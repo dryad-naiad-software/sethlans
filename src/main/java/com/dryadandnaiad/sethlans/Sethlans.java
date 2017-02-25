@@ -17,13 +17,18 @@
  */
 package com.dryadandnaiad.sethlans;
 
+import org.kohsuke.args4j.Option;
+
 /**
  *
  * @author Mario Estrella <mestrella@dryadandnaiad.com>
  */
 public class Sethlans {
-    public static void main(String[] args) {
         
+	@Option(name = "-compute-method", usage = "CPU: only use cpu, GPU: only use gpu, CPU_GPU: can use cpu and gpu (not at the same time) if -gpu is not use it will not use the gpu", metaVar = "CPU", required = false)
+	private String method = null;
+        
+    public static void main(String[] args) {
+        System.out.println("Test");
     }
-    
 }
