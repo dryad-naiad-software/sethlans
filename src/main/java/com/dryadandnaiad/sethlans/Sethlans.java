@@ -22,5 +22,8 @@ package com.dryadandnaiad.sethlans;
  * @author Mario Estrella <mestrella@dryadandnaiad.com>
  */
 public class Sethlans {
+    public static void main(String[] args) {
+        
+    }
     
 }
