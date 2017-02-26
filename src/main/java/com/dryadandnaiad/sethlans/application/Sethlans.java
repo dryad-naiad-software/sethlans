@@ -60,7 +60,7 @@ public class Sethlans {
     private LogLevel logLevel;
 
     public static void main(String[] args) {
-        logger.info("********************* " + SethlansUtils.getString(StringKey.APP_NAME) + " Startup");
+        logger.info("main(): "+ "********************* " + SethlansUtils.getString(StringKey.APP_NAME) + " Startup" + " *********************");
         new Sethlans().doMain(args);
     }
 

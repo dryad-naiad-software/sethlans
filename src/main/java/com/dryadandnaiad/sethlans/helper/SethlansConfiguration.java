@@ -57,7 +57,7 @@ public class SethlansConfiguration {
 
     public static SethlansConfiguration getInstance() {
         if (instance == null) {
-            logger.debug("Creating new instance of configuration helper");
+            logger.debug("getInstance(): Creating new instance of configuration helper");
             instance = new SethlansConfiguration();
         }
         return instance;
@@ -70,6 +70,7 @@ public class SethlansConfiguration {
         this.computeMethod = ComputeType.valueOf(getProperty(ConfigKey.COMPUTE_METHOD).toUpperCase());
         this.cores = Integer.parseInt(getProperty(ConfigKey.CORES));
         Configurator.setRootLevel(this.logLevel.getLevel());
+        logger.debug("loadconfig(): Config values loaded");
     }
 
     public void setComputeMethod(ComputeType value) {
@@ -123,11 +124,11 @@ public class SethlansConfiguration {
         if (defaultConfigFile.isFile()) {
             firstTime = false;
             loadConfig();
-            logger.debug("Configuration exists");
+            logger.debug("check(): Configuration exists");
         }
 
         if (firstTime) {
-            logger.debug("No configuration present, setting default config file");
+            logger.debug("check(): No configuration present, setting default config file");
             setup();
         }
     }
