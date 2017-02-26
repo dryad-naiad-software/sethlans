@@ -18,8 +18,12 @@
 package com.dryadandnaiad.sethlans.application;
 
 import com.dryadandnaiad.sethlans.enums.UIType;
-import com.dryadandnaiad.sethlans.gui.SethlansGUI;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
+import org.kohsuke.args4j.OptionHandlerFilter;
 
 /**
  *
@@ -27,12 +31,14 @@ import org.kohsuke.args4j.Option;
  */
 public class Sethlans {
 
+    private static final Logger logger = LogManager.getLogger(Sethlans.class);
+
     @Option(name = "-compute-method", usage = "CPU: only use cpu, "
             + "GPU: only use gpu, CPU_GPU: can use cpu and gpu "
             + "(not at the same time) if -gpu is not use it will not "
             + "use the gpu", metaVar = "CPU", required = false)
     private String method = null;
-    
+
     @Option(name = "-cores", usage = "Number of cores/threads to use for the "
             + "render", metaVar = "3", required = false)
     private int nb_cores = -1;
@@ -41,19 +47,39 @@ public class Sethlans {
             + "will be emptied on execution",
             metaVar = "/tmp/cache", required = false)
     private String cache_dir = null;
-    
+
     @Option(name = "--verbose", usage = "Display log", required = false)
     private boolean print_log = false;
-    
-    @Option(name = "-ui", usage = "Specify the user interface to use, default '" + 
-            UIType.Constants.GUI_VALUE + "', available '" + 
-            UIType.Constants.CLI_VALUE + "', '" + 
-            UIType.Constants.CLI_ONELINE_VALUE + "', '" + 
-            UIType.Constants.GUI_VALUE + "' (graphical)", required = false)
+
+    @Option(name = "-ui", usage = "Specify the user interface to use, default '"
+            + UIType.Constants.GUI_VALUE + "', available '"
+            + UIType.Constants.CLI_VALUE + "', '"
+            + UIType.Constants.CLI_ONELINE_VALUE + "', '"
+            + UIType.Constants.GUI_VALUE + "' (graphical)", required = false)
     private String ui_type = null;
 
+    @Option(name = "-mode", usage = "Specify whether to operate as a server, node, or both", required = false)
+
     public static void main(String[] args) {
-        System.out.println("Test");
-        SethlansGUI.launch(SethlansGUI.class, args);
+        new Sethlans().doMain(args);
+    }
+
+    public void doMain(String[] args) {
+        CmdLineParser cmdParser = new CmdLineParser(this);
+
+        try {
+            cmdParser.parseArgument(args);
+
+        } catch (CmdLineException e) {
+            logger.error(e.getMessage());
+            System.err.println(e.getMessage());
+            System.err.println("Usage: ");
+            cmdParser.printUsage(System.err);
+            System.err.println();
+            System.err.println("Example: java " + this.getClass().getName() + " " + cmdParser.printExample(OptionHandlerFilter.REQUIRED));
+            return;
+
+        }
+
     }
 }
