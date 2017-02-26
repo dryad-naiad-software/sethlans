@@ -17,7 +17,14 @@
  */
 package com.dryadandnaiad.sethlans.application;
 
+import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.LogLevel;
+import com.dryadandnaiad.sethlans.enums.StringKey;
+import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.enums.UIType;
+import com.dryadandnaiad.sethlans.gui.SethlansGUI;
+import com.dryadandnaiad.sethlans.utils.Configuration;
+import com.dryadandnaiad.sethlans.utils.ProjectUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.kohsuke.args4j.CmdLineException;
@@ -41,7 +48,7 @@ public class Sethlans {
 
     @Option(name = "-cores", usage = "Number of cores/threads to use for the "
             + "render", metaVar = "3", required = false)
-    private int nb_cores = -1;
+    private int cores = -1;
 
     @Option(name = "-cache-dir", usage = "Cache/Working directory. "
             + "will be emptied on execution",
@@ -56,15 +63,21 @@ public class Sethlans {
             + UIType.Constants.CLI_VALUE + "', '"
             + UIType.Constants.CLI_ONELINE_VALUE + "', '"
             + UIType.Constants.GUI_VALUE + "' (graphical)", required = false)
-    private String ui_type = null;
+    private UIType ui_type = null;
 
-    @Option(name = "-mode", usage = "Specify whether to operate as a server, node, or both", required = false)
+    @Option(name = "-mode", usage = "Specify whether to operate as a server, node, or both(default)", required = false)
+    private SethlansMode mode = null;
+    
+    @Option(name = "-loglevel", usage = "Sets the debug level for log file.  info: normal information messages(default), debug: turns on debug logging")
+    private LogLevel logLevels;
 
     public static void main(String[] args) {
+        logger.info("********************* " + ProjectUtils.GetString(StringKey.APP_NAME) + " Startup" );
         new Sethlans().doMain(args);
     }
 
     public void doMain(String[] args) {
+        String noArgs[] = null; // For JavaFX GUI launch, no args needed, they're set on the config.
         CmdLineParser cmdParser = new CmdLineParser(this);
 
         try {
@@ -80,6 +93,15 @@ public class Sethlans {
             return;
 
         }
-
+        
+        Configuration config = new Configuration(SethlansMode.BOTH);
+        config.setComputeMethod(ComputeType.CPU_GPU);
+        
+                
+                
+        if(ui_type == null) {
+            SethlansGUI.launch(SethlansGUI.class, noArgs);
+        }
+        
     }
 }

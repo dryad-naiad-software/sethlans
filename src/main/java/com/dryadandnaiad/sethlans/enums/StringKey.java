@@ -21,17 +21,18 @@ package com.dryadandnaiad.sethlans.enums;
  *
  * @author Mario Estrella <mestrella@dryadandnaiad.com>
  */
-public enum UIType {
-    CLI(Constants.CLI_VALUE),
-    CLI_ONELINE(Constants.CLI_ONELINE_VALUE),
-    GUI(Constants.GUI_VALUE); 
-        
-    UIType(String uiType) {
-    }
+public enum StringKey {
+    APP_NAME("appName");
     
-    public static class Constants {
-        public static final String CLI_VALUE = "cli";
-        public static final String CLI_ONELINE_VALUE = "oneline";
-        public static final String GUI_VALUE = "gui";
-    }   
+    private final String keyName;
+    
+    StringKey(String keyName) {
+        this.keyName = keyName;
+    }
+
+    @Override
+    public String toString() {
+        return keyName;
+    }  
+
 }

@@ -21,17 +21,7 @@ package com.dryadandnaiad.sethlans.enums;
  *
  * @author Mario Estrella <mestrella@dryadandnaiad.com>
  */
-public enum UIType {
-    CLI(Constants.CLI_VALUE),
-    CLI_ONELINE(Constants.CLI_ONELINE_VALUE),
-    GUI(Constants.GUI_VALUE); 
-        
-    UIType(String uiType) {
-    }
+public enum LogLevel {
+    INFO, DEBUG;
     
-    public static class Constants {
-        public static final String CLI_VALUE = "cli";
-        public static final String CLI_ONELINE_VALUE = "oneline";
-        public static final String GUI_VALUE = "gui";
-    }   
 }

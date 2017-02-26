@@ -15,23 +15,36 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.dryadandnaiad.sethlans.enums;
+package com.dryadandnaiad.sethlans.utils;
 
 /**
  *
  * @author Mario Estrella <mestrella@dryadandnaiad.com>
  */
-public enum UIType {
-    CLI(Constants.CLI_VALUE),
-    CLI_ONELINE(Constants.CLI_ONELINE_VALUE),
-    GUI(Constants.GUI_VALUE); 
-        
-    UIType(String uiType) {
+import java.io.InputStream;
+import java.nio.file.NoSuchFileException;
+
+public class Resources {
+
+    private final String filePath;
+
+    public Resources(String filePath) {
+        this.filePath = filePath;
+
+        if (filePath.startsWith("/")) {
+            throw new IllegalArgumentException("Only relative paths are supported, remove the leading slash");
+        }
     }
-    
-    public static class Constants {
-        public static final String CLI_VALUE = "cli";
-        public static final String CLI_ONELINE_VALUE = "oneline";
-        public static final String GUI_VALUE = "gui";
-    }   
+
+    public InputStream getResource() throws NoSuchFileException {
+        ClassLoader classLoader = getClass().getClassLoader();
+
+        InputStream inputStream = classLoader.getResourceAsStream(filePath);
+
+        if (inputStream == null) {
+            throw new NoSuchFileException(filePath + " File not found");
+        }
+
+        return inputStream;
+    }
 }
