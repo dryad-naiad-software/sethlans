@@ -24,7 +24,6 @@ import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.enums.UIType;
 import java.io.*;
 import java.util.Properties;
-import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,12 +32,13 @@ import org.apache.logging.log4j.Logger;
  * @author Mario Estrella <mestrella@dryadandnaiad.com>
  */
 public class Configuration {
+
     private static final Logger logger = LogManager.getLogger(Configuration.class);
-    
+
     private final String path = System.getProperty("user.home") + File.separator + ".sethlans";
     private final File configDirectory = new File(path + File.separator + "config");
     private final File defaultConfigFile = new File(configDirectory + File.separator + "sethlansconfig.xml");
-    
+
     private ComputeType computeMethod;
     private boolean firstTime = true;
     private int cores;
@@ -71,14 +71,14 @@ public class Configuration {
     public void setLoglevels(LogLevel loglevel) {
         this.loglevel = loglevel;
     }
-    
+
     private void check() {
-        if(defaultConfigFile.isFile()) {
+        if (defaultConfigFile.isFile()) {
             firstTime = false;
             logger.debug("Configuration exists");
         }
-        
-        if(firstTime) {
+
+        if (firstTime) {
             logger.debug("No configuration present, setting up initial structure");
             setup();
         }
@@ -90,37 +90,34 @@ public class Configuration {
     }
 
     private void initialConfigFile() {
+
         try {
             Properties properties = new Properties();
             properties.setProperty(ConfigKey.LOGLEVEL.toString().toLowerCase(), loglevel.toString().toLowerCase());
             properties.setProperty(ConfigKey.MODE.toString().toLowerCase(), mode.toString().toLowerCase());
-            try (FileOutputStream fileOut = new FileOutputStream(defaultConfigFile)) {
-                properties.storeToXML(fileOut, ProjectUtils.UpdaterTimeStamp());
-                fileOut.close();
-            }
-            
+            FileOutputStream fileOut = new FileOutputStream(defaultConfigFile);
+            properties.storeToXML(fileOut, ProjectUtils.UpdaterTimeStamp());
+            fileOut.close();
+
         } catch (FileNotFoundException e) {
             logger.error(e.getMessage());
-            
+
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
-    
+
     private void setProperty(String key, String value) {
         try {
             Properties properties = new Properties();
-            try (FileInputStream fileIn = new FileInputStream(defaultConfigFile)) {
-                properties.load(fileIn);
-                fileIn.close();
-            }         
-            
-            
+            FileInputStream fileIn = new FileInputStream(defaultConfigFile);
+            properties.loadFromXML(fileIn);
+            fileIn.close();
+
             properties.setProperty(key, value);
-            try (FileOutputStream fileOut = new FileOutputStream(defaultConfigFile)) {
-                properties.storeToXML(fileOut, ProjectUtils.UpdaterTimeStamp());
-                fileOut.close();
-            }
+            FileOutputStream fileOut = new FileOutputStream(defaultConfigFile);
+            properties.storeToXML(fileOut, ProjectUtils.UpdaterTimeStamp());
+            fileOut.close();
 
         } catch (FileNotFoundException e) {
             logger.error(e.getMessage());
@@ -129,10 +126,9 @@ public class Configuration {
             logger.error(e.getMessage());
         }
     }
-    
+
     private void getProperty() {
-        
+
     }
-    
-    
+
 }
