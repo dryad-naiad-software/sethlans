@@ -17,11 +17,24 @@
  */
 package com.dryadandnaiad.sethlans.enums;
 
+import org.apache.logging.log4j.Level;
+
 /**
  *
  * @author Mario Estrella <mestrella@dryadandnaiad.com>
  */
 public enum LogLevel {
-    INFO, DEBUG;
+    INFO(Level.INFO), DEBUG(Level.DEBUG);
+    
+    private final Level levelName;
+    
+    LogLevel(Level levelName) {
+        this.levelName = levelName;
+    }
+    
+    public Level getLevel() {
+        return levelName;
+    }
+    
     
 }

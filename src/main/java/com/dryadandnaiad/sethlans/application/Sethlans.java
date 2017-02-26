@@ -44,32 +44,20 @@ public class Sethlans {
             + "GPU: only use gpu, CPU_GPU: can use cpu and gpu "
             + "(not at the same time) if -gpu is not use it will not "
             + "use the gpu", metaVar = "CPU", required = false)
-    private String method = null;
+    private ComputeType method = null;
 
     @Option(name = "-cores", usage = "Number of cores/threads to use for the "
             + "render", metaVar = "3", required = false)
     private int cores = -1;
 
-    @Option(name = "-cache-dir", usage = "Cache/Working directory. "
-            + "will be emptied on execution",
-            metaVar = "/tmp/cache", required = false)
-    private String cache_dir = null;
-
-    @Option(name = "--verbose", usage = "Display log", required = false)
-    private boolean print_log = false;
-
-    @Option(name = "-ui", usage = "Specify the user interface to use, default '"
-            + UIType.Constants.GUI_VALUE + "', available '"
-            + UIType.Constants.CLI_VALUE + "', '"
-            + UIType.Constants.CLI_ONELINE_VALUE + "', '"
-            + UIType.Constants.GUI_VALUE + "' (graphical)", required = false)
+    @Option(name = "-ui", usage = "GUI: graphical user interface(default), CLI_ONELINE: constantly refreshing cli, CLI: command line interface", required = false)
     private UIType ui_type = null;
 
     @Option(name = "-mode", usage = "Specify whether to operate as a server, node, or both(default)", required = false)
     private SethlansMode mode = null;
     
     @Option(name = "-loglevel", usage = "Sets the debug level for log file.  info: normal information messages(default), debug: turns on debug logging")
-    private LogLevel logLevels;
+    private LogLevel logLevel;
 
     public static void main(String[] args) {
         logger.info("********************* " + ProjectUtils.getString(StringKey.APP_NAME) + " Startup" );
@@ -78,6 +66,9 @@ public class Sethlans {
 
     public void doMain(String[] args) {
         String noArgs[] = null; // For JavaFX GUI launch, no args needed, they're set on the config.
+        if (args == null) {
+            SethlansGUI.launch(SethlansGUI.class, noArgs);
+        }
         CmdLineParser cmdParser = new CmdLineParser(this);
 
         try {
@@ -94,13 +85,11 @@ public class Sethlans {
 
         }
         
-        Configuration config = new Configuration();
-        config.setComputeMethod(ComputeType.CPU_GPU);
-        
-                
+        Configuration config = Configuration.getInstance();
+        config.setLoglevel(LogLevel.DEBUG);
                 
         if(ui_type == null) {
-            SethlansGUI.launch(SethlansGUI.class, noArgs);
+           // SethlansGUI.launch(SethlansGUI.class, noArgs);
         }
         
     }

@@ -23,9 +23,11 @@ import com.dryadandnaiad.sethlans.enums.LogLevel;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.enums.UIType;
 import java.io.*;
+import java.nio.file.NoSuchFileException;
 import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 
 /**
  *
@@ -44,68 +46,86 @@ public class Configuration {
     private int cores;
     private SethlansMode mode;
     private UIType ui_type;
-    private LogLevel loglevel = LogLevel.INFO;
+    private LogLevel logLevel;
 
-    public Configuration() {
+    private Configuration() {
         check();
     }
-
-    public void setComputeMethod(ComputeType computeMethod) {
-        this.computeMethod = computeMethod;
-        setProperty(ConfigKey.COMPUTE_METHOD, this.computeMethod);
+    
+    public static Configuration getInstance() {
+        return ConfigurationHolder.INSTANCE;
+    }
+    
+    private static class ConfigurationHolder {
+        private static final Configuration INSTANCE = new Configuration();
     }
 
-    public void setCores(int cores) {
-        this.cores = cores;
+    public void setComputeMethod(ComputeType value) {
+        setProperty(ConfigKey.COMPUTE_METHOD, value);
+        loadConfig();
+    }
+
+    public void setCores(int value) {
         setProperty(ConfigKey.CORES, Integer.toString(this.cores));
+        loadConfig();
     }
 
-    public void setMode(SethlansMode mode) {
-        this.mode = mode;
-        setProperty(ConfigKey.MODE, this.mode);
+    public void setMode(SethlansMode value) {
+        setProperty(ConfigKey.MODE, value);
+        loadConfig();
     }
 
-    public void setUi_type(UIType ui_type) {
-        this.ui_type = ui_type;
-        setProperty(ConfigKey.UITYPE, this.ui_type);
+    public void setUi_type(UIType value) {
+        setProperty(ConfigKey.UITYPE, value);
+        loadConfig();
     }
 
-    public void setLoglevels(LogLevel loglevel) {
-        this.loglevel = loglevel;
-        setProperty(ConfigKey.LOGLEVEL, this.loglevel);
+    public void setLoglevel(LogLevel value) {
+        setProperty(ConfigKey.LOGLEVEL, value);
+        loadConfig();
     }
 
     private void check() {
         if (defaultConfigFile.isFile()) {
             firstTime = false;
+            loadConfig();
             logger.debug("Configuration exists");
         }
 
         if (firstTime) {
-            logger.debug("No configuration present, setting up initial structure");
+            logger.debug("No configuration present, setting default config file");
             setup();
         }
+    }
+
+    private void loadConfig() {
+        this.logLevel = LogLevel.valueOf(getProperty(ConfigKey.LOGLEVEL).toUpperCase());
+        this.ui_type = UIType.valueOf(getProperty(ConfigKey.UITYPE).toUpperCase());
+        Configurator.setRootLevel(this.logLevel.getLevel());
     }
 
     private void setup() {
         configDirectory.mkdirs();
         initialConfigFile();
+
     }
 
     private void initialConfigFile() {
-
+        
         try {
-            Properties properties = new Properties();
-            properties.setProperty(ProjectUtils.enumToString(ConfigKey.LOGLEVEL), ProjectUtils.enumToString(loglevel));
-            try (FileOutputStream fileOut = new FileOutputStream(defaultConfigFile)) {
-                properties.storeToXML(fileOut, ProjectUtils.updaterTimeStamp());
+            BufferedWriter writer;
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new Resources("defaultconfig/default_config.xml").getResource(), "UTF-8"))) {
+                writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(defaultConfigFile), "UTF-8"));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    writer.write(line);
+                }
             }
-
-        } catch (FileNotFoundException e) {
-            logger.error(e.getMessage());
-
-        } catch (IOException e) {
-            logger.error(e.getMessage());
+            writer.close();
+        } catch (NoSuchFileException | UnsupportedEncodingException | FileNotFoundException ex) {
+            logger.error(ex.getMessage());
+        } catch (IOException ex) {
+            logger.error(ex.getMessage());
         }
     }
 
@@ -128,8 +148,8 @@ public class Configuration {
             logger.error(e.getMessage());
         }
     }
-    
-        private void setProperty(Enum key, String value) {
+
+    private void setProperty(Enum key, String value) {
         try {
             Properties properties = new Properties();
             try (FileInputStream fileIn = new FileInputStream(defaultConfigFile)) {
@@ -149,7 +169,22 @@ public class Configuration {
         }
     }
 
-    private void getProperty() {
+    private String getProperty(Enum key) {
+        try {
+            Properties properties = new Properties();
+            try (FileInputStream fileIn = new FileInputStream(defaultConfigFile)) {
+                properties.loadFromXML(fileIn);
+            }
+
+            return properties.getProperty(ProjectUtils.enumToString(key));
+
+        } catch (FileNotFoundException e) {
+            logger.error(e.getMessage());
+
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+        return null;
 
     }
 
