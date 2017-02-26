@@ -30,9 +30,9 @@ import org.apache.logging.log4j.Logger;
  *
  * @author Mario Estrella <mestrella@dryadandnaiad.com>
  */
-public class ProjectUtils {
+public class SethlansUtils {
     
-    private static final Logger logger = LogManager.getLogger(ProjectUtils.class);
+    private static final Logger logger = LogManager.getLogger(SethlansUtils.class);
     
     public static String getString(StringKey sentEnum) {
         String newKey = sentEnum.toString();

@@ -23,8 +23,8 @@ import com.dryadandnaiad.sethlans.enums.StringKey;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.enums.UIType;
 import com.dryadandnaiad.sethlans.gui.SethlansGUI;
-import com.dryadandnaiad.sethlans.utils.Configuration;
-import com.dryadandnaiad.sethlans.utils.ProjectUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansConfiguration;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.kohsuke.args4j.CmdLineException;
@@ -60,7 +60,7 @@ public class Sethlans {
     private LogLevel logLevel;
 
     public static void main(String[] args) {
-        logger.info("********************* " + ProjectUtils.getString(StringKey.APP_NAME) + " Startup" );
+        logger.info("********************* " + SethlansUtils.getString(StringKey.APP_NAME) + " Startup" );
         new Sethlans().doMain(args);
     }
 
@@ -85,7 +85,7 @@ public class Sethlans {
 
         }
         
-        Configuration config = Configuration.getInstance();
+        SethlansConfiguration config = SethlansConfiguration.getInstance();
         config.setLoglevel(LogLevel.DEBUG);
                 
         if(ui_type == null) {

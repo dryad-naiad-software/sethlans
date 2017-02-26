@@ -33,9 +33,9 @@ import org.apache.logging.log4j.core.config.Configurator;
  *
  * @author Mario Estrella <mestrella@dryadandnaiad.com>
  */
-public class Configuration {
+public class SethlansConfiguration {
 
-    private static final Logger logger = LogManager.getLogger(Configuration.class);
+    private static final Logger logger = LogManager.getLogger(SethlansConfiguration.class);
 
     private final String path = System.getProperty("user.home") + File.separator + ".sethlans";
     private final File configDirectory = new File(path + File.separator + "config");
@@ -48,16 +48,16 @@ public class Configuration {
     private UIType ui_type;
     private LogLevel logLevel;
 
-    private Configuration() {
+    private SethlansConfiguration() {
         check();
     }
     
-    public static Configuration getInstance() {
+    public static SethlansConfiguration getInstance() {
         return ConfigurationHolder.INSTANCE;
     }
     
     private static class ConfigurationHolder {
-        private static final Configuration INSTANCE = new Configuration();
+        private static final SethlansConfiguration INSTANCE = new SethlansConfiguration();
     }
 
     public void setComputeMethod(ComputeType value) {
@@ -136,9 +136,9 @@ public class Configuration {
                 properties.loadFromXML(fileIn);
             }
 
-            properties.setProperty(ProjectUtils.enumToString(key), ProjectUtils.enumToString(value));
+            properties.setProperty(SethlansUtils.enumToString(key), SethlansUtils.enumToString(value));
             try (FileOutputStream fileOut = new FileOutputStream(defaultConfigFile)) {
-                properties.storeToXML(fileOut, ProjectUtils.updaterTimeStamp());
+                properties.storeToXML(fileOut, SethlansUtils.updaterTimeStamp());
             }
 
         } catch (FileNotFoundException e) {
@@ -156,9 +156,9 @@ public class Configuration {
                 properties.loadFromXML(fileIn);
             }
 
-            properties.setProperty(ProjectUtils.enumToString(key), value);
+            properties.setProperty(SethlansUtils.enumToString(key), value);
             try (FileOutputStream fileOut = new FileOutputStream(defaultConfigFile)) {
-                properties.storeToXML(fileOut, ProjectUtils.updaterTimeStamp());
+                properties.storeToXML(fileOut, SethlansUtils.updaterTimeStamp());
             }
 
         } catch (FileNotFoundException e) {
@@ -176,7 +176,7 @@ public class Configuration {
                 properties.loadFromXML(fileIn);
             }
 
-            return properties.getProperty(ProjectUtils.enumToString(key));
+            return properties.getProperty(SethlansUtils.enumToString(key));
 
         } catch (FileNotFoundException e) {
             logger.error(e.getMessage());

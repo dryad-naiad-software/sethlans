@@ -1,6 +1,6 @@
 package com.dryadandnaiad.sethlans.gui;
 
-import com.dryadandnaiad.sethlans.utils.Configuration;
+import com.dryadandnaiad.sethlans.utils.SethlansConfiguration;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,11 +9,11 @@ import javafx.stage.Stage;
 
 
 public class SethlansGUI extends Application {
-    private Configuration config;
+    private SethlansConfiguration config;
 
     @Override
     public void start(Stage stage) throws Exception {
-        config = Configuration.getInstance();
+        config = SethlansConfiguration.getInstance();
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
         
         Scene scene = new Scene(root);
