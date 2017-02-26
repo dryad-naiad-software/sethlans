@@ -17,6 +17,7 @@
  */
 package com.dryadandnaiad.sethlans;
 
+import com.dryadandnaiad.sethlans.gui.SethlansGUI;
 import org.kohsuke.args4j.Option;
 
 /**
@@ -30,5 +31,6 @@ public class Sethlans {
         
     public static void main(String[] args) {
         System.out.println("Test");
+        SethlansGUI.launch(SethlansGUI.class, args);
     }
 }
