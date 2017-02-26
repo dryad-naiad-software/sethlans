@@ -15,22 +15,23 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.dryadandnaiad.sethlans;
-
-import com.dryadandnaiad.sethlans.gui.SethlansGUI;
-import org.kohsuke.args4j.Option;
+package com.dryadandnaiad.sethlans.enums;
 
 /**
  *
  * @author Mario Estrella <mestrella@dryadandnaiad.com>
  */
-public class Sethlans {
+public enum UIType {
+    CLI(Constants.CLI_VALUE),
+    CLI_ONELINE(Constants.CLI_ONELINE_VALUE),
+    GUI(Constants.GUI_VALUE); 
         
-	@Option(name = "-compute-method", usage = "CPU: only use cpu, GPU: only use gpu, CPU_GPU: can use cpu and gpu (not at the same time) if -gpu is not use it will not use the gpu", metaVar = "CPU", required = false)
-	private String method = null;
-        
-    public static void main(String[] args) {
-        System.out.println("Test");
-        SethlansGUI.launch(SethlansGUI.class, args);
+    UIType(String uiType) {
     }
+    
+    public static class Constants {
+        public static final String CLI_VALUE = "CLI";
+        public static final String CLI_ONELINE_VALUE = "CLI oneline";
+        public static final String GUI_VALUE = "GUI";
+    }   
 }
