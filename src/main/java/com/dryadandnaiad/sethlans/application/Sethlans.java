@@ -23,7 +23,7 @@ import com.dryadandnaiad.sethlans.enums.StringKey;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.enums.UIType;
 import com.dryadandnaiad.sethlans.gui.SethlansGUI;
-import com.dryadandnaiad.sethlans.utils.SethlansConfiguration;
+import com.dryadandnaiad.sethlans.helper.SethlansConfiguration;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -55,19 +55,24 @@ public class Sethlans {
 
     @Option(name = "-mode", usage = "Specify whether to operate as a server, node, or both(default)", required = false)
     private SethlansMode mode = null;
-    
+
     @Option(name = "-loglevel", usage = "Sets the debug level for log file.  info: normal information messages(default), debug: turns on debug logging")
     private LogLevel logLevel;
 
     public static void main(String[] args) {
-        logger.info("********************* " + SethlansUtils.getString(StringKey.APP_NAME) + " Startup" );
+        logger.info("********************* " + SethlansUtils.getString(StringKey.APP_NAME) + " Startup");
         new Sethlans().doMain(args);
     }
 
     public void doMain(String[] args) {
+        SethlansConfiguration config = SethlansConfiguration.getInstance();
+        config.setLoglevel(LogLevel.DEBUG);
         String noArgs[] = null; // For JavaFX GUI launch, no args needed, they're set on the config.
-        if (args == null) {
-            SethlansGUI.launch(SethlansGUI.class, noArgs);
+        if (args.length == 0) {
+            if (config.getUi_type() == UIType.GUI) {
+                SethlansGUI.launch(SethlansGUI.class, noArgs);
+            }
+            
         }
         CmdLineParser cmdParser = new CmdLineParser(this);
 
@@ -84,13 +89,5 @@ public class Sethlans {
             return;
 
         }
-        
-        SethlansConfiguration config = SethlansConfiguration.getInstance();
-        config.setLoglevel(LogLevel.DEBUG);
-                
-        if(ui_type == null) {
-           // SethlansGUI.launch(SethlansGUI.class, noArgs);
-        }
-        
     }
 }

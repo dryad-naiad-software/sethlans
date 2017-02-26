@@ -15,13 +15,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.dryadandnaiad.sethlans.utils;
+package com.dryadandnaiad.sethlans.helper;
 
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.ConfigKey;
 import com.dryadandnaiad.sethlans.enums.LogLevel;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.enums.UIType;
+import com.dryadandnaiad.sethlans.utils.Resources;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import java.io.*;
 import java.nio.file.NoSuchFileException;
 import java.util.Properties;
@@ -43,21 +45,31 @@ public class SethlansConfiguration {
 
     private ComputeType computeMethod;
     private boolean firstTime = true;
-    private int cores;
+    private Integer cores;
     private SethlansMode mode;
     private UIType ui_type;
     private LogLevel logLevel;
-
+    private static SethlansConfiguration instance = null;
+    
     private SethlansConfiguration() {
         check();
     }
-    
+
     public static SethlansConfiguration getInstance() {
-        return ConfigurationHolder.INSTANCE;
+        if (instance == null) {
+            logger.debug("Creating new instance of configuration helper");
+            instance = new SethlansConfiguration();
+        }
+        return instance;
     }
-    
-    private static class ConfigurationHolder {
-        private static final SethlansConfiguration INSTANCE = new SethlansConfiguration();
+
+
+    private void loadConfig() {
+        this.logLevel = LogLevel.valueOf(getProperty(ConfigKey.LOGLEVEL).toUpperCase());
+        this.ui_type = UIType.valueOf(getProperty(ConfigKey.UITYPE).toUpperCase());
+        this.computeMethod = ComputeType.valueOf(getProperty(ConfigKey.COMPUTE_METHOD).toUpperCase());
+        this.cores = Integer.parseInt(getProperty(ConfigKey.CORES));
+        Configurator.setRootLevel(this.logLevel.getLevel());
     }
 
     public void setComputeMethod(ComputeType value) {
@@ -85,6 +97,28 @@ public class SethlansConfiguration {
         loadConfig();
     }
 
+    public ComputeType getComputeMethod() {
+        return computeMethod;
+    }
+
+    public Integer getCores() {
+        return cores;
+    }
+
+    public SethlansMode getMode() {
+        return mode;
+    }
+
+    public UIType getUi_type() {
+        return ui_type;
+    }
+
+    public LogLevel getLogLevel() {
+        return logLevel;
+    }
+    
+    
+
     private void check() {
         if (defaultConfigFile.isFile()) {
             firstTime = false;
@@ -98,12 +132,6 @@ public class SethlansConfiguration {
         }
     }
 
-    private void loadConfig() {
-        this.logLevel = LogLevel.valueOf(getProperty(ConfigKey.LOGLEVEL).toUpperCase());
-        this.ui_type = UIType.valueOf(getProperty(ConfigKey.UITYPE).toUpperCase());
-        Configurator.setRootLevel(this.logLevel.getLevel());
-    }
-
     private void setup() {
         configDirectory.mkdirs();
         initialConfigFile();
@@ -111,7 +139,7 @@ public class SethlansConfiguration {
     }
 
     private void initialConfigFile() {
-        
+
         try {
             BufferedWriter writer;
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(new Resources("defaultconfig/default_config.xml").getResource(), "UTF-8"))) {

@@ -1,6 +1,6 @@
 package com.dryadandnaiad.sethlans.gui;
 
-import com.dryadandnaiad.sethlans.utils.SethlansConfiguration;
+import com.dryadandnaiad.sethlans.helper.SethlansConfiguration;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
