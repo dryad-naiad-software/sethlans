@@ -23,5 +23,7 @@ package com.dryadandnaiad.sethlans.enums;
  */
 public enum ConfigKey {
     LOGLEVEL,
-    MODE, COMPUTE_METHOD;
+    MODE, COMPUTE_METHOD, CORES, UITYPE;
+    
+    
 }

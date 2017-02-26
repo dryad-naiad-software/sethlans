@@ -34,7 +34,7 @@ public class ProjectUtils {
     
     private static final Logger logger = LogManager.getLogger(ProjectUtils.class);
     
-    public static String GetString(StringKey sentEnum) {
+    public static String getString(StringKey sentEnum) {
         String newKey = sentEnum.toString();
         String value = null;
         try {
@@ -55,13 +55,17 @@ public class ProjectUtils {
         return value;
     }
     
-    public static String GetGitProperties(GitPropertyKey sentEnum) {
+    public static String getGitProperties(GitPropertyKey sentEnum) {
         return null;
     }
     
-    public static String UpdaterTimeStamp(){
+    public static String updaterTimeStamp(){
         Date currentDate = GregorianCalendar.getInstance().getTime();
         return String.format("Updated: %1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS", currentDate);
+    }
+    
+    public static String enumToString(Enum value){
+        return value.toString().toLowerCase();
     }
     
     

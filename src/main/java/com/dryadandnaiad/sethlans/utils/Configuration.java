@@ -46,30 +46,33 @@ public class Configuration {
     private UIType ui_type;
     private LogLevel loglevel = LogLevel.INFO;
 
-    public Configuration(SethlansMode mode) {
-        this.mode = mode;
+    public Configuration() {
         check();
     }
 
     public void setComputeMethod(ComputeType computeMethod) {
         this.computeMethod = computeMethod;
-        setProperty(ConfigKey.COMPUTE_METHOD.toString().toLowerCase(), this.computeMethod.toString().toLowerCase());
+        setProperty(ConfigKey.COMPUTE_METHOD, this.computeMethod);
     }
 
     public void setCores(int cores) {
         this.cores = cores;
+        setProperty(ConfigKey.CORES, Integer.toString(this.cores));
     }
 
     public void setMode(SethlansMode mode) {
         this.mode = mode;
+        setProperty(ConfigKey.MODE, this.mode);
     }
 
     public void setUi_type(UIType ui_type) {
         this.ui_type = ui_type;
+        setProperty(ConfigKey.UITYPE, this.ui_type);
     }
 
     public void setLoglevels(LogLevel loglevel) {
         this.loglevel = loglevel;
+        setProperty(ConfigKey.LOGLEVEL, this.loglevel);
     }
 
     private void check() {
@@ -93,11 +96,10 @@ public class Configuration {
 
         try {
             Properties properties = new Properties();
-            properties.setProperty(ConfigKey.LOGLEVEL.toString().toLowerCase(), loglevel.toString().toLowerCase());
-            properties.setProperty(ConfigKey.MODE.toString().toLowerCase(), mode.toString().toLowerCase());
-            FileOutputStream fileOut = new FileOutputStream(defaultConfigFile);
-            properties.storeToXML(fileOut, ProjectUtils.UpdaterTimeStamp());
-            fileOut.close();
+            properties.setProperty(ProjectUtils.enumToString(ConfigKey.LOGLEVEL), ProjectUtils.enumToString(loglevel));
+            try (FileOutputStream fileOut = new FileOutputStream(defaultConfigFile)) {
+                properties.storeToXML(fileOut, ProjectUtils.updaterTimeStamp());
+            }
 
         } catch (FileNotFoundException e) {
             logger.error(e.getMessage());
@@ -107,17 +109,37 @@ public class Configuration {
         }
     }
 
-    private void setProperty(String key, String value) {
+    private void setProperty(Enum key, Enum value) {
         try {
             Properties properties = new Properties();
-            FileInputStream fileIn = new FileInputStream(defaultConfigFile);
-            properties.loadFromXML(fileIn);
-            fileIn.close();
+            try (FileInputStream fileIn = new FileInputStream(defaultConfigFile)) {
+                properties.loadFromXML(fileIn);
+            }
 
-            properties.setProperty(key, value);
-            FileOutputStream fileOut = new FileOutputStream(defaultConfigFile);
-            properties.storeToXML(fileOut, ProjectUtils.UpdaterTimeStamp());
-            fileOut.close();
+            properties.setProperty(ProjectUtils.enumToString(key), ProjectUtils.enumToString(value));
+            try (FileOutputStream fileOut = new FileOutputStream(defaultConfigFile)) {
+                properties.storeToXML(fileOut, ProjectUtils.updaterTimeStamp());
+            }
+
+        } catch (FileNotFoundException e) {
+            logger.error(e.getMessage());
+
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+    
+        private void setProperty(Enum key, String value) {
+        try {
+            Properties properties = new Properties();
+            try (FileInputStream fileIn = new FileInputStream(defaultConfigFile)) {
+                properties.loadFromXML(fileIn);
+            }
+
+            properties.setProperty(ProjectUtils.enumToString(key), value);
+            try (FileOutputStream fileOut = new FileOutputStream(defaultConfigFile)) {
+                properties.storeToXML(fileOut, ProjectUtils.updaterTimeStamp());
+            }
 
         } catch (FileNotFoundException e) {
             logger.error(e.getMessage());

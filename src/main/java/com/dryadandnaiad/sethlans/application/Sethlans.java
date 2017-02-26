@@ -72,7 +72,7 @@ public class Sethlans {
     private LogLevel logLevels;
 
     public static void main(String[] args) {
-        logger.info("********************* " + ProjectUtils.GetString(StringKey.APP_NAME) + " Startup" );
+        logger.info("********************* " + ProjectUtils.getString(StringKey.APP_NAME) + " Startup" );
         new Sethlans().doMain(args);
     }
 
@@ -94,7 +94,7 @@ public class Sethlans {
 
         }
         
-        Configuration config = new Configuration(SethlansMode.BOTH);
+        Configuration config = new Configuration();
         config.setComputeMethod(ComputeType.CPU_GPU);
         
                 
