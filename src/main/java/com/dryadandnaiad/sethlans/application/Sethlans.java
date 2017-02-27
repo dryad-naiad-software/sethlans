@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.enums.UIType;
 import com.dryadandnaiad.sethlans.gui.SethlansGUI;
 import com.dryadandnaiad.sethlans.helper.SethlansConfiguration;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.dryadandnaiad.sethlans.webui.SethlansWebUI;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.kohsuke.args4j.CmdLineException;
@@ -67,10 +68,16 @@ public class Sethlans {
     public void doMain(String[] args) {
         SethlansConfiguration config = SethlansConfiguration.getInstance();
         config.setLoglevel(LogLevel.DEBUG);
+        config.setUi_type(UIType.WEBUI);
+        
+        
         String noArgs[] = null; // For JavaFX GUI launch, no args needed, they're set on the config.
         if (args.length == 0) {
             if (config.getUi_type() == UIType.GUI) {
                 SethlansGUI.launch(SethlansGUI.class, noArgs);
+            }
+            if (config.getUi_type() == UIType.WEBUI) {
+                SethlansWebUI.start();
             }
             
         }

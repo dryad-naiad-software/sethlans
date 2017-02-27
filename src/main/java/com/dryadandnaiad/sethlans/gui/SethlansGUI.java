@@ -6,10 +6,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 public class SethlansGUI extends Application {
     private SethlansConfiguration config;
+    private static final Logger logger = LogManager.getLogger(SethlansGUI.class);
+    
+
 
     @Override
     public void start(Stage stage) throws Exception {
