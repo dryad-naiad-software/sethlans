@@ -99,13 +99,16 @@ public class Sethlans {
             switch (ui_type) {
                 case GUI:
                     logger.info("Starting Sethlans GUI");
+                    logger.debug("GUI started from command line option");
                     SethlansGUI.launch(SethlansGUI.class, noArgs);
-                    break;
+                    return;
                 case WEBUI:
                     logger.info("Starting Sethlans Web UI");
+                    logger.debug("WEBUI started from command line option");
                     SethlansWebUI.start();
-                    break;
+                    return;
                 default:
+                    break;
 
             }
 
@@ -113,14 +116,16 @@ public class Sethlans {
         switch (config.getUi_type()) {
             case GUI:
                 logger.info("Starting Sethlans GUI");
+                logger.debug("GUI started from config setting");
                 SethlansGUI.launch(SethlansGUI.class, noArgs);
-                break;
+                return;
             case WEBUI:
                 logger.info("Starting Sethlans Web UI");
+                logger.debug("WEBUI started from config setting");
                 SethlansWebUI.start();
                 break;
             default:
-
+                break;
         }
     }
 
