@@ -50,7 +50,7 @@ public class Sethlans {
             + "render", metaVar = "3", required = false)
     private int cores = -1;
 
-    @Option(name = "-ui", usage = "GUI: graphical user interface(default), CLI_ONELINE: constantly refreshing cli, CLI: command line interface", required = false)
+    @Option(name = "-ui", usage = "GUI: graphical user interface(default), WEBUI: run server/client via a web interface, CLI: command line interface", required = false)
     private UIType ui_type = null;
 
     @Option(name = "-mode", usage = "Specify whether to operate as a server, node, or both(default)", required = false)
@@ -60,7 +60,7 @@ public class Sethlans {
     private LogLevel logLevel;
 
     public static void main(String[] args) {
-        logger.info("main(): "+ "********************* " + SethlansUtils.getString(StringKey.APP_NAME) + " Startup" + " *********************");
+        logger.info("********************* " + SethlansUtils.getString(StringKey.APP_NAME) + " Startup" + " *********************");
         new Sethlans().doMain(args);
     }
 

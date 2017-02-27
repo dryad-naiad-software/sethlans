@@ -23,7 +23,7 @@ package com.dryadandnaiad.sethlans.enums;
  */
 public enum UIType {
     CLI,
-    CLI_ONELINE,
+    WEBUI,
     GUI; 
      
 }
