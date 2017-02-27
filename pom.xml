@@ -4,7 +4,7 @@
 
     <groupId>com.dryadandnaiad</groupId>
     <artifactId>sethlans</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>sethlans</name>
@@ -116,7 +116,7 @@
                                 <argument>-outdir</argument>
                                 <argument>${project.build.directory}</argument>
                                 <argument>-outfile</argument>
-                                <argument>${project.build.finalName}.jar</argument>
+                                <argument>${project.artifactId}-${project.version}-${git.commit.id.describe}.jar</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -154,7 +154,7 @@
                     </additionalClasspathElements>
                 </configuration>
             </plugin>
-        </plugins>
+         </plugins>
     </build>
     
     

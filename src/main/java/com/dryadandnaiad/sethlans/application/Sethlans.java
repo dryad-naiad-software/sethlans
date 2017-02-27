@@ -40,6 +40,9 @@ import org.kohsuke.args4j.OptionHandlerFilter;
 public class Sethlans {
 
     private static final Logger logger = LogManager.getLogger(Sethlans.class);
+    
+    @Option(name = "-help", aliases ="-h", usage = "Displays this screen\n", required = false, help=true, handler = com.dryadandnaiad.sethlans.utils.HelpOptionHandler.class)
+    private boolean help;
 
     @Option(name = "-compute-method", usage = "CPU: only use cpu, "
             + "GPU: only use gpu, CPU_GPU: can use cpu and gpu "
@@ -48,10 +51,10 @@ public class Sethlans {
     private ComputeType method = null;
 
     @Option(name = "-cores", usage = "Number of cores/threads to use for the "
-            + "render", metaVar = "3", required = false)
-    private int cores = -1;
+            + "render", metaVar = "1", required = false)
+    private int cores = 1;
 
-    @Option(name = "-ui", usage = "GUI: graphical user interface(default), WEBUI: run server/client via a web interface, CLI: command line interface", required = false)
+    @Option(name = "-ui", usage = "GUI: graphical user interface, WEBUI: run server/client via a web interface, CLI: command line interface", required = false)
     private UIType ui_type = null;
 
     @Option(name = "-mode", usage = "Specify whether to operate as a server, node, or both(default)", required = false)
@@ -68,19 +71,9 @@ public class Sethlans {
     public void doMain(String[] args) {
         SethlansConfiguration config = SethlansConfiguration.getInstance();
         config.setLoglevel(LogLevel.DEBUG);
-        config.setUi_type(UIType.GUI);
-        
-        
+
         String noArgs[] = null; // For JavaFX GUI launch, no args needed, they're set on the config.
-        if (args.length == 0) {
-            if (config.getUi_type() == UIType.GUI) {
-                SethlansGUI.launch(SethlansGUI.class, noArgs);
-            }
-            if (config.getUi_type() == UIType.WEBUI) {
-                SethlansWebUI.start();
-            }
-            
-        }
+
         CmdLineParser cmdParser = new CmdLineParser(this);
 
         try {
@@ -92,9 +85,28 @@ public class Sethlans {
             System.err.println("Usage: ");
             cmdParser.printUsage(System.err);
             System.err.println();
-            System.err.println("Example: java " + this.getClass().getName() + " " + cmdParser.printExample(OptionHandlerFilter.REQUIRED));
+            System.err.println("Example: java " +  "-jar sethlans.jar -ui gui" + cmdParser.printExample(OptionHandlerFilter.REQUIRED));
             return;
 
         }
+        if(help) {
+            cmdParser.printUsage(System.out);
+            return;
+        }
+        
+        if(ui_type != null) {
+            config.setUi_type(ui_type);
+        }
+
+        if (config.getUi_type() == UIType.GUI) {
+            logger.info("Starting Sethlans GUI");
+            SethlansGUI.launch(SethlansGUI.class, noArgs);
+        }
+
+        if (config.getUi_type() == UIType.WEBUI) {
+            logger.info("Starting Sethlans Web UI");
+            SethlansWebUI.start();
+        }
     }
+
 }
