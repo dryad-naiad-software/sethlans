@@ -8,7 +8,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <runfx.args>-jar "${project.build.directory}/${project.build.finalName}.jar"</runfx.args>
+                <runfx.args>-jar "${project.build.directory}/${project.artifactId}-${project.version}-${git.commit.id.describe}.jar"</runfx.args>
             </properties>
         </action>
         <action>

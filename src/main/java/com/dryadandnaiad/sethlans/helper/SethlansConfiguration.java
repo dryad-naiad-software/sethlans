@@ -50,7 +50,7 @@ public class SethlansConfiguration {
     private UIType ui_type;
     private LogLevel logLevel;
     private static SethlansConfiguration instance = null;
-    
+
     private SethlansConfiguration() {
         check();
     }
@@ -62,7 +62,6 @@ public class SethlansConfiguration {
         }
         return instance;
     }
-
 
     private void loadConfig() {
         this.logLevel = LogLevel.valueOf(getProperty(ConfigKey.LOGLEVEL).toUpperCase());
@@ -117,8 +116,6 @@ public class SethlansConfiguration {
     public LogLevel getLogLevel() {
         return logLevel;
     }
-    
-    
 
     private void check() {
         if (defaultConfigFile.isFile()) {
