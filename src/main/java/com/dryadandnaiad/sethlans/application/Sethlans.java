@@ -68,7 +68,7 @@ public class Sethlans {
     public void doMain(String[] args) {
         SethlansConfiguration config = SethlansConfiguration.getInstance();
         config.setLoglevel(LogLevel.DEBUG);
-        config.setUi_type(UIType.WEBUI);
+        config.setUi_type(UIType.GUI);
         
         
         String noArgs[] = null; // For JavaFX GUI launch, no args needed, they're set on the config.

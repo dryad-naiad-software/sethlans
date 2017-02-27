@@ -26,14 +26,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet( 
-        name = "MyServlet", 
-        urlPatterns = {"/hello"}
+        name = "Default", 
+        urlPatterns = {""}
 )
 /**
  *
  * @author Mario Estrella <mestrella@dryadandnaiad.com>
  */
-public class TestServlet extends HttpServlet{
+public class DefaultServlet extends HttpServlet{
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
