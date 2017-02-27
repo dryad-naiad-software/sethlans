@@ -40,28 +40,8 @@ import org.kohsuke.args4j.OptionHandlerFilter;
 public class Sethlans {
 
     private static final Logger logger = LogManager.getLogger(Sethlans.class);
-    
-    @Option(name = "-help", aliases ="-h", usage = "Displays this screen\n", required = false, help=true, handler = com.dryadandnaiad.sethlans.utils.HelpOptionHandler.class)
-    private boolean help;
-
-    @Option(name = "-compute-method", usage = "CPU: only use cpu, "
-            + "GPU: only use gpu, CPU_GPU: can use cpu and gpu "
-            + "(not at the same time) if -gpu is not use it will not "
-            + "use the gpu", metaVar = "CPU", required = false)
-    private ComputeType method = null;
-
-    @Option(name = "-cores", usage = "Number of cores/threads to use for the "
-            + "render", metaVar = "1", required = false)
-    private int cores = 1;
-
-    @Option(name = "-ui", usage = "GUI: graphical user interface, WEBUI: run server/client via a web interface, CLI: command line interface", required = false)
-    private UIType ui_type = null;
-
-    @Option(name = "-mode", usage = "Specify whether to operate as a server, node, or both(default)", required = false)
-    private SethlansMode mode = null;
-
-    @Option(name = "-loglevel", usage = "Sets the debug level for log file.  info: normal information messages(default), debug: turns on debug logging")
-    private LogLevel logLevel;
+    private SethlansConfiguration config = SethlansConfiguration.getInstance();
+    private String noArgs[] = null; // For JavaFX GUI launch, no args needed, they're set on the config
 
     public static void main(String[] args) {
         logger.info("********************* " + SethlansUtils.getString(StringKey.APP_NAME) + " Startup" + " *********************");
@@ -69,10 +49,8 @@ public class Sethlans {
     }
 
     public void doMain(String[] args) {
-        SethlansConfiguration config = SethlansConfiguration.getInstance();
-        config.setLoglevel(LogLevel.DEBUG);
 
-        String noArgs[] = null; // For JavaFX GUI launch, no args needed, they're set on the config.
+        config.setLoglevel(LogLevel.DEBUG);
 
         CmdLineParser cmdParser = new CmdLineParser(this);
 
@@ -85,28 +63,91 @@ public class Sethlans {
             System.err.println("Usage: ");
             cmdParser.printUsage(System.err);
             System.err.println();
-            System.err.println("Example: java " +  "-jar sethlans.jar -ui gui" + cmdParser.printExample(OptionHandlerFilter.REQUIRED));
+            System.err.println("Example: java " + "-jar sethlans.jar -ui gui" + cmdParser.printExample(OptionHandlerFilter.REQUIRED));
             return;
 
         }
-        if(help) {
+        if (help) {
             cmdParser.printUsage(System.out);
             return;
         }
+
+        if (persist) {
+            if (ui_type != null) {
+                config.setUi_type(ui_type);
+            }
+            if(method !=null) {
+                config.setComputeMethod(method);
+            }
+            if(cores != 0) {
+                config.setCores(cores);
+            }
+            if(mode !=null){
+                config.setMode(mode);
+            }
+            if(logLevel !=null){
+                config.setLoglevel(logLevel);
+            }
+        }
         
-        if(ui_type != null) {
-            config.setUi_type(ui_type);
-        }
+        startUI();
 
-        if (config.getUi_type() == UIType.GUI) {
-            logger.info("Starting Sethlans GUI");
-            SethlansGUI.launch(SethlansGUI.class, noArgs);
-        }
+    }
 
-        if (config.getUi_type() == UIType.WEBUI) {
-            logger.info("Starting Sethlans Web UI");
-            SethlansWebUI.start();
+    private void startUI() {
+        if (!persist && ui_type != null) {
+            switch (ui_type) {
+                case GUI:
+                    logger.info("Starting Sethlans GUI");
+                    SethlansGUI.launch(SethlansGUI.class, noArgs);
+                    break;
+                case WEBUI:
+                    logger.info("Starting Sethlans Web UI");
+                    SethlansWebUI.start();
+                    break;
+                default:
+
+            }
+
+        }
+        switch (config.getUi_type()) {
+            case GUI:
+                logger.info("Starting Sethlans GUI");
+                SethlansGUI.launch(SethlansGUI.class, noArgs);
+                break;
+            case WEBUI:
+                logger.info("Starting Sethlans Web UI");
+                SethlansWebUI.start();
+                break;
+            default:
+
         }
     }
+
+    // Command line options
+    @Option(name = "-help", aliases = "-h", usage = "Displays this screen\n", required = false, help = true, handler = com.dryadandnaiad.sethlans.utils.HelpOptionHandler.class)
+    private boolean help;
+
+    @Option(name = "-compute-method", usage = "CPU: only use cpu, "
+            + "GPU: only use gpu, CPU_GPU: can use cpu and gpu "
+            + "(not at the same time) if -gpu is not use it will not "
+            + "use the gpu", metaVar = "CPU", required = false)
+    private ComputeType method = null;
+
+    @Option(name = "-cores", usage = "Number of cores/threads to use for the "
+            + "render", metaVar = "1", required = false)
+    private int cores;
+
+    @Option(name = "-ui", usage = "GUI: graphical user interface, WEBUI: run server/client via a web interface, CLI: command line interface", required = false)
+    private UIType ui_type = null;
+
+    @Option(name = "-mode", usage = "Specify whether to operate as a server, node, or both(default)", required = false)
+    private SethlansMode mode = null;
+
+    @Option(name = "-loglevel", usage = "Sets the debug level for log file.  info: normal information messages(default), debug: turns on debug logging")
+    private LogLevel logLevel;
+
+    @Option(name = "-persist", usage = "Options passed via command line are saved and automatically used next startup")
+    private boolean persist;
 
 }
