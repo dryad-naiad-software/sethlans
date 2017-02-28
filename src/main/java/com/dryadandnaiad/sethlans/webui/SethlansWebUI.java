@@ -22,9 +22,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.logging.Level;
 import javax.servlet.ServletException;
-import org.apache.catalina.Globals;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.WebResourceSet;
@@ -56,7 +54,7 @@ public class SethlansWebUI {
             } else {
                 root = new File(runningJarPath.substring(0, lastIndexOf));
             }
-            System.out.println("application resolved root folder: " + root.getAbsolutePath());
+            logger.debug("application resolved root folder: " + root.getAbsolutePath());
             return root;
         } catch (URISyntaxException ex) {
             throw new RuntimeException(ex);
@@ -91,12 +89,12 @@ public class SethlansWebUI {
             
             //Disable TLD scanning by default
             if (System.getProperty(Constants.SKIP_JARS_PROPERTY) == null && System.getProperty(Constants.SKIP_JARS_PROPERTY) == null) {
-                System.out.println("disabling TLD scanning");
+                logger.debug("disabling TLD scanning");
                 StandardJarScanFilter jarScanFilter = (StandardJarScanFilter) ctx.getJarScanner().getJarScanFilter();
                 jarScanFilter.setTldSkip("*");
             }
             
-            System.out.println("configuring app with basedir: " + webContentFolder.getAbsolutePath());
+            logger.debug("configuring app with basedir: " + webContentFolder.getAbsolutePath());
             
             // Declare an alternative location for your "WEB-INF/classes" dir
             // Servlet 3.0 annotation will work
@@ -106,7 +104,7 @@ public class SethlansWebUI {
             WebResourceSet resourceSet;
             if (additionWebInfClassesFolder.exists()) {
                 resourceSet = new DirResourceSet(resources, "/WEB-INF/classes", additionWebInfClassesFolder.getAbsolutePath(), "/");
-                System.out.println("loading WEB-INF resources from as '" + additionWebInfClassesFolder.getAbsolutePath() + "'");
+                logger.debug("loading WEB-INF resources from as '" + additionWebInfClassesFolder.getAbsolutePath() + "'");
             } else {
                 resourceSet = new EmptyResourceSet(resources);
             }
