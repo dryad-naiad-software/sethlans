@@ -84,12 +84,13 @@ public class Sethlans {
                 config.setLoglevel(logLevel);
             }
         }
+        
 
-        startUI();
+        startTomcat();
 
     }
 
-    private void startUI() {
+    private void startTomcat() {
         logger.info("Starting Sethlans Web UI");
         SethlansWebUI.start();
 
