@@ -21,7 +21,6 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.ConfigKey;
 import com.dryadandnaiad.sethlans.enums.LogLevel;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
-import com.dryadandnaiad.sethlans.enums.UIType;
 import com.dryadandnaiad.sethlans.utils.Resources;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import java.io.*;
@@ -47,7 +46,6 @@ public class SethlansConfiguration {
     private boolean firstTime = true;
     private Integer cores;
     private SethlansMode mode;
-    private UIType ui_type;
     private LogLevel logLevel;
     private static SethlansConfiguration instance = null;
 
@@ -65,7 +63,6 @@ public class SethlansConfiguration {
 
     private void loadConfig() {
         this.logLevel = LogLevel.valueOf(getProperty(ConfigKey.LOGLEVEL).toUpperCase());
-        this.ui_type = UIType.valueOf(getProperty(ConfigKey.UITYPE).toUpperCase());
         this.computeMethod = ComputeType.valueOf(getProperty(ConfigKey.COMPUTE_METHOD).toUpperCase());
         this.cores = Integer.parseInt(getProperty(ConfigKey.CORES));
         Configurator.setRootLevel(this.logLevel.getLevel());
@@ -87,10 +84,6 @@ public class SethlansConfiguration {
         loadConfig();
     }
 
-    public void setUi_type(UIType value) {
-        setProperty(ConfigKey.UITYPE, value);
-        loadConfig();
-    }
 
     public void setLoglevel(LogLevel value) {
         setProperty(ConfigKey.LOGLEVEL, value);
@@ -109,9 +102,6 @@ public class SethlansConfiguration {
         return mode;
     }
 
-    public UIType getUi_type() {
-        return ui_type;
-    }
 
     public LogLevel getLogLevel() {
         return logLevel;

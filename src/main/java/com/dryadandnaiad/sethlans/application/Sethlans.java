@@ -21,8 +21,6 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.LogLevel;
 import com.dryadandnaiad.sethlans.enums.StringKey;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
-import com.dryadandnaiad.sethlans.enums.UIType;
-import com.dryadandnaiad.sethlans.gui.SethlansGUI;
 import com.dryadandnaiad.sethlans.helper.SethlansConfiguration;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.dryadandnaiad.sethlans.webui.SethlansWebUI;
@@ -73,60 +71,29 @@ public class Sethlans {
         }
 
         if (persist) {
-            if (ui_type != null) {
-                config.setUi_type(ui_type);
-            }
-            if(method !=null) {
+             if (method != null) {
                 config.setComputeMethod(method);
             }
-            if(cores != 0) {
+            if (cores != 0) {
                 config.setCores(cores);
             }
-            if(mode !=null){
+            if (mode != null) {
                 config.setMode(mode);
             }
-            if(logLevel !=null){
+            if (logLevel != null) {
                 config.setLoglevel(logLevel);
             }
         }
-        
+
         startUI();
 
     }
 
     private void startUI() {
-        if (!persist && ui_type != null) {
-            switch (ui_type) {
-                case GUI:
-                    logger.info("Starting Sethlans GUI");
-                    logger.debug("GUI started from command line option");
-                    SethlansGUI.launch(SethlansGUI.class, noArgs);
-                    return;
-                case WEBUI:
-                    logger.info("Starting Sethlans Web UI");
-                    logger.debug("WEBUI started from command line option");
-                    SethlansWebUI.start();
-                    return;
-                default:
-                    break;
+        logger.info("Starting Sethlans Web UI");
+        logger.debug("WEBUI started from command line option");
+        SethlansWebUI.start();
 
-            }
-
-        }
-        switch (config.getUi_type()) {
-            case GUI:
-                logger.info("Starting Sethlans GUI");
-                logger.debug("GUI started from config setting");
-                SethlansGUI.launch(SethlansGUI.class, noArgs);
-                return;
-            case WEBUI:
-                logger.info("Starting Sethlans Web UI");
-                logger.debug("WEBUI started from config setting");
-                SethlansWebUI.start();
-                break;
-            default:
-                break;
-        }
     }
 
     // Command line options
@@ -142,9 +109,6 @@ public class Sethlans {
     @Option(name = "-cores", usage = "Number of cores/threads to use for the "
             + "render", metaVar = "1", required = false)
     private int cores;
-
-    @Option(name = "-ui", usage = "GUI: graphical user interface, WEBUI: run server/client via a web interface, CLI: command line interface", required = false)
-    private UIType ui_type = null;
 
     @Option(name = "-mode", usage = "Specify whether to operate as a server, node, or both(default)", required = false)
     private SethlansMode mode = null;
