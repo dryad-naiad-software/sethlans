@@ -41,7 +41,6 @@ public class DefaultServlet extends HttpServlet{
         out.write("hello there".getBytes());
         out.flush();
         out.close();
-        
     }
     
     

@@ -91,7 +91,6 @@ public class Sethlans {
 
     private void startUI() {
         logger.info("Starting Sethlans Web UI");
-        logger.debug("WEBUI started from command line option");
         SethlansWebUI.start();
 
     }
