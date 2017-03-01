@@ -47,6 +47,8 @@ public class SethlansConfiguration {
     private Integer cores;
     private SethlansMode mode;
     private LogLevel logLevel;
+    private String httpPort;
+    private String httpsPort;
     private static SethlansConfiguration instance = null;
 
     private SethlansConfiguration() {
@@ -65,6 +67,9 @@ public class SethlansConfiguration {
         this.logLevel = LogLevel.valueOf(getProperty(ConfigKey.LOGLEVEL).toUpperCase());
         this.computeMethod = ComputeType.valueOf(getProperty(ConfigKey.COMPUTE_METHOD).toUpperCase());
         this.cores = Integer.parseInt(getProperty(ConfigKey.CORES));
+        this.mode = SethlansMode.valueOf(getProperty(ConfigKey.MODE).toUpperCase());
+        this.httpPort = getProperty(ConfigKey.HTTP_PORT);
+        this.httpPort = getProperty(ConfigKey.HTTPS_PORT);
         Configurator.setRootLevel(this.logLevel.getLevel());
         logger.debug("Config values loaded");
     }
@@ -84,9 +89,18 @@ public class SethlansConfiguration {
         loadConfig();
     }
 
-
     public void setLoglevel(LogLevel value) {
         setProperty(ConfigKey.LOGLEVEL, value);
+        loadConfig();
+    }
+
+    public void setHttpPort(String value) {
+        setProperty(ConfigKey.HTTP_PORT, value);
+        loadConfig();
+    }
+
+    public void setHttpsPort(String value) {
+        setProperty(ConfigKey.HTTPS_PORT, value);
         loadConfig();
     }
 
@@ -102,9 +116,16 @@ public class SethlansConfiguration {
         return mode;
     }
 
-
     public LogLevel getLogLevel() {
         return logLevel;
+    }
+
+    public String getHttpPort() {
+        return httpPort;
+    }
+
+    public String getHttpsPort() {
+        return httpsPort;
     }
 
     private void check() {

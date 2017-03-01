@@ -83,6 +83,12 @@ public class Sethlans {
             if (logLevel != null) {
                 config.setLoglevel(logLevel);
             }
+            if (httpPort != null) {
+                config.setHttpPort(httpPort);
+            }
+            if (httpsPort != null) {
+                config.setHttpsPort(httpsPort);
+            }
         }
         
 
@@ -92,7 +98,13 @@ public class Sethlans {
 
     private void startTomcat() {
         logger.info("Starting Sethlans Web UI");
-        SethlansWebUI.start();
+        if(httpPort == null) {
+            httpPort = config.getHttpPort();
+        }
+        if (httpsPort == null) {
+            httpsPort = config.getHttpsPort();
+        }
+        SethlansWebUI.start(httpPort, httpsPort);
 
     }
 
@@ -113,10 +125,16 @@ public class Sethlans {
     @Option(name = "-mode", usage = "Specify whether to operate as a server, node, or both(default)", required = false)
     private SethlansMode mode = null;
 
-    @Option(name = "-loglevel", usage = "Sets the debug level for log file.  info: normal information messages(default), debug: turns on debug logging")
+    @Option(name = "-loglevel", usage = "Sets the debug level for log file.  info: normal information messages(default), debug: turns on debug logging", required = false)
     private LogLevel logLevel;
 
-    @Option(name = "-persist", usage = "Options passed via command line are saved and automatically used next startup")
+    @Option(name = "-persist", usage = "Options passed via command line are saved and automatically used next startup", required = false)
     private boolean persist;
+    
+    @Option(name = "-http-port", usage = "Sets the http port for the WEB UI", metaVar = "8443" , required = false)
+    String httpPort=null;
+    
+    @Option(name = "-https-port", usage = "Sets the https port for the WEB UI", metaVar = "8993" , required = false)
+    String httpsPort=null;
 
 }

@@ -5,4 +5,6 @@
 <entry key="loglevel">info</entry>
 <entry key="compute_method">cpu</entry>
 <entry key="cores">-1</entry>
+<entry key="http_port">8448</entry>
+<entry key="https_port">8993</entry>
 </properties>

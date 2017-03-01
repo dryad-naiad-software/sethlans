@@ -34,7 +34,7 @@ public class SethlansWebUI {
 
     private static final Logger logger = LogManager.getLogger(SethlansWebUI.class);
 
-    public static void start() {
+    public static void start(String httpPort, String httpsPort) {
 
         try {
 
@@ -45,7 +45,7 @@ public class SethlansWebUI {
 
             String webPort = System.getenv("PORT");
             if (webPort == null || webPort.isEmpty()) {
-                webPort = "8448";
+                webPort = httpPort;
             }
 
             String contextPath = "/";
