@@ -65,8 +65,8 @@ public class SethlansConfiguration {
     }
 
     private void loadConfig() {
-        if (CONFIG_VERSION_ID != getProperty(ConfigKey.CONFIG_VERSION)) {
-            logger.info("Old Config version, starting uupdate");
+        if (!CONFIG_VERSION_ID.equals(getProperty(ConfigKey.CONFIG_VERSION))) {
+            logger.info("Old Config version, starting update");
             configUpdate();
             logger.info("Configuration updated to config version " + CONFIG_VERSION_ID);
         } else {
@@ -75,7 +75,7 @@ public class SethlansConfiguration {
             this.cores = Integer.parseInt(getProperty(ConfigKey.CORES));
             this.mode = SethlansMode.valueOf(getProperty(ConfigKey.MODE).toUpperCase());
             this.httpPort = getProperty(ConfigKey.HTTP_PORT);
-            this.httpPort = getProperty(ConfigKey.HTTPS_PORT);
+            this.httpsPort = getProperty(ConfigKey.HTTPS_PORT);
             Configurator.setRootLevel(this.logLevel.getLevel());
             logger.debug("Config values loaded");
         }

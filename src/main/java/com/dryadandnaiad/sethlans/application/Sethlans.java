@@ -99,11 +99,13 @@ public class Sethlans {
     private void startTomcat() {
         logger.info("Starting Sethlans Web UI");
         if(httpPort == null) {
-            httpPort = config.getHttpPort();
+            httpPort = config.getHttpPort();            
         }
         if (httpsPort == null) {
-            httpsPort = config.getHttpsPort();
+            httpsPort = config.getHttpsPort();            
         }
+        logger.debug("HTTP Port is set to: " + httpPort);
+        logger.debug("HTTPS Port is set to: " + httpsPort);
         SethlansWebUI.start(httpPort, httpsPort);
 
     }
