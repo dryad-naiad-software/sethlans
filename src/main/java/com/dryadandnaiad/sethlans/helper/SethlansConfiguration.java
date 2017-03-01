@@ -37,6 +37,7 @@ import org.apache.logging.log4j.core.config.Configurator;
 public class SethlansConfiguration {
 
     private static final Logger logger = LogManager.getLogger(SethlansConfiguration.class);
+    private static final String CONFIG_VERSION_ID = "1"; // Used to handle changes to config as versions increase.
 
     private final String path = System.getProperty("user.home") + File.separator + ".sethlans";
     private final File configDirectory = new File(path + File.separator + "config");
@@ -64,14 +65,21 @@ public class SethlansConfiguration {
     }
 
     private void loadConfig() {
-        this.logLevel = LogLevel.valueOf(getProperty(ConfigKey.LOGLEVEL).toUpperCase());
-        this.computeMethod = ComputeType.valueOf(getProperty(ConfigKey.COMPUTE_METHOD).toUpperCase());
-        this.cores = Integer.parseInt(getProperty(ConfigKey.CORES));
-        this.mode = SethlansMode.valueOf(getProperty(ConfigKey.MODE).toUpperCase());
-        this.httpPort = getProperty(ConfigKey.HTTP_PORT);
-        this.httpPort = getProperty(ConfigKey.HTTPS_PORT);
-        Configurator.setRootLevel(this.logLevel.getLevel());
-        logger.debug("Config values loaded");
+        if (CONFIG_VERSION_ID != getProperty(ConfigKey.CONFIG_VERSION)) {
+            logger.info("Old Config version, starting uupdate");
+            configUpdate();
+            logger.info("Configuration updated to config version " + CONFIG_VERSION_ID);
+        } else {
+            this.logLevel = LogLevel.valueOf(getProperty(ConfigKey.LOGLEVEL).toUpperCase());
+            this.computeMethod = ComputeType.valueOf(getProperty(ConfigKey.COMPUTE_METHOD).toUpperCase());
+            this.cores = Integer.parseInt(getProperty(ConfigKey.CORES));
+            this.mode = SethlansMode.valueOf(getProperty(ConfigKey.MODE).toUpperCase());
+            this.httpPort = getProperty(ConfigKey.HTTP_PORT);
+            this.httpPort = getProperty(ConfigKey.HTTPS_PORT);
+            Configurator.setRootLevel(this.logLevel.getLevel());
+            logger.debug("Config values loaded");
+        }
+
     }
 
     public void setComputeMethod(ComputeType value) {
@@ -223,6 +231,10 @@ public class SethlansConfiguration {
         }
         return null;
 
+    }
+
+    private void configUpdate() {
+        //TODO handle upgrades if versions change.
     }
 
 }

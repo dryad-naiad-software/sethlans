@@ -28,7 +28,8 @@ public enum ConfigKey {
     CORES, 
     UITYPE, 
     HTTP_PORT, 
-    HTTPS_PORT;
+    HTTPS_PORT,
+    CONFIG_VERSION;
     
     
 }
