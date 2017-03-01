@@ -61,7 +61,7 @@ public class Sethlans {
             System.err.println("Usage: ");
             cmdParser.printUsage(System.err);
             System.err.println();
-            System.err.println("Example: java " + "-jar sethlans.jar -ui gui" + cmdParser.printExample(OptionHandlerFilter.REQUIRED));
+            System.err.println("Example: java " + "-jar sethlans-x.x.jar -http-port 8443 -persist" + cmdParser.printExample(OptionHandlerFilter.REQUIRED));
             return;
 
         }
@@ -71,6 +71,7 @@ public class Sethlans {
         }
 
         if (persist) {
+            logger.info("Saving command-line options to config file.");
              if (method != null) {
                 config.setComputeMethod(method);
             }
