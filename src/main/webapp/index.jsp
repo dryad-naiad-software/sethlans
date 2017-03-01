@@ -1,25 +1,22 @@
 <%-- 
-    Document   : index.jsp
-    Created on : Feb 28, 2017, 3:55:06 PM
+    Document   : index
+    Created on : Feb 28, 2017, 7:22:24 PM
     Author     : Mario Estrella <mestrella@dryadandnaiad.com>
 --%>
 
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
-<%@taglib prefix="f" uri="http://java.sun.com/jsf/core"%>
-<%@taglib prefix="h" uri="http://java.sun.com/jsf/html"%>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
     "http://www.w3.org/TR/html4/loose.dtd">
 
-<f:view>
-    <html>
+<html>
         <head>
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
             <title>JSP Page</title>
         </head>
         <body>
-            <h1><h:outputText value="Hello World!"/></h1>
+            <c:out value="Hello world jstl"></c:out>
         </body>
-    </html>
-</f:view>
+</html>
