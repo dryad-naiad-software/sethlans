@@ -39,7 +39,6 @@ public class Sethlans {
 
     private static final Logger logger = LogManager.getLogger(Sethlans.class);
     private SethlansConfiguration config = SethlansConfiguration.getInstance();
-    private String noArgs[] = null; // For JavaFX GUI launch, no args needed, they're set on the config
 
     public static void main(String[] args) {
         logger.info("********************* " + SethlansUtils.getString(StringKey.APP_NAME) + " Startup" + " *********************");
@@ -61,7 +60,7 @@ public class Sethlans {
             System.err.println("Usage: ");
             cmdParser.printUsage(System.err);
             System.err.println();
-            System.err.println("Example: java " + "-jar sethlans-x.x.jar -http-port 8443 -persist" + cmdParser.printExample(OptionHandlerFilter.REQUIRED));
+            System.err.println("Example: java -jar sethlans-x.x.jar -http-port 7007 -persist" + cmdParser.printExample(OptionHandlerFilter.REQUIRED));
             return;
 
         }
@@ -134,10 +133,10 @@ public class Sethlans {
     @Option(name = "-persist", usage = "Options passed via command line are saved and automatically used next startup", required = false)
     private boolean persist;
     
-    @Option(name = "-http-port", usage = "Sets the http port for the WEB UI", metaVar = "8443" , required = false)
-    String httpPort=null;
+    @Option(name = "-http-port", usage = "Sets the http port for the WEB UI", metaVar = "7007" , required = false)
+    private String httpPort=null;
     
-    @Option(name = "-https-port", usage = "Sets the https port for the WEB UI", metaVar = "8993" , required = false)
-    String httpsPort=null;
+    @Option(name = "-https-port", usage = "Sets the https port for the WEB UI", metaVar = "7443" , required = false)
+    private String httpsPort=null;
 
 }
