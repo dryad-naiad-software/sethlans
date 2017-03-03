@@ -48,7 +48,7 @@ public class SethlansWebUI {
                 webPort = httpPort;
             }
 
-            String contextPath = "/";
+            String contextPath = "";
             String appBase = ".";
             tomcat.setPort(Integer.valueOf(webPort));
             tomcat.getHost().setAppBase(appBase);

@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet( 
         name = "Default", 
-        urlPatterns = {""}
+        urlPatterns = {"/default"}
 )
 /**
  *
