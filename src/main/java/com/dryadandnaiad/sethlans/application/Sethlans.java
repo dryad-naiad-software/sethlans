@@ -32,13 +32,13 @@ import org.kohsuke.args4j.Option;
 import org.kohsuke.args4j.OptionHandlerFilter;
 
 /**
- *
  * @author Mario Estrella <mestrella@dryadandnaiad.com>
  */
 public class Sethlans {
 
     private static final Logger LOG = LogManager.getLogger(Sethlans.class);
     private SethlansConfiguration config = SethlansConfiguration.getInstance();
+
     // Command line options
     @Option(name = "-help", aliases = "-h", usage = "Displays this screen\n", required = false, help = true, handler = com.dryadandnaiad.sethlans.utils.HelpOptionHandler.class)
     private boolean help;
@@ -92,7 +92,7 @@ public class Sethlans {
 
         if (persist) {
             LOG.info("Saving command-line options to config file.");
-             if (method != null) {
+            if (method != null) {
                 config.setComputeMethod(method);
             }
             if (cores != 0) {
@@ -119,7 +119,7 @@ public class Sethlans {
 
     private void startTomcat() {
         LOG.info("Starting Sethlans Web UI");
-        if(httpPort == null) {
+        if (httpPort == null) {
             httpPort = config.getHttpPort();
         }
         if (httpsPort == null) {
