@@ -17,14 +17,15 @@
  */
 package com.dryadandnaiad.sethlans.webui;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import javax.servlet.ServletException;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import javax.servlet.ServletException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  *
@@ -32,7 +33,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class SethlansWebUI {
 
-    private static final Logger logger = LogManager.getLogger(SethlansWebUI.class);
+    private static final Logger LOG = LogManager.getLogger(SethlansWebUI.class);
 
     public static void start(String httpPort, String httpsPort) {
 
@@ -57,7 +58,7 @@ public class SethlansWebUI {
             tomcat.getServer().await();
 
         } catch (IOException | ServletException | LifecycleException ex) {
-            logger.error(ex.getMessage());
+            LOG.error(ex.getMessage());
         }
 
     }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.dryadandnaiad</groupId>
@@ -126,6 +127,7 @@
                                 <argument>-outdir</argument>
                                 <argument>${project.build.directory}</argument>
                                 <argument>-outfile</argument>
+                                <!--suppress MavenModelInspection -->
                                 <argument>${project.artifactId}-${project.version}-${git.commit.id.describe}.jar</argument>
                             </arguments>
                         </configuration>
@@ -137,7 +139,10 @@
                         </goals>
                         <configuration>
                             <executable>${java.home}/bin/java</executable>
-                            <commandlineArgs>${run.args}</commandlineArgs>
+                            <!--suppress MavenModelInspection -->
+                            <commandlineArgs>-jar
+                                "${project.build.directory}/${project.artifactId}-${project.version}-${git.commit.id.describe}.jar"
+                            </commandlineArgs>
                         </configuration>
                     </execution>
                 </executions>  

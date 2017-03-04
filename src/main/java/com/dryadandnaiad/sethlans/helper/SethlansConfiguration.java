@@ -23,12 +23,13 @@ import com.dryadandnaiad.sethlans.enums.LogLevel;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.utils.Resources;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
-import java.io.*;
-import java.nio.file.NoSuchFileException;
-import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
+
+import java.io.*;
+import java.nio.file.NoSuchFileException;
+import java.util.Properties;
 
 /**
  *
@@ -36,13 +37,12 @@ import org.apache.logging.log4j.core.config.Configurator;
  */
 public class SethlansConfiguration {
 
-    private static final Logger logger = LogManager.getLogger(SethlansConfiguration.class);
+    private static final Logger LOG = LogManager.getLogger(SethlansConfiguration.class);
     private static final String CONFIG_VERSION_ID = "1"; // Used to handle changes to config as versions increase.
-
+    private static SethlansConfiguration instance = null;
     private final String path = System.getProperty("user.home") + File.separator + ".sethlans";
     private final File configDirectory = new File(path + File.separator + "config");
     private final File defaultConfigFile = new File(configDirectory + File.separator + "sethlansconfig.xml");
-
     private ComputeType computeMethod;
     private boolean firstTime = true;
     private Integer cores;
@@ -50,7 +50,6 @@ public class SethlansConfiguration {
     private LogLevel logLevel;
     private String httpPort;
     private String httpsPort;
-    private static SethlansConfiguration instance = null;
 
     private SethlansConfiguration() {
         check();
@@ -58,7 +57,7 @@ public class SethlansConfiguration {
 
     public static SethlansConfiguration getInstance() {
         if (instance == null) {
-            logger.debug("Creating new instance of configuration helper");
+            LOG.debug("Creating new instance of configuration helper");
             instance = new SethlansConfiguration();
         }
         return instance;
@@ -66,9 +65,9 @@ public class SethlansConfiguration {
 
     private void loadConfig() {
         if (!CONFIG_VERSION_ID.equals(getProperty(ConfigKey.CONFIG_VERSION))) {
-            logger.info("Old Config version, starting update");
+            LOG.info("Old Config version, starting update");
             configUpdate();
-            logger.info("Configuration updated to config version " + CONFIG_VERSION_ID);
+            LOG.info("Configuration updated to config version " + CONFIG_VERSION_ID);
         } else {
             this.logLevel = LogLevel.valueOf(getProperty(ConfigKey.LOGLEVEL).toUpperCase());
             this.computeMethod = ComputeType.valueOf(getProperty(ConfigKey.COMPUTE_METHOD).toUpperCase());
@@ -77,24 +76,9 @@ public class SethlansConfiguration {
             this.httpPort = getProperty(ConfigKey.HTTP_PORT);
             this.httpsPort = getProperty(ConfigKey.HTTPS_PORT);
             Configurator.setRootLevel(this.logLevel.getLevel());
-            logger.debug("Config values loaded");
+            LOG.debug("Config values loaded");
         }
 
-    }
-
-    public void setComputeMethod(ComputeType value) {
-        setProperty(ConfigKey.COMPUTE_METHOD, value);
-        loadConfig();
-    }
-
-    public void setCores(int value) {
-        setProperty(ConfigKey.CORES, Integer.toString(this.cores));
-        loadConfig();
-    }
-
-    public void setMode(SethlansMode value) {
-        setProperty(ConfigKey.MODE, value);
-        loadConfig();
     }
 
     public void setLoglevel(LogLevel value) {
@@ -102,26 +86,31 @@ public class SethlansConfiguration {
         loadConfig();
     }
 
-    public void setHttpPort(String value) {
-        setProperty(ConfigKey.HTTP_PORT, value);
-        loadConfig();
-    }
-
-    public void setHttpsPort(String value) {
-        setProperty(ConfigKey.HTTPS_PORT, value);
-        loadConfig();
-    }
-
     public ComputeType getComputeMethod() {
         return computeMethod;
+    }
+
+    public void setComputeMethod(ComputeType value) {
+        setProperty(ConfigKey.COMPUTE_METHOD, value);
+        loadConfig();
     }
 
     public Integer getCores() {
         return cores;
     }
 
+    public void setCores(int value) {
+        setProperty(ConfigKey.CORES, Integer.toString(this.cores));
+        loadConfig();
+    }
+
     public SethlansMode getMode() {
         return mode;
+    }
+
+    public void setMode(SethlansMode value) {
+        setProperty(ConfigKey.MODE, value);
+        loadConfig();
     }
 
     public LogLevel getLogLevel() {
@@ -132,19 +121,29 @@ public class SethlansConfiguration {
         return httpPort;
     }
 
+    public void setHttpPort(String value) {
+        setProperty(ConfigKey.HTTP_PORT, value);
+        loadConfig();
+    }
+
     public String getHttpsPort() {
         return httpsPort;
+    }
+
+    public void setHttpsPort(String value) {
+        setProperty(ConfigKey.HTTPS_PORT, value);
+        loadConfig();
     }
 
     private void check() {
         if (defaultConfigFile.isFile()) {
             firstTime = false;
             loadConfig();
-            logger.debug("Configuration exists");
+            LOG.debug("Configuration exists");
         }
 
         if (firstTime) {
-            logger.debug("No configuration present, setting default config file");
+            LOG.debug("No configuration present, setting default config file");
             setup();
         }
     }
@@ -168,9 +167,9 @@ public class SethlansConfiguration {
             }
             writer.close();
         } catch (NoSuchFileException | UnsupportedEncodingException | FileNotFoundException ex) {
-            logger.error(ex.getMessage());
+            LOG.error(ex.getMessage());
         } catch (IOException ex) {
-            logger.error(ex.getMessage());
+            LOG.error(ex.getMessage());
         }
     }
 
@@ -187,10 +186,10 @@ public class SethlansConfiguration {
             }
 
         } catch (FileNotFoundException e) {
-            logger.error(e.getMessage());
+            LOG.error(e.getMessage());
 
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            LOG.error(e.getMessage());
         }
     }
 
@@ -207,10 +206,10 @@ public class SethlansConfiguration {
             }
 
         } catch (FileNotFoundException e) {
-            logger.error(e.getMessage());
+            LOG.error(e.getMessage());
 
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            LOG.error(e.getMessage());
         }
     }
 
@@ -224,10 +223,10 @@ public class SethlansConfiguration {
             return properties.getProperty(SethlansUtils.enumToString(key));
 
         } catch (FileNotFoundException e) {
-            logger.error(e.getMessage());
+            LOG.error(e.getMessage());
 
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            LOG.error(e.getMessage());
         }
         return null;
 

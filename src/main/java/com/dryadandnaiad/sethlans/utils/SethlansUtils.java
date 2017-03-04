@@ -19,20 +19,23 @@ package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.GitPropertyKey;
 import com.dryadandnaiad.sethlans.enums.StringKey;
-import java.io.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Properties;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author Mario Estrella <mestrella@dryadandnaiad.com>
  */
 public class SethlansUtils {
-    
-    private static final Logger logger = LogManager.getLogger(SethlansUtils.class);
+
+    private static final Logger LOG = LogManager.getLogger(SethlansUtils.class);
     
     public static String getString(StringKey sentEnum) {
         String newKey = sentEnum.toString();
@@ -46,10 +49,10 @@ public class SethlansUtils {
             value = properties.getProperty(newKey);
              
         } catch (FileNotFoundException e) {
-            logger.error(e.getMessage());
+            LOG.error(e.getMessage());
             
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            LOG.error(e.getMessage());
             
         }
         return value;

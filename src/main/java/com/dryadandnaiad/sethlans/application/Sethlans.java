@@ -19,13 +19,13 @@ package com.dryadandnaiad.sethlans.application;
 
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.LogLevel;
-import com.dryadandnaiad.sethlans.enums.StringKey;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.enums.StringKey;
 import com.dryadandnaiad.sethlans.helper.SethlansConfiguration;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.dryadandnaiad.sethlans.webui.SethlansWebUI;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -37,11 +37,32 @@ import org.kohsuke.args4j.OptionHandlerFilter;
  */
 public class Sethlans {
 
-    private static final Logger logger = LogManager.getLogger(Sethlans.class);
+    private static final Logger LOG = LogManager.getLogger(Sethlans.class);
     private SethlansConfiguration config = SethlansConfiguration.getInstance();
+    // Command line options
+    @Option(name = "-help", aliases = "-h", usage = "Displays this screen\n", required = false, help = true, handler = com.dryadandnaiad.sethlans.utils.HelpOptionHandler.class)
+    private boolean help;
+    @Option(name = "-compute-method", usage = "CPU: only use cpu, "
+            + "GPU: only use gpu, CPU_GPU: can use cpu and gpu "
+            + "(not at the same time) if -gpu is not use it will not "
+            + "use the gpu", metaVar = "CPU", required = false)
+    private ComputeType method = null;
+    @Option(name = "-cores", usage = "Number of cores/threads to use for the "
+            + "render", metaVar = "1", required = false)
+    private int cores;
+    @Option(name = "-mode", usage = "Specify whether to operate as a server, node, or both(default)", required = false)
+    private SethlansMode mode = null;
+    @Option(name = "-loglevel", usage = "Sets the debug level for log file.  info: normal information messages(default), debug: turns on debug logging", required = false)
+    private LogLevel logLevel;
+    @Option(name = "-persist", usage = "Options passed via command line are saved and automatically used next startup", required = false)
+    private boolean persist;
+    @Option(name = "-http-port", usage = "Sets the http port for the WEB UI", metaVar = "7007", required = false)
+    private String httpPort = null;
+    @Option(name = "-https-port", usage = "Sets the https port for the WEB UI", metaVar = "7443", required = false)
+    private String httpsPort = null;
 
     public static void main(String[] args) {
-        logger.info("********************* " + SethlansUtils.getString(StringKey.APP_NAME) + " Startup" + " *********************");
+        LOG.info("********************* " + SethlansUtils.getString(StringKey.APP_NAME) + " Startup" + " *********************");
         new Sethlans().doMain(args);
     }
 
@@ -55,7 +76,7 @@ public class Sethlans {
             cmdParser.parseArgument(args);
 
         } catch (CmdLineException e) {
-            logger.error(e.getMessage());
+            LOG.error(e.getMessage());
             System.err.println(e.getMessage());
             System.err.println("Usage: ");
             cmdParser.printUsage(System.err);
@@ -70,7 +91,7 @@ public class Sethlans {
         }
 
         if (persist) {
-            logger.info("Saving command-line options to config file.");
+            LOG.info("Saving command-line options to config file.");
              if (method != null) {
                 config.setComputeMethod(method);
             }
@@ -90,53 +111,24 @@ public class Sethlans {
                 config.setHttpsPort(httpsPort);
             }
         }
-        
+
 
         startTomcat();
 
     }
 
     private void startTomcat() {
-        logger.info("Starting Sethlans Web UI");
+        LOG.info("Starting Sethlans Web UI");
         if(httpPort == null) {
-            httpPort = config.getHttpPort();            
+            httpPort = config.getHttpPort();
         }
         if (httpsPort == null) {
-            httpsPort = config.getHttpsPort();            
+            httpsPort = config.getHttpsPort();
         }
-        logger.debug("HTTP Port is set to: " + httpPort);
-        logger.debug("HTTPS Port is set to: " + httpsPort);
+        LOG.debug("HTTP Port is set to: " + httpPort);
+        LOG.debug("HTTPS Port is set to: " + httpsPort);
         SethlansWebUI.start(httpPort, httpsPort);
 
     }
-
-    // Command line options
-    @Option(name = "-help", aliases = "-h", usage = "Displays this screen\n", required = false, help = true, handler = com.dryadandnaiad.sethlans.utils.HelpOptionHandler.class)
-    private boolean help;
-
-    @Option(name = "-compute-method", usage = "CPU: only use cpu, "
-            + "GPU: only use gpu, CPU_GPU: can use cpu and gpu "
-            + "(not at the same time) if -gpu is not use it will not "
-            + "use the gpu", metaVar = "CPU", required = false)
-    private ComputeType method = null;
-
-    @Option(name = "-cores", usage = "Number of cores/threads to use for the "
-            + "render", metaVar = "1", required = false)
-    private int cores;
-
-    @Option(name = "-mode", usage = "Specify whether to operate as a server, node, or both(default)", required = false)
-    private SethlansMode mode = null;
-
-    @Option(name = "-loglevel", usage = "Sets the debug level for log file.  info: normal information messages(default), debug: turns on debug logging", required = false)
-    private LogLevel logLevel;
-
-    @Option(name = "-persist", usage = "Options passed via command line are saved and automatically used next startup", required = false)
-    private boolean persist;
-    
-    @Option(name = "-http-port", usage = "Sets the http port for the WEB UI", metaVar = "7007" , required = false)
-    private String httpPort=null;
-    
-    @Option(name = "-https-port", usage = "Sets the https port for the WEB UI", metaVar = "7443" , required = false)
-    private String httpsPort=null;
 
 }
