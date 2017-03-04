@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="sethlans:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="sethlans-0.1.war">
+      <element id="artifact" artifact-name="sethlans:war exploded" />
+    </root>
+  </artifact>
+</component>
