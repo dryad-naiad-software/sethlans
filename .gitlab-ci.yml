@@ -1,11 +1,2 @@
-image: maven:3.3.9-jdk-8
-
-before_script:
-- apt-get --quiet update --yes
-- apt-get --quiet install --yes openjfx
-
-
 build:
-  tags:
-      - docker
   script: "mvn package"
