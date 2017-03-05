@@ -1,2 +1,4 @@
 build:
+  tags:
+    - linux
   script: "mvn package"
