@@ -2,7 +2,7 @@
 <configuration status="OFF">
     <appenders>
         <File name="LogFile" fileName="${sys:user.home}/.sethlans/logs/sethlans.log">
-            <PatternLayout pattern="%d{dd-MMM-yyyy HH:mm:ss} [%t] %-5level %logger{1} - %M (): %msg%n" />
+            <PatternLayout pattern="%d{dd-MMM-yyyy HH:mm:ss} [%t] %-5level/%logger{1}: %M(): %msg%n" />
         </File>
     </appenders>
     <loggers>
