@@ -66,5 +66,6 @@
     <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-jasper-el:7.0.75" level="project" />
     <orderEntry type="library" name="Maven: org.apache.tomcat:tomcat-jsp-api:7.0.75" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api:1.2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.taglibs:taglibs-standard-impl:1.2.5" level="project" />
   </component>
 </module>
