@@ -42,7 +42,7 @@
           <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-util:7.0.75" />
           <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-jasper-el:7.0.75" />
           <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-jsp-api:7.0.75" />
-          <element id="library" level="project" name="Maven: jstl:jstl:1.2" />
+          <element id="library" level="project" name="Maven: javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api:1.2.1" />
         </element>
       </element>
       <element id="directory" name="META-INF">
