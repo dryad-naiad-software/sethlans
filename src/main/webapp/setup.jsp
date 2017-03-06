@@ -44,7 +44,7 @@
 </head>
 
 <body>
-<c:import url="includes/setup/setup_nav.jsp"/>
+<c:import url="includes/setup/setup_nav.html"/>
 <div class="container">
     <ul class="breadcrumb">
         <li><a href="#">Sethlans Setup</a></li>
