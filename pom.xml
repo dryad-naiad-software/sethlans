@@ -14,6 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mainClass>com.dryadandnaiad.sethlans.application.Sethlans</mainClass>
         <tomcat.version>7.0.75</tomcat.version>
+        <current.year>2017</current.year>
     </properties>
 
     <organization>
@@ -186,6 +187,75 @@
                 <version>2.19.1</version>
                 <configuration>
                 </configuration>
+            </plugin>
+
+            <!-- Creates Windows executable file -->
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>1.7.15</version>
+                <executions>
+                    <execution>
+                        <id>l4j-gui</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <headerType>gui</headerType>
+                            <!--suppress MavenModelInspection -->
+                            <jar>
+                                ${project.build.directory}/${project.artifactId}-${project.version}-${git.commit.id.describe}.jar
+                            </jar>
+                            <outfile>
+                                ${project.build.directory}/${project.artifactId}-${project.version}-${git.commit.id.describe}-windows.exe
+                            </outfile>
+                            <downloadUrl>http://java.com/download</downloadUrl>
+                            <classPath>
+                                <mainClass>$mainClass</mainClass>
+                            </classPath>
+                            <icon>${project.basedir}/src/main/resources/icon/sethlans.ico</icon>
+                            <jre>
+                                <minVersion>1.8.0</minVersion>
+                                <jdkPreference>preferJre</jdkPreference>
+                            </jre>
+                            <versionInfo>
+                                <fileVersion>${project.version}.0.0</fileVersion>
+                                <txtFileVersion>${project.version}.0.0</txtFileVersion>
+                                <fileDescription>${project.name}</fileDescription>
+                                <copyright>${current.year} ${project.organization.name}</copyright>
+                                <productVersion>${project.version}.0.0</productVersion>
+                                <txtProductVersion>${project.version}</txtProductVersion>
+                                <productName>${project.version}.0.0</productName>
+                                <companyName>${project.organization.name}</companyName>
+                                <internalName>${project.name}</internalName>
+                                <originalFilename>${project.name}.exe</originalFilename>
+                            </versionInfo>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Creates an OSX app Bundle -->
+            <plugin>
+                <groupId>sh.tak.appbundler</groupId>
+                <artifactId>appbundle-maven-plugin</artifactId>
+                <version>1.2.0</version>
+                <configuration>
+                    <buildDirectory>${project.build.directory}/${project.artifactId}-${git.commit.id.describe}-mac/
+                    </buildDirectory>
+                    <mainClass>$mainClass</mainClass>
+                    <iconFile>icon/sethlans.icns</iconFile>
+                    <generateDiskImageFile>true</generateDiskImageFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>bundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
