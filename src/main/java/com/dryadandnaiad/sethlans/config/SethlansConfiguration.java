@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package com.dryadandnaiad.sethlans.helper;
+package com.dryadandnaiad.sethlans.config;
 
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.ConfigKey;
@@ -57,7 +57,7 @@ public class SethlansConfiguration {
 
     public static SethlansConfiguration getInstance() {
         if (instance == null) {
-            LOG.debug("Creating new instance of configuration helper");
+            LOG.debug("Creating new instance of configuration config");
             instance = new SethlansConfiguration();
         }
         return instance;
@@ -75,10 +75,20 @@ public class SethlansConfiguration {
             this.mode = SethlansMode.valueOf(getProperty(ConfigKey.MODE).toUpperCase());
             this.httpPort = getProperty(ConfigKey.HTTP_PORT);
             this.httpsPort = getProperty(ConfigKey.HTTPS_PORT);
+            this.firstTime = Boolean.parseBoolean(getProperty(ConfigKey.FIRST_TIME));
             Configurator.setRootLevel(this.logLevel.getLevel());
             LOG.debug("Config values loaded");
         }
 
+    }
+
+    public boolean isFirstTime() {
+        return firstTime;
+    }
+
+    public void setFirstTime(boolean value) {
+        setProperty(ConfigKey.FIRST_TIME, Boolean.toString(value));
+        loadConfig();
     }
 
     public void setLoglevel(LogLevel value) {
@@ -137,15 +147,19 @@ public class SethlansConfiguration {
 
     private void check() {
         if (defaultConfigFile.isFile()) {
-            firstTime = false;
             loadConfig();
-            LOG.debug("Configuration exists");
+            if (firstTime) {
+                LOG.debug("Configuration exists however web setup has not been run. Not loading initial config.");
+            } else {
+                LOG.debug("Configuration exists");
+            }
+        } else {
+            if (firstTime) {
+                LOG.debug("No configuration present, setting default config file");
+                setup();
+            }
         }
 
-        if (firstTime) {
-            LOG.debug("No configuration present, setting default config file");
-            setup();
-        }
     }
 
     private void setup() {

@@ -17,11 +17,10 @@
  */
 package com.dryadandnaiad.sethlans.application;
 
-import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.config.SethlansConfiguration;
 import com.dryadandnaiad.sethlans.enums.LogLevel;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.enums.StringKey;
-import com.dryadandnaiad.sethlans.helper.SethlansConfiguration;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.dryadandnaiad.sethlans.webui.SethlansWebUI;
 import org.apache.logging.log4j.LogManager;
@@ -42,14 +41,6 @@ public class Sethlans {
     // Command line options
     @Option(name = "-help", aliases = "-h", usage = "Displays this screen\n", required = false, help = true, handler = com.dryadandnaiad.sethlans.utils.HelpOptionHandler.class)
     private boolean help;
-    @Option(name = "-compute-method", usage = "CPU: only use cpu, "
-            + "GPU: only use gpu, CPU_GPU: can use cpu and gpu "
-            + "(not at the same time) if -gpu is not use it will not "
-            + "use the gpu", metaVar = "CPU", required = false)
-    private ComputeType method = null;
-    @Option(name = "-cores", usage = "Number of cores/threads to use for the "
-            + "render", metaVar = "1", required = false)
-    private int cores;
     @Option(name = "-mode", usage = "Specify whether to operate as a server, node, or both(default)", required = false)
     private SethlansMode mode = null;
     @Option(name = "-loglevel", usage = "Sets the debug level for log file.  info: normal information messages(default), debug: turns on debug logging", required = false)
@@ -92,12 +83,6 @@ public class Sethlans {
 
         if (persist) {
             LOG.info("Saving command-line options to config file.");
-            if (method != null) {
-                config.setComputeMethod(method);
-            }
-            if (cores != 0) {
-                config.setCores(cores);
-            }
             if (mode != null) {
                 config.setMode(mode);
             }
