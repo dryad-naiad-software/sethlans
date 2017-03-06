@@ -41,7 +41,7 @@ import java.util.Map;
 @WebServlet(name = "Controller", urlPatterns = {""})
 public class Controller extends HttpServlet {
     private static final Logger LOG = LogManager.getLogger(Controller.class);
-    private SethlansConfiguration config = SethlansConfiguration.getInstance();
+    private static SethlansConfiguration config = SethlansConfiguration.getInstance();
     private boolean firstTime = config.isFirstTime();
     private Map<String, String> actionMap = new HashMap<>();
 

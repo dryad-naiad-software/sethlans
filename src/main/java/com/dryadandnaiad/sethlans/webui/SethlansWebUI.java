@@ -20,16 +20,13 @@
 package com.dryadandnaiad.sethlans.webui;
 
 import org.apache.catalina.LifecycleException;
-import org.apache.catalina.WebResourceRoot;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
-import org.apache.catalina.webresources.DirResourceSet;
-import org.apache.catalina.webresources.StandardRoot;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.tomcat.util.scan.StandardJarScanner;
 
 import javax.servlet.ServletException;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -49,30 +46,18 @@ public class SethlansWebUI {
             System.setProperty("org.apache.catalina.startup.EXIT_ON_INIT_FAILURE", "true");
             Tomcat tomcat = new Tomcat();
             Path tempPath = Files.createTempDirectory("tomcat-base-dir");
+            LOG.debug(tempPath.toString());
             tomcat.setBaseDir(tempPath.toString());
-
             String webPort = System.getenv("PORT");
             if (webPort == null || webPort.isEmpty()) {
                 webPort = httpPort;
             }
-
             String contextPath = "";
-            String contextResourcePath = "/";
             String appBase = ".";
             tomcat.setPort(Integer.valueOf(webPort));
             tomcat.getHost().setAppBase(appBase);
             StandardContext context = (StandardContext) tomcat.addWebapp(contextPath, appBase);
-
-
-            // Additions to make @WebServlet work
-            String buildPath = "target/classes";
-            String webAppMount = "/WEB-INF/classes";
-
-            File additionalWebInfClasses = new File(buildPath);
-            WebResourceRoot resources = new StandardRoot(context);
-            resources.addPreResources(new DirResourceSet(resources, webAppMount, additionalWebInfClasses.getAbsolutePath(), contextResourcePath));
-            context.setResources(resources);
-            // End of additions
+            ((StandardJarScanner) context.getJarScanner()).setScanAllDirectories(true);
 
             tomcat.start();
             tomcat.getServer().await();

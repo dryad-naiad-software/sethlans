@@ -36,7 +36,7 @@ import org.kohsuke.args4j.OptionHandlerFilter;
 public class Sethlans {
 
     private static final Logger LOG = LogManager.getLogger(Sethlans.class);
-    private SethlansConfiguration config = SethlansConfiguration.getInstance();
+    private static SethlansConfiguration config = SethlansConfiguration.getInstance();
 
     // Command line options
     @Option(name = "-help", aliases = "-h", usage = "Displays this screen\n", required = false, help = true, handler = com.dryadandnaiad.sethlans.utils.HelpOptionHandler.class)
@@ -53,6 +53,7 @@ public class Sethlans {
     private String httpsPort = null;
 
     public static void main(String[] args) {
+        config.check();
         LOG.info("********************* " + SethlansUtils.getString(StringKey.APP_NAME) + " Startup" + " *********************");
         new Sethlans().doMain(args);
     }

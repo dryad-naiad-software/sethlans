@@ -37,9 +37,13 @@ import java.util.Properties;
  */
 public class SethlansConfiguration {
 
+    // Singleton
+    private static SethlansConfiguration instance = new SethlansConfiguration();
+    private static Object syncObject;
+
+
     private static final Logger LOG = LogManager.getLogger(SethlansConfiguration.class);
     private static final String CONFIG_VERSION_ID = "1"; // Used to handle changes to config as versions increase.
-    private static SethlansConfiguration instance = null;
     private final String path = System.getProperty("user.home") + File.separator + ".sethlans";
     private final File configDirectory = new File(path + File.separator + "config");
     private final File defaultConfigFile = new File(configDirectory + File.separator + "sethlansconfig.xml");
@@ -52,16 +56,13 @@ public class SethlansConfiguration {
     private String httpsPort;
 
     private SethlansConfiguration() {
-        check();
     }
 
+
     public static SethlansConfiguration getInstance() {
-        if (instance == null) {
-            LOG.debug("Creating new instance of configuration config");
-            instance = new SethlansConfiguration();
-        }
         return instance;
     }
+
 
     private void loadConfig() {
         if (!CONFIG_VERSION_ID.equals(getProperty(ConfigKey.CONFIG_VERSION))) {
@@ -145,7 +146,7 @@ public class SethlansConfiguration {
         loadConfig();
     }
 
-    private void check() {
+    public void check() {
         if (defaultConfigFile.isFile()) {
             loadConfig();
             if (firstTime) {

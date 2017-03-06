@@ -29,20 +29,19 @@
           <element id="library" level="project" name="Maven: junit:junit:4.12" />
           <element id="library" level="project" name="Maven: org.hamcrest:hamcrest-core:1.3" />
           <element id="library" level="project" name="Maven: commons-io:commons-io:2.2" />
-          <element id="library" level="project" name="Maven: org.apache.tomcat.embed:tomcat-embed-core:8.0.41" />
-          <element id="library" level="project" name="Maven: org.apache.tomcat.embed:tomcat-embed-logging-juli:8.0.41" />
-          <element id="library" level="project" name="Maven: org.apache.tomcat.embed:tomcat-embed-jasper:8.0.41" />
-          <element id="library" level="project" name="Maven: org.apache.tomcat.embed:tomcat-embed-el:8.0.41" />
-          <element id="library" level="project" name="Maven: org.eclipse.jdt.core.compiler:ecj:4.5.1" />
-          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-jasper:8.0.41" />
-          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-servlet-api:8.0.41" />
-          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-juli:8.0.41" />
-          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-el-api:8.0.41" />
-          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-api:8.0.41" />
-          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-util-scan:8.0.41" />
-          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-util:8.0.41" />
-          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-jasper-el:8.0.41" />
-          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-jsp-api:8.0.41" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat.embed:tomcat-embed-core:7.0.75" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat.embed:tomcat-embed-logging-juli:7.0.75" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat.embed:tomcat-embed-jasper:7.0.75" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat.embed:tomcat-embed-el:7.0.75" />
+          <element id="library" level="project" name="Maven: org.eclipse.jdt.core.compiler:ecj:4.4.2" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-jasper:7.0.75" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-servlet-api:7.0.75" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-juli:7.0.75" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-el-api:7.0.75" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-api:7.0.75" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-util:7.0.75" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-jasper-el:7.0.75" />
+          <element id="library" level="project" name="Maven: org.apache.tomcat:tomcat-jsp-api:7.0.75" />
           <element id="library" level="project" name="Maven: javax.servlet.jsp.jstl:javax.servlet.jsp.jstl-api:1.2.1" />
           <element id="library" level="project" name="Maven: org.apache.taglibs:taglibs-standard-impl:1.2.5" />
         </element>

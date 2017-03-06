@@ -28,18 +28,18 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <p class="lead">Mode for this installation</p>
 <p>
-    <button type="button" class="btn btn-primary btn-lg custom_btn_width" data-toggle="tooltip"
+    <button type="button" class="btn btn-primary btn-lg custom_btn_width" data-toggle="tooltip" data-placement="right"
             title="Sethlans will be configured as the farm server">Server
     </button>
 </p>
 <p>
-    <button type="button" class="btn btn-primary btn-lg custom_btn_width" data-toggle="tooltip"
+    <button type="button" class="btn btn-primary btn-lg custom_btn_width" data-toggle="tooltip" data-placement="right"
             title="Sethlans will be configured as a node in the farm only">Node
     </button>
 </p>
 
 <p>
-    <button type="button" class="btn btn-primary btn-lg custom_btn_width" data-toggle="tooltip"
+    <button type="button" class="btn btn-primary btn-lg custom_btn_width" data-toggle="tooltip" data-placement="right"
             title="Sethlans will act as the farm server and as a node in the farm">Both
     </button>
 </p>
