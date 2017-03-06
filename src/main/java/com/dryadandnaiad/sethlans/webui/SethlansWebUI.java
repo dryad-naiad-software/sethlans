@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Dryad and Naiad Software LLC
+ * Copyright (c) 2017 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -14,15 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  */
+
 package com.dryadandnaiad.sethlans.webui;
 
 import org.apache.catalina.LifecycleException;
+import org.apache.catalina.WebResourceRoot;
+import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.catalina.webresources.DirResourceSet;
+import org.apache.catalina.webresources.StandardRoot;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -50,10 +57,23 @@ public class SethlansWebUI {
             }
 
             String contextPath = "";
+            String contextResourcePath = "/";
             String appBase = ".";
             tomcat.setPort(Integer.valueOf(webPort));
             tomcat.getHost().setAppBase(appBase);
-            tomcat.addWebapp(contextPath, appBase);
+            StandardContext context = (StandardContext) tomcat.addWebapp(contextPath, appBase);
+
+
+            // Additions to make @WebServlet work
+            String buildPath = "target/classes";
+            String webAppMount = "/WEB-INF/classes";
+
+            File additionalWebInfClasses = new File(buildPath);
+            WebResourceRoot resources = new StandardRoot(context);
+            resources.addPreResources(new DirResourceSet(resources, webAppMount, additionalWebInfClasses.getAbsolutePath(), contextResourcePath));
+            context.setResources(resources);
+            // End of additions
+
             tomcat.start();
             tomcat.getServer().await();
 

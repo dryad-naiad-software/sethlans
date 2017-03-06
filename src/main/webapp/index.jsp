@@ -1,22 +1,42 @@
-<%-- 
-    Document   : index
-    Created on : Feb 28, 2017, 7:22:24 PM
-    Author     : Mario Estrella <mestrella@dryadandnaiad.com>
+<%--
+  Created by IntelliJ IDEA.
+  User: Mario Estrella mestrella@dryadandnaiad.com
+  Company: Dryad and Naiad Software LLC
+  Project: TomcatTest
+  Date: 3/5/17
 --%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="images/favicon.png">
 
+    <title>Title</title>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-    "http://www.w3.org/TR/html4/loose.dtd">
+    <c:import url="includes/css.html"/>
+</head>
 
-<html>
-        <head>
-            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-            <title>JSP Page</title>
-        </head>
-        <body>
-            <c:out value="Hello world jstl"></c:out>
-        </body>
+<body>
+
+<div class=" container">
+
+    <div class="start">
+
+        <h1>Bootstrap starter template</h1>
+        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a
+            mostly barebones HTML document.</p>
+    </div>
+
+</div><!-- /.container -->
+<c:import url="includes/scripts.html"/>
+</body>
 </html>
+

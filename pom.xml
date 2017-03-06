@@ -6,14 +6,13 @@
     <groupId>com.dryadandnaiad</groupId>
     <artifactId>sethlans</artifactId>
     <version>0.1</version>
-    <packaging>war</packaging>
 
     <name>sethlans</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mainClass>com.dryadandnaiad.sethlans.application.Sethlans</mainClass>
-        <tomcat.version>7.0.75</tomcat.version>
+        <tomcat.version>8.0.41</tomcat.version>
     </properties>
 
     <organization>
