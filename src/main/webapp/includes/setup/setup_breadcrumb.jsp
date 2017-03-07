@@ -31,6 +31,17 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <div class="container">
     <ul class="breadcrumb">
-        <li><a href="#">Sethlans Setup</a></li>
+        <li><a href="/">Sethlans</a></li>
+        <c:choose>
+            <c:when test="${param.setup == 'setup_server'}">
+                <li><a href="javascript:void(0)" onclick="serverClicked()">Sethlans Server Setup</a></li>
+            </c:when>
+            <c:when test="${param.setup == 'setup_node'}">
+                <li><a href="javascript:void(0)" onclick="nodeClicked()">Sethlans Node Setup</a></li>
+            </c:when>
+            <c:when test="${param.setup == 'setup_both'}">
+                <li><a href="javascript:void(0)" onclick="bothClicked()">Sethlans Server + Node Setup</a></li>
+            </c:when>
+        </c:choose>
     </ul>
 </div>

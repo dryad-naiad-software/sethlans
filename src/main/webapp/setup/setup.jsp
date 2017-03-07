@@ -63,6 +63,12 @@
             <c:when test="${param.setup == 'setup_server'}">
                 <c:import url="../includes/setup/setup_server.jsp"/>
             </c:when>
+            <c:when test="${param.setup == 'setup_node'}">
+                <c:import url="../includes/setup/setup_node.jsp"/>
+            </c:when>
+            <c:when test="${param.setup == 'setup_both'}">
+                <c:import url="../includes/setup/setup_both.jsp"/>
+            </c:when>
         </c:choose>
     </div>
 

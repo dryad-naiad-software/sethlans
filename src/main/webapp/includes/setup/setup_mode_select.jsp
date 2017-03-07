@@ -46,17 +46,3 @@
             title="Sethlans will act as the farm server and as a node within the farm" onclick="bothClicked()">Both
     </button>
 </p>
-<script>
-    function serverClicked() {
-        $.redirect('/setup', {'setup': 'setup_server', 'mode': "server"});
-
-    }
-    function nodeClicked() {
-
-    }
-
-    function bothClicked() {
-
-    }
-
-</script>

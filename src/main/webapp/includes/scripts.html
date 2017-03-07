@@ -6,5 +6,20 @@
 <script src="js/bootstrap.min.js"></script>
 <script src="js/tooltip.js"></script>
 <script src="js/jquery.redirect.js"></script>
+<script>
+    function serverClicked() {
+        $.redirect('/setup', {'setup': 'setup_server'});
+
+    }
+    function nodeClicked() {
+        $.redirect('/setup', {'setup': 'setup_node'});
+    }
+
+    function bothClicked() {
+        $.redirect('/setup', {'setup': 'setup_both'});
+
+    }
+
+</script>
 
     
