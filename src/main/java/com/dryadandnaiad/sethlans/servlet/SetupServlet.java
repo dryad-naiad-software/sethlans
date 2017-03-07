@@ -19,7 +19,6 @@
 
 package com.dryadandnaiad.sethlans.servlet;
 
-import com.dryadandnaiad.sethlans.model.SetupModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,10 +38,8 @@ import java.io.IOException;
 @WebServlet(name = "SetupServlet", urlPatterns = {"/setup"})
 public class SetupServlet extends HttpServlet {
     private static final Logger LOG = LogManager.getLogger(SetupServlet.class);
-    private SetupModel setupModel;
 
     public SetupServlet() {
-        setupModel = new SetupModel();
 
     }
 
