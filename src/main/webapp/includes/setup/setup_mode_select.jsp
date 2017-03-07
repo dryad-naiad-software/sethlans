@@ -27,27 +27,35 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <p class="lead">Mode for this installation</p>
+<p id="buttonWorks"></p>
 <p>
     <button type="button" class="btn btn-primary btn-lg custom_btn_width" data-toggle="tooltip" data-placement="right"
-            title="Sethlans will be configured as the farm server"
-            onclick="
-            <c:set target="${initial_setup}" property="mode" value="SERVER"/>
-            <c:redirect url="/">
-                <c:param name="setup" value="blender"/>
-            </c:redirect>
-
-                    ">
-        Server
+            data-trigger="hover"
+            title="Sethlans will be configured as the farm server" onclick="serverClicked()"> Server
     </button>
 </p>
 <p>
     <button type="button" class="btn btn-primary btn-lg custom_btn_width" data-toggle="tooltip" data-placement="right"
-            title="Sethlans will be configured as a node in the farm only">Node
+            data-trigger="hover"
+            title="Sethlans will be configured as a node in the farm only" onclick="nodeClicked()">Node
     </button>
 </p>
 
 <p>
     <button type="button" class="btn btn-primary btn-lg custom_btn_width" data-toggle="tooltip" data-placement="right"
-            title="Sethlans will act as the farm server and as a node in the farm">Both
+            data-trigger="hover"
+            title="Sethlans will act as the farm server and as a node in the farm" onclick="bothClicked()">Both
     </button>
 </p>
+<script>
+    function serverClicked() {
+        document.getElementById("buttonWorks").innerHTML = "Server Clicked";
+    }
+    function nodeClicked() {
+        document.getElementById("buttonWorks").innerHTML = "Node Clicked";
+    }
+
+    function bothClicked() {
+        document.getElementById("buttonWorks").innerHTML = "Both Clicked";
+    }
+</script>

@@ -46,25 +46,19 @@ public class Controller extends HttpServlet {
     private Map<String, String> actionMap = new HashMap<>();
 
     public Controller() {
-        actionMap.put("setup", "/setup.jsp");
-        actionMap.put("home", "/home.jsp");
-
     }
 
     private void doForward(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getParameter("action");
-        if (action == null && firstTime) {
-            action = "setup";
+        String setup = request.getParameter("setup");
+        if (setup == null && firstTime) {
             request.setAttribute("setup", "mode");
-
-        } else if (action == null || !actionMap.containsKey(action)) {
-            action = "home";
         }
+
 
         try {
             // Forward to the requested page.
-            request.getRequestDispatcher(actionMap.get(action)).forward(request, response);
+            request.getRequestDispatcher("/setup.jsp").forward(request, response);
         } catch (ServletException ex) {
             LOG.debug(ex.getMessage());
             throw ex;
