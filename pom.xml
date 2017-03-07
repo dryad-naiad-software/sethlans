@@ -176,7 +176,7 @@
                     </buildDirectory>
                     <mainClass>${mainClass}</mainClass>
                     <iconFile>icon/sethlans.icns</iconFile>
-                    <generateDiskImageFile>true</generateDiskImageFile>
+                    <generateDiskImageFile>false</generateDiskImageFile>
                 </configuration>
                 <executions>
                     <execution>
