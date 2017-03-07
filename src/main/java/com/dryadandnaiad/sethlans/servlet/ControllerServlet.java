@@ -29,8 +29,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created Mario Estrella on 3/5/17.
@@ -42,8 +40,6 @@ import java.util.Map;
 public class ControllerServlet extends HttpServlet {
     private static final Logger LOG = LogManager.getLogger(ControllerServlet.class);
     private static SethlansConfiguration config = SethlansConfiguration.getInstance();
-    private boolean firstTime = config.isFirstTime();
-    private Map<String, String> actionMap = new HashMap<>();
 
     public ControllerServlet() {
     }
@@ -56,7 +52,7 @@ public class ControllerServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        if (firstTime) {
+        if (config.isFirstTime()) {
             request.getRequestDispatcher("/setup/setup.jsp").forward(request, response);
         }
     }

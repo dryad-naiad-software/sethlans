@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.webui;
 
+import com.dryadandnaiad.sethlans.config.SethlansConfiguration;
 import com.dryadandnaiad.sethlans.enums.StringKey;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.dryadandnaiad.sethlans.webui.systray.SystemTrayIconListener;
@@ -33,6 +34,7 @@ import org.apache.tomcat.util.scan.StandardJarScanner;
 import javax.servlet.ServletException;
 import java.awt.*;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -44,6 +46,7 @@ public class SethlansWebUI {
 
     private static final Logger LOG = LogManager.getLogger(SethlansWebUI.class);
     private static SystemTrayIconMenu sysTrayMenu;
+    private static SethlansConfiguration config = SethlansConfiguration.getInstance();
     private static Tomcat tomcat;
 
     public static void start(String httpPort, String httpsPort) {
@@ -106,7 +109,16 @@ public class SethlansWebUI {
                     }
                 });
             }
+
+            if (config.isFirstTime()) {
+                URL url = new URL("http://localhost:" + webPort + "/");
+                SethlansUtils.openWebpage(url);
+
+            }
+
+
             tomcat.getServer().await();
+
 
         } catch (IOException | ServletException | LifecycleException ex) {
             LOG.error(ex.getMessage());

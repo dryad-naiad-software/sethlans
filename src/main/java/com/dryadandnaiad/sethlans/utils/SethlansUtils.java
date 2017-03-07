@@ -27,6 +27,8 @@ import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -75,10 +77,6 @@ public class SethlansUtils {
     }
 
 
-    public static Image getAppIcon() {
-        return null;
-    }
-
     public static URL setURL(String fileName) throws FileNotFoundException {
         URL url = SethlansUtils.class.getResource("/images/" + fileName);
 
@@ -95,11 +93,31 @@ public class SethlansUtils {
         try {
             url = setURL(iconName);
         } catch (FileNotFoundException | NullPointerException e) {
-            LOG.error("Image File not found " + url, e);
+            LOG.error("Image File not found " + url + e.getMessage());
         }
 
         ImageIcon imageIcon = new ImageIcon(url);
 
         return imageIcon;
+    }
+
+    public static void openWebpage(URI uri) {
+        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+            try {
+                desktop.browse(uri);
+            } catch (Exception e) {
+                LOG.error("Unable to Open Web page" + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void openWebpage(URL url) {
+        try {
+            openWebpage(url.toURI());
+        } catch (URISyntaxException e) {
+            LOG.error("Unable to Open Web page" + e.getMessage());
+        }
     }
 }
