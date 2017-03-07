@@ -29,7 +29,15 @@
 <p class="lead">Mode for this installation</p>
 <p>
     <button type="button" class="btn btn-primary btn-lg custom_btn_width" data-toggle="tooltip" data-placement="right"
-            title="Sethlans will be configured as the farm server">Server
+            title="Sethlans will be configured as the farm server"
+            onclick="
+            <c:set target="${initial_setup}" property="mode" value="SERVER"/>
+            <c:redirect url="/">
+                <c:param name="setup" value="blender"/>
+            </c:redirect>
+
+                    ">
+        Server
     </button>
 </p>
 <p>

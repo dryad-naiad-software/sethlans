@@ -56,6 +56,8 @@ public class Controller extends HttpServlet {
         String action = request.getParameter("action");
         if (action == null && firstTime) {
             action = "setup";
+            request.setAttribute("setup", "mode");
+
         } else if (action == null || !actionMap.containsKey(action)) {
             action = "home";
         }
