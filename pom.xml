@@ -212,7 +212,7 @@
                             </outfile>
                             <downloadUrl>http://java.com/download</downloadUrl>
                             <classPath>
-                                <mainClass>$mainClass</mainClass>
+                                <mainClass>${mainClass}</mainClass>
                             </classPath>
                             <icon>${project.basedir}/src/main/resources/icon/sethlans.ico</icon>
                             <jre>
