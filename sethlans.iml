@@ -35,6 +35,7 @@
       <excludeFolder url="file://$MODULE_DIR$/target/maven-archiver" />
       <excludeFolder url="file://$MODULE_DIR$/target/maven-status" />
       <excludeFolder url="file://$MODULE_DIR$/target/sethlans-0.1" />
+      <excludeFolder url="file://$MODULE_DIR$/target/sethlans-077f1dd-DEV" />
       <excludeFolder url="file://$MODULE_DIR$/target/sethlans-85bf8b5-DEV" />
       <excludeFolder url="file://$MODULE_DIR$/target/sethlans-ef6436d-DEV" />
       <excludeFolder url="file://$MODULE_DIR$/target/sethlans-ef6436d-DEV-mac" />

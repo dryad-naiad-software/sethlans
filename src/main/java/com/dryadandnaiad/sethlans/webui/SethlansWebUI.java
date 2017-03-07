@@ -53,7 +53,6 @@ public class SethlansWebUI {
             System.setProperty("org.apache.catalina.startup.EXIT_ON_INIT_FAILURE", "true");
             tomcat = new Tomcat();
             Path tempPath = Files.createTempDirectory("tomcat-base-dir");
-            LOG.debug(tempPath.toString());
             tomcat.setBaseDir(tempPath.toString());
             String webPort = System.getenv("PORT");
             if (webPort == null || webPort.isEmpty()) {

@@ -244,7 +244,7 @@
                 <configuration>
                     <buildDirectory>${project.build.directory}/${project.artifactId}-${git.commit.id.describe}
                     </buildDirectory>
-                    <mainClass>$mainClass</mainClass>
+                    <mainClass>${mainClass}</mainClass>
                     <iconFile>icon/sethlans.icns</iconFile>
                     <generateDiskImageFile>true</generateDiskImageFile>
                 </configuration>
