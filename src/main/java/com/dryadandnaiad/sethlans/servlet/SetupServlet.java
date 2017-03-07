@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.servlet;
 
-import com.dryadandnaiad.sethlans.config.SethlansConfiguration;
+import com.dryadandnaiad.sethlans.model.SetupModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,53 +29,33 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * Created Mario Estrella on 3/5/17.
+ * Created Mario Estrella on 3/7/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@WebServlet(name = "Controller", urlPatterns = {""})
-public class Controller extends HttpServlet {
-    private static final Logger LOG = LogManager.getLogger(Controller.class);
-    private static SethlansConfiguration config = SethlansConfiguration.getInstance();
-    private boolean firstTime = config.isFirstTime();
-    private Map<String, String> actionMap = new HashMap<>();
+@WebServlet(name = "SetupServlet", urlPatterns = {"/setup"})
+public class SetupServlet extends HttpServlet {
+    private static final Logger LOG = LogManager.getLogger(SetupServlet.class);
+    private SetupModel setupModel;
 
-    public Controller() {
+    public SetupServlet() {
+        setupModel = new SetupModel();
+
     }
-
-    private void doForward(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String setup = request.getParameter("setup");
-        if (setup == null && firstTime) {
-            request.setAttribute("setup", "mode");
-        }
-
-
-        try {
-            // Forward to the requested page.
-            request.getRequestDispatcher("/setup.jsp").forward(request, response);
-        } catch (ServletException ex) {
-            LOG.debug(ex.getMessage());
-            throw ex;
-        } catch (IOException ex) {
-            LOG.debug(ex.getMessage());
-            throw ex;
-        }
-    }
-
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doForward(request, response);
+        LOG.debug("POST");
+
+        request.getRequestDispatcher("/setup/setup.jsp").forward(request, response);
+
+
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        doForward(request, response);
     }
 }

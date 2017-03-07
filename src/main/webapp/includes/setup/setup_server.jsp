@@ -22,43 +22,8 @@
   User: Mario Estrella mestrella@dryadandnaiad.com
   Company: Dryad and Naiad Software LLC
   Project: sethlans
-  Date: 3/5/17
+  Date: 3/6/17
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="images/favicon.png">
-
-    <title>Sethlans Initial Setup</title>
-
-    <c:import url="includes/css.html"/>
-</head>
-
-<body>
-<c:import url="includes/setup/setup_nav.html"/>
-<c:import url="includes/setup/setup_breadcrumb.jsp"/>
-<jsp:useBean id="initial_setup" class="com.dryadandnaiad.sethlans.beans.InitialSetupBean" scope="session"/>
-
-<div class="container">
-
-    <div class="start">
-        <h1>Sethlans Setup</h1>
-        <c:if test="${setup == 'mode'}">
-            <c:import url="includes/setup/setup_mode_select.jsp"/>
-        </c:if>
-    </div>
-
-</div><!-- /.container -->
-<c:import url="includes/scripts.html"/>
-</body>
-</html>
-
+<p>Blender</p>

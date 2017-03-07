@@ -27,7 +27,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <p class="lead">Mode for this installation</p>
-<p id="buttonWorks"></p>
 <p>
     <button type="button" class="btn btn-primary btn-lg custom_btn_width" data-toggle="tooltip" data-placement="right"
             data-trigger="hover"
@@ -37,25 +36,27 @@
 <p>
     <button type="button" class="btn btn-primary btn-lg custom_btn_width" data-toggle="tooltip" data-placement="right"
             data-trigger="hover"
-            title="Sethlans will be configured as a node in the farm only" onclick="nodeClicked()">Node
+            title="Sethlans will be configured as a node only" onclick="nodeClicked()">Node
     </button>
 </p>
 
 <p>
     <button type="button" class="btn btn-primary btn-lg custom_btn_width" data-toggle="tooltip" data-placement="right"
             data-trigger="hover"
-            title="Sethlans will act as the farm server and as a node in the farm" onclick="bothClicked()">Both
+            title="Sethlans will act as the farm server and as a node within the farm" onclick="bothClicked()">Both
     </button>
 </p>
 <script>
     function serverClicked() {
-        document.getElementById("buttonWorks").innerHTML = "Server Clicked";
+        $.redirect('/setup', {'setup': 'setup_server', 'mode': "server"});
+
     }
     function nodeClicked() {
-        document.getElementById("buttonWorks").innerHTML = "Node Clicked";
+
     }
 
     function bothClicked() {
-        document.getElementById("buttonWorks").innerHTML = "Both Clicked";
+
     }
+
 </script>

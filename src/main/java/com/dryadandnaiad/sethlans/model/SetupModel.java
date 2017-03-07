@@ -17,7 +17,7 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.beans;
+package com.dryadandnaiad.sethlans.model;
 
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.LogLevel;
@@ -29,7 +29,7 @@ import com.dryadandnaiad.sethlans.enums.SethlansMode;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class InitialSetupBean {
+public class SetupModel {
     private ComputeType computeMethod;
     private Integer cores;
     private SethlansMode mode;
