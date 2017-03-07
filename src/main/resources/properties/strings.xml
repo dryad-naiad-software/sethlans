@@ -2,4 +2,5 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
     <entry key="appName">Sethlans</entry>
+    <entry key="appSysTrayImage">sethlans_systray.png</entry>
 </properties>

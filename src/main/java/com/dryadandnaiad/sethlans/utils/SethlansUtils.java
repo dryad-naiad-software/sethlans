@@ -22,9 +22,12 @@ import com.dryadandnaiad.sethlans.enums.StringKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Properties;
@@ -70,6 +73,33 @@ public class SethlansUtils {
     public static String enumToString(Enum value){
         return value.toString().toLowerCase();
     }
-    
-    
+
+
+    public static Image getAppIcon() {
+        return null;
+    }
+
+    public static URL setURL(String fileName) throws FileNotFoundException {
+        URL url = SethlansUtils.class.getResource("/images/" + fileName);
+
+        if (url == null) {
+            throw new FileNotFoundException();
+        }
+
+        return url;
+    }
+
+    public static ImageIcon createIcon(String iconName) {
+        URL url = null;
+
+        try {
+            url = setURL(iconName);
+        } catch (FileNotFoundException | NullPointerException e) {
+            LOG.error("Image File not found " + url, e);
+        }
+
+        ImageIcon imageIcon = new ImageIcon(url);
+
+        return imageIcon;
+    }
 }

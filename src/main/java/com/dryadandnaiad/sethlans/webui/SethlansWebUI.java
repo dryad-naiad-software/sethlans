@@ -19,6 +19,10 @@
 
 package com.dryadandnaiad.sethlans.webui;
 
+import com.dryadandnaiad.sethlans.enums.StringKey;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.dryadandnaiad.sethlans.webui.systray.SystemTrayIconListener;
+import com.dryadandnaiad.sethlans.webui.systray.SystemTrayIconMenu;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.startup.Tomcat;
@@ -27,6 +31,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.tomcat.util.scan.StandardJarScanner;
 
 import javax.servlet.ServletException;
+import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,13 +43,15 @@ import java.nio.file.Path;
 public class SethlansWebUI {
 
     private static final Logger LOG = LogManager.getLogger(SethlansWebUI.class);
+    private static SystemTrayIconMenu sysTrayMenu;
+    private static Tomcat tomcat;
 
     public static void start(String httpPort, String httpsPort) {
 
         try {
 
             System.setProperty("org.apache.catalina.startup.EXIT_ON_INIT_FAILURE", "true");
-            Tomcat tomcat = new Tomcat();
+            tomcat = new Tomcat();
             Path tempPath = Files.createTempDirectory("tomcat-base-dir");
             LOG.debug(tempPath.toString());
             tomcat.setBaseDir(tempPath.toString());
@@ -60,6 +67,46 @@ public class SethlansWebUI {
             ((StandardJarScanner) context.getJarScanner()).setScanAllDirectories(true);
 
             tomcat.start();
+
+            if (SystemTray.isSupported()) {
+                sysTrayMenu = new SystemTrayIconMenu();
+                sysTrayMenu.refresh();
+                sysTrayMenu.setMenuListener(new SystemTrayIconListener() {
+                    @Override
+                    public void aboutDialogRequested() {
+                        LOG.debug("About dialog selected");
+
+                    }
+
+                    @Override
+                    public void startServerEventRequested() {
+                        LOG.debug("Starting tomcat server");
+                        try {
+                            tomcat.start();
+                        } catch (LifecycleException e) {
+                            LOG.error("A lifecycle exception occurred" + e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void stopServerEventRequested() {
+                        LOG.debug("Stopping tomcat server");
+                        try {
+                            tomcat.stop();
+                        } catch (LifecycleException e) {
+                            LOG.error("A lifecycle exception occurred" + e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void exitEventOccurred() {
+
+                        stopServerEventRequested();
+                        LOG.info("********************* " + SethlansUtils.getString(StringKey.APP_NAME) + " Shutdown" + " *********************");
+                        System.exit(0);
+                    }
+                });
+            }
             tomcat.getServer().await();
 
         } catch (IOException | ServletException | LifecycleException ex) {
@@ -67,5 +114,4 @@ public class SethlansWebUI {
         }
 
     }
-
 }

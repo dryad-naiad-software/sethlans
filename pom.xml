@@ -242,7 +242,7 @@
                 <artifactId>appbundle-maven-plugin</artifactId>
                 <version>1.2.0</version>
                 <configuration>
-                    <buildDirectory>${project.build.directory}/${project.artifactId}-${git.commit.id.describe}-mac/
+                    <buildDirectory>${project.build.directory}/${project.artifactId}-${git.commit.id.describe}
                     </buildDirectory>
                     <mainClass>$mainClass</mainClass>
                     <iconFile>icon/sethlans.icns</iconFile>

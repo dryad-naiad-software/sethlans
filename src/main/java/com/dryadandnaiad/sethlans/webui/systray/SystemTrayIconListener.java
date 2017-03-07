@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Dryad and Naiad Software LLC
+ * Copyright (c) 2017 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -14,26 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  */
-package com.dryadandnaiad.sethlans.enums;
+
+package com.dryadandnaiad.sethlans.webui.systray;
 
 /**
- *
- * @author Mario Estrella <mestrella@dryadandnaiad.com>
+ * Created Mario Estrella on 3/6/17.
+ * Dryad and Naiad Software LLC
+ * mestrella@dryadandnaiad.com
+ * Project: sethlans
  */
-public enum StringKey {
-    APP_NAME("appName"),
-    APP_SYSTRAY_IMAGE("appSysTrayImage");
-    
-    private final String keyName;
-    
-    StringKey(String keyName) {
-        this.keyName = keyName;
-    }
+public interface SystemTrayIconListener {
 
-    @Override
-    public String toString() {
-        return keyName;
-    }  
+    public void aboutDialogRequested();
+
+    public void startServerEventRequested();
+
+    public void stopServerEventRequested();
+
+    public void exitEventOccurred();
 
 }
