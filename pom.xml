@@ -6,7 +6,6 @@
     <groupId>com.dryadandnaiad</groupId>
     <artifactId>sethlans</artifactId>
     <version>0.1</version>
-    <packaging>war</packaging>
 
     <name>sethlans</name>
 
@@ -106,29 +105,6 @@
 
 
             <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.6</version>
-                <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <warName>${project.artifactId}</warName>
-                    <archive>
-                        <manifest>
-                            <mainClass>${mainClass}</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>default-war</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>war</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.2.1</version>
@@ -189,52 +165,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Creates Windows executable file -->
-            <plugin>
-                <groupId>com.akathist.maven.plugins.launch4j</groupId>
-                <artifactId>launch4j-maven-plugin</artifactId>
-                <version>1.7.15</version>
-                <executions>
-                    <execution>
-                        <id>l4j-gui</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>launch4j</goal>
-                        </goals>
-                        <configuration>
-                            <headerType>gui</headerType>
-                            <!--suppress MavenModelInspection -->
-                            <jar>
-                                ${project.build.directory}/${project.artifactId}-${project.version}-${git.commit.id.describe}.jar
-                            </jar>
-                            <outfile>
-                                ${project.build.directory}/${project.artifactId}-${project.version}-${git.commit.id.describe}-windows.exe
-                            </outfile>
-                            <downloadUrl>http://java.com/download</downloadUrl>
-                            <classPath>
-                                <mainClass>${mainClass}</mainClass>
-                            </classPath>
-                            <icon>${project.basedir}/src/main/resources/icon/sethlans.ico</icon>
-                            <jre>
-                                <minVersion>1.8.0</minVersion>
-                                <jdkPreference>preferJre</jdkPreference>
-                            </jre>
-                            <versionInfo>
-                                <fileVersion>${project.version}.0.0</fileVersion>
-                                <txtFileVersion>${project.version}.0.0</txtFileVersion>
-                                <fileDescription>${project.name}</fileDescription>
-                                <copyright>${current.year} ${project.organization.name}</copyright>
-                                <productVersion>${project.version}.0.0</productVersion>
-                                <txtProductVersion>${project.version}</txtProductVersion>
-                                <productName>${project.version}.0.0</productName>
-                                <companyName>${project.organization.name}</companyName>
-                                <internalName>${project.name}</internalName>
-                                <originalFilename>${project.name}.exe</originalFilename>
-                            </versionInfo>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
 
             <!-- Creates an OSX app Bundle -->
             <plugin>
