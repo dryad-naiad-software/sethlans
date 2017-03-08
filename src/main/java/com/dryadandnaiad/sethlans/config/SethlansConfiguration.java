@@ -78,6 +78,7 @@ public class SethlansConfiguration {
                 this.httpPort = getProperty(ConfigKey.HTTP_PORT);
                 this.httpsPort = getProperty(ConfigKey.HTTPS_PORT);
                 this.firstTime = Boolean.parseBoolean(getProperty(ConfigKey.FIRST_TIME));
+                this.launchBrowser = Boolean.parseBoolean(getProperty(ConfigKey.LAUNCH_BROWSER));
 
                 switch (this.mode) {
                     case SERVER:
@@ -89,10 +90,7 @@ public class SethlansConfiguration {
                         this.computeMethod = ComputeType.valueOf(getProperty(ConfigKey.COMPUTE_METHOD).toUpperCase());
                         this.cores = Integer.parseInt(getProperty(ConfigKey.CORES)); //TODO Create a class vs using an Integer in order to restrict the value of cores to reasonable numbers.
                         break;
-
                 }
-
-
                 Configurator.setRootLevel(this.logLevel.getLevel());
                 LOG.debug("Config values loaded");
             } catch (NullPointerException e) {
@@ -109,7 +107,7 @@ public class SethlansConfiguration {
 
     public void setLaunchBrowser(boolean value) {
         setProperty(ConfigKey.LAUNCH_BROWSER, Boolean.toString(value));
-        this.launchBrowser = launchBrowser;
+        loadConfig();
     }
 
     public boolean isFirstTime() {
