@@ -48,6 +48,7 @@
       <excludeFolder url="file://$MODULE_DIR$/target/sethlans-ee9c2a2" />
       <excludeFolder url="file://$MODULE_DIR$/target/sethlans-ef6436d-DEV" />
       <excludeFolder url="file://$MODULE_DIR$/target/sethlans-ef6436d-DEV-mac" />
+      <excludeFolder url="file://$MODULE_DIR$/target/sethlans-fd5d220-DEV" />
       <excludeFolder url="file://$MODULE_DIR$/target/tomcat.7007" />
     </content>
     <orderEntry type="inheritedJdk" />

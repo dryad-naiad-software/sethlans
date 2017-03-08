@@ -42,17 +42,12 @@ public class SetupServlet extends HttpServlet {
     public SetupServlet() {
 
     }
-
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         LOG.debug("POST");
 
         request.getRequestDispatcher("/setup/setup.jsp").forward(request, response);
 
-
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-    }
 }

@@ -5,7 +5,7 @@
     <entry key="mode">both</entry>
     <entry key="loglevel">info</entry>
     <entry key="compute_method">cpu</entry>
-    <entry key="cores">-1</entry>
+    <entry key="cores">1</entry>
     <entry key="http_port">7007</entry>
     <entry key="https_port">7443</entry>
     <entry key="first_time">true</entry>

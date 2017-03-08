@@ -71,15 +71,33 @@ public class SethlansConfiguration {
             configUpdate();
             LOG.info("Configuration updated to config version " + CONFIG_VERSION_ID);
         } else {
-            this.logLevel = LogLevel.valueOf(getProperty(ConfigKey.LOGLEVEL).toUpperCase());
-            this.computeMethod = ComputeType.valueOf(getProperty(ConfigKey.COMPUTE_METHOD).toUpperCase());
-            this.cores = Integer.parseInt(getProperty(ConfigKey.CORES)); //TODO Create a class vs using an Integer in order to restrict the value of cores to reasonable numbers.
-            this.mode = SethlansMode.valueOf(getProperty(ConfigKey.MODE).toUpperCase());
-            this.httpPort = getProperty(ConfigKey.HTTP_PORT);
-            this.httpsPort = getProperty(ConfigKey.HTTPS_PORT);
-            this.firstTime = Boolean.parseBoolean(getProperty(ConfigKey.FIRST_TIME));
-            Configurator.setRootLevel(this.logLevel.getLevel());
-            LOG.debug("Config values loaded");
+            try {
+                this.logLevel = LogLevel.valueOf(getProperty(ConfigKey.LOGLEVEL).toUpperCase());
+                this.mode = SethlansMode.valueOf(getProperty(ConfigKey.MODE).toUpperCase());
+                this.httpPort = getProperty(ConfigKey.HTTP_PORT);
+                this.httpsPort = getProperty(ConfigKey.HTTPS_PORT);
+                this.firstTime = Boolean.parseBoolean(getProperty(ConfigKey.FIRST_TIME));
+
+                switch (this.mode) {
+                    case SERVER:
+                    case NODE:
+                        this.computeMethod = ComputeType.valueOf(getProperty(ConfigKey.COMPUTE_METHOD).toUpperCase());
+                        this.cores = Integer.parseInt(getProperty(ConfigKey.CORES)); //TODO Create a class vs using an Integer in order to restrict the value of cores to reasonable numbers.
+                        break;
+                    case BOTH:
+                        this.computeMethod = ComputeType.valueOf(getProperty(ConfigKey.COMPUTE_METHOD).toUpperCase());
+                        this.cores = Integer.parseInt(getProperty(ConfigKey.CORES)); //TODO Create a class vs using an Integer in order to restrict the value of cores to reasonable numbers.
+                        break;
+
+                }
+
+
+                Configurator.setRootLevel(this.logLevel.getLevel());
+                LOG.debug("Config values loaded");
+            } catch (NullPointerException e) {
+                LOG.error("Missing or invalid value in config file");
+                System.exit(1);
+            }
         }
 
     }
@@ -243,6 +261,7 @@ public class SethlansConfiguration {
 
         } catch (IOException e) {
             LOG.error(e.getMessage());
+            System.exit(1);
         }
         return null;
 

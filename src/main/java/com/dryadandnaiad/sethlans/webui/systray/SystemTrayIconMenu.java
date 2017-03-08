@@ -55,7 +55,7 @@ public class SystemTrayIconMenu implements ActionListener {
         exitItem = new MenuItem("Exit");
         aboutItem = new MenuItem("About " + SethlansUtils.getString(StringKey.APP_NAME));
         startTomcatItem = new MenuItem("Start");
-        stopTomcatItem = new MenuItem("Stops");
+        stopTomcatItem = new MenuItem("Stop");
         aboutItem.addActionListener(this);
         exitItem.addActionListener(this);
         startTomcatItem.addActionListener(this);
