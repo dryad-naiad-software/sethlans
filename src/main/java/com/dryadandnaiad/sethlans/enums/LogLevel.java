@@ -25,6 +25,7 @@ import org.apache.logging.log4j.Level;
  */
 public enum LogLevel {
     INFO(Level.INFO),
+
     DEBUG(Level.DEBUG);
     
     private final Level levelName;
