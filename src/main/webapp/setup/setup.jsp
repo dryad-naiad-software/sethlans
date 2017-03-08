@@ -49,9 +49,7 @@
 
 
 <div class="container">
-
-    <div class="start">
-        <h1>Sethlans Setup</h1>
+    <h1 class="text-center">Sethlans Setup</h1>
 
         <c:choose>
             <c:when test="${param.setup == null}">
@@ -70,7 +68,7 @@
                 <c:import url="../includes/setup/setup_both.jsp"/>
             </c:when>
         </c:choose>
-    </div>
+
 
 </div><!-- /.container -->
 <c:import url="../includes/scripts.html"/>

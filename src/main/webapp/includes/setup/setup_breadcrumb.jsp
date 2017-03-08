@@ -40,7 +40,7 @@
                 <li><a href="javascript:void(0)" onclick="nodeClicked()">Sethlans Node Setup</a></li>
             </c:when>
             <c:when test="${param.setup == 'setup_both'}">
-                <li><a href="javascript:void(0)" onclick="bothClicked()">Sethlans Server + Node Setup</a></li>
+                <li><a href="javascript:void(0)" onclick="bothClicked()">Sethlans Dual Mode Setup</a></li>
             </c:when>
         </c:choose>
     </ul>

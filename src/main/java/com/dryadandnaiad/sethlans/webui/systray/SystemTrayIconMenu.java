@@ -54,8 +54,8 @@ public class SystemTrayIconMenu implements ActionListener {
         sysTray = SystemTray.getSystemTray();
         exitItem = new MenuItem("Exit " + SethlansUtils.getString(StringKey.APP_NAME));
         aboutItem = new MenuItem("About " + SethlansUtils.getString(StringKey.APP_NAME));
-        startTomcatItem = new MenuItem("Start Tomcat");
-        stopTomcatItem = new MenuItem("Stop Tomcat");
+        startTomcatItem = new MenuItem("Start Sethlans");
+        stopTomcatItem = new MenuItem("Stop Sethlans");
         aboutItem.addActionListener(this);
         exitItem.addActionListener(this);
         startTomcatItem.addActionListener(this);
@@ -77,6 +77,8 @@ public class SystemTrayIconMenu implements ActionListener {
             trayIcon.setImageAutoSize(true);
             popupMenu = new PopupMenu();
 
+            // TODO checks need to be implemented here in order to disable the appropriate option i.e.
+            // TODO Sethlans Start should be disabled if server is running.
             popupMenu.add(startTomcatItem);
             popupMenu.add(stopTomcatItem);
             popupMenu.add(aboutItem);

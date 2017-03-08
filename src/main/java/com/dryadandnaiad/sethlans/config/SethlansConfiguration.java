@@ -65,6 +65,7 @@ public class SethlansConfiguration {
 
 
     private void loadConfig() {
+        //TODO Add validation to this section.
         if (!CONFIG_VERSION_ID.equals(getProperty(ConfigKey.CONFIG_VERSION))) {
             LOG.info("Old Config version, starting update");
             configUpdate();
@@ -72,7 +73,7 @@ public class SethlansConfiguration {
         } else {
             this.logLevel = LogLevel.valueOf(getProperty(ConfigKey.LOGLEVEL).toUpperCase());
             this.computeMethod = ComputeType.valueOf(getProperty(ConfigKey.COMPUTE_METHOD).toUpperCase());
-            this.cores = Integer.parseInt(getProperty(ConfigKey.CORES));
+            this.cores = Integer.parseInt(getProperty(ConfigKey.CORES)); //TODO Create a class vs using an Integer in order to restrict the value of cores to reasonable numbers.
             this.mode = SethlansMode.valueOf(getProperty(ConfigKey.MODE).toUpperCase());
             this.httpPort = getProperty(ConfigKey.HTTP_PORT);
             this.httpsPort = getProperty(ConfigKey.HTTPS_PORT);
