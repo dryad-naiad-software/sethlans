@@ -52,10 +52,10 @@ public class SystemTrayIconMenu implements ActionListener {
         sethlansImage = SethlansUtils.createIcon(SethlansUtils.getString(StringKey.APP_SYSTRAY_IMAGE)).getImage();
         trayIcon = new TrayIcon(sethlansImage, SethlansUtils.getString(StringKey.APP_NAME));
         sysTray = SystemTray.getSystemTray();
-        exitItem = new MenuItem("Exit " + SethlansUtils.getString(StringKey.APP_NAME));
+        exitItem = new MenuItem("Exit");
         aboutItem = new MenuItem("About " + SethlansUtils.getString(StringKey.APP_NAME));
-        startTomcatItem = new MenuItem("Start Sethlans");
-        stopTomcatItem = new MenuItem("Stop Sethlans");
+        startTomcatItem = new MenuItem("Start");
+        stopTomcatItem = new MenuItem("Stops");
         aboutItem.addActionListener(this);
         exitItem.addActionListener(this);
         startTomcatItem.addActionListener(this);
