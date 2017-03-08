@@ -65,7 +65,7 @@
                 <c:import url="../includes/setup/setup_node.jsp"/>
             </c:when>
             <c:when test="${param.setup == 'setup_both'}">
-                <c:import url="../includes/setup/setup_both.jsp"/>
+                <c:import url="../includes/setup/setup_dual.jsp"/>
             </c:when>
         </c:choose>
 
