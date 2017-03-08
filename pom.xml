@@ -69,9 +69,6 @@
                 </executions>
                 <configuration>
                     <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
-                    <gitDescribe>
-                        <dirty>-DEV</dirty>
-                    </gitDescribe>
                     <excludeProperties>
                         <excludeProperty>git.commit.user.email</excludeProperty>
                         <excludeProperty>git.build.user.email</excludeProperty>
