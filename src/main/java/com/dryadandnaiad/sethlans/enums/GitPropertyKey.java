@@ -22,6 +22,6 @@ package com.dryadandnaiad.sethlans.enums;
  * @author Mario Estrella <mestrella@dryadandnaiad.com>
  */
 public enum GitPropertyKey {
-    GITBUILD;
+    GIT_BUILD;
     
 }
