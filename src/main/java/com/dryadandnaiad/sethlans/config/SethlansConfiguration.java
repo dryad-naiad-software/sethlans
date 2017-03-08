@@ -48,12 +48,13 @@ public class SethlansConfiguration {
     private final File configDirectory = new File(path + File.separator + "config");
     private final File defaultConfigFile = new File(configDirectory + File.separator + "sethlansconfig.xml");
     private ComputeType computeMethod;
-    private boolean firstTime = true;
+    private boolean firstTime;
     private Integer cores;
     private SethlansMode mode;
     private LogLevel logLevel;
     private String httpPort;
     private String httpsPort;
+    private boolean launchBrowser;
 
     private SethlansConfiguration() {
     }
@@ -100,6 +101,15 @@ public class SethlansConfiguration {
             }
         }
 
+    }
+
+    public boolean isLaunchBrowser() {
+        return launchBrowser;
+    }
+
+    public void setLaunchBrowser(boolean value) {
+        setProperty(ConfigKey.LAUNCH_BROWSER, Boolean.toString(value));
+        this.launchBrowser = launchBrowser;
     }
 
     public boolean isFirstTime() {

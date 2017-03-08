@@ -77,7 +77,6 @@ public class SethlansWebUI {
                     @Override
                     public void aboutDialogRequested() {
                         LOG.debug("About dialog selected");
-
                     }
 
                     @Override
@@ -110,7 +109,7 @@ public class SethlansWebUI {
                 });
             }
 
-            if (config.isFirstTime()) {
+            if (config.isFirstTime() || config.isLaunchBrowser()) {
                 URL url = new URL("http://localhost:" + webPort + "/");
                 SethlansUtils.openWebpage(url);
 

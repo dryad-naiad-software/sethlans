@@ -29,7 +29,7 @@ public enum ConfigKey {
     HTTP_PORT, 
     HTTPS_PORT,
     CONFIG_VERSION,
-    FIRST_TIME;
+    FIRST_TIME, LAUNCH_BROWSER;
 
     
     
