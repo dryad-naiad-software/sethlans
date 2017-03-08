@@ -24,7 +24,8 @@ import org.apache.logging.log4j.Level;
  * @author Mario Estrella <mestrella@dryadandnaiad.com>
  */
 public enum LogLevel {
-    INFO(Level.INFO), DEBUG(Level.DEBUG);
+    INFO(Level.INFO),
+    DEBUG(Level.DEBUG);
     
     private final Level levelName;
     
