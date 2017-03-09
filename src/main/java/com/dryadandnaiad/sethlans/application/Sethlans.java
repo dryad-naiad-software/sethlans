@@ -18,16 +18,10 @@
 
 package com.dryadandnaiad.sethlans.application;
 
-import com.dryadandnaiad.sethlans.enums.StringKey;
-import com.dryadandnaiad.sethlans.ui.SystemTrayIconListener;
-import com.dryadandnaiad.sethlans.ui.SystemTrayIconMenu;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.awt.*;
 
 /**
  * Created Mario Estrella on 3/9/17.
@@ -38,34 +32,10 @@ import java.awt.*;
 @SpringBootApplication
 public class Sethlans {
     private static final Logger LOG = LoggerFactory.getLogger(Sethlans.class);
-    private static SystemTrayIconMenu sysTrayMenu;
 
     public static void main(String[] args) {
 
         // TODO System Tray is going to need some work. right now it opens two instances.
-        if (SystemTray.isSupported()) {
-            sysTrayMenu = SystemTrayIconMenu.getInstance();
-            sysTrayMenu.setMenuListener(new SystemTrayIconListener() {
-                @Override
-                public void aboutDialogRequested() {
-                    LOG.debug("About dialog selected");
-                }
-                @Override
-                public void startServerEventRequested() {
-                    LOG.debug("Starting tomcat server");
-                }
-                @Override
-                public void stopServerEventRequested() {
-                    LOG.debug("Stopping tomcat server");
-                }
-                @Override
-                public void exitEventOccurred() {
-                    stopServerEventRequested();
-                    LOG.info("********************* " + SethlansUtils.getString(StringKey.APP_NAME) + " Shutdown" + " *********************");
-                    System.exit(0);
-                }
-            });
-        }
 
             SpringApplication.run(Sethlans.class, args);
 
