@@ -16,17 +16,25 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.ui;
+package com.dryadandnaiad.sethlans;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * Created Mario Estrella on 3/6/17.
+ * Created Mario Estrella on 3/9/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface SystemTrayIconListener {
-    public void aboutDialogRequested();
-    public void startServerEventRequested();
-    public void stopServerEventRequested();
-    public void exitEventOccurred();
+@SpringBootApplication
+public class Sethlans {
+    private static final Logger LOG = LoggerFactory.getLogger(Sethlans.class);
+
+    public static void main(String[] args) {
+        SpringApplication.run(Sethlans.class, args);
+    }
 }
+
