@@ -19,6 +19,9 @@
 
 package com.dryadandnaiad.sethlans.servlet;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -34,6 +37,7 @@ import java.io.IOException;
  */
 @WebServlet(name = "UploadServlet", urlPatterns = {"/upload"})
 public class UploadServlet extends HttpServlet {
+    private static final Logger LOG = LogManager.getLogger(UploadServlet.class);
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
