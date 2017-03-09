@@ -1,0 +1,3 @@
+spring:
+  thymeleaf:
+    cache: false #TODO set this to true during releases. False during development.
