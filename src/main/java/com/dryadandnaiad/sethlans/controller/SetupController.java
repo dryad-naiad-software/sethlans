@@ -32,6 +32,6 @@ public class SetupController {
 
     @RequestMapping("/")
     public String main() {
-        return "views/index";
+        return "index";
     }
 }
