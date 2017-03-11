@@ -16,8 +16,9 @@
     "tests"
   ],
   "dependencies": {
+    "bootstrap": "3.3.7",
     "jquery": "3.1.1",
-    "patternfly": "^3.7.0",
+    "patternfly": "3.22.1",
     "tether": "1.4.0",
     "jquery.redirect": "1.0.4"
   }

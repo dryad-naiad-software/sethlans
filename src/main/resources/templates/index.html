@@ -18,21 +18,41 @@
   ~
   -->
 
-<html lang="en">
 <!-- Namespaces -->
+<html lang="en" class="layout-pf layout-pf-fixed" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- CSS Headings -->
+    <!-- PatternFly Styles -->
+    <link href="../lib/patternfly/dist/css/patternfly.min.css" th:href="@{/lib/patternfly/dist/css/patternfly.min.css}"
+          rel="stylesheet" media="screen, print">
+    <link href="../lib/patternfly/dist/css/patternfly-additions.min.css"
+          th:href="@{/lib/patternfly/dist/css/patternfly-additions.min.css}" rel="stylesheet" media="screen, print">
 
-    <title></title>
+    <title>Index</title>
 </head>
 <body>
-
+<nav th:replace="fragments/nav :: navheader"></nav>
+<div th:replace="fragments/vertmenu :: vertmenu"></div>
+<div>This is a test</div>
 
 <!-- Javascript Footers -->
-
+<!-- jQuery -->
+<script src="../lib/jquery/dist/jquery.min.js" th:src="@{/lib/jquery/dist/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script src="../lib/bootstrap/dist/js/bootstrap.min.js" th:src="@{/lib/bootstrap/dist/js/bootstrap.min.js}"></script>
+<!-- PatternFly -->
+<script src="../lib/patternfly/dist/js/patternfly.min.js"
+        th:src="@{/lib/patternfly/dist/js/patternfly.min.js}"></script>
+<!-- Page Specific Scripts -->
+<script src="../lib/c3/c3.min.js" th:src="@{/lib/c3/c3.min.js}"></script>
+<script src="../lib/d3/d3.min.js" th:src="@{/lib/d3/d3.min.js}"></script>
+<script src="../lib/jquery-match-height/dist/jquery.matchHeight-min.js"
+        th:src="@{/lib/jquery-match-height/dist/jquery.matchHeight-min.js}"></script>
+<script src="../js/vertnav.js" th:src="@{/js/vertnav.js}"></script>
 </body>
 </html>

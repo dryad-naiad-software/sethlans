@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright (c) 2017 Dryad and Naiad Software LLC
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
+<!-- Namespaces -->
+<html lang="en" class="layout-pf layout-pf-fixed" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- CSS Headings -->
+    <!-- PatternFly Styles -->
+    <link href="../../lib/patternfly/dist/css/patternfly.min.css"
+          th:href="@{/lib/patternfly/dist/css/patternfly.min.css}"
+          rel="stylesheet" media="screen, print">
+    <link href="../../lib/patternfly/dist/css/patternfly-additions.min.css"
+          th:href="@{/lib/patternfly/dist/css/patternfly-additions.min.css}" rel="stylesheet" media="screen, print">
+
+
+    <title>Nav</title>
+</head>
+<body>
+<nav class="navbar navbar-pf-vertical" th:fragment="navheader">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a href="/" class="navbar-brand">
+            <img class="navbar-brand-icon" src="//assets/img/logo-alt.svg" alt=""/><img class="navbar-brand-name"
+                                                                                        src="//assets/img/brand-alt.svg"
+                                                                                        alt="PatternFly Enterprise Application"/>
+        </a>
+    </div>
+    <nav class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+            <li><a href="#" target="_blank" class="nav-item-iconic nav-item-iconic-new-window"><span title="Launch"
+                                                                                                     class="fa fa-external-link"></span></a>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right navbar-iconic">
+            <li class="dropdown">
+                <a class="dropdown-toggle nav-item-iconic" id="notifications" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="true">
+                    <span title="Notifications" class="fa pficon-flag"></span>
+                    <span class="badge">2</span>
+                </a>
+                <div class="dropdown-menu infotip bottom-right">
+                    <div class="arrow"></div>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <span class="i pficon pficon-info"></span> Modified Datasources ExampleDS
+                        </li>
+                        <li class="list-group-item">
+                            <span class="i pficon pficon-info"></span> Error: System Failure
+                        </li>
+                    </ul>
+                    <div class="footer">
+                        <a>Clear Messages</a>
+                    </div>
+                </div>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle nav-item-iconic" id="dropdownMenu1" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="true">
+                    <span title="Help" class="fa pficon-help"></span>
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li><a href="#">Help</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a class="dropdown-toggle nav-item-iconic" id="dropdownMenu2" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="true">
+                    <span title="Username" class="fa pficon-user"></span>
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <li><a href="#">Preferences</a></li>
+                    <li><a href="#">Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</nav> <!--/.navbar-->
+
+<!-- Javascript Footers -->
+<!-- jQuery -->
+<script src="../../lib/jquery/dist/jquery.min.js" th:src="@{/lib/jquery/dist/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script src="../../lib/bootstrap/dist/js/bootstrap.min.js" th:src="@{/lib/bootstrap/dist/js/bootstrap.min.js}"></script>
+<!-- PatternFly -->
+<script src="../../lib/patternfly/dist/js/patternfly.min.js"
+        th:src="@{/lib/patternfly/dist/js/patternfly.min.js}"></script>
+<script src="../../lib/c3/c3.min.js" th:src="@{/lib/c3/c3.min.js}"></script>
+<script src="../../lib/d3/d3.min.js" th:src="@{/lib/d3/d3.min.js}"></script>
+<script src="../../lib/jquery-match-height/dist/jquery.matchHeight-min.js"
+        th:src="@{/lib/jquery-match-height/dist/jquery.matchHeight-min.js}"></script>
+</body>
+</html>
