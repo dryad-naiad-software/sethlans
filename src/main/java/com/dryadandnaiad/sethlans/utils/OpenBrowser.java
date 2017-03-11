@@ -19,21 +19,26 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
-import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.OptionDef;
-import org.kohsuke.args4j.spi.BooleanOptionHandler;
-import org.kohsuke.args4j.spi.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
- * @author Rolf Wendolsky
- *         http://stackoverflow.com/questions/30288934/remove-default-value-in-printusage-method-args4j-library
+ * Created Mario Estrella on 3/10/17.
+ * Dryad and Naiad Software LLC
+ * mestrella@dryadandnaiad.com
+ * Project: sethlans
  */
-public class HelpOptionHandler extends BooleanOptionHandler {
-    public HelpOptionHandler(CmdLineParser parser, OptionDef option, Setter<Boolean> setter) {
-        super(parser, option, setter);
-    }
 
-    public String printDefaultValue() {
-        return null;  // this prevents the default value to be printed in usage info
+public class OpenBrowser {
+    private static final Logger LOG = LoggerFactory.getLogger(OpenBrowser.class);
+
+    public static void start() throws MalformedURLException {
+        LOG.debug("Opening Browser");
+        URL url = new URL("http://localhost:7007" + "/");
+        SethlansUtils.openWebpage(url);
+
     }
 }

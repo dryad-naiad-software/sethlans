@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2017 Dryad and Naiad Software LLC
- *
+ * Copyright (c) 2017. Dryad and Naiad Software LLC.
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -14,37 +13,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  */
+
 package com.dryadandnaiad.sethlans.utils;
 
-/**
- *
- * @author Mario Estrella <mestrella@dryadandnaiad.com>
- */
 import java.io.InputStream;
 import java.nio.file.NoSuchFileException;
 
+/**
+ * Created Mario Estrella on 3/9/17.
+ * Dryad and Naiad Software LLC
+ * mestrella@dryadandnaiad.com
+ * Project: sethlans
+ */
 public class Resources {
 
     private final String filePath;
-
     public Resources(String filePath) {
         this.filePath = filePath;
-
         if (filePath.startsWith("/")) {
             throw new IllegalArgumentException("Only relative paths are supported, remove the leading slash");
         }
     }
-
     public InputStream getResource() throws NoSuchFileException {
         ClassLoader classLoader = getClass().getClassLoader();
-
         InputStream inputStream = classLoader.getResourceAsStream(filePath);
-
         if (inputStream == null) {
             throw new NoSuchFileException(filePath + " File not found");
         }
-
         return inputStream;
     }
 }

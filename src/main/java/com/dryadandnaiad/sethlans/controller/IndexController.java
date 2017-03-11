@@ -17,23 +17,22 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.utils;
+package com.dryadandnaiad.sethlans.controller;
 
-import org.kohsuke.args4j.CmdLineParser;
-import org.kohsuke.args4j.OptionDef;
-import org.kohsuke.args4j.spi.BooleanOptionHandler;
-import org.kohsuke.args4j.spi.Setter;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * @author Rolf Wendolsky
- *         http://stackoverflow.com/questions/30288934/remove-default-value-in-printusage-method-args4j-library
+ * Created Mario Estrella on 3/9/17.
+ * Dryad and Naiad Software LLC
+ * mestrella@dryadandnaiad.com
+ * Project: sethlans
  */
-public class HelpOptionHandler extends BooleanOptionHandler {
-    public HelpOptionHandler(CmdLineParser parser, OptionDef option, Setter<Boolean> setter) {
-        super(parser, option, setter);
-    }
+@Controller
+public class IndexController {
 
-    public String printDefaultValue() {
-        return null;  // this prevents the default value to be printed in usage info
+    @RequestMapping("/")
+    public String getPage() {
+        return "index";
     }
 }

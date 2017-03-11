@@ -1,0 +1,10 @@
+spring:
+  thymeleaf:
+    cache: false #TODO set this to true during releases. False during development.
+    mode: LEGACYHTML5
+logging:
+  file: ${user.home}/.sethlans/logs/sethlans.log
+  level:
+    com.dryadandnaiad: DEBUG #TODO set this to INFO during releases. False during development.
+server:
+  port: 7007
