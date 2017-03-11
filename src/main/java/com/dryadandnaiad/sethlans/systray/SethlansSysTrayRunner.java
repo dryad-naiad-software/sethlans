@@ -42,6 +42,7 @@ public class SethlansSysTrayRunner {
             LOG.debug("System Tray is Supported");
             SethlansSysTray sethlansSysTray = new SethlansSysTray();
             sethlansSysTray.setup();
+            sethlansSysTray.setImageAutoSize(true);
         } else {
             LOG.debug("System Tray is Not Supported");
         }

@@ -37,7 +37,7 @@ public class SethlansSysTray extends TrayIcon {
     private static final Logger LOG = LoggerFactory.getLogger(SethlansSysTray.class);
 
     private static final String IMAGE = "images/sethlans_systray.png";
-    private static final String TOOLTIP = "Text";
+    private static final String TOOLTIP = "Sethlans";
 
     private MenuItem openBrowser;
     private MenuItem exitItem;

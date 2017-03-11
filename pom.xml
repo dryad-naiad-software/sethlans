@@ -5,7 +5,7 @@
 
     <groupId>com.dryadandnaiad</groupId>
     <artifactId>sethlans</artifactId>
-    <version>0.0.2</version>
+    <version>0.2</version>
     <packaging>jar</packaging>
 
     <name>sethlans</name>
@@ -18,7 +18,16 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
+    <organization>
+        <!-- Used as the 'Vendor' for JNLP generation -->
+        <name>Dryad and Naiad Software LLC</name>
+    </organization>
+
     <properties>
+        <sLauncherClass>org.springframework.boot.loader.JarLauncher</sLauncherClass>
+        <fileName>${project.artifactId}-${project.version}.${timestamp}</fileName>
+        <timestamp>${maven.build.timestamp}</timestamp>
+        <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
@@ -61,37 +70,104 @@
 
     <build>
         <plugins>
-            <!-- Git Version Plugin -->
-            <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-                <version>2.2.2</version>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>revision</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
-                    <excludeProperties>
-                        <excludeProperty>git.commit.user.email</excludeProperty>
-                        <excludeProperty>git.build.user.email</excludeProperty>
-                        <excludeProperty>git.build.version</excludeProperty>
-                    </excludeProperties>
-                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                    <generateGitPropertiesFilename>src/main/resources/properties/git.properties
-                    </generateGitPropertiesFilename>
-                </configuration>
-            </plugin>
 
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.12</version>
+                <executions>
+                    <execution>
+                        <id>timestamp-property</id>
+                        <goals>
+                            <goal>timestamp-property</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <name>current.year</name>
+                            <pattern>yyyy</pattern>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <!-- Creates Windows executable file -->
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>1.7.15</version>
+                <executions>
+                    <execution>
+                        <id>l4j-gui</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <headerType>gui</headerType>
+                            <jar>
+                                ${project.build.directory}/${fileName}.jar
+                            </jar>
+                            <outfile>
+                                ${project.build.directory}/${fileName}-windows.exe
+                            </outfile>
+                            <errTitle>Sethlans</errTitle>
+                            <downloadUrl>http://java.com/download</downloadUrl>
+                            <classPath>
+                                <mainClass>${sLauncherClass}</mainClass>
+                            </classPath>
+                            <icon>${project.basedir}/src/main/resources/icon/sethlans.ico</icon>
+                            <jre>
+                                <minVersion>1.8.0</minVersion>
+                                <jdkPreference>preferJre</jdkPreference>
+                            </jre>
+                            <versionInfo>
+                                <productName>Sethlans</productName>
+                                <fileVersion>${project.version}.0.0</fileVersion>
+                                <txtFileVersion>${project.version}.0.0</txtFileVersion>
+                                <fileDescription>${project.name}</fileDescription>
+                                <copyright>2017 ${project.organization.name}</copyright>
+                                <productVersion>${project.version}.0.0</productVersion>
+                                <txtProductVersion>${project.version}</txtProductVersion>
+                                <companyName>${project.organization.name}</companyName>
+                                <internalName>${project.name}</internalName>
+                                <originalFilename>${project.name}.exe</originalFilename>
+                            </versionInfo>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Creates an OSX app Bundle -->
+            <plugin>
+                <groupId>sh.tak.appbundler</groupId>
+                <artifactId>appbundle-maven-plugin</artifactId>
+                <version>1.2.0</version>
+                <configuration>
+                    <buildDirectory>${project.build.directory}/${fileName}-macOS
+                    </buildDirectory>
+                    <mainClass>${sLauncherClass}</mainClass>
+                    <iconFile>icon/sethlans.icns</iconFile>
+                    <generateDiskImageFile>false</generateDiskImageFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>bundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+
+        <!--suppress MavenModelInspection -->
+        <finalName>${fileName}</finalName>
+
     </build>
 
 
