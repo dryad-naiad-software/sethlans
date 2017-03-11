@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2017. Dryad and Naiad Software LLC.
+ * Copyright (c) 2017 Dryad and Naiad Software LLC
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -28,10 +29,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Project: sethlans
  */
 @Controller
-public class SetupController {
+public class IndexController {
 
     @RequestMapping("/")
-    public String main() {
+    public String getPage() {
         return "index";
     }
 }
