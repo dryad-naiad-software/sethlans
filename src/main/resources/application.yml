@@ -5,3 +5,5 @@ spring:
 logging:
   level:
     com.dryadandnaiad: DEBUG #TODO set this to INFO during releases. DEBUG during development
+server:
+  port: 7007
