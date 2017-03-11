@@ -19,11 +19,13 @@
 
 package com.dryadandnaiad.sethlans.systray;
 
+import com.dryadandnaiad.sethlans.utils.OpenBrowser;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
+import java.net.MalformedURLException;
 
 /**
  * Created Mario Estrella on 3/10/17.
@@ -37,6 +39,7 @@ public class SethlansSysTray extends TrayIcon {
     private static final String IMAGE = "images/sethlans_systray.png";
     private static final String TOOLTIP = "Text";
 
+    private MenuItem openBrowser;
     private MenuItem exitItem;
     private MenuItem aboutItem;
 
@@ -60,14 +63,24 @@ public class SethlansSysTray extends TrayIcon {
     }
 
     private void menuItems() {
+        openBrowser = new MenuItem("Show Sethlans");
         exitItem = new MenuItem("Exit");
         aboutItem = new MenuItem("About Sethlans");
+        openBrowser.addActionListener(e -> {
+            LOG.debug("Displaying Homepage");
+            try {
+                OpenBrowser.start();
+            } catch (MalformedURLException e1) {
+                e1.printStackTrace();
+            }
+        });
+
         exitItem.addActionListener(e -> {
             LOG.debug("Shutdown Initiated from System Tray");
             System.exit(0);
         });
 
-
+        popup.add(openBrowser);
         popup.add(aboutItem);
         popup.add(exitItem);
     }
