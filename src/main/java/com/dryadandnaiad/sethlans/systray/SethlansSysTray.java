@@ -23,7 +23,6 @@ import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
 import java.awt.*;
 
 /**
@@ -32,7 +31,6 @@ import java.awt.*;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@org.springframework.stereotype.Component
 public class SethlansSysTray extends TrayIcon {
     private static final Logger LOG = LoggerFactory.getLogger(SethlansSysTray.class);
 
@@ -47,16 +45,18 @@ public class SethlansSysTray extends TrayIcon {
 
     public SethlansSysTray() {
         super(SethlansUtils.createImage(IMAGE, TOOLTIP), TOOLTIP);
-        LOG.debug("Test");
         popup = new PopupMenu();
         menuItems();
         tray = SystemTray.getSystemTray();
     }
 
-    @PostConstruct
-    private void setup() throws AWTException {
+    public void setup() {
         setPopupMenu(popup);
-        tray.add(this);
+        try {
+            tray.add(this);
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
     }
 
     private void menuItems() {

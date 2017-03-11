@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2017. Dryad and Naiad Software LLC.
+ * Copyright (c) 2017 Dryad and Naiad Software LLC
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -16,36 +17,33 @@
  *
  */
 
-package com.dryadandnaiad.sethlans;
+package com.dryadandnaiad.sethlans.systray;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.awt.*;
 
 /**
- * Created Mario Estrella on 3/9/17.
+ * Created Mario Estrella on 3/10/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@SpringBootApplication
-public class Sethlans {
-    private static final Logger LOG = LoggerFactory.getLogger(Sethlans.class);
+@Component
+public class SethlansSysTrayRunner {
+    private static final Logger LOG = LoggerFactory.getLogger(SethlansSysTrayRunner.class);
 
-    public static void main(String[] args) {
+    @PostConstruct
+    private void check() {
         if (SystemTray.isSupported()) {
-            SpringApplicationBuilder builder = new SpringApplicationBuilder(Sethlans.class);
-            builder.headless(false);
-            builder.run(args);
+            LOG.debug("System Tray is Supported");
+            SethlansSysTray sethlansSysTray = new SethlansSysTray();
+            sethlansSysTray.setup();
         } else {
-            SpringApplication.run(Sethlans.class, args);
+            LOG.debug("System Tray is Not Supported");
         }
-
-
     }
 }
-
