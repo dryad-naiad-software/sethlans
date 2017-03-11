@@ -2,3 +2,6 @@ spring:
   thymeleaf:
     cache: false #TODO set this to true during releases. False during development.
     mode: LEGACYHTML5
+logging:
+  level:
+    com.dryadandnaiad: DEBUG #TODO set this to INFO during releases. DEBUG during development

@@ -18,22 +18,16 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
-import com.dryadandnaiad.sethlans.enums.GitPropertyKey;
-import com.dryadandnaiad.sethlans.enums.StringKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Properties;
 
 /**
  * Created Mario Estrella on 3/9/17.
@@ -44,56 +38,17 @@ import java.util.Properties;
 public class SethlansUtils {
     private static final Logger LOG = LoggerFactory.getLogger(SethlansUtils.class);
 
-    public static String getString(StringKey sentEnum) {
-        String newKey = sentEnum.toString();
-        String value = null;
+    public static Image createImage(String image, String description) {
+        URL imageURL = null;
         try {
-            Properties properties;
-            InputStream input = new Resources("properties/strings.xml").getResource();
-            properties = new Properties();
-            properties.loadFromXML(input);
-
-            value = properties.getProperty(newKey);
-
-        } catch (FileNotFoundException e) {
-            LOG.error(e.getMessage());
-
+            imageURL = new ClassPathResource(image).getURL();
         } catch (IOException e) {
-            LOG.error(e.getMessage());
-
+            LOG.error("Failed Creating Image. Resource not found.\n" + e.getMessage());
+            System.exit(1);
         }
-        return value;
+        return new ImageIcon(imageURL, description).getImage();
     }
 
-    public static String getGitProperties(GitPropertyKey sentEnum) {
-        return null;
-    }
-
-    public static String updaterTimeStamp(){
-        Date currentDate = GregorianCalendar.getInstance().getTime();
-        return String.format("Updated: %1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS", currentDate);
-    }
-
-    public static String enumToString(Enum value){
-        return value.toString().toLowerCase();
-    }
-    public static URL setURL(String fileName) throws FileNotFoundException {
-        URL url = SethlansUtils.class.getResource("/static/images/" + fileName);
-        if (url == null) {
-            throw new FileNotFoundException();
-        }
-        return url;
-    }
-    public static ImageIcon createIcon(String iconName) {
-        URL url = null;
-        try {
-            url = setURL(iconName);
-        } catch (FileNotFoundException | NullPointerException e) {
-            LOG.error("Image File not found " + url + e.getMessage());
-        }
-        ImageIcon imageIcon = new ImageIcon(url);
-        return imageIcon;
-    }
     public static void openWebpage(URI uri) {
         Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
         if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {

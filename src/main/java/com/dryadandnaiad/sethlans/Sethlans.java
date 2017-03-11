@@ -20,8 +20,9 @@ package com.dryadandnaiad.sethlans;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * Created Mario Estrella on 3/9/17.
@@ -34,7 +35,9 @@ public class Sethlans {
     private static final Logger LOG = LoggerFactory.getLogger(Sethlans.class);
 
     public static void main(String[] args) {
-        SpringApplication.run(Sethlans.class, args);
+        SpringApplicationBuilder builder = new SpringApplicationBuilder(Sethlans.class);
+        builder.headless(false);
+        ConfigurableApplicationContext context = builder.run(args);
     }
 }
 
