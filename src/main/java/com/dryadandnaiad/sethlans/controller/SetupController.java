@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2017. Dryad and Naiad Software LLC.
+ * Copyright (c) 2017 Dryad and Naiad Software LLC
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
@@ -16,14 +17,31 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.enums;
+package com.dryadandnaiad.sethlans.controller;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * Created Mario Estrella on 3/9/17.
+ * Created Mario Estrella on 3/11/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public enum StringKey {
-    APP_NAME, APP_SYSTRAY_IMAGE
+
+@Controller
+public class SetupController {
+    @Value("${sethlans.firsttime}")
+    private boolean firstTime;
+
+    @RequestMapping("/setup")
+    public String getPage() {
+        if (firstTime) {
+            return "setup";
+        } else {
+            return "redirect:/";
+        }
+
+    }
 }

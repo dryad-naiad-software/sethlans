@@ -17,15 +17,13 @@
  *
  */
 
-body {
-    padding-top: 50px;
-}
-
-.start {
-    padding: 40px 15px;
-    text-align: center;
-}
-
-.custom_btn_width {
-    width: 200px !important;
+function toggleHTTPS() {
+    if ($("#useHTTPS").is(":checked")) {
+        document.getElementById("https-label").style.display = "block";
+        document.getElementById("secureServerPort").type = "number";
+    }
+    else {
+        document.getElementById("https-label").style.display = "none";
+        document.getElementById("secureServerPort").type = "hidden";
+    }
 }

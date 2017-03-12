@@ -19,6 +19,9 @@
 
 package com.dryadandnaiad.sethlans.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -30,9 +33,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class IndexController {
+    private static final Logger LOG = LoggerFactory.getLogger(IndexController.class);
+
+    @Value("${sethlans.firsttime}")
+    private boolean firstTime;
 
     @RequestMapping("/")
     public String getPage() {
-        return "index";
+        if (firstTime) {
+            LOG.debug("Setup hasn't been completed, redirecting...");
+            return "redirect:/setup";
+        } else {
+            return "index";
+        }
+
     }
 }

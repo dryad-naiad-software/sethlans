@@ -63,7 +63,7 @@ public class SethlansSysTray extends TrayIcon {
     }
 
     private void menuItems() {
-        openBrowser = new MenuItem("Show Sethlans");
+        openBrowser = new MenuItem("Show");
         exitItem = new MenuItem("Exit");
         aboutItem = new MenuItem("About Sethlans");
         openBrowser.addActionListener(e -> {
