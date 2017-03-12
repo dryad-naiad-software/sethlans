@@ -35,6 +35,7 @@
           media="screen, print">
     <link href="../css/sticky-footer.css" th:href="@{/css/sticky-footer.css}" rel="stylesheet" media="screen, print">
     <link href="../css/center_modal.css" th:href="@{/css/center_modal.css}" rel="stylesheet" media="screen, print">
+    <link rel="shortcut icon" href="../images/favicon.png" th:href="@{/images/favicon.png}">
 
     <title>Setup</title>
 </head>
@@ -63,10 +64,14 @@
                         <h3 id="setupWizardLabel">Wizard Steps</h3>
                         <!-- Dynamic Content for Thymeleaf -->
                     </div>
-                    <div class="modal-body" id="setupWizard">
+                    <div class="modal-body" id="setupWizard" th:switch="${setupModel.progress}">
 
                         <!-- *********** Setup Fragments start here ************** -->
-                        <div class="well" th:include="fragments/setup_mode :: setup_mode"></div>
+                        <div class="well" th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).MODE}"
+                             th:include="fragments/setup_mode :: setup_mode"></div>
+                        <div class="well" th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).SERVER}"
+                             th:include="fragments/setup_server :: setup_server"></div>
+                        <div class="well" th:case="*" th:include="fragments/setup_settings :: setup_settings"></div>
                         <div class="well" th:remove="all">
                             <h3 style="margin-top: auto"><strong><u>Mode for this installation</u></strong></h3>
                             <form>

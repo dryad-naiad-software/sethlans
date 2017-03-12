@@ -19,9 +19,15 @@
 
 package com.dryadandnaiad.sethlans.controller;
 
+import com.dryadandnaiad.sethlans.model.SetupModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 
 /**
  * Created Mario Estrella on 3/11/17.
@@ -32,16 +38,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class SetupController {
+    private static final Logger LOG = LoggerFactory.getLogger(SetupController.class);
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
 
-    @RequestMapping("/setup")
-    public String getPage() {
+
+    @GetMapping("/setup")
+    public String setupForm(Model model) {
+        model.addAttribute("setupModel", new SetupModel());
         if (firstTime) {
             return "setup";
         } else {
             return "redirect:/";
         }
 
+    }
+
+    @PostMapping("/setup")
+    public String setupSubmit(@ModelAttribute SetupModel setupModel) {
+        LOG.debug(setupModel.toString());
+        LOG.debug("Submission");
+        return "setup";
     }
 }

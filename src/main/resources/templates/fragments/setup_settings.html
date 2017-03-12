@@ -58,11 +58,14 @@
 
                             <!-- ************** Fragment Start ***************** -->
                             <div class="well" th:fragment="setup_settings">
-                                <form action="/setup" method="POST">
+                                <form action="/setup" th:object="${setupModel}" method="POST">
                                     <h3 style="margin-top: auto"><strong><u>Ports</u></strong></h3>
                                     <div class="form-group">
-                                        <label for="serverPort">Sethlans HTTP Port</label>
-                                        <input type="number" class="form-control" id="serverPort" value="7007"
+                                        <label for="httpPort">Sethlans HTTP Port</label>
+                                        <input type="number" class="form-control"
+                                               id="httpPort"
+                                               name="httpPort"
+                                               th:value="*{httpPort}"
                                                data-toggle="tooltip"
                                                data-trigger="hover"
                                                title="Default HTTP Port is 7007.  Sethlans will communicate on this port if HTTPS isn't enabled.">
@@ -70,28 +73,41 @@
                                     <div class="checkbox">
                                         <label data-toggle="tooltip" data-trigger="hover" data-placement="right"
                                                title="Turns on HTTPS">
-                                            <input type="checkbox" id="useHTTPS" class="form-check-input" value="true"
+                                            <input type="checkbox" id="useHTTPS" class="form-check-input"
+                                                   value="true"
+                                                   th:field="*{useHttps}"
                                                    onClick="toggleHTTPS()">
                                             Enable HTTPS </label>
                                     </div>
                                     <div class="form-group">
-                                        <label id="https-label" for="secureServerPort" hidden> Sethlans HTTPS
+                                        <label id="https-label" for="httpsPort" hidden> Sethlans HTTPS
                                             Port </label>
-                                        <input type="hidden" class="form-control " id="secureServerPort" value="7443"
+                                        <input type="hidden" class="form-control "
+                                               id="httpsPort"
+                                               name="httpsPort"
+                                               th:value="*{httpsPort}"
                                                data-toggle="tooltip"
                                                data-trigger="hover"
                                                title="Default HTTPS port is 7443. Sethlans will communicate on this port.">
                                     </div>
                                     <h3 style="margin-top: auto"><strong><u>Options</u></strong></h3>
                                     <div class="checkbox">
-                                        <label data-toggle="tooltip" data-trigger="hover" data-placement="right"
+                                        <label data-toggle="tooltip"
+                                               data-trigger="hover"
+                                               data-placement="right"
                                                title="When application is started, launch brower/open tab and navigate to Sethlans main page.">
-                                            <input type="checkbox" id="launchBrowserOnStartup" class="form-check-input"
-                                                   value="true">
+                                            <input type="checkbox"
+                                                   id="launchBrowser"
+                                                   class="form-check-input"
+                                                   name="launchBrowser"
+                                                   value="true"
+                                                   th:field="*{launchBrowser}">
                                             Launch Browser on Startup </label>
                                     </div>
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-default pull-left">Previous</button>
+                                        <input type="hidden" id="progress" name="progress" value="MODE">
+                                        <button type="submit" class="btn btn-default pull-left" disabled>Previous
+                                        </button>
                                         <button type="submit" class="btn btn-primary pull-right">Next</button>
                                         <br/>
                                     </div>
@@ -100,13 +116,18 @@
                                     function toggleHTTPS() {
                                         if ($("#useHTTPS").is(":checked")) {
                                             document.getElementById("https-label").style.display = "block";
-                                            document.getElementById("secureServerPort").type = "number";
+                                            document.getElementById("httpsPort").type = "number";
                                         }
                                         else {
                                             document.getElementById("https-label").style.display = "none";
-                                            document.getElementById("secureServerPort").type = "hidden";
+                                            document.getElementById("httpsPort").type = "hidden";
                                         }
                                     }
+                                </script>
+                                <script>
+                                    window.onload = function () {
+                                        toggleHTTPS()
+                                    };
                                 </script>
                             </div>
                             <!-- ************** Fragment End ***************** -->
