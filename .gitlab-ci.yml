@@ -4,4 +4,4 @@ build:
   script: "mvn package"
     artifacts:
     paths:
-    target/
+    - target/
