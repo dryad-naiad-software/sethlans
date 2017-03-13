@@ -64,7 +64,7 @@
                         <h3 id="setupWizardLabel">Wizard Steps</h3>
                         <!-- Dynamic Content for Thymeleaf -->
                     </div>
-                    <div class="modal-body" id="setupWizard" th:switch="${setupModel.progress}">
+                    <div class="modal-body" id="setupWizard" th:switch="${setupWizard.progress}">
 
                         <!-- *********** Setup Fragments start here ************** -->
                         <div class="well" th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).MODE}"

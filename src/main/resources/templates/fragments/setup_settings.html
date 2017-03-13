@@ -58,7 +58,7 @@
 
                             <!-- ************** Fragment Start ***************** -->
                             <div class="well" th:fragment="setup_settings">
-                                <form action="/setup" th:object="${setupModel}" method="POST">
+                                <form action="/setup" th:object="${setupWizard}" method="POST">
                                     <h3 style="margin-top: auto"><strong><u>Ports</u></strong></h3>
                                     <div class="form-group">
                                         <label for="httpPort">Sethlans HTTP Port</label>

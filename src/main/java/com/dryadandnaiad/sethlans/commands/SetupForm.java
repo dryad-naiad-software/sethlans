@@ -17,7 +17,7 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.model;
+package com.dryadandnaiad.sethlans.commands;
 
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
@@ -29,7 +29,8 @@ import com.dryadandnaiad.sethlans.enums.SetupProgress;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class SetupModel {
+public class SetupForm {
+
     private SethlansMode mode;
     private String userName;
     private String passWord;
@@ -46,14 +47,6 @@ public class SetupModel {
     private boolean useHttps;
     private boolean launchBrowser;
     private SetupProgress progress;
-
-    public SetupProgress getProgress() {
-        return progress;
-    }
-
-    public void setProgress(SetupProgress progress) {
-        this.progress = progress;
-    }
 
     public SethlansMode getMode() {
         return mode;
@@ -144,9 +137,6 @@ public class SetupModel {
     }
 
     public String getHttpPort() {
-        if (this.httpPort == null) {
-            return "7007";
-        }
         return httpPort;
     }
 
@@ -155,9 +145,6 @@ public class SetupModel {
     }
 
     public String getHttpsPort() {
-        if (this.httpsPort == null) {
-            return "7443";
-        }
         return httpsPort;
     }
 
@@ -181,25 +168,11 @@ public class SetupModel {
         this.launchBrowser = launchBrowser;
     }
 
-    @Override
-    public String toString() {
-        return "SetupModel{" +
-                "mode=" + mode +
-                ", userName='" + userName + '\'' +
-                ", passWord='" + passWord + '\'' +
-                ", configDirectory='" + configDirectory + '\'' +
-                ", dataDirectory='" + dataDirectory + '\'' +
-                ", projectDirectory='" + projectDirectory + '\'' +
-                ", blenderDirectory='" + blenderDirectory + '\'' +
-                ", tempDirectory='" + tempDirectory + '\'' +
-                ", devices=" + devices +
-                ", workingDirectory='" + workingDirectory + '\'' +
-                ", blenderVersion='" + blenderVersion + '\'' +
-                ", httpPort='" + httpPort + '\'' +
-                ", httpsPort='" + httpsPort + '\'' +
-                ", useHttps=" + useHttps +
-                ", launchBrowser=" + launchBrowser +
-                ", progress=" + progress +
-                '}';
+    public SetupProgress getProgress() {
+        return progress;
+    }
+
+    public void setProgress(SetupProgress progress) {
+        this.progress = progress;
     }
 }

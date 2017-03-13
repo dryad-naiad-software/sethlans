@@ -59,7 +59,7 @@
                             <!-- ************** Fragment Start ***************** -->
                             <div class="well" th:fragment="setup_mode">
                                 <h3 style="margin-top: auto"><strong><u>Mode for this installation</u></strong></h3>
-                                <form action="/setup" th:object="${setupModel}" method="post">
+                                <form action="/setup" th:object="${setupWizard}" method="post">
                                     <div class="radio form-group">
                                         <h4>
                                             <label data-toggle="tooltip"
