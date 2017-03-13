@@ -2,3 +2,6 @@ build:
   tags:
     - linux
   script: "mvn package"
+    artifacts:
+    paths:
+    target/
