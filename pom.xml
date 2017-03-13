@@ -50,6 +50,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+        <binLocation>binaries</binLocation>
     </properties>
 
     <dependencies>
@@ -93,6 +94,17 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>${fileName}</finalName>
+                            <outputDirectory>${project.build.directory}/${binLocation}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -113,6 +125,28 @@
                 </executions>
             </plugin>
 
+            <!-- Creates an OSX app Bundle -->
+            <plugin>
+                <groupId>sh.tak.appbundler</groupId>
+                <artifactId>appbundle-maven-plugin</artifactId>
+                <version>1.2.0</version>
+                <configuration>
+                    <buildDirectory>
+                        ${project.build.directory}/${binLocation}/${fileName}-macOS
+                    </buildDirectory>
+                    <mainClass>${sLauncherClass}</mainClass>
+                    <iconFile>icon/sethlans.icns</iconFile>
+                    <generateDiskImageFile>false</generateDiskImageFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>bundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
             <!-- Creates Windows executable file -->
             <plugin>
@@ -129,10 +163,10 @@
                         <configuration>
                             <headerType>gui</headerType>
                             <jar>
-                                ${project.build.directory}/${fileName}.jar
+                                ${project.build.directory}/${binLocation}/${fileName}.jar
                             </jar>
                             <outfile>
-                                ${project.build.directory}/${fileName}-windows.exe
+                                ${project.build.directory}/${binLocation}/${fileName}-windows.exe
                             </outfile>
                             <errTitle>Sethlans</errTitle>
                             <downloadUrl>http://java.com/download</downloadUrl>
@@ -161,31 +195,8 @@
                 </executions>
             </plugin>
 
-            <!-- Creates an OSX app Bundle -->
-            <plugin>
-                <groupId>sh.tak.appbundler</groupId>
-                <artifactId>appbundle-maven-plugin</artifactId>
-                <version>1.2.0</version>
-                <configuration>
-                    <buildDirectory>${project.build.directory}/${fileName}-macOS
-                    </buildDirectory>
-                    <mainClass>${sLauncherClass}</mainClass>
-                    <iconFile>icon/sethlans.icns</iconFile>
-                    <generateDiskImageFile>false</generateDiskImageFile>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>bundle</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
 
-        <!--suppress MavenModelInspection -->
-        <finalName>${fileName}</finalName>
+        </plugins>
 
     </build>
 
