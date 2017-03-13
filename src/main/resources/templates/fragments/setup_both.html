@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright (c) 2017 Dryad and Naiad Software LLC
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
+<html xmlns:th="http://www.thymeleaf.org" lang="en" class="layout-pf layout-pf-fixed"
+      xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="../../lib/patternfly/dist/css/patternfly.min.css"
+          th:href="@{/lib/patternfly/dist/css/patternfly.min.css}"
+          rel="stylesheet" media="screen, print">
+    <link href="../../lib/patternfly/dist/css/patternfly-additions.min.css"
+          th:href="@{/lib/patternfly/dist/css/patternfly-additions.min.css}" rel="stylesheet" media="screen, print">
+    <link href="../../lib/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css"
+          th:href="@{/lib/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css}" rel="stylesheet"
+          media="screen, print">
+    <link href="../../css/sticky-footer.css" th:href="@{/css/sticky-footer.css}" rel="stylesheet" media="screen, print">
+    <title>Setup</title>
+</head>
+<body>
+<nav class="navbar navbar-pf-vertical">
+    <div class="navbar-header"></div>
+    <nav class="collapse navbar-collapse">
+        <ul class="nav navbar-nav navbar-right navbar-iconic">
+        </ul>
+    </nav>
+</nav>
+<div class="container">
+    <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         data-backdrop="static" data-keyboard="false" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="myModalLabel">Wizard Steps</h3>
+                </div>
+                <div class="modal-body" id="myWizard">
+                    <div class="tab-content">
+                        <div class="tab-pane fade in active" id="step1">
+
+
+                            <!-- ************** Fragment Start ***************** -->
+                            <div class="well" th:fragment="setup_both">
+                                <form action="/setup" method="POST">
+                                    <h3 style="margin-top: auto"><strong><u>Authentication</u></strong></h3>
+                                    <div class="form-group">
+                                        <label for="userName">User Name</label>
+                                        <input type="text" class="form-control" id="userName"
+                                               data-toggle="tooltip"
+                                               data-trigger="hover"
+                                               title="user name for sethlans">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="passWord">Password</label>
+                                        <input type="password" class="form-control" id="password"
+                                               data-toggle="tooltip"
+                                               data-trigger="hover"
+                                               title="password">
+                                    </div>
+
+
+                                    <h3 style="margin-top: auto"><strong><u>Server Directories</u></strong></h3>
+                                    <div class="form-group">
+                                        <label for="configDir">Config Directory</label>
+                                        <input type="text" class="form-control" id="configDir"
+                                               value="~/.sethlans/config/"
+                                               data-toggle="tooltip"
+                                               data-trigger="hover"
+                                               title="Sethlans user settings are stored here.">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="configDir">Data Directory</label>
+                                        <input type="text" class="form-control" id="configDir" value="~/.sethlans/data/"
+                                               data-toggle="tooltip"
+                                               data-trigger="hover"
+                                               title="Sethlans keeps project history and other data here.">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="projectDir">Project Directory</label>
+                                        <input type="text" class="form-control" id="projectDir"
+                                               value="~/.sethlans/projects/"
+                                               data-toggle="tooltip"
+                                               data-trigger="hover"
+                                               title="Project .blend files and completed render zip files will be stored here in a subfolder with the Project Name.">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="blenderDir">Blender Directory</label>
+                                        <input type="text" class="form-control" id="blenderDir"
+                                               value="~/.sethlans/blenderZip/"
+                                               data-toggle="tooltip"
+                                               data-trigger="hover"
+                                               title="Blender executables will be stored here.">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cacheDir">Temp Directory</label>
+                                        <input type="text" class="form-control" id="cacheDir" value="~/.sethlans/temp/"
+                                               data-toggle="tooltip"
+                                               data-trigger="hover"
+                                               title="Temporary storage for rendered tiles received from nodes by project id.  Moved into the appropriate project folder once all rendering is complete.">
+                                    </div>
+                                    <h3 style="margin-top: auto"><strong><u>Compute Method</u></strong></h3>
+                                    <div class="form-group">
+                                        <label for="devices">Devices:</label>
+                                        <select class="form-control" id="devices">
+                                            <option>CPU</option>
+                                            <option>GPU</option>
+                                            <option>CPU &amp; GPU</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cores">CPU Cores: &nbsp; </label>
+                                        <span id="coresSliderVal">3</span> <br/>
+                                        <input id="cores" type="number" data-slider-min="1" data-slider-max="8"
+                                               data-slider-step="1" data-slider-value="3"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>CUDA Devices:</label><br/>
+                                        <label class="checkbox-inline"><input type="checkbox" value="">Option 1</label>
+                                        <label class="checkbox-inline"><input type="checkbox" value="">Option 2</label>
+                                        <label class="checkbox-inline"><input type="checkbox" value="">Option 3</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>OpenCL Devices:</label><br/>
+                                        <label class="checkbox-inline"><input type="checkbox" value="">Option 1</label>
+                                        <label class="checkbox-inline"><input type="checkbox" value="">Option 2</label>
+                                        <label class="checkbox-inline"><input type="checkbox" value="">Option 3</label>
+                                    </div>
+                                    <h3 style="margin-top: auto"><strong><u>Node Directories</u></strong></h3>
+                                    <div class="form-group">
+                                        <label for="workDir">Working Directory</label>
+                                        <input type="text" class="form-control slider" id="workDir"
+                                               value="~/.sethlans/cache/"
+                                               data-toggle="tooltip"
+                                               data-trigger="hover"
+                                               title="Sethlans will store blender, project and temporary tiles here.">
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-default pull-left">Previous</button>
+                                        <button type="submit" class="btn btn-primary pull-right">Next</button>
+                                        <br/>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- ************** Fragment End ***************** -->
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Javascript Footers -->
+<!-- jQuery -->
+<script src="../../lib/jquery/dist/jquery.min.js" th:src="@{/lib/jquery/dist/jquery.min.js}"></script>
+<!-- Bootstrap -->
+<script src="../../lib/bootstrap/dist/js/bootstrap.min.js" th:src="@{/lib/bootstrap/dist/js/bootstrap.min.js}"></script>
+<!-- PatternFly -->
+<script src="../../lib/patternfly/dist/js/patternfly.min.js"
+        th:src="@{/lib/patternfly/dist/js/patternfly.min.js}"></script>
+<!-- Page Specific Scripts -->
+<script src="../../lib/c3/c3.min.js" th:src="@{/lib/c3/c3.min.js}"></script>
+<script src="../../lib/d3/d3.min.js" th:src="@{/lib/d3/d3.min.js}"></script>
+<script src="../../lib/jquery-match-height/dist/jquery.matchHeight-min.js"
+        th:src="@{/lib/jquery-match-height/dist/jquery.matchHeight-min.js}"></script>
+<script src="../../js/tooltip.js" th:src="@{/js/tooltip.js}"></script>
+<script src="../../lib/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js"
+        th:src="@{/lib/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js}"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#myModal').modal('show');
+        $('#myModal').modal({
+            backdrop: 'static',
+            keyboard: false
+        })
+    });
+    $(document).ready(function () {
+
+        $('.next').click(function () {
+
+            var nextId = $(this).parents('.tab-pane').next().attr("id");
+            $('[href=#' + nextId + ']').tab('show');
+            return false;
+
+        })
+
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+
+            //update progress
+            var step = $(e.target).data('step');
+            var percent = (parseInt(step) / 4) * 100;
+
+            $('.progress-bar').css({width: percent + '%'});
+            $('.progress-bar').text("Step " + step + " of 4");
+
+            //e.relatedTarget // previous tab
+
+        })
+
+        $('.first').click(function () {
+
+            $('#myWizard a:first').tab('show')
+
+        })
+
+    });
+</script>
+</body>
+</html>

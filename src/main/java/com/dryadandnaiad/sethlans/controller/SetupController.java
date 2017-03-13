@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.controller;
 
+import com.dryadandnaiad.sethlans.enums.SetupProgress;
 import com.dryadandnaiad.sethlans.model.SetupModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,11 +42,12 @@ public class SetupController {
     private static final Logger LOG = LoggerFactory.getLogger(SetupController.class);
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
+    private SetupModel setupModel = new SetupModel();
 
 
     @GetMapping("/setup")
     public String setupForm(Model model) {
-        model.addAttribute("setupModel", new SetupModel());
+        model.addAttribute("setupModel", setupModel);
         if (firstTime) {
             return "setup";
         } else {
@@ -56,6 +58,18 @@ public class SetupController {
 
     @PostMapping("/setup")
     public String setupSubmit(@ModelAttribute SetupModel setupModel) {
+        if (setupModel.getProgress() == null && setupModel.getMode() != null) {
+            switch (setupModel.getMode()) {
+                case SERVER:
+                    setupModel.setProgress(SetupProgress.SERVER);
+                    break;
+                case NODE:
+                    setupModel.setProgress(SetupProgress.CLIENT);
+                    break;
+                case BOTH:
+                    setupModel.setProgress(SetupProgress.BOTH);
+            }
+        }
         LOG.debug(setupModel.toString());
         LOG.debug("Submission");
         return "setup";

@@ -71,6 +71,10 @@
                              th:include="fragments/setup_mode :: setup_mode"></div>
                         <div class="well" th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).SERVER}"
                              th:include="fragments/setup_server :: setup_server"></div>
+                        <div class="well" th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).CLIENT}"
+                             th:include="fragments/setup_client :: setup_client"></div>
+                        <div class="well" th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).BOTH}"
+                             th:include="fragments/setup_both :: setup_both"></div>
                         <div class="well" th:case="*" th:include="fragments/setup_settings :: setup_settings"></div>
                         <div class="well" th:remove="all">
                             <h3 style="margin-top: auto"><strong><u>Mode for this installation</u></strong></h3>
