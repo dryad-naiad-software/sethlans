@@ -27,16 +27,24 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- CSS Headings -->
-    <link href="../../lib/patternfly/dist/css/patternfly.min.css"
+
+    <!-- CSS Libraries -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/css/patternfly.min.css"
           th:href="@{/lib/patternfly/dist/css/patternfly.min.css}"
           rel="stylesheet" media="screen, print">
-    <link href="../../lib/patternfly/dist/css/patternfly-additions.min.css"
-          th:href="@{/lib/patternfly/dist/css/patternfly-additions.min.css}" rel="stylesheet" media="screen, print">
-    <link href="../../lib/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css"
-          th:href="@{/lib/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css}" rel="stylesheet"
-          media="screen, print">
-    <link href="../../css/sticky-footer.css" th:href="@{/css/sticky-footer.css}" rel="stylesheet" media="screen, print">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/css/patternfly-additions.min.css"
+          th:href="@{/lib/patternfly/dist/css/patternfly-additions.min.css}"
+          rel="stylesheet" media="screen, print">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/css/bootstrap-slider.css"
+          th:href="@{/lib/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css}"
+          rel="stylesheet" media="screen, print">
+    <!-- Local CSS -->
+    <link href="../../css/sticky-footer.css"
+          th:href="@{/css/sticky-footer.css}"
+          rel="stylesheet" media="screen, print">
+    <link href="../../css/center_modal.css"
+          th:href="@{/css/center_modal.css}"
+          rel="stylesheet" media="screen, print">
 
 
     <title>Nav</title>
@@ -110,17 +118,27 @@
     </nav>
 </nav> <!--/.navbar-->
 
-<!-- Javascript Footers -->
-<!-- jQuery -->
-<script src="../../lib/jquery/dist/jquery.min.js" th:src="@{/lib/jquery/dist/jquery.min.js}"></script>
-<!-- Bootstrap -->
-<script src="../../lib/bootstrap/dist/js/bootstrap.min.js" th:src="@{/lib/bootstrap/dist/js/bootstrap.min.js}"></script>
-<!-- PatternFly -->
-<script src="../../lib/patternfly/dist/js/patternfly.min.js"
+
+<!-- Javascript Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"
+        th:src="@{/lib/jquery/dist/jquery.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"
+        th:src="@{/lib/bootstrap/dist/js/bootstrap.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/js/patternfly.min.js"
         th:src="@{/lib/patternfly/dist/js/patternfly.min.js}"></script>
-<script src="../../lib/c3/c3.min.js" th:src="@{/lib/c3/c3.min.js}"></script>
-<script src="../../lib/d3/d3.min.js" th:src="@{/lib/d3/d3.min.js}"></script>
-<script src="../../lib/jquery-match-height/dist/jquery.matchHeight-min.js"
+<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js"
+        th:src="@{/lib/c3/c3.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.7.3/d3.min.js"
+        th:src="@{/lib/d3/d3.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.matchHeight/0.7.2/jquery.matchHeight-min.js"
         th:src="@{/lib/jquery-match-height/dist/jquery.matchHeight-min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/bootstrap-slider.min.js"
+        th:src="@{/lib/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js}"></script>
+
+<!-- Local Javascript Files -->
+<script src="../js/vertnav.js"
+        th:src="@{/js/vertnav.js}"></script>
+<script src="../js/tooltip.js"
+        th:src="@{/js/tooltip.js}"></script>
 </body>
 </html>
