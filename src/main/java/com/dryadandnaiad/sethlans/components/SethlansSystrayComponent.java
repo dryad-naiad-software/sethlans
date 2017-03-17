@@ -17,35 +17,35 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.controller;
+package com.dryadandnaiad.sethlans.components;
 
+import com.dryadandnaiad.sethlans.components.systray.SethlansSystray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.awt.*;
 
 /**
- * Created Mario Estrella on 3/9/17.
+ * Created Mario Estrella on 3/10/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Controller
-public class IndexController {
-    private static final Logger LOG = LoggerFactory.getLogger(IndexController.class);
+@org.springframework.stereotype.Component
+public class SethlansSystrayComponent {
+    private static final Logger LOG = LoggerFactory.getLogger(SethlansSystrayComponent.class);
 
-    @Value("${sethlans.firsttime}")
-    private boolean firstTime;
-
-    @RequestMapping("/")
-    public String getPage() {
-        if (firstTime) {
-            LOG.debug("Setup hasn't been completed, redirecting...");
-            return "redirect:/setup.form";
+    @Autowired
+    public void startSystray() {
+        if (SystemTray.isSupported()) {
+            LOG.debug("System Tray is Supported");
+            SethlansSystray sethlansSystray = new SethlansSystray();
+            sethlansSystray.setup();
+            sethlansSystray.setImageAutoSize(true);
         } else {
-            return "index";
+            LOG.debug("System Tray is Not Supported");
         }
-
     }
 }
+

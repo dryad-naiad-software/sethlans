@@ -17,7 +17,7 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.systray;
+package com.dryadandnaiad.sethlans.components.systray;
 
 import com.dryadandnaiad.sethlans.utils.OpenBrowser;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
@@ -33,8 +33,8 @@ import java.net.MalformedURLException;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class SethlansSysTray extends TrayIcon {
-    private static final Logger LOG = LoggerFactory.getLogger(SethlansSysTray.class);
+public class SethlansSystray extends TrayIcon {
+    private static final Logger LOG = LoggerFactory.getLogger(SethlansSystray.class);
 
     private static final String IMAGE = "images/sethlans_systray.png";
     private static final String TOOLTIP = "Sethlans";
@@ -46,7 +46,7 @@ public class SethlansSysTray extends TrayIcon {
     private PopupMenu popup;
     private SystemTray tray;
 
-    public SethlansSysTray() {
+    public SethlansSystray() {
         super(SethlansUtils.createImage(IMAGE, TOOLTIP), TOOLTIP);
         popup = new PopupMenu();
         menuItems();

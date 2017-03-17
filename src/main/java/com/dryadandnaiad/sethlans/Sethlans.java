@@ -52,7 +52,7 @@ public class Sethlans {
     private SethlansMode mode = null;
     @Option(name = "-loglevel", usage = "Sets the debug level for log file.  info: normal information messages(default), debug: turns on debug logging", required = false)
     private LogLevel logLevel;
-    @Option(name = "-persist", usage = "Options passed via command line are saved and automatically used next startup", required = false)
+    @Option(name = "-persist", usage = "Options passed via commands line are saved and automatically used next startup", required = false)
     private boolean persist;
     @Option(name = "-http-port", usage = "Sets the http port for the WEB UI", metaVar = "7007", required = false)
     private String httpPort = null;
@@ -92,7 +92,7 @@ public class Sethlans {
         }
 
         if (persist) {
-            LOG.info("Saving command-line options to config file.");
+            LOG.info("Saving commands-line options to config file.");
         }
 
         String[] springArgs = new String[arrayArgs.size()];
