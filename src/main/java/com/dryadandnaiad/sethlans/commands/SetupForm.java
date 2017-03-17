@@ -76,6 +76,9 @@ public class SetupForm {
     }
 
     public String getConfigDirectory() {
+        if (configDirectory == null) {
+            return System.getProperty("user.home") + "/.sethlans/config/";
+        }
         return configDirectory;
     }
 
@@ -84,6 +87,9 @@ public class SetupForm {
     }
 
     public String getDataDirectory() {
+        if (dataDirectory == null) {
+            return System.getProperty("user.home") + "/.sethlans/data/";
+        }
         return dataDirectory;
     }
 
@@ -92,6 +98,9 @@ public class SetupForm {
     }
 
     public String getProjectDirectory() {
+        if (projectDirectory == null) {
+            return System.getProperty("user.home") + "/.sethlans/projects/";
+        }
         return projectDirectory;
     }
 
@@ -100,6 +109,9 @@ public class SetupForm {
     }
 
     public String getBlenderDirectory() {
+        if (blenderDirectory == null) {
+            return System.getProperty("user.home") + "/.sethlans/blenderZips/";
+        }
         return blenderDirectory;
     }
 
@@ -108,6 +120,9 @@ public class SetupForm {
     }
 
     public String getTempDirectory() {
+        if (tempDirectory == null) {
+            return System.getProperty("user.home") + "/.sethlans/temp/";
+        }
         return tempDirectory;
     }
 
@@ -124,6 +139,9 @@ public class SetupForm {
     }
 
     public String getWorkingDirectory() {
+        if (workingDirectory == null) {
+            return System.getProperty("user.home") + "/.sethlans/cache/";
+        }
         return workingDirectory;
     }
 

@@ -77,7 +77,7 @@
 
                             <!-- ************** Fragment Start ***************** -->
                             <div class="well" th:fragment="setup_blender">
-                                <!--/*@thymesVar id="setupForm" type=""*/-->
+                                <!--/*@thymesVar id="setupForm" type="com.dryadandnaiad.sethlans.commands.SetupForm"*/-->
                                 <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
                                       method="POST">
                                     <h3 style="margin-top: auto"><strong><u>Blender Download</u></strong></h3>

@@ -78,7 +78,7 @@
                             <!-- ************** Fragment Start ***************** -->
                             <div class="well" th:fragment="setup_mode">
                                 <h3 style="margin-top: auto"><strong><u>Mode for this installation</u></strong></h3>
-                                <!--/*@thymesVar id="setupForm" type=""*/-->
+                                <!--/*@thymesVar id="setupForm" type="com.dryadandnaiad.sethlans.commands.SetupForm"*/-->
                                 <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
                                       method="POST">
                                     <div class="radio form-group">

@@ -74,6 +74,8 @@
                         <h3 id="setupWizardLabel">Wizard Steps</h3>
                         <!-- Dynamic Content for Thymeleaf -->
                     </div>
+                    <!--/*@thymesVar id="setupForm" type="com.dryadandnaiad.sethlans.commands.SetupForm"*/-->
+                    <!--/*@thymesVar id="progress" type=""*/-->
                     <div class="modal-body" id="setupForm" th:switch="${setupForm.progress}">
 
                         <!-- *********** Setup Fragments start here ************** -->
@@ -84,6 +86,8 @@
                                  th:include="fragments/setup_server :: setup_server"></div>
                             <div th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).NODE}"
                                  th:include="fragments/setup_client :: setup_client"></div>
+                            <div th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).BOTH}"
+                                 th:include="fragments/setup_both :: setup_both"></div>
                             <div th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).BLENDER}"
                                  th:include="fragments/setup_blender :: setup_blender"></div>
                             <div th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).SUMMARY}"
