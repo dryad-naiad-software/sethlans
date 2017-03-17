@@ -71,26 +71,40 @@
                             <!-- ************** Fragment Start ***************** -->
                             <div class="well" th:fragment="setup_summary">
                                 <h2 style="margin-top: auto"><strong>Setup Summary</strong></h2>
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <tbody>
-                                        <tr>
-                                            <td class="col-md-6"><h4>Setting</h4></td>
-                                            <td class="col-md-6"><h4>Value</h4></td>
-                                        </tr>
-                                        <tr><!-- Thymeleaf Iterator here -->
-                                            <td>&nbsp;</td>
-                                            <td>&nbsp;</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <div>
-                                    <button class="btn btn-default pull-left">Previous</button>
-                                    <button class="btn btn-primary pull-right" data-dismiss="modal">Finish</button>
-                                    <br/>
-                                </div>
+                                <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
+                                      method="POST">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <tbody>
+                                            <tr>
+                                                <td class="col-md-6"><h4>Setting</h4></td>
+                                                <td class="col-md-6"><h4>Value</h4></td>
+                                            </tr>
+                                            <tr><!-- Thymeleaf Iterator here -->
+                                                <td>&nbsp;</td>
+                                                <td>&nbsp;</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div>
+                                        <button type="button" class="btn btn-default pull-left"
+                                                onclick="previousClicked()">Previous
+                                        </button>
+                                        <button type="button" class="btn btn-primary pull-right"
+                                                onclick="nextClicked()">Finish
+                                        </button>
+                                        <br/>
+                                    </div>
+                                </form>
+                                <script>
+                                    function nextClicked() {
+                                        document.getElementById("progress").value = "FINISHED";
+                                    }
+                                    function previousClicked() {
+                                        document.getElementById("progress").value = "SETTINGS";
+                                    }
+                                </script>
                             </div>
                             <!-- ************** Fragment End ***************** -->
 

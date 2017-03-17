@@ -69,7 +69,8 @@
                             <!-- ************** Fragment Start ***************** -->
                             <div class="well" th:fragment="setup_mode">
                                 <h3 style="margin-top: auto"><strong><u>Mode for this installation</u></strong></h3>
-                                <form action="/setup" th:object="${setupWizard}" method="post">
+                                <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
+                                      method="POST">
                                     <div class="radio form-group">
                                         <h4>
                                             <label data-toggle="tooltip"
@@ -104,13 +105,27 @@
                                         </h4>
                                     </div>
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-default pull-left">Previous
+                                        <input type="hidden" id="progress" name="progress" value="">
+                                        <button type="button" class="btn btn-default pull-left"
+                                                onclick="previousClicked()">Previous
                                         </button>
-                                        <button type="submit" class="btn btn-primary pull-right">Next</button>
+                                        <button type="button" class="btn btn-primary pull-right"
+                                                onclick="nextClicked()">Next
+                                        </button>
                                         <br/>
                                     </div>
 
                                 </form>
+                                <script>
+                                    function nextClicked() {
+                                        document.getElementById("progress").value = document.querySelector('input[name="mode"]:checked').value;
+                                        document.getElementById("setupWizard").submit();
+                                    }
+                                    function previousClicked() {
+                                        document.getElementById("progress").value = "SETTINGS";
+                                        document.getElementById("setupWizard").submit();
+                                    }
+                                </script>
                             </div>
                             <!-- ************** Fragment End ***************** -->
 

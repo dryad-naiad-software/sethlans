@@ -20,10 +20,16 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.commands.SetupForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created Mario Estrella on 3/17/17.
@@ -32,13 +38,21 @@ import org.springframework.web.bind.annotation.SessionAttributes;
  * Project: sethlans
  */
 @Controller
-@RequestMapping("/setup.form")
-@SessionAttributes("command")
+@RequestMapping("/setup")
+@SessionAttributes("setupForm")
 public class SetupController {
+    private static final Logger LOG = LoggerFactory.getLogger(SetupController.class);
 
     @RequestMapping
     public String getStartPage(final ModelMap modelMap) {
-        modelMap.addAttribute("command", new SetupForm());
+        modelMap.addAttribute("setupForm", new SetupForm());
+        return "setup";
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public String processPage(final @ModelAttribute("setupForm") SetupForm setupForm,
+                              final HttpServletResponse response) {
+        LOG.debug(setupForm.toString());
         return "setup";
     }
 }

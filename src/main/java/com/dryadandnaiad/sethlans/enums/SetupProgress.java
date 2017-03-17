@@ -26,5 +26,5 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum SetupProgress {
-    SETTINGS, SERVER, CLIENT, BOTH, BLENDER, SUMMARY, MODE;
+    SETTINGS, SERVER, CLIENT, BOTH, BLENDER, SUMMARY, MODE, FINISHED;
 }

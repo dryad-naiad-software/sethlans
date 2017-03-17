@@ -42,7 +42,7 @@ public class IndexController {
     public String getPage() {
         if (firstTime) {
             LOG.debug("Setup hasn't been completed, redirecting...");
-            return "redirect:/setup.form";
+            return "redirect:/setup";
         } else {
             return "index";
         }

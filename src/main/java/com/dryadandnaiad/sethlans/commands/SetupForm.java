@@ -49,6 +49,9 @@ public class SetupForm {
     private SetupProgress progress;
 
     public SethlansMode getMode() {
+        if (mode == null) {
+            return SethlansMode.BOTH;
+        }
         return mode;
     }
 
@@ -137,6 +140,9 @@ public class SetupForm {
     }
 
     public String getHttpPort() {
+        if (httpPort == null) {
+            return "7007";
+        }
         return httpPort;
     }
 
@@ -145,6 +151,9 @@ public class SetupForm {
     }
 
     public String getHttpsPort() {
+        if (httpsPort == null) {
+            return "7443";
+        }
         return httpsPort;
     }
 
@@ -174,5 +183,27 @@ public class SetupForm {
 
     public void setProgress(SetupProgress progress) {
         this.progress = progress;
+    }
+
+    @Override
+    public String toString() {
+        return "SetupForm{" +
+                "mode=" + mode +
+                ", userName='" + userName + '\'' +
+                ", passWord='" + passWord + '\'' +
+                ", configDirectory='" + configDirectory + '\'' +
+                ", dataDirectory='" + dataDirectory + '\'' +
+                ", projectDirectory='" + projectDirectory + '\'' +
+                ", blenderDirectory='" + blenderDirectory + '\'' +
+                ", tempDirectory='" + tempDirectory + '\'' +
+                ", devices=" + devices +
+                ", workingDirectory='" + workingDirectory + '\'' +
+                ", blenderVersion='" + blenderVersion + '\'' +
+                ", httpPort='" + httpPort + '\'' +
+                ", httpsPort='" + httpsPort + '\'' +
+                ", useHttps=" + useHttps +
+                ", launchBrowser=" + launchBrowser +
+                ", progress=" + progress +
+                '}';
     }
 }
