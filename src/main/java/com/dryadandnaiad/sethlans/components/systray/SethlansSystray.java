@@ -39,10 +39,6 @@ public class SethlansSystray extends TrayIcon {
     private static final String IMAGE = "images/sethlans_systray.png";
     private static final String TOOLTIP = "Sethlans";
 
-    private MenuItem openBrowser;
-    private MenuItem exitItem;
-    private MenuItem aboutItem;
-
     private PopupMenu popup;
     private SystemTray tray;
 
@@ -63,9 +59,9 @@ public class SethlansSystray extends TrayIcon {
     }
 
     private void menuItems() {
-        openBrowser = new MenuItem("Show");
-        exitItem = new MenuItem("Exit");
-        aboutItem = new MenuItem("About Sethlans");
+        MenuItem openBrowser = new MenuItem("Show");
+        MenuItem exitItem = new MenuItem("Exit");
+        MenuItem aboutItem = new MenuItem("About Sethlans");
         openBrowser.addActionListener(e -> {
             LOG.debug("Displaying Homepage");
             try {

@@ -1,0 +1,23 @@
+{
+  "name": "sethlans-web",
+  "authors": [
+    "Mario Estrella <mestrella@dryadandnaiad.com>"
+  ],
+  "description": "Static Website design for sethlans",
+  "main": "index.html",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "lib",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "patternfly": "3.23.0",
+    "seiyria-bootstrap-slider": "9.7.2"
+  }
+}

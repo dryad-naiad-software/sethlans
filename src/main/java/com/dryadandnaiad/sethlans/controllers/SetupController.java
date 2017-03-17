@@ -17,35 +17,28 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.components;
+package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.components.systray.SethlansSystray;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.PostConstruct;
-import java.awt.*;
+import com.dryadandnaiad.sethlans.commands.SetupForm;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 /**
- * Created Mario Estrella on 3/10/17.
+ * Created Mario Estrella on 3/17/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@org.springframework.stereotype.Component
-public class SethlansSystrayComponent {
-    private static final Logger LOG = LoggerFactory.getLogger(SethlansSystrayComponent.class);
+@Controller
+@RequestMapping("/setup.form")
+@SessionAttributes("command")
+public class SetupController {
 
-    @PostConstruct
-    public void startSystray() {
-        if (SystemTray.isSupported()) {
-            LOG.debug("System Tray is Supported");
-            SethlansSystray sethlansSystray = new SethlansSystray();
-            sethlansSystray.setup();
-            sethlansSystray.setImageAutoSize(true);
-        } else {
-            LOG.debug("System Tray is Not Supported");
-        }
+    @RequestMapping
+    public String getStartPage(final ModelMap modelMap) {
+        modelMap.addAttribute("command", new SetupForm());
+        return "setup";
     }
 }
-
