@@ -82,6 +82,8 @@
                                  th:include="fragments/setup_mode :: setup_mode"></div>
                             <div th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).SERVER}"
                                  th:include="fragments/setup_server :: setup_server"></div>
+                            <div th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).NODE}"
+                                 th:include="fragments/setup_client :: setup_client"></div>
                             <div th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).BLENDER}"
                                  th:include="fragments/setup_blender :: setup_blender"></div>
                             <div th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).SUMMARY}"

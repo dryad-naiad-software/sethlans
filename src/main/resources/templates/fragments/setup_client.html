@@ -70,7 +70,8 @@
                                 background: #BABABA;
                             }</style>
                             <div class="well" th:fragment="setup_client">
-                                <form action="/setup" method="POST">
+                                <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
+                                      method="POST">
                                     <h3 style="margin-top: auto"><strong><u>Compute Method</u></strong></h3>
                                     <div class="form-group">
                                         <label for="devices">Devices:</label>
@@ -108,12 +109,26 @@
                                                title="Sethlans will store blender, project and temporary tiles here.">
                                     </div>
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-default pull-left">Previous</button>
-                                        <button type="submit" class="btn btn-primary pull-right">Next</button>
+                                        <input type="hidden" id="progress" name="progress" value="">
+                                        <button type="button" class="btn btn-default pull-left"
+                                                onclick="previousClicked()">Previous
+                                        </button>
+                                        <button type="button" class="btn btn-primary pull-right"
+                                                onclick="nextClicked()">Next
+                                        </button>
                                         <br/>
                                     </div>
                                 </form>
-                            </div>
+                                <script>
+                                    function nextClicked() {
+                                        document.getElementById("progress").value = "SUMMARY";
+                                        document.getElementById("setupWizard").submit();
+                                    }
+                                    function previousClicked() {
+                                        document.getElementById("progress").value = "MODE";
+                                        document.getElementById("setupWizard").submit();
+                                    }
+                                </script>
                         </div>
                         <!-- ************** Fragment End ***************** -->
 
@@ -123,87 +138,37 @@
         </div>
     </div>
 </div>
-<!-- Javascript Libraries -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"
-        th:src="@{/lib/jquery/dist/jquery.min.js}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"
-        th:src="@{/lib/bootstrap/dist/js/bootstrap.min.js}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/js/patternfly.min.js"
-        th:src="@{/lib/patternfly/dist/js/patternfly.min.js}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js"
-        th:src="@{/lib/c3/c3.min.js}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.7.3/d3.min.js"
-        th:src="@{/lib/d3/d3.min.js}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.matchHeight/0.7.2/jquery.matchHeight-min.js"
-        th:src="@{/lib/jquery-match-height/dist/jquery.matchHeight-min.js}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/bootstrap-slider.min.js"
-        th:src="@{/lib/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js}"></script>
 
-<!-- Local Javascript Files -->
-<script src="../js/vertnav.js"
-        th:src="@{/js/vertnav.js}"></script>
-<script src="../js/tooltip.js"
-        th:src="@{/js/tooltip.js}"></script>
+    <!-- Javascript Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"
+            th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"
+            th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/js/patternfly.min.js"
+            th:src="@{/lib/patternfly/dist/js/patternfly.min.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js"
+            th:src="@{/lib/c3/c3.min.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.7.3/d3.min.js"
+            th:src="@{/lib/d3/d3.min.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.matchHeight/0.7.2/jquery.matchHeight-min.js"
+            th:src="@{/lib/matchHeight/dist/jquery.matchHeight-min.js}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/bootstrap-slider.min.js"
+            th:src="@{/lib/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js}"></script>
 
-<!-- Page Javascript -->
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#myModal').modal('show');
-        $('#myModal').modal({
-            backdrop: 'static',
-            keyboard: false
-        })
-    });
-    $(document).ready(function () {
+    <!-- Local Javascript Files -->
+    <script src="../js/vertnav.js"
+            th:src="@{/js/vertnav.js}"></script>
+    <script src="../js/tooltip.js"
+            th:src="@{/js/tooltip.js}"></script>
 
-        $('.next').click(function () {
-
-            var nextId = $(this).parents('.tab-pane').next().attr("id");
-            $('[href=#' + nextId + ']').tab('show');
-            return false;
-
-        })
-
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-
-            //update progress
-            var step = $(e.target).data('step');
-            var percent = (parseInt(step) / 4) * 100;
-
-            $('.progress-bar').css({width: percent + '%'});
-            $('.progress-bar').text("Step " + step + " of 4");
-
-            //e.relatedTarget // previous tab
-
-        })
-
-        $('.first').click(function () {
-
-            $('#myWizard a:first').tab('show')
-
-        })
-
-    });
-</script>
-<script>
-    function toggleHTTPS() {
-        if ($("#useHTTPS").is(":checked")) {
-            document.getElementById("https-label").style.display = "block";
-            document.getElementById("secureServerPort").type = "number";
-        }
-        else {
-            document.getElementById("https-label").style.display = "none";
-            document.getElementById("secureServerPort").type = "hidden";
-        }
-    }
-</script>
-<script>
-
-    // With JQuery
-    $("#cores").slider();
-    $("#cores").on("slide", function (slideEvt) {
-        $("#coresSliderVal").text(slideEvt.value);
-    });
-</script>
+    <!-- Page Javascript -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#setupWizardModal').modal('show');
+            $('#setupWizardModal').modal({
+                backdrop: 'static',
+                keyboard: false
+            })
+        });</script>
 </body>
 </html>
