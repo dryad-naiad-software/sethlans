@@ -166,5 +166,13 @@
             keyboard: false
         })
     });</script>
+<script>
+
+    // With JQuery
+    $("#cores").slider();
+    $("#cores").on("slide", function (slideEvt) {
+        $("#coresSliderVal").text(slideEvt.value);
+    });
+</script>
 </body>
 </html>

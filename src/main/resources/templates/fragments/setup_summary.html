@@ -17,8 +17,6 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
-
-<!-- Namespaces -->
 <html xmlns:th="http://www.thymeleaf.org" lang="en" class="layout-pf layout-pf-fixed"
       xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -37,17 +35,20 @@
           th:href="@{/lib/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css}"
           rel="stylesheet" media="screen, print">
     <!-- Local CSS -->
-    <link href="../../css/sticky-footer.css"
+    <link href="../css/sticky-footer.css"
           th:href="@{/css/sticky-footer.css}"
           rel="stylesheet" media="screen, print">
-    <link href="../../css/center_modal.css"
+    <link href="../css/center_modal.css"
           th:href="@{/css/center_modal.css}"
           rel="stylesheet" media="screen, print">
+
+    <!--Favicon -->
+    <link rel="shortcut icon" href="../images/favicon.png" th:href="@{/images/favicon.png}">
 
     <title>Setup</title>
 </head>
 <body>
-
+<!-- Setup Header -->
 <nav class="navbar navbar-pf-vertical">
     <div class="navbar-header"></div>
     <nav class="collapse navbar-collapse">
@@ -55,22 +56,28 @@
         </ul>
     </nav>
 </nav>
-<div class="container">
-    <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-         data-backdrop="static" data-keyboard="false" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 id="myModalLabel">Wizard Steps</h3>
-                </div>
-                <div class="modal-body" id="myWizard">
-                    <div class="tab-content">
-                        <div class="tab-pane fade in active" id="step1">
+<!--/.navbar-->
 
+<!-- Setup Wizard -->
+
+<div class="container">
+
+    <!-- Modal -->
+    <div id="setupWizardModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="setupWizardLabel"
+         data-backdrop="static" data-keyboard="false" aria-hidden="true">
+        <div class="vertical-alignment-helper">
+            <div class="modal-dialog vertical-align-center">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="setupWizardLabel">Wizard Steps</h3>
+                        <!-- Dynamic Content for Thymeleaf -->
+                    </div>
+                    <div class="modal-body" id="setupForm">
 
                             <!-- ************** Fragment Start ***************** -->
                             <div class="well" th:fragment="setup_summary">
                                 <h2 style="margin-top: auto"><strong>Setup Summary</strong></h2>
+                                <!--/*@thymesVar id="setupForm" type=""*/-->
                                 <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
                                       method="POST">
                                     <div class="table-responsive">
@@ -87,7 +94,8 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div>
+                                    <div class="form-group">
+                                        <input type="hidden" id="progress" name="progress" value="">
                                         <button type="button" class="btn btn-default pull-left"
                                                 onclick="previousClicked()">Previous
                                         </button>
@@ -100,9 +108,11 @@
                                 <script>
                                     function nextClicked() {
                                         document.getElementById("progress").value = "FINISHED";
+                                        document.getElementById("setupWizard").submit();
                                     }
                                     function previousClicked() {
                                         document.getElementById("progress").value = "SETTINGS";
+                                        document.getElementById("setupWizard").submit();
                                     }
                                 </script>
                             </div>
@@ -116,6 +126,7 @@
         </div>
     </div>
 </div>
+
 <!-- Javascript Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"
         th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
@@ -147,5 +158,13 @@
             keyboard: false
         })
     });</script>
+<script>
+
+    // With JQuery
+    $("#cores").slider();
+    $("#cores").on("slide", function (slideEvt) {
+        $("#coresSliderVal").text(slideEvt.value);
+    });
+</script>
 </body>
 </html>
