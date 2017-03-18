@@ -87,7 +87,8 @@
                                                th:field="*{configDirectory}"
                                                data-toggle="tooltip"
                                                data-trigger="hover"
-                                               title="Sethlans user settings are stored here.">
+                                               th:title="#{setup.tooltip.configDirectory}"
+                                               title="Config Directory">
                                     </div>
                                     <div class="form-group">
                                         <label for="configDir">Data Directory</label>
@@ -95,7 +96,8 @@
                                                th:field="*{dataDirectory}"
                                                data-toggle="tooltip"
                                                data-trigger="hover"
-                                               title="Sethlans keeps project history and other data here.">
+                                               th:title="#{setup.tooltip.dataDirectory}"
+                                               title="Data Directory.">
                                     </div>
                                     <div class="form-group">
                                         <label for="projectDir">Project Directory</label>
@@ -103,7 +105,8 @@
                                                th:field="*{projectDirectory}"
                                                data-toggle="tooltip"
                                                data-trigger="hover"
-                                               title="Project .blend files and completed render zip files will be stored here in a subfolder with the Project Name.">
+                                               th:title="#{setup.tooltip.projectDirectory}"
+                                               title="Project Directory">
                                     </div>
                                     <div class="form-group">
                                         <label for="blenderDir">Blender Directory</label>
@@ -111,7 +114,8 @@
                                                th:field="*{blenderDirectory}"
                                                data-toggle="tooltip"
                                                data-trigger="hover"
-                                               title="Blender executables will be stored here.">
+                                               th:title="#{setup.tooltip.blenderDirectory}"
+                                               title="Blender Directory.">
                                     </div>
                                     <div class="form-group">
                                         <label for="cacheDir">Temp Directory</label>
@@ -119,7 +123,8 @@
                                                th:field="*{tempDirectory}"
                                                data-toggle="tooltip"
                                                data-trigger="hover"
-                                               title="Temporary storage for rendered tiles received from nodes by project id.  Moved into the appropriate project folder once all rendering is complete.">
+                                               th:title="#{setup.tooltip.tempDirectory}"
+                                               title="Temp Directory.">
                                     </div>
                                     <div class="form-group">
                                         <input type="hidden" id="progress" name="progress" value="">
@@ -135,6 +140,7 @@
                                 <script>
                                     function nextClicked() {
                                         document.getElementById("progress").value = "BLENDER";
+                                        document.getElementById("previous").value = "MODE";
                                         document.getElementById("setupWizard").submit();
                                     }
                                     function previousClicked() {

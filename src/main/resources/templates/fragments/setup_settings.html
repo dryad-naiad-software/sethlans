@@ -92,6 +92,7 @@
                                            th:errorclass="has-error"
                                            data-toggle="tooltip"
                                            data-trigger="hover"
+                                           th:title="#{setup.tooltip.userName}"
                                            title="user name for sethlans">
                                     <span class="help-block">
                                         <ul>
@@ -108,6 +109,7 @@
                                            th:errorclass="has-error"
                                            data-toggle="tooltip"
                                            data-trigger="hover"
+                                           th:title="#{setup.tooltip.passWord}"
                                            title="password">
                                     <span class="help-block">
                                         <ul>
@@ -125,6 +127,7 @@
                                            th:errorclass="has-error"
                                            data-toggle="tooltip"
                                            data-trigger="hover"
+                                           th:title="#{setup.tooltip.passWordConf}"
                                            title="password confirmation">
                                     <span class="help-block">
                                         <ul>
@@ -144,7 +147,8 @@
                                            th:errorclass="has-error"
                                            data-toggle="tooltip"
                                            data-trigger="hover"
-                                           title="Default HTTP Port is 7007.  Sethlans will communicate on this port if HTTPS isn't enabled.">
+                                           th:title="#{setup.tooltip.httpPort}"
+                                           title="HTTP Port">
                                     <span class="help-block">
                                         <ul>
                                         <li th:each="err : ${#fields.errors('httpPort')}"
@@ -172,7 +176,8 @@
                                            th:errorclass="has-error"
                                            data-toggle="tooltip"
                                            data-trigger="hover"
-                                           title="Default HTTPS port is 7443. Sethlans will communicate on this port.">
+                                           th:title="#{setup.tooltip.httpsPort}"
+                                           title="HTTPS Port.">
                                     <span class="help-block">
                                         <ul>
                                         <li th:each="err : ${#fields.errors('httpsPort')}"
