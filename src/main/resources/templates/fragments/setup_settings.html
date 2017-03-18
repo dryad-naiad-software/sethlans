@@ -79,6 +79,28 @@
                                 <!--/*@thymesVar id="setupForm" type="com.dryadandnaiad.sethlans.commands.SetupForm"*/-->
                                 <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
                                       method="POST">
+
+                                    <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+                                        <p>Error Message</p>
+                                    </div>
+
+                                    <h3 style="margin-top: auto"><strong><u>Authentication</u></strong></h3>
+                                    <div class="form-group">
+                                        <label for="userName">User Name</label>
+                                        <input type="text" class="form-control" id="userName"
+                                               th:field="*{userName}"
+                                               data-toggle="tooltip"
+                                               data-trigger="hover"
+                                               title="user name for sethlans">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">Password</label>
+                                        <input type="password" class="form-control" id="password"
+                                               th:field="*{passWord}"
+                                               data-toggle="tooltip"
+                                               data-trigger="hover"
+                                               title="password">
+                                    </div>
                                     <h3 style="margin-top: auto"><strong><u>Ports</u></strong></h3>
                                     <div class="form-group">
                                         <label for="httpPort">Sethlans HTTP Port</label>
@@ -110,22 +132,9 @@
                                                data-trigger="hover"
                                                title="Default HTTPS port is 7443. Sethlans will communicate on this port.">
                                     </div>
-                                    <h3 style="margin-top: auto"><strong><u>Options</u></strong></h3>
-                                    <div class="checkbox">
-                                        <label data-toggle="tooltip"
-                                               data-trigger="hover"
-                                               data-placement="right"
-                                               title="When application is started, launch brower/open tab and navigate to Sethlans main page.">
-                                            <input type="checkbox"
-                                                   id="launchBrowser"
-                                                   class="form-check-input"
-                                                   name="launchBrowser"
-                                                   value="true"
-                                                   th:field="*{launchBrowser}">
-                                            Launch Browser on Startup </label>
-                                    </div>
                                     <div class="form-group">
                                         <input type="hidden" id="progress" name="progress" value="">
+                                        <input type="hidden" id="previous" name="previous" value="">
                                         <button type="button" class="btn btn-default pull-left" disabled>Previous
                                         </button>
                                         <button type="button" class="btn btn-primary pull-right"
@@ -149,6 +158,7 @@
                                 <script>
                                     function nextClicked() {
                                         document.getElementById("progress").value = "MODE";
+                                        document.getElementById("previous").value = "SETTINGS";
                                         document.getElementById("setupWizard").submit();
                                     }
                                 </script>

@@ -113,7 +113,7 @@
                                     <div class="form-group">
                                         <label for="workDir">Working Directory</label>
                                         <input type="text" class="form-control slider" id="workDir"
-                                               value="~/.sethlans/cache/"
+                                               th:field="*{workingDirectory}"
                                                data-toggle="tooltip"
                                                data-trigger="hover"
                                                title="Sethlans will store blender, project and temporary tiles here.">

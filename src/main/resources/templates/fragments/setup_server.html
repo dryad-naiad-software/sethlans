@@ -79,24 +79,6 @@
                                 <!--/*@thymesVar id="setupForm" type="com.dryadandnaiad.sethlans.commands.SetupForm"*/-->
                                 <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
                                       method="POST">
-                                    <h3 style="margin-top: auto"><strong><u>Authentication</u></strong></h3>
-                                    <div class="form-group">
-                                        <label for="userName">User Name</label>
-                                        <input type="text" class="form-control" id="userName"
-                                               th:field="*{userName}"
-                                               data-toggle="tooltip"
-                                               data-trigger="hover"
-                                               title="user name for sethlans">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password">Password</label>
-                                        <input type="password" class="form-control" id="password"
-                                               th:field="*{passWord}"
-                                               data-toggle="tooltip"
-                                               data-trigger="hover"
-                                               title="password">
-                                    </div>
-
 
                                     <h3 style="margin-top: auto"><strong><u>Server Directories</u></strong></h3>
                                     <div class="form-group">

@@ -24,12 +24,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 /**
  * Created Mario Estrella on 3/17/17.
@@ -50,9 +52,13 @@ public class SetupController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String processPage(final @ModelAttribute("setupForm") SetupForm setupForm,
+    public String processPage(final @Valid @ModelAttribute("setupForm") SetupForm setupForm, BindingResult bindingResult,
                               final HttpServletResponse response) {
         LOG.debug(setupForm.toString());
+        if (bindingResult.hasErrors()) {
+            setupForm.setProgress(setupForm.getPrevious());
+            LOG.debug("Errors in form");
+        }
         return "setup";
     }
 }

@@ -22,6 +22,12 @@ package com.dryadandnaiad.sethlans.commands;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.enums.SetupProgress;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Created Mario Estrella on 3/12/17.
@@ -32,8 +38,20 @@ import com.dryadandnaiad.sethlans.enums.SetupProgress;
 public class SetupForm {
 
     private SethlansMode mode;
+
+    @NotEmpty
+    @Size(min = 4, max = 75)
     private String userName;
+
+
+    @NotEmpty
+    @Size(min = 8, max = 50)
     private String passWord;
+
+    @NotEmpty
+    @Size(min = 8, max = 50)
+    private String passWordConf;
+
     private String configDirectory;
     private String dataDirectory;
     private String projectDirectory;
@@ -42,11 +60,19 @@ public class SetupForm {
     private ComputeType devices;
     private String workingDirectory;
     private String blenderVersion;
+
+    @NotNull
+    @Min(1)
+    @Max(65535)
     private String httpPort;
+
+    @NotNull
+    @Min(1)
+    @Max(65535)
     private String httpsPort;
     private boolean useHttps;
-    private boolean launchBrowser;
     private SetupProgress progress;
+    private SetupProgress previous;
 
     public SethlansMode getMode() {
         if (mode == null) {
@@ -187,13 +213,6 @@ public class SetupForm {
         this.useHttps = useHttps;
     }
 
-    public boolean isLaunchBrowser() {
-        return launchBrowser;
-    }
-
-    public void setLaunchBrowser(boolean launchBrowser) {
-        this.launchBrowser = launchBrowser;
-    }
 
     public SetupProgress getProgress() {
         return progress;
@@ -203,12 +222,29 @@ public class SetupForm {
         this.progress = progress;
     }
 
+    public String getPassWordConf() {
+        return passWordConf;
+    }
+
+    public void setPassWordConf(String passWordConf) {
+        this.passWordConf = passWordConf;
+    }
+
+    public SetupProgress getPrevious() {
+        return previous;
+    }
+
+    public void setPrevious(SetupProgress previous) {
+        this.previous = previous;
+    }
+
     @Override
     public String toString() {
         return "SetupForm{" +
                 "mode=" + mode +
                 ", userName='" + userName + '\'' +
                 ", passWord='" + passWord + '\'' +
+                ", passWordConf='" + passWordConf + '\'' +
                 ", configDirectory='" + configDirectory + '\'' +
                 ", dataDirectory='" + dataDirectory + '\'' +
                 ", projectDirectory='" + projectDirectory + '\'' +
@@ -220,8 +256,8 @@ public class SetupForm {
                 ", httpPort='" + httpPort + '\'' +
                 ", httpsPort='" + httpsPort + '\'' +
                 ", useHttps=" + useHttps +
-                ", launchBrowser=" + launchBrowser +
                 ", progress=" + progress +
+                ", previous=" + previous +
                 '}';
     }
 }
