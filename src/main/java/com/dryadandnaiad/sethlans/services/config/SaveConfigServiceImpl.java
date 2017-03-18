@@ -17,32 +17,15 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.utils;
+package com.dryadandnaiad.sethlans.services.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.net.MalformedURLException;
-import java.net.URL;
+import com.dryadandnaiad.sethlans.services.SaveConfigService;
 
 /**
- * Created Mario Estrella on 3/10/17.
+ * Created Mario Estrella on 3/18/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-
-public class OpenBrowser {
-    private static final Logger LOG = LoggerFactory.getLogger(OpenBrowser.class);
-
-    public static void start() throws MalformedURLException {
-        LOG.debug("Opening Browser");
-        URL url = new URL("http://localhost:7007" + "/");
-        SethlansUtils.openWebpage(url);
-
-    }
-
-    public static void about() throws MalformedURLException {
-        LOG.debug("Showing About Page");
-    }
+public class SaveConfigServiceImpl implements SaveConfigService {
 }

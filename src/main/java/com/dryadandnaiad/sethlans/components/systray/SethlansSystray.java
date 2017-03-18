@@ -59,14 +59,15 @@ public class SethlansSystray extends TrayIcon {
     }
 
     private void menuItems() {
-        MenuItem openBrowser = new MenuItem("Show");
+        MenuItem openBrowser = new MenuItem("Launch Sethlans in Browser");
         MenuItem exitItem = new MenuItem("Exit");
-        MenuItem aboutItem = new MenuItem("About Sethlans");
+        MenuItem aboutItem = new MenuItem("About");
         openBrowser.addActionListener(e -> {
             LOG.debug("Displaying Homepage");
             try {
                 OpenBrowser.start();
             } catch (MalformedURLException e1) {
+                LOG.error("Error with URL" + e1.getMessage());
                 e1.printStackTrace();
             }
         });
@@ -74,6 +75,15 @@ public class SethlansSystray extends TrayIcon {
         exitItem.addActionListener(e -> {
             LOG.debug("Shutdown Initiated from System Tray");
             System.exit(0);
+        });
+
+        aboutItem.addActionListener(e -> {
+            LOG.debug("About Sethlans Clicked");
+            try {
+                OpenBrowser.about();
+            } catch (MalformedURLException e1) {
+                LOG.error("Error with URL" + e1.getMessage());
+            }
         });
 
         popup.add(openBrowser);

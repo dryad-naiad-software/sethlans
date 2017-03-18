@@ -95,6 +95,34 @@
                                             <td>User Name</td>
                                             <td th:text="${setupForm.userName}">User Name</td>
                                         </tr>
+                                        <tr>
+                                            <td>HTTP Port</td>
+                                            <td th:text="${setupForm.httpPort}">7007</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Use HTTPS</td>
+                                            <td th:text="${setupForm.useHttps}">true</td>
+                                        </tr>
+                                        <tr th:if="${setupForm.useHttps}">
+                                            <td>HTTPS Port</td>
+                                            <td th:text="${setupForm.httpsPort}">7443</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Config Directory</td>
+                                            <td th:text="${setupForm.configDirectory}">Config Dir</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Data Directory</td>
+                                            <td th:text="${setupForm.dataDirectory}">Data Dir</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Project Directory</td>
+                                            <td th:text="${setupForm.projectDirectory}">Project Dir</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Blender Directory</td>
+                                            <td th:text="${setupForm.blenderDirectory}">Blender Dir</td>
+                                        </tr>
 
                                         </tbody>
                                         <tbody th:case="${T(com.dryadandnaiad.sethlans.enums.SethlansMode).NODE}">
@@ -109,6 +137,18 @@
                                         <tr>
                                             <td>User Name</td>
                                             <td th:text="${setupForm.userName}">User Name</td>
+                                        </tr>
+                                        <tr>
+                                            <td>HTTP Port</td>
+                                            <td th:text="${setupForm.httpPort}">7007</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Use HTTPS</td>
+                                            <td th:text="${setupForm.useHttps}">true</td>
+                                        </tr>
+                                        <tr th:if="${setupForm.useHttps}">
+                                            <td>HTTPS Port</td>
+                                            <td th:text="${setupForm.httpsPort}">7443</td>
                                         </tr>
 
                                         </tbody>
@@ -125,6 +165,34 @@
                                         <tr>
                                             <td>User Name</td>
                                             <td th:text="${setupForm.userName}">User Name</td>
+                                        </tr>
+                                        <tr>
+                                            <td>HTTP Port</td>
+                                            <td th:text="${setupForm.httpPort}">7007</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Use HTTPS</td>
+                                            <td th:text="${setupForm.useHttps}">true</td>
+                                        </tr>
+                                        <tr th:if="${setupForm.useHttps}">
+                                            <td>HTTPS Port</td>
+                                            <td th:text="${setupForm.httpsPort}">7443</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Config Directory</td>
+                                            <td th:text="${setupForm.configDirectory}">Config Dir</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Data Directory</td>
+                                            <td th:text="${setupForm.dataDirectory}">Data Dir</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Project Directory</td>
+                                            <td th:text="${setupForm.projectDirectory}">Project Dir</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Blender Directory</td>
+                                            <td th:text="${setupForm.blenderDirectory}">Blender Dir</td>
                                         </tr>
 
                                         </tbody>

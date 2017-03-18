@@ -7,7 +7,12 @@ logging:
   level:
     com.dryadandnaiad: DEBUG #TODO set this to INFO during releases. False during development.
 server:
-  port: 7007
+  port: 7443
+  ssl:
+    key-store: classpath:keystore/sethlans.p12
+    key-store-password: NbsLQxDLMypFq5BfLJ
+    key-store-type: PKCS12
+    key-alias: sethlans
 sethlans:
   firsttime: true
   computeMethod: cpu

@@ -79,7 +79,7 @@ public class SetupForm {
     @Min(1)
     @Max(65535)
     private String httpsPort = "7443";
-    private boolean useHttps;
+    private boolean useHttps = true;
     private SetupProgress progress;
     private SetupProgress previous;
 
