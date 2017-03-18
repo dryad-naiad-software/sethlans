@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.components;
 import com.dryadandnaiad.sethlans.components.systray.SethlansSystray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.awt.*;
@@ -32,9 +33,10 @@ import java.awt.*;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@org.springframework.stereotype.Component
+@Component
 public class SethlansSystrayComponent {
     private static final Logger LOG = LoggerFactory.getLogger(SethlansSystrayComponent.class);
+
 
     @PostConstruct
     public void startSystray() {

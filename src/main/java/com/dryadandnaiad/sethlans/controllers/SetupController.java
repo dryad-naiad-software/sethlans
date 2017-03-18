@@ -22,15 +22,17 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.commands.SetupForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 /**
@@ -44,6 +46,13 @@ import javax.validation.Valid;
 @SessionAttributes("setupForm")
 public class SetupController {
     private static final Logger LOG = LoggerFactory.getLogger(SetupController.class);
+    private Validator setupFormValidator;
+
+    @Autowired
+    @Qualifier("setupFormValidator")
+    public void setSetupFormValidator(Validator setupFormValidator) {
+        this.setupFormValidator = setupFormValidator;
+    }
 
     @RequestMapping
     public String getStartPage(final ModelMap modelMap) {
@@ -52,12 +61,13 @@ public class SetupController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String processPage(final @Valid @ModelAttribute("setupForm") SetupForm setupForm, BindingResult bindingResult,
-                              final HttpServletResponse response) {
-        LOG.debug(setupForm.toString());
+    public String processPage(final @Valid @ModelAttribute("setupForm") SetupForm setupForm, BindingResult bindingResult) {
+        LOG.debug("Current progress \n" + setupForm.toString());
+        setupFormValidator.validate(setupForm, bindingResult);
+
         if (bindingResult.hasErrors()) {
+            LOG.debug(bindingResult.toString());
             setupForm.setProgress(setupForm.getPrevious());
-            LOG.debug("Errors in form");
         }
         return "setup";
     }

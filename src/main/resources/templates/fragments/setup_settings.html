@@ -74,109 +74,157 @@
                     </div>
                     <div class="modal-body" id="setupForm">
 
-                            <!-- ************** Fragment Start ***************** -->
-                            <div class="well" th:fragment="setup_settings">
-                                <!--/*@thymesVar id="setupForm" type="com.dryadandnaiad.sethlans.commands.SetupForm"*/-->
-                                <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
-                                      method="POST">
+                        <!-- ************** Fragment Start ***************** -->
+                        <div class="well" th:fragment="setup_settings">
+                            <!--/*@thymesVar id="setupForm" type="com.dryadandnaiad.sethlans.commands.SetupForm"*/-->
+                            <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
+                                  method="POST">
+                                <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+                                    <div align="center" th:text="#{form.hasErrors}">Error Message</div>
+                                </div>
 
-                                    <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
-                                        <p>Error Message</p>
-                                    </div>
+                                <h3 style="margin-top: auto"><strong><u>Authentication</u></strong></h3>
+                                <div class="form-group"
+                                     th:class="${#fields.hasErrors('userName')} ? 'form-group has-error' : 'form-group'">
+                                    <label for="userName">User Name</label>
+                                    <input type="text" class="form-control" id="userName"
+                                           th:field="*{userName}"
+                                           th:errorclass="has-error"
+                                           data-toggle="tooltip"
+                                           data-trigger="hover"
+                                           title="user name for sethlans">
+                                    <span class="help-block">
+                                        <ul>
+                                        <li th:each="err : ${#fields.errors('userName')}"
+                                            th:text="${err}"/>
+                                        </ul>
+                                    </span>
+                                </div>
+                                <div class="form-group"
+                                     th:class="${#fields.hasErrors('passWord')} ? 'form-group has-error' : 'form-group'">
+                                    <label for="password">Password</label>
+                                    <input type="password" class="form-control" id="password"
+                                           th:field="*{passWord}"
+                                           th:errorclass="has-error"
+                                           data-toggle="tooltip"
+                                           data-trigger="hover"
+                                           title="password">
+                                    <span class="help-block">
+                                        <ul>
+                                        <li th:each="err : ${#fields.errors('passWord')}"
+                                            th:text="${err}"/>
+                                        </ul>
+                                    </span>
+                                </div>
 
-                                    <h3 style="margin-top: auto"><strong><u>Authentication</u></strong></h3>
-                                    <div class="form-group">
-                                        <label for="userName">User Name</label>
-                                        <input type="text" class="form-control" id="userName"
-                                               th:field="*{userName}"
-                                               data-toggle="tooltip"
-                                               data-trigger="hover"
-                                               title="user name for sethlans">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password">Password</label>
-                                        <input type="password" class="form-control" id="password"
-                                               th:field="*{passWord}"
-                                               data-toggle="tooltip"
-                                               data-trigger="hover"
-                                               title="password">
-                                    </div>
-                                    <h3 style="margin-top: auto"><strong><u>Ports</u></strong></h3>
-                                    <div class="form-group">
-                                        <label for="httpPort">Sethlans HTTP Port</label>
-                                        <input type="number" class="form-control"
-                                               id="httpPort"
-                                               name="httpPort"
-                                               th:value="*{httpPort}"
-                                               data-toggle="tooltip"
-                                               data-trigger="hover"
-                                               title="Default HTTP Port is 7007.  Sethlans will communicate on this port if HTTPS isn't enabled.">
-                                    </div>
-                                    <div class="checkbox">
-                                        <label data-toggle="tooltip" data-trigger="hover" data-placement="right"
-                                               title="Turns on HTTPS">
-                                            <input type="checkbox" id="useHTTPS" class="form-check-input"
-                                                   value="true"
-                                                   th:field="*{useHttps}"
-                                                   onClick="toggleHTTPS()">
-                                            Enable HTTPS </label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label id="https-label" for="httpsPort" hidden> Sethlans HTTPS
-                                            Port </label>
-                                        <input type="hidden" class="form-control "
-                                               id="httpsPort"
-                                               name="httpsPort"
-                                               th:value="*{httpsPort}"
-                                               data-toggle="tooltip"
-                                               data-trigger="hover"
-                                               title="Default HTTPS port is 7443. Sethlans will communicate on this port.">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="hidden" id="progress" name="progress" value="">
-                                        <input type="hidden" id="previous" name="previous" value="">
-                                        <button type="button" class="btn btn-default pull-left" disabled>Previous
-                                        </button>
-                                        <button type="button" class="btn btn-primary pull-right"
-                                                onclick="nextClicked()">Next
-                                        </button>
-                                        <br/>
-                                    </div>
-                                </form>
-                                <script>
-                                    function toggleHTTPS() {
-                                        if ($("#useHTTPS").is(":checked")) {
-                                            document.getElementById("https-label").style.display = "block";
-                                            document.getElementById("httpsPort").type = "number";
-                                        }
-                                        else {
-                                            document.getElementById("https-label").style.display = "none";
-                                            document.getElementById("httpsPort").type = "hidden";
-                                        }
+                                <div class="form-group"
+                                     th:class="${#fields.hasErrors('passWord')} ? 'form-group has-error' : 'form-group'">
+                                    <label for="passwordConf">Confirm Password</label>
+                                    <input type="password" class="form-control" id="passwordConf"
+                                           th:field="*{passWordConf}"
+                                           th:errorclass="has-error"
+                                           data-toggle="tooltip"
+                                           data-trigger="hover"
+                                           title="password confirmation">
+                                    <span class="help-block">
+                                        <ul>
+                                        <li th:each="err : ${#fields.errors('passWord')}"
+                                            th:text="${err}"/>
+                                        </ul>
+                                    </span>
+                                </div>
+                                <h3 style="margin-top: auto"><strong><u>Ports</u></strong></h3>
+                                <div class="form-group"
+                                     th:class="${#fields.hasErrors('httpPort')} ? 'form-group has-error' : 'form-group'">
+                                    <label for="httpPort">Sethlans HTTP Port</label>
+                                    <input type="number" class="form-control"
+                                           id="httpPort"
+                                           name="httpPort"
+                                           th:value="*{httpPort}"
+                                           th:errorclass="has-error"
+                                           data-toggle="tooltip"
+                                           data-trigger="hover"
+                                           title="Default HTTP Port is 7007.  Sethlans will communicate on this port if HTTPS isn't enabled.">
+                                    <span class="help-block">
+                                        <ul>
+                                        <li th:each="err : ${#fields.errors('httpPort')}"
+                                            th:text="${err}"/>
+                                        </ul>
+                                    </span>
+                                </div>
+                                <div class="checkbox">
+                                    <label data-toggle="tooltip" data-trigger="hover" data-placement="right"
+                                           title="Turns on HTTPS">
+                                        <input type="checkbox" id="useHTTPS" class="form-check-input"
+                                               value="true"
+                                               th:field="*{useHttps}"
+                                               onClick="toggleHTTPS()">
+                                        Enable HTTPS </label>
+                                </div>
+                                <div class="form-group"
+                                     th:class="${#fields.hasErrors('httpsPort')} ? 'form-group has-error' : 'form-group'">
+                                    <label id="https-label" for="httpsPort" hidden> Sethlans HTTPS
+                                        Port </label>
+                                    <input type="hidden" class="form-control "
+                                           id="httpsPort"
+                                           name="httpsPort"
+                                           th:value="*{httpsPort}"
+                                           th:errorclass="has-error"
+                                           data-toggle="tooltip"
+                                           data-trigger="hover"
+                                           title="Default HTTPS port is 7443. Sethlans will communicate on this port.">
+                                    <span class="help-block">
+                                        <ul>
+                                        <li th:each="err : ${#fields.errors('httpsPort')}"
+                                            th:text="${err}"/>
+                                        </ul>
+                                    </span>
+                                </div>
+                                <div class="form-group">
+                                    <input type="hidden" id="progress" name="progress" value="">
+                                    <input type="hidden" id="previous" name="previous" value="">
+                                    <button type="button" class="btn btn-default pull-left" disabled>Previous
+                                    </button>
+                                    <button type="button" class="btn btn-primary pull-right"
+                                            onclick="nextClicked()">Next
+                                    </button>
+                                    <br/>
+                                </div>
+                            </form>
+                            <script>
+                                function toggleHTTPS() {
+                                    if ($("#useHTTPS").is(":checked")) {
+                                        document.getElementById("https-label").style.display = "block";
+                                        document.getElementById("httpsPort").type = "number";
                                     }
-                                </script>
-                                <script>
-                                    function nextClicked() {
-                                        document.getElementById("progress").value = "MODE";
-                                        document.getElementById("previous").value = "SETTINGS";
-                                        document.getElementById("setupWizard").submit();
+                                    else {
+                                        document.getElementById("https-label").style.display = "none";
+                                        document.getElementById("httpsPort").type = "hidden";
                                     }
-                                </script>
-                                <script>
-                                    window.onload = function () {
-                                        toggleHTTPS()
-                                    };
-                                </script>
-                            </div>
-                            <!-- ************** Fragment End ***************** -->
-
-
+                                }
+                            </script>
+                            <script>
+                                function nextClicked() {
+                                    document.getElementById("progress").value = "MODE";
+                                    document.getElementById("previous").value = "SETTINGS";
+                                    document.getElementById("setupWizard").submit();
+                                }
+                            </script>
+                            <script>
+                                window.onload = function () {
+                                    toggleHTTPS()
+                                };
+                            </script>
                         </div>
+                        <!-- ************** Fragment End ***************** -->
+
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <!-- Javascript Libraries -->

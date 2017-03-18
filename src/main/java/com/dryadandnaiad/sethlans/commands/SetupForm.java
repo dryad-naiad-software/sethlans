@@ -37,7 +37,8 @@ import javax.validation.constraints.Size;
  */
 public class SetupForm {
 
-    private SethlansMode mode;
+    private SethlansMode mode = SethlansMode.BOTH;
+    ;
 
     @NotEmpty
     @Size(min = 4, max = 75)
@@ -52,32 +53,37 @@ public class SetupForm {
     @Size(min = 8, max = 50)
     private String passWordConf;
 
-    private String configDirectory;
-    private String dataDirectory;
-    private String projectDirectory;
-    private String blenderDirectory;
-    private String tempDirectory;
+    @NotEmpty
+    private String configDirectory = System.getProperty("user.home") + "/.sethlans/config/";
+    @NotEmpty
+    private String dataDirectory = System.getProperty("user.home") + "/.sethlans/data/";
+    @NotEmpty
+    private String projectDirectory = System.getProperty("user.home") + "/.sethlans/projects/";
+    @NotEmpty
+    private String blenderDirectory = System.getProperty("user.home") + "/.sethlans/blenderZips/";
+    @NotEmpty
+    private String tempDirectory = System.getProperty("user.home") + "/.sethlans/temp/";
+    @NotEmpty
+    private String workingDirectory = System.getProperty("user.home") + "/.sethlans/cache/";
+
     private ComputeType devices;
-    private String workingDirectory;
+
     private String blenderVersion;
 
-    @NotNull
+    @NotEmpty
     @Min(1)
     @Max(65535)
-    private String httpPort;
+    private String httpPort = "7007";
 
     @NotNull
     @Min(1)
     @Max(65535)
-    private String httpsPort;
+    private String httpsPort = "7443";
     private boolean useHttps;
     private SetupProgress progress;
     private SetupProgress previous;
 
     public SethlansMode getMode() {
-        if (mode == null) {
-            return SethlansMode.BOTH;
-        }
         return mode;
     }
 
@@ -102,9 +108,6 @@ public class SetupForm {
     }
 
     public String getConfigDirectory() {
-        if (configDirectory == null) {
-            return System.getProperty("user.home") + "/.sethlans/config/";
-        }
         return configDirectory;
     }
 
@@ -113,9 +116,6 @@ public class SetupForm {
     }
 
     public String getDataDirectory() {
-        if (dataDirectory == null) {
-            return System.getProperty("user.home") + "/.sethlans/data/";
-        }
         return dataDirectory;
     }
 
@@ -124,9 +124,6 @@ public class SetupForm {
     }
 
     public String getProjectDirectory() {
-        if (projectDirectory == null) {
-            return System.getProperty("user.home") + "/.sethlans/projects/";
-        }
         return projectDirectory;
     }
 
@@ -135,9 +132,6 @@ public class SetupForm {
     }
 
     public String getBlenderDirectory() {
-        if (blenderDirectory == null) {
-            return System.getProperty("user.home") + "/.sethlans/blenderZips/";
-        }
         return blenderDirectory;
     }
 
@@ -146,9 +140,6 @@ public class SetupForm {
     }
 
     public String getTempDirectory() {
-        if (tempDirectory == null) {
-            return System.getProperty("user.home") + "/.sethlans/temp/";
-        }
         return tempDirectory;
     }
 
@@ -165,9 +156,6 @@ public class SetupForm {
     }
 
     public String getWorkingDirectory() {
-        if (workingDirectory == null) {
-            return System.getProperty("user.home") + "/.sethlans/cache/";
-        }
         return workingDirectory;
     }
 
@@ -184,9 +172,6 @@ public class SetupForm {
     }
 
     public String getHttpPort() {
-        if (httpPort == null) {
-            return "7007";
-        }
         return httpPort;
     }
 
@@ -195,9 +180,6 @@ public class SetupForm {
     }
 
     public String getHttpsPort() {
-        if (httpsPort == null) {
-            return "7443";
-        }
         return httpsPort;
     }
 
