@@ -88,12 +88,12 @@
                                             <th class="col-md-6">Value</th>
                                         </tr>
                                         <tr>
+                                            <td>Mode</td>
                                             <td>Server</td>
-                                            <td>&nbsp;</td>
                                         </tr>
                                         <tr>
-                                            <td>Whatever</td>
-                                            <td>&nbsp;</td>
+                                            <td>User Name</td>
+                                            <td th:text="${setupForm.userName}">User Name</td>
                                         </tr>
 
                                         </tbody>
@@ -103,12 +103,12 @@
                                             <th class="col-md-6">Value</th>
                                         </tr>
                                         <tr>
+                                            <td>Mode</td>
                                             <td>Node</td>
-                                            <td>&nbsp;</td>
                                         </tr>
                                         <tr>
-                                            <td>Whatever</td>
-                                            <td>&nbsp;</td>
+                                            <td>User Name</td>
+                                            <td th:text="${setupForm.userName}">User Name</td>
                                         </tr>
 
                                         </tbody>
@@ -119,12 +119,12 @@
                                             <th class="col-md-6">Value</th>
                                         </tr>
                                         <tr>
-                                            <td>Both</td>
-                                            <td>&nbsp;</td>
+                                            <td>Mode</td>
+                                            <td>Dual</td>
                                         </tr>
                                         <tr>
-                                            <td>Whatever</td>
-                                            <td>&nbsp;</td>
+                                            <td>User Name</td>
+                                            <td th:text="${setupForm.userName}">User Name</td>
                                         </tr>
 
                                         </tbody>
@@ -142,13 +142,13 @@
                                     <br/>
                                 </div>
                             </form>
-                            <script>
+                            <script th:inline="javascript">
                                 function nextClicked() {
                                     document.getElementById("progress").value = "FINISHED";
                                     document.getElementById("setupWizard").submit();
                                 }
                                 function previousClicked() {
-                                    document.getElementById("progress").value = /*[[${setupForm.previous.toString()}]]*/ 'None';
+                                    document.getElementById("progress").value = /*[[${setupForm.previous.toString()}]]*/ 'MODE';
                                     document.getElementById("setupWizard").submit();
                                 }
                             </script>
