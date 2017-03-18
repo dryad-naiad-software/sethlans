@@ -17,9 +17,9 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.config;
+package com.dryadandnaiad.sethlans.domains;
 
-import com.dryadandnaiad.sethlans.services.SaveConfigService;
+import org.springframework.data.annotation.Transient;
 
 /**
  * Created Mario Estrella on 3/18/17.
@@ -27,7 +27,16 @@ import com.dryadandnaiad.sethlans.services.SaveConfigService;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class SaveConfigServiceImpl implements SaveConfigService {
+public class User extends AbstractEntityClass {
+
+    private String userName;
+
+    @Transient
+    private String passWord;
+
+    private String encryptedPassword;
+
+    private boolean enabled = true;
 
 
 }

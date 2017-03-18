@@ -17,9 +17,9 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.config;
+package com.dryadandnaiad.sethlans.domains.security;
 
-import com.dryadandnaiad.sethlans.services.SaveConfigService;
+import com.dryadandnaiad.sethlans.domains.AbstractEntityClass;
 
 /**
  * Created Mario Estrella on 3/18/17.
@@ -27,7 +27,8 @@ import com.dryadandnaiad.sethlans.services.SaveConfigService;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class SaveConfigServiceImpl implements SaveConfigService {
+public class Role extends AbstractEntityClass {
 
+    private String role;
 
 }

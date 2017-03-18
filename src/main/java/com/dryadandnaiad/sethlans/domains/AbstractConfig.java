@@ -27,9 +27,7 @@ package com.dryadandnaiad.sethlans.domains;
  */
 public class AbstractConfig {
 
-    private String userName;
 
-    private String passWord;
 
     private String httpPort;
 
