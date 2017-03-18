@@ -20,6 +20,8 @@
 package com.dryadandnaiad.sethlans.services.config;
 
 import com.dryadandnaiad.sethlans.services.SaveConfigService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created Mario Estrella on 3/18/17.
@@ -28,6 +30,53 @@ import com.dryadandnaiad.sethlans.services.SaveConfigService;
  * Project: sethlans
  */
 public class SaveConfigServiceImpl implements SaveConfigService {
+    private static final Logger LOG = LoggerFactory.getLogger(SaveConfigServiceImpl.class);
 
-
+//    private void setProperty(Enum key, Enum value) {
+//        try {
+//            Properties properties = new Properties();
+//            try (FileInputStream fileIn = new FileInputStream(defaultConfigFile)) {
+//                properties.loadFromXML(fileIn);
+//            }
+//            properties.setProperty(SethlansUtils.enumToString(key), SethlansUtils.enumToString(value));
+//            try (FileOutputStream fileOut = new FileOutputStream(defaultConfigFile)) {
+//                properties.storeToXML(fileOut, SethlansUtils.updaterTimeStamp());
+//            }
+//        } catch (FileNotFoundException e) {
+//            LOG.error(e.getMessage());
+//        } catch (IOException e) {
+//            LOG.error(e.getMessage());
+//        }
+//    }
+//    private void setProperty(Enum key, String value) {
+//        try {
+//            Properties properties = new Properties();
+//            try (FileInputStream fileIn = new FileInputStream(defaultConfigFile)) {
+//                properties.loadFromXML(fileIn);
+//            }
+//            properties.setProperty(SethlansUtils.enumToString(key), value);
+//            try (FileOutputStream fileOut = new FileOutputStream(defaultConfigFile)) {
+//                properties.storeToXML(fileOut, SethlansUtils.updaterTimeStamp());
+//            }
+//        } catch (FileNotFoundException e) {
+//            LOG.error(e.getMessage());
+//        } catch (IOException e) {
+//            LOG.error(e.getMessage());
+//        }
+//    }
+//    private String getProperty(Enum key) {
+//        try {
+//            Properties properties = new Properties();
+//            try (FileInputStream fileIn = new FileInputStream(defaultConfigFile)) {
+//                properties.loadFromXML(fileIn);
+//            }
+//            return properties.getProperty(SethlansUtils.enumToString(key));
+//        } catch (FileNotFoundException e) {
+//            LOG.error(e.getMessage());
+//        } catch (IOException e) {
+//            LOG.error(e.getMessage());
+//            System.exit(1);
+//        }
+//        return null;
+//    }
 }

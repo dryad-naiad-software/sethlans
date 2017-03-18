@@ -1,6 +1,0 @@
-logging:
-  file: ${HOME}/.sethlans/logs/sethlans.log
-  level:
-    com.dryadandnaiad: DEBUG #TODO set this to INFO during releases. False during development.
-server:
-  port: 7007
