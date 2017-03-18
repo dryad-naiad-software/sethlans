@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.enums;
  * @author Mario Estrella <mestrella@dryadandnaiad.com>
  */
 public enum SethlansMode {
+    // SERVER, NODE, BOTH need to match Setup Progress Enums for Setup Wizard to work properly
     SERVER,
     NODE,
     BOTH;
