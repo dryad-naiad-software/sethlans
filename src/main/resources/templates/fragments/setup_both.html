@@ -159,6 +159,7 @@
                                     </div>
                                     <div class="form-group">
                                         <input type="hidden" id="progress" name="progress" value="">
+                                        <input type="hidden" id="previous" name="previous" value="">
                                         <button type="button" class="btn btn-default pull-left"
                                                 onclick="previousClicked()">Previous
                                         </button>
@@ -171,6 +172,7 @@
                                 <script>
                                     function nextClicked() {
                                         document.getElementById("progress").value = "SUMMARY";
+                                        document.getElementById("previous").value = "BOTH";
                                         document.getElementById("setupWizard").submit();
                                     }
                                     function previousClicked() {

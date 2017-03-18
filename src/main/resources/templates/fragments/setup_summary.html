@@ -74,57 +74,94 @@
                     </div>
                     <div class="modal-body" id="setupForm">
 
-                            <!-- ************** Fragment Start ***************** -->
-                            <div class="well" th:fragment="setup_summary">
-                                <h2 style="margin-top: auto"><strong>Setup Summary</strong></h2>
-                                <!--/*@thymesVar id="setupForm" type="com.dryadandnaiad.sethlans.commands.SetupForm"*/-->
-                                <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
-                                      method="POST">
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                            <tbody>
-                                            <tr>
-                                                <td class="col-md-6"><h4>Setting</h4></td>
-                                                <td class="col-md-6"><h4>Value</h4></td>
-                                            </tr>
-                                            <tr><!-- Thymeleaf Iterator here -->
-                                                <td>&nbsp;</td>
-                                                <td>&nbsp;</td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="hidden" id="progress" name="progress" value="">
-                                        <button type="button" class="btn btn-default pull-left"
-                                                onclick="previousClicked()">Previous
-                                        </button>
-                                        <button type="button" class="btn btn-primary pull-right"
-                                                onclick="nextClicked()">Finish
-                                        </button>
-                                        <br/>
-                                    </div>
-                                </form>
-                                <script>
-                                    function nextClicked() {
-                                        document.getElementById("progress").value = "FINISHED";
-                                        document.getElementById("setupWizard").submit();
-                                    }
-                                    function previousClicked() {
-                                        document.getElementById("progress").value = "SETTINGS";
-                                        document.getElementById("setupWizard").submit();
-                                    }
-                                </script>
-                            </div>
-                            <!-- ************** Fragment End ***************** -->
+                        <!-- ************** Fragment Start ***************** -->
+                        <div class="well" th:fragment="setup_summary">
+                            <h2 style="margin-top: auto"><strong>Setup Summary</strong></h2>
+                            <!--/*@thymesVar id="setupForm" type="com.dryadandnaiad.sethlans.commands.SetupForm"*/-->
+                            <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
+                                  method="POST">
+                                <div class="table-responsive">
+                                    <table class="table" th:switch="${setupForm.mode}">
+                                        <tbody th:case="${T(com.dryadandnaiad.sethlans.enums.SethlansMode).SERVER}">
+                                        <tr>
+                                            <th class="col-md-6">Setting</th>
+                                            <th class="col-md-6">Value</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Server</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Whatever</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
 
+                                        </tbody>
+                                        <tbody th:case="${T(com.dryadandnaiad.sethlans.enums.SethlansMode).NODE}">
+                                        <tr>
+                                            <th class="col-md-6">Setting</th>
+                                            <th class="col-md-6">Value</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Node</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Whatever</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
 
+                                        </tbody>
+
+                                        <tbody th:case="${T(com.dryadandnaiad.sethlans.enums.SethlansMode).BOTH}">
+                                        <tr>
+                                            <th class="col-md-6">Setting</th>
+                                            <th class="col-md-6">Value</th>
+                                        </tr>
+                                        <tr>
+                                            <td>Both</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Whatever</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="form-group">
+                                    <input type="hidden" id="progress" name="progress" value="">
+                                    <input type="hidden" id="previous" name="previous" value="">
+                                    <button type="button" class="btn btn-default pull-left"
+                                            onclick="previousClicked()">Previous
+                                    </button>
+                                    <button type="button" class="btn btn-primary pull-right"
+                                            onclick="nextClicked()">Finish
+                                    </button>
+                                    <br/>
+                                </div>
+                            </form>
+                            <script>
+                                function nextClicked() {
+                                    document.getElementById("progress").value = "FINISHED";
+                                    document.getElementById("setupWizard").submit();
+                                }
+                                function previousClicked() {
+                                    document.getElementById("progress").value = "SETTINGS";
+                                    document.getElementById("setupWizard").submit();
+                                }
+                            </script>
                         </div>
+                        <!-- ************** Fragment End ***************** -->
+
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <!-- Javascript Libraries -->
