@@ -148,7 +148,7 @@
                                     document.getElementById("setupWizard").submit();
                                 }
                                 function previousClicked() {
-                                    document.getElementById("progress").value = "SETTINGS";
+                                    document.getElementById("progress").value = /*[[${setupForm.previous.toString()}]]*/ 'None';
                                     document.getElementById("setupWizard").submit();
                                 }
                             </script>
