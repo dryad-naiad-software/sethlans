@@ -28,6 +28,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.File;
 
 /**
  * Created Mario Estrella on 3/12/17.
@@ -38,7 +39,6 @@ import javax.validation.constraints.Size;
 public class SetupForm {
 
     private SethlansMode mode = SethlansMode.BOTH;
-    ;
 
     @NotEmpty
     @Size(min = 4, max = 75)
@@ -54,17 +54,17 @@ public class SetupForm {
     private String passWordConf;
 
     @NotEmpty
-    private String configDirectory = System.getProperty("user.home") + "/.sethlans/config/";
+    private String configDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "config" + File.separator;
     @NotEmpty
-    private String dataDirectory = System.getProperty("user.home") + "/.sethlans/data/";
+    private String dataDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "data" + File.separator;
     @NotEmpty
-    private String projectDirectory = System.getProperty("user.home") + "/.sethlans/projects/";
+    private String projectDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "projects" + File.separator;
     @NotEmpty
-    private String blenderDirectory = System.getProperty("user.home") + "/.sethlans/blenderZips/";
+    private String blenderDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "blenderZips" + File.separator;
     @NotEmpty
-    private String tempDirectory = System.getProperty("user.home") + "/.sethlans/temp/";
+    private String tempDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "temp" + File.separator;
     @NotEmpty
-    private String workingDirectory = System.getProperty("user.home") + "/.sethlans/cache/";
+    private String workingDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "cache" + File.separator;
 
     private ComputeType devices;
 
