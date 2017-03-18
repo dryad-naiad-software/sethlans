@@ -5,7 +5,7 @@ spring:
 logging:
   file: ${user.home}/.sethlans/logs/sethlans.log
   level:
-    com.dryadandnaiad: DEBUG #TODO set this to INFO during releases. False during development.
+    com.dryadandnaiad: DEBUG #TODO set this to INFO during releases. DEBUG during development.
 server:
   port: 7443
   ssl:

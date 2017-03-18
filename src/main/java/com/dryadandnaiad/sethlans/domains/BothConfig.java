@@ -17,9 +17,7 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.config;
-
-import com.dryadandnaiad.sethlans.services.SaveConfigService;
+package com.dryadandnaiad.sethlans.domains;
 
 /**
  * Created Mario Estrella on 3/18/17.
@@ -27,6 +25,7 @@ import com.dryadandnaiad.sethlans.services.SaveConfigService;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class SaveConfigServiceImpl implements SaveConfigService {
-
+public class BothConfig {
+    private ServerConfig serverConfig;
+    private NodeConfig nodeConfig;
 }

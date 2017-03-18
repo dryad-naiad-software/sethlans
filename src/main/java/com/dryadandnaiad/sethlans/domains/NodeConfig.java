@@ -17,9 +17,9 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.config;
+package com.dryadandnaiad.sethlans.domains;
 
-import com.dryadandnaiad.sethlans.services.SaveConfigService;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
 
 /**
  * Created Mario Estrella on 3/18/17.
@@ -27,6 +27,8 @@ import com.dryadandnaiad.sethlans.services.SaveConfigService;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class SaveConfigServiceImpl implements SaveConfigService {
+public class NodeConfig extends AbstractConfig {
 
+    private String workingDirectory;
+    private ComputeType devices;
 }
