@@ -115,6 +115,12 @@
         <!-- Other Dependencies - Non Spring-->
 
         <dependency>
+            <groupId>org.jcuda</groupId>
+            <artifactId>jcuda</artifactId>
+            <version>0.8.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna-platform</artifactId>
             <version>4.4.0</version>

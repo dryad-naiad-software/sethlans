@@ -240,8 +240,8 @@ public interface Kernel32Lib extends Library {
     /**
      * See : https://msdn.microsoft.com/en-us/library/windows/desktop/ms686247%28v=vs.85%29.aspx
      *
-     * @param hThread
-     * @param dwThreadAffinityMask
+     * @param hProcess
+     * @param dwProcessAffinityMask
      * @return If the function succeeds, the return value is the thread's previous affinity mask.
      */
     public boolean SetProcessAffinityMask(HANDLE hProcess, DWORD_PTR dwProcessAffinityMask);

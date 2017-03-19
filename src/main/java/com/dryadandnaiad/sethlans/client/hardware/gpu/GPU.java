@@ -30,6 +30,7 @@ import com.dryadandnaiad.sethlans.client.software.AbstractOSClass;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.LongByReference;
+import jcuda.driver.CUresult;
 
 import java.util.LinkedList;
 import java.util.List;
