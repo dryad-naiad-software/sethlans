@@ -87,9 +87,9 @@ public class Linux extends AbstractOSClass {
             }
             scanner.close();
         } catch (java.lang.NoClassDefFoundError e) {
-            System.err.println("AbstractOSClass.Linux::getCPU error " + e + " mostly because Scanner class was introduced by Java 5 and you are running a lower version");
+            LOG.error("AbstractOSClass.Linux::getCPU error " + e + " mostly because Scanner class was introduced by Java 5 and you are running a lower version" + e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         }
         return ret;
     }
@@ -113,9 +113,9 @@ public class Linux extends AbstractOSClass {
             }
             scanner.close();
         } catch (java.lang.NoClassDefFoundError e) {
-            System.err.println("Machine::type error " + e + " mostly because Scanner class was introducted by Java 5 and you are running a lower version");
+            LOG.error("Machine::type error " + e + " mostly because Scanner class was introducted by Java 5 and you are running a lower version");
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         }
 
         return 0;
