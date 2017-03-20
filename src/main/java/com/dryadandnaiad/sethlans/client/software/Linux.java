@@ -37,8 +37,6 @@ import java.util.Scanner;
  * Project: sethlans
  */
 public class Linux extends AbstractOSClass {
-    private final String NICE_BINARY_PATH = "nice";
-    private Boolean hasNiceBinary;
     private static final Logger LOG = LoggerFactory.getLogger(Linux.class);
 
     public Linux() {
@@ -167,23 +165,5 @@ public class Linux extends AbstractOSClass {
             env.putAll(env_overight);
         }
         return builder.start();
-    }
-
-    protected void checkNiceAvailability() {
-        ProcessBuilder builder = new ProcessBuilder();
-        builder.command(NICE_BINARY_PATH);
-        builder.redirectErrorStream(true);
-        Process process = null;
-        try {
-            process = builder.start();
-            this.hasNiceBinary = true;
-        } catch (IOException e) {
-            this.hasNiceBinary = false;
-            LOG.error("Failed to find low priority binary, will not launch renderer in normal priority" + e.getMessage());
-        } finally {
-            if (process != null) {
-                process.destroy();
-            }
-        }
     }
 }

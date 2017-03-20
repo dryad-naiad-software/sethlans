@@ -20,6 +20,8 @@
 package com.dryadandnaiad.sethlans.client.software;
 
 import com.dryadandnaiad.sethlans.client.hardware.cpu.CPU;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,6 +34,10 @@ import java.util.Map;
  * Project: sethlans
  */
 public abstract class AbstractOSClass {
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractOSClass.class);
+    final String NICE_BINARY_PATH = "nice";
+    Boolean hasNiceBinary;
+
     public abstract String name();
 
     public abstract CPU getCPU();
@@ -71,6 +77,24 @@ public abstract class AbstractOSClass {
             return new Linux();
         } else {
             return null;
+        }
+    }
+
+    protected void checkNiceAvailability() {
+        ProcessBuilder builder = new ProcessBuilder();
+        builder.command(NICE_BINARY_PATH);
+        builder.redirectErrorStream(true);
+        Process process = null;
+        try {
+            process = builder.start();
+            this.hasNiceBinary = true;
+        } catch (IOException e) {
+            this.hasNiceBinary = false;
+            LOG.error("Failed to find low priority binary, will not launch renderer in normal priority" + e.getMessage());
+        } finally {
+            if (process != null) {
+                process.destroy();
+            }
         }
     }
 }

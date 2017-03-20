@@ -37,8 +37,8 @@ import java.util.Map;
  * Project: sethlans
  */
 public class Mac extends AbstractOSClass {
-    private final String NICE_BINARY_PATH = "nice";
-    private Boolean hasNiceBinary;
+
+
     private static final Logger LOG = LoggerFactory.getLogger(Mac.class);
 
     public Mac() {
@@ -172,23 +172,5 @@ public class Mac extends AbstractOSClass {
     @Override
     public String getCUDALib() {
         return "/usr/local/cuda/lib/libcuda.dylib";
-    }
-
-    protected void checkNiceAvailability() {
-        ProcessBuilder builder = new ProcessBuilder();
-        builder.command(NICE_BINARY_PATH);
-        builder.redirectErrorStream(true);
-        Process process = null;
-        try {
-            process = builder.start();
-            this.hasNiceBinary = true;
-        } catch (IOException e) {
-            this.hasNiceBinary = false;
-            LOG.error("Failed to find low priority binary, will not launch renderer in normal priority" + e.getMessage());
-        } finally {
-            if (process != null) {
-                process.destroy();
-            }
-        }
     }
 }
