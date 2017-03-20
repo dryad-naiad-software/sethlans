@@ -15,11 +15,5 @@ target/
 *.iml
 *.ipr
 
-### NetBeans ###
-nbproject/private/
-build/
-nbbuild/
-nbdist/
-.nb-gradle/
 
 git.properties
