@@ -76,13 +76,14 @@
                             <!-- ************** Fragment Start ***************** -->
 
                             <div class="well" th:fragment="setup_client">
-                                <style>.slider-selection {
-                                    background: #BABABA;
-                                }</style>
                                 <!--/*@thymesVar id="setupForm" type="com.dryadandnaiad.sethlans.commands.SetupForm"*/-->
                                 <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
                                       method="POST">
+
                                     <div th:fragment="both_import">
+                                        <style>.slider-selection {
+                                            background: #BABABA;
+                                        }</style>
                                         <h3 style="margin-top: auto"><strong><u>Compute Method</u></strong></h3>
                                         <div class="form-group">
                                             <label for="selectedMethod">Devices:</label>
@@ -95,7 +96,7 @@
                                                 <option th:remove="all">CPU &amp; GPU</option>
                                             </select>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group" id="cpu">
                                             <label for="cores">Rendering Cores: &emsp; &emsp; </label>
                                             <input id="cores" name="cores" th:value="${setupForm.cores}" type="number"
                                                    data-slider-min="1"
@@ -199,6 +200,11 @@
             document.getElementById("cuda").style.display = "block";
         } else {
             document.getElementById("cuda").style.display = "none";
+        }
+        if (text === "GPU") {
+            document.getElementById("cpu").style.display = "none";
+        } else {
+            document.getElementById("cpu").style.display = "block";
         }
     }
 </script>

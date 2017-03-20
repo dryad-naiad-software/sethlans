@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.commands;
 
 import com.dryadandnaiad.sethlans.client.hardware.cpu.CPU;
 import com.dryadandnaiad.sethlans.client.hardware.gpu.GPU;
+import com.dryadandnaiad.sethlans.client.hardware.gpu.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.enums.SetupProgress;
@@ -76,6 +77,7 @@ public class SetupForm {
     private ComputeType selectedMethod;
 
     private List<ComputeType> availableMethods = new ArrayList<>();
+    private List<GPUDevice> gpus = GPU.listDevices();
 
     private String blenderVersion;
 
@@ -283,6 +285,7 @@ public class SetupForm {
                 ", workingDirectory='" + workingDirectory + '\'' +
                 ", selectedMethod=" + selectedMethod +
                 ", availableMethods=" + availableMethods +
+                ", gpus=" + gpus +
                 ", blenderVersion='" + blenderVersion + '\'' +
                 ", httpPort='" + httpPort + '\'' +
                 ", httpsPort='" + httpsPort + '\'' +
