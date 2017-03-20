@@ -177,5 +177,23 @@
         }
     }
 </script>
+<script>
+    function showCUDA() {
+        var method = document.getElementById("selectedMethod");
+        var text = method.options[method.selectedIndex].text;
+        if (text.indexOf('GPU') >= 0) {
+            document.getElementById("cuda").style.display = "block";
+        } else {
+            document.getElementById("cuda").style.display = "none";
+        }
+    }
+</script>
+<script>
+    window.onload = function () {
+        showCUDA()
+        $("#cores").slider({tooltip_position: 'bottom'});
+    };
+
+</script>
 </body>
 </html>

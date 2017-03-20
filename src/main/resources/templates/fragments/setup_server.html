@@ -80,51 +80,53 @@
                                 <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
                                       method="POST">
 
-                                    <h3 style="margin-top: auto"><strong><u>Server Directories</u></strong></h3>
-                                    <div class="form-group">
-                                        <label for="configDir">Config Directory</label>
-                                        <input type="text" class="form-control" id="configDir"
-                                               th:field="*{configDirectory}"
-                                               data-toggle="tooltip"
-                                               data-trigger="hover"
-                                               th:title="#{setup.tooltip.configDirectory}"
-                                               title="Config Directory">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="configDir">Data Directory</label>
-                                        <input type="text" class="form-control" id="dataDir"
-                                               th:field="*{dataDirectory}"
-                                               data-toggle="tooltip"
-                                               data-trigger="hover"
-                                               th:title="#{setup.tooltip.dataDirectory}"
-                                               title="Data Directory.">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="projectDir">Project Directory</label>
-                                        <input type="text" class="form-control" id="projectDir"
-                                               th:field="*{projectDirectory}"
-                                               data-toggle="tooltip"
-                                               data-trigger="hover"
-                                               th:title="#{setup.tooltip.projectDirectory}"
-                                               title="Project Directory">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="blenderDir">Blender Directory</label>
-                                        <input type="text" class="form-control" id="blenderDir"
-                                               th:field="*{blenderDirectory}"
-                                               data-toggle="tooltip"
-                                               data-trigger="hover"
-                                               th:title="#{setup.tooltip.blenderDirectory}"
-                                               title="Blender Directory.">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="cacheDir">Temp Directory</label>
-                                        <input type="text" class="form-control" id="cacheDir"
-                                               th:field="*{tempDirectory}"
-                                               data-toggle="tooltip"
-                                               data-trigger="hover"
-                                               th:title="#{setup.tooltip.tempDirectory}"
-                                               title="Temp Directory.">
+                                    <div th:fragment="both_import">
+                                        <h3 style="margin-top: auto"><strong><u>Server Directories</u></strong></h3>
+                                        <div class="form-group">
+                                            <label for="configDir">Config Directory</label>
+                                            <input type="text" class="form-control" id="configDir"
+                                                   th:field="*{configDirectory}"
+                                                   data-toggle="tooltip"
+                                                   data-trigger="hover"
+                                                   th:title="#{setup.tooltip.configDirectory}"
+                                                   title="Config Directory">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="configDir">Data Directory</label>
+                                            <input type="text" class="form-control" id="dataDir"
+                                                   th:field="*{dataDirectory}"
+                                                   data-toggle="tooltip"
+                                                   data-trigger="hover"
+                                                   th:title="#{setup.tooltip.dataDirectory}"
+                                                   title="Data Directory.">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="projectDir">Project Directory</label>
+                                            <input type="text" class="form-control" id="projectDir"
+                                                   th:field="*{projectDirectory}"
+                                                   data-toggle="tooltip"
+                                                   data-trigger="hover"
+                                                   th:title="#{setup.tooltip.projectDirectory}"
+                                                   title="Project Directory">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="blenderDir">Blender Directory</label>
+                                            <input type="text" class="form-control" id="blenderDir"
+                                                   th:field="*{blenderDirectory}"
+                                                   data-toggle="tooltip"
+                                                   data-trigger="hover"
+                                                   th:title="#{setup.tooltip.blenderDirectory}"
+                                                   title="Blender Directory.">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="cacheDir">Temp Directory</label>
+                                            <input type="text" class="form-control" id="cacheDir"
+                                                   th:field="*{tempDirectory}"
+                                                   data-toggle="tooltip"
+                                                   data-trigger="hover"
+                                                   th:title="#{setup.tooltip.tempDirectory}"
+                                                   title="Temp Directory.">
+                                        </div>
                                     </div>
                                     <div class="form-group">
                                         <input type="hidden" id="progress" name="progress" value="">
