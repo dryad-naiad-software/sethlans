@@ -19,6 +19,8 @@
 
 package com.dryadandnaiad.sethlans.commands;
 
+import com.dryadandnaiad.sethlans.client.hardware.cpu.CPU;
+import com.dryadandnaiad.sethlans.client.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.enums.SetupProgress;
@@ -29,6 +31,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created Mario Estrella on 3/12/17.
@@ -39,6 +43,9 @@ import java.io.File;
 public class SetupForm {
 
     private SethlansMode mode = SethlansMode.BOTH;
+
+    private int cores = 1;
+    private int totalCores;
 
     @NotEmpty
     @Size(min = 4, max = 75)
@@ -66,7 +73,9 @@ public class SetupForm {
     @NotEmpty
     private String workingDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "cache" + File.separator;
 
-    private ComputeType devices;
+    private ComputeType selectedMethod;
+
+    private List<ComputeType> availableMethods = new ArrayList<>();
 
     private String blenderVersion;
 
@@ -82,6 +91,51 @@ public class SetupForm {
     private boolean useHttps = true;
     private SetupProgress progress;
     private SetupProgress previous;
+
+    public SetupForm() {
+        this.totalCores = populateCores();
+        populateAvailableMethods();
+    }
+
+    private int populateCores() {
+        CPU cpu = new CPU();
+        return cpu.cores();
+
+    }
+
+    private void populateAvailableMethods() {
+        if (GPU.listDevices().size() != 0) {
+            availableMethods.add(ComputeType.GPU);
+            availableMethods.add(ComputeType.CPU);
+            availableMethods.add(ComputeType.CPU_GPU);
+        } else {
+            availableMethods.add(ComputeType.CPU);
+        }
+    }
+
+    public int getTotalCores() {
+        return totalCores;
+    }
+
+    public int getCores() {
+        return cores;
+    }
+
+    public void setCores(int cores) {
+        this.cores = cores;
+    }
+
+    public ComputeType getSelectedMethod() {
+        return selectedMethod;
+    }
+
+    public void setSelectedMethod(ComputeType selectedMethod) {
+        this.selectedMethod = selectedMethod;
+    }
+
+    public List<ComputeType> getAvailableMethods() {
+        return availableMethods;
+    }
 
     public SethlansMode getMode() {
         return mode;
@@ -145,14 +199,6 @@ public class SetupForm {
 
     public void setTempDirectory(String tempDirectory) {
         this.tempDirectory = tempDirectory;
-    }
-
-    public ComputeType getDevices() {
-        return devices;
-    }
-
-    public void setDevices(ComputeType devices) {
-        this.devices = devices;
     }
 
     public String getWorkingDirectory() {
@@ -224,6 +270,8 @@ public class SetupForm {
     public String toString() {
         return "SetupForm{" +
                 "mode=" + mode +
+                ", cores=" + cores +
+                ", totalCores=" + totalCores +
                 ", userName='" + userName + '\'' +
                 ", passWord='" + passWord + '\'' +
                 ", passWordConf='" + passWordConf + '\'' +
@@ -232,8 +280,9 @@ public class SetupForm {
                 ", projectDirectory='" + projectDirectory + '\'' +
                 ", blenderDirectory='" + blenderDirectory + '\'' +
                 ", tempDirectory='" + tempDirectory + '\'' +
-                ", devices=" + devices +
                 ", workingDirectory='" + workingDirectory + '\'' +
+                ", selectedMethod=" + selectedMethod +
+                ", availableMethods=" + availableMethods +
                 ", blenderVersion='" + blenderVersion + '\'' +
                 ", httpPort='" + httpPort + '\'' +
                 ", httpsPort='" + httpsPort + '\'' +

@@ -79,7 +79,7 @@
                     <div class="modal-body" id="setupForm" th:switch="${setupForm.progress}">
 
                         <!-- *********** Setup Fragments start here ************** -->
-                        <div class="well">
+                        <div class="well" onkeypress="checkSubmit(event)">
                             <div th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).MODE}"
                                  th:include="fragments/setup_mode :: setup_mode"></div>
                             <div th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).SERVER}"
@@ -171,12 +171,11 @@
         })
     });</script>
 <script>
-
-    // With JQuery
-    $("#cores").slider();
-    $("#cores").on("slide", function (slideEvt) {
-        $("#coresSliderVal").text(slideEvt.value);
-    });
+    function checkSubmit(e) {
+        if (e && e.keyCode == 13) {
+            nextClicked();
+        }
+    }
 </script>
 </body>
 </html>

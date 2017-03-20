@@ -84,27 +84,25 @@
                                       method="POST">
                                     <h3 style="margin-top: auto"><strong><u>Compute Method</u></strong></h3>
                                     <div class="form-group">
-                                        <label for="devices">Devices:</label>
-                                        <select class="form-control" id="devices">
-                                            <option>CPU</option>
-                                            <option>GPU</option>
-                                            <option>CPU &amp; GPU</option>
+                                        <label for="selectedMethod">Devices:</label>
+                                        <select class="form-control" id="selectedMethod" name="selectedMethod"
+                                                th:value="${setupForm.selectedMethod}" onclick="showCUDA()">
+                                            <option th:each="method : ${setupForm.availableMethods}"
+                                                    th:value="${method}" th:text="${method}">CPU
+                                            </option>
+                                            <option th:remove="all">GPU</option>
+                                            <option th:remove="all">CPU &amp; GPU</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <label for="cores">CPU Cores: &nbsp; </label>
-                                        <span id="coresSliderVal">3</span> <br/>
-                                        <input id="cores" type="number" data-slider-min="1" data-slider-max="8"
-                                               data-slider-step="1" data-slider-value="3"/>
+                                        <label for="cores">Rendering Cores: &emsp; &emsp; </label>
+                                        <input id="cores" name="cores" th:value="${setupForm.cores}" type="number"
+                                               data-slider-min="1"
+                                               th:attr="data-slider-max=${setupForm.totalCores},data-slider-value=${setupForm.cores}"
+                                               data-slider-step="1"/>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group" id="cuda">
                                         <label>CUDA Devices:</label><br/>
-                                        <label class="checkbox-inline"><input type="checkbox" value="">Option 1</label>
-                                        <label class="checkbox-inline"><input type="checkbox" value="">Option 2</label>
-                                        <label class="checkbox-inline"><input type="checkbox" value="">Option 3</label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>OpenCL Devices:</label><br/>
                                         <label class="checkbox-inline"><input type="checkbox" value="">Option 1</label>
                                         <label class="checkbox-inline"><input type="checkbox" value="">Option 2</label>
                                         <label class="checkbox-inline"><input type="checkbox" value="">Option 3</label>
@@ -131,6 +129,17 @@
                                     </div>
                                 </form>
                                 <script>
+                                    function showCUDA() {
+                                        var method = document.getElementById("selectedMethod");
+                                        var text = method.options[method.selectedIndex].text;
+                                        if (text.indexOf('GPU') >= 0) {
+                                            document.getElementById("cuda").style.display = "block";
+                                        } else {
+                                            document.getElementById("cuda").style.display = "none";
+                                        }
+                                    }
+                                </script>
+                                <script>
                                     function nextClicked() {
                                         document.getElementById("progress").value = "SUMMARY";
                                         document.getElementById("previous").value = "NODE";
@@ -140,6 +149,13 @@
                                         document.getElementById("progress").value = "MODE";
                                         document.getElementById("setupWizard").submit();
                                     }
+                                </script>
+                                <script>
+                                    window.onload = function () {
+                                        showCUDA()
+                                        $("#cores").slider({tooltip_position: 'bottom'});
+                                    };
+
                                 </script>
 
                         </div>
@@ -185,11 +201,6 @@
     });</script>
 <script>
 
-    // With JQuery
-    $("#cores").slider();
-    $("#cores").on("slide", function (slideEvt) {
-        $("#coresSliderVal").text(slideEvt.value);
-    });
 </script>
 </body>
 </html>
