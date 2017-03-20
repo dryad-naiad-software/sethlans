@@ -44,6 +44,7 @@ import java.util.List;
 public class SetupForm {
 
     private SethlansMode mode = SethlansMode.BOTH;
+    private List<GPUDevice> selectedGPU = new ArrayList<>();
 
     private int cores = 1;
     private int totalCores;
@@ -243,6 +244,13 @@ public class SetupForm {
         this.useHttps = useHttps;
     }
 
+    public List<GPUDevice> getGpus() {
+        return gpus;
+    }
+
+    public void setGpus(List<GPUDevice> gpus) {
+        this.gpus = gpus;
+    }
 
     public SetupProgress getProgress() {
         return progress;
@@ -266,6 +274,14 @@ public class SetupForm {
 
     public void setPrevious(SetupProgress previous) {
         this.previous = previous;
+    }
+
+    public List<GPUDevice> getSelectedGPU() {
+        return selectedGPU;
+    }
+
+    public void setSelectedGPU(List<GPUDevice> selectedGPU) {
+        this.selectedGPU = selectedGPU;
     }
 
     @Override
