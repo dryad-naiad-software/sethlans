@@ -31,11 +31,14 @@ import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.LongByReference;
 import jcuda.driver.CUresult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class GPU {
+    private static final Logger LOG = LoggerFactory.getLogger(GPU.class);
     public static List<GPUDevice> devices = null;
 
     public static boolean generate() {
@@ -44,20 +47,20 @@ public class GPU {
         AbstractOSClass os = AbstractOSClass.getOS();
         String path = os.getCUDALib();
         if (path == null) {
-            System.out.println("GPU::generate no CUDA lib path found");
+            LOG.debug("GPU::generate no CUDA lib path found");
             return false;
         }
         CUDA cudalib = null;
         try {
             cudalib = (CUDA) Native.loadLibrary(path, CUDA.class);
         } catch (java.lang.UnsatisfiedLinkError e) {
-            System.out.println("GPU::generate failed to load CUDA lib (path: " + path + ")");
+            LOG.debug("GPU::generate failed to load CUDA lib (path: " + path + ")");
             return false;
         } catch (java.lang.ExceptionInInitializerError e) {
-            System.out.println("GPU::generate ExceptionInInitializerError " + e);
+            LOG.error("GPU::generate ExceptionInInitializerError " + e.getMessage());
             return false;
         } catch (Exception e) {
-            System.out.println("GPU::generate generic exception " + e);
+            LOG.error("GPU::generate generic exception" + e.getMessage());
             return false;
         }
 
@@ -65,11 +68,11 @@ public class GPU {
 
         result = cudalib.cuInit(0);
         if (result != CUresult.CUDA_SUCCESS) {
-            System.out.println("GPU::generate cuInit failed (ret: " + result + ")");
+            LOG.info("GPU::generate cuInit failed (ret: " + result + ")");
             if (result == CUresult.CUDA_ERROR_UNKNOWN) {
-                System.out.println("If you are running Linux, this error is usually due to nvidia kernel module 'nvidia_uvm' not loaded.");
-                System.out.println("Relaunch the application as root or load the module.");
-                System.out.println("Most of time it does fix the issue.");
+                LOG.info("If you are running Linux, this error is usually due to nvidia kernel module 'nvidia_uvm' not loaded. " +
+                        "\nRelaunch the application as root or load the module. " +
+                        "\nMost of time it does fix the issue.");
             }
             return false;
         }
