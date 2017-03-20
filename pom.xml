@@ -23,11 +23,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.dryadandnaiad</groupId>
-    <artifactId>sethlans</artifactId>
+    <artifactId>Sethlans</artifactId>
     <version>0.2</version>
     <packaging>jar</packaging>
 
-    <name>sethlans</name>
+    <name>Sethlans</name>
     <description>Distributed render farm for blender</description>
 
     <parent>
