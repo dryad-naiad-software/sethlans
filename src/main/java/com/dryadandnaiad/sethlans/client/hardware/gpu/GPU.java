@@ -85,7 +85,7 @@ public class GPU {
         result = cudalib.cuDeviceGetCount(count);
 
         if (result != CUresult.CUDA_SUCCESS) {
-            System.out.println("GPU::generate cuDeviceGetCount failed (ret: " + CUresult.stringFor(result) + ")");
+            LOG.debug("GPU::generate cuDeviceGetCount failed (ret: " + CUresult.stringFor(result) + ")");
             return false;
         }
 
@@ -94,7 +94,7 @@ public class GPU {
 
             result = cudalib.cuDeviceGetName(name, 256, num);
             if (result != CUresult.CUDA_SUCCESS) {
-                System.out.println("GPU::generate cuDeviceGetName failed (ret: " + CUresult.stringFor(result) + ")");
+                LOG.debug("GPU::generate cuDeviceGetName failed (ret: " + CUresult.stringFor(result) + ")");
                 continue;
             }
 
@@ -107,7 +107,7 @@ public class GPU {
             }
 
             if (result != CUresult.CUDA_SUCCESS) {
-                System.out.println("GPU::generate cuDeviceTotalMem failed (ret: " + CUresult.stringFor(result) + ")");
+                LOG.debug("GPU::generate cuDeviceTotalMem failed (ret: " + CUresult.stringFor(result) + ")");
                 return false;
             }
 
