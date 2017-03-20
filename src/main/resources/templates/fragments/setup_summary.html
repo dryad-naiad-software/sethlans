@@ -293,12 +293,29 @@
         })
     });</script>
 <script>
+    function checkSubmit(e) {
+        if (e && e.keyCode == 13) {
+            nextClicked();
+        }
+    }
+</script>
+<script>
+    function showCUDA() {
+        var method = document.getElementById("selectedMethod");
+        var text = method.options[method.selectedIndex].text;
+        if (text.indexOf('GPU') >= 0) {
+            document.getElementById("cuda").style.display = "block";
+        } else {
+            document.getElementById("cuda").style.display = "none";
+        }
+    }
+</script>
+<script>
+    window.onload = function () {
+        showCUDA()
+        $("#cores").slider({tooltip_position: 'bottom'});
+    };
 
-    // With JQuery
-    $("#cores").slider();
-    $("#cores").on("slide", function (slideEvt) {
-        $("#coresSliderVal").text(slideEvt.value);
-    });
 </script>
 </body>
 </html>
