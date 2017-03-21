@@ -87,9 +87,17 @@
                                             <th class="col-md-6">Setting</th>
                                             <th class="col-md-6">Value</th>
                                         </tr>
-                                        <tr>
+                                        <tr th:if="${setupForm.mode == T(com.dryadandnaiad.sethlans.enums.SethlansMode).SERVER}">
                                             <td>Mode</td>
-                                            <td th:text="${setupForm.mode}">Mode</td>
+                                            <td>Server</td>
+                                        </tr>
+                                        <tr th:if="${setupForm.mode == T(com.dryadandnaiad.sethlans.enums.SethlansMode).NODE}">
+                                            <td>Mode</td>
+                                            <td>Node</td>
+                                        </tr>
+                                        <tr th:if="${setupForm.mode == T(com.dryadandnaiad.sethlans.enums.SethlansMode).BOTH}">
+                                            <td>Mode</td>
+                                            <td>Dual</td>
                                         </tr>
                                         <tr>
                                             <td>User Name</td>
