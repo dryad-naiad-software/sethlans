@@ -73,6 +73,8 @@ public class SetupForm {
     private String tempDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "temp" + File.separator;
     @NotEmpty
     private String workingDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "cache" + File.separator;
+    @NotEmpty
+    private String logDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "logs" + File.separator;
 
     private ComputeType selectedMethod;
     private List<ComputeType> availableMethods = new ArrayList<>();
@@ -277,6 +279,14 @@ public class SetupForm {
         this.blenderBinaryOS = blenderBinaryOS;
     }
 
+    public String getLogDirectory() {
+        return logDirectory;
+    }
+
+    public void setLogDirectory(String logDirectory) {
+        this.logDirectory = logDirectory;
+    }
+
     @Override
     public String toString() {
         return "SetupForm{" +
@@ -290,6 +300,7 @@ public class SetupForm {
                 ", blenderDirectory='" + blenderDirectory + '\'' +
                 ", tempDirectory='" + tempDirectory + '\'' +
                 ", workingDirectory='" + workingDirectory + '\'' +
+                ", logDirectory='" + logDirectory + '\'' +
                 ", selectedMethod=" + selectedMethod +
                 ", availableMethods=" + availableMethods +
                 ", gpus=" + gpus +
