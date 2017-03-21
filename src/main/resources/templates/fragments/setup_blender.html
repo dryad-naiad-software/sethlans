@@ -83,12 +83,13 @@
                                     <h3 style="margin-top: auto"><strong><u>Blender Download</u></strong></h3>
                                     <div class="form-group">
                                         <label for="blenderVersion">Blender Version:</label>
-                                        <select class="form-control" id="blenderVersion">
-                                            <option>2.78c</option>
-                                            <option>2.77a</option>
-                                            <option>2.76b</option>
-                                            <option>2.75a</option>
-                                            <option>2.74</option>
+                                        <select class="form-control" id="blenderVersion" name="blenderVersion"
+                                                th:value="${setupForm.blenderVersion}">
+                                            <option th:each="version : ${T(com.dryadandnaiad.sethlans.server.BlenderUtils).listVersions()}"
+                                                    th:value="${version}" th:text="${version}">Version
+                                            </option>
+                                            <option th:remove="all">2.78c</option>
+                                            <option th:remove="all">2.77a</option>
                                         </select>
                                     </div>
                                     <div class="form-group">

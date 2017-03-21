@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.commands;
 import com.dryadandnaiad.sethlans.client.hardware.cpu.CPU;
 import com.dryadandnaiad.sethlans.client.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.client.hardware.gpu.GPUDevice;
+import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.enums.SetupProgress;
@@ -84,6 +85,7 @@ public class SetupForm {
     private boolean useHttps = true;
     private SetupProgress progress;
     private SetupProgress previous;
+    private BlenderBinaryOS blenderBinaryOS;
 
 
     public SetupForm() {
@@ -267,6 +269,14 @@ public class SetupForm {
         this.selectedGPUId = selectedGPUId;
     }
 
+    public BlenderBinaryOS getBlenderBinaryOS() {
+        return blenderBinaryOS;
+    }
+
+    public void setBlenderBinaryOS(BlenderBinaryOS blenderBinaryOS) {
+        this.blenderBinaryOS = blenderBinaryOS;
+    }
+
     @Override
     public String toString() {
         return "SetupForm{" +
@@ -291,6 +301,7 @@ public class SetupForm {
                 ", useHttps=" + useHttps +
                 ", progress=" + progress +
                 ", previous=" + previous +
+                ", blenderBinaryOS=" + blenderBinaryOS +
                 '}';
     }
 }

@@ -87,7 +87,8 @@
                                                    data-placement="right"
                                                    data-trigger="hover"
                                                    title="Sethlans will be configured as the farm server">
-                                                <input type="radio" name="mode" value="SERVER"
+                                                <input type="radio" name="mode"
+                                                       th:value="${T(com.dryadandnaiad.sethlans.enums.SethlansMode).SERVER}"
                                                        th:field="*{mode}">
                                                 Server</label>
                                         </h4>
@@ -98,7 +99,8 @@
                                                    data-placement="right"
                                                    data-trigger="hover"
                                                    title="Sethlans will be configured as a node only">
-                                                <input type="radio" name="mode" value="NODE"
+                                                <input type="radio" name="mode"
+                                                       th:value="${T(com.dryadandnaiad.sethlans.enums.SethlansMode).NODE}"
                                                        th:field="*{mode}">
                                                 Node</label>
                                         </h4>
@@ -109,7 +111,8 @@
                                                    data-placement="right"
                                                    data-trigger="hover"
                                                    title="Sethlans will act as the farm server and as a node within the farm">
-                                                <input type="radio" name="mode" value="BOTH"
+                                                <input type="radio" name="mode"
+                                                       th:value="${T(com.dryadandnaiad.sethlans.enums.SethlansMode).BOTH}"
                                                        th:field="*{mode}">
                                                 Dual</label>
                                         </h4>
