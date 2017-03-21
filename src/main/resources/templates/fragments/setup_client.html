@@ -105,8 +105,8 @@
                                         </div>
                                         <div class="form-group" id="cuda">
                                             <label>CUDA Devices:</label><br/>
-                                            <div th:each="gpu,stat : ${setupForm.gpus}">
-                                                <input type="checkbox" th:id="${gpu}" th:value="${gpu}"
+                                            <div th:each="gpu : ${setupForm.gpus}">
+                                                <input type="checkbox" th:id="${gpu}" th:value="${gpu.model}"
                                                        th:field="*{selectedGPUs}"/>
                                                 <label th:for="${gpu}" th:text="${gpu.model}">GPU</label>
                                             </div>
