@@ -63,11 +63,6 @@ public class GPUDevice {
 
     @Override
     public String toString() {
-        return model + "," + memory + "," + cudaName;
-
-    }
-
-    public String getGPU() {
         return "GPUDevice{" +
                 "model='" + model + '\'' +
                 ", memory=" + memory +

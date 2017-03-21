@@ -33,7 +33,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -45,7 +44,7 @@ import java.util.List;
 public class SetupForm {
 
     private SethlansMode mode = SethlansMode.BOTH;
-    private GPUDevice[] selectedGPUs;
+    private List<Integer> selectedGPUId = new ArrayList<>();
 
     private int cores = 1;
     private int totalCores;
@@ -277,39 +276,11 @@ public class SetupForm {
         this.previous = previous;
     }
 
-    public GPUDevice[] getSelectedGPUs() {
-        return selectedGPUs;
+    public List<Integer> getSelectedGPUId() {
+        return selectedGPUId;
     }
 
-    public void setSelectedGPUs(GPUDevice[] selectedGPUs) {
-        this.selectedGPUs = selectedGPUs;
-    }
-
-    @Override
-    public String toString() {
-        return "SetupForm{" +
-                "mode=" + mode +
-                ", selectedGPUs=" + Arrays.toString(selectedGPUs) +
-                ", cores=" + cores +
-                ", totalCores=" + totalCores +
-                ", userName='" + userName + '\'' +
-                ", passWord='" + passWord + '\'' +
-                ", passWordConf='" + passWordConf + '\'' +
-                ", configDirectory='" + configDirectory + '\'' +
-                ", dataDirectory='" + dataDirectory + '\'' +
-                ", projectDirectory='" + projectDirectory + '\'' +
-                ", blenderDirectory='" + blenderDirectory + '\'' +
-                ", tempDirectory='" + tempDirectory + '\'' +
-                ", workingDirectory='" + workingDirectory + '\'' +
-                ", selectedMethod=" + selectedMethod +
-                ", availableMethods=" + availableMethods +
-                ", gpus=" + gpus +
-                ", blenderVersion='" + blenderVersion + '\'' +
-                ", httpPort='" + httpPort + '\'' +
-                ", httpsPort='" + httpsPort + '\'' +
-                ", useHttps=" + useHttps +
-                ", progress=" + progress +
-                ", previous=" + previous +
-                '}';
+    public void setSelectedGPUId(List<Integer> selectedGPUId) {
+        this.selectedGPUId = selectedGPUId;
     }
 }
