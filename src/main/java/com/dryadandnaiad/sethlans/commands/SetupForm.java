@@ -33,7 +33,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -45,7 +44,7 @@ import java.util.List;
 public class SetupForm {
 
     private SethlansMode mode = SethlansMode.BOTH;
-    private List<String> selectedGPUs = new ArrayList<>();
+    private List<GPUDevice> selectedGPUs = new ArrayList<>();
 
     private int cores = 1;
     private int totalCores;
@@ -277,11 +276,11 @@ public class SetupForm {
         this.previous = previous;
     }
 
-    public List<String> getSelectedGPUs() {
+    public List<GPUDevice> getSelectedGPUs() {
         return selectedGPUs;
     }
 
-    public void setSelectedGPUs(List<String> selectedGPUs) {
+    public void setSelectedGPUs(List<GPUDevice> selectedGPUs) {
         this.selectedGPUs = selectedGPUs;
     }
 
