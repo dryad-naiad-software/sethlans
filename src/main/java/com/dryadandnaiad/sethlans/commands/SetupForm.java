@@ -33,6 +33,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -44,7 +45,7 @@ import java.util.List;
 public class SetupForm {
 
     private SethlansMode mode = SethlansMode.BOTH;
-    private List<GPUDevice> selectedGPUs = new ArrayList<>();
+    private GPUDevice[] selectedGPUs = null;
 
     private int cores = 1;
     private int totalCores;
@@ -108,9 +109,9 @@ public class SetupForm {
 
     private void populateAvailableMethods() {
         if (GPU.listDevices().size() != 0) {
+            availableMethods.add(ComputeType.CPU_GPU);
             availableMethods.add(ComputeType.GPU);
             availableMethods.add(ComputeType.CPU);
-            availableMethods.add(ComputeType.CPU_GPU);
         } else {
             availableMethods.add(ComputeType.CPU);
         }
@@ -276,19 +277,19 @@ public class SetupForm {
         this.previous = previous;
     }
 
-    public List<GPUDevice> getSelectedGPUs() {
+    public GPUDevice[] getSelectedGPUs() {
         return selectedGPUs;
     }
 
-    public void setSelectedGPUs(GPUDevice selectedGPU) {
-        this.selectedGPUs.add(selectedGPU);
+    public void setSelectedGPUs(GPUDevice[] selectedGPUs) {
+        this.selectedGPUs = selectedGPUs;
     }
 
     @Override
     public String toString() {
         return "SetupForm{" +
                 "mode=" + mode +
-                ", selectedGPUs=" + selectedGPUs +
+                ", selectedGPUs=" + Arrays.toString(selectedGPUs) +
                 ", cores=" + cores +
                 ", totalCores=" + totalCores +
                 ", userName='" + userName + '\'' +
