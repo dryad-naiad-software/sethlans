@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.config;
 
-import com.dryadandnaiad.sethlans.services.SaveConfigService;
+import com.dryadandnaiad.sethlans.services.interfaces.SaveConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

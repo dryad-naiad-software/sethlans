@@ -43,11 +43,15 @@ import java.util.List;
  */
 public class SetupForm {
 
-    private SethlansMode mode = SethlansMode.BOTH;
-    private List<Integer> selectedGPUId = new ArrayList<>();
+    @NotEmpty
+    @Min(1)
+    @Max(65535)
+    private String httpPort = "7007";
 
-    private int cores = 1;
-    private int totalCores;
+    @NotNull
+    @Min(1)
+    @Max(65535)
+    private String httpsPort = "7443";
 
     @NotEmpty
     @Size(min = 4, max = 75)
@@ -76,24 +80,17 @@ public class SetupForm {
     private String workingDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "cache" + File.separator;
 
     private ComputeType selectedMethod;
-
     private List<ComputeType> availableMethods = new ArrayList<>();
     private List<GPUDevice> gpus = GPU.listDevices();
-
     private String blenderVersion;
-
-    @NotEmpty
-    @Min(1)
-    @Max(65535)
-    private String httpPort = "7007";
-
-    @NotNull
-    @Min(1)
-    @Max(65535)
-    private String httpsPort = "7443";
+    private SethlansMode mode = SethlansMode.BOTH;
+    private List<Integer> selectedGPUId = new ArrayList<>();
+    private int cores = 1;
+    private int totalCores;
     private boolean useHttps = true;
     private SetupProgress progress;
     private SetupProgress previous;
+
 
     public SetupForm() {
         this.totalCores = populateCores();
@@ -284,13 +281,12 @@ public class SetupForm {
         this.selectedGPUId = selectedGPUId;
     }
 
+
     @Override
     public String toString() {
         return "SetupForm{" +
-                "mode=" + mode +
-                ", selectedGPUId=" + selectedGPUId +
-                ", cores=" + cores +
-                ", totalCores=" + totalCores +
+                "httpPort='" + httpPort + '\'' +
+                ", httpsPort='" + httpsPort + '\'' +
                 ", userName='" + userName + '\'' +
                 ", passWord='" + passWord + '\'' +
                 ", passWordConf='" + passWordConf + '\'' +
@@ -304,8 +300,10 @@ public class SetupForm {
                 ", availableMethods=" + availableMethods +
                 ", gpus=" + gpus +
                 ", blenderVersion='" + blenderVersion + '\'' +
-                ", httpPort='" + httpPort + '\'' +
-                ", httpsPort='" + httpsPort + '\'' +
+                ", mode=" + mode +
+                ", selectedGPUId=" + selectedGPUId +
+                ", cores=" + cores +
+                ", totalCores=" + totalCores +
                 ", useHttps=" + useHttps +
                 ", progress=" + progress +
                 ", previous=" + previous +

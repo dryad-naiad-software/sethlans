@@ -17,13 +17,16 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services;
+package com.dryadandnaiad.sethlans.services.interfaces;
 
 /**
- * Created Mario Estrella on 3/18/17.
+ * Created Mario Estrella on 3/21/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface SaveConfigService {
+public interface GetJSONData {
+
+    String getJSONResult(String apiURL);
+
 }
