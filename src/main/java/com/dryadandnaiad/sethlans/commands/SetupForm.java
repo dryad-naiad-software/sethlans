@@ -283,4 +283,32 @@ public class SetupForm {
     public void setSelectedGPUId(List<Integer> selectedGPUId) {
         this.selectedGPUId = selectedGPUId;
     }
+
+    @Override
+    public String toString() {
+        return "SetupForm{" +
+                "mode=" + mode +
+                ", selectedGPUId=" + selectedGPUId +
+                ", cores=" + cores +
+                ", totalCores=" + totalCores +
+                ", userName='" + userName + '\'' +
+                ", passWord='" + passWord + '\'' +
+                ", passWordConf='" + passWordConf + '\'' +
+                ", configDirectory='" + configDirectory + '\'' +
+                ", dataDirectory='" + dataDirectory + '\'' +
+                ", projectDirectory='" + projectDirectory + '\'' +
+                ", blenderDirectory='" + blenderDirectory + '\'' +
+                ", tempDirectory='" + tempDirectory + '\'' +
+                ", workingDirectory='" + workingDirectory + '\'' +
+                ", selectedMethod=" + selectedMethod +
+                ", availableMethods=" + availableMethods +
+                ", gpus=" + gpus +
+                ", blenderVersion='" + blenderVersion + '\'' +
+                ", httpPort='" + httpPort + '\'' +
+                ", httpsPort='" + httpsPort + '\'' +
+                ", useHttps=" + useHttps +
+                ", progress=" + progress +
+                ", previous=" + previous +
+                '}';
+    }
 }
