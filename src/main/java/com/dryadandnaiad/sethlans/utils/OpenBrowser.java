@@ -37,7 +37,7 @@ public class OpenBrowser {
 
     public static void start() throws MalformedURLException {
         LOG.debug("Opening Browser");
-        URL url = new URL("http://localhost:7007" + "/");
+        URL url = new URL("https://localhost:7443" + "/");
         SethlansUtils.openWebpage(url);
 
     }

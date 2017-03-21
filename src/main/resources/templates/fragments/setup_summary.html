@@ -104,14 +104,6 @@
                                             <td th:text="${setupForm.userName}">User Name</td>
                                         </tr>
                                         <tr>
-                                            <td>HTTP Port</td>
-                                            <td th:text="${setupForm.httpPort}">7007</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Use HTTPS</td>
-                                            <td th:text="${setupForm.useHttps}">true</td>
-                                        </tr>
-                                        <tr th:if="${setupForm.useHttps}">
                                             <td>HTTPS Port</td>
                                             <td th:text="${setupForm.httpsPort}">7443</td>
                                         </tr>

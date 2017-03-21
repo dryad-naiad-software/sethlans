@@ -138,38 +138,10 @@
                                 </div>
                                 <h3 style="margin-top: auto"><strong><u>Ports</u></strong></h3>
                                 <div class="form-group"
-                                     th:class="${#fields.hasErrors('httpPort')} ? 'form-group has-error' : 'form-group'">
-                                    <label for="httpPort">Sethlans HTTP Port</label>
-                                    <input type="number" class="form-control"
-                                           id="httpPort"
-                                           name="httpPort"
-                                           th:value="*{httpPort}"
-                                           th:errorclass="has-error"
-                                           data-toggle="tooltip"
-                                           data-trigger="hover"
-                                           th:title="#{setup.tooltip.httpPort}"
-                                           title="HTTP Port">
-                                    <span class="help-block">
-                                        <ul>
-                                        <li th:each="err : ${#fields.errors('httpPort')}"
-                                            th:text="${err}"/>
-                                        </ul>
-                                    </span>
-                                </div>
-                                <div class="checkbox">
-                                    <label data-toggle="tooltip" data-trigger="hover" data-placement="right"
-                                           title="Turns on HTTPS">
-                                        <input type="checkbox" id="useHTTPS" class="form-check-input"
-                                               value="true"
-                                               th:field="*{useHttps}"
-                                               onClick="toggleHTTPS()">
-                                        Enable HTTPS </label>
-                                </div>
-                                <div class="form-group"
                                      th:class="${#fields.hasErrors('httpsPort')} ? 'form-group has-error' : 'form-group'">
-                                    <label id="https-label" for="httpsPort" hidden> Sethlans HTTPS
+                                    <label id="https-label" for="httpsPort"> Sethlans HTTPS
                                         Port </label>
-                                    <input type="hidden" class="form-control "
+                                    <input type="number" class="form-control "
                                            id="httpsPort"
                                            name="httpsPort"
                                            th:value="*{httpsPort}"
@@ -197,28 +169,11 @@
                                 </div>
                             </form>
                             <script>
-                                function toggleHTTPS() {
-                                    if ($("#useHTTPS").is(":checked")) {
-                                        document.getElementById("https-label").style.display = "block";
-                                        document.getElementById("httpsPort").type = "number";
-                                    }
-                                    else {
-                                        document.getElementById("https-label").style.display = "none";
-                                        document.getElementById("httpsPort").type = "hidden";
-                                    }
-                                }
-                            </script>
-                            <script>
                                 function nextClicked() {
                                     document.getElementById("progress").value = "MODE";
                                     document.getElementById("previous").value = "SETTINGS";
                                     document.getElementById("setupWizard").submit();
                                 }
-                            </script>
-                            <script>
-                                window.onload = function () {
-                                    toggleHTTPS()
-                                };
                             </script>
                         </div>
                         <!-- ************** Fragment End ***************** -->

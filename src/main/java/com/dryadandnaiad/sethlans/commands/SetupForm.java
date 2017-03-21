@@ -42,12 +42,6 @@ import java.util.List;
  * Project: sethlans
  */
 public class SetupForm {
-
-    @NotEmpty
-    @Min(1)
-    @Max(65535)
-    private String httpPort = "7007";
-
     @NotNull
     @Min(1)
     @Max(65535)
@@ -217,14 +211,6 @@ public class SetupForm {
         this.blenderVersion = blenderVersion;
     }
 
-    public String getHttpPort() {
-        return httpPort;
-    }
-
-    public void setHttpPort(String httpPort) {
-        this.httpPort = httpPort;
-    }
-
     public String getHttpsPort() {
         return httpsPort;
     }
@@ -281,12 +267,10 @@ public class SetupForm {
         this.selectedGPUId = selectedGPUId;
     }
 
-
     @Override
     public String toString() {
         return "SetupForm{" +
-                "httpPort='" + httpPort + '\'' +
-                ", httpsPort='" + httpsPort + '\'' +
+                "httpsPort='" + httpsPort + '\'' +
                 ", userName='" + userName + '\'' +
                 ", passWord='" + passWord + '\'' +
                 ", passWordConf='" + passWordConf + '\'' +
