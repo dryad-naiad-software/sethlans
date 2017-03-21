@@ -160,6 +160,13 @@
                                             <td th:text="${setupForm.cores}">1</td>
                                         </tr>
 
+                                        <tr th:if="${setupForm.selectedMethod == T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU|| setupForm.selectedMethod == T(com.dryadandnaiad.sethlans.enums.ComputeType).CPU_GPU }">
+                                            <td>Selected GPU(s)</td>
+                                            <td th:each="id : ${setupForm.selectedGPUId}"
+                                                th:text="${setupForm.gpus[setupForm.selectedGPUId].model}">Nvidia
+                                            </td>
+                                        </tr>
+
                                         <tr>
                                             <td>Working Directory</td>
                                             <td th:text="${setupForm.workingDirectory}">WorkingDir</td>
