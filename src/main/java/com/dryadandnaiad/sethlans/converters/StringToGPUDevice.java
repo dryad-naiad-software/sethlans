@@ -21,6 +21,9 @@ package com.dryadandnaiad.sethlans.converters;
 
 import com.dryadandnaiad.sethlans.client.hardware.gpu.GPUDevice;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 
 /**
  * Created Mario Estrella on 3/21/17.
@@ -28,13 +31,14 @@ import org.springframework.core.convert.converter.Converter;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class StringToGPUDevice implements Converter<String, GPUDevice> {
+@Component
+public class StringToGPUDevice implements Converter<String, GPUDevice[]> {
     @Override
-    public GPUDevice convert(String source) {
-        String[] parts = source.split(",");
-        String model = parts[0];
-        long ram = Long.parseLong(parts[1]);
-        String cuda = parts[2];
-        return new GPUDevice(model, ram, cuda);
+    public GPUDevice[] convert(String source) {
+        System.out.println(source);
+        String model = null;
+        long ram = 0;
+        String cuda = null;
+        return new GPUDevice({model, ram, cuda});
     }
 }
