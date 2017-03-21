@@ -162,11 +162,11 @@
 
                                         <tr th:if="${setupForm.selectedMethod == T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU|| setupForm.selectedMethod == T(com.dryadandnaiad.sethlans.enums.ComputeType).CPU_GPU }">
                                             <td>Selected GPU(s)</td>
-                                            <td th:if="${setupForm.selectedGPUId != null}"
+                                            <td th:if="${!setupForm.selectedGPUId.isEmpty()}"
                                                 th:each="id : ${setupForm.selectedGPUId}"
                                                 th:text="${setupForm.gpus[setupForm.selectedGPUId].model}">Nvidia
                                             </td>
-                                            <td th:if="${setupForm.selectedGPUId == null}">None</td>
+                                            <td th:if="${setupForm.selectedGPUId.isEmpty()}">None</td>
                                         </tr>
 
                                         <tr>
