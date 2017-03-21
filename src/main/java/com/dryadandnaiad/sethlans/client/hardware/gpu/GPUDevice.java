@@ -63,7 +63,11 @@ public class GPUDevice {
 
     @Override
     public String toString() {
-        return "GPUDevice [model=" + model + ", memory=" + memory + ", cudaName=" + cudaName + "]";
+        return "GPUDevice{" +
+                "model='" + model + '\'' +
+                ", memory=" + memory +
+                ", cudaName='" + cudaName + '\'' +
+                '}';
     }
 
     public int getRecommandedTileSize() {

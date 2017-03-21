@@ -45,7 +45,7 @@ import java.util.List;
 public class SetupForm {
 
     private SethlansMode mode = SethlansMode.BOTH;
-    private GPUDevice[] selectedGPUs = null;
+    private List<String> selectedGPUs = new ArrayList<>();
 
     private int cores = 1;
     private int totalCores;
@@ -277,11 +277,11 @@ public class SetupForm {
         this.previous = previous;
     }
 
-    public GPUDevice[] getSelectedGPUs() {
+    public List<String> getSelectedGPUs() {
         return selectedGPUs;
     }
 
-    public void setSelectedGPUs(GPUDevice[] selectedGPUs) {
+    public void setSelectedGPUs(List<String> selectedGPUs) {
         this.selectedGPUs = selectedGPUs;
     }
 
@@ -289,7 +289,7 @@ public class SetupForm {
     public String toString() {
         return "SetupForm{" +
                 "mode=" + mode +
-                ", selectedGPUs=" + Arrays.toString(selectedGPUs) +
+                ", selectedGPUs=" + selectedGPUs +
                 ", cores=" + cores +
                 ", totalCores=" + totalCores +
                 ", userName='" + userName + '\'' +
