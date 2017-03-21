@@ -75,88 +75,32 @@
                     <div class="modal-body" id="setupForm">
 
                         <!-- ************** Fragment Start ***************** -->
-                        <div class="well" th:fragment="setup_summary">
+                        <div class="well">
                             <h2 style="margin-top: auto"><strong>Setup Summary</strong></h2>
                             <!--/*@thymesVar id="setupForm" type="com.dryadandnaiad.sethlans.commands.SetupForm"*/-->
                             <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
                                   method="POST">
                                 <div class="table-responsive">
                                     <table class="table" th:switch="${setupForm.mode}">
-                                        <tbody>
+                                        <tbody th:fragment="setup_summary_server">
                                         <tr>
-                                            <th class="col-md-6">Setting</th>
-                                            <th class="col-md-6">Value</th>
-                                        </tr>
-                                        <tr>
-                                            <td>Mode</td>
-                                            <td th:text="${setupForm.mode}">Mode</td>
+                                            <td>Config Directory</td>
+                                            <td th:text="${setupForm.configDirectory}">Config Dir</td>
                                         </tr>
                                         <tr>
-                                            <td>User Name</td>
-                                            <td th:text="${setupForm.userName}">User Name</td>
+                                            <td>Data Directory</td>
+                                            <td th:text="${setupForm.dataDirectory}">Data Dir</td>
                                         </tr>
                                         <tr>
-                                            <td>HTTP Port</td>
-                                            <td th:text="${setupForm.httpPort}">7007</td>
+                                            <td>Project Directory</td>
+                                            <td th:text="${setupForm.projectDirectory}">Project Dir</td>
                                         </tr>
                                         <tr>
-                                            <td>Use HTTPS</td>
-                                            <td th:text="${setupForm.useHttps}">true</td>
+                                            <td>Blender Directory</td>
+                                            <td th:text="${setupForm.blenderDirectory}">Blender Dir</td>
                                         </tr>
-                                        <tr th:if="${setupForm.useHttps}">
-                                            <td>HTTPS Port</td>
-                                            <td th:text="${setupForm.httpsPort}">7443</td>
-                                        </tr>
-                                        </tbody>
-                                        <div th:case="${T(com.dryadandnaiad.sethlans.enums.SethlansMode).SERVER}">
-                                            <tbody th:replace="fragments/setup_summary_server :: setup_summary_server">
-                                        <tr>
-                                            <th class="col-md-6">Setting</th>
-                                            <th class="col-md-6">Value</th>
-                                        </tr>
-                                        <tr>
-                                            <td>Mode</td>
-                                            <td>Server</td>
-                                        </tr>
-                                        </tbody>
-                                        </div>
-                                        <div th:case="${T(com.dryadandnaiad.sethlans.enums.SethlansMode).BOTH}">
-                                            <tbody th:replace="fragments/setup_summary_server :: setup_summary_server">
-                                        <tr>
-                                            <th class="col-md-6">Setting</th>
-                                            <th class="col-md-6">Value</th>
-                                        </tr>
-                                        <tr>
-                                            <td>Mode</td>
-                                            <td>Dual</td>
-                                        </tr>
-                                        </tbody>
 
-                                            <tbody th:replace="fragments/setup_summary_client :: setup_summary_client">
-                                            <tr>
-                                                <th class="col-md-6">Setting</th>
-                                                <th class="col-md-6">Value</th>
-                                            </tr>
-                                            <tr>
-                                                <td>Mode</td>
-                                                <td>Dual</td>
-                                            </tr>
-                                            </tbody>
-                                        </div>
-
-                                        <div th:case="${T(com.dryadandnaiad.sethlans.enums.SethlansMode).NODE}">
-
-                                            <tbody th:replace="fragments/setup_summary_client :: setup_summary_client">
-                                            <tr>
-                                                <th class="col-md-6">Setting</th>
-                                                <th class="col-md-6">Value</th>
-                                            </tr>
-                                            <tr>
-                                                <td>Mode</td>
-                                                <td>Node</td>
-                                            </tr>
-                                            </tbody>
-                                        </div>
+                                        </tbody>
                                     </table>
                                 </div>
                                 <div class="form-group">
