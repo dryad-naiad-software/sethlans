@@ -94,12 +94,28 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Operating System:</label><br/>
-                                        <label class="checkbox-inline"><input type="checkbox" value="win">Windows
-                                            64bit/32bit</label>
-                                        <label class="checkbox-inline"><input type="checkbox" value="osx">OS X /
-                                            macOS</label>
-                                        <label class="checkbox-inline"><input type="checkbox" value="linux">Linux
-                                            64bit/32bit</label>
+                                        <label class="checkbox-inline"><input type="checkbox"
+                                                                              th:field="*{blenderBinaryOS}"
+                                                                              th:value="${T(com.dryadandnaiad.sethlans.enums.BlenderBinaryOS).Windows32}">Windows
+                                            32bit</label>
+                                        <label class="checkbox-inline"><input type="checkbox"
+                                                                              th:field="*{blenderBinaryOS}"
+                                                                              th:value="${T(com.dryadandnaiad.sethlans.enums.BlenderBinaryOS).Windows64}">Windows
+                                            64bit</label>
+                                        <label class="checkbox-inline"><input type="checkbox"
+                                                                              th:field="*{blenderBinaryOS}"
+                                                                              th:value="${T(com.dryadandnaiad.sethlans.enums.BlenderBinaryOS).MacOS}">macOS
+                                            / OSX</label>
+                                        <label class="checkbox-inline"><input type="checkbox"
+                                                                              th:field="*{blenderBinaryOS}"
+                                                                              th:value="${T(com.dryadandnaiad.sethlans.enums.BlenderBinaryOS).Linux32}">Linux
+                                            32bit</label>
+                                        <label class="checkbox-inline"><input type="checkbox"
+                                                                              th:field="*{blenderBinaryOS}"
+                                                                              th:value="${T(com.dryadandnaiad.sethlans.enums.BlenderBinaryOS).Linux64}">Linux
+                                            64bit</label>
+
+
                                     </div>
                                     <div class="form-group">
                                         <input type="hidden" id="progress" name="progress" value="">

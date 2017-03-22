@@ -87,7 +87,7 @@ public class SetupForm {
     private boolean useHttps = true;
     private SetupProgress progress;
     private SetupProgress previous;
-    private BlenderBinaryOS blenderBinaryOS;
+    private List<BlenderBinaryOS> blenderBinaryOS;
 
 
     public SetupForm() {
@@ -271,11 +271,11 @@ public class SetupForm {
         this.selectedGPUId = selectedGPUId;
     }
 
-    public BlenderBinaryOS getBlenderBinaryOS() {
+    public List<BlenderBinaryOS> getBlenderBinaryOS() {
         return blenderBinaryOS;
     }
 
-    public void setBlenderBinaryOS(BlenderBinaryOS blenderBinaryOS) {
+    public void setBlenderBinaryOS(List<BlenderBinaryOS> blenderBinaryOS) {
         this.blenderBinaryOS = blenderBinaryOS;
     }
 

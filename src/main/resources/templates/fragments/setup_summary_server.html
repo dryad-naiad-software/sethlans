@@ -102,7 +102,12 @@
                                         </tr>
                                         <tr>
                                             <td>Blender Version</td>
-                                            <td th:text="${setupForm.blenderVersion}">Blender Version</td>
+                                            <td><span th:text="${setupForm.blenderVersion}">Blender Version </span>
+                                                <span> (</span>
+                                                <span th:each="os,stat : ${setupForm.blenderBinaryOS}"
+                                                      th:text="${!stat.last} ? ${os} + ',' : ${os}"> Windows </span>
+                                                <span>)</span>
+                                            </td>
                                         </tr>
 
                                         </tbody>

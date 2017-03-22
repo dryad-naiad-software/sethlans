@@ -26,5 +26,5 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum BlenderBinaryOS {
-    WIN32, WIN64, MACOS, LINUX32, LINUX64
+    Windows32, Windows64, MacOS, Linux32, Linux64
 }
