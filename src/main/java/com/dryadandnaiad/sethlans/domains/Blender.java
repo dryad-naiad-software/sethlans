@@ -17,7 +17,7 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.server;
+package com.dryadandnaiad.sethlans.domains;
 
 /**
  * Created Mario Estrella on 3/21/17.

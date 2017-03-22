@@ -96,7 +96,7 @@
                                             <td>Selected GPU(s)</td>
                                             <td th:if="${!setupForm.selectedGPUId.isEmpty()}">
                                                 <span th:each="id, stat : ${setupForm.selectedGPUId}"
-                                                      th:text="${!stat.last} ? ${setupForm.gpus[id].model} + ',' : ${setupForm.gpus[id].model}">Nvidia</span>
+                                                      th:text="${!stat.last} ? ${setupForm.availableGPUs[id].model} + ',' : ${setupForm.availableGPUs[id].model}">Nvidia</span>
                                             </td>
                                             <td th:if="${setupForm.selectedGPUId.isEmpty()}">None</td>
                                         </tr>

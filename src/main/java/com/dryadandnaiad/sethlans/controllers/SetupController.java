@@ -91,7 +91,6 @@ public class SetupController {
 
         if (setupForm.getProgress() == SetupProgress.FINISHED) {
             SaveSetupConfigService saveSetupConfigService = new SaveSetupSetupConfigServiceImpl(setupForm);
-            saveSetupConfigService.saveSethlansSettings();
             switch (setupForm.getMode()) {
                 case SERVER:
                     saveSetupConfigService.saveServerSettings();
@@ -105,6 +104,7 @@ public class SetupController {
                 default:
                     System.exit(1);
             }
+            saveSetupConfigService.saveSethlansSettings();
             saveSetupConfigService.wizardCompleted();
             LOG.info("Restarting Sethlans and implementing configuration changes.");
             restartSethlansService.restart();

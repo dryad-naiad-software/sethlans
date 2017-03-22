@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.services.config;
 
 import com.dryadandnaiad.sethlans.commands.SetupForm;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.interfaces.SaveSetupConfigService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
@@ -39,6 +40,7 @@ import java.util.Properties;
  */
 public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     private static final Logger LOG = LoggerFactory.getLogger(SaveSetupSetupConfigServiceImpl.class);
+
     //Config File Constants
     private final String HTTPS_PORT = "server.port";
     private final String FIRST_TIME = "sethlans.firsttime";
@@ -51,6 +53,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     private final String TEMP_DIR = "sethlans.tempDir";
     private final String CACHE_DIR = "sethlans.cacheDir";
     private final String CUDA_DEVICE = "sethlans.cuda";
+    private final String CPU_CORES = "sethlans.cores";
 
 
 
@@ -137,12 +140,44 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
 
     @Override
     public boolean saveNodeSettings() {
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(configFile);
+            sethlansProperties.setProperty(CACHE_DIR, setupForm.getWorkingDirectory());
+            sethlansProperties.setProperty(COMPUTE_METHOD, setupForm.getSelectedMethod().toString());
+            if (!setupForm.getSelectedGPUId().isEmpty()) {
+                sethlansProperties.setProperty(CUDA_DEVICE, ""); // TODO For each to loop through devices and append in comma format "CUDA_0, CUDA_1"
+            }
+            if (!setupForm.getSelectedMethod().equals(ComputeType.GPU)) {
+                sethlansProperties.setProperty(CPU_CORES, Integer.toString(setupForm.getCores()));
+            }
+
+
+            //Save Properties to File
+            sethlansProperties.store(fileOutputStream, SethlansUtils.updaterTimeStamp());
+            LOG.debug("Server Settings Saved");
+
+            // Create directories
+            File cacheDir = new File(setupForm.getWorkingDirectory());
+
+            if (!cacheDir.mkdirs()) {
+                LOG.error("Unable to create project directory " + cacheDir.toString());
+                // TODO Placeholders for now will need to replace System.exit with a friendly message to GUI and restart the setup wizard.
+                System.exit(1);
+
+            }
+
+            return true;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
     @Override
     public boolean saveDualSettings() {
-        return false;
+        return saveServerSettings() && saveNodeSettings();
     }
 
     @Override

@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.server;
 
+import com.dryadandnaiad.sethlans.domains.Blender;
 import com.dryadandnaiad.sethlans.services.interfaces.GetJSONData;
 import com.dryadandnaiad.sethlans.services.network.GetJSONDataImpl;
 import org.json.JSONArray;

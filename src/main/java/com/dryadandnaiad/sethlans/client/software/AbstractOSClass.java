@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.client.software;
 
-import com.dryadandnaiad.sethlans.client.hardware.cpu.CPU;
+import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

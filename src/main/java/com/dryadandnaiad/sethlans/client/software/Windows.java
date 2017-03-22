@@ -19,9 +19,9 @@
 
 package com.dryadandnaiad.sethlans.client.software;
 
-import com.dryadandnaiad.sethlans.client.hardware.cpu.CPU;
 import com.dryadandnaiad.sethlans.client.software.windows.Kernel32Lib;
 import com.dryadandnaiad.sethlans.client.software.windows.WinProcess;
+import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Kernel32;

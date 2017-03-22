@@ -19,9 +19,9 @@
 
 package com.dryadandnaiad.sethlans.commands;
 
-import com.dryadandnaiad.sethlans.client.hardware.cpu.CPU;
 import com.dryadandnaiad.sethlans.client.hardware.gpu.GPU;
-import com.dryadandnaiad.sethlans.client.hardware.gpu.GPUDevice;
+import com.dryadandnaiad.sethlans.domains.hardware.CPU;
+import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
@@ -46,7 +46,7 @@ public class SetupForm {
     @NotNull
     @Min(1)
     @Max(65535)
-    private String httpsPort = "7443";
+    private String httpsPort;
 
     @NotEmpty
     @Size(min = 4, max = 75)
@@ -62,33 +62,44 @@ public class SetupForm {
     private String passWordConf;
 
     @NotEmpty
-    private String dataDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "data" + File.separator;
+    private String dataDirectory;
     @NotEmpty
-    private String projectDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "projects" + File.separator;
+    private String projectDirectory;
     @NotEmpty
-    private String blenderDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "blenderZips" + File.separator;
+    private String blenderDirectory;
     @NotEmpty
-    private String tempDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "temp" + File.separator;
+    private String tempDirectory;
     @NotEmpty
-    private String workingDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "cache" + File.separator;
+    private String workingDirectory;
     @NotEmpty
-    private String logDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "logs" + File.separator;
+    private String logDirectory;
 
     private ComputeType selectedMethod;
-    private List<ComputeType> availableMethods = new ArrayList<>();
-    private List<GPUDevice> gpus = GPU.listDevices();
+    private List<ComputeType> availableMethods;
+    private List<GPUDevice> availableGPUs;
     private String blenderVersion;
-    private SethlansMode mode = SethlansMode.BOTH;
-    private List<Integer> selectedGPUId = new ArrayList<>();
-    private int cores = 1;
+    private SethlansMode mode;
+    private List<Integer> selectedGPUId;
+    private int cores;
     private int totalCores;
-    private boolean useHttps = true;
     private SetupProgress progress;
     private SetupProgress previous;
     private List<BlenderBinaryOS> blenderBinaryOS;
 
 
     public SetupForm() {
+        this.httpsPort = "7443";
+        this.mode = SethlansMode.SERVER;
+        this.availableGPUs = GPU.listDevices();
+        this.availableMethods = new ArrayList<>();
+        this.selectedGPUId = new ArrayList<>();
+        this.cores = 1;
+        this.dataDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "data" + File.separator;
+        this.projectDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "projects" + File.separator;
+        this.blenderDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "blenderzips" + File.separator;
+        this.tempDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "temp" + File.separator;
+        this.workingDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "cache" + File.separator;
+        this.logDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "logs" + File.separator;
         this.totalCores = populateCores();
         populateAvailableMethods();
     }
@@ -213,20 +224,12 @@ public class SetupForm {
         this.httpsPort = httpsPort;
     }
 
-    public boolean isUseHttps() {
-        return useHttps;
+    public List<GPUDevice> getAvailableGPUs() {
+        return availableGPUs;
     }
 
-    public void setUseHttps(boolean useHttps) {
-        this.useHttps = useHttps;
-    }
-
-    public List<GPUDevice> getGpus() {
-        return gpus;
-    }
-
-    public void setGpus(List<GPUDevice> gpus) {
-        this.gpus = gpus;
+    public void setAvailableGPUs(List<GPUDevice> availableGPUs) {
+        this.availableGPUs = availableGPUs;
     }
 
     public SetupProgress getProgress() {
@@ -292,13 +295,12 @@ public class SetupForm {
                 ", logDirectory='" + logDirectory + '\'' +
                 ", selectedMethod=" + selectedMethod +
                 ", availableMethods=" + availableMethods +
-                ", gpus=" + gpus +
+                ", availableGPUs=" + availableGPUs +
                 ", blenderVersion='" + blenderVersion + '\'' +
                 ", mode=" + mode +
                 ", selectedGPUId=" + selectedGPUId +
                 ", cores=" + cores +
                 ", totalCores=" + totalCores +
-                ", useHttps=" + useHttps +
                 ", progress=" + progress +
                 ", previous=" + previous +
                 ", blenderBinaryOS=" + blenderBinaryOS +

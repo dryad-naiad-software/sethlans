@@ -27,6 +27,7 @@ package com.dryadandnaiad.sethlans.client.hardware.gpu;
  */
 
 import com.dryadandnaiad.sethlans.client.software.AbstractOSClass;
+import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.LongByReference;
