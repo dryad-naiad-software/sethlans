@@ -28,6 +28,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ExitCodeGenerator;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -55,6 +58,9 @@ public class SetupController {
     private boolean firstTime;
 
     private Validator setupFormValidator;
+
+    @Autowired
+    private ApplicationContext context;
 
     @Autowired
     @Qualifier("setupFormValidator")
@@ -98,7 +104,8 @@ public class SetupController {
                 default:
                     System.exit(1);
             }
-            return "redirect:/";
+            SpringApplication.exit(context, (ExitCodeGenerator) () -> 2);
+            //TODO program needs to check for this exit code and restart Spring Boot
         }
         return "setup";
     }
