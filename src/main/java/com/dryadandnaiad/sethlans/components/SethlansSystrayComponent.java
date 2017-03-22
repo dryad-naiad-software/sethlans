@@ -37,17 +37,23 @@ import java.awt.*;
 public class SethlansSystrayComponent {
     private static final Logger LOG = LoggerFactory.getLogger(SethlansSystrayComponent.class);
 
+    private static SethlansSystray sethlansSystray;
+
 
     @PostConstruct
-    public void startSystray() {
+    public static void startSystray() {
         if (SystemTray.isSupported()) {
             LOG.debug("System Tray is Supported");
-            SethlansSystray sethlansSystray = new SethlansSystray();
+            sethlansSystray = new SethlansSystray();
             sethlansSystray.setup();
             sethlansSystray.setImageAutoSize(true);
         } else {
             LOG.debug("System Tray is Not Supported");
         }
+    }
+
+    public static void teardown() {
+        sethlansSystray.tearDown();
     }
 }
 

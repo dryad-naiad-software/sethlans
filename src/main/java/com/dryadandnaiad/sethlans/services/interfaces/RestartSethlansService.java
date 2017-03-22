@@ -20,20 +20,11 @@
 package com.dryadandnaiad.sethlans.services.interfaces;
 
 /**
- * Created Mario Estrella on 3/18/17.
+ * Created Mario Estrella on 3/22/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface SaveSetupConfigService {
-    public boolean saveSethlansSettings();
-
-    public boolean saveServerSettings();
-
-    public boolean saveNodeSettings();
-
-    public boolean saveDualSettings();
-
-    public void wizardCompleted();
-
+public interface RestartSethlansService {
+    void restart();
 }

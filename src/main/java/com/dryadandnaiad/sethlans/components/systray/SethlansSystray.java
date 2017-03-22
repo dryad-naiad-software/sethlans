@@ -54,8 +54,12 @@ public class SethlansSystray extends TrayIcon {
         try {
             tray.add(this);
         } catch (AWTException e) {
-            e.printStackTrace();
+            LOG.error("Error setting up Systray" + e.getMessage());
         }
+    }
+
+    public void tearDown() {
+        tray.remove(this);
     }
 
     private void menuItems() {
@@ -73,6 +77,7 @@ public class SethlansSystray extends TrayIcon {
 
         exitItem.addActionListener(e -> {
             LOG.debug("Shutdown Initiated from System Tray");
+            tearDown();
             System.exit(0);
         });
 

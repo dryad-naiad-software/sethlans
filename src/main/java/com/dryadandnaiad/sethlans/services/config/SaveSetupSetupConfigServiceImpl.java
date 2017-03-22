@@ -53,7 +53,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     private final String CUDA_DEVICE = "sethlans.cuda";
 
 
-    //
+
     private SetupForm setupForm;
     private Properties sethlansProperties;
 
@@ -64,7 +64,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     public SaveSetupSetupConfigServiceImpl(SetupForm setupForm) {
         this.setupForm = setupForm;
         this.sethlansProperties = new Properties();
-        configDirectory.mkdirs();
+
     }
 
     @Override
@@ -72,7 +72,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(configFile);
             sethlansProperties.setProperty(HTTPS_PORT, setupForm.getHttpsPort());
-            sethlansProperties.setProperty(FIRST_TIME, "false");
+
             sethlansProperties.setProperty(LOGGING_FILE, setupForm.getLogDirectory());
             sethlansProperties.setProperty(MODE, setupForm.getMode().toString());
             //Save Properties to File
@@ -98,6 +98,34 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
             //Save Properties to File
             sethlansProperties.store(fileOutputStream, SethlansUtils.updaterTimeStamp());
             LOG.debug("Server Settings Saved");
+
+            // Create directories
+            File projectDir = new File(setupForm.getProjectDirectory());
+            File dataDir = new File(setupForm.getDataDirectory());
+            File blenderDir = new File(setupForm.getBlenderDirectory());
+            File tempDir = new File(setupForm.getTempDirectory());
+
+            if (!projectDir.mkdirs()) {
+                LOG.error("Unable to create project directory " + projectDir.toString());
+                // TODO Placeholders for now will need to replace System.exit with a friendly message to GUI and restart the setup wizard.
+                System.exit(1);
+
+            }
+            if (!dataDir.mkdirs()) {
+                LOG.error("Unable to create data directory " + dataDir.toString());
+                System.exit(1);
+
+            }
+            if (!blenderDir.mkdirs()) {
+                LOG.error("Unable to create data directory " + blenderDir.toString());
+                System.exit(1);
+
+            }
+            if (!tempDir.mkdirs()) {
+                LOG.error("Unable to create data directory " + tempDir.toString());
+                System.exit(1);
+            }
+
             return true;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -117,51 +145,22 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
         return false;
     }
 
-    //    private void setProperty(Enum key, Enum value) {
-//        try {
-//            Properties properties = new Properties();
-//            try (FileInputStream fileIn = new FileInputStream(defaultConfigFile)) {
-//                properties.loadFromXML(fileIn);
-//            }
-//            properties.setProperty(SethlansUtils.enumToString(key), SethlansUtils.enumToString(value));
-//            try (FileOutputStream fileOut = new FileOutputStream(defaultConfigFile)) {
-//                properties.storeToXML(fileOut, SethlansUtils.updaterTimeStamp());
-//            }
-//        } catch (FileNotFoundException e) {
-//            LOG.error(e.getMessage());
-//        } catch (IOException e) {
-//            LOG.error(e.getMessage());
-//        }
-//    }
-//    private void setProperty(Enum key, String value) {
-//        try {
-//            Properties properties = new Properties();
-//            try (FileInputStream fileIn = new FileInputStream(defaultConfigFile)) {
-//                properties.loadFromXML(fileIn);
-//            }
-//            properties.setProperty(SethlansUtils.enumToString(key), value);
-//            try (FileOutputStream fileOut = new FileOutputStream(defaultConfigFile)) {
-//                properties.storeToXML(fileOut, SethlansUtils.updaterTimeStamp());
-//            }
-//        } catch (FileNotFoundException e) {
-//            LOG.error(e.getMessage());
-//        } catch (IOException e) {
-//            LOG.error(e.getMessage());
-//        }
-//    }
-//    private String getProperty(Enum key) {
-//        try {
-//            Properties properties = new Properties();
-//            try (FileInputStream fileIn = new FileInputStream(defaultConfigFile)) {
-//                properties.loadFromXML(fileIn);
-//            }
-//            return properties.getProperty(SethlansUtils.enumToString(key));
-//        } catch (FileNotFoundException e) {
-//            LOG.error(e.getMessage());
-//        } catch (IOException e) {
-//            LOG.error(e.getMessage());
-//            System.exit(1);
-//        }
-//        return null;
-//    }
+    @Override
+    public void wizardCompleted() {
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(configFile);
+            sethlansProperties.setProperty(FIRST_TIME, "false");
+            //Save Properties to File
+            sethlansProperties.store(fileOutputStream, SethlansUtils.updaterTimeStamp());
+            LOG.debug("Setup Wizard completed successfully setting first time property to false");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
 }

@@ -69,9 +69,12 @@ public class Sethlans {
         List<String> arrayArgs = new ArrayList<>();
 
         // Setting up config directory
+
+        File configDirectory = new File(System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "config" + File.separator);
+        configDirectory.mkdirs();
         arrayArgs.add("--spring.config.name=sethlans");
-        String configDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "config" + File.separator;
-        arrayArgs.add("--spring.config.location=" + configDirectory);
+        arrayArgs.add("--spring.config.location=" + configDirectory.toString() + File.separator);
+
         try {
             cmdParser.parseArgument(args);
         } catch (CmdLineException e) {

@@ -22,15 +22,13 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.commands.SetupForm;
 import com.dryadandnaiad.sethlans.enums.SetupProgress;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupSetupConfigServiceImpl;
+import com.dryadandnaiad.sethlans.services.interfaces.RestartSethlansService;
 import com.dryadandnaiad.sethlans.services.interfaces.SaveSetupConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.ExitCodeGenerator;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -58,9 +56,12 @@ public class SetupController {
     private boolean firstTime;
 
     private Validator setupFormValidator;
+    private RestartSethlansService restartSethlansService;
 
     @Autowired
-    private ApplicationContext context;
+    public void setRestartSethlansService(RestartSethlansService restartSethlansService) {
+        this.restartSethlansService = restartSethlansService;
+    }
 
     @Autowired
     @Qualifier("setupFormValidator")
@@ -79,7 +80,7 @@ public class SetupController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String processPage(final @Valid @ModelAttribute("setupForm") SetupForm setupForm, BindingResult bindingResult) {
+    public String processPage(final @Valid @ModelAttribute("setupForm") SetupForm setupForm, BindingResult bindingResult) throws InterruptedException {
         LOG.debug("Current progress \n" + setupForm.toString());
         setupFormValidator.validate(setupForm, bindingResult);
 
@@ -104,8 +105,11 @@ public class SetupController {
                 default:
                     System.exit(1);
             }
-            SpringApplication.exit(context, (ExitCodeGenerator) () -> 2);
-            //TODO program needs to check for this exit code and restart Spring Boot
+            saveSetupConfigService.wizardCompleted();
+            LOG.info("Restarting Sethlans and implementing configuration changes.");
+            restartSethlansService.restart();
+            return "restarting";
+
         }
         return "setup";
     }
