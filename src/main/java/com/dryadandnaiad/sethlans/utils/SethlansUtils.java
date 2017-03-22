@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * Created Mario Estrella on 3/9/17.
@@ -67,5 +69,10 @@ public class SethlansUtils {
         } catch (URISyntaxException e) {
             LOG.error("Unable to Open Web page" + e.getMessage());
         }
+    }
+
+    public static String updaterTimeStamp() {
+        Date currentDate = GregorianCalendar.getInstance().getTime();
+        return String.format("Updated: %1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS", currentDate);
     }
 }

@@ -20,10 +20,14 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.commands.SetupForm;
+import com.dryadandnaiad.sethlans.enums.SetupProgress;
+import com.dryadandnaiad.sethlans.services.config.SaveSetupSetupConfigServiceImpl;
+import com.dryadandnaiad.sethlans.services.interfaces.SaveSetupConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -46,6 +50,10 @@ import javax.validation.Valid;
 @SessionAttributes("setupForm")
 public class SetupController {
     private static final Logger LOG = LoggerFactory.getLogger(SetupController.class);
+
+    @Value("${sethlans.firsttime}")
+    private boolean firstTime;
+
     private Validator setupFormValidator;
 
     @Autowired
@@ -56,8 +64,12 @@ public class SetupController {
 
     @RequestMapping
     public String getStartPage(final ModelMap modelMap) {
-        modelMap.addAttribute("setupForm", new SetupForm());
-        return "setup";
+        if (firstTime) {
+            modelMap.addAttribute("setupForm", new SetupForm());
+            return "setup";
+        }
+        return "redirect:/";
+
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -68,6 +80,25 @@ public class SetupController {
         if (bindingResult.hasErrors()) {
             LOG.debug(bindingResult.toString());
             setupForm.setProgress(setupForm.getPrevious());
+        }
+
+        if (setupForm.getProgress() == SetupProgress.FINISHED) {
+            SaveSetupConfigService saveSetupConfigService = new SaveSetupSetupConfigServiceImpl(setupForm);
+            saveSetupConfigService.saveSethlansSettings();
+            switch (setupForm.getMode()) {
+                case SERVER:
+                    saveSetupConfigService.saveServerSettings();
+                    break;
+                case BOTH:
+                    saveSetupConfigService.saveDualSettings();
+                    break;
+                case NODE:
+                    saveSetupConfigService.saveNodeSettings();
+                    break;
+                default:
+                    System.exit(1);
+            }
+            return "redirect:/";
         }
         return "setup";
     }

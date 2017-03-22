@@ -21,23 +21,32 @@ package com.dryadandnaiad.sethlans.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
+@Component
 /**
  * Created Mario Estrella on 3/10/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-
 public class OpenBrowser {
+    private static String port;
     private static final Logger LOG = LoggerFactory.getLogger(OpenBrowser.class);
 
+    @Value("${server.port}")
+    public void setPort(String port) {
+        OpenBrowser.port = port;
+    }
+
     public static void start() throws MalformedURLException {
+
         LOG.debug("Opening Browser");
-        URL url = new URL("https://localhost:7443" + "/");
+        URL url = new URL("https://localhost:" + port + "/");
         SethlansUtils.openWebpage(url);
 
     }

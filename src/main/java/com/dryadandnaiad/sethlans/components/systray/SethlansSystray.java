@@ -67,8 +67,7 @@ public class SethlansSystray extends TrayIcon {
             try {
                 OpenBrowser.start();
             } catch (MalformedURLException e1) {
-                LOG.error("Error with URL" + e1.getMessage());
-                e1.printStackTrace();
+                LOG.error("Error with URL " + e1.getMessage());
             }
         });
 
@@ -82,7 +81,7 @@ public class SethlansSystray extends TrayIcon {
             try {
                 OpenBrowser.about();
             } catch (MalformedURLException e1) {
-                LOG.error("Error with URL" + e1.getMessage());
+                LOG.error("Error with URL " + e1.getMessage());
             }
         });
 

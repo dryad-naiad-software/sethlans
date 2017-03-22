@@ -25,7 +25,13 @@ package com.dryadandnaiad.sethlans.services.interfaces;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface SaveConfigService {
+public interface SaveSetupConfigService {
     public boolean saveSethlansSettings();
+
+    public boolean saveServerSettings();
+
+    public boolean saveNodeSettings();
+
+    public boolean saveDualSettings();
 
 }
