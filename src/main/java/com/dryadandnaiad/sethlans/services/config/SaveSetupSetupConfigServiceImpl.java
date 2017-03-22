@@ -83,8 +83,10 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
             LOG.debug(" Sethlans Settings Saved");
             return true;
         } catch (FileNotFoundException e) {
+            LOG.error(e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
+            LOG.error(e.getMessage());
             e.printStackTrace();
         }
         return false;
@@ -131,9 +133,10 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
 
             return true;
         } catch (FileNotFoundException e) {
+            LOG.error(e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         }
         return false;
     }
@@ -145,7 +148,15 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
             sethlansProperties.setProperty(CACHE_DIR, setupForm.getWorkingDirectory());
             sethlansProperties.setProperty(COMPUTE_METHOD, setupForm.getSelectedMethod().toString());
             if (!setupForm.getSelectedGPUId().isEmpty()) {
-                sethlansProperties.setProperty(CUDA_DEVICE, ""); // TODO For each to loop through devices and append in comma format "CUDA_0, CUDA_1"
+                StringBuilder result = new StringBuilder();
+                for (Integer id : setupForm.getSelectedGPUId()) {
+                    if (result.length() != 0) {
+                        result.append(",");
+                    }
+                    result.append(setupForm.getAvailableGPUs().get(id).getCudaName());
+                }
+
+                sethlansProperties.setProperty(CUDA_DEVICE, result.toString());
             }
             if (!setupForm.getSelectedMethod().equals(ComputeType.GPU)) {
                 sethlansProperties.setProperty(CPU_CORES, Integer.toString(setupForm.getCores()));
@@ -168,9 +179,9 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
 
             return true;
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         }
         return false;
     }
@@ -190,9 +201,9 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
             sethlansProperties.store(fileOutputStream, SethlansUtils.updaterTimeStamp());
             LOG.debug("Setup Wizard completed successfully setting first time property to false");
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         }
 
 
