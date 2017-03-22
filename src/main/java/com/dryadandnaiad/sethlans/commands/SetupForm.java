@@ -62,8 +62,6 @@ public class SetupForm {
     private String passWordConf;
 
     @NotEmpty
-    private String configDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "config" + File.separator;
-    @NotEmpty
     private String dataDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "data" + File.separator;
     @NotEmpty
     private String projectDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "projects" + File.separator;
@@ -157,14 +155,6 @@ public class SetupForm {
 
     public void setPassWord(String passWord) {
         this.passWord = passWord;
-    }
-
-    public String getConfigDirectory() {
-        return configDirectory;
-    }
-
-    public void setConfigDirectory(String configDirectory) {
-        this.configDirectory = configDirectory;
     }
 
     public String getDataDirectory() {
@@ -294,7 +284,6 @@ public class SetupForm {
                 ", userName='" + userName + '\'' +
                 ", passWord='" + passWord + '\'' +
                 ", passWordConf='" + passWordConf + '\'' +
-                ", configDirectory='" + configDirectory + '\'' +
                 ", dataDirectory='" + dataDirectory + '\'' +
                 ", projectDirectory='" + projectDirectory + '\'' +
                 ", blenderDirectory='" + blenderDirectory + '\'' +

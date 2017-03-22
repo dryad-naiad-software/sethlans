@@ -32,6 +32,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.logging.LogLevel;
 
 import java.awt.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,7 +66,12 @@ public class Sethlans {
 
     public void doMain(String[] args) {
         CmdLineParser cmdParser = new CmdLineParser(this);
-        List<String> arrayArgs = new ArrayList<String>();
+        List<String> arrayArgs = new ArrayList<>();
+
+        // Setting up config directory
+        arrayArgs.add("--spring.config.name=sethlans");
+        String configDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "config" + File.separator;
+        arrayArgs.add("--spring.config.location=" + configDirectory);
         try {
             cmdParser.parseArgument(args);
         } catch (CmdLineException e) {
