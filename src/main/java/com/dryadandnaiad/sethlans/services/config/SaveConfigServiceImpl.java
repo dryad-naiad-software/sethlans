@@ -32,7 +32,12 @@ import org.slf4j.LoggerFactory;
 public class SaveConfigServiceImpl implements SaveConfigService {
     private static final Logger LOG = LoggerFactory.getLogger(SaveConfigServiceImpl.class);
 
-//    private void setProperty(Enum key, Enum value) {
+    @Override
+    public boolean saveSethlansSettings() {
+        return false;
+    }
+
+    //    private void setProperty(Enum key, Enum value) {
 //        try {
 //            Properties properties = new Properties();
 //            try (FileInputStream fileIn = new FileInputStream(defaultConfigFile)) {

@@ -26,4 +26,6 @@ package com.dryadandnaiad.sethlans.services.interfaces;
  * Project: sethlans
  */
 public interface SaveConfigService {
+    public boolean saveSethlansSettings();
+
 }

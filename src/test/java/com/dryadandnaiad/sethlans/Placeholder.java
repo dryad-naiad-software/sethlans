@@ -19,17 +19,11 @@
 
 package com.dryadandnaiad.sethlans;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class SethlansApplicationTests {
-
-	@Test
-	public void contextLoads() {
-	}
-
+/**
+ * Created Mario Estrella on 3/22/17.
+ * Dryad and Naiad Software LLC
+ * mestrella@dryadandnaiad.com
+ * Project: sethlans
+ */
+public class Placeholder {
 }
