@@ -79,7 +79,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
             sethlansProperties.setProperty(LOGGING_FILE, setupForm.getLogDirectory());
             sethlansProperties.setProperty(MODE, setupForm.getMode().toString());
             //Save Properties to File
-            sethlansProperties.store(fileOutputStream, SethlansUtils.updaterTimeStamp());
+            sethlansProperties.store(fileOutputStream, "");
             LOG.debug(" Sethlans Settings Saved");
             return true;
         } catch (FileNotFoundException e) {
@@ -101,7 +101,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
             sethlansProperties.setProperty(BLENDER_DIR, setupForm.getBlenderDirectory());
             sethlansProperties.setProperty(TEMP_DIR, setupForm.getTempDirectory());
             //Save Properties to File
-            sethlansProperties.store(fileOutputStream, SethlansUtils.updaterTimeStamp());
+            sethlansProperties.store(fileOutputStream, "");
             LOG.debug("Server Settings Saved");
 
             // Create directories
@@ -164,8 +164,8 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
 
 
             //Save Properties to File
-            sethlansProperties.store(fileOutputStream, SethlansUtils.updaterTimeStamp());
-            LOG.debug("Server Settings Saved");
+            sethlansProperties.store(fileOutputStream, "");
+            LOG.debug("Node Settings Saved");
 
             // Create directories
             File cacheDir = new File(setupForm.getWorkingDirectory());
@@ -193,12 +193,11 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
 
     @Override
     public void wizardCompleted() {
-        FileOutputStream fileOutputStream = null;
         try {
-            fileOutputStream = new FileOutputStream(configFile);
+            FileOutputStream fileOutputStream = new FileOutputStream(configFile);
             sethlansProperties.setProperty(FIRST_TIME, "false");
             //Save Properties to File
-            sethlansProperties.store(fileOutputStream, SethlansUtils.updaterTimeStamp());
+            sethlansProperties.store(fileOutputStream, "");
             LOG.debug("Setup Wizard completed successfully setting first time property to false");
         } catch (FileNotFoundException e) {
             LOG.error(e.getMessage());
