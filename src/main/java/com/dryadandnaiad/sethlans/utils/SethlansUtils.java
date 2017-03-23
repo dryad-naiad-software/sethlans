@@ -19,18 +19,21 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.Properties;
 
 /**
  * Created Mario Estrella on 3/9/17.
@@ -40,6 +43,10 @@ import java.util.GregorianCalendar;
  */
 public class SethlansUtils {
     private static final Logger LOG = LoggerFactory.getLogger(SethlansUtils.class);
+    private static final String path = System.getProperty("user.home") + File.separator + ".sethlans";
+    private static final File configDirectory = new File(path + File.separator + "config");
+    private static final File configFile = new File(configDirectory + File.separator + "sethlans.properties");
+    private static Properties sethlansProperties = new Properties();
 
     public static Image createImage(String image, String description) {
         URL imageURL = null;
@@ -71,8 +78,40 @@ public class SethlansUtils {
         }
     }
 
-    public static String updaterTimeStamp() {
-        Date currentDate = GregorianCalendar.getInstance().getTime();
-        return String.format("Updated: %1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS", currentDate);
+    public static boolean writeProperty(SethlansConfigKeys configKey, String value){
+        String key = configKey.toString();
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(configFile);
+            sethlansProperties.setProperty(key, value);
+            //Save Properties to File
+            sethlansProperties.store(fileOutputStream, "");
+            LOG.debug("SethlansConfigKey:" + key + " written to " + configFile);
+            return true;
+        } catch (FileNotFoundException e) {
+            LOG.error(e.getMessage());
+            e.printStackTrace();
+        } catch (IOException e) {
+            LOG.error(e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean writeProperty(String key, String value){
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(configFile);
+            sethlansProperties.setProperty(key, value);
+            //Save Properties to File
+            sethlansProperties.store(fileOutputStream, "");
+            LOG.debug(key + " written to " + configFile);
+            return true;
+        } catch (FileNotFoundException e) {
+            LOG.error(e.getMessage());
+            e.printStackTrace();
+        } catch (IOException e) {
+            LOG.error(e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
     }
 }
