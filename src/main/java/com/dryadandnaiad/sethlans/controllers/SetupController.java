@@ -108,8 +108,6 @@ public class SetupController {
             saveSetupConfigService.wizardCompleted();
             LOG.info("Restarting Sethlans and implementing configuration changes.");
             restartSethlansService.restart();
-            return "restarting";
-
         }
         return "setup";
     }

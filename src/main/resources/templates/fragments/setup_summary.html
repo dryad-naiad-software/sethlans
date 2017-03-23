@@ -78,8 +78,12 @@
                         <div class="well" th:fragment="setup_summary">
                             <h2 style="margin-top: auto"><strong>Setup Summary</strong></h2>
                             <!--/*@thymesVar id="setupForm" type="com.dryadandnaiad.sethlans.commands.SetupForm"*/-->
-                            <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
+                            <form id="setupWizard" name="setupWizard" th:object="${setupForm}"
                                   method="POST">
+                                <div class="alert alert-success" id="saved" style="display: block">
+                                    <strong>Configuration Saved. <br/>Sethlans is restarting and will redirect to
+                                        homepage in 8 seconds.</strong>
+                                </div>
                                 <div class="table-responsive">
                                     <table class="table" th:switch="${setupForm.mode}">
                                         <tbody>
@@ -175,10 +179,20 @@
                                     <br/>
                                 </div>
                             </form>
-                            <script th:inline="javascript">
+                            <script th:inline="javascript" defer="defer">
                                 function nextClicked() {
                                     document.getElementById("progress").value = "FINISHED";
-                                    document.getElementById("setupWizard").submit();
+                                    $.ajax({
+                                        url: '/setup',
+                                        type: 'post',
+                                        data: $('#setupWizard').serialize(),
+                                        success: function () {
+                                            document.getElementById("saved").style.display = "block"
+                                            window.setTimeout(function () {
+                                                window.location.port = /*[[${setupForm.httpsPort}]]*/ '1234';
+                                            }, 8000);
+                                        }
+                                    });
                                 }
                                 function previousClicked() {
                                     document.getElementById("progress").value = /*[[${setupForm.previous.toString()}]]*/ 'MODE';
