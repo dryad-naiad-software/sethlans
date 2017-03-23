@@ -26,13 +26,12 @@ import org.springframework.core.io.ClassPathResource;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Properties;
 
 /**
@@ -79,12 +78,22 @@ public class SethlansUtils {
     }
 
     public static boolean writeProperty(SethlansConfigKeys configKey, String value){
+        String comment = "";
         String key = configKey.toString();
+        if (configFile.exists()) {
+            try (FileInputStream fileIn = new FileInputStream(configFile)) {
+                sethlansProperties.load(fileIn);
+                comment = updateTimeStamp();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(configFile);
             sethlansProperties.setProperty(key, value);
             //Save Properties to File
-            sethlansProperties.store(fileOutputStream, "");
+            sethlansProperties.store(fileOutputStream, comment);
             LOG.debug("SethlansConfigKey:" + key + " written to " + configFile);
             return true;
         } catch (FileNotFoundException e) {
@@ -98,11 +107,20 @@ public class SethlansUtils {
     }
 
     public static boolean writeProperty(String key, String value){
+        String comment = "";
+        if (configFile.exists()) {
+            try (FileInputStream fileIn = new FileInputStream(configFile)) {
+                sethlansProperties.load(fileIn);
+                comment = updateTimeStamp();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(configFile);
             sethlansProperties.setProperty(key, value);
             //Save Properties to File
-            sethlansProperties.store(fileOutputStream, "");
+            sethlansProperties.store(fileOutputStream, comment);
             LOG.debug(key + " written to " + configFile);
             return true;
         } catch (FileNotFoundException e) {
@@ -114,4 +132,10 @@ public class SethlansUtils {
         }
         return false;
     }
+
+    public static String updateTimeStamp() {
+        Date currentDate = GregorianCalendar.getInstance().getTime();
+        return String.format("Updated: %1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS", currentDate);
+    }
+
 }

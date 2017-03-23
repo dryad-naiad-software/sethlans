@@ -33,9 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Properties;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansUtils.writeProperty;
@@ -93,7 +90,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
         writeProperty(SethlansConfigKeys.HTTPS_PORT, setupForm.getHttpsPort());
         writeProperty(SethlansConfigKeys.LOGGING_FILE, setupForm.getLogDirectory());
         writeProperty(SethlansConfigKeys.MODE, setupForm.getMode().toString());
-        writeProperty("spring.jpa.hibernate.ddl-auto", "validate");
+        //writeProperty("spring.jpa.hibernate.ddl-auto", "validate");
     }
 
     @Override
@@ -101,49 +98,59 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
         writeProperty(SethlansConfigKeys.PROJECT_DIR, setupForm.getProjectDirectory());
         writeProperty(SethlansConfigKeys.BLENDER_DIR, setupForm.getBlenderDirectory());
         writeProperty(SethlansConfigKeys.TEMP_DIR, setupForm.getTempDirectory());
+
+        LOG.debug("Server Settings Saved");
+        // Create directories
+        File projectDir = new File(setupForm.getProjectDirectory());
+        File blenderDir = new File(setupForm.getBlenderDirectory());
+        File tempDir = new File(setupForm.getTempDirectory());
+        if (!projectDir.mkdirs()) {
+            LOG.error("Unable to create project directory " + projectDir.toString());
+            // TODO Placeholders for now will need to replace System.exit with a friendly message to GUI and restart the setup wizard.
+            System.exit(1);
+        }
+        if (!blenderDir.mkdirs()) {
+            LOG.error("Unable to create data directory " + blenderDir.toString());
+            System.exit(1);
+        }
+        if (!tempDir.mkdirs()) {
+            LOG.error("Unable to create data directory " + tempDir.toString());
+            System.exit(1);
+        }
      }
 
     @Override
     public void saveNodeSettings(SetupForm setupForm) {
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(configFile);
-            sethlansProperties.setProperty(SethlansConfigKeys.CACHE_DIR.toString(), setupForm.getWorkingDirectory());
-            sethlansProperties.setProperty(SethlansConfigKeys.COMPUTE_METHOD.toString(), setupForm.getSelectedMethod().toString());
-            if (!setupForm.getSelectedGPUId().isEmpty()) {
-                StringBuilder result = new StringBuilder();
-                for (Integer id : setupForm.getSelectedGPUId()) {
-                    if (result.length() != 0) {
-                        result.append(",");
-                    }
-                    result.append(setupForm.getAvailableGPUs().get(id).getCudaName());
+        writeProperty(SethlansConfigKeys.CACHE_DIR, setupForm.getWorkingDirectory());
+        writeProperty(SethlansConfigKeys.COMPUTE_METHOD, setupForm.getSelectedMethod().toString());
+
+        if (!setupForm.getSelectedGPUId().isEmpty()) {
+            StringBuilder result = new StringBuilder();
+            for (Integer id : setupForm.getSelectedGPUId()) {
+                if (result.length() != 0) {
+                    result.append(",");
                 }
-
-                sethlansProperties.setProperty(SethlansConfigKeys.CUDA_DEVICE.toString(), result.toString());
+                result.append(setupForm.getAvailableGPUs().get(id).getCudaName());
             }
-            if (!setupForm.getSelectedMethod().equals(ComputeType.GPU)) {
-                sethlansProperties.setProperty(SethlansConfigKeys.CPU_CORES.toString(), Integer.toString(setupForm.getCores()));
-            }
-
-
-            //Save Properties to File
-            sethlansProperties.store(fileOutputStream, "");
-            LOG.debug("Node Settings Saved");
-
-            // Create directories
-            File cacheDir = new File(setupForm.getWorkingDirectory());
-
-            if (!cacheDir.mkdirs()) {
-                LOG.error("Unable to create project directory " + cacheDir.toString());
-                // TODO Placeholders for now will need to replace System.exit with a friendly message to GUI and restart the setup wizard.
-                System.exit(1);
-
-            }
-
-        } catch (FileNotFoundException e) {
-            LOG.error(e.getMessage());
-        } catch (IOException e) {
-            LOG.error(e.getMessage());
+            writeProperty(SethlansConfigKeys.CUDA_DEVICE, result.toString());
         }
+
+        if (!setupForm.getSelectedMethod().equals(ComputeType.GPU)) {
+            writeProperty(SethlansConfigKeys.CPU_CORES, Integer.toString(setupForm.getCores()));
+        }
+
+        // Create directories
+        File cacheDir = new File(setupForm.getWorkingDirectory());
+
+        if (!cacheDir.mkdirs()) {
+            LOG.error("Unable to create project directory " + cacheDir.toString());
+            // TODO Placeholders for now will need to replace System.exit with a friendly message to GUI and restart the setup wizard.
+            System.exit(1);
+
+        }
+
+        LOG.debug("Node Settings Saved");
+
     }
 
     @Override
