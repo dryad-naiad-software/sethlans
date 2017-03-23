@@ -20,12 +20,8 @@
 package com.dryadandnaiad.sethlans.domains;
 
 import com.dryadandnaiad.sethlans.domains.security.SethlansRole;
-import org.springframework.data.annotation.Transient;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
