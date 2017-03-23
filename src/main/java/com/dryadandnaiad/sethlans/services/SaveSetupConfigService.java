@@ -28,13 +28,13 @@ import com.dryadandnaiad.sethlans.commands.SetupForm;
  * Project: sethlans
  */
 public interface SaveSetupConfigService {
-    boolean saveSethlansSettings(SetupForm setupForm);
+    void saveSethlansSettings(SetupForm setupForm);
 
-    boolean saveServerSettings(SetupForm setupForm);
+    void saveServerSettings(SetupForm setupForm);
 
-    boolean saveNodeSettings(SetupForm setupForm);
+    void saveNodeSettings(SetupForm setupForm);
 
-    boolean saveDualSettings(SetupForm setupForm);
+    void saveDualSettings(SetupForm setupForm);
 
     void wizardCompleted();
 
