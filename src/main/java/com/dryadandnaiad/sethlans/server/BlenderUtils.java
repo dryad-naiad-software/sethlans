@@ -20,8 +20,8 @@
 package com.dryadandnaiad.sethlans.server;
 
 import com.dryadandnaiad.sethlans.domains.Blender;
-import com.dryadandnaiad.sethlans.services.interfaces.GetJSONData;
-import com.dryadandnaiad.sethlans.services.network.GetJSONDataImpl;
+import com.dryadandnaiad.sethlans.services.GetRawDataService;
+import com.dryadandnaiad.sethlans.services.network.GetRawDataServiceImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,8 +43,8 @@ public class BlenderUtils {
 
     private static void getList() {
 
-        GetJSONData getJSONData = new GetJSONDataImpl();
-        String data = getJSONData.getJSONResult("https://gist.githubusercontent.com/marioestrella/def9d852b3298008ae16040bbbabc524/raw/");
+        GetRawDataService getJSONData = new GetRawDataServiceImpl();
+        String data = getJSONData.getResult("https://gist.githubusercontent.com/marioestrella/def9d852b3298008ae16040bbbabc524/raw/");
         LOG.debug("Retrieved JSON: \n" + data);
         if (data != null || !data.isEmpty()) {
             blenderList = new LinkedList<>();

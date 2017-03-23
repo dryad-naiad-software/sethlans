@@ -21,9 +21,8 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.commands.SetupForm;
 import com.dryadandnaiad.sethlans.enums.SetupProgress;
-import com.dryadandnaiad.sethlans.services.config.SaveSetupSetupConfigServiceImpl;
-import com.dryadandnaiad.sethlans.services.interfaces.RestartSethlansService;
-import com.dryadandnaiad.sethlans.services.interfaces.SaveSetupConfigService;
+import com.dryadandnaiad.sethlans.services.RestartSethlansService;
+import com.dryadandnaiad.sethlans.services.SaveSetupConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +56,12 @@ public class SetupController {
 
     private Validator setupFormValidator;
     private RestartSethlansService restartSethlansService;
+    private SaveSetupConfigService saveSetupConfigService;
+
+    @Autowired
+    public void setSaveSetupConfigService(SaveSetupConfigService saveSetupConfigService) {
+        this.saveSetupConfigService = saveSetupConfigService;
+    }
 
     @Autowired
     public void setRestartSethlansService(RestartSethlansService restartSethlansService) {
@@ -90,21 +95,20 @@ public class SetupController {
         }
 
         if (setupForm.getProgress() == SetupProgress.FINISHED) {
-            SaveSetupConfigService saveSetupConfigService = new SaveSetupSetupConfigServiceImpl(setupForm);
             switch (setupForm.getMode()) {
                 case SERVER:
-                    saveSetupConfigService.saveServerSettings();
+                    saveSetupConfigService.saveServerSettings(setupForm);
                     break;
                 case BOTH:
-                    saveSetupConfigService.saveDualSettings();
+                    saveSetupConfigService.saveDualSettings(setupForm);
                     break;
                 case NODE:
-                    saveSetupConfigService.saveNodeSettings();
+                    saveSetupConfigService.saveNodeSettings(setupForm);
                     break;
                 default:
                     System.exit(1);
             }
-            saveSetupConfigService.saveSethlansSettings();
+            saveSetupConfigService.saveSethlansSettings(setupForm);
             saveSetupConfigService.wizardCompleted();
             LOG.info("Restarting Sethlans and implementing configuration changes.");
             restartSethlansService.restart();

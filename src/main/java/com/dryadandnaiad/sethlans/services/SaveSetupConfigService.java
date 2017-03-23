@@ -17,32 +17,25 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.restart;
+package com.dryadandnaiad.sethlans.services;
 
-import com.dryadandnaiad.sethlans.components.SethlansSystrayComponent;
-import com.dryadandnaiad.sethlans.services.RestartSethlansService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.restart.RestartEndpoint;
-import org.springframework.stereotype.Service;
+import com.dryadandnaiad.sethlans.commands.SetupForm;
 
 /**
- * Created Mario Estrella on 3/22/17.
+ * Created Mario Estrella on 3/18/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Service
-public class RestartSethlansServiceImpl implements RestartSethlansService {
+public interface SaveSetupConfigService {
+    boolean saveSethlansSettings(SetupForm setupForm);
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
-    @Autowired
-    private RestartEndpoint restartEndpoint;
+    boolean saveServerSettings(SetupForm setupForm);
 
-    @Override
-    public void restart() {
-        Thread restartThread = new Thread(() -> restartEndpoint.restart());
-        restartThread.setDaemon(false);
-        restartThread.start();
-        SethlansSystrayComponent.teardown();
-    }
+    boolean saveNodeSettings(SetupForm setupForm);
+
+    boolean saveDualSettings(SetupForm setupForm);
+
+    void wizardCompleted();
+
 }

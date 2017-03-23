@@ -17,13 +17,7 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.restart;
-
-import com.dryadandnaiad.sethlans.components.SethlansSystrayComponent;
-import com.dryadandnaiad.sethlans.services.RestartSethlansService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.restart.RestartEndpoint;
-import org.springframework.stereotype.Service;
+package com.dryadandnaiad.sethlans.services;
 
 /**
  * Created Mario Estrella on 3/22/17.
@@ -31,18 +25,6 @@ import org.springframework.stereotype.Service;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Service
-public class RestartSethlansServiceImpl implements RestartSethlansService {
-
-    @SuppressWarnings("SpringJavaAutowiringInspection")
-    @Autowired
-    private RestartEndpoint restartEndpoint;
-
-    @Override
-    public void restart() {
-        Thread restartThread = new Thread(() -> restartEndpoint.restart());
-        restartThread.setDaemon(false);
-        restartThread.start();
-        SethlansSystrayComponent.teardown();
-    }
+public interface RestartSethlansService {
+    void restart();
 }

@@ -21,10 +21,10 @@ package com.dryadandnaiad.sethlans.services.config;
 
 import com.dryadandnaiad.sethlans.commands.SetupForm;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.services.interfaces.SaveSetupConfigService;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.dryadandnaiad.sethlans.services.SaveSetupConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -38,6 +38,7 @@ import java.util.Properties;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Service
 public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     private static final Logger LOG = LoggerFactory.getLogger(SaveSetupSetupConfigServiceImpl.class);
 
@@ -56,22 +57,19 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     private final String CPU_CORES = "sethlans.cores";
 
 
-
-    private SetupForm setupForm;
     private Properties sethlansProperties;
 
     private final String path = System.getProperty("user.home") + File.separator + ".sethlans";
     private final File configDirectory = new File(path + File.separator + "config");
     private final File configFile = new File(configDirectory + File.separator + "sethlans.properties");
 
-    public SaveSetupSetupConfigServiceImpl(SetupForm setupForm) {
-        this.setupForm = setupForm;
+    public SaveSetupSetupConfigServiceImpl() {
         this.sethlansProperties = new Properties();
 
     }
 
     @Override
-    public boolean saveSethlansSettings() {
+    public boolean saveSethlansSettings(SetupForm setupForm) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(configFile);
             sethlansProperties.setProperty(HTTPS_PORT, setupForm.getHttpsPort());
@@ -93,7 +91,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     }
 
     @Override
-    public boolean saveServerSettings() {
+    public boolean saveServerSettings(SetupForm setupForm) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(configFile);
             sethlansProperties.setProperty(PROJECT_DIR, setupForm.getProjectDirectory());
@@ -142,7 +140,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     }
 
     @Override
-    public boolean saveNodeSettings() {
+    public boolean saveNodeSettings(SetupForm setupForm) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(configFile);
             sethlansProperties.setProperty(CACHE_DIR, setupForm.getWorkingDirectory());
@@ -187,8 +185,8 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     }
 
     @Override
-    public boolean saveDualSettings() {
-        return saveServerSettings() && saveNodeSettings();
+    public boolean saveDualSettings(SetupForm setupForm) {
+        return saveServerSettings(setupForm) && saveNodeSettings(setupForm);
     }
 
     @Override

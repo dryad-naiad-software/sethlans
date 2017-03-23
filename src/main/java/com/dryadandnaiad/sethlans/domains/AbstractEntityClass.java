@@ -19,13 +19,9 @@
 
 package com.dryadandnaiad.sethlans.domains;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
+import javax.persistence.*;
 import java.util.Date;
 
 /**
@@ -34,7 +30,8 @@ import java.util.Date;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class AbstractEntityClass {
+@MappedSuperclass
+public class AbstractEntityClass implements EntityObject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
