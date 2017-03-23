@@ -44,7 +44,6 @@ public class SethlansUser extends AbstractEntityClass {
     private String password;
 
     private String encryptedPassword;
-
     private boolean enabled = true;
 
     @ManyToMany(fetch = FetchType.EAGER)

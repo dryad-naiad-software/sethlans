@@ -19,9 +19,12 @@
 
 package com.dryadandnaiad.sethlans.config;
 
+import org.h2.server.web.WebServlet;
 import org.jasypt.util.password.StrongPasswordEncryptor;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 
 /**
  * Created Mario Estrella on 3/18/17.
@@ -36,6 +39,13 @@ public class CommonBeanConfig {
     public StrongPasswordEncryptor strongEncryptor() {
         StrongPasswordEncryptor encryptor = new StrongPasswordEncryptor();
         return encryptor;
+    }
+
+    @Bean
+    ServletRegistrationBean h2servletRegistration() {
+        ServletRegistrationBean registrationBean = new ServletRegistrationBean(new WebServlet());
+        registrationBean.addUrlMappings("/console/*");
+        return registrationBean;
     }
 
 }

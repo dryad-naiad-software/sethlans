@@ -85,53 +85,53 @@
 
                                 <h3 style="margin-top: auto"><strong><u>Authentication</u></strong></h3>
                                 <div class="form-group"
-                                     th:class="${#fields.hasErrors('userName')} ? 'form-group has-error' : 'form-group'">
-                                    <label for="userName">User Name</label>
-                                    <input type="text" class="form-control" id="userName"
-                                           th:field="*{userName}"
+                                     th:class="${#fields.hasErrors('username')} ? 'form-group has-error' : 'form-group'">
+                                    <label for="username">User Name</label>
+                                    <input type="text" class="form-control" id="username"
+                                           th:field="*{username}"
                                            th:errorclass="has-error"
                                            data-toggle="tooltip"
                                            data-trigger="hover"
-                                           th:title="#{setup.tooltip.userName}"
+                                           th:title="#{setup.tooltip.username}"
                                            title="user name for sethlans">
                                     <span class="help-block">
                                         <ul>
-                                        <li th:each="err : ${#fields.errors('userName')}"
+                                        <li th:each="err : ${#fields.errors('username')}"
                                             th:text="${err}"/>
                                         </ul>
                                     </span>
                                 </div>
                                 <div class="form-group"
-                                     th:class="${#fields.hasErrors('passWord')} ? 'form-group has-error' : 'form-group'">
+                                     th:class="${#fields.hasErrors('password')} ? 'form-group has-error' : 'form-group'">
                                     <label for="password">Password</label>
                                     <input type="password" class="form-control" id="password"
-                                           th:field="*{passWord}"
+                                           th:field="*{password}"
                                            th:errorclass="has-error"
                                            data-toggle="tooltip"
                                            data-trigger="hover"
-                                           th:title="#{setup.tooltip.passWord}"
+                                           th:title="#{setup.tooltip.password}"
                                            title="password">
                                     <span class="help-block">
                                         <ul>
-                                        <li th:each="err : ${#fields.errors('passWord')}"
+                                        <li th:each="err : ${#fields.errors('password')}"
                                             th:text="${err}"/>
                                         </ul>
                                     </span>
                                 </div>
 
                                 <div class="form-group"
-                                     th:class="${#fields.hasErrors('passWord')} ? 'form-group has-error' : 'form-group'">
-                                    <label for="passwordConf">Confirm Password</label>
-                                    <input type="password" class="form-control" id="passwordConf"
-                                           th:field="*{passWordConf}"
+                                     th:class="${#fields.hasErrors('password')} ? 'form-group has-error' : 'form-group'">
+                                    <label for="passwordConfirm">Confirm Password</label>
+                                    <input type="password" class="form-control" id="passwordConfirm"
+                                           th:field="*{passwordConfirm}"
                                            th:errorclass="has-error"
                                            data-toggle="tooltip"
                                            data-trigger="hover"
-                                           th:title="#{setup.tooltip.passWordConf}"
+                                           th:title="#{setup.tooltip.passwordConfirm}"
                                            title="password confirmation">
                                     <span class="help-block">
                                         <ul>
-                                        <li th:each="err : ${#fields.errors('passWord')}"
+                                        <li th:each="err : ${#fields.errors('password')}"
                                             th:text="${err}"/>
                                         </ul>
                                     </span>

@@ -20,10 +20,15 @@
 package com.dryadandnaiad.sethlans.services.config;
 
 import com.dryadandnaiad.sethlans.commands.SetupForm;
+import com.dryadandnaiad.sethlans.domains.SethlansUser;
+import com.dryadandnaiad.sethlans.domains.security.SethlansRole;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.services.RoleService;
 import com.dryadandnaiad.sethlans.services.SaveSetupConfigService;
+import com.dryadandnaiad.sethlans.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -41,6 +46,14 @@ import java.util.Properties;
 @Service
 public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     private static final Logger LOG = LoggerFactory.getLogger(SaveSetupSetupConfigServiceImpl.class);
+    private final String path = System.getProperty("user.home") + File.separator + ".sethlans";
+    private final File configDirectory = new File(path + File.separator + "config");
+    private final File configFile = new File(configDirectory + File.separator + "sethlans.properties");
+    private Properties sethlansProperties;
+
+
+    private UserService userService;
+    private RoleService roleService;
 
     //Config File Constants
     private final String HTTPS_PORT = "server.port";
@@ -49,7 +62,6 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     private final String MODE = "sethlans.mode";
     private final String COMPUTE_METHOD = "sethlans.computeMethod";
     private final String PROJECT_DIR = "sethlans.projectDir";
-    private final String DATA_DIR = "sethlans.dataDir";
     private final String BLENDER_DIR = "sethlans.blenderDir";
     private final String TEMP_DIR = "sethlans.tempDir";
     private final String CACHE_DIR = "sethlans.cacheDir";
@@ -57,19 +69,36 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     private final String CPU_CORES = "sethlans.cores";
 
 
-    private Properties sethlansProperties;
-
-    private final String path = System.getProperty("user.home") + File.separator + ".sethlans";
-    private final File configDirectory = new File(path + File.separator + "config");
-    private final File configFile = new File(configDirectory + File.separator + "sethlans.properties");
-
     public SaveSetupSetupConfigServiceImpl() {
         this.sethlansProperties = new Properties();
+    }
 
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    @Autowired
+    public void setRoleService(RoleService roleService) {
+        this.roleService = roleService;
     }
 
     @Override
     public boolean saveSethlansSettings(SetupForm setupForm) {
+        SethlansRole admin = new SethlansRole();
+        admin.setRole("ADMIN");
+        roleService.saveOrUpdate(admin);
+        SethlansRole userRole = new SethlansRole();
+        userRole.setRole("USER");
+        roleService.saveOrUpdate(userRole);
+
+
+        SethlansUser user = new SethlansUser();
+        user.setUsername(setupForm.getUsername());
+        user.setPassword(setupForm.getPassword());
+        user.addRole(admin);
+        user.addRole(userRole);
+        userService.saveOrUpdate(user);
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(configFile);
             sethlansProperties.setProperty(HTTPS_PORT, setupForm.getHttpsPort());
@@ -95,27 +124,21 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(configFile);
             sethlansProperties.setProperty(PROJECT_DIR, setupForm.getProjectDirectory());
-            sethlansProperties.setProperty(DATA_DIR, setupForm.getDataDirectory());
             sethlansProperties.setProperty(BLENDER_DIR, setupForm.getBlenderDirectory());
             sethlansProperties.setProperty(TEMP_DIR, setupForm.getTempDirectory());
+
             //Save Properties to File
             sethlansProperties.store(fileOutputStream, "");
             LOG.debug("Server Settings Saved");
 
             // Create directories
             File projectDir = new File(setupForm.getProjectDirectory());
-            File dataDir = new File(setupForm.getDataDirectory());
             File blenderDir = new File(setupForm.getBlenderDirectory());
             File tempDir = new File(setupForm.getTempDirectory());
 
             if (!projectDir.mkdirs()) {
                 LOG.error("Unable to create project directory " + projectDir.toString());
                 // TODO Placeholders for now will need to replace System.exit with a friendly message to GUI and restart the setup wizard.
-                System.exit(1);
-
-            }
-            if (!dataDir.mkdirs()) {
-                LOG.error("Unable to create data directory " + dataDir.toString());
                 System.exit(1);
 
             }

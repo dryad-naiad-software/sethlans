@@ -50,19 +50,17 @@ public class SetupForm {
 
     @NotEmpty
     @Size(min = 4, max = 75)
-    private String userName;
+    private String username;
 
 
     @NotEmpty
     @Size(min = 8, max = 50)
-    private String passWord;
+    private String password;
 
     @NotEmpty
     @Size(min = 8, max = 50)
-    private String passWordConf;
+    private String passwordConfirm;
 
-    @NotEmpty
-    private String dataDirectory;
     @NotEmpty
     private String projectDirectory;
     @NotEmpty
@@ -94,7 +92,6 @@ public class SetupForm {
         this.availableMethods = new ArrayList<>();
         this.selectedGPUId = new ArrayList<>();
         this.cores = 1;
-        this.dataDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "data" + File.separator;
         this.projectDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "projects" + File.separator;
         this.blenderDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "blenderzips" + File.separator;
         this.tempDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "temp" + File.separator;
@@ -152,28 +149,20 @@ public class SetupForm {
         this.mode = mode;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getPassWord() {
-        return passWord;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
-    }
-
-    public String getDataDirectory() {
-        return dataDirectory;
-    }
-
-    public void setDataDirectory(String dataDirectory) {
-        this.dataDirectory = dataDirectory;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getProjectDirectory() {
@@ -240,12 +229,12 @@ public class SetupForm {
         this.progress = progress;
     }
 
-    public String getPassWordConf() {
-        return passWordConf;
+    public String getPasswordConfirm() {
+        return passwordConfirm;
     }
 
-    public void setPassWordConf(String passWordConf) {
-        this.passWordConf = passWordConf;
+    public void setPasswordConfirm(String passwordConfirm) {
+        this.passwordConfirm = passwordConfirm;
     }
 
     public SetupProgress getPrevious() {
@@ -284,10 +273,9 @@ public class SetupForm {
     public String toString() {
         return "SetupForm{" +
                 "httpsPort='" + httpsPort + '\'' +
-                ", userName='" + userName + '\'' +
-                ", passWord='" + passWord + '\'' +
-                ", passWordConf='" + passWordConf + '\'' +
-                ", dataDirectory='" + dataDirectory + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", passwordConfirm='" + passwordConfirm + '\'' +
                 ", projectDirectory='" + projectDirectory + '\'' +
                 ", blenderDirectory='" + blenderDirectory + '\'' +
                 ", tempDirectory='" + tempDirectory + '\'' +

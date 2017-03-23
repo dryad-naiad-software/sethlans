@@ -84,10 +84,6 @@
                                     <table class="table" th:switch="${setupForm.mode}">
                                         <tbody th:fragment="setup_summary_server">
                                         <tr>
-                                            <td>Data Directory</td>
-                                            <td th:text="${setupForm.dataDirectory}">Data Dir</td>
-                                        </tr>
-                                        <tr>
                                             <td>Project Directory</td>
                                             <td th:text="${setupForm.projectDirectory}">Project Dir</td>
                                         </tr>
