@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.repo;
 
 import com.dryadandnaiad.sethlans.domains.SethlansUser;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
+import com.dryadandnaiad.sethlans.services.EncryptionService;
 import com.dryadandnaiad.sethlans.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,13 @@ import java.util.List;
 public class UserServiceRepoImpl implements UserService {
 
     private UserRepository userRepository;
+
+    private EncryptionService encryptionService;
+
+    @Autowired
+    public void setEncryptionService(EncryptionService encryptionService) {
+        this.encryptionService = encryptionService;
+    }
 
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
@@ -58,6 +66,10 @@ public class UserServiceRepoImpl implements UserService {
 
     @Override
     public SethlansUser saveOrUpdate(SethlansUser domainObject) {
+
+        if(domainObject.getPassword() != null){
+            domainObject.setEncryptedPassword(encryptionService.encryptString(domainObject.getPassword()));
+        }
         return userRepository.save(domainObject);
     }
 

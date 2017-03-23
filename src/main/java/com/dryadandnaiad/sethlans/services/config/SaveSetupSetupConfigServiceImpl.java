@@ -90,7 +90,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
         writeProperty(SethlansConfigKeys.HTTPS_PORT, setupForm.getHttpsPort());
         writeProperty(SethlansConfigKeys.LOGGING_FILE, setupForm.getLogDirectory());
         writeProperty(SethlansConfigKeys.MODE, setupForm.getMode().toString());
-        //writeProperty("spring.jpa.hibernate.ddl-auto", "validate");
+        writeProperty("spring.jpa.hibernate.ddl-auto", "none");
     }
 
     @Override

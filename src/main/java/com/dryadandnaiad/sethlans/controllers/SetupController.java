@@ -111,7 +111,7 @@ public class SetupController {
             saveSetupConfigService.saveSethlansSettings(setupForm);
             saveSetupConfigService.wizardCompleted();
             LOG.info("Restarting Sethlans and implementing configuration changes.");
-            restartSethlansService.restart();
+          //  restartSethlansService.restart();
         }
         return "setup";
     }
