@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.commands.SetupForm;
 import com.dryadandnaiad.sethlans.domains.SethlansUser;
 import com.dryadandnaiad.sethlans.domains.security.SethlansRole;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.RoleService;
 import com.dryadandnaiad.sethlans.services.SaveSetupConfigService;
 import com.dryadandnaiad.sethlans.services.UserService;
@@ -36,6 +37,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
+
+import static com.dryadandnaiad.sethlans.utils.SethlansUtils.writeProperty;
 
 /**
  * Created Mario Estrella on 3/18/17.
@@ -55,19 +58,6 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     private UserService userService;
     private RoleService roleService;
 
-    //Config File Constants
-    private final String HTTPS_PORT = "server.port";
-    private final String FIRST_TIME = "sethlans.firsttime";
-    private final String LOGGING_FILE = "logging.file";
-    private final String MODE = "sethlans.mode";
-    private final String COMPUTE_METHOD = "sethlans.computeMethod";
-    private final String PROJECT_DIR = "sethlans.projectDir";
-    private final String BLENDER_DIR = "sethlans.blenderDir";
-    private final String TEMP_DIR = "sethlans.tempDir";
-    private final String CACHE_DIR = "sethlans.cacheDir";
-    private final String CUDA_DEVICE = "sethlans.cuda";
-    private final String CPU_CORES = "sethlans.cores";
-
 
     public SaveSetupSetupConfigServiceImpl() {
         this.sethlansProperties = new Properties();
@@ -84,7 +74,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     }
 
     @Override
-    public boolean saveSethlansSettings(SetupForm setupForm) {
+    public void saveSethlansSettings(SetupForm setupForm) {
         SethlansRole admin = new SethlansRole();
         admin.setRole("ADMIN");
         roleService.saveOrUpdate(admin);
@@ -99,75 +89,26 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
         user.addRole(admin);
         user.addRole(userRole);
         userService.saveOrUpdate(user);
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(configFile);
-            sethlansProperties.setProperty(HTTPS_PORT, setupForm.getHttpsPort());
 
-            sethlansProperties.setProperty(LOGGING_FILE, setupForm.getLogDirectory());
-            sethlansProperties.setProperty(MODE, setupForm.getMode().toString());
-            //Save Properties to File
-            sethlansProperties.store(fileOutputStream, "");
-            LOG.debug(" Sethlans Settings Saved");
-            return true;
-        } catch (FileNotFoundException e) {
-            LOG.error(e.getMessage());
-            e.printStackTrace();
-        } catch (IOException e) {
-            LOG.error(e.getMessage());
-            e.printStackTrace();
-        }
-        return false;
+        writeProperty(SethlansConfigKeys.HTTPS_PORT, setupForm.getHttpsPort());
+        writeProperty(SethlansConfigKeys.LOGGING_FILE, setupForm.getLogDirectory());
+        writeProperty(SethlansConfigKeys.MODE, setupForm.getMode().toString());
+        writeProperty("spring.jpa.hibernate.ddl-auto", "validate");
     }
 
     @Override
-    public boolean saveServerSettings(SetupForm setupForm) {
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(configFile);
-            sethlansProperties.setProperty(PROJECT_DIR, setupForm.getProjectDirectory());
-            sethlansProperties.setProperty(BLENDER_DIR, setupForm.getBlenderDirectory());
-            sethlansProperties.setProperty(TEMP_DIR, setupForm.getTempDirectory());
-
-            //Save Properties to File
-            sethlansProperties.store(fileOutputStream, "");
-            LOG.debug("Server Settings Saved");
-
-            // Create directories
-            File projectDir = new File(setupForm.getProjectDirectory());
-            File blenderDir = new File(setupForm.getBlenderDirectory());
-            File tempDir = new File(setupForm.getTempDirectory());
-
-            if (!projectDir.mkdirs()) {
-                LOG.error("Unable to create project directory " + projectDir.toString());
-                // TODO Placeholders for now will need to replace System.exit with a friendly message to GUI and restart the setup wizard.
-                System.exit(1);
-
-            }
-            if (!blenderDir.mkdirs()) {
-                LOG.error("Unable to create data directory " + blenderDir.toString());
-                System.exit(1);
-
-            }
-            if (!tempDir.mkdirs()) {
-                LOG.error("Unable to create data directory " + tempDir.toString());
-                System.exit(1);
-            }
-
-            return true;
-        } catch (FileNotFoundException e) {
-            LOG.error(e.getMessage());
-            e.printStackTrace();
-        } catch (IOException e) {
-            LOG.error(e.getMessage());
-        }
-        return false;
-    }
+    public void saveServerSettings(SetupForm setupForm) {
+        writeProperty(SethlansConfigKeys.PROJECT_DIR, setupForm.getProjectDirectory());
+        writeProperty(SethlansConfigKeys.BLENDER_DIR, setupForm.getBlenderDirectory());
+        writeProperty(SethlansConfigKeys.TEMP_DIR, setupForm.getTempDirectory());
+     }
 
     @Override
-    public boolean saveNodeSettings(SetupForm setupForm) {
+    public void saveNodeSettings(SetupForm setupForm) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(configFile);
-            sethlansProperties.setProperty(CACHE_DIR, setupForm.getWorkingDirectory());
-            sethlansProperties.setProperty(COMPUTE_METHOD, setupForm.getSelectedMethod().toString());
+            sethlansProperties.setProperty(SethlansConfigKeys.CACHE_DIR.toString(), setupForm.getWorkingDirectory());
+            sethlansProperties.setProperty(SethlansConfigKeys.COMPUTE_METHOD.toString(), setupForm.getSelectedMethod().toString());
             if (!setupForm.getSelectedGPUId().isEmpty()) {
                 StringBuilder result = new StringBuilder();
                 for (Integer id : setupForm.getSelectedGPUId()) {
@@ -177,10 +118,10 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
                     result.append(setupForm.getAvailableGPUs().get(id).getCudaName());
                 }
 
-                sethlansProperties.setProperty(CUDA_DEVICE, result.toString());
+                sethlansProperties.setProperty(SethlansConfigKeys.CUDA_DEVICE.toString(), result.toString());
             }
             if (!setupForm.getSelectedMethod().equals(ComputeType.GPU)) {
-                sethlansProperties.setProperty(CPU_CORES, Integer.toString(setupForm.getCores()));
+                sethlansProperties.setProperty(SethlansConfigKeys.CPU_CORES.toString(), Integer.toString(setupForm.getCores()));
             }
 
 
@@ -198,35 +139,22 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
 
             }
 
-            return true;
         } catch (FileNotFoundException e) {
             LOG.error(e.getMessage());
         } catch (IOException e) {
             LOG.error(e.getMessage());
         }
-        return false;
     }
 
     @Override
-    public boolean saveDualSettings(SetupForm setupForm) {
-        return saveServerSettings(setupForm) && saveNodeSettings(setupForm);
+    public void saveDualSettings(SetupForm setupForm) {
+        saveServerSettings(setupForm);
+        saveNodeSettings(setupForm);
     }
 
     @Override
     public void wizardCompleted() {
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(configFile);
-            sethlansProperties.setProperty(FIRST_TIME, "false");
-            //Save Properties to File
-            sethlansProperties.store(fileOutputStream, "");
-            LOG.debug("Setup Wizard completed successfully setting first time property to false");
-        } catch (FileNotFoundException e) {
-            LOG.error(e.getMessage());
-        } catch (IOException e) {
-            LOG.error(e.getMessage());
-        }
-
-
+        writeProperty(SethlansConfigKeys.FIRST_TIME, "false");
     }
 
 }
