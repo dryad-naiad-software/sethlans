@@ -19,8 +19,6 @@
 
 package com.dryadandnaiad.sethlans.domains;
 
-import org.springframework.data.annotation.Version;
-
 import javax.persistence.*;
 import java.util.Date;
 
