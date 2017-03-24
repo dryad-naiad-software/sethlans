@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.BlenderFile;
 import com.dryadandnaiad.sethlans.domains.BlenderObject;
 import com.dryadandnaiad.sethlans.server.BlenderUtils;
 import com.dryadandnaiad.sethlans.services.database.BlenderFileService;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,30 +79,35 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
             URL url;
             HttpURLConnection connection = null;
             try {
+                String filename;
                 url = new URL(blenderFile.getBlenderFile());
                 connection = (HttpURLConnection) url.openConnection();
                 InputStream stream = connection.getInputStream();
                 if (!blenderFile.getBlenderBinaryOS().contains("Linux")) {
-                    String filename = blenderVersion + "-" + blenderFile.getBlenderBinaryOS().toLowerCase() + ".zip";
-                    LOG.debug("Downloading " + filename + " ...");
-                    Files.copy(stream, Paths.get(saveLocation + File.separator + filename));
-                    LOG.debug(filename + " downloaded successfully.");
-                    blenderFile.setBlenderFile(saveLocation + File.separator + filename);
+                    filename = blenderVersion + "-" + blenderFile.getBlenderBinaryOS().toLowerCase() + ".zip";
                 } else {
-                    String filename = blenderVersion + "-" + blenderFile.getBlenderBinaryOS().toLowerCase() + ".tar.bz2";
-                    LOG.debug("Downloading " + filename + " ...");
-                    Files.copy(stream, Paths.get(saveLocation + File.separator + filename));
-                    LOG.debug(filename + " downloaded successfully.");
+                    filename = blenderVersion + "-" + blenderFile.getBlenderBinaryOS().toLowerCase() + ".tar.bz2";
+                }
+
+                LOG.debug("Downloading " + filename + "...");
+
+                Files.copy(stream, Paths.get(saveLocation + File.separator + filename));
+                if (SethlansUtils.fileCheckMD5(new File(saveLocation + File.separator + filename), blenderFile.getBlenderFileMd5())) {
                     blenderFile.setBlenderFile(saveLocation + File.separator + filename);
+                    LOG.debug(filename + " downloaded successfully.");
+                } else {
+                    File toDelete = new File(saveLocation + File.separator + filename);
+                    toDelete.delete();
+                    throw new IOException("MD5 sums did not match");
                 }
                 blenderFile.setDownloaded(true);
                 blenderFileService.saveOrUpdate(blenderFile);
 
             } catch (MalformedURLException e) {
-                LOG.error("Invalid URL" + e.getMessage());
+                LOG.error("Invalid URL: " + e.getMessage());
                 return new AsyncResult<>(false);
             } catch (IOException e) {
-                LOG.error("IO Exception" + e.getMessage());
+                LOG.error("IO Exception: " + e.getMessage());
                 return new AsyncResult<>(false);
             } finally {
                 if (connection != null) {
@@ -124,19 +130,26 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                         switch (blenderFile.getBlenderBinaryOS().toLowerCase()) {
                             case "windows32":
                                 blenderFile.setBlenderFile(blenderBinary.getWindows32());
+                                blenderFile.setBlenderFileMd5(blenderBinary.getMd5Windows32());
                                 break;
                             case "windows64":
                                 blenderFile.setBlenderFile(blenderBinary.getWindows64());
+                                blenderFile.setBlenderFileMd5(blenderBinary.getMd5Windows32());
                                 break;
                             case "macos":
                                 blenderFile.setBlenderFile(blenderBinary.getMacOS());
+                                blenderFile.setBlenderFileMd5(blenderBinary.getMd5MacOS());
                                 break;
                             case "linux64":
                                 blenderFile.setBlenderFile(blenderBinary.getLinux64());
+                                blenderFile.setBlenderFileMd5(blenderBinary.getMd5Linux64());
                                 break;
                             case "linux32":
                                 blenderFile.setBlenderFile(blenderBinary.getLinux32());
-
+                                blenderFile.setBlenderFileMd5(blenderBinary.getMd5Linux32());
+                                break;
+                            default:
+                                LOG.error("Invalid blender binary operating system " + blenderFile.getBlenderBinaryOS());
                         }
                     }
                 }

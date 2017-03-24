@@ -32,14 +32,24 @@ public class BlenderObject {
     private String macOS;
     private String linux32;
     private String linux64;
+    private String md5MacOS;
+    private String md5Windows64;
+    private String md5Windows32;
+    private String md5Linux32;
+    private String md5Linux64;
 
-    public BlenderObject(String blenderVersion, String windows32, String windows64, String macOS, String linux32, String linux64) {
+    public BlenderObject(String blenderVersion, String windows32, String windows64, String macOS, String linux32, String linux64, String md5MacOS, String md5Windows64, String md5Windows32, String md5Linux32, String md5Linux64) {
         this.blenderVersion = blenderVersion;
         this.windows32 = windows32;
         this.windows64 = windows64;
         this.macOS = macOS;
         this.linux32 = linux32;
         this.linux64 = linux64;
+        this.md5MacOS = md5MacOS;
+        this.md5Windows64 = md5Windows64;
+        this.md5Windows32 = md5Windows32;
+        this.md5Linux32 = md5Linux32;
+        this.md5Linux64 = md5Linux64;
     }
 
     public String getBlenderVersion() {
@@ -90,15 +100,60 @@ public class BlenderObject {
         this.linux64 = linux64;
     }
 
+    public String getMd5MacOS() {
+        return md5MacOS;
+    }
+
+    public void setMd5MacOS(String md5MacOS) {
+        this.md5MacOS = md5MacOS;
+    }
+
+    public String getMd5Windows64() {
+        return md5Windows64;
+    }
+
+    public void setMd5Windows64(String md5Windows64) {
+        this.md5Windows64 = md5Windows64;
+    }
+
+    public String getMd5Windows32() {
+        return md5Windows32;
+    }
+
+    public void setMd5Windows32(String md5Windows32) {
+        this.md5Windows32 = md5Windows32;
+    }
+
+    public String getMd5Linux32() {
+        return md5Linux32;
+    }
+
+    public void setMd5Linux32(String md5Linux32) {
+        this.md5Linux32 = md5Linux32;
+    }
+
+    public String getMd5Linux64() {
+        return md5Linux64;
+    }
+
+    public void setMd5Linux64(String md5Linux64) {
+        this.md5Linux64 = md5Linux64;
+    }
+
     @Override
     public String toString() {
         return "BlenderObject{" +
-                "version='" + blenderVersion + '\'' +
+                "blenderVersion='" + blenderVersion + '\'' +
                 ", windows32='" + windows32 + '\'' +
                 ", windows64='" + windows64 + '\'' +
                 ", macOS='" + macOS + '\'' +
                 ", linux32='" + linux32 + '\'' +
                 ", linux64='" + linux64 + '\'' +
+                ", md5MacOS='" + md5MacOS + '\'' +
+                ", md5Windows64='" + md5Windows64 + '\'' +
+                ", md5Windows32='" + md5Windows32 + '\'' +
+                ", md5Linux32='" + md5Linux32 + '\'' +
+                ", md5Linux64='" + md5Linux64 + '\'' +
                 '}';
     }
 }

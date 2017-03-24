@@ -32,6 +32,7 @@ public class BlenderFile extends AbstractEntityClass {
     private String blenderVersion;
     private String blenderBinaryOS;
     private String blenderFile;
+    private String blenderFileMd5;
     private boolean downloaded = false;
 
     public String getBlenderVersion() {
@@ -66,12 +67,21 @@ public class BlenderFile extends AbstractEntityClass {
         this.downloaded = downloaded;
     }
 
+    public String getBlenderFileMd5() {
+        return blenderFileMd5;
+    }
+
+    public void setBlenderFileMd5(String blenderFileMd5) {
+        this.blenderFileMd5 = blenderFileMd5;
+    }
+
     @Override
     public String toString() {
         return "BlenderFile{" +
                 "blenderVersion='" + blenderVersion + '\'' +
                 ", blenderBinaryOS='" + blenderBinaryOS + '\'' +
                 ", blenderFile='" + blenderFile + '\'' +
+                ", blenderFileMd5='" + blenderFileMd5 + '\'' +
                 ", downloaded=" + downloaded +
                 '}';
     }

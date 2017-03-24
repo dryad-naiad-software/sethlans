@@ -20,6 +20,9 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
+import com.google.common.io.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -136,6 +139,14 @@ public class SethlansUtils {
     public static String updateTimeStamp() {
         Date currentDate = GregorianCalendar.getInstance().getTime();
         return String.format("Updated: %1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS", currentDate);
+    }
+
+    public static boolean fileCheckMD5(File file, String md5) throws IOException {
+        HashCode hash = Files.hash(file, Hashing.md5());
+        if (hash.toString().equals(md5)) {
+            return true;
+        }
+        return false;
     }
 
 }

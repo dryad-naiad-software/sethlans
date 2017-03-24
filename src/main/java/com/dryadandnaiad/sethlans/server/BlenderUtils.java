@@ -64,7 +64,12 @@ public class BlenderUtils {
                     String windows32 = blenderBinary.getString("windows32");
                     String linux64 = blenderBinary.getString("linux64");
                     String linux32 = blenderBinary.getString("linux32");
-                    BlenderObject blenderObject = new BlenderObject(version, windows32, windows64, macOS, linux32, linux64);
+                    String md5MacOs = blenderBinary.getString("macos_md5");
+                    String md5Windows64 = blenderBinary.getString("windows64_md5");
+                    String md5Windows32 = blenderBinary.getString("windows32_md5");
+                    String md5Linux64 = blenderBinary.getString("linux64_md5");
+                    String md5Linux32 = blenderBinary.getString("linux32_md5");
+                    BlenderObject blenderObject = new BlenderObject(version, windows32, windows64, macOS, linux32, linux64, md5MacOs, md5Windows64, md5Windows32, md5Linux32, md5Linux64);
                     blenderObjectList.add(blenderObject);
                 }
             } catch (JSONException jsonEx) {
