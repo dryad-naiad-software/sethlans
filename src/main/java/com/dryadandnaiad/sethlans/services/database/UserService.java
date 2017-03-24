@@ -17,9 +17,9 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services;
+package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.domains.security.SethlansRole;
+import com.dryadandnaiad.sethlans.domains.SethlansUser;
 
 /**
  * Created Mario Estrella on 3/23/17.
@@ -27,5 +27,6 @@ import com.dryadandnaiad.sethlans.domains.security.SethlansRole;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface RoleService extends CRUDService<SethlansRole> {
+public interface UserService extends CRUDService<SethlansUser> {
+
 }

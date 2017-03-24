@@ -21,8 +21,8 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.commands.SetupForm;
 import com.dryadandnaiad.sethlans.enums.SetupProgress;
-import com.dryadandnaiad.sethlans.services.RestartSethlansService;
-import com.dryadandnaiad.sethlans.services.SaveSetupConfigService;
+import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
+import com.dryadandnaiad.sethlans.services.restart.RestartSethlansService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

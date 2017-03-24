@@ -17,9 +17,7 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services;
-
-import com.dryadandnaiad.sethlans.domains.SethlansUser;
+package com.dryadandnaiad.sethlans.services.database;
 
 /**
  * Created Mario Estrella on 3/23/17.
@@ -27,6 +25,5 @@ import com.dryadandnaiad.sethlans.domains.SethlansUser;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface UserService extends CRUDService<SethlansUser> {
-
+public class BlenderEntityServiceImpl {
 }

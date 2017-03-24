@@ -17,16 +17,36 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services;
+package com.dryadandnaiad.sethlans.domains;
+
+import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
+
+import javax.persistence.Entity;
 
 /**
- * Created Mario Estrella on 3/21/17.
+ * Created Mario Estrella on 3/23/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface GetRawDataService {
+@Entity
+public class BlenderEntity extends AbstractEntityClass {
+    private String blenderVersion;
+    private BlenderBinaryOS blenderBinaryOS;
 
-    String getResult(String apiURL);
+    public String getBlenderVersion() {
+        return blenderVersion;
+    }
 
+    public void setBlenderVersion(String blenderVersion) {
+        this.blenderVersion = blenderVersion;
+    }
+
+    public BlenderBinaryOS getBlenderBinaryOS() {
+        return blenderBinaryOS;
+    }
+
+    public void setBlenderBinaryOS(BlenderBinaryOS blenderBinaryOS) {
+        this.blenderBinaryOS = blenderBinaryOS;
+    }
 }

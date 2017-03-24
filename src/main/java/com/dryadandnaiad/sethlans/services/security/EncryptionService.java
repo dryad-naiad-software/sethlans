@@ -17,14 +17,15 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services;
+package com.dryadandnaiad.sethlans.services.security;
 
 /**
- * Created Mario Estrella on 3/22/17.
+ * Created Mario Estrella on 3/23/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface RestartSethlansService {
-    void restart();
+public interface EncryptionService {
+    String encryptString(String input);
+    boolean checkPassword(String plainPassword, String encryptedPassword);
 }

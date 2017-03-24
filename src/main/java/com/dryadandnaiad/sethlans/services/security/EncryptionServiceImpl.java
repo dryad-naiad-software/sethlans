@@ -19,7 +19,6 @@
 
 package com.dryadandnaiad.sethlans.services.security;
 
-import com.dryadandnaiad.sethlans.services.EncryptionService;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

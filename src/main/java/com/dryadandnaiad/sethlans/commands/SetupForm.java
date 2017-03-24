@@ -26,6 +26,7 @@ import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.enums.SetupProgress;
+import org.apache.commons.lang3.SystemUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Max;
@@ -91,6 +92,7 @@ public class SetupForm {
         this.availableGPUs = GPU.listDevices();
         this.availableMethods = new ArrayList<>();
         this.selectedGPUId = new ArrayList<>();
+        this.blenderBinaryOS = new ArrayList<>();
         this.cores = 1;
         this.projectDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "projects" + File.separator;
         this.blenderDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "blenderzips" + File.separator;
@@ -99,6 +101,22 @@ public class SetupForm {
         this.logDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "logs" + File.separator;
         this.totalCores = populateCores();
         populateAvailableMethods();
+        populateBlenderOS();
+    }
+
+    private void populateBlenderOS() {
+        if (SystemUtils.IS_OS_MAC) {
+            this.blenderBinaryOS.add(BlenderBinaryOS.MacOS);
+        }
+        if (SystemUtils.IS_OS_LINUX) {
+            this.blenderBinaryOS.add(BlenderBinaryOS.Linux32);
+            this.blenderBinaryOS.add(BlenderBinaryOS.Linux64);
+        }
+        if (SystemUtils.IS_OS_WINDOWS) {
+            this.blenderBinaryOS.add(BlenderBinaryOS.Windows32);
+            this.blenderBinaryOS.add(BlenderBinaryOS.Windows64);
+        }
+
     }
 
     private int populateCores() {

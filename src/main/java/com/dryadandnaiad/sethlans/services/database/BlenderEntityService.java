@@ -17,9 +17,9 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services;
+package com.dryadandnaiad.sethlans.services.database;
 
-import java.util.List;
+import com.dryadandnaiad.sethlans.domains.BlenderEntity;
 
 /**
  * Created Mario Estrella on 3/23/17.
@@ -27,12 +27,5 @@ import java.util.List;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface CRUDService<T> {
-    List<?> listAll();
-
-    T getById(Integer id);
-
-    T saveOrUpdate(T domainObject);
-
-    void delete(Integer id);
+public interface BlenderEntityService extends CRUDService<BlenderEntity> {
 }

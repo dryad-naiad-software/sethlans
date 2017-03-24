@@ -17,25 +17,16 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services;
-
-import com.dryadandnaiad.sethlans.commands.SetupForm;
+package com.dryadandnaiad.sethlans.services.network;
 
 /**
- * Created Mario Estrella on 3/18/17.
+ * Created Mario Estrella on 3/21/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface SaveSetupConfigService {
-    void saveSethlansSettings(SetupForm setupForm);
+public interface GetRawDataService {
 
-    void saveServerSettings(SetupForm setupForm);
-
-    void saveNodeSettings(SetupForm setupForm);
-
-    void saveDualSettings(SetupForm setupForm);
-
-    void wizardCompleted();
+    String getResult(String apiURL);
 
 }

@@ -19,8 +19,8 @@
 
 package com.dryadandnaiad.sethlans.server;
 
-import com.dryadandnaiad.sethlans.domains.Blender;
-import com.dryadandnaiad.sethlans.services.GetRawDataService;
+import com.dryadandnaiad.sethlans.domains.BlenderObject;
+import com.dryadandnaiad.sethlans.services.network.GetRawDataService;
 import com.dryadandnaiad.sethlans.services.network.GetRawDataServiceImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +39,7 @@ import java.util.List;
  */
 public class BlenderUtils {
     private static final Logger LOG = LoggerFactory.getLogger(BlenderUtils.class);
-    private static List<Blender> blenderList = null;
+    private static List<BlenderObject> blenderObjectList = null;
 
     private static void getList() {
 
@@ -47,7 +47,7 @@ public class BlenderUtils {
         String data = getJSONData.getResult("https://gist.githubusercontent.com/marioestrella/def9d852b3298008ae16040bbbabc524/raw/");
         LOG.debug("Retrieved JSON: \n" + data);
         if (data != null || !data.isEmpty()) {
-            blenderList = new LinkedList<>();
+            blenderObjectList = new LinkedList<>();
 
             try {
                 JSONObject jsonData = new JSONObject(data);
@@ -60,8 +60,8 @@ public class BlenderUtils {
                     String windows32 = blenderBinary.getString("windows32");
                     String linux64 = blenderBinary.getString("linux64");
                     String linux32 = blenderBinary.getString("linux32");
-                    Blender blenderObject = new Blender(version, windows32, windows64, macOS, linux32, linux64);
-                    blenderList.add(blenderObject);
+                    BlenderObject blenderObject = new BlenderObject(version, windows32, windows64, macOS, linux32, linux64);
+                    blenderObjectList.add(blenderObject);
                 }
             } catch (JSONException jsonEx) {
                 LOG.error("Error processing JSON data" + jsonEx.getMessage());
@@ -70,20 +70,20 @@ public class BlenderUtils {
         }
     }
 
-    public static List<Blender> listBinaries() {
-        if (blenderList == null) {
+    public static List<BlenderObject> listBinaries() {
+        if (blenderObjectList == null) {
             getList();
         }
-        return blenderList;
+        return blenderObjectList;
     }
 
     public static List<String> listVersions() {
-        if (blenderList == null) {
+        if (blenderObjectList == null) {
             getList();
         }
         List<String> versions = new LinkedList<>();
-        for (Blender blender : blenderList) {
-            versions.add(blender.getBlenderVersion());
+        for (BlenderObject blenderObject : blenderObjectList) {
+            versions.add(blenderObject.getBlenderVersion());
         }
         return versions;
     }

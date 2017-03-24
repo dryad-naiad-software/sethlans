@@ -25,7 +25,7 @@ package com.dryadandnaiad.sethlans.domains;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class Blender {
+public class BlenderObject {
     private String blenderVersion;
     private String windows32;
     private String windows64;
@@ -33,7 +33,7 @@ public class Blender {
     private String linux32;
     private String linux64;
 
-    public Blender(String blenderVersion, String windows32, String windows64, String macOS, String linux32, String linux64) {
+    public BlenderObject(String blenderVersion, String windows32, String windows64, String macOS, String linux32, String linux64) {
         this.blenderVersion = blenderVersion;
         this.windows32 = windows32;
         this.windows64 = windows64;
@@ -92,7 +92,7 @@ public class Blender {
 
     @Override
     public String toString() {
-        return "Blender{" +
+        return "BlenderObject{" +
                 "version='" + blenderVersion + '\'' +
                 ", windows32='" + windows32 + '\'' +
                 ", windows64='" + windows64 + '\'' +

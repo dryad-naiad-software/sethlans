@@ -17,12 +17,11 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.repo;
+package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.SethlansUser;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
-import com.dryadandnaiad.sethlans.services.EncryptionService;
-import com.dryadandnaiad.sethlans.services.UserService;
+import com.dryadandnaiad.sethlans.services.security.EncryptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +35,7 @@ import java.util.List;
  * Project: sethlans
  */
 @Service
-public class UserServiceRepoImpl implements UserService {
+public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
 

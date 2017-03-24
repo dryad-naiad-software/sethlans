@@ -17,11 +17,10 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.repo;
+package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.security.SethlansRole;
 import com.dryadandnaiad.sethlans.repositories.RoleRepository;
-import com.dryadandnaiad.sethlans.services.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +34,7 @@ import java.util.List;
  * Project: sethlans
  */
 @Service
-public class RoleServiceRepoImpl implements RoleService {
+public class RoleServiceImpl implements RoleService {
 
     private RoleRepository roleRepository;
 

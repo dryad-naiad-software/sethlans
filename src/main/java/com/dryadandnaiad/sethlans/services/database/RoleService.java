@@ -17,7 +17,9 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services;
+package com.dryadandnaiad.sethlans.services.database;
+
+import com.dryadandnaiad.sethlans.domains.security.SethlansRole;
 
 /**
  * Created Mario Estrella on 3/23/17.
@@ -25,7 +27,5 @@ package com.dryadandnaiad.sethlans.services;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface EncryptionService {
-    String encryptString(String input);
-    boolean checkPassword(String plainPassword, String encryptedPassword);
+public interface RoleService extends CRUDService<SethlansRole> {
 }
