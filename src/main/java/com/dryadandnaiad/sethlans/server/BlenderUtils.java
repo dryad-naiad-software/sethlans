@@ -83,7 +83,7 @@ public class BlenderUtils {
         }
         List<String> versions = new LinkedList<>();
         for (Blender blender : blenderList) {
-            versions.add(blender.getVersion());
+            versions.add(blender.getBlenderVersion());
         }
         return versions;
     }

@@ -26,15 +26,15 @@ package com.dryadandnaiad.sethlans.domains;
  * Project: sethlans
  */
 public class Blender {
-    private String version;
+    private String blenderVersion;
     private String windows32;
     private String windows64;
     private String macOS;
     private String linux32;
     private String linux64;
 
-    public Blender(String version, String windows32, String windows64, String macOS, String linux32, String linux64) {
-        this.version = version;
+    public Blender(String blenderVersion, String windows32, String windows64, String macOS, String linux32, String linux64) {
+        this.blenderVersion = blenderVersion;
         this.windows32 = windows32;
         this.windows64 = windows64;
         this.macOS = macOS;
@@ -42,12 +42,12 @@ public class Blender {
         this.linux64 = linux64;
     }
 
-    public String getVersion() {
-        return version;
+    public String getBlenderVersion() {
+        return blenderVersion;
     }
 
-    public void setVersion(String version) {
-        this.version = version;
+    public void setBlenderVersion(String blenderVersion) {
+        this.blenderVersion = blenderVersion;
     }
 
     public String getWindows32() {
@@ -93,7 +93,7 @@ public class Blender {
     @Override
     public String toString() {
         return "Blender{" +
-                "version='" + version + '\'' +
+                "version='" + blenderVersion + '\'' +
                 ", windows32='" + windows32 + '\'' +
                 ", windows64='" + windows64 + '\'' +
                 ", macOS='" + macOS + '\'' +
