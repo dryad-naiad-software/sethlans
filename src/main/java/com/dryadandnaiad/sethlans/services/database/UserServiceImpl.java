@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<?> listAll() {
         List<SethlansUser> users = new ArrayList<>();
-        userRepository.findAll().forEach(users::add); //fun with Java 8
+        userRepository.findAll().forEach(users::add);
         return users;
     }
 

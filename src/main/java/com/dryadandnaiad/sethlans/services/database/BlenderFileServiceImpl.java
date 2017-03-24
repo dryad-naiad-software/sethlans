@@ -19,8 +19,8 @@
 
 package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.domains.security.SethlansRole;
-import com.dryadandnaiad.sethlans.repositories.RoleRepository;
+import com.dryadandnaiad.sethlans.domains.BlenderFile;
+import com.dryadandnaiad.sethlans.repositories.BlenderEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,34 +34,36 @@ import java.util.List;
  * Project: sethlans
  */
 @Service
-public class RoleServiceImpl implements RoleService {
+public class BlenderFileServiceImpl implements BlenderFileService {
 
-    private RoleRepository roleRepository;
+    private BlenderEntityRepository blenderEntityRepository;
 
     @Autowired
-    public void setRoleRepository(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
+    public void setBlenderEntityRepository(BlenderEntityRepository blenderEntityRepository) {
+        this.blenderEntityRepository = blenderEntityRepository;
     }
 
     @Override
     public List<?> listAll() {
-        List<SethlansRole> roles = new ArrayList<>();
-        roleRepository.findAll().forEach(roles::add);
-        return roles;
+        List<BlenderFile> blenderEntities = new ArrayList<>();
+        blenderEntityRepository.findAll().forEach(blenderEntities::add);
+        return blenderEntities;
     }
 
     @Override
-    public SethlansRole getById(Integer id) {
-        return roleRepository.findOne(id);
+    public BlenderFile getById(Integer id) {
+        return blenderEntityRepository.findOne(id);
     }
 
     @Override
-    public SethlansRole saveOrUpdate(SethlansRole domainObject) {
-        return roleRepository.save(domainObject);
+    public BlenderFile saveOrUpdate(BlenderFile domainObject) {
+        return blenderEntityRepository.save(domainObject);
     }
 
     @Override
     public void delete(Integer id) {
-        roleRepository.delete(id);
+        BlenderFile blenderFile = blenderEntityRepository.findOne(id);
+        blenderEntityRepository.delete(blenderFile);
+
     }
 }

@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.repositories;
 
-import com.dryadandnaiad.sethlans.domains.BlenderEntity;
+import com.dryadandnaiad.sethlans.domains.BlenderFile;
 import org.springframework.data.repository.CrudRepository;
 
 /**
@@ -28,5 +28,5 @@ import org.springframework.data.repository.CrudRepository;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderEntityRepository extends CrudRepository<BlenderEntity, Integer> {
+public interface BlenderEntityRepository extends CrudRepository<BlenderFile, Integer> {
 }

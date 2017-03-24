@@ -19,8 +19,6 @@
 
 package com.dryadandnaiad.sethlans.domains;
 
-import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
-
 import javax.persistence.Entity;
 
 /**
@@ -30,9 +28,10 @@ import javax.persistence.Entity;
  * Project: sethlans
  */
 @Entity
-public class BlenderEntity extends AbstractEntityClass {
+public class BlenderFile extends AbstractEntityClass {
     private String blenderVersion;
-    private BlenderBinaryOS blenderBinaryOS;
+    private String blenderBinaryOS;
+    private String blenderFile;
 
     public String getBlenderVersion() {
         return blenderVersion;
@@ -42,11 +41,19 @@ public class BlenderEntity extends AbstractEntityClass {
         this.blenderVersion = blenderVersion;
     }
 
-    public BlenderBinaryOS getBlenderBinaryOS() {
+    public String getBlenderBinaryOS() {
         return blenderBinaryOS;
     }
 
-    public void setBlenderBinaryOS(BlenderBinaryOS blenderBinaryOS) {
+    public void setBlenderBinaryOS(String blenderBinaryOS) {
         this.blenderBinaryOS = blenderBinaryOS;
+    }
+
+    public String getBlenderFile() {
+        return blenderFile;
+    }
+
+    public void setBlenderFile(String blenderFile) {
+        this.blenderFile = blenderFile;
     }
 }

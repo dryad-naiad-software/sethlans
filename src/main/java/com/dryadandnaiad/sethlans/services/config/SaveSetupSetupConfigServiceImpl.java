@@ -20,10 +20,13 @@
 package com.dryadandnaiad.sethlans.services.config;
 
 import com.dryadandnaiad.sethlans.commands.SetupForm;
+import com.dryadandnaiad.sethlans.domains.BlenderFile;
 import com.dryadandnaiad.sethlans.domains.SethlansUser;
 import com.dryadandnaiad.sethlans.domains.security.SethlansRole;
+import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
+import com.dryadandnaiad.sethlans.services.database.BlenderFileService;
 import com.dryadandnaiad.sethlans.services.database.RoleService;
 import com.dryadandnaiad.sethlans.services.database.UserService;
 import org.slf4j.Logger;
@@ -46,6 +49,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     private static final Logger LOG = LoggerFactory.getLogger(SaveSetupSetupConfigServiceImpl.class);
     private UserService userService;
     private RoleService roleService;
+    private BlenderFileService blenderFileService;
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -55,6 +59,11 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     @Autowired
     public void setRoleService(RoleService roleService) {
         this.roleService = roleService;
+    }
+
+    @Autowired
+    public void setBlenderFileService(BlenderFileService blenderFileService) {
+        this.blenderFileService = blenderFileService;
     }
 
     @Override
@@ -82,6 +91,12 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
 
     @Override
     public void saveServerSettings(SetupForm setupForm) {
+        for (BlenderBinaryOS os : setupForm.getBlenderBinaryOS()) {
+            BlenderFile blenderFile = new BlenderFile();
+            blenderFile.setBlenderVersion(setupForm.getBlenderVersion());
+            blenderFile.setBlenderBinaryOS(os.toString());
+            blenderFileService.saveOrUpdate(blenderFile);
+        }
         writeProperty(SethlansConfigKeys.PROJECT_DIR, setupForm.getProjectDirectory());
         writeProperty(SethlansConfigKeys.BLENDER_DIR, setupForm.getBlenderDirectory());
         writeProperty(SethlansConfigKeys.TEMP_DIR, setupForm.getTempDirectory());

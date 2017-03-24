@@ -19,11 +19,13 @@
 
 package com.dryadandnaiad.sethlans.services.database;
 
+import com.dryadandnaiad.sethlans.domains.BlenderFile;
+
 /**
  * Created Mario Estrella on 3/23/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class BlenderEntityServiceImpl {
+public interface BlenderFileService extends CRUDService<BlenderFile> {
 }
