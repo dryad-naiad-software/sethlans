@@ -33,7 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.Properties;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansUtils.writeProperty;
 
@@ -46,19 +45,8 @@ import static com.dryadandnaiad.sethlans.utils.SethlansUtils.writeProperty;
 @Service
 public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     private static final Logger LOG = LoggerFactory.getLogger(SaveSetupSetupConfigServiceImpl.class);
-    private final String path = System.getProperty("user.home") + File.separator + ".sethlans";
-    private final File configDirectory = new File(path + File.separator + "config");
-    private final File configFile = new File(configDirectory + File.separator + "sethlans.properties");
-    private Properties sethlansProperties;
-
-
     private UserService userService;
     private RoleService roleService;
-
-
-    public SaveSetupSetupConfigServiceImpl() {
-        this.sethlansProperties = new Properties();
-    }
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -90,6 +78,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
         writeProperty(SethlansConfigKeys.HTTPS_PORT, setupForm.getHttpsPort());
         writeProperty(SethlansConfigKeys.LOGGING_FILE, setupForm.getLogDirectory());
         writeProperty(SethlansConfigKeys.MODE, setupForm.getMode().toString());
+        writeProperty("spring.jpa.hibernate.ddl-auto", "update");
     }
 
     @Override
