@@ -76,14 +76,44 @@
 
                         <!-- ************** Fragment Start ***************** -->
                         <div class="well" th:fragment="setup_summary">
+                            <style>
+                                .glyphicon-refresh-animate {
+                                    -animation: spin .7s infinite linear;
+                                    -webkit-animation: spin2 .7s infinite linear;
+                                }
+
+                                @-webkit-keyframes spin2 {
+                                    from {
+                                        -webkit-transform: rotate(0deg);
+                                    }
+                                    to {
+                                        -webkit-transform: rotate(360deg);
+                                    }
+                                }
+
+                                @keyframes spin {
+                                    from {
+                                        transform: scale(1) rotate(0deg);
+                                    }
+                                    to {
+                                        transform: scale(1) rotate(360deg);
+                                    }
+                                }
+
+                                .alert-block {
+                                    padding-left: 1px;
+                                }
+                            </style>
                             <h2 style="margin-top: auto"><strong>Setup Summary</strong></h2>
+                            <div class="alert alert-success alert-block" id="saved" style="display: none">
+                                <p class="text-center"><strong>Configuration saved, restarting. <span
+                                        class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span></strong>
+                                </p>
+                            </div>
                             <!--/*@thymesVar id="setupForm" type="com.dryadandnaiad.sethlans.commands.SetupForm"*/-->
                             <form id="setupWizard" name="setupWizard" th:object="${setupForm}"
                                   method="POST">
-                                <div class="alert alert-success" id="saved" style="display: none">
-                                    <strong>Configuration Saved. <br/>Sethlans is restarting and will redirect to
-                                        homepage in 8 seconds.</strong>
-                                </div>
+
                                 <div class="table-responsive">
                                     <table class="table" th:switch="${setupForm.mode}">
                                         <tbody>
