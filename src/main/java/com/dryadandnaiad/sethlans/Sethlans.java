@@ -55,8 +55,6 @@ public class Sethlans {
     private LogLevel logLevel;
     @Option(name = "-persist", usage = "Options passed via commands line are saved and automatically used next startup", required = false)
     private boolean persist;
-    @Option(name = "-http-port", usage = "Sets the http port for the WEB UI", metaVar = "7007", required = false)
-    private String httpPort = null;
     @Option(name = "-https-port", usage = "Sets the https port for the WEB UI", metaVar = "7443", required = false)
     private String httpsPort = null;
 
@@ -83,17 +81,13 @@ public class Sethlans {
             System.err.println("Usage: ");
             cmdParser.printUsage(System.err);
             System.err.println();
-            System.err.println("Example: java -jar sethlans-x.x.jar -http-port 7007 -persist" + cmdParser.printExample(OptionHandlerFilter.REQUIRED));
+            System.err.println("Example: java -jar sethlans-x.x.jar -https-port 7443 -persist" + cmdParser.printExample(OptionHandlerFilter.REQUIRED));
             return;
         }
 
         if (help) {
             cmdParser.printUsage(System.out);
             return;
-        }
-
-        if (httpPort != null) {
-            arrayArgs.add("--server.port=" + httpPort);
         }
 
         if (logLevel != null) {
