@@ -17,9 +17,7 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.database;
-
-import org.springframework.stereotype.Service;
+package com.dryadandnaiad.sethlans.services.network;
 
 import java.util.concurrent.Future;
 
@@ -29,11 +27,7 @@ import java.util.concurrent.Future;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Service
-public class BlenderDownloadServiceImpl implements BlenderDownloadService {
+public interface BlenderDownloadService {
 
-    @Override
-    public Future<Boolean> downloadRequestedBlenderFiles() {
-        return null;
-    }
+    Future<Boolean> downloadRequestedBlenderFiles();
 }

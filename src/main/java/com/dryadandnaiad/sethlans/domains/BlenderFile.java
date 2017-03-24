@@ -65,4 +65,14 @@ public class BlenderFile extends AbstractEntityClass {
     public void setDownloaded(boolean downloaded) {
         this.downloaded = downloaded;
     }
+
+    @Override
+    public String toString() {
+        return "BlenderFile{" +
+                "blenderVersion='" + blenderVersion + '\'' +
+                ", blenderBinaryOS='" + blenderBinaryOS + '\'' +
+                ", blenderFile='" + blenderFile + '\'' +
+                ", downloaded=" + downloaded +
+                '}';
+    }
 }

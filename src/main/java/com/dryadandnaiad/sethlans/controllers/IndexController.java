@@ -19,8 +19,11 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.services.network.BlenderDownloadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,8 +38,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class IndexController {
     private static final Logger LOG = LoggerFactory.getLogger(IndexController.class);
 
+    private BlenderDownloadService blenderDownloadService;
+
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
+    @Value("${sethlans.mode}")
+    private SethlansMode mode;
+
+    @Autowired
+    public void setBlenderDownloadService(BlenderDownloadService blenderDownloadService) {
+        this.blenderDownloadService = blenderDownloadService;
+    }
 
     @RequestMapping("/")
     public String getPage() {
@@ -44,6 +56,8 @@ public class IndexController {
             LOG.debug("Setup hasn't been completed, redirecting...");
             return "redirect:/setup";
         } else {
+            LOG.debug(mode.toString());
+            blenderDownloadService.downloadRequestedBlenderFiles();
             return "index";
         }
 
