@@ -17,18 +17,23 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.network;
+package com.dryadandnaiad.sethlans.services.database;
+
+import org.springframework.stereotype.Service;
+
+import java.util.concurrent.Future;
 
 /**
- * Created Mario Estrella on 3/21/17.
+ * Created Mario Estrella on 3/24/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface GetRawDataService {
+@Service
+public class BlenderDownloadServiceImpl implements BlenderDownloadService {
 
-    String getResult(String apiURL);
-
-    String getLocalResult(String resource);
-
+    @Override
+    public Future<Boolean> downloadRequestedBlenderFiles() {
+        return null;
+    }
 }

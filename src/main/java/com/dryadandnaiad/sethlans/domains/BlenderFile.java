@@ -32,6 +32,7 @@ public class BlenderFile extends AbstractEntityClass {
     private String blenderVersion;
     private String blenderBinaryOS;
     private String blenderFile;
+    private boolean downloaded = false;
 
     public String getBlenderVersion() {
         return blenderVersion;
@@ -55,5 +56,13 @@ public class BlenderFile extends AbstractEntityClass {
 
     public void setBlenderFile(String blenderFile) {
         this.blenderFile = blenderFile;
+    }
+
+    public boolean isDownloaded() {
+        return downloaded;
+    }
+
+    public void setDownloaded(boolean downloaded) {
+        this.downloaded = downloaded;
     }
 }

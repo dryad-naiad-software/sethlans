@@ -19,16 +19,16 @@
 
 package com.dryadandnaiad.sethlans.services.network;
 
+import com.dryadandnaiad.sethlans.utils.Resources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.NoSuchFileException;
 
 /**
  * Created Mario Estrella on 3/21/17.
@@ -68,7 +68,7 @@ public class GetRawDataServiceImpl implements GetRawDataService {
         } catch (MalformedURLException e) {
             LOG.error("Inavlid URL: " + e.getMessage());
         } catch (IOException e1) {
-            LOG.error("IO Exception reading data: " + e1.getMessage());
+            LOG.error("IO Exception reading data: " + e1.getMessage() + "\n Site or internet connection most likely down.");
         } finally {
             if (connection != null) {
                 connection.disconnect();
@@ -83,6 +83,36 @@ public class GetRawDataServiceImpl implements GetRawDataService {
         }
 
 
+        return null;
+    }
+
+    @Override
+    public String getLocalResult(String resource) {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(new Resources(resource).getResource(), "UTF-8"));
+
+            StringBuilder result = new StringBuilder();
+
+            for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+                result.append(line).append("\n");
+            }
+
+            return result.toString();
+        } catch (NoSuchFileException | UnsupportedEncodingException | FileNotFoundException ex) {
+            LOG.error(ex.getMessage());
+        } catch (IOException ex) {
+            LOG.error(ex.getMessage());
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    LOG.error("Error closing stream: " + e.getMessage());
+                }
+            }
+
+        }
         return null;
     }
 }

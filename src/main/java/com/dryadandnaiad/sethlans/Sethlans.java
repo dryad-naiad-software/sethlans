@@ -81,7 +81,7 @@ public class Sethlans {
             System.err.println("Usage: ");
             cmdParser.printUsage(System.err);
             System.err.println();
-            System.err.println("Example: java -jar sethlans-x.x.jar -https-port 7443 -persist" + cmdParser.printExample(OptionHandlerFilter.REQUIRED));
+            System.err.println("Example: java -jar Sethlans-x.x.jar -https-port 7443 -persist" + cmdParser.printExample(OptionHandlerFilter.REQUIRED));
             return;
         }
 

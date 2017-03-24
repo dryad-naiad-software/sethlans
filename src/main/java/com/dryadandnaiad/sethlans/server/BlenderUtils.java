@@ -45,6 +45,10 @@ public class BlenderUtils {
 
         GetRawDataService getJSONData = new GetRawDataServiceImpl();
         String data = getJSONData.getResult("https://gist.githubusercontent.com/marioestrella/def9d852b3298008ae16040bbbabc524/raw/");
+        if (data == null || data.isEmpty()) {
+            LOG.debug("Unable to retrieve blenderdownload.json from internet, using local version instead.");
+            data = getJSONData.getLocalResult("blenderdownload.json");
+        }
         LOG.debug("Retrieved JSON: \n" + data);
         if (data != null || !data.isEmpty()) {
             blenderObjectList = new LinkedList<>();
