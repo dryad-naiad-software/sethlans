@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -36,6 +37,8 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -69,33 +72,47 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
 
 
         for (BlenderFile blenderFile : blenderDownloadList) {
-            LOG.debug(blenderFile.toString());
-            File saveLocation = new File(downloadLocation + File.separator + "binaries" + File.separator);
+            String blenderVersion = blenderFile.getBlenderVersion();
+            File saveLocation = new File(downloadLocation + File.separator + "binaries" + File.separator + blenderVersion + File.separator);
             saveLocation.mkdirs();
-            LOG.debug(blenderFile.getBlenderVersion());
-            LOG.debug(saveLocation.toString());
-            URL url = null;
+            URL url;
             HttpURLConnection connection = null;
             try {
                 url = new URL(blenderFile.getBlenderFile());
                 connection = (HttpURLConnection) url.openConnection();
                 InputStream stream = connection.getInputStream();
-                //Files.copy(stream, Paths.get(saveLocation + "test.zip"));
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
+                if (!blenderFile.getBlenderBinaryOS().contains("Linux")) {
+                    String filename = blenderVersion + "-" + blenderFile.getBlenderBinaryOS().toLowerCase() + ".zip";
+                    LOG.debug("Downloading " + filename + " ...");
+                    Files.copy(stream, Paths.get(saveLocation + File.separator + filename));
+                    LOG.debug(filename + " downloaded successfully.");
+                    blenderFile.setBlenderFile(saveLocation + File.separator + filename);
+                } else {
+                    String filename = blenderVersion + "-" + blenderFile.getBlenderBinaryOS().toLowerCase() + ".tar.bz2";
+                    LOG.debug("Downloading " + filename + " ...");
+                    Files.copy(stream, Paths.get(saveLocation + File.separator + filename));
+                    LOG.debug(filename + " downloaded successfully.");
+                    blenderFile.setBlenderFile(saveLocation + File.separator + filename);
+                }
+                blenderFile.setDownloaded(true);
+                blenderFileService.saveOrUpdate(blenderFile);
 
+            } catch (MalformedURLException e) {
+                LOG.error("Invalid URL" + e.getMessage());
+                return new AsyncResult<>(false);
+            } catch (IOException e) {
+                LOG.error("IO Exception" + e.getMessage());
+                return new AsyncResult<>(false);
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
             }
 
 
         }
-
-
-        LOG.debug(downloadLocation);
-
-        return null;
+        LOG.debug("All downloads complete");
+        return new AsyncResult<>(true);
     }
 
     private List<BlenderFile> prepareDownload() {
@@ -125,6 +142,9 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                 }
                 list.add(blenderFile);
             }
+        }
+        if (list.size() == 0) {
+            LOG.debug("Nothing to download");
         }
         return list;
     }

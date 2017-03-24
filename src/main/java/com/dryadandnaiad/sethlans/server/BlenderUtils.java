@@ -49,7 +49,7 @@ public class BlenderUtils {
             LOG.debug("Unable to retrieve blenderdownload.json from internet, using local version instead.");
             data = getJSONData.getLocalResult("blenderdownload.json");
         }
-        LOG.debug("Retrieved JSON: \n" + data);
+        LOG.debug("Retrieved JSON: \n" + data.substring(0, 100) + "...");
         if (data != null || !data.isEmpty()) {
             blenderObjectList = new LinkedList<>();
 
@@ -90,5 +90,9 @@ public class BlenderUtils {
             versions.add(blenderObject.getBlenderVersion());
         }
         return versions;
+    }
+
+    public static void refresh() {
+        blenderObjectList = null;
     }
 }

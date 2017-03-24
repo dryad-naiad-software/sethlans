@@ -53,7 +53,7 @@ public class GetRawDataServiceImpl implements GetRawDataService {
             connection.connect();
 
             int response = connection.getResponseCode();
-            LOG.debug("The response code was " + response);
+            LOG.debug("HTTP Response code " + response);
 
             StringBuilder result = new StringBuilder();
 
