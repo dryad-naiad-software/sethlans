@@ -98,9 +98,10 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                     blenderFile.setDownloaded(true);
                     blenderFileService.saveOrUpdate(blenderFile);
                 } else {
+                    LOG.error("MD5 sums didn't match, removing file" + filename);
                     File toDelete = new File(saveLocation + File.separator + filename);
                     toDelete.delete();
-                    throw new IOException("MD5 sums did not match");
+                    throw new IOException();
                 }
 
             } catch (MalformedURLException e) {

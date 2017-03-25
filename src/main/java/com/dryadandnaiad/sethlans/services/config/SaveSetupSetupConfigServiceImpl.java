@@ -162,8 +162,9 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     }
 
     @Override
-    public void wizardCompleted() {
+    public void wizardCompleted(SetupForm setupForm) {
         writeProperty(SethlansConfigKeys.FIRST_TIME, "false");
+        writeProperty("spring.profiles.active", setupForm.getMode().toString());
     }
 
 }

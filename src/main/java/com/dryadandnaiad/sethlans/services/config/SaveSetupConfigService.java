@@ -36,6 +36,6 @@ public interface SaveSetupConfigService {
 
     void saveDualSettings(SetupForm setupForm);
 
-    void wizardCompleted();
+    void wizardCompleted(SetupForm setupForm);
 
 }

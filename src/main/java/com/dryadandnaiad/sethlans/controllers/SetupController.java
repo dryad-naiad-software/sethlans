@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -46,6 +47,7 @@ import javax.validation.Valid;
  * Project: sethlans
  */
 @Controller
+@Profile("SETUP")
 @RequestMapping("/setup")
 @SessionAttributes("setupForm")
 public class SetupController {
@@ -109,7 +111,7 @@ public class SetupController {
                     System.exit(1);
             }
             saveSetupConfigService.saveSethlansSettings(setupForm);
-            saveSetupConfigService.wizardCompleted();
+            saveSetupConfigService.wizardCompleted(setupForm);
             LOG.info("Restarting Sethlans and implementing configuration changes.");
             restartSethlansService.restart();
         }
