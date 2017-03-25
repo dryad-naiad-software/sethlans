@@ -18,6 +18,7 @@
   ],
   "dependencies": {
     "patternfly": "3.23.0",
-    "seiyria-bootstrap-slider": "9.7.2"
+    "seiyria-bootstrap-slider": "9.7.2",
+    "bootstrap-fileinput": "^4.3.8"
   }
 }
