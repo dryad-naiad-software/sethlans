@@ -108,7 +108,12 @@ public class Sethlans {
         if (SystemTray.isSupported()) {
             SpringApplicationBuilder builder = new SpringApplicationBuilder(Sethlans.class);
             builder.headless(false);
-            builder.run(springArgs);
+            while (builder.run(springArgs).isActive()) ;
+            // Restarts the application if the context was closed down.
+            LOG.debug("Restarting Sethlans");
+            SpringApplicationBuilder builder2 = new SpringApplicationBuilder(Sethlans.class);
+            builder2.headless(false);
+            builder2.run(springArgs).isActive();
         } else {
             SpringApplication.run(Sethlans.class, springArgs);
         }

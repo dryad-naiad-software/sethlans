@@ -19,12 +19,34 @@
 
 package com.dryadandnaiad.sethlans.services.restart;
 
+import com.dryadandnaiad.sethlans.components.SethlansSystrayComponent;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
 /**
  * Created Mario Estrella on 3/22/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface RestartSethlansService {
-    void restart();
+@Service
+public class SethlansManagerServiceImpl implements SethlansManagerService {
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    @Override
+    public void shutdown() {
+        System.exit(0);
+    }
+
+    @Override
+    @Async
+    public void restart() {
+        // Exits application context which prompts the main method to restart service.
+        SethlansSystrayComponent.teardown();
+        SpringApplication.exit(applicationContext, () -> 0);
+    }
 }

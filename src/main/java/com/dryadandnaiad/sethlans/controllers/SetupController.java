@@ -22,7 +22,7 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.commands.SetupForm;
 import com.dryadandnaiad.sethlans.enums.SetupProgress;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
-import com.dryadandnaiad.sethlans.services.restart.RestartSethlansService;
+import com.dryadandnaiad.sethlans.services.restart.SethlansManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +57,7 @@ public class SetupController {
     private boolean firstTime;
 
     private Validator setupFormValidator;
-    private RestartSethlansService restartSethlansService;
+    private SethlansManagerService sethlansManagerService;
     private SaveSetupConfigService saveSetupConfigService;
 
     @Autowired
@@ -66,8 +66,8 @@ public class SetupController {
     }
 
     @Autowired
-    public void setRestartSethlansService(RestartSethlansService restartSethlansService) {
-        this.restartSethlansService = restartSethlansService;
+    public void setSethlansManagerService(SethlansManagerService sethlansManagerService) {
+        this.sethlansManagerService = sethlansManagerService;
     }
 
     @Autowired
@@ -113,7 +113,7 @@ public class SetupController {
             saveSetupConfigService.saveSethlansSettings(setupForm);
             saveSetupConfigService.wizardCompleted(setupForm);
             LOG.info("Restarting Sethlans and implementing configuration changes.");
-            restartSethlansService.restart();
+            sethlansManagerService.restart();
         }
         return "setup";
     }

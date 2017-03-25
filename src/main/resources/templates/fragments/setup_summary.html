@@ -219,8 +219,9 @@
                                         success: function () {
                                             document.getElementById("saved").style.display = "block"
                                             window.setTimeout(function () {
-                                                window.location.port = /*[[${setupForm.httpsPort}]]*/ '1234';
-                                            }, 8000);
+                                                window.location = 'https://' + window.location.hostname + ':' + /*[[${setupForm.httpsPort}]]*/ '1234' + '/';
+                                            }, 10000);
+
                                         }
                                     });
                                 }
