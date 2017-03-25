@@ -30,7 +30,7 @@ import javax.persistence.Entity;
 @Entity
 public class BlenderProject extends AbstractEntityClass {
     private String projectName;
-    private String projectBlendFile;
+    private String projectFile;
     private boolean animation;
     private String projectDirectory;
 

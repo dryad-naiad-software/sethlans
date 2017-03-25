@@ -17,30 +17,14 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.controllers;
-
-import com.dryadandnaiad.sethlans.commands.ProjectForm;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
+package com.dryadandnaiad.sethlans.commands;
 
 /**
- * Created Mario Estrella on 3/24/17.
+ * Created Mario Estrella on 3/25/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Controller
-@Profile({"SERVER", "BOTH"})
-public class ProjectController {
-    private static final Logger LOG = LoggerFactory.getLogger(ProjectController.class);
-
-    @RequestMapping("/project")
-    public String getPage(final Model model) {
-        model.addAttribute("projectForm", new ProjectForm());
-        return "projectform";
-    }
+public class ProjectForm {
+    private String projectFile;
 }

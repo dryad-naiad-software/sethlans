@@ -30,7 +30,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -77,9 +77,9 @@ public class SetupController {
     }
 
     @RequestMapping
-    public String getStartPage(final ModelMap modelMap) {
+    public String getStartPage(final Model model) {
         if (firstTime) {
-            modelMap.addAttribute("setupForm", new SetupForm());
+            model.addAttribute("setupForm", new SetupForm());
             return "setup";
         }
         return "redirect:/";
