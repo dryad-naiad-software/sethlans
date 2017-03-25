@@ -95,13 +95,13 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                 if (SethlansUtils.fileCheckMD5(new File(saveLocation + File.separator + filename), blenderFile.getBlenderFileMd5())) {
                     blenderFile.setBlenderFile(saveLocation + File.separator + filename);
                     LOG.debug(filename + " downloaded successfully.");
+                    blenderFile.setDownloaded(true);
+                    blenderFileService.saveOrUpdate(blenderFile);
                 } else {
                     File toDelete = new File(saveLocation + File.separator + filename);
                     toDelete.delete();
                     throw new IOException("MD5 sums did not match");
                 }
-                blenderFile.setDownloaded(true);
-                blenderFileService.saveOrUpdate(blenderFile);
 
             } catch (MalformedURLException e) {
                 LOG.error("Invalid URL: " + e.getMessage());

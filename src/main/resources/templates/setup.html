@@ -26,6 +26,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+
     <!-- CSS Libraries -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/css/patternfly.min.css"
           th:href="@{/bower/patternfly/dist/css/patternfly.min.css}"
@@ -36,17 +37,37 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/css/bootstrap-slider.css"
           th:href="@{/bower/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css}"
           rel="stylesheet" media="screen, print">
-    <!-- Local CSS -->
-    <link href="../css/sticky-footer.css"
-          th:href="@{/css/sticky-footer.css}"
-          rel="stylesheet" media="screen, print">
-    <link href="../css/center_modal.css"
-          th:href="@{/css/center_modal.css}"
-          rel="stylesheet" media="screen, print">
+    <style>
+        body {
+            background-color: #EAEAEA;
+        }
+
+        .vertical-alignment-helper {
+            display: table;
+            height: 100%;
+            width: 100%;
+            pointer-events: none; /* This makes sure that we can still click outside of the modal to close it */
+        }
+
+        .vertical-align-center {
+            /* To center vertically */
+            display: table-cell;
+            vertical-align: middle;
+            pointer-events: none;
+        }
+
+        .modal-content {
+            /* Bootstrap sets the size of the modal in the modal-dialog class, we need to inherit it */
+            width: inherit;
+            height: inherit;
+            /* To center horizontally */
+            margin: 0 auto;
+            pointer-events: all;
+        }
+    </style>
 
     <!--Favicon -->
     <link rel="shortcut icon" href="../images/favicon.png" th:href="@{/images/favicon.png}">
-
     <title>Setup</title>
 </head>
 <body>
@@ -155,9 +176,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/bootstrap-slider.min.js"
         th:src="@{/bower/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js}"></script>
 
-<!-- Local Javascript Files -->
-<script src="../js/tooltip.js"
-        th:src="@{/js/tooltip.js}"></script>
+<!-- Local Javascript-->
+<script>
+    // Tooltip Javascript
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
 
 <!-- Page Javascript -->
 <script type="text/javascript">

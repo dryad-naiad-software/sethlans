@@ -28,9 +28,11 @@ import javax.persistence.Entity;
  * Project: sethlans
  */
 @Entity
-public class BlenderProject {
+public class BlenderProject extends AbstractEntityClass {
     private String projectName;
     private String projectBlendFile;
     private boolean animation;
+    private String projectDirectory;
+
 
 }
