@@ -26,7 +26,6 @@ import org.kohsuke.args4j.Option;
 import org.kohsuke.args4j.OptionHandlerFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.logging.LogLevel;
@@ -110,12 +109,17 @@ public class Sethlans {
             builder.headless(false);
             while (builder.run(springArgs).isActive()) ;
             // Restarts the application if the context was closed down.
-            LOG.debug("Restarting Sethlans");
             SpringApplicationBuilder builder2 = new SpringApplicationBuilder(Sethlans.class);
             builder2.headless(false);
             builder2.run(springArgs).isActive();
         } else {
-            SpringApplication.run(Sethlans.class, springArgs);
+            SpringApplicationBuilder builder = new SpringApplicationBuilder(Sethlans.class);
+            builder.headless(true);
+            while (builder.run(springArgs).isActive()) ;
+            // Restarts the application if the context was closed down.
+            SpringApplicationBuilder builder2 = new SpringApplicationBuilder(Sethlans.class);
+            builder2.headless(true);
+            builder2.run(springArgs).isActive();
         }
     }
 
