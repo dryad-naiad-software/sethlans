@@ -1,33 +1,13 @@
 <!DOCTYPE html>
-<!--
-  ~ Copyright (c) 2017 Dryad and Naiad Software LLC
-  ~
-  ~ This program is free software; you can redistribute it and/or
-  ~ modify it under the terms of the GNU General Public License
-  ~ as published by the Free Software Foundation; either version 2
-  ~ of the License, or (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program; if not, write to the Free Software
-  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-  ~
-  -->
-
 <!-- Namespaces -->
 <html lang="en" class="layout-pf layout-pf-fixed" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
+
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-
     <!-- CSS Libraries -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/css/patternfly.min.css"
           th:href="@{/bower/patternfly/dist/css/patternfly.min.css}"
@@ -38,8 +18,10 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/css/bootstrap-slider.css"
           th:href="@{/bower/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css}"
           rel="stylesheet" media="screen, print">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.3.8/css/fileinput.min.css"
+          th:href="@{/bower/fileinput.min.css}"
+          media="screen, print" rel="stylesheet" type="text/css">
     <style>
-        @import url('https://fonts.googleapis.com/css?family=Fjalla+One');
         body {
             background-color: #EAEAEA;
         }
@@ -66,12 +48,13 @@
             margin: 0 auto;
             pointer-events: all;
         }
+
+        .form-template {
+            padding: 40px 15px;
+        }
     </style>
 
-    <!--Favicon -->
-    <link rel="shortcut icon" href="../images/favicon.png" th:href="@{/images/favicon.png}">
-
-    <title>Index</title>
+    <title>Project Name</title>
 </head>
 <body>
 <!-- Nav Bar Fragment -->
@@ -144,6 +127,66 @@
 </nav>
 <!--/.navbar-->
 
+<div class="container" style="max-width: 600px;">
+    <h2>Project Name</h2>
+    <h4><strong>Status: <span style="color: green;">Rendering</span> </strong></h4>
+    <hr/>
+    <table class="table table-striped">
+        <tbody>
+        <h4>Project Properties</h4>
+        <tr>
+            <td class="col-md-6">Render Type</td>
+            <td class="col-md-6">Still Image</td>
+        </tr>
+        <tr>
+            <td>Render Engine</td>
+            <td>Cycles</td>
+        </tr>
+        <tr>
+            <td>Blender Version</td>
+            <td>2.78c</td>
+        </tr>
+        </tbody>
+    </table>
+    <hr/>
+    <table class="table table-striped">
+        <tbody>
+        <h4>Render Settings</h4>
+        <tr>
+            <td class="col-md-6">Method</td>
+            <td class="col-md-6">GPU</td>
+        </tr>
+        <tr>
+            <td>Resolution</td>
+            <td>1920x1080</td>
+        </tr>
+        <tr>
+            <td>Samples</td>
+            <td>100</td>
+        </tr>
+        </tbody>
+    </table>
+
+    </table>
+    <hr/>
+    <table class="table table-striped">
+        <tbody>
+        <h4>Render Progress</h4>
+        <tr>
+            <td class="col-md-6">Progress</td>
+            <td class="col-md-6">Frame 1 of 1: Tile 1 of 64</td>
+        </tr>
+        <tr>
+            <td>Details</td>
+            <td>View Frames/Tiles</td>
+        </tr>
+        <tr>
+            <td>Preview</td>
+            <td><img src="../../images/placeholder.svg" height="60"/></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
 
 <!-- Footer Fragment -->
@@ -172,6 +215,7 @@
         <p class="text-muted">Place sticky footer content here.</p>
     </div>
 </footer>
+<!-- Javascript Footers -->
 
 <!-- Javascript Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"
@@ -188,6 +232,8 @@
         th:src="@{/bower/matchHeight/dist/jquery.matchHeight-min.js}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/bootstrap-slider.min.js"
         th:src="@{/bower/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.3.8/js/fileinput.min.js"
+        th:src="@{/bower/fileinput.min.js}"></script>
 
 <!-- Local Javascript-->
 <script>
@@ -196,6 +242,7 @@
         $('[data-toggle="tooltip"]').tooltip();
     });
 </script>
+<!-- Page Javascript -->
 
 </body>
 </html>

@@ -74,75 +74,115 @@
                     </div>
 
                     <div class="modal-body" id="setupForm">
-                            <!-- ************** Fragment Start ***************** -->
-                            <div class="well" th:fragment="setup_server">
-                                <!--/*@thymesVar id="setupForm" type="com.dryadandnaiad.sethlans.commands.SetupForm"*/-->
-                                <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
-                                      method="POST">
+                        <!-- ************** Fragment Start ***************** -->
+                        <div class="well" th:fragment="setup_server">
+                            <!--/*@thymesVar id="setupForm" type="com.dryadandnaiad.sethlans.commands.SetupForm"*/-->
+                            <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
+                                  method="POST">
 
-                                    <div th:fragment="both_import">
-                                        <h3 style="margin-top: auto"><strong><u>Server Directories</u></strong></h3>
-                                        <div class="form-group">
-                                            <label for="projectDir">Project Directory</label>
-                                            <input type="text" class="form-control" id="projectDir"
-                                                   th:field="*{projectDirectory}"
-                                                   data-toggle="tooltip"
-                                                   data-trigger="hover"
-                                                   th:title="#{setup.tooltip.projectDirectory}"
-                                                   title="Project Directory">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="blenderDir">Blender Directory</label>
-                                            <input type="text" class="form-control" id="blenderDir"
-                                                   th:field="*{blenderDirectory}"
-                                                   data-toggle="tooltip"
-                                                   data-trigger="hover"
-                                                   th:title="#{setup.tooltip.blenderDirectory}"
-                                                   title="Blender Directory.">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="cacheDir">Temp Directory</label>
-                                            <input type="text" class="form-control" id="cacheDir"
-                                                   th:field="*{tempDirectory}"
-                                                   data-toggle="tooltip"
-                                                   data-trigger="hover"
-                                                   th:title="#{setup.tooltip.tempDirectory}"
-                                                   title="Temp Directory.">
-                                        </div>
+                                <div th:fragment="both_import">
+                                    <h3 style="margin-top: auto"><strong><u>Server Directories</u></strong></h3>
+                                    <div class="form-group">
+                                        <label for="projectDir">Project Directory</label>
+                                        <input type="text" class="form-control" id="projectDir"
+                                               th:field="*{projectDirectory}"
+                                               data-toggle="tooltip"
+                                               data-trigger="hover"
+                                               th:title="#{setup.tooltip.projectDirectory}"
+                                               title="Project Directory">
                                     </div>
                                     <div class="form-group">
-                                        <input type="hidden" id="progress" name="progress" value="">
-                                        <input type="hidden" id="previous" name="previous" value="">
-                                        <button type="button" class="btn btn-default pull-left"
-                                                onclick="previousClicked()">Previous
-                                        </button>
-                                        <button type="button" class="btn btn-primary pull-right"
-                                                onclick="nextClicked()">Next
-                                        </button>
-                                        <br/>
+                                        <label for="blenderDir">Blender Directory</label>
+                                        <input type="text" class="form-control" id="blenderDir"
+                                               th:field="*{blenderDirectory}"
+                                               data-toggle="tooltip"
+                                               data-trigger="hover"
+                                               th:title="#{setup.tooltip.blenderDirectory}"
+                                               title="Blender Directory.">
                                     </div>
-                                </form>
-                                <script>
-                                    function nextClicked() {
-                                        document.getElementById("progress").value = "BLENDER";
-                                        document.getElementById("previous").value = "SERVER";
-                                        document.getElementById("setupWizard").submit();
-                                    }
-                                    function previousClicked() {
-                                        document.getElementById("progress").value = "MODE";
-                                        document.getElementById("setupWizard").submit();
-                                    }
-                                </script>
-                            </div>
-                            <!-- ************** Fragment End ***************** -->
+                                    <div class="form-group">
+                                        <label for="cacheDir">Temp Directory</label>
+                                        <input type="text" class="form-control" id="cacheDir"
+                                               th:field="*{tempDirectory}"
+                                               data-toggle="tooltip"
+                                               data-trigger="hover"
+                                               th:title="#{setup.tooltip.tempDirectory}"
+                                               title="Temp Directory.">
+                                    </div>
+                                    <h3 style="margin-top: auto"><strong><u>Blender Download</u></strong></h3>
+                                    <div class="form-group">
+                                        <label for="blenderVersion">Blender Version:</label>
+                                        <select class="form-control" id="blenderVersion" name="blenderVersion"
+                                                th:value="${setupForm.blenderVersion}">
+                                            <option th:each="version : ${T(com.dryadandnaiad.sethlans.server.BlenderUtils).listVersions()}"
+                                                    th:value="${version}" th:text="${version}">Version
+                                            </option>
+                                            <option th:remove="all">2.78c</option>
+                                            <option th:remove="all">2.77a</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Operating System:</label><br/>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" th:field="*{blenderBinaryOS}"
+                                                   th:value="${T(com.dryadandnaiad.sethlans.enums.BlenderBinaryOS).Windows32}">
+                                            Windows 32bit</label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox"
+                                                   th:field="*{blenderBinaryOS}"
+                                                   th:value="${T(com.dryadandnaiad.sethlans.enums.BlenderBinaryOS).Windows64}">
+                                            Windows 64bit</label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox"
+                                                   th:field="*{blenderBinaryOS}"
+                                                   th:value="${T(com.dryadandnaiad.sethlans.enums.BlenderBinaryOS).MacOS}">
+                                            macOS / OSX</label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox"
+                                                   th:field="*{blenderBinaryOS}"
+                                                   th:value="${T(com.dryadandnaiad.sethlans.enums.BlenderBinaryOS).Linux32}">
+                                            Linux 32bit</label>
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox"
+                                                   th:field="*{blenderBinaryOS}"
+                                                   th:value="${T(com.dryadandnaiad.sethlans.enums.BlenderBinaryOS).Linux64}">
+                                            Linux 64bit</label>
+                                    </div>
 
-
+                                </div>
+                                <div class="form-group">
+                                    <input type="hidden" id="progress" name="progress" value="">
+                                    <input type="hidden" id="previous" name="previous" value="">
+                                    <button type="button" class="btn btn-default pull-left"
+                                            onclick="previousClicked()">Previous
+                                    </button>
+                                    <button type="button" class="btn btn-primary pull-right"
+                                            onclick="nextClicked()">Next
+                                    </button>
+                                    <br/>
+                                </div>
+                            </form>
+                            <script>
+                                function nextClicked() {
+                                    document.getElementById("progress").value = "SUMMARY";
+                                    document.getElementById("previous").value = "SERVER";
+                                    document.getElementById("setupWizard").submit();
+                                }
+                                function previousClicked() {
+                                    document.getElementById("progress").value = "MODE";
+                                    document.getElementById("setupWizard").submit();
+                                }
+                            </script>
                         </div>
+                        <!-- ************** Fragment End ***************** -->
+
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <!-- Javascript Libraries -->

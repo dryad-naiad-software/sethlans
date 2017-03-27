@@ -75,52 +75,52 @@
                     <div class="modal-body" id="setupForm">
                             <!-- ************** Fragment Start ***************** -->
 
-                            <div class="well" th:fragment="setup_client">
-                                <!--/*@thymesVar id="setupForm" type="com.dryadandnaiad.sethlans.commands.SetupForm"*/-->
-                                <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
-                                      method="POST">
+                        <div class="well" th:fragment="setup_client">
+                            <!--/*@thymesVar id="setupForm" type="com.dryadandnaiad.sethlans.commands.SetupForm"*/-->
+                            <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
+                                  method="POST">
 
-                                    <div th:fragment="both_import">
-                                        <style>.slider-selection {
-                                            background: #0C8DCE;
-                                        }</style>
-                                        <h3 style="margin-top: auto"><strong><u>Compute Method</u></strong></h3>
-                                        <div class="form-group">
-                                            <label for="selectedMethod">Devices:</label>
-                                            <select class="form-control" id="selectedMethod" name="selectedMethod"
-                                                    th:value="${setupForm.selectedMethod}" onclick="showCUDA()">
-                                                <option th:each="method : ${setupForm.availableMethods}"
-                                                        th:value="${method}" th:text="${method}">CPU
-                                                </option>
-                                                <option th:remove="all">GPU</option>
-                                                <option th:remove="all">CPU &amp; GPU</option>
-                                            </select>
+                                <div th:fragment="both_import">
+                                    <style>.slider-selection {
+                                        background: #0C8DCE;
+                                    }</style>
+                                    <h3 style="margin-top: auto"><strong><u>Compute Method</u></strong></h3>
+                                    <div class="form-group">
+                                        <label for="selectedMethod">Devices:</label>
+                                        <select class="form-control" id="selectedMethod" name="selectedMethod"
+                                                th:value="${setupForm.selectedMethod}" onclick="showCUDA()">
+                                            <option th:each="method : ${setupForm.availableMethods}"
+                                                    th:value="${method}" th:text="${method}">CPU
+                                            </option>
+                                            <option th:remove="all">GPU</option>
+                                            <option th:remove="all">CPU &amp; GPU</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" id="cpu">
+                                        <label for="cores">Rendering Cores: &emsp; &emsp; </label>
+                                        <input id="cores" name="cores" th:value="${setupForm.cores}" type="number"
+                                               data-slider-min="1"
+                                               th:attr="data-slider-max=${setupForm.totalCores},data-slider-value=${setupForm.cores}"
+                                               data-slider-step="1"/>
+                                    </div>
+                                    <div class="form-group" id="cuda">
+                                        <label>CUDA Devices:</label><br/>
+                                        <div th:each="gpu,stat : ${setupForm.availableGPUs}">
+                                            <input type="checkbox" id="selectedGPUId" name="selectedGPUId"
+                                                   th:value="${stat.index}" th:field="*{selectedGPUId}">
+                                            <label th:for="selectedGPUId" th:text="${gpu.model}">GPU</label>
                                         </div>
-                                        <div class="form-group" id="cpu">
-                                            <label for="cores">Rendering Cores: &emsp; &emsp; </label>
-                                            <input id="cores" name="cores" th:value="${setupForm.cores}" type="number"
-                                                   data-slider-min="1"
-                                                   th:attr="data-slider-max=${setupForm.totalCores},data-slider-value=${setupForm.cores}"
-                                                   data-slider-step="1"/>
-                                        </div>
-                                        <div class="form-group" id="cuda">
-                                            <label>CUDA Devices:</label><br/>
-                                            <div th:each="gpu,stat : ${setupForm.availableGPUs}">
-                                                <input type="checkbox" id="selectedGPUId" name="selectedGPUId"
-                                                       th:value="${stat.index}" th:field="*{selectedGPUId}">
-                                                <label th:for="selectedGPUId" th:text="${gpu.model}">GPU</label>
-                                            </div>
 
-                                        </div>
-                                        <h3 style="margin-top: auto"><strong><u>Node Directories</u></strong></h3>
-                                        <div class="form-group">
-                                            <label for="workDir">Working Directory</label>
-                                            <input type="text" class="form-control slider" id="workDir"
-                                                   th:field="*{workingDirectory}"
-                                                   data-toggle="tooltip"
-                                                   data-trigger="hover"
-                                                   title="Sethlans will store blender, project and temporary tiles here.">
-                                        </div>
+                                    </div>
+                                    <h3 style="margin-top: auto"><strong><u>Node Directories</u></strong></h3>
+                                    <div class="form-group">
+                                        <label for="workDir">Working Directory</label>
+                                        <input type="text" class="form-control slider" id="workDir"
+                                               th:field="*{workingDirectory}"
+                                               data-toggle="tooltip"
+                                               data-trigger="hover"
+                                               title="Sethlans will store blender, project and temporary tiles here.">
+                                    </div>
                                     </div>
                                     <div class="form-group">
                                         <input type="hidden" id="progress" name="progress" value="">
@@ -135,25 +135,25 @@
                                     </div>
                                 </form>
 
-                                <script>
-                                    function nextClicked() {
-                                        document.getElementById("progress").value = "SUMMARY";
-                                        document.getElementById("previous").value = "NODE";
-                                        document.getElementById("setupWizard").submit();
-                                    }
-                                    function previousClicked() {
-                                        document.getElementById("progress").value = "MODE";
-                                        document.getElementById("setupWizard").submit();
-                                    }
-                                </script>
+                            <script>
+                                function nextClicked() {
+                                    document.getElementById("progress").value = "SUMMARY";
+                                    document.getElementById("previous").value = "NODE";
+                                    document.getElementById("setupWizard").submit();
+                                }
+                                function previousClicked() {
+                                    document.getElementById("progress").value = "MODE";
+                                    document.getElementById("setupWizard").submit();
+                                }
+                            </script>
                         </div>
                         <!-- ************** Fragment End ***************** -->
-                    </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <

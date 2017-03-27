@@ -51,25 +51,72 @@
 </head>
 <body>
 <nav class="navbar navbar-pf-vertical" th:fragment="navbar">
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggle">
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Fjalla+One');
+        /* The side navigation menu */
+        .sidenav {
+            height: 100%; /* 100% Full-height */
+            width: 0; /* 0 width - change this with JavaScript */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Stay on top */
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.8); /* Black*/
+            overflow-x: hidden; /* Disable horizontal scroll */
+            padding-top: 60px; /* Place content 60px from the top */
+            transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+        }
+
+        /* The navigation menu links */
+        .sidenav a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 16px;
+            color: #ffffff;
+            display: block;
+            transition: 0.3s
+        }
+
+        /* When you mouse over the navigation links, change their color */
+        .sidenav a:hover, .offcanvas a:focus {
+            color: #39A5DC;
+        }
+
+        /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+        #main {
+            transition: margin-left .5s;
+        }
+
+        /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+        @media screen and (max-height: 450px) {
+            .sidenav {
+                padding-top: 15px;
+            }
+
+            .sidenav a {
+                font-size: 18px;
+            }
+        }
+    </style>
+    <div id="main" class="navbar-header">
+        <button id="menuButton" type="button" class="navbar-toggle" value="close" onclick="toggleNav()">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a href="/" class="navbar-brand">
-            <img class="navbar-brand-icon" src="//assets/img/logo-alt.svg" alt=""/><img class="navbar-brand-name"
-                                                                                        src="//assets/img/brand-alt.svg"
-                                                                                        alt="Using navbar fragment"/>
+        <a href="/" class="navbar-brand" style="font-family: 'Fjalla One', sans-serif; font-size: 175%">
+            <img class="navbar-brand-icon" src="../../images/logo.png" th:src="@{/images/logo.png}" height="32"
+                 alt="logo"/>Sethlans
         </a>
     </div>
+    <div id="mySidenav" class="sidenav">
+        <a href="#">About</a>
+        <a href="#">Services</a>
+        <a href="#">Clients</a>
+        <a href="#">Contact</a>
+    </div>
     <nav class="collapse navbar-collapse">
-        <ul class="nav navbar-nav">
-            <li><a href="#" target="_blank" class="nav-item-iconic nav-item-iconic-new-window"><span title="Launch"
-                                                                                                     class="fa fa-external-link"></span></a>
-            </li>
-        </ul>
         <ul class="nav navbar-nav navbar-right navbar-iconic">
             <li class="dropdown">
                 <a class="dropdown-toggle nav-item-iconic" id="notifications" data-toggle="dropdown"
@@ -116,6 +163,28 @@
             </li>
         </ul>
     </nav>
+    <script>
+        /* Set the width of the side navigation to 250px */
+        function toggleNav() {
+            if (document.getElementById("menuButton").value == "close") {
+                document.getElementById("menuButton").value = "open";
+                openNav();
+            } else if (document.getElementById("menuButton").value == "open") {
+                document.getElementById("menuButton").value = "close";
+                closeNav();
+            }
+        }
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "200px";
+            document.getElementById("main").style.marginLeft = "200px";
+        }
+
+        /* Set the width of the side navigation to 0 */
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+            document.getElementById("main").style.marginLeft = "0";
+        }
+    </script>
 </nav> <!--/.navbar-->
 
 

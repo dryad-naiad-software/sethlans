@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright (c) 2017 Dryad and Naiad Software LLC
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<!-- Namespaces -->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSS Libraries -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/css/patternfly.min.css"
+          th:href="@{/bower/patternfly/dist/css/patternfly.min.css}"
+          rel="stylesheet" media="screen, print">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/css/patternfly-additions.min.css"
+          th:href="@{/bower/patternfly/dist/css/patternfly-additions.min.css}"
+          rel="stylesheet" media="screen, print">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/css/bootstrap-slider.css"
+          th:href="@{/bower/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css}"
+          rel="stylesheet" media="screen, print">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.3.8/css/fileinput.min.css"
+          th:href="@{/bower/fileinput.min.css}"
+          media="screen, print" rel="stylesheet" type="text/css">
+    <style>
+        body {
+            background-color: #EAEAEA;
+        }
+
+        .vertical-alignment-helper {
+            display: table;
+            height: 100%;
+            width: 100%;
+            pointer-events: none; /* This makes sure that we can still click outside of the modal to close it */
+        }
+
+        .vertical-align-center {
+            /* To center vertically */
+            display: table-cell;
+            vertical-align: middle;
+            pointer-events: none;
+        }
+
+        .modal-content {
+            /* Bootstrap sets the size of the modal in the modal-dialog class, we need to inherit it */
+            width: inherit;
+            height: inherit;
+            /* To center horizontally */
+            margin: 0 auto;
+            pointer-events: all;
+        }
+
+        .form-template {
+            padding: 10px 10px;
+        }
+    </style>
+
+    <!--Favicon -->
+    <link rel="shortcut icon" href="../images/favicon.png" th:href="@{/images/favicon.png}">
+    <title>Project</title>
+</head>
+<body>
+<!-- Nav Bar Fragment -->
+<nav class="navbar navbar-pf-vertical" th:replace="fragments/nav :: navbar">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle"><span class="sr-only">Toggle navigation</span> <span
+                class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span></button>
+        <a href="/" class="navbar-brand"> <img class="navbar-brand-icon" src="//assets/img/logo-alt.svg" alt=""/><img
+                class="navbar-brand-name"
+                src="//assets/img/brand-alt.svg"
+                alt="PatternFly Enterprise Application"/> </a></div>
+    <nav class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+            <li><a href="#" target="_blank" class="nav-item-iconic nav-item-iconic-new-window"><span title="Launch"
+                                                                                                     class="fa fa-external-link"></span></a>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right navbar-iconic">
+            <li class="dropdown"><a class="dropdown-toggle nav-item-iconic" id="notifications" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="true"> <span title="Notifications"
+                                                                                     class="fa pficon-flag"></span>
+                <span class="badge">2</span> </a>
+                <div class="dropdown-menu infotip bottom-right">
+                    <div class="arrow"></div>
+                    <ul class="list-group">
+                        <li class="list-group-item"><span class="i pficon pficon-info"></span> Modified Datasources
+                            ExampleDS
+                        </li>
+                        <li class="list-group-item"><span class="i pficon pficon-info"></span> Error: System Failure
+                        </li>
+                    </ul>
+                    <div class="footer"><a>Clear Messages</a></div>
+                </div>
+            </li>
+            <li class="dropdown"><a class="dropdown-toggle nav-item-iconic" id="dropdownMenu1" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="true"> <span title="Help"
+                                                                                     class="fa pficon-help"></span>
+                <span class="caret"></span> </a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li><a href="#">Help</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+            </li>
+            <li class="dropdown"><a class="dropdown-toggle nav-item-iconic" id="dropdownMenu2" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="true"> <span title="Username"
+                                                                                     class="fa pficon-user"></span>
+                <span class="caret"></span> </a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <li><a href="#">Preferences</a></li>
+                    <li><a href="#">Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+</nav>
+<!--/.navbar-->
+
+
+<!-- Project Form Fragment -->
+<div th:fragment="project_details">
+
+    <div class="container" style="max-width: 600px;">
+        <form class="form-horizontal" id="projectWizard" name="projectWizard" th:action="@{/project}"
+              th:object="${projectForm}"
+              method="POST">
+            <div class="form-group">
+                <h2 class="text-center">Project Details</h2>
+                <label class="control-label" for="projectName">Project Name</label>
+                <input type="text" id="projectName" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="blenderVersion">Blender Version</label>
+                <select class="form-control" id="blenderVersion" name="blenderVersion"
+                        th:value="${projectForm.blenderVersion}">
+                    <option th:each="version : ${T(checkdatabase foravailable downloads}"
+                            th:value="${version}" th:text="${version}">Version
+                    </option>
+                    <option th:remove="all">2.78c</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="blenderVersion">Output Format</label>
+                <select class="form-control" id="outputFormat" name="outputFormat"
+                        th:value="${projectForm.outputFormat}">
+                    <option th:each="version : ${T(get list of output formats}"
+                            th:value="${version}" th:text="${version}">JPG
+                    </option>
+                    <option th:remove="all">PNG</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Project Type</label><br/>
+                <label class="control-label"><input type="radio" name="projtype" value="single">&emsp; Still
+                    Image</label><br/>
+                <label class="control-label" for="framenum">Frame Number</label>
+                <input type="number" id="framenum" class="form-control" disabled>
+
+            </div>
+            <div class="form-group">
+                <label class="control-label"><input type="radio" name="projtype" value="animation">&emsp;
+                    Animation</label><br/>
+                <label class="control-label" for="startframe">Start Frame</label>
+                <input type="number" id="startframe" class="form-control" disabled>
+                <label class="control-label" for="endframe">End Frame</label>
+                <input type="number" id="endframe" class="form-control" disabled>
+                <label class="control-label" for="framestep">Frame Step</label>
+                <input type="number" id="framestep" class="form-control" disabled>
+            </div>
+
+            <div class="form-group">
+                <style>.slider-selection {
+                    background: #0C8DCE;
+                }</style>
+                <label class="control-label">Split tiles</label><br/>
+                <label class="checkbox-inline"><input type="checkbox" id="useTiles" name="useTiles"
+                                                      onClick="toggleTiles()">Yes</label><br/>
+                <div id="tileSlider" style="display: none">
+                    <label for="tiles">Number of Tiles: &emsp; &emsp; </label>
+                    <input id="tiles" name="tiles" th:value="${productForm.tiles}" type="number"
+                           data-slider-min="1"
+                           data-slider-max="100"
+                           th:attr="data-slider-value=${productForm.tiles}"
+                           data-slider-step="1"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Render On</label><br/>
+                <label class="checkbox-inline"><input type="checkbox" name="method">CPU</label>
+                <label class="checkbox-inline"><input type="checkbox" name="method">GPU</label>
+            </div>
+
+            <div class="form-group">
+                <style>.slider-selection {
+                    background: #0C8DCE;
+                }</style>
+                <label for="resolution">Resolution: &emsp; &emsp; </label>
+                <input id="resolution" name="resolution" th:value="${productForm.tiles}" type="number"
+                       data-slider-min="1"
+                       data-slider-max="64"
+                       th:attr="data-slider-value=${productForm.tiles}"
+                       data-slider-step="1"/>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label" for="samples">Samples</label>
+                <input type="number" id="samples" class="form-control">
+            </div>
+
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-default">Cancel</button>
+                <button type="submit" class="btn btn-primary pull-right">Submit Project</button>
+            </div>
+        </form>
+        <script defer="defer">
+            window.onload = function () {
+                $("#tiles").slider({tooltip_position: 'bottom'});
+                $("#resolution").slider({tooltip_position: 'bottom'});
+                $('input[type="radio"]').on('change', function () {
+                    var typeValue = $("input[name='projtype']:checked").val();
+                    if (typeValue === "single") {
+                        document.getElementById("framenum").disabled = false;
+                        document.getElementById("startframe").disabled = true;
+                        document.getElementById("endframe").disabled = true;
+                        document.getElementById("framestep").disabled = true;
+                    }
+                    if (typeValue === "animation") {
+                        document.getElementById("framenum").disabled = true;
+                        document.getElementById("startframe").disabled = false;
+                        document.getElementById("endframe").disabled = false;
+                        document.getElementById("framestep").disabled = false;
+                    }
+                });
+            };
+            function toggleTiles() {
+                if ($("#useTiles").is(":checked")) {
+                    document.getElementById("tileSlider").style.display = "block";
+                } else {
+                    document.getElementById("tileSlider").style.display = "none";
+                }
+            }
+
+        </script>
+    </div>
+</div>
+
+
+<!-- Footer Fragment -->
+<footer class="footer" th:replace="fragments/footer :: footer">
+    <style>
+        html {
+            position: relative;
+            min-height: 100%;
+        }
+
+        body {
+            /* Margin bottom by footer height */
+            margin-bottom: 60px;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            /* Set the fixed height of the footer here */
+            height: 60px;
+            background-color: #000;
+        }
+    </style>
+    <div class="container">
+        <p class="text-muted">Place sticky footer content here.</p>
+    </div>
+</footer>
+
+<!-- Javascript Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"
+        th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"
+        th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/js/patternfly.min.js"
+        th:src="@{/bower/patternfly/dist/js/patternfly.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js"
+        th:src="@{/bower/c3/c3.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.7.3/d3.min.js"
+        th:src="@{/bower/d3/d3.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.matchHeight/0.7.2/jquery.matchHeight-min.js"
+        th:src="@{/bower/matchHeight/dist/jquery.matchHeight-min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/bootstrap-slider.min.js"
+        th:src="@{/bower/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.3.8/js/fileinput.min.js"
+        th:src="@{/bower/fileinput.min.js}"></script>
+
+<!-- Local Javascript-->
+<script>
+    // Tooltip Javascript
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+<!-- Page Javascript -->
+
+</body>
+</html>

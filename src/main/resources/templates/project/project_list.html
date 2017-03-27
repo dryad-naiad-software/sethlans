@@ -1,33 +1,13 @@
 <!DOCTYPE html>
-<!--
-  ~ Copyright (c) 2017 Dryad and Naiad Software LLC
-  ~
-  ~ This program is free software; you can redistribute it and/or
-  ~ modify it under the terms of the GNU General Public License
-  ~ as published by the Free Software Foundation; either version 2
-  ~ of the License, or (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program; if not, write to the Free Software
-  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-  ~
-  -->
-
 <!-- Namespaces -->
 <html lang="en" class="layout-pf layout-pf-fixed" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
+
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-
     <!-- CSS Libraries -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/css/patternfly.min.css"
           th:href="@{/bower/patternfly/dist/css/patternfly.min.css}"
@@ -38,8 +18,10 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/css/bootstrap-slider.css"
           th:href="@{/bower/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css}"
           rel="stylesheet" media="screen, print">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.3.8/css/fileinput.min.css"
+          th:href="@{/bower/fileinput.min.css}"
+          media="screen, print" rel="stylesheet" type="text/css">
     <style>
-        @import url('https://fonts.googleapis.com/css?family=Fjalla+One');
         body {
             background-color: #EAEAEA;
         }
@@ -66,12 +48,13 @@
             margin: 0 auto;
             pointer-events: all;
         }
+
+        .form-template {
+            padding: 40px 15px;
+        }
     </style>
 
-    <!--Favicon -->
-    <link rel="shortcut icon" href="../images/favicon.png" th:href="@{/images/favicon.png}">
-
-    <title>Index</title>
+    <title>Projects</title>
 </head>
 <body>
 <!-- Nav Bar Fragment -->
@@ -144,6 +127,37 @@
 </nav>
 <!--/.navbar-->
 
+<div class="container">
+    <div th:if="${not #lists.isEmpty(products)}">
+        <h2>Projects</h2>
+        <table class="table table-striped">
+            <button type="submit" class="btn btn-primary pull-right">New Project</button>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Blender Version</th>
+                <th>Type</th>
+                <th>Compute</th>
+                <th>Resolution</th>
+                <th>Samples</th>
+                <th>Status</th>
+                <th>Actions</th>
+
+            </tr>
+            <tr th:each="project : ${projects}">
+                <td><img src="../../images/placeholder.svg" height="60"/></td>
+                <td>Test</td>
+                <td>2.78c</td>
+                <td>Still Image</td>
+                <td>GPU</td>
+                <td>1920x1080 px</td>
+                <td>100 Samples</td>
+                <td>50%</td>
+                <td>View<br/>Pause<br/>Download</td>
+            </tr>
+        </table>
+    </div>
+</div>
 
 
 <!-- Footer Fragment -->
@@ -172,6 +186,7 @@
         <p class="text-muted">Place sticky footer content here.</p>
     </div>
 </footer>
+<!-- Javascript Footers -->
 
 <!-- Javascript Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"
@@ -188,6 +203,8 @@
         th:src="@{/bower/matchHeight/dist/jquery.matchHeight-min.js}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/bootstrap-slider.min.js"
         th:src="@{/bower/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.3.8/js/fileinput.min.js"
+        th:src="@{/bower/fileinput.min.js}"></script>
 
 <!-- Local Javascript-->
 <script>
@@ -196,6 +213,6 @@
         $('[data-toggle="tooltip"]').tooltip();
     });
 </script>
-
+<!-- Page Javascript -->
 </body>
 </html>

@@ -1,33 +1,13 @@
 <!DOCTYPE html>
-<!--
-  ~ Copyright (c) 2017 Dryad and Naiad Software LLC
-  ~
-  ~ This program is free software; you can redistribute it and/or
-  ~ modify it under the terms of the GNU General Public License
-  ~ as published by the Free Software Foundation; either version 2
-  ~ of the License, or (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program; if not, write to the Free Software
-  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-  ~
-  -->
-
 <!-- Namespaces -->
 <html lang="en" class="layout-pf layout-pf-fixed" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
+
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-
     <!-- CSS Libraries -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/css/patternfly.min.css"
           th:href="@{/bower/patternfly/dist/css/patternfly.min.css}"
@@ -38,8 +18,11 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/css/bootstrap-slider.css"
           th:href="@{/bower/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css}"
           rel="stylesheet" media="screen, print">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.3.8/css/fileinput.min.css"
+          th:href="@{/bower/fileinput.min.css}"
+          media="screen, print" rel="stylesheet" type="text/css">
+
     <style>
-        @import url('https://fonts.googleapis.com/css?family=Fjalla+One');
         body {
             background-color: #EAEAEA;
         }
@@ -66,12 +49,13 @@
             margin: 0 auto;
             pointer-events: all;
         }
+
+        .form-template {
+            padding: 40px 15px;
+        }
     </style>
 
-    <!--Favicon -->
-    <link rel="shortcut icon" href="../images/favicon.png" th:href="@{/images/favicon.png}">
-
-    <title>Index</title>
+    <title>Project Name</title>
 </head>
 <body>
 <!-- Nav Bar Fragment -->
@@ -144,6 +128,151 @@
 </nav>
 <!--/.navbar-->
 
+<div class="container">
+    <h2>Project Name</h2>
+    <h4><strong>Status: <span style="color: green;">Rendering</span> </strong></h4>
+    <hr/>
+    <h4 class="page-header">Frames/Tiles</h4>
+
+    <div class="row">
+        <div class="col-md-2">
+            <div class="thumbnail">
+                <a class="pop" href="#">
+                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
+                    <div class="caption">
+                        <p>Tile 01</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="thumbnail">
+                <a class="pop" href="#">
+                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
+                    <div class="caption">
+                        <p>Tile 02</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="thumbnail">
+                <a class="pop" href="#">
+                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
+                    <div class="caption">
+                        <p>Tile 03</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="thumbnail">
+                <a class="pop" href="#">
+                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
+                    <div class="caption">
+                        <p>Tile 04</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="thumbnail">
+                <a class="pop" href="#">
+                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
+                    <div class="caption">
+                        <p>Tile 05</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="thumbnail">
+                <a class="pop" href="#">
+                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
+                    <div class="caption">
+                        <p>Tile 06</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <div class="thumbnail">
+                <a class="pop" href="#">
+                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
+                    <div class="caption">
+                        <p>Tile 07</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="thumbnail">
+                <a class="pop" href="#">
+                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
+                    <div class="caption">
+                        <p>Tile 08</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="thumbnail">
+                <a class="pop" href="#">
+                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
+                    <div class="caption">
+                        <p>Tile 09</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="thumbnail">
+                <a class="pop" href="#">
+                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
+                    <div class="caption">
+                        <p>Tile 10</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="thumbnail">
+                <a class="pop" href="#">
+                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
+                    <div class="caption">
+                        <p>Tile 11</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="thumbnail">
+                <a class="pop" href="#">
+                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
+                    <div class="caption">
+                        <p>Tile 12</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Creates the bootstrap modal where the image will appear -->
+        <div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                                class="sr-only">Close</span></button>
+                        <img src="" class="imagepreview" style="width: 100%;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <!-- Footer Fragment -->
@@ -172,9 +301,10 @@
         <p class="text-muted">Place sticky footer content here.</p>
     </div>
 </footer>
+<!-- Javascript Footers -->
 
 <!-- Javascript Libraries -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"
         th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"
         th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
@@ -188,6 +318,9 @@
         th:src="@{/bower/matchHeight/dist/jquery.matchHeight-min.js}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/bootstrap-slider.min.js"
         th:src="@{/bower/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.3.8/js/fileinput.min.js"
+        th:src="@{/bower/fileinput.min.js}"></script>
+
 
 <!-- Local Javascript-->
 <script>
@@ -196,6 +329,15 @@
         $('[data-toggle="tooltip"]').tooltip();
     });
 </script>
+<script>
+    $(document).ready(function () {
+        $('.pop').on('click', function () {
+            $('.imagepreview').attr('src', $(this).find('img').attr('src'));
+            $('#imagemodal').modal('show');
+        });
+    });
+</script>
+<!-- Page Javascript -->
 
 </body>
 </html>

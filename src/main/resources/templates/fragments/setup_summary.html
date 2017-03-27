@@ -148,27 +148,27 @@
                                         </tbody>
                                         <div th:case="${T(com.dryadandnaiad.sethlans.enums.SethlansMode).SERVER}">
                                             <tbody th:replace="fragments/setup_summary_server :: setup_summary_server">
-                                        <tr>
-                                            <th class="col-md-6">Setting</th>
-                                            <th class="col-md-6">Value</th>
-                                        </tr>
-                                        <tr>
-                                            <td>Mode</td>
-                                            <td>Server</td>
-                                        </tr>
-                                        </tbody>
+                                            <tr>
+                                                <th class="col-md-6">Setting</th>
+                                                <th class="col-md-6">Value</th>
+                                            </tr>
+                                            <tr>
+                                                <td>Mode</td>
+                                                <td>Server</td>
+                                            </tr>
+                                            </tbody>
                                         </div>
                                         <div th:case="${T(com.dryadandnaiad.sethlans.enums.SethlansMode).BOTH}">
                                             <tbody th:replace="fragments/setup_summary_server :: setup_summary_server">
-                                        <tr>
-                                            <th class="col-md-6">Setting</th>
-                                            <th class="col-md-6">Value</th>
-                                        </tr>
-                                        <tr>
-                                            <td>Mode</td>
-                                            <td>Dual</td>
-                                        </tr>
-                                        </tbody>
+                                            <tr>
+                                                <th class="col-md-6">Setting</th>
+                                                <th class="col-md-6">Value</th>
+                                            </tr>
+                                            <tr>
+                                                <td>Mode</td>
+                                                <td>Dual</td>
+                                            </tr>
+                                            </tbody>
 
                                             <tbody th:replace="fragments/setup_summary_client :: setup_summary_client">
                                             <tr>
@@ -217,7 +217,7 @@
                                         type: 'post',
                                         data: $('#setupWizard').serialize(),
                                         success: function () {
-                                            document.getElementById("saved").style.display = "block"
+                                            document.getElementById("saved").style.display = "block";
                                             window.setTimeout(function () {
                                                 window.location = 'https://' + window.location.hostname + ':' + /*[[${setupForm.httpsPort}]]*/ '1234' + '/';
                                             }, 10000);
