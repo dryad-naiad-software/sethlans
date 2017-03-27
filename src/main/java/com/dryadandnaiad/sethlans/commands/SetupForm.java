@@ -28,6 +28,8 @@ import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.enums.SetupProgress;
 import org.apache.commons.lang3.SystemUtils;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -84,6 +86,7 @@ public class SetupForm {
     private SetupProgress progress;
     private SetupProgress previous;
     private List<BlenderBinaryOS> blenderBinaryOS;
+    private static final Logger LOG = LoggerFactory.getLogger(SetupForm.class);
 
 
     public SetupForm() {
@@ -95,7 +98,7 @@ public class SetupForm {
         this.blenderBinaryOS = new ArrayList<>();
         this.cores = 1;
         this.projectDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "projects" + File.separator;
-        this.blenderDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "blenderzips" + File.separator;
+        this.blenderDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "blender" + File.separator;
         this.tempDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "temp" + File.separator;
         this.workingDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "cache" + File.separator;
         this.logDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "logs" + File.separator;
@@ -109,12 +112,29 @@ public class SetupForm {
             this.blenderBinaryOS.add(BlenderBinaryOS.MacOS);
         }
         if (SystemUtils.IS_OS_LINUX) {
-            this.blenderBinaryOS.add(BlenderBinaryOS.Linux32);
-            this.blenderBinaryOS.add(BlenderBinaryOS.Linux64);
+            String arch = System.getProperty("os.arch");
+
+            if (arch.equals("x86")) {
+                this.blenderBinaryOS.add(BlenderBinaryOS.Linux32);
+            } else {
+                this.blenderBinaryOS.add(BlenderBinaryOS.Linux64);
+            }
+
         }
         if (SystemUtils.IS_OS_WINDOWS) {
-            this.blenderBinaryOS.add(BlenderBinaryOS.Windows32);
-            this.blenderBinaryOS.add(BlenderBinaryOS.Windows64);
+            String arch = System.getenv("PROCESSOR_ARCHITECTURE");
+            String wow64Arch = System.getenv("PROCESSOR_ARCHITEW6432");
+
+            String realArch = arch.endsWith("64")
+                    || wow64Arch != null && wow64Arch.endsWith("64")
+                    ? "64" : "32";
+            if (realArch.equals("64")) {
+                this.blenderBinaryOS.add(BlenderBinaryOS.Windows64);
+            } else {
+                this.blenderBinaryOS.add(BlenderBinaryOS.Windows32);
+            }
+
+
         }
 
     }
