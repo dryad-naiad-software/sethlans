@@ -19,6 +19,13 @@
 
 package com.dryadandnaiad.sethlans.commands;
 
+import com.dryadandnaiad.sethlans.domains.BlenderFile;
+import com.dryadandnaiad.sethlans.enums.ProjectFormProgress;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.NotNull;
+import java.util.List;
+
 /**
  * Created Mario Estrella on 3/25/17.
  * Dryad and Naiad Software LLC
@@ -26,5 +33,54 @@ package com.dryadandnaiad.sethlans.commands;
  * Project: sethlans
  */
 public class ProjectForm {
-    private String projectFile;
+    @NotNull
+    @NotEmpty
+    private String projectName;
+
+
+    private ProjectFormProgress progress = ProjectFormProgress.UPLOAD;
+    private BlenderFile blenderFile;
+    private List<BlenderFile> serverBlenderBinaries;
+
+    public BlenderFile getBlenderFile() {
+        return blenderFile;
+    }
+
+    public void setBlenderFile(BlenderFile blenderFile) {
+        this.blenderFile = blenderFile;
+    }
+
+    public ProjectFormProgress getProgress() {
+        return progress;
+    }
+
+    public void setProgress(ProjectFormProgress progress) {
+        this.progress = progress;
+    }
+
+    public List<BlenderFile> getServerBlenderBinaries() {
+        return serverBlenderBinaries;
+    }
+
+    public void setServerBlenderBinaries(List<BlenderFile> serverBlenderBinaries) {
+        this.serverBlenderBinaries = serverBlenderBinaries;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    @Override
+    public String toString() {
+        return "ProjectForm{" +
+                "projectName='" + projectName + '\'' +
+                ", progress=" + progress +
+                ", blenderFile=" + blenderFile +
+                ", serverBlenderBinaries=" + serverBlenderBinaries +
+                '}';
+    }
 }

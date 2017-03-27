@@ -20,12 +20,21 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.commands.ProjectForm;
+import com.dryadandnaiad.sethlans.domains.BlenderFile;
+import com.dryadandnaiad.sethlans.services.database.BlenderFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Created Mario Estrella on 3/24/17.
@@ -37,15 +46,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Profile({"SERVER", "BOTH"})
 public class ProjectController {
     private static final Logger LOG = LoggerFactory.getLogger(ProjectController.class);
+    private BlenderFileService blenderFileService;
+    private List<BlenderFile> availableBlenderBinaries;
+
+    @Autowired
+    public void setBlenderFileService(BlenderFileService blenderFileService) {
+        this.blenderFileService = blenderFileService;
+    }
 
     @RequestMapping("/project")
-    public String getPage(final Model model) {
+    public String getPage() {
         return "project/project_list";
     }
 
     @RequestMapping("/project/new")
     public String newProject(Model model) {
         model.addAttribute("projectForm", new ProjectForm());
+        return "project/project_form";
+    }
+
+    @RequestMapping(value = "/project/new", method = RequestMethod.POST)
+    public String newProjectDetails(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm, BindingResult bindingResult) {
+        availableBlenderBinaries = (List<BlenderFile>) blenderFileService.listAll();
+        projectForm.setServerBlenderBinaries(availableBlenderBinaries);
+        LOG.debug(projectForm.toString());
         return "project/project_form";
     }
 }

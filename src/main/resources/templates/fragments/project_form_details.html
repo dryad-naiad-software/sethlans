@@ -134,9 +134,10 @@
 
 
 <!-- Project Form Fragment -->
-<div th:fragment="project_details">
+<div th:fragment="project_form_details">
 
     <div class="container" style="max-width: 600px;">
+        <!--/*@thymesVar id="projectForm" type="com.dryadandnaiad.sethlans.commands.ProjectForm"*/-->
         <form class="form-horizontal" id="projectWizard" name="projectWizard" th:action="@{/project}"
               th:object="${projectForm}"
               method="POST">
@@ -148,9 +149,9 @@
             <div class="form-group">
                 <label for="blenderVersion">Blender Version</label>
                 <select class="form-control" id="blenderVersion" name="blenderVersion"
-                        th:value="${projectForm.blenderVersion}">
-                    <option th:each="version : ${T(checkdatabase foravailable downloads}"
-                            th:value="${version}" th:text="${version}">Version
+                        th:value="${projectForm.blenderFile}">
+                    <option th:each="blenderBinary : ${projectForm.getServerBlenderBinaries()}"
+                            th:value="${blenderBinary}" th:text="${blenderBinary.getBlenderVersion()}">Version
                     </option>
                     <option th:remove="all">2.78c</option>
                 </select>
@@ -158,11 +159,11 @@
             <div class="form-group">
                 <label for="blenderVersion">Output Format</label>
                 <select class="form-control" id="outputFormat" name="outputFormat"
-                        th:value="${projectForm.outputFormat}">
-                    <option th:each="version : ${T(get list of output formats}"
-                            th:value="${version}" th:text="${version}">JPG
+                        ab:value="${projectForm.outputFormat}">
+                    <option ab:each="version : ${T(get list of output formats}"
+                            ab:value="${version}" ab:text="${version}">JPG
                     </option>
-                    <option th:remove="all">PNG</option>
+                    <option ab:remove="all">PNG</option>
                 </select>
             </div>
 
@@ -194,10 +195,10 @@
                                                       onClick="toggleTiles()">Yes</label><br/>
                 <div id="tileSlider" style="display: none">
                     <label for="tiles">Number of Tiles: &emsp; &emsp; </label>
-                    <input id="tiles" name="tiles" th:value="${productForm.tiles}" type="number"
+                    <input id="tiles" name="tiles" ab:value="${productForm.tiles}" type="number"
                            data-slider-min="1"
                            data-slider-max="100"
-                           th:attr="data-slider-value=${productForm.tiles}"
+                           ab:attr="data-slider-value=${productForm.tiles}"
                            data-slider-step="1"/>
                 </div>
             </div>
@@ -212,10 +213,10 @@
                     background: #0C8DCE;
                 }</style>
                 <label for="resolution">Resolution: &emsp; &emsp; </label>
-                <input id="resolution" name="resolution" th:value="${productForm.tiles}" type="number"
+                <input id="resolution" name="resolution" ab:value="${productForm.tiles}" type="number"
                        data-slider-min="1"
                        data-slider-max="64"
-                       th:attr="data-slider-value=${productForm.tiles}"
+                       ab:attr="data-slider-value=${productForm.tiles}"
                        data-slider-step="1"/>
             </div>
 

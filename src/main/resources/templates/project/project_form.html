@@ -37,7 +37,7 @@
           th:href="@{/bower/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css}"
           rel="stylesheet" media="screen, print">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.3.8/css/fileinput.min.css"
-          th:href="@{/bower/fileinput.min.css}"
+          th:href="@{/bower/bootstrap-fileinput/css/fileinput.min.css}"
           media="screen, print" rel="stylesheet" type="text/css">
     <style>
         body {
@@ -73,7 +73,7 @@
     </style>
 
     <!--Favicon -->
-    <link rel="shortcut icon" href="../../images/favicon.png" th:href="@{/images/favicon.png}">
+    <link rel="shortcut icon" href="../images/favicon.png" th:href="@{/images/favicon.png}">
     <title>Add Project</title>
 </head>
 <body>
@@ -96,16 +96,23 @@
 </nav>
 <!--/.navbar-->
 
+<!--/*@thymesVar id="projectForm" type="com.dryadandnaiad.sethlans.commands.ProjectForm"*/-->
 <div th:switch="${projectForm.progress}">
     <!-- Project Form Fragment -->
-    <div th:case="${T(something here}"
-         th:replace="fragments :: fragments">
-        <div class="container" style="max-width: 600px;">
-            <h2>Project</h2>
-            <p>Valid files are <strong>.blend</strong>, with packed textures, and <strong>ZIP files</strong>. <br/>
-                Use relative paths for all the files in the archive.<br/></p>
+    <div th:case="${T(com.dryadandnaiad.sethlans.enums.ProjectFormProgress).UPLOAD}"
+         th:include="fragments/project_form_upload :: project_form_upload">
 
-        </div>
+    </div>
+    <div th:case="${T(com.dryadandnaiad.sethlans.enums.ProjectFormProgress).DETAILS}"
+         th:include="fragments/project_form_details :: project_form_details">
+
+    </div>
+
+    <div th:remove="all" class="container" style="max-width: 600px;">
+        <h2>Project</h2>
+        <p>Valid files are <strong>.blend</strong>, with packed textures, and <strong>ZIP files</strong>. <br/>
+            Use relative paths for all the files in the archive.<br/></p>
+
     </div>
 </div>
 
@@ -152,7 +159,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/bootstrap-slider.min.js"
         th:src="@{/bower/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.3.8/js/fileinput.min.js"
-        th:src="@{/bower/fileinput.min.js}"></script>
+        th:src="@{/bower/bootstrap-fileinput/js/fileinput.min.js}"></script>
 
 <!-- Local Javascript-->
 <script>
