@@ -17,36 +17,13 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.enums;
+package com.dryadandnaiad.sethlans.services.server;
 
 /**
- * Created Mario Estrella on 3/18/17.
+ * Created Mario Estrella on 3/27/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public enum SethlansConfigKeys {
-    HTTPS_PORT("server.port"),
-    FIRST_TIME("sethlans.firsttime"),
-    LOGGING_FILE("logging.file"),
-    MODE("sethlans.mode"),
-    COMPUTE_METHOD("sethlans.computeMethod"),
-    PROJECT_DIR("sethlans.projectDir"),
-    BLENDER_DIR("sethlans.blenderDir"),
-    SERVER_DIR("sethlans.serverDir"),
-    TEMP_DIR("sethlans.tempDir"),
-    CACHE_DIR("sethlans.cacheDir"),
-    CUDA_DEVICE("sethlans.cuda"),
-    CPU_CORES("sethlans.cores");
-
-    private final String text;
-
-    SethlansConfigKeys(final String text) {
-        this.text = text;
-    }
-
-    @Override
-    public String toString() {
-        return text;
-    }
+public interface ServerBlenderSetupService {
 }

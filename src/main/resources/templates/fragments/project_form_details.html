@@ -147,7 +147,7 @@
                 <input type="text" name="projectName" id="projectName" class="form-control">
             </div>
             <div class="form-group">
-                <label for="blenderVersion">Server Blender Version</label>
+                <label for="blenderVersion">Available Blender Versions</label>
                 <select class="form-control" id="blenderVersion" name="blenderVersion"
                         th:value="${projectForm.blenderFile}">
                     <option th:each="blenderBinary : ${projectForm.getAvailableBlenderBinaries()}"

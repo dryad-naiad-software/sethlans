@@ -74,6 +74,8 @@ public class SetupForm {
     private String workingDirectory;
     @NotEmpty
     private String logDirectory;
+    @NotEmpty
+    private String serverBinaryDirectory;
 
     private ComputeType selectedMethod;
     private List<ComputeType> availableMethods;
@@ -98,7 +100,8 @@ public class SetupForm {
         this.blenderBinaryOS = new ArrayList<>();
         this.cores = 1;
         this.projectDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "projects" + File.separator;
-        this.blenderDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "blender" + File.separator;
+        this.blenderDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "blenderzip" + File.separator;
+        this.serverBinaryDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "serverbin" + File.separator;
         this.tempDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "temp" + File.separator;
         this.workingDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "cache" + File.separator;
         this.logDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "logs" + File.separator;
@@ -153,6 +156,14 @@ public class SetupForm {
         } else {
             availableMethods.add(ComputeType.CPU);
         }
+    }
+
+    public String getServerBinaryDirectory() {
+        return serverBinaryDirectory;
+    }
+
+    public void setServerBinaryDirectory(String serverBinaryDirectory) {
+        this.serverBinaryDirectory = serverBinaryDirectory;
     }
 
     public int getTotalCores() {
@@ -307,6 +318,7 @@ public class SetupForm {
         this.logDirectory = logDirectory;
     }
 
+
     @Override
     public String toString() {
         return "SetupForm{" +
@@ -319,6 +331,7 @@ public class SetupForm {
                 ", tempDirectory='" + tempDirectory + '\'' +
                 ", workingDirectory='" + workingDirectory + '\'' +
                 ", logDirectory='" + logDirectory + '\'' +
+                ", serverBinaryDirectory='" + serverBinaryDirectory + '\'' +
                 ", selectedMethod=" + selectedMethod +
                 ", availableMethods=" + availableMethods +
                 ", availableGPUs=" + availableGPUs +
