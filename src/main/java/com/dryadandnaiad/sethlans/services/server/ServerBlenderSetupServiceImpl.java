@@ -21,12 +21,18 @@ package com.dryadandnaiad.sethlans.services.server;
 
 import com.dryadandnaiad.sethlans.domains.BlenderFile;
 import com.dryadandnaiad.sethlans.services.database.BlenderFileService;
+import org.rauschig.jarchivelib.ArchiveFormat;
+import org.rauschig.jarchivelib.Archiver;
+import org.rauschig.jarchivelib.ArchiverFactory;
+import org.rauschig.jarchivelib.CompressionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -50,18 +56,67 @@ public class ServerBlenderSetupServiceImpl implements ServerBlenderSetupService 
     }
 
 
-    private boolean extractBlender() {
+    private boolean extractBlender() throws Exception {
+        File extractLocation = new File(serverDir + File.separator + "blender");
+        extractLocation.mkdirs();
+        BlenderFile toExtract = null;
+        for (BlenderFile blenderFile : blenderFiles) {
+            if (blenderFile.isServerBinary()) {
+                toExtract = blenderFile;
+            }
+        }
+
+        if (toExtract == null) {
+            throw new Exception("No server blender binary found.");
+        }
+
+        File archive = new File(toExtract.getBlenderFile());
+        Archiver archiver = null;
+
+        if (extractLocation.list().length > 0) {
+            // TODO erase directory and replace with new version of blender
+        } else {
+            if (!toExtract.getBlenderBinaryOS().contains("Linux")) {
+                archiver = ArchiverFactory.createArchiver(ArchiveFormat.ZIP);
+                LOG.debug("Extracting zip file.");
+
+            } else {
+                archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.BZIP2);
+                LOG.debug("Extracting tar.bz2 file.");
+            }
+            LOG.debug("Extracting " + archive + " to " + extractLocation);
+            try {
+                archiver.extract(archive, extractLocation);
+            } catch (IOException e) {
+                LOG.error("Error during extraction" + e.getMessage());
+                e.printStackTrace();
+            }
+
+
+        }
         return false;
     }
 
     @Override
     public boolean updateBlender() {
+        blenderFiles = (List<BlenderFile>) blenderFileService.listAll();
+        try {
+            extractBlender();
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+        }
         return false;
     }
 
     @Override
     public boolean installBlender(String serverDir) {
+        blenderFiles = (List<BlenderFile>) blenderFileService.listAll();
         this.serverDir = serverDir;
+        try {
+            extractBlender();
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+        }
         return false;
     }
 }

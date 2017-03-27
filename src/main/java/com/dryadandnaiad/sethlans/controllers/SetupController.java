@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.enums.SetupProgress;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
 import com.dryadandnaiad.sethlans.services.network.BlenderDownloadService;
+import com.dryadandnaiad.sethlans.services.server.ServerBlenderSetupService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,36 +54,16 @@ import javax.validation.Valid;
 @RequestMapping("/setup")
 @SessionAttributes("setupForm")
 public class SetupController {
-    private static final Logger LOG = LoggerFactory.getLogger(SetupController.class);
-
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
 
+    private static final Logger LOG = LoggerFactory.getLogger(SetupController.class);
     private Validator setupFormValidator;
     private SethlansManagerService sethlansManagerService;
     private SaveSetupConfigService saveSetupConfigService;
     private BlenderDownloadService blenderDownloadService;
+    private ServerBlenderSetupService serverBlenderSetupService;
 
-    @Autowired
-    public void setSaveSetupConfigService(SaveSetupConfigService saveSetupConfigService) {
-        this.saveSetupConfigService = saveSetupConfigService;
-    }
-
-    @Autowired
-    public void setSethlansManagerService(SethlansManagerService sethlansManagerService) {
-        this.sethlansManagerService = sethlansManagerService;
-    }
-
-    @Autowired
-    @Qualifier("setupFormValidator")
-    public void setSetupFormValidator(Validator setupFormValidator) {
-        this.setupFormValidator = setupFormValidator;
-    }
-
-    @Autowired
-    public void setBlenderDownloadService(BlenderDownloadService blenderDownloadService) {
-        this.blenderDownloadService = blenderDownloadService;
-    }
 
     @RequestMapping
     public String getStartPage(final Model model) {
@@ -124,6 +105,7 @@ public class SetupController {
             if (setupForm.getMode() == SethlansMode.SERVER || setupForm.getMode() == SethlansMode.BOTH) {
                 if (blenderDownloadService.downloadRequestedBlenderFiles(setupForm.getBlenderDirectory(), true)) {
                     LOG.info("Restarting Sethlans and implementing configuration changes.");
+                    serverBlenderSetupService.installBlender(setupForm.getServerBinaryDirectory());
                     sethlansManagerService.restart();
                 }
             } else {
@@ -134,5 +116,31 @@ public class SetupController {
 
         }
         return "setup";
+    }
+
+    @Autowired
+    public void setSaveSetupConfigService(SaveSetupConfigService saveSetupConfigService) {
+        this.saveSetupConfigService = saveSetupConfigService;
+    }
+
+    @Autowired
+    public void setSethlansManagerService(SethlansManagerService sethlansManagerService) {
+        this.sethlansManagerService = sethlansManagerService;
+    }
+
+    @Autowired
+    @Qualifier("setupFormValidator")
+    public void setSetupFormValidator(Validator setupFormValidator) {
+        this.setupFormValidator = setupFormValidator;
+    }
+
+    @Autowired
+    public void setBlenderDownloadService(BlenderDownloadService blenderDownloadService) {
+        this.blenderDownloadService = blenderDownloadService;
+    }
+
+    @Autowired
+    public void setServerBlenderSetupService(ServerBlenderSetupService serverBlenderSetupService) {
+        this.serverBlenderSetupService = serverBlenderSetupService;
     }
 }
