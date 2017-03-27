@@ -20,10 +20,11 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.commands.SetupForm;
+import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.enums.SetupProgress;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
 import com.dryadandnaiad.sethlans.services.network.BlenderDownloadService;
-import com.dryadandnaiad.sethlans.services.restart.SethlansManagerService;
+import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,8 +121,13 @@ public class SetupController {
             saveSetupConfigService.saveSethlansSettings(setupForm);
             saveSetupConfigService.wizardCompleted(setupForm);
             LOG.debug("Downloading Blender Binary");
-            if (blenderDownloadService.downloadRequestedBlenderFiles(setupForm.getBlenderDirectory())) {
-                LOG.info("Restarting Sethlans and implementing configuration changes.");
+            if (setupForm.getMode() == SethlansMode.SERVER || setupForm.getMode() == SethlansMode.BOTH) {
+                if (blenderDownloadService.downloadRequestedBlenderFiles(setupForm.getBlenderDirectory(), true)) {
+                    LOG.info("Restarting Sethlans and implementing configuration changes.");
+                    sethlansManagerService.restart();
+                }
+            } else {
+                LOG.info("Setup complete complete. Restarting Sethlans");
                 sethlansManagerService.restart();
             }
 

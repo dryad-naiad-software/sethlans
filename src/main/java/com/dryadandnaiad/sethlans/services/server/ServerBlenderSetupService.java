@@ -26,4 +26,8 @@ package com.dryadandnaiad.sethlans.services.server;
  * Project: sethlans
  */
 public interface ServerBlenderSetupService {
+    public boolean updateBlender();
+
+    public boolean installBlender(String serverDir);
+
 }

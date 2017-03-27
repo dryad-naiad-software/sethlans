@@ -172,10 +172,10 @@
                                 <div class="form-group">
                                     <input type="hidden" id="progress" name="progress" value="">
                                     <input type="hidden" id="previous" name="previous" value="">
-                                    <button type="button" class="btn btn-default pull-left"
+                                    <button id="previousBtn" type="button" class="btn btn-default pull-left"
                                             onclick="previousClicked()">Previous
                                     </button>
-                                    <button type="button" class="btn btn-primary pull-right"
+                                    <button id="finishBtn" type="button" class="btn btn-primary pull-right"
                                             onclick="nextClicked()">Finish
                                     </button>
                                     <br/>
@@ -185,6 +185,9 @@
                                 function nextClicked() {
                                     document.getElementById("progress").value = "FINISHED";
                                     document.getElementById("saved").style.display = "block";
+                                    document.getElementById("previousBtn").disabled = true;
+                                    document.getElementById("finishBtn").disabled = true;
+
                                     $.ajax({
                                         url: '/setup',
                                         type: 'post',

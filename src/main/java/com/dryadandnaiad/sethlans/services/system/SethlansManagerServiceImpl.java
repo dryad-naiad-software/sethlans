@@ -17,7 +17,7 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.restart;
+package com.dryadandnaiad.sethlans.services.system;
 
 import com.dryadandnaiad.sethlans.components.SethlansSystrayComponent;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -19,11 +19,49 @@
 
 package com.dryadandnaiad.sethlans.services.server;
 
+import com.dryadandnaiad.sethlans.domains.BlenderFile;
+import com.dryadandnaiad.sethlans.services.database.BlenderFileService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 /**
  * Created Mario Estrella on 3/27/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Service
 public class ServerBlenderSetupServiceImpl implements ServerBlenderSetupService {
+    private static final Logger LOG = LoggerFactory.getLogger(ServerBlenderSetupServiceImpl.class);
+    private BlenderFileService blenderFileService;
+    private List<BlenderFile> blenderFiles;
+
+    @Value("${sethlans.serverDir}")
+    private String serverDir;
+
+    @Autowired
+    public void setBlenderFileService(BlenderFileService blenderFileService) {
+        this.blenderFileService = blenderFileService;
+    }
+
+
+    private boolean extractBlender() {
+        return false;
+    }
+
+    @Override
+    public boolean updateBlender() {
+        return false;
+    }
+
+    @Override
+    public boolean installBlender(String serverDir) {
+        this.serverDir = serverDir;
+        return false;
+    }
 }
