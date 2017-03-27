@@ -66,7 +66,21 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
 
     @Override
     @Async
-    public Future<Boolean> downloadRequestedBlenderFiles() {
+    public Future<Boolean> downloadRequestedBlenderFilesAsync() {
+        if (doDownload()) {
+            return new AsyncResult<>(true);
+        } else {
+            return new AsyncResult<>(false);
+        }
+    }
+
+    @Override
+    public boolean downloadRequestedBlenderFiles(String blenderDir) {
+        this.downloadLocation = blenderDir;
+        return doDownload();
+    }
+
+    private boolean doDownload() {
         blenderFiles = (List<BlenderFile>) blenderFileService.listAll();
         blenderBinaries = BlenderUtils.listBinaries();
         List<BlenderFile> blenderDownloadList = prepareDownload();
@@ -106,10 +120,10 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
 
             } catch (MalformedURLException e) {
                 LOG.error("Invalid URL: " + e.getMessage());
-                return new AsyncResult<>(false);
+                return false;
             } catch (IOException e) {
                 LOG.error("IO Exception: " + e.getMessage());
-                return new AsyncResult<>(false);
+                return false;
             } finally {
                 if (connection != null) {
                     connection.disconnect();
@@ -119,7 +133,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
 
         }
         LOG.debug("All downloads complete");
-        return new AsyncResult<>(true);
+        return true;
     }
 
     private List<BlenderFile> prepareDownload() {

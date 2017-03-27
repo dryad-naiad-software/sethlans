@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.commands.SetupForm;
 import com.dryadandnaiad.sethlans.enums.SetupProgress;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
+import com.dryadandnaiad.sethlans.services.network.BlenderDownloadService;
 import com.dryadandnaiad.sethlans.services.restart.SethlansManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +60,7 @@ public class SetupController {
     private Validator setupFormValidator;
     private SethlansManagerService sethlansManagerService;
     private SaveSetupConfigService saveSetupConfigService;
+    private BlenderDownloadService blenderDownloadService;
 
     @Autowired
     public void setSaveSetupConfigService(SaveSetupConfigService saveSetupConfigService) {
@@ -74,6 +76,11 @@ public class SetupController {
     @Qualifier("setupFormValidator")
     public void setSetupFormValidator(Validator setupFormValidator) {
         this.setupFormValidator = setupFormValidator;
+    }
+
+    @Autowired
+    public void setBlenderDownloadService(BlenderDownloadService blenderDownloadService) {
+        this.blenderDownloadService = blenderDownloadService;
     }
 
     @RequestMapping
@@ -112,8 +119,13 @@ public class SetupController {
             }
             saveSetupConfigService.saveSethlansSettings(setupForm);
             saveSetupConfigService.wizardCompleted(setupForm);
-            LOG.info("Restarting Sethlans and implementing configuration changes.");
-            sethlansManagerService.restart();
+            LOG.debug("Downloading Blender Binary");
+            if (blenderDownloadService.downloadRequestedBlenderFiles(setupForm.getBlenderDirectory())) {
+                LOG.info("Restarting Sethlans and implementing configuration changes.");
+                sethlansManagerService.restart();
+            }
+
+
         }
         return "setup";
     }

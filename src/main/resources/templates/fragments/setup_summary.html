@@ -76,38 +76,10 @@
 
                         <!-- ************** Fragment Start ***************** -->
                         <div class="well" th:fragment="setup_summary">
-                            <style>
-                                .glyphicon-refresh-animate {
-                                    -animation: spin .7s infinite linear;
-                                    -webkit-animation: spin2 .7s infinite linear;
-                                }
-
-                                @-webkit-keyframes spin2 {
-                                    from {
-                                        -webkit-transform: rotate(0deg);
-                                    }
-                                    to {
-                                        -webkit-transform: rotate(360deg);
-                                    }
-                                }
-
-                                @keyframes spin {
-                                    from {
-                                        transform: scale(1) rotate(0deg);
-                                    }
-                                    to {
-                                        transform: scale(1) rotate(360deg);
-                                    }
-                                }
-
-                                .alert-block {
-                                    padding-left: 1px;
-                                }
-                            </style>
                             <h2 style="margin-top: auto"><strong>Setup Summary</strong></h2>
                             <div class="alert alert-success alert-block" id="saved" style="display: none">
-                                <p class="text-center"><strong>Configuration saved, restarting. <span
-                                        class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span></strong>
+                                <p class="text-center"><strong>Configuration saved. Setting up Sethlans then restarting.
+                                    <span class="spinner spinner-xs spinner-inline"></span></strong>
                                 </p>
                             </div>
                             <!--/*@thymesVar id="setupForm" type="com.dryadandnaiad.sethlans.commands.SetupForm"*/-->
@@ -212,12 +184,12 @@
                             <script th:inline="javascript" defer="defer">
                                 function nextClicked() {
                                     document.getElementById("progress").value = "FINISHED";
+                                    document.getElementById("saved").style.display = "block";
                                     $.ajax({
                                         url: '/setup',
                                         type: 'post',
                                         data: $('#setupWizard').serialize(),
                                         success: function () {
-                                            document.getElementById("saved").style.display = "block";
                                             window.setTimeout(function () {
                                                 window.location = 'https://' + window.location.hostname + ':' + /*[[${setupForm.httpsPort}]]*/ '1234' + '/';
                                             }, 10000);
