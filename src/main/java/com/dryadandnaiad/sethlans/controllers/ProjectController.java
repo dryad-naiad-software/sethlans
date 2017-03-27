@@ -68,7 +68,7 @@ public class ProjectController {
     @RequestMapping(value = "/project/new", method = RequestMethod.POST)
     public String newProjectDetails(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm, BindingResult bindingResult) {
         availableBlenderBinaries = (List<BlenderFile>) blenderFileService.listAll();
-        projectForm.setServerBlenderBinaries(availableBlenderBinaries);
+        projectForm.setAvailableBlenderBinaries(availableBlenderBinaries);
         LOG.debug(projectForm.toString());
         return "project/project_form";
     }

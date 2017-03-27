@@ -40,7 +40,7 @@ public class ProjectForm {
 
     private ProjectFormProgress progress = ProjectFormProgress.UPLOAD;
     private BlenderFile blenderFile;
-    private List<BlenderFile> serverBlenderBinaries;
+    private List<BlenderFile> availableBlenderBinaries;
 
     public BlenderFile getBlenderFile() {
         return blenderFile;
@@ -58,12 +58,12 @@ public class ProjectForm {
         this.progress = progress;
     }
 
-    public List<BlenderFile> getServerBlenderBinaries() {
-        return serverBlenderBinaries;
+    public List<BlenderFile> getAvailableBlenderBinaries() {
+        return availableBlenderBinaries;
     }
 
-    public void setServerBlenderBinaries(List<BlenderFile> serverBlenderBinaries) {
-        this.serverBlenderBinaries = serverBlenderBinaries;
+    public void setAvailableBlenderBinaries(List<BlenderFile> availableBlenderBinaries) {
+        this.availableBlenderBinaries = availableBlenderBinaries;
     }
 
     public String getProjectName() {
@@ -80,7 +80,7 @@ public class ProjectForm {
                 "projectName='" + projectName + '\'' +
                 ", progress=" + progress +
                 ", blenderFile=" + blenderFile +
-                ", serverBlenderBinaries=" + serverBlenderBinaries +
+                ", availableBlenderBinaries=" + availableBlenderBinaries +
                 '}';
     }
 }

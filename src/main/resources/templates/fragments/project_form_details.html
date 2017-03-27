@@ -138,19 +138,19 @@
 
     <div class="container" style="max-width: 600px;">
         <!--/*@thymesVar id="projectForm" type="com.dryadandnaiad.sethlans.commands.ProjectForm"*/-->
-        <form class="form-horizontal" id="projectWizard" name="projectWizard" th:action="@{/project}"
+        <form class="form-horizontal" id="projectWizard" name="projectWizard" th:action="@{/project/new}"
               th:object="${projectForm}"
               method="POST">
             <div class="form-group">
                 <h2 class="text-center">Project Details</h2>
                 <label class="control-label" for="projectName">Project Name</label>
-                <input type="text" id="projectName" class="form-control">
+                <input type="text" name="projectName" id="projectName" class="form-control">
             </div>
             <div class="form-group">
-                <label for="blenderVersion">Blender Version</label>
+                <label for="blenderVersion">Server Blender Version</label>
                 <select class="form-control" id="blenderVersion" name="blenderVersion"
                         th:value="${projectForm.blenderFile}">
-                    <option th:each="blenderBinary : ${projectForm.getServerBlenderBinaries()}"
+                    <option th:each="blenderBinary : ${projectForm.getAvailableBlenderBinaries()}"
                             th:value="${blenderBinary}" th:text="${blenderBinary.getBlenderVersion()}">Version
                     </option>
                     <option th:remove="all">2.78c</option>
