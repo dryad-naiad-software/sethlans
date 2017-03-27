@@ -40,7 +40,12 @@ public class ProjectController {
 
     @RequestMapping("/project")
     public String getPage(final Model model) {
+        return "project/project_list";
+    }
+
+    @RequestMapping("/project/new")
+    public String newProject(Model model) {
         model.addAttribute("projectForm", new ProjectForm());
-        return "projectform";
+        return "project/project_form";
     }
 }
