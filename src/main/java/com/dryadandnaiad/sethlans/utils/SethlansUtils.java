@@ -152,17 +152,17 @@ public class SethlansUtils {
 
     public static boolean fileCheckMD5(File file, String md5) throws IOException {
         HashCode hash = Files.hash(file, Hashing.md5());
-        LOG.debug("Hash equals " + hash.toString() + " md5 from JSON equals " + md5);
+        LOG.debug("Hash md5: " + hash.toString() + "\n JSON md5: " + md5);
         if (hash.toString().equals(md5)) {
             return true;
         }
         return false;
     }
 
-    public static boolean extract(BlenderFile toExtract, File extractLocation) {
+    public static boolean extract(BlenderFile toExtract, File extractLocation, String alternateLocation) {
         File archive = new File(toExtract.getBlenderFile());
-
         if (!toExtract.getBlenderBinaryOS().contains("Linux")) {
+            extractLocation.mkdirs();
             LOG.debug("Found zip file:");
             try {
                 ZipFile archiver = new ZipFile(archive);
@@ -178,10 +178,12 @@ public class SethlansUtils {
         Archiver archiver;
         archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.BZIP2);
         LOG.debug("Found tar.bz2 file.");
+        File linuxLocation = new File(alternateLocation);
 
         try {
-            LOG.debug("Extracting " + archive + " to " + extractLocation);
-            archiver.extract(archive, extractLocation);
+            LOG.debug("Extracting " + archive + " to " + linuxLocation);
+            archiver.extract(archive, linuxLocation);
+
         } catch (IOException e) {
             LOG.error("Error during extraction using jarchivelib " + e.getMessage());
             LOG.error(Throwables.getStackTraceAsString(e));

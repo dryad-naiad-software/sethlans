@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.services.server;
 import com.dryadandnaiad.sethlans.domains.BlenderFile;
 import com.dryadandnaiad.sethlans.services.database.BlenderFileService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +56,7 @@ public class ServerBlenderSetupServiceImpl implements ServerBlenderSetupService 
 
     private boolean extractBlender() throws Exception {
         File extractLocation = new File(serverDir + File.separator + "blender");
-        extractLocation.mkdirs();
+
         BlenderFile toExtract = null;
         for (BlenderFile blenderFile : blenderFiles) {
             if (blenderFile.isServerBinary()) {
@@ -68,12 +69,12 @@ public class ServerBlenderSetupServiceImpl implements ServerBlenderSetupService 
         }
 
 
-        if (extractLocation.list().length > 0) {
+        if (extractLocation.exists()) {
             FileUtils.deleteDirectory(extractLocation);
-            SethlansUtils.extract(toExtract, extractLocation);
+            SethlansUtils.extract(toExtract, extractLocation, serverDir);
 
         } else {
-            SethlansUtils.extract(toExtract, extractLocation);
+            SethlansUtils.extract(toExtract, extractLocation, serverDir);
         }
         return false;
     }
@@ -85,6 +86,7 @@ public class ServerBlenderSetupServiceImpl implements ServerBlenderSetupService 
             extractBlender();
         } catch (Exception e) {
             LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
         }
         return false;
     }
@@ -97,6 +99,7 @@ public class ServerBlenderSetupServiceImpl implements ServerBlenderSetupService 
             extractBlender();
         } catch (Exception e) {
             LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
         }
         return false;
     }
