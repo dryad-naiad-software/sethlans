@@ -21,6 +21,8 @@ package com.dryadandnaiad.sethlans.services.server;
 
 import com.dryadandnaiad.sethlans.domains.BlenderFile;
 import com.dryadandnaiad.sethlans.services.database.BlenderFileService;
+import com.google.common.base.Throwables;
+import org.apache.commons.io.FileUtils;
 import org.rauschig.jarchivelib.ArchiveFormat;
 import org.rauschig.jarchivelib.Archiver;
 import org.rauschig.jarchivelib.ArchiverFactory;
@@ -74,7 +76,8 @@ public class ServerBlenderSetupServiceImpl implements ServerBlenderSetupService 
         Archiver archiver = null;
 
         if (extractLocation.list().length > 0) {
-            // TODO erase directory and replace with new version of blender
+            FileUtils.deleteDirectory(extractLocation);
+
         } else {
             if (!toExtract.getBlenderBinaryOS().contains("Linux")) {
                 archiver = ArchiverFactory.createArchiver(ArchiveFormat.ZIP);
@@ -88,8 +91,10 @@ public class ServerBlenderSetupServiceImpl implements ServerBlenderSetupService 
             try {
                 archiver.extract(archive, extractLocation);
             } catch (IOException e) {
-                LOG.error("Error during extraction" + e.getMessage());
-                e.printStackTrace();
+                LOG.error("Error during extraction " + e.getMessage());
+                LOG.error(Throwables.getStackTraceAsString(e));
+                System.exit(1);
+
             }
 
 
