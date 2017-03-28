@@ -17,20 +17,16 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.network;
-
-import java.util.concurrent.Future;
+package com.dryadandnaiad.sethlans.services.client;
 
 /**
- * Created Mario Estrella on 3/24/17.
+ * Created Mario Estrella on 3/28/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderDownloadService {
+public interface ClientSetupBlenderService {
 
-    Future<Boolean> downloadRequestedBlenderFilesAsync();
-
-    boolean downloadRequestedBlenderFiles(String blenderDir);
+    public boolean deployBlender();
 
 }

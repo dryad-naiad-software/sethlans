@@ -103,9 +103,8 @@ public class SetupController {
             saveSetupConfigService.wizardCompleted(setupForm);
             LOG.debug("Downloading Blender Binary");
             if (setupForm.getMode() == SethlansMode.SERVER || setupForm.getMode() == SethlansMode.BOTH) {
-                if (blenderDownloadService.downloadRequestedBlenderFiles(setupForm.getBlenderDirectory(), true)) {
+                if (blenderDownloadService.downloadRequestedBlenderFiles(setupForm.getBlenderDirectory())) {
                     LOG.info("Restarting Sethlans and implementing configuration changes.");
-                    serverBlenderSetupService.installBlender(setupForm.getServerBinaryDirectory());
                     sethlansManagerService.restart();
                 }
             } else {

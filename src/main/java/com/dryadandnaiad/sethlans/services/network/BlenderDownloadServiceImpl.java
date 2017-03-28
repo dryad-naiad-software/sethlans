@@ -67,8 +67,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
 
     @Override
     @Async
-    public Future<Boolean> downloadRequestedBlenderFilesAsync(boolean serverBinary) {
-        this.serverBinary = serverBinary;
+    public Future<Boolean> downloadRequestedBlenderFilesAsync() {
         if (doDownload()) {
             return new AsyncResult<>(true);
         } else {
@@ -77,9 +76,8 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
     }
 
     @Override
-    public boolean downloadRequestedBlenderFiles(String blenderDir, boolean serverBinary) {
+    public boolean downloadRequestedBlenderFiles(String blenderDir) {
         this.downloadLocation = blenderDir;
-        this.serverBinary = serverBinary;
         return doDownload();
     }
 
@@ -113,7 +111,6 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                     blenderFile.setBlenderFile(saveLocation + File.separator + filename);
                     LOG.debug(filename + " downloaded successfully.");
                     blenderFile.setDownloaded(true);
-                    blenderFile.setServerBinary(serverBinary);
                     blenderFileService.saveOrUpdate(blenderFile);
                 } else {
                     LOG.error("MD5 sums didn't match, removing file " + filename);

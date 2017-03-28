@@ -21,14 +21,10 @@ package com.dryadandnaiad.sethlans.services.server;
 
 import com.dryadandnaiad.sethlans.domains.BlenderFile;
 import com.dryadandnaiad.sethlans.services.database.BlenderFileService;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.List;
@@ -39,30 +35,21 @@ import java.util.List;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Service
+
 public class ServerBlenderSetupServiceImpl implements ServerBlenderSetupService {
     private static final Logger LOG = LoggerFactory.getLogger(ServerBlenderSetupServiceImpl.class);
     private BlenderFileService blenderFileService;
     private List<BlenderFile> blenderFiles;
 
-    @Value("${sethlans.serverDir}")
-    private String serverDir;
-
-    @Autowired
     public void setBlenderFileService(BlenderFileService blenderFileService) {
         this.blenderFileService = blenderFileService;
     }
 
 
     private boolean extractBlender() throws Exception {
-        File extractLocation = new File(serverDir + File.separator + "blender");
+        File extractLocation = null;
 
         BlenderFile toExtract = null;
-        for (BlenderFile blenderFile : blenderFiles) {
-            if (blenderFile.isServerBinary()) {
-                toExtract = blenderFile;
-            }
-        }
 
         if (toExtract == null) {
             throw new Exception("No server blender binary found.");
@@ -71,10 +58,10 @@ public class ServerBlenderSetupServiceImpl implements ServerBlenderSetupService 
 
         if (extractLocation.exists()) {
             FileUtils.deleteDirectory(extractLocation);
-            SethlansUtils.extract(toExtract, extractLocation, serverDir);
+            // SethlansUtils.extract(toExtract, extractLocation, serverDir);
 
         } else {
-            SethlansUtils.extract(toExtract, extractLocation, serverDir);
+            // SethlansUtils.extract(toExtract, extractLocation, serverDir);
         }
         return false;
     }
@@ -94,7 +81,7 @@ public class ServerBlenderSetupServiceImpl implements ServerBlenderSetupService 
     @Override
     public boolean installBlender(String serverDir) {
         blenderFiles = (List<BlenderFile>) blenderFileService.listAll();
-        this.serverDir = serverDir;
+        // this.serverDir = serverDir;
         try {
             extractBlender();
         } catch (Exception e) {
