@@ -29,8 +29,8 @@ import java.util.concurrent.Future;
  */
 public interface BlenderDownloadService {
 
-    Future<Boolean> downloadRequestedBlenderFilesAsync();
+    Future<Boolean> downloadRequestedBlenderFilesAsync(boolean serverBinary);
 
-    boolean downloadRequestedBlenderFiles(String blenderDir);
+    boolean downloadRequestedBlenderFiles(String blenderDir, boolean serverBinary);
 
 }
