@@ -116,7 +116,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                     blenderFile.setServerBinary(serverBinary);
                     blenderFileService.saveOrUpdate(blenderFile);
                 } else {
-                    LOG.error("MD5 sums didn't match, removing file" + filename);
+                    LOG.error("MD5 sums didn't match, removing file " + filename);
                     File toDelete = new File(saveLocation + File.separator + filename);
                     toDelete.delete();
                     throw new IOException();
@@ -153,7 +153,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                                 break;
                             case "windows64":
                                 blenderFile.setBlenderFile(blenderBinary.getWindows64());
-                                blenderFile.setBlenderFileMd5(blenderBinary.getMd5Windows32());
+                                blenderFile.setBlenderFileMd5(blenderBinary.getMd5Windows64());
                                 break;
                             case "macos":
                                 blenderFile.setBlenderFile(blenderBinary.getMacOS());

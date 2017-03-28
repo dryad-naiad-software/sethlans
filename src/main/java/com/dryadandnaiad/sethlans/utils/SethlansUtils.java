@@ -143,6 +143,7 @@ public class SethlansUtils {
 
     public static boolean fileCheckMD5(File file, String md5) throws IOException {
         HashCode hash = Files.hash(file, Hashing.md5());
+        LOG.debug("Hash equals " + hash.toString() + " md5 from JSON equals " + md5);
         if (hash.toString().equals(md5)) {
             return true;
         }
