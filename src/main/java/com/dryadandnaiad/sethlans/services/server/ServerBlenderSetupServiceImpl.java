@@ -21,12 +21,8 @@ package com.dryadandnaiad.sethlans.services.server;
 
 import com.dryadandnaiad.sethlans.domains.BlenderFile;
 import com.dryadandnaiad.sethlans.services.database.BlenderFileService;
-import com.google.common.base.Throwables;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.apache.commons.io.FileUtils;
-import org.rauschig.jarchivelib.ArchiveFormat;
-import org.rauschig.jarchivelib.Archiver;
-import org.rauschig.jarchivelib.ArchiverFactory;
-import org.rauschig.jarchivelib.CompressionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +30,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -72,32 +67,13 @@ public class ServerBlenderSetupServiceImpl implements ServerBlenderSetupService 
             throw new Exception("No server blender binary found.");
         }
 
-        File archive = new File(toExtract.getBlenderFile());
-        Archiver archiver = null;
 
         if (extractLocation.list().length > 0) {
             FileUtils.deleteDirectory(extractLocation);
+            SethlansUtils.extract(toExtract, extractLocation);
 
         } else {
-            if (!toExtract.getBlenderBinaryOS().contains("Linux")) {
-                archiver = ArchiverFactory.createArchiver(ArchiveFormat.ZIP);
-                LOG.debug("Extracting zip file.");
-
-            } else {
-                archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.BZIP2);
-                LOG.debug("Extracting tar.bz2 file.");
-            }
-            LOG.debug("Extracting " + archive + " to " + extractLocation);
-            try {
-                archiver.extract(archive, extractLocation);
-            } catch (IOException e) {
-                LOG.error("Error during extraction " + e.getMessage());
-                LOG.error(Throwables.getStackTraceAsString(e));
-                System.exit(1);
-
-            }
-
-
+            SethlansUtils.extract(toExtract, extractLocation);
         }
         return false;
     }

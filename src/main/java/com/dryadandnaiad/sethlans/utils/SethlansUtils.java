@@ -19,10 +19,18 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.domains.BlenderFile;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
+import com.google.common.base.Throwables;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import org.rauschig.jarchivelib.ArchiveFormat;
+import org.rauschig.jarchivelib.Archiver;
+import org.rauschig.jarchivelib.ArchiverFactory;
+import org.rauschig.jarchivelib.CompressionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -72,6 +80,7 @@ public class SethlansUtils {
             }
         }
     }
+
     public static void openWebpage(URL url) {
         try {
             openWebpage(url.toURI());
@@ -80,7 +89,7 @@ public class SethlansUtils {
         }
     }
 
-    public static boolean writeProperty(SethlansConfigKeys configKey, String value){
+    public static boolean writeProperty(SethlansConfigKeys configKey, String value) {
         String comment = "";
         String key = configKey.toString();
         if (configFile.exists()) {
@@ -109,7 +118,7 @@ public class SethlansUtils {
         return false;
     }
 
-    public static boolean writeProperty(String key, String value){
+    public static boolean writeProperty(String key, String value) {
         String comment = "";
         if (configFile.exists()) {
             try (FileInputStream fileIn = new FileInputStream(configFile)) {
@@ -146,6 +155,38 @@ public class SethlansUtils {
         LOG.debug("Hash equals " + hash.toString() + " md5 from JSON equals " + md5);
         if (hash.toString().equals(md5)) {
             return true;
+        }
+        return false;
+    }
+
+    public static boolean extract(BlenderFile toExtract, File extractLocation) {
+        File archive = new File(toExtract.getBlenderFile());
+
+        if (!toExtract.getBlenderBinaryOS().contains("Linux")) {
+            LOG.debug("Found zip file:");
+            try {
+                ZipFile archiver = new ZipFile(archive);
+                LOG.debug("Extracting " + archive + " to " + extractLocation);
+                archiver.extractAll(extractLocation.toString());
+            } catch (ZipException e) {
+                LOG.error("Error extracting using zip4j " + e.getMessage());
+                LOG.error(Throwables.getStackTraceAsString(e));
+                System.exit(1);
+            }
+            return true;
+        }
+        Archiver archiver;
+        archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.BZIP2);
+        LOG.debug("Found tar.bz2 file.");
+
+        try {
+            LOG.debug("Extracting " + archive + " to " + extractLocation);
+            archiver.extract(archive, extractLocation);
+        } catch (IOException e) {
+            LOG.error("Error during extraction using jarchivelib " + e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+            System.exit(1);
+
         }
         return false;
     }
