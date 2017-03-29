@@ -20,7 +20,7 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.commands.ProjectForm;
-import com.dryadandnaiad.sethlans.domains.BlenderFile;
+import com.dryadandnaiad.sethlans.domains.BlenderFileEntity;
 import com.dryadandnaiad.sethlans.services.database.BlenderFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +47,7 @@ import java.util.List;
 public class ProjectController {
     private static final Logger LOG = LoggerFactory.getLogger(ProjectController.class);
     private BlenderFileService blenderFileService;
-    private List<BlenderFile> availableBlenderBinaries;
+    private List<BlenderFileEntity> availableBlenderBinaries;
 
     @Autowired
     public void setBlenderFileService(BlenderFileService blenderFileService) {
@@ -67,7 +67,7 @@ public class ProjectController {
 
     @RequestMapping(value = "/project/new", method = RequestMethod.POST)
     public String newProjectDetails(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm, BindingResult bindingResult) {
-        availableBlenderBinaries = (List<BlenderFile>) blenderFileService.listAll();
+        availableBlenderBinaries = (List<BlenderFileEntity>) blenderFileService.listAll();
         projectForm.setAvailableBlenderBinaries(availableBlenderBinaries);
         LOG.debug(projectForm.toString());
         return "project/project_form";

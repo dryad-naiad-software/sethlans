@@ -19,21 +19,38 @@
 
 package com.dryadandnaiad.sethlans.domains;
 
-import javax.persistence.Entity;
-
 /**
- * Created Mario Estrella on 3/23/17.
+ * Created Mario Estrella on 3/21/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Entity
-public class BlenderFile extends AbstractEntityClass {
+public class BlenderFile {
     private String blenderVersion;
-    private String blenderBinaryOS;
-    private String blenderFile;
-    private String blenderFileMd5;
-    private boolean downloaded = false;
+    private String windows32;
+    private String windows64;
+    private String macOS;
+    private String linux32;
+    private String linux64;
+    private String md5MacOS;
+    private String md5Windows64;
+    private String md5Windows32;
+    private String md5Linux32;
+    private String md5Linux64;
+
+    public BlenderFile(String blenderVersion, String windows32, String windows64, String macOS, String linux32, String linux64, String md5MacOS, String md5Windows64, String md5Windows32, String md5Linux32, String md5Linux64) {
+        this.blenderVersion = blenderVersion;
+        this.windows32 = windows32;
+        this.windows64 = windows64;
+        this.macOS = macOS;
+        this.linux32 = linux32;
+        this.linux64 = linux64;
+        this.md5MacOS = md5MacOS;
+        this.md5Windows64 = md5Windows64;
+        this.md5Windows32 = md5Windows32;
+        this.md5Linux32 = md5Linux32;
+        this.md5Linux64 = md5Linux64;
+    }
 
     public String getBlenderVersion() {
         return blenderVersion;
@@ -43,46 +60,100 @@ public class BlenderFile extends AbstractEntityClass {
         this.blenderVersion = blenderVersion;
     }
 
-    public String getBlenderBinaryOS() {
-        return blenderBinaryOS;
+    public String getWindows32() {
+        return windows32;
     }
 
-    public void setBlenderBinaryOS(String blenderBinaryOS) {
-        this.blenderBinaryOS = blenderBinaryOS;
+    public void setWindows32(String windows32) {
+        this.windows32 = windows32;
     }
 
-    public String getBlenderFile() {
-        return blenderFile;
+    public String getWindows64() {
+        return windows64;
     }
 
-    public void setBlenderFile(String blenderFile) {
-        this.blenderFile = blenderFile;
+    public void setWindows64(String windows64) {
+        this.windows64 = windows64;
     }
 
-    public boolean isDownloaded() {
-        return downloaded;
+    public String getMacOS() {
+        return macOS;
     }
 
-    public void setDownloaded(boolean downloaded) {
-        this.downloaded = downloaded;
+    public void setMacOS(String macOS) {
+        this.macOS = macOS;
     }
 
-    public String getBlenderFileMd5() {
-        return blenderFileMd5;
+    public String getLinux32() {
+        return linux32;
     }
 
-    public void setBlenderFileMd5(String blenderFileMd5) {
-        this.blenderFileMd5 = blenderFileMd5;
+    public void setLinux32(String linux32) {
+        this.linux32 = linux32;
+    }
+
+    public String getLinux64() {
+        return linux64;
+    }
+
+    public void setLinux64(String linux64) {
+        this.linux64 = linux64;
+    }
+
+    public String getMd5MacOS() {
+        return md5MacOS;
+    }
+
+    public void setMd5MacOS(String md5MacOS) {
+        this.md5MacOS = md5MacOS;
+    }
+
+    public String getMd5Windows64() {
+        return md5Windows64;
+    }
+
+    public void setMd5Windows64(String md5Windows64) {
+        this.md5Windows64 = md5Windows64;
+    }
+
+    public String getMd5Windows32() {
+        return md5Windows32;
+    }
+
+    public void setMd5Windows32(String md5Windows32) {
+        this.md5Windows32 = md5Windows32;
+    }
+
+    public String getMd5Linux32() {
+        return md5Linux32;
+    }
+
+    public void setMd5Linux32(String md5Linux32) {
+        this.md5Linux32 = md5Linux32;
+    }
+
+    public String getMd5Linux64() {
+        return md5Linux64;
+    }
+
+    public void setMd5Linux64(String md5Linux64) {
+        this.md5Linux64 = md5Linux64;
     }
 
     @Override
     public String toString() {
         return "BlenderFile{" +
                 "blenderVersion='" + blenderVersion + '\'' +
-                ", blenderBinaryOS='" + blenderBinaryOS + '\'' +
-                ", blenderFile='" + blenderFile + '\'' +
-                ", blenderFileMd5='" + blenderFileMd5 + '\'' +
-                ", downloaded=" + downloaded +
+                ", windows32='" + windows32 + '\'' +
+                ", windows64='" + windows64 + '\'' +
+                ", macOS='" + macOS + '\'' +
+                ", linux32='" + linux32 + '\'' +
+                ", linux64='" + linux64 + '\'' +
+                ", md5MacOS='" + md5MacOS + '\'' +
+                ", md5Windows64='" + md5Windows64 + '\'' +
+                ", md5Windows32='" + md5Windows32 + '\'' +
+                ", md5Linux32='" + md5Linux32 + '\'' +
+                ", md5Linux64='" + md5Linux64 + '\'' +
                 '}';
     }
 }

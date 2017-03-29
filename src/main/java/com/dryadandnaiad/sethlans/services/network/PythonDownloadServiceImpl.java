@@ -17,16 +17,18 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.repositories;
-
-import com.dryadandnaiad.sethlans.domains.BlenderFileEntity;
-import org.springframework.data.repository.CrudRepository;
+package com.dryadandnaiad.sethlans.services.network;
 
 /**
- * Created Mario Estrella on 3/23/17.
+ * Created Mario Estrella on 3/28/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderEntityRepository extends CrudRepository<BlenderFileEntity, Integer> {
+public class PythonDownloadServiceImpl implements PythonDownloadService {
+
+    @Override
+    public boolean downloadPython() {
+        return false;
+    }
 }

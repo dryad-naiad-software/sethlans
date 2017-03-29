@@ -149,7 +149,7 @@
             <div class="form-group">
                 <label for="blenderVersion">Available Blender Versions</label>
                 <select class="form-control" id="blenderVersion" name="blenderVersion"
-                        th:value="${projectForm.blenderFile}">
+                        th:value="${projectForm.blenderFileEntity}">
                     <option th:each="blenderBinary : ${projectForm.getAvailableBlenderBinaries()}"
                             th:value="${blenderBinary}" th:text="${blenderBinary.getBlenderVersion()}">Version
                     </option>

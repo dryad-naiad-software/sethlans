@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.commands;
 
-import com.dryadandnaiad.sethlans.domains.BlenderFile;
+import com.dryadandnaiad.sethlans.domains.BlenderFileEntity;
 import com.dryadandnaiad.sethlans.enums.ProjectFormProgress;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -39,15 +39,15 @@ public class ProjectForm {
 
 
     private ProjectFormProgress progress = ProjectFormProgress.UPLOAD;
-    private BlenderFile blenderFile;
-    private List<BlenderFile> availableBlenderBinaries;
+    private BlenderFileEntity blenderFileEntity;
+    private List<BlenderFileEntity> availableBlenderBinaries;
 
-    public BlenderFile getBlenderFile() {
-        return blenderFile;
+    public BlenderFileEntity getBlenderFileEntity() {
+        return blenderFileEntity;
     }
 
-    public void setBlenderFile(BlenderFile blenderFile) {
-        this.blenderFile = blenderFile;
+    public void setBlenderFileEntity(BlenderFileEntity blenderFileEntity) {
+        this.blenderFileEntity = blenderFileEntity;
     }
 
     public ProjectFormProgress getProgress() {
@@ -58,11 +58,11 @@ public class ProjectForm {
         this.progress = progress;
     }
 
-    public List<BlenderFile> getAvailableBlenderBinaries() {
+    public List<BlenderFileEntity> getAvailableBlenderBinaries() {
         return availableBlenderBinaries;
     }
 
-    public void setAvailableBlenderBinaries(List<BlenderFile> availableBlenderBinaries) {
+    public void setAvailableBlenderBinaries(List<BlenderFileEntity> availableBlenderBinaries) {
         this.availableBlenderBinaries = availableBlenderBinaries;
     }
 
@@ -79,7 +79,7 @@ public class ProjectForm {
         return "ProjectForm{" +
                 "projectName='" + projectName + '\'' +
                 ", progress=" + progress +
-                ", blenderFile=" + blenderFile +
+                ", blenderFileEntity=" + blenderFileEntity +
                 ", availableBlenderBinaries=" + availableBlenderBinaries +
                 '}';
     }

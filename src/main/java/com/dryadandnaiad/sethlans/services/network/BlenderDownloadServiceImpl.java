@@ -20,7 +20,7 @@
 package com.dryadandnaiad.sethlans.services.network;
 
 import com.dryadandnaiad.sethlans.domains.BlenderFile;
-import com.dryadandnaiad.sethlans.domains.BlenderObject;
+import com.dryadandnaiad.sethlans.domains.BlenderFileEntity;
 import com.dryadandnaiad.sethlans.server.BlenderUtils;
 import com.dryadandnaiad.sethlans.services.database.BlenderFileService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
@@ -54,8 +54,8 @@ import java.util.concurrent.Future;
 public class BlenderDownloadServiceImpl implements BlenderDownloadService {
     private static final Logger LOG = LoggerFactory.getLogger(BlenderDownloadServiceImpl.class);
     private BlenderFileService blenderFileService;
-    private List<BlenderFile> blenderFiles;
-    private List<BlenderObject> blenderBinaries;
+    private List<BlenderFileEntity> blenderFileEntities;
+    private List<BlenderFile> blenderBinaries;
     @Value("${sethlans.blenderDir}")
     private String downloadLocation;
 
@@ -81,36 +81,36 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
     }
 
     private boolean doDownload() {
-        blenderFiles = (List<BlenderFile>) blenderFileService.listAll();
+        blenderFileEntities = (List<BlenderFileEntity>) blenderFileService.listAll();
         blenderBinaries = BlenderUtils.listBinaries();
-        List<BlenderFile> blenderDownloadList = prepareDownload();
+        List<BlenderFileEntity> blenderDownloadList = prepareDownload();
 
 
-        for (BlenderFile blenderFile : blenderDownloadList) {
-            String blenderVersion = blenderFile.getBlenderVersion();
+        for (BlenderFileEntity blenderFileEntity : blenderDownloadList) {
+            String blenderVersion = blenderFileEntity.getBlenderVersion();
             File saveLocation = new File(downloadLocation + File.separator + "binaries" + File.separator + blenderVersion + File.separator);
             saveLocation.mkdirs();
             URL url;
             HttpURLConnection connection = null;
             try {
                 String filename;
-                url = new URL(blenderFile.getBlenderFile());
+                url = new URL(blenderFileEntity.getBlenderFile());
                 connection = (HttpURLConnection) url.openConnection();
                 InputStream stream = connection.getInputStream();
-                if (!blenderFile.getBlenderBinaryOS().contains("Linux")) {
-                    filename = blenderVersion + "-" + blenderFile.getBlenderBinaryOS().toLowerCase() + ".zip";
+                if (!blenderFileEntity.getBlenderBinaryOS().contains("Linux")) {
+                    filename = blenderVersion + "-" + blenderFileEntity.getBlenderBinaryOS().toLowerCase() + ".zip";
                 } else {
-                    filename = blenderVersion + "-" + blenderFile.getBlenderBinaryOS().toLowerCase() + ".tar.bz2";
+                    filename = blenderVersion + "-" + blenderFileEntity.getBlenderBinaryOS().toLowerCase() + ".tar.bz2";
                 }
 
                 LOG.debug("Downloading " + filename + "...");
 
                 Files.copy(stream, Paths.get(saveLocation + File.separator + filename));
-                if (SethlansUtils.fileCheckMD5(new File(saveLocation + File.separator + filename), blenderFile.getBlenderFileMd5())) {
-                    blenderFile.setBlenderFile(saveLocation + File.separator + filename);
+                if (SethlansUtils.fileCheckMD5(new File(saveLocation + File.separator + filename), blenderFileEntity.getBlenderFileMd5())) {
+                    blenderFileEntity.setBlenderFile(saveLocation + File.separator + filename);
                     LOG.debug(filename + " downloaded successfully.");
-                    blenderFile.setDownloaded(true);
-                    blenderFileService.saveOrUpdate(blenderFile);
+                    blenderFileEntity.setDownloaded(true);
+                    blenderFileService.saveOrUpdate(blenderFileEntity);
                 } else {
                     LOG.error("MD5 sums didn't match, removing file " + filename);
                     File toDelete = new File(saveLocation + File.separator + filename);
@@ -136,39 +136,39 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
         return true;
     }
 
-    private List<BlenderFile> prepareDownload() {
-        List<BlenderFile> list = new ArrayList<>();
-        for (BlenderFile blenderFile : blenderFiles) {
-            if (!blenderFile.isDownloaded()) {
-                for (BlenderObject blenderBinary : blenderBinaries) {
-                    if (blenderBinary.getBlenderVersion().equals(blenderFile.getBlenderVersion())) {
-                        switch (blenderFile.getBlenderBinaryOS().toLowerCase()) {
+    private List<BlenderFileEntity> prepareDownload() {
+        List<BlenderFileEntity> list = new ArrayList<>();
+        for (BlenderFileEntity blenderFileEntity : blenderFileEntities) {
+            if (!blenderFileEntity.isDownloaded()) {
+                for (BlenderFile blenderBinary : blenderBinaries) {
+                    if (blenderBinary.getBlenderVersion().equals(blenderFileEntity.getBlenderVersion())) {
+                        switch (blenderFileEntity.getBlenderBinaryOS().toLowerCase()) {
                             case "windows32":
-                                blenderFile.setBlenderFile(blenderBinary.getWindows32());
-                                blenderFile.setBlenderFileMd5(blenderBinary.getMd5Windows32());
+                                blenderFileEntity.setBlenderFile(blenderBinary.getWindows32());
+                                blenderFileEntity.setBlenderFileMd5(blenderBinary.getMd5Windows32());
                                 break;
                             case "windows64":
-                                blenderFile.setBlenderFile(blenderBinary.getWindows64());
-                                blenderFile.setBlenderFileMd5(blenderBinary.getMd5Windows64());
+                                blenderFileEntity.setBlenderFile(blenderBinary.getWindows64());
+                                blenderFileEntity.setBlenderFileMd5(blenderBinary.getMd5Windows64());
                                 break;
                             case "macos":
-                                blenderFile.setBlenderFile(blenderBinary.getMacOS());
-                                blenderFile.setBlenderFileMd5(blenderBinary.getMd5MacOS());
+                                blenderFileEntity.setBlenderFile(blenderBinary.getMacOS());
+                                blenderFileEntity.setBlenderFileMd5(blenderBinary.getMd5MacOS());
                                 break;
                             case "linux64":
-                                blenderFile.setBlenderFile(blenderBinary.getLinux64());
-                                blenderFile.setBlenderFileMd5(blenderBinary.getMd5Linux64());
+                                blenderFileEntity.setBlenderFile(blenderBinary.getLinux64());
+                                blenderFileEntity.setBlenderFileMd5(blenderBinary.getMd5Linux64());
                                 break;
                             case "linux32":
-                                blenderFile.setBlenderFile(blenderBinary.getLinux32());
-                                blenderFile.setBlenderFileMd5(blenderBinary.getMd5Linux32());
+                                blenderFileEntity.setBlenderFile(blenderBinary.getLinux32());
+                                blenderFileEntity.setBlenderFileMd5(blenderBinary.getMd5Linux32());
                                 break;
                             default:
-                                LOG.error("Invalid blender binary operating system " + blenderFile.getBlenderBinaryOS());
+                                LOG.error("Invalid blender binary operating system " + blenderFileEntity.getBlenderBinaryOS());
                         }
                     }
                 }
-                list.add(blenderFile);
+                list.add(blenderFileEntity);
             }
         }
         if (list.size() == 0) {

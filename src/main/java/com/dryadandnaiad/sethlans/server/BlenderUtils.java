@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.server;
 
-import com.dryadandnaiad.sethlans.domains.BlenderObject;
+import com.dryadandnaiad.sethlans.domains.BlenderFile;
 import com.dryadandnaiad.sethlans.services.network.GetRawDataService;
 import com.dryadandnaiad.sethlans.services.network.GetRawDataServiceImpl;
 import org.json.JSONArray;
@@ -39,7 +39,7 @@ import java.util.List;
  */
 public class BlenderUtils {
     private static final Logger LOG = LoggerFactory.getLogger(BlenderUtils.class);
-    private static List<BlenderObject> blenderObjectList = null;
+    private static List<BlenderFile> blenderFileList = null;
 
     private static void getList() {
 
@@ -51,7 +51,7 @@ public class BlenderUtils {
         }
         LOG.debug("Retrieved JSON: \n" + data.substring(0, 100) + "...");
         if (data != null || !data.isEmpty()) {
-            blenderObjectList = new LinkedList<>();
+            blenderFileList = new LinkedList<>();
 
             try {
                 JSONObject jsonData = new JSONObject(data);
@@ -69,8 +69,8 @@ public class BlenderUtils {
                     String md5Windows32 = blenderBinary.getString("windows32_md5");
                     String md5Linux64 = blenderBinary.getString("linux64_md5");
                     String md5Linux32 = blenderBinary.getString("linux32_md5");
-                    BlenderObject blenderObject = new BlenderObject(version, windows32, windows64, macOS, linux32, linux64, md5MacOs, md5Windows64, md5Windows32, md5Linux32, md5Linux64);
-                    blenderObjectList.add(blenderObject);
+                    BlenderFile blenderFile = new BlenderFile(version, windows32, windows64, macOS, linux32, linux64, md5MacOs, md5Windows64, md5Windows32, md5Linux32, md5Linux64);
+                    blenderFileList.add(blenderFile);
                 }
             } catch (JSONException jsonEx) {
                 LOG.error("Error processing JSON data" + jsonEx.getMessage());
@@ -79,25 +79,25 @@ public class BlenderUtils {
         }
     }
 
-    public static List<BlenderObject> listBinaries() {
-        if (blenderObjectList == null) {
+    public static List<BlenderFile> listBinaries() {
+        if (blenderFileList == null) {
             getList();
         }
-        return blenderObjectList;
+        return blenderFileList;
     }
 
     public static List<String> listVersions() {
-        if (blenderObjectList == null) {
+        if (blenderFileList == null) {
             getList();
         }
         List<String> versions = new LinkedList<>();
-        for (BlenderObject blenderObject : blenderObjectList) {
-            versions.add(blenderObject.getBlenderVersion());
+        for (BlenderFile blenderFile : blenderFileList) {
+            versions.add(blenderFile.getBlenderVersion());
         }
         return versions;
     }
 
     public static void refresh() {
-        blenderObjectList = null;
+        blenderFileList = null;
     }
 }

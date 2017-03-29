@@ -26,8 +26,6 @@ package com.dryadandnaiad.sethlans.services.server;
  * Project: sethlans
  */
 public interface ServerPythonSetupService {
-    public boolean updateBlender();
-
-    public boolean installBlender(String serverDir);
+    public boolean installPython(String serverDir);
 
 }

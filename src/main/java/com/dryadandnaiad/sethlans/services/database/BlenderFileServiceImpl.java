@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.domains.BlenderFile;
+import com.dryadandnaiad.sethlans.domains.BlenderFileEntity;
 import com.dryadandnaiad.sethlans.repositories.BlenderEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,25 +45,25 @@ public class BlenderFileServiceImpl implements BlenderFileService {
 
     @Override
     public List<?> listAll() {
-        List<BlenderFile> blenderEntities = new ArrayList<>();
+        List<BlenderFileEntity> blenderEntities = new ArrayList<>();
         blenderEntityRepository.findAll().forEach(blenderEntities::add);
         return blenderEntities;
     }
 
     @Override
-    public BlenderFile getById(Integer id) {
+    public BlenderFileEntity getById(Integer id) {
         return blenderEntityRepository.findOne(id);
     }
 
     @Override
-    public BlenderFile saveOrUpdate(BlenderFile domainObject) {
+    public BlenderFileEntity saveOrUpdate(BlenderFileEntity domainObject) {
         return blenderEntityRepository.save(domainObject);
     }
 
     @Override
     public void delete(Integer id) {
-        BlenderFile blenderFile = blenderEntityRepository.findOne(id);
-        blenderEntityRepository.delete(blenderFile);
+        BlenderFileEntity blenderFileEntity = blenderEntityRepository.findOne(id);
+        blenderEntityRepository.delete(blenderFileEntity);
 
     }
 }

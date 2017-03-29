@@ -19,17 +19,10 @@
 
 package com.dryadandnaiad.sethlans.services.server;
 
-import com.dryadandnaiad.sethlans.domains.BlenderFile;
-import com.dryadandnaiad.sethlans.services.database.BlenderFileService;
-import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.io.File;
-import java.util.List;
 
 /**
  * Created Mario Estrella on 3/27/17.
@@ -40,45 +33,13 @@ import java.util.List;
 @Service
 public class ServerPythonSetupServiceImpl implements ServerPythonSetupService {
     private static final Logger LOG = LoggerFactory.getLogger(ServerPythonSetupServiceImpl.class);
-    private BlenderFileService blenderFileService;
-    private List<BlenderFile> blenderFiles;
 
     @Value("${sethlans.serverDir}")
     private String serverDir;
 
-    @Autowired
-    public void setBlenderFileService(BlenderFileService blenderFileService) {
-        this.blenderFileService = blenderFileService;
-    }
-
-
-    private boolean extractBlender() throws Exception {
-        File extractLocation = new File(serverDir + File.separator + "blender");
-        return false;
-    }
 
     @Override
-    public boolean updateBlender() {
-        blenderFiles = (List<BlenderFile>) blenderFileService.listAll();
-        try {
-            extractBlender();
-        } catch (Exception e) {
-            LOG.error(e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
-        }
-        return false;
-    }
-
-    @Override
-    public boolean installBlender(String serverDir) {
-        blenderFiles = (List<BlenderFile>) blenderFileService.listAll();
-        this.serverDir = serverDir;
-        try {
-            extractBlender();
-        } catch (Exception e) {
-            LOG.error(e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
-        }
+    public boolean installPython(String serverDir) {
         return false;
     }
 }

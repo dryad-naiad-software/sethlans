@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
-import com.dryadandnaiad.sethlans.domains.BlenderFile;
+import com.dryadandnaiad.sethlans.domains.BlenderFileEntity;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.google.common.base.Throwables;
 import com.google.common.hash.HashCode;
@@ -159,7 +159,7 @@ public class SethlansUtils {
         return false;
     }
 
-    public static boolean extract(BlenderFile toExtract, File extractLocation, String alternateLocation) {
+    public static boolean extract(BlenderFileEntity toExtract, File extractLocation, String alternateLocation) {
         File archive = new File(toExtract.getBlenderFile());
         if (!toExtract.getBlenderBinaryOS().contains("Linux")) {
             extractLocation.mkdirs();
