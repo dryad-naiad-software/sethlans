@@ -24,7 +24,7 @@ import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.enums.SetupProgress;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
 import com.dryadandnaiad.sethlans.services.network.BlenderDownloadService;
-import com.dryadandnaiad.sethlans.services.server.ServerBlenderSetupService;
+import com.dryadandnaiad.sethlans.services.server.ServerPythonSetupService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +62,7 @@ public class SetupController {
     private SethlansManagerService sethlansManagerService;
     private SaveSetupConfigService saveSetupConfigService;
     private BlenderDownloadService blenderDownloadService;
-    private ServerBlenderSetupService serverBlenderSetupService;
+    private ServerPythonSetupService serverPythonSetupService;
 
 
     @RequestMapping
@@ -103,9 +103,8 @@ public class SetupController {
             saveSetupConfigService.wizardCompleted(setupForm);
             LOG.debug("Downloading Blender Binary");
             if (setupForm.getMode() == SethlansMode.SERVER || setupForm.getMode() == SethlansMode.BOTH) {
-                if (blenderDownloadService.downloadRequestedBlenderFiles(setupForm.getBlenderDirectory(), true)) {
+                if (blenderDownloadService.downloadRequestedBlenderFiles(setupForm.getBlenderDirectory())) {
                     LOG.info("Restarting Sethlans and implementing configuration changes.");
-                    serverBlenderSetupService.installBlender(setupForm.getServerBinaryDirectory());
                     sethlansManagerService.restart();
                 }
             } else {
@@ -140,7 +139,7 @@ public class SetupController {
     }
 
     @Autowired
-    public void setServerBlenderSetupService(ServerBlenderSetupService serverBlenderSetupService) {
-        this.serverBlenderSetupService = serverBlenderSetupService;
+    public void setServerPythonSetupService(ServerPythonSetupService serverPythonSetupService) {
+        this.serverPythonSetupService = serverPythonSetupService;
     }
 }

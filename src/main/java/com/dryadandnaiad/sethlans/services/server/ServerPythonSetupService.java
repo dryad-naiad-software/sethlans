@@ -25,7 +25,7 @@ package com.dryadandnaiad.sethlans.services.server;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface ServerBlenderSetupService {
+public interface ServerPythonSetupService {
     public boolean updateBlender();
 
     public boolean installBlender(String serverDir);

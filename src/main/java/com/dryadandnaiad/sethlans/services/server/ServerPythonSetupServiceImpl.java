@@ -21,9 +21,7 @@ package com.dryadandnaiad.sethlans.services.server;
 
 import com.dryadandnaiad.sethlans.domains.BlenderFile;
 import com.dryadandnaiad.sethlans.services.database.BlenderFileService;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +38,8 @@ import java.util.List;
  * Project: sethlans
  */
 @Service
-public class ServerBlenderSetupServiceImpl implements ServerBlenderSetupService {
-    private static final Logger LOG = LoggerFactory.getLogger(ServerBlenderSetupServiceImpl.class);
+public class ServerPythonSetupServiceImpl implements ServerPythonSetupService {
+    private static final Logger LOG = LoggerFactory.getLogger(ServerPythonSetupServiceImpl.class);
     private BlenderFileService blenderFileService;
     private List<BlenderFile> blenderFiles;
 
@@ -56,26 +54,6 @@ public class ServerBlenderSetupServiceImpl implements ServerBlenderSetupService 
 
     private boolean extractBlender() throws Exception {
         File extractLocation = new File(serverDir + File.separator + "blender");
-
-        BlenderFile toExtract = null;
-        for (BlenderFile blenderFile : blenderFiles) {
-            if (blenderFile.isServerBinary()) {
-                toExtract = blenderFile;
-            }
-        }
-
-        if (toExtract == null) {
-            throw new Exception("No server blender binary found.");
-        }
-
-
-        if (extractLocation.exists()) {
-            FileUtils.deleteDirectory(extractLocation);
-            SethlansUtils.extract(toExtract, extractLocation, serverDir);
-
-        } else {
-            SethlansUtils.extract(toExtract, extractLocation, serverDir);
-        }
         return false;
     }
 
