@@ -26,20 +26,22 @@ package com.dryadandnaiad.sethlans.domains;
  * Project: sethlans
  */
 public class PythonBinary {
-    private String binary;
+    private String binaryURL;
     private String md5;
+    private String filename;
 
-    public PythonBinary(String binary, String md5) {
-        this.binary = binary;
+    public PythonBinary(String binary, String md5, String filename) {
+        this.binaryURL = binary;
         this.md5 = md5;
+        this.filename = filename;
     }
 
-    public String getBinary() {
-        return binary;
+    public String getBinaryURL() {
+        return binaryURL;
     }
 
-    public void setBinary(String binary) {
-        this.binary = binary;
+    public void setBinaryURL(String binaryURL) {
+        this.binaryURL = binaryURL;
     }
 
     public String getMd5() {
@@ -50,11 +52,20 @@ public class PythonBinary {
         this.md5 = md5;
     }
 
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
     @Override
     public String toString() {
         return "PythonBinary{" +
-                "binary='" + binary + '\'' +
+                "binaryURL='" + binaryURL + '\'' +
                 ", md5='" + md5 + '\'' +
+                ", filename='" + filename + '\'' +
                 '}';
     }
 }

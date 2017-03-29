@@ -17,15 +17,34 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.system;
+package com.dryadandnaiad.sethlans.components;
+
+import com.dryadandnaiad.sethlans.services.network.BlenderDownloadService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
 
 /**
- * Created Mario Estrella on 3/27/17.
+ * Created Mario Estrella on 3/29/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface PythonSetupService {
-    public boolean installPython(String binaryDir);
+@Component
+@Profile({"SERVER", "BOTH"})
+public class BlenderDownloadComponent {
 
+    private BlenderDownloadService blenderDownloadService;
+
+    @Autowired
+    public void setBlenderDownloadService(BlenderDownloadService blenderDownloadService) {
+        this.blenderDownloadService = blenderDownloadService;
+    }
+
+    @PostConstruct
+    public void startBlenderDownload() {
+        blenderDownloadService.downloadRequestedBlenderFilesAsync();
+    }
 }

@@ -74,12 +74,6 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
         }
     }
 
-    @Override
-    public boolean downloadRequestedBlenderFiles(String blenderDir) {
-        this.downloadLocation = blenderDir;
-        return doDownload();
-    }
-
     private boolean doDownload() {
         blenderFileEntities = (List<BlenderFileEntity>) blenderFileService.listAll();
         blenderBinaries = BlenderUtils.listBinaries();

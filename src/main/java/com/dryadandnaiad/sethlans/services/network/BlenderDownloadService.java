@@ -31,6 +31,4 @@ public interface BlenderDownloadService {
 
     Future<Boolean> downloadRequestedBlenderFilesAsync();
 
-    boolean downloadRequestedBlenderFiles(String blenderDir);
-
 }

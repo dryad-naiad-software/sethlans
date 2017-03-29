@@ -9,6 +9,11 @@
     "windows64_md5": "ab094e573aa52e553c598c1f298ea01d",
     "windows32_md5": "62e8a1b3a5ffaebbde76091dc6e1baed",
     "linux64_md5": "5e6678d71e0145acda1d53e3f063eecf",
-    "linux32_md5": "25c1dbe29cba99855159e108897f7ae6"
+    "linux32_md5": "25c1dbe29cba99855159e108897f7ae6",
+    "macos_filename": "python-3.5-macOS.zip",
+    "windows64_filename": "python-3.5-windows64.zip",
+    "windows32_filename": "python-3.5-windows32.zip",
+    "linux64_filename": "python-3.5-linux64.zip",
+    "linux32_filename": "python-3.5-linux32.zip"
   }
 }

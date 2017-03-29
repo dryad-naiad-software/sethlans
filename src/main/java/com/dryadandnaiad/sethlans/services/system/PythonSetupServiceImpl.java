@@ -46,9 +46,9 @@ public class PythonSetupServiceImpl implements PythonSetupService {
     }
 
     @Override
-    public boolean installPython(String serverDir) {
-        this.serverDir = serverDir;
-        pythonDownloadService.downloadPython(serverDir);
+    public boolean installPython(String binaryDir) {
+        this.serverDir = binaryDir;
+        pythonDownloadService.downloadPython(binaryDir);
         return false;
     }
 }

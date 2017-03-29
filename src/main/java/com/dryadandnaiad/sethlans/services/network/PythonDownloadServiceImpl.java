@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.services.network;
 
 import com.dryadandnaiad.sethlans.domains.PythonBinary;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONException;
@@ -27,6 +28,15 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Created Mario Estrella on 3/28/17.
@@ -37,7 +47,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class PythonDownloadServiceImpl implements PythonDownloadService {
     private static final Logger LOG = LoggerFactory.getLogger(PythonDownloadServiceImpl.class);
-    private String serverDir;
+    private String binDir;
     private PythonBinary pythonBinary;
 
     private boolean setPythonBinary() {
@@ -46,8 +56,9 @@ public class PythonDownloadServiceImpl implements PythonDownloadService {
         try {
             JSONObject jsonData = new JSONObject(data);
             JSONObject pythondownload = jsonData.getJSONObject("pythondownload");
-            String binary = null;
+            String binaryURL = null;
             String md5 = null;
+            String filename = null;
 
             if (SystemUtils.IS_OS_WINDOWS) {
                 String arch = System.getenv("PROCESSOR_ARCHITECTURE");
@@ -57,31 +68,36 @@ public class PythonDownloadServiceImpl implements PythonDownloadService {
                         || wow64Arch != null && wow64Arch.endsWith("64")
                         ? "64" : "32";
                 if (realArch.equals("64")) {
-                    binary = pythondownload.getString("windows64");
+                    binaryURL = pythondownload.getString("windows64");
                     md5 = pythondownload.getString("windows64_md5");
+                    filename = pythondownload.getString("windows64_filename");
 
                 } else {
-                    binary = pythondownload.getString("windows32");
+                    binaryURL = pythondownload.getString("windows32");
                     md5 = pythondownload.getString("windows32_md5");
+                    filename = pythondownload.getString("windows32_filename");
 
                 }
             }
             if (SystemUtils.IS_OS_LINUX) {
                 if (SystemUtils.OS_ARCH.contains("64")) {
-                    binary = pythondownload.getString("linux64");
+                    binaryURL = pythondownload.getString("linux64");
                     md5 = pythondownload.getString("linux64_md5");
+                    filename = pythondownload.getString("linux64_filename");
                 } else {
-                    binary = pythondownload.getString("linux32");
+                    binaryURL = pythondownload.getString("linux32");
                     md5 = pythondownload.getString("linux32_md5");
+                    filename = pythondownload.getString("linux32_filename");
                 }
             }
             if (SystemUtils.IS_OS_MAC) {
-                binary = pythondownload.getString("macos");
+                binaryURL = pythondownload.getString("macos");
                 md5 = pythondownload.getString("macos_md5");
+                filename = pythondownload.getString("macos_filename");
             }
 
-            if (binary != null && md5 != null) {
-                this.pythonBinary = new PythonBinary(binary, md5);
+            if (binaryURL != null && md5 != null) {
+                this.pythonBinary = new PythonBinary(binaryURL, md5, filename);
                 LOG.debug(pythonBinary.toString());
                 return true;
             }
@@ -93,22 +109,49 @@ public class PythonDownloadServiceImpl implements PythonDownloadService {
         return false;
     }
 
-    private boolean startDownload() {
+    private String startDownload() {
+        File saveLocation = new File(binDir);
+        saveLocation.mkdirs();
+        URL url;
+        HttpURLConnection connection = null;
+        try {
+            url = new URL(pythonBinary.getBinaryURL());
+            connection = (HttpURLConnection) url.openConnection();
+            InputStream stream = connection.getInputStream();
+            LOG.debug("Downloading  " + pythonBinary.getFilename() + "...");
+            Files.copy(stream, Paths.get(saveLocation + File.separator + pythonBinary.getFilename()));
+            if (SethlansUtils.fileCheckMD5(new File(saveLocation + File.separator + pythonBinary.getFilename()), pythonBinary.getMd5())) {
+                LOG.debug(pythonBinary.getFilename() + " downloaded successfully.");
+                return pythonBinary.getFilename();
+            } else {
+                LOG.error("MD5 sums didn't match, removing file " + pythonBinary.getFilename());
+                File toDelete = new File(saveLocation + File.separator + pythonBinary.getFilename());
+                toDelete.delete();
+                throw new IOException();
+            }
 
-        return false;
+        } catch (MalformedURLException e) {
+            LOG.error("Invalid URL " + e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+        } catch (IOException e) {
+            LOG.error("IO Exception " + e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+        return null;
     }
 
 
     @Override
-    public boolean downloadPython(String serverDir) {
-        this.serverDir = serverDir;
+    public String downloadPython(String binDir) {
+        this.binDir = binDir;
+        String binaryFile = null;
         if (setPythonBinary()) {
-            startDownload();
+            binaryFile = startDownload();
         }
-
-
-
-
-        return false;
+        return binaryFile;
     }
 }

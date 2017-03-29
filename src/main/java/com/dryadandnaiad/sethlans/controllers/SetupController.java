@@ -20,7 +20,6 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.commands.SetupForm;
-import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.enums.SetupProgress;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
 import com.dryadandnaiad.sethlans.services.network.BlenderDownloadService;
@@ -101,19 +100,10 @@ public class SetupController {
             }
             saveSetupConfigService.saveSethlansSettings(setupForm);
             saveSetupConfigService.wizardCompleted(setupForm);
-            LOG.debug("Downloading Blender Binary");
+            LOG.debug("Downloading and Installing Python");
             pythonSetupService.installPython(setupForm.getBinDirectory());
-            if (setupForm.getMode() == SethlansMode.SERVER || setupForm.getMode() == SethlansMode.BOTH) {
-                if (blenderDownloadService.downloadRequestedBlenderFiles(setupForm.getBlenderDirectory())) {
-                    LOG.info("Restarting Sethlans and implementing configuration changes.");
-                    sethlansManagerService.restart();
-                }
-            } else {
-                LOG.info("Setup complete complete. Restarting Sethlans");
-                sethlansManagerService.restart();
-            }
-
-
+            LOG.info("Setup complete complete. Restarting Sethlans");
+            sethlansManagerService.restart();
         }
         return "setup";
     }

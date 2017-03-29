@@ -20,7 +20,6 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.domains.BlenderFileEntity;
-import com.dryadandnaiad.sethlans.domains.PythonBinary;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.google.common.base.Throwables;
 import com.google.common.hash.HashCode;
@@ -194,8 +193,8 @@ public class SethlansUtils {
         return false;
     }
 
-    public static boolean pythonExtract(PythonBinary toExtract, File extractLocation) {
-        File archive = new File(toExtract.getBinary());
+    public static boolean pythonExtract(String toExtract, File extractLocation) {
+        File archive = new File(toExtract);
         extractLocation.mkdirs();
         LOG.debug("Found zip file:");
         try {
