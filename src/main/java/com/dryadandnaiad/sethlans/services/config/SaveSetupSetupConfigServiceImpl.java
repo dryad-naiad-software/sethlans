@@ -20,13 +20,13 @@
 package com.dryadandnaiad.sethlans.services.config;
 
 import com.dryadandnaiad.sethlans.commands.SetupForm;
-import com.dryadandnaiad.sethlans.domains.blender.BlenderFileEntity;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderZipEntity;
 import com.dryadandnaiad.sethlans.domains.users.SethlansRole;
 import com.dryadandnaiad.sethlans.domains.users.SethlansUser;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
-import com.dryadandnaiad.sethlans.services.database.BlenderFileService;
+import com.dryadandnaiad.sethlans.services.database.BlenderZipService;
 import com.dryadandnaiad.sethlans.services.database.RoleService;
 import com.dryadandnaiad.sethlans.services.database.UserService;
 import org.slf4j.Logger;
@@ -49,7 +49,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     private static final Logger LOG = LoggerFactory.getLogger(SaveSetupSetupConfigServiceImpl.class);
     private UserService userService;
     private RoleService roleService;
-    private BlenderFileService blenderFileService;
+    private BlenderZipService blenderZipService;
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -62,8 +62,8 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     }
 
     @Autowired
-    public void setBlenderFileService(BlenderFileService blenderFileService) {
-        this.blenderFileService = blenderFileService;
+    public void setBlenderZipService(BlenderZipService blenderZipService) {
+        this.blenderZipService = blenderZipService;
     }
 
     @Override
@@ -92,10 +92,10 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     @Override
     public void saveServerSettings(SetupForm setupForm) {
         for (BlenderBinaryOS os : setupForm.getBlenderBinaryOS()) {
-            BlenderFileEntity blenderFileEntity = new BlenderFileEntity();
-            blenderFileEntity.setBlenderVersion(setupForm.getBlenderVersion());
-            blenderFileEntity.setBlenderBinaryOS(os.toString());
-            blenderFileService.saveOrUpdate(blenderFileEntity);
+            BlenderZipEntity blenderZipEntity = new BlenderZipEntity();
+            blenderZipEntity.setBlenderVersion(setupForm.getBlenderVersion());
+            blenderZipEntity.setBlenderBinaryOS(os.toString());
+            blenderZipService.saveOrUpdate(blenderZipEntity);
         }
         writeProperty(SethlansConfigKeys.PROJECT_DIR, setupForm.getProjectDirectory());
         writeProperty(SethlansConfigKeys.BLENDER_DIR, setupForm.getBlenderDirectory());

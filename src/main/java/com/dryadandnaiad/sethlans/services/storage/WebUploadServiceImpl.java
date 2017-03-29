@@ -19,8 +19,11 @@
 
 package com.dryadandnaiad.sethlans.services.storage;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,6 +31,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 /**
@@ -36,9 +40,17 @@ import java.util.stream.Stream;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class StorageServiceImpl implements StorageService {
-    private final Path rootLocation = null;
+@Service
+public class WebUploadServiceImpl implements WebUploadService {
+    private Path rootLocation;
 
+    @Value("${sethlans.tempDir}")
+    private String temp;
+
+    @Autowired
+    public void setRootLocation() {
+        this.rootLocation = Paths.get(temp);
+    }
 
     @Override
     public void store(MultipartFile file) {

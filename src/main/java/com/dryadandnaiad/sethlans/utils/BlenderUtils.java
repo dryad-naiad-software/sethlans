@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
-import com.dryadandnaiad.sethlans.domains.blender.BlenderFile;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderZip;
 import com.dryadandnaiad.sethlans.services.network.GetRawDataService;
 import com.dryadandnaiad.sethlans.services.network.GetRawDataServiceImpl;
 import com.google.common.base.Throwables;
@@ -40,7 +40,7 @@ import java.util.List;
  */
 public class BlenderUtils {
     private static final Logger LOG = LoggerFactory.getLogger(BlenderUtils.class);
-    private static List<BlenderFile> blenderFileList = null;
+    private static List<BlenderZip> blenderZipList = null;
 
     private static void getList() {
 
@@ -52,7 +52,7 @@ public class BlenderUtils {
         }
         LOG.debug("Retrieved JSON: \n" + data.substring(0, 100) + "...");
         if (data != null || !data.isEmpty()) {
-            blenderFileList = new LinkedList<>();
+            blenderZipList = new LinkedList<>();
 
             try {
                 JSONObject jsonData = new JSONObject(data);
@@ -70,8 +70,8 @@ public class BlenderUtils {
                     String md5Windows32 = blenderBinary.getString("windows32_md5");
                     String md5Linux64 = blenderBinary.getString("linux64_md5");
                     String md5Linux32 = blenderBinary.getString("linux32_md5");
-                    BlenderFile blenderFile = new BlenderFile(version, windows32, windows64, macOS, linux32, linux64, md5MacOs, md5Windows64, md5Windows32, md5Linux32, md5Linux64);
-                    blenderFileList.add(blenderFile);
+                    BlenderZip blenderZip = new BlenderZip(version, windows32, windows64, macOS, linux32, linux64, md5MacOs, md5Windows64, md5Windows32, md5Linux32, md5Linux64);
+                    blenderZipList.add(blenderZip);
                 }
             } catch (JSONException jsonEx) {
                 LOG.error("Error processing JSON data" + jsonEx.getMessage());
@@ -80,25 +80,25 @@ public class BlenderUtils {
         }
     }
 
-    public static List<BlenderFile> listBinaries() {
-        if (blenderFileList == null) {
+    public static List<BlenderZip> listBinaries() {
+        if (blenderZipList == null) {
             getList();
         }
-        return blenderFileList;
+        return blenderZipList;
     }
 
     public static List<String> listVersions() {
-        if (blenderFileList == null) {
+        if (blenderZipList == null) {
             getList();
         }
         List<String> versions = new LinkedList<>();
-        for (BlenderFile blenderFile : blenderFileList) {
-            versions.add(blenderFile.getBlenderVersion());
+        for (BlenderZip blenderZip : blenderZipList) {
+            versions.add(blenderZip.getBlenderVersion());
         }
         return versions;
     }
 
     public static void refresh() {
-        blenderFileList = null;
+        blenderZipList = null;
     }
 }

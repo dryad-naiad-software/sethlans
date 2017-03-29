@@ -20,8 +20,9 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.commands.ProjectForm;
-import com.dryadandnaiad.sethlans.domains.blender.BlenderFileEntity;
-import com.dryadandnaiad.sethlans.services.database.BlenderFileService;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderZipEntity;
+import com.dryadandnaiad.sethlans.services.database.BlenderZipService;
+import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -46,12 +49,18 @@ import java.util.List;
 @Profile({"SERVER", "BOTH"})
 public class ProjectController {
     private static final Logger LOG = LoggerFactory.getLogger(ProjectController.class);
-    private BlenderFileService blenderFileService;
-    private List<BlenderFileEntity> availableBlenderBinaries;
+    private BlenderZipService blenderZipService;
+    private List<BlenderZipEntity> availableBlenderBinaries;
+    private WebUploadService webUploadService;
 
     @Autowired
-    public void setBlenderFileService(BlenderFileService blenderFileService) {
-        this.blenderFileService = blenderFileService;
+    public void setWebUploadService(WebUploadService webUploadService) {
+        this.webUploadService = webUploadService;
+    }
+
+    @Autowired
+    public void setBlenderZipService(BlenderZipService blenderZipService) {
+        this.blenderZipService = blenderZipService;
     }
 
     @RequestMapping("/project")
@@ -66,8 +75,9 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/project/new", method = RequestMethod.POST)
-    public String newProjectDetails(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm, BindingResult bindingResult) {
-        availableBlenderBinaries = (List<BlenderFileEntity>) blenderFileService.listAll();
+    public String newProjectDetails(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm, BindingResult bindingResult, @RequestParam("projectFile") MultipartFile projectFile) {
+        webUploadService.store(projectFile);
+        availableBlenderBinaries = (List<BlenderZipEntity>) blenderZipService.listAll();
         projectForm.setAvailableBlenderBinaries(availableBlenderBinaries);
         LOG.debug(projectForm.toString());
         return "project/project_form";

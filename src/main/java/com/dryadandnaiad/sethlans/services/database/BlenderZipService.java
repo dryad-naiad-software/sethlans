@@ -17,30 +17,15 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.storage;
+package com.dryadandnaiad.sethlans.services.database;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderZipEntity;
 
 /**
- * Created Mario Estrella on 3/29/17.
+ * Created Mario Estrella on 3/23/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@ConfigurationProperties("storage")
-public class StorageProperties {
-
-    /**
-     * Folder location for storing files
-     */
-    private String location = "upload-dir";
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
+public interface BlenderZipService extends CRUDService<BlenderZipEntity> {
 }

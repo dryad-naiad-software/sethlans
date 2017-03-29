@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.commands;
 
-import com.dryadandnaiad.sethlans.domains.blender.BlenderFileEntity;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderZipEntity;
 import com.dryadandnaiad.sethlans.enums.ProjectFormProgress;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -39,15 +39,15 @@ public class ProjectForm {
 
 
     private ProjectFormProgress progress = ProjectFormProgress.UPLOAD;
-    private BlenderFileEntity blenderFileEntity;
-    private List<BlenderFileEntity> availableBlenderBinaries;
+    private BlenderZipEntity blenderZipEntity;
+    private List<BlenderZipEntity> availableBlenderBinaries;
 
-    public BlenderFileEntity getBlenderFileEntity() {
-        return blenderFileEntity;
+    public BlenderZipEntity getBlenderZipEntity() {
+        return blenderZipEntity;
     }
 
-    public void setBlenderFileEntity(BlenderFileEntity blenderFileEntity) {
-        this.blenderFileEntity = blenderFileEntity;
+    public void setBlenderZipEntity(BlenderZipEntity blenderZipEntity) {
+        this.blenderZipEntity = blenderZipEntity;
     }
 
     public ProjectFormProgress getProgress() {
@@ -58,11 +58,11 @@ public class ProjectForm {
         this.progress = progress;
     }
 
-    public List<BlenderFileEntity> getAvailableBlenderBinaries() {
+    public List<BlenderZipEntity> getAvailableBlenderBinaries() {
         return availableBlenderBinaries;
     }
 
-    public void setAvailableBlenderBinaries(List<BlenderFileEntity> availableBlenderBinaries) {
+    public void setAvailableBlenderBinaries(List<BlenderZipEntity> availableBlenderBinaries) {
         this.availableBlenderBinaries = availableBlenderBinaries;
     }
 
@@ -79,7 +79,7 @@ public class ProjectForm {
         return "ProjectForm{" +
                 "projectName='" + projectName + '\'' +
                 ", progress=" + progress +
-                ", blenderFileEntity=" + blenderFileEntity +
+                ", blenderZipEntity=" + blenderZipEntity +
                 ", availableBlenderBinaries=" + availableBlenderBinaries +
                 '}';
     }

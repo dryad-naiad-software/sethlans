@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.domains.blender.BlenderFileEntity;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderZipEntity;
 import com.dryadandnaiad.sethlans.repositories.BlenderEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ import java.util.List;
  * Project: sethlans
  */
 @Service
-public class BlenderFileServiceImpl implements BlenderFileService {
+public class BlenderZipServiceImpl implements BlenderZipService {
 
     private BlenderEntityRepository blenderEntityRepository;
 
@@ -45,25 +45,25 @@ public class BlenderFileServiceImpl implements BlenderFileService {
 
     @Override
     public List<?> listAll() {
-        List<BlenderFileEntity> blenderEntities = new ArrayList<>();
+        List<BlenderZipEntity> blenderEntities = new ArrayList<>();
         blenderEntityRepository.findAll().forEach(blenderEntities::add);
         return blenderEntities;
     }
 
     @Override
-    public BlenderFileEntity getById(Integer id) {
+    public BlenderZipEntity getById(Integer id) {
         return blenderEntityRepository.findOne(id);
     }
 
     @Override
-    public BlenderFileEntity saveOrUpdate(BlenderFileEntity domainObject) {
+    public BlenderZipEntity saveOrUpdate(BlenderZipEntity domainObject) {
         return blenderEntityRepository.save(domainObject);
     }
 
     @Override
     public void delete(Integer id) {
-        BlenderFileEntity blenderFileEntity = blenderEntityRepository.findOne(id);
-        blenderEntityRepository.delete(blenderFileEntity);
+        BlenderZipEntity blenderZipEntity = blenderEntityRepository.findOne(id);
+        blenderEntityRepository.delete(blenderZipEntity);
 
     }
 }

@@ -30,7 +30,7 @@ import javax.persistence.Entity;
  * Project: sethlans
  */
 @Entity
-public class BlenderFileEntity extends AbstractEntityClass {
+public class BlenderZipEntity extends AbstractEntityClass {
     private String blenderVersion;
     private String blenderBinaryOS;
     private String blenderFile;
@@ -79,7 +79,7 @@ public class BlenderFileEntity extends AbstractEntityClass {
 
     @Override
     public String toString() {
-        return "BlenderFileEntity{" +
+        return "BlenderZipEntity{" +
                 "blenderVersion='" + blenderVersion + '\'' +
                 ", blenderBinaryOS='" + blenderBinaryOS + '\'' +
                 ", blenderFile='" + blenderFile + '\'' +

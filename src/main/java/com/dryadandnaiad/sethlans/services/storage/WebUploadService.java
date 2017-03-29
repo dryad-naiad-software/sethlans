@@ -17,15 +17,32 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.database;
+package com.dryadandnaiad.sethlans.services.storage;
 
-import com.dryadandnaiad.sethlans.domains.blender.BlenderFileEntity;
+import org.springframework.core.io.Resource;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.nio.file.Path;
+import java.util.stream.Stream;
 
 /**
- * Created Mario Estrella on 3/23/17.
+ * Created Mario Estrella on 3/29/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderFileService extends CRUDService<BlenderFileEntity> {
+public interface WebUploadService {
+
+    void init();
+
+    void store(MultipartFile file);
+
+    Stream<Path> loadAll();
+
+    Path load(String filename);
+
+    Resource loadAsResource(String filename);
+
+    void deleteAll();
+
 }

@@ -25,7 +25,7 @@ package com.dryadandnaiad.sethlans.domains.blender;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class BlenderFile {
+public class BlenderZip {
     private String blenderVersion;
     private String windows32;
     private String windows64;
@@ -38,7 +38,7 @@ public class BlenderFile {
     private String md5Linux32;
     private String md5Linux64;
 
-    public BlenderFile(String blenderVersion, String windows32, String windows64, String macOS, String linux32, String linux64, String md5MacOS, String md5Windows64, String md5Windows32, String md5Linux32, String md5Linux64) {
+    public BlenderZip(String blenderVersion, String windows32, String windows64, String macOS, String linux32, String linux64, String md5MacOS, String md5Windows64, String md5Windows32, String md5Linux32, String md5Linux64) {
         this.blenderVersion = blenderVersion;
         this.windows32 = windows32;
         this.windows64 = windows64;
@@ -98,7 +98,7 @@ public class BlenderFile {
 
     @Override
     public String toString() {
-        return "BlenderFile{" +
+        return "BlenderZip{" +
                 "blenderVersion='" + blenderVersion + '\'' +
                 ", windows32='" + windows32 + '\'' +
                 ", windows64='" + windows64 + '\'' +
