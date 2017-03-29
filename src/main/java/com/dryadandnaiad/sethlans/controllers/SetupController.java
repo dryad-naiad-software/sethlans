@@ -24,7 +24,7 @@ import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.enums.SetupProgress;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
 import com.dryadandnaiad.sethlans.services.network.BlenderDownloadService;
-import com.dryadandnaiad.sethlans.services.server.ServerPythonSetupService;
+import com.dryadandnaiad.sethlans.services.system.PythonSetupService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +62,7 @@ public class SetupController {
     private SethlansManagerService sethlansManagerService;
     private SaveSetupConfigService saveSetupConfigService;
     private BlenderDownloadService blenderDownloadService;
-    private ServerPythonSetupService serverPythonSetupService;
+    private PythonSetupService pythonSetupService;
 
 
     @RequestMapping
@@ -102,6 +102,7 @@ public class SetupController {
             saveSetupConfigService.saveSethlansSettings(setupForm);
             saveSetupConfigService.wizardCompleted(setupForm);
             LOG.debug("Downloading Blender Binary");
+            pythonSetupService.installPython(setupForm.getBinDirectory());
             if (setupForm.getMode() == SethlansMode.SERVER || setupForm.getMode() == SethlansMode.BOTH) {
                 if (blenderDownloadService.downloadRequestedBlenderFiles(setupForm.getBlenderDirectory())) {
                     LOG.info("Restarting Sethlans and implementing configuration changes.");
@@ -139,7 +140,7 @@ public class SetupController {
     }
 
     @Autowired
-    public void setServerPythonSetupService(ServerPythonSetupService serverPythonSetupService) {
-        this.serverPythonSetupService = serverPythonSetupService;
+    public void setPythonSetupService(PythonSetupService pythonSetupService) {
+        this.pythonSetupService = pythonSetupService;
     }
 }

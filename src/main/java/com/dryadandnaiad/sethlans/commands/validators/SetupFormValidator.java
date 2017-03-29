@@ -43,8 +43,8 @@ public class SetupFormValidator implements Validator {
         SetupForm setupForm = (SetupForm) target;
 
         if (!setupForm.getPassword().equals(setupForm.getPasswordConfirm())) {
-            errors.rejectValue("passWord", "form.passWordsDontMatch", "Passwords Don't Match");
-            errors.rejectValue("passWordConf", "form.passWordsDontMatch", "Passwords Don't Match");
+            errors.rejectValue("password", "form.passwordsDontMatch", "Passwords Don't Match");
+            errors.rejectValue("passwordConfirm", "form.passwordsDontMatch", "Passwords Don't Match");
         }
 
     }

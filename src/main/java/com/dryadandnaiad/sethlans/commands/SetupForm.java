@@ -75,7 +75,7 @@ public class SetupForm {
     @NotEmpty
     private String logDirectory;
     @NotEmpty
-    private String serverBinaryDirectory;
+    private String binDirectory;
 
     private ComputeType selectedMethod;
     private List<ComputeType> availableMethods;
@@ -101,7 +101,7 @@ public class SetupForm {
         this.cores = 1;
         this.projectDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "projects" + File.separator;
         this.blenderDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "blenderzip" + File.separator;
-        this.serverBinaryDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "serverbin" + File.separator;
+        this.binDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "bin" + File.separator;
         this.tempDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "temp" + File.separator;
         this.workingDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "cache" + File.separator;
         this.logDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "logs" + File.separator;
@@ -158,12 +158,12 @@ public class SetupForm {
         }
     }
 
-    public String getServerBinaryDirectory() {
-        return serverBinaryDirectory;
+    public String getBinDirectory() {
+        return binDirectory;
     }
 
-    public void setServerBinaryDirectory(String serverBinaryDirectory) {
-        this.serverBinaryDirectory = serverBinaryDirectory;
+    public void setBinDirectory(String binDirectory) {
+        this.binDirectory = binDirectory;
     }
 
     public int getTotalCores() {
@@ -331,7 +331,7 @@ public class SetupForm {
                 ", tempDirectory='" + tempDirectory + '\'' +
                 ", workingDirectory='" + workingDirectory + '\'' +
                 ", logDirectory='" + logDirectory + '\'' +
-                ", serverBinaryDirectory='" + serverBinaryDirectory + '\'' +
+                ", binDirectory='" + binDirectory + '\'' +
                 ", selectedMethod=" + selectedMethod +
                 ", availableMethods=" + availableMethods +
                 ", availableGPUs=" + availableGPUs +

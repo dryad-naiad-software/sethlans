@@ -117,6 +117,10 @@
                                             <td>Log Directory</td>
                                             <td th:text="${setupForm.logDirectory}">Log Dir</td>
                                         </tr>
+                                        <tr>
+                                            <td>Binary Directory</td>
+                                            <td th:text="${setupForm.binDirectory}">Bin Dir</td>
+                                        </tr>
                                         </tbody>
                                         <div th:case="${T(com.dryadandnaiad.sethlans.enums.SethlansMode).SERVER}">
                                             <tbody th:replace="fragments/setup_summary_server :: setup_summary_server">

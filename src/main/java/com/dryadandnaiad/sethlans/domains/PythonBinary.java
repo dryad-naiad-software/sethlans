@@ -26,4 +26,35 @@ package com.dryadandnaiad.sethlans.domains;
  * Project: sethlans
  */
 public class PythonBinary {
+    private String binary;
+    private String md5;
+
+    public PythonBinary(String binary, String md5) {
+        this.binary = binary;
+        this.md5 = md5;
+    }
+
+    public String getBinary() {
+        return binary;
+    }
+
+    public void setBinary(String binary) {
+        this.binary = binary;
+    }
+
+    public String getMd5() {
+        return md5;
+    }
+
+    public void setMd5(String md5) {
+        this.md5 = md5;
+    }
+
+    @Override
+    public String toString() {
+        return "PythonBinary{" +
+                "binary='" + binary + '\'' +
+                ", md5='" + md5 + '\'' +
+                '}';
+    }
 }

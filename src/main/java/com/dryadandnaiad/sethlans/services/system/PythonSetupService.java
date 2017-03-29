@@ -17,12 +17,7 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.server;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+package com.dryadandnaiad.sethlans.services.system;
 
 /**
  * Created Mario Estrella on 3/27/17.
@@ -30,16 +25,7 @@ import org.springframework.stereotype.Service;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Service
-public class ServerPythonSetupServiceImpl implements ServerPythonSetupService {
-    private static final Logger LOG = LoggerFactory.getLogger(ServerPythonSetupServiceImpl.class);
+public interface PythonSetupService {
+    public boolean installPython(String serverDir);
 
-    @Value("${sethlans.serverDir}")
-    private String serverDir;
-
-
-    @Override
-    public boolean installPython(String serverDir) {
-        return false;
-    }
 }

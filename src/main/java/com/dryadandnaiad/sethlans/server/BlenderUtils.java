@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.server;
 import com.dryadandnaiad.sethlans.domains.BlenderFile;
 import com.dryadandnaiad.sethlans.services.network.GetRawDataService;
 import com.dryadandnaiad.sethlans.services.network.GetRawDataServiceImpl;
+import com.google.common.base.Throwables;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -74,7 +75,7 @@ public class BlenderUtils {
                 }
             } catch (JSONException jsonEx) {
                 LOG.error("Error processing JSON data" + jsonEx.getMessage());
-                jsonEx.printStackTrace();
+                LOG.error(Throwables.getStackTraceAsString(jsonEx));
             }
         }
     }

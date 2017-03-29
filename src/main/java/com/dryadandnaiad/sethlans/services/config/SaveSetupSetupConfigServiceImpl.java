@@ -100,14 +100,14 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
         writeProperty(SethlansConfigKeys.PROJECT_DIR, setupForm.getProjectDirectory());
         writeProperty(SethlansConfigKeys.BLENDER_DIR, setupForm.getBlenderDirectory());
         writeProperty(SethlansConfigKeys.TEMP_DIR, setupForm.getTempDirectory());
-        writeProperty(SethlansConfigKeys.SERVER_DIR, setupForm.getServerBinaryDirectory());
+        writeProperty(SethlansConfigKeys.BINARY_DIR, setupForm.getBinDirectory());
 
         LOG.debug("Server Settings Saved");
         // Create directories
         File projectDir = new File(setupForm.getProjectDirectory());
         File blenderDir = new File(setupForm.getBlenderDirectory());
         File tempDir = new File(setupForm.getTempDirectory());
-        File serverDir = new File(setupForm.getServerBinaryDirectory());
+        File serverDir = new File(setupForm.getBinDirectory());
         if (!projectDir.mkdirs()) {
             LOG.error("Unable to create project directory " + projectDir.toString());
             // TODO Placeholders for now will need to replace System.exit with a friendly message to GUI and restart the setup wizard.

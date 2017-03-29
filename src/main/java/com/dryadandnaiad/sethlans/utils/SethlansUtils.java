@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.domains.BlenderFileEntity;
+import com.dryadandnaiad.sethlans.domains.PythonBinary;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.google.common.base.Throwables;
 import com.google.common.hash.HashCode;
@@ -159,7 +160,7 @@ public class SethlansUtils {
         return false;
     }
 
-    public static boolean extract(BlenderFileEntity toExtract, File extractLocation, String alternateLocation) {
+    public static boolean blenderExtract(BlenderFileEntity toExtract, File extractLocation, String alternateLocation) {
         File archive = new File(toExtract.getBlenderFile());
         if (!toExtract.getBlenderBinaryOS().contains("Linux")) {
             extractLocation.mkdirs();
@@ -189,6 +190,23 @@ public class SethlansUtils {
             LOG.error(Throwables.getStackTraceAsString(e));
             System.exit(1);
 
+        }
+        return false;
+    }
+
+    public static boolean pythonExtract(PythonBinary toExtract, File extractLocation) {
+        File archive = new File(toExtract.getBinary());
+        extractLocation.mkdirs();
+        LOG.debug("Found zip file:");
+        try {
+            ZipFile archiver = new ZipFile(archive);
+            LOG.debug("Extracting " + archive + " to " + extractLocation);
+            archiver.extractAll(extractLocation.toString());
+            return true;
+        } catch (ZipException e) {
+            LOG.error("Error extracting using zip4j " + e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+            System.exit(1);
         }
         return false;
     }

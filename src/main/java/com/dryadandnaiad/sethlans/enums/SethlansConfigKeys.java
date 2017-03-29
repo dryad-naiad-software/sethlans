@@ -33,7 +33,7 @@ public enum SethlansConfigKeys {
     COMPUTE_METHOD("sethlans.computeMethod"),
     PROJECT_DIR("sethlans.projectDir"),
     BLENDER_DIR("sethlans.blenderDir"),
-    SERVER_DIR("sethlans.serverDir"),
+    BINARY_DIR("sethlans.binDir"),
     TEMP_DIR("sethlans.tempDir"),
     CACHE_DIR("sethlans.cacheDir"),
     CUDA_DEVICE("sethlans.cuda"),

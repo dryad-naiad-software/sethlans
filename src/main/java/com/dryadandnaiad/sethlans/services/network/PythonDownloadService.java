@@ -27,5 +27,5 @@ package com.dryadandnaiad.sethlans.services.network;
  */
 public interface PythonDownloadService {
 
-    boolean downloadPython();
+    boolean downloadPython(String serverDir);
 }

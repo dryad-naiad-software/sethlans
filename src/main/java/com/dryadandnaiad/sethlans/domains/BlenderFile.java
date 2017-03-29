@@ -56,88 +56,44 @@ public class BlenderFile {
         return blenderVersion;
     }
 
-    public void setBlenderVersion(String blenderVersion) {
-        this.blenderVersion = blenderVersion;
-    }
-
     public String getWindows32() {
         return windows32;
-    }
-
-    public void setWindows32(String windows32) {
-        this.windows32 = windows32;
     }
 
     public String getWindows64() {
         return windows64;
     }
 
-    public void setWindows64(String windows64) {
-        this.windows64 = windows64;
-    }
-
     public String getMacOS() {
         return macOS;
-    }
-
-    public void setMacOS(String macOS) {
-        this.macOS = macOS;
     }
 
     public String getLinux32() {
         return linux32;
     }
 
-    public void setLinux32(String linux32) {
-        this.linux32 = linux32;
-    }
-
     public String getLinux64() {
         return linux64;
-    }
-
-    public void setLinux64(String linux64) {
-        this.linux64 = linux64;
     }
 
     public String getMd5MacOS() {
         return md5MacOS;
     }
 
-    public void setMd5MacOS(String md5MacOS) {
-        this.md5MacOS = md5MacOS;
-    }
-
     public String getMd5Windows64() {
         return md5Windows64;
-    }
-
-    public void setMd5Windows64(String md5Windows64) {
-        this.md5Windows64 = md5Windows64;
     }
 
     public String getMd5Windows32() {
         return md5Windows32;
     }
 
-    public void setMd5Windows32(String md5Windows32) {
-        this.md5Windows32 = md5Windows32;
-    }
-
     public String getMd5Linux32() {
         return md5Linux32;
     }
 
-    public void setMd5Linux32(String md5Linux32) {
-        this.md5Linux32 = md5Linux32;
-    }
-
     public String getMd5Linux64() {
         return md5Linux64;
-    }
-
-    public void setMd5Linux64(String md5Linux64) {
-        this.md5Linux64 = md5Linux64;
     }
 
     @Override
