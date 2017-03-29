@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.domains.BlenderFileEntity;
 import com.dryadandnaiad.sethlans.server.BlenderUtils;
 import com.dryadandnaiad.sethlans.services.database.BlenderFileService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,8 +87,9 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
             saveLocation.mkdirs();
             URL url;
             HttpURLConnection connection = null;
+            String filename = null;
             try {
-                String filename;
+
                 url = new URL(blenderFileEntity.getBlenderFile());
                 connection = (HttpURLConnection) url.openConnection();
                 InputStream stream = connection.getInputStream();
@@ -97,18 +99,25 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                     filename = blenderVersion + "-" + blenderFileEntity.getBlenderBinaryOS().toLowerCase() + ".tar.bz2";
                 }
 
+                File toDownload = new File(saveLocation + File.separator + filename);
                 LOG.debug("Downloading " + filename + "...");
+                if (toDownload.exists()) {
+                    LOG.debug("Previous download did not complete successfully, deleting and re-downloading.");
+                    toDownload.delete();
+                    LOG.debug("Re-Downloading " + filename + "...");
+                    Files.copy(stream, Paths.get(toDownload.toString()));
+                } else {
+                    Files.copy(stream, Paths.get(toDownload.toString()));
+                }
 
-                Files.copy(stream, Paths.get(saveLocation + File.separator + filename));
-                if (SethlansUtils.fileCheckMD5(new File(saveLocation + File.separator + filename), blenderFileEntity.getBlenderFileMd5())) {
-                    blenderFileEntity.setBlenderFile(saveLocation + File.separator + filename);
+                if (SethlansUtils.fileCheckMD5(toDownload, blenderFileEntity.getBlenderFileMd5())) {
+                    blenderFileEntity.setBlenderFile(toDownload.toString());
                     LOG.debug(filename + " downloaded successfully.");
                     blenderFileEntity.setDownloaded(true);
                     blenderFileService.saveOrUpdate(blenderFileEntity);
                 } else {
                     LOG.error("MD5 sums didn't match, removing file " + filename);
-                    File toDelete = new File(saveLocation + File.separator + filename);
-                    toDelete.delete();
+                    toDownload.delete();
                     throw new IOException();
                 }
 
@@ -117,6 +126,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                 return false;
             } catch (IOException e) {
                 LOG.error("IO Exception: " + e.getMessage());
+                LOG.error(Throwables.getStackTraceAsString(e));
                 return false;
             } finally {
                 if (connection != null) {
