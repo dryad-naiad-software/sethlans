@@ -26,6 +26,6 @@ package com.dryadandnaiad.sethlans.services.system;
  * Project: sethlans
  */
 public interface PythonSetupService {
-    public boolean installPython(String binaryDir);
+    boolean installPython(String binaryDir);
 
 }

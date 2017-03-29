@@ -194,13 +194,13 @@ public class SethlansUtils {
     }
 
     public static boolean pythonExtract(String toExtract, File extractLocation) {
-        File archive = new File(toExtract);
+        File archive = new File(extractLocation + File.separator + toExtract);
         extractLocation.mkdirs();
-        LOG.debug("Found zip file:");
         try {
             ZipFile archiver = new ZipFile(archive);
             LOG.debug("Extracting " + archive + " to " + extractLocation);
             archiver.extractAll(extractLocation.toString());
+            archive.delete();
             return true;
         } catch (ZipException e) {
             LOG.error("Error extracting using zip4j " + e.getMessage());

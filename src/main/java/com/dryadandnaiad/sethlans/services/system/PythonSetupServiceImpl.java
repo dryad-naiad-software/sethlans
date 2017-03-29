@@ -20,11 +20,14 @@
 package com.dryadandnaiad.sethlans.services.system;
 
 import com.dryadandnaiad.sethlans.services.network.PythonDownloadService;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
 
 /**
  * Created Mario Estrella on 3/27/17.
@@ -37,7 +40,7 @@ public class PythonSetupServiceImpl implements PythonSetupService {
     private static final Logger LOG = LoggerFactory.getLogger(PythonSetupServiceImpl.class);
 
     @Value("${sethlans.binDir}")
-    private String serverDir;
+    private String binDir;
     private PythonDownloadService pythonDownloadService;
 
     @Autowired
@@ -47,8 +50,9 @@ public class PythonSetupServiceImpl implements PythonSetupService {
 
     @Override
     public boolean installPython(String binaryDir) {
-        this.serverDir = binaryDir;
-        pythonDownloadService.downloadPython(binaryDir);
+        this.binDir = binaryDir;
+        String pythonFile = pythonDownloadService.downloadPython(binaryDir);
+        SethlansUtils.pythonExtract(pythonFile, new File(binaryDir));
         return false;
     }
 }
