@@ -25,12 +25,12 @@ package com.dryadandnaiad.sethlans.domains;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class PythonBinary {
+public class PythonDownloadFile {
     private String binaryURL;
     private String md5;
     private String filename;
 
-    public PythonBinary(String binary, String md5, String filename) {
+    public PythonDownloadFile(String binary, String md5, String filename) {
         this.binaryURL = binary;
         this.md5 = md5;
         this.filename = filename;
@@ -62,7 +62,7 @@ public class PythonBinary {
 
     @Override
     public String toString() {
-        return "PythonBinary{" +
+        return "PythonDownloadFile{" +
                 "binaryURL='" + binaryURL + '\'' +
                 ", md5='" + md5 + '\'' +
                 ", filename='" + filename + '\'' +

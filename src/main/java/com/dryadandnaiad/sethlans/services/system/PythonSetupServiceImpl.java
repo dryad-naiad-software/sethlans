@@ -19,13 +19,13 @@
 
 package com.dryadandnaiad.sethlans.services.system;
 
+import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.network.PythonDownloadService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -41,8 +41,6 @@ import java.io.IOException;
 public class PythonSetupServiceImpl implements PythonSetupService {
     private static final Logger LOG = LoggerFactory.getLogger(PythonSetupServiceImpl.class);
 
-    @Value("${sethlans.binDir}")
-    private String binDir;
     private PythonDownloadService pythonDownloadService;
 
     @Autowired
@@ -52,16 +50,24 @@ public class PythonSetupServiceImpl implements PythonSetupService {
 
     @Override
     public boolean installPython(String binaryDir) {
-        this.binDir = binaryDir;
         String pythonFile = pythonDownloadService.downloadPython(binaryDir);
-        SethlansUtils.pythonExtract(pythonFile, new File(binaryDir));
-        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
-            try {
-                ProcessBuilder pb = new ProcessBuilder("chmod", "-R", "+x", binaryDir + File.separator + "python" + File.separator + "bin");
-                pb.start();
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (SethlansUtils.pythonExtract(pythonFile, new File(binaryDir))) {
+            if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
+                try {
+                    ProcessBuilder pb = new ProcessBuilder("chmod", "-R", "+x", binaryDir + "python" + File.separator + "bin");
+                    pb.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return false;
+                }
             }
+            if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
+                SethlansUtils.writeProperty(SethlansConfigKeys.PYTHON_BIN, binaryDir + "python" + File.separator + "bin" + File.separator + "python3.5m");
+            }
+            if (SystemUtils.IS_OS_WINDOWS) {
+                SethlansUtils.writeProperty(SethlansConfigKeys.PYTHON_BIN, binaryDir + "python" + File.separator + "bin" + File.separator + "python.exe");
+            }
+            return true;
         }
         return false;
     }

@@ -37,7 +37,8 @@ public enum SethlansConfigKeys {
     TEMP_DIR("sethlans.tempDir"),
     CACHE_DIR("sethlans.cacheDir"),
     CUDA_DEVICE("sethlans.cuda"),
-    CPU_CORES("sethlans.cores");
+    CPU_CORES("sethlans.cores"),
+    PYTHON_BIN("sethlans.python.binary");
 
     private final String text;
 

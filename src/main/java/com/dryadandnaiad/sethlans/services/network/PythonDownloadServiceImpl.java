@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.network;
 
-import com.dryadandnaiad.sethlans.domains.PythonBinary;
+import com.dryadandnaiad.sethlans.domains.PythonDownloadFile;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.lang3.SystemUtils;
@@ -48,7 +48,7 @@ import java.nio.file.Paths;
 public class PythonDownloadServiceImpl implements PythonDownloadService {
     private static final Logger LOG = LoggerFactory.getLogger(PythonDownloadServiceImpl.class);
     private String binDir;
-    private PythonBinary pythonBinary;
+    private PythonDownloadFile pythonDownloadFile;
 
     private boolean setPythonBinary() {
         GetRawDataService getJSONData = new GetRawDataServiceImpl();
@@ -97,8 +97,8 @@ public class PythonDownloadServiceImpl implements PythonDownloadService {
             }
 
             if (binaryURL != null && md5 != null) {
-                this.pythonBinary = new PythonBinary(binaryURL, md5, filename);
-                LOG.debug(pythonBinary.toString());
+                this.pythonDownloadFile = new PythonDownloadFile(binaryURL, md5, filename);
+                LOG.debug(pythonDownloadFile.toString());
                 return true;
             }
 
@@ -115,17 +115,17 @@ public class PythonDownloadServiceImpl implements PythonDownloadService {
         URL url;
         HttpURLConnection connection = null;
         try {
-            url = new URL(pythonBinary.getBinaryURL());
+            url = new URL(pythonDownloadFile.getBinaryURL());
             connection = (HttpURLConnection) url.openConnection();
             InputStream stream = connection.getInputStream();
-            LOG.debug("Downloading  " + pythonBinary.getFilename() + "...");
-            Files.copy(stream, Paths.get(saveLocation + File.separator + pythonBinary.getFilename()));
-            if (SethlansUtils.fileCheckMD5(new File(saveLocation + File.separator + pythonBinary.getFilename()), pythonBinary.getMd5())) {
-                LOG.debug(pythonBinary.getFilename() + " downloaded successfully.");
-                return pythonBinary.getFilename();
+            LOG.debug("Downloading  " + pythonDownloadFile.getFilename() + "...");
+            Files.copy(stream, Paths.get(saveLocation + File.separator + pythonDownloadFile.getFilename()));
+            if (SethlansUtils.fileCheckMD5(new File(saveLocation + File.separator + pythonDownloadFile.getFilename()), pythonDownloadFile.getMd5())) {
+                LOG.debug(pythonDownloadFile.getFilename() + " downloaded successfully.");
+                return pythonDownloadFile.getFilename();
             } else {
-                LOG.error("MD5 sums didn't match, removing file " + pythonBinary.getFilename());
-                File toDelete = new File(saveLocation + File.separator + pythonBinary.getFilename());
+                LOG.error("MD5 sums didn't match, removing file " + pythonDownloadFile.getFilename());
+                File toDelete = new File(saveLocation + File.separator + pythonDownloadFile.getFilename());
                 toDelete.delete();
                 throw new IOException();
             }
