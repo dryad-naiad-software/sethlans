@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.dryadandnaiad.sethlans.client.hardware.gpu;
+package com.dryadandnaiad.sethlans.osnative.hardware.gpu;
 
 /**
  * Created Mario Estrella on 3/19/17.
@@ -26,8 +26,8 @@ package com.dryadandnaiad.sethlans.client.hardware.gpu;
  * Project: sethlans
  */
 
-import com.dryadandnaiad.sethlans.client.software.AbstractOSClass;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
+import com.dryadandnaiad.sethlans.osnative.software.AbstractOSClass;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.LongByReference;

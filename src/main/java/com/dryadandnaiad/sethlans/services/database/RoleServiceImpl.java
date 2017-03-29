@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.domains.security.SethlansRole;
+import com.dryadandnaiad.sethlans.domains.users.SethlansRole;
 import com.dryadandnaiad.sethlans.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

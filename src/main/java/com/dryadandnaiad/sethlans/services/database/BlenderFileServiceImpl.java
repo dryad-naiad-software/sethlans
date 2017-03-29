@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.domains.BlenderFileEntity;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderFileEntity;
 import com.dryadandnaiad.sethlans.repositories.BlenderEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

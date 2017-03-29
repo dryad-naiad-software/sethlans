@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.commands;
 
-import com.dryadandnaiad.sethlans.domains.BlenderFileEntity;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderFileEntity;
 import com.dryadandnaiad.sethlans.enums.ProjectFormProgress;
 import org.hibernate.validator.constraints.NotEmpty;
 

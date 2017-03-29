@@ -17,7 +17,9 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.domains;
+package com.dryadandnaiad.sethlans.domains.blender;
+
+import com.dryadandnaiad.sethlans.domains.AbstractEntityClass;
 
 /**
  * Created Mario Estrella on 3/24/17.

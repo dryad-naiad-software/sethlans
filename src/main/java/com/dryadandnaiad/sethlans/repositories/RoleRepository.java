@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.repositories;
 
-import com.dryadandnaiad.sethlans.domains.security.SethlansRole;
+import com.dryadandnaiad.sethlans.domains.users.SethlansRole;
 import org.springframework.data.repository.CrudRepository;
 
 /**

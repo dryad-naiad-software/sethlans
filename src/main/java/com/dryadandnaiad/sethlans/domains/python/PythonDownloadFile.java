@@ -17,7 +17,7 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.domains;
+package com.dryadandnaiad.sethlans.domains.python;
 
 /**
  * Created Mario Estrella on 3/28/17.

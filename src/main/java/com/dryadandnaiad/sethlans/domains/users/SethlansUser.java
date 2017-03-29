@@ -17,9 +17,9 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.domains;
+package com.dryadandnaiad.sethlans.domains.users;
 
-import com.dryadandnaiad.sethlans.domains.security.SethlansRole;
+import com.dryadandnaiad.sethlans.domains.AbstractEntityClass;
 
 import javax.persistence.*;
 import java.util.ArrayList;

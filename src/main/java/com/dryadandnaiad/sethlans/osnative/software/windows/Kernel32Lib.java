@@ -31,7 +31,7 @@
  * Lesser General Public License for more details.
  */
 
-package com.dryadandnaiad.sethlans.client.software.windows;
+package com.dryadandnaiad.sethlans.osnative.software.windows;
 
 import com.sun.jna.Library;
 import com.sun.jna.Pointer;

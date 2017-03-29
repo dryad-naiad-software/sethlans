@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.network;
 
-import com.dryadandnaiad.sethlans.domains.PythonDownloadFile;
+import com.dryadandnaiad.sethlans.domains.python.PythonDownloadFile;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.lang3.SystemUtils;

@@ -20,7 +20,7 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.commands.ProjectForm;
-import com.dryadandnaiad.sethlans.domains.BlenderFileEntity;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderFileEntity;
 import com.dryadandnaiad.sethlans.services.database.BlenderFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

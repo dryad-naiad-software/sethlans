@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.repositories;
 
-import com.dryadandnaiad.sethlans.domains.BlenderFileEntity;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderFileEntity;
 import org.springframework.data.repository.CrudRepository;
 
 /**

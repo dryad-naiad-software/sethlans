@@ -19,10 +19,10 @@
 
 package com.dryadandnaiad.sethlans.services.network;
 
-import com.dryadandnaiad.sethlans.domains.BlenderFile;
-import com.dryadandnaiad.sethlans.domains.BlenderFileEntity;
-import com.dryadandnaiad.sethlans.server.BlenderUtils;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderFile;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderFileEntity;
 import com.dryadandnaiad.sethlans.services.database.BlenderFileService;
+import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;

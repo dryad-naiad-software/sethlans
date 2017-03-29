@@ -17,10 +17,9 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.domains.security;
+package com.dryadandnaiad.sethlans.domains.users;
 
 import com.dryadandnaiad.sethlans.domains.AbstractEntityClass;
-import com.dryadandnaiad.sethlans.domains.SethlansUser;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;

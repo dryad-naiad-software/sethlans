@@ -17,9 +17,9 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.server;
+package com.dryadandnaiad.sethlans.utils;
 
-import com.dryadandnaiad.sethlans.domains.BlenderFile;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderFile;
 import com.dryadandnaiad.sethlans.services.network.GetRawDataService;
 import com.dryadandnaiad.sethlans.services.network.GetRawDataServiceImpl;
 import com.google.common.base.Throwables;

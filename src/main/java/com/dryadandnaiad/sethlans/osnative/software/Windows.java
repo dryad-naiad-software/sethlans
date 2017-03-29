@@ -17,11 +17,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.dryadandnaiad.sethlans.client.software;
+package com.dryadandnaiad.sethlans.osnative.software;
 
-import com.dryadandnaiad.sethlans.client.software.windows.Kernel32Lib;
-import com.dryadandnaiad.sethlans.client.software.windows.WinProcess;
 import com.dryadandnaiad.sethlans.domains.hardware.CPU;
+import com.dryadandnaiad.sethlans.osnative.software.windows.Kernel32Lib;
+import com.dryadandnaiad.sethlans.osnative.software.windows.WinProcess;
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Kernel32;

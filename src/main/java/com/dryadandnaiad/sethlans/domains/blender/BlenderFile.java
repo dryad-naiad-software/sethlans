@@ -17,7 +17,7 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.domains;
+package com.dryadandnaiad.sethlans.domains.blender;
 
 /**
  * Created Mario Estrella on 3/21/17.

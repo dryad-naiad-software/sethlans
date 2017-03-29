@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package com.dryadandnaiad.sethlans.client.software;
+package com.dryadandnaiad.sethlans.osnative.software;
 
 import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import org.slf4j.Logger;

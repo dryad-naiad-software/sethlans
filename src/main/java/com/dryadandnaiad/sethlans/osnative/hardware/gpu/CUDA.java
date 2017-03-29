@@ -18,7 +18,7 @@
  */
 
 
-package com.dryadandnaiad.sethlans.client.hardware.gpu;
+package com.dryadandnaiad.sethlans.osnative.hardware.gpu;
 
 /**
  * Created Mario Estrella on 3/19/17.

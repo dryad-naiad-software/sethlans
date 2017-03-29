@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package com.dryadandnaiad.sethlans.client.software.windows;
+package com.dryadandnaiad.sethlans.osnative.software.windows;
 
 /**
  * Created Mario Estrella on 3/19/17.

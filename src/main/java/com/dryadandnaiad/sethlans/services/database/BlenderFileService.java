@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.domains.BlenderFileEntity;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderFileEntity;
 
 /**
  * Created Mario Estrella on 3/23/17.

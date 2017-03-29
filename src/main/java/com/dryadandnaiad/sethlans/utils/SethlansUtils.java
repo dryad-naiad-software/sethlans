@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
-import com.dryadandnaiad.sethlans.domains.BlenderFileEntity;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderFileEntity;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.google.common.base.Throwables;
 import com.google.common.hash.HashCode;

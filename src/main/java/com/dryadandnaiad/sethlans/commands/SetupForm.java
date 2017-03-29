@@ -19,13 +19,13 @@
 
 package com.dryadandnaiad.sethlans.commands;
 
-import com.dryadandnaiad.sethlans.client.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.enums.SetupProgress;
+import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import org.apache.commons.lang3.SystemUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;

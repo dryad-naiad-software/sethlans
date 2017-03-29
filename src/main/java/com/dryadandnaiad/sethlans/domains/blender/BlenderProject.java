@@ -17,7 +17,11 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.scripts;
+package com.dryadandnaiad.sethlans.domains.blender;
+
+import com.dryadandnaiad.sethlans.domains.AbstractEntityClass;
+
+import javax.persistence.Entity;
 
 /**
  * Created Mario Estrella on 3/24/17.
@@ -25,5 +29,12 @@ package com.dryadandnaiad.sethlans.services.scripts;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderPythonScriptService {
+@Entity
+public class BlenderProject extends AbstractEntityClass {
+    private String projectName;
+    private String projectFile;
+    private boolean animation;
+    private String projectDirectory;
+
+
 }
