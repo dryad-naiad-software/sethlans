@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.system;
 
 import com.dryadandnaiad.sethlans.services.network.PythonDownloadService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created Mario Estrella on 3/27/17.
@@ -53,6 +55,14 @@ public class PythonSetupServiceImpl implements PythonSetupService {
         this.binDir = binaryDir;
         String pythonFile = pythonDownloadService.downloadPython(binaryDir);
         SethlansUtils.pythonExtract(pythonFile, new File(binaryDir));
+        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
+            try {
+                ProcessBuilder pb = new ProcessBuilder("chmod", "-R", "+x", binaryDir + File.separator + "python" + File.separator + "bin");
+                pb.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return false;
     }
 }
