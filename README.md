@@ -5,4 +5,5 @@ Local distributed rendering for Blender.
  - Spring Boot 1.5.2
  - ThymeLeaf
  - Python 3.x
+ - Java 8
 
