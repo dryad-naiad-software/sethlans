@@ -37,7 +37,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created Mario Estrella on 3/24/17.
@@ -52,16 +54,7 @@ public class ProjectController {
     private BlenderZipService blenderZipService;
     private List<BlenderZipEntity> availableBlenderBinaries;
     private WebUploadService webUploadService;
-
-    @Autowired
-    public void setWebUploadService(WebUploadService webUploadService) {
-        this.webUploadService = webUploadService;
-    }
-
-    @Autowired
-    public void setBlenderZipService(BlenderZipService blenderZipService) {
-        this.blenderZipService = blenderZipService;
-    }
+    private long uploadTag;
 
     @RequestMapping("/project")
     public String getPage() {
@@ -71,15 +64,37 @@ public class ProjectController {
     @RequestMapping("/project/new")
     public String newProject(Model model) {
         model.addAttribute("projectForm", new ProjectForm());
+        uploadTag = new Random().nextLong();
+        LOG.debug("upload tag is " + uploadTag);
         return "project/project_form";
     }
 
     @RequestMapping(value = "/project/new", method = RequestMethod.POST)
     public String newProjectDetails(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm, BindingResult bindingResult, @RequestParam("projectFile") MultipartFile projectFile) {
-        webUploadService.store(projectFile);
-        availableBlenderBinaries = (List<BlenderZipEntity>) blenderZipService.listAll();
+        webUploadService.store(projectFile, uploadTag);
+        getAvailableBlenderBinaries();
         projectForm.setAvailableBlenderBinaries(availableBlenderBinaries);
         LOG.debug(projectForm.toString());
         return "project/project_form";
+    }
+
+    private void getAvailableBlenderBinaries() {
+        availableBlenderBinaries = new ArrayList<>();
+        List<BlenderZipEntity> databaseList = (List<BlenderZipEntity>) blenderZipService.listAll();
+        for (BlenderZipEntity blenderZipEntity : databaseList) {
+            if (blenderZipEntity.isDownloaded()) {
+                availableBlenderBinaries.add(blenderZipEntity);
+            }
+        }
+    }
+
+    @Autowired
+    public void setWebUploadService(WebUploadService webUploadService) {
+        this.webUploadService = webUploadService;
+    }
+
+    @Autowired
+    public void setBlenderZipService(BlenderZipService blenderZipService) {
+        this.blenderZipService = blenderZipService;
     }
 }
