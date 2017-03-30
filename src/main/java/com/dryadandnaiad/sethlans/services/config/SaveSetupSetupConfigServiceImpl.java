@@ -86,7 +86,22 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
         writeProperty(SethlansConfigKeys.HTTPS_PORT, setupForm.getHttpsPort());
         writeProperty(SethlansConfigKeys.LOGGING_FILE, setupForm.getLogDirectory() + "sethlans.log");
         writeProperty(SethlansConfigKeys.MODE, setupForm.getMode().toString());
+        writeProperty(SethlansConfigKeys.BINARY_DIR, setupForm.getBinDirectory());
+        writeProperty(SethlansConfigKeys.SCRIPTS_DIR, setupForm.getScriptsDirectory());
         writeProperty("spring.jpa.hibernate.ddl-auto", "update");
+
+        File binDir = new File(setupForm.getBinDirectory());
+        File scriptDir = new File(setupForm.getScriptsDirectory());
+        if (!binDir.mkdirs()) {
+            LOG.error("Unable to create directory " + binDir.toString());
+            System.exit(1);
+        }
+
+        if (!scriptDir.mkdirs()) {
+            LOG.error("Unable to create directory " + scriptDir.toString());
+            System.exit(1);
+        }
+
     }
 
     @Override
@@ -100,32 +115,29 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
         writeProperty(SethlansConfigKeys.PROJECT_DIR, setupForm.getProjectDirectory());
         writeProperty(SethlansConfigKeys.BLENDER_DIR, setupForm.getBlenderDirectory());
         writeProperty(SethlansConfigKeys.TEMP_DIR, setupForm.getTempDirectory());
-        writeProperty(SethlansConfigKeys.BINARY_DIR, setupForm.getBinDirectory());
+
 
         LOG.debug("Server Settings Saved");
         // Create directories
         File projectDir = new File(setupForm.getProjectDirectory());
         File blenderDir = new File(setupForm.getBlenderDirectory());
         File tempDir = new File(setupForm.getTempDirectory());
-        File serverDir = new File(setupForm.getBinDirectory());
+
         if (!projectDir.mkdirs()) {
-            LOG.error("Unable to create project directory " + projectDir.toString());
+            LOG.error("Unable to create directory " + projectDir.toString());
             // TODO Placeholders for now will need to replace System.exit with a friendly message to GUI and restart the setup wizard.
             System.exit(1);
         }
         if (!blenderDir.mkdirs()) {
-            LOG.error("Unable to create data directory " + blenderDir.toString());
+            LOG.error("Unable to create directory " + blenderDir.toString());
             System.exit(1);
         }
         if (!tempDir.mkdirs()) {
-            LOG.error("Unable to create data directory " + tempDir.toString());
+            LOG.error("Unable to create directory " + tempDir.toString());
             System.exit(1);
         }
-        if (!serverDir.mkdirs()) {
-            LOG.error("Unable to create data directory " + serverDir.toString());
-            System.exit(1);
-        }
-     }
+
+    }
 
     @Override
     public void saveNodeSettings(SetupForm setupForm) {
@@ -151,7 +163,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
         File cacheDir = new File(setupForm.getWorkingDirectory());
 
         if (!cacheDir.mkdirs()) {
-            LOG.error("Unable to create project directory " + cacheDir.toString());
+            LOG.error("Unable to create  directory " + cacheDir.toString());
             // TODO Placeholders for now will need to replace System.exit with a friendly message to GUI and restart the setup wizard.
             System.exit(1);
 

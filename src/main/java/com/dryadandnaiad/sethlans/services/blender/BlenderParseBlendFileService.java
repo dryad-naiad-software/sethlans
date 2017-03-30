@@ -19,6 +19,8 @@
 
 package com.dryadandnaiad.sethlans.services.blender;
 
+import com.dryadandnaiad.sethlans.domains.blender.BlendFile;
+
 /**
  * Created Mario Estrella on 3/29/17.
  * Dryad and Naiad Software LLC
@@ -26,4 +28,6 @@ package com.dryadandnaiad.sethlans.services.blender;
  * Project: sethlans
  */
 public interface BlenderParseBlendFileService {
+
+    BlendFile parseBlendFile(String blendFileLocation);
 }

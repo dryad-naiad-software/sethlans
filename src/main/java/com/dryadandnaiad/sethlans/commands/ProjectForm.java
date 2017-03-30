@@ -39,16 +39,10 @@ public class ProjectForm {
 
 
     private ProjectFormProgress progress = ProjectFormProgress.UPLOAD;
-    private BlenderZipEntity blenderZipEntity;
+    private String fileLocation;
+    private String uploadedFile;
+    private BlenderZipEntity selectedBlenderBinary;
     private List<BlenderZipEntity> availableBlenderBinaries;
-
-    public BlenderZipEntity getBlenderZipEntity() {
-        return blenderZipEntity;
-    }
-
-    public void setBlenderZipEntity(BlenderZipEntity blenderZipEntity) {
-        this.blenderZipEntity = blenderZipEntity;
-    }
 
     public ProjectFormProgress getProgress() {
         return progress;
@@ -74,12 +68,39 @@ public class ProjectForm {
         this.projectName = projectName;
     }
 
+
+    public BlenderZipEntity getSelectedBlenderBinary() {
+        return selectedBlenderBinary;
+    }
+
+    public void setSelectedBlenderBinary(BlenderZipEntity selectedBlenderBinary) {
+        this.selectedBlenderBinary = selectedBlenderBinary;
+    }
+
+    public String getFileLocation() {
+        return fileLocation;
+    }
+
+    public void setFileLocation(String fileLocation) {
+        this.fileLocation = fileLocation;
+    }
+
+    public String getUploadedFile() {
+        return uploadedFile;
+    }
+
+    public void setUploadedFile(String uploadedFile) {
+        this.uploadedFile = uploadedFile;
+    }
+
     @Override
     public String toString() {
         return "ProjectForm{" +
                 "projectName='" + projectName + '\'' +
                 ", progress=" + progress +
-                ", blenderZipEntity=" + blenderZipEntity +
+                ", fileLocation='" + fileLocation + '\'' +
+                ", uploadedFile='" + uploadedFile + '\'' +
+                ", selectedBlenderBinary=" + selectedBlenderBinary +
                 ", availableBlenderBinaries=" + availableBlenderBinaries +
                 '}';
     }

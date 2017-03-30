@@ -26,6 +26,7 @@ import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,7 +40,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.UUID;
 
 /**
  * Created Mario Estrella on 3/24/17.
@@ -54,7 +55,9 @@ public class ProjectController {
     private BlenderZipService blenderZipService;
     private List<BlenderZipEntity> availableBlenderBinaries;
     private WebUploadService webUploadService;
-    private long uploadTag;
+
+    @Value("${sethlans.tempDir}")
+    private String temp;
 
     @RequestMapping("/project")
     public String getPage() {
@@ -64,15 +67,16 @@ public class ProjectController {
     @RequestMapping("/project/new")
     public String newProject(Model model) {
         model.addAttribute("projectForm", new ProjectForm());
-        uploadTag = new Random().nextLong();
-        LOG.debug("upload tag is " + uploadTag);
         return "project/project_form";
     }
 
     @RequestMapping(value = "/project/new", method = RequestMethod.POST)
     public String newProjectDetails(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm, BindingResult bindingResult, @RequestParam("projectFile") MultipartFile projectFile) {
-        webUploadService.store(projectFile, uploadTag);
+        UUID uploadTag = UUID.randomUUID();
+        webUploadService.store(projectFile, uploadTag.toString());
         getAvailableBlenderBinaries();
+        projectForm.setUploadedFile(projectFile.getOriginalFilename());
+        projectForm.setFileLocation(temp + uploadTag + "-" + projectFile.getOriginalFilename());
         projectForm.setAvailableBlenderBinaries(availableBlenderBinaries);
         LOG.debug(projectForm.toString());
         return "project/project_form";

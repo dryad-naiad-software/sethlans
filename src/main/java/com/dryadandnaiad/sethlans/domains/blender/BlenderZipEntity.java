@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.domains.blender;
 import com.dryadandnaiad.sethlans.domains.AbstractEntityClass;
 
 import javax.persistence.Entity;
+import java.util.List;
 
 /**
  * Created Mario Estrella on 3/23/17.
@@ -35,6 +36,7 @@ public class BlenderZipEntity extends AbstractEntityClass {
     private String blenderBinaryOS;
     private String blenderFile;
     private String blenderFileMd5;
+    private List<String> downloadMirrors;
     private boolean downloaded = false;
 
     public String getBlenderVersion() {

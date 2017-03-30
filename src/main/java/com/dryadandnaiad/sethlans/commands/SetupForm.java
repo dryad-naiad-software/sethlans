@@ -89,6 +89,7 @@ public class SetupForm {
     private SetupProgress previous;
     private List<BlenderBinaryOS> blenderBinaryOS;
     private static final Logger LOG = LoggerFactory.getLogger(SetupForm.class);
+    private String scriptsDirectory;
 
 
     public SetupForm() {
@@ -105,6 +106,7 @@ public class SetupForm {
         this.tempDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "temp" + File.separator;
         this.workingDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "cache" + File.separator;
         this.logDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "logs" + File.separator;
+        this.scriptsDirectory = this.binDirectory + "scripts" + File.separator;
         this.totalCores = populateCores();
         populateAvailableMethods();
         populateBlenderOS();
@@ -344,5 +346,13 @@ public class SetupForm {
                 ", previous=" + previous +
                 ", blenderBinaryOS=" + blenderBinaryOS +
                 '}';
+    }
+
+    public String getScriptsDirectory() {
+        return scriptsDirectory;
+    }
+
+    public void setScriptsDirectory(String scriptsDirectory) {
+        this.scriptsDirectory = scriptsDirectory;
     }
 }

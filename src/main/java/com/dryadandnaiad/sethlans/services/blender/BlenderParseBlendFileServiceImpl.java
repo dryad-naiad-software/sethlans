@@ -19,6 +19,8 @@
 
 package com.dryadandnaiad.sethlans.services.blender;
 
+import com.dryadandnaiad.sethlans.domains.blender.BlendFile;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,5 +30,13 @@ import org.springframework.stereotype.Service;
  * Project: sethlans
  */
 @Service
-public class BlenderParseBlendFileServiceImpl {
+public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileService {
+    @Value("${sethlans.python.binary}")
+    private String pythonBinary;
+
+    @Override
+    public BlendFile parseBlendFile(String blendFileLocation) {
+        ProcessBuilder pb = new ProcessBuilder(pythonBinary, "/Users/mestrella/.sethlans/bin/python/bin/test1.py");
+        return null;
+    }
 }

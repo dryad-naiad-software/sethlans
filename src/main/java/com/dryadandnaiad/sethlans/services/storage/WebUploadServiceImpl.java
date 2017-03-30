@@ -53,7 +53,7 @@ public class WebUploadServiceImpl implements WebUploadService {
     }
 
     @Override
-    public void store(MultipartFile file, long uploadTag) {
+    public void store(MultipartFile file, String uploadTag) {
         try {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file " + file.getOriginalFilename());

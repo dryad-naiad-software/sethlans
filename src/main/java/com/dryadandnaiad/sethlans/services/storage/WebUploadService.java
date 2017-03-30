@@ -35,7 +35,7 @@ public interface WebUploadService {
 
     void init();
 
-    void store(MultipartFile file, long uploadTag);
+    void store(MultipartFile file, String uploadTag);
 
     Stream<Path> loadAll();
 

@@ -19,6 +19,8 @@
 
 package com.dryadandnaiad.sethlans.domains.blender;
 
+import java.util.List;
+
 /**
  * Created Mario Estrella on 3/21/17.
  * Dryad and Naiad Software LLC
@@ -27,18 +29,18 @@ package com.dryadandnaiad.sethlans.domains.blender;
  */
 public class BlenderZip {
     private String blenderVersion;
-    private String windows32;
-    private String windows64;
-    private String macOS;
-    private String linux32;
-    private String linux64;
+    private List<String> windows32;
+    private List<String> windows64;
+    private List<String> macOS;
+    private List<String> linux32;
+    private List<String> linux64;
     private String md5MacOS;
     private String md5Windows64;
     private String md5Windows32;
     private String md5Linux32;
     private String md5Linux64;
 
-    public BlenderZip(String blenderVersion, String windows32, String windows64, String macOS, String linux32, String linux64, String md5MacOS, String md5Windows64, String md5Windows32, String md5Linux32, String md5Linux64) {
+    public BlenderZip(String blenderVersion, List<String> windows32, List<String> windows64, List<String> macOS, List<String> linux32, List<String> linux64, String md5MacOS, String md5Windows64, String md5Windows32, String md5Linux32, String md5Linux64) {
         this.blenderVersion = blenderVersion;
         this.windows32 = windows32;
         this.windows64 = windows64;
@@ -54,26 +56,6 @@ public class BlenderZip {
 
     public String getBlenderVersion() {
         return blenderVersion;
-    }
-
-    public String getWindows32() {
-        return windows32;
-    }
-
-    public String getWindows64() {
-        return windows64;
-    }
-
-    public String getMacOS() {
-        return macOS;
-    }
-
-    public String getLinux32() {
-        return linux32;
-    }
-
-    public String getLinux64() {
-        return linux64;
     }
 
     public String getMd5MacOS() {
@@ -96,15 +78,35 @@ public class BlenderZip {
         return md5Linux64;
     }
 
+    public List<String> getWindows32() {
+        return windows32;
+    }
+
+    public List<String> getWindows64() {
+        return windows64;
+    }
+
+    public List<String> getMacOS() {
+        return macOS;
+    }
+
+    public List<String> getLinux32() {
+        return linux32;
+    }
+
+    public List<String> getLinux64() {
+        return linux64;
+    }
+
     @Override
     public String toString() {
         return "BlenderZip{" +
                 "blenderVersion='" + blenderVersion + '\'' +
-                ", windows32='" + windows32 + '\'' +
-                ", windows64='" + windows64 + '\'' +
-                ", macOS='" + macOS + '\'' +
-                ", linux32='" + linux32 + '\'' +
-                ", linux64='" + linux64 + '\'' +
+                ", windows32=" + windows32 +
+                ", windows64=" + windows64 +
+                ", macOS=" + macOS +
+                ", linux32=" + linux32 +
+                ", linux64=" + linux64 +
                 ", md5MacOS='" + md5MacOS + '\'' +
                 ", md5Windows64='" + md5Windows64 + '\'' +
                 ", md5Windows32='" + md5Windows32 + '\'' +
