@@ -73,7 +73,12 @@ public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileSe
             String cameraName = values.get(8);
             int cyclesSamples;
             if (engine == BlenderEngine.CYCLES) {
-                cyclesSamples = Integer.parseInt(values.get(9));
+                if (values.get(9).equals("None")) {
+                    cyclesSamples = 0;
+                } else {
+                    cyclesSamples = Integer.parseInt(values.get(9));
+                }
+
             } else {
                 cyclesSamples = 0;
             }

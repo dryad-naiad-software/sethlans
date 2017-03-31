@@ -45,6 +45,7 @@ public class ProjectForm {
     private BlenderZipEntity selectedBlenderBinary;
     private List<BlenderZipEntity> availableBlenderBinaries;
     private BlendFile blendFile;
+    private int samples;
 
     public ProjectFormProgress getProgress() {
         return progress;
@@ -103,6 +104,14 @@ public class ProjectForm {
         this.blendFile = blendFile;
     }
 
+    public int getSamples() {
+        return samples;
+    }
+
+    public void setSamples(int samples) {
+        this.samples = samples;
+    }
+
     @Override
     public String toString() {
         return "ProjectForm{" +
@@ -113,6 +122,7 @@ public class ProjectForm {
                 ", selectedBlenderBinary=" + selectedBlenderBinary +
                 ", availableBlenderBinaries=" + availableBlenderBinaries +
                 ", blendFile=" + blendFile +
+                ", samples=" + samples +
                 '}';
     }
 }

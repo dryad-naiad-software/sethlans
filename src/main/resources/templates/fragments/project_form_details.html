@@ -18,7 +18,8 @@
   ~
   -->
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:ab="http://www.w3.org/1999/xhtml">
 <!-- Namespaces -->
 
 <head>
@@ -221,8 +222,18 @@
             </div>
 
             <div class="form-group">
+                <label for="blenderEngine">Rendering Engine:</label>
+                <select class="form-control" id="blenderEngine" name="blenderEngine"
+                        th:value="${projectForm.getBlendFile().getEngine()}">
+                    <option th:each="engine : ${T(com.dryadandnaiad.sethlans.enums.BlenderEngine).values()}"
+                            th:value="${engine}" th:text="${engine}">Engine
+                    </option>
+                    <option th:remove="all">Engine1</option>
+                    <option th:remove="all">Engine2</option>
+                </select>
                 <label class="control-label" for="samples">Samples</label>
-                <input type="number" id="samples" class="form-control">
+                <input type="number" id="samples" class="form-control"
+                       th:value="${projectForm.getBlendFile().getCyclesSamples()}">
             </div>
 
 
