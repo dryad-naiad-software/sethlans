@@ -28,4 +28,6 @@ package com.dryadandnaiad.sethlans.services.system;
 public interface PythonSetupService {
     boolean installPython(String binaryDir);
 
+    boolean setupScripts(String scriptsDir);
+
 }

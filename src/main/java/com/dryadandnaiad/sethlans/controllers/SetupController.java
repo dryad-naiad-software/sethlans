@@ -102,6 +102,7 @@ public class SetupController {
             saveSetupConfigService.wizardCompleted(setupForm);
             LOG.debug("Downloading and Installing Python");
             pythonSetupService.installPython(setupForm.getBinDirectory());
+            pythonSetupService.setupScripts(setupForm.getScriptsDirectory());
             LOG.info("Setup complete complete. Restarting Sethlans");
             sethlansManagerService.restart();
         }

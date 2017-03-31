@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.system;
 
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.network.PythonDownloadService;
+import com.dryadandnaiad.sethlans.utils.Resources;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
@@ -28,8 +29,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.NoSuchFileException;
 
 /**
  * Created Mario Estrella on 3/27/17.
@@ -68,6 +69,36 @@ public class PythonSetupServiceImpl implements PythonSetupService {
                 SethlansUtils.writeProperty(SethlansConfigKeys.PYTHON_BIN, binaryDir + "python" + File.separator + "bin" + File.separator + "python.exe");
             }
             return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean setupScripts(String scriptsDir) {
+        File blendInfo = new File(scriptsDir + File.separator + "blend_info.py");
+        File blendFile = new File(scriptsDir + File.separator + "blendfile.py");
+        try {
+            BufferedWriter writer;
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new Resources("scripts/blendfile.py").getResource(), "UTF-8"))) {
+                writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(blendFile)));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    writer.write(line + "\n");
+                }
+            }
+            writer.close();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new Resources("scripts/blend_info.py").getResource(), "UTF-8"))) {
+                writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(blendInfo)));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    writer.write(line + "\n");
+                }
+            }
+            writer.close();
+        } catch (NoSuchFileException | UnsupportedEncodingException | FileNotFoundException ex) {
+            LOG.error(ex.getMessage());
+        } catch (IOException ex) {
+            LOG.error(ex.getMessage());
         }
         return false;
     }
