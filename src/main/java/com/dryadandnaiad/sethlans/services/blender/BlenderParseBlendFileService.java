@@ -29,5 +29,5 @@ import com.dryadandnaiad.sethlans.domains.blender.BlendFile;
  */
 public interface BlenderParseBlendFileService {
 
-    BlendFile parseBlendFile(String blendFileLocation);
+    BlendFile parseBlendFile(String blendFile);
 }

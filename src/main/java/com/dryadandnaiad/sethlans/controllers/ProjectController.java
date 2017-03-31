@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.commands.ProjectForm;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderZipEntity;
+import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
 import com.dryadandnaiad.sethlans.services.database.BlenderZipService;
 import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
 import org.slf4j.Logger;
@@ -55,6 +56,7 @@ public class ProjectController {
     private BlenderZipService blenderZipService;
     private List<BlenderZipEntity> availableBlenderBinaries;
     private WebUploadService webUploadService;
+    private BlenderParseBlendFileService blenderParseBlendFileService;
 
     @Value("${sethlans.tempDir}")
     private String temp;
@@ -77,6 +79,7 @@ public class ProjectController {
         getAvailableBlenderBinaries();
         projectForm.setUploadedFile(projectFile.getOriginalFilename());
         projectForm.setFileLocation(temp + uploadTag + "-" + projectFile.getOriginalFilename());
+        blenderParseBlendFileService.parseBlendFile(projectForm.getFileLocation());
         projectForm.setAvailableBlenderBinaries(availableBlenderBinaries);
         LOG.debug(projectForm.toString());
         return "project/project_form";
@@ -100,5 +103,10 @@ public class ProjectController {
     @Autowired
     public void setBlenderZipService(BlenderZipService blenderZipService) {
         this.blenderZipService = blenderZipService;
+    }
+
+    @Autowired
+    public void setBlenderParseBlendFileService(BlenderParseBlendFileService blenderParseBlendFileService) {
+        this.blenderParseBlendFileService = blenderParseBlendFileService;
     }
 }

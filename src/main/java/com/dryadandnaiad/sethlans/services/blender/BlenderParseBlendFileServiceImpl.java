@@ -20,8 +20,15 @@
 package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlendFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * Created Mario Estrella on 3/29/17.
@@ -31,12 +38,28 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileService {
+    private static final Logger LOG = LoggerFactory.getLogger(BlenderParseBlendFileServiceImpl.class);
     @Value("${sethlans.python.binary}")
     private String pythonBinary;
 
+    @Value("${sethlans.scriptsDir}")
+    private String scriptsDir;
+
     @Override
-    public BlendFile parseBlendFile(String blendFileLocation) {
-        ProcessBuilder pb = new ProcessBuilder(pythonBinary, "/Users/mestrella/.sethlans/bin/python/bin/test1.py");
+    public BlendFile parseBlendFile(String blendFile) {
+        try {
+            ProcessBuilder pb = new ProcessBuilder(pythonBinary, scriptsDir + File.separator + "blend_info.py", blendFile);
+            Process p = null;
+
+            p = pb.start();
+
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String output = in.readLine();
+            LOG.debug(blendFile + " values: " + output);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 }
