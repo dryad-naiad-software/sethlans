@@ -60,6 +60,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
     @Value("${sethlans.blenderDir}")
     private String downloadLocation;
     private int downloadMirror = 0;
+    private boolean retry = true;
 
     @Autowired
     public void setBlenderZipService(BlenderZipService blenderZipService) {
@@ -70,9 +71,12 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
     @Async
     public Future<Boolean> downloadRequestedBlenderFilesAsync() {
         if (doDownload()) {
+            LOG.debug("All downloads complete");
             return new AsyncResult<>(true);
         } else {
+            LOG.debug("Blender Download Service failed");
             return new AsyncResult<>(false);
+
         }
     }
 
@@ -89,68 +93,67 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
             URL url;
             HttpURLConnection connection = null;
             String filename = null;
-            try {
+            while (retry) {
+                try {
+                    url = new URL(blenderZipEntity.getDownloadMirrors().get(downloadMirror));
+                    LOG.debug("Attempting to establish a connection to " + url.toString());
+                    connection = (HttpURLConnection) url.openConnection();
+                    InputStream stream = connection.getInputStream();
+                    if (!blenderZipEntity.getBlenderBinaryOS().contains("Linux")) {
+                        filename = blenderVersion + "-" + blenderZipEntity.getBlenderBinaryOS().toLowerCase() + ".zip";
+                        LOG.debug(filename);
+                    } else {
+                        filename = blenderVersion + "-" + blenderZipEntity.getBlenderBinaryOS().toLowerCase() + ".tar.bz2";
+                    }
 
-                url = new URL(blenderZipEntity.getDownloadMirrors().get(downloadMirror));
-                LOG.debug("Attempting to establish a connection to " + url.toString());
-                connection = (HttpURLConnection) url.openConnection();
-                InputStream stream = connection.getInputStream();
-                if (!blenderZipEntity.getBlenderBinaryOS().contains("Linux")) {
-                    filename = blenderVersion + "-" + blenderZipEntity.getBlenderBinaryOS().toLowerCase() + ".zip";
-                    LOG.debug(filename);
-                } else {
-                    filename = blenderVersion + "-" + blenderZipEntity.getBlenderBinaryOS().toLowerCase() + ".tar.bz2";
-                }
+                    File toDownload = new File(saveLocation + File.separator + filename);
+                    LOG.debug("Downloading " + filename + "...");
+                    if (toDownload.exists()) {
+                        LOG.debug("Previous download did not complete successfully, deleting and re-downloading.");
+                        toDownload.delete();
+                        LOG.debug("Re-Downloading " + filename + "...");
+                        Files.copy(stream, Paths.get(toDownload.toString()));
+                    } else {
+                        Files.copy(stream, Paths.get(toDownload.toString()));
+                    }
 
-                File toDownload = new File(saveLocation + File.separator + filename);
-                LOG.debug("Downloading " + filename + "...");
-                if (toDownload.exists()) {
-                    LOG.debug("Previous download did not complete successfully, deleting and re-downloading.");
-                    toDownload.delete();
-                    LOG.debug("Re-Downloading " + filename + "...");
-                    Files.copy(stream, Paths.get(toDownload.toString()));
-                } else {
-                    Files.copy(stream, Paths.get(toDownload.toString()));
-                }
-
-                if (SethlansUtils.fileCheckMD5(toDownload, blenderZipEntity.getBlenderFileMd5())) {
-                    blenderZipEntity.setBlenderFile(toDownload.toString());
-                    LOG.debug(filename + " downloaded successfully.");
-                    blenderZipEntity.setDownloaded(true);
-                    blenderZipService.saveOrUpdate(blenderZipEntity);
-                } else {
-                    LOG.error("MD5 sums didn't match, removing file " + filename);
-                    toDownload.delete();
-                    throw new IOException();
-                }
-
-            } catch (MalformedURLException e) {
-                LOG.error("Invalid URL: " + e.getMessage());
-                return false;
-            } catch (IOException e) {
-                LOG.error("IO Exception: " + e.getMessage());
-                if (e.getMessage().contains("Connection timed out")) {
-                    LOG.error("Connection time out " + blenderZipEntity.getDownloadMirrors().get(downloadMirror));
-                    downloadMirror++;
+                    if (SethlansUtils.fileCheckMD5(toDownload, blenderZipEntity.getBlenderFileMd5())) {
+                        blenderZipEntity.setBlenderFile(toDownload.toString());
+                        LOG.debug(filename + " downloaded successfully.");
+                        blenderZipEntity.setDownloaded(true);
+                        blenderZipService.saveOrUpdate(blenderZipEntity);
+                    } else {
+                        LOG.error("MD5 sums didn't match, removing file " + filename);
+                        toDownload.delete();
+                        throw new IOException();
+                    }
+                    retry = false;
+                } catch (MalformedURLException e) {
+                    LOG.error("Invalid URL: " + e.getMessage());
+                    retry = false;
+                    return false;
+                } catch (IOException e) {
+                    LOG.error("IO Exception: " + e.getMessage());
+                    if (e.getMessage().contains("Connection timed out")) {
+                        LOG.error("Connection time out " + blenderZipEntity.getDownloadMirrors().get(downloadMirror));
+                        downloadMirror++;
+                        retry = true;
+                        continue;
+                    } else {
+                        LOG.error(Throwables.getStackTraceAsString(e));
+                        retry = false;
+                        return false;
+                    }
+                } finally {
                     if (connection != null) {
                         connection.disconnect();
                     }
-                    doDownload();
-
-                } else {
-                    LOG.error(Throwables.getStackTraceAsString(e));
-                    return false;
                 }
 
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
             }
-
-
         }
-        LOG.debug("All downloads complete");
+
+
         return true;
     }
 

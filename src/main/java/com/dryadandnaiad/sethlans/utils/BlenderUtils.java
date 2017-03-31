@@ -48,8 +48,12 @@ public class BlenderUtils {
         GetRawDataService getJSONData = new GetRawDataServiceImpl();
         String data = getJSONData.getResult("https://gist.githubusercontent.com/marioestrella/def9d852b3298008ae16040bbbabc524/raw/");
         if (data == null || data.isEmpty()) {
-            LOG.debug("Unable to retrieve blenderdownload.json from internet, using local version instead.");
-            data = getJSONData.getLocalResult("blenderdownload.json");
+            LOG.debug("Trying mirror");
+            data = getJSONData.getResult("https://gitlab.com/snippets/1656456/raw");
+            if (data == null || data.isEmpty()) {
+                LOG.debug("Unable to retrieve blenderdownload.json from internet, using local version instead.");
+                data = getJSONData.getLocalResult("blenderdownload.json");
+            }
         }
         LOG.debug("Retrieved JSON: \n" + data.substring(0, 100) + "...");
         if (data != null || !data.isEmpty()) {
