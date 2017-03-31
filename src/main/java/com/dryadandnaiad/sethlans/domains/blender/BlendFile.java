@@ -19,6 +19,8 @@
 
 package com.dryadandnaiad.sethlans.domains.blender;
 
+import com.dryadandnaiad.sethlans.enums.BlenderEngine;
+
 /**
  * Created Mario Estrella on 3/30/17.
  * Dryad and Naiad Software LLC
@@ -27,7 +29,7 @@ package com.dryadandnaiad.sethlans.domains.blender;
  */
 public class BlendFile {
     private String sceneName;
-    private String engine;
+    private BlenderEngine engine;
     private int frameStart;
     private int frameEnd;
     private int frameSkip;
@@ -45,11 +47,11 @@ public class BlendFile {
         this.sceneName = sceneName;
     }
 
-    public String getEngine() {
+    public BlenderEngine getEngine() {
         return engine;
     }
 
-    public void setEngine(String engine) {
+    public void setEngine(BlenderEngine engine) {
         this.engine = engine;
     }
 
@@ -121,7 +123,7 @@ public class BlendFile {
     public String toString() {
         return "BlendFile{" +
                 "sceneName='" + sceneName + '\'' +
-                ", engine='" + engine + '\'' +
+                ", engine=" + engine +
                 ", frameStart=" + frameStart +
                 ", frameEnd=" + frameEnd +
                 ", frameSkip=" + frameSkip +

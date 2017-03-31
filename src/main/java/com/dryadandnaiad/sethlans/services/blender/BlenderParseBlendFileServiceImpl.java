@@ -29,6 +29,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created Mario Estrella on 3/29/17.
@@ -48,6 +50,7 @@ public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileSe
     @Override
     public BlendFile parseBlendFile(String blendFile) {
         try {
+            LOG.debug("Parsing blend file: " + blendFile);
             ProcessBuilder pb = new ProcessBuilder(pythonBinary, scriptsDir + File.separator + "blend_info.py", blendFile);
             Process p = null;
 
@@ -56,7 +59,8 @@ public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileSe
 
             BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String output = in.readLine();
-            LOG.debug(blendFile + " values: " + output);
+            List<String> values = Arrays.asList(output.split("\\s*,\\s*"));
+            LOG.debug(values.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
