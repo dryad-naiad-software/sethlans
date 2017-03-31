@@ -39,6 +39,19 @@ public class BlendFile {
     private String cameraName;
     private int cyclesSamples;
 
+    public BlendFile(String sceneName, BlenderEngine engine, int frameStart, int frameEnd, int frameSkip, int resPercent, int resolutionX, int resolutionY, String cameraName, int cyclesSamples) {
+        this.sceneName = sceneName;
+        this.engine = engine;
+        this.frameStart = frameStart;
+        this.frameEnd = frameEnd;
+        this.frameSkip = frameSkip;
+        this.resPercent = resPercent;
+        this.resolutionX = resolutionX;
+        this.resolutionY = resolutionY;
+        this.cameraName = cameraName;
+        this.cyclesSamples = cyclesSamples;
+    }
+
     public String getSceneName() {
         return sceneName;
     }

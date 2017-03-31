@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlendFile;
+import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,6 +62,20 @@ public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileSe
             String output = in.readLine();
             List<String> values = Arrays.asList(output.split("\\s*,\\s*"));
             LOG.debug(values.toString());
+            String sceneName = values.get(0);
+            BlenderEngine engine = BlenderEngine.valueOf(values.get(1));
+            int frameStart = Integer.parseInt(values.get(2));
+            int frameEnd = Integer.parseInt(values.get(3));
+            int frameSkip = Integer.parseInt(values.get(4));
+            int resPercent = Integer.parseInt(values.get(5));
+            int resolutionX = Integer.parseInt(values.get(6));
+            int resolutionY = Integer.parseInt(values.get(7));
+            String cameraName = values.get(8);
+            int cyclesSamples = Integer.parseInt(values.get(9));
+
+            BlendFile parsedBlend = new BlendFile(sceneName, engine, frameStart, frameEnd, frameSkip, resPercent, resolutionX, resolutionY, cameraName, cyclesSamples);
+            LOG.debug(parsedBlend.toString());
+            return parsedBlend;
         } catch (IOException e) {
             e.printStackTrace();
         }
