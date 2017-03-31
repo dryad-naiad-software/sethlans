@@ -29,6 +29,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,23 +55,52 @@ public class BlenderUtils {
         if (data != null || !data.isEmpty()) {
             blenderZipList = new LinkedList<>();
 
+
             try {
+
                 JSONObject jsonData = new JSONObject(data);
                 JSONArray downloadArray = jsonData.getJSONArray("blenderdownload");
+
                 for (int i = 0; i < downloadArray.length(); i++) {
+                    List<String> macOSMirrors = new ArrayList<>();
+                    List<String> windows64Mirrors = new ArrayList<>();
+                    List<String> windows32Mirrors = new ArrayList<>();
+                    List<String> linux64Mirrors = new ArrayList<>();
+                    List<String> linux32Mirrors = new ArrayList<>();
                     JSONObject blenderBinary = downloadArray.getJSONObject(i);
                     String version = blenderBinary.getString("version");
-                    String macOS = blenderBinary.getString("macos");
-                    String windows64 = blenderBinary.getString("windows64");
-                    String windows32 = blenderBinary.getString("windows32");
-                    String linux64 = blenderBinary.getString("linux64");
-                    String linux32 = blenderBinary.getString("linux32");
+
+                    JSONArray macOSArray = blenderBinary.getJSONArray("macos");
+                    for (int j = 0; j < macOSArray.length(); j++) {
+                        macOSMirrors.add(macOSArray.getString(j));
+                    }
+
+                    JSONArray windows64Array = blenderBinary.getJSONArray("windows64");
+                    for (int j = 0; j < windows64Array.length(); j++) {
+                        windows64Mirrors.add(windows64Array.getString(j));
+                    }
+
+                    JSONArray windows32Array = blenderBinary.getJSONArray("windows32");
+                    for (int j = 0; j < windows32Array.length(); j++) {
+                        windows32Mirrors.add(windows32Array.getString(j));
+                    }
+
+                    JSONArray linux64Array = blenderBinary.getJSONArray("linux64");
+                    for (int j = 0; j < linux64Array.length(); j++) {
+                        linux64Mirrors.add(linux64Array.getString(j));
+                    }
+
+                    JSONArray linux32Array = blenderBinary.getJSONArray("linux32");
+                    for (int j = 0; j < linux64Array.length(); j++) {
+                        linux32Mirrors.add(linux32Array.getString(j));
+                    }
+
                     String md5MacOs = blenderBinary.getString("macos_md5");
                     String md5Windows64 = blenderBinary.getString("windows64_md5");
                     String md5Windows32 = blenderBinary.getString("windows32_md5");
                     String md5Linux64 = blenderBinary.getString("linux64_md5");
                     String md5Linux32 = blenderBinary.getString("linux32_md5");
-                    BlenderZip blenderZip = new BlenderZip(version, windows32, windows64, macOS, linux32, linux64, md5MacOs, md5Windows64, md5Windows32, md5Linux32, md5Linux64);
+                    BlenderZip blenderZip = new BlenderZip(version, windows32Mirrors, windows64Mirrors, macOSMirrors, linux32Mirrors, linux64Mirrors, md5MacOs, md5Windows64, md5Windows32, md5Linux32, md5Linux64);
                     blenderZipList.add(blenderZip);
                 }
             } catch (JSONException jsonEx) {

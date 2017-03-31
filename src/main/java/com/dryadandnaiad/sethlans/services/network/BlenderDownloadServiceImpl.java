@@ -59,6 +59,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
     private List<BlenderZip> blenderBinaries;
     @Value("${sethlans.blenderDir}")
     private String downloadLocation;
+    private int downloadMirror = 0;
 
     @Autowired
     public void setBlenderZipService(BlenderZipService blenderZipService) {
@@ -90,11 +91,13 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
             String filename = null;
             try {
 
-                url = new URL(blenderZipEntity.getBlenderFile());
+                url = new URL(blenderZipEntity.getDownloadMirrors().get(downloadMirror));
+                LOG.debug("Attempting to establish a connection to " + url.toString());
                 connection = (HttpURLConnection) url.openConnection();
                 InputStream stream = connection.getInputStream();
                 if (!blenderZipEntity.getBlenderBinaryOS().contains("Linux")) {
                     filename = blenderVersion + "-" + blenderZipEntity.getBlenderBinaryOS().toLowerCase() + ".zip";
+                    LOG.debug(filename);
                 } else {
                     filename = blenderVersion + "-" + blenderZipEntity.getBlenderBinaryOS().toLowerCase() + ".tar.bz2";
                 }
@@ -126,8 +129,19 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                 return false;
             } catch (IOException e) {
                 LOG.error("IO Exception: " + e.getMessage());
-                LOG.error(Throwables.getStackTraceAsString(e));
-                return false;
+                if (e.getMessage().contains("Connection timed out")) {
+                    LOG.error("Connection time out " + blenderZipEntity.getDownloadMirrors().get(downloadMirror));
+                    downloadMirror++;
+                    if (connection != null) {
+                        connection.disconnect();
+                    }
+                    doDownload();
+
+                } else {
+                    LOG.error(Throwables.getStackTraceAsString(e));
+                    return false;
+                }
+
             } finally {
                 if (connection != null) {
                     connection.disconnect();
@@ -142,29 +156,40 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
 
     private List<BlenderZipEntity> prepareDownload() {
         List<BlenderZipEntity> list = new ArrayList<>();
+        String filename;
         for (BlenderZipEntity blenderZipEntity : blenderFileEntities) {
             if (!blenderZipEntity.isDownloaded()) {
                 for (BlenderZip blenderBinary : blenderBinaries) {
                     if (blenderBinary.getBlenderVersion().equals(blenderZipEntity.getBlenderVersion())) {
                         switch (blenderZipEntity.getBlenderBinaryOS().toLowerCase()) {
                             case "windows32":
-                                blenderZipEntity.setBlenderFile(blenderBinary.getWindows32());
+                                filename = blenderBinary.getWindows32().get(0);
+                                blenderZipEntity.setDownloadMirrors(blenderBinary.getWindows32());
+                                blenderZipEntity.setBlenderFile(filename.substring(filename.lastIndexOf("/") + 1));
                                 blenderZipEntity.setBlenderFileMd5(blenderBinary.getMd5Windows32());
                                 break;
                             case "windows64":
-                                blenderZipEntity.setBlenderFile(blenderBinary.getWindows64());
+                                filename = blenderBinary.getWindows64().get(0);
+                                blenderZipEntity.setDownloadMirrors(blenderBinary.getWindows64());
+                                blenderZipEntity.setBlenderFile(filename.substring(filename.lastIndexOf("/") + 1));
                                 blenderZipEntity.setBlenderFileMd5(blenderBinary.getMd5Windows64());
                                 break;
                             case "macos":
-                                blenderZipEntity.setBlenderFile(blenderBinary.getMacOS());
+                                filename = blenderBinary.getMacOS().get(0);
+                                blenderZipEntity.setDownloadMirrors(blenderBinary.getMacOS());
+                                blenderZipEntity.setBlenderFile(filename.substring(filename.lastIndexOf("/") + 1));
                                 blenderZipEntity.setBlenderFileMd5(blenderBinary.getMd5MacOS());
                                 break;
                             case "linux64":
-                                blenderZipEntity.setBlenderFile(blenderBinary.getLinux64());
+                                filename = blenderBinary.getLinux64().get(0);
+                                blenderZipEntity.setDownloadMirrors(blenderBinary.getLinux64());
+                                blenderZipEntity.setBlenderFile(filename.substring(filename.lastIndexOf("/") + 1));
                                 blenderZipEntity.setBlenderFileMd5(blenderBinary.getMd5Linux64());
                                 break;
                             case "linux32":
-                                blenderZipEntity.setBlenderFile(blenderBinary.getLinux32());
+                                filename = blenderBinary.getLinux32().get(0);
+                                blenderZipEntity.setDownloadMirrors(blenderBinary.getLinux32());
+                                blenderZipEntity.setBlenderFile(filename.substring(filename.lastIndexOf("/") + 1));
                                 blenderZipEntity.setBlenderFileMd5(blenderBinary.getMd5Linux32());
                                 break;
                             default:

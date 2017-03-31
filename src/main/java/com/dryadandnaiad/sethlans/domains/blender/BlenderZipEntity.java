@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.domains.blender;
 import com.dryadandnaiad.sethlans.domains.AbstractEntityClass;
 
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import java.util.List;
 
 /**
@@ -36,6 +37,7 @@ public class BlenderZipEntity extends AbstractEntityClass {
     private String blenderBinaryOS;
     private String blenderFile;
     private String blenderFileMd5;
+    @Transient
     private List<String> downloadMirrors;
     private boolean downloaded = false;
 
@@ -63,20 +65,28 @@ public class BlenderZipEntity extends AbstractEntityClass {
         this.blenderFile = blenderFile;
     }
 
-    public boolean isDownloaded() {
-        return downloaded;
-    }
-
-    public void setDownloaded(boolean downloaded) {
-        this.downloaded = downloaded;
-    }
-
     public String getBlenderFileMd5() {
         return blenderFileMd5;
     }
 
     public void setBlenderFileMd5(String blenderFileMd5) {
         this.blenderFileMd5 = blenderFileMd5;
+    }
+
+    public List<String> getDownloadMirrors() {
+        return downloadMirrors;
+    }
+
+    public void setDownloadMirrors(List<String> downloadMirrors) {
+        this.downloadMirrors = downloadMirrors;
+    }
+
+    public boolean isDownloaded() {
+        return downloaded;
+    }
+
+    public void setDownloaded(boolean downloaded) {
+        this.downloaded = downloaded;
     }
 
     @Override
@@ -86,6 +96,7 @@ public class BlenderZipEntity extends AbstractEntityClass {
                 ", blenderBinaryOS='" + blenderBinaryOS + '\'' +
                 ", blenderFile='" + blenderFile + '\'' +
                 ", blenderFileMd5='" + blenderFileMd5 + '\'' +
+                ", downloadMirrors=" + downloadMirrors +
                 ", downloaded=" + downloaded +
                 '}';
     }
