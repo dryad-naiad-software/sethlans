@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.commands;
 
+import com.dryadandnaiad.sethlans.domains.blender.BlendFile;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderZipEntity;
 import com.dryadandnaiad.sethlans.enums.ProjectFormProgress;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -43,6 +44,7 @@ public class ProjectForm {
     private String uploadedFile;
     private BlenderZipEntity selectedBlenderBinary;
     private List<BlenderZipEntity> availableBlenderBinaries;
+    private BlendFile blendFile;
 
     public ProjectFormProgress getProgress() {
         return progress;
@@ -93,6 +95,14 @@ public class ProjectForm {
         this.uploadedFile = uploadedFile;
     }
 
+    public BlendFile getBlendFile() {
+        return blendFile;
+    }
+
+    public void setBlendFile(BlendFile blendFile) {
+        this.blendFile = blendFile;
+    }
+
     @Override
     public String toString() {
         return "ProjectForm{" +
@@ -102,6 +112,7 @@ public class ProjectForm {
                 ", uploadedFile='" + uploadedFile + '\'' +
                 ", selectedBlenderBinary=" + selectedBlenderBinary +
                 ", availableBlenderBinaries=" + availableBlenderBinaries +
+                ", blendFile=" + blendFile +
                 '}';
     }
 }

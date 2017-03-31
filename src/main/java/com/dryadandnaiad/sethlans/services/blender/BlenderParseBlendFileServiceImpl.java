@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlendFile;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
+import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,15 +54,14 @@ public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileSe
         try {
             LOG.debug("Parsing blend file: " + blendFile);
             ProcessBuilder pb = new ProcessBuilder(pythonBinary, scriptsDir + File.separator + "blend_info.py", blendFile);
-            Process p = null;
-
-            p = pb.start();
+            Process p = pb.start();
 
 
             BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String output = in.readLine();
             List<String> values = Arrays.asList(output.split("\\s*,\\s*"));
             LOG.debug(values.toString());
+
             String sceneName = values.get(0);
             BlenderEngine engine = BlenderEngine.valueOf(values.get(1));
             int frameStart = Integer.parseInt(values.get(2));
@@ -71,13 +71,17 @@ public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileSe
             int resolutionX = Integer.parseInt(values.get(6));
             int resolutionY = Integer.parseInt(values.get(7));
             String cameraName = values.get(8);
-            int cyclesSamples = Integer.parseInt(values.get(9));
-
-            BlendFile parsedBlend = new BlendFile(sceneName, engine, frameStart, frameEnd, frameSkip, resPercent, resolutionX, resolutionY, cameraName, cyclesSamples);
-            LOG.debug(parsedBlend.toString());
+            int cyclesSamples;
+            if (engine == BlenderEngine.CYCLES) {
+                cyclesSamples = Integer.parseInt(values.get(9));
+            } else {
+                cyclesSamples = 0;
+            }
+            BlendFile parsedBlend = new BlendFile(sceneName.substring(2), engine, frameStart, frameEnd, frameSkip, resPercent, resolutionX, resolutionY, cameraName.substring(2), cyclesSamples);
             return parsedBlend;
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("Error parsing " + blendFile + e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
         }
         return null;
     }

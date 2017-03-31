@@ -79,7 +79,7 @@ public class ProjectController {
         getAvailableBlenderBinaries();
         projectForm.setUploadedFile(projectFile.getOriginalFilename());
         projectForm.setFileLocation(temp + uploadTag + "-" + projectFile.getOriginalFilename());
-        blenderParseBlendFileService.parseBlendFile(projectForm.getFileLocation());
+        projectForm.setBlendFile(blenderParseBlendFileService.parseBlendFile(projectForm.getFileLocation()));
         projectForm.setAvailableBlenderBinaries(availableBlenderBinaries);
         LOG.debug(projectForm.toString());
         return "project/project_form";
