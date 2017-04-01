@@ -20,11 +20,11 @@
 package com.dryadandnaiad.sethlans.enums;
 
 /**
- * Created Mario Estrella on 3/27/17.
+ * Created Mario Estrella on 4/1/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public enum ProjectFormProgress {
-    UPLOAD, DETAILS, FINISHED
+public enum RenderOutputFormat {
+    PNG, MP4, AVI
 }

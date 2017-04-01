@@ -41,7 +41,6 @@ public class ProjectForm {
     @NotEmpty
     private String projectName;
 
-
     private ProjectFormProgress progress = ProjectFormProgress.UPLOAD;
     private int samples;
     private int startFrame;
@@ -54,7 +53,7 @@ public class ProjectForm {
     private BlenderEngine blenderEngine;
     private String uploadedFile;
     private String fileLocation;
-    private BlenderZipEntity selectedBlenderBinary;
+    private String selectedBlenderVersion;
     private List<ComputeType> renderOn;
     private List<BlenderZipEntity> availableBlenderBinaries;
     private BlendFile blendFile;
@@ -175,14 +174,6 @@ public class ProjectForm {
         this.fileLocation = fileLocation;
     }
 
-    public BlenderZipEntity getSelectedBlenderBinary() {
-        return selectedBlenderBinary;
-    }
-
-    public void setSelectedBlenderBinary(BlenderZipEntity selectedBlenderBinary) {
-        this.selectedBlenderBinary = selectedBlenderBinary;
-    }
-
     public List<BlenderZipEntity> getAvailableBlenderBinaries() {
         return availableBlenderBinaries;
     }
@@ -207,6 +198,13 @@ public class ProjectForm {
         this.projectType = projectType;
     }
 
+    public String getSelectedBlenderVersion() {
+        return selectedBlenderVersion;
+    }
+
+    public void setSelectedBlenderVersion(String selectedBlenderVersion) {
+        this.selectedBlenderVersion = selectedBlenderVersion;
+    }
 
     @Override
     public String toString() {
@@ -223,9 +221,9 @@ public class ProjectForm {
                 ", projectType=" + projectType +
                 ", blenderEngine=" + blenderEngine +
                 ", renderOn" + renderOn +
+                ", selectedBlenderVersion=" + selectedBlenderVersion +
                 ", uploadedFile='" + uploadedFile + '\'' +
                 ", fileLocation='" + fileLocation + '\'' +
-                ", selectedBlenderBinary=" + selectedBlenderBinary +
                 ", availableBlenderBinaries=" + availableBlenderBinaries +
                 ", blendFile=" + blendFile +
                 '}';

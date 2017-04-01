@@ -150,9 +150,10 @@
             <div class="form-group">
                 <label for="blenderVersion">Available Blender Versions</label>
                 <select class="form-control" id="blenderVersion" name="blenderVersion"
-                        th:value="${projectForm.getSelectedBlenderBinary()}">
+                        th:value="${projectForm.selectedBlenderVersion}">
                     <option th:each="blenderBinary : ${projectForm.getAvailableBlenderBinaries()}"
-                            th:value="${blenderBinary}" th:text="${blenderBinary.getBlenderVersion()}">Version
+                            th:value="${blenderBinary.getBlenderVersion()}"
+                            th:text="${blenderBinary.getBlenderVersion()}">Version
                     </option>
                     <option th:remove="all">2.78c</option>
                 </select>
@@ -161,10 +162,8 @@
                 <label for="blenderVersion">Output Format</label>
                 <select class="form-control" id="outputFormat" name="outputFormat"
                         ab:value="${projectForm.outputFormat}">
-                    <option ab:each="version : ${T(get list of output formats}"
-                            ab:value="${version}" ab:text="${version}">JPG
-                    </option>
-                    <option ab:remove="all">PNG</option>
+                    <option>PNG</option>
+                    <option th:remove="all">AVI</option>
                 </select>
             </div>
 
@@ -195,22 +194,6 @@
                 <input type="number" id="framestep" th:field="${projectForm.stepFrame}" class="form-control" disabled>
             </div>
 
-            <div class="form-group">
-                <style>.slider-selection {
-                    background: #0C8DCE;
-                }</style>
-                <label class="control-label">Split tiles</label><br/>
-                <label class="checkbox-inline"><input type="checkbox" id="useTiles" name="useTiles"
-                                                      onClick="toggleTiles()">Yes</label><br/>
-                <div id="tileSlider" style="display: none">
-                    <label for="tiles">Number of Tiles: &emsp; &emsp; </label>
-                    <input id="tiles" name="tiles" ab:value="${productForm.tiles}" type="number"
-                           data-slider-min="1"
-                           data-slider-max="100"
-                           ab:attr="data-slider-value=${productForm.tiles}"
-                           data-slider-step="1"/>
-                </div>
-            </div>
             <div class="form-group">
                 <label class="control-label">Render On</label><br/>
                 <label class="checkbox-inline"><input type="checkbox" name="method" value="CPU"
