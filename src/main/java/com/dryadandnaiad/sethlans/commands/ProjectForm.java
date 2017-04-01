@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.commands;
 import com.dryadandnaiad.sethlans.domains.blender.BlendFile;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderZipEntity;
 import com.dryadandnaiad.sethlans.enums.ProjectFormProgress;
+import com.dryadandnaiad.sethlans.enums.ProjectType;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
@@ -47,6 +48,7 @@ public class ProjectForm {
     private int resolutionX;
     private int resolutionY;
     private int resPercentage;
+    private ProjectType projectType;
     private String uploadedFile;
     private String fileLocation;
     private BlenderZipEntity selectedBlenderBinary;
@@ -176,6 +178,15 @@ public class ProjectForm {
         this.blendFile = blendFile;
     }
 
+    public ProjectType getProjectType() {
+        return projectType;
+    }
+
+    public void setProjectType(ProjectType projectType) {
+        this.projectType = projectType;
+    }
+
+
     @Override
     public String toString() {
         return "ProjectForm{" +
@@ -188,6 +199,7 @@ public class ProjectForm {
                 ", resolutionX=" + resolutionX +
                 ", resolutionY=" + resolutionY +
                 ", resPercentage=" + resPercentage +
+                ", projectType=" + projectType +
                 ", uploadedFile='" + uploadedFile + '\'' +
                 ", fileLocation='" + fileLocation + '\'' +
                 ", selectedBlenderBinary=" + selectedBlenderBinary +
