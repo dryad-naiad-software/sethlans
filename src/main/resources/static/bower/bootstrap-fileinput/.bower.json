@@ -45,6 +45,5 @@
   },
   "_source": "https://github.com/kartik-v/bootstrap-fileinput.git",
   "_target": "^4.3.8",
-  "_originalSource": "bootstrap-fileinput",
-  "_direct": true
+  "_originalSource": "bootstrap-fileinput"
 }

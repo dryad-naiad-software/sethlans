@@ -399,7 +399,7 @@
                 $h.STYLE_SETTING + '>\n';
             tText = '<textarea class="kv-preview-data file-preview-text" title="{caption}" readonly ' +
                 $h.STYLE_SETTING + '>{data}</textarea>\n';
-            tVideo = '<video class="kv-preview-data file-preview-video" width="{width}" ' +
+            tVideo = '<video class="kv-preview-data file-preview-video" width="{width}" '  +
                 'height="{height}" controls>\n' + '<source src="{data}" type="{type}">\n' + $h.DEFAULT_PREVIEW +
                 '\n</video>\n';
             tAudio = '<div class="file-preview-audio"><audio class="kv-preview-data" controls>\n<source src="{data}" ' +
@@ -722,8 +722,7 @@
                     var config = data.config[i], caption = $h.ifSet('caption', config), actions = '',
                         width = $h.ifSet('width', config, 'auto'), url = $h.ifSet('url', config, false),
                         key = $h.ifSet('key', config, null), fs = self.fileActionSettings,
-                        showDel = $h.ifSet('showDelete', config, true),
-                        showZoom = $h.ifSet('showZoom', config, fs.showZoom),
+                        showDel = $h.ifSet('showDelete', config, true), showZoom = $h.ifSet('showZoom', config, fs.showZoom),
                         showDrag = $h.ifSet('showDrag', config, fs.showDrag), disabled = (url === false) && isDisabled;
                     if (self.initialPreviewShowDelete) {
                         actions = self._renderFileActions(false, showDel, showZoom, showDrag, disabled, url, key, true);
@@ -814,7 +813,7 @@
         },
         _showUploadError: function (msg, params, event) {
             var self = this, $error = self.$errorContainer, ev = event || 'fileuploaderror', e = params && params.id ?
-                '<li data-file-id="' + params.id + '">' + msg + '</li>' : '<li>' + msg + '</li>';
+            '<li data-file-id="' + params.id + '">' + msg + '</li>' : '<li>' + msg + '</li>';
             if ($error.find('ul').length === 0) {
                 self._addError('<ul>' + e + '</ul>');
             } else {
@@ -1997,8 +1996,7 @@
             };
             fnSuccess = function (data, textStatus, jqXHR) {
                 /** @namespace data.errorkeys */
-                var outData = self._getOutData(jqXHR, data), $thumbs = self._getThumbs(':not(.file-preview-error)'),
-                    key = 0,
+                var outData = self._getOutData(jqXHR, data), $thumbs = self._getThumbs(':not(.file-preview-error)'), key = 0,
                     keys = $h.isEmpty(data) || $h.isEmpty(data.errorkeys) ? [] : data.errorkeys;
                 if ($h.isEmpty(data) || $h.isEmpty(data.error)) {
                     self._raise('filebatchuploadsuccess', [outData]);
@@ -2774,8 +2772,7 @@
             self._initBrowse($container);
         },
         _renderMain: function () {
-            var self = this,
-                dropCss = (self.isUploadable && self.dropZoneEnabled) ? ' file-drop-zone' : 'file-drop-disabled',
+            var self = this, dropCss = (self.isUploadable && self.dropZoneEnabled) ? ' file-drop-zone' : 'file-drop-disabled',
                 close = !self.showClose ? '' : self._getLayoutTemplate('close'),
                 preview = !self.showPreview ? '' : self._getLayoutTemplate('preview')
                     .replace(/\{class}/g, self.previewClass)
@@ -2921,11 +2918,9 @@
                 return;
             }
             self.fileInputCleared = false;
-            var tfiles, msg, total, isDragDrop = arguments.length > 1, isAjaxUpload = self.isUploadable, i = 0, f, n,
-                len,
+            var tfiles, msg, total, isDragDrop = arguments.length > 1, isAjaxUpload = self.isUploadable, i = 0, f, n, len,
                 files = isDragDrop ? e.originalEvent.dataTransfer.files : $el.get(0).files, ctr = self.filestack.length,
-                isSingleUpload = $h.isEmpty($el.attr('multiple')), flagSingle = (isSingleUpload && ctr > 0),
-                folders = 0,
+                isSingleUpload = $h.isEmpty($el.attr('multiple')), flagSingle = (isSingleUpload && ctr > 0), folders = 0,
                 throwError = function (mesg, file, previewId, index) {
                     var p1 = $.extend(true, {}, self._getOutData({}, {}, files), {id: previewId, index: index}),
                         p2 = {id: previewId, index: index, file: file, files: files};

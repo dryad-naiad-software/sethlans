@@ -20,12 +20,12 @@
     var CanvasPrototype = window.HTMLCanvasElement &&
             window.HTMLCanvasElement.prototype,
         hasBlobConstructor = window.Blob && (function () {
-                try {
-                    return Boolean(new Blob());
-                } catch (e) {
-                    return false;
-                }
-            }()),
+            try {
+                return Boolean(new Blob());
+            } catch (e) {
+                return false;
+            }
+        }()),
         hasArrayBufferViewSupport = hasBlobConstructor && window.Uint8Array &&
             (function () {
                 try {
