@@ -221,9 +221,11 @@
                 <label for="blenderEngine">Rendering Engine:</label>
                 <select class="form-control" id="blenderEngine" name="blenderEngine"
                         th:value="${projectForm.getBlendFile().getEngine()}">
+                    <!--These errors can be ignored, thymeleaf doesn't recognize values from enum though it is valid. -->
                     <option th:each="engine : ${T(com.dryadandnaiad.sethlans.enums.BlenderEngine).values()}"
                             th:value="${engine}" th:text="${engine.getName()}">Engine
                     </option>
+                    <!--End of comment-->
                     <option th:remove="all">Engine1</option>
                     <option th:remove="all">Engine2</option>
                 </select>
