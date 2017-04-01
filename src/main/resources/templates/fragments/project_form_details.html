@@ -220,10 +220,10 @@
             <div class="form-group">
                 <label for="blenderEngine">Rendering Engine:</label>
                 <select class="form-control" id="blenderEngine" name="blenderEngine"
-                        th:value="${projectForm.blenderEngine}">
+                        th:value="${projectForm.blenderEngine}" onchange="selectEngine()">
                     <!--These errors can be ignored, thymeleaf doesn't recognize values from enum though it is valid. -->
                     <option th:each="engine : ${T(com.dryadandnaiad.sethlans.enums.BlenderEngine).values()}"
-                            th:value="${engine}" th:text="${engine.getName()}">Engine
+                            th:value="${engine}" th:text="${engine.getName()}">Cycles
                     </option>
                     <!--End of comment-->
                     <option th:remove="all">Engine1</option>
@@ -282,7 +282,19 @@
                         document.getElementById("framestep").disabled = false;
                     }
                 });
+                selectEngine();
+
             };
+            function selectEngine() {
+                var method = document.getElementById("blenderEngine");
+                var text = method.options[method.selectedIndex].text;
+                if (text.indexOf('Cycles') >= 0) {
+                    document.getElementById("samples").disabled = false;
+                } else {
+                    document.getElementById("samples").disabled = true;
+                }
+
+            }
             function toggleTiles() {
                 if ($("#useTiles").is(":checked")) {
                     document.getElementById("tileSlider").style.display = "block";
