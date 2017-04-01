@@ -48,7 +48,7 @@ public class ProjectForm {
     private int resolutionX;
     private int resolutionY;
     private int resPercentage;
-    private ProjectType projectType;
+    private ProjectType projectType = ProjectType.STILL_IMAGE;
     private String uploadedFile;
     private String fileLocation;
     private BlenderZipEntity selectedBlenderBinary;

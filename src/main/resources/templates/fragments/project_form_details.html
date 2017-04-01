@@ -170,18 +170,22 @@
 
             <div class="form-group">
                 <label class="control-label">Project Type</label><br/>
-                <label class="control-label"><input type="radio" name="projtype" th:field="${projectForm.projectType}"
-                                                    th:value="${T(com.dryadandnaiad.sethlans.enums.ProjectType).STILL_IMAGE}">&emsp;
+                <label class="control-label"><input type="radio" name="projectType"
+                                                    th:field="${projectForm.projectType}"
+                                                    th:value="${T(com.dryadandnaiad.sethlans.enums.ProjectType).STILL_IMAGE}"
+                                                    value="STILL_IMAGE">&emsp;
                     Still
                     Image</label><br/>
                 <label class="control-label" for="framenum">Frame Number</label>
                 <input type="number" id="framenum" name="startFrame" th:field="${projectForm.startFrame}"
-                       class="form-control" disabled>
+                       class="form-control">
 
             </div>
             <div class="form-group">
-                <label class="control-label"><input type="radio" name="projtype" th:field="${projectForm.projectType}"
-                                                    th:value="${T(com.dryadandnaiad.sethlans.enums.ProjectType).ANIMATION}">&emsp;
+                <label class="control-label"><input type="radio" name="projectType"
+                                                    th:field="${projectForm.projectType}"
+                                                    th:value="${T(com.dryadandnaiad.sethlans.enums.ProjectType).ANIMATION}"
+                                                    value="ANIMATION">&emsp;
                     Animation</label><br/>
                 <label class="control-label" for="startframe">Start Frame</label>
                 <input type="number" id="startframe" th:field="${projectForm.startFrame}" class="form-control" disabled>
@@ -261,16 +265,15 @@
                 $("#tiles").slider({tooltip_position: 'bottom'});
                 $("#scaling").slider({tooltip_position: 'bottom'});
                 $('input[type="radio"]').on('change', function () {
-                    var typeValue = $("input[name='projtype']:checked").val();
+                    var typeValue = document.querySelector('input[name="projectType"]:checked').value;
+                    console.log(typeValue);
                     if (typeValue === "STILL_IMAGE") {
-                        console.log("still")
                         document.getElementById("framenum").disabled = false;
                         document.getElementById("startframe").disabled = true;
                         document.getElementById("endframe").disabled = true;
                         document.getElementById("framestep").disabled = true;
                     }
                     if (typeValue === "ANIMATION") {
-                        console.log("animation")
                         document.getElementById("framenum").disabled = true;
                         document.getElementById("startframe").disabled = false;
                         document.getElementById("endframe").disabled = false;
