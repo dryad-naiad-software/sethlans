@@ -40,27 +40,28 @@ public class ProjectForm {
 
 
     private ProjectFormProgress progress = ProjectFormProgress.UPLOAD;
-    private String fileLocation;
+    private int samples;
+    private int startFrame;
+    private int endFrame;
+    private int stepFrame;
+    private int resolutionX;
+    private int resolutionY;
+    private int resPercentage;
     private String uploadedFile;
+    private String fileLocation;
     private BlenderZipEntity selectedBlenderBinary;
     private List<BlenderZipEntity> availableBlenderBinaries;
     private BlendFile blendFile;
-    private int samples;
 
-    public ProjectFormProgress getProgress() {
-        return progress;
-    }
 
-    public void setProgress(ProjectFormProgress progress) {
-        this.progress = progress;
-    }
-
-    public List<BlenderZipEntity> getAvailableBlenderBinaries() {
-        return availableBlenderBinaries;
-    }
-
-    public void setAvailableBlenderBinaries(List<BlenderZipEntity> availableBlenderBinaries) {
-        this.availableBlenderBinaries = availableBlenderBinaries;
+    public void populateForm() {
+        this.samples = blendFile.getCyclesSamples();
+        this.startFrame = blendFile.getFrameStart();
+        this.endFrame = blendFile.getFrameEnd();
+        this.stepFrame = blendFile.getFrameStep();
+        this.resolutionX = blendFile.getResolutionX();
+        this.resolutionY = blendFile.getResolutionY();
+        this.resPercentage = blendFile.getResPercent();
     }
 
     public String getProjectName() {
@@ -71,37 +72,12 @@ public class ProjectForm {
         this.projectName = projectName;
     }
 
-
-    public BlenderZipEntity getSelectedBlenderBinary() {
-        return selectedBlenderBinary;
+    public ProjectFormProgress getProgress() {
+        return progress;
     }
 
-    public void setSelectedBlenderBinary(BlenderZipEntity selectedBlenderBinary) {
-        this.selectedBlenderBinary = selectedBlenderBinary;
-    }
-
-    public String getFileLocation() {
-        return fileLocation;
-    }
-
-    public void setFileLocation(String fileLocation) {
-        this.fileLocation = fileLocation;
-    }
-
-    public String getUploadedFile() {
-        return uploadedFile;
-    }
-
-    public void setUploadedFile(String uploadedFile) {
-        this.uploadedFile = uploadedFile;
-    }
-
-    public BlendFile getBlendFile() {
-        return blendFile;
-    }
-
-    public void setBlendFile(BlendFile blendFile) {
-        this.blendFile = blendFile;
+    public void setProgress(ProjectFormProgress progress) {
+        this.progress = progress;
     }
 
     public int getSamples() {
@@ -112,17 +88,111 @@ public class ProjectForm {
         this.samples = samples;
     }
 
+    public int getStartFrame() {
+        return startFrame;
+    }
+
+    public void setStartFrame(int startFrame) {
+        this.startFrame = startFrame;
+    }
+
+    public int getEndFrame() {
+        return endFrame;
+    }
+
+    public void setEndFrame(int endFrame) {
+        this.endFrame = endFrame;
+    }
+
+    public int getStepFrame() {
+        return stepFrame;
+    }
+
+    public void setStepFrame(int stepFrame) {
+        this.stepFrame = stepFrame;
+    }
+
+    public int getResolutionX() {
+        return resolutionX;
+    }
+
+    public void setResolutionX(int resolutionX) {
+        this.resolutionX = resolutionX;
+    }
+
+    public int getResolutionY() {
+        return resolutionY;
+    }
+
+    public void setResolutionY(int resolutionY) {
+        this.resolutionY = resolutionY;
+    }
+
+    public int getResPercentage() {
+        return resPercentage;
+    }
+
+    public void setResPercentage(int resPercentage) {
+        this.resPercentage = resPercentage;
+    }
+
+    public String getUploadedFile() {
+        return uploadedFile;
+    }
+
+    public void setUploadedFile(String uploadedFile) {
+        this.uploadedFile = uploadedFile;
+    }
+
+    public String getFileLocation() {
+        return fileLocation;
+    }
+
+    public void setFileLocation(String fileLocation) {
+        this.fileLocation = fileLocation;
+    }
+
+    public BlenderZipEntity getSelectedBlenderBinary() {
+        return selectedBlenderBinary;
+    }
+
+    public void setSelectedBlenderBinary(BlenderZipEntity selectedBlenderBinary) {
+        this.selectedBlenderBinary = selectedBlenderBinary;
+    }
+
+    public List<BlenderZipEntity> getAvailableBlenderBinaries() {
+        return availableBlenderBinaries;
+    }
+
+    public void setAvailableBlenderBinaries(List<BlenderZipEntity> availableBlenderBinaries) {
+        this.availableBlenderBinaries = availableBlenderBinaries;
+    }
+
+    public BlendFile getBlendFile() {
+        return blendFile;
+    }
+
+    public void setBlendFile(BlendFile blendFile) {
+        this.blendFile = blendFile;
+    }
+
     @Override
     public String toString() {
         return "ProjectForm{" +
                 "projectName='" + projectName + '\'' +
                 ", progress=" + progress +
-                ", fileLocation='" + fileLocation + '\'' +
+                ", samples=" + samples +
+                ", startFrame=" + startFrame +
+                ", endFrame=" + endFrame +
+                ", stepFrame=" + stepFrame +
+                ", resolutionX=" + resolutionX +
+                ", resolutionY=" + resolutionY +
+                ", resPercentage=" + resPercentage +
                 ", uploadedFile='" + uploadedFile + '\'' +
+                ", fileLocation='" + fileLocation + '\'' +
                 ", selectedBlenderBinary=" + selectedBlenderBinary +
                 ", availableBlenderBinaries=" + availableBlenderBinaries +
                 ", blendFile=" + blendFile +
-                ", samples=" + samples +
                 '}';
     }
 }

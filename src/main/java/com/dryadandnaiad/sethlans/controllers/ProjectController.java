@@ -81,8 +81,16 @@ public class ProjectController {
         projectForm.setFileLocation(temp + uploadTag + "-" + projectFile.getOriginalFilename());
         projectForm.setBlendFile(blenderParseBlendFileService.parseBlendFile(projectForm.getFileLocation()));
         projectForm.setAvailableBlenderBinaries(availableBlenderBinaries);
+        projectForm.populateForm();
         LOG.debug(projectForm.toString());
         return "project/project_form";
+    }
+
+    @RequestMapping(value = "/project/summary", method = RequestMethod.POST)
+    public String projectSummary(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm, BindingResult bindingResult) {
+        LOG.debug(projectForm.toString());
+        return "project/project_form";
+
     }
 
     private void getAvailableBlenderBinaries() {

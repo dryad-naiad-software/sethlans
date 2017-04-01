@@ -32,19 +32,19 @@ public class BlendFile {
     private BlenderEngine engine;
     private int frameStart;
     private int frameEnd;
-    private int frameSkip;
+    private int frameStep;
     private int resPercent;
     private int resolutionX;
     private int resolutionY;
     private String cameraName;
     private int cyclesSamples;
 
-    public BlendFile(String sceneName, BlenderEngine engine, int frameStart, int frameEnd, int frameSkip, int resPercent, int resolutionX, int resolutionY, String cameraName, int cyclesSamples) {
+    public BlendFile(String sceneName, BlenderEngine engine, int frameStart, int frameEnd, int frameStep, int resPercent, int resolutionX, int resolutionY, String cameraName, int cyclesSamples) {
         this.sceneName = sceneName;
         this.engine = engine;
         this.frameStart = frameStart;
         this.frameEnd = frameEnd;
-        this.frameSkip = frameSkip;
+        this.frameStep = frameStep;
         this.resPercent = resPercent;
         this.resolutionX = resolutionX;
         this.resolutionY = resolutionY;
@@ -84,12 +84,12 @@ public class BlendFile {
         this.frameEnd = frameEnd;
     }
 
-    public int getFrameSkip() {
-        return frameSkip;
+    public int getFrameStep() {
+        return frameStep;
     }
 
-    public void setFrameSkip(int frameSkip) {
-        this.frameSkip = frameSkip;
+    public void setFrameStep(int frameStep) {
+        this.frameStep = frameStep;
     }
 
     public int getResPercent() {
@@ -139,7 +139,7 @@ public class BlendFile {
                 ", engine=" + engine +
                 ", frameStart=" + frameStart +
                 ", frameEnd=" + frameEnd +
-                ", frameSkip=" + frameSkip +
+                ", frameStep=" + frameStep +
                 ", resPercent=" + resPercent +
                 ", resolutionX=" + resolutionX +
                 ", resolutionY=" + resolutionY +

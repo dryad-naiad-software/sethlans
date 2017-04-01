@@ -26,5 +26,15 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum BlenderEngine {
-    CYCLES, BLENDER_RENDER
+    CYCLES("Cycles"), BLENDER_RENDER("Blender Render");
+
+    private final String name;
+
+    BlenderEngine(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

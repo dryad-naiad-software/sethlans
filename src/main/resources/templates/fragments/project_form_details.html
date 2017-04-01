@@ -139,7 +139,7 @@
 
     <div class="container" style="max-width: 600px;">
         <!--/*@thymesVar id="projectForm" type="com.dryadandnaiad.sethlans.commands.ProjectForm"*/-->
-        <form class="form-horizontal" id="projectWizard" name="projectWizard" th:action="@{/project/new}"
+        <form class="form-horizontal" id="projectWizard" name="projectWizard" th:action="@{/project/summary}"
               th:object="${projectForm}"
               method="POST">
             <div class="form-group">
@@ -173,18 +173,19 @@
                 <label class="control-label"><input type="radio" name="projtype" value="single">&emsp; Still
                     Image</label><br/>
                 <label class="control-label" for="framenum">Frame Number</label>
-                <input type="number" id="framenum" class="form-control" disabled>
+                <input type="number" id="framenum" name="startFrame" th:field="${projectForm.startFrame}"
+                       class="form-control" disabled>
 
             </div>
             <div class="form-group">
                 <label class="control-label"><input type="radio" name="projtype" value="animation">&emsp;
                     Animation</label><br/>
                 <label class="control-label" for="startframe">Start Frame</label>
-                <input type="number" id="startframe" class="form-control" disabled>
+                <input type="number" id="startframe" th:field="${projectForm.startFrame}" class="form-control" disabled>
                 <label class="control-label" for="endframe">End Frame</label>
-                <input type="number" id="endframe" class="form-control" disabled>
+                <input type="number" id="endframe" th:field="${projectForm.endFrame}" class="form-control" disabled>
                 <label class="control-label" for="framestep">Frame Step</label>
-                <input type="number" id="framestep" class="form-control" disabled>
+                <input type="number" id="framestep" th:field="${projectForm.stepFrame}" class="form-control" disabled>
             </div>
 
             <div class="form-group">
@@ -214,10 +215,10 @@
                     background: #0C8DCE;
                 }</style>
                 <label for="resolution">Resolution: &emsp; &emsp; </label>
-                <input id="resolution" name="resolution" ab:value="${productForm.tiles}" type="number"
+                <input id="resolution" name="resolution" th:field="${projectForm.resPercentage}" type="number"
                        data-slider-min="1"
-                       data-slider-max="64"
-                       ab:attr="data-slider-value=${productForm.tiles}"
+                       data-slider-max="100"
+                       th:attr="data-slider-value=${projectForm.getResPercentage()}"
                        data-slider-step="1"/>
             </div>
 
@@ -226,14 +227,14 @@
                 <select class="form-control" id="blenderEngine" name="blenderEngine"
                         th:value="${projectForm.getBlendFile().getEngine()}">
                     <option th:each="engine : ${T(com.dryadandnaiad.sethlans.enums.BlenderEngine).values()}"
-                            th:value="${engine}" th:text="${engine}">Engine
+                            th:value="${engine}" th:text="${engine.getName()}">Engine
                     </option>
                     <option th:remove="all">Engine1</option>
                     <option th:remove="all">Engine2</option>
                 </select>
                 <label class="control-label" for="samples">Samples</label>
-                <input type="number" id="samples" class="form-control"
-                       th:value="${projectForm.getBlendFile().getCyclesSamples()}">
+                <input type="number" id="samples" class="form-control" name="samples"
+                       th:field="${projectForm.samples}">
             </div>
 
 
