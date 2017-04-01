@@ -213,8 +213,10 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Render On</label><br/>
-                <label class="checkbox-inline"><input type="checkbox" name="method">CPU</label>
-                <label class="checkbox-inline"><input type="checkbox" name="method">GPU</label>
+                <label class="checkbox-inline"><input type="checkbox" name="method" value="CPU"
+                                                      th:field="${projectForm.renderOn}">CPU</label>
+                <label class="checkbox-inline"><input type="checkbox" name="method" value="GPU"
+                                                      th:field="${projectForm.renderOn}">GPU</label>
             </div>
 
             <div class="form-group">
