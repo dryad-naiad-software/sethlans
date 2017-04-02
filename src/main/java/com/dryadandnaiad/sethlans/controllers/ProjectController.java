@@ -85,6 +85,17 @@ public class ProjectController {
         return "project/project_view";
     }
 
+    @RequestMapping("/project/edit/{id}")
+    public String edit(@PathVariable Integer id, Model model) {
+        getAvailableBlenderBinaries();
+        BlenderProject project = blenderProjectService.getById(id);
+        ProjectForm projectForm = blenderProjectToProjectForm.convert(project);
+        projectForm.setAvailableBlenderBinaries(availableBlenderBinaries);
+        model.addAttribute("projectForm", projectForm);
+        LOG.debug(projectForm.toString());
+        return "project/project_form";
+    }
+
     @RequestMapping(value = "/project/new", method = RequestMethod.POST)
     public String newProjectDetails(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm, BindingResult bindingResult, @RequestParam("projectFile") MultipartFile projectFile) {
         UUID uploadTag = UUID.randomUUID();

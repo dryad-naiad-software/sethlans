@@ -118,7 +118,11 @@
                 <td th:text="${project.getRenderOn().getName()}">GPU</td>
                 <td th:text="${project.getResolutionX()} + ' x ' + ${project.getResolutionY()}">1920x1080 px</td>
                 <td>1% Complete</td>
-                <td><a th:href="${'/project/view/' + project.getId()}" href="#">View</a><br/>Pause<br/>Download</td>
+                <td><a th:href="${'/project/view/' + project.getId()}" href="#">View</a>
+                    <br/><a th:href="${'/project/edit/' + project.getId()}" href="#">Edit</a>
+                    <!--<br/>Pause-->
+                    <br/>Download
+                </td>
             </tr>
         </table>
     </div>

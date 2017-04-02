@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.converters;
 
 import com.dryadandnaiad.sethlans.commands.ProjectForm;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.enums.ProjectFormProgress;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -49,6 +50,8 @@ public class BlenderProjectToProjectForm implements Converter<BlenderProject, Pr
         projectForm.setResolutionX(project.getResolutionX());
         projectForm.setResolutionY(project.getResolutionY());
         projectForm.setResPercentage(project.getResPercentage());
+        projectForm.setSamples(project.getSamples());
+        projectForm.setProgress(ProjectFormProgress.DETAILS);
         return projectForm;
     }
 }

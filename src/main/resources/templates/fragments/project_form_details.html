@@ -145,7 +145,8 @@
             <div class="form-group">
                 <h2 class="text-center">Project Details</h2>
                 <label class="control-label" for="projectName">Project Name</label>
-                <input type="text" name="projectName" id="projectName" class="form-control">
+                <input type="text" name="projectName" id="projectName" th:value="${projectForm.projectName}"
+                       class="form-control">
             </div>
             <div class="form-group">
                 <label for="selectedBlenderVersion">Available Blender Versions</label>
@@ -260,30 +261,32 @@
         </form>
         <script defer="defer" th:inline="javascript">
             window.onload = function () {
-                document.getElementById("outputFormat").disabled = true;
+                readRadio();
                 $("#tiles").slider({tooltip_position: 'bottom'});
                 $("#scaling").slider({tooltip_position: 'bottom'});
                 $('input[type="radio"]').on('change', function () {
-                    var typeValue = document.querySelector('input[name="projectType"]:checked').value;
-                    if (typeValue === "STILL_IMAGE") {
-                        document.getElementById("framenum").disabled = false;
-                        document.getElementById("startframe").disabled = true;
-                        document.getElementById("endframe").disabled = true;
-                        document.getElementById("framestep").disabled = true;
-                        document.getElementById("outputFormat").disabled = true;
-                        $("#outputFormat")[0].selectedIndex = 0;
-                    }
-                    if (typeValue === "ANIMATION") {
-                        document.getElementById("framenum").disabled = true;
-                        document.getElementById("startframe").disabled = false;
-                        document.getElementById("endframe").disabled = false;
-                        document.getElementById("framestep").disabled = false;
-                        document.getElementById("outputFormat").disabled = false;
-                    }
+                    readRadio();
                 });
                 selectEngine();
-
             };
+            function readRadio() {
+                var typeValue = document.querySelector('input[name="projectType"]:checked').value;
+                if (typeValue === "STILL_IMAGE") {
+                    document.getElementById("framenum").disabled = false;
+                    document.getElementById("startframe").disabled = true;
+                    document.getElementById("endframe").disabled = true;
+                    document.getElementById("framestep").disabled = true;
+                    document.getElementById("outputFormat").disabled = true;
+                    $("#outputFormat")[0].selectedIndex = 0;
+                }
+                if (typeValue === "ANIMATION") {
+                    document.getElementById("framenum").disabled = true;
+                    document.getElementById("startframe").disabled = false;
+                    document.getElementById("endframe").disabled = false;
+                    document.getElementById("framestep").disabled = false;
+                    document.getElementById("outputFormat").disabled = false;
+                }
+            }
             function selectEngine() {
                 var method = document.getElementById("blenderEngine");
                 var text = method.options[method.selectedIndex].text;
