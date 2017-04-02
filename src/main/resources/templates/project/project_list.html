@@ -79,10 +79,19 @@
 </nav>
 <!--/.navbar-->
 
-<div class="container">
+<!--/*@thymesVar id="availableBlenderBinaries" type="java.util.List"*/-->
+<div class="container" th:object="${availableBlenderBinaries}">
 
-    <h2>Projects <a href="/project/new" class="btn btn-primary btn-lg pull-right">New Project</a></h2>
-
+    <h2>Projects <a id="newProjectBtn" href="/project/new" class="btn btn-primary btn-lg pull-right">New Project</a>
+    </h2>
+    <script th:inline="javascript">
+        var listEmpty = /*[[${availableBlenderBinaries.isEmpty()}]]*/ true;
+        window.onload = function () {
+            if (listEmpty) {
+                document.getElementById("newProjectBtn").classList.add("disabled");
+            }
+        }
+    </script>
     <br/>
     <br/>
     <div class="table-responsive">
