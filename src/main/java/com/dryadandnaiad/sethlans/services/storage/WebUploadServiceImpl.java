@@ -47,6 +47,7 @@ public class WebUploadServiceImpl implements WebUploadService {
     @Value("${sethlans.tempDir}")
     private String temp;
 
+
     @Autowired
     public void setRootLocation() {
         this.rootLocation = Paths.get(temp);

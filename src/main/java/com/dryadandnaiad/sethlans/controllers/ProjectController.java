@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.commands.ProjectForm;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
+import com.dryadandnaiad.sethlans.enums.ProjectFormProgress;
 import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
 import com.dryadandnaiad.sethlans.services.database.BlenderZipService;
 import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
@@ -62,7 +63,9 @@ public class ProjectController {
     private String temp;
 
     @RequestMapping("/project")
-    public String getPage() {
+    public String getPage(Model model) {
+        getAvailableBlenderBinaries();
+        model.addAttribute("availableBlenderBinaries", availableBlenderBinaries);
         return "project/project_list";
     }
 
@@ -89,6 +92,9 @@ public class ProjectController {
     @RequestMapping(value = "/project/summary", method = RequestMethod.POST)
     public String projectSummary(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm, BindingResult bindingResult) {
         LOG.debug(projectForm.toString());
+        if (projectForm.getProgress() == ProjectFormProgress.FINISHED) {
+            LOG.debug("FINISHED");
+        }
         return "project/project_view";
 
     }

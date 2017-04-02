@@ -247,6 +247,7 @@
             <div class="form-group">
                 <input type="hidden" name="uploadedFile" th:value="${projectForm.uploadedFile}">
                 <input type="hidden" name="fileLocation" th:value="${projectForm.fileLocation}">
+                <input type="hidden" id="progress" name="progress" value="FINISHED">
                 <a href="/project" class="btn btn-default">Cancel</a>
                 <button type="submit" class="btn btn-primary pull-right">Submit Project</button>
             </div>
