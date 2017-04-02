@@ -20,6 +20,9 @@
 package com.dryadandnaiad.sethlans.domains.blender;
 
 import com.dryadandnaiad.sethlans.domains.AbstractEntityClass;
+import com.dryadandnaiad.sethlans.enums.BlenderEngine;
+import com.dryadandnaiad.sethlans.enums.ProjectType;
+import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 
 import javax.persistence.Entity;
 
@@ -32,9 +35,19 @@ import javax.persistence.Entity;
 @Entity
 public class BlenderProject extends AbstractEntityClass {
     private String projectName;
-    private String projectFile;
-    private boolean animation;
-    private String projectDirectory;
+    private String blenderVersion;
+    private RenderOutputFormat renderOutputFormat;
+    private ProjectType projectType;
+    private int startFrame;
+    private int endFrame;
+    private int stepFrame;
+    private int samples;
+    private BlenderEngine blenderEngine;
+    private int resolutionX;
+    private int resolutionY;
+    private int resPercentage;
+    private String blendFilename;
+    private String blendFileLocation;
 
 
 }
