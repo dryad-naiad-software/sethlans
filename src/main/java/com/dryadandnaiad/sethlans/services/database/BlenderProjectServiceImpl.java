@@ -19,8 +19,12 @@
 
 package com.dryadandnaiad.sethlans.services.database;
 
+import com.dryadandnaiad.sethlans.commands.ProjectForm;
+import com.dryadandnaiad.sethlans.converters.ProjectFormToBlenderProject;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.repositories.BlenderProjectRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,10 +40,17 @@ import java.util.List;
 @Service
 public class BlenderProjectServiceImpl implements BlenderProjectService {
     private BlenderProjectRepository blenderProjectRepository;
+    private ProjectFormToBlenderProject projectFormToBlenderProject;
+    private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectServiceImpl.class);
 
     @Autowired
     public void setBlenderProjectRepository(BlenderProjectRepository blenderProjectRepository) {
         this.blenderProjectRepository = blenderProjectRepository;
+    }
+
+    @Autowired
+    public void setProjectFormToBlenderProject(ProjectFormToBlenderProject projectFormToBlenderProject) {
+        this.projectFormToBlenderProject = projectFormToBlenderProject;
     }
 
     @Override
@@ -57,6 +68,11 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Override
     public BlenderProject saveOrUpdate(BlenderProject domainObject) {
         return blenderProjectRepository.save(domainObject);
+    }
+
+    @Override
+    public BlenderProject saveOrUpdateProjectForm(ProjectForm projectForm) {
+        return saveOrUpdate(projectFormToBlenderProject.convert(projectForm));
     }
 
     @Override

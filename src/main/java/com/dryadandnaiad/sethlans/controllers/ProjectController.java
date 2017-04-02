@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.enums.ProjectFormProgress;
 import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryService;
+import com.dryadandnaiad.sethlans.services.database.BlenderProjectService;
 import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +59,7 @@ public class ProjectController {
     private List<BlenderBinary> availableBlenderBinaries;
     private WebUploadService webUploadService;
     private BlenderParseBlendFileService blenderParseBlendFileService;
+    private BlenderProjectService blenderProjectService;
 
     @Value("${sethlans.tempDir}")
     private String temp;
@@ -94,6 +96,7 @@ public class ProjectController {
         LOG.debug(projectForm.toString());
         if (projectForm.getProgress() == ProjectFormProgress.FINISHED) {
             LOG.debug("FINISHED");
+            blenderProjectService.saveOrUpdateProjectForm(projectForm);
         }
         return "project/project_view";
 
@@ -122,5 +125,10 @@ public class ProjectController {
     @Autowired
     public void setBlenderParseBlendFileService(BlenderParseBlendFileService blenderParseBlendFileService) {
         this.blenderParseBlendFileService = blenderParseBlendFileService;
+    }
+
+    @Autowired
+    public void setBlenderProjectService(BlenderProjectService blenderProjectService) {
+        this.blenderProjectService = blenderProjectService;
     }
 }

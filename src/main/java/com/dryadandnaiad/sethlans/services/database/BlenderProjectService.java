@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.database;
 
+import com.dryadandnaiad.sethlans.commands.ProjectForm;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderProject;
 
 /**
@@ -28,4 +29,6 @@ import com.dryadandnaiad.sethlans.domains.blender.BlenderProject;
  * Project: sethlans
  */
 public interface BlenderProjectService extends CRUDService<BlenderProject> {
+
+    public BlenderProject saveOrUpdateProjectForm(ProjectForm projectForm);
 }

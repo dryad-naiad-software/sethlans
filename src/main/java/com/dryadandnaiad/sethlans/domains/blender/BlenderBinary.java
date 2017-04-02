@@ -22,7 +22,6 @@ package com.dryadandnaiad.sethlans.domains.blender;
 import com.dryadandnaiad.sethlans.domains.AbstractEntityClass;
 
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import java.util.List;
 
@@ -41,17 +40,6 @@ public class BlenderBinary extends AbstractEntityClass {
     @Transient
     private List<String> downloadMirrors;
     private boolean downloaded = false;
-
-    @OneToMany(mappedBy = "blenderBinary")
-    private List<BlenderProject> projects;
-
-    public List<BlenderProject> getProjects() {
-        return projects;
-    }
-
-    public void setProjects(List<BlenderProject> projects) {
-        this.projects = projects;
-    }
 
     public String getBlenderVersion() {
         return blenderVersion;
@@ -110,7 +98,6 @@ public class BlenderBinary extends AbstractEntityClass {
                 ", blenderFileMd5='" + blenderFileMd5 + '\'' +
                 ", downloadMirrors=" + downloadMirrors +
                 ", downloaded=" + downloaded +
-                ", projects=" + projects +
                 '}';
     }
 }

@@ -25,7 +25,6 @@ import com.dryadandnaiad.sethlans.enums.ProjectType;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 
 /**
  * Created Mario Estrella on 3/24/17.
@@ -48,9 +47,7 @@ public class BlenderProject extends AbstractEntityClass {
     private int resPercentage;
     private String blendFilename;
     private String blendFileLocation;
-
-    @ManyToOne
-    private BlenderBinary blenderBinary;
+    private String blenderVersion;
 
     public String getProjectName() {
         return projectName;
@@ -156,11 +153,31 @@ public class BlenderProject extends AbstractEntityClass {
         this.blendFileLocation = blendFileLocation;
     }
 
-    public BlenderBinary getBlenderBinary() {
-        return blenderBinary;
+    public String getBlenderVersion() {
+        return blenderVersion;
     }
 
-    public void setBlenderBinary(BlenderBinary blenderBinary) {
-        this.blenderBinary = blenderBinary;
+    public void setBlenderVersion(String blenderVersion) {
+        this.blenderVersion = blenderVersion;
+    }
+
+    @Override
+    public String toString() {
+        return "BlenderProject{" +
+                "projectName='" + projectName + '\'' +
+                ", renderOutputFormat=" + renderOutputFormat +
+                ", projectType=" + projectType +
+                ", startFrame=" + startFrame +
+                ", endFrame=" + endFrame +
+                ", stepFrame=" + stepFrame +
+                ", samples=" + samples +
+                ", blenderEngine=" + blenderEngine +
+                ", resolutionX=" + resolutionX +
+                ", resolutionY=" + resolutionY +
+                ", resPercentage=" + resPercentage +
+                ", blendFilename='" + blendFilename + '\'' +
+                ", blendFileLocation='" + blendFileLocation + '\'' +
+                ", blenderVersion='" + blenderVersion + '\'' +
+                '}';
     }
 }
