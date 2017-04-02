@@ -60,6 +60,7 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
         project.setBlenderEngine(projectForm.getBlenderEngine());
         project.setBlendFilename(projectForm.getUploadedFile());
         project.setBlenderVersion(projectForm.getSelectedBlenderVersion());
+        project.setRenderOn(projectForm.getRenderOn());
 
         RandomString randomString = new RandomString(6);
 

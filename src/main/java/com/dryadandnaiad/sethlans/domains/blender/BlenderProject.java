@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.domains.blender;
 
 import com.dryadandnaiad.sethlans.domains.AbstractEntityClass;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.ProjectType;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 
@@ -45,6 +46,7 @@ public class BlenderProject extends AbstractEntityClass {
     private int resolutionX;
     private int resolutionY;
     private int resPercentage;
+    private ComputeType renderOn;
     private String blendFilename;
     private String blendFileLocation;
     private String blenderVersion;
@@ -161,6 +163,14 @@ public class BlenderProject extends AbstractEntityClass {
         this.blenderVersion = blenderVersion;
     }
 
+    public ComputeType getRenderOn() {
+        return renderOn;
+    }
+
+    public void setRenderOn(ComputeType renderOn) {
+        this.renderOn = renderOn;
+    }
+
     @Override
     public String toString() {
         return "BlenderProject{" +
@@ -175,6 +185,7 @@ public class BlenderProject extends AbstractEntityClass {
                 ", resolutionX=" + resolutionX +
                 ", resolutionY=" + resolutionY +
                 ", resPercentage=" + resPercentage +
+                ", renderOn=" + renderOn +
                 ", blendFilename='" + blendFilename + '\'' +
                 ", blendFileLocation='" + blendFileLocation + '\'' +
                 ", blenderVersion='" + blenderVersion + '\'' +

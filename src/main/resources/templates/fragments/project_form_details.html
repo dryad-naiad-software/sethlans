@@ -197,11 +197,15 @@
             </div>
 
             <div class="form-group">
-                <label class="control-label">Render On</label><br/>
-                <label class="checkbox-inline"><input type="checkbox" name="method" value="CPU"
-                                                      th:field="${projectForm.renderOn}">CPU</label>
-                <label class="checkbox-inline"><input type="checkbox" name="method" value="GPU"
-                                                      th:field="${projectForm.renderOn}">GPU</label>
+                <label for="renderOn">Render On:</label>
+                <select class="form-control" id="renderOn" name="renderOn"
+                        th:value="${projectForm.renderOn}">
+                    <option th:each="method : ${T(com.dryadandnaiad.sethlans.enums.ComputeType).values()}"
+                            th:value="${method}" th:text="${method.getName()}">CPU
+                    </option>
+                    <option th:remove="all">GPU</option>
+                    <option th:remove="all">CPU &amp; GPU</option>
+                </select>
             </div>
 
             <div class="form-group">

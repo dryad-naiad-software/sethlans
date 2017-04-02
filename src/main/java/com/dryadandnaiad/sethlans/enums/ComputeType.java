@@ -22,5 +22,15 @@ package com.dryadandnaiad.sethlans.enums;
  * @author Mario Estrella <mestrella@dryadandnaiad.com>
  */
 public enum ComputeType {
-    CPU_GPU, CPU, GPU
+    CPU_GPU("CPU & GPU"), CPU("CPU"), GPU("GPU");
+
+    private final String name;
+
+    ComputeType(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

@@ -51,7 +51,7 @@ public class ProjectForm {
     private String uploadedFile;
     private String fileLocation;
     private String selectedBlenderVersion;
-    private List<ComputeType> renderOn;
+    private ComputeType renderOn;
     private List<BlenderBinary> availableBlenderBinaries;
     private BlendFile blendFile;
     private RenderOutputFormat outputFormat;
@@ -76,11 +76,11 @@ public class ProjectForm {
         this.blenderEngine = blenderEngine;
     }
 
-    public List<ComputeType> getRenderOn() {
+    public ComputeType getRenderOn() {
         return renderOn;
     }
 
-    public void setRenderOn(List<ComputeType> renderOn) {
+    public void setRenderOn(ComputeType renderOn) {
         this.renderOn = renderOn;
     }
 
@@ -226,7 +226,7 @@ public class ProjectForm {
                 ", resPercentage=" + resPercentage +
                 ", projectType=" + projectType +
                 ", blenderEngine=" + blenderEngine +
-                ", renderOn" + renderOn +
+                ", renderOn=" + renderOn +
                 ", selectedBlenderVersion=" + selectedBlenderVersion +
                 ", outputFormat=" + outputFormat +
                 ", uploadedFile='" + uploadedFile + '\'' +
