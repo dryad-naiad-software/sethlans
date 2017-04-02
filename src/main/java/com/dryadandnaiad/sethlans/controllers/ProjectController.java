@@ -20,7 +20,7 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.commands.ProjectForm;
-import com.dryadandnaiad.sethlans.domains.blender.BlenderZipEntity;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
 import com.dryadandnaiad.sethlans.services.database.BlenderZipService;
 import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
@@ -54,7 +54,7 @@ import java.util.UUID;
 public class ProjectController {
     private static final Logger LOG = LoggerFactory.getLogger(ProjectController.class);
     private BlenderZipService blenderZipService;
-    private List<BlenderZipEntity> availableBlenderBinaries;
+    private List<BlenderBinary> availableBlenderBinaries;
     private WebUploadService webUploadService;
     private BlenderParseBlendFileService blenderParseBlendFileService;
 
@@ -95,10 +95,10 @@ public class ProjectController {
 
     private void getAvailableBlenderBinaries() {
         availableBlenderBinaries = new ArrayList<>();
-        List<BlenderZipEntity> databaseList = (List<BlenderZipEntity>) blenderZipService.listAll();
-        for (BlenderZipEntity blenderZipEntity : databaseList) {
-            if (blenderZipEntity.isDownloaded()) {
-                availableBlenderBinaries.add(blenderZipEntity);
+        List<BlenderBinary> databaseList = (List<BlenderBinary>) blenderZipService.listAll();
+        for (BlenderBinary blenderBinary : databaseList) {
+            if (blenderBinary.isDownloaded()) {
+                availableBlenderBinaries.add(blenderBinary);
             }
         }
     }

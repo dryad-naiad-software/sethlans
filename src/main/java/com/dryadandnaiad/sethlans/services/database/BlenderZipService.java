@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.domains.blender.BlenderZipEntity;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
 
 /**
  * Created Mario Estrella on 3/23/17.
@@ -27,5 +27,5 @@ import com.dryadandnaiad.sethlans.domains.blender.BlenderZipEntity;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderZipService extends CRUDService<BlenderZipEntity> {
+public interface BlenderZipService extends CRUDService<BlenderBinary> {
 }

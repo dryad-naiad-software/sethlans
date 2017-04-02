@@ -20,7 +20,7 @@
 package com.dryadandnaiad.sethlans.commands;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlendFile;
-import com.dryadandnaiad.sethlans.domains.blender.BlenderZipEntity;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.enums.*;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -52,7 +52,7 @@ public class ProjectForm {
     private String fileLocation;
     private String selectedBlenderVersion;
     private List<ComputeType> renderOn;
-    private List<BlenderZipEntity> availableBlenderBinaries;
+    private List<BlenderBinary> availableBlenderBinaries;
     private BlendFile blendFile;
     private RenderOutputFormat outputFormat;
 
@@ -172,11 +172,11 @@ public class ProjectForm {
         this.fileLocation = fileLocation;
     }
 
-    public List<BlenderZipEntity> getAvailableBlenderBinaries() {
+    public List<BlenderBinary> getAvailableBlenderBinaries() {
         return availableBlenderBinaries;
     }
 
-    public void setAvailableBlenderBinaries(List<BlenderZipEntity> availableBlenderBinaries) {
+    public void setAvailableBlenderBinaries(List<BlenderBinary> availableBlenderBinaries) {
         this.availableBlenderBinaries = availableBlenderBinaries;
     }
 

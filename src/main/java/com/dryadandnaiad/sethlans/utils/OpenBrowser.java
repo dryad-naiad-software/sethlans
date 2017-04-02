@@ -51,6 +51,12 @@ public class OpenBrowser {
 
     }
 
+    public static void dbConsole() throws MalformedURLException {
+        LOG.debug("Opening DB console");
+        URL url = new URL("https://localhost:" + port + "/console");
+        SethlansUtils.openWebpage(url);
+    }
+
     public static void about() throws MalformedURLException {
         LOG.debug("Showing About Page");
     }

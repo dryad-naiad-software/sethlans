@@ -19,8 +19,8 @@
 
 package com.dryadandnaiad.sethlans.services.network;
 
+import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderZip;
-import com.dryadandnaiad.sethlans.domains.blender.BlenderZipEntity;
 import com.dryadandnaiad.sethlans.services.database.BlenderZipService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
@@ -55,7 +55,7 @@ import java.util.concurrent.Future;
 public class BlenderDownloadServiceImpl implements BlenderDownloadService {
     private static final Logger LOG = LoggerFactory.getLogger(BlenderDownloadServiceImpl.class);
     private BlenderZipService blenderZipService;
-    private List<BlenderZipEntity> blenderFileEntities;
+    private List<BlenderBinary> blenderFileEntities;
     private List<BlenderZip> blenderBinaries;
     @Value("${sethlans.blenderDir}")
     private String downloadLocation;
@@ -81,13 +81,13 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
     }
 
     private boolean doDownload() {
-        blenderFileEntities = (List<BlenderZipEntity>) blenderZipService.listAll();
+        blenderFileEntities = (List<BlenderBinary>) blenderZipService.listAll();
         blenderBinaries = BlenderUtils.listBinaries();
-        List<BlenderZipEntity> blenderDownloadList = prepareDownload();
+        List<BlenderBinary> blenderDownloadList = prepareDownload();
 
 
-        for (BlenderZipEntity blenderZipEntity : blenderDownloadList) {
-            String blenderVersion = blenderZipEntity.getBlenderVersion();
+        for (BlenderBinary blenderBinary : blenderDownloadList) {
+            String blenderVersion = blenderBinary.getBlenderVersion();
             File saveLocation = new File(downloadLocation + File.separator + "binaries" + File.separator + blenderVersion + File.separator);
             saveLocation.mkdirs();
             URL url;
@@ -95,15 +95,15 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
             String filename = null;
             while (retry) {
                 try {
-                    url = new URL(blenderZipEntity.getDownloadMirrors().get(downloadMirror));
+                    url = new URL(blenderBinary.getDownloadMirrors().get(downloadMirror));
                     LOG.debug("Attempting to establish a connection to " + url.toString());
                     connection = (HttpURLConnection) url.openConnection();
                     InputStream stream = connection.getInputStream();
-                    if (!blenderZipEntity.getBlenderBinaryOS().contains("Linux")) {
-                        filename = blenderVersion + "-" + blenderZipEntity.getBlenderBinaryOS().toLowerCase() + ".zip";
+                    if (!blenderBinary.getBlenderBinaryOS().contains("Linux")) {
+                        filename = blenderVersion + "-" + blenderBinary.getBlenderBinaryOS().toLowerCase() + ".zip";
                         LOG.debug(filename);
                     } else {
-                        filename = blenderVersion + "-" + blenderZipEntity.getBlenderBinaryOS().toLowerCase() + ".tar.bz2";
+                        filename = blenderVersion + "-" + blenderBinary.getBlenderBinaryOS().toLowerCase() + ".tar.bz2";
                     }
 
                     File toDownload = new File(saveLocation + File.separator + filename);
@@ -117,11 +117,11 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                         Files.copy(stream, Paths.get(toDownload.toString()));
                     }
 
-                    if (SethlansUtils.fileCheckMD5(toDownload, blenderZipEntity.getBlenderFileMd5())) {
-                        blenderZipEntity.setBlenderFile(toDownload.toString());
+                    if (SethlansUtils.fileCheckMD5(toDownload, blenderBinary.getBlenderFileMd5())) {
+                        blenderBinary.setBlenderFile(toDownload.toString());
                         LOG.debug(filename + " downloaded successfully.");
-                        blenderZipEntity.setDownloaded(true);
-                        blenderZipService.saveOrUpdate(blenderZipEntity);
+                        blenderBinary.setDownloaded(true);
+                        blenderZipService.saveOrUpdate(blenderBinary);
                     } else {
                         LOG.error("MD5 sums didn't match, removing file " + filename);
                         toDownload.delete();
@@ -135,7 +135,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                 } catch (IOException e) {
                     LOG.error("IO Exception: " + e.getMessage());
                     if (e.getMessage().contains("Connection timed out")) {
-                        LOG.error("Connection time out " + blenderZipEntity.getDownloadMirrors().get(downloadMirror));
+                        LOG.error("Connection time out " + blenderBinary.getDownloadMirrors().get(downloadMirror));
                         downloadMirror++;
                         retry = true;
                         continue;
@@ -157,10 +157,10 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
         return true;
     }
 
-    private List<BlenderZipEntity> prepareDownload() {
-        List<BlenderZipEntity> list = new ArrayList<>();
+    private List<BlenderBinary> prepareDownload() {
+        List<BlenderBinary> list = new ArrayList<>();
         String filename;
-        for (BlenderZipEntity blenderZipEntity : blenderFileEntities) {
+        for (BlenderBinary blenderZipEntity : blenderFileEntities) {
             if (!blenderZipEntity.isDownloaded()) {
                 for (BlenderZip blenderBinary : blenderBinaries) {
                     if (blenderBinary.getBlenderVersion().equals(blenderZipEntity.getBlenderVersion())) {

@@ -20,7 +20,7 @@
 package com.dryadandnaiad.sethlans.services.config;
 
 import com.dryadandnaiad.sethlans.commands.SetupForm;
-import com.dryadandnaiad.sethlans.domains.blender.BlenderZipEntity;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.users.SethlansRole;
 import com.dryadandnaiad.sethlans.domains.users.SethlansUser;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
@@ -107,10 +107,10 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     @Override
     public void saveServerSettings(SetupForm setupForm) {
         for (BlenderBinaryOS os : setupForm.getBlenderBinaryOS()) {
-            BlenderZipEntity blenderZipEntity = new BlenderZipEntity();
-            blenderZipEntity.setBlenderVersion(setupForm.getBlenderVersion());
-            blenderZipEntity.setBlenderBinaryOS(os.toString());
-            blenderZipService.saveOrUpdate(blenderZipEntity);
+            BlenderBinary blenderBinary = new BlenderBinary();
+            blenderBinary.setBlenderVersion(setupForm.getBlenderVersion());
+            blenderBinary.setBlenderBinaryOS(os.toString());
+            blenderZipService.saveOrUpdate(blenderBinary);
         }
         writeProperty(SethlansConfigKeys.PROJECT_DIR, setupForm.getProjectDirectory());
         writeProperty(SethlansConfigKeys.BLENDER_DIR, setupForm.getBlenderDirectory());

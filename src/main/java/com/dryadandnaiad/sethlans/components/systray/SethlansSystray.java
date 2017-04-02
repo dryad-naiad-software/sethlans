@@ -66,6 +66,7 @@ public class SethlansSystray extends TrayIcon {
         MenuItem openBrowser = new MenuItem("Launch Sethlans in Browser");
         MenuItem exitItem = new MenuItem("Exit");
         MenuItem aboutItem = new MenuItem("About");
+        MenuItem dbItem = new MenuItem("Database Console");
         openBrowser.addActionListener(e -> {
             LOG.debug("Displaying Homepage");
             try {
@@ -89,8 +90,17 @@ public class SethlansSystray extends TrayIcon {
                 LOG.error("Error with URL " + e1.getMessage());
             }
         });
+        dbItem.addActionListener(e -> {
+            try {
+                OpenBrowser.dbConsole();
+            } catch (MalformedURLException e1) {
+                LOG.error("Error with URL " + e1.getMessage());
+            }
+
+        });
 
         popup.add(openBrowser);
+        popup.add(dbItem);
         popup.add(aboutItem);
         popup.add(exitItem);
     }

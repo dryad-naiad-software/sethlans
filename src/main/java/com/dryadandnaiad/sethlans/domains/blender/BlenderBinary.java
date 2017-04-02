@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.domains.blender;
 import com.dryadandnaiad.sethlans.domains.AbstractEntityClass;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import java.util.List;
 
@@ -32,7 +33,7 @@ import java.util.List;
  * Project: sethlans
  */
 @Entity
-public class BlenderZipEntity extends AbstractEntityClass {
+public class BlenderBinary extends AbstractEntityClass {
     private String blenderVersion;
     private String blenderBinaryOS;
     private String blenderFile;
@@ -40,6 +41,17 @@ public class BlenderZipEntity extends AbstractEntityClass {
     @Transient
     private List<String> downloadMirrors;
     private boolean downloaded = false;
+
+    @OneToMany(mappedBy = "blenderBinary")
+    private List<BlenderProject> projects;
+
+    public List<BlenderProject> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(List<BlenderProject> projects) {
+        this.projects = projects;
+    }
 
     public String getBlenderVersion() {
         return blenderVersion;
@@ -91,13 +103,14 @@ public class BlenderZipEntity extends AbstractEntityClass {
 
     @Override
     public String toString() {
-        return "BlenderZipEntity{" +
+        return "BlenderBinary{" +
                 "blenderVersion='" + blenderVersion + '\'' +
                 ", blenderBinaryOS='" + blenderBinaryOS + '\'' +
                 ", blenderFile='" + blenderFile + '\'' +
                 ", blenderFileMd5='" + blenderFileMd5 + '\'' +
                 ", downloadMirrors=" + downloadMirrors +
                 ", downloaded=" + downloaded +
+                ", projects=" + projects +
                 '}';
     }
 }
