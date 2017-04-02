@@ -21,7 +21,7 @@ package com.dryadandnaiad.sethlans.services.network;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderZip;
-import com.dryadandnaiad.sethlans.services.database.BlenderZipService;
+import com.dryadandnaiad.sethlans.services.database.BlenderBinaryService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
@@ -54,7 +54,7 @@ import java.util.concurrent.Future;
 @Service
 public class BlenderDownloadServiceImpl implements BlenderDownloadService {
     private static final Logger LOG = LoggerFactory.getLogger(BlenderDownloadServiceImpl.class);
-    private BlenderZipService blenderZipService;
+    private BlenderBinaryService blenderBinaryService;
     private List<BlenderBinary> blenderFileEntities;
     private List<BlenderZip> blenderBinaries;
     @Value("${sethlans.blenderDir}")
@@ -63,8 +63,8 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
     private boolean retry = true;
 
     @Autowired
-    public void setBlenderZipService(BlenderZipService blenderZipService) {
-        this.blenderZipService = blenderZipService;
+    public void setBlenderBinaryService(BlenderBinaryService blenderBinaryService) {
+        this.blenderBinaryService = blenderBinaryService;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
     }
 
     private boolean doDownload() {
-        blenderFileEntities = (List<BlenderBinary>) blenderZipService.listAll();
+        blenderFileEntities = (List<BlenderBinary>) blenderBinaryService.listAll();
         blenderBinaries = BlenderUtils.listBinaries();
         List<BlenderBinary> blenderDownloadList = prepareDownload();
 
@@ -121,7 +121,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                         blenderBinary.setBlenderFile(toDownload.toString());
                         LOG.debug(filename + " downloaded successfully.");
                         blenderBinary.setDownloaded(true);
-                        blenderZipService.saveOrUpdate(blenderBinary);
+                        blenderBinaryService.saveOrUpdate(blenderBinary);
                     } else {
                         LOG.error("MD5 sums didn't match, removing file " + filename);
                         toDownload.delete();

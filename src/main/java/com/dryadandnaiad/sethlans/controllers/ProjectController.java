@@ -23,7 +23,7 @@ import com.dryadandnaiad.sethlans.commands.ProjectForm;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.enums.ProjectFormProgress;
 import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
-import com.dryadandnaiad.sethlans.services.database.BlenderZipService;
+import com.dryadandnaiad.sethlans.services.database.BlenderBinaryService;
 import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +54,7 @@ import java.util.UUID;
 @Profile({"SERVER", "BOTH"})
 public class ProjectController {
     private static final Logger LOG = LoggerFactory.getLogger(ProjectController.class);
-    private BlenderZipService blenderZipService;
+    private BlenderBinaryService blenderBinaryService;
     private List<BlenderBinary> availableBlenderBinaries;
     private WebUploadService webUploadService;
     private BlenderParseBlendFileService blenderParseBlendFileService;
@@ -101,7 +101,7 @@ public class ProjectController {
 
     private void getAvailableBlenderBinaries() {
         availableBlenderBinaries = new ArrayList<>();
-        List<BlenderBinary> databaseList = (List<BlenderBinary>) blenderZipService.listAll();
+        List<BlenderBinary> databaseList = (List<BlenderBinary>) blenderBinaryService.listAll();
         for (BlenderBinary blenderBinary : databaseList) {
             if (blenderBinary.isDownloaded()) {
                 availableBlenderBinaries.add(blenderBinary);
@@ -115,8 +115,8 @@ public class ProjectController {
     }
 
     @Autowired
-    public void setBlenderZipService(BlenderZipService blenderZipService) {
-        this.blenderZipService = blenderZipService;
+    public void setBlenderBinaryService(BlenderBinaryService blenderBinaryService) {
+        this.blenderBinaryService = blenderBinaryService;
     }
 
     @Autowired

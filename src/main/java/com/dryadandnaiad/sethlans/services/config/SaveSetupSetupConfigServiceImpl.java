@@ -26,7 +26,7 @@ import com.dryadandnaiad.sethlans.domains.users.SethlansUser;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
-import com.dryadandnaiad.sethlans.services.database.BlenderZipService;
+import com.dryadandnaiad.sethlans.services.database.BlenderBinaryService;
 import com.dryadandnaiad.sethlans.services.database.RoleService;
 import com.dryadandnaiad.sethlans.services.database.UserService;
 import org.slf4j.Logger;
@@ -49,7 +49,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     private static final Logger LOG = LoggerFactory.getLogger(SaveSetupSetupConfigServiceImpl.class);
     private UserService userService;
     private RoleService roleService;
-    private BlenderZipService blenderZipService;
+    private BlenderBinaryService blenderBinaryService;
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -62,8 +62,8 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     }
 
     @Autowired
-    public void setBlenderZipService(BlenderZipService blenderZipService) {
-        this.blenderZipService = blenderZipService;
+    public void setBlenderBinaryService(BlenderBinaryService blenderBinaryService) {
+        this.blenderBinaryService = blenderBinaryService;
     }
 
     @Override
@@ -110,7 +110,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
             BlenderBinary blenderBinary = new BlenderBinary();
             blenderBinary.setBlenderVersion(setupForm.getBlenderVersion());
             blenderBinary.setBlenderBinaryOS(os.toString());
-            blenderZipService.saveOrUpdate(blenderBinary);
+            blenderBinaryService.saveOrUpdate(blenderBinary);
         }
         writeProperty(SethlansConfigKeys.PROJECT_DIR, setupForm.getProjectDirectory());
         writeProperty(SethlansConfigKeys.BLENDER_DIR, setupForm.getBlenderDirectory());

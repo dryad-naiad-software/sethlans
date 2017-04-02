@@ -19,13 +19,13 @@
 
 package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderProject;
 
 /**
- * Created Mario Estrella on 3/23/17.
+ * Created Mario Estrella on 4/2/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderZipService extends CRUDService<BlenderBinary> {
+public interface BlenderProjectService extends CRUDService<BlenderProject> {
 }

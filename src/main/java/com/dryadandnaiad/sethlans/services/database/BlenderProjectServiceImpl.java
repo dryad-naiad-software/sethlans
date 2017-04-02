@@ -19,8 +19,8 @@
 
 package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
-import com.dryadandnaiad.sethlans.repositories.BlenderEntityRepository;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.repositories.BlenderProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,42 +28,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created Mario Estrella on 3/23/17.
+ * Created Mario Estrella on 4/2/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
 @Service
-public class BlenderZipServiceImpl implements BlenderZipService {
-
-    private BlenderEntityRepository blenderEntityRepository;
+public class BlenderProjectServiceImpl implements BlenderProjectService {
+    private BlenderProjectRepository blenderProjectRepository;
 
     @Autowired
-    public void setBlenderEntityRepository(BlenderEntityRepository blenderEntityRepository) {
-        this.blenderEntityRepository = blenderEntityRepository;
+    public void setBlenderProjectRepository(BlenderProjectRepository blenderProjectRepository) {
+        this.blenderProjectRepository = blenderProjectRepository;
     }
 
     @Override
     public List<?> listAll() {
-        List<BlenderBinary> blenderEntities = new ArrayList<>();
-        blenderEntityRepository.findAll().forEach(blenderEntities::add);
-        return blenderEntities;
+        List<BlenderProject> blenderProjects = new ArrayList<>();
+        blenderProjectRepository.findAll().forEach(blenderProjects::add);
+        return blenderProjects;
     }
 
     @Override
-    public BlenderBinary getById(Integer id) {
-        return blenderEntityRepository.findOne(id);
+    public BlenderProject getById(Integer id) {
+        return blenderProjectRepository.findOne(id);
     }
 
     @Override
-    public BlenderBinary saveOrUpdate(BlenderBinary domainObject) {
-        return blenderEntityRepository.save(domainObject);
+    public BlenderProject saveOrUpdate(BlenderProject domainObject) {
+        return blenderProjectRepository.save(domainObject);
     }
 
     @Override
     public void delete(Integer id) {
-        BlenderBinary blenderBinary = blenderEntityRepository.findOne(id);
-        blenderEntityRepository.delete(blenderBinary);
-
+        BlenderProject blenderProject = blenderProjectRepository.findOne(id);
+        blenderProjectRepository.delete(blenderProject);
     }
 }

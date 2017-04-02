@@ -17,10 +17,9 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.repositories;
+package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
-import org.springframework.data.repository.CrudRepository;
 
 /**
  * Created Mario Estrella on 3/23/17.
@@ -28,5 +27,5 @@ import org.springframework.data.repository.CrudRepository;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderEntityRepository extends CrudRepository<BlenderBinary, Integer> {
+public interface BlenderBinaryService extends CRUDService<BlenderBinary> {
 }
