@@ -69,6 +69,7 @@ public class ProjectController {
     public String getPage(Model model) {
         getAvailableBlenderBinaries();
         model.addAttribute("availableBlenderBinaries", availableBlenderBinaries);
+        model.addAttribute("projects", blenderProjectService.listAll());
         return "project/project_list";
     }
 

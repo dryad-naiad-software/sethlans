@@ -48,6 +48,7 @@ public class BlenderProject extends AbstractEntityClass {
     private String blendFileLocation;
     private String blenderVersion;
     private RenderStatus renderStatus;
+    private String currentFrameThumbnail;
 
     public RenderStatus getRenderStatus() {
         return renderStatus;
@@ -177,6 +178,14 @@ public class BlenderProject extends AbstractEntityClass {
         this.renderOn = renderOn;
     }
 
+    public String getCurrentFrameThumbnail() {
+        return currentFrameThumbnail;
+    }
+
+    public void setCurrentFrameThumbnail(String currentFrameThumbnail) {
+        this.currentFrameThumbnail = currentFrameThumbnail;
+    }
+
     @Override
     public String toString() {
         return "BlenderProject{" +
@@ -195,6 +204,8 @@ public class BlenderProject extends AbstractEntityClass {
                 ", blendFilename='" + blendFilename + '\'' +
                 ", blendFileLocation='" + blendFileLocation + '\'' +
                 ", blenderVersion='" + blenderVersion + '\'' +
+                ", renderStatus=" + renderStatus +
+                ", currentFrameThumbnail='" + currentFrameThumbnail + '\'' +
                 '}';
     }
 }
