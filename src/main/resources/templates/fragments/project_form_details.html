@@ -19,7 +19,7 @@
   -->
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:ab="http://www.w3.org/1999/xhtml">
+>
 <!-- Namespaces -->
 
 <head>
@@ -148,8 +148,8 @@
                 <input type="text" name="projectName" id="projectName" class="form-control">
             </div>
             <div class="form-group">
-                <label for="blenderVersion">Available Blender Versions</label>
-                <select class="form-control" id="blenderVersion" name="blenderVersion"
+                <label for="selectedBlenderVersion">Available Blender Versions</label>
+                <select class="form-control" id="selectedBlenderVersion" name="selectedBlenderVersion"
                         th:value="${projectForm.selectedBlenderVersion}">
                     <option th:each="blenderBinary : ${projectForm.getAvailableBlenderBinaries()}"
                             th:value="${blenderBinary.getBlenderVersion()}"
@@ -159,10 +159,12 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="blenderVersion">Output Format</label>
+                <label for="outputFormat">Output Format</label>
                 <select class="form-control" id="outputFormat" name="outputFormat"
-                        ab:value="${projectForm.outputFormat}">
-                    <option>PNG</option>
+                        th:value="${projectForm.outputFormat}">
+                    <option th:each="format : ${T(com.dryadandnaiad.sethlans.enums.RenderOutputFormat).values()}"
+                            th:value="${format}" th:text="${format}">PNG
+                    </option>
                     <option th:remove="all">AVI</option>
                 </select>
             </div>
@@ -243,28 +245,33 @@
 
 
             <div class="form-group">
-                <button type="submit" class="btn btn-default">Cancel</button>
+                <input type="hidden" name="uploadedFile" th:value="${projectForm.uploadedFile}">
+                <input type="hidden" name="fileLocation" th:value="${projectForm.fileLocation}">
+                <a href="/project" class="btn btn-default">Cancel</a>
                 <button type="submit" class="btn btn-primary pull-right">Submit Project</button>
             </div>
         </form>
         <script defer="defer" th:inline="javascript">
             window.onload = function () {
+                document.getElementById("outputFormat").disabled = true;
                 $("#tiles").slider({tooltip_position: 'bottom'});
                 $("#scaling").slider({tooltip_position: 'bottom'});
                 $('input[type="radio"]').on('change', function () {
                     var typeValue = document.querySelector('input[name="projectType"]:checked').value;
-                    console.log(typeValue);
                     if (typeValue === "STILL_IMAGE") {
                         document.getElementById("framenum").disabled = false;
                         document.getElementById("startframe").disabled = true;
                         document.getElementById("endframe").disabled = true;
                         document.getElementById("framestep").disabled = true;
+                        document.getElementById("outputFormat").disabled = true;
+                        $("#outputFormat")[0].selectedIndex = 0;
                     }
                     if (typeValue === "ANIMATION") {
                         document.getElementById("framenum").disabled = true;
                         document.getElementById("startframe").disabled = false;
                         document.getElementById("endframe").disabled = false;
                         document.getElementById("framestep").disabled = false;
+                        document.getElementById("outputFormat").disabled = false;
                     }
                 });
                 selectEngine();

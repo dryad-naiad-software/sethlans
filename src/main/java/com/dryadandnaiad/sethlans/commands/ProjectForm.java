@@ -21,10 +21,7 @@ package com.dryadandnaiad.sethlans.commands;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlendFile;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderZipEntity;
-import com.dryadandnaiad.sethlans.enums.BlenderEngine;
-import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.enums.ProjectFormProgress;
-import com.dryadandnaiad.sethlans.enums.ProjectType;
+import com.dryadandnaiad.sethlans.enums.*;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
@@ -57,6 +54,7 @@ public class ProjectForm {
     private List<ComputeType> renderOn;
     private List<BlenderZipEntity> availableBlenderBinaries;
     private BlendFile blendFile;
+    private RenderOutputFormat outputFormat;
 
 
     public void populateForm() {
@@ -206,6 +204,14 @@ public class ProjectForm {
         this.selectedBlenderVersion = selectedBlenderVersion;
     }
 
+    public RenderOutputFormat getOutputFormat() {
+        return outputFormat;
+    }
+
+    public void setOutputFormat(RenderOutputFormat outputFormat) {
+        this.outputFormat = outputFormat;
+    }
+
     @Override
     public String toString() {
         return "ProjectForm{" +
@@ -222,6 +228,7 @@ public class ProjectForm {
                 ", blenderEngine=" + blenderEngine +
                 ", renderOn" + renderOn +
                 ", selectedBlenderVersion=" + selectedBlenderVersion +
+                ", outputFormat=" + outputFormat +
                 ", uploadedFile='" + uploadedFile + '\'' +
                 ", fileLocation='" + fileLocation + '\'' +
                 ", availableBlenderBinaries=" + availableBlenderBinaries +

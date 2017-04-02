@@ -88,9 +88,8 @@ public class ProjectController {
 
     @RequestMapping(value = "/project/summary", method = RequestMethod.POST)
     public String projectSummary(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm, BindingResult bindingResult) {
-        projectForm.setAvailableBlenderBinaries(availableBlenderBinaries);
         LOG.debug(projectForm.toString());
-        return "project/project_form";
+        return "project/project_view";
 
     }
 
