@@ -20,17 +20,19 @@
 package com.dryadandnaiad.sethlans.enums;
 
 /**
- * Created Mario Estrella on 4/1/17.
+ * Created Mario Estrella on 4/2/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public enum ProjectType {
-    ANIMATION("Animation"), STILL_IMAGE("Still Image");
+public enum RenderStatus {
+    NOT_STARTED("Not Started"),
+    RENDERING("Rendering"),
+    FINISHED("Finished");
 
-    private final String name;
+    private String name;
 
-    ProjectType(String name) {
+    RenderStatus(String name) {
         this.name = name;
     }
 

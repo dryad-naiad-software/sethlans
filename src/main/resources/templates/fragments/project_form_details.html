@@ -239,7 +239,7 @@
                 <style>.slider-selection {
                     background: #0C8DCE;
                 }</style>
-                <label for="scaling">Scaling: &emsp; &emsp; </label>
+                <label for="scaling">Final Image Scaling: &emsp; &emsp; </label>
                 <input id="scaling" th:field="${projectForm.resPercentage}" type="number"
                        data-slider-min="1"
                        data-slider-max="100"
@@ -249,6 +249,8 @@
 
 
             <div class="form-group">
+                <input type="hidden" th:field="${projectForm.id}"/>
+                <input type="hidden" th:field="${projectForm.version}"/>
                 <input type="hidden" name="uploadedFile" th:value="${projectForm.uploadedFile}">
                 <input type="hidden" name="fileLocation" th:value="${projectForm.fileLocation}">
                 <input type="hidden" id="progress" name="progress" value="FINISHED">

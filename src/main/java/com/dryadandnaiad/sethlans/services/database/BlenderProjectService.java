@@ -30,5 +30,5 @@ import com.dryadandnaiad.sethlans.domains.blender.BlenderProject;
  */
 public interface BlenderProjectService extends CRUDService<BlenderProject> {
 
-    public BlenderProject saveOrUpdateProjectForm(ProjectForm projectForm);
+    BlenderProject saveOrUpdateProjectForm(ProjectForm projectForm);
 }

@@ -20,7 +20,9 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.commands.ProjectForm;
+import com.dryadandnaiad.sethlans.converters.BlenderProjectToProjectForm;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.enums.ProjectFormProgress;
 import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryService;
@@ -34,10 +36,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
@@ -61,6 +60,8 @@ public class ProjectController {
     private BlenderParseBlendFileService blenderParseBlendFileService;
     private BlenderProjectService blenderProjectService;
 
+    private BlenderProjectToProjectForm blenderProjectToProjectForm;
+
     @Value("${sethlans.tempDir}")
     private String temp;
 
@@ -75,6 +76,12 @@ public class ProjectController {
     public String newProject(Model model) {
         model.addAttribute("projectForm", new ProjectForm());
         return "project/project_form";
+    }
+
+    @RequestMapping("/project/view/{id}")
+    public String getProject(@PathVariable Integer id, Model model) {
+        model.addAttribute("project", blenderProjectService.getById(id));
+        return "project/project_view";
     }
 
     @RequestMapping(value = "/project/new", method = RequestMethod.POST)
@@ -96,7 +103,9 @@ public class ProjectController {
         LOG.debug(projectForm.toString());
         if (projectForm.getProgress() == ProjectFormProgress.FINISHED) {
             LOG.debug("FINISHED");
-            blenderProjectService.saveOrUpdateProjectForm(projectForm);
+            BlenderProject savedProject = blenderProjectService.saveOrUpdateProjectForm(projectForm);
+
+            return "redirect:/project/view/" + savedProject.getId();
         }
         return "project/project_view";
 
@@ -130,5 +139,10 @@ public class ProjectController {
     @Autowired
     public void setBlenderProjectService(BlenderProjectService blenderProjectService) {
         this.blenderProjectService = blenderProjectService;
+    }
+
+    @Autowired
+    public void setBlenderProjectToProjectForm(BlenderProjectToProjectForm blenderProjectToProjectForm) {
+        this.blenderProjectToProjectForm = blenderProjectToProjectForm;
     }
 }

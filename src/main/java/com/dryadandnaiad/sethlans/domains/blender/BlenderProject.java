@@ -20,10 +20,7 @@
 package com.dryadandnaiad.sethlans.domains.blender;
 
 import com.dryadandnaiad.sethlans.domains.AbstractEntityClass;
-import com.dryadandnaiad.sethlans.enums.BlenderEngine;
-import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.enums.ProjectType;
-import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
+import com.dryadandnaiad.sethlans.enums.*;
 
 import javax.persistence.Entity;
 
@@ -50,6 +47,15 @@ public class BlenderProject extends AbstractEntityClass {
     private String blendFilename;
     private String blendFileLocation;
     private String blenderVersion;
+    private RenderStatus renderStatus;
+
+    public RenderStatus getRenderStatus() {
+        return renderStatus;
+    }
+
+    public void setRenderStatus(RenderStatus renderStatus) {
+        this.renderStatus = renderStatus;
+    }
 
     public String getProjectName() {
         return projectName;

@@ -34,6 +34,10 @@ import java.util.List;
  * Project: sethlans
  */
 public class ProjectForm {
+
+    private Integer id;
+    private Integer version;
+
     @NotNull
     @NotEmpty
     private String projectName;
@@ -212,10 +216,28 @@ public class ProjectForm {
         this.outputFormat = outputFormat;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
         return "ProjectForm{" +
-                "projectName='" + projectName + '\'' +
+                "id=" + id +
+                ", version=" + version +
+                ", projectName='" + projectName + '\'' +
                 ", progress=" + progress +
                 ", samples=" + samples +
                 ", startFrame=" + startFrame +
@@ -226,13 +248,13 @@ public class ProjectForm {
                 ", resPercentage=" + resPercentage +
                 ", projectType=" + projectType +
                 ", blenderEngine=" + blenderEngine +
-                ", renderOn=" + renderOn +
-                ", selectedBlenderVersion=" + selectedBlenderVersion +
-                ", outputFormat=" + outputFormat +
                 ", uploadedFile='" + uploadedFile + '\'' +
                 ", fileLocation='" + fileLocation + '\'' +
+                ", selectedBlenderVersion='" + selectedBlenderVersion + '\'' +
+                ", renderOn=" + renderOn +
                 ", availableBlenderBinaries=" + availableBlenderBinaries +
                 ", blendFile=" + blendFile +
+                ", outputFormat=" + outputFormat +
                 '}';
     }
 }

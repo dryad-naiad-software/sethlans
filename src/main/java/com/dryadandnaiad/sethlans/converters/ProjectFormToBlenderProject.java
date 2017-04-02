@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.converters;
 
 import com.dryadandnaiad.sethlans.commands.ProjectForm;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.enums.RenderStatus;
 import com.dryadandnaiad.sethlans.utils.RandomString;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
@@ -47,6 +48,8 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
     @Override
     public BlenderProject convert(ProjectForm projectForm) {
         BlenderProject project = new BlenderProject();
+        project.setId(projectForm.getId());
+        project.setVersion(projectForm.getVersion());
         project.setProjectName(projectForm.getProjectName());
         project.setRenderOutputFormat(projectForm.getOutputFormat());
         project.setProjectType(projectForm.getProjectType());
@@ -62,26 +65,30 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
         project.setBlenderVersion(projectForm.getSelectedBlenderVersion());
         project.setRenderOn(projectForm.getRenderOn());
 
-        RandomString randomString = new RandomString(6);
+        if (projectForm.getId() == null) {
+            project.setRenderStatus(RenderStatus.NOT_STARTED);
 
-        File blenderProjectDirectory = new File(projectDir + File.separator + projectForm.getProjectName().replaceAll(" ", "_").toLowerCase() + "_" + randomString.nextString());
+            RandomString randomString = new RandomString(6);
+
+            File blenderProjectDirectory = new File(projectDir + File.separator + projectForm.getProjectName().replaceAll(" ", "_").toLowerCase() + "_" + randomString.nextString());
 
 
-        try {
-            if (!blenderProjectDirectory.mkdirs()) {
-                throw new Exception("Unable to create directory " + blenderProjectDirectory.toString());
+            try {
+                if (!blenderProjectDirectory.mkdirs()) {
+                    throw new Exception("Unable to create directory " + blenderProjectDirectory.toString());
+                }
+                File projecttemp = new File(projectForm.getFileLocation());
+                if (projecttemp.renameTo(new File(blenderProjectDirectory + File.separator + projectForm.getUploadedFile()))) {
+                    LOG.debug(projectForm.getUploadedFile() + " moved to " + blenderProjectDirectory.toString());
+                    project.setBlendFileLocation(blenderProjectDirectory + File.separator + projectForm.getUploadedFile());
+                } else {
+                    throw new Exception(projectForm.getUploadedFile() + " failed to move");
+                }
+            } catch (Exception e) {
+                LOG.error(e.getMessage());
+                LOG.error(Throwables.getStackTraceAsString(e));
+                return null;
             }
-            File projecttemp = new File(projectForm.getFileLocation());
-            if (projecttemp.renameTo(new File(blenderProjectDirectory + File.separator + projectForm.getUploadedFile()))) {
-                LOG.debug(projectForm.getUploadedFile() + " moved to " + blenderProjectDirectory.toString());
-                project.setBlendFileLocation(blenderProjectDirectory + File.separator + projectForm.getUploadedFile());
-            } else {
-                throw new Exception(projectForm.getUploadedFile() + " failed to move");
-            }
-        } catch (Exception e) {
-            LOG.error(e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
-            return null;
         }
 
 
