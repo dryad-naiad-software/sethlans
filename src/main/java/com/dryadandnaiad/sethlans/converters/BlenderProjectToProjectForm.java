@@ -51,6 +51,10 @@ public class BlenderProjectToProjectForm implements Converter<BlenderProject, Pr
         projectForm.setResolutionY(project.getResolutionY());
         projectForm.setResPercentage(project.getResPercentage());
         projectForm.setSamples(project.getSamples());
+        projectForm.setFileLocation(project.getBlendFileLocation());
+        projectForm.setUploadedFile(project.getBlendFilename());
+        projectForm.setRenderStatus(project.getRenderStatus());
+
         projectForm.setProgress(ProjectFormProgress.DETAILS);
         return projectForm;
     }

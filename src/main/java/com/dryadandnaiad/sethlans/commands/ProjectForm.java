@@ -59,6 +59,7 @@ public class ProjectForm {
     private List<BlenderBinary> availableBlenderBinaries;
     private BlendFile blendFile;
     private RenderOutputFormat outputFormat;
+    private RenderStatus renderStatus;
 
 
     public void populateForm() {
@@ -70,6 +71,14 @@ public class ProjectForm {
         this.resolutionY = blendFile.getResolutionY();
         this.resPercentage = blendFile.getResPercent();
         this.blenderEngine = blendFile.getEngine();
+    }
+
+    public RenderStatus getRenderStatus() {
+        return renderStatus;
+    }
+
+    public void setRenderStatus(RenderStatus renderStatus) {
+        this.renderStatus = renderStatus;
     }
 
     public BlenderEngine getBlenderEngine() {
@@ -255,6 +264,7 @@ public class ProjectForm {
                 ", availableBlenderBinaries=" + availableBlenderBinaries +
                 ", blendFile=" + blendFile +
                 ", outputFormat=" + outputFormat +
+                ", renderStatus=" + renderStatus +
                 '}';
     }
 }

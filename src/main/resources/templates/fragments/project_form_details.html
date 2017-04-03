@@ -252,6 +252,7 @@
             <div class="form-group">
                 <input type="hidden" th:field="${projectForm.id}"/>
                 <input type="hidden" th:field="${projectForm.version}"/>
+                <input type="hidden" th:field="${projectForm.renderStatus}"/>
                 <input type="hidden" name="uploadedFile" th:value="${projectForm.uploadedFile}">
                 <input type="hidden" name="fileLocation" th:value="${projectForm.fileLocation}">
                 <input type="hidden" id="progress" name="progress" value="FINISHED">

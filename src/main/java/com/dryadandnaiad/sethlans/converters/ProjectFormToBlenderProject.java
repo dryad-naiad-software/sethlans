@@ -65,6 +65,7 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
         project.setBlenderVersion(projectForm.getSelectedBlenderVersion());
         project.setRenderOn(projectForm.getRenderOn());
 
+
         if (projectForm.getId() == null) {
             project.setRenderStatus(RenderStatus.NOT_STARTED);
 
@@ -89,6 +90,9 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
                 LOG.error(Throwables.getStackTraceAsString(e));
                 return null;
             }
+        } else {
+            project.setBlendFileLocation(projectForm.getFileLocation());
+            project.setRenderStatus(projectForm.getRenderStatus());
         }
 
 
