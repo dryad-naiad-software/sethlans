@@ -202,7 +202,8 @@
                 <select class="form-control" id="renderOn" name="renderOn"
                         th:value="${projectForm.renderOn}">
                     <option th:each="method : ${T(com.dryadandnaiad.sethlans.enums.ComputeType).values()}"
-                            th:value="${method}" th:text="${method.getName()}">CPU
+                            th:value="${method}" th:text="${method.getName()}"
+                            th:selected="${projectForm.renderOn.equals(method)}">CPU
                     </option>
                     <option th:remove="all">GPU</option>
                     <option th:remove="all">CPU &amp; GPU</option>
@@ -215,7 +216,8 @@
                         th:value="${projectForm.blenderEngine}" onchange="selectEngine()">
                     <!--These errors can be ignored, thymeleaf doesn't recognize values from enum though it is valid. -->
                     <option th:each="engine : ${T(com.dryadandnaiad.sethlans.enums.BlenderEngine).values()}"
-                            th:value="${engine}" th:text="${engine.getName()}">Cycles
+                            th:value="${engine}" th:text="${engine.getName()}"
+                            th:selected="${projectForm.blenderEngine.equals(engine)}">Cycles
                     </option>
                     <!--End of comment-->
                     <option th:remove="all">Engine1</option>
