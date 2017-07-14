@@ -17,13 +17,34 @@
  *
  */
 
-package com.dryadandnaiad.sethlans;
+package com.dryadandnaiad.sethlans.utils;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
- * Created Mario Estrella on 3/22/17.
+ * Created Mario Estrella on 7/13/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class Placeholder {
+public class BlenderUtilsTest {
+
+    @Test
+    public void test_binaries_list_not_null() {
+        Assert.assertNotNull(BlenderUtils.listBinaries());
+
+    }
+
+    @Test
+    public void test_version_list_not_null() {
+        Assert.assertNotNull(BlenderUtils.listVersions());
+    }
+
+    @Test
+    public void test_refresh() {
+        BlenderUtils.refresh();
+        Assert.assertNotNull(BlenderUtils.listVersions());
+        Assert.assertNotNull(BlenderUtils.listBinaries());
+    }
 }

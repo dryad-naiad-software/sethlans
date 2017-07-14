@@ -41,7 +41,6 @@ import static org.junit.Assert.*;
 public class SetupFormTest {
 
     private SetupForm target = null;
-    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(SetupFormTest.class);
 
     @Before
     public void setup() {
