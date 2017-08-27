@@ -50,7 +50,6 @@ public class IndexController {
             return "redirect:/setup";
         } else {
             LOG.debug(mode.toString());
-            //TestPython.test("/Users/mestrella/.sethlans/bin/python/bin/python3.5m");
             return "index";
         }
 
