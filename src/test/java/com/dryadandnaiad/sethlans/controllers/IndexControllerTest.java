@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 /**
  * Created Mario Estrella on 8/26/17.
@@ -57,10 +58,42 @@ public class IndexControllerTest {
     }
 
     @Test
-    public void testIndex() throws Exception {
+    public void testIndexFirstTime() throws Exception {
+        ReflectionTestUtils.setField(indexController, "firstTime", true);
+        ReflectionTestUtils.setField(indexController, "mode", SethlansMode.BOTH);
+
+        mockMvc.perform(get("/"))
+                .andExpect(view().name("redirect:/setup"))
+                .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    public void test_index_after_config_mode_server() throws Exception {
+        ReflectionTestUtils.setField(indexController, "firstTime", false);
         ReflectionTestUtils.setField(indexController, "mode", SethlansMode.SERVER);
 
         mockMvc.perform(get("/"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(view().name("index"));
+    }
+
+    @Test
+    public void test_index_after_config_mode_node() throws Exception {
+        ReflectionTestUtils.setField(indexController, "firstTime", false);
+        ReflectionTestUtils.setField(indexController, "mode", SethlansMode.NODE);
+
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("index"));
+    }
+
+    @Test
+    public void test_index_after_config_mode_both() throws Exception {
+        ReflectionTestUtils.setField(indexController, "firstTime", false);
+        ReflectionTestUtils.setField(indexController, "mode", SethlansMode.BOTH);
+
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("index"));
     }
 }
