@@ -4,7 +4,7 @@ cache:
     - /root/.m2/repository/
 before_script:
   - apt-get update -y && apt-get upgrade -y
-  - apt-get install libc6:i386 libstdc++6:i386
+  - apt-get install libc6-dev-i386
 
 build:
   tags:
