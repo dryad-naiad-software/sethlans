@@ -110,6 +110,7 @@ public class SetupForm {
         this.totalCores = populateCores();
         populateAvailableMethods();
         populateBlenderOS();
+        this.selectedMethod = ComputeType.CPU;
     }
 
     private void populateBlenderOS() {

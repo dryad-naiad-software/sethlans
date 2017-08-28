@@ -88,7 +88,7 @@
                                     <div class="form-group">
                                         <label for="selectedMethod">Devices:</label>
                                         <select class="form-control" id="selectedMethod" name="selectedMethod"
-                                                th:value="${setupForm.selectedMethod}" onclick="showCUDA()">
+                                                th:value="${setupForm.selectedMethod}" onchange="showCUDA()">
                                             <option th:each="method : ${setupForm.availableMethods}"
                                                     th:value="${method}" th:text="${method}"
                                                     th:selected="${setupForm.selectedMethod.equals(method)}">CPU
