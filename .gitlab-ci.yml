@@ -3,7 +3,7 @@ cache:
   paths:
     - /root/.m2/repository/
 before_script:
-  - apt-get update -y && apt-get upgrade -y apt-get install libc6-dev-i386 -y
+  - apt-get update -y && apt-get upgrade -y && apt-get install libc6-dev-i386 -y
 
 build:
   tags:
