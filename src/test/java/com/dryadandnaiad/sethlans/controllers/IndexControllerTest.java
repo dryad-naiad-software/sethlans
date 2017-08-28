@@ -58,7 +58,7 @@ public class IndexControllerTest {
     }
 
     @Test
-    public void testIndexFirstTime() throws Exception {
+    public void test_index_first_time() throws Exception {
         ReflectionTestUtils.setField(indexController, "firstTime", true);
         ReflectionTestUtils.setField(indexController, "mode", SethlansMode.BOTH);
 
