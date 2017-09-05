@@ -47,5 +47,9 @@ public class SetupFormValidator implements Validator {
             errors.rejectValue("passwordConfirm", "form.passwordsDontMatch", "Passwords Don't Match");
         }
 
+        if (setupForm.getPassword().length() < 8) {
+            errors.rejectValue("password", "form.passwordTooShort", "Password Too Short");
+        }
+
     }
 }

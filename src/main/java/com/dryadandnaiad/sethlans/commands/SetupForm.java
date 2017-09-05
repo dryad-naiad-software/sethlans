@@ -52,16 +52,16 @@ public class SetupForm {
     private String httpsPort;
 
     @NotEmpty
-    @Size(min = 4, max = 75)
+    @Size(min = 4, max = 32)
     private String username;
 
 
     @NotEmpty
-    @Size(min = 8, max = 50)
+    @Size(max = 32)
     private String password;
 
     @NotEmpty
-    @Size(min = 8, max = 50)
+    @Size(max = 32)
     private String passwordConfirm;
 
     @NotEmpty
