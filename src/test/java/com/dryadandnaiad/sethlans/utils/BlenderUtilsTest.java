@@ -19,8 +19,12 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.domains.blender.BlenderZip;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+
+import java.util.List;
 
 /**
  * Created Mario Estrella on 8/28/17.
@@ -29,6 +33,17 @@ import org.junit.Test;
  * Project: sethlans
  */
 public class BlenderUtilsTest {
+    private List<BlenderZip> blenderZipList;
+
+    @Before
+    public void setup() {
+        blenderZipList = BlenderUtils.listBinaries();
+    }
+
+    @Test
+    public void test_list_items_unique() {
+        Assert.assertNotEquals(blenderZipList.get(0).getBlenderVersion(), blenderZipList.get(1).getBlenderVersion());
+    }
 
     @Test
     public void test_binaries_list_not_null() {

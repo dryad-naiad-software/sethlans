@@ -1,5 +1,4 @@
 {
-  "pythondownload": {
     "macos": "https://github.com/dryad-naiad-software/sethlans-python-binaries/blob/master/python-3.5-macOS.zip?raw=true",
     "windows64": "https://github.com/dryad-naiad-software/sethlans-python-binaries/blob/master/python-3.5-windows64.zip?raw=true",
     "windows32": "https://github.com/dryad-naiad-software/sethlans-python-binaries/blob/master/python-3.5-windows32.zip?raw=true",
@@ -15,5 +14,4 @@
     "windows32_filename": "python-3.5-windows32.zip",
     "linux64_filename": "python-3.5-linux64.zip",
     "linux32_filename": "python-3.5-linux32.zip"
-  }
 }

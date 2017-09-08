@@ -22,9 +22,10 @@ package com.dryadandnaiad.sethlans.services.network;
 import com.dryadandnaiad.sethlans.domains.python.PythonDownloadFile;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang3.SystemUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -32,11 +33,13 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 
 /**
  * Created Mario Estrella on 3/28/17.
@@ -50,16 +53,20 @@ public class PythonDownloadServiceImpl implements PythonDownloadService {
     private String binDir;
     private PythonDownloadFile pythonDownloadFile;
 
+    public PythonDownloadFile getPythonDownloadFile() {
+        setPythonBinary();
+        return pythonDownloadFile;
+    }
+
     private boolean setPythonBinary() {
         GetRawDataService getJSONData = new GetRawDataServiceImpl();
         String data = getJSONData.getLocalResult("pythondownload.json");
         try {
-            JSONObject jsonData = new JSONObject(data);
-            JSONObject pythondownload = jsonData.getJSONObject("pythondownload");
-            String binaryURL = null;
-            String md5 = null;
-            String filename = null;
+            Type listType = new TypeToken<HashMap<String, String>>() {
+            }.getType();
+            Gson gson = new Gson();
 
+            HashMap<String, String> pythonDownload = gson.fromJson(data, listType);//
             if (SystemUtils.IS_OS_WINDOWS) {
                 String arch = System.getenv("PROCESSOR_ARCHITECTURE");
                 String wow64Arch = System.getenv("PROCESSOR_ARCHITEW6432");
@@ -68,41 +75,26 @@ public class PythonDownloadServiceImpl implements PythonDownloadService {
                         || wow64Arch != null && wow64Arch.endsWith("64")
                         ? "64" : "32";
                 if (realArch.equals("64")) {
-                    binaryURL = pythondownload.getString("windows64");
-                    md5 = pythondownload.getString("windows64_md5");
-                    filename = pythondownload.getString("windows64_filename");
-
+                    this.pythonDownloadFile = new PythonDownloadFile(pythonDownload.get("windows64"), pythonDownload.get("windows64_md5"), pythonDownload.get("windows64_filename"));
+                    return true;
                 } else {
-                    binaryURL = pythondownload.getString("windows32");
-                    md5 = pythondownload.getString("windows32_md5");
-                    filename = pythondownload.getString("windows32_filename");
-
+                    this.pythonDownloadFile = new PythonDownloadFile(pythonDownload.get("windows32"), pythonDownload.get("windows32_md5"), pythonDownload.get("windows32_filename"));
+                    return true;
                 }
             }
             if (SystemUtils.IS_OS_LINUX) {
                 if (SystemUtils.OS_ARCH.contains("64")) {
-                    binaryURL = pythondownload.getString("linux64");
-                    md5 = pythondownload.getString("linux64_md5");
-                    filename = pythondownload.getString("linux64_filename");
+                    this.pythonDownloadFile = new PythonDownloadFile(pythonDownload.get("linux64"), pythonDownload.get("linux64_md5"), pythonDownload.get("linux64_filename"));
                 } else {
-                    binaryURL = pythondownload.getString("linux32");
-                    md5 = pythondownload.getString("linux32_md5");
-                    filename = pythondownload.getString("linux32_filename");
+                    this.pythonDownloadFile = new PythonDownloadFile(pythonDownload.get("linux32"), pythonDownload.get("linux32_md5"), pythonDownload.get("linux32_filename"));
                 }
             }
             if (SystemUtils.IS_OS_MAC) {
-                binaryURL = pythondownload.getString("macos");
-                md5 = pythondownload.getString("macos_md5");
-                filename = pythondownload.getString("macos_filename");
-            }
-
-            if (binaryURL != null && md5 != null) {
-                this.pythonDownloadFile = new PythonDownloadFile(binaryURL, md5, filename);
-                LOG.debug(pythonDownloadFile.toString());
+                this.pythonDownloadFile = new PythonDownloadFile(pythonDownload.get("macos"), pythonDownload.get("macos_md5"), pythonDownload.get("macos_filename"));
                 return true;
             }
 
-        } catch (JSONException jsonEX) {
+        } catch (JsonSyntaxException jsonEX) {
             LOG.error("Error processing JSON data" + jsonEX.getMessage());
             LOG.error(Throwables.getStackTraceAsString(jsonEX));
         }

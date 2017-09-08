@@ -23,13 +23,14 @@ import com.dryadandnaiad.sethlans.domains.blender.BlenderZip;
 import com.dryadandnaiad.sethlans.services.network.GetRawDataService;
 import com.dryadandnaiad.sethlans.services.network.GetRawDataServiceImpl;
 import com.google.common.base.Throwables;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
+import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -47,10 +48,10 @@ public class BlenderUtils {
 
         GetRawDataService getJSONData = new GetRawDataServiceImpl();
         String data = getJSONData.getResult("https://gist.githubusercontent.com/marioestrella/def9d852b3298008ae16040bbbabc524/raw/");
-        if (data == null || data.isEmpty()) {
+        if (data == null || data.isEmpty() || !data.startsWith("[")) {
             LOG.debug("Trying mirror");
             data = getJSONData.getResult("https://gitlab.com/snippets/1656456/raw");
-            if (data == null || data.isEmpty()) {
+            if (data == null || data.isEmpty() || !data.startsWith("[")) {
                 LOG.debug("Unable to retrieve blenderdownload.json from internet, using local version instead.");
                 data = getJSONData.getLocalResult("blenderdownload.json");
             }
@@ -58,56 +59,15 @@ public class BlenderUtils {
         LOG.debug("Retrieved JSON: \n" + data.substring(0, 100) + "...");
         if (data != null || !data.isEmpty()) {
             blenderZipList = new LinkedList<>();
+            Gson gson = new Gson();
 
 
             try {
+                Type collectionType = new TypeToken<Collection<BlenderZip>>() {
+                }.getType();
+                blenderZipList = gson.fromJson(data, collectionType);
 
-                JSONObject jsonData = new JSONObject(data);
-                JSONArray downloadArray = jsonData.getJSONArray("blenderdownload");
-
-                for (int i = 0; i < downloadArray.length(); i++) {
-                    List<String> macOSMirrors = new ArrayList<>();
-                    List<String> windows64Mirrors = new ArrayList<>();
-                    List<String> windows32Mirrors = new ArrayList<>();
-                    List<String> linux64Mirrors = new ArrayList<>();
-                    List<String> linux32Mirrors = new ArrayList<>();
-                    JSONObject blenderBinary = downloadArray.getJSONObject(i);
-                    String version = blenderBinary.getString("version");
-
-                    JSONArray macOSArray = blenderBinary.getJSONArray("macos");
-                    for (int j = 0; j < macOSArray.length(); j++) {
-                        macOSMirrors.add(macOSArray.getString(j));
-                    }
-
-                    JSONArray windows64Array = blenderBinary.getJSONArray("windows64");
-                    for (int j = 0; j < windows64Array.length(); j++) {
-                        windows64Mirrors.add(windows64Array.getString(j));
-                    }
-
-                    JSONArray windows32Array = blenderBinary.getJSONArray("windows32");
-                    for (int j = 0; j < windows32Array.length(); j++) {
-                        windows32Mirrors.add(windows32Array.getString(j));
-                    }
-
-                    JSONArray linux64Array = blenderBinary.getJSONArray("linux64");
-                    for (int j = 0; j < linux64Array.length(); j++) {
-                        linux64Mirrors.add(linux64Array.getString(j));
-                    }
-
-                    JSONArray linux32Array = blenderBinary.getJSONArray("linux32");
-                    for (int j = 0; j < linux64Array.length(); j++) {
-                        linux32Mirrors.add(linux32Array.getString(j));
-                    }
-
-                    String md5MacOs = blenderBinary.getString("macos_md5");
-                    String md5Windows64 = blenderBinary.getString("windows64_md5");
-                    String md5Windows32 = blenderBinary.getString("windows32_md5");
-                    String md5Linux64 = blenderBinary.getString("linux64_md5");
-                    String md5Linux32 = blenderBinary.getString("linux32_md5");
-                    BlenderZip blenderZip = new BlenderZip(version, windows32Mirrors, windows64Mirrors, macOSMirrors, linux32Mirrors, linux64Mirrors, md5MacOs, md5Windows64, md5Windows32, md5Linux32, md5Linux64);
-                    blenderZipList.add(blenderZip);
-                }
-            } catch (JSONException jsonEx) {
+            } catch (JsonSyntaxException jsonEx) {
                 LOG.error("Error processing JSON data" + jsonEx.getMessage());
                 LOG.error(Throwables.getStackTraceAsString(jsonEx));
             }

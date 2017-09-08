@@ -19,6 +19,8 @@
 
 package com.dryadandnaiad.sethlans.services.network;
 
+import com.dryadandnaiad.sethlans.domains.python.PythonDownloadFile;
+
 /**
  * Created Mario Estrella on 3/28/17.
  * Dryad and Naiad Software LLC
@@ -28,4 +30,6 @@ package com.dryadandnaiad.sethlans.services.network;
 public interface PythonDownloadService {
 
     String downloadPython(String binDir);
+
+    PythonDownloadFile getPythonDownloadFile();
 }

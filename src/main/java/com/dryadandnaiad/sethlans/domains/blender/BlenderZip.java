@@ -40,20 +40,6 @@ public class BlenderZip {
     private String md5Linux32;
     private String md5Linux64;
 
-    public BlenderZip(String blenderVersion, List<String> windows32, List<String> windows64, List<String> macOS, List<String> linux32, List<String> linux64, String md5MacOS, String md5Windows64, String md5Windows32, String md5Linux32, String md5Linux64) {
-        this.blenderVersion = blenderVersion;
-        this.windows32 = windows32;
-        this.windows64 = windows64;
-        this.macOS = macOS;
-        this.linux32 = linux32;
-        this.linux64 = linux64;
-        this.md5MacOS = md5MacOS;
-        this.md5Windows64 = md5Windows64;
-        this.md5Windows32 = md5Windows32;
-        this.md5Linux32 = md5Linux32;
-        this.md5Linux64 = md5Linux64;
-    }
-
     public String getBlenderVersion() {
         return blenderVersion;
     }
