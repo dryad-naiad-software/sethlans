@@ -31,10 +31,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Project: sethlans
  */
 @Controller
-public class ShutdownController {
+public class SethlansStateController {
     @Autowired
     private SethlansManagerService sethlansManagerService;
 
+    @RequestMapping("/restart")
+    public void restart() {
+        sethlansManagerService.restart();
+    }
 
     @RequestMapping("/shutdown")
     public void shutdown() {

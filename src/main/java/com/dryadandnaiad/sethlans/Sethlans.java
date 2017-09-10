@@ -30,7 +30,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.logging.LogLevel;
 
-import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -104,22 +103,10 @@ public class Sethlans {
 
 
     private void startSpring(String[] springArgs) {
-        if (SystemTray.isSupported()) {
-            SpringApplicationBuilder builder = new SpringApplicationBuilder(Sethlans.class);
-            builder.headless(false);
-            while (builder.run(springArgs).isActive()) ;
-            // Restarts the application if the context was closed down.
-            SpringApplicationBuilder builder2 = new SpringApplicationBuilder(Sethlans.class);
-            builder2.headless(false);
-            builder2.run(springArgs).isActive();
-        } else {
+        while (true) {
             SpringApplicationBuilder builder = new SpringApplicationBuilder(Sethlans.class);
             builder.headless(true);
             while (builder.run(springArgs).isActive()) ;
-            // Restarts the application if the context was closed down.
-            SpringApplicationBuilder builder2 = new SpringApplicationBuilder(Sethlans.class);
-            builder2.headless(true);
-            builder2.run(springArgs).isActive();
         }
     }
 
