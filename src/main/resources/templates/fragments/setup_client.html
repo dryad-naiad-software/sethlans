@@ -116,12 +116,12 @@
                                                    th:errorclass="has-error">
                                             <label th:id="${stat.index} + '-label'" th:for="${stat.index}"
                                                    th:text="${gpu.model}">GPU</label>
-                                            <span id="help" class="help-block">
-                                        <ul>
-                                        <li th:each="err : ${#fields.errors('selectedGPUId')}"
-                                            th:text="${err}"/>
-                                        </ul>
-                                    </span>
+                                            <span id="gpu-error-block" class="help-block">
+                                                <ul>
+                                             <li th:each="err : ${#fields.errors('selectedGPUId')}"
+                                                 th:text="${err}"/>
+                                            </ul>
+                                             </span>
                                         </div>
 
                                     </div>
@@ -169,7 +169,6 @@
 </div>
 </div>
 
-<
 <!-- Javascript Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"
         th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
@@ -208,8 +207,8 @@
 </script>
 <script>
     window.onload = function () {
-        showCUDA()
         $("#cores").slider({tooltip_position: 'bottom'});
+        showCUDA()
     };
 
 </script>
@@ -222,14 +221,14 @@
         } else {
             document.getElementById("cuda").style.display = "none";
             document.getElementById("alert").style.display = "none";
-            document.getElementById("help").style.display = "none";
+            document.getElementById("gpu-error-block").style.display = "none";
         }
         if (text === "GPU") {
             document.getElementById("cpu").style.display = "none";
         } else {
             document.getElementById("cpu").style.display = "block";
             document.getElementById("alert").style.display = "none";
-            document.getElementById("help").style.display = "none";
+            document.getElementById("gpu-error-block").style.display = "none";
         }
     }
 </script>
