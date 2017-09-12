@@ -114,7 +114,8 @@
                                             <input type="checkbox" th:id="${stat.index}" name="selectedGPUId"
                                                    th:value="${stat.index}" th:field="*{selectedGPUId}"
                                                    th:errorclass="has-error">
-                                            <label th:for="selectedGPUId" th:text="${gpu.model}">GPU</label>
+                                            <label th:id="${stat.index} + '-label'" th:for="${stat.index}"
+                                                   th:text="${gpu.model}">GPU</label>
                                             <span id="help" class="help-block">
                                         <ul>
                                         <li th:each="err : ${#fields.errors('selectedGPUId')}"
@@ -206,6 +207,13 @@
     }
 </script>
 <script>
+    window.onload = function () {
+        showCUDA()
+        $("#cores").slider({tooltip_position: 'bottom'});
+    };
+
+</script>
+<script>
     function showCUDA() {
         var method = document.getElementById("selectedMethod");
         var text = method.options[method.selectedIndex].text;
@@ -225,12 +233,6 @@
         }
     }
 </script>
-<script>
-    window.onload = function () {
-        showCUDA()
-        $("#cores").slider({tooltip_position: 'bottom'});
-    };
 
-</script>
 </body>
 </html>

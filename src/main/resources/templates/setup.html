@@ -228,6 +228,13 @@
     }
 </script>
 <script>
+    window.onload = function () {
+        showCUDA()
+        $("#cores").slider({tooltip_position: 'bottom'});
+    };
+
+</script>
+<script>
     function showCUDA() {
         var method = document.getElementById("selectedMethod");
         var text = method.options[method.selectedIndex].text;
@@ -247,12 +254,6 @@
         }
     }
 </script>
-<script>
-    window.onload = function () {
-        showCUDA()
-        $("#cores").slider({tooltip_position: 'bottom'});
-    };
 
-</script>
 </body>
 </html>
