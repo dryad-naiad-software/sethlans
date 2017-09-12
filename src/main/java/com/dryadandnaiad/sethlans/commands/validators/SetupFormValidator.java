@@ -20,6 +20,8 @@
 package com.dryadandnaiad.sethlans.commands.validators;
 
 import com.dryadandnaiad.sethlans.commands.SetupForm;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.SetupProgress;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -50,6 +52,13 @@ public class SetupFormValidator implements Validator {
         if (setupForm.getPassword().length() < 8) {
             errors.rejectValue("password", "form.passwordTooShort", "Password Too Short");
         }
+
+        if (setupForm.getSelectedMethod().equals(ComputeType.GPU) || setupForm.getSelectedMethod().equals(ComputeType.CPU_GPU)) {
+            if (setupForm.getSelectedGPUId().isEmpty() && setupForm.getProgress().equals(SetupProgress.SUMMARY)) {
+                errors.rejectValue("selectedGPUId", "form.gpuErrors", "One GPU must be selected for rendering");
+            }
+        }
+
 
     }
 }

@@ -79,6 +79,9 @@
                             <!--/*@thymesVar id="setupForm" type="com.dryadandnaiad.sethlans.commands.SetupForm"*/-->
                             <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
                                   method="POST">
+                                <div th:if="${#fields.hasErrors('*')}" id="alert" class="alert alert-danger">
+                                    <div align="center" th:text="#{form.hasErrors}">Error Message</div>
+                                </div>
 
                                 <div th:fragment="both_import">
                                     <style>.slider-selection {
@@ -104,12 +107,20 @@
                                                th:attr="data-slider-max=${setupForm.totalCores},data-slider-value=${setupForm.cores}"
                                                data-slider-step="1"/>
                                     </div>
-                                    <div class="form-group" id="cuda">
+                                    <div class="form-group" id="cuda"
+                                         th:class="${#fields.hasErrors('selectedGPUId')} ? 'form-group has-error' : 'form-group'">
                                         <label>CUDA Devices:</label><br/>
                                         <div th:each="gpu,stat : ${setupForm.availableGPUs}">
-                                            <input type="checkbox" id="selectedGPUId" name="selectedGPUId"
-                                                   th:value="${stat.index}" th:field="*{selectedGPUId}">
+                                            <input type="checkbox" th:id="${stat.index}" name="selectedGPUId"
+                                                   th:value="${stat.index}" th:field="*{selectedGPUId}"
+                                                   th:errorclass="has-error">
                                             <label th:for="selectedGPUId" th:text="${gpu.model}">GPU</label>
+                                            <span id="help" class="help-block">
+                                        <ul>
+                                        <li th:each="err : ${#fields.errors('selectedGPUId')}"
+                                            th:text="${err}"/>
+                                        </ul>
+                                    </span>
                                         </div>
 
                                     </div>
@@ -202,11 +213,15 @@
             document.getElementById("cuda").style.display = "block";
         } else {
             document.getElementById("cuda").style.display = "none";
+            document.getElementById("alert").style.display = "none";
+            document.getElementById("help").style.display = "none";
         }
         if (text === "GPU") {
             document.getElementById("cpu").style.display = "none";
         } else {
             document.getElementById("cpu").style.display = "block";
+            document.getElementById("alert").style.display = "none";
+            document.getElementById("help").style.display = "none";
         }
     }
 </script>

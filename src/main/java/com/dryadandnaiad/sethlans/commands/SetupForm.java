@@ -77,12 +77,13 @@ public class SetupForm {
     @NotEmpty
     private String binDirectory;
 
+
     private ComputeType selectedMethod;
     private List<ComputeType> availableMethods;
     private List<GPUDevice> availableGPUs;
+    private List<Integer> selectedGPUId;
     private String blenderVersion;
     private SethlansMode mode;
-    private List<Integer> selectedGPUId;
     private int cores;
     private int totalCores;
     private SetupProgress progress;
