@@ -79,6 +79,9 @@
                                 <!--/*@thymesVar id="setupForm" type="com.dryadandnaiad.sethlans.commands.SetupForm"*/-->
                                 <form id="setupWizard" name="setupWizard" th:action="@{/setup}" th:object="${setupForm}"
                                       method="POST">
+                                    <div th:if="${#fields.hasErrors('*')}" id="alert" class="alert alert-danger">
+                                        <div align="center" th:text="#{form.hasErrors}">Error Message</div>
+                                    </div>
                                     <div th:replace="fragments/setup_server :: both_import">
                                         <h3 style="margin-top: auto"><strong><u>Server Placeholder</u></strong></h3>
                                         <div class="form-group">
