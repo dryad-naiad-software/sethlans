@@ -85,8 +85,10 @@ public class PythonDownloadServiceImpl implements PythonDownloadService {
             if (SystemUtils.IS_OS_LINUX) {
                 if (SystemUtils.OS_ARCH.contains("64")) {
                     this.pythonDownloadFile = new PythonDownloadFile(pythonDownload.get("linux64"), pythonDownload.get("linux64_md5"), pythonDownload.get("linux64_filename"));
+                    return true;
                 } else {
                     this.pythonDownloadFile = new PythonDownloadFile(pythonDownload.get("linux32"), pythonDownload.get("linux32_md5"), pythonDownload.get("linux32_filename"));
+                    return true;
                 }
             }
             if (SystemUtils.IS_OS_MAC) {
