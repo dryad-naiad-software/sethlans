@@ -39,6 +39,7 @@
           rel="stylesheet" media="screen, print">
     <style>
         @import url('https://fonts.googleapis.com/css?family=Fjalla+One');
+
         body {
             background-color: #EAEAEA;
         }
@@ -94,61 +95,9 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h2 id="setupWizardLabel" th:text="#{setup.wizard.title}">Wizard Steps</h2>
-                        <!-- Dynamic Content for Thymeleaf -->
-                    </div>
-                    <!--/*@thymesVar id="setupForm" type="com.dryadandnaiad.sethlans.commands.SetupForm"*/-->
-                    <div class="modal-body" id="setupForm" th:switch="${setupForm.progress}">
+                        <p>Finished</p>
+                        <p id="sethlansUrl" onclick="changeText()">Test</p>
 
-                        <!-- *********** Setup Fragments start here ************** -->
-                        <div class="well" onkeypress="checkSubmit(event)">
-                            <div th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).MODE}"
-                                 th:include="fragments/setup_mode :: setup_mode"></div>
-                            <div th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).SERVER}"
-                                 th:include="fragments/setup_server :: setup_server"></div>
-                            <div th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).NODE}"
-                                 th:include="fragments/setup_client :: setup_client"></div>
-                            <div th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).BOTH}"
-                                 th:include="fragments/setup_both :: setup_both"></div>
-                            <div th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).BLENDER}"
-                                 th:include="fragments/setup_blender :: setup_blender"></div>
-                            <div th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).SUMMARY}"
-                                 th:include="fragments/setup_summary :: setup_summary"></div>
-                            <div th:case="${T(com.dryadandnaiad.sethlans.enums.SetupProgress).SETTINGS}"
-                                 th:include="fragments/setup_settings :: setup_settings"></div>
-                            <div th:case="*" th:include="fragments/setup_settings :: setup_settings"></div>
-                        </div>
-                        <div class="well" th:remove="all">
-                            <h3 style="margin-top: auto"><strong><u>Mode for this installation</u></strong></h3>
-                            <form>
-                                <div class="radio">
-                                    <h4>
-                                        <label data-toggle="tooltip"
-                                               data-placement="right"
-                                               data-trigger="hover"
-                                               title="Sethlans will be configured as the farm server">
-                                            <input type="radio" name="sethlansmode">
-                                            Server</label>
-                                    </h4>
-                                    <h4>
-                                        <label data-toggle="tooltip"
-                                               data-placement="right"
-                                               data-trigger="hover"
-                                               title="Sethlans will be configured as a node only">
-                                            <input type="radio" name="sethlansmode">
-                                            Node</label>
-                                    </h4>
-                                    <h4>
-                                        <label data-toggle="tooltip"
-                                               data-placement="right"
-                                               data-trigger="hover"
-                                               title="Sethlans will act as the farm server and as a node within the farm">
-                                            <input type="radio" name="sethlansmode">
-                                            Dual</label>
-                                    </h4>
-                                </div>
-                            </form>
-                        </div>
-                        <!-- *********** Setup Fragments end here ************** -->
 
                     </div>
                 </div>
@@ -225,34 +174,11 @@
     }
 </script>
 <script>
-    window.onload = function () {
-        $("#cores").slider({tooltip_position: 'bottom'});
-        showCUDA()
-    };
+    function changeText() {
+        document.getElementById("sethlansUrl").innerHTML = "Whatever";
 
-</script>
-<script>
-    function showCUDA() {
-        var method = document.getElementById("selectedMethod");
-        var text = method.options[method.selectedIndex].text;
-        if (text.indexOf('GPU') >= 0) {
-            document.getElementById("cuda").style.display = "block";
-        } else {
-            document.getElementById("cuda").style.display = "none";
-        }
-        if (text === "GPU") {
-            document.getElementById("cpu").style.display = "none";
-        } else {
-            document.getElementById("cpu").style.display = "block";
-        }
-        if (text === "CPU") {
-            document.getElementById("cpu").style.display = "block";
-            document.getElementById("alert").style.display = "none";
-            document.getElementById("gpu-error-block").style.display = "none";
-            document.getElementById("cuda").style.display = "none";
-        }
+
     }
 </script>
-
 </body>
 </html>
