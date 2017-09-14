@@ -105,7 +105,9 @@ public class SetupController {
             pythonSetupService.setupScripts(setupForm.getScriptsDirectory());
             LOG.info("Setup complete complete. Restarting Sethlans");
             sethlansManagerService.restart();
+            return "setup_finished";
         }
+
         return "setup";
     }
 
