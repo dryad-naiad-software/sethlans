@@ -36,4 +36,9 @@ public class SethansUtilsTest {
 
     }
 
+    @Test
+    public void testVersion() {
+        Assert.assertNotEquals("Version Empty", "", SethlansUtils.getVersion());
+    }
+
 }
