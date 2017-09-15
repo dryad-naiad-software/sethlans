@@ -254,10 +254,10 @@
                     <gitDescribe>
                         <dirty>-DEV</dirty>
                     </gitDescribe>
+                    <abbrevLength>4</abbrevLength>
                     <excludeProperties>
                         <excludeProperty>git.commit.user.email</excludeProperty>
                         <excludeProperty>git.build.user.email</excludeProperty>
-                        <excludeProperty>git.build.version</excludeProperty>
                     </excludeProperties>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
                     <generateGitPropertiesFilename>src/main/resources/git.properties</generateGitPropertiesFilename>
