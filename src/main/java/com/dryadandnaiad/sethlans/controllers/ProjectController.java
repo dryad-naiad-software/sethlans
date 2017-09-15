@@ -28,6 +28,7 @@ import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectService;
 import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,6 +132,11 @@ public class ProjectController {
                 availableBlenderBinaries.add(blenderBinary);
             }
         }
+    }
+
+    @ModelAttribute("version")
+    public String getVersion() {
+        return SethlansUtils.getVersion();
     }
 
     @Autowired

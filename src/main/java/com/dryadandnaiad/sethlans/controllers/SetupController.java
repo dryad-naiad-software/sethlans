@@ -57,6 +57,8 @@ public class SetupController {
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
 
+    private String modeName = "SETUP";
+
     private static final Logger LOG = LoggerFactory.getLogger(SetupController.class);
     private Validator setupFormValidator;
     private SethlansManagerService sethlansManagerService;
@@ -64,12 +66,20 @@ public class SetupController {
     private BlenderDownloadService blenderDownloadService;
     private PythonSetupService pythonSetupService;
 
+    @ModelAttribute("version")
+    public String getVersion() {
+        return SethlansUtils.getVersion();
+    }
+
+    @ModelAttribute("sethlansmode")
+    public String getMode() {
+        return modeName;
+    }
 
     @RequestMapping
     public String getStartPage(final Model model) {
         if (firstTime) {
             model.addAttribute("setupForm", new SetupForm());
-            System.out.println(SethlansUtils.getVersion());
             return "setup";
         }
         return "redirect:/";

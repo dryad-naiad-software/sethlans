@@ -20,10 +20,12 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -42,6 +44,15 @@ public class IndexController {
     @Value("${sethlans.mode}")
     private SethlansMode mode;
 
+    @ModelAttribute("version")
+    public String getVersion() {
+        return SethlansUtils.getVersion();
+    }
+
+    @ModelAttribute("sethlansmode")
+    public String getMode() {
+        return mode.toString();
+    }
 
     @RequestMapping("/")
     public String getPage() {
@@ -49,7 +60,6 @@ public class IndexController {
             LOG.debug("Setup hasn't been completed, redirecting...");
             return "redirect:/setup";
         } else {
-            LOG.debug(mode.toString());
             return "index";
         }
 

@@ -216,7 +216,7 @@ public class SethlansUtils {
         final Properties properties = new Properties();
         try {
             properties.load(new InputStreamReader(new Resources("git.properties").getResource(), "UTF-8"));
-            version = properties.getProperty("version");
+            version = properties.getProperty("git.commit.id.describe");
         } catch (IOException e) {
             e.printStackTrace();
         }
