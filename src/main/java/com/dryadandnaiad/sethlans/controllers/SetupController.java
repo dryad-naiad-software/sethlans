@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
 import com.dryadandnaiad.sethlans.services.network.BlenderDownloadService;
 import com.dryadandnaiad.sethlans.services.system.PythonSetupService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,7 @@ public class SetupController {
     public String getStartPage(final Model model) {
         if (firstTime) {
             model.addAttribute("setupForm", new SetupForm());
+            System.out.println(SethlansUtils.getVersion());
             return "setup";
         }
         return "redirect:/";

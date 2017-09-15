@@ -66,7 +66,7 @@ public class PythonDownloadServiceImpl implements PythonDownloadService {
             }.getType();
             Gson gson = new Gson();
 
-            HashMap<String, String> pythonDownload = gson.fromJson(data, listType);//
+            HashMap<String, String> pythonDownload = gson.fromJson(data, listType);
             if (SystemUtils.IS_OS_WINDOWS) {
                 String arch = System.getenv("PROCESSOR_ARCHITECTURE");
                 String wow64Arch = System.getenv("PROCESSOR_ARCHITEW6432");

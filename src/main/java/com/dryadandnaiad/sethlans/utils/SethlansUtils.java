@@ -210,4 +210,24 @@ public class SethlansUtils {
         return false;
     }
 
+    public static String getVersion() {
+        String version = null;
+
+        final Properties properties = new Properties();
+        try {
+            properties.load(new InputStreamReader(new Resources("git.properties").getResource(), "UTF-8"));
+            version = properties.getProperty("version");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        if (version == null) {
+            // we could not compute the version so use a blank
+            version = "";
+        }
+
+        return version;
+    }
+
 }
