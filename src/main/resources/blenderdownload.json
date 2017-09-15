@@ -1,5 +1,28 @@
 [
   {
+    "blenderVersion": "2.79",
+    "macOS": [
+      "http://download.blender.org/release/Blender2.79/blender-2.79-macOS-10.6.tar.gz"
+    ],
+    "windows64": [
+      "http://download.blender.org/release/Blender2.79/blender-2.79-windows64.zip"
+    ],
+    "windows32": [
+      "http://download.blender.org/release/Blender2.79/blender-2.79-windows32.zip"
+    ],
+    "linux64": [
+      "http://download.blender.org/release/Blender2.79/blender-2.79-linux-glibc219-x86_64.tar.bz2"
+    ],
+    "linux32": [
+      "http://download.blender.org/release/Blender2.79/blender-2.79-linux-glibc219-i686.tar.bz2"
+    ],
+    "md5MacOS": "0862f00f186d12c4c63637c1de98e654",
+    "md5Windows64": "17d9f5bda91ac2e7be2e148ac95f1272",
+    "md5Windows32": "b465be6c2fba82a93502844c725d32bb",
+    "md5Linux64": "f89177ef97cad7d78d06cda7b9e66c8d",
+    "md5Linux32": "63519170d305753c52f475303b515a8f"
+  },
+  {
     "blenderVersion": "2.78c",
     "macOS": [
       "http://download.blender.org/release/Blender2.78/blender-2.78c-OSX_10.6-x86_64.zip",
