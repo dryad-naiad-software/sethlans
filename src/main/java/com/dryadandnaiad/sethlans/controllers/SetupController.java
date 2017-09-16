@@ -101,7 +101,7 @@ public class SetupController {
                 case SERVER:
                     saveSetupConfigService.saveServerSettings(setupForm);
                     break;
-                case BOTH:
+                case DUAL:
                     saveSetupConfigService.saveDualSettings(setupForm);
                     break;
                 case NODE:

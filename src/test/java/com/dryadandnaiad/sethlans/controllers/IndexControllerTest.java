@@ -60,7 +60,7 @@ public class IndexControllerTest {
     @Test
     public void test_index_first_time() throws Exception {
         ReflectionTestUtils.setField(indexController, "firstTime", true);
-        ReflectionTestUtils.setField(indexController, "mode", SethlansMode.BOTH);
+        ReflectionTestUtils.setField(indexController, "mode", SethlansMode.DUAL);
 
         mockMvc.perform(get("/"))
                 .andExpect(view().name("redirect:/setup"))
@@ -90,7 +90,7 @@ public class IndexControllerTest {
     @Test
     public void test_index_after_config_mode_both() throws Exception {
         ReflectionTestUtils.setField(indexController, "firstTime", false);
-        ReflectionTestUtils.setField(indexController, "mode", SethlansMode.BOTH);
+        ReflectionTestUtils.setField(indexController, "mode", SethlansMode.DUAL);
 
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())

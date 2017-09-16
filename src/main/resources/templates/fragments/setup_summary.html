@@ -47,7 +47,7 @@
                                             <td>Mode</td>
                                             <td>Node</td>
                                         </tr>
-                                        <tr th:if="${setupForm.mode == T(com.dryadandnaiad.sethlans.enums.SethlansMode).BOTH}">
+                                        <tr th:if="${setupForm.mode == T(com.dryadandnaiad.sethlans.enums.SethlansMode).DUAL}">
                                             <td>Mode</td>
                                             <td>Dual</td>
                                         </tr>
@@ -84,7 +84,7 @@
                                             </tr>
                                             </tbody>
                                         </div>
-                                        <div th:case="${T(com.dryadandnaiad.sethlans.enums.SethlansMode).BOTH}">
+                                        <div th:case="${T(com.dryadandnaiad.sethlans.enums.SethlansMode).DUAL}">
                                             <tbody th:replace="fragments/setup_summary_server :: setup_summary_server">
                                             <tr>
                                                 <th class="col-md-6">Setting</th>

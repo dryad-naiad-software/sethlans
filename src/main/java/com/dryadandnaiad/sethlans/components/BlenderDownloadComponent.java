@@ -33,7 +33,7 @@ import javax.annotation.PostConstruct;
  * Project: sethlans
  */
 @Component
-@Profile({"SERVER", "BOTH"})
+@Profile({"SERVER", "DUAL"})
 public class BlenderDownloadComponent {
 
     private BlenderDownloadService blenderDownloadService;

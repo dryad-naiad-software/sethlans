@@ -52,7 +52,7 @@ import java.util.UUID;
  * Project: sethlans
  */
 @Controller
-@Profile({"SERVER", "BOTH"})
+@Profile({"SERVER", "DUAL"})
 public class ProjectController {
     private static final Logger LOG = LoggerFactory.getLogger(ProjectController.class);
     private BlenderBinaryService blenderBinaryService;

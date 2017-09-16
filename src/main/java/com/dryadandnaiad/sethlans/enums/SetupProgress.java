@@ -26,6 +26,6 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum SetupProgress {
-    // SERVER, NODE, BOTH need to match Sethlans Mode Enums for Setup Wizard to work properly
-    SETTINGS, SERVER, NODE, BOTH, BLENDER, SUMMARY, MODE, FINISHED;
+    // SERVER, NODE, DUAL need to match Sethlans Mode Enums for Setup Wizard to work properly
+    SETTINGS, SERVER, NODE, DUAL, BLENDER, SUMMARY, MODE, FINISHED;
 }
