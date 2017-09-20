@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.services.network;
 
 import com.dryadandnaiad.sethlans.domains.python.PythonDownloadFile;
+import com.dryadandnaiad.sethlans.utils.Resources;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import com.google.gson.Gson;
@@ -34,9 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -106,14 +105,11 @@ public class PythonDownloadServiceImpl implements PythonDownloadService {
     private String startDownload() {
         File saveLocation = new File(binDir);
         saveLocation.mkdirs();
-        URL url;
-        HttpURLConnection connection = null;
         try {
-            url = new URL(pythonDownloadFile.getBinaryURL());
-            connection = (HttpURLConnection) url.openConnection();
-            InputStream stream = connection.getInputStream();
-            LOG.debug("Downloading  " + pythonDownloadFile.getFilename() + "...");
-            Files.copy(stream, Paths.get(saveLocation + File.separator + pythonDownloadFile.getFilename()));
+            InputStream inputStream = new Resources(pythonDownloadFile.getBinaryURL()).getResource();
+
+            LOG.debug("Copying  " + pythonDownloadFile.getFilename() + "...");
+            Files.copy(inputStream, Paths.get(saveLocation + File.separator + pythonDownloadFile.getFilename()));
             if (SethlansUtils.fileCheckMD5(new File(saveLocation + File.separator + pythonDownloadFile.getFilename()), pythonDownloadFile.getMd5())) {
                 LOG.debug(pythonDownloadFile.getFilename() + " downloaded successfully.");
                 return pythonDownloadFile.getFilename();
@@ -130,10 +126,6 @@ public class PythonDownloadServiceImpl implements PythonDownloadService {
         } catch (IOException e) {
             LOG.error("IO Exception " + e.getMessage());
             LOG.error(Throwables.getStackTraceAsString(e));
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
         }
         return null;
     }
