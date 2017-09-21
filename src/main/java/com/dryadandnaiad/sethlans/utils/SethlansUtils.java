@@ -38,8 +38,6 @@ import org.springframework.core.io.ClassPathResource;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -70,25 +68,6 @@ public class SethlansUtils {
         return new ImageIcon(imageURL, description).getImage();
     }
 
-    public static void openWebpage(URI uri) {
-        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
-        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-            try {
-                desktop.browse(uri);
-            } catch (Exception e) {
-                LOG.error("Unable to Open Web page" + e.getMessage());
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public static void openWebpage(URL url) {
-        try {
-            openWebpage(url.toURI());
-        } catch (URISyntaxException e) {
-            LOG.error("Unable to Open Web page" + e.getMessage());
-        }
-    }
 
     public static boolean writeProperty(SethlansConfigKeys configKey, String value) {
         String comment = "";
