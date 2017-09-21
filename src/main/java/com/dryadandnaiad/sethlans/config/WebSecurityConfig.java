@@ -19,7 +19,6 @@
 
 package com.dryadandnaiad.sethlans.config;
 
-import com.dryadandnaiad.sethlans.services.security.SethlansUserDetailsServiceImpl;
 import org.jasypt.springsecurity3.authentication.encoding.PasswordEncoder;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,10 +43,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private SethlansUserDetailsServiceImpl sethlansUserDetailsService;
-
-
     private AuthenticationProvider authenticationProvider;
 
     @Autowired
@@ -60,7 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/setup", "/", "/bower/**", "/webjars/**", "/css/**", "/images/**", "/setup_finished").permitAll()
+                .antMatchers("/setup", "/console/**", "/", "/bower/**", "/webjars/**", "/css/**", "/images/**", "/setup_finished").permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin().loginPage("/login").permitAll()
                 .and().logout().permitAll()
