@@ -17,18 +17,34 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.database;
+package com.dryadandnaiad.sethlans.services.security;
 
 import com.dryadandnaiad.sethlans.domains.users.SethlansUser;
+import com.dryadandnaiad.sethlans.services.database.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 /**
- * Created Mario Estrella on 3/23/17.
+ * Created Mario Estrella on 9/21/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface UserService extends CRUDService<SethlansUser> {
+@Service
+public class SethlansUserDetailsService implements UserDetailsService {
 
-    SethlansUser findByUsername(final String username);
+    @Autowired
+    private UserService userService;
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        SethlansUser sethlansUser = userService.findByUsername(username);
+        if (sethlansUser == null) {
+            throw new UsernameNotFoundException(username);
+        }
+        return null;
+    }
 }

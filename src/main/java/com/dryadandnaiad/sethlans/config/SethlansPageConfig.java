@@ -17,18 +17,23 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.database;
+package com.dryadandnaiad.sethlans.config;
 
-import com.dryadandnaiad.sethlans.domains.users.SethlansUser;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 /**
- * Created Mario Estrella on 3/23/17.
+ * Created Mario Estrella on 9/21/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface UserService extends CRUDService<SethlansUser> {
+@Configuration
+public class SethlansPageConfig extends WebMvcConfigurerAdapter {
 
-    SethlansUser findByUsername(final String username);
-
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/login").setViewName("login");
+    }
 }

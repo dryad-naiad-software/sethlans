@@ -54,9 +54,18 @@ public class IndexController {
             LOG.debug("Setup hasn't been completed, redirecting...");
             return "redirect:/setup";
         } else {
-            return "index";
+            return "redirect:/home";
         }
 
+    }
+
+    @RequestMapping("/home")
+    public String getHomePage() {
+        if (firstTime) {
+            LOG.debug("Setup hasn't been completed, redirecting...");
+            return "redirect:/setup";
+        }
+        return "index";
     }
 
     @ModelAttribute("version")

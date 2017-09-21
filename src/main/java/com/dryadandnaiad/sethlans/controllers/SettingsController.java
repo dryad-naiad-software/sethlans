@@ -44,7 +44,7 @@ public class SettingsController {
 
     @RequestMapping("/settings")
     public String getPage() {
-        return "index";
+        return "settings/settings_list";
     }
 
     @ModelAttribute("version")
