@@ -22,8 +22,6 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.services.database.UserService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -31,32 +29,22 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * Created Mario Estrella on 3/9/17.
+ * Created Mario Estrella on 9/20/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
 @Controller
-public class IndexController {
-    private static final Logger LOG = LoggerFactory.getLogger(IndexController.class);
+public class SettingsController {
+
     private UserService userService;
 
     @Value("${sethlans.mode}")
     private SethlansMode mode;
 
-    @Value("${sethlans.firsttime}")
-    private boolean firstTime;
-
-
-    @RequestMapping("/")
+    @RequestMapping("/settings")
     public String getPage() {
-        if (firstTime) {
-            LOG.debug("Setup hasn't been completed, redirecting...");
-            return "redirect:/setup";
-        } else {
-            return "index";
-        }
-
+        return "index";
     }
 
     @ModelAttribute("version")
@@ -78,6 +66,5 @@ public class IndexController {
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
-
 
 }

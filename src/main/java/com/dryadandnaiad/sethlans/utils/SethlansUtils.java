@@ -58,6 +58,7 @@ public class SethlansUtils {
     private static final File configFile = new File(configDirectory + File.separator + "sethlans.properties");
     private static Properties sethlansProperties = new Properties();
 
+
     public static Image createImage(String image, String description) {
         URL imageURL = null;
         try {
@@ -217,7 +218,6 @@ public class SethlansUtils {
         try {
             properties.load(new InputStreamReader(new Resources("git.properties").getResource(), "UTF-8"));
             String buildNumber = String.format("%04d", Integer.parseInt(properties.getProperty("git.closest.tag.commit.count")));
-            System.out.println(buildNumber);
             version = properties.getProperty("git.build.version") + "." + buildNumber;
         } catch (IOException e) {
             e.printStackTrace();
@@ -231,5 +231,6 @@ public class SethlansUtils {
 
         return version;
     }
+
 
 }

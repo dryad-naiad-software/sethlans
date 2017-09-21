@@ -148,13 +148,15 @@
                 </ul>
             </li>
             <li class="dropdown">
-                <a class="dropdown-toggle nav-item-iconic" id="dropdownMenu2" data-toggle="dropdown"
+                <a class="dropdown-toggle nav-item-iconic" id="userMenu" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="true">
-                    <span title="Username" class="fa pficon-user"></span>
+                    <span title="user" class="fa pficon-user"></span>
                     <span class="caret"></span>
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <li><a href="#">Preferences</a></li>
+                <!--/*@thymesVar id="username" type=""*/-->
+                <ul class="dropdown-menu" aria-labelledby="userMenu">
+                    <li><a><strong th:text="${username}">Username</strong></a></li>
+                    <li><a href="/settings">Settings</a></li>
                     <li><a href="#">Logout</a></li>
                 </ul>
             </li>
