@@ -71,7 +71,10 @@ public class IndexController {
 
     @ModelAttribute("username")
     public String getUserName() {
-        return userService.getById(1).getUsername();
+        if (!firstTime) {
+            return userService.getById(1).getUsername();
+        }
+        return "username";
     }
 
     @Autowired
