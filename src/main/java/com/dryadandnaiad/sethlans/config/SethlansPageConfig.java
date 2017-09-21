@@ -19,7 +19,11 @@
 
 package com.dryadandnaiad.sethlans.config;
 
+import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -32,8 +36,21 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 public class SethlansPageConfig extends WebMvcConfigurerAdapter {
 
+    @Value("${sethlans.mode}")
+    private SethlansMode mode;
+
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/login").setViewName("login");
+    }
+
+    @ModelAttribute("version")
+    public String getVersion() {
+        return SethlansUtils.getVersion();
+    }
+
+    @ModelAttribute("sethlansmode")
+    public String getMode() {
+        return mode.toString();
     }
 }
