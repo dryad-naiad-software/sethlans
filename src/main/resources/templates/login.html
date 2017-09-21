@@ -18,47 +18,151 @@
   ~
   -->
 
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
->
+<html lang="en" class="layout-pf layout-pf-fixed" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>Spring Security Example </title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <!-- CSS Libraries -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/css/patternfly.min.css"
+          th:href="@{/bower/patternfly/dist/css/patternfly.min.css}"
+          rel="stylesheet" media="screen, print">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/css/patternfly-additions.min.css"
+          th:href="@{/bower/patternfly/dist/css/patternfly-additions.min.css}"
+          rel="stylesheet" media="screen, print">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/css/bootstrap-slider.css"
+          th:href="@{/bower/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css}"
+          rel="stylesheet" media="screen, print">
+    <!--Favicon -->
+    <link rel="shortcut icon" href="../images/favicon.png" th:href="@{/images/favicon.png}">
+    <title>Login - Sethlans</title>
 </head>
 <body>
-<div class="container">
-    <div class="row">
-        <div class="col-md-5 col-md-offset-4">
-            <h2>Login</h2>
-            <div>
-                <form class="form-horizontal" th:object="${loginForm}" th:action="@{/login}" method="post">
+<style>
+    @import url('https://fonts.googleapis.com/css?family=Fjalla+One');
 
-                    <div th:if="${param.error}" class="alert alert-danger">
-                        <p>Invalid username and password.</p>
-                    </div>
+    body {
+        background: #EAEAEA !important;
+    }
 
-                    <div th:if="${param.logout}" class="alert alert-success">
-                        <p>You've been logged out.</p>
-                    </div>
+    .wrapper {
+        margin-top: 80px;
+        margin-bottom: 80px;
+    }
 
-                    <div class="form-group" th:class="${param.error} ? 'form-group has-error' : 'form-group'">
-                        <label class="col-sm-2 control-label">Username:</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" name="username" id="username"/>
-                        </div>
-                    </div>
+    .form-signin {
+        max-width: 380px;
+        padding: 15px 35px 45px;
+        margin: 0 auto;
+        background-color: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+    }
 
-                    <div class="form-group" th:class="${param.error} ? 'form-group has-error' : 'form-group'">
-                        <label class="col-sm-2 control-label">Password:</label>
-                        <div class="col-sm-10">
-                            <input type="password" class="form-control" name="password" id="password"/>
-                        </div>
-                    </div>
+    .form-signin .form-signin-heading,
+    .form-signin .checkbox {
+        margin-bottom: 30px;
+    }
 
-                    <button type="submit" class="btn btn-default">Submit</button>
-                </form>
-            </div>
+    .form-signin .checkbox {
+        font-weight: normal;
+    }
+
+    .form-signin .form-control {
+        position: relative;
+        font-size: 16px;
+        height: auto;
+        padding: 10px;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    .form-signin .form-control:focus {
+        z-index: 2;
+    }
+
+    .form-signin input[type="text"] {
+        margin-bottom: -1px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .form-signin input[type="password"] {
+        margin-bottom: 20px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+</style>
+
+<!-- Setup Header -->
+<nav class="navbar navbar-pf-vertical">
+    <div class="navbar-header"><a href="/" class="navbar-brand"
+                                  style="font-family: 'Fjalla One', sans-serif; font-size: 175%">
+        <img class="navbar-brand-icon" src="../static/images/logo.png" th:src="@{/images/logo.png}" height="32"
+             alt="logo"/>Sethlans
+    </a></div>
+</nav>
+<!--/.navbar-->
+<div class="wrapper">
+    <!--/*@thymesVar id="loginForm" type=""*/-->
+    <form class="form-signin" th:object="${loginForm}" th:action="@{/login}" method="post">
+        <h2 class="form-signin-heading">Please Login</h2>
+
+        <div th:if="${param.error}" class="alert alert-danger">
+            <p>Invalid username and password.</p>
         </div>
-    </div>
+
+        <div th:if="${param.logout}" class="alert alert-success">
+            <p>You've been logged out.</p>
+        </div>
+
+        <div class="form-group" th:class="${param.error} ? 'form-group has-error' : 'form-group'">
+            <input type="text" class="form-control" name="username" placeholder="Username" id="username" required=""
+                   autofocus=""/>
+        </div>
+
+        <div class="form-group" th:class="${param.error} ? 'form-group has-error' : 'form-group'">
+            <input type="password" class="form-control" name="password" placeholder="Password" id="password"
+                   required=""/>
+        </div>
+        <label class="checkbox">
+            <input type="checkbox" value="remember-me" id="rememberMe" name="rememberMe"> Remember me
+        </label>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+    </form>
 </div>
+<!-- Footer Fragment -->
+<div class="content"></div>
+<footer class="footer" th:replace="fragments/footer :: footer">
+    <style>
+        html {
+            position: relative;
+            min-height: 100%;
+        }
+
+        body {
+            /* Margin bottom by footer height */
+            margin-bottom: 60px;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            /* Set the fixed height of the footer here */
+            height: 60px;
+            background-color: #000;
+        }
+    </style>
+    <div class="container">
+        <p class="text-muted">Place sticky footer content here.</p>
+    </div>
+</footer>
+
 </body>
-</html>
 </html>
