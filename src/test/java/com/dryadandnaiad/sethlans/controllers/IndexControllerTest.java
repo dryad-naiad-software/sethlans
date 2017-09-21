@@ -67,33 +67,4 @@ public class IndexControllerTest {
                 .andExpect(status().is3xxRedirection());
     }
 
-    @Test
-    public void test_index_after_config_mode_server() throws Exception {
-        ReflectionTestUtils.setField(indexController, "firstTime", false);
-        ReflectionTestUtils.setField(indexController, "mode", SethlansMode.SERVER);
-
-        mockMvc.perform(get("/"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("index"));
-    }
-
-    @Test
-    public void test_index_after_config_mode_node() throws Exception {
-        ReflectionTestUtils.setField(indexController, "firstTime", false);
-        ReflectionTestUtils.setField(indexController, "mode", SethlansMode.NODE);
-
-        mockMvc.perform(get("/"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("index"));
-    }
-
-    @Test
-    public void test_index_after_config_mode_both() throws Exception {
-        ReflectionTestUtils.setField(indexController, "firstTime", false);
-        ReflectionTestUtils.setField(indexController, "mode", SethlansMode.DUAL);
-
-        mockMvc.perform(get("/"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("index"));
-    }
 }
