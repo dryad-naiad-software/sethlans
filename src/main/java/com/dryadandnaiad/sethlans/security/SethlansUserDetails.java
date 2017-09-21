@@ -19,15 +19,11 @@
 
 package com.dryadandnaiad.sethlans.security;
 
-import com.dryadandnaiad.sethlans.domains.users.SethlansRole;
-import com.dryadandnaiad.sethlans.domains.users.SethlansUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Created Mario Estrella on 9/21/17.
@@ -35,33 +31,42 @@ import java.util.List;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class SethlansUserPrincipal implements UserDetails {
+public class SethlansUserDetails implements UserDetails {
 
-    private static final long serialVersionUID = 1L;
+    private Collection<SimpleGrantedAuthority> authorities;
+    private String username;
+    private String password;
+    private Boolean enabled;
 
-    private final SethlansUser user;
+    public void setAuthorities(Collection<SimpleGrantedAuthority> authorities) {
+        this.authorities = authorities;
+    }
 
-    public SethlansUserPrincipal(SethlansUser user) {
-        this.user = user;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        final List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        for (final SethlansRole sethlansRole : user.getSethlansRoles()) {
-            authorities.add(new SimpleGrantedAuthority(sethlansRole.getRole()));
-        }
         return authorities;
     }
 
     @Override
     public String getPassword() {
-        return user.getEncryptedPassword();
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return username;
     }
 
     @Override
@@ -81,10 +86,6 @@ public class SethlansUserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
-    }
-
-    public SethlansUser getUser() {
-        return user;
+        return enabled;
     }
 }

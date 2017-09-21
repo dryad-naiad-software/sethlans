@@ -79,15 +79,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SethlansUser findByUsername(String username) {
-        List<SethlansUser> users = new ArrayList<>();
-        userRepository.findAll().forEach(users::add);
-        for (SethlansUser user : users) {
-            if (user.getUsername().equals(username)) {
-                return user;
-            }
-
-        }
-        return null;
+    public SethlansUser findByUserName(String userName) {
+        return userRepository.findByUsername(userName);
     }
 }

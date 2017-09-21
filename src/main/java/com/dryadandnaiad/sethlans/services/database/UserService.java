@@ -29,6 +29,5 @@ import com.dryadandnaiad.sethlans.domains.users.SethlansUser;
  */
 public interface UserService extends CRUDService<SethlansUser> {
 
-    SethlansUser findByUsername(final String username);
-
+    SethlansUser findByUserName(String username);
 }

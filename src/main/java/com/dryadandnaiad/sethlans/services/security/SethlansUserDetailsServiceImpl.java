@@ -22,6 +22,8 @@ package com.dryadandnaiad.sethlans.services.security;
 import com.dryadandnaiad.sethlans.domains.users.SethlansUser;
 import com.dryadandnaiad.sethlans.services.database.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,18 +35,26 @@ import org.springframework.stereotype.Service;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Service
-public class SethlansUserDetailsService implements UserDetailsService {
+@Service("userDetailsService")
+public class SethlansUserDetailsServiceImpl implements UserDetailsService {
+
+    private UserService userService;
+    private Converter<SethlansUser, UserDetails> sethlansUserDetailsConverter;
 
     @Autowired
-    private UserService userService;
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    @Autowired
+    @Qualifier(value = "sethlansUsertoSethlansUserDetails")
+    public void setUserUserDetailsConverter(Converter<SethlansUser, UserDetails> userUserDetailsConverter) {
+        this.sethlansUserDetailsConverter = userUserDetailsConverter;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        SethlansUser sethlansUser = userService.findByUsername(username);
-        if (sethlansUser == null) {
-            throw new UsernameNotFoundException(username);
-        }
-        return null;
+
+        return sethlansUserDetailsConverter.convert(userService.findByUserName(username));
     }
 }

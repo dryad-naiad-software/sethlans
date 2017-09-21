@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.config;
 
-import com.dryadandnaiad.sethlans.services.security.SethlansUserDetailsService;
+import com.dryadandnaiad.sethlans.services.security.SethlansUserDetailsServiceImpl;
 import org.jasypt.springsecurity3.authentication.encoding.PasswordEncoder;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private SethlansUserDetailsService sethlansUserDetailsService;
+    private SethlansUserDetailsServiceImpl sethlansUserDetailsService;
 
 
     private AuthenticationProvider authenticationProvider;
@@ -62,13 +62,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/setup", "/", "/bower/**", "/webjars/**", "/css/**", "/images/**", "/setup_finished").permitAll()
                 .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .permitAll()
-                .and()
-                .logout()
-                .permitAll();
+                .and().formLogin().loginPage("/login").permitAll()
+                .and().logout().permitAll()
+                .and().exceptionHandling().accessDeniedPage("/access_denied");
     }
 
     @Autowired

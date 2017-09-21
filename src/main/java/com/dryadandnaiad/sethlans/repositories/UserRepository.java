@@ -29,4 +29,6 @@ import org.springframework.data.repository.CrudRepository;
  * Project: sethlans
  */
 public interface UserRepository extends CrudRepository<SethlansUser, Integer> {
+
+    SethlansUser findByUsername(String username);
 }
