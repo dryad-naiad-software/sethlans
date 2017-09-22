@@ -22,7 +22,7 @@ package com.dryadandnaiad.sethlans.config;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.task.TaskExecutor;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -46,11 +46,13 @@ public class CommonBeanConfig {
     }
 
     @Bean
-    public TaskExecutor taskExecutor() {
+    public AsyncTaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(5);
         executor.setMaxPoolSize(10);
-        executor.setQueueCapacity(25);
+        executor.setQueueCapacity(11);
+        executor.setThreadNamePrefix("AsyncExec-");
+        executor.initialize();
         return executor;
     }
 
