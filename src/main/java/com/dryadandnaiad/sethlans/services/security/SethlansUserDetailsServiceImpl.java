@@ -22,7 +22,6 @@ package com.dryadandnaiad.sethlans.services.security;
 import com.dryadandnaiad.sethlans.domains.users.SethlansUser;
 import com.dryadandnaiad.sethlans.services.database.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -47,7 +46,6 @@ public class SethlansUserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Autowired
-    @Qualifier(value = "sethlansUsertoSethlansUserDetails")
     public void setUserUserDetailsConverter(Converter<SethlansUser, UserDetails> userUserDetailsConverter) {
         this.sethlansUserDetailsConverter = userUserDetailsConverter;
     }
