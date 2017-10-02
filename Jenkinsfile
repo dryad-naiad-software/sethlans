@@ -47,7 +47,7 @@ stage('unitests') {
 }
 stage('publish') {
     node {
-        unstash 'everything'
+        git credentialsId: 'gitlabcredentials', url: 'https://gitlab.com/marioestrella/sethlans.git'
         sh 'mvn package'
         archiveArtifacts '**/target/binaries/*.jar'
     }
