@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+
 stage('compile') {
     parallel build: {
         node {
@@ -27,23 +28,15 @@ stage('compile') {
 }
 stage('test') {
     parallel unitTests: {
-        test()
+            node {
+                unstash 'everything'
+                sh 'mvn test'
+                junit '**/target/surefire-reports/*.xml'
+            }
     },
             failFast: false
 }
 stage('publish') {
-    publish()
-}
-
-def test() {
-    node {
-        unstash 'everything'
-        sh 'mvn test'
-        junit '**/target/surefire-reports/*.xml'
-    }
-}
-
-def publish() {
     node {
         unstash 'everything'
         sh 'mvn package'
