@@ -26,14 +26,22 @@ stage('compile') {
         }
     }
 }
-stage('test') {
-    parallel unitTests: {
+stage('unitests') {
+    parallel linux: {
             node {
+                label 'linux'
                 unstash 'everything'
                 sh 'mvn test'
                 junit '**/target/surefire-reports/*.xml'
             }
-    },
+    }, windows: {
+        node {
+            label 'windows'
+            unstash 'everything'
+            sh 'mvn test'
+            junit '**/target/surefire-reports/*.xml'
+        }
+    }
             failFast: false
 }
 stage('publish') {
