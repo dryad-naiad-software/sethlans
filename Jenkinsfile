@@ -50,5 +50,6 @@ stage('publish') {
         git credentialsId: 'gitlabcredentials', url: 'https://gitlab.com/marioestrella/sethlans.git'
         sh 'mvn clean package'
         archiveArtifacts '**/target/binaries/*.jar'
+        archiveArtifacts '**/target/binaries/*.exe'
     }
 }
