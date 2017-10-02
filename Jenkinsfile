@@ -22,6 +22,7 @@ stage('compile') {
             git credentialsId: 'gitlabcredentials', url: 'https://gitlab.com/marioestrella/sethlans.git'
             sh 'mvn compile'
             stash 'everything'
+            cleanWs()
         }
 }
 stage('unitests') {
@@ -50,5 +51,6 @@ stage('publish') {
         unstash 'everything'
         sh 'mvn package'
         archiveArtifacts '**/target/binaries/*.jar'
+        cleanWs()
     }
 }
