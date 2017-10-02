@@ -20,9 +20,8 @@
 stage('compile') {
         node {
             git credentialsId: 'gitlabcredentials', url: 'https://gitlab.com/marioestrella/sethlans.git'
-            sh 'mvn compile'
+            sh 'mvn clean compile'
             stash 'everything'
-            cleanWs()
         }
 }
 stage('unitests') {
@@ -51,6 +50,5 @@ stage('publish') {
         unstash 'everything'
         sh 'mvn package'
         archiveArtifacts '**/target/binaries/*.jar'
-        cleanWs()
     }
 }
