@@ -27,19 +27,19 @@ stage('compile') {
 stage('unitests') {
     parallel linux: {
             node ('linux'){
-                unstash 'everything'
+                git credentialsId: 'gitlabcredentials', url: 'https://gitlab.com/marioestrella/sethlans.git'
                 sh 'mvn clean test'
                 junit '**/target/surefire-reports/*.xml'
             }
     }, windows: {
         node('windows') {
-            unstash 'everything'
+            git credentialsId: 'gitlabcredentials', url: 'https://gitlab.com/marioestrella/sethlans.git'
             sh 'mvn clean test'
             junit '**/target/surefire-reports/*.xml'
         }
     }, mac: {
         node('mac') {
-            unstash 'everything'
+            git credentialsId: 'gitlabcredentials', url: 'https://gitlab.com/marioestrella/sethlans.git'
             sh 'mvn clean test'
             junit '**/target/surefire-reports/*.xml'
         }
@@ -47,7 +47,7 @@ stage('unitests') {
 }
 stage('publish') {
     node {
-        unstash 'everything'
+        git credentialsId: 'gitlabcredentials', url: 'https://gitlab.com/marioestrella/sethlans.git'
         sh 'mvn clean package'
         archiveArtifacts '**/target/binaries/*.jar'
     }
