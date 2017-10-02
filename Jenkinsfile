@@ -18,13 +18,11 @@
  */
 
 stage('compile') {
-    parallel build: {
         node {
             git credentialsId: 'gitlabcredentials', url: 'https://gitlab.com/marioestrella/sethlans.git'
             sh 'mvn compile'
             stash 'everything'
         }
-    }
 }
 stage('unitests') {
     parallel linux: {
@@ -39,8 +37,13 @@ stage('unitests') {
             sh 'mvn test'
             junit '**/target/surefire-reports/*.xml'
         }
-    }
-            failFast: false
+    }, mac: {
+        node('mac') {
+            unstash 'everything'
+            sh 'mvn test'
+            junit '**/target/surefire-reports/*.xml'
+        }
+    }, failFast: false
 }
 stage('publish') {
     node {
