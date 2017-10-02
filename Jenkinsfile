@@ -28,15 +28,13 @@ stage('compile') {
 }
 stage('unitests') {
     parallel linux: {
-            node {
-                label 'linux'
+            node ('linux'){
                 unstash 'everything'
                 sh 'mvn test'
                 junit '**/target/surefire-reports/*.xml'
             }
     }, windows: {
-        node {
-            label 'windows'
+        node('windows') {
             unstash 'everything'
             sh 'mvn test'
             junit '**/target/surefire-reports/*.xml'
