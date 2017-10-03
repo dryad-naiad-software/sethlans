@@ -45,7 +45,6 @@
     <properties>
         <sLauncherClass>org.springframework.boot.loader.JarLauncher</sLauncherClass>
         <fileName>${project.artifactId}-${project.version}.${git.closest.tag.commit.count}</fileName>
-        <finalName>${project.artifactId}-${project.version}.${git.closest.tag.commit.count}</finalName>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -316,6 +315,7 @@
                     <mainClass>${sLauncherClass}</mainClass>
                     <iconFile>icon/sethlans.icns</iconFile>
                     <generateDiskImageFile>true</generateDiskImageFile>
+                    <diskImageFile>${project.build.directory}/${binLocation}/${fileName}.dmg</diskImageFile>
                 </configuration>
                 <executions>
                     <execution>
