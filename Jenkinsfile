@@ -50,7 +50,7 @@ stage('unitests') {
     }, failFast: false
 }
 stage('publish') {
-    node ('linux'){
+    node ('build'){
         deleteDir()
         git credentialsId: 'gitlabcredentials', url: 'https://gitlab.com/marioestrella/sethlans.git'
         sh 'mvn clean package'
