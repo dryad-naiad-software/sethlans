@@ -22,7 +22,6 @@ stage('compile') {
             deleteDir()
             git credentialsId: 'gitlabcredentials', url: 'https://gitlab.com/marioestrella/sethlans.git'
             sh 'mvn clean compile'
-            stash 'everything'
         }
 }
 stage('unitests') {
