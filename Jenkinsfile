@@ -49,8 +49,6 @@ stage('publish') {
     node ('linux'){
         git credentialsId: 'gitlabcredentials', url: 'https://gitlab.com/marioestrella/sethlans.git'
         sh 'mvn clean package'
-        archiveArtifacts '**/target/binaries/*.jar', fingerprint: true
-        archiveArtifacts '**/target/binaries/*.exe', fingerprint: true
-        archiveArtifacts '**/target/*.dmg', fingerprint: true
+        archiveArtifacts artifacts: '**/target/binaries/*.jar, **/target/binaries/*.exe, **/target/*.dmg', fingerprint: true
     }
 }
