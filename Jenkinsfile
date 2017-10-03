@@ -19,6 +19,7 @@
 
 stage('compile') {
         node {
+            deleteDir()
             git credentialsId: 'gitlabcredentials', url: 'https://gitlab.com/marioestrella/sethlans.git'
             sh 'mvn clean compile'
             stash 'everything'
@@ -27,18 +28,21 @@ stage('compile') {
 stage('unitests') {
     parallel linux: {
             node ('linux'){
+                deleteDir()
                 git credentialsId: 'gitlabcredentials', url: 'https://gitlab.com/marioestrella/sethlans.git'
                 sh 'mvn clean test'
                 junit '**/target/surefire-reports/*.xml'
             }
     }, windows: {
         node('windows') {
+            deleteDir()
             git credentialsId: 'gitlabcredentials', url: 'https://gitlab.com/marioestrella/sethlans.git'
             sh 'mvn clean test'
             junit '**/target/surefire-reports/*.xml'
         }
     }, mac: {
         node('mac') {
+            deleteDir()
             git credentialsId: 'gitlabcredentials', url: 'https://gitlab.com/marioestrella/sethlans.git'
             sh 'mvn clean test'
             junit '**/target/surefire-reports/*.xml'
@@ -47,6 +51,7 @@ stage('unitests') {
 }
 stage('publish') {
     node ('linux'){
+        deleteDir()
         git credentialsId: 'gitlabcredentials', url: 'https://gitlab.com/marioestrella/sethlans.git'
         sh 'mvn clean package'
         archiveArtifacts artifacts: '**/target/binaries/*.jar, **/target/binaries/*.exe, **/target/binaries/*.dmg', fingerprint: true
