@@ -51,6 +51,5 @@ stage('publish') {
         sh 'mvn clean package'
         archiveArtifacts '**/target/binaries/*.jar'
         archiveArtifacts '**/target/binaries/*.exe'
-        archiveArtifacts '**/target/binaries/Sethlans*/*'
     }
 }
