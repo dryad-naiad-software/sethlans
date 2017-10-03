@@ -46,7 +46,7 @@ stage('unitests') {
     }, failFast: false
 }
 stage('publish') {
-    node ('mac||linux'){
+    node ('linux'){
         git credentialsId: 'gitlabcredentials', url: 'https://gitlab.com/marioestrella/sethlans.git'
         sh 'mvn clean package'
         archiveArtifacts '**/target/binaries/*.jar'
