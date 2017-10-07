@@ -32,6 +32,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.stereotype.Component;
 
 /**
  * Created Mario Estrella on 9/21/17.
@@ -40,6 +41,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
  * Project: sethlans
  */
 @Configuration
+@Component
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
