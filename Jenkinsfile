@@ -18,20 +18,20 @@
  */
 
 stage('compile') {
-        node {
-            deleteDir()
-            git url: 'https://gitlab.com/marioestrella/sethlans.git'
-            sh 'mvn clean compile'
-        }
+    node {
+        deleteDir()
+        git url: 'https://gitlab.com/marioestrella/sethlans.git'
+        sh 'mvn clean compile'
+    }
 }
 stage('unitests') {
     parallel linux: {
-            node ('linux'){
-                deleteDir()
-                git url: 'https://gitlab.com/marioestrella/sethlans.git'
-                sh 'mvn clean test'
-                junit '**/target/surefire-reports/*.xml'
-            }
+        node('linux') {
+            deleteDir()
+            git url: 'https://gitlab.com/marioestrella/sethlans.git'
+            sh 'mvn clean test'
+            junit '**/target/surefire-reports/*.xml'
+        }
     }, windows: {
         node('windows') {
             deleteDir()
@@ -49,7 +49,7 @@ stage('unitests') {
     }, failFast: false
 }
 stage('publish') {
-    node ('package'){
+    node('package') {
         deleteDir()
         git url: 'https://gitlab.com/marioestrella/sethlans.git'
         sh 'mvn clean package'
