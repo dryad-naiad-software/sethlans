@@ -58,7 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/setup", "/", "/bower/**", "/webjars/**", "/css/**", "/images/**", "/setup_finished").permitAll()
                 .anyRequest().authenticated()
-                .and().formLogin().loginPage("/login").permitAll()
+                .and().formLogin().loginPage("/login").failureUrl("/login?error").permitAll()
                 .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login")
                 .and().exceptionHandling().accessDeniedPage("/access_denied");
     }
