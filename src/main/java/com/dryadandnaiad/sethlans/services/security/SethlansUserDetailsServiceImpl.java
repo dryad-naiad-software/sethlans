@@ -53,6 +53,6 @@ public class SethlansUserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        return sethlansUserDetailsConverter.convert(userService.findByUserName(username));
+        return sethlansUserDetailsConverter.convert(userService.findByUserName(username.toLowerCase()));
     }
 }

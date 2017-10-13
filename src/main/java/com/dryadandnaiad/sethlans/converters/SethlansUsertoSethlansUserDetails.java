@@ -40,7 +40,7 @@ public class SethlansUsertoSethlansUserDetails implements Converter<SethlansUser
     @Override
     public UserDetails convert(SethlansUser user) {
         SethlansUserDetails userDetails = new SethlansUserDetails();
-        userDetails.setUsername(user.getUsername());
+        userDetails.setUsername(user.getUsername().toLowerCase());
         userDetails.setPassword(user.getEncryptedPassword());
         userDetails.setEnabled(user.isEnabled());
 
