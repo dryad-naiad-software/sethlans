@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.commands.validators;
 import com.dryadandnaiad.sethlans.commands.SetupForm;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SetupProgress;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -43,6 +44,12 @@ public class SetupFormValidator implements Validator {
     public void validate(Object target, Errors errors) {
 
         SetupForm setupForm = (SetupForm) target;
+
+        if (StringUtils.containsAny(setupForm.getUsername(), "~`!@#$%^&*()-_=+[{]}\\|;:\'\",<.>/?")) {
+            errors.rejectValue("username", "form.usernameInvalidChar", "The following symbols are not supported. ~`!@#$%^&*()-_=+[{]}\\|;:\'\",<.>/?");
+        }
+
+
 
         if (!setupForm.getPassword().equals(setupForm.getPasswordConfirm())) {
             errors.rejectValue("password", "form.passwordsDontMatch", "Passwords Don't Match");
