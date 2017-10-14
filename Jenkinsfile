@@ -29,21 +29,34 @@ stage('unitests') {
         node('linux') {
             deleteDir()
             git url: 'https://gitlab.com/marioestrella/sethlans.git'
-            sh 'mvn clean test'
+            try{
+                sh 'mvn clean test'
+            } catch (err) {
+
+            }
+
             junit '**/target/surefire-reports/*.xml'
         }
     }, windows: {
         node('windows') {
             deleteDir()
             git url: 'https://gitlab.com/marioestrella/sethlans.git'
-            sh 'mvn clean test'
+            try{
+                sh 'mvn clean test'
+            } catch (err) {
+
+            }
             junit '**/target/surefire-reports/*.xml'
         }
     }, mac: {
         node('mac') {
             deleteDir()
             git url: 'https://gitlab.com/marioestrella/sethlans.git'
-            sh 'mvn clean test'
+            try{
+                sh 'mvn clean test'
+            } catch (err) {
+
+            }
             junit '**/target/surefire-reports/*.xml'
         }
     }, failFast: false

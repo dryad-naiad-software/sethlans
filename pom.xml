@@ -33,7 +33,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.8.BUILD-SNAPSHOT</version>
+        <version>1.5.7.RELEASE</version>
     </parent>
 
     <organization>
@@ -225,7 +225,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>1.5.7.RELEASE</version>
                 <executions>
                     <execution>
                         <goals>
