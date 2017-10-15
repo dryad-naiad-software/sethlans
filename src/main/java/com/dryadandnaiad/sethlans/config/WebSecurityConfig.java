@@ -40,6 +40,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
  * Project: sethlans
  */
 @Configuration
+// TODO set this to FALSE during releases. TRUE during development.
 @EnableWebSecurity(debug = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 

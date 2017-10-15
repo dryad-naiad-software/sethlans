@@ -49,7 +49,10 @@ public class SetupFormValidator implements Validator {
             errors.rejectValue("username", "form.usernameInvalidChar", "The following symbols are not supported. ~`!@#$%^&*()-_=+[{]}\\|;:\'\",<.>/?");
         }
 
+        if (StringUtils.containsAny(setupForm.getPassword(), "()-_=+[{]}\\|;:\'\",<.>/")) {
+            errors.rejectValue("password", "form.passwordInvalidChar", "The following symbols are not supported. ()-_=+[{]}\\|;:\'\",<.>/");
 
+        }
 
         if (!setupForm.getPassword().equals(setupForm.getPasswordConfirm())) {
             errors.rejectValue("password", "form.passwordsDontMatch", "Passwords Don't Match");
