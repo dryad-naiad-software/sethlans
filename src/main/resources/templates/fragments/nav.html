@@ -156,8 +156,8 @@
                 <!--/*@thymesVar id="username" type=""*/-->
                 <ul class="dropdown-menu" aria-labelledby="userMenu">
                     <li><a id="currentLoggedInUser"><strong th:text="${username}">Username</strong></a></li>
-                    <li><a href="/settings">Settings</a></li>
-                    <li><a href="/logout">Logout</a></li>
+                    <li><a id="dropdown-settings" href="/settings">Settings</a></li>
+                    <li><a id="dropdown-logout" href="/logout">Logout</a></li>
                 </ul>
             </li>
         </ul>
