@@ -46,7 +46,7 @@ public class SetupFormValidator implements Validator {
         SetupForm setupForm = (SetupForm) target;
 
         if (StringUtils.containsAny(setupForm.getUsername(), "~`!@#$%^&*()-_=+[{]}\\|;:\'\",<.>/?")) {
-            errors.rejectValue("username", "form.usernameInvalidChar", "The following symbols are not supported. ~`!@#$%^&*()-_=+[{]}\\|;:\'\",<.>/?");
+            errors.rejectValue("username", "form.usernameInvalidChar", "User names can only contain alpha-numeric characters");
         }
 
         if (StringUtils.containsAny(setupForm.getPassword(), "()-_=+[{]}\\|;:\'\",<.>/")) {
