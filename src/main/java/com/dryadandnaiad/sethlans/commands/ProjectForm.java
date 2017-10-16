@@ -71,6 +71,7 @@ public class ProjectForm {
         this.resolutionY = blendFile.getResolutionY();
         this.resPercentage = blendFile.getResPercent();
         this.blenderEngine = blendFile.getEngine();
+        this.renderOn = ComputeType.CPU;
     }
 
     public RenderStatus getRenderStatus() {
