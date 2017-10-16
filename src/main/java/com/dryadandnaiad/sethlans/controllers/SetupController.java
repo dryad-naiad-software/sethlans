@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
 import com.dryadandnaiad.sethlans.services.network.BlenderDownloadService;
 import com.dryadandnaiad.sethlans.services.system.PythonSetupService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
+import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Created Mario Estrella on 3/17/17.
@@ -65,16 +67,6 @@ public class SetupController {
     private SaveSetupConfigService saveSetupConfigService;
     private BlenderDownloadService blenderDownloadService;
     private PythonSetupService pythonSetupService;
-
-    @ModelAttribute("version")
-    public String getVersion() {
-        return SethlansUtils.getVersion();
-    }
-
-    @ModelAttribute("sethlansmode")
-    public String getMode() {
-        return modeName;
-    }
 
     @RequestMapping
     public String getStartPage(final Model model) {
@@ -121,6 +113,21 @@ public class SetupController {
         }
 
         return "setup";
+    }
+
+    @ModelAttribute("version")
+    public String getVersion() {
+        return SethlansUtils.getVersion();
+    }
+
+    @ModelAttribute("sethlansmode")
+    public String getMode() {
+        return modeName;
+    }
+
+    @ModelAttribute("blender_versions")
+    public List<String> getBlenderVersions() {
+        return BlenderUtils.listVersions();
     }
 
     @Autowired

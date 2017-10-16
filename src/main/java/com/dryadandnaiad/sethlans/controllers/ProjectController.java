@@ -23,8 +23,7 @@ import com.dryadandnaiad.sethlans.commands.ProjectForm;
 import com.dryadandnaiad.sethlans.converters.BlenderProjectToProjectForm;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderProject;
-import com.dryadandnaiad.sethlans.enums.ProjectFormProgress;
-import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectService;
@@ -44,6 +43,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -153,6 +153,21 @@ public class ProjectController {
     @ModelAttribute("username")
     public String getUserName() {
         return userService.getById(1).getUsername();
+    }
+
+    @ModelAttribute("compute_types")
+    public List<ComputeType> computeTypeArray() {
+        return Arrays.asList(ComputeType.values());
+    }
+
+    @ModelAttribute("engines")
+    public List<BlenderEngine> blenderEngineArray() {
+        return Arrays.asList(BlenderEngine.values());
+    }
+
+    @ModelAttribute("formats")
+    public List<RenderOutputFormat> renderOutputFormats() {
+        return Arrays.asList(RenderOutputFormat.values());
     }
 
     @Autowired

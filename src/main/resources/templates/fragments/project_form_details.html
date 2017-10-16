@@ -163,7 +163,7 @@
                 <label for="outputFormat">Output Format</label>
                 <select class="form-control" id="outputFormat" name="outputFormat"
                         th:value="${projectForm.outputFormat}">
-                    <option th:each="format : ${T(com.dryadandnaiad.sethlans.enums.RenderOutputFormat).values()}"
+                    <option th:each="format : ${formats}"
                             th:value="${format}" th:text="${format}">PNG
                     </option>
                     <option th:remove="all">AVI</option>
@@ -201,7 +201,8 @@
                 <label for="renderOn">Render On:</label>
                 <select class="form-control" id="renderOn" name="renderOn"
                         th:value="${projectForm.renderOn}">
-                    <option th:each="method : ${T(com.dryadandnaiad.sethlans.enums.ComputeType).values()}"
+                    <!--/*@thymesVar id="compute_types" type="com.dryadandnaiad.sethlans.enums.ComputeType"*/-->
+                    <option th:each="method : ${compute_types}"
                             th:value="${method}" th:text="${method.getName()}"
                             th:selected="${projectForm.renderOn.equals(method)}">CPU
                     </option>
@@ -215,7 +216,7 @@
                 <select class="form-control" id="blenderEngine" name="blenderEngine"
                         th:value="${projectForm.blenderEngine}" onchange="selectEngine()">
                     <!--These errors can be ignored, thymeleaf doesn't recognize values from enum though it is valid. -->
-                    <option th:each="engine : ${T(com.dryadandnaiad.sethlans.enums.BlenderEngine).values()}"
+                    <option th:each="engine : ${engines}"
                             th:value="${engine}" th:text="${engine.getName()}"
                             th:selected="${projectForm.blenderEngine.equals(engine)}">Cycles
                     </option>
