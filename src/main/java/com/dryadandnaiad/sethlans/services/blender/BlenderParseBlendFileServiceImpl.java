@@ -56,10 +56,10 @@ public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileSe
             ProcessBuilder pb = new ProcessBuilder(pythonBinary, scriptsDir + File.separator + "blend_info.py", blendFile);
             Process p = pb.start();
 
-
             BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String output = in.readLine();
-            List<String> values = Arrays.asList(output.split("\\s*,\\s*"));
+            List<String> values;
+            values = Arrays.asList(output.split("\\s*,\\s*"));
             LOG.debug(values.toString());
 
             String sceneName = values.get(0);
@@ -84,8 +84,8 @@ public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileSe
             }
             BlendFile parsedBlend = new BlendFile(sceneName.substring(2), engine, frameStart, frameEnd, frameSkip, resPercent, resolutionX, resolutionY, cameraName.substring(2), cyclesSamples);
             return parsedBlend;
-        } catch (IOException e) {
-            LOG.error("Error parsing " + blendFile + e.getMessage());
+        } catch (IOException | NullPointerException e) {
+            LOG.error("Error parsing " + blendFile + " " + e.getMessage());
             LOG.error(Throwables.getStackTraceAsString(e));
         }
         return null;

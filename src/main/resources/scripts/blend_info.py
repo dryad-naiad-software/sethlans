@@ -147,6 +147,7 @@ frame_start, frame_end, frame_current, frame_skip = query_main_scene(filepath, [
 views_data, = query_main_scene(filepath, [get_views_name_status])
 samples, = query_main_scene(filepath, [get_samples])
 
+
 print(scene_name, ",", engine, ",", frame_start, ",", frame_end, ",", frame_skip, ",", res_percent, ",", resolution_x,
       ",", resolution_y,
       ",", camera_name, ",", samples)
