@@ -112,7 +112,7 @@
     </div>
     <div id="mySidenav" class="sidenav">
 
-        <a th:if="${sethlansmode == 'SERVER'}" href="/project">Projects</a>
+        <a id="menuItemProject" th:if="${sethlansmode == 'SERVER' || sethlansmode == 'DUAL'}" href="/project">Projects</a>
         <a th:if="${sethlansmode == 'NODE' || sethlansmode == 'DUAL'}" href="#">Rendering</a>
     </div>
     <nav class="collapse navbar-collapse">
