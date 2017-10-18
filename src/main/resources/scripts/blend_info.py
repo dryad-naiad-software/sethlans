@@ -20,7 +20,7 @@ This takes a blend file argument and prints out some of its details, eg:
 """
 import sys
 
-import io_blend_utils.blend.blendfile as blendfile
+import blendfile
 
 filepath = sys.argv[-1]
 
