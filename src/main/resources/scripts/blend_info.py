@@ -36,10 +36,6 @@ def idprop_group_iter(idprops, ):
     return listbase_iter(idprops, b'data', b'group')
 
 
-def views_iter(scene):
-    """Return an iterator for all views of scene"""
-    return listbase_iter(scene, b'r', b'views')
-
 
 def query_main_scene(filepath, callbacks):
     """Return the equivalent to bpy.context.scene"""
@@ -105,14 +101,14 @@ def get_camera_lens(scene):
     return camera_data.get(b'lens')
 
 
-def get_views_name_status(scene):
-    name_status = []
-    for view in views_iter(scene):
-        name_status.append((
-            view.get(b'name'),
-            view.get(b'viewflag'),
-        ))
-    return name_status
+# def get_views_name_status(scene):
+#     name_status = []
+#     for view in views_iter(scene):
+#         name_status.append((
+#             view.get(b'name'),
+#             view.get(b'viewflag'),
+#         ))
+#     return name_status
 
 
 def get_samples(scene):
@@ -144,7 +140,7 @@ frame_start, frame_end, frame_current, frame_skip = query_main_scene(filepath, [
     get_frame_end,
     get_frame_current, get_frame_skip,
 ])
-views_data, = query_main_scene(filepath, [get_views_name_status])
+
 samples, = query_main_scene(filepath, [get_samples])
 
 
