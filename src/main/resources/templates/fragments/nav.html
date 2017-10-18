@@ -121,21 +121,19 @@
                 <a class="dropdown-toggle nav-item-iconic" id="notifications" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="true">
                     <span title="Notifications" class="fa pficon-flag"></span>
-                    <span class="badge">2</span>
+                    <span th:if="${T(com.dryadandnaiad.sethlans.services.network.BlenderDownloadServiceImpl).isDownloading()}" class="badge">!</span>
                 </a>
                 <div class="dropdown-menu infotip bottom-right">
                     <div class="arrow"></div>
                     <ul class="list-group">
-                        <li class="list-group-item">
-                            <span class="i pficon pficon-info"></span> Modified Datasources ExampleDS
+                        <li th:if="${T(com.dryadandnaiad.sethlans.services.network.BlenderDownloadServiceImpl).isDownloading()}"
+                            class="list-group-item">
+                            <span class="i pficon pficon-info"></span>
+                                <p th:text="${T(com.dryadandnaiad.sethlans.services.network.BlenderDownloadServiceImpl).getBlenderFileInfo()}"></p>
                         </li>
-                        <li class="list-group-item">
-                            <span class="i pficon pficon-info"></span> Error: System Failure
-                        </li>
+                        <li th:unless="${T(com.dryadandnaiad.sethlans.services.network.BlenderDownloadServiceImpl).isDownloading()}"
+                            class="list-group-item"> <span class="i pficon pficon-info"></span> Nothing to report</li>
                     </ul>
-                    <div class="footer">
-                        <a>Clear Messages</a>
-                    </div>
                 </div>
             </li>
             <li class="dropdown">

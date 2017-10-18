@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.config;
 import org.jasypt.springsecurity3.authentication.encoding.PasswordEncoder;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -44,6 +45,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity(debug = false)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Value("${sethlans.firsttime}")
+    private boolean firstTime;
+
     @Autowired
     // Autowired needed to fix issue #18
     private AuthenticationProvider authenticationProvider;
@@ -55,13 +59,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .antMatchers("/setup", "/", "/bower/**", "/webjars/**", "/css/**", "/images/**", "/setup_finished", "/shutdown").permitAll()
-                .anyRequest().authenticated()
-                .and().formLogin().loginPage("/login").failureUrl("/login?error").permitAll()
-                .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login?logout").permitAll()
-                .and().exceptionHandling().accessDeniedPage("/access_denied");
+        if(firstTime){
+            http
+                    .authorizeRequests()
+                    .antMatchers("/setup", "/", "/bower/**", "/webjars/**", "/css/**", "/images/**", "/setup_finished", "/shutdown", "/home").permitAll()
+                    .anyRequest().authenticated()
+                    .and().formLogin().loginPage("/login").failureUrl("/login?error").permitAll()
+                    .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login?logout").permitAll()
+                    .and().exceptionHandling().accessDeniedPage("/access_denied");
+        }
+        else{
+            http
+                    .authorizeRequests()
+                    .antMatchers("/setup", "/", "/bower/**", "/webjars/**", "/css/**", "/images/**", "/setup_finished", "/shutdown").permitAll()
+                    .anyRequest().authenticated()
+                    .and().formLogin().loginPage("/login").failureUrl("/login?error").permitAll()
+                    .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login?logout").permitAll()
+                    .and().exceptionHandling().accessDeniedPage("/access_denied");
+        }
+
     }
 
 

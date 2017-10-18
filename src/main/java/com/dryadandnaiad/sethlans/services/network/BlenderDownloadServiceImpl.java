@@ -61,6 +61,8 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
     private String downloadLocation;
     private int downloadMirror = 0;
     private boolean retry = true;
+    private static boolean downloading = true;
+    private static String blenderFileInfo;
 
     @Autowired
     public void setBlenderBinaryService(BlenderBinaryService blenderBinaryService) {
@@ -107,7 +109,8 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                     }
 
                     File toDownload = new File(saveLocation + File.separator + filename);
-                    LOG.debug("Downloading " + filename + "...");
+                    LOG.info("Downloading " + filename + "...");
+                    blenderFileInfo = "Downloading Blender " + blenderVersion;
                     if (toDownload.exists()) {
                         LOG.debug("Previous download did not complete successfully, deleting and re-downloading.");
                         toDownload.delete();
@@ -119,7 +122,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
 
                     if (SethlansUtils.fileCheckMD5(toDownload, blenderBinary.getBlenderFileMd5())) {
                         blenderBinary.setBlenderFile(toDownload.toString());
-                        LOG.debug(filename + " downloaded successfully.");
+                        LOG.info(filename + " downloaded successfully.");
                         blenderBinary.setDownloaded(true);
                         blenderBinaryService.saveOrUpdate(blenderBinary);
                     } else {
@@ -153,7 +156,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
             }
         }
 
-
+        downloading = false;
         return true;
     }
 
@@ -207,5 +210,13 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
             LOG.debug("Nothing to download");
         }
         return list;
+    }
+
+    public static boolean isDownloading() {
+        return downloading;
+    }
+
+    public static String getBlenderFileInfo() {
+        return blenderFileInfo;
     }
 }
