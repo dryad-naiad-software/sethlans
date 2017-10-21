@@ -4,10 +4,15 @@ import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.events.SethlansEvent;
 import com.dryadandnaiad.sethlans.services.database.UserService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.web.bind.annotation.ModelAttribute;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created Mario Estrella on 10/20/17.
@@ -18,7 +23,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 public class AbstractSethlansController implements ApplicationListener<SethlansEvent> {
     private UserService userService;
     private boolean notification;
-    private String notificationMessage;
+    private List<String> notificationMessage = new ArrayList<>();
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractSethlansController.class);
 
     @Value("${sethlans.mode}")
     private SethlansMode mode;
@@ -47,11 +53,12 @@ public class AbstractSethlansController implements ApplicationListener<SethlansE
 
     @ModelAttribute("isNewNotification")
     public boolean isNotification(){
+        LOG.debug("Current notification list size: " + notificationMessage.size());
         return notification;
     }
 
-    @ModelAttribute("notificationMessage")
-    public String getNotificationMessage(){
+    @ModelAttribute("notificationMessages")
+    public List<String> getNotificationMessage(){
         return notificationMessage;
     }
 
@@ -64,7 +71,12 @@ public class AbstractSethlansController implements ApplicationListener<SethlansE
     @Override
     public void onApplicationEvent(SethlansEvent event) {
         notification = event.isNewNotification();
-        notificationMessage = event.getMessage();
+        if(notification) {
+            notificationMessage.add(event.getMessage());
+        }
+        else {
+            notificationMessage = new ArrayList<>();
+        }
 
     }
 }

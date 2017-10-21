@@ -25,6 +25,11 @@ public class SethlansEvent extends ApplicationEvent{
         this.newNotification = newNotification;
     }
 
+    public SethlansEvent(Object source, boolean newNotification) {
+        super(source);
+        this.message = message;
+        this.newNotification = newNotification;
+    }
 
     public String getMessage() {
         return message;

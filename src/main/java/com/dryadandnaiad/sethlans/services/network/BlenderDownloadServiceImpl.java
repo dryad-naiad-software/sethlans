@@ -162,6 +162,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
         }
 
         downloading = false;
+        this.applicationEventPublisher.publishEvent(new SethlansEvent(this, downloading));
         return true;
     }
 

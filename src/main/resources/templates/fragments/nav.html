@@ -117,7 +117,7 @@
     </div>
     <nav class="collapse navbar-collapse">
         <!--/*@thymesVar id="isNewNotification" type="com.dryadandnaiad.sethlans.controllers.AbstractSethlansController"*/-->
-        <!--/*@thymesVar id="notificationMessage" type="com.dryadandnaiad.sethlans.controllers.AbstractSethlansController"*/-->
+        <!--/*@thymesVar id="notificationMessages" type="java.util.List"*/-->
         <ul class="nav navbar-nav navbar-right navbar-iconic">
             <li class="dropdown">
                 <a class="dropdown-toggle nav-item-iconic" id="notifications" data-toggle="dropdown"
@@ -127,15 +127,15 @@
                 </a>
                 <div class="dropdown-menu infotip bottom-right">
                     <div class="arrow"></div>
-                    <ul class="list-group">
-                        <li th:if="${isNewNotification}"
+                    <ul class="list-group" id="messages">
+                        <li th:if="${isNewNotification}" th:each="message : ${notificationMessages}"
                             class="list-group-item">
                             <span class="i pficon pficon-info"></span>
 
-                                <p th:text="${notificationMessage}"></p>
+                                <p id="message" th:text="${message}"></p>
                         </li>
                         <li th:unless="${isNewNotification}"
-                            class="list-group-item"> <span class="i pficon pficon-info"></span> Nothing to report</li>
+                            class="list-group-item"> <span class="i pficon pficon-info"></span> <p id="message">Nothing to report</p></li>
                     </ul>
                 </div>
             </li>
