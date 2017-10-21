@@ -38,6 +38,9 @@ public class AbstractSethlansController implements ApplicationListener<SethlansE
 
     @ModelAttribute("username")
     public String getUserName() {
+        if(firstTime){
+            return "username";
+        }
         return userService.getById(1).getUsername();
 
     }
