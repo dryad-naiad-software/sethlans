@@ -22,7 +22,6 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.commands.SetupForm;
 import com.dryadandnaiad.sethlans.enums.SetupProgress;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
-import com.dryadandnaiad.sethlans.services.network.BlenderDownloadService;
 import com.dryadandnaiad.sethlans.services.system.PythonSetupService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
@@ -64,7 +63,6 @@ public class SetupController extends AbstractSethlansController {
     private Validator setupFormValidator;
     private SethlansManagerService sethlansManagerService;
     private SaveSetupConfigService saveSetupConfigService;
-    private BlenderDownloadService blenderDownloadService;
     private PythonSetupService pythonSetupService;
 
     @RequestMapping
@@ -75,6 +73,11 @@ public class SetupController extends AbstractSethlansController {
         }
         return "redirect:/";
 
+    }
+
+    @Override
+    public String getUserName() {
+        return "username";
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -136,12 +139,13 @@ public class SetupController extends AbstractSethlansController {
     }
 
     @Autowired
-    public void setBlenderDownloadService(BlenderDownloadService blenderDownloadService) {
-        this.blenderDownloadService = blenderDownloadService;
-    }
-
-    @Autowired
     public void setPythonSetupService(PythonSetupService pythonSetupService) {
         this.pythonSetupService = pythonSetupService;
+    }
+
+    @Override
+    @ModelAttribute("sethlansmode")
+    public String getMode() {
+        return modeName;
     }
 }
