@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Project: sethlans
  */
 @Controller
-public class SethlansStateController {
+public class SethlansStateController extends AbstractSethlansController {
     @Autowired
     private SethlansManagerService sethlansManagerService;
 

@@ -19,15 +19,10 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.enums.SethlansMode;
-import com.dryadandnaiad.sethlans.services.database.UserService;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -37,16 +32,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Project: sethlans
  */
 @Controller
-public class IndexController {
+public class IndexController extends AbstractSethlansController {
     private static final Logger LOG = LoggerFactory.getLogger(IndexController.class);
-    private UserService userService;
-
-    @Value("${sethlans.mode}")
-    private SethlansMode mode;
 
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
-
 
     @RequestMapping("/")
     public String getPage() {
@@ -67,29 +57,5 @@ public class IndexController {
         }
         return "index";
     }
-
-    @ModelAttribute("version")
-    public String getVersion() {
-        return SethlansUtils.getVersion();
-    }
-
-    @ModelAttribute("sethlansmode")
-    public String getMode() {
-        return mode.toString();
-    }
-
-    @ModelAttribute("username")
-    public String getUserName() {
-        if (!firstTime) {
-            return userService.getById(1).getUsername();
-        }
-        return "username";
-    }
-
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
 
 }

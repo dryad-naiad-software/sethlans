@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Project: sethlans
  */
 @Controller
-public class SettingsController {
+public class SettingsController extends AbstractSethlansController {
 
     private UserService userService;
 

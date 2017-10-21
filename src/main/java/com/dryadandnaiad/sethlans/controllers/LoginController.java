@@ -19,11 +19,7 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.enums.SethlansMode;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -33,10 +29,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Project: sethlans
  */
 @Controller
-public class LoginController {
+public class LoginController extends AbstractSethlansController {
 
-    @Value("${sethlans.mode}")
-    private SethlansMode mode;
 
     @RequestMapping("/login")
     public String getLoginPage() {
@@ -48,14 +42,4 @@ public class LoginController {
         return "access_denied";
     }
 
-
-    @ModelAttribute("version")
-    public String getVersion() {
-        return SethlansUtils.getVersion();
-    }
-
-    @ModelAttribute("sethlansmode")
-    public String getMode() {
-        return mode.toString();
-    }
 }

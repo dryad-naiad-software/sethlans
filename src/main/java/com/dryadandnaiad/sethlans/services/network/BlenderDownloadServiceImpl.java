@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.network;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderZip;
+import com.dryadandnaiad.sethlans.events.SethlansEvent;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
@@ -29,6 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
@@ -52,7 +55,7 @@ import java.util.concurrent.Future;
  * Project: sethlans
  */
 @Service
-public class BlenderDownloadServiceImpl implements BlenderDownloadService {
+public class BlenderDownloadServiceImpl implements BlenderDownloadService, ApplicationEventPublisherAware {
     private static final Logger LOG = LoggerFactory.getLogger(BlenderDownloadServiceImpl.class);
     private BlenderBinaryService blenderBinaryService;
     private List<BlenderBinary> blenderFileEntities;
@@ -61,8 +64,8 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
     private String downloadLocation;
     private int downloadMirror = 0;
     private boolean retry = true;
-    private static boolean downloading = true;
-    private static String blenderFileInfo;
+    private boolean downloading = true;
+    private ApplicationEventPublisher applicationEventPublisher = null;
 
     @Autowired
     public void setBlenderBinaryService(BlenderBinaryService blenderBinaryService) {
@@ -110,7 +113,9 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
 
                     File toDownload = new File(saveLocation + File.separator + filename);
                     LOG.info("Downloading " + filename + "...");
-                    blenderFileInfo = "Downloading Blender " + blenderVersion;
+                    String blenderFileInfo = "Downloading Blender " + blenderVersion;
+                    this.applicationEventPublisher.publishEvent(new SethlansEvent(this, blenderFileInfo, downloading));
+
                     if (toDownload.exists()) {
                         LOG.debug("Previous download did not complete successfully, deleting and re-downloading.");
                         toDownload.delete();
@@ -212,11 +217,10 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
         return list;
     }
 
-    public static boolean isDownloading() {
-        return downloading;
-    }
 
-    public static String getBlenderFileInfo() {
-        return blenderFileInfo;
+    @Override
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.applicationEventPublisher = applicationEventPublisher;
+
     }
 }

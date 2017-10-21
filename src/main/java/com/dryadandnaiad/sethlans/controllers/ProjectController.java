@@ -23,13 +23,14 @@ import com.dryadandnaiad.sethlans.commands.ProjectForm;
 import com.dryadandnaiad.sethlans.converters.BlenderProjectToProjectForm;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderProject;
-import com.dryadandnaiad.sethlans.enums.*;
+import com.dryadandnaiad.sethlans.enums.BlenderEngine;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.ProjectFormProgress;
+import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectService;
-import com.dryadandnaiad.sethlans.services.database.UserService;
 import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,7 @@ import java.util.UUID;
  */
 @Controller
 @Profile({"SERVER", "DUAL"})
-public class ProjectController {
+public class ProjectController extends AbstractSethlansController {
     private static final Logger LOG = LoggerFactory.getLogger(ProjectController.class);
     private BlenderBinaryService blenderBinaryService;
     private List<BlenderBinary> availableBlenderBinaries;
@@ -68,9 +69,6 @@ public class ProjectController {
     @Value("${sethlans.tempDir}")
     private String temp;
 
-    @Value("${sethlans.mode}")
-    private SethlansMode mode;
-    private UserService userService;
 
     @RequestMapping("/project")
     public String getPage(Model model) {
@@ -140,20 +138,7 @@ public class ProjectController {
         }
     }
 
-    @ModelAttribute("version")
-    public String getVersion() {
-        return SethlansUtils.getVersion();
-    }
 
-    @ModelAttribute("sethlansmode")
-    public String getMode() {
-        return mode.toString();
-    }
-
-    @ModelAttribute("username")
-    public String getUserName() {
-        return userService.getById(1).getUsername();
-    }
 
     @ModelAttribute("compute_types")
     public List<ComputeType> computeTypeArray() {
@@ -168,11 +153,6 @@ public class ProjectController {
     @ModelAttribute("formats")
     public List<RenderOutputFormat> renderOutputFormats() {
         return Arrays.asList(RenderOutputFormat.values());
-    }
-
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
     }
 
     @Autowired

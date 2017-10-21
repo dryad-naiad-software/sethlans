@@ -116,22 +116,25 @@
         <a th:if="${sethlansmode == 'NODE' || sethlansmode == 'DUAL'}" href="#">Rendering</a>
     </div>
     <nav class="collapse navbar-collapse">
+        <!--/*@thymesVar id="isNewNotification" type="com.dryadandnaiad.sethlans.controllers.AbstractSethlansController"*/-->
+        <!--/*@thymesVar id="notificationMessage" type="com.dryadandnaiad.sethlans.controllers.AbstractSethlansController"*/-->
         <ul class="nav navbar-nav navbar-right navbar-iconic">
             <li class="dropdown">
                 <a class="dropdown-toggle nav-item-iconic" id="notifications" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="true">
                     <span title="Notifications" class="fa pficon-flag"></span>
-                    <span th:if="${T(com.dryadandnaiad.sethlans.services.network.BlenderDownloadServiceImpl).isDownloading()}" class="badge">!</span>
+                    <span th:if="${isNewNotification}" class="badge">!</span>
                 </a>
                 <div class="dropdown-menu infotip bottom-right">
                     <div class="arrow"></div>
                     <ul class="list-group">
-                        <li th:if="${T(com.dryadandnaiad.sethlans.services.network.BlenderDownloadServiceImpl).isDownloading()}"
+                        <li th:if="${isNewNotification}"
                             class="list-group-item">
                             <span class="i pficon pficon-info"></span>
-                                <p th:text="${T(com.dryadandnaiad.sethlans.services.network.BlenderDownloadServiceImpl).getBlenderFileInfo()}"></p>
+
+                                <p th:text="${notificationMessage}"></p>
                         </li>
-                        <li th:unless="${T(com.dryadandnaiad.sethlans.services.network.BlenderDownloadServiceImpl).isDownloading()}"
+                        <li th:unless="${isNewNotification}"
                             class="list-group-item"> <span class="i pficon pficon-info"></span> Nothing to report</li>
                     </ul>
                 </div>

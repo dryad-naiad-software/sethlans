@@ -26,7 +26,6 @@ import com.dryadandnaiad.sethlans.services.network.BlenderDownloadService;
 import com.dryadandnaiad.sethlans.services.system.PythonSetupService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +54,7 @@ import java.util.List;
 @Profile("SETUP")
 @RequestMapping("/setup")
 @SessionAttributes("setupForm")
-public class SetupController {
+public class SetupController extends AbstractSethlansController {
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
 
@@ -113,16 +112,6 @@ public class SetupController {
         }
 
         return "setup";
-    }
-
-    @ModelAttribute("version")
-    public String getVersion() {
-        return SethlansUtils.getVersion();
-    }
-
-    @ModelAttribute("sethlansmode")
-    public String getMode() {
-        return modeName;
     }
 
     @ModelAttribute("blender_versions")
