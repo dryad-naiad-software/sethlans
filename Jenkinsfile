@@ -52,7 +52,7 @@ stage('publish') {
     node('package') {
         deleteDir()
         git url: 'https://gitlab.com/marioestrella/sethlans.git'
-        sh 'mvn clean package'
+        sh 'mvn clean package -DskipTests'
         archiveArtifacts artifacts: '**/target/binaries/*.jar, **/target/binaries/*.exe, **/target/binaries/*.dmg', fingerprint: true
     }
 }
