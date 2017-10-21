@@ -30,7 +30,7 @@
               th:object="${projectForm}"
               method="POST">
             <div class="form-group">
-                <h2 class="text-center">Project Details</h2>
+                <h2 class="text-center" id="projectFormTitle">Project Details</h2>
                 <label class="control-label" for="projectName">Project Name</label>
                 <input type="text" name="projectName" id="projectName" th:value="${projectForm.projectName}"
                        class="form-control">
@@ -50,6 +50,7 @@
                 <label for="outputFormat">Output Format</label>
                 <select class="form-control" id="outputFormat" name="outputFormat"
                         th:value="${projectForm.outputFormat}">
+                    <!--/*@thymesVar id="formats" type="com.dryadandnaiad.sethlans.enums.RenderOutputFormat"*/-->
                     <option th:each="format : ${formats}"
                             th:value="${format}" th:text="${format}">PNG
                     </option>
