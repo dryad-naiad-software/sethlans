@@ -141,19 +141,19 @@
         <h4>Project Properties</h4>
         <tr>
             <td class="col-md-6">Render Type</td>
-            <td class="col-md-6" th:text="${project.getProjectType().getName()}">Still Image</td>
+            <td id="projectType" class="col-md-6" th:text="${project.getProjectType().getName()}">Still Image</td>
         </tr>
         <tr>
             <td>Render Engine</td>
-            <td th:text="${project.getBlenderEngine().getName()}">Cycles</td>
+            <td id="projectBlenderEngine" th:text="${project.getBlenderEngine().getName()}">Cycles</td>
         </tr>
         <tr>
             <td>Blender Version</td>
-            <td th:text="${project.getBlenderVersion()}">2.78c</td>
+            <td id="projectBlenderVersion" th:text="${project.getBlenderVersion()}">2.78c</td>
         </tr>
-        <tr>
+        <tr th:if="${project.getProjectType().getName() == 'Animation'}">
             <td>Output Format</td>
-            <td th:text="${project.getRenderOutputFormat()}">MP4</td>
+            <td id="renderOutputFormat" th:text="${project.getRenderOutputFormat()}">MP4</td>
         </tr>
         </tbody>
     </table>
@@ -163,36 +163,36 @@
         <h4>Render Settings</h4>
         <tr>
             <td class="col-md-6">Method</td>
-            <td class="col-md-6" th:text="${project.getRenderOn().getName()}">GPU</td>
+            <td id="computeType" class="col-md-6" th:text="${project.getRenderOn().getName()}">GPU</td>
         </tr>
         <tr>
             <td>Resolution</td>
-            <td th:text="${project.getResolutionX()} + ' x ' + ${project.getResolutionY()}">1920x1080</td>
+            <td id="resolution" th:text="${project.getResolutionX()} + ' x ' + ${project.getResolutionY()}">1920x1080</td>
         </tr>
         <tr>
             <td>Final Image Scaling</td>
-            <td th:text="${project.getResPercentage()} + '%'">100%</td>
+            <td id="resPercentage" th:text="${project.getResPercentage()} + '%'">100%</td>
         </tr>
 
         <tr th:if="${project.getBlenderEngine().getName().contains('Cycles')}">
             <td>Samples</td>
-            <td th:text="${project.getSamples()}">100</td>
+            <td id="samples" th:text="${project.getSamples()}">100</td>
         </tr>
         <tr th:if="${project.getProjectType().getName().contains('Animation')}">
             <td>Start Frame</td>
-            <td th:text="${project.getStartFrame()}">1</td>
+            <td id="startFrame" th:text="${project.getStartFrame()}">1</td>
         </tr>
         <tr th:if="${project.getProjectType().getName().contains('Animation')}">
             <td>End Frame</td>
-            <td th:text="${project.getEndFrame()}">250</td>
+            <td id="endFrame" th:text="${project.getEndFrame()}">250</td>
         </tr>
         <tr th:if="${project.getProjectType().getName().contains('Animation')}">
             <td>Frame Step</td>
-            <td th:text="${project.getStepFrame()}">2</td>
+            <td id="frameStep" th:text="${project.getStepFrame()}">2</td>
         </tr>
         <tr th:if="${project.getProjectType().getName().contains('Still')}">
             <td>Frame Number</td>
-            <td th:text="${project.getStartFrame()}">1</td>
+            <td id="frameNumber" th:text="${project.getStartFrame()}">1</td>
         </tr>
         </tbody>
     </table>
@@ -216,6 +216,7 @@
         </tr>
         </tbody>
     </table>
+    <a class="btn btn-primary pull-right" id="projectReturn" href="/project">Return to Project List</a>
 </div>
 
 
