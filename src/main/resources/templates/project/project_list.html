@@ -112,16 +112,17 @@
             <tr th:each="project : ${projects}">
                 <!--/*@thymesVar id="project" type="com.dryadandnaiad.sethlans.domains.blender.BlenderProject"*/-->
                 <td><img src="../../images/placeholder.svg" th:src="@{/images/placeholder.svg}" height="60"/></td>
-                <td th:text="${project.getProjectName()}">Test</td>
-                <td th:text="${project.getBlenderVersion()}">2.78c</td>
-                <td th:text="${project.getProjectType().getName()}">Still Image</td>
-                <td th:text="${project.getRenderOn().getName()}">GPU</td>
-                <td th:text="${project.getResolutionX()} + ' x ' + ${project.getResolutionY()}">1920x1080 px</td>
-                <td>1% Complete</td>
-                <td><a th:href="${'/project/view/' + project.getId()}" href="#">View</a>
-                    <br/><a th:href="${'/project/edit/' + project.getId()}" href="#">Edit</a>
-                    <!--<br/>Pause-->
-                    <br/>Download
+                <td th:id="'projectName-' + ${project.getId()}" th:text="${project.getProjectName()}">Test</td>
+                <td th:id="'projectBlenderVersion-' + ${project.getId()}" th:text="${project.getBlenderVersion()}">2.78c</td>
+                <td th:id="'projectType-' + ${project.getId()}" th:text="${project.getProjectType().getName()}">Still Image</td>
+                <td th:id="'projectComputeType-' + ${project.getId()}" th:text="${project.getRenderOn().getName()}">GPU</td>
+                <td th:id="'projectResolution-' + ${project.getId()}" th:text="${project.getResolutionX()} + ' x ' + ${project.getResolutionY()}">1920x1080 px</td>
+                <td th:id="'projectStatus-' + ${project.getId()}">1% Complete</td>
+                <td><a th:id="'projectViewLink-' + ${project.getId()}" th:href="${'/project/view/' + project.getId()}" href="#">View</a>
+                    <br/><a th:id="'projectEditLink-' + ${project.getId()}" th:href="${'/project/edit/' + project.getId()}" href="#">Edit</a>
+                    <br/><a th:id="'projectPauseLink-' + ${project.getId()}" href="#">Pause</a>
+                    <br/><a th:id="'projectDownloadLink-' + ${project.getId()}" href="#">Download</a>
+                    <br/><a th:id="'projectDeleteLink-' + ${project.getId()}" href="#">Delete</a>
                 </td>
             </tr>
         </table>
