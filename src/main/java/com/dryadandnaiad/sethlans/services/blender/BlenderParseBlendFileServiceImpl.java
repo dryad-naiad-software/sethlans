@@ -62,6 +62,10 @@ public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileSe
             values = Arrays.asList(output.split("\\s*,\\s*"));
             LOG.debug(values.toString());
 
+            BufferedReader err = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            String error = err.readLine();
+            LOG.error(error);
+
             String sceneName = values.get(0);
             BlenderEngine engine = BlenderEngine.valueOf(values.get(1));
             int frameStart = Integer.parseInt(values.get(2));
