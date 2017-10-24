@@ -122,7 +122,7 @@
                     <br/><a th:id="'projectEditLink-' + ${project.getId()}" th:href="${'/project/edit/' + project.getId()}" href="#">Edit</a>
                     <br/><a th:id="'projectPauseLink-' + ${project.getId()}" href="#">Pause</a>
                     <br/><a th:id="'projectDownloadLink-' + ${project.getId()}" href="#">Download</a>
-                    <br/><a th:id="'projectDeleteLink-' + ${project.getId()}" href="#">Delete</a>
+                    <br/><a th:id="'projectDeleteLink-' + ${project.getId()}" th:href="${'/project/delete/' + project.getId()}" href="#">Delete</a>
                 </td>
             </tr>
         </table>

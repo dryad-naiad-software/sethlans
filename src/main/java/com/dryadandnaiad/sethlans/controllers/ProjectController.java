@@ -90,6 +90,12 @@ public class ProjectController extends AbstractSethlansController {
         return "project/project_view";
     }
 
+    @RequestMapping("/project/delete/{id}")
+    public String deleteProject(@PathVariable Integer id, Model model) {
+        blenderProjectService.delete(id);
+        return "redirect:/project";
+    }
+
     @RequestMapping("/project/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
         getAvailableBlenderBinaries();
