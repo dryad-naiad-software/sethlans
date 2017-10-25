@@ -22,15 +22,16 @@ package com.dryadandnaiad.sethlans.services.blender;
 import com.dryadandnaiad.sethlans.domains.blender.BlendFile;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.google.common.base.Throwables;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecuteResultHandler;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.PumpStreamHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -51,20 +52,29 @@ public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileSe
 
     @Override
     public BlendFile parseBlendFile(String blendFile) {
+        String error = null;
         try {
             LOG.debug("Parsing blend file: " + blendFile);
-            ProcessBuilder pb = new ProcessBuilder(pythonBinary, scriptsDir + File.separator + "blend_info.py", blendFile);
-            Process p = pb.start();
 
-            BufferedReader err = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            String error = err.readLine();
-            if(error != null) {
-                LOG.error(error);
-            }
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
+            PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
+            CommandLine commandLine = new CommandLine(pythonBinary);
 
+            commandLine.addArgument(scriptsDir + File.separator + "blend_info.py");
+            commandLine.addArgument(blendFile);
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            DefaultExecutor executor = new DefaultExecutor();
+            executor.setStreamHandler(pumpStreamHandler);
+            DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
+            executor.execute(commandLine, resultHandler);
+            resultHandler.waitFor();
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray())));
+
             String output = in.readLine();
+            error = errorStream.toString();
+
             List<String> values;
             values = Arrays.asList(output.split("\\s*,\\s*"));
             LOG.debug(values.toString());
@@ -92,9 +102,11 @@ public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileSe
             BlendFile parsedBlend = new BlendFile(sceneName.substring(2), engine, frameStart, frameEnd, frameSkip, resPercent, resolutionX, resolutionY, cameraName.substring(2), cyclesSamples);
             return parsedBlend;
         } catch (IOException | NullPointerException e) {
-            LOG.error("Error parsing " + blendFile + " " + e.getMessage());
+            LOG.error("Error parsing " + blendFile + "\n" + error);
             LOG.error(Throwables.getStackTraceAsString(e));
 
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         return null;
     }

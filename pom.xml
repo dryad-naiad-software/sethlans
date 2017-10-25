@@ -120,6 +120,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-exec</artifactId>
+            <version>1.3</version>
+        </dependency>
+
+
+        <dependency>
             <groupId>org.jcuda</groupId>
             <artifactId>jcuda</artifactId>
             <version>0.8.0</version>
