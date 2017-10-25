@@ -112,9 +112,11 @@
                     <option th:remove="all">Engine1</option>
                     <option th:remove="all">Engine2</option>
                 </select>
+                <div id="sampleGroup" style="display: block">
                 <label class="control-label" for="samples">Samples</label>
                 <input type="number" id="samples" class="form-control" name="samples"
                        th:field="${projectForm.samples}">
+                </div>
             </div>
 
             <div class="form-group">
@@ -179,13 +181,15 @@
                     document.getElementById("framestep").disabled = false;
                     document.getElementById("outputFormatGroup").style.display = "block";
                 }
-
-                function selectEngine() {
+            }
+            function selectEngine() {
                     var method = document.getElementById("blenderEngine");
                     var text = method.options[method.selectedIndex].text;
                     if (text.indexOf('Cycles') >= 0) {
+                        document.getElementById("sampleGroup").style.display="block";
                         document.getElementById("samples").disabled = false;
                     } else {
+                        document.getElementById("sampleGroup").style.display="none";
                         document.getElementById("samples").disabled = true;
                     }
 
@@ -198,7 +202,6 @@
 //                        document.getElementById("tileSlider").style.display = "none";
 //                    }
 //                }
-            }
 
         </script>
     </div>

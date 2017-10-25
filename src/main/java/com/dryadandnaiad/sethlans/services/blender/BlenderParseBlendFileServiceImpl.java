@@ -58,15 +58,16 @@ public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileSe
 
             BufferedReader err = new BufferedReader(new InputStreamReader(p.getErrorStream()));
             String error = err.readLine();
-            LOG.error(error);
+            if(error != null) {
+                LOG.error(error);
+            }
+
 
             BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String output = in.readLine();
             List<String> values;
             values = Arrays.asList(output.split("\\s*,\\s*"));
             LOG.debug(values.toString());
-
-
 
             String sceneName = values.get(0);
             BlenderEngine engine = BlenderEngine.valueOf(values.get(1));
