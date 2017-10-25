@@ -40,6 +40,7 @@
           rel="stylesheet" media="screen, print">
     <style>
         @import url('https://fonts.googleapis.com/css?family=Fjalla+One');
+
         body {
             background-color: #EAEAEA;
         }
@@ -145,7 +146,6 @@
 <!--/.navbar-->
 
 
-
 <!-- Footer Fragment -->
 <div class="content"></div>
 <footer class="footer" th:replace="fragments/footer :: footer">
@@ -196,6 +196,11 @@
     $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip();
     });
+</script>
+<script>
+    setTimeout(function () {
+        window.location.reload(1);
+    }, 30000);
 </script>
 
 </body>
