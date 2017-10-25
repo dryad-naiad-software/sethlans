@@ -46,7 +46,7 @@
                     <option th:remove="all">2.78c</option>
                 </select>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="outputFormatGroup" style="display: none">
                 <label for="outputFormat">Output Format</label>
                 <select class="form-control" id="outputFormat" name="outputFormat"
                         th:value="${projectForm.outputFormat}">
@@ -143,7 +143,8 @@
             <div class="form-group">
                 <input type="hidden" th:field="${projectForm.id}"/>
                 <input type="hidden" th:field="${projectForm.version}"/>
-                <input type="hidden" th:field="${projectForm.renderStatus}"/>
+                <input type="hidden" th:field="${projectForm.started}"/>
+                <input type="hidden" th:field="${projectForm.finished}"/>
                 <input type="hidden" name="uploadedFile" th:value="${projectForm.uploadedFile}">
                 <input type="hidden" name="fileLocation" th:value="${projectForm.fileLocation}">
                 <input type="hidden" id="progress" name="progress" value="FINISHED">
@@ -168,7 +169,7 @@
                     document.getElementById("startframe").disabled = true;
                     document.getElementById("endframe").disabled = true;
                     document.getElementById("framestep").disabled = true;
-                    document.getElementById("outputFormat").disabled = true;
+                    document.getElementById("outputFormatGroup").style.display = "none";
                     $("#outputFormat")[0].selectedIndex = 0;
                 }
                 if (typeValue === "ANIMATION") {
@@ -176,24 +177,26 @@
                     document.getElementById("startframe").disabled = false;
                     document.getElementById("endframe").disabled = false;
                     document.getElementById("framestep").disabled = false;
-                    document.getElementById("outputFormat").disabled = false;
-                }
-            }
-            function selectEngine() {
-                var method = document.getElementById("blenderEngine");
-                var text = method.options[method.selectedIndex].text;
-                if (text.indexOf('Cycles') >= 0) {
-                    document.getElementById("samples").disabled = false;
-                } else {
-                    document.getElementById("samples").disabled = true;
+                    document.getElementById("outputFormatGroup").style.display = "block";
                 }
 
-            }
-            function toggleTiles() {
-                if ($("#useTiles").is(":checked")) {
-                    document.getElementById("tileSlider").style.display = "block";
-                } else {
-                    document.getElementById("tileSlider").style.display = "none";
+                function selectEngine() {
+                    var method = document.getElementById("blenderEngine");
+                    var text = method.options[method.selectedIndex].text;
+                    if (text.indexOf('Cycles') >= 0) {
+                        document.getElementById("samples").disabled = false;
+                    } else {
+                        document.getElementById("samples").disabled = true;
+                    }
+
+                }
+
+                function toggleTiles() {
+                    if ($("#useTiles").is(":checked")) {
+                        document.getElementById("tileSlider").style.display = "block";
+                    } else {
+                        document.getElementById("tileSlider").style.display = "none";
+                    }
                 }
             }
 

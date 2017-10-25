@@ -117,11 +117,13 @@
                 <td th:id="'projectType-' + ${project.getId()}" th:text="${project.getProjectType().getName()}">Still Image</td>
                 <td th:id="'projectComputeType-' + ${project.getId()}" th:text="${project.getRenderOn().getName()}">GPU</td>
                 <td th:id="'projectResolution-' + ${project.getId()}" th:text="${project.getResolutionX()} + ' x ' + ${project.getResolutionY()}">1920x1080 px</td>
-                <td th:id="'projectStatus-' + ${project.getId()}">1% Complete</td>
+                <td th:id="'projectStatus-' + ${project.getId()}" th:unless="${project.isStarted() and project.isFinished()}">Not Started</td>
+                <td th:id="'projectStatus-' + ${project.getId()}" th:if="${project.isStarted()}">1% Complete</td>
+                <td th:id="'projectStatus-' + ${project.getId()}" th:if="${project.isFinished()}">Complete</td>
                 <td><a th:id="'projectViewLink-' + ${project.getId()}" th:href="${'/project/view/' + project.getId()}" href="#">View</a>
                     <br/><a th:id="'projectEditLink-' + ${project.getId()}" th:href="${'/project/edit/' + project.getId()}" href="#">Edit</a>
-                    <br/><a th:id="'projectPauseLink-' + ${project.getId()}" href="#">Pause</a>
-                    <br/><a th:id="'projectDownloadLink-' + ${project.getId()}" href="#">Download</a>
+                    <br th:if="${project.isStarted()}"/><a th:id="'projectPauseLink-' + ${project.getId()}" th:if="${project.isStarted()}" href="#">Pause</a>
+                    <br th:if="${project.isFinished()}"/><a th:id="'projectDownloadLink-' + ${project.getId()}" th:if="${project.isFinished()}" href="#">Download</a>
                     <br/><a th:id="'projectDeleteLink-' + ${project.getId()}" th:href="${'/project/delete/' + project.getId()}" href="#">Delete</a>
                 </td>
             </tr>

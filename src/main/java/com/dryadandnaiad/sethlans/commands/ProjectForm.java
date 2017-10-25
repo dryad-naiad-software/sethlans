@@ -59,7 +59,9 @@ public class ProjectForm {
     private List<BlenderBinary> availableBlenderBinaries;
     private BlendFile blendFile;
     private RenderOutputFormat outputFormat;
-    private RenderStatus renderStatus;
+    private boolean started;
+    private boolean finished;
+    private int currentPercentage;
 
 
     public void populateForm() {
@@ -72,15 +74,12 @@ public class ProjectForm {
         this.resPercentage = blendFile.getResPercent();
         this.blenderEngine = blendFile.getEngine();
         this.renderOn = ComputeType.CPU;
+        this.started = false;
+        this.finished = false;
+        this.currentPercentage = 0;
+        this.outputFormat = RenderOutputFormat.PNG;
     }
 
-    public RenderStatus getRenderStatus() {
-        return renderStatus;
-    }
-
-    public void setRenderStatus(RenderStatus renderStatus) {
-        this.renderStatus = renderStatus;
-    }
 
     public BlenderEngine getBlenderEngine() {
         return blenderEngine;
@@ -242,6 +241,30 @@ public class ProjectForm {
         this.version = version;
     }
 
+    public boolean isStarted() {
+        return started;
+    }
+
+    public void setStarted(boolean started) {
+        this.started = started;
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
+    }
+
+    public int getCurrentPercentage() {
+        return currentPercentage;
+    }
+
+    public void setCurrentPercentage(int currentPercentage) {
+        this.currentPercentage = currentPercentage;
+    }
+
     @Override
     public String toString() {
         return "ProjectForm{" +
@@ -265,7 +288,11 @@ public class ProjectForm {
                 ", availableBlenderBinaries=" + availableBlenderBinaries +
                 ", blendFile=" + blendFile +
                 ", outputFormat=" + outputFormat +
-                ", renderStatus=" + renderStatus +
+                ", started=" + started +
+                ", finished=" + finished +
+                ", currentPercentage=" + currentPercentage +
                 '}';
     }
+
+
 }

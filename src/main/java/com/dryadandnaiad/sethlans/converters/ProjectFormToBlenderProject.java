@@ -21,7 +21,6 @@ package com.dryadandnaiad.sethlans.converters;
 
 import com.dryadandnaiad.sethlans.commands.ProjectForm;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderProject;
-import com.dryadandnaiad.sethlans.enums.RenderStatus;
 import com.dryadandnaiad.sethlans.utils.RandomString;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
@@ -67,7 +66,9 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
 
 
         if (projectForm.getId() == null) {
-            project.setRenderStatus(RenderStatus.NOT_STARTED);
+            project.setStarted(false);
+            project.setFinished(false);
+            project.setCurrentPercentage(0);
 
             RandomString randomString = new RandomString(6);
 
@@ -92,7 +93,6 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
             }
         } else {
             project.setBlendFileLocation(projectForm.getFileLocation());
-            project.setRenderStatus(projectForm.getRenderStatus());
         }
 
 

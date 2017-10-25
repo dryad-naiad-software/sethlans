@@ -47,16 +47,10 @@ public class BlenderProject extends AbstractEntityClass {
     private String blendFilename;
     private String blendFileLocation;
     private String blenderVersion;
-    private RenderStatus renderStatus;
     private String currentFrameThumbnail;
-
-    public RenderStatus getRenderStatus() {
-        return renderStatus;
-    }
-
-    public void setRenderStatus(RenderStatus renderStatus) {
-        this.renderStatus = renderStatus;
-    }
+    private boolean started;
+    private boolean finished;
+    private int currentPercentage;
 
     public String getProjectName() {
         return projectName;
@@ -186,6 +180,32 @@ public class BlenderProject extends AbstractEntityClass {
         this.currentFrameThumbnail = currentFrameThumbnail;
     }
 
+    public void setStarted(boolean started) {
+        this.started = started;
+    }
+
+    public boolean isStarted() {
+        return started;
+    }
+
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
+    }
+
+
+    public int getCurrentPercentage() {
+        return currentPercentage;
+    }
+
+    public void setCurrentPercentage(int currentPercentage) {
+        this.currentPercentage = currentPercentage;
+    }
+
     @Override
     public String toString() {
         return "BlenderProject{" +
@@ -204,8 +224,10 @@ public class BlenderProject extends AbstractEntityClass {
                 ", blendFilename='" + blendFilename + '\'' +
                 ", blendFileLocation='" + blendFileLocation + '\'' +
                 ", blenderVersion='" + blenderVersion + '\'' +
-                ", renderStatus=" + renderStatus +
                 ", currentFrameThumbnail='" + currentFrameThumbnail + '\'' +
+                ", started=" + started +
+                ", finished=" + finished +
+                ", currentPercentage=" + currentPercentage +
                 '}';
     }
 }

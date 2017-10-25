@@ -133,7 +133,11 @@
 <!--/*@thymesVar id="project" type="com.dryadandnaiad.sethlans.domains.blender.BlenderProject"*/-->
 <div class="container" th:object="${project}" style="max-width: 600px;">
     <h2 id="projectName" th:text="${project.getProjectName()}">Project Name</h2>
-    <h4 id="projectStatus"><strong>Status: <span style="color: green;" th:text="${project.getRenderStatus().getName()}">Rendering</span>
+    <h4 id="projectStatus">
+        <strong>Status:
+            <span style="color: grey;" th:unless="${project.isStarted() and project.isFinished()}">Not Started</span>
+            <span style="color: blue;" th:if="${project.isStarted()}">Rendering</span>
+            <span style="color: green;" th:if="${project.isFinished()}">Complete</span>
     </strong></h4>
     <hr/>
     <table class="table table-striped">
