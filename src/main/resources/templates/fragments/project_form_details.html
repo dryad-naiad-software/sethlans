@@ -85,7 +85,7 @@
                 <input type="number" id="framestep" th:field="${projectForm.stepFrame}" class="form-control" disabled>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" id="renderOnGroup" style="display: block">
                 <label for="renderOn">Render On:</label>
                 <select class="form-control" id="renderOn" name="renderOn"
                         th:value="${projectForm.renderOn}">
@@ -172,7 +172,7 @@
                     document.getElementById("endframe").disabled = true;
                     document.getElementById("framestep").disabled = true;
                     document.getElementById("outputFormatGroup").style.display = "none";
-                    $("#outputFormat")[0].selectedIndex = 0;
+                    document.getElementById("outputFormat").value="PNG";
                 }
                 if (typeValue === "ANIMATION") {
                     document.getElementById("framenum").disabled = true;
@@ -187,10 +187,13 @@
                     var text = method.options[method.selectedIndex].text;
                     if (text.indexOf('Cycles') >= 0) {
                         document.getElementById("sampleGroup").style.display="block";
+                        document.getElementById("renderOnGroup").style.display="block";
                         document.getElementById("samples").disabled = false;
                     } else {
                         document.getElementById("sampleGroup").style.display="none";
+                        document.getElementById("renderOnGroup").style.display="none";
                         document.getElementById("samples").disabled = true;
+                        document.getElementById("renderOn").value="CPU";
                     }
 
                 }

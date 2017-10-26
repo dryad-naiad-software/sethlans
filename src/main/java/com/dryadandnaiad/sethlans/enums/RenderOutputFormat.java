@@ -26,5 +26,5 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum RenderOutputFormat {
-    PNG, MP4, AVI
+    PNG, AVI
 }
