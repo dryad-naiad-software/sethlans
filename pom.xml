@@ -81,7 +81,7 @@
 
         <!--Spring JMS-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
+            <groupId>org.springframework</groupId>
             <artifactId>spring-jms</artifactId>
         </dependency>
 
