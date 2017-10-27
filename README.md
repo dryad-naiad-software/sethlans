@@ -1,8 +1,11 @@
 Sethlans
 =======
 Local distributed rendering for Blender.
- - Spring Boot 1.5.7
+
+Components in use:
+ - Spring Boot 1.5.8
  - ThymeLeaf
- - Python 3.x
+ - Python 3.5.2
  - Java 8
+ - ActiveMQ
 
