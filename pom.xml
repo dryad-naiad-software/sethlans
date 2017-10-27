@@ -24,7 +24,7 @@
 
     <groupId>com.dryadandnaiad</groupId>
     <artifactId>Sethlans</artifactId>
-    <version>0.3.0</version>
+    <version>0.4.0</version>
     <packaging>jar</packaging>
 
     <name>Sethlans</name>
@@ -53,24 +53,39 @@
     </properties>
 
     <dependencies>
+
+        <!--Thymeleaf-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
+
+        <!--Spring Web-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!--Spring JPA-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
+
+        <!--Spring Security-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+
+        <!--Spring JMS-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-jms</artifactId>
+        </dependency>
+
+
 
         <!-- Tests -->
         <dependency>
@@ -107,6 +122,10 @@
 
 
         <!-- Other Dependencies - Non Spring Specific-->
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-broker</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.h2database</groupId>
@@ -200,6 +219,8 @@
             <version>1.0.0</version>
             <type>pom</type>
         </dependency>
+
+
 
 
         <!--encryption lib-->
