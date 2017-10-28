@@ -57,7 +57,7 @@ public class IndexController extends AbstractSethlansController {
             LOG.debug("Setup hasn't been completed, redirecting...");
             return "redirect:/setup";
         }
-        multicastReceiverService.currentSethlansClients();
+        //multicastReceiverService.currentSethlansClients();
         return "index";
     }
 
