@@ -79,12 +79,6 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!--Spring JMS-->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jms</artifactId>
-        </dependency>
-
 
 
         <!-- Tests -->
@@ -122,10 +116,6 @@
 
 
         <!-- Other Dependencies - Non Spring Specific-->
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-broker</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.h2database</groupId>
