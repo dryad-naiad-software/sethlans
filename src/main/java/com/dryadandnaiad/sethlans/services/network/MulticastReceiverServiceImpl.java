@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -31,22 +32,29 @@ public class MulticastReceiverServiceImpl implements  MulticastReceiverService{
     @Async
     @Override
     public Set<String> currentSethlansClients() {
+        Set<String> currentClients = new HashSet<>();
         byte[] buffer = new byte[256];
         try {
             MulticastSocket clientSocket = new MulticastSocket(Integer.parseInt(multicastPort));
             clientSocket.joinGroup(InetAddress.getByName(multicastIP));
+            long start_time = System.currentTimeMillis();
+            long wait_time = 30000;
+            long end_time = start_time + wait_time;
 
-            while(true){
+            while (System.currentTimeMillis() < end_time){
                 DatagramPacket msgPacket = new DatagramPacket(buffer, buffer.length);
                 clientSocket.receive(msgPacket);
 
                 String msg = new String(msgPacket.getData(), 0, msgPacket.getLength());
+                currentClients.add(msg);
                 LOG.debug(msg);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return null;
+        LOG.debug("Number of clients detected: " + currentClients.size());
+
+        return currentClients;
     }
 }
