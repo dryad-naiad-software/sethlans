@@ -33,7 +33,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -46,7 +45,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Future;
 
 /**
  * Created Mario Estrella on 3/24/17.
@@ -74,14 +72,11 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
 
     @Override
     @Async
-    public Future<Boolean> downloadRequestedBlenderFilesAsync() {
+    public void downloadRequestedBlenderFilesAsync() {
         if (doDownload()) {
             LOG.debug("All downloads complete");
-            return new AsyncResult<>(true);
         } else {
             LOG.debug("Blender Download Service failed");
-            return new AsyncResult<>(false);
-
         }
     }
 

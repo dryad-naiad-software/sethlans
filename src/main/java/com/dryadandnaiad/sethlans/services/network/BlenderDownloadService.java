@@ -19,8 +19,6 @@
 
 package com.dryadandnaiad.sethlans.services.network;
 
-import java.util.concurrent.Future;
-
 /**
  * Created Mario Estrella on 3/24/17.
  * Dryad and Naiad Software LLC
@@ -29,7 +27,7 @@ import java.util.concurrent.Future;
  */
 public interface BlenderDownloadService {
 
-    Future<Boolean> downloadRequestedBlenderFilesAsync();
+    void downloadRequestedBlenderFilesAsync();
 
 
 }
