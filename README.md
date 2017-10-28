@@ -7,5 +7,3 @@ Components in use:
  - ThymeLeaf
  - Python 3.5.2
  - Java 8
- - ActiveMQ
-

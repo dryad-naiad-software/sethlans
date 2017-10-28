@@ -24,12 +24,14 @@ public class MulticastSenderServiceImpl extends Thread implements MulticastSende
     @Value("${sethlans.multicast}")
     private String multicastIP;
 
+    @Value("${sethlans.multicast.port}")
+    private String multicastPort;
 
     @Async
     @Override
     public void sendSethlansIPAndPort(String ip, String port) {
-        String message = "sethlans client: ip: " + ip + ", port: " + port;
-        int multicastSocketPort = 4448;
+        String message = ip + ":" + port;
+        int multicastSocketPort = Integer.parseInt(multicastPort);
         try {
             byte[] buffer = message.getBytes();
             MulticastSocket multicastSocket = new MulticastSocket(multicastSocketPort);

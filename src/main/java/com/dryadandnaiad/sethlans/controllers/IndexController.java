@@ -19,8 +19,10 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.services.network.MulticastReceiverService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,7 +57,14 @@ public class IndexController extends AbstractSethlansController {
             LOG.debug("Setup hasn't been completed, redirecting...");
             return "redirect:/setup";
         }
+        multicastReceiverService.currentSethlansClients();
         return "index";
     }
 
+    private MulticastReceiverService multicastReceiverService;
+
+    @Autowired
+    public void setMulticastReceiverService(MulticastReceiverService multicastReceiverService) {
+        this.multicastReceiverService = multicastReceiverService;
+    }
 }
