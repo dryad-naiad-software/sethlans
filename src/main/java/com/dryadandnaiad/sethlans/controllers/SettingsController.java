@@ -19,13 +19,10 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.enums.SethlansMode;
-import com.dryadandnaiad.sethlans.services.database.UserService;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -36,35 +33,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 public class SettingsController extends AbstractSethlansController {
-
-    private UserService userService;
-
-    @Value("${sethlans.mode}")
-    private SethlansMode mode;
+    private static final Logger LOG = LoggerFactory.getLogger(SettingsController.class);
 
     @RequestMapping("/settings")
-    public String getPage() {
-        return "settings/settings_list";
+    public String getHomePage(Model model) {
+        model.addAttribute("settings_option", "home");
+        return "settings";
     }
 
-    @ModelAttribute("version")
-    public String getVersion() {
-        return SethlansUtils.getVersion();
+    @RequestMapping("/settings/users")
+    public String getUserPage(Model model){
+        model.addAttribute("settings_option", "users");
+        return "settings";
     }
 
-    @ModelAttribute("sethlansmode")
-    public String getMode() {
-        return mode.toString();
-    }
-
-    @ModelAttribute("username")
-    public String getUserName() {
-        return userService.getById(1).getUsername();
-    }
-
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
 
 }
