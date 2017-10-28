@@ -77,6 +77,11 @@
             transition: 0.3s
         }
 
+        .userfont {
+            font-family: "Open Sans", Helvetica, Arial, sans-serif;
+            font-size:14px;
+        }
+
         /* When you mouse over the navigation links, change their color */
         .sidenav a:hover, .offcanvas a:focus {
             color: #39A5DC;
@@ -111,7 +116,6 @@
         </a>
     </div>
     <div id="mySidenav" class="sidenav">
-
         <a id="menuItemProject" th:if="${sethlansmode == 'SERVER' || sethlansmode == 'DUAL'}" href="/project">Projects</a>
         <a th:if="${sethlansmode == 'NODE' || sethlansmode == 'DUAL'}" href="#">Rendering</a>
     </div>
@@ -131,7 +135,6 @@
                         <li th:if="${isNewNotification}" th:each="message : ${notificationMessages}"
                             class="list-group-item">
                             <span class="i pficon pficon-info"></span>
-
                                 <p id="message" th:text="${message}"></p>
                         </li>
                         <li th:unless="${isNewNotification}"
@@ -153,12 +156,11 @@
             <li class="dropdown">
                 <a class="dropdown-toggle nav-item-iconic" id="userMenu" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="true">
-                    <span title="user" class="fa pficon-user"></span>
+                    <span title="user" class="fa pficon-user"><span>&nbsp;</span><span class="userfont" id="currentLoggedInUser"th:text="${username}">Username</span></span>
                     <span class="caret"></span>
                 </a>
                 <!--/*@thymesVar id="username" type=""*/-->
                 <ul class="dropdown-menu" aria-labelledby="userMenu">
-                    <li><a id="currentLoggedInUser"><strong th:text="${username}">Username</strong></a></li>
                     <li><a id="dropdown-settings" href="/settings">Settings</a></li>
                     <li><a id="dropdown-logout" href="/logout">Logout</a></li>
                 </ul>
