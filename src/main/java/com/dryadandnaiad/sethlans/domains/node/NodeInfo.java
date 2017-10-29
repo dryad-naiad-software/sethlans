@@ -64,6 +64,7 @@ public class NodeInfo {
             } else {
                 this.nodeOS = BlenderBinaryOS.Linux32;
             }
+
         }
         return nodeOS;
     }
