@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.repositories.BlenderBinaryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

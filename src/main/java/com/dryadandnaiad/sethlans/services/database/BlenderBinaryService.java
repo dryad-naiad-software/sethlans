@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 
 /**
  * Created Mario Estrella on 3/23/17.

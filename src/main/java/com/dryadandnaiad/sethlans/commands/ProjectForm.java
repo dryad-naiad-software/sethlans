@@ -20,7 +20,7 @@
 package com.dryadandnaiad.sethlans.commands;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlendFile;
-import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.enums.*;
 import org.hibernate.validator.constraints.NotEmpty;
 

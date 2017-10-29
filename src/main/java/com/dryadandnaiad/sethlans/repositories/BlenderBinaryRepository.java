@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.repositories;
 
-import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import org.springframework.data.repository.CrudRepository;
 
 /**

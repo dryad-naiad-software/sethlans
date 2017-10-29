@@ -17,15 +17,17 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.domains.blender;
-
-import com.dryadandnaiad.sethlans.domains.AbstractEntityClass;
+package com.dryadandnaiad.sethlans.domains.database;
 
 /**
- * Created Mario Estrella on 3/24/17.
+ * Created Mario Estrella on 3/23/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class BlenderClientTask extends AbstractEntityClass {
+public interface EntityObject {
+
+    Integer getId();
+
+    void setId(Integer id);
 }

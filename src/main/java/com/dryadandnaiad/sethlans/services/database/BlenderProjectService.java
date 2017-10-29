@@ -20,7 +20,7 @@
 package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.commands.ProjectForm;
-import com.dryadandnaiad.sethlans.domains.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 
 /**
  * Created Mario Estrella on 4/2/17.

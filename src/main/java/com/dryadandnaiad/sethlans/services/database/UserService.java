@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.domains.users.SethlansUser;
+import com.dryadandnaiad.sethlans.domains.database.users.SethlansUser;
 
 /**
  * Created Mario Estrella on 3/23/17.

@@ -17,7 +17,7 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.domains;
+package com.dryadandnaiad.sethlans.domains.database;
 
 import javax.persistence.*;
 import java.util.Date;

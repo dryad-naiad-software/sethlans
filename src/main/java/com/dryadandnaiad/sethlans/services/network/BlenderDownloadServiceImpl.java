@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.network;
 
-import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderZip;
 import com.dryadandnaiad.sethlans.events.SethlansEvent;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryService;

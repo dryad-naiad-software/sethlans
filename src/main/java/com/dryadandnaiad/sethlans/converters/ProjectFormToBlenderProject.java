@@ -20,7 +20,7 @@
 package com.dryadandnaiad.sethlans.converters;
 
 import com.dryadandnaiad.sethlans.commands.ProjectForm;
-import com.dryadandnaiad.sethlans.domains.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.utils.RandomString;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;

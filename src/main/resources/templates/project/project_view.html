@@ -56,7 +56,7 @@
 
     <!--Favicon -->
     <link rel="shortcut icon" href="../images/favicon.png" th:href="@{/images/favicon.png}">
-    <!--/*@thymesVar id="project" type="com.dryadandnaiad.sethlans.domains.blender.BlenderProject"*/-->
+    <!--/*@thymesVar id="project" type="com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject"*/-->
     <title th:text="${project.getProjectName()}">Project Name</title>
 </head>
 <body>
@@ -130,7 +130,7 @@
 </nav>
 <!--/.navbar-->
 
-<!--/*@thymesVar id="project" type="com.dryadandnaiad.sethlans.domains.blender.BlenderProject"*/-->
+<!--/*@thymesVar id="project" type="com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject"*/-->
 <div class="container" th:object="${project}" style="max-width: 600px;">
     <h2 id="projectName" th:text="${project.getProjectName()}">Project Name</h2>
     <h4 id="projectStatus">

@@ -17,9 +17,9 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.domains.users;
+package com.dryadandnaiad.sethlans.domains.database.users;
 
-import com.dryadandnaiad.sethlans.domains.AbstractEntityClass;
+import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
 
 import javax.persistence.*;
 import java.util.ArrayList;

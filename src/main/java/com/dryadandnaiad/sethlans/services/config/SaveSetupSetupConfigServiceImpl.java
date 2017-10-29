@@ -20,9 +20,9 @@
 package com.dryadandnaiad.sethlans.services.config;
 
 import com.dryadandnaiad.sethlans.commands.SetupForm;
-import com.dryadandnaiad.sethlans.domains.blender.BlenderBinary;
-import com.dryadandnaiad.sethlans.domains.users.SethlansRole;
-import com.dryadandnaiad.sethlans.domains.users.SethlansUser;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
+import com.dryadandnaiad.sethlans.domains.database.users.SethlansRole;
+import com.dryadandnaiad.sethlans.domains.database.users.SethlansUser;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;

@@ -21,7 +21,7 @@ package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.commands.ProjectForm;
 import com.dryadandnaiad.sethlans.converters.ProjectFormToBlenderProject;
-import com.dryadandnaiad.sethlans.domains.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.repositories.BlenderProjectRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

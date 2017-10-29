@@ -17,9 +17,9 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.domains.blender;
+package com.dryadandnaiad.sethlans.domains.database.blender;
 
-import com.dryadandnaiad.sethlans.domains.AbstractEntityClass;
+import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
 import com.dryadandnaiad.sethlans.enums.*;
 
 import javax.persistence.Entity;

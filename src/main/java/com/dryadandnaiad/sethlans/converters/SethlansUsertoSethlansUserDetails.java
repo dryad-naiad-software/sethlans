@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.converters;
 
-import com.dryadandnaiad.sethlans.domains.users.SethlansUser;
+import com.dryadandnaiad.sethlans.domains.database.users.SethlansUser;
 import com.dryadandnaiad.sethlans.security.SethlansUserDetails;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
