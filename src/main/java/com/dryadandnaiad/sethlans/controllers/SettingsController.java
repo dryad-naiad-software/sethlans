@@ -47,5 +47,11 @@ public class SettingsController extends AbstractSethlansController {
         return "settings";
     }
 
+    @RequestMapping("/settings/nodes")
+    public String getNodePage(Model model){
+        model.addAttribute("settings_option", "nodes");
+        return "settings";
+    }
+
 
 }

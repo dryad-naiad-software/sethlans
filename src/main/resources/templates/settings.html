@@ -1,33 +1,11 @@
 <!DOCTYPE html>
-<!--
-  ~ Copyright (c) 2017 Dryad and Naiad Software LLC
-  ~
-  ~ This program is free software; you can redistribute it and/or
-  ~ modify it under the terms of the GNU General Public License
-  ~ as published by the Free Software Foundation; either version 2
-  ~ of the License, or (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program; if not, write to the Free Software
-  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-  ~
-  -->
-
 <!-- Namespaces -->
 <html lang="en" class="layout-pf layout-pf-fixed" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-
     <!-- CSS Libraries -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/css/patternfly.min.css"
           th:href="@{/bower/patternfly/dist/css/patternfly.min.css}"
@@ -38,9 +16,10 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/css/bootstrap-slider.css"
           th:href="@{/bower/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css}"
           rel="stylesheet" media="screen, print">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.3.8/css/fileinput.min.css"
+          th:href="@{/bower/bootstrap-fileinput/css/fileinput.min.css}"
+          media="screen, print" rel="stylesheet" type="text/css">
     <style>
-        @import url('https://fonts.googleapis.com/css?family=Fjalla+One');
-
         body {
             background-color: #EAEAEA;
         }
@@ -67,6 +46,10 @@
             margin: 0 auto;
             pointer-events: all;
         }
+
+        .form-template {
+            padding: 40px 15px;
+        }
     </style>
 
     <!--Favicon -->
@@ -77,96 +60,45 @@
 <body>
 <!-- Nav Bar Fragment -->
 <nav class="navbar navbar-pf-vertical" th:replace="fragments/nav :: navbar">
-    <style>
-        @import url('https://fonts.googleapis.com/css?family=Fjalla+One');
-        /* The side navigation menu */
-        .sidenav {
-            height: 100%; /* 100% Full-height */
-            width: 0; /* 0 width - change this with JavaScript */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Stay on top */
-            top: 0;
-            left: 0;
-            background-color: rgba(0, 0, 0, 0.8); /* Black*/
-            overflow-x: hidden; /* Disable horizontal scroll */
-            padding-top: 60px; /* Place content 60px from the top */
-            transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
-        }
-
-        /* The navigation menu links */
-        .sidenav a {
-            padding: 8px 8px 8px 32px;
-            text-decoration: none;
-            font-size: 16px;
-            color: #ffffff;
-            display: block;
-            transition: 0.3s
-        }
-
-        .userfont {
-            font-family: "Open Sans", Helvetica, Arial, sans-serif;
-            font-size:14px;
-            font-weight: bold;
-        }
-
-        /* When you mouse over the navigation links, change their color */
-        .sidenav a:hover, .offcanvas a:focus {
-            color: #39A5DC;
-        }
-
-        /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
-        #main {
-            transition: margin-left .5s;
-        }
-
-        /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
-        @media screen and (max-height: 450px) {
-            .sidenav {
-                padding-top: 15px;
-            }
-
-            .sidenav a {
-                font-size: 18px;
-            }
-        }
-    </style>
-    <div id="main" class="navbar-header">
-        <button id="menuButton" type="button" class="navbar-toggle" value="close" onclick="toggleNav()">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a href="/" class="navbar-brand" style="font-family: 'Fjalla One', sans-serif; font-size: 175%">
-            <img class="navbar-brand-icon" src="../../images/logo.png" th:src="@{/images/logo.png}" height="32"
-                 alt="logo"/>Sethlans
+        <a href="/" class="navbar-brand">
+            <img class="navbar-brand-icon" src="//assets/img/logo-alt.svg" alt=""/><img class="navbar-brand-name"
+                                                                                        src="//assets/img/brand-alt.svg"
+                                                                                        alt="PatternFly Enterprise Application"/>
         </a>
     </div>
-    <div id="mySidenav" class="sidenav">
-        <a id="menuItemProject" th:if="${sethlansmode == 'SERVER' || sethlansmode == 'DUAL'}" href="/project">Projects</a>
-        <a th:if="${sethlansmode == 'NODE' || sethlansmode == 'DUAL'}" href="#">Rendering</a>
-    </div>
     <nav class="collapse navbar-collapse">
-        <!--/*@thymesVar id="isNewNotification" type="com.dryadandnaiad.sethlans.controllers.AbstractSethlansController"*/-->
-        <!--/*@thymesVar id="notificationMessages" type="java.util.List"*/-->
+        <ul class="nav navbar-nav">
+            <li><a href="#" target="_blank" class="nav-item-iconic nav-item-iconic-new-window"><span title="Launch"
+                                                                                                     class="fa fa-external-link"></span></a>
+            </li>
+        </ul>
         <ul class="nav navbar-nav navbar-right navbar-iconic">
             <li class="dropdown">
                 <a class="dropdown-toggle nav-item-iconic" id="notifications" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="true">
                     <span title="Notifications" class="fa pficon-flag"></span>
-                    <span th:if="${isNewNotification}" class="badge">!</span>
+                    <span class="badge">2</span>
                 </a>
                 <div class="dropdown-menu infotip bottom-right">
                     <div class="arrow"></div>
-                    <ul class="list-group" id="messages">
-                        <li th:if="${isNewNotification}" th:each="message : ${notificationMessages}"
-                            class="list-group-item">
-                            <span class="i pficon pficon-info"></span>
-                            <p id="message" th:text="${message}"></p>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <span class="i pficon pficon-info"></span> Modified Datasources ExampleDS
                         </li>
-                        <li th:unless="${isNewNotification}"
-                            class="list-group-item"> <span class="i pficon pficon-info"></span> <p id="message">Nothing to report</p></li>
+                        <li class="list-group-item">
+                            <span class="i pficon pficon-info"></span> Error: System Failure
+                        </li>
                     </ul>
+                    <div class="footer">
+                        <a>Clear Messages</a>
+                    </div>
                 </div>
             </li>
             <li class="dropdown">
@@ -181,89 +113,90 @@
                 </ul>
             </li>
             <li class="dropdown">
-                <a class="dropdown-toggle nav-item-iconic" id="userMenu" data-toggle="dropdown"
+                <a class="dropdown-toggle nav-item-iconic" id="dropdownMenu2" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="true">
-                    <span title="user" class="fa pficon-user"><span>&nbsp;</span><span class="userfont" id="currentLoggedInUser"th:text="${username}">Username</span></span>
+                    <span title="Username" class="fa pficon-user"></span>
                     <span class="caret"></span>
                 </a>
-                <!--/*@thymesVar id="username" type=""*/-->
-                <ul class="dropdown-menu" aria-labelledby="userMenu">
-                    <li><a id="dropdown-settings" href="/settings">Settings</a></li>
-                    <li><a id="dropdown-logout" href="/logout">Logout</a></li>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <li><a href="#">Preferences</a></li>
+                    <li><a href="#">Logout</a></li>
                 </ul>
             </li>
         </ul>
     </nav>
-    <script>
-        /* Set the width of the side navigation to 250px */
-        function toggleNav() {
-            if (document.getElementById("menuButton").value == "close") {
-                document.getElementById("menuButton").value = "open";
-                openNav();
-            } else if (document.getElementById("menuButton").value == "open") {
-                document.getElementById("menuButton").value = "close";
-                closeNav();
-            }
-        }
-        function openNav() {
-            document.getElementById("mySidenav").style.width = "200px";
-            document.getElementById("main").style.marginLeft = "200px";
-        }
-
-        /* Set the width of the side navigation to 0 */
-        function closeNav() {
-            document.getElementById("mySidenav").style.width = "0";
-            document.getElementById("main").style.marginLeft = "0";
-        }
-    </script>
-</nav> <!--/.navbar-->
+</nav>
 <!--/.navbar-->
 <style>
     .sidebarfont {
         font-family: "Open Sans", Helvetica, Arial, sans-serif;
-        font-size:18px;
+        font-size:14px;
         color:black;
     }
 </style>
 <div class="container">
-    <div class="row">
-        <div class="col-sm-3 col-md-2 hidden-xs-down  bg-faded sidebarfont">
-            <ul class="nav nav-pills nav-stacked">
-                <li class="nav-item">
+    <div class="table-responsive col-md-3">
+        <br/>
+        <table class="table table-bordered table-hover">
+            <thead class="thead-default">
+            <tr>
+                <th>System</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
                     <a style="color:black" class=" fa pficon-settings" href="/settings">&nbsp;<span class="sidebarfont">Settings</span></a>
-                </li>
-                <li class="nav-item">
+                </td>
+            </tr>
+            <tr>
+                <td>
                     <a style="color:black" class=" fa pficon-users" href="/settings/users">&nbsp;<span class="sidebarfont">Users</span></a>
-                </li>
-                <li class="nav-item">
-                    <a style="color:black" class=" fa pficon-container-node" href="#">&nbsp;<span class="sidebarfont">Nodes</span></a>
-                </li>
-                <li class="nav-item">
+                </td>
+            </tr>
+            <!--/*@thymesVar id="sethlansmode" type="java.lang.String"*/-->
+            <tr th:if="${sethlansmode == 'SERVER' || sethlansmode == 'DUAL'}">
+                <td>
+                    <a style="color:black" class=" fa pficon-container-node" href="/settings/nodes">&nbsp;<span class="sidebarfont">Nodes</span></a>
+                </td>
+            </tr>
+            <tr>
+                <td>
                     <a style="color:black" class=" fa fa-power-off" href="/shutdown">&nbsp;&nbsp;<span class="sidebarfont">Shutdown</span></a>
-                </li>
-            </ul>
-        </div>
-
-        <!--/*@thymesVar id="settings_option" type="java.lang.String"*/-->
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <table class="table table-bordered table-hover">
+            <thead class="thead-default">
+            <tr>
+                <th>Blender</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Blender Versions</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-9">
+        <br/>
 
         <div th:if="${settings_option.equals('home')}">
-        <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3"  th:replace="fragments/settings_home :: settings_home">
-            <!--Replaced By Fragment-->  </main>
-            </div>
+            <main th:replace="fragments/settings_home :: settings_home">
+                <!--Replaced By Fragment-->  </main>
+        </div>
         <div th:if="${settings_option.equals('users')}">
-        <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3"  th:replace="fragments/settings_users :: settings_users">
-            <!--Replaced By Fragment-->  </main>
+            <main th:replace="fragments/settings_users :: settings_users">
+                <!--Replaced By Fragment-->  </main>
+        </div>
+        <div th:if="${settings_option.equals('nodes')}">
+            <main th:replace="fragments/settings_nodes :: settings_nodes">
+                <!--Replaced By Fragment-->  </main>
         </div>
     </div>
 </div>
-<script>
-    window.onload = function() {
-            window.location.reload();
-        }
-    }
-</script>
-
-
 <!-- Footer Fragment -->
 <div class="content"></div>
 <footer class="footer" th:replace="fragments/footer :: footer">
@@ -307,6 +240,9 @@
         th:src="@{/bower/matchHeight/dist/jquery.matchHeight-min.js}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/bootstrap-slider.min.js"
         th:src="@{/bower/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.3.8/js/fileinput.min.js"
+        th:src="@{/bower/bootstrap-fileinput/js/fileinput.min.js}"></script>
+
 
 <!-- Local Javascript-->
 <script>
@@ -315,6 +251,6 @@
         $('[data-toggle="tooltip"]').tooltip();
     });
 </script>
-
+<!-- Page Javascript -->
 </body>
 </html>
