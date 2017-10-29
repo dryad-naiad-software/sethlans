@@ -29,7 +29,7 @@ public class NodeInfoRestController {
     private ComputeType computeType;
 
     @Value("${sethlans.cores}")
-    private int cores;
+    private String cores;
 
     @Value("${sethlans.cuda}")
     private String cuda;

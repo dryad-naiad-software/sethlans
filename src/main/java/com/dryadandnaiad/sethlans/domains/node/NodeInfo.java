@@ -23,7 +23,7 @@ public class NodeInfo {
     private String networkPort;
     private BlenderBinaryOS nodeOS;
     private ComputeType computeType;
-    private int cores;
+    private String cores;
     private List<GPUDevice> selectedGPUs = new ArrayList<>();
     private List<String> selectedCUDA;
 
@@ -87,11 +87,11 @@ public class NodeInfo {
         this.computeType = computeType;
     }
 
-    public void setCores(int cores) {
+    public void setCores(String cores) {
         this.cores = cores;
     }
 
-    public int getCores() {
+    public String getCores() {
         return cores;
     }
 
