@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created Mario Estrella on 10/28/17.
@@ -26,6 +28,14 @@ public class NodeInfoRestController {
     @Value("${sethlans.computeMethod}")
     private ComputeType computeType;
 
+    @Value("${sethlans.cores}")
+    private int cores;
+
+    @Value("${sethlans.cuda}")
+    private String cuda;
+
+
+
     @RequestMapping(value = "/nodeinfo", method = RequestMethod.GET)
     public NodeInfo nodeInfo(){
         NodeInfo nodeInfo = new NodeInfo();
@@ -36,6 +46,17 @@ public class NodeInfoRestController {
         }
         nodeInfo.setNetworkPort(sethlansPort);
         nodeInfo.setComputeType(computeType);
+
+        if(computeType == ComputeType.CPU_GPU || computeType == ComputeType.CPU) {
+            nodeInfo.setCores(cores);
+        }
+
+        if(computeType == ComputeType.GPU || computeType == ComputeType.CPU_GPU) {
+            List<String> cudaList = Arrays.asList(cuda.split(","));
+            nodeInfo.setSelectedCUDA(cudaList);
+            nodeInfo.setSelectedGPUs();
+
+        }
         return nodeInfo;
     }
 }

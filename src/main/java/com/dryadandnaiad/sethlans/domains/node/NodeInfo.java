@@ -1,11 +1,15 @@
 package com.dryadandnaiad.sethlans.domains.node;
 
+import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created Mario Estrella on 10/28/17.
@@ -19,6 +23,9 @@ public class NodeInfo {
     private String networkPort;
     private BlenderBinaryOS nodeOS;
     private ComputeType computeType;
+    private int cores;
+    private List<GPUDevice> selectedGPUs = new ArrayList<>();
+    private List<String> selectedCUDA;
 
     public String getHostname() {
         return hostname;
@@ -78,5 +85,36 @@ public class NodeInfo {
 
     public void setComputeType(ComputeType computeType) {
         this.computeType = computeType;
+    }
+
+    public void setCores(int cores) {
+        this.cores = cores;
+    }
+
+    public int getCores() {
+        return cores;
+    }
+
+    public List<String> getSelectedCUDA() {
+        return selectedCUDA;
+    }
+
+    public void setSelectedCUDA(List<String> selectedCUDA) {
+        this.selectedCUDA = selectedCUDA;
+    }
+
+    public List<GPUDevice> getSelectedGPUs() {
+        return selectedGPUs;
+    }
+
+    public void setSelectedGPUs() {
+        List<GPUDevice> availableGPUs = GPU.listDevices();
+        for (String cuda : selectedCUDA) {
+            for (GPUDevice gpu : availableGPUs) {
+                if (gpu.getCudaName().equals(cuda)){
+                    selectedGPUs.add(gpu);
+                }
+            }
+        }
     }
 }
