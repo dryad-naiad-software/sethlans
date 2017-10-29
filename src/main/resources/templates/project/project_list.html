@@ -94,6 +94,9 @@
     </script>
     <br/>
     <br/>
+    <div class="container">
+        <h2 th:if="${#lists.isEmpty(projects)}" style="text-align: center">No Projects Available</h2>
+    </div>
     <div class="table-responsive">
         <table class="table table-striped">
             <tr th:if="${not #lists.isEmpty(projects)}">

@@ -34,11 +34,13 @@ import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -63,7 +65,7 @@ public class ProjectController extends AbstractSethlansController {
     private WebUploadService webUploadService;
     private BlenderParseBlendFileService blenderParseBlendFileService;
     private BlenderProjectService blenderProjectService;
-
+    private Validator projectFormValidator;
     private BlenderProjectToProjectForm blenderProjectToProjectForm;
 
     @Value("${sethlans.tempDir}")
@@ -108,7 +110,9 @@ public class ProjectController extends AbstractSethlansController {
     }
 
     @RequestMapping(value = "/project/new", method = RequestMethod.POST)
-    public String newProjectDetails(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm, BindingResult bindingResult, @RequestParam("projectFile") MultipartFile projectFile) {
+    public String newProjectDetails(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm, BindingResult bindingResult, @RequestParam("projectFile")
+            MultipartFile projectFile) {
+
         UUID uploadTag = UUID.randomUUID();
         webUploadService.store(projectFile, uploadTag.toString());
         getAvailableBlenderBinaries();
@@ -121,15 +125,26 @@ public class ProjectController extends AbstractSethlansController {
         return "project/project_form";
     }
 
-    @RequestMapping(value = "/project/summary", method = RequestMethod.POST)
+    @RequestMapping(value = "/project/new/details", method = RequestMethod.POST)
     public String projectSummary(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm, BindingResult bindingResult) {
+        projectFormValidator.validate(projectForm, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            LOG.debug(bindingResult.toString());
+            projectForm.setProgress(ProjectFormProgress.DETAILS);
+            projectForm.setAvailableBlenderBinaries(availableBlenderBinaries);
+            LOG.debug(projectForm.toString());
+            return "project/project_form";
+        }
         LOG.debug(projectForm.toString());
         if (projectForm.getProgress() == ProjectFormProgress.FINISHED) {
             LOG.debug("FINISHED");
             BlenderProject savedProject = blenderProjectService.saveOrUpdateProjectForm(projectForm);
-
+            LOG.debug(projectForm.toString());
             return "redirect:/project/view/" + savedProject.getId();
         }
+
+
         return "project/project_view";
 
     }
@@ -143,7 +158,6 @@ public class ProjectController extends AbstractSethlansController {
             }
         }
     }
-
 
 
     @ModelAttribute("compute_types")
@@ -184,5 +198,11 @@ public class ProjectController extends AbstractSethlansController {
     @Autowired
     public void setBlenderProjectToProjectForm(BlenderProjectToProjectForm blenderProjectToProjectForm) {
         this.blenderProjectToProjectForm = blenderProjectToProjectForm;
+    }
+
+    @Autowired
+    @Qualifier("projectFormValidator")
+    public void setProjectFormValidator(Validator projectFormValidator) {
+        this.projectFormValidator = projectFormValidator;
     }
 }

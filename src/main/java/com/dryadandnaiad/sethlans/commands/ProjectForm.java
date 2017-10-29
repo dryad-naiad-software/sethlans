@@ -24,7 +24,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.enums.*;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -38,11 +38,12 @@ public class ProjectForm {
     private Integer id;
     private Integer version;
 
-    @NotNull
     @NotEmpty
-    private String projectName;
+    @Size(min = 4, max = 256)
+    private String projectName="";
 
     private ProjectFormProgress progress = ProjectFormProgress.UPLOAD;
+    private ProjectFormProgress previous;
     private int samples;
     private int startFrame;
     private int endFrame;
@@ -265,6 +266,14 @@ public class ProjectForm {
         this.currentPercentage = currentPercentage;
     }
 
+    public ProjectFormProgress getPrevious() {
+        return previous;
+    }
+
+    public void setPrevious(ProjectFormProgress previous) {
+        this.previous = previous;
+    }
+
     @Override
     public String toString() {
         return "ProjectForm{" +
@@ -272,6 +281,7 @@ public class ProjectForm {
                 ", version=" + version +
                 ", projectName='" + projectName + '\'' +
                 ", progress=" + progress +
+                ", previous=" + previous +
                 ", samples=" + samples +
                 ", startFrame=" + startFrame +
                 ", endFrame=" + endFrame +
@@ -293,6 +303,4 @@ public class ProjectForm {
                 ", currentPercentage=" + currentPercentage +
                 '}';
     }
-
-
 }

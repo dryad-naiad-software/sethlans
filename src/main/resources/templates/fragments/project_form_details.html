@@ -26,11 +26,27 @@
 
     <div class="container" style="max-width: 600px;">
         <!--/*@thymesVar id="projectForm" type="com.dryadandnaiad.sethlans.commands.ProjectForm"*/-->
-        <form class="form-horizontal" id="projectWizard" name="projectWizard" th:action="@{/project/summary}"
+        <form class="form-horizontal" id="projectWizard" name="projectWizard" th:action="@{/project/new/details}"
               th:object="${projectForm}"
               method="POST">
-            <div class="form-group">
-                <h2 class="text-center" id="projectFormTitle">Project Details</h2>
+            <br/>
+            <h2 class="text-center" id="projectFormTitle">Project Details</h2>
+            <div th:if="${#fields.hasErrors('*') and projectForm.getPrevious() == T(com.dryadandnaiad.sethlans.enums.ProjectFormProgress).DETAILS}" class="alert alert-danger">
+                <div align="center" th:text="#{form.hasErrors}">Error Message</div>
+            </div>
+            <div class="form-group" th:if="${projectForm.getPrevious() == T(com.dryadandnaiad.sethlans.enums.ProjectFormProgress).DETAILS}"
+                 th:class="${#fields.hasErrors('projectName')} ? 'form-group has-error' : 'form-group'">
+                <label class="control-label" for="projectName">Project Name</label>
+                <input type="text" name="projectName" id="projectName" th:value="${projectForm.projectName}"
+                       class="form-control">
+                <span class="help-block">
+                                        <ul>
+                                        <li th:each="err : ${#fields.errors('projectName')}"
+                                            th:text="${err}"/>
+                                        </ul>
+                                    </span>
+            </div>
+            <div class="form-group" th:unless="${projectForm.getPrevious() == T(com.dryadandnaiad.sethlans.enums.ProjectFormProgress).DETAILS}">
                 <label class="control-label" for="projectName">Project Name</label>
                 <input type="text" name="projectName" id="projectName" th:value="${projectForm.projectName}"
                        class="form-control">
@@ -113,9 +129,9 @@
                     <option th:remove="all">Engine2</option>
                 </select>
                 <div id="sampleGroup" style="display: block">
-                <label class="control-label" for="samples">Samples</label>
-                <input type="number" id="samples" class="form-control" name="samples"
-                       th:field="${projectForm.samples}">
+                    <label class="control-label" for="samples">Samples</label>
+                    <input type="number" id="samples" class="form-control" name="samples"
+                           th:field="${projectForm.samples}">
                 </div>
             </div>
 
@@ -150,6 +166,7 @@
                 <input type="hidden" name="uploadedFile" th:value="${projectForm.uploadedFile}">
                 <input type="hidden" name="fileLocation" th:value="${projectForm.fileLocation}">
                 <input type="hidden" id="progress" name="progress" value="FINISHED">
+                <input type="hidden" id="previous" name="previous" value="DETAILS">
                 <a href="/project" class="btn btn-default">Cancel</a>
                 <button type="submit" class="btn btn-primary pull-right" id="projectSubmit">Submit Project</button>
             </div>
@@ -164,6 +181,7 @@
                 });
                 selectEngine();
             };
+
             function readRadio() {
                 var typeValue = document.querySelector('input[name="projectType"]:checked').value;
                 if (typeValue === "STILL_IMAGE") {
@@ -172,7 +190,7 @@
                     document.getElementById("endframe").disabled = true;
                     document.getElementById("framestep").disabled = true;
                     document.getElementById("outputFormatGroup").style.display = "none";
-                    document.getElementById("outputFormat").value="PNG";
+                    document.getElementById("outputFormat").value = "PNG";
                 }
                 if (typeValue === "ANIMATION") {
                     document.getElementById("framenum").disabled = true;
@@ -182,29 +200,30 @@
                     document.getElementById("outputFormatGroup").style.display = "block";
                 }
             }
-            function selectEngine() {
-                    var method = document.getElementById("blenderEngine");
-                    var text = method.options[method.selectedIndex].text;
-                    if (text.indexOf('Cycles') >= 0) {
-                        document.getElementById("sampleGroup").style.display="block";
-                        document.getElementById("renderOnGroup").style.display="block";
-                        document.getElementById("samples").disabled = false;
-                    } else {
-                        document.getElementById("sampleGroup").style.display="none";
-                        document.getElementById("renderOnGroup").style.display="none";
-                        document.getElementById("samples").disabled = true;
-                        document.getElementById("renderOn").value="CPU";
-                    }
 
+            function selectEngine() {
+                var method = document.getElementById("blenderEngine");
+                var text = method.options[method.selectedIndex].text;
+                if (text.indexOf('Cycles') >= 0) {
+                    document.getElementById("sampleGroup").style.display = "block";
+                    document.getElementById("renderOnGroup").style.display = "block";
+                    document.getElementById("samples").disabled = false;
+                } else {
+                    document.getElementById("sampleGroup").style.display = "none";
+                    document.getElementById("renderOnGroup").style.display = "none";
+                    document.getElementById("samples").disabled = true;
+                    document.getElementById("renderOn").value = "CPU";
                 }
 
-//                function toggleTiles() {
-//                    if ($("#useTiles").is(":checked")) {
-//                        document.getElementById("tileSlider").style.display = "block";
-//                    } else {
-//                        document.getElementById("tileSlider").style.display = "none";
-//                    }
-//                }
+            }
+
+            //                function toggleTiles() {
+            //                    if ($("#useTiles").is(":checked")) {
+            //                        document.getElementById("tileSlider").style.display = "block";
+            //                    } else {
+            //                        document.getElementById("tileSlider").style.display = "none";
+            //                    }
+            //                }
 
         </script>
     </div>
