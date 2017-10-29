@@ -18,7 +18,7 @@ import java.net.UnknownHostException;
  */
 @RestController
 @Profile({"NODE", "DUAL"})
-public class NodeInfoController {
+public class NodeInfoRestController {
 
     @Value("${server.port}")
     private String sethlansPort;
