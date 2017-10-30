@@ -58,6 +58,7 @@
     <title>Settings</title>
 </head>
 <body>
+
 <!-- Nav Bar Fragment -->
 <nav class="navbar navbar-pf-vertical" th:replace="fragments/nav :: navbar">
     <div class="navbar-header">
@@ -207,6 +208,16 @@
         </div>
         <div th:if="${settings_option.equals('nodes')}">
             <main th:replace="fragments/settings_nodes :: settings_nodes">
+                <!--Replaced By Fragment-->  </main>
+        </div>
+
+        <div th:if="${settings_option.equals('nodes_scan')}">
+            <main th:replace="fragments/settings_nodes_scan :: settings_nodes_scan">
+                <!--Replaced By Fragment-->  </main>
+        </div>
+
+        <div th:if="${settings_option.equals('nodes_scan')}">
+            <main th:replace="fragments/settings_nodes_add :: settings_nodes_add">
                 <!--Replaced By Fragment-->  </main>
         </div>
     </div>

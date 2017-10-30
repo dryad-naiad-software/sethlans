@@ -38,20 +38,31 @@ public class SettingsController extends AbstractSethlansController {
     @RequestMapping("/settings")
     public String getHomePage(Model model) {
         model.addAttribute("settings_option", "home");
-        return "settings";
+        return "settings/settings";
     }
 
     @RequestMapping("/settings/users")
     public String getUserPage(Model model){
         model.addAttribute("settings_option", "users");
-        return "settings";
+        return "settings/settings";
     }
 
     @RequestMapping("/settings/nodes")
     public String getNodePage(Model model){
         model.addAttribute("settings_option", "nodes");
-        return "settings";
+        return "settings/settings";
     }
 
+    @RequestMapping("/settings/nodes/add")
+    public String getNodeAddPage(Model model){
+        model.addAttribute("settings_option", "nodes_add");
+        return "settings/settings";
+    }
+
+    @RequestMapping("/settings/nodes/scan")
+    public String getNodeScanPage(Model model){
+        model.addAttribute("settings_option", "nodes_scan");
+        return "settings/settings";
+    }
 
 }

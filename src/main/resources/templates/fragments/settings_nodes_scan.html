@@ -86,37 +86,9 @@
 <div class="container">
     <div class="row">
 
-        <main th:fragment="settings_nodes">
-            <!--Settings Nodes Fragment-->
-            <h2>Nodes</h2>
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>Hostname</th>
-                        <th>IP Address</th>
-                        <th>Port</th>
-                        <th>OS</th>
-                        <th>Compute Methods</th>
-                        <th>CPU Cores</th>
-                        <th>Selected GPU(s)</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>SAMPLE</td>
-                        <td>1.1.1.1</td>
-                        <td>1234</td>
-                        <td>Windows64</td>
-                        <td>CPU & GPU</td>
-                        <td>8</td>
-                        <td>GeForce GTX 1080</td>
-                    </tr>
-                    </tbody>
-                </table>
-                <a id="discoveryBtn" href="/settings/nodes/scan" class="btn btn-default pull-left">Scan</a>
-                <a id="addNodeBtn" href="/settings/nodes/add" class="btn btn-default pull-right">Add Node</a>
-            </div>
+        <main th:fragment="settings_nodes_scan">
+            <!--Nodes Add-->
+
         </main>
     </div>
 </div>
