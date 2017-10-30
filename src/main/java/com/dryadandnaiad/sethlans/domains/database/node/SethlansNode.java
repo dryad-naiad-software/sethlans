@@ -17,7 +17,7 @@ public class SethlansNode extends AbstractEntityClass {
     private String nodeName;
     private String ipAddress;
     private String networkPort;
-    private BlenderBinaryOS nodeOS;
+    private BlenderBinaryOS sethlansNodeOS;
     private ComputeType computeType;
 
     public String getNodeName() {
@@ -44,12 +44,12 @@ public class SethlansNode extends AbstractEntityClass {
         this.networkPort = networkPort;
     }
 
-    public BlenderBinaryOS getNodeOS() {
-        return nodeOS;
+    public BlenderBinaryOS getSethlansNodeOS() {
+        return sethlansNodeOS;
     }
 
-    public void setNodeOS(BlenderBinaryOS nodeOS) {
-        this.nodeOS = nodeOS;
+    public void setSethlansNodeOS(BlenderBinaryOS sethlansNodeOS) {
+        this.sethlansNodeOS = sethlansNodeOS;
     }
 
     public ComputeType getComputeType() {
@@ -66,7 +66,7 @@ public class SethlansNode extends AbstractEntityClass {
                 "nodeName='" + nodeName + '\'' +
                 ", ipAddress='" + ipAddress + '\'' +
                 ", networkPort='" + networkPort + '\'' +
-                ", nodeOS=" + nodeOS +
+                ", sethlansNodeOS=" + sethlansNodeOS +
                 ", computeType=" + computeType +
                 '}';
     }

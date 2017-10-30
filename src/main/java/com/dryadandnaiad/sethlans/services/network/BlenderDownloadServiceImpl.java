@@ -61,7 +61,6 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
     @Value("${sethlans.blenderDir}")
     private String downloadLocation;
     private int downloadMirror = 0;
-    private boolean retry = true;
     private boolean downloading = true;
     private ApplicationEventPublisher applicationEventPublisher = null;
 
@@ -84,15 +83,17 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
         blenderFileEntities = (List<BlenderBinary>) blenderBinaryService.listAll();
         blenderBinaries = BlenderUtils.listBinaries();
         List<BlenderBinary> blenderDownloadList = prepareDownload();
-
+        LOG.debug(blenderDownloadList.toString());
 
         for (BlenderBinary blenderBinary : blenderDownloadList) {
+            boolean retry=true;
             String blenderVersion = blenderBinary.getBlenderVersion();
             File saveLocation = new File(downloadLocation + File.separator + "binaries" + File.separator + blenderVersion + File.separator);
             saveLocation.mkdirs();
             URL url;
             HttpURLConnection connection = null;
             String filename = null;
+
             while (retry) {
                 try {
                     url = new URL(blenderBinary.getDownloadMirrors().get(downloadMirror));
