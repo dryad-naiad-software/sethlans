@@ -19,12 +19,15 @@
 
 package com.dryadandnaiad.sethlans.domains.hardware;
 
+import javax.persistence.Embeddable;
+
 /**
  * Created Mario Estrella on 3/19/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Embeddable
 public class GPUDevice {
     private String model;
     private long memory; // in B
@@ -61,6 +64,13 @@ public class GPUDevice {
         this.cudaName = cudaName;
     }
 
+
+    public int getRecommandedTileSize() {
+        // GPU
+        // if the vram is lower than 1G reduce the size of tile to avoid black output
+        return (getMemory() > 1073741824L) ? 256 : 128;
+    }
+
     @Override
     public String toString() {
         return "GPUDevice{" +
@@ -69,11 +79,4 @@ public class GPUDevice {
                 ", cudaName='" + cudaName + '\'' +
                 '}';
     }
-
-    public int getRecommandedTileSize() {
-        // GPU
-        // if the vram is lower than 1G reduce the size of tile to avoid black output
-        return (getMemory() > 1073741824L) ? 256 : 128;
-    }
-
 }

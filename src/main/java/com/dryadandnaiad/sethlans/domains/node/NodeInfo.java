@@ -21,7 +21,7 @@ public class NodeInfo {
     private String hostname;
     private String ipAddress;
     private String networkPort;
-    private BlenderBinaryOS nodeOS;
+    private BlenderBinaryOS sethlansNodeOS;
     private ComputeType computeType;
     private String cores;
     private List<GPUDevice> selectedGPUs = new ArrayList<>();
@@ -41,7 +41,7 @@ public class NodeInfo {
     }
 
 
-    public BlenderBinaryOS getNodeOS() {
+    public BlenderBinaryOS getSethlansNodeOS() {
         if (SystemUtils.IS_OS_WINDOWS) {
             String arch = System.getenv("PROCESSOR_ARCHITECTURE");
             String wow64Arch = System.getenv("PROCESSOR_ARCHITEW6432");
@@ -50,22 +50,22 @@ public class NodeInfo {
                     || wow64Arch != null && wow64Arch.endsWith("64")
                     ? "64" : "32";
             if (realArch.equals("64")) {
-                this.nodeOS = BlenderBinaryOS.Windows64;
+                this.sethlansNodeOS = BlenderBinaryOS.Windows64;
             } else {
-                this.nodeOS = BlenderBinaryOS.Windows32;
+                this.sethlansNodeOS = BlenderBinaryOS.Windows32;
             }
         }
         if (SystemUtils.IS_OS_MAC) {
-            this.nodeOS = BlenderBinaryOS.MacOS;
+            this.sethlansNodeOS = BlenderBinaryOS.MacOS;
         }
         if (SystemUtils.IS_OS_LINUX) {
             if (SystemUtils.OS_ARCH.contains("64")) {
-                this.nodeOS= BlenderBinaryOS.Linux64;
+                this.sethlansNodeOS = BlenderBinaryOS.Linux64;
             } else {
-                this.nodeOS = BlenderBinaryOS.Linux32;
+                this.sethlansNodeOS = BlenderBinaryOS.Linux32;
             }
         }
-        return nodeOS;
+        return sethlansNodeOS;
     }
 
 

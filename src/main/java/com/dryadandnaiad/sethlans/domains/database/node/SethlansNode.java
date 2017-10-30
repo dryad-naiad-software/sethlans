@@ -1,10 +1,14 @@
 package com.dryadandnaiad.sethlans.domains.database.node;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created Mario Estrella on 10/28/17.
@@ -19,6 +23,11 @@ public class SethlansNode extends AbstractEntityClass {
     private String networkPort;
     private BlenderBinaryOS sethlansNodeOS;
     private ComputeType computeType;
+    private String cores;
+    @ElementCollection
+    private List<GPUDevice> selectedGPUs = new ArrayList<>();
+    @ElementCollection
+    private List<String> selectedCUDA;
 
     public String getNodeName() {
         return nodeName;
@@ -60,6 +69,30 @@ public class SethlansNode extends AbstractEntityClass {
         this.computeType = computeType;
     }
 
+    public String getCores() {
+        return cores;
+    }
+
+    public void setCores(String cores) {
+        this.cores = cores;
+    }
+
+    public List<GPUDevice> getSelectedGPUs() {
+        return selectedGPUs;
+    }
+
+    public void setSelectedGPUs(List<GPUDevice> selectedGPUs) {
+        this.selectedGPUs = selectedGPUs;
+    }
+
+    public List<String> getSelectedCUDA() {
+        return selectedCUDA;
+    }
+
+    public void setSelectedCUDA(List<String> selectedCUDA) {
+        this.selectedCUDA = selectedCUDA;
+    }
+
     @Override
     public String toString() {
         return "SethlansNode{" +
@@ -68,6 +101,9 @@ public class SethlansNode extends AbstractEntityClass {
                 ", networkPort='" + networkPort + '\'' +
                 ", sethlansNodeOS=" + sethlansNodeOS +
                 ", computeType=" + computeType +
+                ", cores='" + cores + '\'' +
+                ", selectedGPUs=" + selectedGPUs +
+                ", selectedCUDA=" + selectedCUDA +
                 '}';
     }
 }
