@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.commands.NodeAddForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -56,6 +57,7 @@ public class SettingsController extends AbstractSethlansController {
     @RequestMapping("/settings/nodes/add")
     public String getNodeAddPage(Model model){
         model.addAttribute("settings_option", "nodes_add");
+        model.addAttribute("nodeAddForm",new NodeAddForm());
         return "settings/settings";
     }
 
