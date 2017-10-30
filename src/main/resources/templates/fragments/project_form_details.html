@@ -55,9 +55,9 @@
                 <label for="selectedBlenderVersion">Available Blender Versions</label>
                 <select class="form-control" id="selectedBlenderVersion" name="selectedBlenderVersion"
                         th:value="${projectForm.selectedBlenderVersion}">
-                    <option th:each="blenderBinary : ${projectForm.getAvailableBlenderBinaries()}"
-                            th:value="${blenderBinary.getBlenderVersion()}"
-                            th:text="${blenderBinary.getBlenderVersion()}">Version
+                    <option th:each="blenderVersion : ${projectForm.getAvailableBlenderVersions()}"
+                            th:value="${blenderVersion}"
+                            th:text="${blenderVersion}">Version
                     </option>
                     <option th:remove="all">2.78c</option>
                 </select>

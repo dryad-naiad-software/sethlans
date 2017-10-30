@@ -104,6 +104,7 @@ public class ProjectController extends AbstractSethlansController {
         BlenderProject project = blenderProjectService.getById(id);
         ProjectForm projectForm = blenderProjectToProjectForm.convert(project);
         projectForm.setAvailableBlenderBinaries(availableBlenderBinaries);
+        projectForm.setAvailableBlenderVersions();
         model.addAttribute("projectForm", projectForm);
         LOG.debug(projectForm.toString());
         return "project/project_form";
@@ -121,6 +122,7 @@ public class ProjectController extends AbstractSethlansController {
         projectForm.setBlendFile(blenderParseBlendFileService.parseBlendFile(projectForm.getFileLocation()));
         projectForm.setAvailableBlenderBinaries(availableBlenderBinaries);
         projectForm.populateForm();
+        projectForm.setAvailableBlenderVersions();
         LOG.debug(projectForm.toString());
         return "project/project_form";
     }
@@ -133,6 +135,7 @@ public class ProjectController extends AbstractSethlansController {
             LOG.debug(bindingResult.toString());
             projectForm.setProgress(ProjectFormProgress.DETAILS);
             projectForm.setAvailableBlenderBinaries(availableBlenderBinaries);
+            projectForm.setAvailableBlenderVersions();
             LOG.debug(projectForm.toString());
             return "project/project_form";
         }

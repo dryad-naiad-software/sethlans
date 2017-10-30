@@ -25,7 +25,10 @@ import com.dryadandnaiad.sethlans.enums.*;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Size;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created Mario Estrella on 3/25/17.
@@ -57,6 +60,7 @@ public class ProjectForm {
     private String fileLocation;
     private String selectedBlenderVersion;
     private ComputeType renderOn;
+    private Set<String> availableBlenderVersions;
     private List<BlenderBinary> availableBlenderBinaries;
     private BlendFile blendFile;
     private RenderOutputFormat outputFormat;
@@ -274,6 +278,17 @@ public class ProjectForm {
         this.previous = previous;
     }
 
+    public Set<String> getAvailableBlenderVersions() {
+        return availableBlenderVersions;
+    }
+
+    public void setAvailableBlenderVersions() {
+        this.availableBlenderVersions = new TreeSet<>(Collections.reverseOrder());
+        for (BlenderBinary availableBlenderBinary : availableBlenderBinaries) {
+            availableBlenderVersions.add(availableBlenderBinary.getBlenderVersion());
+        }
+    }
+
     @Override
     public String toString() {
         return "ProjectForm{" +
@@ -295,6 +310,7 @@ public class ProjectForm {
                 ", fileLocation='" + fileLocation + '\'' +
                 ", selectedBlenderVersion='" + selectedBlenderVersion + '\'' +
                 ", renderOn=" + renderOn +
+                ", availableBlenderVersions=" + availableBlenderVersions +
                 ", availableBlenderBinaries=" + availableBlenderBinaries +
                 ", blendFile=" + blendFile +
                 ", outputFormat=" + outputFormat +
