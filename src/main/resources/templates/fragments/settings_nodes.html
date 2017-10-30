@@ -85,129 +85,38 @@
 </style>
 <div class="container">
     <div class="row">
-        <div class="col-sm-3 col-md-2 hidden-xs-down  bg-faded sidebarfont">
-            <ul class="nav nav-pills nav-stacked">
-                <li class="nav-item">
-                    <a style="color:black" class=" fa pficon-users" href="#">&nbsp;<span class="sidebarfont">Users</span></a>
-                </li>
-                <li class="nav-item">
-                    <a style="color:black" class=" fa pficon-container-node" href="#">&nbsp;<span class="sidebarfont">Nodes</span></a>
-                </li>
-                <li class="nav-item">
-                    <a style="color:black" class=" fa fa-power-off" href="#">&nbsp;&nbsp;<span class="sidebarfont">Shutdown</span></a>
-                </li>
-            </ul>
-        </div>
 
         <main th:fragment="settings_nodes">
             <!--Settings Users Fragment-->
 
-            <h2>Section title</h2>
+            <h2>Nodes</h2>
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Header</th>
-                        <th>Header</th>
-                        <th>Header</th>
-                        <th>Header</th>
+                        <th>Hostname</th>
+                        <th>IP Address</th>
+                        <th>Port</th>
+                        <th>OS</th>
+                        <th>Compute Methods</th>
+                        <th>CPU Cores</th>
+                        <th>Selected GPU(s)</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr>
-                        <td>1,001</td>
-                        <td>Lorem</td>
-                        <td>ipsum</td>
-                        <td>dolor</td>
-                        <td>sit</td>
-                    </tr>
-                    <tr>
-                        <td>1,002</td>
-                        <td>amet</td>
-                        <td>consectetur</td>
-                        <td>adipiscing</td>
-                        <td>elit</td>
-                    </tr>
-                    <tr>
-                        <td>1,003</td>
-                        <td>Integer</td>
-                        <td>nec</td>
-                        <td>odio</td>
-                        <td>Praesent</td>
-                    </tr>
-                    <tr>
-                        <td>1,003</td>
-                        <td>libero</td>
-                        <td>Sed</td>
-                        <td>cursus</td>
-                        <td>ante</td>
-                    </tr>
-                    <tr>
-                        <td>1,004</td>
-                        <td>dapibus</td>
-                        <td>diam</td>
-                        <td>Sed</td>
-                        <td>nisi</td>
-                    </tr>
-                    <tr>
-                        <td>1,005</td>
-                        <td>Nulla</td>
-                        <td>quis</td>
-                        <td>sem</td>
-                        <td>at</td>
-                    </tr>
-                    <tr>
-                        <td>1,006</td>
-                        <td>nibh</td>
-                        <td>elementum</td>
-                        <td>imperdiet</td>
-                        <td>Duis</td>
-                    </tr>
-                    <tr>
-                        <td>1,007</td>
-                        <td>sagittis</td>
-                        <td>ipsum</td>
-                        <td>Praesent</td>
-                        <td>mauris</td>
-                    </tr>
-                    <tr>
-                        <td>1,008</td>
-                        <td>Fusce</td>
-                        <td>nec</td>
-                        <td>tellus</td>
-                        <td>sed</td>
-                    </tr>
-                    <tr>
-                        <td>1,009</td>
-                        <td>augue</td>
-                        <td>semper</td>
-                        <td>porta</td>
-                        <td>Mauris</td>
-                    </tr>
-                    <tr>
-                        <td>1,010</td>
-                        <td>massa</td>
-                        <td>Vestibulum</td>
-                        <td>lacinia</td>
-                        <td>arcu</td>
-                    </tr>
-                    <tr>
-                        <td>1,011</td>
-                        <td>eget</td>
-                        <td>nulla</td>
-                        <td>Class</td>
-                        <td>aptent</td>
-                    </tr>
-                    <tr>
-                        <td>1,012</td>
-                        <td>taciti</td>
-                        <td>sociosqu</td>
-                        <td>ad</td>
-                        <td>litora</td>
+                        <td>SAMPLE</td>
+                        <td>1.1.1.1</td>
+                        <td>1234</td>
+                        <td>Windows64</td>
+                        <td>CPU & GPU</td>
+                        <td>8</td>
+                        <td>GeForce GTX 1080</td>
                     </tr>
                     </tbody>
                 </table>
+                <a id="discoveryBtn" href="#" class="btn btn-primary pull-left">Scan</a>
+                <a id="addNodeBtn" href="#" class="btn btn-primary pull-right">Add Node</a>
             </div>
         </main>
     </div>
