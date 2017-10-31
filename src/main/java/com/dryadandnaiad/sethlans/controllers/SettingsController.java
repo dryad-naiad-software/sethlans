@@ -20,11 +20,16 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.commands.NodeAddForm;
+import com.dryadandnaiad.sethlans.enums.NodeAddProgress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import javax.validation.Valid;
 
 /**
  * Created Mario Estrella on 9/20/17.
@@ -58,6 +63,16 @@ public class SettingsController extends AbstractSethlansController {
     public String getNodeAddPage(Model model){
         model.addAttribute("settings_option", "nodes_add");
         model.addAttribute("nodeAddForm",new NodeAddForm());
+        return "settings/settings";
+    }
+
+    @RequestMapping(value = "/settings/nodes/add", method = RequestMethod.POST)
+    public String nodeAddForm(final @Valid @ModelAttribute("nodeAddForm") NodeAddForm nodeAddForm, Model model){
+        LOG.debug(nodeAddForm.toString());
+        if(nodeAddForm.getProgress() == NodeAddProgress.NODE_INFO) {
+            model.addAttribute("settings_option", "nodes_add_nodeinfo");
+        }
+
         return "settings/settings";
     }
 
