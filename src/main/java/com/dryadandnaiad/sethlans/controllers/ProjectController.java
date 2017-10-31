@@ -111,7 +111,7 @@ public class ProjectController extends AbstractSethlansController {
     }
 
     @RequestMapping(value = "/project/new", method = RequestMethod.POST)
-    public String newProjectDetails(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm, @RequestParam("projectFile")
+    public String newProjectDetails(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm,BindingResult bindingResult, @RequestParam("projectFile")
             MultipartFile projectFile) {
 
         UUID uploadTag = UUID.randomUUID();
