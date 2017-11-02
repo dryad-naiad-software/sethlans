@@ -100,17 +100,29 @@
                         <th>Compute Methods</th>
                         <th>CPU Cores</th>
                         <th>Selected GPU(s)</th>
+                        <th>Actions</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td>SAMPLE</td>
-                        <td>1.1.1.1</td>
-                        <td>1234</td>
-                        <td>Windows64</td>
-                        <td>CPU & GPU</td>
-                        <td>8</td>
-                        <td>GeForce GTX 1080</td>
+                    <tbody th:if="${not #lists.isEmpty(nodes)}">
+                    <!--/*@thymesVar id="nodes" type="java.util.List"*/-->
+                    <tr th:each="node : ${nodes}">
+                        <!--/*@thymesVar id="node" type="com.dryadandnaiad.sethlans.domains.database.node.SethlansNode"*/-->
+                        <td th:text="${node.getHostname()}">SAMPLE</td>
+                        <td th:text="${node.getIpAddress()}">1.1.1.1</td>
+                        <td th:text="${node.getNetworkPort()}">1234</td>
+                        <td th:text="${node.getSethlansNodeOS()}">Windows64</td>
+                        <td th:text="${node.getComputeType().getName()}">CPU & GPU</td>
+                        <td th:text="${node.getCores()}">8</td>
+                        <td th:if="${!node.getSelectedGPUs().isEmpty()}">
+                                                <span th:each="gpu, stat : ${node.selectedGPUs}"
+                                                      th:utext="${!stat.last} ? ${gpu.getModel()} + ',' +  '<br />' : ${gpu.getModel()}">Nvidia</span>
+                        <td>
+                            <a href="#">Edit</a>
+                            <br/>
+                            <a href="#">Delete</a>
+                            <br/>
+                            <a href="#">Disable</a>
+                        </td>
                     </tr>
                     </tbody>
                 </table>

@@ -99,9 +99,8 @@
 
             </tr>
             <!--/*@thymesVar id="projects" type="java.util.List"*/-->
-
+            <!--/*@thymesVar id="project" type="com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject"*/-->
             <tr th:each="project : ${projects}">
-                <!--/*@thymesVar id="project" type="com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject"*/-->
                 <td><img src="../../images/placeholder.svg" th:src="@{/images/placeholder.svg}" height="60"/></td>
                 <td th:id="'projectName-' + ${project.getId()}" th:text="${project.getProjectName()}">Test</td>
                 <td th:id="'projectBlenderVersion-' + ${project.getId()}" th:text="${project.getBlenderVersion()}">2.78c</td>

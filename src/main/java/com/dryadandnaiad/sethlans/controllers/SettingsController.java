@@ -64,6 +64,7 @@ public class SettingsController extends AbstractSethlansController {
     @RequestMapping("/settings/nodes")
     public String getNodePage(Model model){
         model.addAttribute("settings_option", "nodes");
+        model.addAttribute("nodes", sethlansNodeService.listAll());
         return "settings/settings";
     }
 
