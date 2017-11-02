@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Entity
 public class SethlansNode extends AbstractEntityClass {
-    private String nodeName;
+    private String hostname;
     private String ipAddress;
     private String networkPort;
     private BlenderBinaryOS sethlansNodeOS;
@@ -29,12 +29,12 @@ public class SethlansNode extends AbstractEntityClass {
     @ElementCollection
     private List<String> selectedCUDA;
 
-    public String getNodeName() {
-        return nodeName;
+    public String getHostname() {
+        return hostname;
     }
 
-    public void setNodeName(String nodeName) {
-        this.nodeName = nodeName;
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
     }
 
     public String getIpAddress() {
@@ -96,7 +96,7 @@ public class SethlansNode extends AbstractEntityClass {
     @Override
     public String toString() {
         return "SethlansNode{" +
-                "nodeName='" + nodeName + '\'' +
+                "hostname='" + hostname + '\'' +
                 ", ipAddress='" + ipAddress + '\'' +
                 ", networkPort='" + networkPort + '\'' +
                 ", sethlansNodeOS=" + sethlansNodeOS +

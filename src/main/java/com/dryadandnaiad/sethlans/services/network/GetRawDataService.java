@@ -29,6 +29,8 @@ public interface GetRawDataService {
 
     String getResult(String apiURL);
 
+    String getNodeResult(String nodeURL);
+
     String getLocalResult(String resource);
 
 }

@@ -124,10 +124,25 @@
                 </tr>
                 </tbody>
             </table>
-            <a id="addNode" href="#" class="btn btn-default pull-right">Add</a>
-            <a id="cancelAdd" href="#" class="btn btn-default pull-left">Cancel</a>
+            <form id="addNodeWizard" name="addNodeWizard" th:action="@{/settings/nodes/add}"
+                  th:object="${nodeAddForm}"
+                  method="POST">
+                <input type="hidden" id="progress" name="progress" value="">
+                <input type="hidden" id="previous" name="previous" value="">
+            </form>
+            <button type="button" id="addNode" class="btn btn-default pull-right" onclick="nextClicked()">Add</button>
+            <a id="cancelAdd" href="/settings/nodes/" class="btn btn-default pull-left">Cancel</a>
         </div>
     </div>
+
+
+    <script>
+        function nextClicked() {
+            document.getElementById("progress").value = "NODE_ADD";
+            document.getElementById("previous").value = "NODE_INFO";
+            document.getElementById("addNodeWizard").submit();
+        }
+    </script>
 </div>
 
 

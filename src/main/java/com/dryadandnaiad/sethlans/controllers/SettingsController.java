@@ -20,9 +20,12 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.commands.NodeAddForm;
+import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.NodeAddProgress;
+import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -40,6 +43,8 @@ import javax.validation.Valid;
 @Controller
 public class SettingsController extends AbstractSethlansController {
     private static final Logger LOG = LoggerFactory.getLogger(SettingsController.class);
+
+    private NodeDiscoveryService nodeDiscoveryService;
 
     @RequestMapping("/settings")
     public String getHomePage(Model model) {
@@ -69,8 +74,13 @@ public class SettingsController extends AbstractSethlansController {
     @RequestMapping(value = "/settings/nodes/add", method = RequestMethod.POST)
     public String nodeAddForm(final @Valid @ModelAttribute("nodeAddForm") NodeAddForm nodeAddForm, Model model){
         LOG.debug(nodeAddForm.toString());
+        SethlansNode sethlansNode;
         if(nodeAddForm.getProgress() == NodeAddProgress.NODE_INFO) {
+            sethlansNode = nodeDiscoveryService.discoverUnicastNode(nodeAddForm.getIpAddress(), nodeAddForm.getPort());
             model.addAttribute("settings_option", "nodes_add_nodeinfo");
+        }
+        if(nodeAddForm.getProgress() == NodeAddProgress.NODE_ADD) {
+            return "redirect:/settings/nodes/";
         }
 
         return "settings/settings";
@@ -82,4 +92,8 @@ public class SettingsController extends AbstractSethlansController {
         return "settings/settings";
     }
 
+    @Autowired
+    public void setNodeDiscoveryService(NodeDiscoveryService nodeDiscoveryService) {
+        this.nodeDiscoveryService = nodeDiscoveryService;
+    }
 }

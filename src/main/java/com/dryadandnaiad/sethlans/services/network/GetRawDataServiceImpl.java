@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.services.network;
 
 import com.dryadandnaiad.sethlans.utils.Resources;
+import com.dryadandnaiad.sethlans.utils.SSLUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -48,6 +49,53 @@ public class GetRawDataServiceImpl implements GetRawDataService {
         try {
             URL url = new URL(apiURL);
 
+            connection = (HttpsURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+
+            int response = connection.getResponseCode();
+            LOG.debug("HTTP Response code " + response);
+
+            StringBuilder result = new StringBuilder();
+
+            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+            for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+                result.append(line).append("\n");
+            }
+
+            return result.toString();
+
+        } catch (MalformedURLException e) {
+            LOG.error("Inavlid URL: " + e.getMessage());
+        } catch (IOException e1) {
+            LOG.error("IO Exception reading data: " + e1.getMessage() + "\n Site or internet connection most likely down.");
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    LOG.error("Error closing stream: " + e.getMessage());
+                }
+            }
+        }
+
+
+        return null;
+    }
+
+    @Override
+    public String getNodeResult(String nodeURL) {
+        HttpsURLConnection connection = null;
+        BufferedReader reader = null;
+
+        try {
+            URL url = new URL(nodeURL);
+            SSLUtilities.trustAllHostnames();
+            SSLUtilities.trustAllHttpsCertificates();
             connection = (HttpsURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();
