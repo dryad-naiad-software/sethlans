@@ -28,9 +28,7 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
     @Override
     public SethlansNode discoverUnicastNode(String ip, String port) {
         Gson gson = new Gson();
-        SethlansNode sethlansNode = gson.fromJson(getRawDataService.getNodeResult("https://" + ip + ":" + port + "/nodeinfo"), SethlansNode.class);
-        LOG.debug(sethlansNode.toString());
-        return sethlansNode;
+        return gson.fromJson(getRawDataService.getNodeResult("https://" + ip + ":" + port + "/nodeinfo"), SethlansNode.class);
     }
 
     @Autowired

@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.commands.NodeAddForm;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.NodeAddProgress;
+import com.dryadandnaiad.sethlans.services.database.SethlansNodeService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,8 @@ public class SettingsController extends AbstractSethlansController {
     private static final Logger LOG = LoggerFactory.getLogger(SettingsController.class);
 
     private NodeDiscoveryService nodeDiscoveryService;
+    private SethlansNodeService sethlansNodeService;
+    private SethlansNode sethlansNode;
 
     @RequestMapping("/settings")
     public String getHomePage(Model model) {
@@ -66,6 +69,7 @@ public class SettingsController extends AbstractSethlansController {
 
     @RequestMapping("/settings/nodes/add")
     public String getNodeAddPage(Model model){
+        sethlansNode = null;
         model.addAttribute("settings_option", "nodes_add");
         model.addAttribute("nodeAddForm",new NodeAddForm());
         return "settings/settings";
@@ -73,13 +77,24 @@ public class SettingsController extends AbstractSethlansController {
 
     @RequestMapping(value = "/settings/nodes/add", method = RequestMethod.POST)
     public String nodeAddForm(final @Valid @ModelAttribute("nodeAddForm") NodeAddForm nodeAddForm, Model model){
-        LOG.debug(nodeAddForm.toString());
-        SethlansNode sethlansNode;
         if(nodeAddForm.getProgress() == NodeAddProgress.NODE_INFO) {
+            LOG.debug(nodeAddForm.toString());
             sethlansNode = nodeDiscoveryService.discoverUnicastNode(nodeAddForm.getIpAddress(), nodeAddForm.getPort());
-            model.addAttribute("settings_option", "nodes_add_nodeinfo");
+            if(sethlansNode != null) {
+                LOG.debug(sethlansNode.toString());
+                model.addAttribute("settings_option", "nodes_add_nodeinfo");
+                model.addAttribute("sethlansNode",sethlansNode);
+            } else {
+                nodeAddForm.setProgress(NodeAddProgress.IP_SETTINGS);
+                LOG.debug(nodeAddForm.toString());
+                model.addAttribute("settings_option", "nodes_add");
+                return "settings/settings";
+            }
         }
         if(nodeAddForm.getProgress() == NodeAddProgress.NODE_ADD) {
+            sethlansNodeService.saveOrUpdate(sethlansNode);
+            LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
+            sethlansNode = null;
             return "redirect:/settings/nodes/";
         }
 
@@ -95,5 +110,10 @@ public class SettingsController extends AbstractSethlansController {
     @Autowired
     public void setNodeDiscoveryService(NodeDiscoveryService nodeDiscoveryService) {
         this.nodeDiscoveryService = nodeDiscoveryService;
+    }
+
+    @Autowired
+    public void setSethlansNodeService(SethlansNodeService sethlansNodeService) {
+        this.sethlansNodeService = sethlansNodeService;
     }
 }

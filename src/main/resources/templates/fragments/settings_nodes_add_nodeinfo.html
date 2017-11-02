@@ -89,38 +89,42 @@
     <!--/*@thymesVar id="nodeAddForm" type="com.dryadandnaiad.sethlans.commands.NodeAddForm"*/-->
 
     <div class="col-md-8">
-      <h2>Summary</h2>
-        <div class="table-responsive">
+        <h2>Summary</h2>
+        <!--/*@thymesVar id="sethlansNode" type="com.dryadandnaiad.sethlans.domains.database.node.SethlansNode"*/-->
+        <div class="table-responsive" th:object="${sethlansNode}">
             <table class="table table-striped">
                 <tbody>
                 <h4>Node Properties</h4>
                 <tr>
                     <td>Hostname</td>
-                    <td>COOKIE</td>
+                    <td th:text="${sethlansNode.getHostname()}">COOKIE</td>
                 </tr>
                 <tr>
                     <td>IP Address</td>
-                    <td>1.1.1.1</td>
+                    <td th:text="${sethlansNode.getIpAddress()}">1.1.1.1</td>
                 </tr>
                 <tr>
                     <td>Network Port</td>
-                    <td>1234</td>
+                    <td th:text="${sethlansNode.getNetworkPort()}">1234</td>
                 </tr>
                 <tr>
                     <td>Sethlans Node OS</td>
-                    <td>MacOS</td>
+                    <td th:text="${sethlansNode.getSethlansNodeOS()}">Windows</td>
                 </tr>
                 <tr>
                     <td>Compute Type</td>
-                    <td>CPU & GPU</td>
+                    <td th:text="${sethlansNode.getComputeType().getName()}">CPU</td>
                 </tr>
                 <tr>
                     <td>Cores</td>
-                    <td>8</td>
+                    <td th:text="${sethlansNode.getCores()}">1</td>
                 </tr>
-                <tr>
+                <tr th:if="${sethlansNode.getComputeType() == T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU|| sethlansNode.getComputeType() == T(com.dryadandnaiad.sethlans.enums.ComputeType).CPU_GPU }">
                     <td>Selected GPU(s)</td>
-                    <td>GeForce GTX 1080, Geforce GT 1030</td>
+                    <td th:if="${!sethlansNode.getSelectedGPUs().isEmpty()}">
+                                                <span th:each="gpu, stat : ${sethlansNode.selectedGPUs}"
+                                                      th:text="${!stat.last} ? ${gpu.getModel()} + ',' : ${gpu.getModel()}">Nvidia</span>
+                    </td>
                 </tr>
                 </tbody>
             </table>

@@ -34,6 +34,9 @@ public class GPUDevice {
 
     private String cudaName;
 
+    public GPUDevice(){
+        super();
+    }
     public GPUDevice(String model, long ram, String cuda) {
         this.model = model;
         this.memory = ram;
