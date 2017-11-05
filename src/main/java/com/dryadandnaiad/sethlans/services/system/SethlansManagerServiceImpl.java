@@ -37,7 +37,13 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
     private ApplicationContext applicationContext;
 
     @Override
+    @Async
     public void shutdown() {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         System.exit(0);
     }
 

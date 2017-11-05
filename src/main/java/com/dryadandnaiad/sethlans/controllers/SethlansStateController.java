@@ -41,7 +41,9 @@ public class SethlansStateController extends AbstractSethlansController {
     }
 
     @RequestMapping("/shutdown")
-    public void shutdown() {
+    public String shutdownPage() {
         sethlansManagerService.shutdown();
+        return "shutdown";
     }
+
 }
