@@ -97,10 +97,14 @@ public class SettingsController extends AbstractSethlansController {
 
     @RequestMapping("/settings/nodes/update/{id}")
     public String updateNode(@PathVariable Integer id, Model model){
+        NodeAddForm nodeUpdateForm = new NodeAddForm();
         model.addAttribute("settings_option", "nodes_update_nodeinfo");
         SethlansNode sethlansNode = sethlansNodeService.getById(id);
         LOG.debug(sethlansNode.toString());
+        nodeUpdateForm.setIpAddress(sethlansNode.getIpAddress());
+        nodeUpdateForm.setPort(sethlansNode.getNetworkPort());
         model.addAttribute("sethlansNode",sethlansNode);
+        model.addAttribute("nodeUpdateForm", nodeUpdateForm);
         //sethlansNodeService.saveOrUpdate(sethlansNode);
         return "settings/settings";
     }

@@ -94,7 +94,7 @@
         <div class="table-responsive" th:object="${sethlansNode}">
             <table class="table table-striped">
                 <tbody>
-                <h4>Node Properties</h4>
+                <h4>Current Node Properties</h4>
                 <tr>
                     <td>Hostname</td>
                     <td th:text="${sethlansNode.getHostname()}">COOKIE</td>
@@ -129,8 +129,16 @@
                 </tbody>
             </table>
             <form id="updateNodeWizard" name="updateNodeWizard" th:action="@{/settings/nodes/update}"
-                  th:object="${nodeAddForm}"
+                  th:object="${nodeUpdateForm}"
                   method="POST">
+                <div class="form-group">
+                    <label for="ipAddress">IP Address or Hostname</label>
+                    <input type="text" class="form-control" id="ipAddress" name="ipAddress" th:value="${nodeUpdateForm.ipAddress}">
+                </div>
+                <div class="form-group">
+                    <label for="port">Port</label>
+                    <input type="number" class="form-control" id="port" name="port" th:value="${nodeUpdateForm.port}">
+                </div>
                 <input type="hidden" id="progress" name="progress" value="">
                 <input type="hidden" id="previous" name="previous" value="">
             </form>
