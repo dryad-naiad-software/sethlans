@@ -84,12 +84,12 @@
     }
 </style>
 
-<div th:fragment="settings_nodes_add_nodeinfo">
+<div th:fragment="settings_nodes_update_nodeinfo">
     <!--Node Scan-->
     <!--/*@thymesVar id="nodeAddForm" type="com.dryadandnaiad.sethlans.commands.NodeAddForm"*/-->
 
     <div class="col-md-8">
-        <h2>Summary</h2>
+        <h2>Update Node</h2>
         <!--/*@thymesVar id="sethlansNode" type="com.dryadandnaiad.sethlans.domains.database.node.SethlansNode"*/-->
         <div class="table-responsive" th:object="${sethlansNode}">
             <table class="table table-striped">
@@ -128,13 +128,13 @@
                 </tr>
                 </tbody>
             </table>
-            <form id="addNodeWizard" name="addNodeWizard" th:action="@{/settings/nodes/add}"
+            <form id="updateNodeWizard" name="updateNodeWizard" th:action="@{/settings/nodes/update}"
                   th:object="${nodeAddForm}"
                   method="POST">
                 <input type="hidden" id="progress" name="progress" value="">
                 <input type="hidden" id="previous" name="previous" value="">
             </form>
-            <button type="button" id="addNode" class="btn btn-default pull-right" onclick="nextClicked()">Add</button>
+            <button type="button" id="rescanNode" class="btn btn-default pull-right" onclick="nextClicked()">Rescan</button>
             <a id="cancelAdd" href="/settings/nodes/" class="btn btn-default pull-left">Cancel</a>
         </div>
     </div>

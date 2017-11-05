@@ -225,6 +225,11 @@
             <main th:replace="fragments/settings_nodes_add_nodeinfo :: settings_nodes_add_nodeinfo">
                 <!--Replaced By Fragment-->  </main>
         </div>
+
+        <div th:if="${settings_option.equals('nodes_update_nodeinfo')}">
+            <main th:replace="fragments/settings_nodes_update_nodeinfo :: settings_nodes_update_nodeinfo">
+                <!--Replaced By Fragment-->  </main>
+        </div>
     </div>
 </div>
 <!-- Footer Fragment -->

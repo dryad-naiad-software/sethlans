@@ -104,7 +104,6 @@
                     </tr>
                     </thead>
                     <tbody th:if="${not #lists.isEmpty(nodes)}">
-                    <!--/*@thymesVar id="nodes" type="java.util.List"*/-->
                     <tr th:each="node : ${nodes}">
                         <!--/*@thymesVar id="node" type="com.dryadandnaiad.sethlans.domains.database.node.SethlansNode"*/-->
                         <td th:id="'nodeHostname-' + ${node.getId()}"
@@ -118,7 +117,11 @@
                         <td th:id="'nodeComputeType-' + ${node.getId()}"
                             th:text="${node.getComputeType().getName()}">CPU & GPU</td>
                         <td th:id="'nodeCores-' + ${node.getId()}"
+                            th:unless="${node.getComputeType().GPU}"
                             th:text="${node.getCores()}">8</td>
+                        <td th:id="'nodeCores-' + ${node.getId()}"
+                            th:if="${node.getComputeType().GPU}">N/A</td>
+
                         <td th:id="'nodeSelectedGPUs-' + ${node.getId()}"
                             th:if="${!node.getSelectedGPUs().isEmpty()}">
                                                 <span th:each="gpu, stat : ${node.selectedGPUs}"
@@ -126,19 +129,21 @@
                         </td>
                         <td th:id="'nodeSelectedGPUs-' + ${node.getId()}"
                             th:if="${node.getSelectedGPUs().isEmpty()}">
-                                                <span>None</span>
+                                                <span>N/A</span>
                         </td>
                         <td>
                             <a th:id="'nodeUpdate-' + ${node.getId()}"
-                               href="#">Update</a>
+                               th:href="${'/settings/nodes/update/' + node.getId()}" href="#">Update</a>
                             <br/>
                             <a th:id="'nodeDelete-' + ${node.getId()}"
                                th:href="${'/settings/nodes/delete/' + node.getId()}" href="">Delete</a>
                             <br/>
                             <a th:id="'nodeEnableDisable-' + ${node.getId()}"
-                               th:if="${node.isActive()}" th:href="${'/settings/nodes/disable/' + node.getId()}" href="#">Disable</a>
+                               th:if="${node.isActive()}"
+                               th:href="${'/settings/nodes/disable/' + node.getId()}" href="#">Disable</a>
                             <a th:id="'nodeEnableDisable-' + ${node.getId()}"
-                               th:unless="${node.isActive()}" th:href="${'/settings/nodes/enable/' + node.getId()}" href="#">Enable</a>
+                               th:unless="${node.isActive()}"
+                               th:href="${'/settings/nodes/enable/' + node.getId()}" href="#">Enable</a>
                         </td>
                     </tr>
                     </tbody>
