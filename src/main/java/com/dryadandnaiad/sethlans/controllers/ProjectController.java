@@ -93,7 +93,7 @@ public class ProjectController extends AbstractSethlansController {
     }
 
     @RequestMapping("/project/delete/{id}")
-    public String deleteProject(@PathVariable Integer id, Model model) {
+    public String deleteProject(@PathVariable Integer id) {
         blenderProjectService.delete(id);
         return "redirect:/project";
     }

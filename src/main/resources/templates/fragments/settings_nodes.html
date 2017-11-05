@@ -116,12 +116,17 @@
                         <td th:if="${!node.getSelectedGPUs().isEmpty()}">
                                                 <span th:each="gpu, stat : ${node.selectedGPUs}"
                                                       th:utext="${!stat.last} ? ${gpu.getModel()} + ',' +  '<br />' : ${gpu.getModel()}">Nvidia</span>
+                        </td>
+                        <td th:if="${node.getSelectedGPUs().isEmpty()}">
+                                                <span>None</span>
+                        </td>
                         <td>
-                            <a href="#">Edit</a>
+                            <a href="#">Update</a>
                             <br/>
-                            <a href="#">Delete</a>
+                            <a th:href="${'/settings/nodes/delete/' + node.getId()}" href="">Delete</a>
                             <br/>
-                            <a href="#">Disable</a>
+                            <a th:if="${node.isActive()}" th:href="${'/settings/nodes/disable/' + node.getId()}" href="#">Disable</a>
+                            <a th:unless="${node.isActive()}" th:href="${'/settings/nodes/enable/' + node.getId()}" href="#">Enable</a>
                         </td>
                     </tr>
                     </tbody>

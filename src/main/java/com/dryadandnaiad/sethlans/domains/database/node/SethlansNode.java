@@ -28,6 +28,7 @@ public class SethlansNode extends AbstractEntityClass {
     private List<GPUDevice> selectedGPUs = new ArrayList<>();
     @ElementCollection
     private List<String> selectedCUDA;
+    private boolean active;
 
     public String getHostname() {
         return hostname;
@@ -93,6 +94,14 @@ public class SethlansNode extends AbstractEntityClass {
         this.selectedCUDA = selectedCUDA;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     @Override
     public String toString() {
         return "SethlansNode{" +
@@ -104,6 +113,7 @@ public class SethlansNode extends AbstractEntityClass {
                 ", cores='" + cores + '\'' +
                 ", selectedGPUs=" + selectedGPUs +
                 ", selectedCUDA=" + selectedCUDA +
+                ", active=" + active +
                 '}';
     }
 }

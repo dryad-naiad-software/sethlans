@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -75,6 +76,32 @@ public class SettingsController extends AbstractSethlansController {
         model.addAttribute("nodeAddForm",new NodeAddForm());
         return "settings/settings";
     }
+
+    @RequestMapping("/settings/nodes/delete/{id}")
+    public String deleteNode(@PathVariable Integer id, Model model){
+        model.addAttribute("settings_option", "nodes");
+        sethlansNodeService.delete(id);
+        return "redirect:/settings/nodes/";
+    }
+
+    @RequestMapping("/settings/nodes/enable/{id}")
+    public String enableNode(@PathVariable Integer id, Model model){
+        model.addAttribute("settings_option", "nodes");
+        SethlansNode sethlansNode = sethlansNodeService.getById(id);
+        sethlansNode.setActive(true);
+        sethlansNodeService.saveOrUpdate(sethlansNode);
+        return "redirect:/settings/nodes/";
+    }
+
+    @RequestMapping("/settings/nodes/disable/{id}")
+    public String disableNode(@PathVariable Integer id, Model model){
+        model.addAttribute("settings_option", "nodes");
+        SethlansNode sethlansNode = sethlansNodeService.getById(id);
+        sethlansNode.setActive(false);
+        sethlansNodeService.saveOrUpdate(sethlansNode);
+        return "redirect:/settings/nodes/";
+    }
+
 
     @RequestMapping(value = "/settings/nodes/add", method = RequestMethod.POST)
     public String nodeAddForm(final @Valid @ModelAttribute("nodeAddForm") NodeAddForm nodeAddForm, Model model){
