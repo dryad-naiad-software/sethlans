@@ -89,6 +89,17 @@ public class SettingsController extends AbstractSethlansController {
         model.addAttribute("settings_option", "nodes");
         SethlansNode sethlansNode = sethlansNodeService.getById(id);
         sethlansNode.setActive(true);
+        LOG.debug(sethlansNode.toString());
+        sethlansNodeService.saveOrUpdate(sethlansNode);
+        return "redirect:/settings/nodes/";
+    }
+
+
+    @RequestMapping("/settings/nodes/update/{id}")
+    public String updateNode(@PathVariable Integer id, Model model){
+        model.addAttribute("settings_option", "nodes");
+        SethlansNode sethlansNode = sethlansNodeService.getById(id);
+        LOG.debug(sethlansNode.toString());
         sethlansNodeService.saveOrUpdate(sethlansNode);
         return "redirect:/settings/nodes/";
     }
@@ -98,6 +109,7 @@ public class SettingsController extends AbstractSethlansController {
         model.addAttribute("settings_option", "nodes");
         SethlansNode sethlansNode = sethlansNodeService.getById(id);
         sethlansNode.setActive(false);
+        LOG.debug(sethlansNode.toString());
         sethlansNodeService.saveOrUpdate(sethlansNode);
         return "redirect:/settings/nodes/";
     }

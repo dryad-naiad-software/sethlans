@@ -107,26 +107,38 @@
                     <!--/*@thymesVar id="nodes" type="java.util.List"*/-->
                     <tr th:each="node : ${nodes}">
                         <!--/*@thymesVar id="node" type="com.dryadandnaiad.sethlans.domains.database.node.SethlansNode"*/-->
-                        <td th:text="${node.getHostname()}">SAMPLE</td>
-                        <td th:text="${node.getIpAddress()}">1.1.1.1</td>
-                        <td th:text="${node.getNetworkPort()}">1234</td>
-                        <td th:text="${node.getSethlansNodeOS()}">Windows64</td>
-                        <td th:text="${node.getComputeType().getName()}">CPU & GPU</td>
-                        <td th:text="${node.getCores()}">8</td>
-                        <td th:if="${!node.getSelectedGPUs().isEmpty()}">
+                        <td th:id="'nodeHostname-' + ${node.getId()}"
+                            th:text="${node.getHostname()}">SAMPLE</td>
+                        <td th:id="'nodeIPAddress-' + ${node.getId()}"
+                            th:text="${node.getIpAddress()}">1.1.1.1</td>
+                        <td th:id="'nodeNetworkPort-' + ${node.getId()}"
+                            th:text="${node.getNetworkPort()}">1234</td>
+                        <td th:id="'nodeOS-' + ${node.getId()}"
+                            th:text="${node.getSethlansNodeOS()}">Windows64</td>
+                        <td th:id="'nodeComputeType-' + ${node.getId()}"
+                            th:text="${node.getComputeType().getName()}">CPU & GPU</td>
+                        <td th:id="'nodeCores-' + ${node.getId()}"
+                            th:text="${node.getCores()}">8</td>
+                        <td th:id="'nodeSelectedGPUs-' + ${node.getId()}"
+                            th:if="${!node.getSelectedGPUs().isEmpty()}">
                                                 <span th:each="gpu, stat : ${node.selectedGPUs}"
                                                       th:utext="${!stat.last} ? ${gpu.getModel()} + ',' +  '<br />' : ${gpu.getModel()}">Nvidia</span>
                         </td>
-                        <td th:if="${node.getSelectedGPUs().isEmpty()}">
+                        <td th:id="'nodeSelectedGPUs-' + ${node.getId()}"
+                            th:if="${node.getSelectedGPUs().isEmpty()}">
                                                 <span>None</span>
                         </td>
                         <td>
-                            <a href="#">Update</a>
+                            <a th:id="'nodeUpdate-' + ${node.getId()}"
+                               href="#">Update</a>
                             <br/>
-                            <a th:href="${'/settings/nodes/delete/' + node.getId()}" href="">Delete</a>
+                            <a th:id="'nodeDelete-' + ${node.getId()}"
+                               th:href="${'/settings/nodes/delete/' + node.getId()}" href="">Delete</a>
                             <br/>
-                            <a th:if="${node.isActive()}" th:href="${'/settings/nodes/disable/' + node.getId()}" href="#">Disable</a>
-                            <a th:unless="${node.isActive()}" th:href="${'/settings/nodes/enable/' + node.getId()}" href="#">Enable</a>
+                            <a th:id="'nodeEnableDisable-' + ${node.getId()}"
+                               th:if="${node.isActive()}" th:href="${'/settings/nodes/disable/' + node.getId()}" href="#">Disable</a>
+                            <a th:id="'nodeEnableDisable-' + ${node.getId()}"
+                               th:unless="${node.isActive()}" th:href="${'/settings/nodes/enable/' + node.getId()}" href="#">Enable</a>
                         </td>
                     </tr>
                     </tbody>
