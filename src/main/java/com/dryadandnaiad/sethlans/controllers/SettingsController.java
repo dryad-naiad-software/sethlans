@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.commands.NodeAddForm;
+import com.dryadandnaiad.sethlans.converters.SethlansNodeToNodeAddForm;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.NodeAddProgress;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeService;
@@ -49,6 +50,7 @@ public class SettingsController extends AbstractSethlansController {
     private NodeDiscoveryService nodeDiscoveryService;
     private SethlansNodeService sethlansNodeService;
     private SethlansNode sethlansNode;
+    private SethlansNodeToNodeAddForm sethlansNodeToNodeAddForm;
 
     @RequestMapping("/settings")
     public String getHomePage(Model model) {
@@ -97,16 +99,34 @@ public class SettingsController extends AbstractSethlansController {
 
     @RequestMapping("/settings/nodes/update/{id}")
     public String updateNode(@PathVariable Integer id, Model model){
-        NodeAddForm nodeUpdateForm = new NodeAddForm();
         model.addAttribute("settings_option", "nodes_update_nodeinfo");
-        SethlansNode sethlansNode = sethlansNodeService.getById(id);
-        LOG.debug(sethlansNode.toString());
-        nodeUpdateForm.setIpAddress(sethlansNode.getIpAddress());
-        nodeUpdateForm.setPort(sethlansNode.getNetworkPort());
+        sethlansNode = sethlansNodeService.getById(id);
+        NodeAddForm nodeUpdateForm = sethlansNodeToNodeAddForm.convert(sethlansNode);
         model.addAttribute("sethlansNode",sethlansNode);
         model.addAttribute("nodeUpdateForm", nodeUpdateForm);
-        //sethlansNodeService.saveOrUpdate(sethlansNode);
         return "settings/settings";
+    }
+
+    @RequestMapping(value = "/settings/nodes/update-form/", method = RequestMethod.POST)
+    public String updateNodeSubmit(final @Valid @ModelAttribute("nodeUpdateForm") NodeAddForm nodeUpdateForm, Model model){
+        model.addAttribute("settings_option", "nodes_update_node_summary");
+
+        if(nodeUpdateForm.getProgress() == NodeAddProgress.NODE_UPDATE_SUMMARY){
+            sethlansNode = nodeDiscoveryService.discoverUnicastNode(nodeUpdateForm.getIpAddress(), nodeUpdateForm.getPort());
+            model.addAttribute("sethlansNode",sethlansNode);
+            model.addAttribute("settings_option", "nodes_update_node_summary");
+            return "settings/settings";
+        }
+
+        if(nodeUpdateForm.getProgress() == NodeAddProgress.NODE_UPDATE_FINISHED){
+            sethlansNode.setId(nodeUpdateForm.getId());
+            sethlansNode.setVersion(nodeUpdateForm.getVersion());
+            sethlansNodeService.saveOrUpdate(sethlansNode);
+            LOG.debug("Updated: " +" ID:" + sethlansNode.getId() + ", Hostname: " + sethlansNode.getHostname() + " to database.");
+            sethlansNode = null;
+            return "redirect:/settings/nodes/";
+        }
+        return  "settings/settings";
     }
 
     @RequestMapping("/settings/nodes/disable/{id}")
@@ -160,5 +180,10 @@ public class SettingsController extends AbstractSethlansController {
     @Autowired
     public void setSethlansNodeService(SethlansNodeService sethlansNodeService) {
         this.sethlansNodeService = sethlansNodeService;
+    }
+
+    @Autowired
+    public void setSethlansNodeToNodeAddForm(SethlansNodeToNodeAddForm sethlansNodeToNodeAddForm) {
+        this.sethlansNodeToNodeAddForm = sethlansNodeToNodeAddForm;
     }
 }

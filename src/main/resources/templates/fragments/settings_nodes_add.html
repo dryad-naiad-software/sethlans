@@ -88,7 +88,7 @@
     <!--Node Scan-->
     <!--/*@thymesVar id="nodeAddForm" type="com.dryadandnaiad.sethlans.commands.NodeAddForm"*/-->
 
-    <div class="col-md-10">
+    <div class="col-md-10" onkeypress="checkSubmit(event)">
         <form id="addNodeWizard" name="addNodeWizard" th:action="@{/settings/nodes/add}"
               th:object="${nodeAddForm}"
               method="POST">

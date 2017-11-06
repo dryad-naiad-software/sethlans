@@ -230,7 +230,19 @@
             <main th:replace="fragments/settings_nodes_update_nodeinfo :: settings_nodes_update_nodeinfo">
                 <!--Replaced By Fragment-->  </main>
         </div>
+
+        <div th:if="${settings_option.equals('nodes_update_node_summary')}">
+            <main th:replace="fragments/settings_nodes_update_node_summary :: settings_nodes_update_node_summary">
+                <!--Replaced By Fragment-->  </main>
+        </div>
     </div>
+    <script>
+        function checkSubmit(e) {
+            if (e && e.keyCode == 13) {
+                nextClicked();
+            }
+        }
+    </script>
 </div>
 <!-- Footer Fragment -->
 <div class="content"></div>

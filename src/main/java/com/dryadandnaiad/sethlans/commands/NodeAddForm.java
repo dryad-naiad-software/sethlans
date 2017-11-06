@@ -14,6 +14,9 @@ public class NodeAddForm {
     private String port;
     private NodeAddProgress previous;
     private NodeAddProgress progress;
+    private Integer id;
+    private Integer version;
+
 
     public String getIpAddress() {
         return ipAddress;
@@ -48,6 +51,23 @@ public class NodeAddForm {
         this.progress = progress;
     }
 
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
         return "NodeAddForm{" +
@@ -55,6 +75,8 @@ public class NodeAddForm {
                 ", port='" + port + '\'' +
                 ", previous=" + previous +
                 ", progress=" + progress +
+                ", id=" + id +
+                ", version=" + version +
                 '}';
     }
 }

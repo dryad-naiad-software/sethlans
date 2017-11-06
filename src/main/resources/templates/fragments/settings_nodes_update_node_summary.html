@@ -84,17 +84,17 @@
     }
 </style>
 
-<div th:fragment="settings_nodes_update_nodeinfo">
+<div th:fragment="settings_nodes_update_node_summary">
     <!--Node Scan-->
     <!--/*@thymesVar id="nodeAddForm" type="com.dryadandnaiad.sethlans.commands.NodeAddForm"*/-->
 
-    <div class="col-md-8" onkeypress="checkSubmit(event)">
+    <div class="col-md-8">
         <h2>Update Node</h2>
         <!--/*@thymesVar id="sethlansNode" type="com.dryadandnaiad.sethlans.domains.database.node.SethlansNode"*/-->
         <div class="table-responsive" th:object="${sethlansNode}">
             <table class="table table-striped">
                 <tbody>
-                <h4>Current Node Properties</h4>
+                <h4>Updated Node Properties</h4>
                 <tr>
                     <td>Hostname</td>
                     <td th:text="${sethlansNode.getHostname()}">COOKIE</td>
@@ -131,32 +131,24 @@
             <form id="updateNodeWizard" name="updateNodeWizard" th:action="@{/settings/nodes/update-form/}"
                   th:object="${nodeUpdateForm}"
                   method="POST">
-                <div class="form-group">
-                    <label for="ipAddress">IP Address or Hostname</label>
-                    <input type="text" class="form-control" id="ipAddress" name="ipAddress" th:value="${nodeUpdateForm.ipAddress}">
-                </div>
-                <div class="form-group">
-                    <label for="port">Port</label>
-                    <input type="number" class="form-control" id="port" name="port" th:value="${nodeUpdateForm.port}">
-                </div>
                 <input type="hidden" th:field="${nodeUpdateForm.id}"/>
                 <input type="hidden" th:field="${nodeUpdateForm.version}"/>
                 <input type="hidden" id="progress" name="progress" value="">
                 <input type="hidden" id="previous" name="previous" value="">
             </form>
-            <button type="button" id="rescanNode" class="btn btn-default pull-right" onclick="nextClicked()">Rescan</button>
+            <button type="button" id="updateNode" class="btn btn-default pull-right" onclick="nextClicked()">Update</button>
             <a id="cancelAdd" href="/settings/nodes/" class="btn btn-default pull-left">Cancel</a>
         </div>
     </div>
 
-      <script>
+
+    <script>
         function nextClicked() {
-            document.getElementById("progress").value = "NODE_UPDATE_SUMMARY";
-            document.getElementById("previous").value = "NODE_UPDATE";
+            document.getElementById("progress").value = "NODE_UPDATE_FINISHED";
+            document.getElementById("previous").value = "NODE_UPDATE_SUMMARY";
             document.getElementById("updateNodeWizard").submit();
         }
     </script>
-
 </div>
 
 

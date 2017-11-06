@@ -7,5 +7,5 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum NodeAddProgress {
-    IP_SETTINGS, NODE_INFO, NODE_ADD
+    IP_SETTINGS, NODE_INFO, NODE_ADD, NODE_UPDATE, NODE_UPDATE_SUMMARY, NODE_UPDATE_FINISHED
 }
