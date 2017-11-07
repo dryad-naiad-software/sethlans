@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -24,31 +25,32 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
     private GetRawDataService getRawDataService;
     private MulticastReceiverService multicastReceiverService;
     private List<SethlansNode> sethlansNodeList;
-    private boolean listComplete;
+    private boolean listComplete = false;
 
 
     @Override
     public List<SethlansNode> discoverMulticastNodes() {
-        sethlansNodeList = null;
-        if(listComplete) {
+        if (listComplete) {
             return sethlansNodeList;
-        }
-        else {
+        } else {
             return null;
         }
 
     }
 
     @Async
-    public void multicastDiscovery(){
+    public void multicastDiscovery() {
         Set<String> nodeList = multicastReceiverService.currentSethlansClients();
-        for (String node : nodeList) {
-            LOG.debug(node);
-            String[] split = node.split(":");
-            String ip = split[0];
-            String port = split[1];
-            discoverUnicastNode(ip, port);
-
+        if (nodeList != null) {
+            sethlansNodeList = new ArrayList<>();
+            for (String node : nodeList) {
+                LOG.debug(node);
+                String[] split = node.split(":");
+                String ip = split[0];
+                String port = split[1];
+                sethlansNodeList.add(discoverUnicastNode(ip, port));
+            }
+            listComplete = true;
         }
     }
 

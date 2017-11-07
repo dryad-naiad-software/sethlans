@@ -171,13 +171,13 @@ public class SettingsController extends AbstractSethlansController {
     public String getNodeScanPage(Model model){
         model.addAttribute("settings_option", "nodes_scan");
         nodeDiscoveryService.multicastDiscovery();
-        if(nodeDiscoveryService.discoverMulticastNodes() == null){
+        if(!nodeDiscoveryService.isListComplete()){
             LOG.debug("Scanning");
             // return page
         }
         else {
             List<SethlansNode> sethlansNodes = nodeDiscoveryService.discoverMulticastNodes();
-            if(sethlansNodes.size() > 0){
+            if(sethlansNodes.size() == 0){
                 LOG.debug("No Nodes found");
                 // return page
             }
