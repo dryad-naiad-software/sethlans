@@ -62,6 +62,7 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
 
     public void resetNodeList(){
         sethlansNodeList = null;
+        listComplete = false;
     }
 
 

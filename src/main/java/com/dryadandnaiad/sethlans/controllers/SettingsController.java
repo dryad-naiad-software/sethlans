@@ -60,35 +60,35 @@ public class SettingsController extends AbstractSethlansController {
     }
 
     @RequestMapping("/settings/users")
-    public String getUserPage(Model model){
+    public String getUserPage(Model model) {
         model.addAttribute("settings_option", "users");
         return "settings/settings";
     }
 
     @RequestMapping("/settings/nodes")
-    public String getNodePage(Model model){
+    public String getNodePage(Model model) {
         model.addAttribute("settings_option", "nodes");
         model.addAttribute("nodes", sethlansNodeService.listAll());
         return "settings/settings";
     }
 
     @RequestMapping("/settings/nodes/add")
-    public String getNodeAddPage(Model model){
+    public String getNodeAddPage(Model model) {
         sethlansNode = null;
         model.addAttribute("settings_option", "nodes_add");
-        model.addAttribute("nodeAddForm",new NodeAddForm());
+        model.addAttribute("nodeAddForm", new NodeAddForm());
         return "settings/settings";
     }
 
     @RequestMapping("/settings/nodes/delete/{id}")
-    public String deleteNode(@PathVariable Integer id, Model model){
+    public String deleteNode(@PathVariable Integer id, Model model) {
         model.addAttribute("settings_option", "nodes");
         sethlansNodeService.delete(id);
         return "redirect:/settings/nodes/";
     }
 
     @RequestMapping("/settings/nodes/enable/{id}")
-    public String enableNode(@PathVariable Integer id, Model model){
+    public String enableNode(@PathVariable Integer id, Model model) {
         model.addAttribute("settings_option", "nodes");
         SethlansNode sethlansNode = sethlansNodeService.getById(id);
         sethlansNode.setActive(true);
@@ -99,39 +99,39 @@ public class SettingsController extends AbstractSethlansController {
 
 
     @RequestMapping("/settings/nodes/update/{id}")
-    public String updateNode(@PathVariable Integer id, Model model){
+    public String updateNode(@PathVariable Integer id, Model model) {
         model.addAttribute("settings_option", "nodes_update_nodeinfo");
         sethlansNode = sethlansNodeService.getById(id);
         NodeAddForm nodeUpdateForm = sethlansNodeToNodeAddForm.convert(sethlansNode);
-        model.addAttribute("sethlansNode",sethlansNode);
+        model.addAttribute("sethlansNode", sethlansNode);
         model.addAttribute("nodeUpdateForm", nodeUpdateForm);
         return "settings/settings";
     }
 
     @RequestMapping(value = "/settings/nodes/update-form/", method = RequestMethod.POST)
-    public String updateNodeSubmit(final @Valid @ModelAttribute("nodeUpdateForm") NodeAddForm nodeUpdateForm, Model model){
+    public String updateNodeSubmit(final @Valid @ModelAttribute("nodeUpdateForm") NodeAddForm nodeUpdateForm, Model model) {
         model.addAttribute("settings_option", "nodes_update_node_summary");
 
-        if(nodeUpdateForm.getProgress() == NodeAddProgress.NODE_UPDATE_SUMMARY){
+        if (nodeUpdateForm.getProgress() == NodeAddProgress.NODE_UPDATE_SUMMARY) {
             sethlansNode = nodeDiscoveryService.discoverUnicastNode(nodeUpdateForm.getIpAddress(), nodeUpdateForm.getPort());
-            model.addAttribute("sethlansNode",sethlansNode);
+            model.addAttribute("sethlansNode", sethlansNode);
             model.addAttribute("settings_option", "nodes_update_node_summary");
             return "settings/settings";
         }
 
-        if(nodeUpdateForm.getProgress() == NodeAddProgress.NODE_UPDATE_FINISHED){
+        if (nodeUpdateForm.getProgress() == NodeAddProgress.NODE_UPDATE_FINISHED) {
             sethlansNode.setId(nodeUpdateForm.getId());
             sethlansNode.setVersion(nodeUpdateForm.getVersion());
             sethlansNodeService.saveOrUpdate(sethlansNode);
-            LOG.debug("Updated: " +" ID:" + sethlansNode.getId() + ", Hostname: " + sethlansNode.getHostname() + " to database.");
+            LOG.debug("Updated: " + " ID:" + sethlansNode.getId() + ", Hostname: " + sethlansNode.getHostname() + " to database.");
             sethlansNode = null;
             return "redirect:/settings/nodes/";
         }
-        return  "settings/settings";
+        return "settings/settings";
     }
 
     @RequestMapping("/settings/nodes/disable/{id}")
-    public String disableNode(@PathVariable Integer id, Model model){
+    public String disableNode(@PathVariable Integer id, Model model) {
         model.addAttribute("settings_option", "nodes");
         SethlansNode sethlansNode = sethlansNodeService.getById(id);
         sethlansNode.setActive(false);
@@ -142,14 +142,14 @@ public class SettingsController extends AbstractSethlansController {
 
 
     @RequestMapping(value = "/settings/nodes/add", method = RequestMethod.POST)
-    public String nodeAddForm(final @Valid @ModelAttribute("nodeAddForm") NodeAddForm nodeAddForm, Model model){
-        if(nodeAddForm.getProgress() == NodeAddProgress.NODE_INFO) {
+    public String nodeAddForm(final @Valid @ModelAttribute("nodeAddForm") NodeAddForm nodeAddForm, Model model) {
+        if (nodeAddForm.getProgress() == NodeAddProgress.NODE_INFO) {
             LOG.debug(nodeAddForm.toString());
             sethlansNode = nodeDiscoveryService.discoverUnicastNode(nodeAddForm.getIpAddress(), nodeAddForm.getPort());
-            if(sethlansNode != null) {
+            if (sethlansNode != null) {
                 LOG.debug(sethlansNode.toString());
                 model.addAttribute("settings_option", "nodes_add_nodeinfo");
-                model.addAttribute("sethlansNode",sethlansNode);
+                model.addAttribute("sethlansNode", sethlansNode);
             } else {
                 nodeAddForm.setProgress(NodeAddProgress.IP_SETTINGS);
                 LOG.debug(nodeAddForm.toString());
@@ -157,7 +157,7 @@ public class SettingsController extends AbstractSethlansController {
                 return "settings/settings";
             }
         }
-        if(nodeAddForm.getProgress() == NodeAddProgress.NODE_ADD) {
+        if (nodeAddForm.getProgress() == NodeAddProgress.NODE_ADD) {
             sethlansNodeService.saveOrUpdate(sethlansNode);
             LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
             sethlansNode = null;
@@ -168,24 +168,26 @@ public class SettingsController extends AbstractSethlansController {
     }
 
     @RequestMapping("/settings/nodes/scan")
-    public String getNodeScanPage(Model model){
+    public String getNodeScanPage(Model model) {
         model.addAttribute("settings_option", "nodes_scan");
         nodeDiscoveryService.multicastDiscovery();
-        if(!nodeDiscoveryService.isListComplete()){
-            LOG.debug("Scanning");
-        }
-        else {
-            List<SethlansNode> sethlansNodes = nodeDiscoveryService.discoverMulticastNodes();
-            if(sethlansNodes.size() == 0){
-                LOG.debug("No Nodes found");
-                // return page
-            }
-            else{
-                LOG.debug(sethlansNodes.toString());
-                nodeDiscoveryService.resetNodeList();
-            }
+        LOG.debug("Scanning");
+        return "settings/settings";
+    }
 
+    @RequestMapping("/settings/nodes/scan/summary")
+    public String getNodeScanSummaryPage(Model model) {
+        model.addAttribute("settings_option", "nodes_scan_summary");
+        List<SethlansNode> sethlansNodes = nodeDiscoveryService.discoverMulticastNodes();
+        if (sethlansNodes.size() == 0) {
+            LOG.debug("No Nodes found");
+            nodeDiscoveryService.resetNodeList();
+        } else {
+            LOG.debug(sethlansNodes.toString());
+            nodeDiscoveryService.resetNodeList();
         }
+        model.addAttribute("sethlansNodes", sethlansNodes);
+
         return "settings/settings";
     }
 

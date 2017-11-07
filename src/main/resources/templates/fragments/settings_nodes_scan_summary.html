@@ -84,18 +84,61 @@
     }
 </style>
 
-<div th:fragment="settings_nodes_scan">
+<div th:fragment="settings_nodes_scan_summary">
 
-    <div class="col-md-10" onkeypress="checkSubmit(event)">
+    <div class="col-md-10" >
         <h2>Node Discovery</h2>
-        <h3 id="scanningPending">Scanning Local Network for Sethlans Nodes</h3>
-        <script>
-            window.onload = function () {
-                    setTimeout(function () {
-                        window.location.replace("/settings/nodes/scan/summary")
-                    }, 15000);
-            }
-        </script>
+        <h3 id="scanComplete">Scan Complete</h3>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th><label class="sr-only" for="selectAll">Select all rows</label><input type="checkbox" id="selectAll" name="selectAll"></th>
+                    <th>Hostname</th>
+                    <th>IP Address</th>
+                    <th>Port</th>
+                    <th>OS</th>
+                    <th>Compute Methods</th>
+                    <th>CPU Cores</th>
+                    <th>Selected GPU(s)</th>
+                </tr>
+                </thead>
+                <tbody th:if="${not #lists.isEmpty(sethlansNodes)}">
+                <tr th:each="node : ${sethlansNodes}">
+                    <!--/*@thymesVar id="node" type="com.dryadandnaiad.sethlans.domains.database.node.SethlansNode"*/-->
+                    <td>
+                        <input type="checkbox" name="vehicle" value="Car">
+                    </td>
+                    <td
+                        th:text="${node.getHostname()}">SAMPLE</td>
+                    <td
+                        th:text="${node.getIpAddress()}">1.1.1.1</td>
+                    <td
+                        th:text="${node.getNetworkPort()}">1234</td>
+                    <td
+                        th:text="${node.getSethlansNodeOS()}">Windows64</td>
+                    <td
+                        th:text="${node.getComputeType().getName()}">CPU & GPU</td>
+                    <td
+                        th:unless="${node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU)}"
+                        th:text="${node.getCores()}">8</td>
+                    <td
+                        th:if="${node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU)}">N/A</td>
+
+                    <td
+                        th:if="${!node.getSelectedGPUs().isEmpty()}">
+                                                <span th:each="gpu, stat : ${node.selectedGPUs}"
+                                                      th:utext="${!stat.last} ? ${gpu.getModel()} + ',' +  '<br />' : ${gpu.getModel()}">Nvidia</span>
+                    </td>
+                    <td
+                        th:if="${node.getSelectedGPUs().isEmpty()}">
+                        <span>N/A</span>
+                    </td>
+                </tbody>
+            </table>
+            <a id="cancelAdd" href="/settings/nodes/" class="btn btn-default pull-left">Cancel</a>
+            <a id="addNodeBtn" href="/settings/nodes/add" class="btn btn-default pull-right">Add Node</a>
+        </div>
     </div>
 </div>
 
