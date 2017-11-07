@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Created Mario Estrella on 9/20/17.
@@ -169,6 +170,22 @@ public class SettingsController extends AbstractSethlansController {
     @RequestMapping("/settings/nodes/scan")
     public String getNodeScanPage(Model model){
         model.addAttribute("settings_option", "nodes_scan");
+        nodeDiscoveryService.multicastDiscovery();
+        if(nodeDiscoveryService.discoverMulticastNodes() == null){
+            LOG.debug("Scanning");
+            // return page
+        }
+        else {
+            List<SethlansNode> sethlansNodes = nodeDiscoveryService.discoverMulticastNodes();
+            if(sethlansNodes.size() > 0){
+                LOG.debug("No Nodes found");
+                // return page
+            }
+            else{
+                LOG.debug(sethlansNodes.toString());
+            }
+
+        }
         return "settings/settings";
     }
 

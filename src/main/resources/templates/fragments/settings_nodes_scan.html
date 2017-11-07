@@ -79,17 +79,24 @@
 <style>
     .sidebarfont {
         font-family: "Open Sans", Helvetica, Arial, sans-serif;
-        font-size:18px;
-        color:black;
+        font-size: 18px;
+        color: black;
     }
 </style>
-<div class="container">
-    <div class="row">
 
-        <main th:fragment="settings_nodes_scan">
-            <!--Nodes Add-->
+<div th:fragment="settings_nodes_scan">
+    <!--/*@thymesVar id="nodeAddForm" type="com.dryadandnaiad.sethlans.commands.NodeAddForm"*/-->
 
-        </main>
+    <div class="col-md-10" onkeypress="checkSubmit(event)">
+        <h2>Node Discovery</h2>
+        <h3>Scanning Local Network for Sethlans Nodes</h3>
+        <script>
+            function nextClicked() {
+                document.getElementById("progress").value = "NODE_INFO";
+                document.getElementById("previous").value = "IP_SETTINGS";
+                document.getElementById("addNodeWizard").submit();
+            }
+        </script>
     </div>
 </div>
 

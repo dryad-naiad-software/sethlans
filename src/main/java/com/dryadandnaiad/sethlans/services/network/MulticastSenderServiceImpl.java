@@ -41,7 +41,7 @@ public class MulticastSenderServiceImpl extends Thread implements MulticastSende
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, multicastSocketPort);
                 multicastSocket.send(packet);
                 LOG.debug("Sent Multicast");
-                Thread.sleep(10000);
+                Thread.sleep(5000);
             }
         } catch (IOException e) {
             e.printStackTrace();

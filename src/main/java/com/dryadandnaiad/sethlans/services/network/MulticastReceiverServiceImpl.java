@@ -3,7 +3,6 @@ package com.dryadandnaiad.sethlans.services.network;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -29,7 +28,6 @@ public class MulticastReceiverServiceImpl implements  MulticastReceiverService{
     @Value("${sethlans.multicast.port}")
     private String multicastPort;
 
-    @Async
     @Override
     public Set<String> currentSethlansClients() {
         Set<String> currentClients = new HashSet<>();
@@ -38,7 +36,7 @@ public class MulticastReceiverServiceImpl implements  MulticastReceiverService{
             MulticastSocket clientSocket = new MulticastSocket(Integer.parseInt(multicastPort));
             clientSocket.joinGroup(InetAddress.getByName(multicastIP));
             long start_time = System.currentTimeMillis();
-            long wait_time = 30000;
+            long wait_time = 10000;
             long end_time = start_time + wait_time;
 
             while (System.currentTimeMillis() < end_time){

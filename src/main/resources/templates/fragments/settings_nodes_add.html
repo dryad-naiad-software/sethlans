@@ -85,14 +85,13 @@
 </style>
 
 <div th:fragment="settings_nodes_add">
-    <!--Node Scan-->
     <!--/*@thymesVar id="nodeAddForm" type="com.dryadandnaiad.sethlans.commands.NodeAddForm"*/-->
 
     <div class="col-md-10" onkeypress="checkSubmit(event)">
         <form id="addNodeWizard" name="addNodeWizard" th:action="@{/settings/nodes/add}"
               th:object="${nodeAddForm}"
               method="POST">
-            <h3 style="margin-top: auto"><strong><u>Add Node</u></strong></h3>
+            <h2 style="margin-top: auto">Add Node</h2>
             <div class="form-group">
                 <label for="ipAddress">IP Address or Hostname</label>
                 <input type="text" class="form-control" id="ipAddress" name="ipAddress" th:value="${nodeAddForm.ipAddress}">
