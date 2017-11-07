@@ -26,6 +26,7 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
     private MulticastReceiverService multicastReceiverService;
     private List<SethlansNode> sethlansNodeList;
     private boolean listComplete = false;
+    private boolean scanInProgress = false;
 
 
     @Override
@@ -40,19 +41,29 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
 
     @Async
     public void multicastDiscovery() {
-        Set<String> nodeList = multicastReceiverService.currentSethlansClients();
-        if (nodeList != null) {
-            sethlansNodeList = new ArrayList<>();
-            for (String node : nodeList) {
-                LOG.debug(node);
-                String[] split = node.split(":");
-                String ip = split[0];
-                String port = split[1];
-                sethlansNodeList.add(discoverUnicastNode(ip, port));
+        if(!scanInProgress && !listComplete) {
+            scanInProgress = true;
+            LOG.debug("Starting Discovery");
+            Set<String> nodeList = multicastReceiverService.currentSethlansClients();
+            if (nodeList != null) {
+                sethlansNodeList = new ArrayList<>();
+                for (String node : nodeList) {
+                    LOG.debug(node);
+                    String[] split = node.split(":");
+                    String ip = split[0];
+                    String port = split[1];
+                    sethlansNodeList.add(discoverUnicastNode(ip, port));
+                }
+                listComplete = true;
+                scanInProgress = false;
             }
-            listComplete = true;
         }
     }
+
+    public void resetNodeList(){
+        sethlansNodeList = null;
+    }
+
 
     @Override
     public SethlansNode discoverUnicastNode(String ip, String port) {

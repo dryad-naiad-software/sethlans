@@ -85,16 +85,18 @@
 </style>
 
 <div th:fragment="settings_nodes_scan">
-    <!--/*@thymesVar id="nodeAddForm" type="com.dryadandnaiad.sethlans.commands.NodeAddForm"*/-->
 
     <div class="col-md-10" onkeypress="checkSubmit(event)">
         <h2>Node Discovery</h2>
         <h3>Scanning Local Network for Sethlans Nodes</h3>
         <script>
-            function nextClicked() {
-                document.getElementById("progress").value = "NODE_INFO";
-                document.getElementById("previous").value = "IP_SETTINGS";
-                document.getElementById("addNodeWizard").submit();
+            window.onload = function() {
+                if(!window.location.hash) {
+                    window.location = window.location + '#complete';
+                    setTimeout(function () {
+                        window.location.reload(1);
+                    }, 15000);
+                }
             }
         </script>
     </div>

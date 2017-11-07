@@ -18,6 +18,8 @@ public interface NodeDiscoveryService {
 
     void multicastDiscovery();
 
+    void resetNodeList();
+
     SethlansNode discoverUnicastNode(String ip, String port);
 
 }

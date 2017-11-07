@@ -173,7 +173,6 @@ public class SettingsController extends AbstractSethlansController {
         nodeDiscoveryService.multicastDiscovery();
         if(!nodeDiscoveryService.isListComplete()){
             LOG.debug("Scanning");
-            // return page
         }
         else {
             List<SethlansNode> sethlansNodes = nodeDiscoveryService.discoverMulticastNodes();
@@ -183,6 +182,7 @@ public class SettingsController extends AbstractSethlansController {
             }
             else{
                 LOG.debug(sethlansNodes.toString());
+                nodeDiscoveryService.resetNodeList();
             }
 
         }
