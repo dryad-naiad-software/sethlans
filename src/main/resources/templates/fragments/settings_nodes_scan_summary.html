@@ -107,10 +107,10 @@
                 </tr>
                 </thead>
                 <tbody id="discoveryTable" th:if="${not #lists.isEmpty(sethlansNodes)}">
-                <tr th:each="node : ${sethlansNodes}">
+                <tr th:each="node, iter : ${sethlansNodes}">
                     <!--/*@thymesVar id="node" type="com.dryadandnaiad.sethlans.domains.database.node.SethlansNode"*/-->
                     <td>
-                        <input type="checkbox" name="sethlanNode">
+                        <input type="checkbox" name="sethlanNode" th:value="${iter.index}">
                     </td>
                     <td
                             th:text="${node.getHostname()}">SAMPLE
