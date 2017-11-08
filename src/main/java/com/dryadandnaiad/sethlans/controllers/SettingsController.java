@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.commands.NodeAddForm;
+import com.dryadandnaiad.sethlans.commands.ScanForm;
 import com.dryadandnaiad.sethlans.converters.SethlansNodeToNodeAddForm;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.NodeAddProgress;
@@ -69,6 +70,7 @@ public class SettingsController extends AbstractSethlansController {
     public String getNodePage(Model model) {
         model.addAttribute("settings_option", "nodes");
         model.addAttribute("nodes", sethlansNodeService.listAll());
+        nodeDiscoveryService.resetNodeList();
         return "settings/settings";
     }
 
@@ -184,11 +186,22 @@ public class SettingsController extends AbstractSethlansController {
             nodeDiscoveryService.resetNodeList();
         } else {
             LOG.debug(sethlansNodes.toString());
-            nodeDiscoveryService.resetNodeList();
         }
+        model.addAttribute("scanForm", new ScanForm());
         model.addAttribute("sethlansNodes", sethlansNodes);
-
         return "settings/settings";
+    }
+
+    @RequestMapping(value = "/settings/nodes/scan/summary", method = RequestMethod.POST)
+    public String submitNodefromScan(final @Valid @ModelAttribute("scanForm") ScanForm scanForm) {
+        List<SethlansNode> sethlansNodes = nodeDiscoveryService.discoverMulticastNodes();
+        LOG.debug(sethlansNodes.toString());
+        LOG.debug(scanForm.toString());
+        for (Integer nodeId : scanForm.getSethlansNodeIdNum()) {
+            sethlansNodeService.saveOrUpdate(sethlansNodes.get(nodeId));
+        }
+        nodeDiscoveryService.resetNodeList();
+        return "redirect:/settings/nodes/";
     }
 
     @Autowired

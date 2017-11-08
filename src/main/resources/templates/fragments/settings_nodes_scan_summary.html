@@ -89,7 +89,8 @@
     <h2>Node Discovery</h2>
     <h3 id="scanComplete">Scan Complete</h3>
     <div class="table-responsive">
-        <form id="discoveryNodeForm" name="discoveryNodeForm" method="POST">
+        <form id="discoveryNodeForm" name="discoveryNodeForm" method="POST" th:action="@{/settings/nodes/scan/summary}"
+              th:object="${scanForm}">
             <table class="table table-striped">
                 <thead>
                 <tr>
@@ -110,7 +111,8 @@
                 <tr th:each="node, iter : ${sethlansNodes}">
                     <!--/*@thymesVar id="node" type="com.dryadandnaiad.sethlans.domains.database.node.SethlansNode"*/-->
                     <td>
-                        <input type="checkbox" name="sethlanNode" th:value="${iter.index}">
+                        <input type="checkbox" name="sethlanNodeIds" th:field="*{sethlansNodeIdNum}"
+                               th:value="${iter.index}">
                     </td>
                     <td
                             th:text="${node.getHostname()}">SAMPLE
@@ -147,6 +149,8 @@
                     </td>
                 </tbody>
             </table>
+            <a id="cancel" href="/settings/nodes/" class="btn btn-default pull-left">Cancel</a>
+            <input id="addNodesBtn" type="submit" class="btn btn-default pull-right" value="Add">
         </form>
         <script type="text/javascript">
 
@@ -166,8 +170,7 @@
             }
 
         </script>
-        <a id="cancel" href="/settings/nodes/" class="btn btn-default pull-left">Cancel</a>
-        <a id="addNodesBtn" href="#" class="btn btn-default pull-right">Add</a>
+
     </div>
 </div>
 
