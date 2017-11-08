@@ -224,10 +224,12 @@ public class SettingsController extends AbstractSethlansController {
                         LOG.debug(node.getHostname() + " is already in the database.");
                     } else {
                         sethlansNodeService.saveOrUpdate(sethlansNodes.get(nodeId));
+                        LOG.debug("Added: " + sethlansNodes.get(nodeId).getHostname() + " to database.");
                     }
                 }
             } else {
                 sethlansNodeService.saveOrUpdate(sethlansNodes.get(nodeId));
+                LOG.debug("Added: " + sethlansNodes.get(nodeId).getHostname() + " to database.");
             }
         }
         nodeDiscoveryService.resetNodeList();
