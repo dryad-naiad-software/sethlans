@@ -160,8 +160,25 @@ public class SettingsController extends AbstractSethlansController {
             }
         }
         if (nodeAddForm.getProgress() == NodeAddProgress.NODE_ADD) {
-            sethlansNodeService.saveOrUpdate(sethlansNode);
-            LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
+            List<SethlansNode> sethlansNodesDatabase = (List<SethlansNode>) sethlansNodeService.listAll();
+            if (!sethlansNodesDatabase.isEmpty()) {
+                for (SethlansNode node : sethlansNodesDatabase) {
+                    if (node.getIpAddress().equals(sethlansNode.getIpAddress()) &&
+                            node.getNetworkPort().equals(sethlansNode.getNetworkPort()) &&
+                            node.getComputeType().equals(sethlansNode.getComputeType()) &&
+                            node.getSethlansNodeOS().equals(sethlansNode.getSethlansNodeOS())) {
+                        LOG.debug(node.getHostname() + " is already in the database.");
+                    } else {
+                        sethlansNodeService.saveOrUpdate(sethlansNode);
+                        LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
+                    }
+                }
+            } else {
+                sethlansNodeService.saveOrUpdate(sethlansNode);
+                LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
+            }
+
+
             sethlansNode = null;
             return "redirect:/settings/nodes/";
         }
@@ -195,8 +212,7 @@ public class SettingsController extends AbstractSethlansController {
     @RequestMapping(value = "/settings/nodes/scan/summary", method = RequestMethod.POST)
     public String submitNodefromScan(final @Valid @ModelAttribute("scanForm") ScanForm scanForm) {
         List<SethlansNode> sethlansNodes = nodeDiscoveryService.discoverMulticastNodes();
-        LOG.debug(sethlansNodes.toString());
-        LOG.debug(scanForm.toString());
+        LOG.debug("Selected Nodes: " + sethlansNodes.toString());
         List<SethlansNode> sethlansNodesDatabase = (List<SethlansNode>) sethlansNodeService.listAll();
         for (Integer nodeId : scanForm.getSethlansNodeIdNum()) {
             if (!sethlansNodesDatabase.isEmpty()) {
