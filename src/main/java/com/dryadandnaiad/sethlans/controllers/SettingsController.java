@@ -197,8 +197,22 @@ public class SettingsController extends AbstractSethlansController {
         List<SethlansNode> sethlansNodes = nodeDiscoveryService.discoverMulticastNodes();
         LOG.debug(sethlansNodes.toString());
         LOG.debug(scanForm.toString());
+        List<SethlansNode> sethlansNodesDatabase = (List<SethlansNode>) sethlansNodeService.listAll();
         for (Integer nodeId : scanForm.getSethlansNodeIdNum()) {
-            sethlansNodeService.saveOrUpdate(sethlansNodes.get(nodeId));
+            if (!sethlansNodesDatabase.isEmpty()) {
+                for (SethlansNode node : sethlansNodesDatabase) {
+                    if (node.getIpAddress().equals(sethlansNodes.get(nodeId).getIpAddress()) &&
+                            node.getNetworkPort().equals(sethlansNodes.get(nodeId).getNetworkPort()) &&
+                            node.getComputeType().equals(sethlansNodes.get(nodeId).getComputeType()) &&
+                            node.getSethlansNodeOS().equals(sethlansNodes.get(nodeId).getSethlansNodeOS())) {
+                        LOG.debug(node.getHostname() + " is already in the database.");
+                    } else {
+                        sethlansNodeService.saveOrUpdate(sethlansNodes.get(nodeId));
+                    }
+                }
+            } else {
+                sethlansNodeService.saveOrUpdate(sethlansNodes.get(nodeId));
+            }
         }
         nodeDiscoveryService.resetNodeList();
         return "redirect:/settings/nodes/";
