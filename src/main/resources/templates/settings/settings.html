@@ -256,6 +256,10 @@
             <main th:replace="fragments/settings_nodes_scan_summary :: settings_nodes_scan_summary">
                 <!--Replaced By Fragment-->  </main>
         </div>
+        <div th:if="${settings_option.equals('nodes_scan_empty')}">
+            <main th:replace="fragments/settings_nodes_scan_empty :: settings_nodes_scan_empty">
+                <!--Replaced By Fragment-->  </main>
+        </div>
 
 
         <div th:if="${settings_option.equals('nodes_add')}">

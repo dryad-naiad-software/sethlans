@@ -196,16 +196,20 @@ public class SettingsController extends AbstractSethlansController {
 
     @RequestMapping("/settings/nodes/scan/summary")
     public String getNodeScanSummaryPage(Model model) {
-        model.addAttribute("settings_option", "nodes_scan_summary");
+
         List<SethlansNode> sethlansNodes = nodeDiscoveryService.discoverMulticastNodes();
-        if (sethlansNodes.size() == 0) {
+        if (sethlansNodes == null || sethlansNodes.size() == 0) {
             LOG.debug("No Nodes found");
+            model.addAttribute("settings_option", "nodes_scan_empty");
             nodeDiscoveryService.resetNodeList();
+
         } else {
             LOG.debug(sethlansNodes.toString());
+            model.addAttribute("settings_option", "nodes_scan_summary");
+            model.addAttribute("scanForm", new ScanForm());
+            model.addAttribute("sethlansNodes", sethlansNodes);
         }
-        model.addAttribute("scanForm", new ScanForm());
-        model.addAttribute("sethlansNodes", sethlansNodes);
+
         return "settings/settings";
     }
 

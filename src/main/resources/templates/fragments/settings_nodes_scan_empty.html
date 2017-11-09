@@ -84,21 +84,14 @@
     }
 </style>
 
-<div th:fragment="settings_nodes_scan">
+<div th:fragment="settings_nodes_scan_empty">
 
     <div class="col-md-10" onkeypress="checkSubmit(event)">
         <h2>Node Discovery</h2>
         <br/>
-        <h3 id="scanningPending" align="center">Scanning Local Network for Sethlans Nodes</h3>
+        <h3 id="scanningComplete" align="center">No nodes found</h3>
         <br/>
-        <p align="center"><span class="fa fa-circle-o-notch fa-spin" style="font-size:36px"></span></p>
-        <script>
-            window.onload = function () {
-                    setTimeout(function () {
-                        window.location.replace("/settings/nodes/scan/summary")
-                    }, 15000);
-            }
-        </script>
+        <p align="center"><a id="cancel" href="/settings/nodes/" class="btn btn-default">Return to List</a></p>
     </div>
 </div>
 
