@@ -19,6 +19,8 @@
   "dependencies": {
     "patternfly": "3.23.0",
     "seiyria-bootstrap-slider": "9.7.2",
-    "bootstrap-fileinput": "^4.3.8"
+    "bootstrap-fileinput": "^4.3.8",
+    "datatables.net": "^1.10.16",
+    "datatables.net-bs": "^2.1.1"
   }
 }
