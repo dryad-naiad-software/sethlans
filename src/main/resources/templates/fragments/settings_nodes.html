@@ -90,8 +90,13 @@
             <!--Settings Nodes Fragment-->
             <h2>Nodes</h2>
             <div class="table-responsive">
-                <table class="table table-striped">
+
+                <table id="nodeTable" class="table table-striped">
                     <thead>
+                    <a id="discoveryBtn" href="/settings/nodes/scan" class="btn btn-default pull-left">Scan</a>
+                    <a id="addNodeBtn" href="/settings/nodes/add" class="btn btn-default pull-right">Add Node</a>
+                    <br/>
+                    <br/>
                     <tr>
                         <th>Hostname</th>
                         <th>IP Address</th>
@@ -148,9 +153,17 @@
                     </tr>
                     </tbody>
                 </table>
-                <a id="discoveryBtn" href="/settings/nodes/scan" class="btn btn-default pull-left">Scan</a>
-                <a id="addNodeBtn" href="/settings/nodes/add" class="btn btn-default pull-right">Add Node</a>
             </div>
+            <script>
+                $(document).ready(function () {
+                    $('#nodeTable').dataTable({
+                        "ordering": false,
+                        "searching": false,
+                        "lengthChange": false,
+                        "pageLength": 5
+                    });
+                });
+            </script>
         </main>
     </div>
 </div>

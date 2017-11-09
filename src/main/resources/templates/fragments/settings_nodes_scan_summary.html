@@ -87,7 +87,6 @@
 <div th:fragment="settings_nodes_scan_summary">
 
     <h2>Node Discovery</h2>
-    <h3 id="scanComplete">Scan Complete</h3>
     <div class="table-responsive">
         <form id="discoveryNodeForm" name="discoveryNodeForm" method="POST" th:action="@{/settings/nodes/scan/summary}"
               th:object="${scanForm}">

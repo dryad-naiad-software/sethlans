@@ -141,9 +141,9 @@
                 <th>Resolution</th>
                 <th>Status</th>
                 <th>Actions</th>
-
             </tr>
             </thead>
+
             <tbody>
             <!--/*@thymesVar id="projects" type="java.util.List"*/-->
             <!--/*@thymesVar id="project" type="com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject"*/-->
@@ -195,7 +195,12 @@
     </div>
     <script>
         $(document).ready(function () {
-            $('#projectTable').dataTable();
+            $('#projectTable').dataTable({
+                "ordering": false,
+                "searching": false,
+                "lengthChange": false,
+                "pageLength": 5
+            });
         });
     </script>
 </div>
