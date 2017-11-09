@@ -62,6 +62,39 @@
 </head>
 <body>
 
+
+<!-- Javascript Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"
+        th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"
+        th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/js/patternfly.min.js"
+        th:src="@{/bower/patternfly/dist/js/patternfly.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js"
+        th:src="@{/bower/c3/c3.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.7.3/d3.min.js"
+        th:src="@{/bower/d3/d3.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.matchHeight/0.7.2/jquery.matchHeight-min.js"
+        th:src="@{/bower/matchHeight/dist/jquery.matchHeight-min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/bootstrap-slider.min.js"
+        th:src="@{/bower/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.3.8/js/fileinput.min.js"
+        th:src="@{/bower/bootstrap-fileinput/js/fileinput.min.js}"></script>
+<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"
+        th:src="@{/bower/datatables.net/js/jquery.dataTables.min.js}"></script>
+<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"
+        th:src="@{/bower/datatables.net-bs/js/dataTables.bootstrap.min.js}"></script>
+
+
+<!-- Local Javascript-->
+<script>
+    // Tooltip Javascript
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+<!-- Page Javascript -->
+
 <!-- Nav Bar Fragment -->
 <nav class="navbar navbar-pf-vertical" th:replace="fragments/nav :: navbar">
     <div class="navbar-header">
@@ -284,35 +317,7 @@
 </footer>
 
 <!-- Javascript Libraries -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"
-        th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"
-        th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/js/patternfly.min.js"
-        th:src="@{/bower/patternfly/dist/js/patternfly.min.js}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js"
-        th:src="@{/bower/c3/c3.min.js}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.7.3/d3.min.js"
-        th:src="@{/bower/d3/d3.min.js}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.matchHeight/0.7.2/jquery.matchHeight-min.js"
-        th:src="@{/bower/matchHeight/dist/jquery.matchHeight-min.js}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/bootstrap-slider.min.js"
-        th:src="@{/bower/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.3.8/js/fileinput.min.js"
-        th:src="@{/bower/bootstrap-fileinput/js/fileinput.min.js}"></script>
-<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"
-        th:src="@{/bower/datatables.net/js/jquery.dataTables.min.js}"></script>
-<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"
-        th:src="@{/bower/datatables.net-bs/js/dataTables.bootstrap.min.js}"></script>
 
-
-<!-- Local Javascript-->
-<script>
-    // Tooltip Javascript
-    $(document).ready(function () {
-        $('[data-toggle="tooltip"]').tooltip();
-    });
-</script>
 <!-- Page Javascript -->
 </body>
 </html>
