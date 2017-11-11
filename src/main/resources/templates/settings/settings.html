@@ -183,18 +183,21 @@
             <tbody>
             <tr>
                 <td>
-                    <a style="color:black" class=" fa pficon-settings" href="/settings">&nbsp;<span class="sidebarfont">Settings Home</span></a>
+                    <a id="settings_home" style="color:black" class=" fa pficon-settings" href="/settings">&nbsp;
+                        <span class="sidebarfont">Settings Home</span></a>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <a style="color:black" class=" fa pficon-users" href="/settings/users">&nbsp;<span class="sidebarfont">Users</span></a>
+                    <a id="settings_users" style="color:black" class=" fa pficon-users" href="/settings/users">&nbsp;
+                        <span class="sidebarfont">Users</span></a>
                 </td>
             </tr>
             <!--/*@thymesVar id="sethlansmode" type="java.lang.String"*/-->
             <tr th:if="${sethlansmode == 'SERVER' || sethlansmode == 'DUAL'}">
                 <td>
-                    <a style="color:black" class=" fa pficon-container-node" href="/settings/nodes">&nbsp;<span class="sidebarfont">Nodes</span></a>
+                    <a id="settings_nodes" style="color:black" class=" fa pficon-container-node" href="/settings/nodes">&nbsp;
+                        <span class="sidebarfont">Nodes</span></a>
                 </td>
             </tr>
             <tr>
@@ -211,7 +214,8 @@
             <tbody>
             <tr>
                 <td>
-                <a style="color:black" class=" fa pficon-bundle" href="#">&nbsp;&nbsp;<span class="sidebarfont">Blender Versions</span></a>
+                    <a style="color:black" class=" fa pficon-bundle" href="#">&nbsp;
+                        <span class="sidebarfont">Blender Versions</span></a>
                 </td>
             </tr>
             </tbody>
@@ -225,7 +229,8 @@
             <tbody>
             <tr>
                 <td>
-                    <a style="color:black" class=" fa fa-power-off" href="/shutdown">&nbsp;&nbsp;<span class="sidebarfont">Shutdown</span></a>
+                    <a id="settings_shutdown" style="color:black" class=" fa fa-power-off" href="/shutdown">&nbsp;&nbsp;
+                        <span class="sidebarfont">Shutdown</span></a>
                 </td>
             </tr>
             </tbody>
