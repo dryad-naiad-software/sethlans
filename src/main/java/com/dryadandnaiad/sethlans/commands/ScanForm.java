@@ -10,21 +10,21 @@ import java.util.List;
  */
 public class ScanForm {
 
-    private List<Integer> sethlansNodeIdNum;
+    private List<Integer> sethlansNodeId;
 
 
-    public List<Integer> getSethlansNodeIdNum() {
-        return sethlansNodeIdNum;
+    public List<Integer> getSethlansNodeId() {
+        return sethlansNodeId;
     }
 
-    public void setSethlansNodeIdNum(List<Integer> sethlansNodeIdNum) {
-        this.sethlansNodeIdNum = sethlansNodeIdNum;
+    public void setSethlansNodeId(List<Integer> sethlansNodeId) {
+        this.sethlansNodeId = sethlansNodeId;
     }
 
     @Override
     public String toString() {
         return "ScanForm{" +
-                "sethlansNodeIdNum=" + sethlansNodeIdNum +
+                "sethlansNodeId=" + sethlansNodeId +
                 '}';
     }
 }

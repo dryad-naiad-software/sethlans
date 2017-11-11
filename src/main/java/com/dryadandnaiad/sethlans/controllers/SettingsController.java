@@ -218,7 +218,7 @@ public class SettingsController extends AbstractSethlansController {
         List<SethlansNode> sethlansNodes = nodeDiscoveryService.discoverMulticastNodes();
         LOG.debug("Selected Nodes: " + sethlansNodes.toString());
         List<SethlansNode> sethlansNodesDatabase = (List<SethlansNode>) sethlansNodeService.listAll();
-        for (Integer nodeId : scanForm.getSethlansNodeIdNum()) {
+        for (Integer nodeId : scanForm.getSethlansNodeId()) {
             if (!sethlansNodesDatabase.isEmpty()) {
                 for (SethlansNode node : sethlansNodesDatabase) {
                     if (node.getIpAddress().equals(sethlansNodes.get(nodeId).getIpAddress()) &&

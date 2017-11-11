@@ -110,40 +110,40 @@
                 <tr th:each="node, iter : ${sethlansNodes}">
                     <!--/*@thymesVar id="node" type="com.dryadandnaiad.sethlans.domains.database.node.SethlansNode"*/-->
                     <td>
-                        <input type="checkbox" name="sethlanNodeIds" th:field="*{sethlansNodeIdNum}"
+                        <input type="checkbox" th:field="*{sethlansNodeId}"
                                th:value="${iter.index}">
                     </td>
-                    <td
-                            th:text="${node.getHostname()}">SAMPLE
+                    <td th:id="'sethlansNodeHostname' + ${iter.count}"
+                        th:text="${node.getHostname()}">SAMPLE
                     </td>
-                    <td
-                            th:text="${node.getIpAddress()}">1.1.1.1
+                    <td th:id="'sethlansNodeIPAddress' + ${iter.count}"
+                        th:text="${node.getIpAddress()}">1.1.1.1
                     </td>
-                    <td
-                            th:text="${node.getNetworkPort()}">1234
+                    <td th:id="'sethlansNodeNetworkPort' + ${iter.count}"
+                        th:text="${node.getNetworkPort()}">1234
                     </td>
-                    <td
-                            th:text="${node.getSethlansNodeOS()}">Windows64
+                    <td th:id="'sethlansNodeOS' + ${iter.count}"
+                        th:text="${node.getSethlansNodeOS()}">Windows64
                     </td>
-                    <td
-                            th:text="${node.getComputeType().getName()}">CPU & GPU
+                    <td th:id="'sethlansComputeType' + ${iter.count}"
+                        th:text="${node.getComputeType().getName()}">CPU & GPU
                     </td>
-                    <td
-                            th:unless="${node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU)}"
-                            th:text="${node.getCores()}">8
+                    <td th:id="'sethlansCores' + ${iter.count}"
+                        th:unless="${node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU)}"
+                        th:text="${node.getCores()}">8
                     </td>
-                    <td
-                            th:if="${node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU)}">
+                    <td th:id="'sethlansCores' + ${iter.count}"
+                        th:if="${node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU)}">
                         N/A
                     </td>
 
-                    <td
-                            th:if="${!node.getSelectedGPUs().isEmpty()}">
+                    <td th:id="'sethlansSelectedGPUs' + ${iter.count}"
+                        th:if="${!node.getSelectedGPUs().isEmpty()}">
                                                 <span th:each="gpu, stat : ${node.selectedGPUs}"
                                                       th:utext="${!stat.last} ? ${gpu.getModel()} + ',' +  '<br />' : ${gpu.getModel()}">Nvidia</span>
                     </td>
-                    <td
-                            th:if="${node.getSelectedGPUs().isEmpty()}">
+                    <td th:id="'sethlansSelectedGPUs' + ${iter.count}"
+                        th:if="${node.getSelectedGPUs().isEmpty()}">
                         <span>N/A</span>
                     </td>
                 </tbody>
