@@ -1,6 +1,7 @@
 package com.dryadandnaiad.sethlans.components;
 
 import com.dryadandnaiad.sethlans.services.network.MulticastSenderService;
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.UnknownHostException;
 
 /**
@@ -38,8 +41,16 @@ public class SethlansMulticastSendComponent {
     public void startNodeMulticast(){
         String ip = null;
         try {
-            ip = InetAddress.getLocalHost().getHostAddress();
+            if (SystemUtils.IS_OS_LINUX) {
+                Socket s = new Socket("localhost", Integer.parseInt(sethlansPort));
+                ip = s.getLocalAddress().getHostAddress();
+                s.close();
+            } else {
+                ip = InetAddress.getLocalHost().getHostAddress();
+            }
         } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
