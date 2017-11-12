@@ -42,7 +42,8 @@ public class SethlansMulticastSendComponent {
         String ip = null;
         try {
             if (SystemUtils.IS_OS_LINUX) {
-                Socket s = new Socket("localhost", Integer.parseInt(sethlansPort));
+                // Make a connection to 8.8.8.8 DNS in order to get IP address
+                Socket s = new Socket("8.8.8.8", 53);
                 ip = s.getLocalAddress().getHostAddress();
                 s.close();
             } else {
