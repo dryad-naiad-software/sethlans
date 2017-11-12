@@ -6,7 +6,9 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import org.apache.commons.lang3.SystemUtils;
 
+import java.io.IOException;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +77,19 @@ public class NodeInfo {
 
     public void populateNodeInfo() throws UnknownHostException {
         this.hostname = InetAddress.getLocalHost().getHostName();
-        this.ipAddress = InetAddress.getLocalHost().getHostAddress();
+        if (SystemUtils.IS_OS_LINUX) {
+            // Make a connection to 8.8.8.8 DNS in order to get IP address
+            try {
+                Socket s = new Socket("8.8.8.8", 53);
+                this.ipAddress = s.getLocalAddress().getHostAddress();
+
+                s.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            this.ipAddress = InetAddress.getLocalHost().getHostAddress();
+        }
 
     }
 
