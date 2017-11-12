@@ -5,6 +5,8 @@ import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import org.apache.commons.lang3.SystemUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -42,6 +44,8 @@ public class NodeInfo {
         return networkPort;
     }
 
+    private static final Logger LOG = LoggerFactory.getLogger(NodeInfo.class);
+
 
     public BlenderBinaryOS getSethlansNodeOS() {
         if (SystemUtils.IS_OS_WINDOWS) {
@@ -76,7 +80,14 @@ public class NodeInfo {
     }
 
     public void populateNodeInfo() throws UnknownHostException {
-        this.hostname = InetAddress.getLocalHost().getHostName();
+        String hostname = InetAddress.getLocalHost().getHostName();
+        int iend = hostname.indexOf(".");
+        if (iend != -1) {
+            LOG.debug(hostname + " contains a domain name. Removing it.");
+            this.hostname = hostname.substring(0, iend);
+        } else {
+            this.hostname = hostname;
+        }
         if (SystemUtils.IS_OS_LINUX) {
             // Make a connection to 8.8.8.8 DNS in order to get IP address
             try {
