@@ -19,4 +19,11 @@ public class OpenBrowser {
         SethlansUtils.openWebpage(url);
 
     }
+
+    public static void settings() throws MalformedURLException {
+        String ip = SethlansUtils.getIP();
+        String port = SethlansUtils.getPort();
+        URL url = new URL("https://" + ip + ":" + port + "/" + "settings");
+        SethlansUtils.openWebpage(url);
+    }
 }

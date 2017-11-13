@@ -225,6 +225,23 @@ public class SethlansUtils {
         return ip;
     }
 
+    public static boolean getFirstTime() {
+        boolean firsttime = true;
+        final Properties properties = new Properties();
+        try {
+            if (configFile.exists()) {
+                FileInputStream fileIn = new FileInputStream(configFile);
+                properties.load(fileIn);
+            } else {
+                properties.load(new InputStreamReader(new Resources("sethlans.properties").getResource(), "UTF-8"));
+            }
+            firsttime = Boolean.parseBoolean(properties.getProperty("sethlans.firsttime"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return firsttime;
+    }
+
     public static String getPort() {
         String port = null;
         final Properties properties = new Properties();
