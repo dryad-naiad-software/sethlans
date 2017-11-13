@@ -1,5 +1,6 @@
 package com.dryadandnaiad.sethlans.domains.node;
 
+import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
@@ -27,7 +28,8 @@ public class NodeInfo {
     private String networkPort;
     private BlenderBinaryOS sethlansNodeOS;
     private ComputeType computeType;
-    private String cores;
+    private CPU cpuinfo;
+    private String selectedCores;
     private List<GPUDevice> selectedGPUs = new ArrayList<>();
     private List<String> selectedCUDA;
 
@@ -112,14 +114,6 @@ public class NodeInfo {
         this.computeType = computeType;
     }
 
-    public void setCores(String cores) {
-        this.cores = cores;
-    }
-
-    public String getCores() {
-        return cores;
-    }
-
     public List<String> getSelectedCUDA() {
         return selectedCUDA;
     }
@@ -141,5 +135,23 @@ public class NodeInfo {
                 }
             }
         }
+    }
+
+    public CPU getCpuinfo() {
+        return cpuinfo;
+    }
+
+    public void setCpuinfo() {
+        CPU cpu = new CPU();
+
+        this.cpuinfo = cpu;
+    }
+
+    public String getSelectedCores() {
+        return selectedCores;
+    }
+
+    public void setSelectedCores(String selectedCores) {
+        this.selectedCores = selectedCores;
     }
 }

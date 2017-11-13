@@ -1,11 +1,10 @@
 /*
- * Copyright (C) 2010-2014 Laurent CLOUET
- * Author Laurent CLOUET <laurent.clouet@nopnop.net>
+ * Copyright (c) 2017 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; version 2
- * of the License.
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,10 +13,18 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  */
 
+
 package com.dryadandnaiad.sethlans.domains.hardware;
+
+import oshi.SystemInfo;
+import oshi.hardware.CentralProcessor;
+import oshi.hardware.HardwareAbstractionLayer;
+
+import javax.persistence.Embeddable;
 
 /**
  * Created Mario Estrella on 3/19/17.
@@ -25,54 +32,25 @@ package com.dryadandnaiad.sethlans.domains.hardware;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Embeddable
 public class CPU {
     private String name;
     private String model;
     private String family;
     private String arch; // 32 or 64 bits
+    private int cores;
 
     public CPU() {
-        this.name = null;
-        this.model = null;
-        this.family = null;
+        SystemInfo si = new SystemInfo();
+        HardwareAbstractionLayer hal = si.getHardware();
+        CentralProcessor processor = hal.getProcessor();
+        this.name = processor.getName();
+        this.model = processor.getModel();
+        this.family = processor.getFamily();
+        this.cores = processor.getLogicalProcessorCount();
         this.generateArch();
     }
 
-    public String name() {
-        return this.name;
-    }
-
-    public String model() {
-        return this.model;
-    }
-
-    public String family() {
-        return this.family;
-    }
-
-    public String arch() {
-        return this.arch;
-    }
-
-    public int cores() {
-        return Runtime.getRuntime().availableProcessors();
-    }
-
-    public void setName(String name_) {
-        this.name = name_;
-    }
-
-    public void setModel(String model_) {
-        this.model = model_;
-    }
-
-    public void setFamily(String family_) {
-        this.family = family_;
-    }
-
-    public void setArch(String arch_) {
-        this.arch = arch_;
-    }
 
     public void generateArch() {
         String arch = System.getProperty("os.arch").toLowerCase();
@@ -92,8 +70,35 @@ public class CPU {
         }
     }
 
-    public boolean haveData() {
-        return this.name != null && this.model != null && this.family != null && this.arch != null;
+
+    public String getName() {
+        return name;
     }
 
+    public String getModel() {
+        return model;
+    }
+
+    public String getFamily() {
+        return family;
+    }
+
+    public String getArch() {
+        return arch;
+    }
+
+    public int getCores() {
+        return cores;
+    }
+
+    @Override
+    public String toString() {
+        return "CPU{" +
+                "name='" + name + '\'' +
+                ", model='" + model + '\'' +
+                ", family='" + family + '\'' +
+                ", arch='" + arch + '\'' +
+                ", cores=" + cores +
+                '}';
+    }
 }

@@ -48,7 +48,8 @@ public class NodeInfoRestController {
         nodeInfo.setComputeType(computeType);
 
         if(computeType == ComputeType.CPU_GPU || computeType == ComputeType.CPU) {
-            nodeInfo.setCores(cores);
+            nodeInfo.setCpuinfo();
+            nodeInfo.setSelectedCores(cores);
         }
 
         if(computeType == ComputeType.GPU || computeType == ComputeType.CPU_GPU) {

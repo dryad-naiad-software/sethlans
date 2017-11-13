@@ -27,11 +27,11 @@ package com.dryadandnaiad.sethlans.osnative.hardware.gpu;
  */
 
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
-import com.dryadandnaiad.sethlans.osnative.software.AbstractOSClass;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.LongByReference;
 import jcuda.driver.CUresult;
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,10 +43,8 @@ public class GPU {
     public static List<GPUDevice> devices = null;
 
     public static boolean generate() {
-        devices = new LinkedList<GPUDevice>();
-
-        AbstractOSClass os = AbstractOSClass.getOS();
-        String path = os.getCUDALib();
+        devices = new LinkedList<>();
+        String path = getCUDALib();
         if (path == null) {
             LOG.debug("GPU::generate no CUDA lib path found");
             return false;
@@ -115,6 +113,19 @@ public class GPU {
             devices.add(new GPUDevice(new String(name).trim(), ram.getValue(), "CUDA_" + Integer.toString(num)));
         }
         return true;
+    }
+
+    private static String getCUDALib() {
+        if (SystemUtils.IS_OS_WINDOWS) {
+            return "nvcuda";
+        }
+        if (SystemUtils.IS_OS_MAC) {
+            return "/usr/local/cuda/lib/libcuda.dylib";
+        }
+        if (SystemUtils.IS_OS_LINUX) {
+            return "cuda";
+        }
+        return null;
     }
 
     public static List<String> listModels() {

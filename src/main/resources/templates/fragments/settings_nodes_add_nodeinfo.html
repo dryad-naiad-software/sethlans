@@ -117,7 +117,7 @@
                 </tr>
                 <tr th:if="${sethlansNode.getComputeType() == T(com.dryadandnaiad.sethlans.enums.ComputeType).CPU || sethlansNode.getComputeType() == T(com.dryadandnaiad.sethlans.enums.ComputeType).CPU_GPU }">
                     <td>Cores</td>
-                    <td id="cores" th:text="${sethlansNode.getCores()}">1</td>
+                    <td id="cores" th:text="${sethlansNode.getSelectedCores()}">1</td>
                 </tr>
                 <tr th:if="${sethlansNode.getComputeType() == T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU|| sethlansNode.getComputeType() == T(com.dryadandnaiad.sethlans.enums.ComputeType).CPU_GPU }">
                     <td>Selected GPU(s)</td>

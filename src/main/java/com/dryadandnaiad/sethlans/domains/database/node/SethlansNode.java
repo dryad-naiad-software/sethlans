@@ -1,6 +1,7 @@
 package com.dryadandnaiad.sethlans.domains.database.node;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
@@ -23,7 +24,8 @@ public class SethlansNode extends AbstractEntityClass {
     private String networkPort;
     private BlenderBinaryOS sethlansNodeOS;
     private ComputeType computeType;
-    private String cores;
+    private CPU cpuinfo;
+    private String selectedCores;
     @ElementCollection
     private List<GPUDevice> selectedGPUs = new ArrayList<>();
     @ElementCollection
@@ -70,14 +72,6 @@ public class SethlansNode extends AbstractEntityClass {
         this.computeType = computeType;
     }
 
-    public String getCores() {
-        return cores;
-    }
-
-    public void setCores(String cores) {
-        this.cores = cores;
-    }
-
     public List<GPUDevice> getSelectedGPUs() {
         return selectedGPUs;
     }
@@ -102,6 +96,22 @@ public class SethlansNode extends AbstractEntityClass {
         this.active = active;
     }
 
+    public CPU getCpuinfo() {
+        return cpuinfo;
+    }
+
+    public void setCpuinfo(CPU cpuinfo) {
+        this.cpuinfo = cpuinfo;
+    }
+
+    public String getSelectedCores() {
+        return selectedCores;
+    }
+
+    public void setSelectedCores(String selectedCores) {
+        this.selectedCores = selectedCores;
+    }
+
     @Override
     public String toString() {
         return "SethlansNode{" +
@@ -110,7 +120,8 @@ public class SethlansNode extends AbstractEntityClass {
                 ", networkPort='" + networkPort + '\'' +
                 ", sethlansNodeOS=" + sethlansNodeOS +
                 ", computeType=" + computeType +
-                ", cores='" + cores + '\'' +
+                ", cpuinfo=" + cpuinfo +
+                ", selectedCores='" + selectedCores + '\'' +
                 ", selectedGPUs=" + selectedGPUs +
                 ", selectedCUDA=" + selectedCUDA +
                 ", active=" + active +

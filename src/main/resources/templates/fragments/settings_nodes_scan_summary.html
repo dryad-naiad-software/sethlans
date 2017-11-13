@@ -130,7 +130,7 @@
                     </td>
                     <td th:id="'sethlansCores' + ${iter.count}"
                         th:unless="${node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU)}"
-                        th:text="${node.getCores()}">8
+                        th:text="${node.getSelectedCores()}">8
                     </td>
                     <td th:id="'sethlansCores' + ${iter.count}"
                         th:if="${node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU)}">

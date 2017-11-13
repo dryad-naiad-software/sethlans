@@ -148,7 +148,7 @@ public class SetupForm {
 
     private int populateCores() {
         CPU cpu = new CPU();
-        return cpu.cores();
+        return cpu.getCores();
 
     }
 
