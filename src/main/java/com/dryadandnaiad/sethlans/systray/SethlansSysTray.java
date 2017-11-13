@@ -17,12 +17,6 @@ public class SethlansSysTray extends TrayIcon {
     private static final String IMAGE = "images/sethlans_systray.png";
     private static final String TOOLTIP = "Sethlans";
     private static final Logger LOG = LoggerFactory.getLogger(SethlansSysTray.class);
-
-    private MenuItem openBrowser;
-    private MenuItem exitItem;
-    private MenuItem aboutItem;
-    private MenuItem settingsItem;
-
     private PopupMenu popup;
     private SystemTray tray;
 
@@ -43,8 +37,10 @@ public class SethlansSysTray extends TrayIcon {
     }
 
     private void menuItems() {
-        exitItem = new MenuItem("Exit");
-        openBrowser = new MenuItem("Open Sethlans in browser");
+        MenuItem exitItem = new MenuItem("Exit");
+        MenuItem openBrowser = new MenuItem("Open Sethlans in browser");
+        MenuItem settingsItem = null;
+        MenuItem aboutItem = null;
 
         openBrowser.addActionListener(e -> {
             try {
