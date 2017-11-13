@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans;
 
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.systray.SethlansSysTray;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -30,6 +31,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.logging.LogLevel;
 
+import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,6 +105,12 @@ public class Sethlans {
 
 
     private void startSpring(String[] springArgs) {
+        if (SystemTray.isSupported()) {
+            SethlansSysTray sethlansSysTray = new SethlansSysTray();
+            sethlansSysTray.setup();
+            sethlansSysTray.setImageAutoSize(true);
+
+        }
         while (true) {
             SpringApplicationBuilder builder = new SpringApplicationBuilder(Sethlans.class);
             builder.headless(true);

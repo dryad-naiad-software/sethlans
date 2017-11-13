@@ -1,7 +1,7 @@
 package com.dryadandnaiad.sethlans.components;
 
 import com.dryadandnaiad.sethlans.services.network.MulticastSenderService;
-import org.apache.commons.lang3.SystemUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +10,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
 
 /**
  * Created Mario Estrella on 10/27/17.
@@ -39,22 +35,7 @@ public class SethlansMulticastSendComponent {
 
     @PostConstruct
     public void startNodeMulticast(){
-        String ip = null;
-        try {
-            if (SystemUtils.IS_OS_LINUX) {
-                // Make a connection to 8.8.8.8 DNS in order to get IP address
-                Socket s = new Socket("8.8.8.8", 53);
-                ip = s.getLocalAddress().getHostAddress();
-                s.close();
-            } else {
-                ip = InetAddress.getLocalHost().getHostAddress();
-            }
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        String ip = SethlansUtils.getIP();
         LOG.debug("Sethlans Host IP: " + ip);
         multicastSenderService.sendSethlansIPAndPort(ip, sethlansPort);
     }

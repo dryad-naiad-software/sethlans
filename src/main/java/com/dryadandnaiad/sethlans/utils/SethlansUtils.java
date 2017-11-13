@@ -27,6 +27,7 @@ import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
+import org.apache.commons.lang3.SystemUtils;
 import org.rauschig.jarchivelib.ArchiveFormat;
 import org.rauschig.jarchivelib.Archiver;
 import org.rauschig.jarchivelib.ArchiverFactory;
@@ -38,7 +39,10 @@ import org.springframework.core.io.ClassPathResource;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Properties;
@@ -190,6 +194,54 @@ public class SethlansUtils {
         return false;
     }
 
+    public static void openWebpage(URL url) {
+        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+            try {
+                desktop.browse(url.toURI());
+            } catch (Exception e) {
+                LOG.error("Unable to Open Web page" + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static String getIP() {
+        String ip = null;
+        try {
+            if (SystemUtils.IS_OS_LINUX) {
+                // Make a connection to 8.8.8.8 DNS in order to get IP address
+                Socket s = new Socket("8.8.8.8", 53);
+                ip = s.getLocalAddress().getHostAddress();
+                s.close();
+            } else {
+                ip = InetAddress.getLocalHost().getHostAddress();
+            }
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ip;
+    }
+
+    public static String getPort() {
+        String port = null;
+        final Properties properties = new Properties();
+        try {
+            if (configFile.exists()) {
+                FileInputStream fileIn = new FileInputStream(configFile);
+                properties.load(fileIn);
+            } else {
+                properties.load(new InputStreamReader(new Resources("sethlans.properties").getResource(), "UTF-8"));
+            }
+            port = properties.getProperty("server.port");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return port;
+    }
+
     public static String getVersion() {
         String version = null;
 
@@ -201,7 +253,6 @@ public class SethlansUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
         if (version == null) {
             // we could not compute the version so use a blank
