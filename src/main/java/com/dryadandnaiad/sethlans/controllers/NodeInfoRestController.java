@@ -54,6 +54,7 @@ public class NodeInfoRestController {
 
         if(computeType == ComputeType.GPU || computeType == ComputeType.CPU_GPU) {
             List<String> cudaList = Arrays.asList(cuda.split(","));
+            nodeInfo.setCpuinfo();
             nodeInfo.setSelectedCUDA(cudaList);
             nodeInfo.setSelectedGPUs();
 
