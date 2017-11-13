@@ -22,7 +22,9 @@ package com.dryadandnaiad.sethlans.domains.hardware;
 
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
+import oshi.hardware.GlobalMemory;
 import oshi.hardware.HardwareAbstractionLayer;
+import oshi.util.FormatUtil;
 
 import javax.persistence.Embeddable;
 
@@ -39,15 +41,18 @@ public class CPU {
     private String family;
     private String arch; // 32 or 64 bits
     private int cores;
+    private String totalMemory;
 
     public CPU() {
         SystemInfo si = new SystemInfo();
         HardwareAbstractionLayer hal = si.getHardware();
         CentralProcessor processor = hal.getProcessor();
+        GlobalMemory globalMemory = hal.getMemory();
         this.name = processor.getName();
         this.model = processor.getModel();
         this.family = processor.getFamily();
         this.cores = processor.getLogicalProcessorCount();
+        this.totalMemory = FormatUtil.formatBytes(globalMemory.getTotal());
         this.generateArch();
     }
 
@@ -91,6 +96,10 @@ public class CPU {
         return cores;
     }
 
+    public String getTotalMemory() {
+        return totalMemory;
+    }
+
     @Override
     public String toString() {
         return "CPU{" +
@@ -99,6 +108,7 @@ public class CPU {
                 ", family='" + family + '\'' +
                 ", arch='" + arch + '\'' +
                 ", cores=" + cores +
+                ", totalMemory='" + totalMemory + '\'' +
                 '}';
     }
 }

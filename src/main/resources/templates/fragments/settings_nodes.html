@@ -103,7 +103,8 @@
                         <th>Port</th>
                         <th>OS</th>
                         <th>Compute Methods</th>
-                        <th>CPU Cores</th>
+                        <th>CPU Name</th>
+                        <th>Selected Cores</th>
                         <th>Selected GPU(s)</th>
                         <th>Actions</th>
                     </tr>
@@ -121,6 +122,15 @@
                             th:text="${node.getSethlansNodeOS()}">Windows64</td>
                         <td th:id="'nodeComputeType-' + ${node.getId()}"
                             th:text="${node.getComputeType().getName()}">CPU & GPU</td>
+                        <td th:id="'nodeCPUName-' + ${node.getId()}"
+                            th:unless="${node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU)}"
+                            th:text="${node.getCpuinfo().getName()}">Intel Core i7
+                        </td>
+                        <td th:id="'nodeCPUName-' + ${node.getId()}"
+                            th:if="${node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU)}">
+                            N/A
+                        </td>
+
                         <td th:id="'nodeCores-' + ${node.getId()}"
                             th:unless="${node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU)}"
                             th:text="${node.getSelectedCores()}">8

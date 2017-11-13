@@ -116,6 +116,10 @@
                     <td id="computeType" th:text="${sethlansNode.getComputeType().getName()}">CPU</td>
                 </tr>
                 <tr th:if="${sethlansNode.getComputeType() == T(com.dryadandnaiad.sethlans.enums.ComputeType).CPU || sethlansNode.getComputeType() == T(com.dryadandnaiad.sethlans.enums.ComputeType).CPU_GPU }">
+                    <td>CPU Name</td>
+                    <td id="cpuName" th:text="${sethlansNode.getCpuinfo().getName()}">Intel Core i7</td>
+                </tr>
+                <tr th:if="${sethlansNode.getComputeType() == T(com.dryadandnaiad.sethlans.enums.ComputeType).CPU || sethlansNode.getComputeType() == T(com.dryadandnaiad.sethlans.enums.ComputeType).CPU_GPU }">
                     <td>Cores</td>
                     <td id="cores" th:text="${sethlansNode.getSelectedCores()}">1</td>
                 </tr>
