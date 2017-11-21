@@ -55,4 +55,8 @@ stage('publish') {
         sh 'mvn clean package -DskipTests'
         archiveArtifacts artifacts: '**/target/binaries/*.jar, **/target/binaries/*.exe, **/target/binaries/*.dmg', fingerprint: true
     }
+    emailext(body: '${DEFAULT_CONTENT}', mimeType: 'text/html',
+            replyTo: '$DEFAULT_REPLYTO', subject: '${DEFAULT_SUBJECT}',
+            to: emailextrecipients([[$class: 'CulpritsRecipientProvider'],
+                                    [$class: 'RequesterRecipientProvider']]))
 }
