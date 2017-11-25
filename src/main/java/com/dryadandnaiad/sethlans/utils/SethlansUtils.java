@@ -177,20 +177,30 @@ public class SethlansUtils {
         return false;
     }
 
+
     public static boolean pythonExtract(String toExtract, File extractLocation) {
         File archive = new File(extractLocation + File.separator + toExtract);
         extractLocation.mkdirs();
         try {
-            ZipFile archiver = new ZipFile(archive);
-            LOG.debug("Extracting " + archive + " to " + extractLocation);
-            archiver.extractAll(extractLocation.toString());
-            archive.delete();
-            return true;
-        } catch (ZipException e) {
-            LOG.error("Error extracting using zip4j " + e.getMessage());
+            if (archive.toString().contains("txz")) {
+                Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.XZ);
+                archiver.extract(archive, extractLocation);
+                archive.delete();
+                return true;
+            } else {
+                ZipFile archiver = new ZipFile(archive);
+                LOG.debug("Extracting " + archive + " to " + extractLocation);
+                archiver.extractAll(extractLocation.toString());
+                archive.delete();
+                return true;
+            }
+
+        } catch (ZipException | IOException e) {
+            LOG.error("Error extracting python " + e.getMessage());
             LOG.error(Throwables.getStackTraceAsString(e));
             System.exit(1);
         }
+
         return false;
     }
 
