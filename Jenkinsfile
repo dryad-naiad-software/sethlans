@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC
+ * Copyright (c) 2017 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,6 +23,12 @@ stage('compile') {
         git url: 'https://gitlab.com/marioestrella/sethlans.git'
         sh 'mvn clean compile'
     }
+    if(currentBuild.currentResult == 'UNSTABLE' || currentBuild.currentResult == 'FAILURE') {
+        emailext(body: '${DEFAULT_CONTENT}', mimeType: 'text/html',
+                replyTo: '$DEFAULT_REPLYTO', subject: '${DEFAULT_SUBJECT}',
+                to: emailextrecipients([[$class: 'CulpritsRecipientProvider'],
+                                        [$class: 'RequesterRecipientProvider']]))
+    }
 }
 stage('unitests') {
     parallel linux: {
@@ -32,6 +38,12 @@ stage('unitests') {
             sh 'mvn clean test'
             junit '**/target/surefire-reports/*.xml'
         }
+        if(currentBuild.currentResult == 'UNSTABLE' || currentBuild.currentResult == 'FAILURE') {
+            emailext(body: '${DEFAULT_CONTENT}', mimeType: 'text/html',
+                    replyTo: '$DEFAULT_REPLYTO', subject: '${DEFAULT_SUBJECT}',
+                    to: emailextrecipients([[$class: 'CulpritsRecipientProvider'],
+                                            [$class: 'RequesterRecipientProvider']]))
+        }
     }, windows: {
         node('windows') {
             deleteDir()
@@ -39,12 +51,24 @@ stage('unitests') {
             sh 'mvn clean test'
             junit '**/target/surefire-reports/*.xml'
         }
+        if(currentBuild.currentResult == 'UNSTABLE' || currentBuild.currentResult == 'FAILURE') {
+            emailext(body: '${DEFAULT_CONTENT}', mimeType: 'text/html',
+                    replyTo: '$DEFAULT_REPLYTO', subject: '${DEFAULT_SUBJECT}',
+                    to: emailextrecipients([[$class: 'CulpritsRecipientProvider'],
+                                            [$class: 'RequesterRecipientProvider']]))
+        }
     }, mac: {
         node('mac') {
             deleteDir()
             git url: 'https://gitlab.com/marioestrella/sethlans.git'
             sh 'mvn clean test'
             junit '**/target/surefire-reports/*.xml'
+        }
+        if(currentBuild.currentResult == 'UNSTABLE' || currentBuild.currentResult == 'FAILURE') {
+            emailext(body: '${DEFAULT_CONTENT}', mimeType: 'text/html',
+                    replyTo: '$DEFAULT_REPLYTO', subject: '${DEFAULT_SUBJECT}',
+                    to: emailextrecipients([[$class: 'CulpritsRecipientProvider'],
+                                            [$class: 'RequesterRecipientProvider']]))
         }
     }, failFast: false
 }
