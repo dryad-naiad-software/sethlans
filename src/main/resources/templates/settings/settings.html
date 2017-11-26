@@ -26,20 +26,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- CSS Libraries -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/css/patternfly.min.css"
-          th:href="@{/bower/patternfly/dist/css/patternfly.min.css}"
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.29.13/css/patternfly.min.css"
+          th:href="@{/webjars/patternfly/dist/css/patternfly.min.css}"
           rel="stylesheet" media="screen, print">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/css/patternfly-additions.min.css"
-          th:href="@{/bower/patternfly/dist/css/patternfly-additions.min.css}"
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.29.13/css/patternfly-additions.min.css"
+          th:href="@{/webjars/patternfly/dist/css/patternfly-additions.min.css}"
           rel="stylesheet" media="screen, print">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/css/bootstrap-slider.css"
-          th:href="@{/bower/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css}"
+          th:href="@{/webjars/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css}"
           rel="stylesheet" media="screen, print">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.3.8/css/fileinput.min.css"
-          th:href="@{/bower/bootstrap-fileinput/css/fileinput.min.css}"
+          th:href="@{/webjars/bootstrap-fileinput/css/fileinput.min.css}"
           media="screen, print" rel="stylesheet" type="text/css">
     <link href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css"
-          th:href="@{/bower/datatables.net-bs/css/dataTables.bootstrap.min.css}"
+          th:href="@{/webjars/datatables.net-bs/css/dataTables.bootstrap.min.css}"
           rel="stylesheet" media="screen, print">
     <style>
         body {
@@ -81,28 +81,27 @@
 </head>
 <body>
 
-
 <!-- Javascript Libraries -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"
-        th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"
+        th:src="@{/webjars/jquery/3.2.1/dist/jquery.min.js}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"
-        th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/js/patternfly.min.js"
-        th:src="@{/bower/patternfly/dist/js/patternfly.min.js}"></script>
+        th:src="@{/webjars/bootstrap/3.3.7/dist/js/bootstrap.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.29.13/js/patternfly.min.js"
+        th:src="@{/webjars/patternfly/3.29.13/dist/js/patternfly.min.js}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js"
-        th:src="@{/bower/c3/c3.min.js}"></script>
+        th:src="@{/webjars/c3/0.4.11/c3.min.js}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.7.3/d3.min.js"
-        th:src="@{/bower/d3/d3.min.js}"></script>
+        th:src="@{/webjars/d3/4.7.3/build/d3.min.js}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.matchHeight/0.7.2/jquery.matchHeight-min.js"
-        th:src="@{/bower/matchHeight/dist/jquery.matchHeight-min.js}"></script>
+        th:src="@{/webjars/matchHeight/0.7.2/jquery.matchHeight-min.js}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/bootstrap-slider.min.js"
-        th:src="@{/bower/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js}"></script>
+        th:src="@{/webjars/seiyria-bootstrap-slider/9.7.2/dist/bootstrap-slider.min.js}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-fileinput/4.3.8/js/fileinput.min.js"
-        th:src="@{/bower/bootstrap-fileinput/js/fileinput.min.js}"></script>
+        th:src="@{/webjars/bootstrap-fileinput/js/fileinput.min.js}"></script>
 <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"
-        th:src="@{/bower/datatables.net/js/jquery.dataTables.min.js}"></script>
+        th:src="@{/webjars/datatables.net/js/jquery.dataTables.min.js}"></script>
 <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"
-        th:src="@{/bower/datatables.net-bs/js/dataTables.bootstrap.min.js}"></script>
+        th:src="@{/webjars/datatables.net-bs/js/dataTables.bootstrap.min.js}"></script>
 
 
 <!-- Local Javascript-->
@@ -112,7 +111,6 @@
         $('[data-toggle="tooltip"]').tooltip();
     });
 </script>
-<!-- Page Javascript -->
 
 <!-- Nav Bar Fragment -->
 <nav class="navbar navbar-pf-vertical" th:replace="fragments/nav :: navbar">
@@ -242,10 +240,16 @@
         <table class="table table-bordered table-hover">
             <thead class="thead-default">
             <tr>
-                <th>Sethlans Actions</th>
+                <th>Manage Sethlans</th>
             </tr>
             </thead>
             <tbody>
+            <tr>
+                <td>
+                    <a id="settings_logs" style="color:black" class="fa fa-list-alt" href="/logs">&nbsp;&nbsp;
+                        <span class="sidebarfont">Logs</span></a>
+                </td>
+            </tr>
             <tr>
                 <td>
                     <a id="settings_shutdown" style="color:black" class=" fa fa-power-off" href="/shutdown">&nbsp;&nbsp;
@@ -268,6 +272,11 @@
         </div>
         <div th:if="${settings_option.equals('nodes')}">
             <main th:replace="fragments/settings_nodes :: settings_nodes">
+                <!--Replaced By Fragment-->  </main>
+        </div>
+
+        <div th:if="${settings_option.equals('logs')}">
+            <main th:replace="fragments/settings_logs :: settings_logs">
                 <!--Replaced By Fragment-->  </main>
         </div>
 

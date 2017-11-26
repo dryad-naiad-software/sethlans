@@ -93,18 +93,6 @@
         <!-- WebJARS -->
         <dependency>
             <groupId>org.webjars</groupId>
-            <artifactId>bootstrap</artifactId>
-            <version>3.3.7</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>jquery</artifactId>
-            <version>3.1.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.webjars</groupId>
             <artifactId>webjars-locator</artifactId>
             <version>0.32</version>
         </dependency>
@@ -112,7 +100,51 @@
         <dependency>
             <groupId>org.webjars.bower</groupId>
             <artifactId>seiyria-bootstrap-slider</artifactId>
-            <version>9.3.0</version>
+            <version>9.7.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>patternfly</artifactId>
+            <version>3.29.13</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars.bower</groupId>
+            <artifactId>datatables.net</artifactId>
+            <version>1.10.16</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars.bower</groupId>
+            <artifactId>bootstrap-fileinput</artifactId>
+            <version>4.3.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars.bower</groupId>
+            <artifactId>matchHeight</artifactId>
+            <version>0.7.2</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.webjars.bower</groupId>
+            <artifactId>c3</artifactId>
+            <version>0.4.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>d3</artifactId>
+            <version>4.7.3</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.webjars.bower</groupId>
+            <artifactId>datatables.net-bs</artifactId>
+            <version>1.10.16</version>
         </dependency>
 
 

@@ -240,6 +240,12 @@ public class SettingsController extends AbstractSethlansController {
         return "redirect:/settings/nodes/";
     }
 
+    @RequestMapping("/logs")
+    public String getLogPage(Model model) {
+        model.addAttribute("settings_option", "logs");
+        return "settings/settings";
+    }
+
     @Autowired
     public void setNodeDiscoveryService(NodeDiscoveryService nodeDiscoveryService) {
         this.nodeDiscoveryService = nodeDiscoveryService;
