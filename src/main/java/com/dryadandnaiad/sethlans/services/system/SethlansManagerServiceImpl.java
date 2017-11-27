@@ -51,7 +51,7 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
     @Async
     public void restart() {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
