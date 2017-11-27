@@ -111,7 +111,7 @@
 
         <dependency>
             <groupId>org.webjars.bower</groupId>
-            <artifactId>datatables.net</artifactId>
+            <artifactId>datatables</artifactId>
             <version>1.10.16</version>
         </dependency>
 
@@ -140,12 +140,6 @@
             <version>4.7.3</version>
         </dependency>
 
-
-        <dependency>
-            <groupId>org.webjars.bower</groupId>
-            <artifactId>datatables.net-bs</artifactId>
-            <version>1.10.16</version>
-        </dependency>
 
 
         <!-- Other Dependencies - Non Spring Specific-->
