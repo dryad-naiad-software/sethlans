@@ -19,7 +19,6 @@ This takes a blend file argument and prints out some of its details, eg:
     
 """
 import sys
-
 import blendfile
 
 filepath = sys.argv[-1]

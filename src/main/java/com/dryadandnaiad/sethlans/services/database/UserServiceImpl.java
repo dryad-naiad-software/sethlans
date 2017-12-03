@@ -22,6 +22,8 @@ package com.dryadandnaiad.sethlans.services.database;
 import com.dryadandnaiad.sethlans.domains.database.users.SethlansUser;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.dryadandnaiad.sethlans.services.security.EncryptionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,7 @@ import java.util.List;
  */
 @Service
 public class UserServiceImpl implements UserService {
+    private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private UserRepository userRepository;
 
@@ -65,6 +68,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public SethlansUser saveOrUpdate(SethlansUser domainObject) {
+        LOG.debug("Saving/Updating user");
 
         if(domainObject.getPassword() != null){
             domainObject.setEncryptedPassword(encryptionService.encryptString(domainObject.getPassword()));
