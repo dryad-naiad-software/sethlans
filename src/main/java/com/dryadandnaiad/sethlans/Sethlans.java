@@ -116,11 +116,12 @@ public class Sethlans {
             try {
                 boolean sethlansActive = builder.run(springArgs).isActive();
                 if (sethlansActive) {
-                    Thread.sleep(10000);
+                    Thread.sleep(3000);
                 } else {
+                    Thread.sleep(3000);
                     builder = new SpringApplicationBuilder(Sethlans.class);
                     builder.run(springArgs);
-                    Thread.sleep(10000);
+                    LOG.debug("Sethlans Restarted");
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
