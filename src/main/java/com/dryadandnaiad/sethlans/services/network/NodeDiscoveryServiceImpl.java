@@ -71,9 +71,9 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
                     String[] split = node.split(":");
                     String ip = split[0];
                     String port = split[1];
-                    SethlansNode sethlansNode = discoverUnicastNode(ip, port);
-                    if (sethlansNode != null) {
-                        sethlansNodeList.add(discoverUnicastNode(ip, port));
+                    SethlansNode newSethlansNode = discoverUnicastNode(ip, port);
+                    if (newSethlansNode != null) {
+                        sethlansNodeList.add(newSethlansNode);
                     }
                 }
                 listComplete = true;
