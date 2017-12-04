@@ -29,6 +29,7 @@ import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -46,25 +47,14 @@ import java.util.List;
  * Project: sethlans
  */
 @Controller
-public class SettingsController extends AbstractSethlansController {
-    private static final Logger LOG = LoggerFactory.getLogger(SettingsController.class);
+@Profile({"SERVER", "DUAL"})
+public class ServerSettingsController extends AbstractSettingsController {
+    private static final Logger LOG = LoggerFactory.getLogger(ServerSettingsController.class);
 
     private NodeDiscoveryService nodeDiscoveryService;
     private SethlansNodeService sethlansNodeService;
     private SethlansNode sethlansNode;
     private SethlansNodeToNodeAddForm sethlansNodeToNodeAddForm;
-
-    @RequestMapping("/settings")
-    public String getHomePage(Model model) {
-        model.addAttribute("settings_option", "home");
-        return "settings/settings";
-    }
-
-    @RequestMapping("/settings/users")
-    public String getUserPage(Model model) {
-        model.addAttribute("settings_option", "users");
-        return "settings/settings";
-    }
 
     @RequestMapping("/settings/nodes")
     public String getNodePage(Model model) {
@@ -229,21 +219,17 @@ public class SettingsController extends AbstractSethlansController {
                     } else {
                         sethlansNodeService.saveOrUpdate(sethlansNodes.get(nodeId));
                         LOG.debug("Added: " + sethlansNodes.get(nodeId).getHostname() + " to database.");
+                        //TODO Node Activation Service
                     }
                 }
             } else {
                 sethlansNodeService.saveOrUpdate(sethlansNodes.get(nodeId));
                 LOG.debug("Added: " + sethlansNodes.get(nodeId).getHostname() + " to database.");
+                //TODO Node Activation Service
             }
         }
         nodeDiscoveryService.resetNodeList();
         return "redirect:/settings/nodes/";
-    }
-
-    @RequestMapping("/logs")
-    public String getLogPage(Model model) {
-        model.addAttribute("settings_option", "logs");
-        return "settings/settings";
     }
 
     @Autowired
