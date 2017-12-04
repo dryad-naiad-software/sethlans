@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Created Mario Estrella on 11/1/17.
@@ -95,7 +96,10 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
         SethlansNode sethlansNode = null;
         try {
             sethlansNode = gson.fromJson(getRawDataService.getNodeResult("https://" + ip + ":" + port + "/nodeinfo"), SethlansNode.class);
-            sethlansNode.setActive(true);
+            sethlansNode.setPendingAck(true);
+            sethlansNode.setActive(false);
+            sethlansNode.setRequestUUID(UUID.randomUUID().toString());
+
         } catch (NullPointerException e) {
             LOG.error("Unable to read JSON data from" + ip + ":" + port);
             LOG.error(e.getMessage());

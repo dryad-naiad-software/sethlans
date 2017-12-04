@@ -50,6 +50,8 @@ public class SethlansNode extends AbstractEntityClass {
     @ElementCollection
     private List<String> selectedCUDA;
     private boolean active;
+    private boolean pendingAck;
+    private String requestUUID;
 
     public String getHostname() {
         return hostname;
@@ -91,6 +93,22 @@ public class SethlansNode extends AbstractEntityClass {
         this.computeType = computeType;
     }
 
+    public CPU getCpuinfo() {
+        return cpuinfo;
+    }
+
+    public void setCpuinfo(CPU cpuinfo) {
+        this.cpuinfo = cpuinfo;
+    }
+
+    public String getSelectedCores() {
+        return selectedCores;
+    }
+
+    public void setSelectedCores(String selectedCores) {
+        this.selectedCores = selectedCores;
+    }
+
     public List<GPUDevice> getSelectedGPUs() {
         return selectedGPUs;
     }
@@ -115,20 +133,20 @@ public class SethlansNode extends AbstractEntityClass {
         this.active = active;
     }
 
-    public CPU getCpuinfo() {
-        return cpuinfo;
+    public boolean isPendingAck() {
+        return pendingAck;
     }
 
-    public void setCpuinfo(CPU cpuinfo) {
-        this.cpuinfo = cpuinfo;
+    public void setPendingAck(boolean pendingAck) {
+        this.pendingAck = pendingAck;
     }
 
-    public String getSelectedCores() {
-        return selectedCores;
+    public String getRequestUUID() {
+        return requestUUID;
     }
 
-    public void setSelectedCores(String selectedCores) {
-        this.selectedCores = selectedCores;
+    public void setRequestUUID(String requestUUID) {
+        this.requestUUID = requestUUID;
     }
 
     @Override
@@ -144,6 +162,8 @@ public class SethlansNode extends AbstractEntityClass {
                 ", selectedGPUs=" + selectedGPUs +
                 ", selectedCUDA=" + selectedCUDA +
                 ", active=" + active +
+                ", pendingAck=" + pendingAck +
+                ", requestUUID='" + requestUUID + '\'' +
                 '}';
     }
 }

@@ -98,6 +98,7 @@
                     <br/>
                     <br/>
                     <tr>
+                        <th>Node Status</th>
                         <th>Hostname</th>
                         <th>IP Address</th>
                         <th>Port</th>
@@ -112,6 +113,16 @@
                     <tbody th:if="${not #lists.isEmpty(nodes)}">
                     <tr th:each="node : ${nodes}">
                         <!--/*@thymesVar id="node" type="com.dryadandnaiad.sethlans.domains.database.node.SethlansNode"*/-->
+                        <td th:id="'nodeStatus-' + ${node.getId()}"
+                            th:if="${node.isActive() and not node.isPendingAck()}">Active
+                        </td>
+                        <td th:id="'nodeStatus-' + ${node.getId()}"
+                            th:if="${node.isPendingAck() and not node.isActive()}">Pending Activation
+                        </td>
+                        <td th:id="'nodeStatus-' + ${node.getId()}"
+                            th:if="${not node.isPendingAck() and not node.isActive()}">Inactive
+                        </td>
+
                         <td th:id="'nodeHostname-' + ${node.getId()}"
                             th:text="${node.getHostname()}">SAMPLE</td>
                         <td th:id="'nodeIPAddress-' + ${node.getId()}"
@@ -155,10 +166,10 @@
                                th:href="${'/settings/nodes/delete/' + node.getId()}" href="">Delete</a>
                             <br/>
                             <a th:id="'nodeEnableDisable-' + ${node.getId()}"
-                               th:if="${node.isActive()}"
+                               th:if="${node.isActive() and not node.isPendingAck()}"
                                th:href="${'/settings/nodes/disable/' + node.getId()}" href="#">Disable</a>
                             <a th:id="'nodeEnableDisable-' + ${node.getId()}"
-                               th:unless="${node.isActive()}"
+                               th:if="${not node.isActive() and not node.isPendingAck()}"
                                th:href="${'/settings/nodes/enable/' + node.getId()}" href="#">Enable</a>
                         </td>
                     </tr>
