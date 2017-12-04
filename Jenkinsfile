@@ -19,8 +19,8 @@
 
 stage('compile') {
     node {
-        deleteDir()
-        git url: 'https://gitlab.com/marioestrella/sethlans.git'
+        sh "rm -rf *"
+        checkout scm
         sh 'mvn clean compile'
     }
     if(currentBuild.currentResult == 'UNSTABLE' || currentBuild.currentResult == 'FAILURE') {
@@ -33,8 +33,8 @@ stage('compile') {
 stage('unitests') {
     parallel linux: {
         node('linux') {
-            deleteDir()
-            git url: 'https://gitlab.com/marioestrella/sethlans.git'
+            sh "rm -rf *"
+            checkout scm
             sh 'mvn clean test'
             junit '**/target/surefire-reports/*.xml'
         }
@@ -46,8 +46,8 @@ stage('unitests') {
         }
     }, windows: {
         node('windows') {
-            deleteDir()
-            git url: 'https://gitlab.com/marioestrella/sethlans.git'
+            sh "rm -rf *"
+            checkout scm
             sh 'mvn clean test'
             junit '**/target/surefire-reports/*.xml'
         }
@@ -59,8 +59,8 @@ stage('unitests') {
         }
     }, mac: {
         node('mac') {
-            deleteDir()
-            git url: 'https://gitlab.com/marioestrella/sethlans.git'
+            sh "rm -rf *"
+            checkout scm
             sh 'mvn clean test'
             junit '**/target/surefire-reports/*.xml'
         }
@@ -74,8 +74,8 @@ stage('unitests') {
 }
 stage('publish') {
     node('package') {
-        deleteDir()
-        git url: 'https://gitlab.com/marioestrella/sethlans.git'
+        sh "rm -rf *"
+        checkout scm
         sh 'mvn clean package -DskipTests'
         archiveArtifacts artifacts: '**/target/binaries/*.jar, **/target/binaries/*.exe, **/target/binaries/*.dmg', fingerprint: true
     }
