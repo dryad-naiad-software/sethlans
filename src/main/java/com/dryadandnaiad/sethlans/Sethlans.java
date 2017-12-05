@@ -121,7 +121,6 @@ public class Sethlans {
                     Thread.sleep(3000);
                     builder = new SpringApplicationBuilder(Sethlans.class);
                     builder.run(springArgs);
-                    LOG.debug("Sethlans Restarted");
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
