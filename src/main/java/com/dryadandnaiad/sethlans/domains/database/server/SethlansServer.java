@@ -19,11 +19,62 @@
 
 package com.dryadandnaiad.sethlans.domains.database.server;
 
+import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+
+import javax.persistence.Entity;
+
 /**
  * Created Mario Estrella on 12/4/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class SethlansServer {
+@Entity
+public class SethlansServer extends AbstractEntityClass {
+    private String hostname;
+    private String ipAddress;
+    private String networkPort;
+    private String acknowledgeUUID;
+
+    public String getHostname() {
+        return hostname;
+    }
+
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
+    public String getNetworkPort() {
+        return networkPort;
+    }
+
+    public void setNetworkPort(String networkPort) {
+        this.networkPort = networkPort;
+    }
+
+    public String getAcknowledgeUUID() {
+        return acknowledgeUUID;
+    }
+
+    public void setAcknowledgeUUID(String acknowledgeUUID) {
+        this.acknowledgeUUID = acknowledgeUUID;
+    }
+
+    @Override
+    public String toString() {
+        return "SethlansServer{" +
+                "hostname='" + hostname + '\'' +
+                ", ipAddress='" + ipAddress + '\'' +
+                ", networkPort='" + networkPort + '\'' +
+                ", acknowledgeUUID='" + acknowledgeUUID + '\'' +
+                '}';
+    }
 }

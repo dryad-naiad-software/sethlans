@@ -71,7 +71,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         else{
             http
                     .authorizeRequests()
-                    .antMatchers("/", "/nodeactivate*", "/bower/**", "/webjars/**", "/css/**", "/images/**", "/nodeinfo").permitAll()
+                    .antMatchers("/", "/nodeactivate/request*", "/bower/**", "/webjars/**", "/css/**", "/images/**", "/nodeinfo").permitAll()
                     .anyRequest().authenticated()
                     .and().formLogin().loginPage("/login").failureUrl("/login?error").permitAll()
                     .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login?logout").permitAll()

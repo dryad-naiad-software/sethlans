@@ -19,8 +19,11 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
+import com.dryadandnaiad.sethlans.services.database.SethlansServerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,11 +40,20 @@ import org.springframework.web.bind.annotation.RestController;
 @Profile({"NODE", "DUAL"})
 public class NodeActivationRestController {
     private static final Logger LOG = LoggerFactory.getLogger(NodeActivationRestController.class);
+    private SethlansServerService sethlansServerService;
 
-    @RequestMapping(value = "/nodeactivate", method = RequestMethod.GET)
-    public void NodeActivation(@RequestParam String server, @RequestParam String ip, @RequestParam String port, @RequestParam String uuid) {
-        LOG.debug("SERVER: " + server);
-        LOG.debug("UUID: " + uuid);
+    @RequestMapping(value = "/nodeactivate/request", method = RequestMethod.GET)
+    public void NodeActivation(@RequestParam String serverhostname, @RequestParam String ipAddress, @RequestParam String port, @RequestParam String uuid) {
+        SethlansServer sethlansServer = new SethlansServer();
+        sethlansServer.setHostname(serverhostname);
+        sethlansServer.setIpAddress(ipAddress);
+        sethlansServer.setNetworkPort(port);
+        sethlansServer.setAcknowledgeUUID(uuid);
+        sethlansServerService.saveOrUpdate(sethlansServer);
+    }
 
+    @Autowired
+    public void setSethlansServerService(SethlansServerService sethlansServerService) {
+        this.sethlansServerService = sethlansServerService;
     }
 }
