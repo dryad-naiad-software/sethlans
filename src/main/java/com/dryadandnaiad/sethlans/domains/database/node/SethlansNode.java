@@ -50,7 +50,7 @@ public class SethlansNode extends AbstractEntityClass {
     @ElementCollection
     private List<String> selectedCUDA;
     private boolean active;
-    private boolean pendingAck;
+    private boolean pendingActivation;
     private String requestUUID;
 
     public String getHostname() {
@@ -133,12 +133,12 @@ public class SethlansNode extends AbstractEntityClass {
         this.active = active;
     }
 
-    public boolean isPendingAck() {
-        return pendingAck;
+    public boolean isPendingActivation() {
+        return pendingActivation;
     }
 
-    public void setPendingAck(boolean pendingAck) {
-        this.pendingAck = pendingAck;
+    public void setPendingActivation(boolean pendingActivation) {
+        this.pendingActivation = pendingActivation;
     }
 
     public String getRequestUUID() {
@@ -162,7 +162,7 @@ public class SethlansNode extends AbstractEntityClass {
                 ", selectedGPUs=" + selectedGPUs +
                 ", selectedCUDA=" + selectedCUDA +
                 ", active=" + active +
-                ", pendingAck=" + pendingAck +
+                ", pendingActivation=" + pendingActivation +
                 ", requestUUID='" + requestUUID + '\'' +
                 '}';
     }

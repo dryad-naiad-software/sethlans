@@ -96,7 +96,7 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
         SethlansNode sethlansNode = null;
         try {
             sethlansNode = gson.fromJson(getRawDataService.getNodeResult("https://" + ip + ":" + port + "/nodeinfo"), SethlansNode.class);
-            sethlansNode.setPendingAck(true);
+            sethlansNode.setPendingActivation(true);
             sethlansNode.setActive(false);
             sethlansNode.setRequestUUID(UUID.randomUUID().toString());
 

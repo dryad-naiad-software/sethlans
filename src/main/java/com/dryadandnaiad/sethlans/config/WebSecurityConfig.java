@@ -29,6 +29,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -71,7 +72,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         else{
             http
                     .authorizeRequests()
-                    .antMatchers("/", "/nodeactivate/request*", "/bower/**", "/webjars/**", "/css/**", "/images/**", "/nodeinfo").permitAll()
+                    .antMatchers("/", "/bower/**", "/webjars/**", "/css/**", "/images/**").permitAll()
                     .anyRequest().authenticated()
                     .and().formLogin().loginPage("/login").failureUrl("/login?error").permitAll()
                     .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login?logout").permitAll()
@@ -80,6 +81,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        if (!firstTime) {
+            web.ignoring().antMatchers("/nodeactivate/request", "/nodeinfo");
+        }
+
+    }
 
     @Autowired
     public void configureAuthManager(AuthenticationManagerBuilder authenticationManagerBuilder) {

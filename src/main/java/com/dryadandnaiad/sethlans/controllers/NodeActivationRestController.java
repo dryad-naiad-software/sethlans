@@ -42,14 +42,17 @@ public class NodeActivationRestController {
     private static final Logger LOG = LoggerFactory.getLogger(NodeActivationRestController.class);
     private SethlansServerService sethlansServerService;
 
-    @RequestMapping(value = "/nodeactivate/request", method = RequestMethod.GET)
+    @RequestMapping(value = "/nodeactivate/request", method = RequestMethod.POST)
     public void NodeActivation(@RequestParam String serverhostname, @RequestParam String ipAddress, @RequestParam String port, @RequestParam String uuid) {
+        LOG.debug("Test");
         SethlansServer sethlansServer = new SethlansServer();
         sethlansServer.setHostname(serverhostname);
         sethlansServer.setIpAddress(ipAddress);
         sethlansServer.setNetworkPort(port);
         sethlansServer.setAcknowledgeUUID(uuid);
         sethlansServerService.saveOrUpdate(sethlansServer);
+        LOG.debug(sethlansServer.toString());
+        LOG.debug("Received node activation request");
     }
 
     @Autowired

@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.converters.SethlansNodeToNodeAddForm;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.NodeAddProgress;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeService;
+import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +56,7 @@ public class ServerSettingsController extends AbstractSettingsController {
     private SethlansNodeService sethlansNodeService;
     private SethlansNode sethlansNode;
     private SethlansNodeToNodeAddForm sethlansNodeToNodeAddForm;
+    private NodeActivationService nodeActivationService;
 
     @RequestMapping("/settings/nodes")
     public String getNodePage(Model model) {
@@ -161,11 +163,17 @@ public class ServerSettingsController extends AbstractSettingsController {
                     } else {
                         sethlansNodeService.saveOrUpdate(sethlansNode);
                         LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
+                        if (sethlansNode.isPendingActivation()) {
+                            nodeActivationService.sendActivationRequest(sethlansNode);
+                        }
                     }
                 }
             } else {
                 sethlansNodeService.saveOrUpdate(sethlansNode);
                 LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
+                if (sethlansNode.isPendingActivation()) {
+                    nodeActivationService.sendActivationRequest(sethlansNode);
+                }
             }
 
 
@@ -219,17 +227,27 @@ public class ServerSettingsController extends AbstractSettingsController {
                     } else {
                         sethlansNodeService.saveOrUpdate(sethlansNodes.get(nodeId));
                         LOG.debug("Added: " + sethlansNodes.get(nodeId).getHostname() + " to database.");
-                        //TODO Node Activation Service
+                        if (sethlansNodes.get(nodeId).isPendingActivation()) {
+                            nodeActivationService.sendActivationRequest(sethlansNodes.get(nodeId));
+                        }
+
                     }
                 }
             } else {
                 sethlansNodeService.saveOrUpdate(sethlansNodes.get(nodeId));
                 LOG.debug("Added: " + sethlansNodes.get(nodeId).getHostname() + " to database.");
-                //TODO Node Activation Service
+                if (sethlansNodes.get(nodeId).isPendingActivation()) {
+                    nodeActivationService.sendActivationRequest(sethlansNodes.get(nodeId));
+                }
             }
         }
         nodeDiscoveryService.resetNodeList();
         return "redirect:/settings/nodes/";
+    }
+
+    @Autowired
+    public void setNodeActivationService(NodeActivationService nodeActivationService) {
+        this.nodeActivationService = nodeActivationService;
     }
 
     @Autowired

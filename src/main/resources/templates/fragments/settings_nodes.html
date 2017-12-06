@@ -114,13 +114,13 @@
                     <tr th:each="node : ${nodes}">
                         <!--/*@thymesVar id="node" type="com.dryadandnaiad.sethlans.domains.database.node.SethlansNode"*/-->
                         <td th:id="'nodeStatus-' + ${node.getId()}"
-                            th:if="${node.isActive() and not node.isPendingAck()}">Active
+                            th:if="${node.isActive() and not node.isPendingActivation()}">Active
                         </td>
                         <td th:id="'nodeStatus-' + ${node.getId()}"
-                            th:if="${node.isPendingAck() and not node.isActive()}">Pending Activation
+                            th:if="${node.isPendingActivation() and not node.isActive()}">Pending Activation
                         </td>
                         <td th:id="'nodeStatus-' + ${node.getId()}"
-                            th:if="${not node.isPendingAck() and not node.isActive()}">Inactive
+                            th:if="${not node.isPendingActivation() and not node.isActive()}">Inactive
                         </td>
 
                         <td th:id="'nodeHostname-' + ${node.getId()}"
@@ -166,10 +166,10 @@
                                th:href="${'/settings/nodes/delete/' + node.getId()}" href="">Delete</a>
                             <br/>
                             <a th:id="'nodeEnableDisable-' + ${node.getId()}"
-                               th:if="${node.isActive() and not node.isPendingAck()}"
+                               th:if="${node.isActive() and not node.isPendingActivation()}"
                                th:href="${'/settings/nodes/disable/' + node.getId()}" href="#">Disable</a>
                             <a th:id="'nodeEnableDisable-' + ${node.getId()}"
-                               th:if="${not node.isActive() and not node.isPendingAck()}"
+                               th:if="${not node.isActive() and not node.isPendingActivation()}"
                                th:href="${'/settings/nodes/enable/' + node.getId()}" href="#">Enable</a>
                         </td>
                     </tr>
