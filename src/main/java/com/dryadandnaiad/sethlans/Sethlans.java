@@ -111,16 +111,15 @@ public class Sethlans {
             sethlansSysTray.setImageAutoSize(true);
 
         }
-        SpringApplicationBuilder builder = new SpringApplicationBuilder(Sethlans.class);
+        SpringApplicationBuilder builder;
+        boolean sethlansActive = false;
         while (true) {
             try {
-                boolean sethlansActive = builder.run(springArgs).isActive();
                 if (sethlansActive) {
                     Thread.sleep(3000);
                 } else {
-                    Thread.sleep(3000);
                     builder = new SpringApplicationBuilder(Sethlans.class);
-                    builder.run(springArgs);
+                    sethlansActive = builder.run(springArgs).isActive();
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

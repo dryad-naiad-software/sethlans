@@ -40,7 +40,7 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
     @Async
     public void shutdown() {
         try {
-            Thread.sleep(10000);
+            Thread.sleep(2000);
             System.exit(0);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -52,7 +52,7 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
     @Async
     public void restart() {
         try {
-            Thread.sleep(10000);
+            Thread.sleep(4000);
             SpringApplication.exit(applicationContext, () -> 0);
         } catch (InterruptedException e) {
             e.printStackTrace();
