@@ -40,21 +40,23 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
     @Async
     public void shutdown() {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(10000);
+            System.exit(0);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.exit(0);
+
     }
 
     @Override
     @Async
     public void restart() {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(10000);
+            SpringApplication.exit(applicationContext, () -> 0);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        SpringApplication.exit(applicationContext, () -> 0);
+
     }
 }
