@@ -111,12 +111,13 @@ public class Sethlans {
             sethlansSysTray.setImageAutoSize(true);
 
         }
-        SpringApplicationBuilder builder;
+        SpringApplicationBuilder builder = null;
         boolean sethlansActive = false;
         while (true) {
             try {
                 if (sethlansActive) {
                     Thread.sleep(3000);
+                    sethlansActive = builder.run(springArgs).isActive();
                 } else {
                     builder = new SpringApplicationBuilder(Sethlans.class);
                     sethlansActive = builder.run(springArgs).isActive();
