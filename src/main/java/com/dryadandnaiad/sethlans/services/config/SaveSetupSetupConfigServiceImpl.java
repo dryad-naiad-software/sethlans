@@ -88,7 +88,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
         writeProperty(SethlansConfigKeys.MODE, setupForm.getMode().toString());
         writeProperty(SethlansConfigKeys.BINARY_DIR, setupForm.getBinDirectory());
         writeProperty(SethlansConfigKeys.SCRIPTS_DIR, setupForm.getScriptsDirectory());
-        writeProperty("spring.jpa.hibernate.ddl-auto", "update");
+        writeProperty("spring.jpa.hibernate.ddl-auto", "validate");
 
         File binDir = new File(setupForm.getBinDirectory());
         File scriptDir = new File(setupForm.getScriptsDirectory());
