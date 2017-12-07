@@ -216,6 +216,21 @@ public class SethlansUtils {
         }
     }
 
+    public static String getHostname() {
+        String hostname = null;
+        try {
+            hostname = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        int iend = hostname.indexOf(".");
+        if (iend != -1) {
+            LOG.debug(hostname + " contains a domain name. Removing it.");
+            hostname = hostname.substring(0, iend);
+        }
+        return hostname;
+    }
+
     public static String getIP() {
         String ip = null;
         try {

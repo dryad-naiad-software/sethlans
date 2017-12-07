@@ -63,7 +63,7 @@ public class NodeActivationServiceImpl implements NodeActivationService {
         String port = sethlansServer.getNetworkPort();
         String responseURL = "https://" + ip + ":" + port + "/api/nodeactivate/response";
         LOG.debug("Connecting to " + responseURL);
-        String params = "serverhostname=" + sethlansNode.getHostname() + "&ipAddress=" + sethlansNode.getIpAddress()
+        String params = "nodehostname=" + sethlansNode.getHostname() + "&ipAddress=" + sethlansNode.getIpAddress()
                 + "&port=" + sethlansNode.getNetworkPort() + "&uuid=" + sethlansServer.getAcknowledgeUUID();
         connectToRemote(responseURL, params);
     }

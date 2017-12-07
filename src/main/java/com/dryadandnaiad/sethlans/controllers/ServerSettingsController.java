@@ -28,7 +28,7 @@ import com.dryadandnaiad.sethlans.enums.NodeAddProgress;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeService;
 import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
-import org.apache.commons.lang3.SystemUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +42,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.List;
 
 /**
@@ -283,39 +279,9 @@ public class ServerSettingsController extends AbstractSethlansController {
 
     public void setSethlansServer() {
         this.sethlansServer = new SethlansServer();
-
-        String hostname = null;
-        try {
-            hostname = InetAddress.getLocalHost().getHostName();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        int iend = hostname.indexOf(".");
-        if (iend != -1) {
-            LOG.debug(hostname + " contains a domain name. Removing it.");
-            hostname = hostname.substring(0, iend);
-        }
-        String ipAddress = null;
-        if (SystemUtils.IS_OS_LINUX) {
-            // Make a connection to 8.8.8.8 DNS in order to get IP address
-            try {
-                Socket s = new Socket("8.8.8.8", 53);
-                ipAddress = s.getLocalAddress().getHostAddress();
-
-                s.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            try {
-                ipAddress = InetAddress.getLocalHost().getHostAddress();
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
-        }
         this.sethlansServer.setNetworkPort(sethlansPort);
-        this.sethlansServer.setHostname(hostname);
-        this.sethlansServer.setIpAddress(ipAddress);
+        this.sethlansServer.setHostname(SethlansUtils.getHostname());
+        this.sethlansServer.setIpAddress(SethlansUtils.getIP());
 
 
     }

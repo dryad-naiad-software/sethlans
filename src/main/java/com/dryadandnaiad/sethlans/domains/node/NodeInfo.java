@@ -24,14 +24,11 @@ import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,28 +97,10 @@ public class NodeInfo {
         return computeType;
     }
 
-    public void populateNodeInfo() throws UnknownHostException {
-        String hostname = InetAddress.getLocalHost().getHostName();
-        int iend = hostname.indexOf(".");
-        if (iend != -1) {
-            LOG.debug(hostname + " contains a domain name. Removing it.");
-            this.hostname = hostname.substring(0, iend);
-        } else {
-            this.hostname = hostname;
-        }
-        if (SystemUtils.IS_OS_LINUX) {
-            // Make a connection to 8.8.8.8 DNS in order to get IP address
-            try {
-                Socket s = new Socket("8.8.8.8", 53);
-                this.ipAddress = s.getLocalAddress().getHostAddress();
+    public void populateNodeInfo() {
+        this.hostname = SethlansUtils.getHostname();
 
-                s.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            this.ipAddress = InetAddress.getLocalHost().getHostAddress();
-        }
+        this.ipAddress = SethlansUtils.getIP();
 
     }
 
