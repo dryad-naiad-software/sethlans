@@ -55,7 +55,7 @@ public class MulticastReceiverServiceImpl implements  MulticastReceiverService{
             MulticastSocket clientSocket = new MulticastSocket(Integer.parseInt(multicastPort));
             clientSocket.joinGroup(InetAddress.getByName(multicastIP));
             long start_time = System.currentTimeMillis();
-            long wait_time = 10000;
+            long wait_time = 12000;
             long end_time = start_time + wait_time;
 
             while (System.currentTimeMillis() < end_time){

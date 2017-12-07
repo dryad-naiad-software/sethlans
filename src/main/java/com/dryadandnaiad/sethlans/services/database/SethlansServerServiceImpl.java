@@ -66,4 +66,16 @@ public class SethlansServerServiceImpl implements SethlansServerService {
     public void setServerRepository(ServerRepository serverRepository) {
         this.serverRepository = serverRepository;
     }
+
+    @Override
+    public SethlansServer getByUUID(String uuid) {
+        List<SethlansServer> sethlansServers = new ArrayList<>();
+        serverRepository.findAll().forEach(sethlansServers::add);
+        for (SethlansServer sethlansServer : sethlansServers) {
+            if (sethlansServer.getAcknowledgeUUID().equals(uuid)) {
+                return sethlansServer;
+            }
+        }
+        return null;
+    }
 }

@@ -28,4 +28,5 @@ import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
  * Project: sethlans
  */
 public interface SethlansServerService extends CRUDService<SethlansServer> {
+    SethlansServer getByUUID(String uuid);
 }

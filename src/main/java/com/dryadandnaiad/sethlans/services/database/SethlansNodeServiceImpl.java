@@ -41,7 +41,7 @@ public class SethlansNodeServiceImpl implements SethlansNodeService {
     @Override
     public List<?> listAll() {
         List<SethlansNode> sethlansNodes = new ArrayList<>();
-        nodeRepository.findAll().forEach(sethlansNodes :: add);
+        nodeRepository.findAll().forEach(sethlansNodes::add);
         return sethlansNodes;
     }
 
@@ -59,6 +59,18 @@ public class SethlansNodeServiceImpl implements SethlansNodeService {
     public void delete(Integer id) {
         SethlansNode sethlansNode = nodeRepository.findOne(id);
         nodeRepository.delete(sethlansNode);
+    }
+
+    @Override
+    public SethlansNode getByUUID(String uuid) {
+        List<SethlansNode> sethlansNodes = new ArrayList<>();
+        nodeRepository.findAll().forEach(sethlansNodes::add);
+        for (SethlansNode sethlansNode : sethlansNodes) {
+            if (sethlansNode.getRequestUUID().equals(uuid)) {
+                return sethlansNode;
+            }
+        }
+        return null;
     }
 
     @Autowired

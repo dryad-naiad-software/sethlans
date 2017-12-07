@@ -19,8 +19,8 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
-import com.dryadandnaiad.sethlans.services.database.SethlansServerService;
+import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.services.database.SethlansNodeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,31 +31,35 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Created Mario Estrella on 12/4/17.
+ * Created Mario Estrella on 12/6/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
 @RestController
-@Profile({"NODE", "DUAL"})
-public class NodeActivationRequestController {
-    private static final Logger LOG = LoggerFactory.getLogger(NodeActivationRequestController.class);
-    private SethlansServerService sethlansServerService;
+@Profile({"SERVER", "DUAL"})
+public class ActivationResponseController {
+    private static final Logger LOG = LoggerFactory.getLogger(ActivationResponseController.class);
+    private SethlansNodeService sethlansNodeService;
 
-    @RequestMapping(value = "/api/nodeactivate/request", method = RequestMethod.POST)
-    public void nodeActivationRequest(@RequestParam String serverhostname, @RequestParam String ipAddress, @RequestParam String port, @RequestParam String uuid) {
-        SethlansServer sethlansServer = new SethlansServer();
-        sethlansServer.setHostname(serverhostname);
-        sethlansServer.setIpAddress(ipAddress);
-        sethlansServer.setNetworkPort(port);
-        sethlansServer.setAcknowledgeUUID(uuid);
-        sethlansServerService.saveOrUpdate(sethlansServer);
-        LOG.debug(sethlansServer.toString());
-        LOG.debug("Received node activation request");
+    @RequestMapping(value = "/api/nodeactivate/response", method = RequestMethod.POST)
+    public void nodeActivationRequest(@RequestParam String nodehostname, @RequestParam String ipAddress,
+                                      @RequestParam String port, @RequestParam String uuid) {
+        SethlansNode sethlansNode;
+        if (sethlansNodeService.getByUUID(uuid) == null) {
+            LOG.debug("The node: " + nodehostname + "/" + ipAddress + " is not present in the database");
+        } else {
+            sethlansNode = sethlansNodeService.getByUUID(uuid);
+            sethlansNode.setPendingActivation(false);
+            sethlansNode.setActive(true);
+            sethlansNodeService.saveOrUpdate(sethlansNode);
+        }
+
+        LOG.debug("Received node activation response");
     }
 
     @Autowired
-    public void setSethlansServerService(SethlansServerService sethlansServerService) {
-        this.sethlansServerService = sethlansServerService;
+    public void setSethlansNodeService(SethlansNodeService sethlansNodeService) {
+        this.sethlansNodeService = sethlansNodeService;
     }
 }
