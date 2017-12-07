@@ -45,6 +45,7 @@ public class ActivationRequestController {
     @RequestMapping(value = "/api/nodeactivate/request", method = RequestMethod.POST)
     public void nodeActivationRequest(@RequestParam String serverhostname, @RequestParam String ipAddress,
                                       @RequestParam String port, @RequestParam String uuid) {
+        LOG.debug("Received node activation request");
         if (sethlansServerService.getByUUID(uuid) != null) {
             LOG.debug("Server UUID is already present on node. Skipping Activation");
         } else {
@@ -55,7 +56,7 @@ public class ActivationRequestController {
             sethlansServer.setAcknowledgeUUID(uuid);
             sethlansServerService.saveOrUpdate(sethlansServer);
             LOG.debug(sethlansServer.toString());
-            LOG.debug("Received node activation request");
+            LOG.debug("Processed node activation request");
         }
     }
 

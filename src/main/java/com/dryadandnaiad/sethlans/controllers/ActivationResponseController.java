@@ -45,6 +45,7 @@ public class ActivationResponseController {
     @RequestMapping(value = "/api/nodeactivate/response", method = RequestMethod.POST)
     public void nodeActivationRequest(@RequestParam String nodehostname, @RequestParam String ipAddress,
                                       @RequestParam String port, @RequestParam String uuid) {
+        LOG.debug("Received node activation response");
         SethlansNode sethlansNode;
         if (sethlansNodeService.getByUUID(uuid) == null) {
             LOG.debug("The node: " + nodehostname + "/" + ipAddress + " is not present in the database");
@@ -53,9 +54,11 @@ public class ActivationResponseController {
             sethlansNode.setPendingActivation(false);
             sethlansNode.setActive(true);
             sethlansNodeService.saveOrUpdate(sethlansNode);
+            LOG.debug(sethlansNode.toString());
+            LOG.debug("Processed node activation response");
         }
 
-        LOG.debug("Received node activation response");
+
     }
 
     @Autowired
