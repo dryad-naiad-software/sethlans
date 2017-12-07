@@ -282,6 +282,7 @@ public class ServerSettingsController extends AbstractSethlansController {
 
 
     public void setSethlansServer() {
+        this.sethlansServer = new SethlansServer();
 
         String hostname = null;
         try {

@@ -50,12 +50,28 @@ public class NodeActivationServiceImpl implements NodeActivationService {
         String port = sethlansNode.getNetworkPort();
         String activateURL = "https://" + ip + ":" + port + "/api/nodeactivate/request";
         LOG.debug("Connecting to " + activateURL);
-        HttpsURLConnection connection;
         String params = "serverhostname=" + sethlansServer.getHostname() + "&ipAddress=" + sethlansServer.getIpAddress()
                 + "&port=" + sethlansServer.getNetworkPort() + "&uuid=" + sethlansNode.getRequestUUID();
+        connectToRemote(activateURL, params);
 
+    }
+
+    @Async
+    public void sendActivationResponse(SethlansServer sethlansServer, SethlansNode sethlansNode) {
+        LOG.debug("Sending Activation Response to Server");
+        String ip = sethlansServer.getIpAddress();
+        String port = sethlansServer.getNetworkPort();
+        String responseURL = "https://" + ip + ":" + port + "/api/nodeactivate/response";
+        LOG.debug("Connecting to " + responseURL);
+        String params = "serverhostname=" + sethlansNode.getHostname() + "&ipAddress=" + sethlansNode.getIpAddress()
+                + "&port=" + sethlansNode.getNetworkPort() + "&uuid=" + sethlansServer.getAcknowledgeUUID();
+        connectToRemote(responseURL, params);
+    }
+
+    private void connectToRemote(String connectionURL, String params) {
+        HttpsURLConnection connection;
         try {
-            URL url = new URL(activateURL);
+            URL url = new URL(connectionURL);
             SSLUtilities.trustAllHostnames();
             SSLUtilities.trustAllHttpsCertificates();
             connection = (HttpsURLConnection) url.openConnection();
@@ -77,15 +93,6 @@ public class NodeActivationServiceImpl implements NodeActivationService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @Async
-    public void sendActivationResponse(SethlansServer sethlansServer, SethlansNode sethlansNode) {
-        LOG.debug("Sending Activation Response to Server");
-        String ip = sethlansServer.getIpAddress();
-        String port = sethlansServer.getNetworkPort();
-        String responseURL = "https://" + ip + ":" + port + "/api/nodeactivate/response";
-        LOG.debug("Connecting to " + responseURL);
 
     }
 }
