@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -28,7 +29,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class AbstractSettingsController extends AbstractSethlansController {
+@Controller
+public class SettingsController extends AbstractSethlansController {
 
     @RequestMapping("/settings")
     public String getHomePage(Model model) {

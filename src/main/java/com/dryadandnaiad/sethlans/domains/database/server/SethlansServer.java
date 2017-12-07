@@ -35,6 +35,7 @@ public class SethlansServer extends AbstractEntityClass {
     private String ipAddress;
     private String networkPort;
     private String acknowledgeUUID;
+    private boolean acknowledged;
 
     public String getHostname() {
         return hostname;
@@ -68,6 +69,14 @@ public class SethlansServer extends AbstractEntityClass {
         this.acknowledgeUUID = acknowledgeUUID;
     }
 
+    public boolean isAcknowledged() {
+        return acknowledged;
+    }
+
+    public void setAcknowledged(boolean acknowledged) {
+        this.acknowledged = acknowledged;
+    }
+
     @Override
     public String toString() {
         return "SethlansServer{" +
@@ -75,6 +84,7 @@ public class SethlansServer extends AbstractEntityClass {
                 ", ipAddress='" + ipAddress + '\'' +
                 ", networkPort='" + networkPort + '\'' +
                 ", acknowledgeUUID='" + acknowledgeUUID + '\'' +
+                ", acknowledged=" + acknowledged +
                 '}';
     }
 }

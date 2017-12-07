@@ -49,7 +49,7 @@ import java.util.List;
  */
 @Controller
 @Profile({"SERVER", "DUAL"})
-public class ServerSettingsController extends AbstractSettingsController {
+public class ServerSettingsController extends AbstractSethlansController {
     private static final Logger LOG = LoggerFactory.getLogger(ServerSettingsController.class);
 
     private NodeDiscoveryService nodeDiscoveryService;

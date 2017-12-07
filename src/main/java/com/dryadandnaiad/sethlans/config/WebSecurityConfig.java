@@ -84,7 +84,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         if (!firstTime) {
-            web.ignoring().antMatchers("/nodeactivate/request", "/nodeinfo");
+            web.ignoring().antMatchers("/api/**");
         }
 
     }

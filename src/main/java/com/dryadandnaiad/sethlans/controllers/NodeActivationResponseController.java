@@ -17,20 +17,25 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.network;
+package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
-import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
+import org.springframework.context.annotation.Profile;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Created Mario Estrella on 12/5/17.
+ * Created Mario Estrella on 12/6/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface NodeActivationService {
+@RestController
+@Profile({"SERVER", "DUAL"})
+public class NodeActivationResponseController {
 
-    void sendActivationRequest(SethlansNode sethlansNode);
-
-    void sendActivationResponse(SethlansServer sethlansServer);
+    @RequestMapping(value = "/api/nodeactivate/response", method = RequestMethod.POST)
+    public void nodeActivationRequest(@RequestParam String nodehostname, @RequestParam String ipAddress, @RequestParam String port, @RequestParam String uuid) {
+    }
 }

@@ -79,98 +79,54 @@
 <style>
     .sidebarfont {
         font-family: "Open Sans", Helvetica, Arial, sans-serif;
-        font-size:18px;
-        color:black;
+        font-size: 18px;
+        color: black;
     }
 </style>
 <div class="container">
     <div class="row">
 
-        <main th:fragment="settings_nodes">
-            <!--Settings Nodes Fragment-->
-            <h2>Nodes</h2>
+        <main th:fragment="settings_servers">
+            <!--Settings servers Fragment-->
+            <h2>Servers</h2>
             <div class="table-responsive">
-                <a id="discoveryBtn" href="/settings/nodes/scan" class="btn btn-default pull-left">Scan</a>
-                <a id="addNodeBtn" href="/settings/nodes/add" class="btn btn-default pull-right">Add Node</a>
-                <br/>
-                <br/>
-                <h2 th:if="${#lists.isEmpty(nodes)}" style="text-align: center">No Nodes Available</h2>
-                <table id="nodeTable" class="table table-striped" th:if="${not #lists.isEmpty(nodes)}">
+                <h2 th:if="${#lists.isEmpty(servers)}" style="text-align: center">No Servers Available</h2>
+                <table id="serverTable" class="table table-striped" th:if="${not #lists.isEmpty(servers)}">
                     <thead>
                     <tr>
-                        <th>Node Status</th>
+                        <th>Server Status</th>
                         <th>Hostname</th>
                         <th>IP Address</th>
                         <th>Port</th>
-                        <th>OS</th>
-                        <th>Compute Methods</th>
-                        <th>CPU Name</th>
-                        <th>Selected Cores</th>
-                        <th>Selected GPU(s)</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
-                    <tbody th:if="${not #lists.isEmpty(nodes)}">
-                    <tr th:each="node : ${nodes}">
-                        <!--/*@thymesVar id="node" type="com.dryadandnaiad.sethlans.domains.database.node.SethlansNode"*/-->
-                        <td th:id="'nodeStatus-' + ${node.getId()}"
-                            th:if="${node.isActive() and not node.isPendingActivation()}">Active
+                    <tbody th:if="${not #lists.isEmpty(servers)}">
+                    <tr th:each="server : ${servers}">
+                        <!--/*@thymesVar id="server" type="com.dryadandnaiad.sethlans.domains.database.server.SethlansServer"*/-->
+                        <td th:id="'serverStatus-' + ${server.getId()}"
+                            th:if="${server.isAcknowledged()}">Active
                         </td>
-                        <td th:id="'nodeStatus-' + ${node.getId()}"
-                            th:if="${node.isPendingActivation() and not node.isActive()}">Pending Activation
-                        </td>
-                        <td th:id="'nodeStatus-' + ${node.getId()}"
-                            th:if="${not node.isPendingActivation() and not node.isActive()}">Inactive
+                        <td th:id="'serverStatus-' + ${server.getId()}"
+                            th:if="${not server.isAcknowledged()}">Pending Acknowledgement
                         </td>
 
-                        <td th:id="'nodeHostname-' + ${node.getId()}"
-                            th:text="${node.getHostname()}">SAMPLE</td>
-                        <td th:id="'nodeIPAddress-' + ${node.getId()}"
-                            th:text="${node.getIpAddress()}">1.1.1.1</td>
-                        <td th:id="'nodeNetworkPort-' + ${node.getId()}"
-                            th:text="${node.getNetworkPort()}">1234</td>
-                        <td th:id="'nodeOS-' + ${node.getId()}"
-                            th:text="${node.getSethlansNodeOS()}">Windows64</td>
-                        <td th:id="'nodeComputeType-' + ${node.getId()}"
-                            th:text="${node.getComputeType().getName()}">CPU & GPU</td>
-                        <td th:id="'nodeCPUName-' + ${node.getId()}"
-                            th:unless="${node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU)}"
-                            th:text="${node.getCpuinfo().getName()}">Intel Core i7
+                        <td th:id="'serverHostname-' + ${server.getId()}"
+                            th:text="${server.getHostname()}">SAMPLE
                         </td>
-                        <td th:id="'nodeCPUName-' + ${node.getId()}"
-                            th:if="${node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU)}">
-                            N/A
+                        <td th:id="'serverIPAddress-' + ${server.getId()}"
+                            th:text="${server.getIpAddress()}">1.1.1.1
                         </td>
-
-                        <td th:id="'nodeCores-' + ${node.getId()}"
-                            th:unless="${node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU)}"
-                            th:text="${node.getSelectedCores()}">8
-                        </td>
-                        <td th:id="'nodeCores-' + ${node.getId()}"
-                            th:if="${node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU)}">N/A</td>
-
-                        <td th:id="'nodeSelectedGPUs-' + ${node.getId()}"
-                            th:if="${!node.getSelectedGPUs().isEmpty()}">
-                                                <span th:each="gpu, stat : ${node.selectedGPUs}"
-                                                      th:utext="${!stat.last} ? ${gpu.getModel()} + ',' +  '<br />' : ${gpu.getModel()}">Nvidia</span>
-                        </td>
-                        <td th:id="'nodeSelectedGPUs-' + ${node.getId()}"
-                            th:if="${node.getSelectedGPUs().isEmpty()}">
-                                                <span>N/A</span>
+                        <td th:id="'serverNetworkPort-' + ${server.getId()}"
+                            th:text="${server.getNetworkPort()}">1234
                         </td>
                         <td>
-                            <a th:id="'nodeUpdate-' + ${node.getId()}"
-                               th:href="${'/settings/nodes/update/' + node.getId()}" href="#">Update</a>
-                            <br/>
-                            <a th:id="'nodeDelete-' + ${node.getId()}"
-                               th:href="${'/settings/nodes/delete/' + node.getId()}" href="">Delete</a>
-                            <br/>
-                            <a th:id="'nodeEnableDisable-' + ${node.getId()}"
-                               th:if="${node.isActive() and not node.isPendingActivation()}"
-                               th:href="${'/settings/nodes/disable/' + node.getId()}" href="#">Disable</a>
-                            <a th:id="'nodeEnableDisable-' + ${node.getId()}"
-                               th:if="${not node.isActive() and not node.isPendingActivation()}"
-                               th:href="${'/settings/nodes/enable/' + node.getId()}" href="#">Enable</a>
+                            <a th:id="'serverAcknowledgement-' + ${server.getId()}"
+                               th:if="${not server.isAcknowledged()}"
+                               th:href="${'/settings/servers/acknowledge/' + server.getId()}" href="#">Acknowledge</a>
+                            <br th:if="${not server.isAcknowledged()}"/>
+                            <a th:id="'serverDelete-' + ${server.getId()}"
+                               th:href="${'/settings/servers/delete/' + server.getId()}" href="">Delete</a>
                         </td>
                     </tr>
                     </tbody>
@@ -178,7 +134,7 @@
             </div>
             <script>
                 $(document).ready(function () {
-                    $('#nodeTable').dataTable({
+                    $('#serverTable').dataTable({
                         "ordering": false,
                         "searching": false,
                         "lengthChange": false,

@@ -54,7 +54,7 @@ public class NodeInfoRestController {
     private String cuda;
 
 
-    @RequestMapping(value = "/nodeinfo", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/nodeinfo", method = RequestMethod.GET)
     public NodeInfo nodeInfo(){
         NodeInfo nodeInfo = new NodeInfo();
         try {

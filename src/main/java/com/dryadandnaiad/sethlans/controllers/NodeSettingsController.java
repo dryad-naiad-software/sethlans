@@ -25,34 +25,46 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Created Mario Estrella on 12/4/17.
+ * Created Mario Estrella on 12/6/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@RestController
+@Controller
 @Profile({"NODE", "DUAL"})
-public class NodeActivationRestController {
-    private static final Logger LOG = LoggerFactory.getLogger(NodeActivationRestController.class);
+public class NodeSettingsController extends AbstractSethlansController {
+    private static final Logger LOG = LoggerFactory.getLogger(NodeSettingsController.class);
+
     private SethlansServerService sethlansServerService;
 
-    @RequestMapping(value = "/nodeactivate/request", method = RequestMethod.POST)
-    public void NodeActivation(@RequestParam String serverhostname, @RequestParam String ipAddress, @RequestParam String port, @RequestParam String uuid) {
-        LOG.debug("Test");
-        SethlansServer sethlansServer = new SethlansServer();
-        sethlansServer.setHostname(serverhostname);
-        sethlansServer.setIpAddress(ipAddress);
-        sethlansServer.setNetworkPort(port);
-        sethlansServer.setAcknowledgeUUID(uuid);
-        sethlansServerService.saveOrUpdate(sethlansServer);
+    @RequestMapping("/settings/servers")
+    public String getServersPage(Model model) {
+        model.addAttribute("settings_option", "servers");
+        model.addAttribute("servers", sethlansServerService.listAll());
+        return "settings/settings";
+    }
+
+    @RequestMapping("/settings/servers/delete/{id}")
+    public String deleteNode(@PathVariable Integer id, Model model) {
+        model.addAttribute("settings_option", "servers");
+        sethlansServerService.delete(id);
+        return "redirect:/settings/servers/";
+    }
+
+    @RequestMapping("/settings/servers/acknowledge/{id}")
+    public String enableNode(@PathVariable Integer id, Model model) {
+        model.addAttribute("settings_option", "server");
+        SethlansServer sethlansServer = sethlansServerService.getById(id);
+        sethlansServer.setAcknowledged(true);
         LOG.debug(sethlansServer.toString());
-        LOG.debug("Received node activation request");
+        sethlansServerService.saveOrUpdate(sethlansServer);
+        return "redirect:/settings/servers/";
     }
 
     @Autowired

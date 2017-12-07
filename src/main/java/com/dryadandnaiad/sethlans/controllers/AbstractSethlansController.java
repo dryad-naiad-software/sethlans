@@ -39,7 +39,7 @@ import java.util.List;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class AbstractSethlansController implements ApplicationListener<SethlansEvent> {
+abstract public class AbstractSethlansController implements ApplicationListener<SethlansEvent> {
     private UserService userService;
     private boolean notification;
     private List<String> notificationMessage = new ArrayList<>();

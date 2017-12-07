@@ -219,6 +219,13 @@
                         <span class="sidebarfont">Nodes</span></a>
                 </td>
             </tr>
+            <!--/*@thymesVar id="sethlansmode" type="java.lang.String"*/-->
+            <tr th:if="${sethlansmode == 'NODE' || sethlansmode == 'DUAL'}">
+                <td>
+                    <a id="settings_servers" style="color:black" class=" fa fa-server" href="/settings/servers">&nbsp;&nbsp;
+                        <span class="sidebarfont">Servers</span></a>
+                </td>
+            </tr>
             <tr>
 
             </tr>
@@ -274,6 +281,11 @@
         </div>
         <div th:if="${settings_option.equals('nodes')}">
             <main th:replace="fragments/settings_nodes :: settings_nodes">
+                <!--Replaced By Fragment-->  </main>
+        </div>
+
+        <div th:if="${settings_option.equals('servers')}">
+            <main th:replace="fragments/settings_servers :: settings_servers">
                 <!--Replaced By Fragment-->  </main>
         </div>
 

@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.services.network;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.utils.SSLUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,7 @@ public class NodeActivationServiceImpl implements NodeActivationService {
         LOG.debug("Sending Activation Request to Node");
         String ip = sethlansNode.getIpAddress();
         String port = sethlansNode.getNetworkPort();
-        String activateURL = "https://" + ip + ":" + port + "/nodeactivate/request";
+        String activateURL = "https://" + ip + ":" + port + "/api/nodeactivate/request";
         LOG.debug("Connecting to " + activateURL);
         HttpsURLConnection connection;
         String params = "serverhostname=" + sethlansNode.getHostname() + "&ipAddress=" + sethlansNode.getIpAddress()
@@ -79,7 +80,12 @@ public class NodeActivationServiceImpl implements NodeActivationService {
     }
 
     @Async
-    public void sendActivationResponse() {
+    public void sendActivationResponse(SethlansServer sethlansServer) {
+        LOG.debug("Sending Activation Response to Server");
+        String ip = sethlansServer.getIpAddress();
+        String port = sethlansServer.getNetworkPort();
+        String responseURL = "https://" + ip + ":" + port + "/api/nodeactivate/response";
+        LOG.debug("Connecting to " + responseURL);
 
     }
 }
