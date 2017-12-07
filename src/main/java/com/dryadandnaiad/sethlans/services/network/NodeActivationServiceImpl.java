@@ -44,15 +44,15 @@ public class NodeActivationServiceImpl implements NodeActivationService {
     private static final Logger LOG = LoggerFactory.getLogger(NodeActivationServiceImpl.class);
 
     @Async
-    public void sendActivationRequest(SethlansNode sethlansNode) {
+    public void sendActivationRequest(SethlansNode sethlansNode, SethlansServer sethlansServer) {
         LOG.debug("Sending Activation Request to Node");
         String ip = sethlansNode.getIpAddress();
         String port = sethlansNode.getNetworkPort();
         String activateURL = "https://" + ip + ":" + port + "/api/nodeactivate/request";
         LOG.debug("Connecting to " + activateURL);
         HttpsURLConnection connection;
-        String params = "serverhostname=" + sethlansNode.getHostname() + "&ipAddress=" + sethlansNode.getIpAddress()
-                + "&port=" + sethlansNode.getNetworkPort() + "&uuid=" + sethlansNode.getRequestUUID();
+        String params = "serverhostname=" + sethlansServer.getHostname() + "&ipAddress=" + sethlansServer.getIpAddress()
+                + "&port=" + sethlansServer.getNetworkPort() + "&uuid=" + sethlansNode.getRequestUUID();
 
         try {
             URL url = new URL(activateURL);
@@ -80,7 +80,7 @@ public class NodeActivationServiceImpl implements NodeActivationService {
     }
 
     @Async
-    public void sendActivationResponse(SethlansServer sethlansServer) {
+    public void sendActivationResponse(SethlansServer sethlansServer, SethlansNode sethlansNode) {
         LOG.debug("Sending Activation Response to Server");
         String ip = sethlansServer.getIpAddress();
         String port = sethlansServer.getNetworkPort();

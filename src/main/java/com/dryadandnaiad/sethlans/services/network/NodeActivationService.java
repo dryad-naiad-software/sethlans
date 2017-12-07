@@ -30,7 +30,7 @@ import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
  */
 public interface NodeActivationService {
 
-    void sendActivationRequest(SethlansNode sethlansNode);
+    void sendActivationRequest(SethlansNode sethlansNode, SethlansServer sethlansServer);
 
-    void sendActivationResponse(SethlansServer sethlansServer);
+    void sendActivationResponse(SethlansServer sethlansServer, SethlansNode sethlansNode);
 }

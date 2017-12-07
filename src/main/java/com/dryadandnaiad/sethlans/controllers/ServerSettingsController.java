@@ -23,13 +23,16 @@ import com.dryadandnaiad.sethlans.commands.NodeAddForm;
 import com.dryadandnaiad.sethlans.commands.ScanForm;
 import com.dryadandnaiad.sethlans.converters.SethlansNodeToNodeAddForm;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.enums.NodeAddProgress;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeService;
 import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,6 +42,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.List;
 
 /**
@@ -57,6 +64,10 @@ public class ServerSettingsController extends AbstractSethlansController {
     private SethlansNode sethlansNode;
     private SethlansNodeToNodeAddForm sethlansNodeToNodeAddForm;
     private NodeActivationService nodeActivationService;
+    private SethlansServer sethlansServer;
+
+    @Value("${server.port}")
+    private String sethlansPort;
 
     @RequestMapping("/settings/nodes")
     public String getNodePage(Model model) {
@@ -164,7 +175,8 @@ public class ServerSettingsController extends AbstractSethlansController {
                         sethlansNodeService.saveOrUpdate(sethlansNode);
                         LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
                         if (sethlansNode.isPendingActivation()) {
-                            nodeActivationService.sendActivationRequest(sethlansNode);
+                            setSethlansServer();
+                            nodeActivationService.sendActivationRequest(sethlansNode, sethlansServer);
                         }
                     }
                 }
@@ -172,7 +184,8 @@ public class ServerSettingsController extends AbstractSethlansController {
                 sethlansNodeService.saveOrUpdate(sethlansNode);
                 LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
                 if (sethlansNode.isPendingActivation()) {
-                    nodeActivationService.sendActivationRequest(sethlansNode);
+                    setSethlansServer();
+                    nodeActivationService.sendActivationRequest(sethlansNode, sethlansServer);
                 }
             }
 
@@ -228,7 +241,8 @@ public class ServerSettingsController extends AbstractSethlansController {
                         sethlansNodeService.saveOrUpdate(sethlansNodes.get(nodeId));
                         LOG.debug("Added: " + sethlansNodes.get(nodeId).getHostname() + " to database.");
                         if (sethlansNodes.get(nodeId).isPendingActivation()) {
-                            nodeActivationService.sendActivationRequest(sethlansNodes.get(nodeId));
+                            setSethlansServer();
+                            nodeActivationService.sendActivationRequest(sethlansNodes.get(nodeId), sethlansServer);
                         }
 
                     }
@@ -237,7 +251,8 @@ public class ServerSettingsController extends AbstractSethlansController {
                 sethlansNodeService.saveOrUpdate(sethlansNodes.get(nodeId));
                 LOG.debug("Added: " + sethlansNodes.get(nodeId).getHostname() + " to database.");
                 if (sethlansNodes.get(nodeId).isPendingActivation()) {
-                    nodeActivationService.sendActivationRequest(sethlansNodes.get(nodeId));
+                    setSethlansServer();
+                    nodeActivationService.sendActivationRequest(sethlansNodes.get(nodeId), sethlansServer);
                 }
             }
         }
@@ -263,5 +278,44 @@ public class ServerSettingsController extends AbstractSethlansController {
     @Autowired
     public void setSethlansNodeToNodeAddForm(SethlansNodeToNodeAddForm sethlansNodeToNodeAddForm) {
         this.sethlansNodeToNodeAddForm = sethlansNodeToNodeAddForm;
+    }
+
+
+    public void setSethlansServer() {
+
+        String hostname = null;
+        try {
+            hostname = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        int iend = hostname.indexOf(".");
+        if (iend != -1) {
+            LOG.debug(hostname + " contains a domain name. Removing it.");
+            hostname = hostname.substring(0, iend);
+        }
+        String ipAddress = null;
+        if (SystemUtils.IS_OS_LINUX) {
+            // Make a connection to 8.8.8.8 DNS in order to get IP address
+            try {
+                Socket s = new Socket("8.8.8.8", 53);
+                ipAddress = s.getLocalAddress().getHostAddress();
+
+                s.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                ipAddress = InetAddress.getLocalHost().getHostAddress();
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+        }
+        this.sethlansServer.setNetworkPort(sethlansPort);
+        this.sethlansServer.setHostname(hostname);
+        this.sethlansServer.setIpAddress(ipAddress);
+
+
     }
 }
