@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,22 +54,19 @@ public class NodeInfoRestController {
 
 
     @RequestMapping(value = "/api/nodeinfo", method = RequestMethod.GET)
-    public NodeInfo nodeInfo(){
+    public NodeInfo nodeInfo() {
         NodeInfo nodeInfo = new NodeInfo();
-        try {
-            nodeInfo.populateNodeInfo();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+        nodeInfo.populateNodeInfo();
+
         nodeInfo.setNetworkPort(sethlansPort);
         nodeInfo.setComputeType(computeType);
 
-        if(computeType == ComputeType.CPU_GPU || computeType == ComputeType.CPU) {
+        if (computeType == ComputeType.CPU_GPU || computeType == ComputeType.CPU) {
             nodeInfo.setCpuinfo();
             nodeInfo.setSelectedCores(cores);
         }
 
-        if(computeType == ComputeType.GPU || computeType == ComputeType.CPU_GPU) {
+        if (computeType == ComputeType.GPU || computeType == ComputeType.CPU_GPU) {
             List<String> cudaList = Arrays.asList(cuda.split(","));
             nodeInfo.setCpuinfo();
             nodeInfo.setSelectedCUDA(cudaList);
