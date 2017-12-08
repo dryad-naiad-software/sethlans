@@ -34,8 +34,9 @@ public class SethlansServer extends AbstractEntityClass {
     private String hostname;
     private String ipAddress;
     private String networkPort;
-    private String acknowledgeUUID;
+    private String uuid;
     private boolean acknowledged;
+    private boolean pendingAcknowledgementResponse;
 
     public String getHostname() {
         return hostname;
@@ -61,12 +62,12 @@ public class SethlansServer extends AbstractEntityClass {
         this.networkPort = networkPort;
     }
 
-    public String getAcknowledgeUUID() {
-        return acknowledgeUUID;
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setAcknowledgeUUID(String acknowledgeUUID) {
-        this.acknowledgeUUID = acknowledgeUUID;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public boolean isAcknowledged() {
@@ -77,14 +78,23 @@ public class SethlansServer extends AbstractEntityClass {
         this.acknowledged = acknowledged;
     }
 
+    public void setPendingAcknowledgementResponse(boolean pendingAcknowledgementResponse) {
+        this.pendingAcknowledgementResponse = pendingAcknowledgementResponse;
+    }
+
+    public boolean isPendingAcknowledgementResponse() {
+        return pendingAcknowledgementResponse;
+    }
+
     @Override
     public String toString() {
         return "SethlansServer{" +
                 "hostname='" + hostname + '\'' +
                 ", ipAddress='" + ipAddress + '\'' +
                 ", networkPort='" + networkPort + '\'' +
-                ", acknowledgeUUID='" + acknowledgeUUID + '\'' +
+                ", uuid='" + uuid + '\'' +
                 ", acknowledged=" + acknowledged +
+                ", pendingAcknowledgementResponse=" + pendingAcknowledgementResponse +
                 '}';
     }
 }

@@ -51,7 +51,7 @@ public class SethlansNode extends AbstractEntityClass {
     private List<String> selectedCUDA;
     private boolean active;
     private boolean pendingActivation;
-    private String requestUUID;
+    private String uuid;
 
     public String getHostname() {
         return hostname;
@@ -141,12 +141,12 @@ public class SethlansNode extends AbstractEntityClass {
         this.pendingActivation = pendingActivation;
     }
 
-    public String getRequestUUID() {
-        return requestUUID;
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setRequestUUID(String requestUUID) {
-        this.requestUUID = requestUUID;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     @Override
@@ -163,7 +163,7 @@ public class SethlansNode extends AbstractEntityClass {
                 ", selectedCUDA=" + selectedCUDA +
                 ", active=" + active +
                 ", pendingActivation=" + pendingActivation +
-                ", requestUUID='" + requestUUID + '\'' +
+                ", uuid='" + uuid + '\'' +
                 '}';
     }
 }
