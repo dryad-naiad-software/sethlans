@@ -47,37 +47,50 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
     private static final Logger LOG = LoggerFactory.getLogger(NodeActivationServiceImpl.class);
     private ApplicationEventPublisher applicationEventPublisher;
 
+    @Override
     @Async
     public void sendActivationRequest(SethlansNode sethlansNode, SethlansServer sethlansServer) {
         LOG.debug("Sending Activation Request to Node");
         String ip = sethlansNode.getIpAddress();
         String port = sethlansNode.getNetworkPort();
         String activateURL = "https://" + ip + ":" + port + "/api/nodeactivate/request";
-        LOG.debug("Connecting to " + activateURL);
         String params = "serverhostname=" + sethlansServer.getHostname() + "&ipAddress=" + sethlansServer.getIpAddress()
-                + "&port=" + sethlansServer.getNetworkPort() + "&uuid=" + sethlansNode.getRequestUUID();
+                + "&port=" + sethlansServer.getNetworkPort() + "&uuid=" + sethlansNode.getUuid();
         connectToRemote(activateURL, params);
 
     }
 
+    @Override
     @Async
     public void sendActivationResponse(SethlansServer sethlansServer, SethlansNode sethlansNode) {
         LOG.debug("Sending Activation Response to Server");
         String ip = sethlansServer.getIpAddress();
         String port = sethlansServer.getNetworkPort();
         String responseURL = "https://" + ip + ":" + port + "/api/nodeactivate/response";
-        LOG.debug("Connecting to " + responseURL);
         String params = "nodehostname=" + sethlansNode.getHostname() + "&ipAddress=" + sethlansNode.getIpAddress()
-                + "&port=" + sethlansNode.getNetworkPort() + "&uuid=" + sethlansServer.getAcknowledgeUUID();
+                + "&port=" + sethlansNode.getNetworkPort() + "&uuid=" + sethlansServer.getUuid();
         if (connectToRemote(responseURL, params)) {
             this.applicationEventPublisher.publishEvent(new SethlansEvent(this, sethlansServer.getHostname(), false));
 
         }
     }
 
+    @Override
+    @Async
+    public void sendResponseAcknowledgement(SethlansNode sethlansNode, String uuid) {
+        LOG.debug("Sending Response Acknowledgement to Node");
+        String ip = sethlansNode.getIpAddress();
+        String port = sethlansNode.getNetworkPort();
+        String acknowledgeURL = "https://" + ip + ":" + port + "/api/nodeactivate/acknowledge";
+        String params = "uuid=" + sethlansNode.getUuid();
+        connectToRemote(acknowledgeURL, params);
+    }
+
     private boolean connectToRemote(String connectionURL, String params) {
+        LOG.debug("Connecting to " + connectionURL);
         HttpsURLConnection connection;
         try {
+            LOG.debug("Sending the following parameters to API: " + params);
             URL url = new URL(connectionURL);
             SSLUtilities.trustAllHostnames();
             SSLUtilities.trustAllHttpsCertificates();
@@ -99,9 +112,9 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
 
 
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            LOG.error("Unsupported Encoding Exception " + e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         }
         return false;
 

@@ -66,7 +66,7 @@ public class SethlansNodeServiceImpl implements SethlansNodeService {
         List<SethlansNode> sethlansNodes = new ArrayList<>();
         nodeRepository.findAll().forEach(sethlansNodes::add);
         for (SethlansNode sethlansNode : sethlansNodes) {
-            if (sethlansNode.getRequestUUID().equals(uuid)) {
+            if (sethlansNode.getUuid().equals(uuid)) {
                 return sethlansNode;
             }
         }

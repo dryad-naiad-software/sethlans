@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.network;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
+import org.springframework.scheduling.annotation.Async;
 
 /**
  * Created Mario Estrella on 12/5/17.
@@ -30,7 +31,12 @@ import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
  */
 public interface NodeActivationService {
 
+    @Async
     void sendActivationRequest(SethlansNode sethlansNode, SethlansServer sethlansServer);
 
+    @Async
     void sendActivationResponse(SethlansServer sethlansServer, SethlansNode sethlansNode);
+
+    @Async
+    void sendResponseAcknowledgement(SethlansNode sethlansNode, String uuid);
 }

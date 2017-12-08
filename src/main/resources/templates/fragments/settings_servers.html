@@ -108,7 +108,12 @@
                             th:if="${server.isAcknowledged()}">Active
                         </td>
                         <td th:id="'serverStatus-' + ${server.getId()}"
-                            th:if="${not server.isAcknowledged()}">Pending Acknowledgement
+                            th:if="${not server.isAcknowledged() and not server.isPendingAcknowledgementResponse()}">
+                            Pending Acknowledgement
+                        </td>
+                        <td th:id="'serverStatus-' + ${server.getId()}"
+                            th:if="${not server.isAcknowledged() and server.isPendingAcknowledgementResponse()}">Pending
+                            Server Response
                         </td>
 
                         <td th:id="'serverHostname-' + ${server.getId()}"
@@ -122,9 +127,9 @@
                         </td>
                         <td>
                             <a th:id="'serverAcknowledgement-' + ${server.getId()}"
-                               th:if="${not server.isAcknowledged()}"
+                               th:if="${not server.isAcknowledged() and not server.isPendingAcknowledgementResponse()}"
                                th:href="${'/settings/servers/acknowledge/' + server.getId()}" href="#">Acknowledge</a>
-                            <br th:if="${not server.isAcknowledged()}"/>
+                            <br th:if="${not server.isAcknowledged() and not server.isPendingAcknowledgementResponse()}"/>
                             <a th:id="'serverDelete-' + ${server.getId()}"
                                th:href="${'/settings/servers/delete/' + server.getId()}" href="">Delete</a>
                         </td>

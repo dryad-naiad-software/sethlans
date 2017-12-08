@@ -70,7 +70,7 @@ public class NodeSettingsController extends AbstractSethlansController {
     public String enableNode(@PathVariable Integer id, Model model) {
         model.addAttribute("settings_option", "server");
         SethlansServer sethlansServer = sethlansServerService.getById(id);
-        sethlansServer.setAcknowledged(true);
+        sethlansServer.setPendingAcknowledgementResponse(true);
         LOG.debug(sethlansServer.toString());
         sethlansServerService.saveOrUpdate(sethlansServer);
         setSethlansNode();

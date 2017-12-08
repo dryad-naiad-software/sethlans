@@ -72,7 +72,7 @@ public class SethlansServerServiceImpl implements SethlansServerService {
         List<SethlansServer> sethlansServers = new ArrayList<>();
         serverRepository.findAll().forEach(sethlansServers::add);
         for (SethlansServer sethlansServer : sethlansServers) {
-            if (sethlansServer.getAcknowledgeUUID().equals(uuid)) {
+            if (sethlansServer.getUuid().equals(uuid)) {
                 return sethlansServer;
             }
         }

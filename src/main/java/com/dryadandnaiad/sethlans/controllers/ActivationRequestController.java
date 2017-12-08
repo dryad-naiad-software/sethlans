@@ -57,7 +57,7 @@ public class ActivationRequestController implements ApplicationEventPublisherAwa
             sethlansServer.setHostname(serverhostname);
             sethlansServer.setIpAddress(ipAddress);
             sethlansServer.setNetworkPort(port);
-            sethlansServer.setAcknowledgeUUID(uuid);
+            sethlansServer.setUuid(uuid);
             sethlansServerService.saveOrUpdate(sethlansServer);
             LOG.debug(sethlansServer.toString());
             LOG.debug("Processed node activation request");
@@ -67,7 +67,17 @@ public class ActivationRequestController implements ApplicationEventPublisherAwa
     }
 
     @RequestMapping(value = "/api/nodeactivate/acknowledge", method = RequestMethod.POST)
-    public void nodeActivationAcknowledge() {
+    public void nodeActivationAcknowledge(@RequestParam String uuid) {
+        if (sethlansServerService.getByUUID(uuid) != null) {
+            SethlansServer sethlansServer = sethlansServerService.getByUUID(uuid);
+            LOG.debug("Received Server Acknowledgement for " + sethlansServer.getHostname());
+            sethlansServer.setPendingAcknowledgementResponse(false);
+            sethlansServer.setAcknowledged(true);
+            sethlansServerService.saveOrUpdate(sethlansServer);
+        } else {
+            LOG.debug("No such server present in database");
+        }
+
 
     }
 

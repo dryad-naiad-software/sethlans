@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeService;
+import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ActivationResponseController {
     private static final Logger LOG = LoggerFactory.getLogger(ActivationResponseController.class);
     private SethlansNodeService sethlansNodeService;
+    private NodeActivationService nodeActivationService;
 
     @RequestMapping(value = "/api/nodeactivate/response", method = RequestMethod.POST)
     public void nodeActivationRequest(@RequestParam String nodehostname, @RequestParam String ipAddress,
@@ -56,6 +58,9 @@ public class ActivationResponseController {
             sethlansNodeService.saveOrUpdate(sethlansNode);
             LOG.debug(sethlansNode.toString());
             LOG.debug("Processed node activation response");
+            nodeActivationService.sendResponseAcknowledgement(sethlansNode, uuid);
+
+
         }
 
 
@@ -64,5 +69,10 @@ public class ActivationResponseController {
     @Autowired
     public void setSethlansNodeService(SethlansNodeService sethlansNodeService) {
         this.sethlansNodeService = sethlansNodeService;
+    }
+
+    @Autowired
+    public void setNodeActivationService(NodeActivationService nodeActivationService) {
+        this.nodeActivationService = nodeActivationService;
     }
 }
