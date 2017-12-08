@@ -31,7 +31,9 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created Mario Estrella on 10/20/17.
@@ -41,8 +43,7 @@ import java.util.List;
  */
 abstract public class AbstractSethlansController implements ApplicationListener<SethlansEvent> {
     private UserService userService;
-    private boolean notification;
-    private List<String> notificationMessage = new ArrayList<>();
+    private Map<String, String> notificationMessage = new LinkedHashMap<>();
     private static final Logger LOG = LoggerFactory.getLogger(AbstractSethlansController.class);
 
     @Value("${sethlans.mode}")
@@ -73,12 +74,15 @@ abstract public class AbstractSethlansController implements ApplicationListener<
     @ModelAttribute("isNewNotification")
     public boolean isNotification(){
         LOG.debug("Current notification list size: " + notificationMessage.size());
-        return notification;
+        if (notificationMessage.size() > 0) {
+            return true;
+        }
+        return false;
     }
 
     @ModelAttribute("notificationMessages")
     public List<String> getNotificationMessage(){
-        return notificationMessage;
+        return new ArrayList<>(notificationMessage.values());
     }
 
     @Autowired
@@ -89,11 +93,11 @@ abstract public class AbstractSethlansController implements ApplicationListener<
 
     @Override
     public void onApplicationEvent(SethlansEvent event) {
-        notification = event.isNewNotification();
-        if(notification) {
-            notificationMessage.add(event.getMessage());
+        boolean activeNotification = event.isActiveNotification();
+        if (activeNotification) {
+            notificationMessage.put(event.getKey(), event.getMessage());
         } else {
-            notificationMessage = new ArrayList<>();
+            notificationMessage.remove(event.getKey());
         }
 
     }

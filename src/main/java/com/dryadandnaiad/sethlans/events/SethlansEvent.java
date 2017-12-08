@@ -27,35 +27,41 @@ import org.springframework.context.ApplicationEvent;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class SethlansEvent extends ApplicationEvent{
+public class SethlansEvent extends ApplicationEvent {
 
     private static final long serialVersionUID = 1L;
 
     private String message;
-    private boolean newNotification;
+    private String key;
+    private boolean activeNotification;
 
     /**
      * Create a new ApplicationEvent.
      *
      * @param source the object on which the event initially occurred (never {@code null})
      */
-    public SethlansEvent(Object source, String message, boolean newNotification) {
+    public SethlansEvent(Object source, String key, String message, boolean activeNotification) {
         super(source);
         this.message = message;
-        this.newNotification = newNotification;
+        this.key = key;
+        this.activeNotification = activeNotification;
     }
 
-    public SethlansEvent(Object source, boolean newNotification) {
+    public SethlansEvent(Object source, String key, boolean activeNotification) {
         super(source);
-        this.message = message;
-        this.newNotification = newNotification;
+        this.key = key;
+        this.activeNotification = activeNotification;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public boolean isNewNotification() {
-        return newNotification;
+    public boolean isActiveNotification() {
+        return activeNotification;
+    }
+
+    public String getKey() {
+        return key;
     }
 }

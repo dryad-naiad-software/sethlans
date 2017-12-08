@@ -21,9 +21,12 @@ package com.dryadandnaiad.sethlans.services.network;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
+import com.dryadandnaiad.sethlans.events.SethlansEvent;
 import com.dryadandnaiad.sethlans.utils.SSLUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -40,8 +43,9 @@ import java.net.URL;
  * Project: sethlans
  */
 @Service
-public class NodeActivationServiceImpl implements NodeActivationService {
+public class NodeActivationServiceImpl implements NodeActivationService, ApplicationEventPublisherAware {
     private static final Logger LOG = LoggerFactory.getLogger(NodeActivationServiceImpl.class);
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Async
     public void sendActivationRequest(SethlansNode sethlansNode, SethlansServer sethlansServer) {
@@ -65,10 +69,13 @@ public class NodeActivationServiceImpl implements NodeActivationService {
         LOG.debug("Connecting to " + responseURL);
         String params = "nodehostname=" + sethlansNode.getHostname() + "&ipAddress=" + sethlansNode.getIpAddress()
                 + "&port=" + sethlansNode.getNetworkPort() + "&uuid=" + sethlansServer.getAcknowledgeUUID();
-        connectToRemote(responseURL, params);
+        if (connectToRemote(responseURL, params)) {
+            this.applicationEventPublisher.publishEvent(new SethlansEvent(this, sethlansServer.getHostname(), false));
+
+        }
     }
 
-    private void connectToRemote(String connectionURL, String params) {
+    private boolean connectToRemote(String connectionURL, String params) {
         HttpsURLConnection connection;
         try {
             URL url = new URL(connectionURL);
@@ -86,6 +93,9 @@ public class NodeActivationServiceImpl implements NodeActivationService {
 
             int response = connection.getResponseCode();
             LOG.debug("HTTP Response code " + response);
+            if (response == 200) {
+                return true;
+            }
 
 
         } catch (UnsupportedEncodingException e) {
@@ -93,6 +103,12 @@ public class NodeActivationServiceImpl implements NodeActivationService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return false;
 
+    }
+
+    @Override
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 }

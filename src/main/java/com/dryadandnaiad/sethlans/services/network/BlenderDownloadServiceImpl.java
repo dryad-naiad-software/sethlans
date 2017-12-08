@@ -84,15 +84,16 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
         blenderBinaries = BlenderUtils.listBinaries();
         List<BlenderBinary> blenderDownloadList = prepareDownload();
         LOG.debug(blenderDownloadList.toString());
+        String blenderVersion = null;
 
         for (BlenderBinary blenderBinary : blenderDownloadList) {
             boolean retry=true;
-            String blenderVersion = blenderBinary.getBlenderVersion();
+            blenderVersion = blenderBinary.getBlenderVersion();
             File saveLocation = new File(downloadLocation + File.separator + "binaries" + File.separator + blenderVersion + File.separator);
             saveLocation.mkdirs();
             URL url;
             HttpURLConnection connection = null;
-            String filename = null;
+            String filename;
 
             while (retry) {
                 try {
@@ -110,7 +111,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                     File toDownload = new File(saveLocation + File.separator + filename);
                     LOG.info("Downloading " + filename + "...");
                     String blenderFileInfo = "Downloading Blender " + blenderVersion;
-                    this.applicationEventPublisher.publishEvent(new SethlansEvent(this, blenderFileInfo, downloading));
+                    this.applicationEventPublisher.publishEvent(new SethlansEvent(this, blenderVersion, blenderFileInfo, downloading));
 
                     if (toDownload.exists()) {
                         LOG.debug("Previous download did not complete successfully, deleting and re-downloading.");
@@ -134,7 +135,6 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                     retry = false;
                 } catch (MalformedURLException e) {
                     LOG.error("Invalid URL: " + e.getMessage());
-                    retry = false;
                     return false;
                 } catch (IOException e) {
                     LOG.error("IO Exception: " + e.getMessage());
@@ -145,7 +145,6 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                         continue;
                     } else {
                         LOG.error(Throwables.getStackTraceAsString(e));
-                        retry = false;
                         return false;
                     }
                 } finally {
@@ -158,7 +157,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
         }
 
         downloading = false;
-        this.applicationEventPublisher.publishEvent(new SethlansEvent(this, downloading));
+        this.applicationEventPublisher.publishEvent(new SethlansEvent(this, blenderVersion, downloading));
         return true;
     }
 

@@ -20,10 +20,13 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
+import com.dryadandnaiad.sethlans.events.SethlansEvent;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -38,9 +41,10 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @Profile({"NODE", "DUAL"})
-public class ActivationRequestController {
+public class ActivationRequestController implements ApplicationEventPublisherAware {
     private static final Logger LOG = LoggerFactory.getLogger(ActivationRequestController.class);
     private SethlansServerService sethlansServerService;
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @RequestMapping(value = "/api/nodeactivate/request", method = RequestMethod.POST)
     public void nodeActivationRequest(@RequestParam String serverhostname, @RequestParam String ipAddress,
@@ -57,6 +61,8 @@ public class ActivationRequestController {
             sethlansServerService.saveOrUpdate(sethlansServer);
             LOG.debug(sethlansServer.toString());
             LOG.debug("Processed node activation request");
+            String notification = "New Server Request: " + serverhostname;
+            this.applicationEventPublisher.publishEvent(new SethlansEvent(this, serverhostname, notification, true));
         }
     }
 
@@ -68,5 +74,10 @@ public class ActivationRequestController {
     @Autowired
     public void setSethlansServerService(SethlansServerService sethlansServerService) {
         this.sethlansServerService = sethlansServerService;
+    }
+
+    @Override
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 }
