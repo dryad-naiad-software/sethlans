@@ -52,7 +52,7 @@ public class SethlansNode extends AbstractEntityClass {
     private boolean active;
     private boolean pendingActivation;
     private String uuid;
-    private float rating;
+    private double rating;
 
 
     public String getHostname() {
@@ -151,11 +151,11 @@ public class SethlansNode extends AbstractEntityClass {
         this.uuid = uuid;
     }
 
-    public float getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 
