@@ -38,10 +38,10 @@ import java.util.List;
  * Project: sethlans
  */
 @Service
-public class BlenderProjectServiceImpl implements BlenderProjectService {
+public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabaseService {
     private BlenderProjectRepository blenderProjectRepository;
     private ProjectFormToBlenderProject projectFormToBlenderProject;
-    private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectDatabaseServiceImpl.class);
 
     @Autowired
     public void setBlenderProjectRepository(BlenderProjectRepository blenderProjectRepository) {

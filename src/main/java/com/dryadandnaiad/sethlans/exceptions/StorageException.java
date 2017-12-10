@@ -17,15 +17,21 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.domains.database.blender;
-
-import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+package com.dryadandnaiad.sethlans.exceptions;
 
 /**
- * Created Mario Estrella on 3/24/17.
+ * Created Mario Estrella on 3/29/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class BlenderClientTask extends AbstractEntityClass {
+public class StorageException extends RuntimeException {
+
+    public StorageException(String message) {
+        super(message);
+    }
+
+    public StorageException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

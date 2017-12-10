@@ -23,13 +23,16 @@ import com.dryadandnaiad.sethlans.commands.ProjectForm;
 import com.dryadandnaiad.sethlans.converters.BlenderProjectToProjectForm;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.ProjectFormProgress;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
+import com.dryadandnaiad.sethlans.services.blender.BlenderProjectService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryService;
-import com.dryadandnaiad.sethlans.services.database.BlenderProjectService;
+import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.SethlansNodeService;
 import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,9 +67,11 @@ public class ProjectController extends AbstractSethlansController {
     private List<BlenderBinary> availableBlenderBinaries;
     private WebUploadService webUploadService;
     private BlenderParseBlendFileService blenderParseBlendFileService;
-    private BlenderProjectService blenderProjectService;
+    private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private Validator projectFormValidator;
     private BlenderProjectToProjectForm blenderProjectToProjectForm;
+    private SethlansNodeService sethlansNodeService;
+    private BlenderProjectService blenderProjectService;
 
     @Value("${sethlans.tempDir}")
     private String temp;
@@ -74,9 +79,17 @@ public class ProjectController extends AbstractSethlansController {
 
     @RequestMapping("/project")
     public String getPage(Model model) {
+        List<SethlansNode> sethlansNodeList = (List<SethlansNode>) sethlansNodeService.listAll();
+        List<SethlansNode> activeNodes = new ArrayList<>();
+        for (SethlansNode sethlansNode : sethlansNodeList) {
+            if (sethlansNode.isActive()) {
+                activeNodes.add(sethlansNode);
+            }
+        }
         getAvailableBlenderBinaries();
         model.addAttribute("availableBlenderBinaries", availableBlenderBinaries);
-        model.addAttribute("projects", blenderProjectService.listAll());
+        model.addAttribute("projects", blenderProjectDatabaseService.listAll());
+        model.addAttribute("active_nodes", activeNodes);
         return "project/project_list";
     }
 
@@ -88,20 +101,36 @@ public class ProjectController extends AbstractSethlansController {
 
     @RequestMapping("/project/view/{id}")
     public String getProject(@PathVariable Integer id, Model model) {
-        model.addAttribute("project", blenderProjectService.getById(id));
+        model.addAttribute("project", blenderProjectDatabaseService.getById(id));
         return "project/project_view";
     }
 
     @RequestMapping("/project/delete/{id}")
     public String deleteProject(@PathVariable Integer id) {
-        blenderProjectService.delete(id);
+        BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
+        blenderProjectService.stopProject(blenderProject);
+        blenderProjectDatabaseService.delete(id);
+        return "redirect:/project";
+    }
+
+    @RequestMapping("/project/start/{id}")
+    public String startProject(@PathVariable Integer id) {
+        BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
+        blenderProjectService.startProject(blenderProject);
+        return "redirect:/project";
+    }
+
+    @RequestMapping("/project/pause/{id}")
+    public String pauseProject(@PathVariable Integer id) {
+        BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
+        blenderProjectService.pauseProject(blenderProject);
         return "redirect:/project";
     }
 
     @RequestMapping("/project/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
         getAvailableBlenderBinaries();
-        BlenderProject project = blenderProjectService.getById(id);
+        BlenderProject project = blenderProjectDatabaseService.getById(id);
         ProjectForm projectForm = blenderProjectToProjectForm.convert(project);
         projectForm.setAvailableBlenderBinaries(availableBlenderBinaries);
         projectForm.setAvailableBlenderVersions();
@@ -142,7 +171,7 @@ public class ProjectController extends AbstractSethlansController {
         LOG.debug(projectForm.toString());
         if (projectForm.getProgress() == ProjectFormProgress.FINISHED) {
             LOG.debug("FINISHED");
-            BlenderProject savedProject = blenderProjectService.saveOrUpdateProjectForm(projectForm);
+            BlenderProject savedProject = blenderProjectDatabaseService.saveOrUpdateProjectForm(projectForm);
             LOG.debug(projectForm.toString());
             return "redirect:/project/view/" + savedProject.getId();
         }
@@ -194,13 +223,23 @@ public class ProjectController extends AbstractSethlansController {
     }
 
     @Autowired
-    public void setBlenderProjectService(BlenderProjectService blenderProjectService) {
-        this.blenderProjectService = blenderProjectService;
+    public void setBlenderProjectDatabaseService(BlenderProjectDatabaseService blenderProjectDatabaseService) {
+        this.blenderProjectDatabaseService = blenderProjectDatabaseService;
     }
 
     @Autowired
     public void setBlenderProjectToProjectForm(BlenderProjectToProjectForm blenderProjectToProjectForm) {
         this.blenderProjectToProjectForm = blenderProjectToProjectForm;
+    }
+
+    @Autowired
+    public void setSethlansNodeService(SethlansNodeService sethlansNodeService) {
+        this.sethlansNodeService = sethlansNodeService;
+    }
+
+    @Autowired
+    public void setBlenderProjectService(BlenderProjectService blenderProjectService) {
+        this.blenderProjectService = blenderProjectService;
     }
 
     @Autowired

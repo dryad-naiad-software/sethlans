@@ -17,21 +17,18 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.storage;
+package com.dryadandnaiad.sethlans.controllers;
+
+import org.springframework.context.annotation.Profile;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Created Mario Estrella on 3/29/17.
+ * Created Mario Estrella on 12/10/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class StorageException extends RuntimeException {
-
-    public StorageException(String message) {
-        super(message);
-    }
-
-    public StorageException(String message, Throwable cause) {
-        super(message, cause);
-    }
+@RestController
+@Profile({"SERVER", "DUAL"})
+public class ServerProjectRestController {
 }

@@ -52,6 +52,8 @@ public class SethlansNode extends AbstractEntityClass {
     private boolean active;
     private boolean pendingActivation;
     private String uuid;
+    private float rating;
+
 
     public String getHostname() {
         return hostname;
@@ -149,6 +151,14 @@ public class SethlansNode extends AbstractEntityClass {
         this.uuid = uuid;
     }
 
+    public float getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
+
     @Override
     public String toString() {
         return "SethlansNode{" +
@@ -164,6 +174,7 @@ public class SethlansNode extends AbstractEntityClass {
                 ", active=" + active +
                 ", pendingActivation=" + pendingActivation +
                 ", uuid='" + uuid + '\'' +
+                ", rating=" + rating +
                 '}';
     }
 }

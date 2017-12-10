@@ -17,18 +17,20 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.database;
+package com.dryadandnaiad.sethlans.services.blender;
 
-import com.dryadandnaiad.sethlans.commands.ProjectForm;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 
 /**
- * Created Mario Estrella on 4/2/17.
+ * Created Mario Estrella on 12/9/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderProjectService extends CRUDService<BlenderProject> {
+public interface BlenderProjectService {
+    void startProject(BlenderProject blenderProject);
 
-    BlenderProject saveOrUpdateProjectForm(ProjectForm projectForm);
+    void pauseProject(BlenderProject blenderProject);
+
+    void stopProject(BlenderProject blenderProject);
 }

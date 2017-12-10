@@ -17,21 +17,19 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.storage;
+package com.dryadandnaiad.sethlans.domains.database.blender;
+
+import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+
+import javax.persistence.Entity;
 
 /**
- * Created Mario Estrella on 3/29/17.
+ * Created Mario Estrella on 3/24/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class StorageFileNotFoundException extends StorageException {
-
-    public StorageFileNotFoundException(String message) {
-        super(message);
-    }
-
-    public StorageFileNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
+@Entity
+public class BlenderRenderTask extends AbstractEntityClass {
+    private String projectName;
 }

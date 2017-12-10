@@ -19,6 +19,8 @@
 
 package com.dryadandnaiad.sethlans.services.storage;
 
+import com.dryadandnaiad.sethlans.exceptions.StorageException;
+import com.dryadandnaiad.sethlans.exceptions.StorageFileNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
