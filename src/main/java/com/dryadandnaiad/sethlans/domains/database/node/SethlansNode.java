@@ -52,7 +52,8 @@ public class SethlansNode extends AbstractEntityClass {
     private boolean active;
     private boolean pendingActivation;
     private String uuid;
-    private double rating;
+    private double ratingCPU;
+    private double ratingGPU;
 
 
     public String getHostname() {
@@ -151,12 +152,20 @@ public class SethlansNode extends AbstractEntityClass {
         this.uuid = uuid;
     }
 
-    public double getRating() {
-        return rating;
+    public double getRatingCPU() {
+        return ratingCPU;
     }
 
-    public void setRating(double rating) {
-        this.rating = rating;
+    public void setRatingCPU(double ratingCPU) {
+        this.ratingCPU = ratingCPU;
+    }
+
+    public double getRatingGPU() {
+        return ratingGPU;
+    }
+
+    public void setRatingGPU(double ratingGPU) {
+        this.ratingGPU = ratingGPU;
     }
 
     @Override
@@ -174,7 +183,8 @@ public class SethlansNode extends AbstractEntityClass {
                 ", active=" + active +
                 ", pendingActivation=" + pendingActivation +
                 ", uuid='" + uuid + '\'' +
-                ", rating=" + rating +
+                ", ratingCPU=" + ratingCPU +
+                ", ratingGPU=" + ratingGPU +
                 '}';
     }
 }
