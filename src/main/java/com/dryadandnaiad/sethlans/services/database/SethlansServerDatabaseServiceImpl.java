@@ -39,7 +39,7 @@ public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabase
     private ServerRepository serverRepository;
 
     @Override
-    public List<?> listAll() {
+    public List<SethlansServer> listAll() {
         List<SethlansServer> sethlansServers = new ArrayList<>();
         serverRepository.findAll().forEach(sethlansServers::add);
         return sethlansServers;

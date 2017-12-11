@@ -159,7 +159,7 @@ public class ServerSettingsController extends AbstractSethlansController {
             }
         }
         if (nodeAddForm.getProgress() == NodeAddProgress.NODE_ADD) {
-            List<SethlansNode> sethlansNodesDatabase = (List<SethlansNode>) sethlansNodeDatabaseService.listAll();
+            List<SethlansNode> sethlansNodesDatabase = sethlansNodeDatabaseService.listAll();
             if (!sethlansNodesDatabase.isEmpty()) {
                 for (SethlansNode node : sethlansNodesDatabase) {
                     if (node.getIpAddress().equals(sethlansNode.getIpAddress()) &&

@@ -17,22 +17,44 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.database;
+package com.dryadandnaiad.sethlans.domains.database.events;
 
-import java.util.List;
+import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+
+import javax.persistence.Entity;
 
 /**
- * Created Mario Estrella on 3/23/17.
+ * Created Mario Estrella on 12/11/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface CRUDService<T> {
-    List<T> listAll();
+@Entity
+public class SethlansNotification extends AbstractEntityClass {
+    private String message;
+    private String key;
 
-    T getById(Integer id);
+    public String getMessage() {
+        return message;
+    }
 
-    T saveOrUpdate(T domainObject);
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
-    void delete(Integer id);
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    @Override
+    public String toString() {
+        return "SethlansNotification{" +
+                "message='" + message + '\'' +
+                ", key='" + key + '\'' +
+                '}';
+    }
 }

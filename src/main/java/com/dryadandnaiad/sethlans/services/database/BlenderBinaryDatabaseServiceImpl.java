@@ -44,7 +44,7 @@ public class BlenderBinaryDatabaseServiceImpl implements BlenderBinaryDatabaseSe
     }
 
     @Override
-    public List<?> listAll() {
+    public List<BlenderBinary> listAll() {
         List<BlenderBinary> blenderBinaries = new ArrayList<>();
         blenderBinaryRepository.findAll().forEach(blenderBinaries::add);
         return blenderBinaries;

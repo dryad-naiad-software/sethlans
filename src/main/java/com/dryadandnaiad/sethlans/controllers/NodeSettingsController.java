@@ -88,7 +88,7 @@ public class NodeSettingsController extends AbstractSethlansController {
         this.nodeActivationService = nodeActivationService;
     }
 
-    public void setSethlansNode() {
+    private void setSethlansNode() {
         sethlansNode = new SethlansNode();
         sethlansNode.setHostname(SethlansUtils.getHostname());
         sethlansNode.setNetworkPort(sethlansPort);

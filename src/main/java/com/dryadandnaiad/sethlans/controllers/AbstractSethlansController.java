@@ -19,8 +19,10 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.events.SethlansEvent;
+import com.dryadandnaiad.sethlans.services.database.NotificationDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.UserDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
@@ -52,6 +54,8 @@ abstract public class AbstractSethlansController implements ApplicationListener<
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
 
+    private NotificationDatabaseService notificationDatabaseService;
+
     @ModelAttribute("version")
     public String getVersion() {
         return SethlansUtils.getVersion();
@@ -73,11 +77,11 @@ abstract public class AbstractSethlansController implements ApplicationListener<
 
     @ModelAttribute("isNewNotification")
     public boolean isNotification(){
-        LOG.debug("Current notification list size: " + notificationMessage.size());
-        if (notificationMessage.size() > 0) {
-            return true;
+        if (notificationMessage.size() == 0) {
+            restoreNotifications();
         }
-        return false;
+        LOG.debug("Current notification list size: " + notificationMessage.size());
+        return notificationMessage.size() > 0;
     }
 
     @ModelAttribute("notificationMessages")
@@ -96,8 +100,25 @@ abstract public class AbstractSethlansController implements ApplicationListener<
         boolean activeNotification = event.isActiveNotification();
         if (activeNotification) {
             notificationMessage.put(event.getKey(), event.getMessage());
+            notificationDatabaseService.saveOrUpdate(event.getSethlansNotification());
         } else {
             notificationMessage.remove(event.getKey());
+            notificationDatabaseService.delete(event.getSethlansNotification());
+        }
+
+    }
+
+    @Autowired
+    public void setNotificationDatabaseService(NotificationDatabaseService notificationDatabaseService) {
+        this.notificationDatabaseService = notificationDatabaseService;
+    }
+
+    private void restoreNotifications() {
+        List<SethlansNotification> sethlansNotifications = notificationDatabaseService.listAll();
+        if (sethlansNotifications.size() != 0) {
+            for (SethlansNotification sethlansNotification : sethlansNotifications) {
+                notificationMessage.put(sethlansNotification.getKey(), sethlansNotification.getMessage());
+            }
         }
 
     }

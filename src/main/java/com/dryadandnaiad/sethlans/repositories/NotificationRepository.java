@@ -17,22 +17,16 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.database;
+package com.dryadandnaiad.sethlans.repositories;
 
-import java.util.List;
+import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
+import org.springframework.data.repository.CrudRepository;
 
 /**
- * Created Mario Estrella on 3/23/17.
+ * Created Mario Estrella on 12/11/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface CRUDService<T> {
-    List<T> listAll();
-
-    T getById(Integer id);
-
-    T saveOrUpdate(T domainObject);
-
-    void delete(Integer id);
+public interface NotificationRepository extends CrudRepository<SethlansNotification, Integer> {
 }

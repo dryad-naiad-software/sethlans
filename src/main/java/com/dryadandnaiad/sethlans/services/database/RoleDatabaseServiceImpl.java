@@ -44,7 +44,7 @@ public class RoleDatabaseServiceImpl implements RoleDatabaseService {
     }
 
     @Override
-    public List<?> listAll() {
+    public List<SethlansRole> listAll() {
         List<SethlansRole> roles = new ArrayList<>();
         roleRepository.findAll().forEach(roles::add);
         return roles;

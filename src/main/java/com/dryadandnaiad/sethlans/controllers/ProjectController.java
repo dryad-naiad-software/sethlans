@@ -79,7 +79,7 @@ public class ProjectController extends AbstractSethlansController {
 
     @RequestMapping("/project")
     public String getPage(Model model) {
-        List<SethlansNode> sethlansNodeList = (List<SethlansNode>) sethlansNodeDatabaseService.listAll();
+        List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.listAll();
         List<SethlansNode> activeNodes = new ArrayList<>();
         for (SethlansNode sethlansNode : sethlansNodeList) {
             if (sethlansNode.isActive()) {
@@ -143,6 +143,9 @@ public class ProjectController extends AbstractSethlansController {
     public String newProjectDetails(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm,BindingResult bindingResult, @RequestParam("projectFile")
             MultipartFile projectFile) {
 
+        if (bindingResult != null) {
+            LOG.debug("New project with binding result.");
+        }
         UUID uploadTag = UUID.randomUUID();
         webUploadService.store(projectFile, uploadTag.toString());
         getAvailableBlenderBinaries();
@@ -183,7 +186,7 @@ public class ProjectController extends AbstractSethlansController {
 
     private void getAvailableBlenderBinaries() {
         availableBlenderBinaries = new ArrayList<>();
-        List<BlenderBinary> databaseList = (List<BlenderBinary>) blenderBinaryDatabaseService.listAll();
+        List<BlenderBinary> databaseList = blenderBinaryDatabaseService.listAll();
         for (BlenderBinary blenderBinary : databaseList) {
             if (blenderBinary.isDownloaded()) {
                 availableBlenderBinaries.add(blenderBinary);

@@ -54,7 +54,7 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     }
 
     @Override
-    public List<?> listAll() {
+    public List<BlenderProject> listAll() {
         List<BlenderProject> blenderProjects = new ArrayList<>();
         blenderProjectRepository.findAll().forEach(blenderProjects::add);
         return blenderProjects;

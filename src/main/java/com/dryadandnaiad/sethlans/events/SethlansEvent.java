@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.events;
 
+import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import org.springframework.context.ApplicationEvent;
 
 /**
@@ -30,9 +31,7 @@ import org.springframework.context.ApplicationEvent;
 public class SethlansEvent extends ApplicationEvent {
 
     private static final long serialVersionUID = 1L;
-
-    private String message;
-    private String key;
+    private SethlansNotification sethlansNotification;
     private boolean activeNotification;
 
     /**
@@ -42,26 +41,40 @@ public class SethlansEvent extends ApplicationEvent {
      */
     public SethlansEvent(Object source, String key, String message, boolean activeNotification) {
         super(source);
-        this.message = message;
-        this.key = key;
+        this.sethlansNotification = new SethlansNotification();
+        this.sethlansNotification.setMessage(message);
+        this.sethlansNotification.setKey(key);
         this.activeNotification = activeNotification;
     }
 
     public SethlansEvent(Object source, String key, boolean activeNotification) {
         super(source);
-        this.key = key;
+        this.sethlansNotification = new SethlansNotification();
+        this.sethlansNotification.setKey(key);
         this.activeNotification = activeNotification;
     }
 
+    public SethlansNotification getSethlansNotification() {
+        return sethlansNotification;
+    }
+
+    public void setSethlansNotification(SethlansNotification sethlansNotification) {
+        this.sethlansNotification = sethlansNotification;
+    }
+
+    public String getKey() {
+        return this.sethlansNotification.getKey();
+    }
+
     public String getMessage() {
-        return message;
+        return this.sethlansNotification.getMessage();
     }
 
     public boolean isActiveNotification() {
         return activeNotification;
     }
 
-    public String getKey() {
-        return key;
+    public void setActiveNotification(boolean activeNotification) {
+        this.activeNotification = activeNotification;
     }
 }

@@ -55,7 +55,7 @@ public class UserDatabaseServiceImpl implements UserDatabaseService {
     }
 
     @Override
-    public List<?> listAll() {
+    public List<SethlansUser> listAll() {
         List<SethlansUser> users = new ArrayList<>();
         userRepository.findAll().forEach(users::add);
         return users;
