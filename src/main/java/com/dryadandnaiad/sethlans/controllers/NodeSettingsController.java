@@ -21,7 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
-import com.dryadandnaiad.sethlans.services.database.SethlansServerService;
+import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
@@ -48,39 +48,39 @@ public class NodeSettingsController extends AbstractSethlansController {
     @Value("${server.port}")
     private String sethlansPort;
 
-    private SethlansServerService sethlansServerService;
+    private SethlansServerDatabaseService sethlansServerDatabaseService;
     private NodeActivationService nodeActivationService;
     private SethlansNode sethlansNode;
 
     @RequestMapping("/settings/servers")
     public String getServersPage(Model model) {
         model.addAttribute("settings_option", "servers");
-        model.addAttribute("servers", sethlansServerService.listAll());
+        model.addAttribute("servers", sethlansServerDatabaseService.listAll());
         return "settings/settings";
     }
 
     @RequestMapping("/settings/servers/delete/{id}")
     public String deleteNode(@PathVariable Integer id, Model model) {
         model.addAttribute("settings_option", "servers");
-        sethlansServerService.delete(id);
+        sethlansServerDatabaseService.delete(id);
         return "redirect:/settings/servers/";
     }
 
     @RequestMapping("/settings/servers/acknowledge/{id}")
     public String enableNode(@PathVariable Integer id, Model model) {
         model.addAttribute("settings_option", "server");
-        SethlansServer sethlansServer = sethlansServerService.getById(id);
+        SethlansServer sethlansServer = sethlansServerDatabaseService.getById(id);
         sethlansServer.setPendingAcknowledgementResponse(true);
         LOG.debug(sethlansServer.toString());
-        sethlansServerService.saveOrUpdate(sethlansServer);
+        sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
         setSethlansNode();
         nodeActivationService.sendActivationResponse(sethlansServer, sethlansNode);
         return "redirect:/settings/servers/";
     }
 
     @Autowired
-    public void setSethlansServerService(SethlansServerService sethlansServerService) {
-        this.sethlansServerService = sethlansServerService;
+    public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
+        this.sethlansServerDatabaseService = sethlansServerDatabaseService;
     }
 
     @Autowired

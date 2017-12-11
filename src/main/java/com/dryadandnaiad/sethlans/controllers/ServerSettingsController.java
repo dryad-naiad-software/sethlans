@@ -25,7 +25,7 @@ import com.dryadandnaiad.sethlans.converters.SethlansNodeToNodeAddForm;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.enums.NodeAddProgress;
-import com.dryadandnaiad.sethlans.services.database.SethlansNodeService;
+import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
@@ -56,7 +56,7 @@ public class ServerSettingsController extends AbstractSethlansController {
     private static final Logger LOG = LoggerFactory.getLogger(ServerSettingsController.class);
 
     private NodeDiscoveryService nodeDiscoveryService;
-    private SethlansNodeService sethlansNodeService;
+    private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private SethlansNode sethlansNode;
     private SethlansNodeToNodeAddForm sethlansNodeToNodeAddForm;
     private NodeActivationService nodeActivationService;
@@ -68,7 +68,7 @@ public class ServerSettingsController extends AbstractSethlansController {
     @RequestMapping("/settings/nodes")
     public String getNodePage(Model model) {
         model.addAttribute("settings_option", "nodes");
-        model.addAttribute("nodes", sethlansNodeService.listAll());
+        model.addAttribute("nodes", sethlansNodeDatabaseService.listAll());
         nodeDiscoveryService.resetNodeList();
         return "settings/settings";
     }
@@ -84,17 +84,17 @@ public class ServerSettingsController extends AbstractSethlansController {
     @RequestMapping("/settings/nodes/delete/{id}")
     public String deleteNode(@PathVariable Integer id, Model model) {
         model.addAttribute("settings_option", "nodes");
-        sethlansNodeService.delete(id);
+        sethlansNodeDatabaseService.delete(id);
         return "redirect:/settings/nodes/";
     }
 
     @RequestMapping("/settings/nodes/enable/{id}")
     public String enableNode(@PathVariable Integer id, Model model) {
         model.addAttribute("settings_option", "nodes");
-        SethlansNode sethlansNode = sethlansNodeService.getById(id);
+        SethlansNode sethlansNode = sethlansNodeDatabaseService.getById(id);
         sethlansNode.setActive(true);
         LOG.debug(sethlansNode.toString());
-        sethlansNodeService.saveOrUpdate(sethlansNode);
+        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
         return "redirect:/settings/nodes/";
     }
 
@@ -102,7 +102,7 @@ public class ServerSettingsController extends AbstractSethlansController {
     @RequestMapping("/settings/nodes/update/{id}")
     public String updateNode(@PathVariable Integer id, Model model) {
         model.addAttribute("settings_option", "nodes_update_nodeinfo");
-        sethlansNode = sethlansNodeService.getById(id);
+        sethlansNode = sethlansNodeDatabaseService.getById(id);
         NodeAddForm nodeUpdateForm = sethlansNodeToNodeAddForm.convert(sethlansNode);
         model.addAttribute("sethlansNode", sethlansNode);
         model.addAttribute("nodeUpdateForm", nodeUpdateForm);
@@ -123,7 +123,7 @@ public class ServerSettingsController extends AbstractSethlansController {
         if (nodeUpdateForm.getProgress() == NodeAddProgress.NODE_UPDATE_FINISHED) {
             sethlansNode.setId(nodeUpdateForm.getId());
             sethlansNode.setVersion(nodeUpdateForm.getVersion());
-            sethlansNodeService.saveOrUpdate(sethlansNode);
+            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
             LOG.debug("Updated: " + " ID:" + sethlansNode.getId() + ", Hostname: " + sethlansNode.getHostname() + " to database.");
             sethlansNode = null;
             return "redirect:/settings/nodes/";
@@ -134,10 +134,10 @@ public class ServerSettingsController extends AbstractSethlansController {
     @RequestMapping("/settings/nodes/disable/{id}")
     public String disableNode(@PathVariable Integer id, Model model) {
         model.addAttribute("settings_option", "nodes");
-        SethlansNode sethlansNode = sethlansNodeService.getById(id);
+        SethlansNode sethlansNode = sethlansNodeDatabaseService.getById(id);
         sethlansNode.setActive(false);
         LOG.debug(sethlansNode.toString());
-        sethlansNodeService.saveOrUpdate(sethlansNode);
+        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
         return "redirect:/settings/nodes/";
     }
 
@@ -159,7 +159,7 @@ public class ServerSettingsController extends AbstractSethlansController {
             }
         }
         if (nodeAddForm.getProgress() == NodeAddProgress.NODE_ADD) {
-            List<SethlansNode> sethlansNodesDatabase = (List<SethlansNode>) sethlansNodeService.listAll();
+            List<SethlansNode> sethlansNodesDatabase = (List<SethlansNode>) sethlansNodeDatabaseService.listAll();
             if (!sethlansNodesDatabase.isEmpty()) {
                 for (SethlansNode node : sethlansNodesDatabase) {
                     if (node.getIpAddress().equals(sethlansNode.getIpAddress()) &&
@@ -168,7 +168,7 @@ public class ServerSettingsController extends AbstractSethlansController {
                             node.getSethlansNodeOS().equals(sethlansNode.getSethlansNodeOS())) {
                         LOG.debug(node.getHostname() + " is already in the database.");
                     } else {
-                        sethlansNodeService.saveOrUpdate(sethlansNode);
+                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                         LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
                         if (sethlansNode.isPendingActivation()) {
                             setSethlansServer();
@@ -177,7 +177,7 @@ public class ServerSettingsController extends AbstractSethlansController {
                     }
                 }
             } else {
-                sethlansNodeService.saveOrUpdate(sethlansNode);
+                sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                 LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
                 if (sethlansNode.isPendingActivation()) {
                     setSethlansServer();
@@ -224,7 +224,7 @@ public class ServerSettingsController extends AbstractSethlansController {
     public String submitNodefromScan(final @Valid @ModelAttribute("scanForm") ScanForm scanForm) {
         List<SethlansNode> sethlansNodes = nodeDiscoveryService.discoverMulticastNodes();
         LOG.debug("Selected Nodes: " + sethlansNodes.toString());
-        List<SethlansNode> sethlansNodesDatabase = (List<SethlansNode>) sethlansNodeService.listAll();
+        List<SethlansNode> sethlansNodesDatabase = (List<SethlansNode>) sethlansNodeDatabaseService.listAll();
         for (Integer nodeId : scanForm.getSethlansNodeId()) {
             if (!sethlansNodesDatabase.isEmpty()) {
                 for (SethlansNode node : sethlansNodesDatabase) {
@@ -234,7 +234,7 @@ public class ServerSettingsController extends AbstractSethlansController {
                             node.getSethlansNodeOS().equals(sethlansNodes.get(nodeId).getSethlansNodeOS())) {
                         LOG.debug(node.getHostname() + " is already in the database.");
                     } else {
-                        sethlansNodeService.saveOrUpdate(sethlansNodes.get(nodeId));
+                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNodes.get(nodeId));
                         LOG.debug("Added: " + sethlansNodes.get(nodeId).getHostname() + " to database.");
                         if (sethlansNodes.get(nodeId).isPendingActivation()) {
                             setSethlansServer();
@@ -244,7 +244,7 @@ public class ServerSettingsController extends AbstractSethlansController {
                     }
                 }
             } else {
-                sethlansNodeService.saveOrUpdate(sethlansNodes.get(nodeId));
+                sethlansNodeDatabaseService.saveOrUpdate(sethlansNodes.get(nodeId));
                 LOG.debug("Added: " + sethlansNodes.get(nodeId).getHostname() + " to database.");
                 if (sethlansNodes.get(nodeId).isPendingActivation()) {
                     setSethlansServer();
@@ -267,8 +267,8 @@ public class ServerSettingsController extends AbstractSethlansController {
     }
 
     @Autowired
-    public void setSethlansNodeService(SethlansNodeService sethlansNodeService) {
-        this.sethlansNodeService = sethlansNodeService;
+    public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {
+        this.sethlansNodeDatabaseService = sethlansNodeDatabaseService;
     }
 
     @Autowired

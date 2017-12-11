@@ -20,7 +20,7 @@
 package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
-import com.dryadandnaiad.sethlans.services.database.SethlansNodeService;
+import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +32,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class BlenderProjectServiceImpl implements BlenderProjectService {
-    private SethlansNodeService sethlansNodeService;
+    private SethlansNodeDatabaseService sethlansNodeDatabaseService;
 
     @Override
     public void startProject(BlenderProject blenderProject) {
@@ -47,7 +47,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     }
 
     @Autowired
-    public void setSethlansNodeService(SethlansNodeService sethlansNodeService) {
-        this.sethlansNodeService = sethlansNodeService;
+    public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {
+        this.sethlansNodeDatabaseService = sethlansNodeDatabaseService;
     }
 }

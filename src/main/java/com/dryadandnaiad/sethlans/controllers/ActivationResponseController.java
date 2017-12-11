@@ -21,7 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
-import com.dryadandnaiad.sethlans.services.database.SethlansNodeService;
+import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Profile({"SERVER", "DUAL"})
 public class ActivationResponseController {
     private static final Logger LOG = LoggerFactory.getLogger(ActivationResponseController.class);
-    private SethlansNodeService sethlansNodeService;
+    private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private NodeActivationService nodeActivationService;
     private BlenderBenchmarkService blenderBenchmarkService;
 
@@ -51,13 +51,13 @@ public class ActivationResponseController {
                                       @RequestParam String port, @RequestParam String uuid) {
         LOG.debug("Received node activation response");
         SethlansNode sethlansNode;
-        if (sethlansNodeService.getByUUID(uuid) == null) {
+        if (sethlansNodeDatabaseService.getByUUID(uuid) == null) {
             LOG.debug("The node: " + nodehostname + "/" + ipAddress + " is not present in the database");
         } else {
-            sethlansNode = sethlansNodeService.getByUUID(uuid);
+            sethlansNode = sethlansNodeDatabaseService.getByUUID(uuid);
             sethlansNode.setPendingActivation(false);
             sethlansNode.setActive(true);
-            sethlansNodeService.saveOrUpdate(sethlansNode);
+            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
             LOG.debug(sethlansNode.toString());
             LOG.debug("Processed node activation response");
             nodeActivationService.sendResponseAcknowledgement(sethlansNode, uuid);
@@ -67,8 +67,8 @@ public class ActivationResponseController {
     }
 
     @Autowired
-    public void setSethlansNodeService(SethlansNodeService sethlansNodeService) {
-        this.sethlansNodeService = sethlansNodeService;
+    public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {
+        this.sethlansNodeDatabaseService = sethlansNodeDatabaseService;
     }
 
     @Autowired

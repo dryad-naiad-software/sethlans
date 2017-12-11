@@ -26,9 +26,9 @@ import com.dryadandnaiad.sethlans.domains.database.users.SethlansUser;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
-import com.dryadandnaiad.sethlans.services.database.BlenderBinaryService;
-import com.dryadandnaiad.sethlans.services.database.RoleService;
-import com.dryadandnaiad.sethlans.services.database.UserService;
+import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.RoleDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.UserDatabaseService;
 import com.dryadandnaiad.sethlans.utils.Resources;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
@@ -54,33 +54,33 @@ import static com.dryadandnaiad.sethlans.utils.SethlansUtils.writeProperty;
 @Service
 public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     private static final Logger LOG = LoggerFactory.getLogger(SaveSetupSetupConfigServiceImpl.class);
-    private UserService userService;
-    private RoleService roleService;
-    private BlenderBinaryService blenderBinaryService;
+    private UserDatabaseService userDatabaseService;
+    private RoleDatabaseService roleDatabaseService;
+    private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
 
     @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
+    public void setUserDatabaseService(UserDatabaseService userDatabaseService) {
+        this.userDatabaseService = userDatabaseService;
     }
 
     @Autowired
-    public void setRoleService(RoleService roleService) {
-        this.roleService = roleService;
+    public void setRoleDatabaseService(RoleDatabaseService roleDatabaseService) {
+        this.roleDatabaseService = roleDatabaseService;
     }
 
     @Autowired
-    public void setBlenderBinaryService(BlenderBinaryService blenderBinaryService) {
-        this.blenderBinaryService = blenderBinaryService;
+    public void setBlenderBinaryDatabaseService(BlenderBinaryDatabaseService blenderBinaryDatabaseService) {
+        this.blenderBinaryDatabaseService = blenderBinaryDatabaseService;
     }
 
     @Override
     public void saveSethlansSettings(SetupForm setupForm) {
         SethlansRole admin = new SethlansRole();
         admin.setRole("ADMIN");
-        roleService.saveOrUpdate(admin);
+        roleDatabaseService.saveOrUpdate(admin);
         SethlansRole userRole = new SethlansRole();
         userRole.setRole("USER");
-        roleService.saveOrUpdate(userRole);
+        roleDatabaseService.saveOrUpdate(userRole);
 
 
         SethlansUser user = new SethlansUser();
@@ -88,7 +88,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
         user.setPassword(setupForm.getPassword());
         user.addRole(admin);
         user.addRole(userRole);
-        userService.saveOrUpdate(user);
+        userDatabaseService.saveOrUpdate(user);
 
         writeProperty(SethlansConfigKeys.HTTPS_PORT, setupForm.getHttpsPort());
         writeProperty(SethlansConfigKeys.LOGGING_FILE, setupForm.getLogDirectory() + "sethlans.log");
@@ -119,7 +119,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
             BlenderBinary blenderBinary = new BlenderBinary();
             blenderBinary.setBlenderVersion(setupForm.getBlenderVersion());
             blenderBinary.setBlenderBinaryOS(os.toString());
-            blenderBinaryService.saveOrUpdate(blenderBinary);
+            blenderBinaryDatabaseService.saveOrUpdate(blenderBinary);
         }
         writeProperty(SethlansConfigKeys.PROJECT_DIR, setupForm.getProjectDirectory());
         writeProperty(SethlansConfigKeys.BLENDER_DIR, setupForm.getBlenderDirectory());
@@ -151,19 +151,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
             System.exit(1);
         }
 
-        String benchmark = "archives/benchmarks/bmw27.txz";
-
-        try {
-            InputStream inputStream = new Resources(benchmark).getResource();
-            LOG.debug("Copying Benchmarks...");
-            Files.copy(inputStream, Paths.get(setupForm.getBenchmarkDirectory() + "bmw27.txz"));
-            LOG.debug("Benchmarks copied successfully.");
-        } catch (NoSuchFileException e) {
-            LOG.error(e.getMessage());
-        } catch (IOException e) {
-            LOG.error(e.getMessage());
-        }
-        SethlansUtils.archiveExtract("bmw27.txz", benchDir);
+        copyBenchmarks(setupForm, benchDir);
     }
 
     @Override
@@ -209,6 +197,22 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     public void wizardCompleted(SetupForm setupForm) {
         writeProperty(SethlansConfigKeys.FIRST_TIME, "false");
         writeProperty("spring.profiles.active", setupForm.getMode().toString());
+    }
+
+    private void copyBenchmarks(SetupForm setupForm, File benchDir) {
+        String benchmark = "archives/benchmarks/bmw27.txz";
+
+        try {
+            InputStream inputStream = new Resources(benchmark).getResource();
+            LOG.debug("Copying Benchmarks...");
+            Files.copy(inputStream, Paths.get(setupForm.getBenchmarkDirectory() + "bmw27.txz"));
+            LOG.debug("Benchmarks copied successfully.");
+        } catch (NoSuchFileException e) {
+            LOG.error(e.getMessage());
+        } catch (IOException e) {
+            LOG.error(e.getMessage());
+        }
+        SethlansUtils.archiveExtract("bmw27.txz", benchDir);
     }
 
 }

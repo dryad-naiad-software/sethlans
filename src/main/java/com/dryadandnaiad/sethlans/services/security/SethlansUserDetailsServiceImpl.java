@@ -20,7 +20,7 @@
 package com.dryadandnaiad.sethlans.services.security;
 
 import com.dryadandnaiad.sethlans.domains.database.users.SethlansUser;
-import com.dryadandnaiad.sethlans.services.database.UserService;
+import com.dryadandnaiad.sethlans.services.database.UserDatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,12 +37,12 @@ import org.springframework.stereotype.Service;
 @Service("userDetailsService")
 public class SethlansUserDetailsServiceImpl implements UserDetailsService {
 
-    private UserService userService;
+    private UserDatabaseService userDatabaseService;
     private Converter<SethlansUser, UserDetails> sethlansUserDetailsConverter;
 
     @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
+    public void setUserDatabaseService(UserDatabaseService userDatabaseService) {
+        this.userDatabaseService = userDatabaseService;
     }
 
     @Autowired
@@ -53,6 +53,6 @@ public class SethlansUserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        return sethlansUserDetailsConverter.convert(userService.findByUserName(username.toLowerCase()));
+        return sethlansUserDetailsConverter.convert(userDatabaseService.findByUserName(username.toLowerCase()));
     }
 }

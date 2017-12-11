@@ -21,7 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.events.SethlansEvent;
-import com.dryadandnaiad.sethlans.services.database.SethlansServerService;
+import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,14 +43,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Profile({"NODE", "DUAL"})
 public class ActivationRequestController implements ApplicationEventPublisherAware {
     private static final Logger LOG = LoggerFactory.getLogger(ActivationRequestController.class);
-    private SethlansServerService sethlansServerService;
+    private SethlansServerDatabaseService sethlansServerDatabaseService;
     private ApplicationEventPublisher applicationEventPublisher;
 
     @RequestMapping(value = "/api/nodeactivate/request", method = RequestMethod.POST)
     public void nodeActivationRequest(@RequestParam String serverhostname, @RequestParam String ipAddress,
                                       @RequestParam String port, @RequestParam String uuid) {
         LOG.debug("Received node activation request");
-        if (sethlansServerService.getByUUID(uuid) != null) {
+        if (sethlansServerDatabaseService.getByUUID(uuid) != null) {
             LOG.debug("Server UUID is already present on node. Skipping Activation");
         } else {
             SethlansServer sethlansServer = new SethlansServer();
@@ -58,7 +58,7 @@ public class ActivationRequestController implements ApplicationEventPublisherAwa
             sethlansServer.setIpAddress(ipAddress);
             sethlansServer.setNetworkPort(port);
             sethlansServer.setUuid(uuid);
-            sethlansServerService.saveOrUpdate(sethlansServer);
+            sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
             LOG.debug(sethlansServer.toString());
             LOG.debug("Processed node activation request");
             String notification = "New Server Request: " + serverhostname;
@@ -68,12 +68,12 @@ public class ActivationRequestController implements ApplicationEventPublisherAwa
 
     @RequestMapping(value = "/api/nodeactivate/acknowledge", method = RequestMethod.POST)
     public void nodeActivationAcknowledge(@RequestParam String uuid) {
-        if (sethlansServerService.getByUUID(uuid) != null) {
-            SethlansServer sethlansServer = sethlansServerService.getByUUID(uuid);
+        if (sethlansServerDatabaseService.getByUUID(uuid) != null) {
+            SethlansServer sethlansServer = sethlansServerDatabaseService.getByUUID(uuid);
             LOG.debug("Received Server Acknowledgement for " + sethlansServer.getHostname());
             sethlansServer.setPendingAcknowledgementResponse(false);
             sethlansServer.setAcknowledged(true);
-            sethlansServerService.saveOrUpdate(sethlansServer);
+            sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
         } else {
             LOG.debug("No such server present in database");
         }
@@ -82,8 +82,8 @@ public class ActivationRequestController implements ApplicationEventPublisherAwa
     }
 
     @Autowired
-    public void setSethlansServerService(SethlansServerService sethlansServerService) {
-        this.sethlansServerService = sethlansServerService;
+    public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
+        this.sethlansServerDatabaseService = sethlansServerDatabaseService;
     }
 
     @Override

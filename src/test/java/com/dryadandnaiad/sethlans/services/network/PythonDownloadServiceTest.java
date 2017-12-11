@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC
+ * Copyright (c) 2017 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,6 +20,8 @@
 package com.dryadandnaiad.sethlans.services.network;
 
 import com.dryadandnaiad.sethlans.domains.python.PythonDownloadFile;
+import com.dryadandnaiad.sethlans.services.python.PythonSetupService;
+import com.dryadandnaiad.sethlans.services.python.PythonSetupServiceImpl;
 import org.apache.commons.lang3.SystemUtils;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
@@ -33,13 +35,13 @@ import org.junit.Test;
  * Project: sethlans
  */
 public class PythonDownloadServiceTest {
-    PythonDownloadService pythonDownloadService;
+    PythonSetupService pythonSetupService;
     PythonDownloadFile pythonDownloadFile;
 
     @Before
     public void setUp() throws Exception {
-        pythonDownloadService = new PythonDownloadServiceImpl();
-        pythonDownloadFile = pythonDownloadService.getPythonDownloadFile();
+        pythonSetupService = new PythonSetupServiceImpl();
+        pythonDownloadFile = pythonSetupService.getPythonDownloadFile();
     }
 
     @Test

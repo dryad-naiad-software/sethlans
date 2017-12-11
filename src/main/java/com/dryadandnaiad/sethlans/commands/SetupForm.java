@@ -64,10 +64,8 @@ public class SetupForm {
     @Size(max = 32)
     private String passwordConfirm;
 
-
     @NotEmpty
     private String sethlansRootDirectory;
-
 
     private ComputeType selectedMethod;
     private List<ComputeType> availableMethods;
@@ -355,8 +353,6 @@ public class SetupForm {
         return "SetupForm{" +
                 "httpsPort='" + httpsPort + '\'' +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", passwordConfirm='" + passwordConfirm + '\'' +
                 ", sethlansRootDirectory='" + sethlansRootDirectory + '\'' +
                 ", selectedMethod=" + selectedMethod +
                 ", availableMethods=" + availableMethods +

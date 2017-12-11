@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.components;
 
-import com.dryadandnaiad.sethlans.services.network.BlenderDownloadService;
+import com.dryadandnaiad.sethlans.services.blender.BlenderDownloadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;

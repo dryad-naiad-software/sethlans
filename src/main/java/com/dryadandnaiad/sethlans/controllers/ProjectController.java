@@ -30,9 +30,9 @@ import com.dryadandnaiad.sethlans.enums.ProjectFormProgress;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderProjectService;
-import com.dryadandnaiad.sethlans.services.database.BlenderBinaryService;
+import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
-import com.dryadandnaiad.sethlans.services.database.SethlansNodeService;
+import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,14 +63,14 @@ import java.util.UUID;
 @Profile({"SERVER", "DUAL"})
 public class ProjectController extends AbstractSethlansController {
     private static final Logger LOG = LoggerFactory.getLogger(ProjectController.class);
-    private BlenderBinaryService blenderBinaryService;
+    private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
     private List<BlenderBinary> availableBlenderBinaries;
     private WebUploadService webUploadService;
     private BlenderParseBlendFileService blenderParseBlendFileService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private Validator projectFormValidator;
     private BlenderProjectToProjectForm blenderProjectToProjectForm;
-    private SethlansNodeService sethlansNodeService;
+    private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectService blenderProjectService;
 
     @Value("${sethlans.tempDir}")
@@ -79,7 +79,7 @@ public class ProjectController extends AbstractSethlansController {
 
     @RequestMapping("/project")
     public String getPage(Model model) {
-        List<SethlansNode> sethlansNodeList = (List<SethlansNode>) sethlansNodeService.listAll();
+        List<SethlansNode> sethlansNodeList = (List<SethlansNode>) sethlansNodeDatabaseService.listAll();
         List<SethlansNode> activeNodes = new ArrayList<>();
         for (SethlansNode sethlansNode : sethlansNodeList) {
             if (sethlansNode.isActive()) {
@@ -183,7 +183,7 @@ public class ProjectController extends AbstractSethlansController {
 
     private void getAvailableBlenderBinaries() {
         availableBlenderBinaries = new ArrayList<>();
-        List<BlenderBinary> databaseList = (List<BlenderBinary>) blenderBinaryService.listAll();
+        List<BlenderBinary> databaseList = (List<BlenderBinary>) blenderBinaryDatabaseService.listAll();
         for (BlenderBinary blenderBinary : databaseList) {
             if (blenderBinary.isDownloaded()) {
                 availableBlenderBinaries.add(blenderBinary);
@@ -213,8 +213,8 @@ public class ProjectController extends AbstractSethlansController {
     }
 
     @Autowired
-    public void setBlenderBinaryService(BlenderBinaryService blenderBinaryService) {
-        this.blenderBinaryService = blenderBinaryService;
+    public void setBlenderBinaryDatabaseService(BlenderBinaryDatabaseService blenderBinaryDatabaseService) {
+        this.blenderBinaryDatabaseService = blenderBinaryDatabaseService;
     }
 
     @Autowired
@@ -233,8 +233,8 @@ public class ProjectController extends AbstractSethlansController {
     }
 
     @Autowired
-    public void setSethlansNodeService(SethlansNodeService sethlansNodeService) {
-        this.sethlansNodeService = sethlansNodeService;
+    public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {
+        this.sethlansNodeDatabaseService = sethlansNodeDatabaseService;
     }
 
     @Autowired

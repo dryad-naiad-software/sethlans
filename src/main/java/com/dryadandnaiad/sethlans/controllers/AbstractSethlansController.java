@@ -21,7 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.events.SethlansEvent;
-import com.dryadandnaiad.sethlans.services.database.UserService;
+import com.dryadandnaiad.sethlans.services.database.UserDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +42,7 @@ import java.util.Map;
  * Project: sethlans
  */
 abstract public class AbstractSethlansController implements ApplicationListener<SethlansEvent> {
-    private UserService userService;
+    private UserDatabaseService userDatabaseService;
     private Map<String, String> notificationMessage = new LinkedHashMap<>();
     private static final Logger LOG = LoggerFactory.getLogger(AbstractSethlansController.class);
 
@@ -67,7 +67,7 @@ abstract public class AbstractSethlansController implements ApplicationListener<
         if(firstTime){
             return "username";
         }
-        return userService.getById(1).getUsername();
+        return userDatabaseService.getById(1).getUsername();
 
     }
 
@@ -86,8 +86,8 @@ abstract public class AbstractSethlansController implements ApplicationListener<
     }
 
     @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
+    public void setUserDatabaseService(UserDatabaseService userDatabaseService) {
+        this.userDatabaseService = userDatabaseService;
     }
 
 

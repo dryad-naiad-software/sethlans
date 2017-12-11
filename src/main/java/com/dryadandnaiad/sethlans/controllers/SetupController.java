@@ -22,7 +22,8 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.commands.SetupForm;
 import com.dryadandnaiad.sethlans.enums.SetupProgress;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
-import com.dryadandnaiad.sethlans.services.system.PythonSetupService;
+import com.dryadandnaiad.sethlans.services.python.PythonSetupService;
+import com.dryadandnaiad.sethlans.services.security.EncryptionService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import org.slf4j.Logger;
@@ -64,6 +65,7 @@ public class SetupController extends AbstractSethlansController {
     private SethlansManagerService sethlansManagerService;
     private SaveSetupConfigService saveSetupConfigService;
     private PythonSetupService pythonSetupService;
+    private EncryptionService encryptionService;
 
     @RequestMapping
     public String getStartPage(final Model model) {
@@ -151,5 +153,10 @@ public class SetupController extends AbstractSethlansController {
     @ModelAttribute("sethlansmode")
     public String getMode() {
         return modeName;
+    }
+
+    @Autowired
+    public void setEncryptionService(EncryptionService encryptionService) {
+        this.encryptionService = encryptionService;
     }
 }
