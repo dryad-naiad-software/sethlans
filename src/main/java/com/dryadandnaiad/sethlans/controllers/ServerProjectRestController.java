@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import org.springframework.context.annotation.Profile;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -31,4 +32,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Profile({"SERVER", "DUAL"})
 public class ServerProjectRestController {
+
+    @RequestMapping(value = "/api/project/blender")
+    public void downloadBlender() {
+
+    }
+
+    @RequestMapping(value = "/api/project/blendfile/")
+    public void downloadBlendfile() {
+
+    }
+
+
 }

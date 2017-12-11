@@ -64,18 +64,9 @@ public class SetupForm {
     @Size(max = 32)
     private String passwordConfirm;
 
+
     @NotEmpty
-    private String projectDirectory;
-    @NotEmpty
-    private String blenderDirectory;
-    @NotEmpty
-    private String tempDirectory;
-    @NotEmpty
-    private String workingDirectory;
-    @NotEmpty
-    private String logDirectory;
-    @NotEmpty
-    private String binDirectory;
+    private String sethlansRootDirectory;
 
 
     private ComputeType selectedMethod;
@@ -91,6 +82,13 @@ public class SetupForm {
     private List<BlenderBinaryOS> blenderBinaryOS;
     private static final Logger LOG = LoggerFactory.getLogger(SetupForm.class);
     private String scriptsDirectory;
+    private String projectDirectory;
+    private String blenderDirectory;
+    private String tempDirectory;
+    private String workingDirectory;
+    private String logDirectory;
+    private String binDirectory;
+    private String benchmarkDirectory;
 
 
     public SetupForm() {
@@ -101,13 +99,7 @@ public class SetupForm {
         this.selectedGPUId = new ArrayList<>();
         this.blenderBinaryOS = new ArrayList<>();
         this.cores = 1;
-        this.projectDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "projects" + File.separator;
-        this.blenderDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "blenderzip" + File.separator;
-        this.binDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "bin" + File.separator;
-        this.tempDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "temp" + File.separator;
-        this.workingDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "cache" + File.separator;
-        this.logDirectory = System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "logs" + File.separator;
-        this.scriptsDirectory = this.binDirectory + "scripts" + File.separator;
+        this.sethlansRootDirectory = System.getProperty("user.home") + File.separator + ".sethlans";
         this.totalCores = populateCores();
         populateAvailableMethods();
         populateBlenderOS();
@@ -160,6 +152,17 @@ public class SetupForm {
         } else {
             availableMethods.add(ComputeType.CPU);
         }
+    }
+
+    public void setDirectories() {
+        this.projectDirectory = this.sethlansRootDirectory + File.separator + "projects" + File.separator;
+        this.blenderDirectory = this.sethlansRootDirectory + File.separator + "blenderzip" + File.separator;
+        this.binDirectory = this.sethlansRootDirectory + File.separator + "bin" + File.separator;
+        this.tempDirectory = this.sethlansRootDirectory + File.separator + "temp" + File.separator;
+        this.workingDirectory = this.sethlansRootDirectory + File.separator + "cache" + File.separator;
+        this.logDirectory = this.sethlansRootDirectory + File.separator + "logs" + File.separator;
+        this.benchmarkDirectory = this.sethlansRootDirectory + File.separator + "benchmarks" + File.separator;
+        this.scriptsDirectory = this.binDirectory + "scripts" + File.separator;
     }
 
     public String getBinDirectory() {
@@ -323,6 +326,30 @@ public class SetupForm {
     }
 
 
+    public String getScriptsDirectory() {
+        return scriptsDirectory;
+    }
+
+    public void setScriptsDirectory(String scriptsDirectory) {
+        this.scriptsDirectory = scriptsDirectory;
+    }
+
+    public String getSethlansRootDirectory() {
+        return sethlansRootDirectory;
+    }
+
+    public void setSethlansRootDirectory(String sethlansRootDirectory) {
+        this.sethlansRootDirectory = sethlansRootDirectory;
+    }
+
+    public String getBenchmarkDirectory() {
+        return benchmarkDirectory;
+    }
+
+    public void setBenchmarkDirectory(String benchmarkDirectory) {
+        this.benchmarkDirectory = benchmarkDirectory;
+    }
+
     @Override
     public String toString() {
         return "SetupForm{" +
@@ -330,31 +357,26 @@ public class SetupForm {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", passwordConfirm='" + passwordConfirm + '\'' +
+                ", sethlansRootDirectory='" + sethlansRootDirectory + '\'' +
+                ", selectedMethod=" + selectedMethod +
+                ", availableMethods=" + availableMethods +
+                ", availableGPUs=" + availableGPUs +
+                ", selectedGPUId=" + selectedGPUId +
+                ", blenderVersion='" + blenderVersion + '\'' +
+                ", mode=" + mode +
+                ", cores=" + cores +
+                ", totalCores=" + totalCores +
+                ", progress=" + progress +
+                ", previous=" + previous +
+                ", blenderBinaryOS=" + blenderBinaryOS +
+                ", scriptsDirectory='" + scriptsDirectory + '\'' +
                 ", projectDirectory='" + projectDirectory + '\'' +
                 ", blenderDirectory='" + blenderDirectory + '\'' +
                 ", tempDirectory='" + tempDirectory + '\'' +
                 ", workingDirectory='" + workingDirectory + '\'' +
                 ", logDirectory='" + logDirectory + '\'' +
                 ", binDirectory='" + binDirectory + '\'' +
-                ", selectedMethod=" + selectedMethod +
-                ", availableMethods=" + availableMethods +
-                ", availableGPUs=" + availableGPUs +
-                ", blenderVersion='" + blenderVersion + '\'' +
-                ", mode=" + mode +
-                ", selectedGPUId=" + selectedGPUId +
-                ", cores=" + cores +
-                ", totalCores=" + totalCores +
-                ", progress=" + progress +
-                ", previous=" + previous +
-                ", blenderBinaryOS=" + blenderBinaryOS +
+                ", benchmarkDirectory='" + benchmarkDirectory + '\'' +
                 '}';
-    }
-
-    public String getScriptsDirectory() {
-        return scriptsDirectory;
-    }
-
-    public void setScriptsDirectory(String scriptsDirectory) {
-        this.scriptsDirectory = scriptsDirectory;
     }
 }

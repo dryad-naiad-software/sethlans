@@ -29,12 +29,19 @@ import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryService;
 import com.dryadandnaiad.sethlans.services.database.RoleService;
 import com.dryadandnaiad.sethlans.services.database.UserService;
+import com.dryadandnaiad.sethlans.utils.Resources;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Paths;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansUtils.writeProperty;
 
@@ -92,6 +99,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
 
         File binDir = new File(setupForm.getBinDirectory());
         File scriptDir = new File(setupForm.getScriptsDirectory());
+
         if (!binDir.mkdirs()) {
             LOG.error("Unable to create directory " + binDir.toString());
             System.exit(1);
@@ -101,6 +109,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
             LOG.error("Unable to create directory " + scriptDir.toString());
             System.exit(1);
         }
+
 
     }
 
@@ -115,6 +124,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
         writeProperty(SethlansConfigKeys.PROJECT_DIR, setupForm.getProjectDirectory());
         writeProperty(SethlansConfigKeys.BLENDER_DIR, setupForm.getBlenderDirectory());
         writeProperty(SethlansConfigKeys.TEMP_DIR, setupForm.getTempDirectory());
+        writeProperty(SethlansConfigKeys.BENCHMARK_DIR, setupForm.getBenchmarkDirectory());
 
 
         LOG.debug("Server Settings Saved");
@@ -122,10 +132,10 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
         File projectDir = new File(setupForm.getProjectDirectory());
         File blenderDir = new File(setupForm.getBlenderDirectory());
         File tempDir = new File(setupForm.getTempDirectory());
+        File benchDir = new File(setupForm.getBenchmarkDirectory());
 
         if (!projectDir.mkdirs()) {
             LOG.error("Unable to create directory " + projectDir.toString());
-            // TODO Placeholders for now will need to replace System.exit with a friendly message to GUI and restart the setup wizard.
             System.exit(1);
         }
         if (!blenderDir.mkdirs()) {
@@ -136,7 +146,24 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
             LOG.error("Unable to create directory " + tempDir.toString());
             System.exit(1);
         }
+        if (!benchDir.mkdirs()) {
+            LOG.error("Unable to create directory " + benchDir.toString());
+            System.exit(1);
+        }
 
+        String benchmark = "archives/benchmarks/bmw27.txz";
+
+        try {
+            InputStream inputStream = new Resources(benchmark).getResource();
+            LOG.debug("Copying Benchmarks...");
+            Files.copy(inputStream, Paths.get(setupForm.getBenchmarkDirectory() + "bmw27.txz"));
+            LOG.debug("Benchmarks copied successfully.");
+        } catch (NoSuchFileException e) {
+            LOG.error(e.getMessage());
+        } catch (IOException e) {
+            LOG.error(e.getMessage());
+        }
+        SethlansUtils.archiveExtract("bmw27.txz", benchDir);
     }
 
     @Override
@@ -164,7 +191,6 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
 
         if (!cacheDir.mkdirs()) {
             LOG.error("Unable to create  directory " + cacheDir.toString());
-            // TODO Placeholders for now will need to replace System.exit with a friendly message to GUI and restart the setup wizard.
             System.exit(1);
 
         }

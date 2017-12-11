@@ -52,7 +52,7 @@ public class PythonSetupServiceImpl implements PythonSetupService {
     @Override
     public boolean installPython(String binaryDir) {
         String pythonFile = pythonDownloadService.downloadPython(binaryDir);
-        if (SethlansUtils.pythonExtract(pythonFile, new File(binaryDir))) {
+        if (SethlansUtils.archiveExtract(pythonFile, new File(binaryDir))) {
             if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
                 try {
                     ProcessBuilder pb = new ProcessBuilder("chmod", "-R", "+x", binaryDir + "python" + File.separator + "bin");

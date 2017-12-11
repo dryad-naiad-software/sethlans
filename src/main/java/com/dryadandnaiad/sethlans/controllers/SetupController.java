@@ -85,6 +85,10 @@ public class SetupController extends AbstractSethlansController {
         LOG.debug("Current progress \n" + setupForm.toString());
         setupFormValidator.validate(setupForm, bindingResult);
 
+        if (setupForm.getProgress() == SetupProgress.MODE) {
+            setupForm.setDirectories();
+        }
+
         if (bindingResult.hasErrors()) {
             LOG.debug(bindingResult.toString());
             setupForm.setProgress(setupForm.getPrevious());

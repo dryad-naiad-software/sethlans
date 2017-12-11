@@ -178,7 +178,7 @@ public class SethlansUtils {
     }
 
 
-    public static boolean pythonExtract(String toExtract, File extractLocation) {
+    public static boolean archiveExtract(String toExtract, File extractLocation) {
         File archive = new File(extractLocation + File.separator + toExtract);
         extractLocation.mkdirs();
         try {
@@ -196,13 +196,14 @@ public class SethlansUtils {
             }
 
         } catch (ZipException | IOException e) {
-            LOG.error("Error extracting python " + e.getMessage());
+            LOG.error("Error extracting archive " + e.getMessage());
             LOG.error(Throwables.getStackTraceAsString(e));
             System.exit(1);
         }
 
         return false;
     }
+
 
     public static void openWebpage(URL url) {
         Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;

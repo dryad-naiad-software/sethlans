@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeService;
 import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
 import org.slf4j.Logger;
@@ -43,6 +44,7 @@ public class ActivationResponseController {
     private static final Logger LOG = LoggerFactory.getLogger(ActivationResponseController.class);
     private SethlansNodeService sethlansNodeService;
     private NodeActivationService nodeActivationService;
+    private BlenderBenchmarkService blenderBenchmarkService;
 
     @RequestMapping(value = "/api/nodeactivate/response", method = RequestMethod.POST)
     public void nodeActivationRequest(@RequestParam String nodehostname, @RequestParam String ipAddress,
@@ -59,8 +61,6 @@ public class ActivationResponseController {
             LOG.debug(sethlansNode.toString());
             LOG.debug("Processed node activation response");
             nodeActivationService.sendResponseAcknowledgement(sethlansNode, uuid);
-
-
         }
 
 

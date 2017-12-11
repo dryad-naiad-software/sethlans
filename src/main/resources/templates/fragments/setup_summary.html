@@ -60,16 +60,8 @@
                                             <td th:text="${setupForm.httpsPort}">7443</td>
                                         </tr>
                                         <tr>
-                                            <td>Log Directory</td>
-                                            <td th:text="${setupForm.logDirectory}">Log Dir</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Binary Directory</td>
-                                            <td th:text="${setupForm.binDirectory}">Bin Dir</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Scripts Directory</td>
-                                            <td th:text="${setupForm.scriptsDirectory}">Bin Dir</td>
+                                            <td>Sethlans Home Directory</td>
+                                            <td th:text="${setupForm.sethlansRootDirectory}">Sethlans Dir</td>
                                         </tr>
                                         </tbody>
                                         <div th:case="${T(com.dryadandnaiad.sethlans.enums.SethlansMode).SERVER}">

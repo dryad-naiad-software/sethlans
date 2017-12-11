@@ -17,40 +17,13 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.enums;
+package com.dryadandnaiad.sethlans.services.blender;
 
 /**
- * Created Mario Estrella on 3/18/17.
+ * Created Mario Estrella on 12/10/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public enum SethlansConfigKeys {
-    HTTPS_PORT("server.port"),
-    FIRST_TIME("sethlans.firsttime"),
-    LOGGING_FILE("logging.file"),
-    MODE("sethlans.mode"),
-    COMPUTE_METHOD("sethlans.computeMethod"),
-    PROJECT_DIR("sethlans.projectDir"),
-    BLENDER_DIR("sethlans.blenderDir"),
-    BINARY_DIR("sethlans.binDir"),
-    TEMP_DIR("sethlans.tempDir"),
-    CACHE_DIR("sethlans.cacheDir"),
-    CUDA_DEVICE("sethlans.cuda"),
-    CPU_CORES("sethlans.cores"),
-    PYTHON_BIN("sethlans.python.binary"),
-    SCRIPTS_DIR("sethlans.scriptsDir"),
-    BENCHMARK_DIR("sethlans.benchmarkDir");
-
-
-    private final String text;
-
-    SethlansConfigKeys(final String text) {
-        this.text = text;
-    }
-
-    @Override
-    public String toString() {
-        return text;
-    }
+public interface BlenderBenchmarkService {
 }

@@ -107,7 +107,6 @@ public class PythonDownloadServiceImpl implements PythonDownloadService {
         saveLocation.mkdirs();
         try {
             InputStream inputStream = new Resources(pythonDownloadFile.getBinaryURL()).getResource();
-
             LOG.debug("Copying  " + pythonDownloadFile.getFilename() + "...");
             Files.copy(inputStream, Paths.get(saveLocation + File.separator + pythonDownloadFile.getFilename()));
             if (SethlansUtils.fileCheckMD5(new File(saveLocation + File.separator + pythonDownloadFile.getFilename()), pythonDownloadFile.getMd5())) {
