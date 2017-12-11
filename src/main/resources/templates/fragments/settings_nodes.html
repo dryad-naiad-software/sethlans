@@ -107,6 +107,7 @@
                         <th>CPU Name</th>
                         <th>Selected Cores</th>
                         <th>Selected GPU(s)</th>
+                        <th>Benchmark Rating</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -157,6 +158,17 @@
                         <td th:id="'nodeSelectedGPUs-' + ${node.getId()}"
                             th:if="${node.getSelectedGPUs().isEmpty()}">
                                                 <span>N/A</span>
+                        </td>
+                        <td th:id="'nodeBenchmarkRating-' + ${node.getId()}"
+                            th:if="${!node.isBenchmarkComplete()}">
+                            <span>N/A</span>
+                        </td>
+                        <td th:id="'nodeBenchmarkRating-' + ${node.getId()}"
+                            th:if="${node.isBenchmarkComplete()}">
+                            <span th:if="${!node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU)}"
+                                  th:text="'CPU:' ${node.getRatingCPU()}">CPU: 7000</span>
+                            <span th:if="${!node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).CPU)}"
+                                  th:text="'GPU:' ${node.getRatingGPU()}">GPU: 7000</span>
                         </td>
                         <td>
                             <a th:id="'nodeUpdate-' + ${node.getId()}"
