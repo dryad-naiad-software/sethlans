@@ -116,7 +116,9 @@
                  alt="logo"/>Sethlans
         </a>
     </div>
+
     <div id="mySidenav" class="sidenav">
+        <!--/*@thymesVar id="sethlansmode" type="com.dryadandnaiad.sethlans.enums.SethlansMode"*/-->
         <a id="menuItemProject" th:if="${sethlansmode == 'SERVER' || sethlansmode == 'DUAL'}" href="/project">Projects</a>
         <a th:if="${sethlansmode == 'NODE' || sethlansmode == 'DUAL'}" href="#">Rendering</a>
         <a id="sidenavSettings" href="/settings">Settings</a>
@@ -137,10 +139,11 @@
                         <li th:if="${isNewNotification}" th:each="message : ${notificationMessages}"
                             class="list-group-item">
                             <span class="i pficon pficon-info"></span>
-                                <p id="message" th:text="${message}"></p>
+                            <p th:id="message" th:text="${message}"></p>
                         </li>
                         <li th:unless="${isNewNotification}"
-                            class="list-group-item"> <span class="i pficon pficon-info"></span> <p id="message">Nothing to report</p></li>
+                            class="list-group-item"><span class="i pficon pficon-info"></span>
+                            <p th:id="message">Nothing to report</p></li>
                     </ul>
                 </div>
             </li>
