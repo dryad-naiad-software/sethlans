@@ -35,7 +35,8 @@ import javax.persistence.Entity;
 @Entity
 public class BlenderRenderTask extends AbstractEntityClass {
     private String projectName;
-    private String uuid;
+    private String server_uuid;
+    private String project_uuid;
     private RenderOutputFormat renderOutputFormat;
     private int startFrame;
     private int endFrame;
@@ -45,10 +46,11 @@ public class BlenderRenderTask extends AbstractEntityClass {
     private int resolutionX;
     private int resolutionY;
     private int resPercentage;
-    private ComputeType renderOn;
+    private ComputeType computeType;
     private int currentPercentage;
     private String blendFilename;
     private String blenderVersion;
+    private int part;
 
     public String getProjectName() {
         return projectName;
@@ -58,13 +60,6 @@ public class BlenderRenderTask extends AbstractEntityClass {
         this.projectName = projectName;
     }
 
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
 
     public RenderOutputFormat getRenderOutputFormat() {
         return renderOutputFormat;
@@ -138,12 +133,12 @@ public class BlenderRenderTask extends AbstractEntityClass {
         this.resPercentage = resPercentage;
     }
 
-    public ComputeType getRenderOn() {
-        return renderOn;
+    public ComputeType getComputeType() {
+        return computeType;
     }
 
-    public void setRenderOn(ComputeType renderOn) {
-        this.renderOn = renderOn;
+    public void setComputeType(ComputeType computeType) {
+        this.computeType = computeType;
     }
 
     public int getCurrentPercentage() {
@@ -170,11 +165,36 @@ public class BlenderRenderTask extends AbstractEntityClass {
         this.blenderVersion = blenderVersion;
     }
 
+    public int getPart() {
+        return part;
+    }
+
+    public void setPart(int part) {
+        this.part = part;
+    }
+
+    public String getServer_uuid() {
+        return server_uuid;
+    }
+
+    public void setServer_uuid(String server_uuid) {
+        this.server_uuid = server_uuid;
+    }
+
+    public String getProject_uuid() {
+        return project_uuid;
+    }
+
+    public void setProject_uuid(String project_uuid) {
+        this.project_uuid = project_uuid;
+    }
+
     @Override
     public String toString() {
         return "BlenderRenderTask{" +
                 "projectName='" + projectName + '\'' +
-                ", uuid='" + uuid + '\'' +
+                ", server_uuid='" + server_uuid + '\'' +
+                ", project_uuid='" + project_uuid + '\'' +
                 ", renderOutputFormat=" + renderOutputFormat +
                 ", startFrame=" + startFrame +
                 ", endFrame=" + endFrame +
@@ -184,10 +204,11 @@ public class BlenderRenderTask extends AbstractEntityClass {
                 ", resolutionX=" + resolutionX +
                 ", resolutionY=" + resolutionY +
                 ", resPercentage=" + resPercentage +
-                ", renderOn=" + renderOn +
+                ", computeType=" + computeType +
                 ", currentPercentage=" + currentPercentage +
                 ", blendFilename='" + blendFilename + '\'' +
                 ", blenderVersion='" + blenderVersion + '\'' +
+                ", part=" + part +
                 '}';
     }
 }

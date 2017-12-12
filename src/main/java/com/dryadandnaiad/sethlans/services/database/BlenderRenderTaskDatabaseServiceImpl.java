@@ -21,6 +21,8 @@ package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
 import com.dryadandnaiad.sethlans.repositories.BlenderRenderTaskRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +39,7 @@ import java.util.List;
 public class BlenderRenderTaskDatabaseServiceImpl implements BlenderRenderTaskDatabaseService {
 
     private BlenderRenderTaskRepository blenderRenderTaskRepository;
+    private static final Logger LOG = LoggerFactory.getLogger(BlenderRenderTaskDatabaseServiceImpl.class);
 
 
     @Override
@@ -66,5 +69,18 @@ public class BlenderRenderTaskDatabaseServiceImpl implements BlenderRenderTaskDa
     @Autowired
     public void setBlenderRenderTaskRepository(BlenderRenderTaskRepository blenderRenderTaskRepository) {
         this.blenderRenderTaskRepository = blenderRenderTaskRepository;
+    }
+
+    @Override
+    public BlenderRenderTask getByProjectUUID(String project_uuid) {
+        List<BlenderRenderTask> blenderRenderTasks = listAll();
+        for (BlenderRenderTask blenderRenderTask : blenderRenderTasks) {
+            if (project_uuid.equals(blenderRenderTask.getProject_uuid())) {
+                return blenderRenderTask;
+            } else {
+                LOG.error("Render Task for this project is currently not in database");
+            }
+        }
+        return null;
     }
 }

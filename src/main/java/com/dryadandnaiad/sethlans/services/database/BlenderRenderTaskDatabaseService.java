@@ -28,4 +28,5 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
  * Project: sethlans
  */
 public interface BlenderRenderTaskDatabaseService extends CRUDService<BlenderRenderTask> {
+    BlenderRenderTask getByProjectUUID(String project_uuid);
 }

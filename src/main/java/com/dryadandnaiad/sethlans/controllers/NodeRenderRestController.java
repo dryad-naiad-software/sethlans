@@ -19,6 +19,11 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
+import com.dryadandnaiad.sethlans.enums.BlenderEngine;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
+import com.dryadandnaiad.sethlans.services.database.BlenderRenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,13 +45,48 @@ import org.springframework.web.bind.annotation.RestController;
 public class NodeRenderRestController {
 
     private SethlansServerDatabaseService sethlansServerDatabaseService;
+    private BlenderRenderTaskDatabaseService blenderRenderTaskDatabaseService;
     private static final Logger LOG = LoggerFactory.getLogger(NodeRenderRestController.class);
 
-    @RequestMapping(value = "/api/render/request", method = RequestMethod.GET)
-    public void renderRequest(@RequestParam String server_uuid, String project_uuid, String renderoutputformat,
+    @RequestMapping(value = "/api/render/request", method = RequestMethod.POST)
+    public void renderRequest(@RequestParam String server_uuid, String project_uuid, RenderOutputFormat renderoutputformat,
                               int start_frame, int end_frame, int step_frame, int samples,
-                              String blender_engine, int resolution_x, int resolution_y, int res_percentage, String compute_type,
-                              int current_percentage, String blend_file, String blender_version) {
+                              BlenderEngine blender_engine, int resolution_x, int resolution_y, int res_percentage, ComputeType compute_type,
+                              String blend_file, String blender_version, int part) {
+        if (sethlansServerDatabaseService.getByUUID(server_uuid) == null) {
+            LOG.debug("The uuid sent: " + server_uuid + " is not present in the database");
+        } else {
+            BlenderRenderTask blenderRenderTask;
+            if (blenderRenderTaskDatabaseService.getByProjectUUID(project_uuid) == null) {
+                // Create a new task
+                blenderRenderTask = new BlenderRenderTask();
+                blenderRenderTask.setProject_uuid(project_uuid);
+                blenderRenderTask.setServer_uuid(server_uuid);
+                blenderRenderTask.setRenderOutputFormat(renderoutputformat);
+                blenderRenderTask.setStartFrame(start_frame);
+                blenderRenderTask.setEndFrame(end_frame);
+                blenderRenderTask.setStepFrame(step_frame);
+                blenderRenderTask.setSamples(samples);
+                blenderRenderTask.setBlenderEngine(blender_engine);
+                blenderRenderTask.setResolutionX(resolution_x);
+                blenderRenderTask.setResolutionY(resolution_y);
+                blenderRenderTask.setResPercentage(res_percentage);
+                blenderRenderTask.setComputeType(compute_type);
+                blenderRenderTask.setBlendFilename(blend_file);
+                blenderRenderTask.setBlenderVersion(blender_version);
+                blenderRenderTask.setPart(part);
+                blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
+            } else {
+                // Update existing task to process a new part and a new frame if necessary
+                blenderRenderTask = blenderRenderTaskDatabaseService.getByProjectUUID(project_uuid);
+                blenderRenderTask.setPart(part);
+                blenderRenderTask.setStartFrame(start_frame);
+                blenderRenderTask.setEndFrame(end_frame);
+                blenderRenderTask.setStepFrame(step_frame);
+            }
+
+
+        }
 
     }
 
@@ -55,6 +95,11 @@ public class NodeRenderRestController {
 
     }
 
+
+    @Autowired
+    public void setBlenderRenderTaskDatabaseService(BlenderRenderTaskDatabaseService blenderRenderTaskDatabaseService) {
+        this.blenderRenderTaskDatabaseService = blenderRenderTaskDatabaseService;
+    }
 
     @Autowired
     public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
