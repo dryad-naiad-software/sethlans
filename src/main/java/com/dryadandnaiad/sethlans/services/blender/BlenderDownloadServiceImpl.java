@@ -19,8 +19,8 @@
 
 package com.dryadandnaiad.sethlans.services.blender;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderZip;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.events.SethlansEvent;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
@@ -80,7 +80,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
     }
 
     private boolean doDownload() {
-        blenderFileEntities = (List<BlenderBinary>) blenderBinaryDatabaseService.listAll();
+        blenderFileEntities = blenderBinaryDatabaseService.listAll();
         blenderBinaries = BlenderUtils.listBinaries();
         List<BlenderBinary> blenderDownloadList = prepareDownload();
         LOG.debug(blenderDownloadList.toString());
@@ -101,11 +101,14 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                     LOG.debug("Attempting to establish a connection to " + url.toString());
                     connection = (HttpURLConnection) url.openConnection();
                     InputStream stream = connection.getInputStream();
-                    if (!blenderBinary.getBlenderBinaryOS().contains("Linux")) {
-                        filename = blenderVersion + "-" + blenderBinary.getBlenderBinaryOS().toLowerCase() + ".zip";
+                    if (blenderBinary.getBlenderFile().contains("tar")) {
+                        filename = blenderVersion + "-" +
+                                blenderBinary.getBlenderBinaryOS().toLowerCase() + ".tar." +
+                                com.google.common.io.Files.getFileExtension(blenderBinary.getBlenderFile());
                         LOG.debug(filename);
                     } else {
-                        filename = blenderVersion + "-" + blenderBinary.getBlenderBinaryOS().toLowerCase() + ".tar.bz2";
+                        filename = blenderVersion + "-" + blenderBinary.getBlenderBinaryOS().toLowerCase() + "." +
+                                com.google.common.io.Files.getFileExtension(blenderBinary.getBlenderFile());
                     }
 
                     File toDownload = new File(saveLocation + File.separator + filename);
