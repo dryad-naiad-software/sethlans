@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.repositories.BlenderBenchmarkTaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,21 +39,25 @@ public class BlenderBenchmarkTaskDatabaseServiceImpl implements BlenderBenchmark
 
     @Override
     public List<BlenderBenchmarkTask> listAll() {
-        return null;
+        List<BlenderBenchmarkTask> blenderBenchmarkTasks = new ArrayList<>();
+        blenderBenchmarkTaskRepository.findAll().forEach(blenderBenchmarkTasks::add);
+        return blenderBenchmarkTasks;
     }
 
     @Override
     public BlenderBenchmarkTask getById(Integer id) {
-        return null;
+        return blenderBenchmarkTaskRepository.findOne(id);
     }
 
     @Override
     public BlenderBenchmarkTask saveOrUpdate(BlenderBenchmarkTask domainObject) {
-        return null;
+        return blenderBenchmarkTaskRepository.save(domainObject);
     }
 
     @Override
     public void delete(Integer id) {
+        BlenderBenchmarkTask blenderBenchmarkTask = blenderBenchmarkTaskRepository.findOne(id);
+        blenderBenchmarkTaskRepository.delete(blenderBenchmarkTask);
 
     }
 
