@@ -43,7 +43,10 @@ public class NodeRenderRestController {
     private static final Logger LOG = LoggerFactory.getLogger(NodeRenderRestController.class);
 
     @RequestMapping(value = "/api/render/request", method = RequestMethod.GET)
-    public void renderRequest(@RequestParam String server_uuid, String project_uuid,) {
+    public void renderRequest(@RequestParam String server_uuid, String project_uuid, String renderoutputformat,
+                              int start_frame, int end_frame, int step_frame, int samples,
+                              String blender_engine, int resolution_x, int resolution_y, int res_percentage, String compute_type,
+                              int current_percentage, String blend_file, String blender_version) {
 
     }
 

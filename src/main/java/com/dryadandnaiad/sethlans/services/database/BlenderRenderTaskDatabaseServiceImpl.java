@@ -19,8 +19,8 @@
 
 package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
-import com.dryadandnaiad.sethlans.repositories.BlenderBinaryRepository;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
+import com.dryadandnaiad.sethlans.repositories.BlenderRenderTaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,42 +28,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created Mario Estrella on 3/23/17.
+ * Created Mario Estrella on 12/12/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
 @Service
-public class BlenderBinaryDatabaseServiceImpl implements BlenderBinaryDatabaseService {
+public class BlenderRenderTaskDatabaseServiceImpl implements BlenderRenderTaskDatabaseService {
 
-    private BlenderBinaryRepository blenderBinaryRepository;
+    private BlenderRenderTaskRepository blenderRenderTaskRepository;
+
 
     @Override
-    public List<BlenderBinary> listAll() {
-        List<BlenderBinary> blenderBinaries = new ArrayList<>();
-        blenderBinaryRepository.findAll().forEach(blenderBinaries::add);
-        return blenderBinaries;
+    public List<BlenderRenderTask> listAll() {
+        List<BlenderRenderTask> blenderRenderTasks = new ArrayList<>();
+        blenderRenderTaskRepository.findAll().forEach(blenderRenderTasks::add);
+        return blenderRenderTasks;
     }
 
     @Override
-    public BlenderBinary getById(Integer id) {
-        return blenderBinaryRepository.findOne(id);
+    public BlenderRenderTask getById(Integer id) {
+        return blenderRenderTaskRepository.findOne(id);
     }
 
     @Override
-    public BlenderBinary saveOrUpdate(BlenderBinary domainObject) {
-        return blenderBinaryRepository.save(domainObject);
+    public BlenderRenderTask saveOrUpdate(BlenderRenderTask domainObject) {
+        return blenderRenderTaskRepository.save(domainObject);
     }
 
     @Override
     public void delete(Integer id) {
-        BlenderBinary blenderBinary = blenderBinaryRepository.findOne(id);
-        blenderBinaryRepository.delete(blenderBinary);
+        BlenderRenderTask blenderRenderTask = blenderRenderTaskRepository.findOne(id);
+        blenderRenderTaskRepository.delete(blenderRenderTask);
 
     }
 
     @Autowired
-    public void setBlenderBinaryRepository(BlenderBinaryRepository blenderBinaryRepository) {
-        this.blenderBinaryRepository = blenderBinaryRepository;
+    public void setBlenderRenderTaskRepository(BlenderRenderTaskRepository blenderRenderTaskRepository) {
+        this.blenderRenderTaskRepository = blenderRenderTaskRepository;
     }
 }
