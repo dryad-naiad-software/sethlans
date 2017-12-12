@@ -51,6 +51,7 @@ public class BlenderProject extends AbstractEntityClass {
     private boolean started;
     private boolean finished;
     private int currentPercentage;
+    private String uuid;
 
     public String getProjectName() {
         return projectName;
@@ -206,6 +207,14 @@ public class BlenderProject extends AbstractEntityClass {
         this.currentPercentage = currentPercentage;
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     @Override
     public String toString() {
         return "BlenderProject{" +
@@ -228,6 +237,7 @@ public class BlenderProject extends AbstractEntityClass {
                 ", started=" + started +
                 ", finished=" + finished +
                 ", currentPercentage=" + currentPercentage +
+                ", uuid='" + uuid + '\'' +
                 '}';
     }
 }

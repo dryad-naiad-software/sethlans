@@ -19,7 +19,14 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -31,4 +38,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Profile({"NODE", "DUAL"})
 public class NodeRenderRestController {
+
+    private SethlansServerDatabaseService sethlansServerDatabaseService;
+    private static final Logger LOG = LoggerFactory.getLogger(NodeRenderRestController.class);
+
+    @RequestMapping(value = "/api/render/request", method = RequestMethod.GET)
+    public void renderRequest(@RequestParam String server_uuid, String project_uuid,) {
+
+    }
+
+    @RequestMapping(value = "/api/render/status", method = RequestMethod.GET)
+    public void renderStatus(@RequestParam String uuid) {
+
+    }
+
+
+    @Autowired
+    public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
+        this.sethlansServerDatabaseService = sethlansServerDatabaseService;
+    }
 }

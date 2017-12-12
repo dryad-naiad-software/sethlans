@@ -25,10 +25,7 @@ import com.dryadandnaiad.sethlans.enums.*;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Size;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created Mario Estrella on 3/25/17.
@@ -67,6 +64,7 @@ public class ProjectForm {
     private boolean started;
     private boolean finished;
     private int currentPercentage;
+    private String uuid;
 
 
     public void populateForm() {
@@ -83,6 +81,7 @@ public class ProjectForm {
         this.finished = false;
         this.currentPercentage = 0;
         this.outputFormat = RenderOutputFormat.PNG;
+        this.uuid = UUID.randomUUID().toString();
     }
 
 
@@ -289,6 +288,15 @@ public class ProjectForm {
         }
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+
     @Override
     public String toString() {
         return "ProjectForm{" +
@@ -317,6 +325,7 @@ public class ProjectForm {
                 ", started=" + started +
                 ", finished=" + finished +
                 ", currentPercentage=" + currentPercentage +
+                ", uuid='" + uuid + '\'' +
                 '}';
     }
 }

@@ -54,21 +54,25 @@ public class ServerProjectRestController {
 
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
 
-    @RequestMapping(value = "/api/project/blenderBinary")
+    @RequestMapping(value = "/api/project/blender_binary", method = RequestMethod.GET)
     public void downloadBlenderBinary(HttpServletResponse response, @RequestParam String uuid,
                                       @RequestParam String version, @RequestParam String os) {
-        File dir = new File(blenderDir + File.separator + "binaries" + File.separator + version);
-        FileFilter fileFilter = new WildcardFileFilter(version + "-" + os + "." + "*");
-        File[] files = dir.listFiles(fileFilter);
-        if (files != null) {
-            if (files.length > 1) {
-                LOG.error("More files than expected, only one archive per os + version expected");
-            } else {
-                File blenderBinary = files[0];
-                serveFile(blenderBinary, response);
-            }
+        if (sethlansNodeDatabaseService.getByUUID(uuid) == null) {
+            LOG.debug("The uuid sent: " + uuid + " is not present in the database");
         } else {
-            LOG.error("No files found.");
+            File dir = new File(blenderDir + File.separator + "binaries" + File.separator + version);
+            FileFilter fileFilter = new WildcardFileFilter(version + "-" + os + "." + "*");
+            File[] files = dir.listFiles(fileFilter);
+            if (files != null) {
+                if (files.length > 1) {
+                    LOG.error("More files than expected, only one archive per os + version expected");
+                } else {
+                    File blenderBinary = files[0];
+                    serveFile(blenderBinary, response);
+                }
+            } else {
+                LOG.error("No files found.");
+            }
         }
     }
 
@@ -94,7 +98,12 @@ public class ServerProjectRestController {
         }
     }
 
-    @RequestMapping(value = "/api/project/blend_file/")
+    @RequestMapping(value = "/api/project/status", method = RequestMethod.GET)
+    public void projectStatus(@RequestParam String uuid) {
+
+    }
+
+    @RequestMapping(value = "/api/project/blend_file/", method = RequestMethod.GET)
     public void downloadBlendfile(HttpServletResponse response, @RequestParam String uuid) {
 
     }
