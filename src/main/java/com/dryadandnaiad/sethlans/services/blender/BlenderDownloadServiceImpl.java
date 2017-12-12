@@ -118,9 +118,10 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
 
                     if (toDownload.exists()) {
                         LOG.debug("Previous download did not complete successfully, deleting and re-downloading.");
-                        toDownload.delete();
-                        LOG.debug("Re-Downloading " + filename + "...");
-                        Files.copy(stream, Paths.get(toDownload.toString()));
+                        if (toDownload.delete()) {
+                            LOG.debug("Re-Downloading " + filename + "...");
+                            Files.copy(stream, Paths.get(toDownload.toString()));
+                        }
                     } else {
                         Files.copy(stream, Paths.get(toDownload.toString()));
                     }
@@ -129,6 +130,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                         blenderBinary.setBlenderFile(toDownload.toString());
                         LOG.info(filename + " downloaded successfully.");
                         blenderBinary.setDownloaded(true);
+                        downloading = false;
                         blenderBinaryDatabaseService.saveOrUpdate(blenderBinary);
                     } else {
                         LOG.error("MD5 sums didn't match, removing file " + filename);
@@ -145,7 +147,6 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                         LOG.error("Connection time out " + blenderBinary.getDownloadMirrors().get(downloadMirror));
                         downloadMirror++;
                         retry = true;
-                        continue;
                     } else {
                         LOG.error(Throwables.getStackTraceAsString(e));
                         return false;
@@ -159,7 +160,6 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
             }
         }
 
-        downloading = false;
         this.applicationEventPublisher.publishEvent(new SethlansEvent(this, blenderVersion, downloading));
         return true;
     }

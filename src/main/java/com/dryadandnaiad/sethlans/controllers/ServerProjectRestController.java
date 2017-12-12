@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,25 +54,21 @@ public class ServerProjectRestController {
 
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
 
-    @RequestMapping(value = "/api/project/blender")
-    public void downloadBlender(HttpServletResponse response, @RequestParam String uuid) {
-
-    }
-
-    @RequestMapping(value = "/api/project/blendfile/")
-    public void downloadBlendfile(HttpServletResponse response, @RequestParam String uuid,
-                                  @RequestParam String version, @RequestParam String os) {
-        try {
-            File bmw27_cpu = new File(blenderDir + File.separator + version + "bmw27_cpu.blend");
-            String mimeType = "application/octet-stream";
-
-            response.setContentType(mimeType);
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + bmw27_cpu.getName() + "\"");
-            response.setContentLength((int) bmw27_cpu.length());
-            InputStream inputStream = new BufferedInputStream(new FileInputStream(bmw27_cpu));
-            FileCopyUtils.copy(inputStream, response.getOutputStream());
-        } catch (IOException e) {
-            LOG.error(e.getMessage());
+    @RequestMapping(value = "/api/project/blenderBinary")
+    public void downloadBlenderBinary(HttpServletResponse response, @RequestParam String uuid,
+                                      @RequestParam String version, @RequestParam String os) {
+        File dir = new File(blenderDir + File.separator + "binaries" + File.separator + version);
+        FileFilter fileFilter = new WildcardFileFilter(version + "-" + os + "." + "*");
+        File[] files = dir.listFiles(fileFilter);
+        if (files != null) {
+            if (files.length > 1) {
+                LOG.error("More files than expected, only one archive per os + version expected");
+            } else {
+                File blenderBinary = files[0];
+                serveFile(blenderBinary, response);
+            }
+        } else {
+            LOG.error("No files found.");
         }
     }
 
@@ -80,18 +77,9 @@ public class ServerProjectRestController {
         if (sethlansNodeDatabaseService.getByUUID(uuid) == null) {
             LOG.debug("The uuid sent: " + uuid + " is not present in the database");
         } else {
-            try {
-                File bmw27_cpu = new File(benchmarkDir + File.separator + "bmw27_cpu.blend");
-                String mimeType = "application/octet-stream";
+            File bmw27_cpu = new File(benchmarkDir + File.separator + "bmw27_cpu.blend");
+            serveFile(bmw27_cpu, response);
 
-                response.setContentType(mimeType);
-                response.setHeader("Content-Disposition", "attachment; filename=\"" + bmw27_cpu.getName() + "\"");
-                response.setContentLength((int) bmw27_cpu.length());
-                InputStream inputStream = new BufferedInputStream(new FileInputStream(bmw27_cpu));
-                FileCopyUtils.copy(inputStream, response.getOutputStream());
-            } catch (IOException e) {
-                LOG.error(e.getMessage());
-            }
         }
 
     }
@@ -101,18 +89,27 @@ public class ServerProjectRestController {
         if (sethlansNodeDatabaseService.getByUUID(uuid) == null) {
             LOG.debug("The uuid sent: " + uuid + " is not present in the database");
         } else {
-            try {
-                File bmw27_gpu = new File(benchmarkDir + File.separator + "bmw27_gpu.blend");
-                String mimeType = "application/octet-stream";
+            File bmw27_gpu = new File(benchmarkDir + File.separator + "bmw27_gpu.blend");
+            serveFile(bmw27_gpu, response);
+        }
+    }
 
-                response.setContentType(mimeType);
-                response.setHeader("Content-Disposition", "attachment; filename=\"" + bmw27_gpu.getName() + "\"");
-                response.setContentLength((int) bmw27_gpu.length());
-                InputStream inputStream = new BufferedInputStream(new FileInputStream(bmw27_gpu));
-                FileCopyUtils.copy(inputStream, response.getOutputStream());
-            } catch (IOException e) {
-                LOG.error(e.getMessage());
-            }
+    @RequestMapping(value = "/api/project/blend_file/")
+    public void downloadBlendfile(HttpServletResponse response, @RequestParam String uuid) {
+
+    }
+
+    private void serveFile(File file, HttpServletResponse response) {
+        try {
+            String mimeType = "application/octet-stream";
+            response.setContentType(mimeType);
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+            response.setContentLength((int) file.length());
+            InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+            FileCopyUtils.copy(inputStream, response.getOutputStream());
+
+        } catch (IOException e) {
+            LOG.error(e.getMessage());
         }
     }
 
