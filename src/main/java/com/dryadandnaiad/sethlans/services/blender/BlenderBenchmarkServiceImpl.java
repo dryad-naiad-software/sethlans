@@ -19,6 +19,10 @@
 
 package com.dryadandnaiad.sethlans.services.blender;
 
+import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
+import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -29,4 +33,22 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
+    @Value("${sethlans.tempDir}")
+    private String tempDir;
+
+    private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
+    private SethlansAPIConnectionService sethlansAPIConnectionService;
+
+    public void sendBenchmarktoNode() {
+
+    }
+
+    public void processReceivedBenchmark() {
+
+    }
+
+    @Autowired
+    public void setSethlansAPIConnectionService(SethlansAPIConnectionService sethlansAPIConnectionService) {
+        this.sethlansAPIConnectionService = sethlansAPIConnectionService;
+    }
 }
