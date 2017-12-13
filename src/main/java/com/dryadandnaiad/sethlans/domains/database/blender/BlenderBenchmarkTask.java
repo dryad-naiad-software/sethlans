@@ -31,17 +31,17 @@ import javax.persistence.Entity;
  */
 @Entity
 public class BlenderBenchmarkTask extends AbstractEntityClass {
-    private String blendFilename;
+    private String benchmarkURL;
     private String blenderVersion;
     private String server_uuid;
     private int rating;
 
-    public String getBlendFilename() {
-        return blendFilename;
+    public String getBenchmarkURL() {
+        return benchmarkURL;
     }
 
-    public void setBlendFilename(String blendFilename) {
-        this.blendFilename = blendFilename;
+    public void setBenchmarkURL(String benchmarkURL) {
+        this.benchmarkURL = benchmarkURL;
     }
 
     public String getBlenderVersion() {
@@ -71,7 +71,7 @@ public class BlenderBenchmarkTask extends AbstractEntityClass {
     @Override
     public String toString() {
         return "BlenderBenchmarkTask{" +
-                "blendFilename='" + blendFilename + '\'' +
+                "benchmarkURL='" + benchmarkURL + '\'' +
                 ", blenderVersion='" + blenderVersion + '\'' +
                 ", server_uuid='" + server_uuid + '\'' +
                 ", rating=" + rating +

@@ -55,10 +55,10 @@ public class ServerProjectRestController {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
 
     @RequestMapping(value = "/api/project/blender_binary", method = RequestMethod.GET)
-    public void downloadBlenderBinary(HttpServletResponse response, @RequestParam String uuid,
+    public void downloadBlenderBinary(HttpServletResponse response, @RequestParam String node_uuid,
                                       @RequestParam String version, @RequestParam String os) {
-        if (sethlansNodeDatabaseService.getByUUID(uuid) == null) {
-            LOG.debug("The uuid sent: " + uuid + " is not present in the database");
+        if (sethlansNodeDatabaseService.getByUUID(node_uuid) == null) {
+            LOG.debug("The uuid sent: " + node_uuid + " is not present in the database");
         } else {
             File dir = new File(blenderDir + File.separator + "binaries" + File.separator + version);
             FileFilter fileFilter = new WildcardFileFilter(version + "-" + os + "." + "*");
@@ -76,10 +76,10 @@ public class ServerProjectRestController {
         }
     }
 
-    @RequestMapping(value = "/api/benchmarks/bmw_cpu", method = RequestMethod.GET)
-    public void downloadCPUBenchmark(HttpServletResponse response, @RequestParam String uuid) {
-        if (sethlansNodeDatabaseService.getByUUID(uuid) == null) {
-            LOG.debug("The uuid sent: " + uuid + " is not present in the database");
+    @RequestMapping(value = "/api/benchmark_files/bmw_cpu", method = RequestMethod.GET)
+    public void downloadCPUBenchmark(HttpServletResponse response, @RequestParam String node_uuid) {
+        if (sethlansNodeDatabaseService.getByUUID(node_uuid) == null) {
+            LOG.debug("The uuid sent: " + node_uuid + " is not present in the database");
         } else {
             File bmw27_cpu = new File(benchmarkDir + File.separator + "bmw27_cpu.blend");
             serveFile(bmw27_cpu, response);
@@ -88,10 +88,10 @@ public class ServerProjectRestController {
 
     }
 
-    @RequestMapping(value = "/api/benchmarks/bmw_gpu", method = RequestMethod.GET)
-    public void downloadGPUBenchmark(HttpServletResponse response, @RequestParam String uuid) {
-        if (sethlansNodeDatabaseService.getByUUID(uuid) == null) {
-            LOG.debug("The uuid sent: " + uuid + " is not present in the database");
+    @RequestMapping(value = "/api/benchmark_files/bmw_gpu", method = RequestMethod.GET)
+    public void downloadGPUBenchmark(HttpServletResponse response, @RequestParam String node_uuid) {
+        if (sethlansNodeDatabaseService.getByUUID(node_uuid) == null) {
+            LOG.debug("The uuid sent: " + node_uuid + " is not present in the database");
         } else {
             File bmw27_gpu = new File(benchmarkDir + File.separator + "bmw27_gpu.blend");
             serveFile(bmw27_gpu, response);
@@ -99,12 +99,12 @@ public class ServerProjectRestController {
     }
 
     @RequestMapping(value = "/api/project/status", method = RequestMethod.GET)
-    public void projectStatus(@RequestParam String uuid) {
+    public void projectStatus(@RequestParam String node_uuid, @RequestParam String project_uuid) {
 
     }
 
     @RequestMapping(value = "/api/project/blend_file/", method = RequestMethod.GET)
-    public void downloadBlendfile(HttpServletResponse response, @RequestParam String uuid) {
+    public void downloadBlendfile(HttpServletResponse response, @RequestParam String node_uuid, @RequestParam String project_uuid) {
 
     }
 
