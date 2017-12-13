@@ -95,10 +95,12 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
         writeProperty(SethlansConfigKeys.MODE, setupForm.getMode().toString());
         writeProperty(SethlansConfigKeys.BINARY_DIR, setupForm.getBinDirectory());
         writeProperty(SethlansConfigKeys.SCRIPTS_DIR, setupForm.getScriptsDirectory());
+        writeProperty(SethlansConfigKeys.TEMP_DIR, setupForm.getTempDirectory());
         writeProperty("spring.jpa.hibernate.ddl-auto", "validate");
 
         File binDir = new File(setupForm.getBinDirectory());
         File scriptDir = new File(setupForm.getScriptsDirectory());
+        File tempDir = new File(setupForm.getTempDirectory());
 
         if (!binDir.mkdirs()) {
             LOG.error("Unable to create directory " + binDir.toString());
@@ -110,6 +112,10 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
             System.exit(1);
         }
 
+        if (!tempDir.mkdirs()) {
+            LOG.error("Unable to create directory " + tempDir.toString());
+            System.exit(1);
+        }
 
     }
 
@@ -123,7 +129,6 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
         }
         writeProperty(SethlansConfigKeys.PROJECT_DIR, setupForm.getProjectDirectory());
         writeProperty(SethlansConfigKeys.BLENDER_DIR, setupForm.getBlenderDirectory());
-        writeProperty(SethlansConfigKeys.TEMP_DIR, setupForm.getTempDirectory());
         writeProperty(SethlansConfigKeys.BENCHMARK_DIR, setupForm.getBenchmarkDirectory());
 
 
@@ -131,7 +136,6 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
         // Create directories
         File projectDir = new File(setupForm.getProjectDirectory());
         File blenderDir = new File(setupForm.getBlenderDirectory());
-        File tempDir = new File(setupForm.getTempDirectory());
         File benchDir = new File(setupForm.getBenchmarkDirectory());
 
         if (!projectDir.mkdirs()) {
@@ -142,10 +146,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
             LOG.error("Unable to create directory " + blenderDir.toString());
             System.exit(1);
         }
-        if (!tempDir.mkdirs()) {
-            LOG.error("Unable to create directory " + tempDir.toString());
-            System.exit(1);
-        }
+
         if (!benchDir.mkdirs()) {
             LOG.error("Unable to create directory " + benchDir.toString());
             System.exit(1);
