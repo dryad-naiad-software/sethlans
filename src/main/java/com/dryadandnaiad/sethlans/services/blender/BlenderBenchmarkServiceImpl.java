@@ -19,10 +19,12 @@
 
 package com.dryadandnaiad.sethlans.services.blender;
 
+import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,14 +34,22 @@ import org.springframework.stereotype.Service;
  * Project: sethlans
  */
 @Service
+@Profile({"SERVER", "NODE", "DUAL"})
 public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     @Value("${sethlans.tempDir}")
     private String tempDir;
 
+    @Value("${sethlans.primaryBlenderVersion}")
+    private String primaryBlenderVersion;
+
     private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
 
-    public void sendBenchmarktoNode() {
+    @Override
+    public void sendBenchmarktoNode(SethlansNode sethlansNode) {
+        String nodeURL = "https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() + "/api/benchmark/request";
+        String params = "connection_uuid=" + sethlansNode.getConnection_uuid() + "&compute_type=" + sethlansNode.getComputeType() + "&blender_version=" + primaryBlenderVersion;
+        sethlansAPIConnectionService.sendToRemotePOST(nodeURL, params);
 
     }
 

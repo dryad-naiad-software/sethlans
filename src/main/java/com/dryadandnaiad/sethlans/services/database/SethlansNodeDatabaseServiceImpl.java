@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.services.database;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import java.util.List;
  * Project: sethlans
  */
 @Service
+@Profile({"SERVER", "DUAL"})
 public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseService {
 
     private NodeRepository nodeRepository;
@@ -62,11 +64,11 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
     }
 
     @Override
-    public SethlansNode getByUUID(String uuid) {
+    public SethlansNode getByConnectionUUID(String uuid) {
         List<SethlansNode> sethlansNodes = new ArrayList<>();
         nodeRepository.findAll().forEach(sethlansNodes::add);
         for (SethlansNode sethlansNode : sethlansNodes) {
-            if (sethlansNode.getUuid().equals(uuid)) {
+            if (sethlansNode.getConnection_uuid().equals(uuid)) {
                 return sethlansNode;
             }
         }

@@ -48,16 +48,16 @@ public class ActivationRequestController implements ApplicationEventPublisherAwa
 
     @RequestMapping(value = "/api/nodeactivate/request", method = RequestMethod.POST)
     public void nodeActivationRequest(@RequestParam String serverhostname, @RequestParam String ipAddress,
-                                      @RequestParam String port, @RequestParam String uuid) {
+                                      @RequestParam String port, @RequestParam String connection_uuid) {
         LOG.debug("Received node activation request");
-        if (sethlansServerDatabaseService.getByUUID(uuid) != null) {
+        if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) != null) {
             LOG.debug("Server UUID is already present on node. Skipping Activation");
         } else {
             SethlansServer sethlansServer = new SethlansServer();
             sethlansServer.setHostname(serverhostname);
             sethlansServer.setIpAddress(ipAddress);
             sethlansServer.setNetworkPort(port);
-            sethlansServer.setUuid(uuid);
+            sethlansServer.setConnection_uuid(connection_uuid);
             sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
             LOG.debug(sethlansServer.toString());
             LOG.debug("Processed node activation request");
@@ -67,9 +67,9 @@ public class ActivationRequestController implements ApplicationEventPublisherAwa
     }
 
     @RequestMapping(value = "/api/nodeactivate/acknowledge", method = RequestMethod.POST)
-    public void nodeActivationAcknowledge(@RequestParam String uuid) {
-        if (sethlansServerDatabaseService.getByUUID(uuid) != null) {
-            SethlansServer sethlansServer = sethlansServerDatabaseService.getByUUID(uuid);
+    public void nodeActivationAcknowledge(@RequestParam String connection_uuid) {
+        if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) != null) {
+            SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connection_uuid);
             LOG.debug("Received Server Acknowledgement for " + sethlansServer.getHostname());
             sethlansServer.setPendingAcknowledgementResponse(false);
             sethlansServer.setAcknowledged(true);

@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.domains.database.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+import org.springframework.context.annotation.Profile;
 
 import javax.persistence.Entity;
 
@@ -30,10 +31,11 @@ import javax.persistence.Entity;
  * Project: sethlans
  */
 @Entity
+@Profile({"NODE", "DUAL"})
 public class BlenderBenchmarkTask extends AbstractEntityClass {
     private String benchmarkURL;
     private String blenderVersion;
-    private String server_uuid;
+    private String connection_uuid;
     private int rating;
 
     public String getBenchmarkURL() {
@@ -52,12 +54,12 @@ public class BlenderBenchmarkTask extends AbstractEntityClass {
         this.blenderVersion = blenderVersion;
     }
 
-    public String getServer_uuid() {
-        return server_uuid;
+    public String getConnection_uuid() {
+        return connection_uuid;
     }
 
-    public void setServer_uuid(String server_uuid) {
-        this.server_uuid = server_uuid;
+    public void setConnection_uuid(String connection_uuid) {
+        this.connection_uuid = connection_uuid;
     }
 
     public int getRating() {
@@ -73,7 +75,7 @@ public class BlenderBenchmarkTask extends AbstractEntityClass {
         return "BlenderBenchmarkTask{" +
                 "benchmarkURL='" + benchmarkURL + '\'' +
                 ", blenderVersion='" + blenderVersion + '\'' +
-                ", server_uuid='" + server_uuid + '\'' +
+                ", connection_uuid='" + connection_uuid + '\'' +
                 ", rating=" + rating +
                 '}';
     }

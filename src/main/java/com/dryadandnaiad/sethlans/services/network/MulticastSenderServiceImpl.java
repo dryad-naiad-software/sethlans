@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.services.network;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +38,7 @@ import java.net.MulticastSocket;
  * Project: sethlans
  */
 @Service
+@Profile({"NODE", "DUAL"})
 public class MulticastSenderServiceImpl extends Thread implements MulticastSenderService {
     private static final Logger LOG = LoggerFactory.getLogger(MulticastSenderServiceImpl.class);
 

@@ -20,7 +20,11 @@
 package com.dryadandnaiad.sethlans.domains.database.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
-import com.dryadandnaiad.sethlans.enums.*;
+import com.dryadandnaiad.sethlans.enums.BlenderEngine;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.ProjectType;
+import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
+import org.springframework.context.annotation.Profile;
 
 import javax.persistence.Entity;
 
@@ -31,6 +35,7 @@ import javax.persistence.Entity;
  * Project: sethlans
  */
 @Entity
+@Profile({"SERVER", "DUAL"})
 public class BlenderProject extends AbstractEntityClass {
     private String projectName;
     private RenderOutputFormat renderOutputFormat;
@@ -51,7 +56,7 @@ public class BlenderProject extends AbstractEntityClass {
     private boolean started;
     private boolean finished;
     private int currentPercentage;
-    private String uuid;
+    private String project_uuid;
 
     public String getProjectName() {
         return projectName;
@@ -207,12 +212,12 @@ public class BlenderProject extends AbstractEntityClass {
         this.currentPercentage = currentPercentage;
     }
 
-    public String getUuid() {
-        return uuid;
+    public String getProject_uuid() {
+        return project_uuid;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setProject_uuid(String project_uuid) {
+        this.project_uuid = project_uuid;
     }
 
     @Override
@@ -237,7 +242,7 @@ public class BlenderProject extends AbstractEntityClass {
                 ", started=" + started +
                 ", finished=" + finished +
                 ", currentPercentage=" + currentPercentage +
-                ", uuid='" + uuid + '\'' +
+                ", project_uuid='" + project_uuid + '\'' +
                 '}';
     }
 }

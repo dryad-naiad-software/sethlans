@@ -19,6 +19,8 @@
 
 package com.dryadandnaiad.sethlans.services.blender;
 
+import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+
 /**
  * Created Mario Estrella on 12/10/17.
  * Dryad and Naiad Software LLC
@@ -26,4 +28,5 @@ package com.dryadandnaiad.sethlans.services.blender;
  * Project: sethlans
  */
 public interface BlenderBenchmarkService {
+    void sendBenchmarktoNode(SethlansNode sethlansNode);
 }

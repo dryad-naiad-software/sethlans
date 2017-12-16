@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.domains.database.server;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+import org.springframework.context.annotation.Profile;
 
 import javax.persistence.Entity;
 
@@ -30,11 +31,12 @@ import javax.persistence.Entity;
  * Project: sethlans
  */
 @Entity
+@Profile({"SERVER", "DUAL"})
 public class SethlansServer extends AbstractEntityClass {
     private String hostname;
     private String ipAddress;
     private String networkPort;
-    private String uuid;
+    private String connection_uuid;
     private boolean acknowledged;
     private boolean pendingAcknowledgementResponse;
 
@@ -62,12 +64,12 @@ public class SethlansServer extends AbstractEntityClass {
         this.networkPort = networkPort;
     }
 
-    public String getUuid() {
-        return uuid;
+    public String getConnection_uuid() {
+        return connection_uuid;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setConnection_uuid(String connection_uuid) {
+        this.connection_uuid = connection_uuid;
     }
 
     public boolean isAcknowledged() {
@@ -92,7 +94,7 @@ public class SethlansServer extends AbstractEntityClass {
                 "hostname='" + hostname + '\'' +
                 ", ipAddress='" + ipAddress + '\'' +
                 ", networkPort='" + networkPort + '\'' +
-                ", uuid='" + uuid + '\'' +
+                ", connection_uuid='" + connection_uuid + '\'' +
                 ", acknowledged=" + acknowledged +
                 ", pendingAcknowledgementResponse=" + pendingAcknowledgementResponse +
                 '}';

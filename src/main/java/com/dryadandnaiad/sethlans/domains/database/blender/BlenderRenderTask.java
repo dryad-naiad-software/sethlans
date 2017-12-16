@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
+import org.springframework.context.annotation.Profile;
 
 import javax.persistence.Entity;
 
@@ -33,9 +34,10 @@ import javax.persistence.Entity;
  * Project: sethlans
  */
 @Entity
+@Profile({"NODE", "DUAL"})
 public class BlenderRenderTask extends AbstractEntityClass {
     private String projectName;
-    private String server_uuid;
+    private String connection_uuid;
     private String project_uuid;
     private RenderOutputFormat renderOutputFormat;
     private int startFrame;
@@ -173,12 +175,12 @@ public class BlenderRenderTask extends AbstractEntityClass {
         this.part = part;
     }
 
-    public String getServer_uuid() {
-        return server_uuid;
+    public String getConnection_uuid() {
+        return connection_uuid;
     }
 
-    public void setServer_uuid(String server_uuid) {
-        this.server_uuid = server_uuid;
+    public void setConnection_uuid(String connection_uuid) {
+        this.connection_uuid = connection_uuid;
     }
 
     public String getProject_uuid() {
@@ -193,7 +195,7 @@ public class BlenderRenderTask extends AbstractEntityClass {
     public String toString() {
         return "BlenderRenderTask{" +
                 "projectName='" + projectName + '\'' +
-                ", server_uuid='" + server_uuid + '\'' +
+                ", connection_uuid='" + connection_uuid + '\'' +
                 ", project_uuid='" + project_uuid + '\'' +
                 ", renderOutputFormat=" + renderOutputFormat +
                 ", startFrame=" + startFrame +

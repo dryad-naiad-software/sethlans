@@ -26,6 +26,7 @@ import com.dryadandnaiad.sethlans.repositories.BlenderProjectRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ import java.util.List;
  * Project: sethlans
  */
 @Service
+@Profile({"SERVER", "DUAL"})
 public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabaseService {
     private BlenderProjectRepository blenderProjectRepository;
     private ProjectFormToBlenderProject projectFormToBlenderProject;

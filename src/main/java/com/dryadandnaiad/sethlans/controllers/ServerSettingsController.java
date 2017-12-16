@@ -224,7 +224,7 @@ public class ServerSettingsController extends AbstractSethlansController {
     public String submitNodefromScan(final @Valid @ModelAttribute("scanForm") ScanForm scanForm) {
         List<SethlansNode> sethlansNodes = nodeDiscoveryService.discoverMulticastNodes();
         LOG.debug("Selected Nodes: " + sethlansNodes.toString());
-        List<SethlansNode> sethlansNodesDatabase = (List<SethlansNode>) sethlansNodeDatabaseService.listAll();
+        List<SethlansNode> sethlansNodesDatabase = sethlansNodeDatabaseService.listAll();
         for (Integer nodeId : scanForm.getSethlansNodeId()) {
             if (!sethlansNodesDatabase.isEmpty()) {
                 for (SethlansNode node : sethlansNodesDatabase) {
@@ -277,7 +277,7 @@ public class ServerSettingsController extends AbstractSethlansController {
     }
 
 
-    public void setSethlansServer() {
+    private void setSethlansServer() {
         this.sethlansServer = new SethlansServer();
         this.sethlansServer.setNetworkPort(sethlansPort);
         this.sethlansServer.setHostname(SethlansUtils.getHostname());

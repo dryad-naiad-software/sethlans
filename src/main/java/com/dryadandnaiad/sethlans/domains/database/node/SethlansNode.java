@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import org.springframework.context.annotation.Profile;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -37,6 +38,7 @@ import java.util.List;
  * Project: sethlans
  */
 @Entity
+@Profile({"SERVER", "DUAL"})
 public class SethlansNode extends AbstractEntityClass {
     private String hostname;
     private String ipAddress;
@@ -51,7 +53,7 @@ public class SethlansNode extends AbstractEntityClass {
     private List<String> selectedCUDA;
     private boolean active;
     private boolean pendingActivation;
-    private String uuid;
+    private String connection_uuid;
     private int ratingCPU;
     private int ratingGPU;
     private boolean benchmarkComplete;
@@ -145,12 +147,12 @@ public class SethlansNode extends AbstractEntityClass {
         this.pendingActivation = pendingActivation;
     }
 
-    public String getUuid() {
-        return uuid;
+    public String getConnection_uuid() {
+        return connection_uuid;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setConnection_uuid(String connection_uuid) {
+        this.connection_uuid = connection_uuid;
     }
 
     public int getRatingCPU() {
@@ -191,7 +193,7 @@ public class SethlansNode extends AbstractEntityClass {
                 ", selectedCUDA=" + selectedCUDA +
                 ", active=" + active +
                 ", pendingActivation=" + pendingActivation +
-                ", uuid='" + uuid + '\'' +
+                ", connection_uuid='" + connection_uuid + '\'' +
                 ", ratingCPU=" + ratingCPU +
                 ", ratingGPU=" + ratingGPU +
                 ", benchmarkComplete=" + benchmarkComplete +

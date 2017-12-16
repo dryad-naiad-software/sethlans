@@ -38,5 +38,5 @@ public interface NodeActivationService {
     void sendActivationResponse(SethlansServer sethlansServer, SethlansNode sethlansNode);
 
     @Async
-    void sendResponseAcknowledgement(SethlansNode sethlansNode, String uuid);
+    void sendResponseAcknowledgement(SethlansNode sethlansNode, String connection_uuid);
 }

@@ -130,6 +130,7 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
         writeProperty(SethlansConfigKeys.PROJECT_DIR, setupForm.getProjectDirectory());
         writeProperty(SethlansConfigKeys.BLENDER_DIR, setupForm.getBlenderDirectory());
         writeProperty(SethlansConfigKeys.BENCHMARK_DIR, setupForm.getBenchmarkDirectory());
+        writeProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION, setupForm.getBlenderVersion());
 
 
         LOG.debug("Server Settings Saved");

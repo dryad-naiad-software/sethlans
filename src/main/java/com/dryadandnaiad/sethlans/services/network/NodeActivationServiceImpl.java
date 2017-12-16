@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.events.SethlansEvent;
+import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderDownloadService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -44,12 +46,14 @@ import java.util.Set;
  * Project: sethlans
  */
 @Service
+@Profile({"SERVER", "NODE", "DUAL"})
 public class NodeActivationServiceImpl implements NodeActivationService, ApplicationEventPublisherAware {
     private static final Logger LOG = LoggerFactory.getLogger(NodeActivationServiceImpl.class);
     private ApplicationEventPublisher applicationEventPublisher;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
     private BlenderDownloadService blenderDownloadService;
+    private BlenderBenchmarkService blenderBenchmarkService;
 
 
     @Override
@@ -60,7 +64,7 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
         String port = sethlansNode.getNetworkPort();
         String activateURL = "https://" + ip + ":" + port + "/api/nodeactivate/request";
         String params = "serverhostname=" + sethlansServer.getHostname() + "&ipAddress=" + sethlansServer.getIpAddress()
-                + "&port=" + sethlansServer.getNetworkPort() + "&uuid=" + sethlansNode.getUuid();
+                + "&port=" + sethlansServer.getNetworkPort() + "&connection_uuid=" + sethlansNode.getConnection_uuid();
         if (sethlansAPIConnectionService.sendToRemotePOST(activateURL, params)) {
             addBlenderBinary(sethlansNode.getSethlansNodeOS().toString());
             blenderDownloadService.downloadRequestedBlenderFilesAsync();
@@ -77,7 +81,7 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
         String port = sethlansServer.getNetworkPort();
         String responseURL = "https://" + ip + ":" + port + "/api/nodeactivate/response";
         String params = "nodehostname=" + sethlansNode.getHostname() + "&ipAddress=" + sethlansNode.getIpAddress()
-                + "&port=" + sethlansNode.getNetworkPort() + "&uuid=" + sethlansServer.getUuid();
+                + "&port=" + sethlansNode.getNetworkPort() + "&connection_uuid=" + sethlansServer.getConnection_uuid();
         if (sethlansAPIConnectionService.sendToRemotePOST(responseURL, params)) {
             this.applicationEventPublisher.publishEvent(new SethlansEvent(this, sethlansServer.getHostname(), false));
 
@@ -86,13 +90,15 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
 
     @Override
     @Async
-    public void sendResponseAcknowledgement(SethlansNode sethlansNode, String uuid) {
+    public void sendResponseAcknowledgement(SethlansNode sethlansNode, String connection_uuid) {
         LOG.debug("Sending Response Acknowledgement to Node");
         String ip = sethlansNode.getIpAddress();
         String port = sethlansNode.getNetworkPort();
         String acknowledgeURL = "https://" + ip + ":" + port + "/api/nodeactivate/acknowledge";
-        String params = "uuid=" + sethlansNode.getUuid();
-        sethlansAPIConnectionService.sendToRemotePOST(acknowledgeURL, params);
+        String params = "connection_uuid=" + sethlansNode.getConnection_uuid();
+        if (sethlansAPIConnectionService.sendToRemotePOST(acknowledgeURL, params)) {
+            blenderBenchmarkService.sendBenchmarktoNode(sethlansNode);
+        }
     }
 
 
@@ -135,5 +141,10 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
     @Autowired
     public void setBlenderDownloadService(BlenderDownloadService blenderDownloadService) {
         this.blenderDownloadService = blenderDownloadService;
+    }
+
+    @Autowired
+    public void setBlenderBenchmarkService(BlenderBenchmarkService blenderBenchmarkService) {
+        this.blenderBenchmarkService = blenderBenchmarkService;
     }
 }

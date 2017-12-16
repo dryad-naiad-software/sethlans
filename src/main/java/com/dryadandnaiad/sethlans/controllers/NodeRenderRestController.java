@@ -56,7 +56,7 @@ public class NodeRenderRestController {
                               int start_frame, int end_frame, int step_frame, int samples,
                               BlenderEngine blender_engine, int resolution_x, int resolution_y, int res_percentage, ComputeType compute_type,
                               String blend_file, String blender_version, int part) {
-        if (sethlansServerDatabaseService.getByUUID(server_uuid) == null) {
+        if (sethlansServerDatabaseService.getByConnectionUUID(server_uuid) == null) {
             LOG.debug("The uuid sent: " + server_uuid + " is not present in the database");
         } else {
             BlenderRenderTask blenderRenderTask;
@@ -64,7 +64,7 @@ public class NodeRenderRestController {
                 // Create a new task
                 blenderRenderTask = new BlenderRenderTask();
                 blenderRenderTask.setProject_uuid(project_uuid);
-                blenderRenderTask.setServer_uuid(server_uuid);
+                blenderRenderTask.setConnection_uuid(server_uuid);
                 blenderRenderTask.setRenderOutputFormat(renderoutputformat);
                 blenderRenderTask.setStartFrame(start_frame);
                 blenderRenderTask.setEndFrame(end_frame);
@@ -91,20 +91,20 @@ public class NodeRenderRestController {
     }
 
     @RequestMapping(value = "/api/benchmark/request", method = RequestMethod.POST)
-    public void benchmarkRequest(@RequestParam String server_uuid, ComputeType computeType, String version) {
-        if (sethlansServerDatabaseService.getByUUID(server_uuid) == null) {
-            LOG.debug("The uuid sent: " + server_uuid + " is not present in the database");
+    public void benchmarkRequest(@RequestParam String connection_uuid, ComputeType compute_type, String blender_version) {
+        if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) == null) {
+            LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
             BlenderBenchmarkTask cpuBenchmarkTask = new BlenderBenchmarkTask();
-            cpuBenchmarkTask.setBlenderVersion(version);
+            cpuBenchmarkTask.setBlenderVersion(blender_version);
             cpuBenchmarkTask.setBenchmarkURL("bmw_cpu");
-            cpuBenchmarkTask.setServer_uuid(server_uuid);
+            cpuBenchmarkTask.setConnection_uuid(connection_uuid);
 
             BlenderBenchmarkTask gpuBenchmarkTask = new BlenderBenchmarkTask();
-            gpuBenchmarkTask.setBlenderVersion(version);
+            gpuBenchmarkTask.setBlenderVersion(blender_version);
             gpuBenchmarkTask.setBenchmarkURL("bmw_gpu");
-            gpuBenchmarkTask.setServer_uuid(server_uuid);
-            switch (computeType) {
+            gpuBenchmarkTask.setConnection_uuid(connection_uuid);
+            switch (compute_type) {
                 case CPU:
                     blenderBenchmarkTaskDatabaseService.saveOrUpdate(cpuBenchmarkTask);
                     break;
@@ -118,7 +118,7 @@ public class NodeRenderRestController {
     }
 
     @RequestMapping(value = "/api/render/status", method = RequestMethod.GET)
-    public void renderStatus(@RequestParam String server_uuid) {
+    public void renderStatus(@RequestParam String connection_uuid) {
 
     }
 
