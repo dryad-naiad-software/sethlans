@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.python;
 
-import com.dryadandnaiad.sethlans.domains.python.PythonDownloadFile;
+import com.dryadandnaiad.sethlans.domains.python.PythonArchive;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.network.GetRawDataService;
 import com.dryadandnaiad.sethlans.services.network.GetRawDataServiceImpl;
@@ -107,11 +107,11 @@ public class PythonSetupServiceImpl implements PythonSetupService {
     }
 
     private String binDir;
-    private PythonDownloadFile pythonDownloadFile;
+    private PythonArchive pythonArchive;
 
-    public PythonDownloadFile getPythonDownloadFile() {
+    public PythonArchive getPythonArchive() {
         setPythonBinary();
-        return pythonDownloadFile;
+        return pythonArchive;
     }
 
     private boolean setPythonBinary() {
@@ -131,24 +131,24 @@ public class PythonSetupServiceImpl implements PythonSetupService {
                         || wow64Arch != null && wow64Arch.endsWith("64")
                         ? "64" : "32";
                 if (realArch.equals("64")) {
-                    this.pythonDownloadFile = new PythonDownloadFile(pythonDownload.get("windows64"), pythonDownload.get("windows64_md5"), pythonDownload.get("windows64_filename"));
+                    this.pythonArchive = new PythonArchive(pythonDownload.get("windows64"), pythonDownload.get("windows64_md5"), pythonDownload.get("windows64_filename"));
                     return true;
                 } else {
-                    this.pythonDownloadFile = new PythonDownloadFile(pythonDownload.get("windows32"), pythonDownload.get("windows32_md5"), pythonDownload.get("windows32_filename"));
+                    this.pythonArchive = new PythonArchive(pythonDownload.get("windows32"), pythonDownload.get("windows32_md5"), pythonDownload.get("windows32_filename"));
                     return true;
                 }
             }
             if (SystemUtils.IS_OS_LINUX) {
                 if (SystemUtils.OS_ARCH.contains("64")) {
-                    this.pythonDownloadFile = new PythonDownloadFile(pythonDownload.get("linux64"), pythonDownload.get("linux64_md5"), pythonDownload.get("linux64_filename"));
+                    this.pythonArchive = new PythonArchive(pythonDownload.get("linux64"), pythonDownload.get("linux64_md5"), pythonDownload.get("linux64_filename"));
                     return true;
                 } else {
-                    this.pythonDownloadFile = new PythonDownloadFile(pythonDownload.get("linux32"), pythonDownload.get("linux32_md5"), pythonDownload.get("linux32_filename"));
+                    this.pythonArchive = new PythonArchive(pythonDownload.get("linux32"), pythonDownload.get("linux32_md5"), pythonDownload.get("linux32_filename"));
                     return true;
                 }
             }
             if (SystemUtils.IS_OS_MAC) {
-                this.pythonDownloadFile = new PythonDownloadFile(pythonDownload.get("macos"), pythonDownload.get("macos_md5"), pythonDownload.get("macos_filename"));
+                this.pythonArchive = new PythonArchive(pythonDownload.get("macos"), pythonDownload.get("macos_md5"), pythonDownload.get("macos_filename"));
                 return true;
             }
 
@@ -163,15 +163,15 @@ public class PythonSetupServiceImpl implements PythonSetupService {
         File saveLocation = new File(binDir);
         saveLocation.mkdirs();
         try {
-            InputStream inputStream = new Resources(pythonDownloadFile.getBinaryURL()).getResource();
-            LOG.debug("Copying  " + pythonDownloadFile.getFilename() + "...");
-            Files.copy(inputStream, Paths.get(saveLocation + File.separator + pythonDownloadFile.getFilename()));
-            if (SethlansUtils.fileCheckMD5(new File(saveLocation + File.separator + pythonDownloadFile.getFilename()), pythonDownloadFile.getMd5())) {
-                LOG.debug(pythonDownloadFile.getFilename() + " downloaded successfully.");
-                return pythonDownloadFile.getFilename();
+            InputStream inputStream = new Resources(pythonArchive.getBinaryURL()).getResource();
+            LOG.debug("Copying  " + pythonArchive.getFilename() + "...");
+            Files.copy(inputStream, Paths.get(saveLocation + File.separator + pythonArchive.getFilename()));
+            if (SethlansUtils.fileCheckMD5(new File(saveLocation + File.separator + pythonArchive.getFilename()), pythonArchive.getMd5())) {
+                LOG.debug(pythonArchive.getFilename() + " downloaded successfully.");
+                return pythonArchive.getFilename();
             } else {
-                LOG.error("MD5 sums didn't match, removing file " + pythonDownloadFile.getFilename());
-                File toDelete = new File(saveLocation + File.separator + pythonDownloadFile.getFilename());
+                LOG.error("MD5 sums didn't match, removing file " + pythonArchive.getFilename());
+                File toDelete = new File(saveLocation + File.separator + pythonArchive.getFilename());
                 toDelete.delete();
                 throw new IOException();
             }

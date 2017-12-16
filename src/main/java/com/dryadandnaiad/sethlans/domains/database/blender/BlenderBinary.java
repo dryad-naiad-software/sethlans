@@ -21,8 +21,8 @@ package com.dryadandnaiad.sethlans.domains.database.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.Transient;
 import java.util.List;
 
 /**
@@ -37,7 +37,7 @@ public class BlenderBinary extends AbstractEntityClass {
     private String blenderBinaryOS;
     private String blenderFile;
     private String blenderFileMd5;
-    @Transient
+    @ElementCollection
     private List<String> downloadMirrors;
     private boolean downloaded = false;
 

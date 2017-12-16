@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.python;
 
-import com.dryadandnaiad.sethlans.domains.python.PythonDownloadFile;
+import com.dryadandnaiad.sethlans.domains.python.PythonArchive;
 
 /**
  * Created Mario Estrella on 3/27/17.
@@ -34,6 +34,6 @@ public interface PythonSetupService {
 
     String downloadPython(String binDir);
 
-    PythonDownloadFile getPythonDownloadFile();
+    PythonArchive getPythonArchive();
 
 }

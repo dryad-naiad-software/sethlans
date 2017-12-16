@@ -44,7 +44,7 @@ public class BlenderDownloadComponent {
     }
 
     @PostConstruct
-    public void startBlenderDownload() throws InterruptedException {
+    public void startBlenderDownload() {
         blenderDownloadService.downloadRequestedBlenderFilesAsync();
     }
 }

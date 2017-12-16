@@ -32,7 +32,7 @@
 
                                         <tr>
                                             <td>Compute Method</td>
-                                            <td th:text="${setupForm.selectedMethod}">CPU &amp; GPU</td>
+                                            <td th:text="${setupForm.selectedMethod.getName()}">CPU &amp; GPU</td>
                                         </tr>
                                         <tr th:if="${setupForm.selectedMethod == T(com.dryadandnaiad.sethlans.enums.ComputeType).CPU || setupForm.selectedMethod == T(com.dryadandnaiad.sethlans.enums.ComputeType).CPU_GPU }">
                                             <td>Rendering Cores</td>

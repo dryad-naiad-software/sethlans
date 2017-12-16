@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.network;
 
-import com.dryadandnaiad.sethlans.domains.python.PythonDownloadFile;
+import com.dryadandnaiad.sethlans.domains.python.PythonArchive;
 import com.dryadandnaiad.sethlans.services.python.PythonSetupService;
 import com.dryadandnaiad.sethlans.services.python.PythonSetupServiceImpl;
 import org.apache.commons.lang3.SystemUtils;
@@ -36,23 +36,23 @@ import org.junit.Test;
  */
 public class PythonDownloadServiceTest {
     PythonSetupService pythonSetupService;
-    PythonDownloadFile pythonDownloadFile;
+    PythonArchive pythonArchive;
 
     @Before
     public void setUp() throws Exception {
         pythonSetupService = new PythonSetupServiceImpl();
-        pythonDownloadFile = pythonSetupService.getPythonDownloadFile();
+        pythonArchive = pythonSetupService.getPythonArchive();
     }
 
     @Test
     public void test_python_download_not_null() {
-        Assert.assertNotNull(pythonDownloadFile);
+        Assert.assertNotNull(pythonArchive);
     }
 
     @Test
     public void test_python_mac_file() {
         if (SystemUtils.IS_OS_MAC) {
-            Assert.assertThat(pythonDownloadFile.getFilename(), CoreMatchers.containsString("mac"));
+            Assert.assertThat(pythonArchive.getFilename(), CoreMatchers.containsString("mac"));
 
         } else {
             System.out.println("System is not running macOS, skipping Assert in test_python_mac_file");
@@ -68,10 +68,10 @@ public class PythonDownloadServiceTest {
             String realArch = arch.endsWith("64") || wow64Arch != null && wow64Arch.endsWith("64")
                     ? "64" : "32";
             if (realArch.equals("64")) {
-                Assert.assertThat(pythonDownloadFile.getFilename(), CoreMatchers.containsString("windows64"));
+                Assert.assertThat(pythonArchive.getFilename(), CoreMatchers.containsString("windows64"));
 
             } else {
-                Assert.assertThat(pythonDownloadFile.getFilename(), CoreMatchers.containsString("windows32"));
+                Assert.assertThat(pythonArchive.getFilename(), CoreMatchers.containsString("windows32"));
             }
 
         } else {
@@ -84,9 +84,9 @@ public class PythonDownloadServiceTest {
         if (SystemUtils.IS_OS_LINUX) {
             String arch = System.getProperty("os.arch");
             if (arch.equals("x86")) {
-                Assert.assertThat(pythonDownloadFile.getFilename(), CoreMatchers.containsString("linux32"));
+                Assert.assertThat(pythonArchive.getFilename(), CoreMatchers.containsString("linux32"));
             } else {
-                Assert.assertThat(pythonDownloadFile.getFilename(), CoreMatchers.containsString("linux64"));
+                Assert.assertThat(pythonArchive.getFilename(), CoreMatchers.containsString("linux64"));
             }
         } else {
             System.out.println("System is not running Linux, skipping Assert in test_python_linux_file");
