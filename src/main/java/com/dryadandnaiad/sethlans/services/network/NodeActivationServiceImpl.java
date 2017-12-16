@@ -19,9 +19,11 @@
 
 package com.dryadandnaiad.sethlans.services.network;
 
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.events.SethlansEvent;
+import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,10 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created Mario Estrella on 12/5/17.
@@ -41,6 +47,7 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
     private static final Logger LOG = LoggerFactory.getLogger(NodeActivationServiceImpl.class);
     private ApplicationEventPublisher applicationEventPublisher;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
+    private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
 
     @Override
     @Async
@@ -51,7 +58,10 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
         String activateURL = "https://" + ip + ":" + port + "/api/nodeactivate/request";
         String params = "serverhostname=" + sethlansServer.getHostname() + "&ipAddress=" + sethlansServer.getIpAddress()
                 + "&port=" + sethlansServer.getNetworkPort() + "&uuid=" + sethlansNode.getUuid();
-        sethlansAPIConnectionService.sendToRemotePOST(activateURL, params);
+        if (sethlansAPIConnectionService.sendToRemotePOST(activateURL, params)) {
+            addBlenderBinary(sethlansNode.getSethlansNodeOS().toString());
+        }
+
 
     }
 
@@ -87,8 +97,34 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
+    private void addBlenderBinary(String serverOS) {
+        List<BlenderBinary> blenderBinaries = blenderBinaryDatabaseService.listAll();
+        Set<String> versions = new HashSet<>();
+        for (BlenderBinary blenderBinary : blenderBinaries) {
+            versions.add(blenderBinary.getBlenderVersion());
+            for (String version : versions) {
+                if (blenderBinary.getBlenderBinaryOS().equals(serverOS) && blenderBinary.getBlenderVersion().equals(version)) {
+                    LOG.debug("Blender Binaries already present.");
+                } else {
+                    BlenderBinary newBlenderBinary = new BlenderBinary();
+                    newBlenderBinary.setDownloaded(false);
+                    newBlenderBinary.setBlenderBinaryOS(serverOS);
+                    newBlenderBinary.setBlenderVersion(version);
+                    LOG.debug("Adding " + newBlenderBinary.toString() + " to database.");
+                    blenderBinaryDatabaseService.saveOrUpdate(newBlenderBinary);
+                }
+            }
+
+        }
+    }
+
     @Autowired
     public void setSethlansAPIConnectionService(SethlansAPIConnectionService sethlansAPIConnectionService) {
         this.sethlansAPIConnectionService = sethlansAPIConnectionService;
+    }
+
+    @Autowired
+    public void setBlenderBinaryDatabaseService(BlenderBinaryDatabaseService blenderBinaryDatabaseService) {
+        this.blenderBinaryDatabaseService = blenderBinaryDatabaseService;
     }
 }
