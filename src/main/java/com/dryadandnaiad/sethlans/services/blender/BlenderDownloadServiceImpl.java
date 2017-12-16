@@ -87,7 +87,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
         String blenderVersion = null;
 
         for (BlenderBinary blenderBinary : blenderDownloadList) {
-            boolean retry=true;
+            boolean retry = true;
             blenderVersion = blenderBinary.getBlenderVersion();
             File saveLocation = new File(downloadLocation + File.separator + "binaries" + File.separator + blenderVersion + File.separator);
             saveLocation.mkdirs();
@@ -165,9 +165,18 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
     }
 
     private List<BlenderBinary> prepareDownload() {
+        LOG.debug("Preparing Blender Binary Download List");
         List<BlenderBinary> list = new ArrayList<>();
         String filename;
         for (BlenderBinary blenderZipEntity : blenderFileEntities) {
+            if (blenderZipEntity.isDownloaded()) {
+                File blendFile = new File(blenderZipEntity.getBlenderFile());
+                if (!blendFile.exists()) {
+                    LOG.debug(blenderZipEntity.getBlenderFile() + " is missing, re-downloading file.");
+                    blenderZipEntity.setDownloaded(false);
+                }
+
+            }
             if (!blenderZipEntity.isDownloaded()) {
                 for (BlenderZip blenderBinary : blenderBinaries) {
                     if (blenderBinary.getBlenderVersion().equals(blenderZipEntity.getBlenderVersion())) {
