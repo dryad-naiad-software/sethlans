@@ -19,13 +19,17 @@
 
 package com.dryadandnaiad.sethlans.services.blender;
 
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created Mario Estrella on 12/10/17.
@@ -53,12 +57,38 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
 
     }
 
-    public void processReceivedBenchmark() {
+    @Override
+    public void processReceivedBenchmark(String benchmark_uuid) {
+        BlenderBenchmarkTask benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark_uuid);
+        // Process benchmark
 
+    }
+
+    @Override
+    public void processReceivedBenchmarks(List<String> benchmark_uuid) {
+        for (String benchmark : benchmark_uuid) {
+            BlenderBenchmarkTask benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark);
+            // Process benchmark;
+        }
+
+    }
+
+    @Override
+    public void sendResultsToServer(SethlansServer sethlansServer) {
+
+    }
+
+    private boolean downloadRequiredFiles() {
+        return false;
     }
 
     @Autowired
     public void setSethlansAPIConnectionService(SethlansAPIConnectionService sethlansAPIConnectionService) {
         this.sethlansAPIConnectionService = sethlansAPIConnectionService;
+    }
+
+    @Autowired
+    public void setBlenderBenchmarkTaskDatabaseService(BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService) {
+        this.blenderBenchmarkTaskDatabaseService = blenderBenchmarkTaskDatabaseService;
     }
 }

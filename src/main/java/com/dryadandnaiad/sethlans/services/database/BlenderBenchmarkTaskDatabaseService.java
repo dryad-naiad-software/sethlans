@@ -28,4 +28,5 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
  * Project: sethlans
  */
 public interface BlenderBenchmarkTaskDatabaseService extends CRUDService<BlenderBenchmarkTask> {
+    BlenderBenchmarkTask getByBenchmarkUUID(String uuid);
 }

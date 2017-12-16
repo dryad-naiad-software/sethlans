@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
+import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
@@ -35,6 +36,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Created Mario Estrella on 12/9/17.
@@ -49,6 +54,7 @@ public class NodeRenderRestController {
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private BlenderRenderTaskDatabaseService blenderRenderTaskDatabaseService;
     private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
+    private BlenderBenchmarkService blenderBenchmarkService;
     private static final Logger LOG = LoggerFactory.getLogger(NodeRenderRestController.class);
 
     @RequestMapping(value = "/api/render/request", method = RequestMethod.POST)
@@ -98,22 +104,33 @@ public class NodeRenderRestController {
             BlenderBenchmarkTask cpuBenchmarkTask = new BlenderBenchmarkTask();
             cpuBenchmarkTask.setBlenderVersion(blender_version);
             cpuBenchmarkTask.setBenchmarkURL("bmw_cpu");
+            cpuBenchmarkTask.setComputeType(ComputeType.CPU);
             cpuBenchmarkTask.setConnection_uuid(connection_uuid);
+            cpuBenchmarkTask.setBenchmark_uuid(UUID.randomUUID().toString());
 
             BlenderBenchmarkTask gpuBenchmarkTask = new BlenderBenchmarkTask();
             gpuBenchmarkTask.setBlenderVersion(blender_version);
             gpuBenchmarkTask.setBenchmarkURL("bmw_gpu");
+            gpuBenchmarkTask.setComputeType(ComputeType.GPU);
             gpuBenchmarkTask.setConnection_uuid(connection_uuid);
+            gpuBenchmarkTask.setBenchmark_uuid(UUID.randomUUID().toString());
             switch (compute_type) {
                 case CPU:
                     blenderBenchmarkTaskDatabaseService.saveOrUpdate(cpuBenchmarkTask);
+                    blenderBenchmarkService.processReceivedBenchmark(cpuBenchmarkTask.getBenchmark_uuid());
                     break;
                 case CPU_GPU:
                     blenderBenchmarkTaskDatabaseService.saveOrUpdate(gpuBenchmarkTask);
                     blenderBenchmarkTaskDatabaseService.saveOrUpdate(cpuBenchmarkTask);
+                    List<String> benchmarks = new ArrayList<>();
+                    benchmarks.add(gpuBenchmarkTask.getBenchmark_uuid());
+                    benchmarks.add(cpuBenchmarkTask.getBenchmark_uuid());
+                    blenderBenchmarkService.processReceivedBenchmarks(benchmarks);
                 case GPU:
                     blenderBenchmarkTaskDatabaseService.saveOrUpdate(gpuBenchmarkTask);
+                    blenderBenchmarkService.processReceivedBenchmark(gpuBenchmarkTask.getBenchmark_uuid());
             }
+
         }
     }
 
@@ -136,5 +153,10 @@ public class NodeRenderRestController {
     @Autowired
     public void setBlenderBenchmarkTaskDatabaseService(BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService) {
         this.blenderBenchmarkTaskDatabaseService = blenderBenchmarkTaskDatabaseService;
+    }
+
+    @Autowired
+    public void setBlenderBenchmarkService(BlenderBenchmarkService blenderBenchmarkService) {
+        this.blenderBenchmarkService = blenderBenchmarkService;
     }
 }

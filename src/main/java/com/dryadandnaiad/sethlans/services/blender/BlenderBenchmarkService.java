@@ -20,6 +20,9 @@
 package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
+
+import java.util.List;
 
 /**
  * Created Mario Estrella on 12/10/17.
@@ -29,4 +32,10 @@ import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
  */
 public interface BlenderBenchmarkService {
     void sendBenchmarktoNode(SethlansNode sethlansNode);
+
+    void processReceivedBenchmark(String benchmark_uuid);
+
+    void processReceivedBenchmarks(List<String> benchmark_uuid);
+
+    void sendResultsToServer(SethlansServer sethlansServer);
 }

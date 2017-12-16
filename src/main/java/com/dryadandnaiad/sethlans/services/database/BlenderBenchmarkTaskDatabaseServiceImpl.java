@@ -63,6 +63,19 @@ public class BlenderBenchmarkTaskDatabaseServiceImpl implements BlenderBenchmark
 
     }
 
+    @Override
+    public BlenderBenchmarkTask getByBenchmarkUUID(String uuid) {
+        List<BlenderBenchmarkTask> blenderBenchmarkTasks = listAll();
+        for (BlenderBenchmarkTask blenderBenchmarkTask : blenderBenchmarkTasks) {
+            if (blenderBenchmarkTask.getBenchmark_uuid().equals(uuid)) {
+                return blenderBenchmarkTask;
+            }
+
+        }
+        return null;
+    }
+
+
     @Autowired
     public void setBlenderBenchmarkTaskRepository(BlenderBenchmarkTaskRepository blenderBenchmarkTaskRepository) {
         this.blenderBenchmarkTaskRepository = blenderBenchmarkTaskRepository;

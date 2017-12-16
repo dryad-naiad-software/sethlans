@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.domains.database.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
 import org.springframework.context.annotation.Profile;
 
 import javax.persistence.Entity;
@@ -36,6 +37,8 @@ public class BlenderBenchmarkTask extends AbstractEntityClass {
     private String benchmarkURL;
     private String blenderVersion;
     private String connection_uuid;
+    private String benchmark_uuid;
+    private ComputeType computeType;
     private int rating;
 
     public String getBenchmarkURL() {
@@ -70,12 +73,30 @@ public class BlenderBenchmarkTask extends AbstractEntityClass {
         this.rating = rating;
     }
 
+    public ComputeType getComputeType() {
+        return computeType;
+    }
+
+    public void setComputeType(ComputeType computeType) {
+        this.computeType = computeType;
+    }
+
+    public String getBenchmark_uuid() {
+        return benchmark_uuid;
+    }
+
+    public void setBenchmark_uuid(String benchmark_uuid) {
+        this.benchmark_uuid = benchmark_uuid;
+    }
+
     @Override
     public String toString() {
         return "BlenderBenchmarkTask{" +
                 "benchmarkURL='" + benchmarkURL + '\'' +
                 ", blenderVersion='" + blenderVersion + '\'' +
                 ", connection_uuid='" + connection_uuid + '\'' +
+                ", benchmark_uuid='" + benchmark_uuid + '\'' +
+                ", computeType=" + computeType +
                 ", rating=" + rating +
                 '}';
     }

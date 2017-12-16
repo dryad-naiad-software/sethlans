@@ -71,8 +71,7 @@ public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabase
 
     @Override
     public SethlansServer getByConnectionUUID(String uuid) {
-        List<SethlansServer> sethlansServers = new ArrayList<>();
-        serverRepository.findAll().forEach(sethlansServers::add);
+        List<SethlansServer> sethlansServers = listAll();
         for (SethlansServer sethlansServer : sethlansServers) {
             if (sethlansServer.getConnection_uuid().equals(uuid)) {
                 return sethlansServer;

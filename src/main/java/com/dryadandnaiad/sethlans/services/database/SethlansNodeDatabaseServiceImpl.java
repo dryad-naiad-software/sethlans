@@ -65,8 +65,7 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
 
     @Override
     public SethlansNode getByConnectionUUID(String uuid) {
-        List<SethlansNode> sethlansNodes = new ArrayList<>();
-        nodeRepository.findAll().forEach(sethlansNodes::add);
+        List<SethlansNode> sethlansNodes = listAll();
         for (SethlansNode sethlansNode : sethlansNodes) {
             if (sethlansNode.getConnection_uuid().equals(uuid)) {
                 return sethlansNode;
