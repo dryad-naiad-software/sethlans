@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.events.SethlansEvent;
+import com.dryadandnaiad.sethlans.services.blender.BlenderDownloadService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,8 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
     private ApplicationEventPublisher applicationEventPublisher;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
+    private BlenderDownloadService blenderDownloadService;
+
 
     @Override
     @Async
@@ -60,6 +63,7 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
                 + "&port=" + sethlansServer.getNetworkPort() + "&uuid=" + sethlansNode.getUuid();
         if (sethlansAPIConnectionService.sendToRemotePOST(activateURL, params)) {
             addBlenderBinary(sethlansNode.getSethlansNodeOS().toString());
+            blenderDownloadService.downloadRequestedBlenderFilesAsync();
         }
 
 
@@ -126,5 +130,10 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
     @Autowired
     public void setBlenderBinaryDatabaseService(BlenderBinaryDatabaseService blenderBinaryDatabaseService) {
         this.blenderBinaryDatabaseService = blenderBinaryDatabaseService;
+    }
+
+    @Autowired
+    public void setBlenderDownloadService(BlenderDownloadService blenderDownloadService) {
+        this.blenderDownloadService = blenderDownloadService;
     }
 }

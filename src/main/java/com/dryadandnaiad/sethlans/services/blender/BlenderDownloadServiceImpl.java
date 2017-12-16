@@ -61,7 +61,6 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
     @Value("${sethlans.blenderDir}")
     private String downloadLocation;
     private int downloadMirror = 0;
-    private boolean downloading = true;
     private ApplicationEventPublisher applicationEventPublisher = null;
 
     @Autowired
@@ -84,12 +83,13 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
         blenderBinaries = BlenderUtils.listBinaries();
         List<BlenderBinary> blenderDownloadList = prepareDownload();
         LOG.debug(blenderDownloadList.toString());
-        String blenderVersion = null;
+        String blenderVersion;
 
         for (BlenderBinary blenderBinary : blenderDownloadList) {
-            boolean retry = true;
+            boolean retry = true; // While loop keeps going until download is successful otherwise try again with different mirrors.
             blenderVersion = blenderBinary.getBlenderVersion();
-            File saveLocation = new File(downloadLocation + File.separator + "binaries" + File.separator + blenderVersion + File.separator);
+            File saveLocation = new File(downloadLocation + File.separator + "binaries" +
+                    File.separator + blenderVersion + File.separator);
             saveLocation.mkdirs();
             URL url;
             HttpURLConnection connection = null;
@@ -101,6 +101,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                     LOG.debug("Attempting to establish a connection to " + url.toString());
                     connection = (HttpURLConnection) url.openConnection();
                     InputStream stream = connection.getInputStream();
+
                     if (blenderBinary.getBlenderFile().contains("tar")) {
                         filename = blenderVersion + "-" +
                                 blenderBinary.getBlenderBinaryOS().toLowerCase() + ".tar." +
@@ -113,9 +114,11 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
 
                     File toDownload = new File(saveLocation + File.separator + filename);
                     LOG.info("Downloading " + filename + "...");
-                    String blenderFileInfo = "Downloading Blender " + blenderVersion;
-                    this.applicationEventPublisher.publishEvent(new SethlansEvent(this, blenderVersion, blenderFileInfo, downloading));
+                    String blenderFileInfo = "Downloading Blender " + blenderVersion + " for " + blenderBinary.getBlenderBinaryOS();
+                    this.applicationEventPublisher.publishEvent(new SethlansEvent(this, blenderVersion,
+                            blenderFileInfo, true));  // Sets the download notification
 
+                    // Checks to see if temp file is still present.
                     if (toDownload.exists()) {
                         LOG.debug("Previous download did not complete successfully, deleting and re-downloading.");
                         if (toDownload.delete()) {
@@ -126,11 +129,11 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                         Files.copy(stream, Paths.get(toDownload.toString()));
                     }
 
+                    // Check MD5 sum
                     if (SethlansUtils.fileCheckMD5(toDownload, blenderBinary.getBlenderFileMd5())) {
                         blenderBinary.setBlenderFile(toDownload.toString());
                         LOG.info(filename + " downloaded successfully.");
                         blenderBinary.setDownloaded(true);
-                        downloading = false;
                         blenderBinaryDatabaseService.saveOrUpdate(blenderBinary);
                     } else {
                         LOG.error("MD5 sums didn't match, removing file " + filename);
@@ -138,6 +141,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                         throw new IOException();
                     }
                     retry = false;
+
                 } catch (MalformedURLException e) {
                     LOG.error("Invalid URL: " + e.getMessage());
                     return false;
@@ -154,13 +158,13 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                 } finally {
                     if (connection != null) {
                         connection.disconnect();
+                        this.applicationEventPublisher.publishEvent(new SethlansEvent
+                                (this, blenderVersion, false)); // Removes the download notification
                     }
                 }
 
             }
         }
-
-        this.applicationEventPublisher.publishEvent(new SethlansEvent(this, blenderVersion, downloading));
         return true;
     }
 

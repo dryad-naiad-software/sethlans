@@ -20,6 +20,8 @@
 package com.dryadandnaiad.sethlans.events;
 
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
 
 /**
@@ -33,6 +35,7 @@ public class SethlansEvent extends ApplicationEvent {
     private static final long serialVersionUID = 1L;
     private SethlansNotification sethlansNotification;
     private boolean activeNotification;
+    private static final Logger LOG = LoggerFactory.getLogger(SethlansEvent.class);
 
     /**
      * Create a new ApplicationEvent.
@@ -45,6 +48,7 @@ public class SethlansEvent extends ApplicationEvent {
         this.sethlansNotification.setMessage(message);
         this.sethlansNotification.setKey(key);
         this.activeNotification = activeNotification;
+        LOG.debug("New Event Received " + sethlansNotification);
     }
 
     public SethlansEvent(Object source, String key, boolean activeNotification) {
@@ -77,4 +81,6 @@ public class SethlansEvent extends ApplicationEvent {
     public void setActiveNotification(boolean activeNotification) {
         this.activeNotification = activeNotification;
     }
+
+
 }
