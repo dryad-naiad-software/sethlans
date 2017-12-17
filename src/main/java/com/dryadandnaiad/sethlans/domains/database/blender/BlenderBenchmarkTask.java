@@ -39,6 +39,7 @@ public class BlenderBenchmarkTask extends AbstractEntityClass {
     private String connection_uuid;
     private String benchmark_uuid;
     private ComputeType computeType;
+    private String blenderExecutable;
     private int rating;
 
     public String getBenchmarkURL() {
@@ -89,6 +90,14 @@ public class BlenderBenchmarkTask extends AbstractEntityClass {
         this.benchmark_uuid = benchmark_uuid;
     }
 
+    public String getBlenderExecutable() {
+        return blenderExecutable;
+    }
+
+    public void setBlenderExecutable(String blenderExecutable) {
+        this.blenderExecutable = blenderExecutable;
+    }
+
     @Override
     public String toString() {
         return "BlenderBenchmarkTask{" +
@@ -97,6 +106,7 @@ public class BlenderBenchmarkTask extends AbstractEntityClass {
                 ", connection_uuid='" + connection_uuid + '\'' +
                 ", benchmark_uuid='" + benchmark_uuid + '\'' +
                 ", computeType=" + computeType +
+                ", blenderExecutable='" + blenderExecutable + '\'' +
                 ", rating=" + rating +
                 '}';
     }

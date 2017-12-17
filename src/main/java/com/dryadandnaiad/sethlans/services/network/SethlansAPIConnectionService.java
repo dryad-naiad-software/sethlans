@@ -29,5 +29,7 @@ public interface SethlansAPIConnectionService {
 
     boolean sendToRemotePOST(String connectionURL, String params);
 
-    boolean sendToRemoteGET();
+    String downloadFromRemoteGET(String connectionURL, String params, String location);
+
+    boolean sendToRemoteGET(String connectionURL, String params);
 }

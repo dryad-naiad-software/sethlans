@@ -26,10 +26,10 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Created Mario Estrella on 12/12/17.
@@ -77,7 +77,51 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
     }
 
     @Override
-    public boolean sendToRemoteGET() {
+    public String downloadFromRemoteGET(String connectionURL, String params, String location) {
+        LOG.debug("Connecting to " + connectionURL);
+        HttpsURLConnection connection;
+        try {
+            LOG.debug("Sending the following parameters to API via GET: " + connectionURL + params);
+            URL url = new URL(connectionURL + params);
+            SSLUtilities.trustAllHostnames();
+            SSLUtilities.trustAllHttpsCertificates();
+            connection = (HttpsURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+            String fieldValue = connection.getHeaderField("Content-Disposition");
+            if (fieldValue == null || !fieldValue.contains("filename=\"")) {
+                throw new IOException("No filename found");
+            }
+
+            String filename = fieldValue.substring(fieldValue.indexOf("filename=\"") + 10, fieldValue.length() - 1);
+
+            InputStream stream = connection.getInputStream();
+            LOG.debug("Saving file to location: " + location);
+            File download = new File(location, filename);
+            if (download.exists()) {
+                LOG.debug("Previous download of  " + download.toString() + " did not complete successfully, deleting and re-downloading.");
+                if (download.delete()) {
+                    LOG.debug("Re-Downloading " + filename + "...");
+                    Files.copy(stream, Paths.get(download.toString()));
+                }
+            } else {
+                LOG.debug("Downloading " + download.toString());
+                Files.copy(stream, Paths.get(download.toString()));
+
+            }
+            LOG.debug("Download of " + download.toString() + " complete.");
+            return filename;
+
+
+        } catch (UnsupportedEncodingException e) {
+            LOG.error("Unsupported Encoding Exception " + e.getMessage());
+        } catch (IOException e) {
+            LOG.error(e.getMessage());
+        }
+        return null;
+    }
+
+    public boolean sendToRemoteGET(String connectionURL, String params) {
         return false;
     }
 }

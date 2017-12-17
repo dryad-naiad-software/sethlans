@@ -23,12 +23,18 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -46,8 +52,11 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     @Value("${sethlans.primaryBlenderVersion}")
     private String primaryBlenderVersion;
 
+    private static final Logger LOG = LoggerFactory.getLogger(BlenderBenchmarkServiceImpl.class);
+
     private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
+    private SethlansServerDatabaseService sethlansServerDatabaseService;
 
     @Override
     public void sendBenchmarktoNode(SethlansNode sethlansNode) {
@@ -65,9 +74,11 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     }
 
     @Override
-    public void processReceivedBenchmarks(List<String> benchmark_uuid) {
-        for (String benchmark : benchmark_uuid) {
+    public void processReceivedBenchmarks(List<String> benchmark_uuids) {
+        for (String benchmark : benchmark_uuids) {
             BlenderBenchmarkTask benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark);
+            LOG.debug(benchmarkTask.toString());
+            downloadRequiredFiles(benchmarkTask.getBlenderVersion(), benchmarkTask.getBenchmarkURL(), benchmarkTask.getBenchmark_uuid(), benchmarkTask.getConnection_uuid());
             // Process benchmark;
         }
 
@@ -78,7 +89,26 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
 
     }
 
-    private boolean downloadRequiredFiles() {
+    @Async
+    boolean downloadRequiredFiles(String blenderVersion, String benchmarkURL, String benchmarkUUID, String connectionUUID) {
+        SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connectionUUID);
+        String serverIP = sethlansServer.getIpAddress();
+        String serverPort = sethlansServer.getNetworkPort();
+        File benchmarkDir = new File(tempDir + File.separator + benchmarkUUID + "_" + benchmarkURL);
+        if (benchmarkDir.mkdirs()) {
+            //Download Blender from server
+            String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blender_binary/";
+            String params = "?connection_uuid=" + connectionUUID + "&version=" + blenderVersion + "&os=" + SethlansUtils.getOS();
+            String filename = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, benchmarkDir.toString());
+            SethlansUtils.archiveExtract(filename, benchmarkDir);
+
+            // Download benchmarks from server
+            connectionURL = "https://" + serverIP + ":" + serverPort + "/api/benchmark_files/" + benchmarkURL;
+            params = "?connection_uuid=" + connectionUUID;
+            sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, benchmarkDir.toString());
+
+
+        }
         return false;
     }
 
@@ -90,5 +120,10 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     @Autowired
     public void setBlenderBenchmarkTaskDatabaseService(BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService) {
         this.blenderBenchmarkTaskDatabaseService = blenderBenchmarkTaskDatabaseService;
+    }
+
+    @Autowired
+    public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
+        this.sethlansServerDatabaseService = sethlansServerDatabaseService;
     }
 }

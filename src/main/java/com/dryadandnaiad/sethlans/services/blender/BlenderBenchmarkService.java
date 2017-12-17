@@ -35,7 +35,7 @@ public interface BlenderBenchmarkService {
 
     void processReceivedBenchmark(String benchmark_uuid);
 
-    void processReceivedBenchmarks(List<String> benchmark_uuid);
+    void processReceivedBenchmarks(List<String> benchmark_uuids);
 
     void sendResultsToServer(SethlansServer sethlansServer);
 }

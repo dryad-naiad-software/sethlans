@@ -187,6 +187,12 @@ public class SethlansUtils {
                 archiver.extract(archive, extractLocation);
                 archive.delete();
                 return true;
+            }
+            if (archive.toString().contains("tar.gz")) {
+                Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.GZIP);
+                archiver.extract(archive, extractLocation);
+                archive.delete();
+                return true;
             } else {
                 ZipFile archiver = new ZipFile(archive);
                 LOG.debug("Extracting " + archive + " to " + extractLocation);
@@ -283,6 +289,33 @@ public class SethlansUtils {
             e.printStackTrace();
         }
         return port;
+    }
+
+    public static String getOS() {
+        if (SystemUtils.IS_OS_WINDOWS) {
+            String arch = System.getenv("PROCESSOR_ARCHITECTURE");
+            String wow64Arch = System.getenv("PROCESSOR_ARCHITEW6432");
+
+            String realArch = arch.endsWith("64")
+                    || wow64Arch != null && wow64Arch.endsWith("64")
+                    ? "64" : "32";
+            if (realArch.equals("64")) {
+                return "Windows64";
+            } else {
+                return "Windows32";
+            }
+        }
+        if (SystemUtils.IS_OS_MAC) {
+            return "MacOS";
+        }
+        if (SystemUtils.IS_OS_LINUX) {
+            if (SystemUtils.OS_ARCH.contains("64")) {
+                return "Linux64";
+            } else {
+                return "Linux32";
+            }
+        }
+        return null;
     }
 
     public static String getVersion() {
