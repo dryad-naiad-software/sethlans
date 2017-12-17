@@ -24,7 +24,6 @@ import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
-import org.springframework.context.annotation.Profile;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -38,7 +37,6 @@ import java.util.List;
  * Project: sethlans
  */
 @Entity
-@Profile({"SERVER", "DUAL"})
 public class SethlansNode extends AbstractEntityClass {
     private String hostname;
     private String ipAddress;

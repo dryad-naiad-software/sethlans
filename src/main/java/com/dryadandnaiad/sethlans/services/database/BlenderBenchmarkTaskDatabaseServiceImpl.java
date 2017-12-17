@@ -22,7 +22,6 @@ package com.dryadandnaiad.sethlans.services.database;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
 import com.dryadandnaiad.sethlans.repositories.BlenderBenchmarkTaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,7 +34,6 @@ import java.util.List;
  * Project: sethlans
  */
 @Service
-@Profile({"NODE", "DUAL"})
 public class BlenderBenchmarkTaskDatabaseServiceImpl implements BlenderBenchmarkTaskDatabaseService {
     private BlenderBenchmarkTaskRepository blenderBenchmarkTaskRepository;
 

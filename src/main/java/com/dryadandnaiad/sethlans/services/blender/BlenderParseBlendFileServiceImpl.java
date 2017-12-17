@@ -29,7 +29,6 @@ import org.apache.commons.exec.PumpStreamHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -43,7 +42,6 @@ import java.util.List;
  * Project: sethlans
  */
 @Service
-@Profile({"SERVER", "DUAL"})
 public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileService {
     private static final Logger LOG = LoggerFactory.getLogger(BlenderParseBlendFileServiceImpl.class);
     @Value("${sethlans.python.binary}")

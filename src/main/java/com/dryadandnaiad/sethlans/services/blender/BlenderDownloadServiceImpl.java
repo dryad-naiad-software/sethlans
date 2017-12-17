@@ -32,7 +32,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -54,7 +53,6 @@ import java.util.List;
  * Project: sethlans
  */
 @Service
-@Profile({"SERVER", "DUAL"})
 public class BlenderDownloadServiceImpl implements BlenderDownloadService, ApplicationEventPublisherAware {
     private static final Logger LOG = LoggerFactory.getLogger(BlenderDownloadServiceImpl.class);
     private BlenderBinaryDatabaseService blenderBinaryDatabaseService;

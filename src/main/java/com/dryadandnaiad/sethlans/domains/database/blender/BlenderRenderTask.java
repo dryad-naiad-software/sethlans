@@ -23,7 +23,6 @@ import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
-import org.springframework.context.annotation.Profile;
 
 import javax.persistence.Entity;
 
@@ -34,7 +33,6 @@ import javax.persistence.Entity;
  * Project: sethlans
  */
 @Entity
-@Profile({"NODE", "DUAL"})
 public class BlenderRenderTask extends AbstractEntityClass {
     private String projectName;
     private String connection_uuid;

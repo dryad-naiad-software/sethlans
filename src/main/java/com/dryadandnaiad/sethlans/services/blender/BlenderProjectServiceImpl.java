@@ -22,7 +22,6 @@ package com.dryadandnaiad.sethlans.services.blender;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,7 +31,6 @@ import org.springframework.stereotype.Service;
  * Project: sethlans
  */
 @Service
-@Profile({"SERVER", "DUAL"})
 public class BlenderProjectServiceImpl implements BlenderProjectService {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
 

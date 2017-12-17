@@ -21,7 +21,6 @@ package com.dryadandnaiad.sethlans.domains.database.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
-import org.springframework.context.annotation.Profile;
 
 import javax.persistence.Entity;
 
@@ -32,7 +31,6 @@ import javax.persistence.Entity;
  * Project: sethlans
  */
 @Entity
-@Profile({"NODE", "DUAL"})
 public class BlenderBenchmarkTask extends AbstractEntityClass {
     private String benchmarkURL;
     private String blenderVersion;

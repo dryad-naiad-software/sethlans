@@ -20,7 +20,6 @@
 package com.dryadandnaiad.sethlans.domains.database.server;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
-import org.springframework.context.annotation.Profile;
 
 import javax.persistence.Entity;
 
@@ -31,7 +30,6 @@ import javax.persistence.Entity;
  * Project: sethlans
  */
 @Entity
-@Profile({"SERVER", "DUAL"})
 public class SethlansServer extends AbstractEntityClass {
     private String hostname;
     private String ipAddress;

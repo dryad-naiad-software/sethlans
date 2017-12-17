@@ -20,7 +20,6 @@
 package com.dryadandnaiad.sethlans.domains.database.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
-import org.springframework.context.annotation.Profile;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -33,7 +32,6 @@ import java.util.List;
  * Project: sethlans
  */
 @Entity
-@Profile({"SERVER", "DUAL"})
 public class BlenderBinary extends AbstractEntityClass {
     private String blenderVersion;
     private String blenderBinaryOS;

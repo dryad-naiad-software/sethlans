@@ -22,7 +22,6 @@ package com.dryadandnaiad.sethlans.services.database;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.repositories.ServerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,7 +34,6 @@ import java.util.List;
  * Project: sethlans
  */
 @Service
-@Profile({"NODE", "DUAL"})
 public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabaseService {
 
     private ServerRepository serverRepository;
