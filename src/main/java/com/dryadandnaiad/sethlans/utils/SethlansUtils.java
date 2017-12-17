@@ -183,12 +183,14 @@ public class SethlansUtils {
         extractLocation.mkdirs();
         try {
             if (archive.toString().contains("txz")) {
+                LOG.debug("Extracting " + archive + " to " + extractLocation);
                 Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.XZ);
                 archiver.extract(archive, extractLocation);
                 archive.delete();
                 return true;
             }
             if (archive.toString().contains("tar.gz")) {
+                LOG.debug("Extracting " + archive + " to " + extractLocation);
                 Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.GZIP);
                 archiver.extract(archive, extractLocation);
                 archive.delete();

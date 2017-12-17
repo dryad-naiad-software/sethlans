@@ -105,11 +105,13 @@ public class NodeRenderRestController {
             cpuBenchmarkTask.setBlenderVersion(blender_version);
             cpuBenchmarkTask.setBenchmarkURL("bmw_cpu");
             cpuBenchmarkTask.setComputeType(ComputeType.CPU);
+            cpuBenchmarkTask.setComplete(false);
             cpuBenchmarkTask.setConnection_uuid(connection_uuid);
             cpuBenchmarkTask.setBenchmark_uuid(UUID.randomUUID().toString());
 
             BlenderBenchmarkTask gpuBenchmarkTask = new BlenderBenchmarkTask();
             gpuBenchmarkTask.setBlenderVersion(blender_version);
+            gpuBenchmarkTask.setComplete(false);
             gpuBenchmarkTask.setBenchmarkURL("bmw_gpu");
             gpuBenchmarkTask.setComputeType(ComputeType.GPU);
             gpuBenchmarkTask.setConnection_uuid(connection_uuid);

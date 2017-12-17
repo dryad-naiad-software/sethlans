@@ -26,6 +26,7 @@ import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabase
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.List;
 
 /**
@@ -67,6 +69,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     }
 
     @Override
+    @Async
     public void processReceivedBenchmark(String benchmark_uuid) {
         BlenderBenchmarkTask benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark_uuid);
         // Process benchmark
@@ -74,13 +77,14 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     }
 
     @Override
+    @Async
     public void processReceivedBenchmarks(List<String> benchmark_uuids) {
         for (String benchmark : benchmark_uuids) {
             BlenderBenchmarkTask benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark);
             LOG.debug(benchmarkTask.toString());
             File benchmarkDir = new File(tempDir + File.separator + benchmarkTask.getBenchmark_uuid() + "_" + benchmarkTask.getBenchmarkURL());
-            if (downloadRequiredFiles(benchmarkTask.getBlenderVersion(), benchmarkTask.getBenchmarkURL(), benchmarkDir, benchmarkTask.getConnection_uuid())) {
-                // Do stuff
+            if (downloadRequiredFiles(benchmarkDir, benchmarkTask)) {
+
             }
             // Process benchmark;
         }
@@ -92,27 +96,52 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
 
     }
 
-    @Async
-    boolean downloadRequiredFiles(String blenderVersion, String benchmarkURL, File benchmarkDir, String connectionUUID) {
-        SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connectionUUID);
+    private boolean downloadRequiredFiles(File benchmarkDir, BlenderBenchmarkTask benchmarkTask) {
+        LOG.debug("Downloading required files");
+        SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(benchmarkTask.getConnection_uuid());
         String serverIP = sethlansServer.getIpAddress();
         String serverPort = sethlansServer.getNetworkPort();
 
         if (benchmarkDir.mkdirs()) {
+
             //Download Blender from server
             String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blender_binary/";
-            String params = "?connection_uuid=" + connectionUUID + "&version=" + blenderVersion + "&os=" + SethlansUtils.getOS();
+            String params = "?connection_uuid=" + benchmarkTask.getConnection_uuid() + "&version=" + benchmarkTask.getBlenderVersion() + "&os=" + SethlansUtils.getOS();
             String filename = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, benchmarkDir.toString());
             SethlansUtils.archiveExtract(filename, benchmarkDir);
+            renameBlender(benchmarkDir);
+            benchmarkTask.setBlenderExecutable(assignBlenderExecutable(benchmarkDir));
 
-            // Download benchmarks from server
-            connectionURL = "https://" + serverIP + ":" + serverPort + "/api/benchmark_files/" + benchmarkURL;
-            params = "?connection_uuid=" + connectionUUID;
-            sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, benchmarkDir.toString());
+            // Download benchmark from server
+            connectionURL = "https://" + serverIP + ":" + serverPort + "/api/benchmark_files/" + benchmarkTask.getBenchmarkURL();
+            params = "?connection_uuid=" + benchmarkTask.getConnection_uuid();
+            String benchmarkFile = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, benchmarkDir.toString());
+            benchmarkTask.setBenchmarkFile(benchmarkFile);
+            LOG.debug("Required files downloaded, updated benchmark task saved to database. \n" + benchmarkTask);
+            blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
             return true;
 
         }
         return false;
+    }
+
+    private void renameBlender(File benchmarkDir) {
+        FileFilter fileFilter = new WildcardFileFilter("blender*");
+        File[] files = benchmarkDir.listFiles(fileFilter);
+        for (File file : files) {
+            if (file.isDirectory()) {
+                file.renameTo(new File(benchmarkDir + File.separator + "blender"));
+            }
+        }
+    }
+
+    private String assignBlenderExecutable(File benchmarkDir) {
+        String executable = null;
+        if (SethlansUtils.getOS().equals("MacOS")) {
+            executable = benchmarkDir.toString() + File.separator + "blender/blender.app/Contents/MacOS/blender";
+        }
+        LOG.debug("Setting executable to: " + executable);
+        return executable;
     }
 
     @Autowired
