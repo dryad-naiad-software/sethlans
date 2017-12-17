@@ -19,7 +19,6 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.google.common.base.Throwables;
 import com.google.common.hash.HashCode;
@@ -143,40 +142,6 @@ public class SethlansUtils {
         return false;
     }
 
-    public static boolean blenderExtract(BlenderBinary toExtract, File extractLocation, String alternateLocation) {
-        File archive = new File(toExtract.getBlenderFile());
-        if (!toExtract.getBlenderBinaryOS().contains("Linux")) {
-            extractLocation.mkdirs();
-            LOG.debug("Found zip file:");
-            try {
-                ZipFile archiver = new ZipFile(archive);
-                LOG.debug("Extracting " + archive + " to " + extractLocation);
-                archiver.extractAll(extractLocation.toString());
-            } catch (ZipException e) {
-                LOG.error("Error extracting using zip4j " + e.getMessage());
-                LOG.error(Throwables.getStackTraceAsString(e));
-                System.exit(1);
-            }
-            return true;
-        }
-        Archiver archiver;
-        archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.BZIP2);
-        LOG.debug("Found tar.bz2 file.");
-        File linuxLocation = new File(alternateLocation);
-
-        try {
-            LOG.debug("Extracting " + archive + " to " + linuxLocation);
-            archiver.extract(archive, linuxLocation);
-
-        } catch (IOException e) {
-            LOG.error("Error during extraction using jarchivelib " + e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
-            System.exit(1);
-
-        }
-        return false;
-    }
-
 
     public static boolean archiveExtract(String toExtract, File extractLocation) {
         File archive = new File(extractLocation + File.separator + toExtract);
@@ -192,6 +157,13 @@ public class SethlansUtils {
             if (archive.toString().contains("tar.gz")) {
                 LOG.debug("Extracting " + archive + " to " + extractLocation);
                 Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.GZIP);
+                archiver.extract(archive, extractLocation);
+                archive.delete();
+                return true;
+            }
+            if (archive.toString().contains("tar.bz2")) {
+                LOG.debug("Extracting " + archive + " to " + extractLocation);
+                Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.BZIP2);
                 archiver.extract(archive, extractLocation);
                 archive.delete();
                 return true;
