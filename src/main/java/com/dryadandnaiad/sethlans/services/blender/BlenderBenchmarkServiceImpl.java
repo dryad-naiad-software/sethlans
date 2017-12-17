@@ -81,7 +81,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     public void processReceivedBenchmarks(List<String> benchmark_uuids) {
         for (String benchmark : benchmark_uuids) {
             BlenderBenchmarkTask benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark);
-            LOG.debug(benchmarkTask.toString());
+            LOG.debug("Processing benchmark task: \n" + benchmarkTask.toString());
             File benchmarkDir = new File(tempDir + File.separator + benchmarkTask.getBenchmark_uuid() + "_" + benchmarkTask.getBenchmarkURL());
             if (downloadRequiredFiles(benchmarkDir, benchmarkTask)) {
 
