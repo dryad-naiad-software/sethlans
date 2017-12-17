@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +45,6 @@ import java.util.Set;
  * Project: sethlans
  */
 @Service
-@Profile({"SERVER", "NODE", "DUAL"})
 public class NodeActivationServiceImpl implements NodeActivationService, ApplicationEventPublisherAware {
     private static final Logger LOG = LoggerFactory.getLogger(NodeActivationServiceImpl.class);
     private ApplicationEventPublisher applicationEventPublisher;
