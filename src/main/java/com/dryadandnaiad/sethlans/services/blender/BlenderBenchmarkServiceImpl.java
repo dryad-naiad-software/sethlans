@@ -78,7 +78,10 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         for (String benchmark : benchmark_uuids) {
             BlenderBenchmarkTask benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark);
             LOG.debug(benchmarkTask.toString());
-            downloadRequiredFiles(benchmarkTask.getBlenderVersion(), benchmarkTask.getBenchmarkURL(), benchmarkTask.getBenchmark_uuid(), benchmarkTask.getConnection_uuid());
+            File benchmarkDir = new File(tempDir + File.separator + benchmarkTask.getBenchmark_uuid() + "_" + benchmarkTask.getBenchmarkURL());
+            if (downloadRequiredFiles(benchmarkTask.getBlenderVersion(), benchmarkTask.getBenchmarkURL(), benchmarkDir, benchmarkTask.getConnection_uuid())) {
+                // Do stuff
+            }
             // Process benchmark;
         }
 
@@ -90,11 +93,11 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     }
 
     @Async
-    boolean downloadRequiredFiles(String blenderVersion, String benchmarkURL, String benchmarkUUID, String connectionUUID) {
+    boolean downloadRequiredFiles(String blenderVersion, String benchmarkURL, File benchmarkDir, String connectionUUID) {
         SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connectionUUID);
         String serverIP = sethlansServer.getIpAddress();
         String serverPort = sethlansServer.getNetworkPort();
-        File benchmarkDir = new File(tempDir + File.separator + benchmarkUUID + "_" + benchmarkURL);
+
         if (benchmarkDir.mkdirs()) {
             //Download Blender from server
             String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blender_binary/";
@@ -106,7 +109,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             connectionURL = "https://" + serverIP + ":" + serverPort + "/api/benchmark_files/" + benchmarkURL;
             params = "?connection_uuid=" + connectionUUID;
             sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, benchmarkDir.toString());
-
+            return true;
 
         }
         return false;
