@@ -19,6 +19,8 @@
 
 package com.dryadandnaiad.sethlans.services.blender;
 
+import com.dryadandnaiad.sethlans.enums.ComputeType;
+
 /**
  * Created Mario Estrella on 3/24/17.
  * Dryad and Naiad Software LLC
@@ -26,4 +28,5 @@ package com.dryadandnaiad.sethlans.services.blender;
  * Project: sethlans
  */
 public interface BlenderPythonScriptService {
+    void writePythonScript(ComputeType computeType, String renderLocation, int deviceId, int tileSize);
 }

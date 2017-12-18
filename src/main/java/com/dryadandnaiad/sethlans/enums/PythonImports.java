@@ -20,10 +20,22 @@
 package com.dryadandnaiad.sethlans.enums;
 
 /**
- * Created Mario Estrella on 3/9/17.
+ * Created Mario Estrella on 12/18/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public enum GitPropertyKey {
+public enum PythonImports {
+    BPY("import bpy");
+
+    private final String text;
+
+    PythonImports(final String text) {
+        this.text = text;
+    }
+
+    @Override
+    public String toString() {
+        return text;
+    }
 }
