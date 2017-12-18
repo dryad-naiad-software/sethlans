@@ -53,7 +53,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     @Value("${sethlans.primaryBlenderVersion}")
     private String primaryBlenderVersion;
 
-    @Value("${sethlans.cuda")
+    @Value("${sethlans.cuda}")
     private String cuda;
 
     private static final Logger LOG = LoggerFactory.getLogger(BlenderBenchmarkServiceImpl.class);
@@ -62,6 +62,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private BlenderPythonScriptService blenderPythonScriptService;
+    private BlenderRenderService blenderRenderService;
 
     @Override
     public void sendBenchmarktoNode(SethlansNode sethlansNode) {
@@ -92,16 +93,18 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                     if (cudaList.length > 1) {
                         for (int i = 0; i < cudaList.length; i++) {
                             LOG.debug("Creating benchmark script using " + cudaList[i]);
-                            blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), i, 256);
+                            String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), i, 256);
+
                         }
 
                     } else {
-                        LOG.debug("Creating benchmark script using CUDA_0");
-                        blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), 0, 256);
+                        LOG.debug("Creating benchmark script using " + cuda);
+                        String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), 0, 256);
+                        blenderRenderService.executeBenchmarkTask(benchmarkTask, script);
                     }
                 } else {
                     LOG.debug("Creating benchmark script using CPU");
-                    blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), 0, 32);
+                    String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), 0, 32);
                 }
             }
         }
@@ -180,5 +183,10 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     @Autowired
     public void setBlenderPythonScriptService(BlenderPythonScriptService blenderPythonScriptService) {
         this.blenderPythonScriptService = blenderPythonScriptService;
+    }
+
+    @Autowired
+    public void setBlenderRenderService(BlenderRenderService blenderRenderService) {
+        this.blenderRenderService = blenderRenderService;
     }
 }

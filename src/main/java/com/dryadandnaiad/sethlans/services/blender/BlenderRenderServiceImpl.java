@@ -72,6 +72,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             commandLine.addArgument("-o " + benchmarkTask.getBenchmarkDir());
             commandLine.addArgument("-f 1");
             commandLine.addArgument("-P " + blenderScript);
+            LOG.debug(commandLine.toString());
 
             DefaultExecutor executor = new DefaultExecutor();
             executor.setStreamHandler(pumpStreamHandler);

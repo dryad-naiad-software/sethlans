@@ -36,62 +36,64 @@ import java.io.FileWriter;
 public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptService {
 
     @Override
-    public void writePythonScript(ComputeType computeType, String renderLocation, int deviceId, int tileSize) {
+    public String writePythonScript(ComputeType computeType, String renderLocation, int deviceId, int tileSize) {
         try {
-            File file = new File(renderLocation + File.separator + "script-" + deviceId + ".py");
-            FileWriter fileWriter = new FileWriter(file);
+            File script = new File(renderLocation + File.separator + "script-" + deviceId + ".py");
+            FileWriter scriptWriter = new FileWriter(script);
 
             // Write Imports
-            fileWriter.write(PythonImports.BPY.toString() + "\n\n");
+            scriptWriter.write(PythonImports.BPY.toString() + "\n\n");
 
             //Temp Directory
-            fileWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "\"" + renderLocation + "\"" + "\n");
+            scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "\"" + renderLocation + "\"" + "\n");
 
             // Set Device
-            fileWriter.write("bpy.context.scene.cycles.device = " + computeType + "\n");
+            scriptWriter.write("bpy.context.scene.cycles.device = " + computeType + "\n");
 
             if (computeType.equals(ComputeType.GPU)) {
                 // CUDA Setting
-                fileWriter.write("\n");
-                fileWriter.write("bpy.context.user_preferences.addons['cycles'].preferences.compute_device_type = CUDA" + "\n");
-                fileWriter.write("devices = bpy.context.user_preferences.addons['cycles'].preferences.get_devices()" + "\n");
+                scriptWriter.write("\n");
+                scriptWriter.write("bpy.context.user_preferences.addons['cycles'].preferences.compute_device_type = CUDA" + "\n");
+                scriptWriter.write("devices = bpy.context.user_preferences.addons['cycles'].preferences.get_devices()" + "\n");
                 //CUDA = 0, OpenCL = 1
-                fileWriter.write("cuda_devices = devices[0]" + "\n");
-                fileWriter.write("cuda_id = " + deviceId + "\n");
-                fileWriter.write("\n");
-                fileWriter.write("for i in range(len(cuda_devices)):" + "\n");
-                fileWriter.write("\tcuda_devices[i].use = (i == cuda_id)" + "\n");
+                scriptWriter.write("cuda_devices = devices[0]" + "\n");
+                scriptWriter.write("cuda_id = " + deviceId + "\n");
+                scriptWriter.write("\n");
+                scriptWriter.write("for i in range(len(cuda_devices)):" + "\n");
+                scriptWriter.write("\tcuda_devices[i].use = (i == cuda_id)" + "\n");
 
                 // Disable all OpenCL
-                fileWriter.write("\n");
-                fileWriter.write("for dev in devices[1]:" + "\n");
-                fileWriter.write("\tdev.use = False" + "\n");
+                scriptWriter.write("\n");
+                scriptWriter.write("for dev in devices[1]:" + "\n");
+                scriptWriter.write("\tdev.use = False" + "\n");
             }
 
             if (computeType.equals(ComputeType.CPU)) {
-                fileWriter.write("\n");
-                fileWriter.write("bpy.context.user_preferences.system.compute_device_type = CPU" + "\n");
-                fileWriter.write("bpy.context.user_preferences.system.compute_device = CPU" + "\n");
+                scriptWriter.write("\n");
+                scriptWriter.write("bpy.context.user_preferences.system.compute_device_type = CPU" + "\n");
+                scriptWriter.write("bpy.context.user_preferences.system.compute_device = CPU" + "\n");
             }
 
 //            // Disable GPU Devices
-//            fileWriter.write("\n");
-//            fileWriter.write("for dev in devices[0]:" + "\n");
-//            fileWriter.write("\tdev.use = False" + "\n");
-//            fileWriter.write("\n");
-//            fileWriter.write("for dev in devices[1]:" + "\n");
-//            fileWriter.write("\tdev.use = False" + "\n");
+//            scriptWriter.write("\n");
+//            scriptWriter.write("for dev in devices[0]:" + "\n");
+//            scriptWriter.write("\tdev.use = False" + "\n");
+//            scriptWriter.write("\n");
+//            scriptWriter.write("for dev in devices[1]:" + "\n");
+//            scriptWriter.write("\tdev.use = False" + "\n");
 
 
             // Tile Sizes
-            fileWriter.write("\n");
-            fileWriter.write("bpy.context.scene.render.tile_x = " + tileSize + "\n");
-            fileWriter.write("bpy.context.scene.render.tile_y = " + tileSize + "\n");
-            fileWriter.flush();
-            fileWriter.close();
+            scriptWriter.write("\n");
+            scriptWriter.write("bpy.context.scene.render.tile_x = " + tileSize + "\n");
+            scriptWriter.write("bpy.context.scene.render.tile_y = " + tileSize + "\n");
+            scriptWriter.flush();
+            scriptWriter.close();
+            return script.toString();
         } catch (java.io.IOException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
 }
