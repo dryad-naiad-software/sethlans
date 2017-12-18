@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.google.common.base.Throwables;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
@@ -28,6 +29,7 @@ import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -41,6 +43,8 @@ import java.io.*;
 @Service
 public class BlenderRenderServiceImpl implements BlenderRenderService {
     private static final Logger LOG = LoggerFactory.getLogger(BlenderRenderServiceImpl.class);
+    @Value("${sethlans.cores}")
+    String cores;
 
     public void executeRenderTask(BlenderRenderTask renderTask, String blenderScript) {
         String error = null;
@@ -75,6 +79,10 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             commandLine.addArgument(benchmarkTask.getBenchmarkDir() + File.separator);
             commandLine.addArgument("-f");
             commandLine.addArgument("1");
+            if (benchmarkTask.getComputeType().equals(ComputeType.CPU)) {
+                commandLine.addArgument("-t");
+                commandLine.addArgument(cores);
+            }
             commandLine.addArgument("-P");
             commandLine.addArgument(blenderScript);
             LOG.debug(commandLine.toString());

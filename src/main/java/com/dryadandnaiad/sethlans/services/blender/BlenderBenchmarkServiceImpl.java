@@ -165,6 +165,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             } else {
                 LOG.debug("Creating benchmark script using CPU");
                 String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), 0, 32);
+                blenderRenderService.executeBenchmarkTask(benchmarkTask, script);
             }
         }
     }

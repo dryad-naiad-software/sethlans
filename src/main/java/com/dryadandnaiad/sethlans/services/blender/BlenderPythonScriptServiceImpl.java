@@ -35,6 +35,7 @@ import java.io.FileWriter;
 @Service
 public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptService {
 
+
     @Override
     public String writePythonScript(ComputeType computeType, String renderLocation, int deviceId, int tileSize) {
         try {
@@ -70,8 +71,8 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
 
             if (computeType.equals(ComputeType.CPU)) {
                 scriptWriter.write("\n");
-                scriptWriter.write("bpy.context.user_preferences.system.compute_device_type = CPU" + "\n");
-                scriptWriter.write("bpy.context.user_preferences.system.compute_device = CPU" + "\n");
+                scriptWriter.write("bpy.context.user_preferences.system.compute_device_type = \"NONE\"" + "\n");
+                scriptWriter.write("bpy.context.user_preferences.system.compute_device = \"CPU\"" + "\n");
             }
 
 //            // Disable GPU Devices
