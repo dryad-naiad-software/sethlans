@@ -38,6 +38,7 @@ public class BlenderBenchmarkTask extends AbstractEntityClass {
     private String benchmark_uuid;
     private ComputeType computeType;
     private String blenderExecutable;
+    private String benchmarkDir;
     private String benchmarkFile;
     private boolean complete;
     private int rating;
@@ -114,6 +115,14 @@ public class BlenderBenchmarkTask extends AbstractEntityClass {
         this.complete = complete;
     }
 
+    public String getBenchmarkDir() {
+        return benchmarkDir;
+    }
+
+    public void setBenchmarkDir(String benchmarkDir) {
+        this.benchmarkDir = benchmarkDir;
+    }
+
     @Override
     public String toString() {
         return "BlenderBenchmarkTask{" +
@@ -123,6 +132,7 @@ public class BlenderBenchmarkTask extends AbstractEntityClass {
                 ", benchmark_uuid='" + benchmark_uuid + '\'' +
                 ", computeType=" + computeType +
                 ", blenderExecutable='" + blenderExecutable + '\'' +
+                ", benchmarkDir='" + benchmarkDir + '\'' +
                 ", benchmarkFile='" + benchmarkFile + '\'' +
                 ", complete=" + complete +
                 ", rating=" + rating +

@@ -51,6 +51,7 @@ public class BlenderRenderTask extends AbstractEntityClass {
     private String blendFilename;
     private String blenderVersion;
     private int part;
+    private String blenderExecutable;
 
     public String getProjectName() {
         return projectName;
@@ -189,6 +190,14 @@ public class BlenderRenderTask extends AbstractEntityClass {
         this.project_uuid = project_uuid;
     }
 
+    public String getBlenderExecutable() {
+        return blenderExecutable;
+    }
+
+    public void setBlenderExecutable(String blenderExecutable) {
+        this.blenderExecutable = blenderExecutable;
+    }
+
     @Override
     public String toString() {
         return "BlenderRenderTask{" +
@@ -209,6 +218,7 @@ public class BlenderRenderTask extends AbstractEntityClass {
                 ", blendFilename='" + blendFilename + '\'' +
                 ", blenderVersion='" + blenderVersion + '\'' +
                 ", part=" + part +
+                ", blenderExecutable='" + blenderExecutable + '\'' +
                 '}';
     }
 }

@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.services.blender;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
@@ -52,11 +53,15 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     @Value("${sethlans.primaryBlenderVersion}")
     private String primaryBlenderVersion;
 
+    @Value("${sethlans.cuda")
+    private String cuda;
+
     private static final Logger LOG = LoggerFactory.getLogger(BlenderBenchmarkServiceImpl.class);
 
     private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private SethlansServerDatabaseService sethlansServerDatabaseService;
+    private BlenderPythonScriptService blenderPythonScriptService;
 
     @Override
     public void sendBenchmarktoNode(SethlansNode sethlansNode) {
@@ -82,9 +87,23 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             LOG.debug("Processing benchmark task: \n" + benchmarkTask.toString());
             File benchmarkDir = new File(tempDir + File.separator + benchmarkTask.getBenchmark_uuid() + "_" + benchmarkTask.getBenchmarkURL());
             if (downloadRequiredFiles(benchmarkDir, benchmarkTask)) {
+                if(benchmarkTask.getComputeType().equals(ComputeType.GPU)){
+                    String[] cudaList = cuda.split(",");
+                    if (cudaList.length > 1) {
+                        for (int i = 0; i < cudaList.length; i++) {
+                            LOG.debug("Creating benchmark script using " + cudaList[i]);
+                            blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), i, 256);
+                        }
 
+                    } else {
+                        LOG.debug("Creating benchmark script using CUDA_0");
+                        blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), 0, 256);
+                    }
+                } else {
+                    LOG.debug("Creating benchmark script using CPU");
+                    blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), 0, 32);
+                }
             }
-            // Process benchmark;
         }
 
     }
@@ -108,6 +127,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             String filename = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, benchmarkDir.toString());
             SethlansUtils.archiveExtract(filename, benchmarkDir);
             renameBlender(benchmarkDir);
+            benchmarkTask.setBenchmarkDir(benchmarkDir.toString());
             benchmarkTask.setBlenderExecutable(assignBlenderExecutable(benchmarkDir));
 
             // Download benchmark from server
@@ -155,5 +175,10 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     @Autowired
     public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
         this.sethlansServerDatabaseService = sethlansServerDatabaseService;
+    }
+
+    @Autowired
+    public void setBlenderPythonScriptService(BlenderPythonScriptService blenderPythonScriptService) {
+        this.blenderPythonScriptService = blenderPythonScriptService;
     }
 }
