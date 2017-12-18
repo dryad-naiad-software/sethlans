@@ -37,7 +37,7 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
 
 
     @Override
-    public String writePythonScript(ComputeType computeType, String renderLocation, int deviceId, int tileSize) {
+    public String writePythonScript(ComputeType computeType, String renderLocation, int deviceId, int tileSize, int resolution_x, int resolution_y, int res_percentage) {
         try {
             File script = new File(renderLocation + File.separator + "script-" + deviceId + ".py");
             FileWriter scriptWriter = new FileWriter(script);
@@ -69,11 +69,6 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
                 scriptWriter.write("\tdev.use = False" + "\n");
             }
 
-            if (computeType.equals(ComputeType.CPU)) {
-                scriptWriter.write("\n");
-                scriptWriter.write("bpy.context.user_preferences.system.compute_device_type = \"NONE\"" + "\n");
-                scriptWriter.write("bpy.context.user_preferences.system.compute_device = \"CPU\"" + "\n");
-            }
 
 //            // Disable GPU Devices
 //            scriptWriter.write("\n");
@@ -83,6 +78,13 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
 //            scriptWriter.write("for dev in devices[1]:" + "\n");
 //            scriptWriter.write("\tdev.use = False" + "\n");
 
+            // Set Resolution
+            scriptWriter.write("\n");
+            scriptWriter.write("for scene in bpy.data.scenes:" + "\n");
+            scriptWriter.write("\tscene.render.resolution_x = " + resolution_x + "\n");
+            scriptWriter.write("\tscene.render.resolution_y = " + resolution_y + "\n");
+            scriptWriter.write("\tscene.render.resolution_percentage = " + res_percentage + "\n");
+            //scriptWriter.write("\tscene.render.use_border = False");
 
             // Tile Sizes
             scriptWriter.write("\n");

@@ -153,18 +153,18 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                 if (cudaList.length > 1) {
                     for (int i = 0; i < cudaList.length; i++) {
                         LOG.debug("Creating benchmark script using " + cudaList[i]);
-                        String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), i, 256);
+                        String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), i, 256, 800, 600, 50);
 
                     }
 
                 } else {
                     LOG.debug("Creating benchmark script using " + cuda);
-                    String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), 0, 256);
+                    String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), 0, 256, 800, 600, 50);
                     blenderRenderService.executeBenchmarkTask(benchmarkTask, script);
                 }
             } else {
                 LOG.debug("Creating benchmark script using CPU");
-                String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), 0, 32);
+                String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), 0, 32, 800, 600, 50);
                 blenderRenderService.executeBenchmarkTask(benchmarkTask, script);
             }
         }

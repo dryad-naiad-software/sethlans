@@ -73,6 +73,8 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
             commandLine.addArgument("-b");
             commandLine.addArgument(benchmarkTask.getBenchmarkDir() + File.separator + benchmarkTask.getBenchmarkFile());
+            commandLine.addArgument("-P");
+            commandLine.addArgument(blenderScript);
             commandLine.addArgument("-E");
             commandLine.addArgument("CYCLES");
             commandLine.addArgument("-o");
@@ -83,8 +85,6 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                 commandLine.addArgument("-t");
                 commandLine.addArgument(cores);
             }
-            commandLine.addArgument("-P");
-            commandLine.addArgument(blenderScript);
             LOG.debug(commandLine.toString());
 
             DefaultExecutor executor = new DefaultExecutor();
