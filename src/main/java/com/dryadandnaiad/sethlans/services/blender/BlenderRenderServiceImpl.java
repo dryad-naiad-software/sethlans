@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
+import com.google.common.base.Throwables;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
@@ -67,11 +68,15 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             CommandLine commandLine = new CommandLine(benchmarkTask.getBlenderExecutable());
 
             commandLine.addArgument("-b");
-            commandLine.addArgument(benchmarkTask.getBenchmarkFile());
-            commandLine.addArgument("-E CYCLES");
-            commandLine.addArgument("-o " + benchmarkTask.getBenchmarkDir());
-            commandLine.addArgument("-f 1");
-            commandLine.addArgument("-P " + blenderScript);
+            commandLine.addArgument(benchmarkTask.getBenchmarkDir() + File.separator + benchmarkTask.getBenchmarkFile());
+            commandLine.addArgument("-E");
+            commandLine.addArgument("CYCLES");
+            commandLine.addArgument("-o");
+            commandLine.addArgument(benchmarkTask.getBenchmarkDir() + File.separator);
+            commandLine.addArgument("-f");
+            commandLine.addArgument("1");
+            commandLine.addArgument("-P");
+            commandLine.addArgument(blenderScript);
             LOG.debug(commandLine.toString());
 
             DefaultExecutor executor = new DefaultExecutor();
@@ -82,10 +87,18 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
             BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray())));
 
-            String output = in.readLine();
+            String output;
+
+            while ((output = in.readLine()) != null) {
+                LOG.debug(output);
+            }
+
             error = errorStream.toString();
 
+            LOG.debug(error);
+
         } catch (IOException | NullPointerException e) {
+            LOG.error(Throwables.getStackTraceAsString(e));
 
         } catch (InterruptedException e) {
             e.printStackTrace();

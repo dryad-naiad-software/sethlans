@@ -76,7 +76,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     @Async
     public void processReceivedBenchmark(String benchmark_uuid) {
         BlenderBenchmarkTask benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark_uuid);
-        // Process benchmark
+        runBenchmark(benchmarkTask);
 
     }
 
@@ -85,28 +85,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     public void processReceivedBenchmarks(List<String> benchmark_uuids) {
         for (String benchmark : benchmark_uuids) {
             BlenderBenchmarkTask benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark);
-            LOG.debug("Processing benchmark task: \n" + benchmarkTask.toString());
-            File benchmarkDir = new File(tempDir + File.separator + benchmarkTask.getBenchmark_uuid() + "_" + benchmarkTask.getBenchmarkURL());
-            if (downloadRequiredFiles(benchmarkDir, benchmarkTask)) {
-                if(benchmarkTask.getComputeType().equals(ComputeType.GPU)){
-                    String[] cudaList = cuda.split(",");
-                    if (cudaList.length > 1) {
-                        for (int i = 0; i < cudaList.length; i++) {
-                            LOG.debug("Creating benchmark script using " + cudaList[i]);
-                            String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), i, 256);
-
-                        }
-
-                    } else {
-                        LOG.debug("Creating benchmark script using " + cuda);
-                        String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), 0, 256);
-                        blenderRenderService.executeBenchmarkTask(benchmarkTask, script);
-                    }
-                } else {
-                    LOG.debug("Creating benchmark script using CPU");
-                    String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), 0, 32);
-                }
-            }
+            runBenchmark(benchmarkTask);
         }
 
     }
@@ -163,6 +142,31 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         }
         LOG.debug("Setting executable to: " + executable);
         return executable;
+    }
+
+    private void runBenchmark(BlenderBenchmarkTask benchmarkTask) {
+        LOG.debug("Processing benchmark task: \n" + benchmarkTask.toString());
+        File benchmarkDir = new File(tempDir + File.separator + benchmarkTask.getBenchmark_uuid() + "_" + benchmarkTask.getBenchmarkURL());
+        if (downloadRequiredFiles(benchmarkDir, benchmarkTask)) {
+            if (benchmarkTask.getComputeType().equals(ComputeType.GPU)) {
+                String[] cudaList = cuda.split(",");
+                if (cudaList.length > 1) {
+                    for (int i = 0; i < cudaList.length; i++) {
+                        LOG.debug("Creating benchmark script using " + cudaList[i]);
+                        String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), i, 256);
+
+                    }
+
+                } else {
+                    LOG.debug("Creating benchmark script using " + cuda);
+                    String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), 0, 256);
+                    blenderRenderService.executeBenchmarkTask(benchmarkTask, script);
+                }
+            } else {
+                LOG.debug("Creating benchmark script using CPU");
+                String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(), benchmarkTask.getBenchmarkDir(), 0, 32);
+            }
+        }
     }
 
     @Autowired

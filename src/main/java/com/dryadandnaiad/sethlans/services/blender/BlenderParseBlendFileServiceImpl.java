@@ -63,6 +63,7 @@ public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileSe
 
             commandLine.addArgument(scriptsDir + File.separator + "blend_info.py");
             commandLine.addArgument(blendFile);
+            LOG.debug(commandLine.toString());
 
             DefaultExecutor executor = new DefaultExecutor();
             executor.setStreamHandler(pumpStreamHandler);
@@ -72,7 +73,10 @@ public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileSe
 
             BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray())));
 
-            String output = in.readLine();
+            String output;
+            while ((output = in.readLine()) != null) {
+                LOG.debug(output);
+            }
             error = errorStream.toString();
 
             List<String> values;

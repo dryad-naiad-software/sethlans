@@ -48,12 +48,12 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "\"" + renderLocation + "\"" + "\n");
 
             // Set Device
-            scriptWriter.write("bpy.context.scene.cycles.device = " + computeType + "\n");
+            scriptWriter.write("bpy.context.scene.cycles.device = " + "\"" + computeType + "\"" + "\n");
 
             if (computeType.equals(ComputeType.GPU)) {
                 // CUDA Setting
                 scriptWriter.write("\n");
-                scriptWriter.write("bpy.context.user_preferences.addons['cycles'].preferences.compute_device_type = CUDA" + "\n");
+                scriptWriter.write("bpy.context.user_preferences.addons['cycles'].preferences.compute_device_type = \"CUDA\"" + "\n");
                 scriptWriter.write("devices = bpy.context.user_preferences.addons['cycles'].preferences.get_devices()" + "\n");
                 //CUDA = 0, OpenCL = 1
                 scriptWriter.write("cuda_devices = devices[0]" + "\n");
