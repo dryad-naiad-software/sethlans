@@ -16,14 +16,35 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-package com.dryadandnaiad.sethlans.enums;
+
+package com.dryadandnaiad.sethlans.utils;
+
+import com.dryadandnaiad.sethlans.systray.SethlansSysTray;
+
+import java.awt.*;
+
 /**
- *
- * @author Mario Estrella <mestrella@dryadandnaiad.com>
+ * Created Mario Estrella on 12/19/17.
+ * Dryad and Naiad Software LLC
+ * mestrella@dryadandnaiad.com
+ * Project: sethlans
  */
-public enum SethlansMode {
-    // SERVER, NODE, DUAL need to match Setup Progress Enums for Setup Wizard to work properly
-    SERVER,
-    NODE,
-    DUAL, SETUP
+public class SethlansState {
+    private static SethlansState ourInstance = new SethlansState();
+
+    public boolean sethlansActive;
+
+
+    public static SethlansState getInstance() {
+        return ourInstance;
+    }
+
+    private SethlansState() {
+        sethlansActive = false;
+        if (SystemTray.isSupported()) {
+            SethlansSysTray sethlansSysTray = new SethlansSysTray();
+            Thread sysTray = new Thread(sethlansSysTray);
+            sysTray.start();
+        }
+    }
 }

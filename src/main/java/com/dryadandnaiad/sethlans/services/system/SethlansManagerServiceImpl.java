@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.system;
 
+import com.dryadandnaiad.sethlans.utils.SethlansState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
@@ -52,7 +53,9 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
     @Async
     public void restart() {
         try {
-            Thread.sleep(4000);
+            SethlansState sethlansState = SethlansState.getInstance();
+            Thread.sleep(2000);
+            sethlansState.sethlansActive = false;
             SpringApplication.exit(applicationContext, () -> 0);
         } catch (InterruptedException e) {
             e.printStackTrace();

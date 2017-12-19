@@ -20,18 +20,17 @@
 package com.dryadandnaiad.sethlans;
 
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
-import com.dryadandnaiad.sethlans.systray.SethlansSysTray;
+import com.dryadandnaiad.sethlans.utils.SethlansState;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.kohsuke.args4j.OptionHandlerFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.logging.LogLevel;
 
-import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,22 +104,13 @@ public class Sethlans {
 
 
     private void startSpring(String[] springArgs) {
-        if (SystemTray.isSupported()) {
-            SethlansSysTray sethlansSysTray = new SethlansSysTray();
-            sethlansSysTray.setup();
-            sethlansSysTray.setImageAutoSize(true);
-
-        }
-        SpringApplicationBuilder builder = null;
-        boolean sethlansActive = false;
+        SethlansState sethlansState = SethlansState.getInstance();
         while (true) {
             try {
-                if (sethlansActive) {
-                    Thread.sleep(3000);
-                    sethlansActive = builder.run(springArgs).isActive();
+                if (sethlansState.sethlansActive) {
+                    Thread.sleep(1000);
                 } else {
-                    builder = new SpringApplicationBuilder(Sethlans.class);
-                    sethlansActive = builder.run(springArgs).isActive();
+                    sethlansState.sethlansActive = SpringApplication.run(Sethlans.class, springArgs).isActive();
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

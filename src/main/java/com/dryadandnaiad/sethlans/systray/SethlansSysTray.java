@@ -32,7 +32,7 @@ import java.net.MalformedURLException;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class SethlansSysTray extends TrayIcon {
+public class SethlansSysTray extends TrayIcon implements Runnable {
     private static final String IMAGE = "images/sethlans_systray.png";
     private static final String TOOLTIP = "Sethlans";
     private static final Logger LOG = LoggerFactory.getLogger(SethlansSysTray.class);
@@ -41,12 +41,9 @@ public class SethlansSysTray extends TrayIcon {
 
     public SethlansSysTray() {
         super(SethlansUtils.createImage(IMAGE, TOOLTIP), TOOLTIP);
-        popup = new PopupMenu();
-        menuItems();
-        tray = SystemTray.getSystemTray();
     }
 
-    public void setup() {
+    private void setup() {
         setPopupMenu(popup);
         try {
             tray.add(this);
@@ -91,4 +88,12 @@ public class SethlansSysTray extends TrayIcon {
         popup.add(exitItem);
     }
 
+    @Override
+    public void run() {
+        popup = new PopupMenu();
+        menuItems();
+        tray = SystemTray.getSystemTray();
+        setup();
+
+    }
 }
