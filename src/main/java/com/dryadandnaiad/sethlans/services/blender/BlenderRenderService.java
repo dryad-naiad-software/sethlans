@@ -28,5 +28,5 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
  * Project: sethlans
  */
 public interface BlenderRenderService {
-    void executeBenchmarkTask(BlenderBenchmarkTask benchmarkTask, String blenderScript);
+    int executeBenchmarkTask(BlenderBenchmarkTask benchmarkTask, String blenderScript);
 }

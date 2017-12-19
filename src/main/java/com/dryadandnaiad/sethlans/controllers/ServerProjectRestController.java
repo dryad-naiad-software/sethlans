@@ -19,6 +19,8 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.slf4j.Logger;
@@ -74,6 +76,26 @@ public class ServerProjectRestController {
                 LOG.error("No files found.");
             }
         }
+    }
+
+    @RequestMapping(value = "/api/benchmark/response", method = RequestMethod.POST)
+    public void benchmarkResponse(@RequestParam String connection_uuid, @RequestParam int rating, @RequestParam ComputeType compute_type) {
+        SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
+        if (sethlansNode == null) {
+            LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
+        } else {
+            LOG.debug("Receiving benchmark from Node: " + sethlansNode.getHostname());
+            if (compute_type.equals(ComputeType.CPU)) {
+                sethlansNode.setRatingCPU(rating);
+            }
+            if (compute_type.equals(ComputeType.GPU)) {
+                sethlansNode.setRatingGPU(rating);
+            }
+            sethlansNode.setBenchmarkComplete(true);
+            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+        }
+
+
     }
 
     @RequestMapping(value = "/api/benchmark_files/bmw_cpu", method = RequestMethod.GET)

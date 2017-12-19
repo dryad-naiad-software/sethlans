@@ -20,7 +20,6 @@
 package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
-import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import org.springframework.scheduling.annotation.Async;
 
 import java.util.List;
@@ -40,5 +39,4 @@ public interface BlenderBenchmarkService {
     @Async
     void processReceivedBenchmarks(List<String> benchmark_uuids);
 
-    void sendResultsToServer(SethlansServer sethlansServer);
 }

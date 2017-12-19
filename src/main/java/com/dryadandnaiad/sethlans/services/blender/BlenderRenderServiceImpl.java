@@ -27,12 +27,14 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created Mario Estrella on 12/18/17.
@@ -62,8 +64,8 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     }
 
     @Override
-    public void executeBenchmarkTask(BlenderBenchmarkTask benchmarkTask, String blenderScript) {
-        String error = null;
+    public int executeBenchmarkTask(BlenderBenchmarkTask benchmarkTask, String blenderScript) {
+        String error;
         try {
             LOG.debug("Starting Benchmark. Benchmark type: " + benchmarkTask.getComputeType());
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -96,14 +98,34 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray())));
 
             String output;
+            String time = null;
 
             while ((output = in.readLine()) != null) {
                 LOG.debug(output);
+                if (output.contains("Finished")) {
+                    String[] finished = output.split("\\|");
+                    for (String item : finished) {
+                        LOG.debug(item);
+                        if (item.contains("Time:")) {
+                            time = StringUtils.substringAfter(item, ":");
+                            time = StringUtils.substringBefore(time, ".");
+                        }
+                    }
+                }
             }
+
 
             error = errorStream.toString();
 
             LOG.debug(error);
+            String[] timeToConvert = time.split(":");
+            int minutes = Integer.parseInt(timeToConvert[0]);
+            int seconds = Integer.parseInt(timeToConvert[1]);
+            int timeInSeconds = seconds + 60 * minutes;
+            int timeInMilliseconds = (int) TimeUnit.MILLISECONDS.convert(timeInSeconds, TimeUnit.SECONDS);
+            LOG.debug("Benchmark time in milliseconds: " + timeInMilliseconds);
+            return timeInMilliseconds;
+
 
         } catch (IOException | NullPointerException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
@@ -111,6 +133,6 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+        return 0;
     }
 }

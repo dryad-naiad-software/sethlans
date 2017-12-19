@@ -113,8 +113,9 @@
                     </tr>
                     </thead>
                     <tbody th:if="${not #lists.isEmpty(nodes)}">
+                    <!--/*@thymesVar id="nodes" type="java.util.List"*/-->
+                    <!--/*@thymesVar id="node" type="com.dryadandnaiad.sethlans.domains.database.node.SethlansNode"*/-->
                     <tr th:each="node : ${nodes}">
-                        <!--/*@thymesVar id="node" type="com.dryadandnaiad.sethlans.domains.database.node.SethlansNode"*/-->
                         <td th:id="'nodeStatus-' + ${node.getId()}"
                             th:if="${node.isActive() and not node.isPendingActivation()}">Active
                         </td>
@@ -167,9 +168,9 @@
                         <td th:id="'nodeBenchmarkRating-' + ${node.getId()}"
                             th:if="${node.isBenchmarkComplete()}">
                             <span th:if="${!node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU)}"
-                                  th:text="'CPU:' ${node.getRatingCPU()}">CPU: 7000</span>
+                                  th:text="'CPU:&nbsp;' + ${node.getRatingCPU()}">CPU: 7000</span>
                             <span th:if="${!node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).CPU)}"
-                                  th:text="'GPU:' ${node.getRatingGPU()}">GPU: 7000</span>
+                                  th:text="'GPU:&nbsp;' + ${node.getRatingGPU()}">GPU: 7000</span>
                         </td>
                         <td>
                             <a th:id="'nodeUpdate-' + ${node.getId()}"
