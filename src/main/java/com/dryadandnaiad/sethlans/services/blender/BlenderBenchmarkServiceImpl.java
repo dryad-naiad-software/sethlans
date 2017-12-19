@@ -128,7 +128,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             SethlansUtils.archiveExtract(filename, benchmarkDir);
             renameBlender(benchmarkDir);
             benchmarkTask.setBenchmarkDir(benchmarkDir.toString());
-            benchmarkTask.setBlenderExecutable(assignBlenderExecutable(benchmarkDir));
+            benchmarkTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(benchmarkDir));
 
             // Download benchmark from server
             connectionURL = "https://" + serverIP + ":" + serverPort + "/api/benchmark_files/" + benchmarkTask.getBenchmarkURL();
@@ -152,14 +152,6 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         }
     }
 
-    private String assignBlenderExecutable(File benchmarkDir) {
-        String executable = null;
-        if (SethlansUtils.getOS().equals("MacOS")) {
-            executable = benchmarkDir.toString() + File.separator + "blender/blender.app/Contents/MacOS/blender";
-        }
-        LOG.debug("Setting executable to: " + executable);
-        return executable;
-    }
 
     private void runBenchmark(BlenderBenchmarkTask benchmarkTask) {
         LOG.debug("Processing benchmark task: \n" + benchmarkTask.toString());

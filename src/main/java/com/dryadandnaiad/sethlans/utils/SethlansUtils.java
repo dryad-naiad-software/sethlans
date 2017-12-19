@@ -292,6 +292,21 @@ public class SethlansUtils {
         return null;
     }
 
+    public static String assignBlenderExecutable(File tempDir) {
+        String executable = null;
+        if (getOS().equals("MacOS")) {
+            executable = tempDir.toString() + File.separator + "blender/blender.app/Contents/MacOS/blender";
+        }
+        if (getOS().equals("Windows64") || getOS().equals("Windows32")) {
+            executable = tempDir.toString() + File.separator + "blender/blender.exe";
+        }
+        if (getOS().equals("Linux64") || getOS().equals("Linux32")) {
+            executable = tempDir.toString() + File.separator + "blender/blender";
+        }
+        LOG.debug("Setting executable to: " + executable);
+        return executable;
+    }
+
     public static String getVersion() {
         String version = null;
 
