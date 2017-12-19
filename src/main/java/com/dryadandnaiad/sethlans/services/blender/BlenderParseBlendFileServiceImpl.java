@@ -73,10 +73,8 @@ public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileSe
 
             BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray())));
 
-            String output;
-            while ((output = in.readLine()) != null) {
-                LOG.debug(output);
-            }
+            String output = in.readLine();
+
             error = errorStream.toString();
 
             List<String> values;
