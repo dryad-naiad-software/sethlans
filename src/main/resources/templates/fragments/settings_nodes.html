@@ -168,9 +168,12 @@
                         <td th:id="'nodeBenchmarkRating-' + ${node.getId()}"
                             th:if="${node.isBenchmarkComplete()}">
                             <span th:if="${!node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU)}"
-                                  th:text="'CPU:&nbsp;' + ${node.getRatingCPU()}">CPU: 7000</span>
-                            <span th:if="${!node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).CPU)}"
-                                  th:text="'GPU:&nbsp;' + ${node.getRatingGPU()}">GPU: 7000</span>
+                                  th:text="'CPU:&nbsp;' + ${node.getCpuRating()}">CPU: 7000</span>
+                            <span th:if="${!node.getComputeType().equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).CPU)}">
+                                 <span th:each="gpu, stat : ${node.selectedGPUs}"
+                                       th:utext="${!stat.last} ? ${gpu.getCudaName()} + ': ' + ${gpu.getRating()}  +  '<br />' :
+                                       ${gpu.getCudaName()} + ': ' + ${gpu.getRating()}">Nvidia</span>
+                            </span>
                         </td>
                         <td>
                             <a th:id="'nodeUpdate-' + ${node.getId()}"
