@@ -94,7 +94,24 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
         String port = sethlansNode.getNetworkPort();
         String acknowledgeURL = "https://" + ip + ":" + port + "/api/nodeactivate/acknowledge";
         String params = "connection_uuid=" + sethlansNode.getConnection_uuid();
+        boolean pendingDownloads = true;
         if (sethlansAPIConnectionService.sendToRemotePOST(acknowledgeURL, params)) {
+            while (pendingDownloads) {
+                pendingDownloads = false;
+                List<BlenderBinary> blenderBinaries = blenderBinaryDatabaseService.listAll();
+                for (BlenderBinary blenderBinary : blenderBinaries) {
+                    if (!blenderBinary.isDownloaded()) {
+                        try {
+                            pendingDownloads = true;
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        LOG.debug("Blender binary is progress, holding off on sending benchmark request");
+                    }
+                }
+
+            }
             blenderBenchmarkService.sendBenchmarktoNode(sethlansNode);
         }
     }

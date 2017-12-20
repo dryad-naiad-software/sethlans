@@ -26,6 +26,7 @@ import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.rauschig.jarchivelib.ArchiveFormat;
 import org.rauschig.jarchivelib.Archiver;
@@ -145,9 +146,9 @@ public class SethlansUtils {
 
     public static boolean archiveExtract(String toExtract, File extractLocation) {
         File archive = new File(extractLocation + File.separator + toExtract);
-        extractLocation.mkdirs();
         try {
             if (archive.toString().contains("txz")) {
+                extractLocation.mkdirs();
                 LOG.debug("Extracting " + archive + " to " + extractLocation);
                 Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.XZ);
                 archiver.extract(archive, extractLocation);
@@ -155,6 +156,7 @@ public class SethlansUtils {
                 return true;
             }
             if (archive.toString().contains("tar.gz")) {
+                extractLocation.mkdirs();
                 LOG.debug("Extracting " + archive + " to " + extractLocation);
                 Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.GZIP);
                 archiver.extract(archive, extractLocation);
@@ -162,12 +164,15 @@ public class SethlansUtils {
                 return true;
             }
             if (archive.toString().contains("tar.bz2")) {
+                extractLocation.mkdirs();
                 LOG.debug("Extracting " + archive + " to " + extractLocation);
                 Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.BZIP2);
                 archiver.extract(archive, extractLocation);
                 archive.delete();
                 return true;
             } else {
+                extractLocation = new File(extractLocation + File.separator + StringUtils.substringBefore(toExtract, ".zip"));
+                extractLocation.mkdirs();
                 ZipFile archiver = new ZipFile(archive);
                 LOG.debug("Extracting " + archive + " to " + extractLocation);
                 archiver.extractAll(extractLocation.toString());

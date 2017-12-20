@@ -90,6 +90,7 @@
             <!--Settings servers Fragment-->
             <h2>Servers</h2>
             <div class="table-responsive">
+                <!--/*@thymesVar id="servers" type="java.util.List"*/-->
                 <h2 th:if="${#lists.isEmpty(servers)}" style="text-align: center">No Servers Available</h2>
                 <table id="serverTable" class="table table-striped" th:if="${not #lists.isEmpty(servers)}">
                     <thead>
@@ -102,6 +103,7 @@
                     </tr>
                     </thead>
                     <tbody th:if="${not #lists.isEmpty(servers)}">
+                    <!--/*@thymesVar id="servers" type="java.util.List"*/-->
                     <tr th:each="server : ${servers}">
                         <!--/*@thymesVar id="server" type="com.dryadandnaiad.sethlans.domains.database.server.SethlansServer"*/-->
                         <td th:id="'serverStatus-' + ${server.getId()}"

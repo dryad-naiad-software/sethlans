@@ -28,8 +28,8 @@ import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseServic
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.List;
 
@@ -158,11 +157,23 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     }
 
     private void renameBlender(File benchmarkDir) {
-        FileFilter fileFilter = new WildcardFileFilter("blender*");
-        File[] files = benchmarkDir.listFiles(fileFilter);
-        for (File file : files) {
-            if (file.isDirectory()) {
-                file.renameTo(new File(benchmarkDir + File.separator + "blender"));
+        File[] files = benchmarkDir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
+                        try {
+                            ProcessBuilder pb = new ProcessBuilder("chmod", "-R", "+x", benchmarkDir.toString());
+                            pb.start();
+                            LOG.debug("Setting blender files as executable.");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    LOG.debug("Directory found, renaming");
+                    file.renameTo(new File(benchmarkDir + File.separator + "blender"));
+                }
             }
         }
     }
@@ -191,12 +202,17 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                 String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(),
                         benchmarkTask.getBenchmarkDir(), "0", 16, 800, 600, 50);
                 int rating = blenderRenderService.executeBenchmarkTask(benchmarkTask, script);
-                LOG.debug(benchmarkTask.toString());
-                LOG.debug("Benchmark complete, saving to database.");
-                benchmarkTask.setCpuRating(rating);
-                benchmarkTask.setComplete(true);
-                blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
-                LOG.debug(benchmarkTask.toString());
+                if (rating == 0) {
+                    LOG.debug("Benchmark failed.");
+                    LOG.debug(benchmarkTask.toString());
+                } else {
+                    LOG.debug("Benchmark complete, saving to database.");
+                    benchmarkTask.setCpuRating(rating);
+                    benchmarkTask.setComplete(true);
+                    blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
+                    LOG.debug(benchmarkTask.toString());
+                }
+
             }
         }
 
