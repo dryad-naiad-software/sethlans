@@ -80,7 +80,8 @@ public class ServerProjectRestController {
     }
 
     @RequestMapping(value = "/api/benchmark/response", method = RequestMethod.POST)
-    public void benchmarkResponse(@RequestParam String connection_uuid, @RequestParam int rating, @RequestParam String cuda_name, @RequestParam ComputeType compute_type) {
+    public void benchmarkResponse(@RequestParam String connection_uuid, @RequestParam int rating, @RequestParam String cuda_name,
+                                  @RequestParam ComputeType compute_type, @RequestParam boolean complete) {
         SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
         if (sethlansNode == null) {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
@@ -97,7 +98,7 @@ public class ServerProjectRestController {
                     }
                 }
             }
-            sethlansNode.setBenchmarkComplete(true);
+            sethlansNode.setBenchmarkComplete(complete);
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
         }
 
