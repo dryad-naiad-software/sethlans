@@ -26,7 +26,6 @@ import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.rauschig.jarchivelib.ArchiveFormat;
 import org.rauschig.jarchivelib.Archiver;
@@ -171,7 +170,6 @@ public class SethlansUtils {
                 archive.delete();
                 return true;
             } else {
-                extractLocation = new File(extractLocation + File.separator + StringUtils.substringBefore(toExtract, ".zip"));
                 extractLocation.mkdirs();
                 ZipFile archiver = new ZipFile(archive);
                 LOG.debug("Extracting " + archive + " to " + extractLocation);
@@ -310,6 +308,28 @@ public class SethlansUtils {
         }
         LOG.debug("Setting executable to: " + executable);
         return executable;
+    }
+
+    public static void renameBlender(File tempDir, String blenderVersion) {
+        File[] files = tempDir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory() && file.toString().contains(blenderVersion)) {
+                    LOG.debug(file.toString());
+                    LOG.debug("Directory found, renaming");
+                    file.renameTo(new File(tempDir + File.separator + "blender"));
+                }
+            }
+        }
+        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
+            try {
+                ProcessBuilder pb = new ProcessBuilder("chmod", "-R", "+x", tempDir.toString());
+                pb.start();
+                LOG.debug("Setting blender files as executable.");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static String getVersion() {

@@ -29,7 +29,6 @@ import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,7 +139,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             String params = "?connection_uuid=" + benchmarkTask.getConnection_uuid() + "&version=" + benchmarkTask.getBlenderVersion() + "&os=" + SethlansUtils.getOS();
             String filename = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, benchmarkDir.toString());
             SethlansUtils.archiveExtract(filename, benchmarkDir);
-            renameBlender(benchmarkDir);
+            SethlansUtils.renameBlender(benchmarkDir, primaryBlenderVersion);
             benchmarkTask.setBenchmarkDir(benchmarkDir.toString());
             benchmarkTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(benchmarkDir));
 
@@ -156,27 +155,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         return false;
     }
 
-    private void renameBlender(File benchmarkDir) {
-        File[] files = benchmarkDir.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
-                        try {
-                            ProcessBuilder pb = new ProcessBuilder("chmod", "-R", "+x", benchmarkDir.toString());
-                            pb.start();
-                            LOG.debug("Setting blender files as executable.");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
 
-                    LOG.debug("Directory found, renaming");
-                    file.renameTo(new File(benchmarkDir + File.separator + "blender"));
-                }
-            }
-        }
-    }
 
 
     private void runBenchmark(BlenderBenchmarkTask benchmarkTask) {
@@ -192,11 +171,17 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                 String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(),
                         benchmarkTask.getBenchmarkDir(), cudaID, 128, 800, 600, 50);
                 int rating = blenderRenderService.executeBenchmarkTask(benchmarkTask, script);
-                LOG.debug("Benchmark complete, saving to database.");
-                LOG.debug(benchmarkTask.toString());
-                benchmarkTask.setGpuRating(rating);
-                benchmarkTask.setComplete(true);
-                blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
+                if (rating == 0) {
+                    LOG.debug("Benchmark failed.");
+                    LOG.debug(benchmarkTask.toString());
+                } else {
+                    LOG.debug("Benchmark complete, saving to database.");
+                    LOG.debug(benchmarkTask.toString());
+                    benchmarkTask.setGpuRating(rating);
+                    benchmarkTask.setComplete(true);
+                    blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
+                }
+
             } else {
                 LOG.debug("Creating benchmark script using CPU");
                 String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(),
