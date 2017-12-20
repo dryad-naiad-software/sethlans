@@ -31,6 +31,7 @@ import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseServic
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -50,6 +51,8 @@ import java.util.UUID;
 @RestController
 @Profile({"NODE", "DUAL"})
 public class NodeRenderRestController {
+    @Value("${sethlans.cuda}")
+    private String cuda;
 
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private BlenderRenderTaskDatabaseService blenderRenderTaskDatabaseService;
@@ -101,6 +104,7 @@ public class NodeRenderRestController {
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
+            String[] cudaList = cuda.split(",");
             BlenderBenchmarkTask cpuBenchmarkTask = new BlenderBenchmarkTask();
             cpuBenchmarkTask.setBlenderVersion(blender_version);
             cpuBenchmarkTask.setBenchmarkURL("bmw_cpu");
@@ -109,28 +113,43 @@ public class NodeRenderRestController {
             cpuBenchmarkTask.setConnection_uuid(connection_uuid);
             cpuBenchmarkTask.setBenchmark_uuid(UUID.randomUUID().toString());
 
-            BlenderBenchmarkTask gpuBenchmarkTask = new BlenderBenchmarkTask();
-            gpuBenchmarkTask.setBlenderVersion(blender_version);
-            gpuBenchmarkTask.setComplete(false);
-            gpuBenchmarkTask.setBenchmarkURL("bmw_gpu");
-            gpuBenchmarkTask.setComputeType(ComputeType.GPU);
-            gpuBenchmarkTask.setConnection_uuid(connection_uuid);
-            gpuBenchmarkTask.setBenchmark_uuid(UUID.randomUUID().toString());
+            List<BlenderBenchmarkTask> gpuTasks = new ArrayList<>();
+
+
+            for (String cuda : cudaList) {
+                BlenderBenchmarkTask gpuBenchmarkTask = new BlenderBenchmarkTask();
+                gpuBenchmarkTask.setBlenderVersion(blender_version);
+                gpuBenchmarkTask.setComplete(false);
+                gpuBenchmarkTask.setCudaName(cuda);
+                gpuBenchmarkTask.setBenchmarkURL("bmw_gpu");
+                gpuBenchmarkTask.setComputeType(ComputeType.GPU);
+                gpuBenchmarkTask.setConnection_uuid(connection_uuid);
+                gpuBenchmarkTask.setBenchmark_uuid(UUID.randomUUID().toString());
+                gpuTasks.add(gpuBenchmarkTask);
+            }
+
+            List<String> benchmarks = new ArrayList<>();
             switch (compute_type) {
                 case CPU:
                     blenderBenchmarkTaskDatabaseService.saveOrUpdate(cpuBenchmarkTask);
                     blenderBenchmarkService.processReceivedBenchmark(cpuBenchmarkTask.getBenchmark_uuid());
                     break;
                 case CPU_GPU:
-                    blenderBenchmarkTaskDatabaseService.saveOrUpdate(gpuBenchmarkTask);
                     blenderBenchmarkTaskDatabaseService.saveOrUpdate(cpuBenchmarkTask);
-                    List<String> benchmarks = new ArrayList<>();
-                    benchmarks.add(gpuBenchmarkTask.getBenchmark_uuid());
+                    for (BlenderBenchmarkTask gpuTask : gpuTasks) {
+                        blenderBenchmarkTaskDatabaseService.saveOrUpdate(gpuTask);
+                        benchmarks.add(gpuTask.getBenchmark_uuid());
+                    }
                     benchmarks.add(cpuBenchmarkTask.getBenchmark_uuid());
                     blenderBenchmarkService.processReceivedBenchmarks(benchmarks);
+                    break;
                 case GPU:
-                    blenderBenchmarkTaskDatabaseService.saveOrUpdate(gpuBenchmarkTask);
-                    blenderBenchmarkService.processReceivedBenchmark(gpuBenchmarkTask.getBenchmark_uuid());
+                    for (BlenderBenchmarkTask gpuTask : gpuTasks) {
+                        blenderBenchmarkTaskDatabaseService.saveOrUpdate(gpuTask);
+                        benchmarks.add(gpuTask.getBenchmark_uuid());
+                    }
+                    blenderBenchmarkService.processReceivedBenchmarks(benchmarks);
+                    break;
             }
 
         }

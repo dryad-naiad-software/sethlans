@@ -41,7 +41,9 @@ public class BlenderBenchmarkTask extends AbstractEntityClass {
     private String benchmarkDir;
     private String benchmarkFile;
     private boolean complete;
-    private int rating;
+    private int cpuRating;
+    private int gpuRating;
+    private String cudaName;
 
     public String getBenchmarkURL() {
         return benchmarkURL;
@@ -67,12 +69,12 @@ public class BlenderBenchmarkTask extends AbstractEntityClass {
         this.connection_uuid = connection_uuid;
     }
 
-    public int getRating() {
-        return rating;
+    public int getCpuRating() {
+        return cpuRating;
     }
 
-    public void setRating(int rating) {
-        this.rating = rating;
+    public void setCpuRating(int cpuRating) {
+        this.cpuRating = cpuRating;
     }
 
     public ComputeType getComputeType() {
@@ -123,6 +125,22 @@ public class BlenderBenchmarkTask extends AbstractEntityClass {
         this.benchmarkDir = benchmarkDir;
     }
 
+    public int getGpuRating() {
+        return gpuRating;
+    }
+
+    public void setGpuRating(int gpuRating) {
+        this.gpuRating = gpuRating;
+    }
+
+    public String getCudaName() {
+        return cudaName;
+    }
+
+    public void setCudaName(String cudaName) {
+        this.cudaName = cudaName;
+    }
+
     @Override
     public String toString() {
         return "BlenderBenchmarkTask{" +
@@ -135,7 +153,9 @@ public class BlenderBenchmarkTask extends AbstractEntityClass {
                 ", benchmarkDir='" + benchmarkDir + '\'' +
                 ", benchmarkFile='" + benchmarkFile + '\'' +
                 ", complete=" + complete +
-                ", rating=" + rating +
+                ", cpuRating=" + cpuRating +
+                ", gpuRating=" + gpuRating +
+                ", cudaName='" + cudaName + '\'' +
                 '}';
     }
 }

@@ -31,12 +31,14 @@ import javax.persistence.Embeddable;
 public class GPUDevice {
     private String model;
     private long memory; // in B
+    private int rating;
 
     private String cudaName;
 
     public GPUDevice(){
         super();
     }
+
     public GPUDevice(String model, long ram, String cuda) {
         this.model = model;
         this.memory = ram;
@@ -67,6 +69,13 @@ public class GPUDevice {
         this.cudaName = cudaName;
     }
 
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
 
     public int getRecommandedTileSize() {
         // GPU
@@ -79,6 +88,7 @@ public class GPUDevice {
         return "GPUDevice{" +
                 "model='" + model + '\'' +
                 ", memory=" + memory +
+                ", rating=" + rating +
                 ", cudaName='" + cudaName + '\'' +
                 '}';
     }

@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -79,17 +80,22 @@ public class ServerProjectRestController {
     }
 
     @RequestMapping(value = "/api/benchmark/response", method = RequestMethod.POST)
-    public void benchmarkResponse(@RequestParam String connection_uuid, @RequestParam int rating, @RequestParam ComputeType compute_type) {
+    public void benchmarkResponse(@RequestParam String connection_uuid, @RequestParam int rating, @RequestParam String cuda_name, @RequestParam ComputeType compute_type) {
         SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
         if (sethlansNode == null) {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
             LOG.debug("Receiving benchmark from Node: " + sethlansNode.getHostname());
             if (compute_type.equals(ComputeType.CPU)) {
-                sethlansNode.setRatingCPU(rating);
+                sethlansNode.setCpuRating(rating);
             }
             if (compute_type.equals(ComputeType.GPU)) {
-                sethlansNode.setRatingGPU(rating);
+                for (GPUDevice gpuDevice : sethlansNode.getSelectedGPUs()) {
+                    if (gpuDevice.getCudaName().equals(cuda_name)) {
+                        gpuDevice.setRating(rating);
+                        LOG.debug(sethlansNode.toString());
+                    }
+                }
             }
             sethlansNode.setBenchmarkComplete(true);
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);

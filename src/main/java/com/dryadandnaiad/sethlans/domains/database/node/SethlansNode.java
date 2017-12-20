@@ -52,8 +52,7 @@ public class SethlansNode extends AbstractEntityClass {
     private boolean active;
     private boolean pendingActivation;
     private String connection_uuid;
-    private int ratingCPU;
-    private int ratingGPU;
+    private int cpuRating;
     private boolean benchmarkComplete;
 
 
@@ -153,21 +152,6 @@ public class SethlansNode extends AbstractEntityClass {
         this.connection_uuid = connection_uuid;
     }
 
-    public int getRatingCPU() {
-        return ratingCPU;
-    }
-
-    public void setRatingCPU(int ratingCPU) {
-        this.ratingCPU = ratingCPU;
-    }
-
-    public int getRatingGPU() {
-        return ratingGPU;
-    }
-
-    public void setRatingGPU(int ratingGPU) {
-        this.ratingGPU = ratingGPU;
-    }
 
     public boolean isBenchmarkComplete() {
         return benchmarkComplete;
@@ -175,6 +159,14 @@ public class SethlansNode extends AbstractEntityClass {
 
     public void setBenchmarkComplete(boolean benchmarkComplete) {
         this.benchmarkComplete = benchmarkComplete;
+    }
+
+    public int getCpuRating() {
+        return cpuRating;
+    }
+
+    public void setCpuRating(int cpuRating) {
+        this.cpuRating = cpuRating;
     }
 
     @Override
@@ -192,8 +184,7 @@ public class SethlansNode extends AbstractEntityClass {
                 ", active=" + active +
                 ", pendingActivation=" + pendingActivation +
                 ", connection_uuid='" + connection_uuid + '\'' +
-                ", ratingCPU=" + ratingCPU +
-                ", ratingGPU=" + ratingGPU +
+                ", cpuRating=" + cpuRating +
                 ", benchmarkComplete=" + benchmarkComplete +
                 '}';
     }

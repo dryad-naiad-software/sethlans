@@ -29,6 +29,7 @@ import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,9 +55,6 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
 
     @Value("${sethlans.primaryBlenderVersion}")
     private String primaryBlenderVersion;
-
-    @Value("${sethlans.cuda}")
-    private String cuda;
 
     private static final Logger LOG = LoggerFactory.getLogger(BlenderBenchmarkServiceImpl.class);
 
@@ -107,8 +105,15 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     private void sendResultsToServer(String connectionUUID, BlenderBenchmarkTask blenderBenchmarkTask) {
         SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connectionUUID);
         String serverUrl = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/benchmark/response";
-        String params = "connection_uuid=" + sethlansServer.getConnection_uuid() + "&rating=" + blenderBenchmarkTask.getRating() + "&compute_type=" +
-                blenderBenchmarkTask.getComputeType();
+        String params;
+        if (blenderBenchmarkTask.getComputeType().equals(ComputeType.CPU)) {
+            params = "connection_uuid=" + sethlansServer.getConnection_uuid() + "&rating=" + blenderBenchmarkTask.getCpuRating() + "&cuda_name=" + "&compute_type=" +
+                    blenderBenchmarkTask.getComputeType();
+
+        } else {
+            params = "connection_uuid=" + sethlansServer.getConnection_uuid() + "&rating=" + blenderBenchmarkTask.getGpuRating() + "&cuda_name=" + blenderBenchmarkTask.getCudaName() + "&compute_type=" +
+                    blenderBenchmarkTask.getComputeType();
+        }
         sethlansAPIConnectionService.sendToRemotePOST(serverUrl, params);
     }
 
@@ -161,44 +166,30 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             String uuid = benchmarkTask.getBenchmark_uuid();
             benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(uuid);
             if (benchmarkTask.getComputeType().equals(ComputeType.GPU)) {
-                String[] cudaList = cuda.split(",");
-                if (cudaList.length > 1) {
-                    for (int i = 0; i < cudaList.length; i++) {
-                        LOG.debug("Creating benchmark script using " + cudaList[i]);
-                        String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(),
-                                benchmarkTask.getBenchmarkDir(), i, 128, 800, 600, 50);
-                        int rating = blenderRenderService.executeBenchmarkTask(benchmarkTask, script);
-                        LOG.debug("Benchmark complete, saving to database.");
-                        LOG.debug(benchmarkTask.toString());
-                        benchmarkTask.setRating(rating);
-                        benchmarkTask.setComplete(true);
-                        blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
-                    }
-
-                } else {
-                    LOG.debug("Creating benchmark script using " + cuda);
-                    String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(),
-                            benchmarkTask.getBenchmarkDir(), 0, 128, 800, 600, 50);
-                    int rating = blenderRenderService.executeBenchmarkTask(benchmarkTask, script);
-                    LOG.debug("Benchmark complete, saving to database.");
-                    LOG.debug(benchmarkTask.toString());
-                    benchmarkTask.setRating(rating);
-                    benchmarkTask.setComplete(true);
-                    blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
-                }
-            } else {
-                LOG.debug("Creating benchmark script using CPU");
+                LOG.debug("Creating benchmark script using " + benchmarkTask.getCudaName());
+                String cudaID = StringUtils.substringAfter(benchmarkTask.getCudaName(), "_");
                 String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(),
-                        benchmarkTask.getBenchmarkDir(), 0, 16, 800, 600, 50);
+                        benchmarkTask.getBenchmarkDir(), cudaID, 128, 800, 600, 50);
                 int rating = blenderRenderService.executeBenchmarkTask(benchmarkTask, script);
-                LOG.debug(benchmarkTask.toString());
                 LOG.debug("Benchmark complete, saving to database.");
-                benchmarkTask.setRating(rating);
+                LOG.debug(benchmarkTask.toString());
+                benchmarkTask.setGpuRating(rating);
                 benchmarkTask.setComplete(true);
                 blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
-                LOG.debug(benchmarkTask.toString());
             }
+        } else {
+            LOG.debug("Creating benchmark script using CPU");
+            String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(),
+                    benchmarkTask.getBenchmarkDir(), "0", 16, 800, 600, 50);
+            int rating = blenderRenderService.executeBenchmarkTask(benchmarkTask, script);
+            LOG.debug(benchmarkTask.toString());
+            LOG.debug("Benchmark complete, saving to database.");
+            benchmarkTask.setCpuRating(rating);
+            benchmarkTask.setComplete(true);
+            blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
+            LOG.debug(benchmarkTask.toString());
         }
+
     }
 
     @Autowired

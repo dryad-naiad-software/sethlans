@@ -98,8 +98,6 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
             sethlansNode = gson.fromJson(getRawDataService.getNodeResult("https://" + ip + ":" + port + "/api/nodeinfo"), SethlansNode.class);
             sethlansNode.setPendingActivation(true);
             sethlansNode.setActive(false);
-            sethlansNode.setRatingGPU(7200000);
-            sethlansNode.setRatingCPU(7200000);
             sethlansNode.setConnection_uuid(UUID.randomUUID().toString());
 
         } catch (NullPointerException e) {
