@@ -21,6 +21,9 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
+import com.dryadandnaiad.sethlans.domains.hardware.CPU;
+import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
+import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
@@ -31,8 +34,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 /**
  * Created Mario Estrella on 12/6/17.
@@ -47,6 +53,9 @@ public class NodeSettingsController extends AbstractSethlansController {
 
     @Value("${server.port}")
     private String sethlansPort;
+
+    @Value("${sethlans.cores}")
+    private String currentCores;
 
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private NodeActivationService nodeActivationService;
@@ -76,6 +85,23 @@ public class NodeSettingsController extends AbstractSethlansController {
         setSethlansNode();
         nodeActivationService.sendActivationResponse(sethlansServer, sethlansNode);
         return "redirect:/settings/servers/";
+    }
+
+    @ModelAttribute("total_cores")
+    public int getTotalCPUCores() {
+        CPU cpu = new CPU();
+        return cpu.getCores();
+    }
+
+
+    @ModelAttribute("current_cores")
+    public int getCurrentCPUCores() {
+        return Integer.getInteger(currentCores);
+    }
+
+    @ModelAttribute("available_gpus")
+    public List<GPUDevice> getAvailableGPUs() {
+        return GPU.listDevices();
     }
 
     @Autowired
