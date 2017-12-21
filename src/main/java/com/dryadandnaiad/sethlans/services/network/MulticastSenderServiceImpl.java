@@ -65,7 +65,7 @@ public class MulticastSenderServiceImpl extends Thread implements MulticastSende
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
-            LOG.debug("Ending multicast");
+            LOG.debug("Ending Multicast");
         }
 
 
