@@ -72,7 +72,7 @@ abstract public class AbstractSethlansController implements ApplicationListener<
 
     @ModelAttribute("computetype")
     public String getComputeType() {
-        return computeType.toString();
+        return computeType.getName();
     }
 
     @ModelAttribute("username")
