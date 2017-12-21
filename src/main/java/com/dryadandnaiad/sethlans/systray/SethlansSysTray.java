@@ -93,6 +93,7 @@ public class SethlansSysTray extends TrayIcon implements Runnable {
         popup = new PopupMenu();
         menuItems();
         tray = SystemTray.getSystemTray();
+        this.setImageAutoSize(true);
         setup();
 
     }
