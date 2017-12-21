@@ -96,6 +96,12 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
         writeProperty(SethlansConfigKeys.BINARY_DIR, setupForm.getBinDirectory());
         writeProperty(SethlansConfigKeys.SCRIPTS_DIR, setupForm.getScriptsDirectory());
         writeProperty(SethlansConfigKeys.TEMP_DIR, setupForm.getTempDirectory());
+        if (setupForm.getSelectedMethod() == null) {
+            writeProperty(SethlansConfigKeys.COMPUTE_METHOD, ComputeType.CPU_GPU.getName());
+        } else {
+            writeProperty(SethlansConfigKeys.COMPUTE_METHOD, setupForm.getSelectedMethod().toString());
+        }
+
         writeProperty("spring.jpa.hibernate.ddl-auto", "validate");
 
         File binDir = new File(setupForm.getBinDirectory());
@@ -159,7 +165,6 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     @Override
     public void saveNodeSettings(SetupForm setupForm) {
         writeProperty(SethlansConfigKeys.CACHE_DIR, setupForm.getWorkingDirectory());
-        writeProperty(SethlansConfigKeys.COMPUTE_METHOD, setupForm.getSelectedMethod().toString());
 
         if (!setupForm.getSelectedGPUId().isEmpty()) {
             StringBuilder result = new StringBuilder();
