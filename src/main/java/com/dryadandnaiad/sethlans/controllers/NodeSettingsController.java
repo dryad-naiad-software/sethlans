@@ -100,7 +100,10 @@ public class NodeSettingsController extends AbstractSethlansController {
     }
 
     private void setComputeMethodItems(Model model, List<GPUDevice> availableGPUs, ComputeForm computeForm) {
-        Integer currentCores = Integer.parseInt(cores);
+        Integer currentCores;
+        LOG.debug(cores);
+        currentCores = Integer.parseInt(cores);
+
         List<Integer> selectedGPUs = new ArrayList<>();
         List<String> selectedModels = new ArrayList<>();
         if (cudaList.size() > 0) {
@@ -187,10 +190,11 @@ public class NodeSettingsController extends AbstractSethlansController {
     }
 
     public void setCudaList() {
-        if (cuda != null) {
-            cudaList = Arrays.asList(cuda.split(","));
-        } else {
+        LOG.debug(cuda + " CUDA");
+        if (cuda.equals("") || cuda.equals("null")) {
             cudaList = new ArrayList<>();
+        } else {
+            cudaList = Arrays.asList(cuda.split(","));
         }
 
     }
