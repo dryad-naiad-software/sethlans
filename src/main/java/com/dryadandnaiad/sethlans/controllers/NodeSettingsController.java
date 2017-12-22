@@ -68,7 +68,7 @@ public class NodeSettingsController extends AbstractSethlansController {
     private String sethlansPort;
 
     @Value("${sethlans.cores}")
-    private int currentCores;
+    private String cores;
 
     @Value("${sethlans.cuda}")
     private String cuda;
@@ -100,6 +100,7 @@ public class NodeSettingsController extends AbstractSethlansController {
     }
 
     private void setComputeMethodItems(Model model, List<GPUDevice> availableGPUs, ComputeForm computeForm) {
+        Integer currentCores = Integer.parseInt(cores);
         List<Integer> selectedGPUs = new ArrayList<>();
         List<String> selectedModels = new ArrayList<>();
         if (cudaList.size() > 0) {
