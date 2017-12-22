@@ -19,11 +19,13 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.commands.ComputeForm;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
@@ -31,17 +33,23 @@ import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.dryadandnaiad.sethlans.utils.SethlansUtils.writeProperty;
 
 /**
  * Created Mario Estrella on 12/6/17.
@@ -66,6 +74,7 @@ public class NodeSettingsController extends AbstractSethlansController {
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private NodeActivationService nodeActivationService;
     private SethlansNode sethlansNode;
+    private Validator computeFormValidator;
 
     @RequestMapping("/settings/servers")
     public String getServersPage(Model model) {
@@ -77,20 +86,51 @@ public class NodeSettingsController extends AbstractSethlansController {
     @RequestMapping(value = "/settings/compute_method", method = RequestMethod.GET)
     public String getComputeMethodPage(Model model) {
         List<GPUDevice> availableGPUs = GPU.listDevices();
-        List<Integer> selectedGPUId = new ArrayList<>();
+        ComputeForm computeForm = new ComputeForm();
+        computeForm.setSelectedGPUIds(new ArrayList<>());
+        computeForm.setSelectedCompute(currentCompute);
+        if (currentCores != 0) {
+            computeForm.setSelectedCores(currentCores);
+        }
         model.addAttribute("settings_option", "compute");
+        model.addAttribute("compute_form", computeForm);
         model.addAttribute("current_compute", currentCompute);
-        model.addAttribute("current_cores", currentCores);
         model.addAttribute("available_gpus", availableGPUs);
-        model.addAttribute("selected_gpus", selectedGPUId);
         return "settings/settings";
     }
 
     @RequestMapping(value = "/settings/compute_method", method = RequestMethod.POST)
-    public String processComputeMethod(Model model) {
-        model.addAttribute("settings_option", "compute");
-        model.addAttribute("current_compute", currentCompute);
-        return "settings/settings";
+    public String processComputeMethod(final @Valid @ModelAttribute("compute_form") ComputeForm computeForm, Model model, BindingResult bindingResult) {
+        computeFormValidator.validate(computeForm, bindingResult);
+        List<GPUDevice> availableGPUs = GPU.listDevices();
+        if (bindingResult.hasErrors()) {
+            LOG.debug("Errors found");
+            LOG.debug(computeForm.toString());
+
+            model.addAttribute("compute_form", computeForm);
+            model.addAttribute("current_compute", currentCompute);
+            model.addAttribute("available_gpus", availableGPUs);
+            model.addAttribute("settings_option", "compute");
+            return "settings/settings";
+        }
+        LOG.debug("Saving compute form to config file " + computeForm.toString());
+        writeProperty(SethlansConfigKeys.COMPUTE_METHOD, computeForm.getSelectedCompute().toString());
+        if (!computeForm.getSelectedCompute().equals(ComputeType.GPU)) {
+            writeProperty(SethlansConfigKeys.CPU_CORES, computeForm.getSelectedCores().toString());
+        }
+        if (!computeForm.getSelectedCompute().equals(ComputeType.CPU)) {
+            if (!computeForm.getSelectedGPUIds().isEmpty()) {
+                StringBuilder result = new StringBuilder();
+                for (Integer id : computeForm.getSelectedGPUIds()) {
+                    if (result.length() != 0) {
+                        result.append(",");
+                    }
+                    result.append(availableGPUs.get(id).getCudaName());
+                }
+                writeProperty(SethlansConfigKeys.CUDA_DEVICE, result.toString());
+            }
+        }
+        return "redirect:/restart";
     }
 
     @RequestMapping("/settings/servers/delete/{id}")
@@ -139,5 +179,11 @@ public class NodeSettingsController extends AbstractSethlansController {
         sethlansNode.setHostname(SethlansUtils.getHostname());
         sethlansNode.setNetworkPort(sethlansPort);
         sethlansNode.setIpAddress(SethlansUtils.getIP());
+    }
+
+    @Autowired
+    @Qualifier("computeFormValidator")
+    public void setComputeFormValidator(Validator computeFormValidator) {
+        this.computeFormValidator = computeFormValidator;
     }
 }

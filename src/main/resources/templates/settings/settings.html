@@ -254,20 +254,9 @@
             <tbody>
             <tr>
                 <td>
-                    <a id="settings_compute" style="color:black" class="fa fa-arrows-h" href="/settings/compute_method">&nbsp;&nbsp;
-                        <span class="sidebarfont">Change Compute Method</span></a>
-                </td>
-            </tr>
-            <tr th:if="${computetype == 'CPU' || computetype == 'CPU & GPU'}">
-                <td>
-                    <a id="settings_cpu" style="color:black" class="fa fa-microchip" href="#">&nbsp;&nbsp;
-                        <span class="sidebarfont">CPU Settings</span></a>
-                </td>
-            </tr>
-            <tr>
-                <td th:if="${computetype == 'GPU' || computetype == 'CPU & GPU'}">
-                    <a id="settings_gpu" style="color:black" class=" fa fa-image" href="#">&nbsp;&nbsp;
-                        <span class="sidebarfont">GPU Settings</span></a>
+                    <a id="settings_compute" style="color:black" class="fa fa-microchip"
+                       href="/settings/compute_method">&nbsp;&nbsp;
+                        <span class="sidebarfont">Compute Settings</span></a>
                 </td>
             </tr>
             </tbody>

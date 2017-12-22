@@ -20,7 +20,6 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
-import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.events.SethlansEvent;
 import com.dryadandnaiad.sethlans.services.database.NotificationDatabaseService;
@@ -52,9 +51,6 @@ abstract public class AbstractSethlansController implements ApplicationListener<
     @Value("${sethlans.mode}")
     private SethlansMode mode;
 
-    @Value("${sethlans.computeMethod}")
-    private ComputeType computeType;
-
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
 
@@ -68,11 +64,6 @@ abstract public class AbstractSethlansController implements ApplicationListener<
     @ModelAttribute("sethlansmode")
     public String getMode() {
         return mode.toString();
-    }
-
-    @ModelAttribute("computetype")
-    public String getComputeType() {
-        return computeType.getName();
     }
 
     @ModelAttribute("username")

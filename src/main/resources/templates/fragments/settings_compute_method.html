@@ -89,14 +89,14 @@
         <main th:fragment="settings_compute_method">
             <script>
                 window.onload = function () {
-                    $("#cores").slider({tooltip_position: 'bottom'});
+                    $("#selectedCores").slider({tooltip_position: 'bottom'});
                     showCUDA()
                 };
 
             </script>
             <script>
                 function showCUDA() {
-                    var method = document.getElementById("selectedMethod");
+                    var method = document.getElementById("selectedCompute");
                     var text = method.options[method.selectedIndex].text;
                     if (text.indexOf('GPU') >= 0) {
                         document.getElementById("cuda").style.display = "block";
@@ -119,10 +119,15 @@
             <!--Settings servers Fragment-->
             <h2>Compute Method</h2>
             <br/>
-            <h4><strong>Current Compute Method</strong></h4>
+            <h5><strong>Current Compute Method</strong></h5>
             <!--/*@thymesVar id="current_compute" type="com.dryadandnaiad.sethlans.enums.ComputeType"*/-->
-            <h4 th:text="${current_compute.getName()}"></h4>
+            <h5 th:text="${current_compute.getName()}">GPU</h5>
+            <h5><strong>Current Number of Cores</strong></h5>
+            <h4>5</h4>
+
+            <!--/*@thymesVar id="compute_form" type="com.dryadandnaiad.sethlans.commands.ComputeForm"*/-->
             <form id="computeForm" name="computeForm" th:action="@{/settings/compute_method}"
+                  th:object="${compute_form}"
                   method="POST">
                 <style>.slider-selection {
                     background: #0C8DCE;
@@ -131,14 +136,14 @@
 
                 <h5 style="margin-top: auto"><strong>Update Compute Method</strong></h5>
                 <div class="form-group">
-                    <label for="selectedMethod">Devices:</label>
-                    <select class="form-control" id="selectedMethod" name="selectedMethod"
-                            th:value="${current_compute}" onchange="showCUDA()">
+                    <label for="selectedCompute">Devices:</label>
+                    <select class="form-control" id="selectedCompute" name="selectedCompute"
+                            th:value="${compute_form.selectedCompute}" onchange="showCUDA()">
                         <!--/*@thymesVar id="available_methods" type="java.util.List"*/-->
                         <!--/*@thymesVar id="method" type="com.dryadandnaiad.sethlans.enums.ComputeType"*/-->
                         <option th:each="method : ${available_methods}"
                                 th:value="${method}" th:text="${method.getName()}"
-                                th:selected="${current_compute.equals(method)}">CPU
+                                th:selected="${compute_form.selectedCompute.equals(method)}">CPU
                         </option>
                         <option th:remove="all">GPU</option>
                         <option th:remove="all">CPU &amp; GPU</option>
@@ -146,12 +151,13 @@
                 </div>
 
                 <div class="form-group" id="cpu">
-                    <label for="cores">Rendering Cores: &emsp; &emsp; </label>
+                    <label for="selectedCores">Rendering Cores: &emsp; &emsp; </label>
                     <!--/*@thymesVar id="current_cores" type="java.lang.Integer"*/-->
                     <!--/*@thymesVar id="total_cores" type="java.lang.Integer"*/-->
-                    <input id="cores" name="cores" th:value="${current_cores}" type="number"
+                    <input id="selectedCores" name="selectedCores" th:value="${compute_form.selectedCores}"
+                           type="number"
                            data-slider-min="1"
-                           th:attr="data-slider-max=${total_cores},data-slider-value=${current_cores}"
+                           th:attr="data-slider-max=${total_cores},data-slider-value=${compute_form.selectedCores}"
                            data-slider-step="1"/>
                 </div>
                 <div class="form-group" id="cuda">
@@ -159,17 +165,28 @@
                     <!--/*@thymesVar id="available_gpus" type="java.util.List"*/-->
                     <!--/*@thymesVar id="gpu" type="com.dryadandnaiad.sethlans.domains.hardware.GPUDevice"*/-->
                     <div th:each="gpu,stat : ${available_gpus}">
-                        <!--/*@thymesVar id="selected_gpus" type="java.util.List"*/-->
                         <input type="checkbox" th:id="${stat.index}" name="selected_gpus"
-                               th:value="${stat.index}" th:field="${selected_gpus}"
+                               th:value="${stat.index}" th:field="${compute_form.selectedGPUIds}"
                                th:errorclass="has-error">
                         <label th:id="${stat.index} + '-label'" th:for="${stat.index}"
                                th:text="${gpu.model}">GPU</label>
+                        <span id="gpu-error-block" class="help-block">
+                            <ul>
+                                <li th:each="err : ${#fields.errors('selectedGPUIds')}"
+                                    th:text="${err}"></li>
+                            </ul>
+                        </span>
                     </div>
                 </div>
-
-
             </form>
+            <button type="button" id="update_method" class="btn btn-default pull-right" onclick="nextClicked()">Update
+            </button>
+            <a id="cancel" href="/settings/" class="btn btn-default pull-left">Cancel</a>
+            <script>
+                function nextClicked() {
+                    document.getElementById("computeForm").submit();
+                }
+            </script>
         </main>
     </div>
 </div>

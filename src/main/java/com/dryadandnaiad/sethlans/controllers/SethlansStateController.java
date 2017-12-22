@@ -36,8 +36,9 @@ public class SethlansStateController extends AbstractSethlansController {
     private SethlansManagerService sethlansManagerService;
 
     @RequestMapping("/restart")
-    public void restart() {
+    public String restartPage() {
         sethlansManagerService.restart();
+        return "restart";
     }
 
     @RequestMapping("/shutdown")
