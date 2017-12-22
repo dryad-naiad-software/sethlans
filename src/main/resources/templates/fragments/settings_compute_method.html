@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright (c) 2017 Dryad and Naiad Software LLC.
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
+<!-- Namespaces -->
+<html lang="en" class="layout-pf layout-pf-fixed" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <!-- CSS Libraries -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/css/patternfly.min.css"
+          th:href="@{/bower/patternfly/dist/css/patternfly.min.css}"
+          rel="stylesheet" media="screen, print">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/css/patternfly-additions.min.css"
+          th:href="@{/bower/patternfly/dist/css/patternfly-additions.min.css}"
+          rel="stylesheet" media="screen, print">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/css/bootstrap-slider.css"
+          th:href="@{/bower/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css}"
+          rel="stylesheet" media="screen, print">
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Fjalla+One');
+
+        body {
+            background-color: #EAEAEA;
+        }
+
+        .vertical-alignment-helper {
+            display: table;
+            height: 100%;
+            width: 100%;
+            pointer-events: none; /* This makes sure that we can still click outside of the modal to close it */
+        }
+
+        .vertical-align-center {
+            /* To center vertically */
+            display: table-cell;
+            vertical-align: middle;
+            pointer-events: none;
+        }
+
+        .modal-content {
+            /* Bootstrap sets the size of the modal in the modal-dialog class, we need to inherit it */
+            width: inherit;
+            height: inherit;
+            /* To center horizontally */
+            margin: 0 auto;
+            pointer-events: all;
+        }
+    </style>
+
+    <!--Favicon -->
+    <link rel="shortcut icon" href="../images/favicon.png" th:href="@{/images/favicon.png}">
+
+    <title>Index</title>
+</head>
+<body>
+
+<style>
+    .sidebarfont {
+        font-family: "Open Sans", Helvetica, Arial, sans-serif;
+        font-size: 18px;
+        color: black;
+    }
+</style>
+<div class="container">
+    <div class="row">
+
+        <main th:fragment="settings_compute_method">
+            <script>
+                window.onload = function () {
+                    $("#cores").slider({tooltip_position: 'bottom'});
+                    showCUDA()
+                };
+
+            </script>
+            <script>
+                function showCUDA() {
+                    var method = document.getElementById("selectedMethod");
+                    var text = method.options[method.selectedIndex].text;
+                    if (text.indexOf('GPU') >= 0) {
+                        document.getElementById("cuda").style.display = "block";
+                    } else {
+                        document.getElementById("cuda").style.display = "none";
+                    }
+                    if (text === "GPU") {
+                        document.getElementById("cpu").style.display = "none";
+                    } else {
+                        document.getElementById("cpu").style.display = "block";
+                    }
+                    if (text === "CPU") {
+                        document.getElementById("cpu").style.display = "block";
+                        document.getElementById("alert").style.display = "none";
+                        document.getElementById("gpu-error-block").style.display = "none";
+                        document.getElementById("cuda").style.display = "none";
+                    }
+                }
+            </script>
+            <!--Settings servers Fragment-->
+            <h2>Compute Method</h2>
+            <br/>
+            <h4><strong>Current Compute Method</strong></h4>
+            <!--/*@thymesVar id="current_compute" type="com.dryadandnaiad.sethlans.enums.ComputeType"*/-->
+            <h4 th:text="${current_compute.getName()}"></h4>
+            <form id="computeForm" name="computeForm" th:action="@{/settings/compute_method}"
+                  method="POST">
+                <style>.slider-selection {
+                    background: #0C8DCE;
+                }</style>
+                <br/>
+
+                <h5 style="margin-top: auto"><strong>Update Compute Method</strong></h5>
+                <div class="form-group">
+                    <label for="selectedMethod">Devices:</label>
+                    <select class="form-control" id="selectedMethod" name="selectedMethod"
+                            th:value="${current_compute}" onchange="showCUDA()">
+                        <!--/*@thymesVar id="available_methods" type="java.util.List"*/-->
+                        <!--/*@thymesVar id="method" type="com.dryadandnaiad.sethlans.enums.ComputeType"*/-->
+                        <option th:each="method : ${available_methods}"
+                                th:value="${method}" th:text="${method.getName()}"
+                                th:selected="${current_compute.equals(method)}">CPU
+                        </option>
+                        <option th:remove="all">GPU</option>
+                        <option th:remove="all">CPU &amp; GPU</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="cpu">
+                    <label for="cores">Rendering Cores: &emsp; &emsp; </label>
+                    <!--/*@thymesVar id="current_cores" type="java.lang.Integer"*/-->
+                    <!--/*@thymesVar id="total_cores" type="java.lang.Integer"*/-->
+                    <input id="cores" name="cores" th:value="${current_cores}" type="number"
+                           data-slider-min="1"
+                           th:attr="data-slider-max=${total_cores},data-slider-value=${current_cores}"
+                           data-slider-step="1"/>
+                </div>
+                <div class="form-group" id="cuda">
+                    <label>CUDA Devices:</label><br/>
+                    <!--/*@thymesVar id="available_gpus" type="java.util.List"*/-->
+                    <!--/*@thymesVar id="gpu" type="com.dryadandnaiad.sethlans.domains.hardware.GPUDevice"*/-->
+                    <div th:each="gpu,stat : ${available_gpus}">
+                        <!--/*@thymesVar id="selected_gpus" type="java.util.List"*/-->
+                        <input type="checkbox" th:id="${stat.index}" name="selected_gpus"
+                               th:value="${stat.index}" th:field="${selected_gpus}"
+                               th:errorclass="has-error">
+                        <label th:id="${stat.index} + '-label'" th:for="${stat.index}"
+                               th:text="${gpu.model}">GPU</label>
+                    </div>
+                </div>
+
+
+            </form>
+        </main>
+    </div>
+</div>
+
+
+<!-- Footer Fragment -->
+<div class="content"></div>
+<footer class="footer" th:replace="fragments/footer :: footer">
+    <style>
+        html {
+            position: relative;
+            min-height: 100%;
+        }
+
+        body {
+            /* Margin bottom by footer height */
+            margin-bottom: 60px;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            /* Set the fixed height of the footer here */
+            height: 60px;
+            background-color: #000;
+        }
+    </style>
+    <div class="container">
+        <p class="text-muted">Place sticky footer content here.</p>
+    </div>
+</footer>
+
+<!-- Javascript Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"
+        th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"
+        th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.22.1/js/patternfly.min.js"
+        th:src="@{/bower/patternfly/dist/js/patternfly.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js"
+        th:src="@{/bower/c3/c3.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.7.3/d3.min.js"
+        th:src="@{/bower/d3/d3.min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.matchHeight/0.7.2/jquery.matchHeight-min.js"
+        th:src="@{/bower/matchHeight/dist/jquery.matchHeight-min.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/bootstrap-slider.min.js"
+        th:src="@{/bower/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js}"></script>
+
+<!-- Local Javascript-->
+<script>
+    // Tooltip Javascript
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+
+</body>
+</html>

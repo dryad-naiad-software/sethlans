@@ -26,6 +26,7 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.enums.SetupProgress;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
@@ -93,14 +94,13 @@ public class SetupForm {
         this.httpsPort = "7443";
         this.mode = SethlansMode.SERVER;
         this.availableGPUs = GPU.listDevices();
-        this.availableMethods = new ArrayList<>();
         this.selectedGPUId = new ArrayList<>();
         this.blenderBinaryOS = new ArrayList<>();
         this.cores = 1;
         this.sethlansRootDirectory = System.getProperty("user.home") + File.separator + ".sethlans";
         this.totalCores = populateCores();
-        populateAvailableMethods();
         populateBlenderOS();
+        this.availableMethods = SethlansUtils.getAvailableMethods();
         this.selectedMethod = ComputeType.CPU;
     }
 
@@ -142,15 +142,6 @@ public class SetupForm {
 
     }
 
-    private void populateAvailableMethods() {
-        if (GPU.listDevices().size() != 0) {
-            availableMethods.add(ComputeType.CPU_GPU);
-            availableMethods.add(ComputeType.GPU);
-            availableMethods.add(ComputeType.CPU);
-        } else {
-            availableMethods.add(ComputeType.CPU);
-        }
-    }
 
     public void setDirectories() {
         this.projectDirectory = this.sethlansRootDirectory + File.separator + "projects" + File.separator;

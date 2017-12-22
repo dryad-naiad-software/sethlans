@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
@@ -37,7 +38,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,7 +58,10 @@ public class NodeSettingsController extends AbstractSethlansController {
     private String sethlansPort;
 
     @Value("${sethlans.cores}")
-    private String currentCores;
+    private int currentCores;
+
+    @Value("${sethlans.computeMethod}")
+    private ComputeType currentCompute;
 
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private NodeActivationService nodeActivationService;
@@ -65,6 +71,25 @@ public class NodeSettingsController extends AbstractSethlansController {
     public String getServersPage(Model model) {
         model.addAttribute("settings_option", "servers");
         model.addAttribute("servers", sethlansServerDatabaseService.listAll());
+        return "settings/settings";
+    }
+
+    @RequestMapping(value = "/settings/compute_method", method = RequestMethod.GET)
+    public String getComputeMethodPage(Model model) {
+        List<GPUDevice> availableGPUs = GPU.listDevices();
+        List<Integer> selectedGPUId = new ArrayList<>();
+        model.addAttribute("settings_option", "compute");
+        model.addAttribute("current_compute", currentCompute);
+        model.addAttribute("current_cores", currentCores);
+        model.addAttribute("available_gpus", availableGPUs);
+        model.addAttribute("selected_gpus", selectedGPUId);
+        return "settings/settings";
+    }
+
+    @RequestMapping(value = "/settings/compute_method", method = RequestMethod.POST)
+    public String processComputeMethod(Model model) {
+        model.addAttribute("settings_option", "compute");
+        model.addAttribute("current_compute", currentCompute);
         return "settings/settings";
     }
 
@@ -93,15 +118,10 @@ public class NodeSettingsController extends AbstractSethlansController {
         return cpu.getCores();
     }
 
+    @ModelAttribute("available_methods")
+    public List<ComputeType> getAvailableMethods() {
+        return SethlansUtils.getAvailableMethods();
 
-    @ModelAttribute("current_cores")
-    public int getCurrentCPUCores() {
-        return Integer.getInteger(currentCores);
-    }
-
-    @ModelAttribute("available_gpus")
-    public List<GPUDevice> getAvailableGPUs() {
-        return GPU.listDevices();
     }
 
     @Autowired

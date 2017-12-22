@@ -19,7 +19,9 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
+import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.google.common.base.Throwables;
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
@@ -42,9 +44,8 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Properties;
+import java.util.*;
+import java.util.List;
 
 /**
  * Created Mario Estrella on 3/9/17.
@@ -140,6 +141,19 @@ public class SethlansUtils {
             return true;
         }
         return false;
+    }
+
+    public static List<ComputeType> getAvailableMethods() {
+        List<ComputeType> availableMethods = new ArrayList<>();
+        if (GPU.listDevices().size() != 0) {
+            availableMethods.add(ComputeType.CPU_GPU);
+            availableMethods.add(ComputeType.GPU);
+            availableMethods.add(ComputeType.CPU);
+        } else {
+            availableMethods.add(ComputeType.CPU);
+        }
+        return availableMethods;
+
     }
 
 

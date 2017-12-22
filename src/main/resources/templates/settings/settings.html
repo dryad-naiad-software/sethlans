@@ -254,7 +254,7 @@
             <tbody>
             <tr>
                 <td>
-                    <a id="settings_compute" style="color:black" class="fa fa-arrows-h" href="#">&nbsp;&nbsp;
+                    <a id="settings_compute" style="color:black" class="fa fa-arrows-h" href="/settings/compute_method">&nbsp;&nbsp;
                         <span class="sidebarfont">Change Compute Method</span></a>
                 </td>
             </tr>
@@ -352,6 +352,11 @@
 
         <div th:if="${settings_option.equals('nodes_update_node_summary')}">
             <main th:replace="fragments/settings_nodes_update_node_summary :: settings_nodes_update_node_summary">
+                <!--Replaced By Fragment-->  </main>
+        </div>
+
+        <div th:if="${settings_option.equals('compute')}">
+            <main th:replace="fragments/settings_compute_method :: settings_compute_method">
                 <!--Replaced By Fragment-->  </main>
         </div>
 
