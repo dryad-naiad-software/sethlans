@@ -119,11 +119,41 @@
             <!--Settings servers Fragment-->
             <h2>Compute Method</h2>
             <br/>
-            <h5><strong>Current Compute Method</strong></h5>
             <!--/*@thymesVar id="current_compute" type="com.dryadandnaiad.sethlans.enums.ComputeType"*/-->
-            <h5 th:text="${current_compute.getName()}">GPU</h5>
-            <h5><strong>Current Number of Cores</strong></h5>
-            <h4>5</h4>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <strong> Current Compute Method</strong>
+                        </td>
+
+                        <td th:text="${current_compute.getName()}">
+                            GPU
+                        </td>
+                    </tr>
+                    <tr th:if="${current_compute != T(com.dryadandnaiad.sethlans.enums.ComputeType).GPU}">
+                        <td>
+                            <strong>Current Number of Cores</strong>
+                        </td>
+                        <!--/*@thymesVar id="current_cores" type="java.lang.Integer"*/-->
+                        <td th:text="${current_cores}">
+                            5
+                        </td>
+                    </tr>
+                    <tr th:if="${current_compute != T(com.dryadandnaiad.sethlans.enums.ComputeType).CPU}">
+                        <td>
+                            <strong>Selected GPU Models</strong>
+                        </td>
+                        <!--/*@thymesVar id="selected_models" type="java.util.List"*/-->
+                        <td><p th:each="model : ${selected_models}" th:text="${model}">Nvidia 1, Nvidia 2</p>
+
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
 
             <!--/*@thymesVar id="compute_form" type="com.dryadandnaiad.sethlans.commands.ComputeForm"*/-->
             <form id="computeForm" name="computeForm" th:action="@{/settings/compute_method}"
@@ -180,6 +210,7 @@
                 </div>
             </form>
             <button type="button" id="update_method" class="btn btn-default pull-right" onclick="nextClicked()">Update
+                and Restart
             </button>
             <a id="cancel" href="/settings/" class="btn btn-default pull-left">Cancel</a>
             <script>

@@ -30,6 +30,7 @@ import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansUtils.writeProperty;
@@ -68,6 +70,11 @@ public class NodeSettingsController extends AbstractSethlansController {
     @Value("${sethlans.cores}")
     private int currentCores;
 
+    @Value("${sethlans.cuda}")
+    private String cuda;
+
+    private List<String> cudaList;
+
     @Value("${sethlans.computeMethod}")
     private ComputeType currentCompute;
 
@@ -85,32 +92,46 @@ public class NodeSettingsController extends AbstractSethlansController {
 
     @RequestMapping(value = "/settings/compute_method", method = RequestMethod.GET)
     public String getComputeMethodPage(Model model) {
+        setCudaList();
         List<GPUDevice> availableGPUs = GPU.listDevices();
         ComputeForm computeForm = new ComputeForm();
-        computeForm.setSelectedGPUIds(new ArrayList<>());
+        setComputeMethodItems(model, availableGPUs, computeForm);
+        return "settings/settings";
+    }
+
+    private void setComputeMethodItems(Model model, List<GPUDevice> availableGPUs, ComputeForm computeForm) {
+        List<Integer> selectedGPUs = new ArrayList<>();
+        List<String> selectedModels = new ArrayList<>();
+        if (cudaList.size() > 0) {
+            for (String cuda : cudaList) {
+                Integer idNumber = Integer.parseInt(StringUtils.substringAfter(cuda, "_"));
+                selectedGPUs.add(idNumber);
+                selectedModels.add(availableGPUs.get(idNumber).getModel());
+            }
+        }
+
+        computeForm.setSelectedGPUIds(selectedGPUs);
         computeForm.setSelectedCompute(currentCompute);
         if (currentCores != 0) {
             computeForm.setSelectedCores(currentCores);
         }
+        LOG.debug(computeForm.toString());
         model.addAttribute("settings_option", "compute");
         model.addAttribute("compute_form", computeForm);
+        model.addAttribute("current_cores", currentCores);
         model.addAttribute("current_compute", currentCompute);
         model.addAttribute("available_gpus", availableGPUs);
-        return "settings/settings";
+        model.addAttribute("selected_models", selectedModels);
     }
 
     @RequestMapping(value = "/settings/compute_method", method = RequestMethod.POST)
     public String processComputeMethod(final @Valid @ModelAttribute("compute_form") ComputeForm computeForm, Model model, BindingResult bindingResult) {
+        setCudaList();
         computeFormValidator.validate(computeForm, bindingResult);
         List<GPUDevice> availableGPUs = GPU.listDevices();
         if (bindingResult.hasErrors()) {
             LOG.debug("Errors found");
-            LOG.debug(computeForm.toString());
-
-            model.addAttribute("compute_form", computeForm);
-            model.addAttribute("current_compute", currentCompute);
-            model.addAttribute("available_gpus", availableGPUs);
-            model.addAttribute("settings_option", "compute");
+            setComputeMethodItems(model, availableGPUs, computeForm);
             return "settings/settings";
         }
         LOG.debug("Saving compute form to config file " + computeForm.toString());
@@ -161,6 +182,15 @@ public class NodeSettingsController extends AbstractSethlansController {
     @ModelAttribute("available_methods")
     public List<ComputeType> getAvailableMethods() {
         return SethlansUtils.getAvailableMethods();
+
+    }
+
+    public void setCudaList() {
+        if (cuda != null) {
+            cudaList = Arrays.asList(cuda.split(","));
+        } else {
+            cudaList = new ArrayList<>();
+        }
 
     }
 
