@@ -138,10 +138,16 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blender_binary/";
             String params = "?connection_uuid=" + benchmarkTask.getConnection_uuid() + "&version=" + benchmarkTask.getBlenderVersion() + "&os=" + SethlansUtils.getOS();
             String filename = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, benchmarkDir.toString());
-            SethlansUtils.archiveExtract(filename, benchmarkDir);
-            SethlansUtils.renameBlender(benchmarkDir, primaryBlenderVersion);
-            benchmarkTask.setBenchmarkDir(benchmarkDir.toString());
-            benchmarkTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(benchmarkDir));
+            if (SethlansUtils.archiveExtract(filename, benchmarkDir)) {
+                if (SethlansUtils.renameBlender(benchmarkDir, primaryBlenderVersion)) {
+                    LOG.debug("Blender executable extracted and ready");
+                    benchmarkTask.setBenchmarkDir(benchmarkDir.toString());
+                    benchmarkTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(benchmarkDir));
+                } else {
+                    return false;
+                }
+            }
+
 
             // Download benchmark from server
             connectionURL = "https://" + serverIP + ":" + serverPort + "/api/benchmark_files/" + benchmarkTask.getBenchmarkURL();

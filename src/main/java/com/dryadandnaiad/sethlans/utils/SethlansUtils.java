@@ -324,26 +324,30 @@ public class SethlansUtils {
         return executable;
     }
 
-    public static void renameBlender(File tempDir, String blenderVersion) {
+    public static boolean renameBlender(File tempDir, String blenderVersion) {
         File[] files = tempDir.listFiles();
         if (files != null) {
             for (File file : files) {
                 if (file.isDirectory() && file.toString().contains(blenderVersion)) {
                     LOG.debug(file.toString());
                     LOG.debug("Directory found, renaming");
-                    file.renameTo(new File(tempDir + File.separator + "blender"));
+                    if (file.renameTo(new File(tempDir + File.separator + "blender"))) {
+                        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
+                            try {
+                                ProcessBuilder pb = new ProcessBuilder("chmod", "-R", "+x", tempDir.toString());
+                                pb.start();
+                                LOG.debug("Setting blender files as executable.");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    return true;
                 }
             }
         }
-        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
-            try {
-                ProcessBuilder pb = new ProcessBuilder("chmod", "-R", "+x", tempDir.toString());
-                pb.start();
-                LOG.debug("Setting blender files as executable.");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+
+        return false;
     }
 
     public static String getVersion() {
