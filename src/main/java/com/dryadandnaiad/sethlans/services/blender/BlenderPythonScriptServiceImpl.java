@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.PythonImports;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -45,8 +46,13 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             // Write Imports
             scriptWriter.write(PythonImports.BPY.toString() + "\n\n");
 
+            if (SethlansUtils.getOS().contains("Windows")) {
+                scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "r\"" + renderLocation + "\"" + "\n");
+            } else {
+                scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "\"" + renderLocation + "\"" + "\n");
+            }
             //Temp Directory
-            scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "\"" + renderLocation + "\"" + "\n");
+
 
             // Set Device
             scriptWriter.write("bpy.context.scene.cycles.device = " + "\"" + computeType + "\"" + "\n");
