@@ -65,6 +65,7 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
                 + "&port=" + sethlansServer.getNetworkPort() + "&connection_uuid=" + sethlansNode.getConnection_uuid();
         if (sethlansAPIConnectionService.sendToRemotePOST(activateURL, params)) {
             addBlenderBinary(sethlansNode.getSethlansNodeOS().toString());
+            LOG.debug("Node activation sent, downloading blender zip files");
             blenderDownloadService.downloadRequestedBlenderFilesAsync();
         }
 
@@ -101,13 +102,14 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
                 List<BlenderBinary> blenderBinaries = blenderBinaryDatabaseService.listAll();
                 for (BlenderBinary blenderBinary : blenderBinaries) {
                     if (!blenderBinary.isDownloaded()) {
+                        LOG.debug("Blender binary download is in progress, holding off on sending benchmark request");
                         try {
                             pendingDownloads = true;
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        LOG.debug("Blender binary is progress, holding off on sending benchmark request");
+
                     }
                 }
 
@@ -118,7 +120,7 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            
+
         }
     }
 
@@ -129,10 +131,13 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
     }
 
     private void addBlenderBinary(String serverOS) {
+        LOG.debug("Checking to see if blender binaries need to be downloaded for new node.");
+        // TODO Some kind of logic error here is causing multiple downloads.  To address tomorrow
         List<BlenderBinary> blenderBinaries = blenderBinaryDatabaseService.listAll();
         Set<String> versions = new HashSet<>();
         for (BlenderBinary blenderBinary : blenderBinaries) {
             versions.add(blenderBinary.getBlenderVersion());
+            LOG.debug("Adding blender binary version " + blenderBinary.getBlenderVersion() + " to set for verification");
             for (String version : versions) {
                 if (blenderBinary.getBlenderBinaryOS().equals(serverOS) && blenderBinary.getBlenderVersion().equals(version)) {
                     LOG.debug("Blender Binaries already present.");
