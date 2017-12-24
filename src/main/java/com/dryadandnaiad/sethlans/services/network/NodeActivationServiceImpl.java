@@ -34,9 +34,7 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created Mario Estrella on 12/5/17.
@@ -129,29 +127,20 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
 
     private void addBlenderBinary(String serverOS) {
         LOG.debug("Checking to see if blender binaries need to be downloaded for new node.");
-        // TODO Some kind of logic error here is causing multiple downloads.  To address tomorrow
         List<BlenderBinary> blenderBinaries = blenderBinaryDatabaseService.listAll();
-        Set<String> versions = new HashSet<>();
-        Set<BlenderBinary> blenderBinarySet = new HashSet<>();
         for (BlenderBinary blenderBinary : blenderBinaries) {
-            versions.add(blenderBinary.getBlenderVersion());
-            LOG.debug("Adding blender binary version " + blenderBinary.getBlenderVersion() + " to set for verification");
-            for (String version : versions) {
-                if (blenderBinary.getBlenderBinaryOS().equals(serverOS) && blenderBinary.getBlenderVersion().equals(version)) {
-                    LOG.debug("Blender Binaries already present.");
-                } else {
-                    BlenderBinary newBlenderBinary = new BlenderBinary();
-                    newBlenderBinary.setDownloaded(false);
-                    newBlenderBinary.setBlenderBinaryOS(serverOS);
-                    newBlenderBinary.setBlenderVersion(version);
-                    blenderBinarySet.add(newBlenderBinary);
-                }
+            if (blenderBinary.getBlenderBinaryOS().equals(serverOS)) {
+                LOG.debug("Blender " + blenderBinary.getBlenderVersion() + " is present for " + serverOS);
+            } else {
+                LOG.debug("Adding Blender " + blenderBinary.getBlenderVersion() + " " + serverOS + " to database.");
+                BlenderBinary newBlenderBinary = new BlenderBinary();
+                newBlenderBinary.setDownloaded(false);
+                newBlenderBinary.setBlenderBinaryOS(serverOS);
+                newBlenderBinary.setBlenderVersion(blenderBinary.getBlenderVersion());
+                blenderBinaryDatabaseService.saveOrUpdate(newBlenderBinary);
             }
         }
-        for (BlenderBinary blenderBinary : blenderBinarySet) {
-            LOG.debug("Adding " + blenderBinary.toString() + " to database.");
-            blenderBinaryDatabaseService.saveOrUpdate(blenderBinary);
-        }
+
 
     }
 
