@@ -24,8 +24,8 @@ import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.events.SethlansEvent;
 import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
-import com.dryadandnaiad.sethlans.services.blender.BlenderDownloadService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
+import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,6 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
     private ApplicationEventPublisher applicationEventPublisher;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
-    private BlenderDownloadService blenderDownloadService;
     private BlenderBenchmarkService blenderBenchmarkService;
 
 
@@ -65,8 +64,6 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
                 + "&port=" + sethlansServer.getNetworkPort() + "&connection_uuid=" + sethlansNode.getConnection_uuid();
         if (sethlansAPIConnectionService.sendToRemotePOST(activateURL, params)) {
             addBlenderBinary(sethlansNode.getSethlansNodeOS().toString());
-            LOG.debug("Node activation sent, downloading blender zip files");
-            blenderDownloadService.downloadRequestedBlenderFilesAsync();
         }
 
 
@@ -107,7 +104,7 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
                             pendingDownloads = true;
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            LOG.error(Throwables.getStackTraceAsString(e));
                         }
 
                     }
@@ -118,7 +115,7 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
                 Thread.sleep(5000);
                 blenderBenchmarkService.sendBenchmarktoNode(sethlansNode);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                LOG.error(Throwables.getStackTraceAsString(e));
             }
 
         }
@@ -162,11 +159,6 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
     @Autowired
     public void setBlenderBinaryDatabaseService(BlenderBinaryDatabaseService blenderBinaryDatabaseService) {
         this.blenderBinaryDatabaseService = blenderBinaryDatabaseService;
-    }
-
-    @Autowired
-    public void setBlenderDownloadService(BlenderDownloadService blenderDownloadService) {
-        this.blenderDownloadService = blenderDownloadService;
     }
 
     @Autowired

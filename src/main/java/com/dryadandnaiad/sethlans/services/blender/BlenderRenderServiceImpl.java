@@ -131,7 +131,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             LOG.error(Throwables.getStackTraceAsString(e));
 
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOG.error(Throwables.getStackTraceAsString(e));
         }
         return 0;
     }

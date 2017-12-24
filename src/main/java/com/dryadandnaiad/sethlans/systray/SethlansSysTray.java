@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.systray;
 
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +49,7 @@ public class SethlansSysTray extends TrayIcon implements Runnable {
         try {
             tray.add(this);
         } catch (AWTException e) {
-            e.printStackTrace();
+            LOG.error(Throwables.getStackTraceAsString(e));
         }
     }
 

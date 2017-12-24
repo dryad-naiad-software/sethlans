@@ -27,7 +27,7 @@ package com.dryadandnaiad.sethlans.services.blender;
  */
 public interface BlenderDownloadService {
 
-    void downloadRequestedBlenderFilesAsync();
+    void downloadRequestedBlenderFilesAsync() throws InterruptedException;
 
 
 }

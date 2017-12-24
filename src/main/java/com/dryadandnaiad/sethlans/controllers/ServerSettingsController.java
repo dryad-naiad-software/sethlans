@@ -42,7 +42,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created Mario Estrella on 9/20/17.
@@ -159,6 +161,7 @@ public class ServerSettingsController extends AbstractSethlansController {
             }
         }
         if (nodeAddForm.getProgress() == NodeAddProgress.NODE_ADD) {
+            Set<SethlansNode> sethlansNodes = new HashSet<>();
             List<SethlansNode> sethlansNodesDatabase = sethlansNodeDatabaseService.listAll();
             if (!sethlansNodesDatabase.isEmpty()) {
                 for (SethlansNode node : sethlansNodesDatabase) {
@@ -168,14 +171,18 @@ public class ServerSettingsController extends AbstractSethlansController {
                             node.getSethlansNodeOS().equals(sethlansNode.getSethlansNodeOS())) {
                         LOG.debug(node.getHostname() + " is already in the database.");
                     } else {
-                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                        LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
-                        if (sethlansNode.isPendingActivation()) {
-                            setSethlansServer();
-                            nodeActivationService.sendActivationRequest(sethlansNode, sethlansServer);
-                        }
+                        sethlansNodes.add(sethlansNode);
                     }
                 }
+                for (SethlansNode node : sethlansNodes) {
+                    sethlansNodeDatabaseService.saveOrUpdate(node);
+                    LOG.debug("Added: " + node.getHostname() + " to database.");
+                    if (node.isPendingActivation()) {
+                        setSethlansServer();
+                        nodeActivationService.sendActivationRequest(node, sethlansServer);
+                    }
+                }
+
             } else {
                 sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                 LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");

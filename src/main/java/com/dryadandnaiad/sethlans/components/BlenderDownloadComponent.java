@@ -20,6 +20,9 @@
 package com.dryadandnaiad.sethlans.components;
 
 import com.dryadandnaiad.sethlans.services.blender.BlenderDownloadService;
+import com.google.common.base.Throwables;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -37,6 +40,7 @@ import javax.annotation.PostConstruct;
 public class BlenderDownloadComponent {
 
     private BlenderDownloadService blenderDownloadService;
+    private static final Logger LOG = LoggerFactory.getLogger(BlenderDownloadComponent.class);
 
     @Autowired
     public void setBlenderDownloadService(BlenderDownloadService blenderDownloadService) {
@@ -45,6 +49,10 @@ public class BlenderDownloadComponent {
 
     @PostConstruct
     public void startBlenderDownload() {
-        blenderDownloadService.downloadRequestedBlenderFilesAsync();
+        try {
+            blenderDownloadService.downloadRequestedBlenderFilesAsync();
+        } catch (InterruptedException e) {
+            LOG.error(Throwables.getStackTraceAsString(e));
+        }
     }
 }

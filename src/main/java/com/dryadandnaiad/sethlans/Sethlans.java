@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans;
 
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.utils.SethlansState;
+import com.google.common.base.Throwables;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -113,7 +114,7 @@ public class Sethlans {
                     sethlansState.sethlansActive = SpringApplication.run(Sethlans.class, springArgs).isActive();
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                LOG.error(Throwables.getStackTraceAsString(e));
             }
         }
     }

@@ -81,7 +81,7 @@ public class SethlansUtils {
                 sethlansProperties.load(fileIn);
                 comment = updateTimeStamp();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.error(Throwables.getStackTraceAsString(e));
             }
         }
 
@@ -94,10 +94,10 @@ public class SethlansUtils {
             return true;
         } catch (FileNotFoundException e) {
             LOG.error(e.getMessage());
-            e.printStackTrace();
+            LOG.error(Throwables.getStackTraceAsString(e));
         } catch (IOException e) {
             LOG.error(e.getMessage());
-            e.printStackTrace();
+            LOG.error(Throwables.getStackTraceAsString(e));
         }
         return false;
     }
@@ -109,7 +109,7 @@ public class SethlansUtils {
                 sethlansProperties.load(fileIn);
                 comment = updateTimeStamp();
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.error(Throwables.getStackTraceAsString(e));
             }
         }
         try {
@@ -121,10 +121,10 @@ public class SethlansUtils {
             return true;
         } catch (FileNotFoundException e) {
             LOG.error(e.getMessage());
-            e.printStackTrace();
+            LOG.error(Throwables.getStackTraceAsString(e));
         } catch (IOException e) {
             LOG.error(e.getMessage());
-            e.printStackTrace();
+            LOG.error(Throwables.getStackTraceAsString(e));
         }
         return false;
     }
@@ -209,7 +209,7 @@ public class SethlansUtils {
                 desktop.browse(url.toURI());
             } catch (Exception e) {
                 LOG.error("Unable to Open Web page" + e.getMessage());
-                e.printStackTrace();
+                LOG.error(Throwables.getStackTraceAsString(e));
             }
         }
     }
@@ -219,7 +219,7 @@ public class SethlansUtils {
         try {
             hostname = InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            LOG.error(Throwables.getStackTraceAsString(e));
         }
         int iend = hostname.indexOf(".");
         if (iend != -1) {
@@ -241,9 +241,9 @@ public class SethlansUtils {
                 ip = InetAddress.getLocalHost().getHostAddress();
             }
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            LOG.error(Throwables.getStackTraceAsString(e));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error(Throwables.getStackTraceAsString(e));
         }
         return ip;
     }
@@ -260,7 +260,7 @@ public class SethlansUtils {
             }
             firsttime = Boolean.parseBoolean(properties.getProperty("sethlans.firsttime"));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error(Throwables.getStackTraceAsString(e));
         }
         return firsttime;
     }
@@ -277,7 +277,7 @@ public class SethlansUtils {
             }
             port = properties.getProperty("server.port");
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error(Throwables.getStackTraceAsString(e));
         }
         return port;
     }
@@ -338,7 +338,7 @@ public class SethlansUtils {
                                 pb.start();
                                 LOG.debug("Setting blender files as executable.");
                             } catch (IOException e) {
-                                e.printStackTrace();
+                                LOG.error(Throwables.getStackTraceAsString(e));
                             }
                         }
                     }
@@ -359,7 +359,7 @@ public class SethlansUtils {
             String buildNumber = String.format("%04d", Integer.parseInt(properties.getProperty("git.closest.tag.commit.count")));
             version = properties.getProperty("git.build.version") + "." + buildNumber;
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error(Throwables.getStackTraceAsString(e));
         }
 
         if (version == null) {

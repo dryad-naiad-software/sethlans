@@ -61,7 +61,7 @@ public class PythonSetupServiceImpl implements PythonSetupService {
                     ProcessBuilder pb = new ProcessBuilder("chmod", "-R", "+x", binaryDir + "python" + File.separator + "bin");
                     pb.start();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    LOG.error(Throwables.getStackTraceAsString(e));
                     return false;
                 }
             }

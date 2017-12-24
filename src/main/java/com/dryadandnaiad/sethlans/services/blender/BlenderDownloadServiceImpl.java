@@ -43,7 +43,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -70,107 +69,130 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
 
     @Override
     @Async
-    public void downloadRequestedBlenderFilesAsync() {
-        if (doDownload()) {
-            LOG.debug("All downloads complete");
-        } else {
-            LOG.debug("Blender Download Service failed");
+    public void downloadRequestedBlenderFilesAsync() throws InterruptedException {
+        while (true) {
+            if (doDownload()) {
+                LOG.debug("All downloads complete");
+            } else {
+                LOG.debug("Blender Download Service failed");
+            }
+            Thread.sleep(180000);
         }
     }
 
     private boolean doDownload() {
-        blenderFileEntities = blenderBinaryDatabaseService.listAll();
-        blenderBinaries = BlenderUtils.listBinaries();
-        List<BlenderBinary> blenderDownloadList = prepareDownload();
-        LOG.debug(blenderDownloadList.toString());
+        prepareDownload();
+        List<BlenderBinary> blenderDownloadList = blenderBinaryDatabaseService.listAll();
         String blenderVersion;
 
         for (BlenderBinary blenderBinary : blenderDownloadList) {
-            boolean retry = true; // While loop keeps going until download is successful otherwise try again with different mirrors.
-            blenderVersion = blenderBinary.getBlenderVersion();
-            File saveLocation = new File(downloadLocation + File.separator + "binaries" +
-                    File.separator + blenderVersion + File.separator);
-            saveLocation.mkdirs();
-            URL url;
-            HttpURLConnection connection = null;
-            String filename;
+            if (!blenderBinary.isDownloaded()) {
+                blenderVersion = blenderBinary.getBlenderVersion();
+                File saveLocation = new File(downloadLocation + File.separator + "binaries" +
+                        File.separator + blenderVersion + File.separator);
+                saveLocation.mkdirs();
+                URL url;
+                HttpURLConnection connection = null;
+                String filename;
+                File downloadPlaceholder = new File(saveLocation + File.separator + blenderVersion + blenderBinary.getBlenderBinaryOS() + ".pending");
 
-            while (retry) {
-                try {
-                    url = new URL(blenderBinary.getDownloadMirrors().get(downloadMirror));
-                    LOG.debug("Attempting to establish a connection to " + url.toString());
-                    connection = (HttpURLConnection) url.openConnection();
-                    InputStream stream = connection.getInputStream();
+                while (true) {
+                    try {
+                        if (downloadPlaceholder.exists()) {
+                            // This will prevent a download if another async process is downloading the same file.
+                            break;
+                        }
 
-                    if (blenderBinary.getBlenderFile().contains("tar")) {
-                        filename = blenderVersion + "-" +
-                                blenderBinary.getBlenderBinaryOS().toLowerCase() + ".tar." +
-                                com.google.common.io.Files.getFileExtension(blenderBinary.getBlenderFile());
-                        LOG.debug(filename);
-                    } else {
-                        filename = blenderVersion + "-" + blenderBinary.getBlenderBinaryOS().toLowerCase() + "." +
-                                com.google.common.io.Files.getFileExtension(blenderBinary.getBlenderFile());
-                    }
+                        url = new URL(blenderBinary.getDownloadMirrors().get(downloadMirror));
+                        LOG.debug("Attempting to establish a connection to " + url.toString());
+                        connection = (HttpURLConnection) url.openConnection();
+                        InputStream stream = connection.getInputStream();
+                        if (connection.getResponseCode() == 200) {
+                            LOG.debug("Creating placeholder file to let service know an active download is in place.");
+                            downloadPlaceholder.createNewFile();
+                        }
 
-                    File toDownload = new File(saveLocation + File.separator + filename);
-                    LOG.info("Downloading " + filename + "...");
-                    String blenderFileInfo = "Downloading Blender " + blenderVersion + " for " + blenderBinary.getBlenderBinaryOS();
-                    this.applicationEventPublisher.publishEvent(new SethlansEvent(this, blenderVersion,
-                            blenderFileInfo, true));  // Sets the download notification
+                        if (blenderBinary.getBlenderFile().contains("tar")) {
+                            filename = blenderVersion + "-" +
+                                    blenderBinary.getBlenderBinaryOS().toLowerCase() + ".tar." +
+                                    com.google.common.io.Files.getFileExtension(blenderBinary.getBlenderFile());
+                            LOG.debug("Renamed Filename " + filename);
+                        } else {
+                            filename = blenderVersion + "-" + blenderBinary.getBlenderBinaryOS().toLowerCase() + "." +
+                                    com.google.common.io.Files.getFileExtension(blenderBinary.getBlenderFile());
+                            LOG.debug("Renamed Filename " + filename);
+                        }
 
-                    // Checks to see if temp file is still present.
-                    if (toDownload.exists()) {
-                        LOG.debug("Previous download did not complete successfully, deleting and re-downloading.");
-                        if (toDownload.delete()) {
-                            LOG.debug("Re-Downloading " + filename + "...");
+                        File toDownload = new File(saveLocation + File.separator + filename);
+
+
+                        // Send notification of pending download.
+                        LOG.info("Downloading " + filename + "...");
+                        String blenderFileInfo = "Downloading Blender " + blenderVersion + " for " + blenderBinary.getBlenderBinaryOS();
+                        this.applicationEventPublisher.publishEvent(new SethlansEvent(this, blenderVersion,
+                                blenderFileInfo, true));  // Sets the download notification
+
+                        // Checks to see if previous file is there.  In case of a failure user will need to delete file with extension = pending.
+                        if (toDownload.exists()) {
+                            LOG.debug("Previous download did not complete successfully, deleting and re-downloading.");
+                            if (toDownload.delete()) {
+                                LOG.debug("Re-Downloading " + filename + "...");
+                                Files.copy(stream, Paths.get(toDownload.toString()));
+                            }
+                        } else {
+                            LOG.debug("Saving file to " + toDownload.toString());
                             Files.copy(stream, Paths.get(toDownload.toString()));
                         }
-                    } else {
-                        Files.copy(stream, Paths.get(toDownload.toString()));
-                    }
 
-                    // Check MD5 sum
-                    if (SethlansUtils.fileCheckMD5(toDownload, blenderBinary.getBlenderFileMd5())) {
-                        blenderBinary.setBlenderFile(toDownload.toString());
-                        LOG.info(filename + " downloaded successfully.");
-                        blenderBinary.setDownloaded(true);
-                        blenderBinaryDatabaseService.saveOrUpdate(blenderBinary);
-                    } else {
-                        LOG.error("MD5 sums didn't match, removing file " + filename);
-                        toDownload.delete();
-                        throw new IOException();
-                    }
-                    retry = false;
+                        // Check MD5 sum
+                        LOG.debug("Starting MD5sum check");
+                        if (SethlansUtils.fileCheckMD5(toDownload, blenderBinary.getBlenderFileMd5())) {
+                            blenderBinary.setBlenderFile(toDownload.toString());
+                            LOG.info(filename + " downloaded successfully.");
+                            blenderBinary.setDownloaded(true);
+                            downloadPlaceholder.delete();
+                            LOG.debug(blenderBinary.toString());
+                            blenderBinaryDatabaseService.saveOrUpdate(blenderBinary);
+                            break;
+                        } else {
+                            LOG.error("MD5 sums didn't match, removing file " + filename);
+                            toDownload.delete();
+                            downloadPlaceholder.delete();
+                            throw new IOException();
+                        }
 
-                } catch (MalformedURLException e) {
-                    LOG.error("Invalid URL: " + e.getMessage());
-                    return false;
-                } catch (IOException e) {
-                    LOG.error("IO Exception: " + e.getMessage());
-                    if (e.getMessage().contains("Connection timed out")) {
-                        LOG.error("Connection time out " + blenderBinary.getDownloadMirrors().get(downloadMirror));
-                        downloadMirror++;
-                        retry = true;
-                    } else {
-                        LOG.error(Throwables.getStackTraceAsString(e));
+                    } catch (MalformedURLException e) {
+                        LOG.error("Invalid URL: " + e.getMessage());
                         return false;
+                    } catch (IOException e) {
+                        LOG.error("IO Exception: " + e.getMessage());
+                        if (e.getMessage().contains("Connection timed out")) {
+                            LOG.error("Connection time out " + blenderBinary.getDownloadMirrors().get(downloadMirror));
+                            downloadMirror++;
+                        } else {
+                            LOG.error(Throwables.getStackTraceAsString(e));
+                            return false;
+                        }
+                    } finally {
+                        LOG.debug("Ending connection, removing notification.");
+                        if (connection != null) {
+                            connection.disconnect();
+                            this.applicationEventPublisher.publishEvent(new SethlansEvent
+                                    (this, blenderVersion, false)); // Removes the download notification
+                        }
                     }
-                } finally {
-                    if (connection != null) {
-                        connection.disconnect();
-                        this.applicationEventPublisher.publishEvent(new SethlansEvent
-                                (this, blenderVersion, false)); // Removes the download notification
-                    }
-                }
 
+                }
             }
         }
+
         return true;
     }
 
-    private List<BlenderBinary> prepareDownload() {
+    private void prepareDownload() {
+        blenderBinaries = BlenderUtils.listBinaries();
+        blenderFileEntities = blenderBinaryDatabaseService.listAll();
         LOG.debug("Preparing Blender Binary Download List");
-        List<BlenderBinary> list = new ArrayList<>();
         String filename;
         for (BlenderBinary blenderZipEntity : blenderFileEntities) {
             if (blenderZipEntity.isDownloaded()) {
@@ -178,10 +200,9 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                 if (!blendFile.exists()) {
                     LOG.debug(blenderZipEntity.getBlenderFile() + " is missing, re-downloading file.");
                     blenderZipEntity.setDownloaded(false);
+                    blenderBinaryDatabaseService.saveOrUpdate(blenderZipEntity);
                 }
-
-            }
-            if (!blenderZipEntity.isDownloaded()) {
+            } else if (!blenderZipEntity.isDownloaded()) {
                 for (BlenderZip blenderBinary : blenderBinaries) {
                     if (blenderBinary.getBlenderVersion().equals(blenderZipEntity.getBlenderVersion())) {
                         switch (blenderZipEntity.getBlenderBinaryOS().toLowerCase()) {
@@ -190,43 +211,44 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                                 blenderZipEntity.setDownloadMirrors(blenderBinary.getWindows32());
                                 blenderZipEntity.setBlenderFile(filename.substring(filename.lastIndexOf("/") + 1));
                                 blenderZipEntity.setBlenderFileMd5(blenderBinary.getMd5Windows32());
+                                blenderBinaryDatabaseService.saveOrUpdate(blenderZipEntity);
                                 break;
                             case "windows64":
                                 filename = blenderBinary.getWindows64().get(0);
                                 blenderZipEntity.setDownloadMirrors(blenderBinary.getWindows64());
                                 blenderZipEntity.setBlenderFile(filename.substring(filename.lastIndexOf("/") + 1));
                                 blenderZipEntity.setBlenderFileMd5(blenderBinary.getMd5Windows64());
+                                blenderBinaryDatabaseService.saveOrUpdate(blenderZipEntity);
                                 break;
                             case "macos":
                                 filename = blenderBinary.getMacOS().get(0);
                                 blenderZipEntity.setDownloadMirrors(blenderBinary.getMacOS());
                                 blenderZipEntity.setBlenderFile(filename.substring(filename.lastIndexOf("/") + 1));
                                 blenderZipEntity.setBlenderFileMd5(blenderBinary.getMd5MacOS());
+                                blenderBinaryDatabaseService.saveOrUpdate(blenderZipEntity);
                                 break;
                             case "linux64":
                                 filename = blenderBinary.getLinux64().get(0);
                                 blenderZipEntity.setDownloadMirrors(blenderBinary.getLinux64());
                                 blenderZipEntity.setBlenderFile(filename.substring(filename.lastIndexOf("/") + 1));
                                 blenderZipEntity.setBlenderFileMd5(blenderBinary.getMd5Linux64());
+                                blenderBinaryDatabaseService.saveOrUpdate(blenderZipEntity);
                                 break;
                             case "linux32":
                                 filename = blenderBinary.getLinux32().get(0);
                                 blenderZipEntity.setDownloadMirrors(blenderBinary.getLinux32());
                                 blenderZipEntity.setBlenderFile(filename.substring(filename.lastIndexOf("/") + 1));
                                 blenderZipEntity.setBlenderFileMd5(blenderBinary.getMd5Linux32());
+                                blenderBinaryDatabaseService.saveOrUpdate(blenderZipEntity);
                                 break;
                             default:
                                 LOG.error("Invalid blender binary operating system " + blenderZipEntity.getBlenderBinaryOS());
                         }
                     }
                 }
-                list.add(blenderZipEntity);
             }
         }
-        if (list.size() == 0) {
-            LOG.debug("Nothing to download");
-        }
-        return list;
+        blenderFileEntities = blenderBinaryDatabaseService.listAll();
     }
 
 

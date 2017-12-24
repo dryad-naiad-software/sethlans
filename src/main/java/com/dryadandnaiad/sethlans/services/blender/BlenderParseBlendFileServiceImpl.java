@@ -108,7 +108,7 @@ public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileSe
             LOG.error(Throwables.getStackTraceAsString(e));
 
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOG.error(Throwables.getStackTraceAsString(e));
         }
         return null;
     }

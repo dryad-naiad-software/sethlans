@@ -22,6 +22,9 @@ package com.dryadandnaiad.sethlans.services.blender;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.PythonImports;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.google.common.base.Throwables;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -35,6 +38,7 @@ import java.io.FileWriter;
  */
 @Service
 public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptService {
+    private static final Logger LOG = LoggerFactory.getLogger(BlenderPythonScriptServiceImpl.class);
 
 
     @Override
@@ -100,7 +104,7 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.close();
             return script.toString();
         } catch (java.io.IOException e) {
-            e.printStackTrace();
+            LOG.error(Throwables.getStackTraceAsString(e));
         }
         return null;
     }

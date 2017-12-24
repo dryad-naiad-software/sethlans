@@ -27,6 +27,7 @@ import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabase
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -95,7 +96,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                 FileUtils.deleteDirectory(new File(benchmarkTask.getBenchmarkDir()));
                 remainingBenchmarks--;
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.error(Throwables.getStackTraceAsString(e));
             }
             sendResultsToServer(benchmarkTask.getConnection_uuid(), benchmarkTask);
         }

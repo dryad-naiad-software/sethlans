@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import java.util.List;
 
 /**
@@ -37,7 +38,7 @@ public class BlenderBinary extends AbstractEntityClass {
     private String blenderBinaryOS;
     private String blenderFile;
     private String blenderFileMd5;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> downloadMirrors;
     private boolean downloaded = false;
 

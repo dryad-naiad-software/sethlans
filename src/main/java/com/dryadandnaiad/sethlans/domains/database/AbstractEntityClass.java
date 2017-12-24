@@ -73,4 +73,5 @@ public class AbstractEntityClass implements EntityObject {
             dateCreated = new Date();
         }
     }
+
 }

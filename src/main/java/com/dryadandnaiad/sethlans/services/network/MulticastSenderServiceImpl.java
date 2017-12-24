@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.network;
 
+import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,7 +64,7 @@ public class MulticastSenderServiceImpl extends Thread implements MulticastSende
                 Thread.sleep(5000);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error(Throwables.getStackTraceAsString(e));
         } catch (InterruptedException e) {
             LOG.debug("Ending Multicast");
         }

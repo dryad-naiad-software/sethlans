@@ -20,6 +20,9 @@
 package com.dryadandnaiad.sethlans.services.system;
 
 import com.dryadandnaiad.sethlans.utils.SethlansState;
+import com.google.common.base.Throwables;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
@@ -34,6 +37,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SethlansManagerServiceImpl implements SethlansManagerService {
+    private static final Logger LOG = LoggerFactory.getLogger(SethlansManagerServiceImpl.class);
     @Autowired
     private ApplicationContext applicationContext;
 
@@ -44,7 +48,7 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
             Thread.sleep(2000);
             System.exit(0);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOG.error(Throwables.getStackTraceAsString(e));
         }
 
     }
@@ -58,7 +62,7 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
             sethlansState.sethlansActive = false;
             SpringApplication.exit(applicationContext, () -> 0);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOG.error(Throwables.getStackTraceAsString(e));
         }
 
     }
