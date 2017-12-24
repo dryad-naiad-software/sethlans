@@ -100,7 +100,7 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
                         LOG.debug("Blender binary download is in progress, holding off on sending benchmark request");
                         try {
                             pendingDownloads = true;
-                            Thread.sleep(1000);
+                            Thread.sleep(3000);
                         } catch (InterruptedException e) {
                             LOG.error(Throwables.getStackTraceAsString(e));
                         }

@@ -139,8 +139,9 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             String params = "?connection_uuid=" + benchmarkTask.getConnection_uuid() + "&version=" + benchmarkTask.getBlenderVersion() + "&os=" + SethlansUtils.getOS();
             String filename = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, benchmarkDir.toString());
             if (SethlansUtils.archiveExtract(filename, benchmarkDir)) {
+                LOG.debug("Extraction complete.");
                 if (SethlansUtils.renameBlender(benchmarkDir, primaryBlenderVersion)) {
-                    LOG.debug("Blender executable extracted and ready");
+                    LOG.debug("Blender executable ready");
                     benchmarkTask.setBenchmarkDir(benchmarkDir.toString());
                     benchmarkTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(benchmarkDir));
                 } else {
