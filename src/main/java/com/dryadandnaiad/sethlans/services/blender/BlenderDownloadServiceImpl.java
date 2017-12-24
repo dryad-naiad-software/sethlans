@@ -106,7 +106,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                         connection = (HttpURLConnection) url.openConnection();
                         InputStream stream = connection.getInputStream();
                         if (connection.getResponseCode() == 200) {
-                            LOG.debug("Creating placeholder file" + downloadPlaceholder + "to let service know an active download is in place.");
+                            LOG.debug("Creating placeholder file" + downloadPlaceholder + " to let service know an active download is in place.");
                             downloadPlaceholder.createNewFile();
                         }
 

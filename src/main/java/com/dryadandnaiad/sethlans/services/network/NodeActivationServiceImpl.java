@@ -128,19 +128,24 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
     private void addBlenderBinary(String serverOS) {
         LOG.debug("Checking to see if blender binaries need to be downloaded for new node.");
         List<BlenderBinary> blenderBinaries = blenderBinaryDatabaseService.listAll();
+        boolean binaryAdded = false;
+        String blenderVersion = null;
         for (BlenderBinary blenderBinary : blenderBinaries) {
-            if (blenderBinary.getBlenderBinaryOS().equals(serverOS)) {
-                LOG.debug("Blender " + blenderBinary.getBlenderVersion() + " is present for " + serverOS);
+            if (blenderBinary.getBlenderBinaryOS().toLowerCase().equals(serverOS.toLowerCase())) {
+                LOG.debug("Blender " + blenderBinary.getBlenderVersion() + " binary is already present for " + serverOS);
+                binaryAdded = true;
             } else {
-                LOG.debug("Adding Blender " + blenderBinary.getBlenderVersion() + " " + serverOS + " to database.");
-                BlenderBinary newBlenderBinary = new BlenderBinary();
-                newBlenderBinary.setDownloaded(false);
-                newBlenderBinary.setBlenderBinaryOS(serverOS);
-                newBlenderBinary.setBlenderVersion(blenderBinary.getBlenderVersion());
-                blenderBinaryDatabaseService.saveOrUpdate(newBlenderBinary);
+                blenderVersion = blenderBinary.getBlenderVersion();
             }
         }
-
+        if (!binaryAdded) {
+            LOG.debug("Adding Blender " + blenderVersion + " " + serverOS + " to database.");
+            BlenderBinary newBlenderBinary = new BlenderBinary();
+            newBlenderBinary.setDownloaded(false);
+            newBlenderBinary.setBlenderBinaryOS(serverOS);
+            newBlenderBinary.setBlenderVersion(blenderVersion);
+            blenderBinaryDatabaseService.saveOrUpdate(newBlenderBinary);
+        }
 
     }
 
