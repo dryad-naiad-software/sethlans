@@ -132,6 +132,7 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
         // TODO Some kind of logic error here is causing multiple downloads.  To address tomorrow
         List<BlenderBinary> blenderBinaries = blenderBinaryDatabaseService.listAll();
         Set<String> versions = new HashSet<>();
+        Set<BlenderBinary> blenderBinarySet = new HashSet<>();
         for (BlenderBinary blenderBinary : blenderBinaries) {
             versions.add(blenderBinary.getBlenderVersion());
             LOG.debug("Adding blender binary version " + blenderBinary.getBlenderVersion() + " to set for verification");
@@ -143,12 +144,15 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
                     newBlenderBinary.setDownloaded(false);
                     newBlenderBinary.setBlenderBinaryOS(serverOS);
                     newBlenderBinary.setBlenderVersion(version);
-                    LOG.debug("Adding " + newBlenderBinary.toString() + " to database.");
-                    blenderBinaryDatabaseService.saveOrUpdate(newBlenderBinary);
+                    blenderBinarySet.add(newBlenderBinary);
                 }
             }
-
         }
+        for (BlenderBinary blenderBinary : blenderBinarySet) {
+            LOG.debug("Adding " + blenderBinary.toString() + " to database.");
+            blenderBinaryDatabaseService.saveOrUpdate(blenderBinary);
+        }
+
     }
 
     @Autowired

@@ -55,8 +55,6 @@ import java.util.List;
 public class BlenderDownloadServiceImpl implements BlenderDownloadService, ApplicationEventPublisherAware {
     private static final Logger LOG = LoggerFactory.getLogger(BlenderDownloadServiceImpl.class);
     private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
-    private List<BlenderBinary> blenderFileEntities;
-    private List<BlenderZip> blenderBinaries;
     @Value("${sethlans.blenderDir}")
     private String downloadLocation;
     private int downloadMirror = 0;
@@ -76,7 +74,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
             } else {
                 LOG.debug("Blender Download Service failed");
             }
-            Thread.sleep(180000);
+            Thread.sleep(120000);
         }
     }
 
@@ -108,7 +106,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                         connection = (HttpURLConnection) url.openConnection();
                         InputStream stream = connection.getInputStream();
                         if (connection.getResponseCode() == 200) {
-                            LOG.debug("Creating placeholder file to let service know an active download is in place.");
+                            LOG.debug("Creating placeholder file" + downloadPlaceholder + "to let service know an active download is in place.");
                             downloadPlaceholder.createNewFile();
                         }
 
@@ -116,11 +114,11 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                             filename = blenderVersion + "-" +
                                     blenderBinary.getBlenderBinaryOS().toLowerCase() + ".tar." +
                                     com.google.common.io.Files.getFileExtension(blenderBinary.getBlenderFile());
-                            LOG.debug("Renamed Filename " + filename);
+                            LOG.debug("Setting filename to  " + filename);
                         } else {
                             filename = blenderVersion + "-" + blenderBinary.getBlenderBinaryOS().toLowerCase() + "." +
                                     com.google.common.io.Files.getFileExtension(blenderBinary.getBlenderFile());
-                            LOG.debug("Renamed Filename " + filename);
+                            LOG.debug("Setting filename to" + filename);
                         }
 
                         File toDownload = new File(saveLocation + File.separator + filename);
@@ -190,8 +188,8 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
     }
 
     private void prepareDownload() {
-        blenderBinaries = BlenderUtils.listBinaries();
-        blenderFileEntities = blenderBinaryDatabaseService.listAll();
+        List<BlenderZip> blenderBinaries = BlenderUtils.listBinaries();
+        List<BlenderBinary> blenderFileEntities = blenderBinaryDatabaseService.listAll();
         LOG.debug("Preparing Blender Binary Download List");
         String filename;
         for (BlenderBinary blenderZipEntity : blenderFileEntities) {
@@ -248,7 +246,6 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                 }
             }
         }
-        blenderFileEntities = blenderBinaryDatabaseService.listAll();
     }
 
 
