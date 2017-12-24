@@ -145,6 +145,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                     benchmarkTask.setBenchmarkDir(benchmarkDir.toString());
                     benchmarkTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(benchmarkDir));
                 } else {
+                    LOG.debug("Rename failed.");
                     return false;
                 }
             }
