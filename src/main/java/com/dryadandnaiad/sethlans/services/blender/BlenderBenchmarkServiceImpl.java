@@ -53,15 +53,14 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
 
     @Value("${sethlans.primaryBlenderVersion}")
     private String primaryBlenderVersion;
-    private int remainingBenchmarks;
 
     private static final Logger LOG = LoggerFactory.getLogger(BlenderBenchmarkServiceImpl.class);
-
     private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private BlenderPythonScriptService blenderPythonScriptService;
     private BlenderRenderService blenderRenderService;
+    private int remainingBenchmarks;
 
     @Override
     public void sendBenchmarktoNode(SethlansNode sethlansNode) {
