@@ -77,7 +77,7 @@ public class ServerBackgroundRestController {
             } else {
                 sethlansNodeDatabaseService.saveOrUpdate(sethlansNodetoUpdate);
             }
-            LOG.debug(sethlansNodetoUpdate.getHostname() + " synced.");
+            LOG.debug(sethlansNodetoUpdate.getHostname() + " has been synced.");
 
 
         }
