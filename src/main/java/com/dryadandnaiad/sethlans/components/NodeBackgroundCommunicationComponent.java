@@ -22,7 +22,6 @@ package com.dryadandnaiad.sethlans.components;
 import com.dryadandnaiad.sethlans.services.network.MulticastSenderService;
 import com.dryadandnaiad.sethlans.services.network.NodeStatusUpdateService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
-import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,9 +49,8 @@ public class NodeBackgroundCommunicationComponent {
     private String sethlansPort;
 
 
-
     @PostConstruct
-    public void startNodeMulticast(){
+    public void startNodeMulticast() {
         String ip = SethlansUtils.getIP();
         LOG.debug("Sethlans Host IP: " + ip);
         multicastSenderService.sendSethlansIPAndPort(ip, sethlansPort);
@@ -60,11 +58,8 @@ public class NodeBackgroundCommunicationComponent {
 
     @PostConstruct
     public void startNodeStatusUpdates() {
-        try {
-            nodeStatusUpdateService.backgroundRequests();
-        } catch (InterruptedException e) {
-            LOG.error(Throwables.getStackTraceAsString(e));
-        }
+        nodeStatusUpdateService.backgroundRequests();
+
 
     }
 

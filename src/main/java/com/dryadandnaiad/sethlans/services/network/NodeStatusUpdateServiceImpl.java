@@ -43,10 +43,15 @@ public class NodeStatusUpdateServiceImpl implements NodeStatusUpdateService {
 
     @Override
     @Async
-    public void backgroundRequests() throws InterruptedException {
+    public void backgroundRequests() {
         while (true) {
-            Thread.sleep(300000);
-            nodeUpdatePullRequest();
+            try {
+                Thread.sleep(300000);
+                nodeUpdatePullRequest();
+            } catch (InterruptedException e) {
+                LOG.debug("Stopping Node Status Update Service");
+            }
+
         }
     }
 

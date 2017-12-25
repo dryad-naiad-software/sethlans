@@ -71,7 +71,7 @@ public class MulticastSenderServiceImpl implements MulticastSenderService {
         } catch (IOException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
         } catch (InterruptedException e) {
-            LOG.error("Ending Multicast");
+            LOG.debug("Stopping Multicast Sender Service");
         }
 
 

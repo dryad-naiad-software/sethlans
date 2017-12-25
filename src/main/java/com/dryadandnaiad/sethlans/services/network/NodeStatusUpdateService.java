@@ -30,7 +30,7 @@ import org.springframework.scheduling.annotation.Async;
 public interface NodeStatusUpdateService {
 
     @Async
-    void backgroundRequests() throws InterruptedException;
+    void backgroundRequests();
 
     void nodeUpdatePullRequest();
 }
