@@ -34,6 +34,7 @@ import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,6 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created Mario Estrella on 3/24/17.
@@ -146,8 +146,8 @@ public class ProjectController extends AbstractSethlansController {
         if (bindingResult != null) {
             LOG.debug("New project with binding result.");
         }
-        UUID uploadTag = UUID.randomUUID();
-        webUploadService.store(projectFile, uploadTag.toString());
+        String uploadTag = SethlansUtils.getShortUUID();
+        webUploadService.store(projectFile, uploadTag);
         getAvailableBlenderBinaries();
         projectForm.setUploadedFile(projectFile.getOriginalFilename());
         projectForm.setFileLocation(temp + uploadTag + "-" + projectFile.getOriginalFilename());

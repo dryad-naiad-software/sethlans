@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.commands;
 import com.dryadandnaiad.sethlans.domains.blender.BlendFile;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.enums.*;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Size;
@@ -81,7 +82,7 @@ public class ProjectForm {
         this.finished = false;
         this.currentPercentage = 0;
         this.outputFormat = RenderOutputFormat.PNG;
-        this.uuid = UUID.randomUUID().toString();
+        this.uuid = SethlansUtils.getShortUUID();
     }
 
 
