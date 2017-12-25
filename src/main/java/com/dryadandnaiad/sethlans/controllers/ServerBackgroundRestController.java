@@ -64,9 +64,9 @@ public class ServerBackgroundRestController {
             sethlansNodetoUpdate.setSelectedCUDA(tempNode.getSelectedCUDA());
             sethlansNodetoUpdate.setSelectedGPUs(tempNode.getSelectedGPUs());
             sethlansNodetoUpdate.setHostname(tempNode.getHostname());
-            sethlansNodeDatabaseService.saveOrUpdate(sethlansNodetoUpdate);
-            LOG.debug(sethlansNodetoUpdate.getHostname() + " synced.");
             if (redoBenchmark && sethlansNodetoUpdate.isActive()) {
+                sethlansNodetoUpdate.setBenchmarkComplete(false);
+                sethlansNodeDatabaseService.saveOrUpdate(sethlansNodetoUpdate);
                 try {
                     Thread.sleep(10000);
                     blenderBenchmarkService.sendBenchmarktoNode(sethlansNodetoUpdate);
@@ -74,7 +74,10 @@ public class ServerBackgroundRestController {
                     LOG.debug(Throwables.getStackTraceAsString(e));
                 }
 
+            } else {
+                sethlansNodeDatabaseService.saveOrUpdate(sethlansNodetoUpdate);
             }
+            LOG.debug(sethlansNodetoUpdate.getHostname() + " synced.");
 
 
         }
@@ -93,12 +96,13 @@ public class ServerBackgroundRestController {
         }
 
         if (nodeUpdate.getComputeType().equals(ComputeType.GPU) || nodeUpdate.getComputeType().equals(ComputeType.CPU_GPU)) {
-            if (!originalNode.getSelectedCUDA().equals(nodeUpdate.getSelectedCUDA())) {
+            if (!originalNode.getSelectedCUDA().toString().equals(nodeUpdate.getSelectedCUDA().toString())) {
                 LOG.debug("Selected CUDA Changed. Now: " + nodeUpdate.getSelectedCUDA());
                 return true;
             }
             if (!originalNode.getSelectedGPUs().toString().equals(nodeUpdate.getSelectedGPUs().toString())) {
                 LOG.debug("Selected GPUs Changed. Now: " + nodeUpdate.getSelectedGPUs().toString());
+                return true;
             }
         }
 
