@@ -120,6 +120,27 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
     }
 
     public boolean sendToRemoteGET(String connectionURL, String params) {
+        LOG.debug("Connecting to " + connectionURL);
+        HttpsURLConnection connection;
+        try {
+            LOG.debug("Sending the following parameters to API via GET: " + connectionURL + params);
+            URL url = new URL(connectionURL + params);
+            SSLUtilities.trustAllHostnames();
+            SSLUtilities.trustAllHttpsCertificates();
+            connection = (HttpsURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+
+            int response = connection.getResponseCode();
+            LOG.debug("HTTP Response code " + response);
+            if (response == 200) {
+                return true;
+            }
+        } catch (UnsupportedEncodingException e) {
+            LOG.error("Unsupported Encoding Exception " + e.getMessage());
+        } catch (IOException e) {
+            LOG.error(e.getMessage());
+        }
         return false;
     }
 }

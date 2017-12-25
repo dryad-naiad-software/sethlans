@@ -20,7 +20,9 @@
 package com.dryadandnaiad.sethlans.components;
 
 import com.dryadandnaiad.sethlans.services.network.MulticastSenderService;
+import com.dryadandnaiad.sethlans.services.network.NodeStatusUpdateService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,24 +40,41 @@ import javax.annotation.PostConstruct;
  */
 @Component
 @Profile({"NODE", "DUAL"})
-public class SethlansMulticastSendComponent {
+public class NodeBackgroundCommunicationComponent {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SethlansMulticastSendComponent.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NodeBackgroundCommunicationComponent.class);
+    private MulticastSenderService multicastSenderService;
+    private NodeStatusUpdateService nodeStatusUpdateService;
 
     @Value("${server.port}")
     private String sethlansPort;
 
-    private MulticastSenderService multicastSenderService;
 
-    @Autowired
-    public void setMulticastSenderService(MulticastSenderService multicastSenderService) {
-        this.multicastSenderService = multicastSenderService;
-    }
 
     @PostConstruct
     public void startNodeMulticast(){
         String ip = SethlansUtils.getIP();
         LOG.debug("Sethlans Host IP: " + ip);
         multicastSenderService.sendSethlansIPAndPort(ip, sethlansPort);
+    }
+
+    @PostConstruct
+    public void startNodeStatusUpdates() {
+        try {
+            nodeStatusUpdateService.backgroundRequests();
+        } catch (InterruptedException e) {
+            LOG.error(Throwables.getStackTraceAsString(e));
+        }
+
+    }
+
+    @Autowired
+    public void setMulticastSenderService(MulticastSenderService multicastSenderService) {
+        this.multicastSenderService = multicastSenderService;
+    }
+
+    @Autowired
+    public void setNodeStatusUpdateService(NodeStatusUpdateService nodeStatusUpdateService) {
+        this.nodeStatusUpdateService = nodeStatusUpdateService;
     }
 }

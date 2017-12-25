@@ -21,6 +21,8 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.node.NodeInfo;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +41,7 @@ import java.util.List;
 @RestController
 @Profile({"NODE", "DUAL"})
 public class NodeInfoRestController {
+    private static final Logger LOG = LoggerFactory.getLogger(NodeInfoRestController.class);
 
     @Value("${server.port}")
     private String sethlansPort;
@@ -55,6 +58,7 @@ public class NodeInfoRestController {
 
     @RequestMapping(value = "/api/nodeinfo", method = RequestMethod.GET)
     public NodeInfo nodeInfo() {
+        LOG.debug("Node info requested.");
         NodeInfo nodeInfo = new NodeInfo();
         nodeInfo.populateNodeInfo();
 

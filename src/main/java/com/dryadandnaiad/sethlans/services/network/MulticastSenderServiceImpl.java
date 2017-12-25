@@ -38,7 +38,7 @@ import java.net.MulticastSocket;
  * Project: sethlans
  */
 @Service
-public class MulticastSenderServiceImpl extends Thread implements MulticastSenderService {
+public class MulticastSenderServiceImpl implements MulticastSenderService {
     private static final Logger LOG = LoggerFactory.getLogger(MulticastSenderServiceImpl.class);
 
     @Value("${sethlans.multicast}")
