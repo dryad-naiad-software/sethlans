@@ -21,7 +21,6 @@ package com.dryadandnaiad.sethlans.services.storage;
 
 import com.dryadandnaiad.sethlans.exceptions.StorageException;
 import com.dryadandnaiad.sethlans.exceptions.StorageFileNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -29,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -50,7 +50,7 @@ public class WebUploadServiceImpl implements WebUploadService {
     private String temp;
 
 
-    @Autowired
+    @PostConstruct
     public void setRootLocation() {
         this.rootLocation = Paths.get(temp);
     }
