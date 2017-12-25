@@ -28,6 +28,7 @@ import com.dryadandnaiad.sethlans.enums.NodeAddProgress;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
+import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,15 +64,23 @@ public class ServerSettingsController extends AbstractSethlansController {
     private SethlansNodeToNodeAddForm sethlansNodeToNodeAddForm;
     private NodeActivationService nodeActivationService;
     private SethlansServer sethlansServer;
+    private SethlansAPIConnectionService sethlansAPIConnectionService;
 
     @Value("${server.port}")
     private String sethlansPort;
 
     @RequestMapping("/settings/nodes")
     public String getNodePage(Model model) {
+        List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.listAll();
         model.addAttribute("settings_option", "nodes");
-        model.addAttribute("nodes", sethlansNodeDatabaseService.listAll());
+        model.addAttribute("nodes", sethlansNodeList);
         nodeDiscoveryService.resetNodeList();
+        for (SethlansNode node : sethlansNodeList) {
+            LOG.debug("Initiating background refresh of node list");
+            String url = "https://" + SethlansUtils.getIP() + ":" + sethlansPort + "/api/update/node_status_update";
+            String param = "/?connection_uuid=" + node.getConnection_uuid();
+            sethlansAPIConnectionService.sendToRemoteGET(url, param);
+        }
         return "settings/settings";
     }
 
@@ -283,6 +292,10 @@ public class ServerSettingsController extends AbstractSethlansController {
         this.sethlansNodeToNodeAddForm = sethlansNodeToNodeAddForm;
     }
 
+    @Autowired
+    public void setSethlansAPIConnectionService(SethlansAPIConnectionService sethlansAPIConnectionService) {
+        this.sethlansAPIConnectionService = sethlansAPIConnectionService;
+    }
 
     private void setSethlansServer() {
         this.sethlansServer = new SethlansServer();
