@@ -88,7 +88,6 @@ public class GPUDevice {
         return "GPUDevice{" +
                 "model='" + model + '\'' +
                 ", memory=" + memory +
-                ", rating=" + rating +
                 ", cudaName='" + cudaName + '\'' +
                 '}';
     }
