@@ -72,6 +72,10 @@ public class SethlansUtils {
         return new ImageIcon(imageURL, description).getImage();
     }
 
+    public static String getShortUUID() {
+        return UUID.randomUUID().toString().substring(0, 13);
+    }
+
 
     public static boolean writeProperty(SethlansConfigKeys configKey, String value) {
         String comment = "";
@@ -325,9 +329,12 @@ public class SethlansUtils {
     }
 
     public static boolean renameBlender(File tempDir, String blenderVersion) {
+        LOG.debug("Starting to rename of extracted directory in " + tempDir + " to " + tempDir + File.separator + "blender");
         File[] files = tempDir.listFiles();
         if (files != null) {
             for (File file : files) {
+                LOG.debug("Searching " + tempDir + " for extracted directory.");
+                LOG.debug("Examining " + file);
                 if (file.isDirectory() && file.toString().contains(blenderVersion)) {
                     LOG.debug(file.toString());
                     LOG.debug("Directory found, renaming");
@@ -345,6 +352,8 @@ public class SethlansUtils {
                     return true;
                 }
             }
+        } else {
+            LOG.debug("Unable to get a list of files");
         }
 
         return false;

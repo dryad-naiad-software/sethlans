@@ -28,6 +28,7 @@ import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created Mario Estrella on 12/9/17.
@@ -111,7 +111,7 @@ public class NodeRenderRestController {
             cpuBenchmarkTask.setComputeType(ComputeType.CPU);
             cpuBenchmarkTask.setComplete(false);
             cpuBenchmarkTask.setConnection_uuid(connection_uuid);
-            cpuBenchmarkTask.setBenchmark_uuid(UUID.randomUUID().toString());
+            cpuBenchmarkTask.setBenchmark_uuid(SethlansUtils.getShortUUID());
 
             List<BlenderBenchmarkTask> gpuTasks = new ArrayList<>();
 
@@ -124,7 +124,7 @@ public class NodeRenderRestController {
                 gpuBenchmarkTask.setBenchmarkURL("bmw_gpu");
                 gpuBenchmarkTask.setComputeType(ComputeType.GPU);
                 gpuBenchmarkTask.setConnection_uuid(connection_uuid);
-                gpuBenchmarkTask.setBenchmark_uuid(UUID.randomUUID().toString());
+                gpuBenchmarkTask.setBenchmark_uuid(SethlansUtils.getShortUUID());
                 gpuTasks.add(gpuBenchmarkTask);
             }
 
