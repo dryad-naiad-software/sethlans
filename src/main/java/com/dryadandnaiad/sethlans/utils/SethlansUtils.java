@@ -335,6 +335,7 @@ public class SethlansUtils {
             for (File file : files) {
                 LOG.debug("Searching " + tempDir + " for extracted directory.");
                 LOG.debug("Examining " + file);
+                LOG.debug("Searching for directories containing " + blenderVersion);
                 if (file.isDirectory() && file.toString().contains(blenderVersion)) {
                     LOG.debug(file.toString());
                     LOG.debug("Directory found, renaming");
