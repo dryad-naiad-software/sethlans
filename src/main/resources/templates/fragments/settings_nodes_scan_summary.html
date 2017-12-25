@@ -112,7 +112,7 @@
                     <!--/*@thymesVar id="node" type="com.dryadandnaiad.sethlans.domains.database.node.SethlansNode"*/-->
                     <td>
                         <input type="checkbox" th:field="*{sethlansNodeId}"
-                               th:value="${iter.index}">
+                               th:value="${iter.index}" onclick="disable_selectallcheckbox()">
                     </td>
                     <td th:id="'sethlansNodeHostname' + ${iter.count}"
                         th:text="${node.getHostname()}">SAMPLE
@@ -161,18 +161,15 @@
             <input id="addNodesBtn" type="submit" class="btn btn-default pull-right" value="Add">
         </form>
         <script type="text/javascript">
+            function disable_selectallcheckbox() {
+                document.getElementById("selectAll").checked = false;
+            }
 
             function toggle_checkboxes(id) {
-                if (!document.getElementById) {
-                    return;
-                }
-                if (!document.getElementsByTagName) {
-                    return;
-                }
                 var inputs = document.getElementById(id).getElementsByTagName("input");
                 for (var x = 0; x < inputs.length; x++) {
-                    if (inputs[x].type == 'checkbox') {
-                        inputs[x].checked = !inputs[x].checked;
+                    if (inputs[x].type === 'checkbox') {
+                        inputs[x].checked = document.getElementById("selectAll").checked;
                     }
                 }
             }
