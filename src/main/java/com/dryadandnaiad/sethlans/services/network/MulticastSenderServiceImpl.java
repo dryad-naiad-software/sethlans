@@ -57,16 +57,21 @@ public class MulticastSenderServiceImpl extends Thread implements MulticastSende
             MulticastSocket multicastSocket = new MulticastSocket(multicastSocketPort);
             multicastSocket.setReuseAddress(true);
             InetAddress group = InetAddress.getByName(multicastIP);
+            int count = 0;
             while (true) {
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, multicastSocketPort);
                 multicastSocket.send(packet);
-                LOG.debug("Sent Multicast");
-                Thread.sleep(5000);
+                Thread.sleep(3000);
+                count++;
+                if (count == 10) {
+                    LOG.debug("One multicast packet sent every 3 seconds.  Sent 10 Multicast packets.");
+                    count = 0;
+                }
             }
         } catch (IOException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
         } catch (InterruptedException e) {
-            LOG.debug("Ending Multicast");
+            LOG.error("Ending Multicast");
         }
 
 
