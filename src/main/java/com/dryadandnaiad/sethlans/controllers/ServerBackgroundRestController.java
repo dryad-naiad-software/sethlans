@@ -58,15 +58,9 @@ public class ServerBackgroundRestController {
             LOG.debug("Sync request received for " + sethlansNodetoUpdate.getHostname());
             SethlansNode tempNode = nodeDiscoveryService.discoverUnicastNode(sethlansNodetoUpdate.getIpAddress(), sethlansNodetoUpdate.getNetworkPort());
             boolean redoBenchmark = checkNodeUpdate(sethlansNodetoUpdate, tempNode);
-            sethlansNodetoUpdate.setComputeType(tempNode.getComputeType());
-            sethlansNodetoUpdate.setCpuinfo(tempNode.getCpuinfo());
-            sethlansNodetoUpdate.setSelectedCores(tempNode.getSelectedCores());
-            sethlansNodetoUpdate.setSelectedCUDA(tempNode.getSelectedCUDA());
-            sethlansNodetoUpdate.setSelectedGPUs(tempNode.getSelectedGPUs());
-            sethlansNodetoUpdate.setHostname(tempNode.getHostname());
             if (redoBenchmark && sethlansNodetoUpdate.isActive()) {
                 sethlansNodetoUpdate.setBenchmarkComplete(false);
-                sethlansNodeDatabaseService.saveOrUpdate(sethlansNodetoUpdate);
+                updateNode(sethlansNodetoUpdate, tempNode);
                 try {
                     Thread.sleep(10000);
                     blenderBenchmarkService.sendBenchmarktoNode(sethlansNodetoUpdate);
@@ -74,13 +68,22 @@ public class ServerBackgroundRestController {
                     LOG.debug(Throwables.getStackTraceAsString(e));
                 }
 
-            } else {
-                sethlansNodeDatabaseService.saveOrUpdate(sethlansNodetoUpdate);
+            } else if (redoBenchmark) {
+                updateNode(sethlansNodetoUpdate, tempNode);
             }
             LOG.debug(sethlansNodetoUpdate.getHostname() + " has been synced.");
 
 
         }
+    }
+
+    private void updateNode(SethlansNode sethlansNodetoUpdate, SethlansNode tempNode) {
+        sethlansNodetoUpdate.setComputeType(tempNode.getComputeType());
+        sethlansNodetoUpdate.setCpuinfo(tempNode.getCpuinfo());
+        sethlansNodetoUpdate.setSelectedCores(tempNode.getSelectedCores());
+        sethlansNodetoUpdate.setSelectedCUDA(tempNode.getSelectedCUDA());
+        sethlansNodetoUpdate.setSelectedGPUs(tempNode.getSelectedGPUs());
+        sethlansNodeDatabaseService.saveOrUpdate(sethlansNodetoUpdate);
     }
 
     private boolean checkNodeUpdate(SethlansNode originalNode, SethlansNode nodeUpdate) {
