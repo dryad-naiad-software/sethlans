@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -76,19 +75,19 @@ public class ServerSettingsController extends AbstractSethlansController {
         model.addAttribute("settings_option", "nodes");
         model.addAttribute("nodes", sethlansNodeList);
         nodeDiscoveryService.resetNodeList();
-        refreshList(sethlansNodeList);
+        Thread backgroundNodeRefresh = new Thread(() -> {
+            for (SethlansNode node : sethlansNodeList) {
+                LOG.debug("Initiating background refresh of node list");
+                String url = "https://" + SethlansUtils.getIP() + ":" + sethlansPort + "/api/update/node_status_update";
+                String param = "/?connection_uuid=" + node.getConnection_uuid();
+                sethlansAPIConnectionService.sendToRemoteGET(url, param);
+            }
+        });
+        backgroundNodeRefresh.start();
+
         return "settings/settings";
     }
 
-    @Async
-    void refreshList(List<SethlansNode> sethlansNodeList) {
-        for (SethlansNode node : sethlansNodeList) {
-            LOG.debug("Initiating background refresh of node list");
-            String url = "https://" + SethlansUtils.getIP() + ":" + sethlansPort + "/api/update/node_status_update";
-            String param = "/?connection_uuid=" + node.getConnection_uuid();
-            sethlansAPIConnectionService.sendToRemoteGET(url, param);
-        }
-    }
 
     @RequestMapping("/settings/nodes/add")
     public String getNodeAddPage(Model model) {

@@ -71,6 +71,7 @@ public class NodeStatusUpdateServiceImpl implements NodeStatusUpdateService {
         }
     }
 
+
     @Autowired
     public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
         this.sethlansServerDatabaseService = sethlansServerDatabaseService;
