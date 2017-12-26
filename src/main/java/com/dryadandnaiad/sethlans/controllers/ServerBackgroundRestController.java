@@ -83,6 +83,7 @@ public class ServerBackgroundRestController {
         sethlansNodetoUpdate.setSelectedCores(tempNode.getSelectedCores());
         sethlansNodetoUpdate.setSelectedCUDA(tempNode.getSelectedCUDA());
         sethlansNodetoUpdate.setSelectedGPUs(tempNode.getSelectedGPUs());
+        LOG.debug("Saving changes to database.");
         sethlansNodeDatabaseService.saveOrUpdate(sethlansNodetoUpdate);
     }
 
