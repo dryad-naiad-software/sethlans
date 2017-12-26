@@ -62,6 +62,7 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
             int response = connection.getResponseCode();
             LOG.debug("HTTP Response code " + response);
             if (response == 200) {
+                connection.disconnect();
                 return true;
             }
 
@@ -108,6 +109,7 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
 
             }
             LOG.debug("Download of " + download.toString() + " complete.");
+            connection.disconnect();
             return filename;
 
 
@@ -134,6 +136,7 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
             int response = connection.getResponseCode();
             LOG.debug("HTTP Response code " + response);
             if (response == 200) {
+                connection.disconnect();
                 return true;
             }
         } catch (UnsupportedEncodingException e) {
