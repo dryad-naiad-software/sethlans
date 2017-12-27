@@ -88,6 +88,7 @@ public class SetupForm {
     private String logDirectory;
     private String binDirectory;
     private String benchmarkDirectory;
+    private String ipAddress;
 
 
     public SetupForm() {
@@ -99,6 +100,7 @@ public class SetupForm {
         this.cores = 1;
         this.sethlansRootDirectory = System.getProperty("user.home") + File.separator + ".sethlans";
         this.totalCores = populateCores();
+        this.ipAddress = SethlansUtils.getIP();
         populateBlenderOS();
         this.availableMethods = SethlansUtils.getAvailableMethods();
         this.selectedMethod = ComputeType.CPU;
@@ -339,11 +341,20 @@ public class SetupForm {
         this.benchmarkDirectory = benchmarkDirectory;
     }
 
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
     @Override
     public String toString() {
         return "SetupForm{" +
                 "httpsPort='" + httpsPort + '\'' +
                 ", username='" + username + '\'' +
+                ", ipAddress='" + ipAddress + '\'' +
                 ", sethlansRootDirectory='" + sethlansRootDirectory + '\'' +
                 ", selectedMethod=" + selectedMethod +
                 ", availableMethods=" + availableMethods +
@@ -366,4 +377,5 @@ public class SetupForm {
                 ", benchmarkDirectory='" + benchmarkDirectory + '\'' +
                 '}';
     }
+
 }

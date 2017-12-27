@@ -82,9 +82,17 @@
                                         </ul>
                                     </span>
         </div>
-        <h3 style="margin-top: auto"><strong><u>Ports</u></strong></h3>
+        <h3 style="margin-top: auto"><strong><u>Network</u></strong></h3>
         <div class="form-group"
              th:class="${#fields.hasErrors('httpsPort')} ? 'form-group has-error' : 'form-group'">
+            <label id="ipAddress" for="ipAddress">Sethlans IP Address</label>
+            <input type="text" class="form-control"
+                   id="ipAddress"
+                   name="ipAddress"
+                   th:value="*{ipAddress}"
+                   data-toggle="tooltip"
+                   data-trigger="hover"
+                   title="IP Address.">
             <label id="https-label" for="httpsPort"> Sethlans HTTPS
                 Port </label>
             <input type="number" class="form-control "

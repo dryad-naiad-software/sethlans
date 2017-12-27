@@ -41,6 +41,7 @@ public enum SethlansConfigKeys {
     CPU_CORES("sethlans.cores"),
     PYTHON_BIN("sethlans.python.binary"),
     SCRIPTS_DIR("sethlans.scriptsDir"),
+    SETHLANS_IP("server.ipaddress"),
     BENCHMARK_DIR("sethlans.benchmarkDir");
 
 

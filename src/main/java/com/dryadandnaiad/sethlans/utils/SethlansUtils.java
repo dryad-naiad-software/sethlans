@@ -235,20 +235,32 @@ public class SethlansUtils {
 
     public static String getIP() {
         String ip = null;
+        final Properties properties = new Properties();
         try {
-            if (SystemUtils.IS_OS_LINUX) {
-                // Make a connection to 8.8.8.8 DNS in order to get IP address
-                Socket s = new Socket("8.8.8.8", 53);
-                ip = s.getLocalAddress().getHostAddress();
-                s.close();
+            if (configFile.exists()) {
+                FileInputStream fileIn = new FileInputStream(configFile);
+                properties.load(fileIn);
             } else {
-                ip = InetAddress.getLocalHost().getHostAddress();
+                properties.load(new InputStreamReader(new Resources("sethlans.properties").getResource(), "UTF-8"));
+            }
+            ip = properties.getProperty("server.ipaddress");
+            LOG.debug(ip);
+            if (ip.equals("null")) {
+                if (SystemUtils.IS_OS_LINUX) {
+                    // Make a connection to 8.8.8.8 DNS in order to get IP address
+                    Socket s = new Socket("8.8.8.8", 53);
+                    ip = s.getLocalAddress().getHostAddress();
+                    s.close();
+                } else {
+                    ip = InetAddress.getLocalHost().getHostAddress();
+                }
             }
         } catch (UnknownHostException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
         } catch (IOException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
         }
+
         return ip;
     }
 
