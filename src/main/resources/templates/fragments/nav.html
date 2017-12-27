@@ -138,13 +138,15 @@
                     <ul class="list-group" id="messages">
                         <li th:if="${isNewNotification}" th:each="message : ${notificationMessages}"
                             class="list-group-item">
-                            <span class="i pficon pficon-info"></span>
+                            <span class="i fa fa-info-circle "></span>
                             <p th:id="message" th:text="${message}"></p>
                         </li>
                         <li th:unless="${isNewNotification}"
-                            class="list-group-item"><span class="i pficon pficon-info"></span>
+                            class="list-group-item"><span class="i fa fa-info-circle"></span>
                             <p th:id="message">Nothing to report</p></li>
+
                     </ul>
+                    <p th:if="${isNewNotification}" style="text-align: center"><a href="#">Clear Notifications</a></p>
                 </div>
             </li>
             <li class="dropdown">
