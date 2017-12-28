@@ -42,7 +42,9 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
 
 
     @Override
-    public String writePythonScript(ComputeType computeType, String renderLocation, String deviceId, int tileSize, int resolution_x, int resolution_y, int res_percentage) {
+    public String writePythonScript(ComputeType computeType, String renderLocation, String deviceId,
+                                    int tileSize, int resolution_x, int resolution_y, int res_percentage,
+                                    int parts) {
         try {
             File script = new File(renderLocation + File.separator + "script-" + deviceId + ".py");
             FileWriter scriptWriter = new FileWriter(script);
@@ -102,6 +104,10 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.write("bpy.context.scene.render.tile_y = " + tileSize + "\n");
             scriptWriter.flush();
             scriptWriter.close();
+
+            if (parts != 0) {
+                LOG.debug("Parts requested.");
+            }
             return script.toString();
         } catch (java.io.IOException e) {
             LOG.error(Throwables.getStackTraceAsString(e));

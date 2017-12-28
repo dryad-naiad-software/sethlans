@@ -177,7 +177,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                 LOG.debug("Creating benchmark script using " + benchmarkTask.getCudaName());
                 String cudaID = StringUtils.substringAfter(benchmarkTask.getCudaName(), "_");
                 String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(),
-                        benchmarkTask.getBenchmarkDir(), cudaID, 128, 800, 600, 50);
+                        benchmarkTask.getBenchmarkDir(), cudaID, 128, 800, 600, 50, 0);
                 int rating = blenderRenderService.executeBenchmarkTask(benchmarkTask, script);
                 if (rating == 0) {
                     LOG.debug("Benchmark failed.");
@@ -193,7 +193,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             } else {
                 LOG.debug("Creating benchmark script using CPU");
                 String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(),
-                        benchmarkTask.getBenchmarkDir(), "0", 16, 800, 600, 50);
+                        benchmarkTask.getBenchmarkDir(), "0", 16, 800, 600, 50, 0);
                 int rating = blenderRenderService.executeBenchmarkTask(benchmarkTask, script);
                 if (rating == 0) {
                     LOG.debug("Benchmark failed.");

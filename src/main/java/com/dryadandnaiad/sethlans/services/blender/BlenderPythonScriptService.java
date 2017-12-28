@@ -29,5 +29,8 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
  */
 public interface BlenderPythonScriptService {
 
-    String writePythonScript(ComputeType computeType, String renderLocation, String deviceId, int tileSize, int resolution_x, int resolution_y, int res_percentage);
+    String writePythonScript(ComputeType computeType, String renderLocation,
+                             String deviceId, int tileSize, int resolution_x,
+                             int resolution_y, int res_percentage, int parts);
+
 }
