@@ -117,13 +117,20 @@
                     <!--/*@thymesVar id="node" type="com.dryadandnaiad.sethlans.domains.database.node.SethlansNode"*/-->
                     <tr th:each="node : ${nodes}">
                         <td th:id="'nodeStatus-' + ${node.getId()}"
-                            th:if="${node.isActive() and not node.isPendingActivation()}">Active
+                            th:if="${node.isActive() and not node.isPendingActivation() and node.isBenchmarkComplete()}">
+                            Active
                         </td>
                         <td th:id="'nodeStatus-' + ${node.getId()}"
                             th:if="${node.isPendingActivation() and not node.isActive()}">Pending Activation
                         </td>
                         <td th:id="'nodeStatus-' + ${node.getId()}"
-                            th:if="${not node.isPendingActivation() and not node.isActive()}">Inactive
+                            th:if="${node.isActive() and not node.isPendingActivation() and not node.isBenchmarkComplete()}">
+                            Pending Benchmark
+                        </td>
+
+                        <td th:id="'nodeStatus-' + ${node.getId()}"
+                            th:if="${not node.isPendingActivation() and not node.isActive() and node.isBenchmarkComplete()}">
+                            Inactive
                         </td>
 
                         <td th:id="'nodeHostname-' + ${node.getId()}"

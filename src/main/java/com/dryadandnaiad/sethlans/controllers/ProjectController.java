@@ -82,7 +82,7 @@ public class ProjectController extends AbstractSethlansController {
         List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.listAll();
         List<SethlansNode> activeNodes = new ArrayList<>();
         for (SethlansNode sethlansNode : sethlansNodeList) {
-            if (sethlansNode.isActive()) {
+            if (sethlansNode.isActive() && sethlansNode.isBenchmarkComplete()) {
                 activeNodes.add(sethlansNode);
             }
         }
