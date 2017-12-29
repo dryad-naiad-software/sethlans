@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.domains.database.blender;
 
+import com.dryadandnaiad.sethlans.domains.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
@@ -50,8 +51,8 @@ public class BlenderRenderTask extends AbstractEntityClass {
     private int currentPercentage;
     private String blendFilename;
     private String blenderVersion;
-    private int part;
     private String blenderExecutable;
+    private BlenderFramePart blenderFramePart;
 
     public String getProjectName() {
         return projectName;
@@ -166,14 +167,6 @@ public class BlenderRenderTask extends AbstractEntityClass {
         this.blenderVersion = blenderVersion;
     }
 
-    public int getPart() {
-        return part;
-    }
-
-    public void setPart(int part) {
-        this.part = part;
-    }
-
     public String getConnection_uuid() {
         return connection_uuid;
     }
@@ -198,6 +191,14 @@ public class BlenderRenderTask extends AbstractEntityClass {
         this.blenderExecutable = blenderExecutable;
     }
 
+    public BlenderFramePart getBlenderFramePart() {
+        return blenderFramePart;
+    }
+
+    public void setBlenderFramePart(BlenderFramePart blenderFramePart) {
+        this.blenderFramePart = blenderFramePart;
+    }
+
     @Override
     public String toString() {
         return "BlenderRenderTask{" +
@@ -217,8 +218,8 @@ public class BlenderRenderTask extends AbstractEntityClass {
                 ", currentPercentage=" + currentPercentage +
                 ", blendFilename='" + blendFilename + '\'' +
                 ", blenderVersion='" + blenderVersion + '\'' +
-                ", part=" + part +
                 ", blenderExecutable='" + blenderExecutable + '\'' +
+                ", blenderFramePart=" + blenderFramePart +
                 '}';
     }
 }

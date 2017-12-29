@@ -25,7 +25,9 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.ProjectType;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import java.util.List;
 
 /**
  * Created Mario Estrella on 3/24/17.
@@ -54,6 +56,8 @@ public class BlenderProject extends AbstractEntityClass {
     private boolean started;
     private boolean finished;
     private int currentPercentage;
+    @ElementCollection
+    private List<BlenderFrame> frameList;
     private String project_uuid;
 
     public String getProjectName() {
@@ -218,6 +222,14 @@ public class BlenderProject extends AbstractEntityClass {
         this.project_uuid = project_uuid;
     }
 
+    public List<BlenderFrame> getFrameList() {
+        return frameList;
+    }
+
+    public void setFrameList(List<BlenderFrame> frameList) {
+        this.frameList = frameList;
+    }
+
     @Override
     public String toString() {
         return "BlenderProject{" +
@@ -240,6 +252,7 @@ public class BlenderProject extends AbstractEntityClass {
                 ", started=" + started +
                 ", finished=" + finished +
                 ", currentPercentage=" + currentPercentage +
+                ", frameList=" + frameList +
                 ", project_uuid='" + project_uuid + '\'' +
                 '}';
     }

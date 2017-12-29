@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.domains.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
@@ -64,7 +65,7 @@ public class NodeRenderRestController {
     public void renderRequest(@RequestParam String server_uuid, String project_uuid, RenderOutputFormat renderoutputformat,
                               int start_frame, int end_frame, int step_frame, int samples,
                               BlenderEngine blender_engine, int resolution_x, int resolution_y, int res_percentage, ComputeType compute_type,
-                              String blend_file, String blender_version, int part) {
+                              String blend_file, String blender_version, BlenderFramePart blenderFramePart) {
         if (sethlansServerDatabaseService.getByConnectionUUID(server_uuid) == null) {
             LOG.debug("The uuid sent: " + server_uuid + " is not present in the database");
         } else {
@@ -86,12 +87,12 @@ public class NodeRenderRestController {
                 blenderRenderTask.setComputeType(compute_type);
                 blenderRenderTask.setBlendFilename(blend_file);
                 blenderRenderTask.setBlenderVersion(blender_version);
-                blenderRenderTask.setPart(part);
+                blenderRenderTask.setBlenderFramePart(blenderFramePart);
                 blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
             } else {
                 // Update existing task to process a new part and a new frame if necessary
                 blenderRenderTask = blenderRenderTaskDatabaseService.getByProjectUUID(project_uuid);
-                blenderRenderTask.setPart(part);
+                blenderRenderTask.setBlenderFramePart(blenderFramePart);
                 blenderRenderTask.setStartFrame(start_frame);
                 blenderRenderTask.setEndFrame(end_frame);
                 blenderRenderTask.setStepFrame(step_frame);

@@ -16,15 +16,42 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+package com.dryadandnaiad.sethlans.domains.blender;
 
-package com.dryadandnaiad.sethlans.enums;
+import javax.persistence.Embeddable;
 
 /**
- * Created Mario Estrella on 4/1/17.
+ * Created Mario Estrella on 12/28/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public enum RenderOutputFormat {
-    PNG, AVI, EXR
+@Embeddable
+public class BlenderFramePart {
+    private int partNumber;
+    private String partFilename;
+
+    public int getPartNumber() {
+        return partNumber;
+    }
+
+    public void setPartNumber(int partNumber) {
+        this.partNumber = partNumber;
+    }
+
+    public String getPartFilename() {
+        return partFilename;
+    }
+
+    public void setPartFilename(String partFilename) {
+        this.partFilename = partFilename;
+    }
+
+    @Override
+    public String toString() {
+        return "BlenderFramePart{" +
+                "partNumber=" + partNumber +
+                ", partFilename='" + partFilename + '\'' +
+                '}';
+    }
 }
