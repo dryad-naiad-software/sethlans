@@ -60,7 +60,7 @@ public class ServerSettingsController extends AbstractSethlansController {
 
     private NodeDiscoveryService nodeDiscoveryService;
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
-    private SethlansNode sethlansNode;
+    private SethlansNode sethlansNode; // TODO this should be persisted as a model attribute not as a field variable
     private SethlansNodeToNodeAddForm sethlansNodeToNodeAddForm;
     private NodeActivationService nodeActivationService;
     private SethlansServer sethlansServer;
