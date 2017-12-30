@@ -28,5 +28,7 @@ import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
  * Project: sethlans
  */
 public interface NotificationDatabaseService extends CRUDService<SethlansNotification> {
+    SethlansNotification getByKey(String key);
+
     void delete(SethlansNotification notification);
 }

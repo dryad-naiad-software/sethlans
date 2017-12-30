@@ -54,8 +54,20 @@ public class NotificationDatabaseServiceImpl implements NotificationDatabaseServ
     }
 
     @Override
+    public SethlansNotification getByKey(String key) {
+        List<SethlansNotification> sethlansNotificationList = listAll();
+        for (SethlansNotification sethlansNotification : sethlansNotificationList) {
+            if (sethlansNotification.getKey().equals(key)) {
+                return sethlansNotification;
+            }
+
+        }
+        return null;
+    }
+
+    @Override
     public SethlansNotification saveOrUpdate(SethlansNotification domainObject) {
-        if (domainObject.getKey().equals(null) || domainObject.getMessage().equals(null)) {
+        if (domainObject.getKey().isEmpty() || domainObject.getMessage().isEmpty() || domainObject.getOrigin().isEmpty()) {
             LOG.debug("null objects are not allowed");
         } else {
             return notificationRepository.save(domainObject);

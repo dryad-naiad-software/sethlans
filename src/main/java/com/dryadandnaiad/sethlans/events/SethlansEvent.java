@@ -42,11 +42,12 @@ public class SethlansEvent extends ApplicationEvent {
      *
      * @param source the object on which the event initially occurred (never {@code null})
      */
-    public SethlansEvent(Object source, String key, String message, boolean activeNotification) {
+    public SethlansEvent(Object source, String key, String message, String origin, boolean activeNotification) {
         super(source);
         this.sethlansNotification = new SethlansNotification();
         this.sethlansNotification.setMessage(message);
         this.sethlansNotification.setKey(key);
+        this.sethlansNotification.setOrigin(origin);
         this.activeNotification = activeNotification;
         LOG.debug("New Event Received " + sethlansNotification);
     }

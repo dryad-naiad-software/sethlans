@@ -54,7 +54,7 @@ abstract public class AbstractSethlansController implements ApplicationListener<
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
 
-    private NotificationDatabaseService notificationDatabaseService;
+    public NotificationDatabaseService notificationDatabaseService;
 
     @ModelAttribute("version")
     public String getVersion() {

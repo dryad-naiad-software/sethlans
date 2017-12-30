@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlenderZip;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
+import com.dryadandnaiad.sethlans.enums.NotificationOrigin;
 import com.dryadandnaiad.sethlans.events.SethlansEvent;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
@@ -131,8 +132,9 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                         // Send notification of pending download.
                         LOG.info("Downloading " + filename + "...");
                         String blenderFileInfo = "Downloading Blender " + blenderVersion + " for " + blenderBinary.getBlenderBinaryOS();
+                        // TODO Notification key should be a combination of origin and item.
                         this.applicationEventPublisher.publishEvent(new SethlansEvent(this, blenderVersion,
-                                blenderFileInfo, true));  // Sets the download notification
+                                blenderFileInfo, NotificationOrigin.BLENDER_DOWNLOAD_SERVICE.toString(), true));  // Sets the download notification
 
                         // Checks to see if previous file is there.  In case of a failure user will need to delete file with extension = pending.
                         if (toDownload.exists()) {

@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
+import com.dryadandnaiad.sethlans.enums.NotificationOrigin;
 import com.dryadandnaiad.sethlans.events.SethlansEvent;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import org.slf4j.Logger;
@@ -62,7 +63,8 @@ public class ActivationRequestController implements ApplicationEventPublisherAwa
             LOG.debug(sethlansServer.toString());
             LOG.debug("Processed node activation request");
             String notification = "New Server Request: " + serverhostname;
-            this.applicationEventPublisher.publishEvent(new SethlansEvent(this, serverhostname, notification, true));
+            //TODO key should be a combination of origin and item.
+            this.applicationEventPublisher.publishEvent(new SethlansEvent(this, serverhostname, notification, NotificationOrigin.ACTIVATION_REQUEST.toString(), true));
         }
     }
 

@@ -158,7 +158,9 @@ public class NodeSettingsController extends AbstractSethlansController {
     @RequestMapping("/settings/servers/delete/{id}")
     public String deleteNode(@PathVariable Integer id, Model model) {
         model.addAttribute("settings_option", "servers");
-        sethlansServerDatabaseService.delete(id);
+        SethlansServer sethlansServer = sethlansServerDatabaseService.getById(id);
+//        notificationDatabaseService.
+//        sethlansServerDatabaseService.delete(id);
         return "redirect:/settings/servers/";
     }
 
