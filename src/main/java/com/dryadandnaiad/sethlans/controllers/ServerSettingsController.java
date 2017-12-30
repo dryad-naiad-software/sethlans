@@ -174,6 +174,7 @@ public class ServerSettingsController extends AbstractSethlansController {
                 return "settings/settings";
             }
         }
+        //TODO create method in Node Database Service to check for duplicates rather than duplicating code in Controllers
         if (nodeAddForm.getProgress() == NodeAddProgress.NODE_ADD) {
             Set<SethlansNode> sethlansNodes = new HashSet<>();
             List<SethlansNode> sethlansNodesDatabase = sethlansNodeDatabaseService.listAll();
@@ -243,6 +244,8 @@ public class ServerSettingsController extends AbstractSethlansController {
 
     @RequestMapping(value = "/settings/nodes/scan/summary", method = RequestMethod.POST)
     public String submitNodefromScan(final @Valid @ModelAttribute("scanForm") ScanForm scanForm) {
+
+        //TODO create method in Node Database Service to check for duplicates rather than duplicating code in Controllers
         List<SethlansNode> sethlansNodes = nodeDiscoveryService.discoverMulticastNodes();
         LOG.debug("Selected Nodes: " + sethlansNodes.toString());
         List<SethlansNode> sethlansNodesDatabase = sethlansNodeDatabaseService.listAll();
