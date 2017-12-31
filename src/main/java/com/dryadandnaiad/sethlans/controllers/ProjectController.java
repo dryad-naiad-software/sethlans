@@ -24,10 +24,7 @@ import com.dryadandnaiad.sethlans.converters.BlenderProjectToProjectForm;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
-import com.dryadandnaiad.sethlans.enums.BlenderEngine;
-import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.enums.ProjectFormProgress;
-import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
+import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderProjectService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
@@ -134,6 +131,9 @@ public class ProjectController extends AbstractSethlansController {
         ProjectForm projectForm = blenderProjectToProjectForm.convert(project);
         projectForm.setAvailableBlenderBinaries(availableBlenderBinaries);
         projectForm.setAvailableBlenderVersions();
+        if (projectForm.getProjectType().equals(ProjectType.STILL_IMAGE)) {
+            projectForm.setEndFrame(200);
+        }
         model.addAttribute("projectForm", projectForm);
         LOG.debug(projectForm.toString());
         return "project/project_form";

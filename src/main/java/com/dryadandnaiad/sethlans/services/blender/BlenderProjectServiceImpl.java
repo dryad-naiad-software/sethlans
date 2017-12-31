@@ -19,6 +19,8 @@
 
 package com.dryadandnaiad.sethlans.services.blender;
 
+import com.dryadandnaiad.sethlans.domains.blender.BlenderFramePart;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFrame;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
@@ -31,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,19 +51,30 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     @Override
     public void startProject(BlenderProject blenderProject) {
-        List<SethlansNode> sethlansNodes = sethlansNodeDatabaseService.listAll();
-        SethlansNode selectedRenderNode = null;
-        if (!blenderProject.getRenderOn().equals(ComputeType.CPU_GPU)) {
-            selectedRenderNode = SethlansUtils.getFastestFreeNode(sethlansNodes, blenderProject.getRenderOn());
-            LOG.debug(selectedRenderNode.toString());
-        } else {
-            SethlansNode cpuNode = SethlansUtils.getFastestFreeNode(sethlansNodes, ComputeType.CPU);
-            SethlansNode gpuNode = SethlansUtils.getFastestFreeNode(sethlansNodes, ComputeType.GPU);
+
+
+    }
+
+    @Override
+    public void configureFrameList(BlenderProject blenderProject) {
+        List<BlenderFrame> blenderFrameList = new ArrayList<>();
+        for (int i = 0; i < blenderProject.getTotalNumOfFrames(); i++) {
+            List<BlenderFramePart> blenderFramePartList = new ArrayList<>();
+            BlenderFrame blenderFrame = new BlenderFrame();
+            blenderFrame.setFrameFileName(blenderProject.getProject_uuid() + "-" + i);
+            blenderFrame.setFileExtension(blenderProject.getRenderOutputFormat().name().toLowerCase());
+            for (int j = 0; j < blenderProject.getPartsPerFrame(); j++) {
+                BlenderFramePart blenderFramePart = new BlenderFramePart();
+                blenderFramePart.setPartNumber(j);
+                blenderFramePart.setPartFilename(blenderFrame.getFrameFileName() + "-part" + j);
+                blenderFramePart.setFileExtension(blenderProject.getRenderOutputFormat().name().toLowerCase());
+                blenderFramePartList.add(blenderFramePart);
+
+            }
+            blenderFrame.setBlenderFrameParts(blenderFramePartList);
+            blenderFrameList.add(blenderFrame);
         }
-
-
-
-
+        blenderProject.setFrameList(blenderFrameList);
     }
 
     @Override
@@ -69,6 +83,35 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     @Override
     public void stopProject(BlenderProject blenderProject) {
+    }
+
+    private SethlansNode selectNodeToRenderWith(ComputeType computeType) {
+        List<SethlansNode> sethlansNodes = sethlansNodeDatabaseService.listAll();
+        SethlansNode selectedRenderNode;
+        if (!computeType.equals(ComputeType.CPU_GPU)) {
+            selectedRenderNode = SethlansUtils.getFastestFreeNode(sethlansNodes, computeType);
+        } else {
+            SethlansNode cpuNode = SethlansUtils.getFastestFreeNode(sethlansNodes, ComputeType.CPU);
+            SethlansNode gpuNode = SethlansUtils.getFastestFreeNode(sethlansNodes, ComputeType.GPU);
+            int gpuValue = gpuNode.getCombinedGPURating();
+            int cpuValue = cpuNode.getCpuRating();
+            if (cpuValue > gpuValue) {
+                selectedRenderNode = gpuNode;
+            } else if (cpuValue < gpuValue) {
+                selectedRenderNode = cpuNode;
+
+            } else {
+                // If both CPU and GPU are equal, default to CPU node(generally has more memory able to handle bigger renders.)
+                selectedRenderNode = cpuNode;
+            }
+
+
+        }
+        if (selectedRenderNode != null) {
+            LOG.debug(selectedRenderNode.toString());
+        }
+
+        return selectedRenderNode;
     }
 
     @Autowired

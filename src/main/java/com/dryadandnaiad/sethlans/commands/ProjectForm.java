@@ -26,7 +26,10 @@ import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Size;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created Mario Estrella on 3/25/17.
@@ -41,7 +44,7 @@ public class ProjectForm {
 
     @NotEmpty
     @Size(min = 4, max = 256)
-    private String projectName="";
+    private String projectName = "";
 
     private ProjectFormProgress progress = ProjectFormProgress.UPLOAD;
     private ProjectFormProgress previous;
@@ -66,6 +69,7 @@ public class ProjectForm {
     private boolean finished;
     private int currentPercentage;
     private String uuid;
+    private int partsPerFrame;
 
 
     public void populateForm() {
@@ -83,6 +87,9 @@ public class ProjectForm {
         this.currentPercentage = 0;
         this.outputFormat = RenderOutputFormat.PNG;
         this.uuid = SethlansUtils.getShortUUID();
+        this.partsPerFrame = 9;
+        this.stepFrame = 1;
+        this.endFrame = 200;
     }
 
 
@@ -143,7 +150,11 @@ public class ProjectForm {
     }
 
     public int getStepFrame() {
-        return stepFrame;
+        if (projectType.equals(ProjectType.STILL_IMAGE)) {
+            return 1;
+        } else {
+            return stepFrame;
+        }
     }
 
     public void setStepFrame(int stepFrame) {
@@ -297,6 +308,13 @@ public class ProjectForm {
         this.uuid = uuid;
     }
 
+    public int getPartsPerFrame() {
+        return partsPerFrame;
+    }
+
+    public void setPartsPerFrame(int partsPerFrame) {
+        this.partsPerFrame = partsPerFrame;
+    }
 
     @Override
     public String toString() {
@@ -327,6 +345,7 @@ public class ProjectForm {
                 ", finished=" + finished +
                 ", currentPercentage=" + currentPercentage +
                 ", uuid='" + uuid + '\'' +
+                ", partsPerFrame=" + partsPerFrame +
                 '}';
     }
 }

@@ -56,6 +56,7 @@ public class BlenderProject extends AbstractEntityClass {
     private boolean started;
     private boolean finished;
     private int currentPercentage;
+    private int partsPerFrame;
     @ElementCollection
     private List<BlenderFrame> frameList;
     private String project_uuid;
@@ -230,6 +231,24 @@ public class BlenderProject extends AbstractEntityClass {
         this.frameList = frameList;
     }
 
+    public int getPartsPerFrame() {
+        return partsPerFrame;
+    }
+
+    public void setPartsPerFrame(int partsPerFrame) {
+        this.partsPerFrame = partsPerFrame;
+    }
+
+    public int getTotalNumOfFrames() {
+        int frameSum = (endFrame - startFrame) / stepFrame;
+        if ((frameSum > 1)) {
+            return frameSum;
+        } else {
+            return 1;
+        }
+    }
+
+
     @Override
     public String toString() {
         return "BlenderProject{" +
@@ -252,8 +271,10 @@ public class BlenderProject extends AbstractEntityClass {
                 ", started=" + started +
                 ", finished=" + finished +
                 ", currentPercentage=" + currentPercentage +
+                ", partsPerFrame=" + partsPerFrame +
                 ", frameList=" + frameList +
                 ", project_uuid='" + project_uuid + '\'' +
+                ", totalNumOfFrames=" + getTotalNumOfFrames() +
                 '}';
     }
 }

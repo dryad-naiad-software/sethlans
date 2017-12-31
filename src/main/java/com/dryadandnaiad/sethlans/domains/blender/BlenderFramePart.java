@@ -30,6 +30,7 @@ import javax.persistence.Embeddable;
 public class BlenderFramePart {
     private int partNumber;
     private String partFilename;
+    private String fileExtension;
 
     public int getPartNumber() {
         return partNumber;
@@ -47,11 +48,20 @@ public class BlenderFramePart {
         this.partFilename = partFilename;
     }
 
+    public String getFileExtension() {
+        return fileExtension;
+    }
+
+    public void setFileExtension(String fileExtension) {
+        this.fileExtension = fileExtension;
+    }
+
     @Override
     public String toString() {
         return "BlenderFramePart{" +
                 "partNumber=" + partNumber +
                 ", partFilename='" + partFilename + '\'' +
+                ", fileExtension='" + fileExtension + '\'' +
                 '}';
     }
 }

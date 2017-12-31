@@ -169,7 +169,6 @@
             <td>Final Image Scaling</td>
             <td id="resPercentage" th:text="${project.getResPercentage()} + '%'">100%</td>
         </tr>
-
         <tr th:if="${project.getBlenderEngine().getName().contains('Cycles')}">
             <td>Samples</td>
             <td id="samples" th:text="${project.getSamples()}">100</td>
@@ -187,8 +186,16 @@
             <td id="frameStep" th:text="${project.getStepFrame()}">2</td>
         </tr>
         <tr th:if="${project.getProjectType().getName().contains('Still')}">
-            <td>Frame Number</td>
+            <td>Frame Number to Render</td>
             <td id="frameNumber" th:text="${project.getStartFrame()}">1</td>
+        </tr>
+        <tr>
+            <td>Total Number of Frames</td>
+            <td id="totalNumOfFrames" th:text="${project.getTotalNumOfFrames()}">1</td>
+        </tr>
+        <tr>
+            <td>Parts Per Frame</td>
+            <td id="partsPerFrame" th:text="${project.getPartsPerFrame()}">3</td>
         </tr>
         </tbody>
     </table>
@@ -200,11 +207,11 @@
         <h4>Render Progress</h4>
         <tr>
             <td class="col-md-6">Progress</td>
-            <td class="col-md-6">Frame 1 of 1: Tile 1 of 64</td>
+            <td class="col-md-6">Frame 1 of 1: Part 1 of 9</td>
         </tr>
         <tr>
             <td>Details</td>
-            <td>View Frames/Tiles</td>
+            <td>View Frames</td>
         </tr>
         <tr>
             <td>Preview</td>

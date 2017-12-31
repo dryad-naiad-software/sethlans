@@ -37,6 +37,7 @@ import java.util.List;
 public class BlenderFrame extends AbstractEntityClass {
     private String frameFileName;
     private int frameNumber;
+    private String fileExtension;
     @ElementCollection
     private List<BlenderFramePart> blenderFrameParts;
 
@@ -65,11 +66,20 @@ public class BlenderFrame extends AbstractEntityClass {
         this.blenderFrameParts = blenderFrameParts;
     }
 
+    public String getFileExtension() {
+        return fileExtension;
+    }
+
+    public void setFileExtension(String fileExtension) {
+        this.fileExtension = fileExtension;
+    }
+
     @Override
     public String toString() {
         return "BlenderFrame{" +
                 "frameFileName='" + frameFileName + '\'' +
                 ", frameNumber=" + frameNumber +
+                ", fileExtension='" + fileExtension + '\'' +
                 ", blenderFrameParts=" + blenderFrameParts +
                 '}';
     }

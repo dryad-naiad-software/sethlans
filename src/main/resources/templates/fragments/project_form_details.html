@@ -156,6 +156,17 @@
                        th:attr="data-slider-value=${projectForm.getResPercentage()}"
                        data-slider-step="1"/>
             </div>
+            <div class="form-group">
+                <style>.slider-selection {
+                    background: #0C8DCE;
+                }</style>
+                <label for="renderParts">Number of Rendering Parts per Frame: &emsp; &emsp; </label>
+                <input id="renderParts" th:field="${projectForm.partsPerFrame}" type="number"
+                       data-slider-min="3"
+                       data-slider-max="48"
+                       th:attr="data-slider-value=${projectForm.getPartsPerFrame()}"
+                       data-slider-step="3"/>
+            </div>
 
 
             <div class="form-group">
@@ -176,6 +187,7 @@
                 readRadio();
                 $("#tiles").slider({tooltip_position: 'bottom'});
                 $("#scaling").slider({tooltip_position: 'bottom'});
+                $("#renderParts").slider({tooltip_position: 'bottom'});
                 $('input[type="radio"]').on('change', function () {
                     readRadio();
                 });
@@ -216,14 +228,6 @@
                 }
 
             }
-
-            //                function toggleTiles() {
-            //                    if ($("#useTiles").is(":checked")) {
-            //                        document.getElementById("tileSlider").style.display = "block";
-            //                    } else {
-            //                        document.getElementById("tileSlider").style.display = "none";
-            //                    }
-            //                }
 
         </script>
     </div>
