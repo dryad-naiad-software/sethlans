@@ -113,7 +113,6 @@ public class ProjectController extends AbstractSethlansController {
     @RequestMapping("/project/start/{id}")
     public String startProject(@PathVariable Integer id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
-        blenderProjectService.configureFrameList(blenderProject);
         blenderProjectService.startProject(blenderProject);
         return "redirect:/project";
     }

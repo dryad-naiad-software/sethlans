@@ -30,7 +30,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 public interface BlenderProjectService {
     void startProject(BlenderProject blenderProject);
 
-    void configureFrameList(BlenderProject blenderProject);
+    void restartProject(BlenderProject blenderProject);
 
     void pauseProject(BlenderProject blenderProject);
 

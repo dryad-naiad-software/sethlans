@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
@@ -50,12 +51,28 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     @Override
     public void startProject(BlenderProject blenderProject) {
-
-
+        configureFrameList(blenderProject);
+        populateRenderQueue(blenderProject);
     }
 
     @Override
-    public void configureFrameList(BlenderProject blenderProject) {
+    public void restartProject(BlenderProject blenderProject) {
+
+    }
+
+    private void populateRenderQueue(BlenderProject blenderProject) {
+        List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
+        for (BlenderFramePart blenderFramePart : blenderFramePartList) {
+            BlenderRenderQueueItem blenderRenderQueueItem = new BlenderRenderQueueItem();
+            blenderRenderQueueItem.setConnection_uuid(selectNodeToRenderWith(blenderProject.getRenderOn()).getConnection_uuid());
+            blenderRenderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
+            blenderRenderQueueItem.setComplete(false);
+            blenderRenderQueueItem.setBlenderFramePart(blenderFramePart);
+            blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+        }
+    }
+
+    private void configureFrameList(BlenderProject blenderProject) {
         List<BlenderFramePart> blenderFramePartList = new ArrayList<>();
         List<String> frameFileNames = new ArrayList<>();
         for (int i = 0; i < blenderProject.getTotalNumOfFrames(); i++) {
@@ -73,6 +90,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         }
         blenderProject.setFrameFileNames(frameFileNames);
         blenderProject.setFramePartList(blenderFramePartList);
+        LOG.debug("Project Frames configured \n" + blenderFramePartList);
         blenderProjectDatabaseService.saveOrUpdate(blenderProject);
     }
 
