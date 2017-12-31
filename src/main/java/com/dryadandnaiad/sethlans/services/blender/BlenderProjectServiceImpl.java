@@ -20,10 +20,18 @@
 package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created Mario Estrella on 12/9/17.
@@ -35,10 +43,23 @@ import org.springframework.stereotype.Service;
 public class BlenderProjectServiceImpl implements BlenderProjectService {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
+    private BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService;
+    private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectServiceImpl.class);
 
     @Override
     public void startProject(BlenderProject blenderProject) {
-        blenderProject.setStarted(true);
+        List<SethlansNode> sethlansNodes = sethlansNodeDatabaseService.listAll();
+        SethlansNode selectedRenderNode = null;
+        if (!blenderProject.getRenderOn().equals(ComputeType.CPU_GPU)) {
+            selectedRenderNode = SethlansUtils.getFastestFreeNode(sethlansNodes, blenderProject.getRenderOn());
+            LOG.debug(selectedRenderNode.toString());
+        } else {
+            SethlansNode cpuNode = SethlansUtils.getFastestFreeNode(sethlansNodes, ComputeType.CPU);
+            SethlansNode gpuNode = SethlansUtils.getFastestFreeNode(sethlansNodes, ComputeType.GPU);
+        }
+
+
+
 
     }
 
@@ -58,5 +79,10 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Autowired
     public void setBlenderProjectDatabaseService(BlenderProjectDatabaseService blenderProjectDatabaseService) {
         this.blenderProjectDatabaseService = blenderProjectDatabaseService;
+    }
+
+    @Autowired
+    public void setBlenderRenderQueueDatabaseService(BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService) {
+        this.blenderRenderQueueDatabaseService = blenderRenderQueueDatabaseService;
     }
 }

@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
@@ -390,6 +391,41 @@ public class SethlansUtils {
         }
 
         return version;
+    }
+
+    public static SethlansNode getFastestFreeNode(List<SethlansNode> nodeList, ComputeType computeType) {
+        List<SethlansNode> listToSort = new ArrayList<>();
+        for (SethlansNode sethlansNode : nodeList) {
+            if (!sethlansNode.isRendering() && sethlansNode.isBenchmarkComplete() && sethlansNode.isActive()) {
+                switch (computeType) {
+                    case CPU:
+                        if (sethlansNode.getComputeType().equals(ComputeType.CPU)) {
+                            listToSort.add(sethlansNode);
+                        }
+                        if (sethlansNode.getComputeType().equals(ComputeType.CPU_GPU)) {
+                            listToSort.add(sethlansNode);
+                        }
+                        break;
+                    case GPU:
+                        if (sethlansNode.getComputeType().equals(ComputeType.GPU)) {
+                            listToSort.add(sethlansNode);
+                        }
+                        if (sethlansNode.getComputeType().equals(ComputeType.CPU_GPU)) {
+                            listToSort.add(sethlansNode);
+                        }
+                        break;
+                }
+            }
+        }
+        switch (computeType) {
+            case CPU:
+                listToSort.sort(Comparator.comparing(SethlansNode::getCpuRating));
+                return listToSort.get(0);
+            case GPU:
+                listToSort.sort(Comparator.comparing(SethlansNode::getCombinedGPURating));
+                return listToSort.get(0);
+        }
+        return null;
     }
 
 

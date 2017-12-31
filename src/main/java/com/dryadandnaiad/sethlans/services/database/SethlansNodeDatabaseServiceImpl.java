@@ -38,8 +38,6 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
 
     private NodeRepository nodeRepository;
 
-    //TODO create method in Node Database Service to check for duplicates rather than duplicating code in Controllers
-
     @Override
     public List<SethlansNode> listAll() {
         List<SethlansNode> sethlansNodes = new ArrayList<>();

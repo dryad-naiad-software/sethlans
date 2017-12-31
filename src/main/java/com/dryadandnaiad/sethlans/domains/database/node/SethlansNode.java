@@ -49,11 +49,13 @@ public class SethlansNode extends AbstractEntityClass {
     private List<GPUDevice> selectedGPUs = new ArrayList<>();
     @ElementCollection
     private List<String> selectedCUDA;
+    private Integer combinedGPURating;
     private boolean active;
     private boolean pendingActivation;
     private String connection_uuid;
     private int cpuRating;
     private boolean benchmarkComplete;
+    private boolean rendering;
 
 
     public String getHostname() {
@@ -169,6 +171,32 @@ public class SethlansNode extends AbstractEntityClass {
         this.cpuRating = cpuRating;
     }
 
+    public boolean isRendering() {
+        return rendering;
+    }
+
+    public void setRendering(boolean rendering) {
+        this.rendering = rendering;
+    }
+
+    public Integer getCombinedGPURating() {
+        List<Integer> gpuRatings = new ArrayList<>();
+        if (this.computeType.equals(ComputeType.CPU_GPU) || this.computeType.equals(ComputeType.GPU)) {
+            for (GPUDevice gpuDevice : selectedGPUs) {
+                gpuRatings.add(gpuDevice.getRating());
+            }
+        }
+        Integer sum = 0;
+        for (Integer gpuRating : gpuRatings) {
+            sum += gpuRating;
+        }
+        return sum / selectedGPUs.size();
+    }
+
+    public void setCombinedGPURating() {
+        this.combinedGPURating = getCombinedGPURating();
+    }
+
     @Override
     public String toString() {
         return "SethlansNode{" +
@@ -181,11 +209,13 @@ public class SethlansNode extends AbstractEntityClass {
                 ", selectedCores='" + selectedCores + '\'' +
                 ", selectedGPUs=" + selectedGPUs +
                 ", selectedCUDA=" + selectedCUDA +
+                ", combinedGPURating=" + getCombinedGPURating() +
                 ", active=" + active +
                 ", pendingActivation=" + pendingActivation +
                 ", connection_uuid='" + connection_uuid + '\'' +
                 ", cpuRating=" + cpuRating +
                 ", benchmarkComplete=" + benchmarkComplete +
+                ", rendering=" + rendering +
                 '}';
     }
 }
