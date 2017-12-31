@@ -64,6 +64,7 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
         project.setBlenderVersion(projectForm.getSelectedBlenderVersion());
         project.setRenderOn(projectForm.getRenderOn());
         project.setPartsPerFrame(projectForm.getPartsPerFrame());
+        project.setProject_uuid(projectForm.getUuid());
 
 
         if (projectForm.getId() == null) {

@@ -19,8 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.blender;
 
-import com.dryadandnaiad.sethlans.domains.blender.BlenderFramePart;
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFrame;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
@@ -57,24 +56,24 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     @Override
     public void configureFrameList(BlenderProject blenderProject) {
-        List<BlenderFrame> blenderFrameList = new ArrayList<>();
+        List<BlenderFramePart> blenderFramePartList = new ArrayList<>();
+        List<String> frameFileNames = new ArrayList<>();
         for (int i = 0; i < blenderProject.getTotalNumOfFrames(); i++) {
-            List<BlenderFramePart> blenderFramePartList = new ArrayList<>();
-            BlenderFrame blenderFrame = new BlenderFrame();
-            blenderFrame.setFrameFileName(blenderProject.getProject_uuid() + "-" + i);
-            blenderFrame.setFileExtension(blenderProject.getRenderOutputFormat().name().toLowerCase());
+            frameFileNames.add(blenderProject.getProject_uuid() + "-" + (i + 1));
             for (int j = 0; j < blenderProject.getPartsPerFrame(); j++) {
                 BlenderFramePart blenderFramePart = new BlenderFramePart();
-                blenderFramePart.setPartNumber(j);
-                blenderFramePart.setPartFilename(blenderFrame.getFrameFileName() + "-part" + j);
+                blenderFramePart.setFrameFileName(frameFileNames.get(i));
+                blenderFramePart.setFrameNumber(i + 1);
+                blenderFramePart.setPartNumber(j + 1);
+                blenderFramePart.setPartFilename(blenderFramePart.getFrameFileName() + "-part" + (j + 1));
                 blenderFramePart.setFileExtension(blenderProject.getRenderOutputFormat().name().toLowerCase());
                 blenderFramePartList.add(blenderFramePart);
 
             }
-            blenderFrame.setBlenderFrameParts(blenderFramePartList);
-            blenderFrameList.add(blenderFrame);
         }
-        blenderProject.setFrameList(blenderFrameList);
+        blenderProject.setFrameFileNames(frameFileNames);
+        blenderProject.setFramePartList(blenderFramePartList);
+        blenderProjectDatabaseService.saveOrUpdate(blenderProject);
     }
 
     @Override

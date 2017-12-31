@@ -53,12 +53,14 @@ public class BlenderProject extends AbstractEntityClass {
     private String blendFileLocation;
     private String blenderVersion;
     private String currentFrameThumbnail;
+    @ElementCollection
+    private List<String> frameFileNames;
     private boolean started;
     private boolean finished;
     private int currentPercentage;
     private int partsPerFrame;
     @ElementCollection
-    private List<BlenderFrame> frameList;
+    private List<BlenderFramePart> framePartList;
     private String project_uuid;
 
     public String getProjectName() {
@@ -223,12 +225,12 @@ public class BlenderProject extends AbstractEntityClass {
         this.project_uuid = project_uuid;
     }
 
-    public List<BlenderFrame> getFrameList() {
-        return frameList;
+    public List<BlenderFramePart> getFramePartList() {
+        return framePartList;
     }
 
-    public void setFrameList(List<BlenderFrame> frameList) {
-        this.frameList = frameList;
+    public void setFramePartList(List<BlenderFramePart> framePartList) {
+        this.framePartList = framePartList;
     }
 
     public int getPartsPerFrame() {
@@ -248,6 +250,13 @@ public class BlenderProject extends AbstractEntityClass {
         }
     }
 
+    public List<String> getFrameFileNames() {
+        return frameFileNames;
+    }
+
+    public void setFrameFileNames(List<String> frameFileNames) {
+        this.frameFileNames = frameFileNames;
+    }
 
     @Override
     public String toString() {
@@ -272,8 +281,9 @@ public class BlenderProject extends AbstractEntityClass {
                 ", finished=" + finished +
                 ", currentPercentage=" + currentPercentage +
                 ", partsPerFrame=" + partsPerFrame +
-                ", frameList=" + frameList +
+                ", frameList=" + framePartList +
                 ", project_uuid='" + project_uuid + '\'' +
+                ", frameFileNames='" + frameFileNames + '\'' +
                 ", totalNumOfFrames=" + getTotalNumOfFrames() +
                 '}';
     }

@@ -57,6 +57,7 @@ public class BlenderProjectToProjectForm implements Converter<BlenderProject, Pr
         projectForm.setFinished(project.isFinished());
         projectForm.setProgress(ProjectFormProgress.DETAILS);
         projectForm.setPartsPerFrame(project.getPartsPerFrame());
+        projectForm.setUuid(project.getProject_uuid());
         return projectForm;
     }
 }

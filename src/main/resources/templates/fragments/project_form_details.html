@@ -176,6 +176,7 @@
                 <input type="hidden" th:field="${projectForm.finished}"/>
                 <input type="hidden" name="uploadedFile" th:value="${projectForm.uploadedFile}">
                 <input type="hidden" name="fileLocation" th:value="${projectForm.fileLocation}">
+                <input type="hidden" name="uuid" th:value="${projectForm.uuid}">
                 <input type="hidden" id="progress" name="progress" value="FINISHED">
                 <input type="hidden" id="previous" name="previous" value="DETAILS">
                 <a href="/project" class="btn btn-default">Cancel</a>

@@ -16,15 +16,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
 package com.dryadandnaiad.sethlans.domains.database.blender;
 
-import com.dryadandnaiad.sethlans.domains.blender.BlenderFramePart;
-import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
-
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import java.util.List;
+import javax.persistence.Embeddable;
 
 /**
  * Created Mario Estrella on 12/28/17.
@@ -32,38 +26,28 @@ import java.util.List;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-
-@Entity
-public class BlenderFrame extends AbstractEntityClass {
+@Embeddable
+public class BlenderFramePart {
     private String frameFileName;
     private int frameNumber;
+    private int partNumber;
+    private String partFilename;
     private String fileExtension;
-    @ElementCollection
-    private List<BlenderFramePart> blenderFrameParts;
 
-    public String getFrameFileName() {
-        return frameFileName;
+    public int getPartNumber() {
+        return partNumber;
     }
 
-    public void setFrameFileName(String frameFileName) {
-        this.frameFileName = frameFileName;
+    public void setPartNumber(int partNumber) {
+        this.partNumber = partNumber;
     }
 
-
-    public int getFrameNumber() {
-        return frameNumber;
+    public String getPartFilename() {
+        return partFilename;
     }
 
-    public void setFrameNumber(int frameNumber) {
-        this.frameNumber = frameNumber;
-    }
-
-    public List<BlenderFramePart> getBlenderFrameParts() {
-        return blenderFrameParts;
-    }
-
-    public void setBlenderFrameParts(List<BlenderFramePart> blenderFrameParts) {
-        this.blenderFrameParts = blenderFrameParts;
+    public void setPartFilename(String partFilename) {
+        this.partFilename = partFilename;
     }
 
     public String getFileExtension() {
@@ -74,13 +58,26 @@ public class BlenderFrame extends AbstractEntityClass {
         this.fileExtension = fileExtension;
     }
 
+    public String getFrameFileName() {
+        return frameFileName;
+    }
+
+    public void setFrameFileName(String frameFileName) {
+        this.frameFileName = frameFileName;
+    }
+
+    public void setFrameNumber(int frameNumber) {
+        this.frameNumber = frameNumber;
+    }
+
     @Override
     public String toString() {
-        return "BlenderFrame{" +
+        return "BlenderFramePart{" +
                 "frameFileName='" + frameFileName + '\'' +
                 ", frameNumber=" + frameNumber +
+                ", partNumber=" + partNumber +
+                ", partFilename='" + partFilename + '\'' +
                 ", fileExtension='" + fileExtension + '\'' +
-                ", blenderFrameParts=" + blenderFrameParts +
                 '}';
     }
 }

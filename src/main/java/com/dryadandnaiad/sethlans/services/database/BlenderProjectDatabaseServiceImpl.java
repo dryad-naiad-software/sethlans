@@ -43,16 +43,6 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     private ProjectFormToBlenderProject projectFormToBlenderProject;
     private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectDatabaseServiceImpl.class);
 
-    @Autowired
-    public void setBlenderProjectRepository(BlenderProjectRepository blenderProjectRepository) {
-        this.blenderProjectRepository = blenderProjectRepository;
-    }
-
-    @Autowired
-    public void setProjectFormToBlenderProject(ProjectFormToBlenderProject projectFormToBlenderProject) {
-        this.projectFormToBlenderProject = projectFormToBlenderProject;
-    }
-
     @Override
     public List<BlenderProject> listAll() {
         List<BlenderProject> blenderProjects = new ArrayList<>();
@@ -80,4 +70,15 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
         BlenderProject blenderProject = blenderProjectRepository.findOne(id);
         blenderProjectRepository.delete(blenderProject);
     }
+
+    @Autowired
+    public void setBlenderProjectRepository(BlenderProjectRepository blenderProjectRepository) {
+        this.blenderProjectRepository = blenderProjectRepository;
+    }
+
+    @Autowired
+    public void setProjectFormToBlenderProject(ProjectFormToBlenderProject projectFormToBlenderProject) {
+        this.projectFormToBlenderProject = projectFormToBlenderProject;
+    }
+
 }
