@@ -49,7 +49,6 @@ public class SethlansNode extends AbstractEntityClass {
     private List<GPUDevice> selectedGPUs = new ArrayList<>();
     @ElementCollection
     private List<String> selectedCUDA;
-    private Integer combinedGPURating;
     private boolean active;
     private boolean pendingActivation;
     private String connection_uuid;
@@ -191,10 +190,6 @@ public class SethlansNode extends AbstractEntityClass {
             sum += gpuRating;
         }
         return sum / selectedGPUs.size();
-    }
-
-    public void setCombinedGPURating() {
-        this.combinedGPURating = getCombinedGPURating();
     }
 
     @Override
