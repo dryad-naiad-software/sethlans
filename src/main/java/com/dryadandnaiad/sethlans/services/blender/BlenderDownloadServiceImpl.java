@@ -132,9 +132,8 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                         // Send notification of pending download.
                         LOG.info("Downloading " + filename + "...");
                         String blenderFileInfo = "Downloading Blender " + blenderVersion + " for " + blenderBinary.getBlenderBinaryOS();
-                        // TODO Notification key should be a combination of origin and item.
-                        this.applicationEventPublisher.publishEvent(new SethlansEvent(this, blenderVersion,
-                                blenderFileInfo, NotificationOrigin.BLENDER_DOWNLOAD_SERVICE.toString(), true));  // Sets the download notification
+                        this.applicationEventPublisher.publishEvent(new SethlansEvent(this, blenderVersion + "-" + NotificationOrigin.BLENDER_DOWNLOAD_SERVICE.toString(),
+                                blenderFileInfo, true));  // Sets the download notification
 
                         // Checks to see if previous file is there.  In case of a failure user will need to delete file with extension = pending.
                         if (toDownload.exists()) {
@@ -182,7 +181,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                         if (connection != null) {
                             connection.disconnect();
                             this.applicationEventPublisher.publishEvent(new SethlansEvent
-                                    (this, blenderVersion, false)); // Removes the download notification
+                                    (this, blenderVersion + "-" + NotificationOrigin.BLENDER_DOWNLOAD_SERVICE.toString(), false)); // Removes the download notification
                         }
                     }
 

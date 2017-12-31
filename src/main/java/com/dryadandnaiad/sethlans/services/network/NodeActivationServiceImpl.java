@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.services.network;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
+import com.dryadandnaiad.sethlans.enums.NotificationOrigin;
 import com.dryadandnaiad.sethlans.events.SethlansEvent;
 import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
@@ -77,7 +78,7 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
         String params = "nodehostname=" + sethlansNode.getHostname() + "&ipAddress=" + sethlansNode.getIpAddress()
                 + "&port=" + sethlansNode.getNetworkPort() + "&connection_uuid=" + sethlansServer.getConnection_uuid();
         if (sethlansAPIConnectionService.sendToRemotePOST(responseURL, params)) {
-            this.applicationEventPublisher.publishEvent(new SethlansEvent(this, sethlansServer.getHostname(), false));
+            this.applicationEventPublisher.publishEvent(new SethlansEvent(this, sethlansServer.getConnection_uuid() + "-" + NotificationOrigin.ACTIVATION_REQUEST, false));
 
         }
     }

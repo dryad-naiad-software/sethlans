@@ -63,8 +63,7 @@ public class ActivationRequestController implements ApplicationEventPublisherAwa
             LOG.debug(sethlansServer.toString());
             LOG.debug("Processed node activation request");
             String notification = "New Server Request: " + serverhostname;
-            //TODO key should be a combination of origin and item.
-            this.applicationEventPublisher.publishEvent(new SethlansEvent(this, serverhostname, notification, NotificationOrigin.ACTIVATION_REQUEST.toString(), true));
+            this.applicationEventPublisher.publishEvent(new SethlansEvent(this, connection_uuid + "-" + NotificationOrigin.ACTIVATION_REQUEST.toString(), notification, true));
         }
     }
 

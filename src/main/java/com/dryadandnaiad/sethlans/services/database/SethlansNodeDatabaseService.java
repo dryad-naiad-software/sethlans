@@ -29,4 +29,6 @@ import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
  */
 public interface SethlansNodeDatabaseService extends CRUDService<SethlansNode> {
     SethlansNode getByConnectionUUID(String uuid);
+
+    boolean isNodeAlreadyInDatabase(SethlansNode sethlansNode);
 }

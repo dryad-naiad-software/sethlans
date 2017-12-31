@@ -67,7 +67,7 @@ public class NotificationDatabaseServiceImpl implements NotificationDatabaseServ
 
     @Override
     public SethlansNotification saveOrUpdate(SethlansNotification domainObject) {
-        if (domainObject.getKey().isEmpty() || domainObject.getMessage().isEmpty() || domainObject.getOrigin().isEmpty()) {
+        if (domainObject.getKey().isEmpty() || domainObject.getMessage().isEmpty()) {
             LOG.debug("null objects are not allowed");
         } else {
             return notificationRepository.save(domainObject);

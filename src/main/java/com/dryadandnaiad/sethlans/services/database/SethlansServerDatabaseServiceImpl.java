@@ -20,8 +20,12 @@
 package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
+import com.dryadandnaiad.sethlans.enums.NotificationOrigin;
+import com.dryadandnaiad.sethlans.events.SethlansEvent;
 import com.dryadandnaiad.sethlans.repositories.ServerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,9 +38,10 @@ import java.util.List;
  * Project: sethlans
  */
 @Service
-public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabaseService {
+public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabaseService, ApplicationEventPublisherAware {
 
     private ServerRepository serverRepository;
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public List<SethlansServer> listAll() {
@@ -58,6 +63,7 @@ public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabase
     @Override
     public void delete(Integer id) {
         SethlansServer sethlansServer = serverRepository.findOne(id);
+        this.applicationEventPublisher.publishEvent(new SethlansEvent(this, sethlansServer.getConnection_uuid() + "-" + NotificationOrigin.ACTIVATION_REQUEST, false));
         serverRepository.delete(sethlansServer);
 
     }
@@ -76,5 +82,10 @@ public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabase
             }
         }
         return null;
+    }
+
+    @Override
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 }

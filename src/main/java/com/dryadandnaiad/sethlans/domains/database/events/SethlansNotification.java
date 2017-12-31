@@ -33,7 +33,6 @@ import javax.persistence.Entity;
 public class SethlansNotification extends AbstractEntityClass {
     private String message;
     private String key;
-    private String origin;
 
     public String getMessage() {
         return message;
@@ -51,20 +50,11 @@ public class SethlansNotification extends AbstractEntityClass {
         this.key = key;
     }
 
-    public String getOrigin() {
-        return origin;
-    }
-
-    public void setOrigin(String origin) {
-        this.origin = origin;
-    }
-
     @Override
     public String toString() {
         return "SethlansNotification{" +
                 "message='" + message + '\'' +
                 ", key='" + key + '\'' +
-                ", origin='" + origin + '\'' +
                 '}';
     }
 }

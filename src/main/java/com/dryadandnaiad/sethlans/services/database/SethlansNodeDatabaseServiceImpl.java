@@ -74,6 +74,20 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
         return null;
     }
 
+    @Override
+    public boolean isNodeAlreadyInDatabase(SethlansNode sethlansNode) {
+        List<SethlansNode> sethlansNodeList = listAll();
+        for (SethlansNode node : sethlansNodeList) {
+            if (node.getIpAddress().equals(sethlansNode.getIpAddress()) &&
+                    node.getNetworkPort().equals(sethlansNode.getNetworkPort()) &&
+                    node.getComputeType().equals(sethlansNode.getComputeType()) &&
+                    node.getSethlansNodeOS().equals(sethlansNode.getSethlansNodeOS())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Autowired
     public void setNodeRepository(NodeRepository nodeRepository) {
         this.nodeRepository = nodeRepository;
