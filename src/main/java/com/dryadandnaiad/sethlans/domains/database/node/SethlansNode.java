@@ -184,12 +184,14 @@ public class SethlansNode extends AbstractEntityClass {
             for (GPUDevice gpuDevice : selectedGPUs) {
                 gpuRatings.add(gpuDevice.getRating());
             }
+            Integer sum = 0;
+            for (Integer gpuRating : gpuRatings) {
+                sum += gpuRating;
+            }
+            return sum / selectedGPUs.size();
         }
-        Integer sum = 0;
-        for (Integer gpuRating : gpuRatings) {
-            sum += gpuRating;
-        }
-        return sum / selectedGPUs.size();
+        return 0;
+
     }
 
     @Override
