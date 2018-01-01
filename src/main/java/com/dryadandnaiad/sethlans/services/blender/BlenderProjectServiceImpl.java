@@ -27,6 +27,7 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.utils.RandomCollection;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,17 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Override
     public void startProject(BlenderProject blenderProject) {
         configureFrameList(blenderProject);
-        populateRenderQueue(blenderProject);
+        if (populateRenderQueue(blenderProject)) {
+            RandomCollection<SethlansNode> nodeRandomCollection = new RandomCollection<>();
+            List<SethlansNode> sortedList =
+                    SethlansUtils.getFastestNodes(sethlansNodeDatabaseService.listAll(), blenderProject.getRenderOn());
+            double weight = 50.0;
+            for (int i = 0; i < sortedList.size(); i++) {
+                nodeRandomCollection.add(weight - i, sortedList.get(i));
+            }
+            LOG.debug(nodeRandomCollection.toString());
+
+        }
 
         // TODO logic to handle the queue depending on the number of ndoes available.
         // TODO weighted distribution of queue depending on speed of nodes.

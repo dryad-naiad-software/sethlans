@@ -397,38 +397,59 @@ public class SethlansUtils {
         List<SethlansNode> listToSort = new ArrayList<>();
         for (SethlansNode sethlansNode : nodeList) {
             if (!sethlansNode.isRendering() && sethlansNode.isBenchmarkComplete() && sethlansNode.isActive()) {
-                switch (computeType) {
-                    case CPU:
-                        if (sethlansNode.getComputeType().equals(ComputeType.CPU)) {
-                            listToSort.add(sethlansNode);
-                        }
-                        if (sethlansNode.getComputeType().equals(ComputeType.CPU_GPU)) {
-                            listToSort.add(sethlansNode);
-                        }
-                        break;
-                    case GPU:
-                        if (sethlansNode.getComputeType().equals(ComputeType.GPU)) {
-                            listToSort.add(sethlansNode);
-                        }
-                        if (sethlansNode.getComputeType().equals(ComputeType.CPU_GPU)) {
-                            listToSort.add(sethlansNode);
-                        }
-                        break;
-                }
+                listofNodes(computeType, listToSort, sethlansNode);
             }
         }
+        if (sortedNodeList(computeType, listToSort)) return listToSort.get(0);
+
+        return null;
+    }
+
+    public static List<SethlansNode> getFastestNodes(List<SethlansNode> nodeList, ComputeType computeType) {
+        List<SethlansNode> listToSort = new ArrayList<>();
+        for (SethlansNode sethlansNode : nodeList) {
+            if (sethlansNode.isBenchmarkComplete() && sethlansNode.isActive()) {
+                listofNodes(computeType, listToSort, sethlansNode);
+            }
+        }
+        if (sortedNodeList(computeType, listToSort)) return listToSort;
+
+        return null;
+    }
+
+    private static boolean sortedNodeList(ComputeType computeType, List<SethlansNode> listToSort) {
         if (listToSort.size() > 0) {
             switch (computeType) {
                 case CPU:
                     listToSort.sort(Comparator.comparing(SethlansNode::getCpuRating));
-                    return listToSort.get(0);
+                    return true;
                 case GPU:
                     listToSort.sort(Comparator.comparing(SethlansNode::getCombinedGPURating));
-                    return listToSort.get(0);
+                    return true;
             }
         }
+        return false;
+    }
 
-        return null;
+    private static void listofNodes(ComputeType computeType, List<SethlansNode> listToSort, SethlansNode sethlansNode) {
+        switch (computeType) {
+            case CPU:
+                if (sethlansNode.getComputeType().equals(ComputeType.CPU)) {
+                    listToSort.add(sethlansNode);
+                }
+                if (sethlansNode.getComputeType().equals(ComputeType.CPU_GPU)) {
+                    listToSort.add(sethlansNode);
+                }
+                break;
+            case GPU:
+                if (sethlansNode.getComputeType().equals(ComputeType.GPU)) {
+                    listToSort.add(sethlansNode);
+                }
+                if (sethlansNode.getComputeType().equals(ComputeType.CPU_GPU)) {
+                    listToSort.add(sethlansNode);
+                }
+                break;
+        }
     }
 
 

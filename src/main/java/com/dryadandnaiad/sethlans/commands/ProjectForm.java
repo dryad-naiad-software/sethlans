@@ -53,11 +53,11 @@ public class ProjectForm {
     private int samples;
     @NotNull
     @Min(1)
-    private int startFrame;
-    private int endFrame;
+    private int startFrame = 1;
+    private int endFrame = 1;
     @NotNull
     @Min(1)
-    private int stepFrame;
+    private int stepFrame = 1;
     private int resolutionX;
     private int resolutionY;
     private int resPercentage;
@@ -94,7 +94,6 @@ public class ProjectForm {
         this.outputFormat = RenderOutputFormat.PNG;
         this.uuid = SethlansUtils.getShortUUID();
         this.partsPerFrame = 9;
-        this.stepFrame = 1;
         this.endFrame = 200;
     }
 
