@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,6 +25,8 @@ import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Collections;
 import java.util.List;
@@ -49,8 +51,12 @@ public class ProjectForm {
     private ProjectFormProgress progress = ProjectFormProgress.UPLOAD;
     private ProjectFormProgress previous;
     private int samples;
+    @NotNull
+    @Min(1)
     private int startFrame;
     private int endFrame;
+    @NotNull
+    @Min(1)
     private int stepFrame;
     private int resolutionX;
     private int resolutionY;

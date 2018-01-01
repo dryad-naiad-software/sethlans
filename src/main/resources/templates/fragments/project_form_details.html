@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-  ~ Copyright (c) 2017 Dryad and Naiad Software LLC.
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
   ~
   ~ This program is free software; you can redistribute it and/or
   ~ modify it under the terms of the GNU General Public License
@@ -31,22 +31,25 @@
               method="POST">
             <br/>
             <h2 class="text-center" id="projectFormTitle">Project Details</h2>
-            <div th:if="${#fields.hasErrors('*') and projectForm.getPrevious() == T(com.dryadandnaiad.sethlans.enums.ProjectFormProgress).DETAILS}" class="alert alert-danger">
+            <div th:if="${#fields.hasErrors('*') and projectForm.getPrevious() == T(com.dryadandnaiad.sethlans.enums.ProjectFormProgress).DETAILS}"
+                 class="alert alert-danger">
                 <div align="center" th:text="#{form.hasErrors}">Error Message</div>
             </div>
-            <div class="form-group" th:if="${projectForm.getPrevious() == T(com.dryadandnaiad.sethlans.enums.ProjectFormProgress).DETAILS}"
+            <div class="form-group"
+                 th:if="${projectForm.getPrevious() == T(com.dryadandnaiad.sethlans.enums.ProjectFormProgress).DETAILS}"
                  th:class="${#fields.hasErrors('projectName')} ? 'form-group has-error' : 'form-group'">
                 <label class="control-label" for="projectName">Project Name</label>
                 <input type="text" name="projectName" id="projectName" th:value="${projectForm.projectName}"
                        class="form-control">
                 <span class="help-block">
-                                        <ul>
-                                        <li th:each="err : ${#fields.errors('projectName')}"
+                    <ul>
+                        <li th:each="err : ${#fields.errors('projectName')}"
                                             th:text="${err}"/>
-                                        </ul>
-                                    </span>
+                    </ul>
+                </span>
             </div>
-            <div class="form-group" th:unless="${projectForm.getPrevious() == T(com.dryadandnaiad.sethlans.enums.ProjectFormProgress).DETAILS}">
+            <div class="form-group"
+                 th:unless="${projectForm.getPrevious() == T(com.dryadandnaiad.sethlans.enums.ProjectFormProgress).DETAILS}">
                 <label class="control-label" for="projectName">Project Name</label>
                 <input type="text" name="projectName" id="projectName" th:value="${projectForm.projectName}"
                        class="form-control">
@@ -87,7 +90,11 @@
                        class="form-control">
 
             </div>
-            <div class="form-group">
+
+
+            <div class="form-group"
+                 th:if="${projectForm.getPrevious() == T(com.dryadandnaiad.sethlans.enums.ProjectFormProgress).DETAILS}"
+                 th:class="${#fields.hasErrors('stepFrame')} ? 'form-group has-error' : 'form-group'">
                 <label class="control-label"><input type="radio" name="projectType"
                                                     th:field="${projectForm.projectType}"
                                                     th:value="${T(com.dryadandnaiad.sethlans.enums.ProjectType).ANIMATION}"
@@ -99,7 +106,30 @@
                 <input type="number" id="endframe" th:field="${projectForm.endFrame}" class="form-control" disabled>
                 <label class="control-label" for="framestep">Frame Step</label>
                 <input type="number" id="framestep" th:field="${projectForm.stepFrame}" class="form-control" disabled>
+                <span class="help-block">
+                    <ul>
+                        <li th:each="err : ${#fields.errors('stepFrame')}"
+                            th:text="${err}"/>
+                    </ul>
+                </span>
             </div>
+            <div class="form-group"
+                 th:unless="${projectForm.getPrevious() == T(com.dryadandnaiad.sethlans.enums.ProjectFormProgress).DETAILS}">
+                <label class="control-label"><input type="radio" name="projectType"
+                                                    th:field="${projectForm.projectType}"
+                                                    th:value="${T(com.dryadandnaiad.sethlans.enums.ProjectType).ANIMATION}"
+                                                    value="ANIMATION">&emsp;
+                    Animation</label><br/>
+                <label class="control-label" for="startframe">Start Frame</label>
+                <input type="number" id="startframe" th:field="${projectForm.startFrame}" class="form-control" disabled>
+                <label class="control-label" for="endframe">End Frame</label>
+                <input type="number" id="endframe" th:field="${projectForm.endFrame}" class="form-control" disabled>
+                <label class="control-label" for="framestep">Frame Step</label>
+                <input type="number" id="framestep" th:field="${projectForm.stepFrame}" class="form-control" disabled>
+                <span class="help-block">
+                </span>
+            </div>
+
 
             <div class="form-group" id="renderOnGroup" style="display: block">
                 <label for="renderOn">Render On:</label>

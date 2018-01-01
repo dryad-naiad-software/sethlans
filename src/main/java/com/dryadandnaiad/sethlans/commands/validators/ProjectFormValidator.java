@@ -42,7 +42,6 @@ public class ProjectFormValidator implements Validator {
 
         ProjectForm projectForm = (ProjectForm) target;
 
-        //TODO add validation for animation frames and steps.
 
     }
 }
