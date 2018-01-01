@@ -53,6 +53,9 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     public void startProject(BlenderProject blenderProject) {
         configureFrameList(blenderProject);
         populateRenderQueue(blenderProject);
+
+        // TODO logic to handle the queue depending on the number of ndoes available.
+        // TODO weighted distribution of queue depending on speed of nodes.
     }
 
     @Override
