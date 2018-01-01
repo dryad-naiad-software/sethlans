@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,6 +29,4 @@ import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
  */
 public interface SethlansNodeDatabaseService extends CRUDService<SethlansNode> {
     SethlansNode getByConnectionUUID(String uuid);
-
-    boolean isNodeAlreadyInDatabase(SethlansNode sethlansNode);
 }

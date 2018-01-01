@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -70,20 +70,6 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
             }
         }
         return null;
-    }
-
-    @Override
-    public boolean isNodeAlreadyInDatabase(SethlansNode sethlansNode) {
-        List<SethlansNode> sethlansNodeList = listAll();
-        for (SethlansNode node : sethlansNodeList) {
-            if (node.getIpAddress().equals(sethlansNode.getIpAddress()) &&
-                    node.getNetworkPort().equals(sethlansNode.getNetworkPort()) &&
-                    node.getComputeType().equals(sethlansNode.getComputeType()) &&
-                    node.getSethlansNodeOS().equals(sethlansNode.getSethlansNodeOS())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Autowired
