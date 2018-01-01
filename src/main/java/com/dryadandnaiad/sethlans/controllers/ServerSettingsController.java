@@ -165,15 +165,23 @@ public class ServerSettingsController extends AbstractSethlansController {
             Set<SethlansNode> sethlansNodes = new HashSet<>();
             List<SethlansNode> sethlansNodesDatabase = sethlansNodeDatabaseService.listAll();
             if (!sethlansNodesDatabase.isEmpty()) {
+                LOG.debug("Nodes found in database, starting comparison.");
+                List<SethlansNode> matchedNodes = new ArrayList<>();
                 for (SethlansNode node : sethlansNodesDatabase) {
                     if (node.getIpAddress().equals(sethlansNode.getIpAddress()) &&
                             node.getNetworkPort().equals(sethlansNode.getNetworkPort()) &&
                             node.getComputeType().equals(sethlansNode.getComputeType()) &&
                             node.getSethlansNodeOS().equals(sethlansNode.getSethlansNodeOS())) {
                         LOG.debug(node.getHostname() + " is already in the database.");
+                        matchedNodes.add(node);
                     } else {
-                        sethlansNodes.add(sethlansNode);
+                        LOG.debug(node.getHostname() + " does not match " + sethlansNode.getHostname());
                     }
+                }
+                if (matchedNodes.size() == 0) {
+                    sethlansNodes.add(sethlansNode);
+                } else {
+                    LOG.debug("A Total of " + matchedNodes.size() + " node(s) already exist in the database."); 
                 }
                 for (SethlansNode node : sethlansNodes) {
                     sethlansNodeDatabaseService.saveOrUpdate(node);
@@ -185,6 +193,7 @@ public class ServerSettingsController extends AbstractSethlansController {
                 }
 
             } else {
+                LOG.debug("No nodes present in database.");
                 sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                 LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
                 if (sethlansNode.isPendingActivation()) {
