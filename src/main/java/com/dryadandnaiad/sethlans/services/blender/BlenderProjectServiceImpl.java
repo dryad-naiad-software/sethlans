@@ -65,10 +65,6 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
             List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
             for (BlenderFramePart blenderFramePart : blenderFramePartList) {
                 BlenderRenderQueueItem blenderRenderQueueItem = new BlenderRenderQueueItem();
-
-                blenderRenderQueueItem.setConnection_uuid(selectNodeToRenderWith(blenderProject.getRenderOn()).getConnection_uuid());
-
-
                 blenderRenderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
                 blenderRenderQueueItem.setComplete(false);
                 blenderRenderQueueItem.setBlenderFramePart(blenderFramePart);
@@ -141,7 +137,6 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
         }
         if (selectedRenderNode != null) {
-            LOG.debug(selectedRenderNode.toString());
             return selectedRenderNode;
         } else {
             return null;
