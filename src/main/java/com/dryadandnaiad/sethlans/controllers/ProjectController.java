@@ -87,6 +87,9 @@ public class ProjectController extends AbstractSethlansController {
         for (SethlansNode activeNode : activeNodes) {
             activeTypes.add(activeNode.getComputeType());
         }
+        if (activeNodes.size() > 0) {
+            activeTypes.add(ComputeType.CPU_GPU);
+        }
         getAvailableBlenderBinaries();
         model.addAttribute("availableBlenderBinaries", availableBlenderBinaries);
         model.addAttribute("projects", blenderProjectDatabaseService.listAll());
