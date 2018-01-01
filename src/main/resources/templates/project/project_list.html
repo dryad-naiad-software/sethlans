@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-  ~ Copyright (c) 2017 Dryad and Naiad Software LLC.
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
   ~
   ~ This program is free software; you can redistribute it and/or
   ~ modify it under the terms of the GNU General Public License
@@ -195,11 +195,19 @@
                 </td>
                 <td>
                     <a th:id="'projectStartLink-' + ${project.getId()}"
-                       th:if="${!project.isStarted() and active_nodes.size() > 0}"
+                       th:if="${!project.isStarted()
+                       and active_nodes.size() > 0
+                       and #lists.contains(active_compute_types, project.renderOn)
+                       or !project.isStarted()
+                       and active_nodes.size() > 0
+                       and project.renderOn.equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).CPU_GPU)}"
                        th:href="${'/project/start/' + project.getId()}"
                        href="#">Start</a>
                     <span th:id="'projectStartLinkDisabled-' + ${project.getId()}"
-                          th:if="${!project.isStarted() and active_nodes.size() == 0}">Start</span>
+                          th:if="${!project.isStarted()
+                          and active_nodes.size() == 0
+                          or not project.renderOn.equals(T(com.dryadandnaiad.sethlans.enums.ComputeType).CPU_GPU)
+                          and not #lists.contains(active_compute_types, project.renderOn)}">Start</span>
                     <br th:if="${!project.isStarted()}"/>
                     <a th:id="'projectPauseLink-' + ${project.getId()}"
                        th:if="${project.isStarted()}" href="#">Pause</a>

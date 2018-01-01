@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -78,15 +78,20 @@ public class ProjectController extends AbstractSethlansController {
     public String getPage(Model model) {
         List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.listAll();
         List<SethlansNode> activeNodes = new ArrayList<>();
+        List<ComputeType> activeTypes = new ArrayList<>();
         for (SethlansNode sethlansNode : sethlansNodeList) {
             if (sethlansNode.isActive() && sethlansNode.isBenchmarkComplete()) {
                 activeNodes.add(sethlansNode);
             }
         }
+        for (SethlansNode activeNode : activeNodes) {
+            activeTypes.add(activeNode.getComputeType());
+        }
         getAvailableBlenderBinaries();
         model.addAttribute("availableBlenderBinaries", availableBlenderBinaries);
         model.addAttribute("projects", blenderProjectDatabaseService.listAll());
         model.addAttribute("active_nodes", activeNodes);
+        model.addAttribute("active_compute_types", activeTypes);
         return "project/project_list";
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -60,15 +60,25 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     }
 
-    private void populateRenderQueue(BlenderProject blenderProject) {
-        List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
-        for (BlenderFramePart blenderFramePart : blenderFramePartList) {
-            BlenderRenderQueueItem blenderRenderQueueItem = new BlenderRenderQueueItem();
-            blenderRenderQueueItem.setConnection_uuid(selectNodeToRenderWith(blenderProject.getRenderOn()).getConnection_uuid());
-            blenderRenderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
-            blenderRenderQueueItem.setComplete(false);
-            blenderRenderQueueItem.setBlenderFramePart(blenderFramePart);
-            blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+    private boolean populateRenderQueue(BlenderProject blenderProject) {
+        if (selectNodeToRenderWith(blenderProject.getRenderOn()) != null) {
+            List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
+            for (BlenderFramePart blenderFramePart : blenderFramePartList) {
+                BlenderRenderQueueItem blenderRenderQueueItem = new BlenderRenderQueueItem();
+
+                blenderRenderQueueItem.setConnection_uuid(selectNodeToRenderWith(blenderProject.getRenderOn()).getConnection_uuid());
+
+
+                blenderRenderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
+                blenderRenderQueueItem.setComplete(false);
+                blenderRenderQueueItem.setBlenderFramePart(blenderFramePart);
+                blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+            }
+            LOG.debug("Render Queue configured \n" + blenderRenderQueueDatabaseService.listAll());
+            return true;
+        } else {
+            LOG.debug("No compatible rendering nodes found for this project.");
+            return false;
         }
     }
 
@@ -92,6 +102,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         blenderProject.setFramePartList(blenderFramePartList);
         LOG.debug("Project Frames configured \n" + blenderFramePartList);
         blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+
     }
 
     @Override
@@ -110,6 +121,12 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         } else {
             SethlansNode cpuNode = SethlansUtils.getFastestFreeNode(sethlansNodes, ComputeType.CPU);
             SethlansNode gpuNode = SethlansUtils.getFastestFreeNode(sethlansNodes, ComputeType.GPU);
+            if (gpuNode == null) {
+                return selectedRenderNode = cpuNode;
+            }
+            if (cpuNode == null) {
+                return selectedRenderNode = gpuNode;
+            }
             int gpuValue = gpuNode.getCombinedGPURating();
             int cpuValue = cpuNode.getCpuRating();
             if (cpuValue > gpuValue) {
@@ -122,13 +139,15 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
                 selectedRenderNode = cpuNode;
             }
 
-
         }
         if (selectedRenderNode != null) {
             LOG.debug(selectedRenderNode.toString());
+            return selectedRenderNode;
+        } else {
+            return null;
         }
 
-        return selectedRenderNode;
+
     }
 
     @Autowired

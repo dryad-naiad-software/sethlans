@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -417,14 +417,17 @@ public class SethlansUtils {
                 }
             }
         }
-        switch (computeType) {
-            case CPU:
-                listToSort.sort(Comparator.comparing(SethlansNode::getCpuRating));
-                return listToSort.get(0);
-            case GPU:
-                listToSort.sort(Comparator.comparing(SethlansNode::getCombinedGPURating));
-                return listToSort.get(0);
+        if (listToSort.size() > 0) {
+            switch (computeType) {
+                case CPU:
+                    listToSort.sort(Comparator.comparing(SethlansNode::getCpuRating));
+                    return listToSort.get(0);
+                case GPU:
+                    listToSort.sort(Comparator.comparing(SethlansNode::getCombinedGPURating));
+                    return listToSort.get(0);
+            }
         }
+
         return null;
     }
 
