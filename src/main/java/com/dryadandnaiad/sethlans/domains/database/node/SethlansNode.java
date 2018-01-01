@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -194,6 +194,15 @@ public class SethlansNode extends AbstractEntityClass {
 
     }
 
+    public Integer getCombinedCPUGPURating() {
+        int cpuRating = getCpuRating();
+        int gpuRating = getCombinedGPURating();
+        if (gpuRating == 0 || cpuRating == 0) {
+            return gpuRating + cpuRating;
+        }
+        return gpuRating + cpuRating / 2;
+    }
+
     @Override
     public String toString() {
         return "SethlansNode{" +
@@ -207,6 +216,7 @@ public class SethlansNode extends AbstractEntityClass {
                 ", selectedGPUs=" + selectedGPUs +
                 ", selectedCUDA=" + selectedCUDA +
                 ", combinedGPURating=" + getCombinedGPURating() +
+                ", combinedCPUGPURating=" + getCombinedCPUGPURating() +
                 ", active=" + active +
                 ", pendingActivation=" + pendingActivation +
                 ", connection_uuid='" + connection_uuid + '\'' +

@@ -412,19 +412,29 @@ public class SethlansUtils {
                 listofNodes(computeType, listToSort, sethlansNode);
             }
         }
-        if (sortedNodeList(computeType, listToSort)) return listToSort;
+        LOG.debug("List to sort " + listToSort.toString());
+        if (sortedNodeList(computeType, listToSort)) {
+            return listToSort;
+        } else {
+            return null;
+        }
 
-        return null;
     }
 
     private static boolean sortedNodeList(ComputeType computeType, List<SethlansNode> listToSort) {
         if (listToSort.size() > 0) {
             switch (computeType) {
                 case CPU:
+                    LOG.debug("Sorting by CPU");
                     listToSort.sort(Comparator.comparing(SethlansNode::getCpuRating));
                     return true;
                 case GPU:
+                    LOG.debug("Sorting by GPU");
                     listToSort.sort(Comparator.comparing(SethlansNode::getCombinedGPURating));
+                    return true;
+                case CPU_GPU:
+                    LOG.debug("Sorting by CPU_GPU");
+                    listToSort.sort(Comparator.comparing(SethlansNode::getCombinedCPUGPURating));
                     return true;
             }
         }
@@ -449,6 +459,16 @@ public class SethlansUtils {
                     listToSort.add(sethlansNode);
                 }
                 break;
+            case CPU_GPU:
+                if (sethlansNode.getComputeType().equals(ComputeType.CPU)) {
+                    listToSort.add(sethlansNode);
+                }
+                if (sethlansNode.getComputeType().equals(ComputeType.GPU)) {
+                    listToSort.add(sethlansNode);
+                }
+                if (sethlansNode.getComputeType().equals(ComputeType.CPU_GPU)) {
+                    listToSort.add(sethlansNode);
+                }
         }
     }
 

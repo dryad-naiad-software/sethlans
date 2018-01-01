@@ -72,6 +72,19 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
         return null;
     }
 
+    @Override
+    public List<SethlansNode> activeNodesNotRendering() {
+        List<SethlansNode> nodes = listAll();
+        List<SethlansNode> nodesNotRendering = new ArrayList<>();
+        for (SethlansNode node : nodes) {
+            if (!node.isRendering() && node.isActive() && node.isBenchmarkComplete()) {
+                nodesNotRendering.add(node);
+
+            }
+        }
+        return nodesNotRendering;
+    }
+
     @Autowired
     public void setNodeRepository(NodeRepository nodeRepository) {
         this.nodeRepository = nodeRepository;

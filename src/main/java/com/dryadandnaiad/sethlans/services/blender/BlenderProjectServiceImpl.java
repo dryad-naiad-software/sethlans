@@ -23,10 +23,10 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
-import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.RandomCollection;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
@@ -48,20 +48,13 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService;
+    private SethlansAPIConnectionService sethlansAPIConnectionService;
     private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectServiceImpl.class);
 
     @Override
     public void startProject(BlenderProject blenderProject) {
         configureFrameList(blenderProject);
         if (populateRenderQueue(blenderProject)) {
-            RandomCollection<SethlansNode> nodeRandomCollection = new RandomCollection<>();
-            List<SethlansNode> sortedList =
-                    SethlansUtils.getFastestNodes(sethlansNodeDatabaseService.listAll(), blenderProject.getRenderOn());
-            double weight = 50.0;
-            for (int i = 0; i < sortedList.size(); i++) {
-                nodeRandomCollection.add(weight - i, sortedList.get(i));
-            }
-            LOG.debug(nodeRandomCollection.toString());
 
         }
 
@@ -69,27 +62,72 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         // TODO weighted distribution of queue depending on speed of nodes.
     }
 
+
     @Override
     public void restartProject(BlenderProject blenderProject) {
 
     }
 
-    private boolean populateRenderQueue(BlenderProject blenderProject) {
-        if (selectNodeToRenderWith(blenderProject.getRenderOn()) != null) {
-            List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
-            for (BlenderFramePart blenderFramePart : blenderFramePartList) {
-                BlenderRenderQueueItem blenderRenderQueueItem = new BlenderRenderQueueItem();
-                blenderRenderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
-                blenderRenderQueueItem.setComplete(false);
-                blenderRenderQueueItem.setBlenderFramePart(blenderFramePart);
-                blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+
+    @Override
+    public void pauseProject(BlenderProject blenderProject) {
+    }
+
+    @Override
+    public void stopProject(BlenderProject blenderProject) {
+    }
+
+//    private SethlansNode selectNodeToRenderWith(ComputeType computeType) {
+//        List<SethlansNode> sethlansNodes = sethlansNodeDatabaseService.listAll();
+//        SethlansNode selectedRenderNode;
+//        if (!computeType.equals(ComputeType.CPU_GPU)) {
+//            selectedRenderNode = SethlansUtils.getFastestFreeNode(sethlansNodes, computeType);
+//        } else {
+//            SethlansNode cpuNode = SethlansUtils.getFastestFreeNode(sethlansNodes, ComputeType.CPU);
+//            SethlansNode gpuNode = SethlansUtils.getFastestFreeNode(sethlansNodes, ComputeType.GPU);
+//            if (gpuNode == null) {
+//                return selectedRenderNode = cpuNode;
+//            }
+//            if (cpuNode == null) {
+//                return selectedRenderNode = gpuNode;
+//            }
+//            int gpuValue = gpuNode.getCombinedGPURating();
+//            int cpuValue = cpuNode.getCpuRating();
+//            if (cpuValue > gpuValue) {
+//                selectedRenderNode = gpuNode;
+//            } else if (cpuValue < gpuValue) {
+//                selectedRenderNode = cpuNode;
+//
+//            } else {
+//                // If both CPU and GPU are equal, default to CPU node(generally has more memory able to handle bigger renders.)
+//                selectedRenderNode = cpuNode;
+//            }
+//
+//        }
+//        if (selectedRenderNode != null) {
+//            return selectedRenderNode;
+//        } else {
+//            return null;
+//        }
+//
+//
+//    }
+
+    private RandomCollection<SethlansNode> getRandomWeightedNode(BlenderProject blenderProject) {
+        RandomCollection<SethlansNode> nodeRandomCollection = new RandomCollection<>();
+        List<SethlansNode> sortedList =
+                SethlansUtils.getFastestNodes(sethlansNodeDatabaseService.listAll(), blenderProject.getRenderOn());
+        double weight = sortedList.size();
+        LOG.debug("Sorted List " + sortedList.toString());
+        for (int i = 0; i < sortedList.size(); i++) {
+            if (i == 0) {
+                nodeRandomCollection.add(weight, sortedList.get(i));
+            } else {
+                weight = weight * 0.75;
+                nodeRandomCollection.add(weight, sortedList.get(i));
             }
-            LOG.debug("Render Queue configured \n" + blenderRenderQueueDatabaseService.listAll());
-            return true;
-        } else {
-            LOG.debug("No compatible rendering nodes found for this project.");
-            return false;
         }
+        return nodeRandomCollection;
     }
 
     private void configureFrameList(BlenderProject blenderProject) {
@@ -115,49 +153,26 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     }
 
-    @Override
-    public void pauseProject(BlenderProject blenderProject) {
-    }
-
-    @Override
-    public void stopProject(BlenderProject blenderProject) {
-    }
-
-    private SethlansNode selectNodeToRenderWith(ComputeType computeType) {
-        List<SethlansNode> sethlansNodes = sethlansNodeDatabaseService.listAll();
-        SethlansNode selectedRenderNode;
-        if (!computeType.equals(ComputeType.CPU_GPU)) {
-            selectedRenderNode = SethlansUtils.getFastestFreeNode(sethlansNodes, computeType);
+    private boolean populateRenderQueue(BlenderProject blenderProject) {
+        RandomCollection<SethlansNode> randomWeightedNode = getRandomWeightedNode(blenderProject);
+        if (randomWeightedNode.next() != null) {
+            List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
+            for (BlenderFramePart blenderFramePart : blenderFramePartList) {
+                BlenderRenderQueueItem blenderRenderQueueItem = new BlenderRenderQueueItem();
+                blenderRenderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
+                blenderRenderQueueItem.setConnection_uuid(randomWeightedNode.next().getConnection_uuid());
+                blenderRenderQueueItem.setComplete(false);
+                blenderRenderQueueItem.setBlenderFramePart(blenderFramePart);
+                blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+            }
+            LOG.debug("Render Queue configured \n" + blenderRenderQueueDatabaseService.listAll());
+            return true;
         } else {
-            SethlansNode cpuNode = SethlansUtils.getFastestFreeNode(sethlansNodes, ComputeType.CPU);
-            SethlansNode gpuNode = SethlansUtils.getFastestFreeNode(sethlansNodes, ComputeType.GPU);
-            if (gpuNode == null) {
-                return selectedRenderNode = cpuNode;
-            }
-            if (cpuNode == null) {
-                return selectedRenderNode = gpuNode;
-            }
-            int gpuValue = gpuNode.getCombinedGPURating();
-            int cpuValue = cpuNode.getCpuRating();
-            if (cpuValue > gpuValue) {
-                selectedRenderNode = gpuNode;
-            } else if (cpuValue < gpuValue) {
-                selectedRenderNode = cpuNode;
-
-            } else {
-                // If both CPU and GPU are equal, default to CPU node(generally has more memory able to handle bigger renders.)
-                selectedRenderNode = cpuNode;
-            }
-
+            LOG.debug("No compatible rendering nodes found for this project.");
+            return false;
         }
-        if (selectedRenderNode != null) {
-            return selectedRenderNode;
-        } else {
-            return null;
-        }
-
-
     }
+
 
     @Autowired
     public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {
@@ -172,5 +187,10 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Autowired
     public void setBlenderRenderQueueDatabaseService(BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService) {
         this.blenderRenderQueueDatabaseService = blenderRenderQueueDatabaseService;
+    }
+
+    @Autowired
+    public void setSethlansAPIConnectionService(SethlansAPIConnectionService sethlansAPIConnectionService) {
+        this.sethlansAPIConnectionService = sethlansAPIConnectionService;
     }
 }

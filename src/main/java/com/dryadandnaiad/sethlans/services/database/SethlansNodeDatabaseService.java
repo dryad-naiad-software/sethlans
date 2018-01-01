@@ -21,6 +21,8 @@ package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 
+import java.util.List;
+
 /**
  * Created Mario Estrella on 10/29/17.
  * Dryad and Naiad Software LLC
@@ -29,4 +31,6 @@ import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
  */
 public interface SethlansNodeDatabaseService extends CRUDService<SethlansNode> {
     SethlansNode getByConnectionUUID(String uuid);
+
+    List<SethlansNode> activeNodesNotRendering();
 }
