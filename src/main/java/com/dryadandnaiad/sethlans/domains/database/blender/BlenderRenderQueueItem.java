@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -35,6 +35,7 @@ public class BlenderRenderQueueItem extends AbstractEntityClass {
     private String project_uuid;
     private BlenderFramePart blenderFramePart;
     private boolean complete;
+    private boolean paused;
 
     public String getConnection_uuid() {
         return connection_uuid;
@@ -68,6 +69,14 @@ public class BlenderRenderQueueItem extends AbstractEntityClass {
         this.complete = complete;
     }
 
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public void setPaused(boolean paused) {
+        this.paused = paused;
+    }
+
     @Override
     public String toString() {
         return "BlenderRenderQueueItem{" +
@@ -75,6 +84,7 @@ public class BlenderRenderQueueItem extends AbstractEntityClass {
                 ", project_uuid='" + project_uuid + '\'' +
                 ", blenderFramePart=" + blenderFramePart +
                 ", complete=" + complete +
+                ", paused=" + paused +
                 '}';
     }
 }
