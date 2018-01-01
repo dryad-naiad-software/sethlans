@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import org.springframework.scheduling.annotation.Async;
 
 /**
  * Created Mario Estrella on 1/1/18.
@@ -28,5 +29,8 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
  * Project: sethlans
  */
 public interface BlenderQueueService {
+    @Async
+    void startQueue();
+
     boolean populateRenderQueue(BlenderProject blenderProject);
 }

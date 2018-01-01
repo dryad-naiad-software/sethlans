@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,8 +19,12 @@
 
 package com.dryadandnaiad.sethlans.components;
 
+import com.dryadandnaiad.sethlans.services.blender.BlenderQueueService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
 
 /**
  * Created Mario Estrella on 12/25/17.
@@ -30,5 +34,19 @@ import org.springframework.stereotype.Component;
  */
 @Profile({"SERVER", "DUAL"})
 @Component
-public class ServerBackgroundCommunicationComponent {
+public class ServerBackgroundComponent {
+    private BlenderQueueService blenderQueueService;
+
+
+    @PostConstruct
+    public void startRenderQueue() {
+        blenderQueueService.startQueue();
+    }
+
+    @Autowired
+    public void setBlenderQueueService(BlenderQueueService blenderQueueService) {
+        this.blenderQueueService = blenderQueueService;
+    }
+
+
 }

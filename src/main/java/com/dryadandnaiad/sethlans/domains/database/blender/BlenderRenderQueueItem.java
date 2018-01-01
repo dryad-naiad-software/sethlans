@@ -36,6 +36,7 @@ public class BlenderRenderQueueItem extends AbstractEntityClass {
     private BlenderFramePart blenderFramePart;
     private boolean complete;
     private boolean paused;
+    private boolean rendering;
 
     public String getConnection_uuid() {
         return connection_uuid;
@@ -77,6 +78,14 @@ public class BlenderRenderQueueItem extends AbstractEntityClass {
         this.paused = paused;
     }
 
+    public boolean isRendering() {
+        return rendering;
+    }
+
+    public void setRendering(boolean rendering) {
+        this.rendering = rendering;
+    }
+
     @Override
     public String toString() {
         return "BlenderRenderQueueItem{" +
@@ -85,6 +94,7 @@ public class BlenderRenderQueueItem extends AbstractEntityClass {
                 ", blenderFramePart=" + blenderFramePart +
                 ", complete=" + complete +
                 ", paused=" + paused +
+                ", rendering=" + rendering +
                 '}';
     }
 }
