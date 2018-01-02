@@ -33,6 +33,7 @@ public class BlenderFramePart {
     private int partNumber;
     private String partFilename;
     private String fileExtension;
+    private String renderDir;
 
     public int getPartNumber() {
         return partNumber;
@@ -74,6 +75,14 @@ public class BlenderFramePart {
         this.frameNumber = frameNumber;
     }
 
+    public String getRenderDir() {
+        return renderDir;
+    }
+
+    public void setRenderDir(String renderDir) {
+        this.renderDir = renderDir;
+    }
+
     @Override
     public String toString() {
         return "BlenderFramePart{" +
@@ -82,6 +91,7 @@ public class BlenderFramePart {
                 ", partNumber=" + partNumber +
                 ", partFilename='" + partFilename + '\'' +
                 ", fileExtension='" + fileExtension + '\'' +
+                ", renderDir='" + renderDir + '\'' +
                 '}';
     }
 }

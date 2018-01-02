@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,8 +20,14 @@
 package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
+import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.services.database.BlenderRenderTaskDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
+import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
@@ -30,7 +36,9 @@ import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -48,18 +56,67 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     @Value("${sethlans.cores}")
     String cores;
 
+    @Value("${sethlans.cacheDir}")
+    private String cacheDir;
+
+    private SethlansServerDatabaseService sethlansServerDatabaseService;
+    private SethlansAPIConnectionService sethlansAPIConnectionService;
+    private BlenderRenderTaskDatabaseService blenderRenderTaskDatabaseService;
+
+    @Override
+    @Async
+    public void startRenderTask(String projectUUID) {
+        BlenderRenderTask blenderRenderTask = blenderRenderTaskDatabaseService.getByProjectUUID(projectUUID);
+        File renderDir = new File(cacheDir + File.separator + blenderRenderTask.getBlenderFramePart().getPartFilename());
+        if (downloadRequiredFiles(renderDir, blenderRenderTask)) {
+
+        }
+
+
+    }
+
+    private boolean downloadRequiredFiles(File renderDir, BlenderRenderTask renderTask) {
+        LOG.debug("Downloading required files");
+        SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(renderTask.getConnection_uuid());
+        String serverIP = sethlansServer.getIpAddress();
+        String serverPort = sethlansServer.getNetworkPort();
+
+        if (renderDir.mkdirs()) {
+            //Download Blender from server
+            String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blender_binary/";
+            String params = "?connection_uuid=" + renderTask.getConnection_uuid() + "&version=" +
+                    renderTask.getBlenderVersion() + "&os=" + SethlansUtils.getOS();
+            String filename = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, renderDir.toString());
+
+            if (SethlansUtils.archiveExtract(filename, renderDir)) {
+                LOG.debug("Extraction complete.");
+                if (SethlansUtils.renameBlender(renderDir, renderTask.getBlenderVersion())) {
+                    LOG.debug("Blender executable ready");
+                    renderTask.getBlenderFramePart().setRenderDir(renderDir.toString());
+                    renderTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(renderDir));
+                } else {
+                    LOG.debug("Rename failed.");
+                    return false;
+                }
+            }
+
+        }
+        return false;
+    }
+
     public void executeRenderTask(BlenderRenderTask renderTask, String blenderScript) {
         String error = null;
-//        try {
-//            LOG.debug("Starting the render of " + renderTask.getProjectName() + ": Part: " + renderTask.getPart());
-//            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//            ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
-//            PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
-//            CommandLine commandLine = new CommandLine(renderTask.getBlenderExecutable());
-//
-//        } catch (IOException | NullPointerException e){
-//
-//        }
+        BlenderFramePart blenderFramePart = renderTask.getBlenderFramePart();
+        try {
+            LOG.debug("Starting the render of " + renderTask.getProjectName() + ": Part: " + blenderFramePart.getPartNumber());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
+            PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
+            CommandLine commandLine = new CommandLine(renderTask.getBlenderExecutable());
+
+        } catch (NullPointerException e) {
+
+        }
 
     }
 
@@ -134,5 +191,19 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             LOG.error(Throwables.getStackTraceAsString(e));
         }
         return 0;
+    }
+
+    @Autowired
+    public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
+        this.sethlansServerDatabaseService = sethlansServerDatabaseService;
+    }
+
+    @Autowired
+    public void setSethlansAPIConnectionService(SethlansAPIConnectionService sethlansAPIConnectionService) {
+        this.sethlansAPIConnectionService = sethlansAPIConnectionService;
+    }
+
+    public void setBlenderRenderTaskDatabaseService(BlenderRenderTaskDatabaseService blenderRenderTaskDatabaseService) {
+        this.blenderRenderTaskDatabaseService = blenderRenderTaskDatabaseService;
     }
 }
