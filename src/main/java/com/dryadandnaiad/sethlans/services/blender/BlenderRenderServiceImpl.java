@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.services.blender;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
@@ -98,6 +99,9 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         File renderDir = new File(cacheDir + File.separator + blenderRenderTask.getBlenderFramePart().getPartFilename());
         if (downloadRequiredFiles(renderDir, blenderRenderTask)) {
             blenderRenderTask = blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
+            if (blenderRenderTask.getComputeType().equals(ComputeType.GPU)) {
+
+            }
 
 
 

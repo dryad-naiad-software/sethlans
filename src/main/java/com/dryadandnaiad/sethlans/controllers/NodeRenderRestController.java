@@ -26,6 +26,7 @@ import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
+import com.dryadandnaiad.sethlans.services.blender.BlenderRenderService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
@@ -59,6 +60,7 @@ public class NodeRenderRestController {
     private BlenderRenderTaskDatabaseService blenderRenderTaskDatabaseService;
     private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
     private BlenderBenchmarkService blenderBenchmarkService;
+    private BlenderRenderService blenderRenderService;
     private static final Logger LOG = LoggerFactory.getLogger(NodeRenderRestController.class);
 
     @RequestMapping(value = "/api/render/request", method = RequestMethod.POST)
@@ -99,6 +101,7 @@ public class NodeRenderRestController {
             blenderRenderTask.setBlenderFramePart(framePart);
             blenderRenderTask.setComplete(false);
             blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
+            blenderRenderService.startRenderTask(project_uuid);
 
         }
     }
@@ -183,5 +186,10 @@ public class NodeRenderRestController {
     @Autowired
     public void setBlenderBenchmarkService(BlenderBenchmarkService blenderBenchmarkService) {
         this.blenderBenchmarkService = blenderBenchmarkService;
+    }
+
+    @Autowired
+    public void setBlenderRenderService(BlenderRenderService blenderRenderService) {
+        this.blenderRenderService = blenderRenderService;
     }
 }

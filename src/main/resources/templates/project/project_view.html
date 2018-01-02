@@ -127,7 +127,7 @@
     <h2 id="projectName" th:text="${project.getProjectName()}">Project Name</h2>
     <h4 id="projectStatus">
         <strong>Status:
-            <span style="color: grey;" th:unless="${project.isStarted() and project.isFinished()}">Not Started</span>
+            <span style="color: grey;" th:if="${!project.isStarted()}">Not Started</span>
             <span style="color: blue;" th:if="${project.isStarted()}">Rendering</span>
             <span style="color: green;" th:if="${project.isFinished()}">Complete</span>
     </strong></h4>

@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.List;
 
 /**
  * Created Mario Estrella on 12/17/17.
@@ -43,7 +44,7 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
 
     @Override
     public String writeBenchmarkPythonScript(ComputeType computeType, String renderLocation, String deviceId,
-                                             int tileSize, int resolution_x, int resolution_y, int res_percentage) {
+                                             int tileSize, int resolutionX, int resolutionY, int resPercentage) {
         try {
             File script = new File(renderLocation + File.separator + "script-" + deviceId + ".py");
             FileWriter scriptWriter = new FileWriter(script);
@@ -71,6 +72,7 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
                 scriptWriter.write("cuda_devices = devices[0]" + "\n");
                 scriptWriter.write("cuda_id = " + deviceId + "\n");
                 scriptWriter.write("\n");
+                // Sets the CUDA device defined in cuda_id to true.
                 scriptWriter.write("for i in range(len(cuda_devices)):" + "\n");
                 scriptWriter.write("\tcuda_devices[i].use = (i == cuda_id)" + "\n");
 
@@ -81,20 +83,96 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             }
 
 
-//            // Disable GPU Devices
-//            scriptWriter.write("\n");
-//            scriptWriter.write("for dev in devices[0]:" + "\n");
-//            scriptWriter.write("\tdev.use = False" + "\n");
-//            scriptWriter.write("\n");
-//            scriptWriter.write("for dev in devices[1]:" + "\n");
-//            scriptWriter.write("\tdev.use = False" + "\n");
+            // Set Resolution
+            scriptWriter.write("\n");
+            scriptWriter.write("for scene in bpy.data.scenes:" + "\n");
+            scriptWriter.write("\tscene.render.resolution_x = " + resolutionX + "\n");
+            scriptWriter.write("\tscene.render.resolution_y = " + resolutionY + "\n");
+            scriptWriter.write("\tscene.render.resolution_percentage = " + resPercentage + "\n");
+            //scriptWriter.write("\tscene.render.use_border = False");
+
+            // Tile Sizes
+            scriptWriter.write("\n");
+            scriptWriter.write("bpy.context.scene.render.tile_x = " + tileSize + "\n");
+            scriptWriter.write("bpy.context.scene.render.tile_y = " + tileSize + "\n");
+            scriptWriter.flush();
+            scriptWriter.close();
+
+            return script.toString();
+        } catch (java.io.IOException e) {
+            LOG.error(Throwables.getStackTraceAsString(e));
+        }
+        return null;
+    }
+
+    public String writeRenderPythonScript(ComputeType computeType, String renderLocation, List<String> selectedDeviceIds, List<String> unselectedIds,
+                                          int tileSize, int resolutionX, int resolutionY, int resPercentage,
+                                          int partsPerFrame, int partNo) {
+        try {
+            File script;
+            if (selectedDeviceIds.size() == 1) {
+                script = new File(renderLocation + File.separator + "script-" + selectedDeviceIds.get(0) + ".py");
+            } else {
+                script = new File(renderLocation + File.separator + "script-MULTI_DEV.py");
+            }
+
+            FileWriter scriptWriter = new FileWriter(script);
+
+            // Write Imports
+            scriptWriter.write(PythonImports.BPY.toString() + "\n\n");
+
+            //Temp Directory
+            if (SethlansUtils.getOS().contains("Windows")) {
+                scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "r\"" + renderLocation + "\"" + "\n");
+            } else {
+                scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "\"" + renderLocation + "\"" + "\n");
+            }
+
+            // Set Device
+            scriptWriter.write("bpy.context.scene.cycles.device = " + "\"" + computeType + "\"" + "\n");
+
+            if (computeType.equals(ComputeType.GPU)) {
+                // CUDA Setting
+                scriptWriter.write("\n");
+                scriptWriter.write("bpy.context.user_preferences.addons['cycles'].preferences.compute_device_type = \"CUDA\"" + "\n");
+                scriptWriter.write("devices = bpy.context.user_preferences.addons['cycles'].preferences.get_devices()" + "\n");
+                if (selectedDeviceIds.size() == 1) {
+                    scriptWriter.write("cuda_devices = devices[0]" + "\n");
+                    scriptWriter.write("cuda_id = " + selectedDeviceIds.get(0) + "\n");
+                    scriptWriter.write("\n");
+
+                    // Sets the CUDA device defined in cuda_id to true.
+                    scriptWriter.write("for i in range(len(cuda_devices)):" + "\n");
+                    scriptWriter.write("\tcuda_devices[i].use = (i == cuda_id)" + "\n");
+                } else {
+                    scriptWriter.write("cuda_devices = devices[0]" + "\n");
+                    scriptWriter.write("\n");
+
+                    // Sets the CUDA device defined in cuda_id to true.
+                    for (String deviceId : selectedDeviceIds) {
+                        scriptWriter.write("cuda_devices[" + deviceId + "].use = True" + "\n");
+                    }
+                    if (unselectedIds.size() > 0) {
+                        for (String unselectedId : unselectedIds) {
+                            scriptWriter.write("cuda_devices[" + unselectedId + "].use = False" + "\n");
+                        }
+                    }
+
+                }
+
+                // Disable all OpenCL
+                scriptWriter.write("\n");
+                scriptWriter.write("for dev in devices[1]:" + "\n");
+                scriptWriter.write("\tdev.use = False" + "\n");
+            }
+
 
             // Set Resolution
             scriptWriter.write("\n");
             scriptWriter.write("for scene in bpy.data.scenes:" + "\n");
-            scriptWriter.write("\tscene.render.resolution_x = " + resolution_x + "\n");
-            scriptWriter.write("\tscene.render.resolution_y = " + resolution_y + "\n");
-            scriptWriter.write("\tscene.render.resolution_percentage = " + res_percentage + "\n");
+            scriptWriter.write("\tscene.render.resolution_x = " + resolutionX + "\n");
+            scriptWriter.write("\tscene.render.resolution_y = " + resolutionY + "\n");
+            scriptWriter.write("\tscene.render.resolution_percentage = " + resPercentage + "\n");
             //scriptWriter.write("\tscene.render.use_border = False");
 
             // Tile Sizes
