@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -64,6 +64,10 @@ public class BlenderFramePart {
 
     public void setFrameFileName(String frameFileName) {
         this.frameFileName = frameFileName;
+    }
+
+    public int getFrameNumber() {
+        return frameNumber;
     }
 
     public void setFrameNumber(int frameNumber) {

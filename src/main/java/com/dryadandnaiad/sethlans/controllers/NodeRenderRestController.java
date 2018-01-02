@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,8 +19,8 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
@@ -62,20 +62,30 @@ public class NodeRenderRestController {
     private static final Logger LOG = LoggerFactory.getLogger(NodeRenderRestController.class);
 
     @RequestMapping(value = "/api/render/request", method = RequestMethod.POST)
-    public void renderRequest(@RequestParam String server_uuid, String project_uuid, RenderOutputFormat renderoutputformat,
+    public void renderRequest(@RequestParam String connection_uuid, String project_uuid, String project_name, RenderOutputFormat render_output_format,
                               int start_frame, int end_frame, int step_frame, int samples,
                               BlenderEngine blender_engine, int resolution_x, int resolution_y, int res_percentage, ComputeType compute_type,
-                              String blend_file, String blender_version, BlenderFramePart blenderFramePart) {
-        if (sethlansServerDatabaseService.getByConnectionUUID(server_uuid) == null) {
-            LOG.debug("The uuid sent: " + server_uuid + " is not present in the database");
+                              String blend_file, String blender_version, String file_extension, String frame_filename,
+                              int frame_number, String part_filename, int part_number) {
+        if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) == null) {
+            LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
             BlenderRenderTask blenderRenderTask;
+            BlenderFramePart framePart = new BlenderFramePart();
+            framePart.setFrameNumber(frame_number);
+            framePart.setFileExtension(file_extension);
+            framePart.setFrameFileName(frame_filename);
+            framePart.setPartFilename(part_filename);
+            framePart.setPartNumber(part_number);
             if (blenderRenderTaskDatabaseService.getByProjectUUID(project_uuid) == null) {
+
+
                 // Create a new task
                 blenderRenderTask = new BlenderRenderTask();
                 blenderRenderTask.setProject_uuid(project_uuid);
-                blenderRenderTask.setConnection_uuid(server_uuid);
-                blenderRenderTask.setRenderOutputFormat(renderoutputformat);
+                blenderRenderTask.setProjectName(project_name);
+                blenderRenderTask.setConnection_uuid(connection_uuid);
+                blenderRenderTask.setRenderOutputFormat(render_output_format);
                 blenderRenderTask.setStartFrame(start_frame);
                 blenderRenderTask.setEndFrame(end_frame);
                 blenderRenderTask.setStepFrame(step_frame);
@@ -87,15 +97,16 @@ public class NodeRenderRestController {
                 blenderRenderTask.setComputeType(compute_type);
                 blenderRenderTask.setBlendFilename(blend_file);
                 blenderRenderTask.setBlenderVersion(blender_version);
-                blenderRenderTask.setBlenderFramePart(blenderFramePart);
+                blenderRenderTask.setBlenderFramePart(framePart);
                 blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
             } else {
                 // Update existing task to process a new part and a new frame if necessary
                 blenderRenderTask = blenderRenderTaskDatabaseService.getByProjectUUID(project_uuid);
-                blenderRenderTask.setBlenderFramePart(blenderFramePart);
                 blenderRenderTask.setStartFrame(start_frame);
                 blenderRenderTask.setEndFrame(end_frame);
                 blenderRenderTask.setStepFrame(step_frame);
+                blenderRenderTask.setBlenderFramePart(framePart);
+                blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
             }
         }
     }

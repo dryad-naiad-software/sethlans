@@ -55,43 +55,84 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     @Override
     @Async
     public void startQueue() {
-        // Notes, attempt to create a connection to a node and start a queue
-        // if all nodes are busy sleep and then check every minute.
-        while (true) {
-            try {
-                if (!sethlansNodeDatabaseService.listAll().isEmpty() || !blenderRenderQueueDatabaseService.listAll().isEmpty()) {
-                    List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listAll();
-                    for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
-                        if (!blenderRenderQueueItem.isRendering()) {
-                            LOG.debug(blenderRenderQueueItem.getBlenderFramePart() + " is waiting to be rendered.");
-                            SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid());
-                            if (sethlansNode.isActive() && !sethlansNode.isRendering()) {
-                                LOG.debug("Sending " + blenderRenderQueueItem.getBlenderFramePart() + " to " + sethlansNode.getHostname());
-                                blenderRenderQueueItem.setRendering(true);
-                                sethlansNode.setRendering(true);
-                            } else if (sethlansNode.isActive() && sethlansNode.isRendering()) {
-                                LOG.debug(sethlansNode.getHostname() + " is busy. Will attempt to send in one minute. " + blenderRenderQueueItem.getBlenderFramePart());
-                            } else if (!sethlansNode.isActive()) {
-                                LOG.debug(sethlansNode.getHostname() + " no longer active, reassigning " + blenderRenderQueueItem.getBlenderFramePart() +
-                                        " to another node ");
-                                RandomCollection<SethlansNode> randomWeightedNode =
-                                        getRandomWeightedNode(blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid()));
-                                blenderRenderQueueItem.setConnection_uuid(randomWeightedNode.next().getConnection_uuid());
+        try {
+            Thread.sleep(10000);
+
+            int count = 0;
+            while (true) {
+                try {
+                    if (!sethlansNodeDatabaseService.listAll().isEmpty() || !blenderRenderQueueDatabaseService.listAll().isEmpty()) {
+                        LOG.debug("Processing Render Queue. Verbose status set for every 5 minutes.");
+                        List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listAll();
+                        for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
+                            if (!blenderRenderQueueItem.isRendering()) {
+                                if (count == 20) {
+                                    LOG.debug(blenderRenderQueueItem.getBlenderFramePart() + " is waiting to be rendered.");
+                                }
+                                SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid());
+                                if (sethlansNode.isActive() && !sethlansNode.isRendering()) {
+                                    LOG.debug("Sending " + blenderRenderQueueItem.getBlenderFramePart() + " to " + sethlansNode.getHostname());
+                                    BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
+
+                                    String connectionURL = "https://" + sethlansNode.getIpAddress() + ":" +
+                                            sethlansNode.getNetworkPort() + "/api/render/request";
+                                    String params = "connection_uuid=" + sethlansNode.getConnection_uuid() +
+                                            "&project_uuid=" + blenderProject.getProject_uuid() +
+                                            "&render_output_format=" + blenderProject.getRenderOutputFormat() +
+                                            "&start_frame=" + blenderProject.getStartFrame() +
+                                            "&end_frame=" + blenderProject.getEndFrame() +
+                                            "&step_frame=" + blenderProject.getStepFrame() +
+                                            "&samples=" + blenderProject.getSamples() +
+                                            "&blender_engine=" + blenderProject.getBlenderEngine() +
+                                            "&resolution_x=" + blenderProject.getResolutionX() +
+                                            "&resolution_y=" + blenderProject.getResolutionY() +
+                                            "&res_percentage=" + blenderProject.getResPercentage() +
+                                            "&compute_type=" + blenderProject.getRenderOn() +
+                                            "&blend_file=" + blenderProject.getBlendFilename() +
+                                            "&blender_version=" + blenderProject.getBlenderVersion() +
+                                            "&file_extension=" + blenderRenderQueueItem.getBlenderFramePart().getFileExtension() +
+                                            "&frame_filename=" + blenderRenderQueueItem.getBlenderFramePart().getFrameFileName() +
+                                            "&frame_number=" + blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() +
+                                            "&part_filename=" + blenderRenderQueueItem.getBlenderFramePart().getPartFilename() +
+                                            "&part_number=" + blenderRenderQueueItem.getBlenderFramePart().getPartNumber();
+
+
+                                    if (sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params)) {
+                                        blenderRenderQueueItem.setRendering(true);
+                                        sethlansNode.setRendering(true);
+                                        blenderProject.setStarted(true);
+                                        blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+                                    }
+                                } else if (sethlansNode.isActive() && sethlansNode.isRendering()) {
+
+                                    if (count == 20) {
+                                        LOG.debug(sethlansNode.getHostname() + " is busy. Will attempt in next loop. " + blenderRenderQueueItem.getBlenderFramePart());
+                                    }
+                                } else if (!sethlansNode.isActive()) {
+                                    LOG.debug(sethlansNode.getHostname() + " no longer active, reassigning " + blenderRenderQueueItem.getBlenderFramePart() +
+                                            " to another node ");
+                                    RandomCollection<SethlansNode> randomWeightedNode =
+                                            getRandomWeightedNode(blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid()));
+                                    blenderRenderQueueItem.setConnection_uuid(randomWeightedNode.next().getConnection_uuid());
+                                }
+                                blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+                                sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                             }
-                            blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
-                            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+
                         }
-
+                        if (count == 20) {
+                            count = 0;
+                        }
+                        count++;
                     }
-                    LOG.debug("Sleeping for one minute then checking status of node");
+                    Thread.sleep(15000);
 
-
+                } catch (InterruptedException e) {
+                    LOG.debug("Stopping Blender Queue Service");
                 }
-                Thread.sleep(60000);
-
-            } catch (InterruptedException e) {
-                LOG.debug("Stopping Blender Queue Service");
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
