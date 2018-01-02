@@ -88,6 +88,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                             sethlansNode.getNetworkPort() + "/api/render/request";
                                     String params = "connection_uuid=" + sethlansNode.getConnection_uuid() +
                                             "&project_uuid=" + blenderProject.getProject_uuid() +
+                                            "&project_name=" + blenderProject.getProjectName() +
                                             "&render_output_format=" + blenderProject.getRenderOutputFormat() +
                                             "&start_frame=" + blenderProject.getStartFrame() +
                                             "&end_frame=" + blenderProject.getEndFrame() +
