@@ -125,7 +125,7 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
         LOG.debug("Connecting to " + connectionURL);
         HttpsURLConnection connection;
         try {
-            LOG.debug("Sending the following parameters to API via GET: " + connectionURL + params);
+            LOG.debug("Sending the following parameters to API via GET: " + connectionURL + "?" + params);
             URL url = new URL(connectionURL + params);
             SSLUtilities.trustAllHostnames();
             SSLUtilities.trustAllHttpsCertificates();

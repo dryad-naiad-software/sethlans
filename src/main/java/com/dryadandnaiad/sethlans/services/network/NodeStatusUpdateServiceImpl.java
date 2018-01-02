@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -62,8 +62,8 @@ public class NodeStatusUpdateServiceImpl implements NodeStatusUpdateService {
         if (!sethlansServers.isEmpty()) {
             for (SethlansServer sethlansServer : sethlansServers) {
                 LOG.debug("Sending node status update request to " + sethlansServer.getHostname());
-                String url = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/update/node_status_update";
-                String param = "/?connection_uuid=" + sethlansServer.getConnection_uuid();
+                String url = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/update/node_status_update/";
+                String param = "connection_uuid=" + sethlansServer.getConnection_uuid();
                 sethlansAPIConnectionService.sendToRemoteGET(url, param);
             }
         } else {
