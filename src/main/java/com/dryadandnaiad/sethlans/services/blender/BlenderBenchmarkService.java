@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -32,6 +32,9 @@ import java.util.List;
  */
 public interface BlenderBenchmarkService {
     void sendBenchmarktoNode(SethlansNode sethlansNode);
+
+    @Async
+    void benchmarkOnNodeRestart();
 
     @Async
     void processReceivedBenchmark(String benchmark_uuid);

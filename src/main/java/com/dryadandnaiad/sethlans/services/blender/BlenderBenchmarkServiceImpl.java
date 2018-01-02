@@ -42,6 +42,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -80,6 +81,38 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
 
     @Override
     @Async
+    public void benchmarkOnNodeRestart() {
+        // If a node gets shutdown, this will attempt to process any pending benchmarks.
+        try {
+            Thread.sleep(10000);
+            LOG.debug("Checking to see if any benchmarks are pending.");
+            List<BlenderBenchmarkTask> blenderBenchmarkTaskList = blenderBenchmarkTaskDatabaseService.listAll();
+            List<BlenderBenchmarkTask> pendingBenchmarks = new ArrayList<>();
+            for (BlenderBenchmarkTask benchmarkTask : blenderBenchmarkTaskList) {
+                if (!benchmarkTask.isComplete()) {
+                    pendingBenchmarks.add(benchmarkTask);
+                }
+            }
+            if (pendingBenchmarks.size() > 1) {
+                LOG.debug("There are " + pendingBenchmarks.size() + " benchmarks pending.");
+                List<String> benchmarkUUIDs = new ArrayList<>();
+                for (BlenderBenchmarkTask pendingBenchmark : pendingBenchmarks) {
+                    benchmarkUUIDs.add(pendingBenchmark.getBenchmark_uuid());
+                }
+                processReceivedBenchmarks(benchmarkUUIDs);
+            } else if (pendingBenchmarks.size() == 1) {
+                LOG.debug("There is one benchmark pending.");
+                processReceivedBenchmark(pendingBenchmarks.get(0).getBenchmark_uuid());
+            } else {
+                LOG.debug("No benchmarks are pending.");
+            }
+        } catch (InterruptedException e) {
+            LOG.debug("Shutting down Benchmark Service");
+        }
+    }
+
+    @Override
+    @Async
     public void processReceivedBenchmark(String benchmark_uuid) {
         startBenchmarkService(benchmark_uuid);
     }
@@ -94,6 +127,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     }
 
     private void startBenchmarkService(String benchmark_uuid) {
+        LOG.debug("Starting Benchmark");
         BlenderBenchmarkTask benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark_uuid);
         runBenchmark(benchmarkTask);
         benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark_uuid);
@@ -168,8 +202,6 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         }
         return false;
     }
-
-
 
 
     private void runBenchmark(BlenderBenchmarkTask benchmarkTask) {

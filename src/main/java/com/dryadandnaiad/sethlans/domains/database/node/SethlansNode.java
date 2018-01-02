@@ -27,6 +27,7 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class SethlansNode extends AbstractEntityClass {
     private ComputeType computeType;
     private CPU cpuinfo;
     private String selectedCores;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<GPUDevice> selectedGPUs = new ArrayList<>();
     @ElementCollection
     private List<String> selectedCUDA;
