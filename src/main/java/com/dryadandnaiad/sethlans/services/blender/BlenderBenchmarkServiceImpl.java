@@ -208,14 +208,12 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         LOG.debug("Processing benchmark task: \n" + benchmarkTask.toString());
         File benchmarkDir = new File(tempDir + File.separator + benchmarkTask.getBenchmark_uuid() + "_" + benchmarkTask.getBenchmarkURL());
         if (downloadRequiredFiles(benchmarkDir, benchmarkTask)) {
-            blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
-            String uuid = benchmarkTask.getBenchmark_uuid();
-            benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(uuid);
+            benchmarkTask = blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
             if (benchmarkTask.getComputeType().equals(ComputeType.GPU)) {
                 LOG.debug("Creating benchmark script using " + benchmarkTask.getCudaName());
                 String cudaID = StringUtils.substringAfter(benchmarkTask.getCudaName(), "_");
-                String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(),
-                        benchmarkTask.getBenchmarkDir(), cudaID, 128, 800, 600, 50, 0);
+                String script = blenderPythonScriptService.writeBenchmarkPythonScript(benchmarkTask.getComputeType(),
+                        benchmarkTask.getBenchmarkDir(), cudaID, 128, 800, 600, 50);
                 int rating = blenderBenchmark(benchmarkTask, script);
                 if (rating == 0) {
                     LOG.debug("Benchmark failed.");
@@ -230,8 +228,8 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
 
             } else {
                 LOG.debug("Creating benchmark script using CPU");
-                String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(),
-                        benchmarkTask.getBenchmarkDir(), "0", 16, 800, 600, 50, 0);
+                String script = blenderPythonScriptService.writeBenchmarkPythonScript(benchmarkTask.getComputeType(),
+                        benchmarkTask.getBenchmarkDir(), "0", 16, 800, 600, 50);
                 int rating = blenderBenchmark(benchmarkTask, script);
                 if (rating == 0) {
                     LOG.debug("Benchmark failed.");

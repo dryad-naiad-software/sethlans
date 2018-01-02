@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.components;
 
 import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
+import com.dryadandnaiad.sethlans.services.blender.BlenderRenderService;
 import com.dryadandnaiad.sethlans.services.network.MulticastSenderService;
 import com.dryadandnaiad.sethlans.services.network.NodeStatusUpdateService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
@@ -46,6 +47,7 @@ public class NodeBackgroundComponent {
     private MulticastSenderService multicastSenderService;
     private NodeStatusUpdateService nodeStatusUpdateService;
     private BlenderBenchmarkService blenderBenchmarkService;
+    private BlenderRenderService blenderRenderService;
 
     @Value("${server.port}")
     private String sethlansPort;
@@ -69,6 +71,12 @@ public class NodeBackgroundComponent {
 
     }
 
+    @PostConstruct
+    public void startRender() {
+        blenderRenderService.resumeRenderOnNodeRestart();
+
+    }
+
     @Autowired
     public void setMulticastSenderService(MulticastSenderService multicastSenderService) {
         this.multicastSenderService = multicastSenderService;
@@ -83,5 +91,10 @@ public class NodeBackgroundComponent {
     @Autowired
     public void setBlenderBenchmarkService(BlenderBenchmarkService blenderBenchmarkService) {
         this.blenderBenchmarkService = blenderBenchmarkService;
+    }
+
+    @Autowired
+    public void setBlenderRenderService(BlenderRenderService blenderRenderService) {
+        this.blenderRenderService = blenderRenderService;
     }
 }

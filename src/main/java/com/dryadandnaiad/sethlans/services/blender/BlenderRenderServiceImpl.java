@@ -37,6 +37,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created Mario Estrella on 12/18/17.
@@ -59,10 +61,45 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
     @Override
     @Async
+    public void resumeRenderOnNodeRestart() {
+        // If a node gets shutdown, this will attempt to process any pending benchmarks.
+        try {
+            Thread.sleep(10000);
+            LOG.debug("Checking to see if any render tasks are pending.");
+            List<BlenderRenderTask> blenderRenderTaskList = blenderRenderTaskDatabaseService.listAll();
+            List<BlenderRenderTask> pendingRenderTask = new ArrayList<>();
+            for (BlenderRenderTask blenderRenderTask : blenderRenderTaskList) {
+                if (!blenderRenderTask.isComplete()) {
+                    pendingRenderTask.add(blenderRenderTask);
+                }
+            }
+
+            if (pendingRenderTask.size() > 1) {
+                LOG.debug("There are " + pendingRenderTask.size() + " render tasks pending.");
+                List<String> projectUUIDs = new ArrayList<>();
+                for (BlenderRenderTask blenderRenderTask : pendingRenderTask) {
+                    projectUUIDs.add(blenderRenderTask.getProject_uuid());
+                }
+            } else if (pendingRenderTask.size() == 1) {
+                LOG.debug("There is one render task pending.");
+                startRenderTask(pendingRenderTask.get(0).getProject_uuid());
+            } else {
+                LOG.debug("No render tasks are pending.");
+            }
+        } catch (InterruptedException e) {
+            LOG.debug("Shutting down Render Service");
+        }
+    }
+
+    @Override
+    @Async
     public void startRenderTask(String projectUUID) {
         BlenderRenderTask blenderRenderTask = blenderRenderTaskDatabaseService.getByProjectUUID(projectUUID);
         File renderDir = new File(cacheDir + File.separator + blenderRenderTask.getBlenderFramePart().getPartFilename());
         if (downloadRequiredFiles(renderDir, blenderRenderTask)) {
+            blenderRenderTask = blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
+
+
 
         }
 
@@ -96,7 +133,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
             // Download Blend File from server
             connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blend_file/";
-            params = "connection_uuid=" + renderTask.getConnection_uuid() + "&project_uuid" + renderTask.getProject_uuid();
+            params = "connection_uuid=" + renderTask.getConnection_uuid() + "&project_uuid=" + renderTask.getProject_uuid();
             String blendFile = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, renderDir.toString());
             renderTask.setBlendFilename(blendFile);
             LOG.debug("Required files downloaded.");
@@ -134,6 +171,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         this.sethlansAPIConnectionService = sethlansAPIConnectionService;
     }
 
+    @Autowired
     public void setBlenderRenderTaskDatabaseService(BlenderRenderTaskDatabaseService blenderRenderTaskDatabaseService) {
         this.blenderRenderTaskDatabaseService = blenderRenderTaskDatabaseService;
     }

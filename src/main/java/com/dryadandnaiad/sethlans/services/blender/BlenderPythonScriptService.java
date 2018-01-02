@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,8 +29,8 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
  */
 public interface BlenderPythonScriptService {
 
-    String writePythonScript(ComputeType computeType, String renderLocation,
-                             String deviceId, int tileSize, int resolution_x,
-                             int resolution_y, int res_percentage, int parts);
+    String writeBenchmarkPythonScript(ComputeType computeType, String renderLocation,
+                                      String deviceId, int tileSize, int resolution_x,
+                                      int resolution_y, int res_percentage);
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -42,9 +42,8 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
 
 
     @Override
-    public String writePythonScript(ComputeType computeType, String renderLocation, String deviceId,
-                                    int tileSize, int resolution_x, int resolution_y, int res_percentage,
-                                    int parts) {
+    public String writeBenchmarkPythonScript(ComputeType computeType, String renderLocation, String deviceId,
+                                             int tileSize, int resolution_x, int resolution_y, int res_percentage) {
         try {
             File script = new File(renderLocation + File.separator + "script-" + deviceId + ".py");
             FileWriter scriptWriter = new FileWriter(script);
@@ -105,9 +104,6 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.flush();
             scriptWriter.close();
 
-            if (parts != 0) {
-                LOG.debug("Parts requested.");
-            }
             return script.toString();
         } catch (java.io.IOException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
