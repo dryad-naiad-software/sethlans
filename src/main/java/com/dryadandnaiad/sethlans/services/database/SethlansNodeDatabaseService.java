@@ -33,4 +33,6 @@ public interface SethlansNodeDatabaseService extends CRUDService<SethlansNode> {
     SethlansNode getByConnectionUUID(String uuid);
 
     List<SethlansNode> activeNodesNotRendering();
+
+    boolean checkForDuplicatesAndSave(SethlansNode sethlansNode);
 }

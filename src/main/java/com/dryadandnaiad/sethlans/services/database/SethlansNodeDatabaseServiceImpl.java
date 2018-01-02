@@ -21,6 +21,8 @@ package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +39,7 @@ import java.util.List;
 public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseService {
 
     private NodeRepository nodeRepository;
+    private static final Logger LOG = LoggerFactory.getLogger(SethlansNodeDatabaseServiceImpl.class);
 
     @Override
     public List<SethlansNode> listAll() {
@@ -83,6 +86,27 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
             }
         }
         return nodesNotRendering;
+    }
+
+    @Override
+    public boolean checkForDuplicatesAndSave(SethlansNode sethlansNode) {
+        List<SethlansNode> storedNodes = listAll();
+        List<SethlansNode> matchedNodes = new ArrayList<>();
+        for (SethlansNode storedNode : storedNodes) {
+            if (storedNode.getIpAddress().equals(sethlansNode.getIpAddress()) &&
+                    storedNode.getNetworkPort().equals(sethlansNode.getNetworkPort()) &&
+                    storedNode.getComputeType().equals(sethlansNode.getComputeType()) &&
+                    storedNode.getSethlansNodeOS().equals(sethlansNode.getSethlansNodeOS())) {
+                LOG.debug(sethlansNode.getHostname() + " is already in the database.");
+                matchedNodes.add(storedNode);
+            }
+        }
+        if (matchedNodes.size() == 0) {
+            nodeRepository.save(sethlansNode);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Autowired

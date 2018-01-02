@@ -42,10 +42,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created Mario Estrella on 9/20/17.
@@ -162,35 +159,10 @@ public class ServerSettingsController extends AbstractSethlansController {
             }
         }
         if (nodeAddForm.getProgress() == NodeAddProgress.NODE_ADD) {
-            Set<SethlansNode> sethlansNodes = new HashSet<>();
             List<SethlansNode> sethlansNodesDatabase = sethlansNodeDatabaseService.listAll();
             if (!sethlansNodesDatabase.isEmpty()) {
                 LOG.debug("Nodes found in database, starting comparison.");
-                List<SethlansNode> matchedNodes = new ArrayList<>();
-                for (SethlansNode node : sethlansNodesDatabase) {
-                    if (node.getIpAddress().equals(sethlansNode.getIpAddress()) &&
-                            node.getNetworkPort().equals(sethlansNode.getNetworkPort()) &&
-                            node.getComputeType().equals(sethlansNode.getComputeType()) &&
-                            node.getSethlansNodeOS().equals(sethlansNode.getSethlansNodeOS())) {
-                        LOG.debug(node.getHostname() + " is already in the database.");
-                        matchedNodes.add(node);
-                    } else {
-                        LOG.debug(node.getHostname() + " does not match " + sethlansNode.getHostname());
-                    }
-                }
-                if (matchedNodes.size() == 0) {
-                    sethlansNodes.add(sethlansNode);
-                } else {
-                    LOG.debug("A Total of " + matchedNodes.size() + " node(s) already exist in the database."); 
-                }
-                for (SethlansNode node : sethlansNodes) {
-                    sethlansNodeDatabaseService.saveOrUpdate(node);
-                    LOG.debug("Added: " + node.getHostname() + " to database.");
-                    if (node.isPendingActivation()) {
-                        setSethlansServer();
-                        nodeActivationService.sendActivationRequest(node, sethlansServer);
-                    }
-                }
+                sethlansNodeDatabaseService.checkForDuplicatesAndSave(sethlansNode);
 
             } else {
                 LOG.debug("No nodes present in database.");
@@ -245,30 +217,8 @@ public class ServerSettingsController extends AbstractSethlansController {
 
         if (!sethlansNodesDatabase.isEmpty()) {
             LOG.debug("Nodes found in database, starting comparison.");
-            List<SethlansNode> matchedNodes = new ArrayList<>();
             for (Integer nodeId : scanForm.getSethlansNodeId()) {
-                for (SethlansNode storedNode : sethlansNodesDatabase) {
-                    if (storedNode.getIpAddress().equals(discoveredNodes.get(nodeId).getIpAddress()) &&
-                            storedNode.getNetworkPort().equals(discoveredNodes.get(nodeId).getNetworkPort()) &&
-                            storedNode.getComputeType().equals(discoveredNodes.get(nodeId).getComputeType()) &&
-                            storedNode.getSethlansNodeOS().equals(discoveredNodes.get(nodeId).getSethlansNodeOS())) {
-                        LOG.debug(storedNode.getHostname() + " is already in the database.");
-                        matchedNodes.add(storedNode);
-                    } else {
-                        LOG.debug(storedNode.getHostname() + " does not match " + discoveredNodes.get(nodeId) + " continuing loop.");
-                    }
-
-                }
-                if (matchedNodes.size() == 0) {
-                    sethlansNodeDatabaseService.saveOrUpdate(discoveredNodes.get(nodeId));
-                    LOG.debug("Added: " + discoveredNodes.get(nodeId).getHostname() + " to database.");
-                    if (discoveredNodes.get(nodeId).isPendingActivation()) {
-                        setSethlansServer();
-                        nodeActivationService.sendActivationRequest(discoveredNodes.get(nodeId), sethlansServer);
-                    }
-                } else {
-                    LOG.debug("A Total of " + matchedNodes.size() + " node(s) already exist in the database.");
-                }
+                sethlansNodeDatabaseService.checkForDuplicatesAndSave(discoveredNodes.get(nodeId));
             }
         } else {
             for (Integer nodeId : scanForm.getSethlansNodeId()) {
