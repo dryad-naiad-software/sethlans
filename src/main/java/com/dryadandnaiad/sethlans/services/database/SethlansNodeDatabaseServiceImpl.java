@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
+import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ import java.util.List;
 public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseService {
 
     private NodeRepository nodeRepository;
+    private SethlansAPIConnectionService sethlansAPIConnectionService;
     private static final Logger LOG = LoggerFactory.getLogger(SethlansNodeDatabaseServiceImpl.class);
 
     @Override
@@ -61,6 +63,9 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
     @Override
     public void delete(Integer id) {
         SethlansNode sethlansNode = nodeRepository.findOne(id);
+        String connectionURL = "https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() + "/api/nodeactivate/removal";
+        String params = "connection_uuid=" + sethlansNode.getConnection_uuid();
+        sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params);
         nodeRepository.delete(sethlansNode);
     }
 
@@ -112,5 +117,10 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
     @Autowired
     public void setNodeRepository(NodeRepository nodeRepository) {
         this.nodeRepository = nodeRepository;
+    }
+
+    @Autowired
+    public void setSethlansAPIConnectionService(SethlansAPIConnectionService sethlansAPIConnectionService) {
+        this.sethlansAPIConnectionService = sethlansAPIConnectionService;
     }
 }

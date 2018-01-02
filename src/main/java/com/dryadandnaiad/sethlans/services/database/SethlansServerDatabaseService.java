@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -28,5 +28,7 @@ import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
  * Project: sethlans
  */
 public interface SethlansServerDatabaseService extends CRUDService<SethlansServer> {
+    void deleteByConnectionUUID(String uuid);
+
     SethlansServer getByConnectionUUID(String uuid);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -68,9 +68,12 @@ public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabase
 
     }
 
-    @Autowired
-    public void setServerRepository(ServerRepository serverRepository) {
-        this.serverRepository = serverRepository;
+    @Override
+    public void deleteByConnectionUUID(String uuid) {
+        SethlansServer sethlansServer = getByConnectionUUID(uuid);
+        this.applicationEventPublisher.publishEvent(new SethlansEvent(this, sethlansServer.getConnection_uuid() + "-" + NotificationOrigin.ACTIVATION_REQUEST, false));
+        serverRepository.delete(sethlansServer);
+
     }
 
     @Override
@@ -83,6 +86,12 @@ public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabase
         }
         return null;
     }
+
+    @Autowired
+    public void setServerRepository(ServerRepository serverRepository) {
+        this.serverRepository = serverRepository;
+    }
+
 
     @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {

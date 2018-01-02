@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -65,6 +65,18 @@ public class ActivationRequestController implements ApplicationEventPublisherAwa
             String notification = "New Server Request: " + serverhostname;
             this.applicationEventPublisher.publishEvent(new SethlansEvent(this, connection_uuid + "-" + NotificationOrigin.ACTIVATION_REQUEST.toString(), notification, true));
         }
+    }
+
+    @RequestMapping(value = "/api/nodeactivate/removal", method = RequestMethod.POST)
+    public void serverDeletionRequest(@RequestParam String connection_uuid) {
+        LOG.debug("Received server deletion request");
+        if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) != null) {
+            LOG.debug("Server UUID found, deleting entry.");
+            sethlansServerDatabaseService.deleteByConnectionUUID(connection_uuid);
+        } else {
+            LOG.debug("Server not found in database.");
+        }
+
     }
 
     @RequestMapping(value = "/api/nodeactivate/acknowledge", method = RequestMethod.POST)
