@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -81,7 +81,7 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
         HttpsURLConnection connection;
         try {
             LOG.debug("Sending the following parameters to API via GET: " + connectionURL + params);
-            URL url = new URL(connectionURL + params);
+            URL url = new URL(connectionURL + "?" + params);
             SSLUtilities.trustAllHostnames();
             SSLUtilities.trustAllHttpsCertificates();
             connection = (HttpsURLConnection) url.openConnection();

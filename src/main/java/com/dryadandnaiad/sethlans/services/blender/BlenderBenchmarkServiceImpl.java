@@ -142,7 +142,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
 
             //Download Blender from server
             String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blender_binary/";
-            String params = "?connection_uuid=" + benchmarkTask.getConnection_uuid() + "&version=" + benchmarkTask.getBlenderVersion() + "&os=" + SethlansUtils.getOS();
+            String params = "connection_uuid=" + benchmarkTask.getConnection_uuid() + "&version=" + benchmarkTask.getBlenderVersion() + "&os=" + SethlansUtils.getOS();
             String filename = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, benchmarkDir.toString());
             if (SethlansUtils.archiveExtract(filename, benchmarkDir)) {
                 LOG.debug("Extraction complete.");
@@ -159,7 +159,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
 
             // Download benchmark from server
             connectionURL = "https://" + serverIP + ":" + serverPort + "/api/benchmark_files/" + benchmarkTask.getBenchmarkURL();
-            params = "?connection_uuid=" + benchmarkTask.getConnection_uuid();
+            params = "connection_uuid=" + benchmarkTask.getConnection_uuid();
             String benchmarkFile = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, benchmarkDir.toString());
             benchmarkTask.setBenchmarkFile(benchmarkFile);
             LOG.debug("Required files downloaded.");

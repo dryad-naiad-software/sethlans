@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,9 +19,11 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.slf4j.Logger;
@@ -55,7 +57,11 @@ public class ServerProjectRestController {
     @Value("${sethlans.blenderDir}")
     private String blenderDir;
 
+    @Value("${sethlans.projectDir}")
+    private String projectDir;
+
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
+    private BlenderProjectDatabaseService blenderProjectDatabaseService;
 
     @RequestMapping(value = "/api/project/blender_binary", method = RequestMethod.GET)
     public void downloadBlenderBinary(HttpServletResponse response, @RequestParam String connection_uuid,
@@ -134,6 +140,13 @@ public class ServerProjectRestController {
 
     @RequestMapping(value = "/api/project/blend_file/", method = RequestMethod.GET)
     public void downloadBlendfile(HttpServletResponse response, @RequestParam String connection_uuid, @RequestParam String project_uuid) {
+        if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) == null) {
+            LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
+        } else {
+            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(project_uuid);
+            File blend_file = new File(blenderProject.getBlendFileLocation());
+            serveFile(blend_file, response);
+        }
 
     }
 
@@ -154,5 +167,10 @@ public class ServerProjectRestController {
     @Autowired
     public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {
         this.sethlansNodeDatabaseService = sethlansNodeDatabaseService;
+    }
+
+    @Autowired
+    public void setBlenderProjectDatabaseService(BlenderProjectDatabaseService blenderProjectDatabaseService) {
+        this.blenderProjectDatabaseService = blenderProjectDatabaseService;
     }
 }

@@ -78,7 +78,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         if (renderDir.mkdirs()) {
             //Download Blender from server
             String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blender_binary/";
-            String params = "?connection_uuid=" + renderTask.getConnection_uuid() + "&version=" +
+            String params = "connection_uuid=" + renderTask.getConnection_uuid() + "&version=" +
                     renderTask.getBlenderVersion() + "&os=" + SethlansUtils.getOS();
             String filename = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, renderDir.toString());
 
@@ -93,6 +93,15 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                     return false;
                 }
             }
+
+            // Download Blend File from server
+            connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blend_file/";
+            params = "connection_uuid=" + renderTask.getConnection_uuid() + "&project_uuid" + renderTask.getProject_uuid();
+            String blendFile = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, renderDir.toString());
+            renderTask.setBlendFilename(blendFile);
+            LOG.debug("Required files downloaded.");
+            return true;
+
 
         }
         return false;
