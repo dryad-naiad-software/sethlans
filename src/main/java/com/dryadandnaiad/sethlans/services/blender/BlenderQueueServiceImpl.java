@@ -73,6 +73,16 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                 if (sethlansNode.isActive() && !sethlansNode.isRendering()) {
                                     LOG.debug("Sending " + blenderRenderQueueItem.getBlenderFramePart() + " to " + sethlansNode.getHostname());
                                     BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
+                                    ComputeType projectComputeType = blenderProject.getRenderOn();
+
+                                    // If both the project and the node is CPU and GPU, use the method with the lowest rating.
+                                    if (sethlansNode.getComputeType().equals(ComputeType.CPU_GPU) && projectComputeType.equals(ComputeType.CPU_GPU)) {
+                                        if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating()) {
+                                            projectComputeType = ComputeType.GPU;
+                                        } else {
+                                            projectComputeType = ComputeType.CPU;
+                                        }
+                                    }
 
                                     String connectionURL = "https://" + sethlansNode.getIpAddress() + ":" +
                                             sethlansNode.getNetworkPort() + "/api/render/request";
@@ -87,7 +97,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                             "&resolution_x=" + blenderProject.getResolutionX() +
                                             "&resolution_y=" + blenderProject.getResolutionY() +
                                             "&res_percentage=" + blenderProject.getResPercentage() +
-                                            "&compute_type=" + blenderProject.getRenderOn() +
+                                            "&compute_type=" + projectComputeType +
                                             "&blend_file=" + blenderProject.getBlendFilename() +
                                             "&blender_version=" + blenderProject.getBlenderVersion() +
                                             "&file_extension=" + blenderRenderQueueItem.getBlenderFramePart().getFileExtension() +
