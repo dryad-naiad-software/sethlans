@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -52,6 +52,7 @@ public class BlenderRenderTask extends AbstractEntityClass {
     private String blenderVersion;
     private String blenderExecutable;
     private BlenderFramePart blenderFramePart;
+    private boolean complete;
 
     public String getProjectName() {
         return projectName;
@@ -198,6 +199,14 @@ public class BlenderRenderTask extends AbstractEntityClass {
         this.blenderFramePart = blenderFramePart;
     }
 
+    public boolean isComplete() {
+        return complete;
+    }
+
+    public void setComplete(boolean complete) {
+        this.complete = complete;
+    }
+
     @Override
     public String toString() {
         return "BlenderRenderTask{" +
@@ -219,6 +228,7 @@ public class BlenderRenderTask extends AbstractEntityClass {
                 ", blenderVersion='" + blenderVersion + '\'' +
                 ", blenderExecutable='" + blenderExecutable + '\'' +
                 ", blenderFramePart=" + blenderFramePart +
+                ", complete=" + complete +
                 '}';
     }
 }

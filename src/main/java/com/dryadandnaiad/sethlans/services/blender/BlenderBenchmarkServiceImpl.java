@@ -192,7 +192,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
 
 
             // Download benchmark from server
-            connectionURL = "https://" + serverIP + ":" + serverPort + "/api/benchmark_files/" + benchmarkTask.getBenchmarkURL();
+            connectionURL = "https://" + serverIP + ":" + serverPort + "/api/benchmark_files/" + benchmarkTask.getBenchmarkURL() + "/";
             params = "connection_uuid=" + benchmarkTask.getConnection_uuid();
             String benchmarkFile = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, benchmarkDir.toString());
             benchmarkTask.setBenchmarkFile(benchmarkFile);

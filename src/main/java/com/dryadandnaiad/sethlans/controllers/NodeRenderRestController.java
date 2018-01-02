@@ -77,37 +77,29 @@ public class NodeRenderRestController {
             framePart.setFrameFileName(frame_filename);
             framePart.setPartFilename(part_filename);
             framePart.setPartNumber(part_number);
-            if (blenderRenderTaskDatabaseService.getByProjectUUID(project_uuid) == null) {
 
 
-                // Create a new task
-                blenderRenderTask = new BlenderRenderTask();
-                blenderRenderTask.setProject_uuid(project_uuid);
-                blenderRenderTask.setProjectName(project_name);
-                blenderRenderTask.setConnection_uuid(connection_uuid);
-                blenderRenderTask.setRenderOutputFormat(render_output_format);
-                blenderRenderTask.setStartFrame(start_frame);
-                blenderRenderTask.setEndFrame(end_frame);
-                blenderRenderTask.setStepFrame(step_frame);
-                blenderRenderTask.setSamples(samples);
-                blenderRenderTask.setBlenderEngine(blender_engine);
-                blenderRenderTask.setResolutionX(resolution_x);
-                blenderRenderTask.setResolutionY(resolution_y);
-                blenderRenderTask.setResPercentage(res_percentage);
-                blenderRenderTask.setComputeType(compute_type);
-                blenderRenderTask.setBlendFilename(blend_file);
-                blenderRenderTask.setBlenderVersion(blender_version);
-                blenderRenderTask.setBlenderFramePart(framePart);
-                blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
-            } else {
-                // Update existing task to process a new part and a new frame if necessary
-                blenderRenderTask = blenderRenderTaskDatabaseService.getByProjectUUID(project_uuid);
-                blenderRenderTask.setStartFrame(start_frame);
-                blenderRenderTask.setEndFrame(end_frame);
-                blenderRenderTask.setStepFrame(step_frame);
-                blenderRenderTask.setBlenderFramePart(framePart);
-                blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
-            }
+            // Create a new task
+            blenderRenderTask = new BlenderRenderTask();
+            blenderRenderTask.setProject_uuid(project_uuid);
+            blenderRenderTask.setProjectName(project_name);
+            blenderRenderTask.setConnection_uuid(connection_uuid);
+            blenderRenderTask.setRenderOutputFormat(render_output_format);
+            blenderRenderTask.setStartFrame(start_frame);
+            blenderRenderTask.setEndFrame(end_frame);
+            blenderRenderTask.setStepFrame(step_frame);
+            blenderRenderTask.setSamples(samples);
+            blenderRenderTask.setBlenderEngine(blender_engine);
+            blenderRenderTask.setResolutionX(resolution_x);
+            blenderRenderTask.setResolutionY(resolution_y);
+            blenderRenderTask.setResPercentage(res_percentage);
+            blenderRenderTask.setComputeType(compute_type);
+            blenderRenderTask.setBlendFilename(blend_file);
+            blenderRenderTask.setBlenderVersion(blender_version);
+            blenderRenderTask.setBlenderFramePart(framePart);
+            blenderRenderTask.setComplete(false);
+            blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
+
         }
     }
 

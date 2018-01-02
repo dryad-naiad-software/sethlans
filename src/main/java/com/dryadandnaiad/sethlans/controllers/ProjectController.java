@@ -46,9 +46,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created Mario Estrella on 3/24/17.
@@ -78,7 +76,7 @@ public class ProjectController extends AbstractSethlansController {
     public String getPage(Model model) {
         List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.listAll();
         List<SethlansNode> activeNodes = new ArrayList<>();
-        List<ComputeType> activeTypes = new ArrayList<>();
+        Set<ComputeType> activeTypes = new HashSet<>();
         for (SethlansNode sethlansNode : sethlansNodeList) {
             if (sethlansNode.isActive() && sethlansNode.isBenchmarkComplete()) {
                 activeNodes.add(sethlansNode);
@@ -87,9 +85,16 @@ public class ProjectController extends AbstractSethlansController {
         for (SethlansNode activeNode : activeNodes) {
             activeTypes.add(activeNode.getComputeType());
         }
-        if (activeNodes.size() > 0) {
+
+        if (activeNodes.size() > 0 && activeTypes.contains(ComputeType.CPU_GPU)) {
+            activeTypes.add(ComputeType.CPU);
+            activeTypes.add(ComputeType.GPU);
+        }
+
+        if (activeNodes.size() > 0 && !activeTypes.contains(ComputeType.CPU_GPU)) {
             activeTypes.add(ComputeType.CPU_GPU);
         }
+        LOG.debug("activetypes" + activeTypes.toString());
         getAvailableBlenderBinaries();
         model.addAttribute("availableBlenderBinaries", availableBlenderBinaries);
         model.addAttribute("projects", blenderProjectDatabaseService.listAll());
@@ -119,7 +124,7 @@ public class ProjectController extends AbstractSethlansController {
     }
 
     @RequestMapping("/project/start/{id}")
-    public String startProject(@PathVariable Integer id) {
+    public String startProject(@PathVariable Integer id, Model model) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
         blenderProjectService.startProject(blenderProject);
         return "redirect:/project";
