@@ -19,21 +19,15 @@
 
 package com.dryadandnaiad.sethlans.services.blender;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
-import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
-import com.google.common.base.Throwables;
 import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecuteResultHandler;
-import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +35,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
-import java.util.concurrent.TimeUnit;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 /**
  * Created Mario Estrella on 12/18/17.
@@ -120,78 +114,6 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
     }
 
-    @Override
-    public int executeBenchmarkTask(BlenderBenchmarkTask benchmarkTask, String blenderScript) {
-        String error;
-        try {
-            LOG.debug("Starting Benchmark. Benchmark type: " + benchmarkTask.getComputeType());
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
-            PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
-            CommandLine commandLine = new CommandLine(benchmarkTask.getBlenderExecutable());
-
-            commandLine.addArgument("-b");
-            commandLine.addArgument(benchmarkTask.getBenchmarkDir() + File.separator + benchmarkTask.getBenchmarkFile());
-            commandLine.addArgument("-P");
-            commandLine.addArgument(blenderScript);
-            commandLine.addArgument("-E");
-            commandLine.addArgument("CYCLES");
-            commandLine.addArgument("-o");
-            commandLine.addArgument(benchmarkTask.getBenchmarkDir() + File.separator);
-            commandLine.addArgument("-f");
-            commandLine.addArgument("1");
-            if (benchmarkTask.getComputeType().equals(ComputeType.CPU)) {
-                commandLine.addArgument("-t");
-                commandLine.addArgument(cores);
-            }
-            LOG.debug(commandLine.toString());
-
-            DefaultExecutor executor = new DefaultExecutor();
-            executor.setStreamHandler(pumpStreamHandler);
-            DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
-            executor.execute(commandLine, resultHandler);
-            resultHandler.waitFor();
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray())));
-
-            String output;
-            String time = null;
-
-            while ((output = in.readLine()) != null) {
-                LOG.debug(output);
-                if (output.contains("Finished")) {
-                    String[] finished = output.split("\\|");
-                    for (String item : finished) {
-                        LOG.debug(item);
-                        if (item.contains("Time:")) {
-                            time = StringUtils.substringAfter(item, ":");
-                            time = StringUtils.substringBefore(time, ".");
-                        }
-                    }
-                }
-            }
-
-
-            error = errorStream.toString();
-
-            LOG.debug(error);
-            String[] timeToConvert = time.split(":");
-            int minutes = Integer.parseInt(timeToConvert[0]);
-            int seconds = Integer.parseInt(timeToConvert[1]);
-            int timeInSeconds = seconds + 60 * minutes;
-            int timeInMilliseconds = (int) TimeUnit.MILLISECONDS.convert(timeInSeconds, TimeUnit.SECONDS);
-            LOG.debug("Benchmark time in milliseconds: " + timeInMilliseconds);
-            return timeInMilliseconds;
-
-
-        } catch (IOException | NullPointerException e) {
-            LOG.error(Throwables.getStackTraceAsString(e));
-
-        } catch (InterruptedException e) {
-            LOG.error(Throwables.getStackTraceAsString(e));
-        }
-        return 0;
-    }
 
     @Autowired
     public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {

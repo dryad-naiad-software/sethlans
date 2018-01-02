@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -28,6 +28,10 @@ import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseServic
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecuteResultHandler;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -37,9 +41,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created Mario Estrella on 12/10/17.
@@ -52,6 +56,9 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     @Value("${sethlans.tempDir}")
     private String tempDir;
 
+    @Value("${sethlans.cores}")
+    String cores;
+
     @Value("${sethlans.primaryBlenderVersion}")
     private String primaryBlenderVersion;
 
@@ -60,7 +67,6 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private BlenderPythonScriptService blenderPythonScriptService;
-    private BlenderRenderService blenderRenderService;
     private int remainingBenchmarks;
 
     @Override
@@ -178,7 +184,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                 String cudaID = StringUtils.substringAfter(benchmarkTask.getCudaName(), "_");
                 String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(),
                         benchmarkTask.getBenchmarkDir(), cudaID, 128, 800, 600, 50, 0);
-                int rating = blenderRenderService.executeBenchmarkTask(benchmarkTask, script);
+                int rating = blenderBenchmark(benchmarkTask, script);
                 if (rating == 0) {
                     LOG.debug("Benchmark failed.");
                     LOG.debug(benchmarkTask.toString());
@@ -194,7 +200,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                 LOG.debug("Creating benchmark script using CPU");
                 String script = blenderPythonScriptService.writePythonScript(benchmarkTask.getComputeType(),
                         benchmarkTask.getBenchmarkDir(), "0", 16, 800, 600, 50, 0);
-                int rating = blenderRenderService.executeBenchmarkTask(benchmarkTask, script);
+                int rating = blenderBenchmark(benchmarkTask, script);
                 if (rating == 0) {
                     LOG.debug("Benchmark failed.");
                     LOG.debug(benchmarkTask.toString());
@@ -209,6 +215,78 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             }
         }
 
+    }
+
+    private int blenderBenchmark(BlenderBenchmarkTask benchmarkTask, String blenderScript) {
+        String error;
+        try {
+            LOG.debug("Starting Benchmark. Benchmark type: " + benchmarkTask.getComputeType());
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
+            PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
+            CommandLine commandLine = new CommandLine(benchmarkTask.getBlenderExecutable());
+
+            commandLine.addArgument("-b");
+            commandLine.addArgument(benchmarkTask.getBenchmarkDir() + File.separator + benchmarkTask.getBenchmarkFile());
+            commandLine.addArgument("-P");
+            commandLine.addArgument(blenderScript);
+            commandLine.addArgument("-E");
+            commandLine.addArgument("CYCLES");
+            commandLine.addArgument("-o");
+            commandLine.addArgument(benchmarkTask.getBenchmarkDir() + File.separator);
+            commandLine.addArgument("-f");
+            commandLine.addArgument("1");
+            if (benchmarkTask.getComputeType().equals(ComputeType.CPU)) {
+                commandLine.addArgument("-t");
+                commandLine.addArgument(cores);
+            }
+            LOG.debug(commandLine.toString());
+
+            DefaultExecutor executor = new DefaultExecutor();
+            executor.setStreamHandler(pumpStreamHandler);
+            DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
+            executor.execute(commandLine, resultHandler);
+            resultHandler.waitFor();
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray())));
+
+            String output;
+            String time = null;
+
+            while ((output = in.readLine()) != null) {
+                LOG.debug(output);
+                if (output.contains("Finished")) {
+                    String[] finished = output.split("\\|");
+                    for (String item : finished) {
+                        LOG.debug(item);
+                        if (item.contains("Time:")) {
+                            time = StringUtils.substringAfter(item, ":");
+                            time = StringUtils.substringBefore(time, ".");
+                        }
+                    }
+                }
+            }
+
+
+            error = errorStream.toString();
+
+            LOG.debug(error);
+            String[] timeToConvert = time.split(":");
+            int minutes = Integer.parseInt(timeToConvert[0]);
+            int seconds = Integer.parseInt(timeToConvert[1]);
+            int timeInSeconds = seconds + 60 * minutes;
+            int timeInMilliseconds = (int) TimeUnit.MILLISECONDS.convert(timeInSeconds, TimeUnit.SECONDS);
+            LOG.debug("Benchmark time in milliseconds: " + timeInMilliseconds);
+            return timeInMilliseconds;
+
+
+        } catch (IOException | NullPointerException e) {
+            LOG.error(Throwables.getStackTraceAsString(e));
+
+        } catch (InterruptedException e) {
+            LOG.error(Throwables.getStackTraceAsString(e));
+        }
+        return 0;
     }
 
     @Autowired
@@ -231,8 +309,4 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         this.blenderPythonScriptService = blenderPythonScriptService;
     }
 
-    @Autowired
-    public void setBlenderRenderService(BlenderRenderService blenderRenderService) {
-        this.blenderRenderService = blenderRenderService;
-    }
 }

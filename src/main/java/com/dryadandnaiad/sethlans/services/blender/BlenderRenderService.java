@@ -19,7 +19,6 @@
 
 package com.dryadandnaiad.sethlans.services.blender;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
 import org.springframework.scheduling.annotation.Async;
 
 /**
@@ -32,5 +31,4 @@ public interface BlenderRenderService {
     @Async
     void startRenderTask(String projectUUID);
 
-    int executeBenchmarkTask(BlenderBenchmarkTask benchmarkTask, String blenderScript);
 }
