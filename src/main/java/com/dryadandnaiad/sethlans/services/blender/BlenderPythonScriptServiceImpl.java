@@ -173,7 +173,9 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.write("\tscene.render.resolution_x = " + resolutionX + "\n");
             scriptWriter.write("\tscene.render.resolution_y = " + resolutionY + "\n");
             scriptWriter.write("\tscene.render.resolution_percentage = " + resPercentage + "\n");
-            //scriptWriter.write("\tscene.render.use_border = False");
+            scriptWriter.write("\tscene.render.use_border = True");
+
+            //todo border position.
 
             // Tile Sizes
             scriptWriter.write("\n");

@@ -84,6 +84,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                         }
                                     }
 
+                                    //TODO add part resolution and position to API
                                     String connectionURL = "https://" + sethlansNode.getIpAddress() + ":" +
                                             sethlansNode.getNetworkPort() + "/api/render/request";
                                     String params = "connection_uuid=" + sethlansNode.getConnection_uuid() +
@@ -166,7 +167,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
 
 
     @Override
-    public boolean populateRenderQueue(BlenderProject blenderProject) {
+    public void populateRenderQueue(BlenderProject blenderProject) {
         RandomCollection<SethlansNode> randomWeightedNode = getRandomWeightedNode(blenderProject);
         if (randomWeightedNode.next() != null) {
             List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
@@ -180,10 +181,8 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
             }
             LOG.debug("Render Queue configured \n" + blenderRenderQueueDatabaseService.listAll());
-            return true;
         } else {
             LOG.debug("No compatible rendering nodes found for this project.");
-            return false;
         }
     }
 

@@ -80,6 +80,8 @@ public class NodeRenderRestController {
             framePart.setPartFilename(part_filename);
             framePart.setPartNumber(part_number);
 
+            // TODO add part resolution and position to API
+
 
             // Create a new task
             blenderRenderTask = new BlenderRenderTask();

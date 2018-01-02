@@ -31,6 +31,10 @@ public class BlenderFramePart {
     private String frameFileName;
     private int frameNumber;
     private int partNumber;
+    private int partResolutionX;
+    private int partResolutionY;
+    private int partPositionX;
+    private int partPositionY;
     private String partFilename;
     private String fileExtension;
     private String renderDir;
@@ -83,12 +87,48 @@ public class BlenderFramePart {
         this.renderDir = renderDir;
     }
 
+    public int getPartResolutionX() {
+        return partResolutionX;
+    }
+
+    public void setPartResolutionX(int partResolutionX) {
+        this.partResolutionX = partResolutionX;
+    }
+
+    public int getPartResolutionY() {
+        return partResolutionY;
+    }
+
+    public void setPartResolutionY(int partResolutionY) {
+        this.partResolutionY = partResolutionY;
+    }
+
+    public int getPartPositionX() {
+        return partPositionX;
+    }
+
+    public void setPartPositionX(int partPositionX) {
+        this.partPositionX = partPositionX;
+    }
+
+    public int getPartPositionY() {
+        return partPositionY;
+    }
+
+    public void setPartPositionY(int partPositionY) {
+        this.partPositionY = partPositionY;
+    }
+
     @Override
     public String toString() {
         return "BlenderFramePart{" +
                 "frameFileName='" + frameFileName + '\'' +
                 ", frameNumber=" + frameNumber +
                 ", partNumber=" + partNumber +
+                ", partResolutionX=" + partResolutionX +
+                ", partResolutionY=" + partResolutionY +
+                ", partPositionX=" + partPositionX +
+                ", partPositionY=" + partPositionY +
                 ", partFilename='" + partFilename + '\'' +
                 ", fileExtension='" + fileExtension + '\'' +
                 ", renderDir='" + renderDir + '\'' +

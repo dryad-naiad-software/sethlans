@@ -47,12 +47,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Override
     public void startProject(BlenderProject blenderProject) {
         configureFrameList(blenderProject);
-        if (blenderQueueService.populateRenderQueue(blenderProject)) {
-
-        }
-
-        // TODO logic to handle the queue depending on the number of ndoes available.
-        // TODO weighted distribution of queue depending on speed of nodes.
+        blenderQueueService.populateRenderQueue(blenderProject);
     }
 
     @Override
@@ -86,6 +81,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
             }
         }
+        // TODO Calculate part resolution and position.
         blenderProject.setFrameFileNames(frameFileNames);
         blenderProject.setFramePartList(blenderFramePartList);
         LOG.debug("Project Frames configured \n" + blenderFramePartList);

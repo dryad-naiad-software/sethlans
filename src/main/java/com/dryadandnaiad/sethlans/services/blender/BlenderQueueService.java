@@ -32,5 +32,5 @@ public interface BlenderQueueService {
     @Async
     void startQueue();
 
-    boolean populateRenderQueue(BlenderProject blenderProject);
+    void populateRenderQueue(BlenderProject blenderProject);
 }
