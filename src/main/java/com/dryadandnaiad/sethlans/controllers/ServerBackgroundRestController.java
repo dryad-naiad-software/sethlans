@@ -62,7 +62,7 @@ public class ServerBackgroundRestController {
                 sethlansNodetoUpdate.setBenchmarkComplete(false);
                 updateNode(sethlansNodetoUpdate, tempNode);
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(5000);
                     blenderBenchmarkService.sendBenchmarktoNode(sethlansNodetoUpdate);
                 } catch (InterruptedException e) {
                     LOG.debug(Throwables.getStackTraceAsString(e));

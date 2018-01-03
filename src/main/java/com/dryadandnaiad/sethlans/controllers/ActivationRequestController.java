@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.enums.NotificationOrigin;
 import com.dryadandnaiad.sethlans.events.SethlansEvent;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
+import com.dryadandnaiad.sethlans.services.network.NodeStatusUpdateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,7 @@ public class ActivationRequestController implements ApplicationEventPublisherAwa
     private static final Logger LOG = LoggerFactory.getLogger(ActivationRequestController.class);
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private ApplicationEventPublisher applicationEventPublisher;
+    private NodeStatusUpdateService nodeStatusUpdateService;
 
     @RequestMapping(value = "/api/nodeactivate/request", method = RequestMethod.POST)
     public void nodeActivationRequest(@RequestParam String serverhostname, @RequestParam String ipAddress,
@@ -87,6 +89,13 @@ public class ActivationRequestController implements ApplicationEventPublisherAwa
             sethlansServer.setPendingAcknowledgementResponse(false);
             sethlansServer.setAcknowledged(true);
             sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
+            try {
+                Thread.sleep(5000);
+                nodeStatusUpdateService.nodeUpdatePullRequest();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
         } else {
             LOG.debug("No such server present in database");
         }
@@ -102,5 +111,10 @@ public class ActivationRequestController implements ApplicationEventPublisherAwa
     @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
+    }
+
+    @Autowired
+    public void setNodeStatusUpdateService(NodeStatusUpdateService nodeStatusUpdateService) {
+        this.nodeStatusUpdateService = nodeStatusUpdateService;
     }
 }
