@@ -38,16 +38,9 @@ public class BlenderRenderTask extends AbstractEntityClass {
     private String connection_uuid;
     private String project_uuid;
     private RenderOutputFormat renderOutputFormat;
-    private int startFrame;
-    private int endFrame;
-    private int stepFrame;
     private int samples;
     private BlenderEngine blenderEngine;
-    private int resolutionX;
-    private int resolutionY;
-    private int resPercentage;
     private ComputeType computeType;
-    private int currentPercentage;
     private String blendFilename;
     private String blenderVersion;
     private String blenderExecutable;
@@ -62,6 +55,21 @@ public class BlenderRenderTask extends AbstractEntityClass {
         this.projectName = projectName;
     }
 
+    public String getConnection_uuid() {
+        return connection_uuid;
+    }
+
+    public void setConnection_uuid(String connection_uuid) {
+        this.connection_uuid = connection_uuid;
+    }
+
+    public String getProject_uuid() {
+        return project_uuid;
+    }
+
+    public void setProject_uuid(String project_uuid) {
+        this.project_uuid = project_uuid;
+    }
 
     public RenderOutputFormat getRenderOutputFormat() {
         return renderOutputFormat;
@@ -69,30 +77,6 @@ public class BlenderRenderTask extends AbstractEntityClass {
 
     public void setRenderOutputFormat(RenderOutputFormat renderOutputFormat) {
         this.renderOutputFormat = renderOutputFormat;
-    }
-
-    public int getStartFrame() {
-        return startFrame;
-    }
-
-    public void setStartFrame(int startFrame) {
-        this.startFrame = startFrame;
-    }
-
-    public int getEndFrame() {
-        return endFrame;
-    }
-
-    public void setEndFrame(int endFrame) {
-        this.endFrame = endFrame;
-    }
-
-    public int getStepFrame() {
-        return stepFrame;
-    }
-
-    public void setStepFrame(int stepFrame) {
-        this.stepFrame = stepFrame;
     }
 
     public int getSamples() {
@@ -111,44 +95,12 @@ public class BlenderRenderTask extends AbstractEntityClass {
         this.blenderEngine = blenderEngine;
     }
 
-    public int getResolutionX() {
-        return resolutionX;
-    }
-
-    public void setResolutionX(int resolutionX) {
-        this.resolutionX = resolutionX;
-    }
-
-    public int getResolutionY() {
-        return resolutionY;
-    }
-
-    public void setResolutionY(int resolutionY) {
-        this.resolutionY = resolutionY;
-    }
-
-    public int getResPercentage() {
-        return resPercentage;
-    }
-
-    public void setResPercentage(int resPercentage) {
-        this.resPercentage = resPercentage;
-    }
-
     public ComputeType getComputeType() {
         return computeType;
     }
 
     public void setComputeType(ComputeType computeType) {
         this.computeType = computeType;
-    }
-
-    public int getCurrentPercentage() {
-        return currentPercentage;
-    }
-
-    public void setCurrentPercentage(int currentPercentage) {
-        this.currentPercentage = currentPercentage;
     }
 
     public String getBlendFilename() {
@@ -165,22 +117,6 @@ public class BlenderRenderTask extends AbstractEntityClass {
 
     public void setBlenderVersion(String blenderVersion) {
         this.blenderVersion = blenderVersion;
-    }
-
-    public String getConnection_uuid() {
-        return connection_uuid;
-    }
-
-    public void setConnection_uuid(String connection_uuid) {
-        this.connection_uuid = connection_uuid;
-    }
-
-    public String getProject_uuid() {
-        return project_uuid;
-    }
-
-    public void setProject_uuid(String project_uuid) {
-        this.project_uuid = project_uuid;
     }
 
     public String getBlenderExecutable() {
@@ -214,16 +150,9 @@ public class BlenderRenderTask extends AbstractEntityClass {
                 ", connection_uuid='" + connection_uuid + '\'' +
                 ", project_uuid='" + project_uuid + '\'' +
                 ", renderOutputFormat=" + renderOutputFormat +
-                ", startFrame=" + startFrame +
-                ", endFrame=" + endFrame +
-                ", stepFrame=" + stepFrame +
                 ", samples=" + samples +
                 ", blenderEngine=" + blenderEngine +
-                ", resolutionX=" + resolutionX +
-                ", resolutionY=" + resolutionY +
-                ", resPercentage=" + resPercentage +
                 ", computeType=" + computeType +
-                ", currentPercentage=" + currentPercentage +
                 ", blendFilename='" + blendFilename + '\'' +
                 ", blenderVersion='" + blenderVersion + '\'' +
                 ", blenderExecutable='" + blenderExecutable + '\'' +

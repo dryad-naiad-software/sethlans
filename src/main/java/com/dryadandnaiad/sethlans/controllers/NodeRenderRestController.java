@@ -64,11 +64,10 @@ public class NodeRenderRestController {
     private static final Logger LOG = LoggerFactory.getLogger(NodeRenderRestController.class);
 
     @RequestMapping(value = "/api/render/request", method = RequestMethod.POST)
-    public void renderRequest(@RequestParam String connection_uuid, String project_uuid, String project_name, RenderOutputFormat render_output_format,
-                              int start_frame, int end_frame, int step_frame, int samples,
-                              BlenderEngine blender_engine, int resolution_x, int resolution_y, int res_percentage, ComputeType compute_type,
-                              String blend_file, String blender_version, String file_extension, String frame_filename,
-                              int frame_number, String part_filename, int part_number) {
+    public void renderRequest(@RequestParam String project_name, String connection_uuid, String project_uuid, RenderOutputFormat render_output_format,
+                              int samples, BlenderEngine blender_engine, ComputeType compute_type, String blend_file, String blender_version,
+                              String frame_filename, int frame_number, int part_number, int part_resolution_x, int part_resolution_y,
+                              double part_position_min_y, double part_position_max_y, int part_res_percentage, String part_filename, String file_extension) {
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
@@ -79,8 +78,11 @@ public class NodeRenderRestController {
             framePart.setFrameFileName(frame_filename);
             framePart.setPartFilename(part_filename);
             framePart.setPartNumber(part_number);
-
-            // TODO add part resolution and position to API
+            framePart.setPartPositionMinY(part_position_min_y);
+            framePart.setPartPositionMaxY(part_position_max_y);
+            framePart.setPartResolutionX(part_resolution_x);
+            framePart.setPartResolutionY(part_resolution_y);
+            framePart.setPartResPercentage(part_res_percentage);
 
 
             // Create a new task
@@ -89,14 +91,8 @@ public class NodeRenderRestController {
             blenderRenderTask.setProjectName(project_name);
             blenderRenderTask.setConnection_uuid(connection_uuid);
             blenderRenderTask.setRenderOutputFormat(render_output_format);
-            blenderRenderTask.setStartFrame(start_frame);
-            blenderRenderTask.setEndFrame(end_frame);
-            blenderRenderTask.setStepFrame(step_frame);
             blenderRenderTask.setSamples(samples);
             blenderRenderTask.setBlenderEngine(blender_engine);
-            blenderRenderTask.setResolutionX(resolution_x);
-            blenderRenderTask.setResolutionY(resolution_y);
-            blenderRenderTask.setResPercentage(res_percentage);
             blenderRenderTask.setComputeType(compute_type);
             blenderRenderTask.setBlendFilename(blend_file);
             blenderRenderTask.setBlenderVersion(blender_version);

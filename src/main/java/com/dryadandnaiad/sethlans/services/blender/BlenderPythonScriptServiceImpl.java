@@ -173,7 +173,16 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.write("\tscene.render.resolution_x = " + resolutionX + "\n");
             scriptWriter.write("\tscene.render.resolution_y = " + resolutionY + "\n");
             scriptWriter.write("\tscene.render.resolution_percentage = " + resPercentage + "\n");
+            // Set Tile order
             scriptWriter.write("\tscene.render.use_border = True");
+            scriptWriter.write("\tscene.render.border_min_x = 0");
+            scriptWriter.write("\tscene.render.border_max_x = 1.0");
+
+            // The following goes from top to bottom
+            // bpy.data.scenes["Scene"].render.border_max_y = 1.0
+            // bpy.data.scenes["Scene"].render.border_min_y = 0.9
+
+
 
             //todo border position.
 

@@ -66,6 +66,11 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
 
     private void configureFrameList(BlenderProject blenderProject) {
+        // TODO Calculate part resolution and position.
+        // TODO using slices works well
+        // The following items should be used.
+        // bpy.data.scenes["Scene"].render.border_min_x = 0
+        // bpy.data.scenes["Scene"].render.border_max_x = 1.0
         List<BlenderFramePart> blenderFramePartList = new ArrayList<>();
         List<String> frameFileNames = new ArrayList<>();
         for (int i = 0; i < blenderProject.getTotalNumOfFrames(); i++) {
@@ -81,7 +86,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
             }
         }
-        // TODO Calculate part resolution and position.
+
         blenderProject.setFrameFileNames(frameFileNames);
         blenderProject.setFramePartList(blenderFramePartList);
         LOG.debug("Project Frames configured \n" + blenderFramePartList);

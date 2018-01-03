@@ -33,8 +33,9 @@ public class BlenderFramePart {
     private int partNumber;
     private int partResolutionX;
     private int partResolutionY;
-    private int partPositionX;
-    private int partPositionY;
+    private Double partPositionMinY;
+    private Double partPositionMaxY;
+    private int partResPercentage;
     private String partFilename;
     private String fileExtension;
     private String renderDir;
@@ -103,20 +104,28 @@ public class BlenderFramePart {
         this.partResolutionY = partResolutionY;
     }
 
-    public int getPartPositionX() {
-        return partPositionX;
+    public Double getPartPositionMinY() {
+        return partPositionMinY;
     }
 
-    public void setPartPositionX(int partPositionX) {
-        this.partPositionX = partPositionX;
+    public void setPartPositionMinY(Double partPositionMinY) {
+        this.partPositionMinY = partPositionMinY;
     }
 
-    public int getPartPositionY() {
-        return partPositionY;
+    public Double getPartPositionMaxY() {
+        return partPositionMaxY;
     }
 
-    public void setPartPositionY(int partPositionY) {
-        this.partPositionY = partPositionY;
+    public void setPartPositionMaxY(Double partPositionMaxY) {
+        this.partPositionMaxY = partPositionMaxY;
+    }
+
+    public int getPartResPercentage() {
+        return partResPercentage;
+    }
+
+    public void setPartResPercentage(int partResPercentage) {
+        this.partResPercentage = partResPercentage;
     }
 
     @Override
@@ -127,8 +136,9 @@ public class BlenderFramePart {
                 ", partNumber=" + partNumber +
                 ", partResolutionX=" + partResolutionX +
                 ", partResolutionY=" + partResolutionY +
-                ", partPositionX=" + partPositionX +
-                ", partPositionY=" + partPositionY +
+                ", partPositionMinY=" + partPositionMinY +
+                ", partPositionMaxY=" + partPositionMaxY +
+                ", partResPercentage=" + partResPercentage +
                 ", partFilename='" + partFilename + '\'' +
                 ", fileExtension='" + fileExtension + '\'' +
                 ", renderDir='" + renderDir + '\'' +

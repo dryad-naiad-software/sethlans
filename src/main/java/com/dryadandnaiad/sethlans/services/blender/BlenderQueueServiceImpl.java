@@ -84,29 +84,26 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                         }
                                     }
 
-                                    //TODO add part resolution and position to API
                                     String connectionURL = "https://" + sethlansNode.getIpAddress() + ":" +
                                             sethlansNode.getNetworkPort() + "/api/render/request";
-                                    String params = "connection_uuid=" + sethlansNode.getConnection_uuid() +
+                                    String params = "project_name=" + blenderProject.getProjectName() +
+                                            "&connection_uuid=" + sethlansNode.getConnection_uuid() +
                                             "&project_uuid=" + blenderProject.getProject_uuid() +
-                                            "&project_name=" + blenderProject.getProjectName() +
                                             "&render_output_format=" + blenderProject.getRenderOutputFormat() +
-                                            "&start_frame=" + blenderProject.getStartFrame() +
-                                            "&end_frame=" + blenderProject.getEndFrame() +
-                                            "&step_frame=" + blenderProject.getStepFrame() +
                                             "&samples=" + blenderProject.getSamples() +
                                             "&blender_engine=" + blenderProject.getBlenderEngine() +
-                                            "&resolution_x=" + blenderProject.getResolutionX() +
-                                            "&resolution_y=" + blenderProject.getResolutionY() +
-                                            "&res_percentage=" + blenderProject.getResPercentage() +
-                                            "&compute_type=" + projectComputeType +
+                                            "&compute_type=" + blenderProject.getRenderOn() +
                                             "&blend_file=" + blenderProject.getBlendFilename() +
                                             "&blender_version=" + blenderProject.getBlenderVersion() +
-                                            "&file_extension=" + blenderRenderQueueItem.getBlenderFramePart().getFileExtension() +
                                             "&frame_filename=" + blenderRenderQueueItem.getBlenderFramePart().getFrameFileName() +
                                             "&frame_number=" + blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() +
-                                            "&part_filename=" + blenderRenderQueueItem.getBlenderFramePart().getPartFilename() +
-                                            "&part_number=" + blenderRenderQueueItem.getBlenderFramePart().getPartNumber();
+                                            "&part_number=" + blenderRenderQueueItem.getBlenderFramePart().getPartNumber() +
+                                            "&part_resolution_x=" + blenderRenderQueueItem.getBlenderFramePart().getPartResolutionX() +
+                                            "&part_resolution_y=" + blenderRenderQueueItem.getBlenderFramePart().getPartResolutionY() +
+                                            "&part_position_min_y=" + blenderRenderQueueItem.getBlenderFramePart().getPartPositionMinY() +
+                                            "&part_position_max_y=" + blenderRenderQueueItem.getBlenderFramePart().getPartPositionMaxY() +
+                                            "&part_res_percentage=" + blenderRenderQueueItem.getBlenderFramePart().getPartResPercentage() +
+                                            "&file_extension=" + blenderRenderQueueItem.getBlenderFramePart().getFileExtension();
 
 
                                     if (sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params)) {
