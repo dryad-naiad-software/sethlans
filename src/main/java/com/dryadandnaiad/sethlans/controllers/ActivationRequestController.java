@@ -89,13 +89,7 @@ public class ActivationRequestController implements ApplicationEventPublisherAwa
             sethlansServer.setPendingAcknowledgementResponse(false);
             sethlansServer.setAcknowledged(true);
             sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
-            try {
-                Thread.sleep(5000);
-                nodeStatusUpdateService.nodeUpdatePullRequest();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
+            nodeStatusUpdateService.nodeUpdatePullRequest();
         } else {
             LOG.debug("No such server present in database");
         }

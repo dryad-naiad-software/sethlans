@@ -76,6 +76,8 @@ public class NodeStatusUpdateServiceImpl implements NodeStatusUpdateService {
                 } else {
                     LOG.debug("No connections to Sethlans servers present.  No updates sent.");
                 }
+            } else {
+                LOG.debug("Benchmark is in progress, node update service suspended.");
             }
         }
     }
