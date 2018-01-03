@@ -92,7 +92,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                             "&render_output_format=" + blenderProject.getRenderOutputFormat() +
                                             "&samples=" + blenderProject.getSamples() +
                                             "&blender_engine=" + blenderProject.getBlenderEngine() +
-                                            "&compute_type=" + blenderProject.getRenderOn() +
+                                            "&compute_type=" + projectComputeType +
                                             "&blend_file=" + blenderProject.getBlendFilename() +
                                             "&blender_version=" + blenderProject.getBlenderVersion() +
                                             "&frame_filename=" + blenderRenderQueueItem.getBlenderFramePart().getFrameFileName() +
