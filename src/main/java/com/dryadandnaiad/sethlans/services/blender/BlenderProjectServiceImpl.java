@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.blender;
 
+import com.dryadandnaiad.sethlans.domains.blender.PartCoordinate;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
@@ -66,11 +67,6 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
 
     private void configureFrameList(BlenderProject blenderProject) {
-        // TODO Calculate part resolution and position.
-        // TODO using slices works well
-        // The following items should be used.
-        // bpy.data.scenes["Scene"].render.border_min_x = 0
-        // bpy.data.scenes["Scene"].render.border_max_x = 1.0
         List<BlenderFramePart> blenderFramePartList = new ArrayList<>();
         List<String> frameFileNames = new ArrayList<>();
         for (int i = 0; i < blenderProject.getTotalNumOfFrames(); i++) {
@@ -92,6 +88,17 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         LOG.debug("Project Frames configured \n" + blenderFramePartList);
         blenderProjectDatabaseService.saveOrUpdate(blenderProject);
 
+    }
+
+    private List<PartCoordinate> configurePartCoordinates(int partsPerFrame) {
+        // The following items should be used.
+        // bpy.data.scenes["Scene"].render.border_max_y = 1.0
+        // bpy.data.scenes["Scene"].render.border_min_y = 0.9
+        List<PartCoordinate> partCoordinateList = new ArrayList<>();
+        // TODO generate max y and min y using the number of parts. Max y should be the min y of the previous part
+        // TODO for example max y = 1.0 and min y = 0.9 the next item will be max y = 0.9, min y = 0.8
+
+        return partCoordinateList;
     }
 
     @Autowired
