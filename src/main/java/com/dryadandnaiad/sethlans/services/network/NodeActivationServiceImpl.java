@@ -111,7 +111,7 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
 
             }
             try {
-                Thread.sleep(15000);
+                Thread.sleep(5000);
                 blenderBenchmarkService.sendBenchmarktoNode(sethlansNode);
             } catch (InterruptedException e) {
                 LOG.error(Throwables.getStackTraceAsString(e));

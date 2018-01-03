@@ -44,7 +44,6 @@ public class BlenderBenchmarkTask extends AbstractEntityClass {
     private int cpuRating;
     private int gpuRating;
     private String cudaName;
-    private boolean inProgress;
 
     public String getBenchmarkURL() {
         return benchmarkURL;
@@ -142,14 +141,6 @@ public class BlenderBenchmarkTask extends AbstractEntityClass {
         this.cudaName = cudaName;
     }
 
-    public boolean isInProgress() {
-        return inProgress;
-    }
-
-    public void setInProgress(boolean inProgress) {
-        this.inProgress = inProgress;
-    }
-
     @Override
     public String toString() {
         return "BlenderBenchmarkTask{" +
@@ -165,7 +156,6 @@ public class BlenderBenchmarkTask extends AbstractEntityClass {
                 ", cpuRating=" + cpuRating +
                 ", gpuRating=" + gpuRating +
                 ", cudaName='" + cudaName + '\'' +
-                ", inProgress=" + inProgress +
                 '}';
     }
 }

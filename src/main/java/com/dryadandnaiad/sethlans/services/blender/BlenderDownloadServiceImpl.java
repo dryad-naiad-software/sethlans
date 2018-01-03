@@ -70,13 +70,15 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
     @Async
     public void downloadRequestedBlenderFilesAsync() {
         while (true) {
-            if (doDownload()) {
-                LOG.debug("All downloads complete");
-            } else {
-                LOG.debug("Blender Download Service failed");
-            }
             try {
                 Thread.sleep(120000);
+                if (doDownload()) {
+                    LOG.debug("All downloads complete");
+                } else {
+                    LOG.debug("Blender Download Service failed");
+                }
+
+
             } catch (InterruptedException e) {
                 LOG.debug("Stopping Blender Binary Download Service");
             }
