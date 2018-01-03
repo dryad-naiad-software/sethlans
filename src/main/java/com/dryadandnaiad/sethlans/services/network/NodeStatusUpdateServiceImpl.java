@@ -19,7 +19,9 @@
 
 package com.dryadandnaiad.sethlans.services.network;
 
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
+import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +41,7 @@ import java.util.List;
 public class NodeStatusUpdateServiceImpl implements NodeStatusUpdateService {
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
+    private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
     private static final Logger LOG = LoggerFactory.getLogger(NodeStatusUpdateServiceImpl.class);
 
     @Override
@@ -58,16 +61,22 @@ public class NodeStatusUpdateServiceImpl implements NodeStatusUpdateService {
 
     @Override
     public void nodeUpdatePullRequest() {
-        List<SethlansServer> sethlansServers = sethlansServerDatabaseService.listAll();
-        if (!sethlansServers.isEmpty()) {
-            for (SethlansServer sethlansServer : sethlansServers) {
-                LOG.debug("Sending node status update request to " + sethlansServer.getHostname());
-                String url = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/update/node_status_update/";
-                String param = "connection_uuid=" + sethlansServer.getConnection_uuid();
-                sethlansAPIConnectionService.sendToRemoteGET(url, param);
+        List<BlenderBenchmarkTask> blenderBenchmarkTaskList = blenderBenchmarkTaskDatabaseService.listAll();
+        for (BlenderBenchmarkTask blenderBenchmarkTask : blenderBenchmarkTaskList) {
+            if (!blenderBenchmarkTask.isInProgress()) {
+                // Pull requests will not be sent if a node is currently performing a benchmark.
+                List<SethlansServer> sethlansServers = sethlansServerDatabaseService.listAll();
+                if (!sethlansServers.isEmpty()) {
+                    for (SethlansServer sethlansServer : sethlansServers) {
+                        LOG.debug("Sending node status update request to " + sethlansServer.getHostname());
+                        String url = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/update/node_status_update/";
+                        String param = "connection_uuid=" + sethlansServer.getConnection_uuid();
+                        sethlansAPIConnectionService.sendToRemoteGET(url, param);
+                    }
+                } else {
+                    LOG.debug("No connections to Sethlans servers present.  No updates sent.");
+                }
             }
-        } else {
-            LOG.debug("No connections to Sethlans servers present.  No updates sent.");
         }
     }
 
@@ -80,5 +89,10 @@ public class NodeStatusUpdateServiceImpl implements NodeStatusUpdateService {
     @Autowired
     public void setSethlansAPIConnectionService(SethlansAPIConnectionService sethlansAPIConnectionService) {
         this.sethlansAPIConnectionService = sethlansAPIConnectionService;
+    }
+
+    @Autowired
+    public void setBlenderBenchmarkTaskDatabaseService(BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService) {
+        this.blenderBenchmarkTaskDatabaseService = blenderBenchmarkTaskDatabaseService;
     }
 }
