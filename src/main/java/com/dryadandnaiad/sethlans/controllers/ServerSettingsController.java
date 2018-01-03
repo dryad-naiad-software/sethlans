@@ -162,7 +162,13 @@ public class ServerSettingsController extends AbstractSethlansController {
             List<SethlansNode> sethlansNodesDatabase = sethlansNodeDatabaseService.listAll();
             if (!sethlansNodesDatabase.isEmpty()) {
                 LOG.debug("Nodes found in database, starting comparison.");
-                sethlansNodeDatabaseService.checkForDuplicatesAndSave(sethlansNode);
+                if(sethlansNodeDatabaseService.checkForDuplicatesAndSave(sethlansNode)){
+                    if (sethlansNode.isPendingActivation()) {
+                        setSethlansServer();
+                        nodeActivationService.sendActivationRequest(sethlansNode, sethlansServer);
+                    }
+                }
+
 
             } else {
                 LOG.debug("No nodes present in database.");
@@ -218,7 +224,13 @@ public class ServerSettingsController extends AbstractSethlansController {
         if (!sethlansNodesDatabase.isEmpty()) {
             LOG.debug("Nodes found in database, starting comparison.");
             for (Integer nodeId : scanForm.getSethlansNodeId()) {
-                sethlansNodeDatabaseService.checkForDuplicatesAndSave(discoveredNodes.get(nodeId));
+                if(sethlansNodeDatabaseService.checkForDuplicatesAndSave(discoveredNodes.get(nodeId))){
+                    setSethlansServer();
+                    if (discoveredNodes.get(nodeId).isPendingActivation()) {
+                        setSethlansServer();
+                        nodeActivationService.sendActivationRequest(discoveredNodes.get(nodeId), sethlansServer);
+                    }
+                }
             }
         } else {
             for (Integer nodeId : scanForm.getSethlansNodeId()) {
