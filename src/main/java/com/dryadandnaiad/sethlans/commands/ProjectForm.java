@@ -93,7 +93,7 @@ public class ProjectForm {
         this.currentPercentage = 0;
         this.outputFormat = RenderOutputFormat.PNG;
         this.uuid = SethlansUtils.getShortUUID();
-        this.partsPerFrame = 9;
+        this.partsPerFrame = 8;
         this.endFrame = 200;
     }
 
