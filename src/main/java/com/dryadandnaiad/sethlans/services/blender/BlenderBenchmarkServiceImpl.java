@@ -135,6 +135,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     private void startBenchmarkService(String benchmark_uuid) {
         LOG.debug("Starting Benchmark");
         BlenderBenchmarkTask benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark_uuid);
+        benchmarkTask.setInProgress(true);
         runBenchmark(benchmarkTask);
         benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark_uuid);
         if (benchmarkTask.isComplete()) {
@@ -228,6 +229,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                     LOG.debug("Benchmark complete, saving to database.");
                     LOG.debug(benchmarkTask.toString());
                     benchmarkTask.setGpuRating(rating);
+                    benchmarkTask.setInProgress(false);
                     benchmarkTask.setComplete(true);
                     blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
                 }
@@ -243,6 +245,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                 } else {
                     LOG.debug("Benchmark complete, saving to database.");
                     benchmarkTask.setCpuRating(rating);
+                    benchmarkTask.setInProgress(false);
                     benchmarkTask.setComplete(true);
                     blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
                     LOG.debug(benchmarkTask.toString());
