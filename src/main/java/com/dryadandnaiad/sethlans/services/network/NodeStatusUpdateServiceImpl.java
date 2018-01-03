@@ -55,6 +55,17 @@ public class NodeStatusUpdateServiceImpl implements NodeStatusUpdateService {
         }
     }
 
+    @Override
+    @Async
+    public void sendUpdateOnStart() {
+        try {
+            Thread.sleep(10000);
+            nodeUpdatePullRequest();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public void nodeUpdatePullRequest() {

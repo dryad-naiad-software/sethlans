@@ -32,5 +32,8 @@ public interface NodeStatusUpdateService {
     @Async
     void backgroundRequests();
 
+    @Async
+    void sendUpdateOnStart();
+
     void nodeUpdatePullRequest();
 }

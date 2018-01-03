@@ -57,8 +57,8 @@ public class ServerBackgroundRestController {
             SethlansNode sethlansNodetoUpdate = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
             LOG.debug("Sync request received for " + sethlansNodetoUpdate.getHostname());
             SethlansNode tempNode = nodeDiscoveryService.discoverUnicastNode(sethlansNodetoUpdate.getIpAddress(), sethlansNodetoUpdate.getNetworkPort());
-            boolean redoBenchmark = checkNodeUpdate(sethlansNodetoUpdate, tempNode);
-            if (redoBenchmark && sethlansNodetoUpdate.isActive()) {
+            boolean checkNode = checkNodeUpdate(sethlansNodetoUpdate, tempNode);
+            if (checkNode && sethlansNodetoUpdate.isActive()) {
                 sethlansNodetoUpdate.setBenchmarkComplete(false);
                 updateNode(sethlansNodetoUpdate, tempNode);
                 try {
@@ -68,7 +68,7 @@ public class ServerBackgroundRestController {
                     LOG.debug(Throwables.getStackTraceAsString(e));
                 }
 
-            } else if (redoBenchmark) {
+            } else if (checkNode) {
                 updateNode(sethlansNodetoUpdate, tempNode);
             }
             LOG.debug(sethlansNodetoUpdate.getHostname() + " has been synced.");

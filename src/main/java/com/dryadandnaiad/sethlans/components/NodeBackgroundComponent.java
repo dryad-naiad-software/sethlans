@@ -62,6 +62,7 @@ public class NodeBackgroundComponent {
 
     @PostConstruct
     public void startNodeStatusUpdates() {
+        nodeStatusUpdateService.sendUpdateOnStart();
         nodeStatusUpdateService.backgroundRequests();
     }
 
