@@ -58,46 +58,54 @@ public class NodeStatusUpdateServiceImpl implements NodeStatusUpdateService {
         }
     }
 
+    @Async
     @Override
     public void sendUpdateOnStart() {
-        Thread startThread = new Thread(() -> {
-            try {
-                Thread.sleep(10000);
-                nodeUpdatePullRequest();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
-        startThread.start();
+        try {
+            Thread.sleep(10000);
+            nodeUpdatePullRequest();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
 
     @Override
     public void nodeUpdatePullRequest() {
         List<BlenderBenchmarkTask> blenderBenchmarkTaskList = blenderBenchmarkTaskDatabaseService.listAll();
-        for (BlenderBenchmarkTask blenderBenchmarkTask : blenderBenchmarkTaskList) {
-            if (blenderBenchmarkTask.isInProgress()) {
-                LOG.debug("A benchmark is in progress, node update requests on hold for 10 minutes.");
-                try {
-                    Thread.sleep(600000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                List<SethlansServer> sethlansServers = sethlansServerDatabaseService.listAll();
-                if (!sethlansServers.isEmpty()) {
-                    for (SethlansServer sethlansServer : sethlansServers) {
-                        LOG.debug("Sending node status update request to " + sethlansServer.getHostname());
-                        String url = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/update/node_status_update/";
-                        String param = "connection_uuid=" + sethlansServer.getConnection_uuid();
-                        sethlansAPIConnectionService.sendToRemoteGET(url, param);
+        if (!blenderBenchmarkTaskList.isEmpty()) {
+            for (BlenderBenchmarkTask blenderBenchmarkTask : blenderBenchmarkTaskList) {
+                if (blenderBenchmarkTask.isInProgress()) {
+                    LOG.debug("A benchmark is in progress, node update requests on hold for 10 minutes.");
+                    try {
+                        Thread.sleep(600000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 } else {
-                    LOG.debug("No connections to Sethlans servers present.  No updates sent.");
+                    sendRequest();
                 }
             }
+        } else {
+            sendRequest();
         }
 
+
+    }
+
+    private void sendRequest() {
+        List<SethlansServer> sethlansServers = sethlansServerDatabaseService.listAll();
+        if (!sethlansServers.isEmpty()) {
+            for (SethlansServer sethlansServer : sethlansServers) {
+                LOG.debug("Sending node status update request to " + sethlansServer.getHostname());
+                String url = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/update/node_status_update/";
+                String param = "connection_uuid=" + sethlansServer.getConnection_uuid();
+                sethlansAPIConnectionService.sendToRemoteGET(url, param);
+            }
+        } else {
+            LOG.debug("No connections to Sethlans servers present.  No updates sent.");
+        }
     }
 
 
@@ -109,5 +117,10 @@ public class NodeStatusUpdateServiceImpl implements NodeStatusUpdateService {
     @Autowired
     public void setSethlansAPIConnectionService(SethlansAPIConnectionService sethlansAPIConnectionService) {
         this.sethlansAPIConnectionService = sethlansAPIConnectionService;
+    }
+
+    @Autowired
+    public void setBlenderBenchmarkTaskDatabaseService(BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService) {
+        this.blenderBenchmarkTaskDatabaseService = blenderBenchmarkTaskDatabaseService;
     }
 }

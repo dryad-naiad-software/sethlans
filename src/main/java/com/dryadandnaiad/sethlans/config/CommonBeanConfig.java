@@ -19,13 +19,17 @@
 
 package com.dryadandnaiad.sethlans.config;
 
+import com.dryadandnaiad.sethlans.exceptions.CustomAsyncExceptionHandler;
 import org.jasypt.util.password.StrongPasswordEncryptor;
+import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import java.util.concurrent.Executor;
 
 
 /**
@@ -37,16 +41,16 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @Configuration
 @EnableAsync
 @EnableJpaRepositories("com.dryadandnaiad.sethlans.repositories")
-public class CommonBeanConfig {
+public class CommonBeanConfig implements AsyncConfigurer {
 
     @Bean
     public StrongPasswordEncryptor strongEncryptor() {
-        StrongPasswordEncryptor encryptor = new StrongPasswordEncryptor();
-        return encryptor;
+        return new StrongPasswordEncryptor();
     }
 
-    @Bean
-    public AsyncTaskExecutor taskExecutor() {
+
+    @Override
+    public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(20);
         executor.setMaxPoolSize(35);
@@ -56,4 +60,8 @@ public class CommonBeanConfig {
         return executor;
     }
 
+    @Override
+    public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
+        return new CustomAsyncExceptionHandler();
+    }
 }

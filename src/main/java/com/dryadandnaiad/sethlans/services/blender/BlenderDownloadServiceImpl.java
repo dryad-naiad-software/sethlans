@@ -33,7 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -67,22 +66,25 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
     }
 
     @Override
-    @Async
     public void downloadRequestedBlenderFilesAsync() {
-        while (true) {
-            try {
-                Thread.sleep(120000);
-                if (doDownload()) {
-                    LOG.debug("All downloads complete");
-                } else {
-                    LOG.debug("Blender Download Service failed");
+        Thread startThread = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(120000);
+                    if (doDownload()) {
+                        LOG.debug("All downloads complete");
+                    } else {
+                        LOG.debug("Blender Download Service failed");
+                    }
+
+
+                } catch (InterruptedException e) {
+                    LOG.debug("Stopping Blender Binary Download Service");
                 }
-
-
-            } catch (InterruptedException e) {
-                LOG.debug("Stopping Blender Binary Download Service");
             }
-        }
+        });
+        startThread.start();
+
     }
 
     private boolean doDownload() {
