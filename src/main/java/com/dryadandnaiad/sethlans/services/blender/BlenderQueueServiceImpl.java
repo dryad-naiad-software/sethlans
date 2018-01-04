@@ -96,6 +96,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                             "&blend_file=" + blenderProject.getBlendFilename() +
                                             "&blender_version=" + blenderProject.getBlenderVersion() +
                                             "&frame_filename=" + blenderRenderQueueItem.getBlenderFramePart().getFrameFileName() +
+                                            "&part_filename=" + blenderRenderQueueItem.getBlenderFramePart().getPartFilename() +
                                             "&frame_number=" + blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() +
                                             "&part_number=" + blenderRenderQueueItem.getBlenderFramePart().getPartNumber() +
                                             "&part_resolution_x=" + blenderRenderQueueItem.getBlenderFramePart().getPartResolutionX() +
