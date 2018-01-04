@@ -49,7 +49,7 @@ public class NodeStatusUpdateServiceImpl implements NodeStatusUpdateService {
     public void backgroundRequests() {
         while (true) {
             try {
-                Thread.sleep(300000);
+                Thread.sleep(600000);
                 nodeUpdatePullRequest();
             } catch (InterruptedException e) {
                 LOG.debug("Stopping Node Status Update Service");
