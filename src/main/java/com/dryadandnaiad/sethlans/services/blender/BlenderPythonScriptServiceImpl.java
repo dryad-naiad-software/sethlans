@@ -52,6 +52,7 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             // Write Imports
             scriptWriter.write(PythonImports.BPY.toString() + "\n\n");
 
+            //noinspection ConstantConditions
             if (SethlansUtils.getOS().contains("Windows")) {
                 scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "r\"" + renderLocation + "\"" + "\n");
             } else {
@@ -122,6 +123,7 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.write(PythonImports.BPY.toString() + "\n\n");
 
             //Temp Directory
+            //noinspection ConstantConditions
             if (SethlansUtils.getOS().contains("Windows")) {
                 scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "r\"" + renderLocation + "\"" + "\n");
             } else {

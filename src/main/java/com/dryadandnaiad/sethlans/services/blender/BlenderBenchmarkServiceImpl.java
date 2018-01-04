@@ -149,11 +149,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connectionUUID);
         boolean complete;
         LOG.debug("Remaining benchmarks to process: " + remainingBenchmarks);
-        if (remainingBenchmarks > 0) {
-            complete = false;
-        } else {
-            complete = true;
-        }
+        complete = remainingBenchmarks <= 0;
         String serverUrl = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/benchmark/response";
         String params;
         if (blenderBenchmarkTask.getComputeType().equals(ComputeType.CPU)) {
@@ -305,7 +301,10 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             error = errorStream.toString();
 
             LOG.debug(error);
-            String[] timeToConvert = time.split(":");
+            String[] timeToConvert = new String[0];
+            if (time != null) {
+                timeToConvert = time.split(":");
+            }
             int minutes = Integer.parseInt(timeToConvert[0]);
             int seconds = Integer.parseInt(timeToConvert[1]);
             int timeInSeconds = seconds + 60 * minutes;
@@ -314,11 +313,9 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             return timeInMilliseconds;
 
 
-        } catch (IOException | NullPointerException e) {
+        } catch (IOException | NullPointerException | InterruptedException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
 
-        } catch (InterruptedException e) {
-            LOG.error(Throwables.getStackTraceAsString(e));
         }
         return 0;
     }
