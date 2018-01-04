@@ -47,6 +47,7 @@ public class NodeStatusUpdateServiceImpl implements NodeStatusUpdateService {
     @Override
     @Async
     public void backgroundRequests() {
+        //noinspection InfiniteLoopStatement
         while (true) {
             try {
                 Thread.sleep(600000);

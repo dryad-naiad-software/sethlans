@@ -59,6 +59,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             Thread.sleep(12000);
 
             int count = 0;
+            //noinspection InfiniteLoopStatement
             while (true) {
                 try {
                     if (!sethlansNodeDatabaseService.listAll().isEmpty() || !blenderRenderQueueDatabaseService.listAll().isEmpty()) {

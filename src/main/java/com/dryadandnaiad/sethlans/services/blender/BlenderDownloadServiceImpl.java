@@ -69,6 +69,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
     @Override
     @Async
     public void downloadRequestedBlenderFilesAsync() {
+        //noinspection InfiniteLoopStatement
             while (true) {
                 try {
                     Thread.sleep(10000);
