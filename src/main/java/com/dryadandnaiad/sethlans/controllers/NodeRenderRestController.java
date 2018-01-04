@@ -71,6 +71,7 @@ public class NodeRenderRestController {
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
+            LOG.debug("Render Request Received, preparing render task.");
             BlenderRenderTask blenderRenderTask;
             BlenderFramePart framePart = new BlenderFramePart();
             framePart.setFrameNumber(frame_number);
@@ -98,6 +99,7 @@ public class NodeRenderRestController {
             blenderRenderTask.setBlenderVersion(blender_version);
             blenderRenderTask.setBlenderFramePart(framePart);
             blenderRenderTask.setComplete(false);
+            LOG.debug(blenderRenderTask.toString());
             blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
             blenderRenderService.startRenderTask(project_uuid);
 
