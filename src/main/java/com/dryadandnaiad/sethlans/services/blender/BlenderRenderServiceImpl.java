@@ -22,12 +22,17 @@ package com.dryadandnaiad.sethlans.services.blender;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
+import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.google.common.base.Throwables;
 import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecuteResultHandler;
+import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,10 +40,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.StringUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -56,9 +62,13 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     @Value("${sethlans.cacheDir}")
     private String cacheDir;
 
+    @Value("${sethlans.cuda}")
+    private String cuda;
+
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private BlenderRenderTaskDatabaseService blenderRenderTaskDatabaseService;
+    private BlenderPythonScriptService blenderPythonScriptService;
 
     @Override
     @Async
@@ -83,7 +93,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                 }
             } else if (pendingRenderTask.size() == 1) {
                 LOG.debug("There is one render task pending.");
-                startRenderTask(pendingRenderTask.get(0).getProject_uuid());
+                startRenderService(pendingRenderTask.get(0).getProject_uuid());
             } else {
                 LOG.debug("No render tasks are pending.");
             }
@@ -94,13 +104,45 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
     @Override
     @Async
-    public void startRenderTask(String projectUUID) {
+    public void startRenderService(String projectUUID) {
         BlenderRenderTask blenderRenderTask = blenderRenderTaskDatabaseService.getByProjectUUID(projectUUID);
+        blenderRenderTask.setInProgress(true);
         File renderDir = new File(cacheDir + File.separator + blenderRenderTask.getBlenderFramePart().getPartFilename());
         if (downloadRequiredFiles(renderDir, blenderRenderTask)) {
             blenderRenderTask = blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
             if (blenderRenderTask.getComputeType().equals(ComputeType.GPU)) {
+                List<String> cudaList = Arrays.asList(cuda.split(","));
+                List<String> cudaIDList = new ArrayList<>();
+                LOG.debug("Running render task using " + cuda);
+                for (String cuda : cudaList) {
+                    cudaIDList.add(StringUtils.substringAfter(cuda, "_"));
+                }
+                String script = blenderPythonScriptService.writeRenderPythonScript(blenderRenderTask.getComputeType(),
+                        blenderRenderTask.getBlenderFramePart().getRenderDir(), cudaIDList,
+                        getUnselectedIds(cudaList),
+                        256,
+                        blenderRenderTask.getBlenderFramePart().getPartResolutionX(),
+                        blenderRenderTask.getBlenderFramePart().getPartResolutionY(),
+                        blenderRenderTask.getBlenderFramePart().getPartResPercentage(),
+                        blenderRenderTask.getSamples(),
+                        blenderRenderTask.getBlenderFramePart().getPartPositionMaxY(),
+                        blenderRenderTask.getBlenderFramePart().getPartPositionMinY());
+                saveOnSuccess(blenderRenderTask, script);
 
+            } else {
+                LOG.debug("Running render task using CPU");
+                List<String> emptyList = new ArrayList<>();
+                String script = blenderPythonScriptService.writeRenderPythonScript(blenderRenderTask.getComputeType(),
+                        blenderRenderTask.getBlenderFramePart().getRenderDir(), emptyList,
+                        emptyList,
+                        32,
+                        blenderRenderTask.getBlenderFramePart().getPartResolutionX(),
+                        blenderRenderTask.getBlenderFramePart().getPartResolutionY(),
+                        blenderRenderTask.getBlenderFramePart().getPartResPercentage(),
+                        blenderRenderTask.getSamples(),
+                        blenderRenderTask.getBlenderFramePart().getPartPositionMaxY(),
+                        blenderRenderTask.getBlenderFramePart().getPartPositionMinY());
+                saveOnSuccess(blenderRenderTask, script);
             }
 
 
@@ -108,6 +150,15 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         }
 
 
+    }
+
+    private void saveOnSuccess(BlenderRenderTask blenderRenderTask, String script) {
+        if (executeRenderTask(blenderRenderTask, script)) {
+            LOG.debug("Render Successful! Updating task status.");
+            blenderRenderTask.setInProgress(false);
+            blenderRenderTask.setComplete(true);
+            blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
+        }
     }
 
     private boolean downloadRequiredFiles(File renderDir, BlenderRenderTask renderTask) {
@@ -148,8 +199,9 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         return false;
     }
 
-    public void executeRenderTask(BlenderRenderTask renderTask, String blenderScript) {
-        String error = null;
+    public boolean executeRenderTask(BlenderRenderTask renderTask, String blenderScript) {
+        boolean success = false;
+        String error;
         BlenderFramePart blenderFramePart = renderTask.getBlenderFramePart();
         try {
             LOG.debug("Starting the render of " + renderTask.getProjectName() + ": Part: " + blenderFramePart.getPartNumber());
@@ -158,10 +210,68 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
             CommandLine commandLine = new CommandLine(renderTask.getBlenderExecutable());
 
-        } catch (NullPointerException e) {
+            commandLine.addArgument("-b");
+            commandLine.addArgument(renderTask.getBlenderFramePart().getRenderDir() + File.separator + renderTask.getBlendFilename());
+            commandLine.addArgument("-P");
+            commandLine.addArgument(blenderScript);
+            commandLine.addArgument("-E");
+            commandLine.addArgument("CYCLES");
+            commandLine.addArgument("-o");
+            commandLine.addArgument(renderTask.getBlenderFramePart().getRenderDir() + File.separator);
+            commandLine.addArgument("-f");
+            commandLine.addArgument(Integer.toString(renderTask.getBlenderFramePart().getFrameNumber()));
+            if (renderTask.getComputeType().equals(ComputeType.CPU)) {
+                commandLine.addArgument("-t");
+                commandLine.addArgument(cores);
+            }
+            LOG.debug(commandLine.toString());
+
+            DefaultExecutor executor = new DefaultExecutor();
+            executor.setStreamHandler(pumpStreamHandler);
+            DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
+            executor.execute(commandLine, resultHandler);
+            resultHandler.waitFor();
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray())));
+
+            String output;
+
+            while ((output = in.readLine()) != null) {
+                LOG.debug(output);
+                if (output.contains("Finished")) {
+                    success = true;
+                }
+            }
+
+
+            error = errorStream.toString();
+
+            LOG.debug(error);
+
+
+        } catch (IOException | NullPointerException | InterruptedException e) {
+            LOG.error(Throwables.getStackTraceAsString(e));
 
         }
+        return success;
 
+    }
+
+    private List<String> getUnselectedIds(List<String> cudaList) {
+        List<GPUDevice> gpuDeviceList = GPU.listDevices();
+        List<String> unselectedGPUs = new ArrayList<>();
+        for (GPUDevice gpuDevice : gpuDeviceList) {
+            for (String cuda : cudaList) {
+                if (!cuda.equals(gpuDevice.getCudaName())) {
+                    unselectedGPUs.add(gpuDevice.getCudaName());
+                }
+            }
+        }
+        List<String> unselectedIds = new ArrayList<>();
+        for (String gpUs : unselectedGPUs) {
+            unselectedIds.add(StringUtils.substringAfter(gpUs, "_"));
+        }
+        return unselectedIds;
     }
 
 
@@ -178,5 +288,10 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     @Autowired
     public void setBlenderRenderTaskDatabaseService(BlenderRenderTaskDatabaseService blenderRenderTaskDatabaseService) {
         this.blenderRenderTaskDatabaseService = blenderRenderTaskDatabaseService;
+    }
+
+    @Autowired
+    public void setBlenderPythonScriptService(BlenderPythonScriptService blenderPythonScriptService) {
+        this.blenderPythonScriptService = blenderPythonScriptService;
     }
 }

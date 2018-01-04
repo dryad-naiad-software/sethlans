@@ -46,6 +46,7 @@ public class BlenderRenderTask extends AbstractEntityClass {
     private String blenderExecutable;
     private BlenderFramePart blenderFramePart;
     private boolean complete;
+    private boolean inProgress;
 
     public String getProjectName() {
         return projectName;
@@ -143,6 +144,14 @@ public class BlenderRenderTask extends AbstractEntityClass {
         this.complete = complete;
     }
 
+    public boolean isInProgress() {
+        return inProgress;
+    }
+
+    public void setInProgress(boolean inProgress) {
+        this.inProgress = inProgress;
+    }
+
     @Override
     public String toString() {
         return "BlenderRenderTask{" +
@@ -158,6 +167,7 @@ public class BlenderRenderTask extends AbstractEntityClass {
                 ", blenderExecutable='" + blenderExecutable + '\'' +
                 ", blenderFramePart=" + blenderFramePart +
                 ", complete=" + complete +
+                ", inProgress=" + inProgress +
                 '}';
     }
 }

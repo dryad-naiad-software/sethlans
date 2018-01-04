@@ -36,5 +36,5 @@ public interface BlenderPythonScriptService {
                                       int resolution_y, int res_percentage);
 
     String writeRenderPythonScript(ComputeType computeType, String renderLocation, List<String> selectedDeviceIds, List<String> unselectedIds,
-                                   int tileSize, int resolutionX, int resolutionY, int resPercentage, double partMaxY, double partMinY);
+                                   int tileSize, int resolutionX, int resolutionY, int resPercentage, int samples, double partMaxY, double partMinY);
 }

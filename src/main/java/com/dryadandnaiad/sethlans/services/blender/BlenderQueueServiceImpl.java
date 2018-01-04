@@ -85,6 +85,14 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                         }
                                     }
 
+                                    if (projectComputeType.equals(ComputeType.CPU_GPU) && sethlansNode.getComputeType().equals(ComputeType.CPU)) {
+                                        projectComputeType = ComputeType.CPU;
+                                    }
+
+                                    if (projectComputeType.equals(ComputeType.CPU_GPU) && sethlansNode.getComputeType().equals(ComputeType.GPU)) {
+                                        projectComputeType = ComputeType.GPU;
+                                    }
+
                                     String connectionURL = "https://" + sethlansNode.getIpAddress() + ":" +
                                             sethlansNode.getNetworkPort() + "/api/render/request";
                                     String params = "project_name=" + blenderProject.getProjectName() +
@@ -100,11 +108,11 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                             "&part_filename=" + blenderRenderQueueItem.getBlenderFramePart().getPartFilename() +
                                             "&frame_number=" + blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() +
                                             "&part_number=" + blenderRenderQueueItem.getBlenderFramePart().getPartNumber() +
-                                            "&part_resolution_x=" + blenderRenderQueueItem.getBlenderFramePart().getPartResolutionX() +
-                                            "&part_resolution_y=" + blenderRenderQueueItem.getBlenderFramePart().getPartResolutionY() +
+                                            "&part_resolution_x=" + blenderProject.getResolutionX() +
+                                            "&part_resolution_y=" + blenderProject.getResolutionY() +
                                             "&part_position_min_y=" + blenderRenderQueueItem.getBlenderFramePart().getPartPositionMinY() +
                                             "&part_position_max_y=" + blenderRenderQueueItem.getBlenderFramePart().getPartPositionMaxY() +
-                                            "&part_res_percentage=" + blenderRenderQueueItem.getBlenderFramePart().getPartResPercentage() +
+                                            "&part_res_percentage=" + blenderProject.getResPercentage() +
                                             "&file_extension=" + blenderRenderQueueItem.getBlenderFramePart().getFileExtension();
 
 

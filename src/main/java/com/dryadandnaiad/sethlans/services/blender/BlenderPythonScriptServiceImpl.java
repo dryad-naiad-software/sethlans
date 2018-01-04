@@ -108,7 +108,8 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
 
     @Override
     public String writeRenderPythonScript(ComputeType computeType, String renderLocation, List<String> selectedDeviceIds, List<String> unselectedIds,
-                                          int tileSize, int resolutionX, int resolutionY, int resPercentage, double partMaxY, double partMinY) {
+                                          int tileSize, int resolutionX, int resolutionY, int resPercentage, int samples,
+                                          double partMaxY, double partMinY) {
         try {
             File script;
             if (selectedDeviceIds.size() == 1) {
@@ -169,12 +170,13 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             }
 
 
-            // Set Resolution
+            // Set Resolution and Samples
             scriptWriter.write("\n");
             scriptWriter.write("for scene in bpy.data.scenes:" + "\n");
             scriptWriter.write("\tscene.render.resolution_x = " + resolutionX + "\n");
             scriptWriter.write("\tscene.render.resolution_y = " + resolutionY + "\n");
             scriptWriter.write("\tscene.render.resolution_percentage = " + resPercentage + "\n");
+            scriptWriter.write("\tscene.cycles.samples = " + samples);
 
             // Set Part
             // X is the width of the image, parts are then slices from top to bottom along Y axis.

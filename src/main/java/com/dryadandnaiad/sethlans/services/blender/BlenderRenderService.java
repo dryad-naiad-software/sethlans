@@ -31,6 +31,6 @@ public interface BlenderRenderService {
     void resumeRenderOnNodeRestart();
 
     @Async
-    void startRenderTask(String projectUUID);
+    void startRenderService(String projectUUID);
 
 }

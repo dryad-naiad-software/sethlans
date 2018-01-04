@@ -101,7 +101,7 @@ public class NodeRenderRestController {
             blenderRenderTask.setComplete(false);
             LOG.debug(blenderRenderTask.toString());
             blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
-            blenderRenderService.startRenderTask(project_uuid);
+            blenderRenderService.startRenderService(project_uuid);
 
         }
     }
