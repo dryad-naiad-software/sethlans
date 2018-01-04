@@ -49,8 +49,8 @@ public class PartCoordinate {
     @Override
     public String toString() {
         return "PartCoordinate{" +
-                "min_y=" + min_y +
-                ", max_y=" + max_y +
+                "max_y=" + max_y +
+                ", min_y=" + min_y +
                 '}';
     }
 }
