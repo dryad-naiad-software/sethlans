@@ -21,6 +21,8 @@ package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 
+import java.util.List;
+
 /**
  * Created Mario Estrella on 3/24/17.
  * Dryad and Naiad Software LLC
@@ -33,4 +35,6 @@ public interface BlenderPythonScriptService {
                                       String deviceId, int tileSize, int resolution_x,
                                       int resolution_y, int res_percentage);
 
+    String writeRenderPythonScript(ComputeType computeType, String renderLocation, List<String> selectedDeviceIds, List<String> unselectedIds,
+                                   int tileSize, int resolutionX, int resolutionY, int resPercentage, double partMaxY, double partMinY);
 }

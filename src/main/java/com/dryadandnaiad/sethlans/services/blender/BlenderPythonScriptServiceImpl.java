@@ -105,9 +105,9 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
         return null;
     }
 
+    @Override
     public String writeRenderPythonScript(ComputeType computeType, String renderLocation, List<String> selectedDeviceIds, List<String> unselectedIds,
-                                          int tileSize, int resolutionX, int resolutionY, int resPercentage,
-                                          int partsPerFrame, int partNo) {
+                                          int tileSize, int resolutionX, int resolutionY, int resPercentage, double partMaxY, double partMinY) {
         try {
             File script;
             if (selectedDeviceIds.size() == 1) {
@@ -173,18 +173,15 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.write("\tscene.render.resolution_x = " + resolutionX + "\n");
             scriptWriter.write("\tscene.render.resolution_y = " + resolutionY + "\n");
             scriptWriter.write("\tscene.render.resolution_percentage = " + resPercentage + "\n");
-            // Set Tile order
-            scriptWriter.write("\tscene.render.use_border = True");
-            scriptWriter.write("\tscene.render.border_min_x = 0");
-            scriptWriter.write("\tscene.render.border_max_x = 1.0");
 
-            // The following goes from top to bottom
-            // bpy.data.scenes["Scene"].render.border_max_y = 1.0
-            // bpy.data.scenes["Scene"].render.border_min_y = 0.9
-
-
-
-            //todo border position.
+            // Set Part
+            // X is the width of the image, parts are then slices from top to bottom along Y axis.
+            scriptWriter.write("\n");
+            scriptWriter.write("\tscene.render.use_border = True" + "\n");
+            scriptWriter.write("\tscene.render.border_min_x = 0" + "\n");
+            scriptWriter.write("\tscene.render.border_max_x = 1.0" + "\n");
+            scriptWriter.write("\tscene.render.border_max_y = " + partMaxY + "\n");
+            scriptWriter.write("\tscene.render.border_min_y = " + partMinY + "\n");
 
             // Tile Sizes
             scriptWriter.write("\n");
