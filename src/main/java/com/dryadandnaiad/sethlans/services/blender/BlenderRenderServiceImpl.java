@@ -65,7 +65,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     public void resumeRenderOnNodeRestart() {
         // If a node gets shutdown, this will attempt to process any pending benchmarks.
         try {
-            Thread.sleep(10000);
+            Thread.sleep(14000);
             LOG.debug("Checking to see if any render tasks are pending.");
             List<BlenderRenderTask> blenderRenderTaskList = blenderRenderTaskDatabaseService.listAll();
             List<BlenderRenderTask> pendingRenderTask = new ArrayList<>();

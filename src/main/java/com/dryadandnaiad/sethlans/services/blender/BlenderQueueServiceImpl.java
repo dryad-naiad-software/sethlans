@@ -56,7 +56,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     @Async
     public void startQueue() {
         try {
-            Thread.sleep(10000);
+            Thread.sleep(12000);
 
             int count = 0;
             while (true) {
