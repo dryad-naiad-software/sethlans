@@ -69,6 +69,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     private void configureFrameList(BlenderProject blenderProject) {
         List<BlenderFramePart> blenderFramePartList = new ArrayList<>();
         List<String> frameFileNames = new ArrayList<>();
+        List<PartCoordinate> partCoordinateList = configurePartCoordinates(blenderProject.getPartsPerFrame());
         for (int i = 0; i < blenderProject.getTotalNumOfFrames(); i++) {
             frameFileNames.add(blenderProject.getProject_uuid() + "-" + (i + 1));
             for (int j = 0; j < blenderProject.getPartsPerFrame(); j++) {
@@ -77,6 +78,8 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
                 blenderFramePart.setFrameNumber(i + 1);
                 blenderFramePart.setPartNumber(j + 1);
                 blenderFramePart.setPartFilename(blenderFramePart.getFrameFileName() + "-part" + (j + 1));
+                blenderFramePart.setPartPositionMaxY(partCoordinateList.get(j).getMax_y());
+                blenderFramePart.setPartPositionMinY(partCoordinateList.get(j).getMin_y());
                 blenderFramePart.setFileExtension(blenderProject.getRenderOutputFormat().name().toLowerCase());
                 blenderFramePartList.add(blenderFramePart);
 
@@ -91,12 +94,28 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     }
 
     private List<PartCoordinate> configurePartCoordinates(int partsPerFrame) {
-        // The following items should be used.
-        // bpy.data.scenes["Scene"].render.border_max_y = 1.0
-        // bpy.data.scenes["Scene"].render.border_min_y = 0.9
         List<PartCoordinate> partCoordinateList = new ArrayList<>();
-        // TODO generate max y and min y using the number of parts. Max y should be the min y of the previous part
-        // TODO for example max y = 1.0 and min y = 0.9 the next item will be max y = 0.9, min y = 0.8
+        Integer parts = partsPerFrame;
+        Double upperLimit = 1.0;
+        Double difference = upperLimit / parts;
+        LOG.debug("Slice Interval " + difference);
+        Double startingPoint = upperLimit;
+        Double endingPoint;
+        for (int i = 0; i < parts; i++) {
+            LOG.debug("Starting Point " + startingPoint);
+            endingPoint = startingPoint - difference;
+            if (i == parts - 1) {
+                endingPoint = 0.0;
+            }
+            PartCoordinate partCoordinate = new PartCoordinate();
+            partCoordinate.setMax_y(startingPoint);
+            partCoordinate.setMin_y(endingPoint);
+            partCoordinateList.add(partCoordinate);
+            startingPoint = endingPoint;
+            LOG.debug("Ending Point " + endingPoint);
+
+        }
+        LOG.debug("Part Coordinate List generated \n" + partCoordinateList);
 
         return partCoordinateList;
     }

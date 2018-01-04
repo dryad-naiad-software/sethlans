@@ -192,10 +192,10 @@
                 }</style>
                 <label for="renderParts">Number of Rendering Parts per Frame: &emsp; &emsp; </label>
                 <input id="renderParts" th:field="${projectForm.partsPerFrame}" type="number"
-                       data-slider-min="4"
-                       data-slider-max="40"
+                       data-slider-min="2"
+                       data-slider-max="16"
                        th:attr="data-slider-value=${projectForm.getPartsPerFrame()}"
-                       data-slider-step="4"/>
+                       data-slider-step="2"/>
             </div>
 
 
