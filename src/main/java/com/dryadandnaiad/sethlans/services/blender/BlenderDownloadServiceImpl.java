@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -33,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -66,25 +67,23 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
     }
 
     @Override
+    @Async
     public void downloadRequestedBlenderFilesAsync() {
-        Thread startThread = new Thread(() -> {
             while (true) {
                 try {
-                    Thread.sleep(120000);
+                    Thread.sleep(10000);
                     if (doDownload()) {
                         LOG.debug("All downloads complete");
                     } else {
                         LOG.debug("Blender Download Service failed");
                     }
+                    Thread.sleep(120000);
 
 
                 } catch (InterruptedException e) {
                     LOG.debug("Stopping Blender Binary Download Service");
                 }
             }
-        });
-        startThread.start();
-
     }
 
     private boolean doDownload() {
