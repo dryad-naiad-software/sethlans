@@ -47,9 +47,10 @@ public class NodeStatusUpdateServiceImpl implements NodeStatusUpdateService {
     @Override
     @Async
     public void backgroundRequests() {
+        //noinspection InfiniteLoopStatement
         while (true) {
             try {
-                Thread.sleep(300000);
+                Thread.sleep(600000);
                 nodeUpdatePullRequest();
             } catch (InterruptedException e) {
                 LOG.debug("Stopping Node Status Update Service");
@@ -62,7 +63,7 @@ public class NodeStatusUpdateServiceImpl implements NodeStatusUpdateService {
     @Override
     public void sendUpdateOnStart() {
         try {
-            Thread.sleep(10000);
+            Thread.sleep(16000);
             nodeUpdatePullRequest();
         } catch (InterruptedException e) {
             e.printStackTrace();

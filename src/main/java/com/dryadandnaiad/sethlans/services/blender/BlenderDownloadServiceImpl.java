@@ -69,6 +69,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
     @Override
     @Async
     public void downloadRequestedBlenderFilesAsync() {
+        //noinspection InfiniteLoopStatement
             while (true) {
                 try {
                     Thread.sleep(10000);
@@ -96,6 +97,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                 blenderVersion = blenderBinary.getBlenderVersion();
                 File saveLocation = new File(downloadLocation + File.separator + "binaries" +
                         File.separator + blenderVersion + File.separator);
+                //noinspection ResultOfMethodCallIgnored
                 saveLocation.mkdirs();
                 URL url;
                 HttpURLConnection connection = null;
@@ -115,6 +117,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                         InputStream stream = connection.getInputStream();
                         if (connection.getResponseCode() == 200) {
                             LOG.debug("Creating placeholder file" + downloadPlaceholder + " to let service know an active download is in place.");
+                            //noinspection ResultOfMethodCallIgnored
                             downloadPlaceholder.createNewFile();
                         }
 
@@ -156,13 +159,16 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                             blenderBinary.setBlenderFile(toDownload.toString());
                             LOG.info(filename + " downloaded successfully.");
                             blenderBinary.setDownloaded(true);
+                            //noinspection ResultOfMethodCallIgnored
                             downloadPlaceholder.delete();
                             LOG.debug(blenderBinary.toString());
                             blenderBinaryDatabaseService.saveOrUpdate(blenderBinary);
                             break;
                         } else {
                             LOG.error("MD5 sums didn't match, removing file " + filename);
+                            //noinspection ResultOfMethodCallIgnored
                             toDownload.delete();
+                            //noinspection ResultOfMethodCallIgnored
                             downloadPlaceholder.delete();
                             throw new IOException();
                         }

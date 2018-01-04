@@ -56,9 +56,10 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     @Async
     public void startQueue() {
         try {
-            Thread.sleep(10000);
+            Thread.sleep(12000);
 
             int count = 0;
+            //noinspection InfiniteLoopStatement
             while (true) {
                 try {
                     if (!sethlansNodeDatabaseService.listAll().isEmpty() || !blenderRenderQueueDatabaseService.listAll().isEmpty()) {
@@ -188,16 +189,20 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         RandomCollection<SethlansNode> nodeRandomCollection = new RandomCollection<>();
         List<SethlansNode> sortedList =
                 SethlansUtils.getFastestNodes(sethlansNodeDatabaseService.listAll(), blenderProject.getRenderOn());
-        double weight = sortedList.size();
-        LOG.debug("Sorted List " + sortedList.toString());
-        for (int i = 0; i < sortedList.size(); i++) {
-            if (i == 0) {
-                nodeRandomCollection.add(weight, sortedList.get(i));
-            } else {
-                weight = weight * 0.75;
-                nodeRandomCollection.add(weight, sortedList.get(i));
+        if (sortedList != null) {
+            double weight = sortedList.size();
+            LOG.debug("Sorted List " + sortedList.toString());
+            for (int i = 0; i < sortedList.size(); i++) {
+                if (i == 0) {
+                    nodeRandomCollection.add(weight, sortedList.get(i));
+                } else {
+                    weight = weight * 0.75;
+                    nodeRandomCollection.add(weight, sortedList.get(i));
+                }
             }
         }
+        LOG.error("Sorted List was empty.");
+
         return nodeRandomCollection;
     }
 

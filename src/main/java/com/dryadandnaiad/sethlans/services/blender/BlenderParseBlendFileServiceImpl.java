@@ -101,8 +101,7 @@ public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileSe
             } else {
                 cyclesSamples = 0;
             }
-            BlendFile parsedBlend = new BlendFile(sceneName.substring(2), engine, frameStart, frameEnd, frameSkip, resPercent, resolutionX, resolutionY, cameraName.substring(2), cyclesSamples);
-            return parsedBlend;
+            return new BlendFile(sceneName.substring(2), engine, frameStart, frameEnd, frameSkip, resPercent, resolutionX, resolutionY, cameraName.substring(2), cyclesSamples);
         } catch (IOException | NullPointerException e) {
             LOG.error("Error parsing " + blendFile + "\n" + error);
             LOG.error(Throwables.getStackTraceAsString(e));
