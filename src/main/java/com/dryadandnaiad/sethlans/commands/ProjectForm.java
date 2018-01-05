@@ -65,6 +65,7 @@ public class ProjectForm {
     private BlenderEngine blenderEngine;
     private String uploadedFile;
     private String fileLocation;
+    private String projectRootDir;
     private String selectedBlenderVersion;
     private ComputeType renderOn;
     private Set<String> availableBlenderVersions;
@@ -321,6 +322,14 @@ public class ProjectForm {
         this.partsPerFrame = partsPerFrame;
     }
 
+    public String getProjectRootDir() {
+        return projectRootDir;
+    }
+
+    public void setProjectRootDir(String projectRootDir) {
+        this.projectRootDir = projectRootDir;
+    }
+
     @Override
     public String toString() {
         return "ProjectForm{" +
@@ -340,6 +349,7 @@ public class ProjectForm {
                 ", blenderEngine=" + blenderEngine +
                 ", uploadedFile='" + uploadedFile + '\'' +
                 ", fileLocation='" + fileLocation + '\'' +
+                ", projectRootDir='" + projectRootDir + '\'' +
                 ", selectedBlenderVersion='" + selectedBlenderVersion + '\'' +
                 ", renderOn=" + renderOn +
                 ", availableBlenderVersions=" + availableBlenderVersions +

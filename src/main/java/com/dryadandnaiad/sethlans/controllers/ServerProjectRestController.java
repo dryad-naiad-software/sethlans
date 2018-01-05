@@ -20,11 +20,12 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.services.blender.BlenderQueueService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.slf4j.Logger;
@@ -41,6 +42,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.List;
 
 /**
  * Created Mario Estrella on 12/10/17.
@@ -64,7 +66,7 @@ public class ServerProjectRestController {
 
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
-    private BlenderQueueService blenderQueueService;
+    private BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService;
 
     @RequestMapping(value = "/api/project/blender_binary", method = RequestMethod.GET)
     public void downloadBlenderBinary(HttpServletResponse response, @RequestParam String connection_uuid,
@@ -143,6 +145,20 @@ public class ServerProjectRestController {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         }
         BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(project_uuid);
+        List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.queueItemsByProjectUUID(project_uuid);
+        for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
+            if (blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() == frameNumber &&
+                    blenderRenderQueueItem.getBlenderFramePart().getPartNumber() == partNumber) {
+                blenderRenderQueueItem.setRendering(false);
+                blenderRenderQueueItem.setComplete(true);
+                blenderRenderQueueItem.setPaused(false);
+                blenderRenderQueueItem.getBlenderFramePart().setStoredDir(blenderProject.getProjectRootDir() +
+                        File.separator + "frame " + frameNumber);
+                File storedDir = new File(blenderRenderQueueItem.getBlenderFramePart().getStoredDir());
+                storedDir.mkdirs();
+                //TODO store received part here.
+            }
+        }
 
 
     }
@@ -184,7 +200,7 @@ public class ServerProjectRestController {
     }
 
     @Autowired
-    public void setBlenderQueueService(BlenderQueueService blenderQueueService) {
-        this.blenderQueueService = blenderQueueService;
+    public void setBlenderRenderQueueDatabaseService(BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService) {
+        this.blenderRenderQueueDatabaseService = blenderRenderQueueDatabaseService;
     }
 }

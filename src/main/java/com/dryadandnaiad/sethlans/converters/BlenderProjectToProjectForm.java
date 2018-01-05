@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -58,6 +58,7 @@ public class BlenderProjectToProjectForm implements Converter<BlenderProject, Pr
         projectForm.setProgress(ProjectFormProgress.DETAILS);
         projectForm.setPartsPerFrame(project.getPartsPerFrame());
         projectForm.setUuid(project.getProject_uuid());
+        projectForm.setProjectRootDir(project.getProjectRootDir());
         return projectForm;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -62,6 +62,7 @@ public class BlenderProject extends AbstractEntityClass {
     @ElementCollection
     private List<BlenderFramePart> framePartList;
     private String project_uuid;
+    private String projectRootDir;
 
     public String getProjectName() {
         return projectName;
@@ -250,6 +251,14 @@ public class BlenderProject extends AbstractEntityClass {
         }
     }
 
+    public String getProjectRootDir() {
+        return projectRootDir;
+    }
+
+    public void setProjectRootDir(String projectRootDir) {
+        this.projectRootDir = projectRootDir;
+    }
+
     public List<String> getFrameFileNames() {
         return frameFileNames;
     }
@@ -284,6 +293,7 @@ public class BlenderProject extends AbstractEntityClass {
                 ", frameList=" + framePartList +
                 ", project_uuid='" + project_uuid + '\'' +
                 ", frameFileNames='" + frameFileNames + '\'' +
+                ", projectRootDir='" + projectRootDir + '\'' +
                 ", totalNumOfFrames=" + getTotalNumOfFrames() +
                 '}';
     }
