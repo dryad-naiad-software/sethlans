@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -354,7 +354,6 @@ public class SetupForm {
         return "SetupForm{" +
                 "httpsPort='" + httpsPort + '\'' +
                 ", username='" + username + '\'' +
-                ", ipAddress='" + ipAddress + '\'' +
                 ", sethlansRootDirectory='" + sethlansRootDirectory + '\'' +
                 ", selectedMethod=" + selectedMethod +
                 ", availableMethods=" + availableMethods +
@@ -375,7 +374,7 @@ public class SetupForm {
                 ", logDirectory='" + logDirectory + '\'' +
                 ", binDirectory='" + binDirectory + '\'' +
                 ", benchmarkDirectory='" + benchmarkDirectory + '\'' +
+                ", ipAddress='" + ipAddress + '\'' +
                 '}';
     }
-
 }

@@ -81,14 +81,7 @@ public class SethlansUtils {
     public static boolean writeProperty(SethlansConfigKeys configKey, String value) {
         String comment = "";
         String key = configKey.toString();
-        if (configFile.exists()) {
-            try (FileInputStream fileIn = new FileInputStream(configFile)) {
-                sethlansProperties.load(fileIn);
-                comment = updateTimeStamp();
-            } catch (IOException e) {
-                LOG.error(Throwables.getStackTraceAsString(e));
-            }
-        }
+        comment = updateComment(comment);
 
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(configFile);
@@ -107,8 +100,7 @@ public class SethlansUtils {
         return false;
     }
 
-    public static boolean writeProperty(String key, String value) {
-        String comment = "";
+    private static String updateComment(String comment) {
         if (configFile.exists()) {
             try (FileInputStream fileIn = new FileInputStream(configFile)) {
                 sethlansProperties.load(fileIn);
@@ -117,6 +109,12 @@ public class SethlansUtils {
                 LOG.error(Throwables.getStackTraceAsString(e));
             }
         }
+        return comment;
+    }
+
+    public static boolean writeProperty(String key, String value) {
+        String comment = "";
+        comment = updateComment(comment);
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(configFile);
             sethlansProperties.setProperty(key, value);
