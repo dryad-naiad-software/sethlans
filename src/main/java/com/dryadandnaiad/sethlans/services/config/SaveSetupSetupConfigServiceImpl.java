@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -162,6 +162,8 @@ public class SaveSetupSetupConfigServiceImpl implements SaveSetupConfigService {
     public void saveNodeSettings(SetupForm setupForm) {
         writeProperty(SethlansConfigKeys.CACHE_DIR, setupForm.getWorkingDirectory());
         writeProperty(SethlansConfigKeys.COMPUTE_METHOD, setupForm.getSelectedMethod().toString());
+        writeProperty(SethlansConfigKeys.TILE_SIZE_GPU, "256");
+        writeProperty(SethlansConfigKeys.TILE_SIZE_CPU, "32");
 
         if (!setupForm.getSelectedGPUId().isEmpty()) {
             StringBuilder result = new StringBuilder();

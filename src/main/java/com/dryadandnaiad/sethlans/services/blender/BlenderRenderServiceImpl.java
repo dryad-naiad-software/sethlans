@@ -65,6 +65,12 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     @Value("${sethlans.cuda}")
     private String cuda;
 
+    @Value("${sethlans.tileSizeCPU}")
+    private String tileSizeCPU;
+
+    @Value("${sethlans.tileSizeGPU}")
+    private String tileSizeGPU;
+
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private BlenderRenderTaskDatabaseService blenderRenderTaskDatabaseService;
@@ -120,7 +126,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                 String script = blenderPythonScriptService.writeRenderPythonScript(blenderRenderTask.getComputeType(),
                         blenderRenderTask.getBlenderFramePart().getRenderDir(), cudaIDList,
                         getUnselectedIds(cudaList),
-                        "256",
+                        tileSizeGPU,
                         blenderRenderTask.getBlenderFramePart().getPartResolutionX(),
                         blenderRenderTask.getBlenderFramePart().getPartResolutionY(),
                         blenderRenderTask.getBlenderFramePart().getPartResPercentage(),
@@ -134,8 +140,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                 List<String> emptyList = new ArrayList<>();
                 String script = blenderPythonScriptService.writeRenderPythonScript(blenderRenderTask.getComputeType(),
                         blenderRenderTask.getBlenderFramePart().getRenderDir(), emptyList,
-                        emptyList,
-                        "32",
+                        emptyList, tileSizeCPU,
                         blenderRenderTask.getBlenderFramePart().getPartResolutionX(),
                         blenderRenderTask.getBlenderFramePart().getPartResolutionY(),
                         blenderRenderTask.getBlenderFramePart().getPartResPercentage(),
@@ -199,7 +204,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         return false;
     }
 
-    public boolean executeRenderTask(BlenderRenderTask renderTask, String blenderScript) {
+    private boolean executeRenderTask(BlenderRenderTask renderTask, String blenderScript) {
         boolean success = false;
         String error;
         BlenderFramePart blenderFramePart = renderTask.getBlenderFramePart();

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -42,6 +42,8 @@ public enum SethlansConfigKeys {
     PYTHON_BIN("sethlans.python.binary"),
     SCRIPTS_DIR("sethlans.scriptsDir"),
     SETHLANS_IP("server.ipaddress"),
+    TILE_SIZE_CPU("sethlans.tileSizeCPU"),
+    TILE_SIZE_GPU("sethlans.tileSizeGPU"),
     BENCHMARK_DIR("sethlans.benchmarkDir");
 
 
