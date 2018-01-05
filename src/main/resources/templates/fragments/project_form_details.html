@@ -18,6 +18,7 @@
   ~
   -->
 
+<!--suppress XmlDuplicatedId -->
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 
@@ -150,6 +151,7 @@
                 <select class="form-control" id="blenderEngine" name="blenderEngine"
                         th:value="${projectForm.blenderEngine}" onchange="selectEngine()">
                     <!--These errors can be ignored, thymeleaf doesn't recognize values from enum though it is valid. -->
+                    <!--/*@thymesVar id="engines" type="java.util.List"*/-->
                     <option th:each="engine : ${engines}"
                             th:value="${engine}" th:text="${engine.getName()}"
                             th:selected="${projectForm.blenderEngine.equals(engine)}">Cycles

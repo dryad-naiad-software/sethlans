@@ -53,16 +53,17 @@ public class BlenderProject extends AbstractEntityClass {
     private String blendFileLocation;
     private String blenderVersion;
     private String currentFrameThumbnail;
-    @ElementCollection
-    private List<String> frameFileNames;
     private boolean started;
     private boolean finished;
     private int currentPercentage;
     private int partsPerFrame;
-    @ElementCollection
-    private List<BlenderFramePart> framePartList;
+    private boolean allImagesProcessed;
     private String project_uuid;
     private String projectRootDir;
+    @ElementCollection
+    private List<String> frameFileNames;
+    @ElementCollection
+    private List<BlenderFramePart> framePartList;
 
     public String getProjectName() {
         return projectName;
@@ -250,6 +251,14 @@ public class BlenderProject extends AbstractEntityClass {
         }
     }
 
+    public boolean isAllImagesProcessed() {
+        return allImagesProcessed;
+    }
+
+    public void setAllImagesProcessed(boolean allImagesProcessed) {
+        this.allImagesProcessed = allImagesProcessed;
+    }
+
     public String getProjectRootDir() {
         return projectRootDir;
     }
@@ -293,6 +302,7 @@ public class BlenderProject extends AbstractEntityClass {
                 ", project_uuid='" + project_uuid + '\'' +
                 ", frameFileNames='" + frameFileNames + '\'' +
                 ", projectRootDir='" + projectRootDir + '\'' +
+                ", allImagesProcessed='" + allImagesProcessed + '\'' +
                 ", totalNumOfFrames=" + getTotalNumOfFrames() +
                 '}';
     }
