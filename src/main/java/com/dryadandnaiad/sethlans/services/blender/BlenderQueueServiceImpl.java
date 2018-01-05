@@ -66,7 +66,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                         LOG.debug("Processing Render Queue. Verbose status set for every 5 minutes.");
                         List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listAll();
                         for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
-                            if (!blenderRenderQueueItem.isRendering()) {
+                            if (!blenderRenderQueueItem.isRendering() || !blenderRenderQueueItem.isPaused() || !blenderRenderQueueItem.isComplete()) {
                                 if (count == 20) {
                                     LOG.debug(blenderRenderQueueItem.getBlenderFramePart() + " is waiting to be rendered.");
                                 }

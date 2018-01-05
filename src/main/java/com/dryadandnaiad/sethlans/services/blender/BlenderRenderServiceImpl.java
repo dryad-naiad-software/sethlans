@@ -125,12 +125,12 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                     cudaIDList.add(StringUtils.substringAfter(cuda, "_"));
                 }
                 String script = blenderPythonScriptService.writeRenderPythonScript(blenderRenderTask.getComputeType(),
-                        blenderRenderTask.getBlenderFramePart().getRenderDir(), cudaIDList,
+                        blenderRenderTask.getRenderDir(), cudaIDList,
                         getUnselectedIds(cudaList),
                         tileSizeGPU,
-                        blenderRenderTask.getBlenderFramePart().getPartResolutionX(),
-                        blenderRenderTask.getBlenderFramePart().getPartResolutionY(),
-                        blenderRenderTask.getBlenderFramePart().getPartResPercentage(),
+                        blenderRenderTask.getTaskResolutionX(),
+                        blenderRenderTask.getTaskResolutionY(),
+                        blenderRenderTask.getPartResPercentage(),
                         blenderRenderTask.getSamples(),
                         blenderRenderTask.getBlenderFramePart().getPartPositionMaxY(),
                         blenderRenderTask.getBlenderFramePart().getPartPositionMinY());
@@ -140,11 +140,11 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                 LOG.debug("Running render task using CPU");
                 List<String> emptyList = new ArrayList<>();
                 String script = blenderPythonScriptService.writeRenderPythonScript(blenderRenderTask.getComputeType(),
-                        blenderRenderTask.getBlenderFramePart().getRenderDir(), emptyList,
+                        blenderRenderTask.getRenderDir(), emptyList,
                         emptyList, tileSizeCPU,
-                        blenderRenderTask.getBlenderFramePart().getPartResolutionX(),
-                        blenderRenderTask.getBlenderFramePart().getPartResolutionY(),
-                        blenderRenderTask.getBlenderFramePart().getPartResPercentage(),
+                        blenderRenderTask.getTaskResolutionX(),
+                        blenderRenderTask.getTaskResolutionY(),
+                        blenderRenderTask.getPartResPercentage(),
                         blenderRenderTask.getSamples(),
                         blenderRenderTask.getBlenderFramePart().getPartPositionMaxY(),
                         blenderRenderTask.getBlenderFramePart().getPartPositionMinY());
@@ -179,7 +179,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                 LOG.debug("Extraction complete.");
                 if (SethlansUtils.renameBlender(renderDir, renderTask.getBlenderVersion())) {
                     LOG.debug("Blender executable ready");
-                    renderTask.getBlenderFramePart().setRenderDir(renderDir.toString());
+                    renderTask.setRenderDir(renderDir.toString());
                     renderTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(renderDir));
                 } else {
                     LOG.debug("Rename failed.");
@@ -212,13 +212,13 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             CommandLine commandLine = new CommandLine(renderTask.getBlenderExecutable());
 
             commandLine.addArgument("-b");
-            commandLine.addArgument(renderTask.getBlenderFramePart().getRenderDir() + File.separator + renderTask.getBlendFilename());
+            commandLine.addArgument(renderTask.getRenderDir() + File.separator + renderTask.getBlendFilename());
             commandLine.addArgument("-P");
             commandLine.addArgument(blenderScript);
             commandLine.addArgument("-E");
             commandLine.addArgument("CYCLES");
             commandLine.addArgument("-o");
-            commandLine.addArgument(renderTask.getBlenderFramePart().getRenderDir() + File.separator);
+            commandLine.addArgument(renderTask.getRenderDir() + File.separator);
             commandLine.addArgument("-f");
             commandLine.addArgument(Integer.toString(renderTask.getBlenderFramePart().getFrameNumber()));
             if (renderTask.getComputeType().equals(ComputeType.CPU)) {

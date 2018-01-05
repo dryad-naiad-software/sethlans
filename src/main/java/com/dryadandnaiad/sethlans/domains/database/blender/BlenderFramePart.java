@@ -31,38 +31,11 @@ public class BlenderFramePart {
     private String frameFileName;
     private int frameNumber;
     private int partNumber;
-    private int partResolutionX;
-    private int partResolutionY;
     private Double partPositionMinY;
     private Double partPositionMaxY;
-    private int partResPercentage;
     private String partFilename;
     private String fileExtension;
-    private String renderDir;
-
-    public int getPartNumber() {
-        return partNumber;
-    }
-
-    public void setPartNumber(int partNumber) {
-        this.partNumber = partNumber;
-    }
-
-    public String getPartFilename() {
-        return partFilename;
-    }
-
-    public void setPartFilename(String partFilename) {
-        this.partFilename = partFilename;
-    }
-
-    public String getFileExtension() {
-        return fileExtension;
-    }
-
-    public void setFileExtension(String fileExtension) {
-        this.fileExtension = fileExtension;
-    }
+    private String storedDir;
 
     public String getFrameFileName() {
         return frameFileName;
@@ -80,28 +53,12 @@ public class BlenderFramePart {
         this.frameNumber = frameNumber;
     }
 
-    public String getRenderDir() {
-        return renderDir;
+    public int getPartNumber() {
+        return partNumber;
     }
 
-    public void setRenderDir(String renderDir) {
-        this.renderDir = renderDir;
-    }
-
-    public int getPartResolutionX() {
-        return partResolutionX;
-    }
-
-    public void setPartResolutionX(int partResolutionX) {
-        this.partResolutionX = partResolutionX;
-    }
-
-    public int getPartResolutionY() {
-        return partResolutionY;
-    }
-
-    public void setPartResolutionY(int partResolutionY) {
-        this.partResolutionY = partResolutionY;
+    public void setPartNumber(int partNumber) {
+        this.partNumber = partNumber;
     }
 
     public Double getPartPositionMinY() {
@@ -120,12 +77,28 @@ public class BlenderFramePart {
         this.partPositionMaxY = partPositionMaxY;
     }
 
-    public int getPartResPercentage() {
-        return partResPercentage;
+    public String getPartFilename() {
+        return partFilename;
     }
 
-    public void setPartResPercentage(int partResPercentage) {
-        this.partResPercentage = partResPercentage;
+    public void setPartFilename(String partFilename) {
+        this.partFilename = partFilename;
+    }
+
+    public String getFileExtension() {
+        return fileExtension;
+    }
+
+    public void setFileExtension(String fileExtension) {
+        this.fileExtension = fileExtension;
+    }
+
+    public String getStoredDir() {
+        return storedDir;
+    }
+
+    public void setStoredDir(String storedDir) {
+        this.storedDir = storedDir;
     }
 
     @Override
@@ -134,14 +107,11 @@ public class BlenderFramePart {
                 "frameFileName='" + frameFileName + '\'' +
                 ", frameNumber=" + frameNumber +
                 ", partNumber=" + partNumber +
-                ", partResolutionX=" + partResolutionX +
-                ", partResolutionY=" + partResolutionY +
                 ", partPositionMinY=" + partPositionMinY +
                 ", partPositionMaxY=" + partPositionMaxY +
-                ", partResPercentage=" + partResPercentage +
                 ", partFilename='" + partFilename + '\'' +
                 ", fileExtension='" + fileExtension + '\'' +
-                ", renderDir='" + renderDir + '\'' +
+                ", storedDir='" + storedDir + '\'' +
                 '}';
     }
 }

@@ -85,9 +85,6 @@ public class NodeRenderRestController {
             framePart.setPartNumber(part_number);
             framePart.setPartPositionMinY(part_position_min_y);
             framePart.setPartPositionMaxY(part_position_max_y);
-            framePart.setPartResolutionX(part_resolution_x);
-            framePart.setPartResolutionY(part_resolution_y);
-            framePart.setPartResPercentage(part_res_percentage);
 
 
             // Create a new task
@@ -102,6 +99,9 @@ public class NodeRenderRestController {
             blenderRenderTask.setBlendFilename(blend_file);
             blenderRenderTask.setBlenderVersion(blender_version);
             blenderRenderTask.setBlenderFramePart(framePart);
+            blenderRenderTask.setTaskResolutionX(part_resolution_x);
+            blenderRenderTask.setTaskResolutionY(part_resolution_y);
+            blenderRenderTask.setPartResPercentage(part_res_percentage);
             blenderRenderTask.setComplete(false);
             LOG.debug(blenderRenderTask.toString());
             blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);

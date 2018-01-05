@@ -45,8 +45,12 @@ public class BlenderRenderTask extends AbstractEntityClass {
     private String blenderVersion;
     private String blenderExecutable;
     private BlenderFramePart blenderFramePart;
+    private int taskResolutionX;
+    private int taskResolutionY;
+    private int partResPercentage;
     private boolean complete;
     private boolean inProgress;
+    private String renderDir;
 
     public String getProjectName() {
         return projectName;
@@ -152,6 +156,38 @@ public class BlenderRenderTask extends AbstractEntityClass {
         this.inProgress = inProgress;
     }
 
+    public String getRenderDir() {
+        return renderDir;
+    }
+
+    public void setRenderDir(String renderDir) {
+        this.renderDir = renderDir;
+    }
+
+    public int getTaskResolutionX() {
+        return taskResolutionX;
+    }
+
+    public void setTaskResolutionX(int taskResolutionX) {
+        this.taskResolutionX = taskResolutionX;
+    }
+
+    public int getTaskResolutionY() {
+        return taskResolutionY;
+    }
+
+    public void setTaskResolutionY(int taskResolutionY) {
+        this.taskResolutionY = taskResolutionY;
+    }
+
+    public int getPartResPercentage() {
+        return partResPercentage;
+    }
+
+    public void setPartResPercentage(int partResPercentage) {
+        this.partResPercentage = partResPercentage;
+    }
+
     @Override
     public String toString() {
         return "BlenderRenderTask{" +
@@ -166,8 +202,12 @@ public class BlenderRenderTask extends AbstractEntityClass {
                 ", blenderVersion='" + blenderVersion + '\'' +
                 ", blenderExecutable='" + blenderExecutable + '\'' +
                 ", blenderFramePart=" + blenderFramePart +
+                ", taskResolutionX=" + taskResolutionX +
+                ", taskResolutionY=" + taskResolutionY +
+                ", partResPercentage=" + partResPercentage +
                 ", complete=" + complete +
                 ", inProgress=" + inProgress +
+                ", renderDir='" + renderDir + '\'' +
                 '}';
     }
 }

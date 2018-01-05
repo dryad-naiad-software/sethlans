@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.services.blender.BlenderQueueService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -36,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -62,6 +64,7 @@ public class ServerProjectRestController {
 
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
+    private BlenderQueueService blenderQueueService;
 
     @RequestMapping(value = "/api/project/blender_binary", method = RequestMethod.GET)
     public void downloadBlenderBinary(HttpServletResponse response, @RequestParam String connection_uuid,
@@ -132,7 +135,15 @@ public class ServerProjectRestController {
     }
 
     @RequestMapping(value = "/api/project/response", method = RequestMethod.POST)
-    public void projectResponse(@RequestParam String connection_uuid, @RequestParam String project_uuid) {
+    public void projectResponse(@RequestParam String connection_uuid,
+                                @RequestParam String project_uuid,
+                                @RequestParam MultipartFile part, @RequestParam int partNumber,
+                                @RequestParam int frameNumber) {
+        if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) == null) {
+            LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
+        }
+        BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(project_uuid);
+
 
     }
 
@@ -170,5 +181,10 @@ public class ServerProjectRestController {
     @Autowired
     public void setBlenderProjectDatabaseService(BlenderProjectDatabaseService blenderProjectDatabaseService) {
         this.blenderProjectDatabaseService = blenderProjectDatabaseService;
+    }
+
+    @Autowired
+    public void setBlenderQueueService(BlenderQueueService blenderQueueService) {
+        this.blenderQueueService = blenderQueueService;
     }
 }
