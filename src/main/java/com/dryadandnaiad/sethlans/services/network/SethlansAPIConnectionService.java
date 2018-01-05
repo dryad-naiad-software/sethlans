@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,6 +19,9 @@
 
 package com.dryadandnaiad.sethlans.services.network;
 
+import java.io.File;
+import java.util.Map;
+
 /**
  * Created Mario Estrella on 12/12/17.
  * Dryad and Naiad Software LLC
@@ -28,6 +31,8 @@ package com.dryadandnaiad.sethlans.services.network;
 public interface SethlansAPIConnectionService {
 
     boolean sendToRemotePOST(String connectionURL, String params);
+
+    boolean uploadToRemotePOST(String connectionURL, Map<String, String> params, File toUpload);
 
     String downloadFromRemoteGET(String connectionURL, String params, String location);
 

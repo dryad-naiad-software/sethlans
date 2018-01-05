@@ -34,6 +34,7 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +44,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created Mario Estrella on 12/18/17.
@@ -91,21 +90,18 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                 }
             }
 
-            if (pendingRenderTask.size() > 1) {
-                LOG.debug("There are " + pendingRenderTask.size() + " render tasks pending.");
-                List<String> projectUUIDs = new ArrayList<>();
-                for (BlenderRenderTask blenderRenderTask : pendingRenderTask) {
-                    projectUUIDs.add(blenderRenderTask.getProject_uuid());
-                }
-                // TODO create a queue if there are than one tasks pending(shouldn't happen.)
-            } else if (pendingRenderTask.size() == 1) {
+            if (pendingRenderTask.size() == 1) {
                 LOG.debug("There is one render task pending.");
+                FileUtils.deleteDirectory(new File(pendingRenderTask.get(0).getRenderDir()));
+                LOG.debug("Deleting directory " + pendingRenderTask.get(0).getRenderDir());
                 startRenderService(pendingRenderTask.get(0).getProject_uuid());
             } else {
                 LOG.debug("No render tasks are pending.");
             }
         } catch (InterruptedException e) {
             LOG.debug("Shutting down Render Service");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -158,8 +154,31 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             LOG.debug("Render Successful! Updating task status.");
             blenderRenderTask.setInProgress(false);
             blenderRenderTask.setComplete(true);
-            blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
+            blenderRenderTask = blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
+            if (sendResultsToServer(blenderRenderTask.getConnection_uuid(), blenderRenderTask)) {
+                try {
+                    LOG.debug("Cleaning up " + blenderRenderTask.getRenderDir());
+                    FileUtils.deleteDirectory(new File(blenderRenderTask.getRenderDir()));
+                    blenderRenderTaskDatabaseService.delete(blenderRenderTask);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
         }
+    }
+
+    private boolean sendResultsToServer(String connectionUUID, BlenderRenderTask blenderRenderTask) {
+        SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connectionUUID);
+        String serverUrl = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/response";
+        Map<String, String> params = new HashMap<>();
+        params.put("connection_uuid", blenderRenderTask.getConnection_uuid());
+        params.put("project_uuid", blenderRenderTask.getProject_uuid());
+        params.put("part_number", Integer.toString(blenderRenderTask.getBlenderFramePart().getPartNumber()));
+        params.put("frame_number", Integer.toString(blenderRenderTask.getBlenderFramePart().getFrameNumber()));
+
+        File result = new File(blenderRenderTask.getRenderDir() + File.separator + "0001" + "." + blenderRenderTask.getBlenderFramePart().getFileExtension());
+        return sethlansAPIConnectionService.uploadToRemotePOST(serverUrl, params, result);
     }
 
     private boolean downloadRequiredFiles(File renderDir, BlenderRenderTask renderTask) {
@@ -243,7 +262,6 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                     success = true;
                 }
             }
-
 
             error = errorStream.toString();
 

@@ -42,6 +42,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -139,28 +142,41 @@ public class ServerProjectRestController {
     @RequestMapping(value = "/api/project/response", method = RequestMethod.POST)
     public void projectResponse(@RequestParam String connection_uuid,
                                 @RequestParam String project_uuid,
-                                @RequestParam MultipartFile part, @RequestParam int partNumber,
-                                @RequestParam int frameNumber) {
+                                @RequestParam MultipartFile part,
+                                @RequestParam int part_number,
+                                @RequestParam int frame_number) {
         if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         }
-        BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(project_uuid);
-        List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.queueItemsByProjectUUID(project_uuid);
-        for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
-            if (blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() == frameNumber &&
-                    blenderRenderQueueItem.getBlenderFramePart().getPartNumber() == partNumber) {
-                blenderRenderQueueItem.setRendering(false);
-                blenderRenderQueueItem.setComplete(true);
-                blenderRenderQueueItem.setPaused(false);
-                blenderRenderQueueItem.getBlenderFramePart().setStoredDir(blenderProject.getProjectRootDir() +
-                        File.separator + "frame " + frameNumber);
-                File storedDir = new File(blenderRenderQueueItem.getBlenderFramePart().getStoredDir());
-                storedDir.mkdirs();
-                //TODO store received part here.
+        if (!part.isEmpty()) {
+            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(project_uuid);
+            List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.queueItemsByProjectUUID(project_uuid);
+            for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
+                if (blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() == frame_number &&
+                        blenderRenderQueueItem.getBlenderFramePart().getPartNumber() == part_number) {
+                    blenderRenderQueueItem.setRendering(false);
+                    blenderRenderQueueItem.setComplete(true);
+                    blenderRenderQueueItem.setPaused(false);
+                    blenderRenderQueueItem.getBlenderFramePart().setStoredDir(blenderProject.getProjectRootDir() +
+                            File.separator + "frame_" + frame_number + File.separator);
+                    File storedDir = new File(blenderRenderQueueItem.getBlenderFramePart().getStoredDir());
+                    storedDir.mkdirs();
+                    try {
+                        byte[] bytes = part.getBytes();
+                        Path path = Paths.get(storedDir.toString() + File.separator +
+                                blenderRenderQueueItem.getBlenderFramePart().getPartFilename() + "." +
+                                blenderRenderQueueItem.getBlenderFramePart().getFileExtension());
+                        Files.write(path, bytes);
+                        SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
+                        sethlansNode.setRendering(false);
+                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
-
-
     }
 
     @RequestMapping(value = "/api/project/blend_file/", method = RequestMethod.GET)

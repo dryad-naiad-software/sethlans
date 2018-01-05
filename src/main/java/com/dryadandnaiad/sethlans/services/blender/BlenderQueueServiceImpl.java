@@ -66,13 +66,13 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                         LOG.debug("Processing Render Queue. Verbose status set for every 5 minutes.");
                         List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listAll();
                         for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
-                            if (!blenderRenderQueueItem.isRendering() || !blenderRenderQueueItem.isPaused() || !blenderRenderQueueItem.isComplete()) {
+                            if (!blenderRenderQueueItem.isComplete() && !blenderRenderQueueItem.isRendering() && !blenderRenderQueueItem.isPaused()) {
                                 if (count == 20) {
-                                    LOG.debug(blenderRenderQueueItem.getBlenderFramePart() + " is waiting to be rendered.");
+                                    LOG.debug(blenderRenderQueueItem.toString() + " is waiting to be rendered.");
                                 }
                                 SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid());
                                 if (sethlansNode.isActive() && !sethlansNode.isRendering()) {
-                                    LOG.debug("Sending " + blenderRenderQueueItem.getBlenderFramePart() + " to " + sethlansNode.getHostname());
+                                    LOG.debug("Sending " + blenderRenderQueueItem + " to " + sethlansNode.getHostname());
                                     BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
                                     ComputeType projectComputeType = blenderProject.getRenderOn();
 

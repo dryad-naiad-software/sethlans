@@ -67,6 +67,11 @@ public class BlenderRenderTaskDatabaseServiceImpl implements BlenderRenderTaskDa
     }
 
     @Override
+    public void delete(BlenderRenderTask blenderRenderTask) {
+        blenderRenderTaskRepository.delete(blenderRenderTask);
+    }
+
+    @Override
     public BlenderRenderTask getByProjectUUID(String project_uuid) {
         List<BlenderRenderTask> blenderRenderTasks = listAll();
         for (BlenderRenderTask blenderRenderTask : blenderRenderTasks) {
