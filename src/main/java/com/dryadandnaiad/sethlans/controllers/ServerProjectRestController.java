@@ -151,6 +151,8 @@ public class ServerProjectRestController {
         if (!part.isEmpty()) {
             BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(project_uuid);
             List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.queueItemsByProjectUUID(project_uuid);
+            int projectTotalQueue = blenderRenderQueueItemList.size();
+            int remainingQueue = 0;
             for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
                 if (blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() == frame_number &&
                         blenderRenderQueueItem.getBlenderFramePart().getPartNumber() == part_number) {
@@ -175,7 +177,20 @@ public class ServerProjectRestController {
                         e.printStackTrace();
                     }
                 }
+
+                if (!blenderRenderQueueItem.isComplete()) {
+                    remainingQueue++;
+                }
             }
+            LOG.debug("Remaining items in Queue " + remainingQueue);
+            LOG.debug("Project Total Queue " + projectTotalQueue);
+            double currentPercentage = ((projectTotalQueue - remainingQueue) * 100.0) / projectTotalQueue;
+            LOG.debug("Current Percentage " + currentPercentage);
+            blenderProject.setCurrentPercentage(currentPercentage);
+            if (remainingQueue == 0) {
+                blenderProject.setFinished(true);
+            }
+            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
         }
     }
 

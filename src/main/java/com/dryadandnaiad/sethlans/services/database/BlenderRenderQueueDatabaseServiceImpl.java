@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -41,6 +41,18 @@ public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueue
         List<BlenderRenderQueueItem> blenderRenderQueueItems = new ArrayList<>();
         blenderRenderQueueRepository.findAll().forEach(blenderRenderQueueItems::add);
         return blenderRenderQueueItems;
+    }
+
+    @Override
+    public List<BlenderRenderQueueItem> listPendingRender() {
+        List<BlenderRenderQueueItem> blenderRenderQueueItemsPending = new ArrayList<>();
+        List<BlenderRenderQueueItem> fullList = listAll();
+        for (BlenderRenderQueueItem blenderRenderQueueItem : fullList) {
+            if (!blenderRenderQueueItem.isComplete()) {
+                blenderRenderQueueItemsPending.add(blenderRenderQueueItem);
+            }
+        }
+        return blenderRenderQueueItemsPending;
     }
 
     @Override

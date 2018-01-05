@@ -76,6 +76,12 @@ public class NodeRenderRestController {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
             LOG.debug("Render Request Received, preparing render task.");
+            List<BlenderRenderTask> blenderRenderTaskList = blenderRenderTaskDatabaseService.listAll();
+            LOG.debug("Cleaning up any stray tasks.");
+            for (BlenderRenderTask blenderRenderTask : blenderRenderTaskList) {
+                blenderRenderTaskDatabaseService.delete(blenderRenderTask);
+            }
+
             BlenderRenderTask blenderRenderTask;
             BlenderFramePart framePart = new BlenderFramePart();
             framePart.setFrameNumber(frame_number);

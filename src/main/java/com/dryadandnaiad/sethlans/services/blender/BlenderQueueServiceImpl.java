@@ -187,7 +187,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 blenderRenderQueueItem.setBlenderFramePart(blenderFramePart);
                 blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
             }
-            LOG.debug("Render Queue configured \n" + blenderRenderQueueDatabaseService.listAll());
+            LOG.debug("Render Queue configured \n" + blenderRenderQueueDatabaseService.listPendingRender());
         } else {
             LOG.debug("No compatible rendering nodes found for this project.");
         }
@@ -209,7 +209,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 }
             }
         }
-        LOG.error("Sorted List was empty.");
+        LOG.debug("Sorted List was empty.");
 
         return nodeRandomCollection;
     }

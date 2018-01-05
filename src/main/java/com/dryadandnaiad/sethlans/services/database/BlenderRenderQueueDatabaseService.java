@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -30,6 +30,8 @@ import java.util.List;
  */
 
 public interface BlenderRenderQueueDatabaseService extends CRUDService<BlenderRenderQueueItem> {
+    List<BlenderRenderQueueItem> listPendingRender();
+
     List<BlenderRenderQueueItem> queueItemsByConnectionUUID(String connection_uuid);
 
     List<BlenderRenderQueueItem> queueItemsByProjectUUID(String project_uuid);

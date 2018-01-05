@@ -57,7 +57,7 @@ public class BlenderProject extends AbstractEntityClass {
     private List<String> frameFileNames;
     private boolean started;
     private boolean finished;
-    private int currentPercentage;
+    private Double currentPercentage;
     private int partsPerFrame;
     @ElementCollection
     private List<BlenderFramePart> framePartList;
@@ -209,13 +209,12 @@ public class BlenderProject extends AbstractEntityClass {
         this.finished = finished;
     }
 
-
-    public int getCurrentPercentage() {
-        return currentPercentage;
+    public void setCurrentPercentage(Double currentPercentage) {
+        this.currentPercentage = currentPercentage;
     }
 
-    public void setCurrentPercentage(int currentPercentage) {
-        this.currentPercentage = currentPercentage;
+    public Double getCurrentPercentage() {
+        return currentPercentage;
     }
 
     public String getProject_uuid() {
