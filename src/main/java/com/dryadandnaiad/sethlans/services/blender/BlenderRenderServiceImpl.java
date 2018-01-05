@@ -92,8 +92,13 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
             if (pendingRenderTask.size() == 1) {
                 LOG.debug("There is one render task pending.");
-                FileUtils.deleteDirectory(new File(pendingRenderTask.get(0).getRenderDir()));
-                LOG.debug("Deleting directory " + pendingRenderTask.get(0).getRenderDir());
+                if (pendingRenderTask.get(0).getRenderDir() != null) {
+                    File file = new File(pendingRenderTask.get(0).getRenderDir());
+                    if (file.exists()) {
+                        FileUtils.deleteDirectory(new File(pendingRenderTask.get(0).getRenderDir()));
+                        LOG.debug("Deleting directory " + pendingRenderTask.get(0).getRenderDir());
+                    }
+                }
                 startRenderService(pendingRenderTask.get(0).getProject_uuid());
             } else {
                 LOG.debug("No render tasks are pending.");

@@ -182,6 +182,7 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             // X is the width of the image, parts are then slices from top to bottom along Y axis.
             scriptWriter.write("\n");
             scriptWriter.write("\tscene.render.use_border = True" + "\n");
+            scriptWriter.write("\tscene.render.use_crop_to_border = True" + "\n");
             scriptWriter.write("\tscene.render.border_min_x = 0" + "\n");
             scriptWriter.write("\tscene.render.border_max_x = 1.0" + "\n");
             scriptWriter.write("\tscene.render.border_max_y = " + partMaxY + "\n");
