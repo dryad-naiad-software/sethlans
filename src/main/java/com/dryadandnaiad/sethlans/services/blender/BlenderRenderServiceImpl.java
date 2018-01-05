@@ -97,6 +97,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                 for (BlenderRenderTask blenderRenderTask : pendingRenderTask) {
                     projectUUIDs.add(blenderRenderTask.getProject_uuid());
                 }
+                // TODO create a queue if there are than one tasks pending(shouldn't happen.)
             } else if (pendingRenderTask.size() == 1) {
                 LOG.debug("There is one render task pending.");
                 startRenderService(pendingRenderTask.get(0).getProject_uuid());
@@ -149,12 +150,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                         blenderRenderTask.getBlenderFramePart().getPartPositionMinY());
                 saveOnSuccess(blenderRenderTask, script);
             }
-
-
-
         }
-
-
     }
 
     private void saveOnSuccess(BlenderRenderTask blenderRenderTask, String script) {

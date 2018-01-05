@@ -64,10 +64,14 @@ public class NodeRenderRestController {
     private static final Logger LOG = LoggerFactory.getLogger(NodeRenderRestController.class);
 
     @RequestMapping(value = "/api/render/request", method = RequestMethod.POST)
-    public void renderRequest(@RequestParam String project_name, String connection_uuid, String project_uuid, RenderOutputFormat render_output_format,
-                              int samples, BlenderEngine blender_engine, ComputeType compute_type, String blend_file, String blender_version,
-                              String frame_filename, int frame_number, int part_number, int part_resolution_x, int part_resolution_y,
-                              double part_position_min_y, double part_position_max_y, int part_res_percentage, String part_filename, String file_extension) {
+    public void renderRequest(@RequestParam String project_name, @RequestParam String connection_uuid, @RequestParam String project_uuid,
+                              @RequestParam RenderOutputFormat render_output_format,
+                              @RequestParam int samples, @RequestParam BlenderEngine blender_engine, @RequestParam ComputeType compute_type,
+                              @RequestParam String blend_file, @RequestParam String blender_version,
+                              @RequestParam String frame_filename, @RequestParam int frame_number, @RequestParam int part_number,
+                              @RequestParam int part_resolution_x, @RequestParam int part_resolution_y,
+                              @RequestParam double part_position_min_y, @RequestParam double part_position_max_y,
+                              @RequestParam int part_res_percentage, @RequestParam String part_filename, @RequestParam String file_extension) {
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
@@ -107,7 +111,7 @@ public class NodeRenderRestController {
     }
 
     @RequestMapping(value = "/api/benchmark/request", method = RequestMethod.POST)
-    public void benchmarkRequest(@RequestParam String connection_uuid, ComputeType compute_type, String blender_version) {
+    public void benchmarkRequest(@RequestParam String connection_uuid, @RequestParam ComputeType compute_type, @RequestParam String blender_version) {
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
@@ -160,11 +164,6 @@ public class NodeRenderRestController {
             }
 
         }
-    }
-
-    @RequestMapping(value = "/api/render/status", method = RequestMethod.GET)
-    public void renderStatus(@RequestParam String connection_uuid) {
-
     }
 
 

@@ -107,8 +107,6 @@ public class ServerProjectRestController {
             sethlansNode.setBenchmarkComplete(complete);
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
         }
-
-
     }
 
     @RequestMapping(value = "/api/benchmark_files/bmw_cpu", method = RequestMethod.GET)
@@ -133,8 +131,8 @@ public class ServerProjectRestController {
         }
     }
 
-    @RequestMapping(value = "/api/project/status", method = RequestMethod.GET)
-    public void projectStatus(@RequestParam String node_uuid, @RequestParam String project_uuid) {
+    @RequestMapping(value = "/api/project/response", method = RequestMethod.POST)
+    public void projectResponse(@RequestParam String connection_uuid, @RequestParam String project_uuid) {
 
     }
 
