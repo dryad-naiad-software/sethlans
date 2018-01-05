@@ -128,7 +128,7 @@
     <h4 id="projectStatus">
         <strong>Status:
             <span style="color: grey;" th:if="${!project.isStarted()}">Not Started</span>
-            <span style="color: blue;" th:if="${project.isStarted()}">Rendering</span>
+            <span style="color: blue;" th:if="${project.isStarted() and !project.isFinished()}">Rendering</span>
             <span style="color: green;" th:if="${project.isFinished()}">Complete</span>
     </strong></h4>
     <hr/>
@@ -207,7 +207,7 @@
         <h4>Render Progress</h4>
         <tr>
             <td class="col-md-6">Progress</td>
-            <td class="col-md-6">Frame 1 of 1: Part 1 of <span th:text="${project.partsPerFrame}"></span></td>
+            <td class="col-md-6"><span th:text="${project.getCurrentPercentage()}">0</span>% Complete</td>
         </tr>
         <tr>
             <td>Details</td>

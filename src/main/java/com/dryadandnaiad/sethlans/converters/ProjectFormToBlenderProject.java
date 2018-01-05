@@ -70,7 +70,7 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
         if (projectForm.getId() == null) {
             project.setStarted(false);
             project.setFinished(false);
-            project.setCurrentPercentage(0.0);
+            project.setCurrentPercentage(0);
 
             RandomString randomString = new RandomString(6);
 
