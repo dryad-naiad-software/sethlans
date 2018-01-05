@@ -131,7 +131,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         LOG.debug("Starting Benchmark");
         BlenderBenchmarkTask benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark_uuid);
         benchmarkTask.setInProgress(true);
-        runBenchmark(benchmarkTask);
+        prepareScriptandExecute(benchmarkTask);
         benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark_uuid);
         if (benchmarkTask.isComplete()) {
             try {
@@ -202,7 +202,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     }
 
 
-    private void runBenchmark(BlenderBenchmarkTask benchmarkTask) {
+    private void prepareScriptandExecute(BlenderBenchmarkTask benchmarkTask) {
         LOG.debug("Processing benchmark task: \n" + benchmarkTask.toString());
         File benchmarkDir = new File(tempDir + File.separator + benchmarkTask.getBenchmark_uuid() + "_" + benchmarkTask.getBenchmarkURL());
         if (downloadRequiredFiles(benchmarkDir, benchmarkTask)) {
@@ -211,8 +211,8 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                 LOG.debug("Creating benchmark script using " + benchmarkTask.getCudaName());
                 String cudaID = StringUtils.substringAfter(benchmarkTask.getCudaName(), "_");
                 String script = blenderPythonScriptService.writeBenchmarkPythonScript(benchmarkTask.getComputeType(),
-                        benchmarkTask.getBenchmarkDir(), cudaID, 128, 800, 600, 50);
-                int rating = blenderBenchmark(benchmarkTask, script);
+                        benchmarkTask.getBenchmarkDir(), cudaID, "128", 800, 600, 50);
+                int rating = executeBlenderBenchmark(benchmarkTask, script);
                 if (rating == 0) {
                     LOG.debug("Benchmark failed.");
                     LOG.debug(benchmarkTask.toString());
@@ -228,8 +228,8 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             } else {
                 LOG.debug("Creating benchmark script using CPU");
                 String script = blenderPythonScriptService.writeBenchmarkPythonScript(benchmarkTask.getComputeType(),
-                        benchmarkTask.getBenchmarkDir(), "0", 16, 800, 600, 50);
-                int rating = blenderBenchmark(benchmarkTask, script);
+                        benchmarkTask.getBenchmarkDir(), "0", "16", 800, 600, 50);
+                int rating = executeBlenderBenchmark(benchmarkTask, script);
                 if (rating == 0) {
                     LOG.debug("Benchmark failed.");
                     LOG.debug(benchmarkTask.toString());
@@ -247,7 +247,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
 
     }
 
-    private int blenderBenchmark(BlenderBenchmarkTask benchmarkTask, String blenderScript) {
+    private int executeBlenderBenchmark(BlenderBenchmarkTask benchmarkTask, String blenderScript) {
         String error;
         try {
             LOG.debug("Starting Benchmark. Benchmark type: " + benchmarkTask.getComputeType());
