@@ -160,6 +160,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             blenderRenderTask.setInProgress(false);
             blenderRenderTask.setComplete(true);
             blenderRenderTask = blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
+            int count = 0;
             while (true) {
                 if (sendResultsToServer(blenderRenderTask.getConnection_uuid(), blenderRenderTask)) {
                     try {
@@ -171,8 +172,13 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                         LOG.error(Throwables.getStackTraceAsString(e));
                     }
                 }
+                if (count >= 10) {
+                    LOG.debug("Unable to establish a connection with the server to send results.");
+                    break;
+                }
                 try {
                     Thread.sleep(5000);
+                    count++;
                 } catch (InterruptedException e) {
                     LOG.error(Throwables.getStackTraceAsString(e));
                 }

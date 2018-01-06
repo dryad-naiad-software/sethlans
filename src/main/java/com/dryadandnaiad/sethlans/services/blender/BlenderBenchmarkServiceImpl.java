@@ -140,12 +140,18 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             } catch (IOException e) {
                 LOG.error(Throwables.getStackTraceAsString(e));
             }
+            int count = 0;
             while (true) {
                 if (sendResultsToServer(benchmarkTask.getConnection_uuid(), benchmarkTask)) {
                     break;
                 }
+                if (count >= 10) {
+                    LOG.debug("Unable to establish a connection with the server to send results.");
+                    break;
+                }
                 try {
                     Thread.sleep(5000);
+                    count++;
                 } catch (InterruptedException e) {
                     LOG.error(Throwables.getStackTraceAsString(e));
                 }
