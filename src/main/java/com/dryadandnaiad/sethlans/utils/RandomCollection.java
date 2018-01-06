@@ -38,7 +38,7 @@ public class RandomCollection<E> {
         this(new Random());
     }
 
-    public RandomCollection(Random random) {
+    private RandomCollection(Random random) {
         this.random = random;
     }
 

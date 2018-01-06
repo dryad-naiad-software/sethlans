@@ -253,6 +253,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                     nodeRandomCollection.add(sethlansNode.getCombinedCPUGPURating(), sethlansNode);
                 }
             }
+            LOG.debug("Sorted node list " + nodeRandomCollection.toString());
 
         } else {
             LOG.debug("Sorted List was empty.");
