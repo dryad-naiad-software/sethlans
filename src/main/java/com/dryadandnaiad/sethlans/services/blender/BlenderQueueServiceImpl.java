@@ -226,7 +226,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         Integer average = sum / sortedList.size();
 
         for (Integer rating : ratings) {
-            if (Math.abs(average - rating) > 15000) {
+            if (Math.abs(average - rating) > 18000) {
                 LOG.debug("Nodes are not equally powered, assigning a weight to each one in order of strength.");
                 return false;
             }
@@ -250,7 +250,13 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 }
             } else {
                 for (SethlansNode sethlansNode : sortedList) {
-                    nodeRandomCollection.add(sethlansNode.getCombinedCPUGPURating(), sethlansNode);
+                    if (nodesEquallyPowered(sortedList)) {
+                        nodeRandomCollection.add(sortedList.get(0).getCombinedCPUGPURating(), sethlansNode);
+                    } else {
+                        nodeRandomCollection.add(sethlansNode.getCombinedCPUGPURating(), sethlansNode);
+                        sortedList.remove(sethlansNode);
+                    }
+
                 }
             }
             LOG.debug("Sorted node list " + nodeRandomCollection.toString());

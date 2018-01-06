@@ -51,7 +51,7 @@ public class RandomCollection<E> {
 
     public E next() {
         double value = random.nextDouble() * total;
-        return map.lowerEntry(value).getValue();
+        return map.higherEntry(value).getValue();
     }
 
     @Override
