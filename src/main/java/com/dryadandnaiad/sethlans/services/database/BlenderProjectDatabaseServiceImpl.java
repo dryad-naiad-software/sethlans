@@ -82,6 +82,11 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
         blenderProjectRepository.delete(blenderProject);
     }
 
+    @Override
+    public void delete(BlenderProject blenderProject) {
+        blenderProjectRepository.delete(blenderProject);
+    }
+
     @Autowired
     public void setBlenderProjectRepository(BlenderProjectRepository blenderProjectRepository) {
         this.blenderProjectRepository = blenderProjectRepository;

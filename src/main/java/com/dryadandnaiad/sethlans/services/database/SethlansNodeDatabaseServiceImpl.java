@@ -94,6 +94,19 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
     }
 
     @Override
+    public List<SethlansNode> activeNodesRendering() {
+        List<SethlansNode> nodes = listAll();
+        List<SethlansNode> nodesRendering = new ArrayList<>();
+        for (SethlansNode node : nodes) {
+            if (node.isRendering() && node.isActive() && node.isBenchmarkComplete()) {
+                nodesRendering.add(node);
+
+            }
+        }
+        return nodesRendering;
+    }
+
+    @Override
     public boolean checkForDuplicatesAndSave(SethlansNode sethlansNode) {
         List<SethlansNode> storedNodes = listAll();
         List<SethlansNode> matchedNodes = new ArrayList<>();

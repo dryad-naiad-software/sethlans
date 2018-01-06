@@ -119,7 +119,6 @@ public class ProjectController extends AbstractSethlansController {
     public String deleteProject(@PathVariable Integer id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
         blenderProjectService.stopProject(blenderProject);
-        blenderProjectDatabaseService.delete(id);
         return "redirect:/project";
     }
 

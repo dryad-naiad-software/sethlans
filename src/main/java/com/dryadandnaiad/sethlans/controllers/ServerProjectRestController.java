@@ -19,11 +19,13 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.services.blender.BlenderProjectService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
@@ -70,6 +72,7 @@ public class ServerProjectRestController {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService;
+    private BlenderProjectService blenderProjectService;
 
     @RequestMapping(value = "/api/project/blender_binary", method = RequestMethod.GET)
     public void downloadBlenderBinary(HttpServletResponse response, @RequestParam String connection_uuid,
@@ -149,10 +152,12 @@ public class ServerProjectRestController {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         }
         if (!part.isEmpty()) {
+            File storedDir = null;
             BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(project_uuid);
             List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.queueItemsByProjectUUID(project_uuid);
             int projectTotalQueue = blenderRenderQueueItemList.size();
-            int remainingQueue = 0;
+            int remainingTotalQueue = 0;
+            int remainingPartsForFrame = 0;
             for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
                 if (blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() == frame_number &&
                         blenderRenderQueueItem.getBlenderFramePart().getPartNumber() == part_number) {
@@ -161,7 +166,7 @@ public class ServerProjectRestController {
                     blenderRenderQueueItem.setPaused(false);
                     blenderRenderQueueItem.getBlenderFramePart().setStoredDir(blenderProject.getProjectRootDir() +
                             File.separator + "frame_" + frame_number + File.separator);
-                    File storedDir = new File(blenderRenderQueueItem.getBlenderFramePart().getStoredDir());
+                    storedDir = new File(blenderRenderQueueItem.getBlenderFramePart().getStoredDir());
                     storedDir.mkdirs();
                     try {
                         byte[] bytes = part.getBytes();
@@ -179,16 +184,30 @@ public class ServerProjectRestController {
                 }
 
                 if (!blenderRenderQueueItem.isComplete()) {
-                    remainingQueue++;
+                    remainingTotalQueue++;
+                }
+                if (!blenderRenderQueueItem.isComplete() && blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() == frame_number) {
+                    remainingPartsForFrame++;
                 }
             }
-            LOG.debug("Remaining items in Queue " + remainingQueue);
+            for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
+                if (blenderFramePart.getFrameNumber() == frame_number) {
+                    blenderFramePart.setStoredDir(storedDir.toString() + File.separator);
+                }
+            }
+            LOG.debug("Remaining Parts per Frame for Frame " + frame_number + ": " + remainingPartsForFrame + " out of " + blenderProject.getPartsPerFrame());
+            LOG.debug("Remaining Items in Queue: " + remainingTotalQueue);
             LOG.debug("Project Total Queue " + projectTotalQueue);
-            double currentPercentage = ((projectTotalQueue - remainingQueue) * 100.0) / projectTotalQueue;
+            double currentPercentage = ((projectTotalQueue - remainingTotalQueue) * 100.0) / projectTotalQueue;
             LOG.debug("Current Percentage " + currentPercentage);
             blenderProject.setCurrentPercentage((int) currentPercentage);
-            if (remainingQueue == 0) {
-                blenderProject.setFinished(true);
+            if (remainingPartsForFrame == 0) {
+                if (blenderProjectService.combineParts(blenderProject, frame_number)) {
+                    if (remainingTotalQueue == 0) {
+                        blenderProject.setFinished(true);
+                        blenderProject.setAllImagesProcessed(true);
+                    }
+                }
             }
             blenderProjectDatabaseService.saveOrUpdate(blenderProject);
         }
@@ -233,5 +252,10 @@ public class ServerProjectRestController {
     @Autowired
     public void setBlenderRenderQueueDatabaseService(BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService) {
         this.blenderRenderQueueDatabaseService = blenderRenderQueueDatabaseService;
+    }
+
+    @Autowired
+    public void setBlenderProjectService(BlenderProjectService blenderProjectService) {
+        this.blenderProjectService = blenderProjectService;
     }
 }

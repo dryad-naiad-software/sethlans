@@ -36,4 +36,5 @@ public interface BlenderProjectService {
 
     void stopProject(BlenderProject blenderProject);
 
+    boolean combineParts(BlenderProject blenderProject, int frameNumber);
 }

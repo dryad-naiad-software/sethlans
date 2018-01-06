@@ -160,8 +160,29 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         return false;
     }
 
-    public boolean pauseRenderQueueforProject(BlenderProject blenderProject) {
-        return false;
+    @Override
+    public void pauseRenderQueueforProject(BlenderProject blenderProject) {
+        List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.queueItemsByProjectUUID(blenderProject.getProject_uuid());
+        List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.activeNodesRendering();
+        for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
+            blenderRenderQueueItem.setPaused(true);
+            for (SethlansNode sethlansNode : sethlansNodeList) {
+                if (sethlansNode.getConnection_uuid().equals(blenderRenderQueueItem.getConnection_uuid())) {
+                    sethlansNode.setRendering(false);
+                    sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                }
+            }
+            blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+
+        }
+    }
+
+    @Override
+    public void deleteRenderQueueforProject(BlenderProject blenderProject) {
+        List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.queueItemsByProjectUUID(blenderProject.getProject_uuid());
+        for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
+            blenderRenderQueueDatabaseService.delete(blenderRenderQueueItem);
+        }
     }
 
     public boolean resumeRenderQueueforProject(BlenderProject blenderProject) {

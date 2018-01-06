@@ -33,4 +33,6 @@ public interface BlenderProjectDatabaseService extends CRUDService<BlenderProjec
     BlenderProject getByProjectUUID(String projectUUID);
 
     BlenderProject saveOrUpdateProjectForm(ProjectForm projectForm);
+
+    void delete(BlenderProject blenderProject);
 }

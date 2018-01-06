@@ -32,5 +32,9 @@ public interface BlenderQueueService {
     @Async
     void startQueue();
 
+    void pauseRenderQueueforProject(BlenderProject blenderProject);
+
+    void deleteRenderQueueforProject(BlenderProject blenderProject);
+
     void populateRenderQueue(BlenderProject blenderProject);
 }

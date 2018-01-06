@@ -72,6 +72,11 @@ public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueue
     }
 
     @Override
+    public void delete(BlenderRenderQueueItem blenderRenderQueueItem) {
+        blenderRenderQueueRepository.delete(blenderRenderQueueItem);
+    }
+
+    @Override
     public List<BlenderRenderQueueItem> queueItemsByConnectionUUID(String connection_uuid) {
         List<BlenderRenderQueueItem> blenderRenderQueueItemList = listAll();
         List<BlenderRenderQueueItem> sortedList = new ArrayList<>();
