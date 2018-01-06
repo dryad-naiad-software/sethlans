@@ -215,7 +215,8 @@
                        th:if="${project.isStarted() and !project.isFinished()}" href="#">Pause</a>
                     <br th:if="${project.isStarted() and !project.isFinished()}"/>
                     <a th:id="'projectDownloadLink-' + ${project.getId()}"
-                       th:if="${project.isFinished() and project.isAllImagesProcessed()}" href="#">Download</a>
+                       th:if="${project.isFinished() and project.isAllImagesProcessed()}"
+                       th:href="${'/project/download/' + project.getId()}" href="#">Download</a>
                     <span th:id="'projectDownloadLinkDisabled-' + ${project.getId()}"
                           th:if="${project.isFinished() and !project.isAllImagesProcessed()}">Download</span>
                     <br th:if="${project.isFinished()}"/>

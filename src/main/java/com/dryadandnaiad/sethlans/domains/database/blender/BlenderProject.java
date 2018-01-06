@@ -37,27 +37,28 @@ import java.util.List;
  */
 @Entity
 public class BlenderProject extends AbstractEntityClass {
-    private String projectName;
     private RenderOutputFormat renderOutputFormat;
     private ProjectType projectType;
+    private BlenderEngine blenderEngine;
+    private ComputeType renderOn;
     private int startFrame;
     private int endFrame;
     private int stepFrame;
     private int samples;
-    private BlenderEngine blenderEngine;
     private int resolutionX;
     private int resolutionY;
     private int resPercentage;
-    private ComputeType renderOn;
+    private int currentPercentage;
+    private int partsPerFrame;
+    private boolean started;
+    private boolean finished;
+    private boolean allImagesProcessed;
+    private boolean paused;
+    private String projectName;
     private String blendFilename;
     private String blendFileLocation;
     private String blenderVersion;
     private String currentFrameThumbnail;
-    private boolean started;
-    private boolean finished;
-    private int currentPercentage;
-    private int partsPerFrame;
-    private boolean allImagesProcessed;
     private String project_uuid;
     private String projectRootDir;
     @ElementCollection
@@ -275,6 +276,14 @@ public class BlenderProject extends AbstractEntityClass {
         this.frameFileNames = frameFileNames;
     }
 
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public void setPaused(boolean paused) {
+        this.paused = paused;
+    }
+
     @Override
     public String toString() {
         return "BlenderProject{" +
@@ -296,6 +305,7 @@ public class BlenderProject extends AbstractEntityClass {
                 ", currentFrameThumbnail='" + currentFrameThumbnail + '\'' +
                 ", started=" + started +
                 ", finished=" + finished +
+                ", paused=" + paused +
                 ", currentPercentage=" + currentPercentage +
                 ", partsPerFrame=" + partsPerFrame +
                 ", frameList=" + framePartList +

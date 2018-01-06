@@ -29,13 +29,13 @@ import com.dryadandnaiad.sethlans.services.blender.BlenderProjectService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -43,7 +43,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -88,7 +90,7 @@ public class ServerProjectRestController {
                     LOG.error("More files than expected, only one archive per os + version expected");
                 } else {
                     File blenderBinary = files[0];
-                    serveFile(blenderBinary, response);
+                    SethlansUtils.serveFile(blenderBinary, response);
                 }
             } else {
                 LOG.error("No files found.");
@@ -126,7 +128,7 @@ public class ServerProjectRestController {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
             File bmw27_cpu = new File(benchmarkDir + File.separator + "bmw27_cpu.blend");
-            serveFile(bmw27_cpu, response);
+            SethlansUtils.serveFile(bmw27_cpu, response);
 
         }
 
@@ -138,7 +140,7 @@ public class ServerProjectRestController {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
             File bmw27_gpu = new File(benchmarkDir + File.separator + "bmw27_gpu.blend");
-            serveFile(bmw27_gpu, response);
+            SethlansUtils.serveFile(bmw27_gpu, response);
         }
     }
 
@@ -220,24 +222,11 @@ public class ServerProjectRestController {
         } else {
             BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(project_uuid);
             File blend_file = new File(blenderProject.getBlendFileLocation());
-            serveFile(blend_file, response);
+            SethlansUtils.serveFile(blend_file, response);
         }
 
     }
 
-    private void serveFile(File file, HttpServletResponse response) {
-        try {
-            String mimeType = "application/octet-stream";
-            response.setContentType(mimeType);
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
-            response.setContentLength((int) file.length());
-            InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-            FileCopyUtils.copy(inputStream, response.getOutputStream());
-
-        } catch (IOException e) {
-            LOG.error(e.getMessage());
-        }
-    }
 
     @Autowired
     public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {

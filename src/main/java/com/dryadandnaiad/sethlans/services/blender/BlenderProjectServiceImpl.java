@@ -67,6 +67,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     @Override
     public void pauseProject(BlenderProject blenderProject) {
+        blenderQueueService.pauseRenderQueueforProject(blenderProject);
     }
 
     @Override
@@ -160,8 +161,6 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
             }
         }
-
-        blenderProject.setFrameFileNames(frameFileNames);
         blenderProject.setFramePartList(blenderFramePartList);
         LOG.debug("Project Frames configured \n" + blenderFramePartList);
         blenderProjectDatabaseService.saveOrUpdate(blenderProject);

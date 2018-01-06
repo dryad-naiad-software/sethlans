@@ -48,6 +48,7 @@ import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.*;
 import java.util.*;
@@ -77,7 +78,7 @@ public class ProjectController extends AbstractSethlansController {
 
 
     @RequestMapping("/project")
-    public String getPage(Model model) {
+    public String listProjects(Model model) {
         List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.listAll();
         List<SethlansNode> activeNodes = new ArrayList<>();
         Set<ComputeType> activeTypes = new HashSet<>();
@@ -138,12 +139,14 @@ public class ProjectController extends AbstractSethlansController {
     @RequestMapping("/project/pause/{id}")
     public String pauseProject(@PathVariable Integer id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
+        blenderProject.setPaused(true);
+        blenderProject = blenderProjectDatabaseService.saveOrUpdate(blenderProject);
         blenderProjectService.pauseProject(blenderProject);
         return "redirect:/project";
     }
 
     @RequestMapping("/project/edit/{id}")
-    public String edit(@PathVariable Integer id, Model model) {
+    public String editProject(@PathVariable Integer id, Model model) {
         getAvailableBlenderBinaries();
         BlenderProject project = blenderProjectDatabaseService.getById(id);
         ProjectForm projectForm = blenderProjectToProjectForm.convert(project);
@@ -155,6 +158,16 @@ public class ProjectController extends AbstractSethlansController {
         model.addAttribute("projectForm", projectForm);
         LOG.debug(projectForm.toString());
         return "project/project_form";
+    }
+
+    @RequestMapping(value = "/project/download/{id}")
+    public void downloadProject(@PathVariable Integer id, HttpServletResponse response) {
+        BlenderProject project = blenderProjectDatabaseService.getById(id);
+        if (project.getProjectType().equals(ProjectType.STILL_IMAGE)) {
+            File image = new File(project.getFrameFileNames().get(0));
+            SethlansUtils.serveFile(image, response);
+        }
+
     }
 
     @RequestMapping(value = "/project/new", method = RequestMethod.POST)
@@ -196,8 +209,6 @@ public class ProjectController extends AbstractSethlansController {
             LOG.debug(projectForm.toString());
             return "redirect:/project/view/" + savedProject.getId();
         }
-
-
         return "project/project_view";
 
     }

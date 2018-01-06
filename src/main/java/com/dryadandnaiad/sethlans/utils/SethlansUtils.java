@@ -37,7 +37,9 @@ import org.rauschig.jarchivelib.CompressionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.FileCopyUtils;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -467,6 +469,20 @@ public class SethlansUtils {
                 if (sethlansNode.getComputeType().equals(ComputeType.CPU_GPU)) {
                     listToSort.add(sethlansNode);
                 }
+        }
+    }
+
+    public static void serveFile(File file, HttpServletResponse response) {
+        try {
+            String mimeType = "application/octet-stream";
+            response.setContentType(mimeType);
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+            response.setContentLength((int) file.length());
+            InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+            FileCopyUtils.copy(inputStream, response.getOutputStream());
+
+        } catch (IOException e) {
+            LOG.error(e.getMessage());
         }
     }
 
