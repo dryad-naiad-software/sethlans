@@ -36,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -214,6 +215,28 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         }
     }
 
+    private boolean nodesEquallyPowered(List<SethlansNode> sortedList) {
+        List<Integer> ratings = new ArrayList<>();
+        Integer sum = 0;
+        for (SethlansNode sethlansNode : sortedList) {
+            ratings.add(sethlansNode.getCombinedCPUGPURating());
+            sum += sethlansNode.getCombinedGPURating();
+        }
+        Integer average = sum / sortedList.size();
+
+        for (Integer rating : ratings) {
+            if (Math.abs(average - rating) > 15000) {
+                LOG.debug("Nodes are not equally powered, assigning a weight to each one in order of strength.");
+                return false;
+            }
+
+
+        }
+        LOG.debug("Nodes are equally powered, assigning the same weight to all");
+        return true;
+
+    }
+
     private RandomCollection<SethlansNode> getRandomWeightedNode(BlenderProject blenderProject) {
         RandomCollection<SethlansNode> nodeRandomCollection = new RandomCollection<>();
         List<SethlansNode> sortedList =
@@ -221,55 +244,30 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         if (sortedList != null) {
             double weight = sortedList.size();
             LOG.debug("Sorted List " + sortedList.toString());
-            for (int i = 0; i < sortedList.size(); i++) {
-                if (i == 0) {
-                    nodeRandomCollection.add(weight, sortedList.get(i));
-                } else {
-                    weight = weight * 0.75;
-                    nodeRandomCollection.add(weight, sortedList.get(i));
+            if (nodesEquallyPowered(sortedList)) {
+                for (SethlansNode sethlansNode : sortedList) {
+                    nodeRandomCollection.add(weight, sethlansNode);
+                }
+            } else {
+                for (int i = 0; i < sortedList.size(); i++) {
+                    if (i == 0) {
+                        nodeRandomCollection.add(weight, sortedList.get(i));
+                    } else {
+                        weight = weight * 0.75;
+                        nodeRandomCollection.add(weight, sortedList.get(i));
+                    }
                 }
             }
+
+        } else {
+            LOG.debug("Sorted List was empty.");
         }
-        LOG.debug("Sorted List was empty.");
+
 
         return nodeRandomCollection;
     }
 
-    private SethlansNode selectNodeToRenderWith(ComputeType computeType) {
-        List<SethlansNode> sethlansNodes = sethlansNodeDatabaseService.listAll();
-        SethlansNode selectedRenderNode;
-        if (!computeType.equals(ComputeType.CPU_GPU)) {
-            selectedRenderNode = SethlansUtils.getFastestFreeNode(sethlansNodes, computeType);
-        } else {
-            SethlansNode cpuNode = SethlansUtils.getFastestFreeNode(sethlansNodes, ComputeType.CPU);
-            SethlansNode gpuNode = SethlansUtils.getFastestFreeNode(sethlansNodes, ComputeType.GPU);
-            if (gpuNode == null) {
-                return selectedRenderNode = cpuNode;
-            }
-            if (cpuNode == null) {
-                return selectedRenderNode = gpuNode;
-            }
-            int gpuValue = gpuNode.getCombinedGPURating();
-            int cpuValue = cpuNode.getCpuRating();
-            if (cpuValue > gpuValue) {
-                selectedRenderNode = gpuNode;
-            } else if (cpuValue < gpuValue) {
-                selectedRenderNode = cpuNode;
 
-            } else {
-                // If both CPU and GPU are equal, default to CPU node(generally has more memory able to handle bigger renders.)
-                selectedRenderNode = cpuNode;
-            }
-
-        }
-        if (selectedRenderNode != null) {
-            return selectedRenderNode;
-        } else {
-            return null;
-        }
-
-
-    }
 
     @Autowired
     public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {
