@@ -140,12 +140,22 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             } catch (IOException e) {
                 LOG.error(Throwables.getStackTraceAsString(e));
             }
-            sendResultsToServer(benchmarkTask.getConnection_uuid(), benchmarkTask);
+            while (true) {
+                if (sendResultsToServer(benchmarkTask.getConnection_uuid(), benchmarkTask)) {
+                    break;
+                }
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    LOG.error(Throwables.getStackTraceAsString(e));
+                }
+            }
+
         }
 
     }
 
-    private void sendResultsToServer(String connectionUUID, BlenderBenchmarkTask blenderBenchmarkTask) {
+    private boolean sendResultsToServer(String connectionUUID, BlenderBenchmarkTask blenderBenchmarkTask) {
         SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connectionUUID);
         boolean complete;
         LOG.debug("Remaining benchmarks to process: " + remainingBenchmarks);
@@ -160,7 +170,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             params = "connection_uuid=" + sethlansServer.getConnection_uuid() + "&rating=" + blenderBenchmarkTask.getGpuRating() + "&cuda_name=" + blenderBenchmarkTask.getCudaName() + "&compute_type=" +
                     blenderBenchmarkTask.getComputeType() + "&complete=" + complete;
         }
-        sethlansAPIConnectionService.sendToRemotePOST(serverUrl, params);
+        return sethlansAPIConnectionService.sendToRemotePOST(serverUrl, params);
     }
 
 

@@ -160,15 +160,24 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             blenderRenderTask.setInProgress(false);
             blenderRenderTask.setComplete(true);
             blenderRenderTask = blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
-            if (sendResultsToServer(blenderRenderTask.getConnection_uuid(), blenderRenderTask)) {
+            while (true) {
+                if (sendResultsToServer(blenderRenderTask.getConnection_uuid(), blenderRenderTask)) {
+                    try {
+                        LOG.debug("Cleaning up " + blenderRenderTask.getRenderDir());
+                        FileUtils.deleteDirectory(new File(blenderRenderTask.getRenderDir()));
+                        blenderRenderTaskDatabaseService.delete(blenderRenderTask);
+                        break;
+                    } catch (IOException e) {
+                        LOG.error(Throwables.getStackTraceAsString(e));
+                    }
+                }
                 try {
-                    LOG.debug("Cleaning up " + blenderRenderTask.getRenderDir());
-                    FileUtils.deleteDirectory(new File(blenderRenderTask.getRenderDir()));
-                    blenderRenderTaskDatabaseService.delete(blenderRenderTask);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    LOG.error(Throwables.getStackTraceAsString(e));
                 }
             }
+
 
         }
     }
