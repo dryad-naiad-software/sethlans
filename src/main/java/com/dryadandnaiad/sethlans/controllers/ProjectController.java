@@ -32,12 +32,15 @@ import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseServic
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -46,6 +49,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -123,8 +127,10 @@ public class ProjectController extends AbstractSethlansController {
     }
 
     @RequestMapping("/project/start/{id}")
-    public String startProject(@PathVariable Integer id, Model model) {
+    public String startProject(@PathVariable Integer id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
+        blenderProject.setStarted(true);
+        blenderProject = blenderProjectDatabaseService.saveOrUpdate(blenderProject);
         blenderProjectService.startProject(blenderProject);
         return "redirect:/project";
     }
@@ -204,6 +210,22 @@ public class ProjectController extends AbstractSethlansController {
                 availableBlenderBinaries.add(blenderBinary);
             }
         }
+    }
+
+    @RequestMapping("/project/thumbnail/{id}")
+    public ResponseEntity<byte[]> getThumbnailImage(@PathVariable Integer id) {
+        BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
+        File image = new File(blenderProject.getCurrentFrameThumbnail());
+        try {
+            InputStream in = new BufferedInputStream(new FileInputStream(image));
+            byte[] imageToSend = IOUtils.toByteArray(in);
+            if (blenderProject.getCurrentFrameThumbnail().contains("png")) {
+                return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(imageToSend);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 

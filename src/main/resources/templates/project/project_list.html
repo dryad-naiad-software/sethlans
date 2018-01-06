@@ -168,7 +168,12 @@
             <!--/*@thymesVar id="projects" type="java.util.List"*/-->
             <!--/*@thymesVar id="project" type="com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject"*/-->
             <tr th:each="project : ${projects}">
-                <td><img src="../../images/placeholder.svg" th:src="@{/images/placeholder.svg}" height="60"/></td>
+                <td><img src="../../images/placeholder.svg"
+                         th:if="${#strings.isEmpty(project.getCurrentFrameThumbnail())}"
+                         th:src="@{/images/placeholder.svg}" height="60"/>
+                    <img th:src="'/project/thumbnail/' + ${project.getId()}"
+                         th:unless="${#strings.isEmpty(project.getCurrentFrameThumbnail())}"/>
+                </td>
                 <td th:id="'projectName-' + ${project.getId()}"
                     th:text="${project.getProjectName()}">Test
                 </td>
