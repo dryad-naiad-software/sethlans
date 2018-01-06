@@ -215,6 +215,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         }
     }
 
+
     private boolean nodesEquallyPowered(List<SethlansNode> sortedList) {
         List<Integer> ratings = new ArrayList<>();
         Integer sum = 0;
@@ -242,20 +243,14 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         List<SethlansNode> sortedList =
                 SethlansUtils.getFastestNodes(sethlansNodeDatabaseService.listAll(), blenderProject.getRenderOn());
         if (sortedList != null) {
-            double weight = sortedList.size();
             LOG.debug("Sorted List " + sortedList.toString());
             if (nodesEquallyPowered(sortedList)) {
                 for (SethlansNode sethlansNode : sortedList) {
-                    nodeRandomCollection.add(weight, sethlansNode);
+                    nodeRandomCollection.add(sortedList.size(), sethlansNode);
                 }
             } else {
-                for (int i = 0; i < sortedList.size(); i++) {
-                    if (i == 0) {
-                        nodeRandomCollection.add(weight, sortedList.get(i));
-                    } else {
-                        weight = weight * 0.75;
-                        nodeRandomCollection.add(weight, sortedList.get(i));
-                    }
+                for (SethlansNode sethlansNode : sortedList) {
+                    nodeRandomCollection.add(sethlansNode.getCombinedCPUGPURating(), sethlansNode);
                 }
             }
 
