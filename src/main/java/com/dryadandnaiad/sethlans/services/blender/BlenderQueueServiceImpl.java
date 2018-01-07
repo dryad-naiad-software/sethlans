@@ -28,7 +28,6 @@ import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseServic
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
-import com.dryadandnaiad.sethlans.utils.RandomCollection;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +58,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             Thread.sleep(12000);
 
             int count = 0;
+            int cycle = 20;
             //noinspection InfiniteLoopStatement
             while (true) {
                 try {
@@ -67,82 +67,82 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                         List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listAll();
                         for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
                             if (!blenderRenderQueueItem.isComplete() && !blenderRenderQueueItem.isRendering() && !blenderRenderQueueItem.isPaused()) {
-                                if (count == 20) {
-                                    LOG.debug(blenderRenderQueueItem.toString() + " is waiting to be rendered.");
-                                }
-                                SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid());
-                                if (sethlansNode.isActive() && !sethlansNode.isRendering()) {
-                                    LOG.debug("Sending " + blenderRenderQueueItem + " to " + sethlansNode.getHostname());
-                                    BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
-                                    ComputeType projectComputeType = blenderProject.getRenderOn();
+                                timedLog(count, cycle, blenderRenderQueueItem.toString() + " is waiting to be rendered.");
+                                ComputeType computeType = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid()).getRenderOn();
+                                SethlansNode sethlansNode = SethlansUtils.getFastestFreeNode(sethlansNodeDatabaseService.listAll(), computeType);
+                                if (sethlansNode != null) {
+                                    if (sethlansNode.isActive() && !sethlansNode.isRendering()) {
+                                        LOG.debug("Sending " + blenderRenderQueueItem + " to " + sethlansNode.getHostname());
+                                        BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
+                                        ComputeType projectComputeType = blenderProject.getRenderOn();
 
-                                    // If both the project and the node is CPU and GPU, use the method with the lowest rating.
-                                    if (sethlansNode.getComputeType().equals(ComputeType.CPU_GPU) && projectComputeType.equals(ComputeType.CPU_GPU)) {
-                                        if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating()) {
-                                            projectComputeType = ComputeType.GPU;
-                                        } else {
+                                        // If both the project and the node is CPU and GPU, use the method with the lowest rating.
+                                        if (sethlansNode.getComputeType().equals(ComputeType.CPU_GPU) && projectComputeType.equals(ComputeType.CPU_GPU)) {
+                                            if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating()) {
+                                                projectComputeType = ComputeType.GPU;
+                                            } else {
+                                                projectComputeType = ComputeType.CPU;
+                                            }
+                                        }
+
+                                        if (projectComputeType.equals(ComputeType.CPU_GPU) && sethlansNode.getComputeType().equals(ComputeType.CPU)) {
                                             projectComputeType = ComputeType.CPU;
                                         }
+
+                                        if (projectComputeType.equals(ComputeType.CPU_GPU) && sethlansNode.getComputeType().equals(ComputeType.GPU)) {
+                                            projectComputeType = ComputeType.GPU;
+                                        }
+
+                                        String connectionURL = "https://" + sethlansNode.getIpAddress() + ":" +
+                                                sethlansNode.getNetworkPort() + "/api/render/request";
+                                        String params = "project_name=" + blenderProject.getProjectName() +
+                                                "&connection_uuid=" + sethlansNode.getConnection_uuid() +
+                                                "&project_uuid=" + blenderProject.getProject_uuid() +
+                                                "&render_output_format=" + blenderProject.getRenderOutputFormat() +
+                                                "&samples=" + blenderProject.getSamples() +
+                                                "&blender_engine=" + blenderProject.getBlenderEngine() +
+                                                "&compute_type=" + projectComputeType +
+                                                "&blend_file=" + blenderProject.getBlendFilename() +
+                                                "&blender_version=" + blenderProject.getBlenderVersion() +
+                                                "&frame_filename=" + blenderRenderQueueItem.getBlenderFramePart().getFrameFileName() +
+                                                "&part_filename=" + blenderRenderQueueItem.getBlenderFramePart().getPartFilename() +
+                                                "&frame_number=" + blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() +
+                                                "&part_number=" + blenderRenderQueueItem.getBlenderFramePart().getPartNumber() +
+                                                "&part_resolution_x=" + blenderProject.getResolutionX() +
+                                                "&part_resolution_y=" + blenderProject.getResolutionY() +
+                                                "&part_position_min_y=" + blenderRenderQueueItem.getBlenderFramePart().getPartPositionMinY() +
+                                                "&part_position_max_y=" + blenderRenderQueueItem.getBlenderFramePart().getPartPositionMaxY() +
+                                                "&part_res_percentage=" + blenderProject.getResPercentage() +
+                                                "&file_extension=" + blenderRenderQueueItem.getBlenderFramePart().getFileExtension();
+
+
+                                        if (sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params)) {
+                                            blenderRenderQueueItem.setRendering(true);
+                                            sethlansNode.setRendering(true);
+                                            blenderProject.setStarted(true);
+                                            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+                                        }
+                                    } else if (!sethlansNode.isActive()) {
+                                        LOG.debug(sethlansNode.getHostname() + " no longer active, reassigning " + blenderRenderQueueItem.getBlenderFramePart() +
+                                                " to another node ");
+                                        ComputeType newComputeType = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid()).getRenderOn();
+                                        SethlansNode node = SethlansUtils.getFastestFreeNode(sethlansNodeDatabaseService.listAll(), newComputeType);
+                                        blenderRenderQueueItem.setConnection_uuid(node.getConnection_uuid());
                                     }
-
-                                    if (projectComputeType.equals(ComputeType.CPU_GPU) && sethlansNode.getComputeType().equals(ComputeType.CPU)) {
-                                        projectComputeType = ComputeType.CPU;
-                                    }
-
-                                    if (projectComputeType.equals(ComputeType.CPU_GPU) && sethlansNode.getComputeType().equals(ComputeType.GPU)) {
-                                        projectComputeType = ComputeType.GPU;
-                                    }
-
-                                    String connectionURL = "https://" + sethlansNode.getIpAddress() + ":" +
-                                            sethlansNode.getNetworkPort() + "/api/render/request";
-                                    String params = "project_name=" + blenderProject.getProjectName() +
-                                            "&connection_uuid=" + sethlansNode.getConnection_uuid() +
-                                            "&project_uuid=" + blenderProject.getProject_uuid() +
-                                            "&render_output_format=" + blenderProject.getRenderOutputFormat() +
-                                            "&samples=" + blenderProject.getSamples() +
-                                            "&blender_engine=" + blenderProject.getBlenderEngine() +
-                                            "&compute_type=" + projectComputeType +
-                                            "&blend_file=" + blenderProject.getBlendFilename() +
-                                            "&blender_version=" + blenderProject.getBlenderVersion() +
-                                            "&frame_filename=" + blenderRenderQueueItem.getBlenderFramePart().getFrameFileName() +
-                                            "&part_filename=" + blenderRenderQueueItem.getBlenderFramePart().getPartFilename() +
-                                            "&frame_number=" + blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() +
-                                            "&part_number=" + blenderRenderQueueItem.getBlenderFramePart().getPartNumber() +
-                                            "&part_resolution_x=" + blenderProject.getResolutionX() +
-                                            "&part_resolution_y=" + blenderProject.getResolutionY() +
-                                            "&part_position_min_y=" + blenderRenderQueueItem.getBlenderFramePart().getPartPositionMinY() +
-                                            "&part_position_max_y=" + blenderRenderQueueItem.getBlenderFramePart().getPartPositionMaxY() +
-                                            "&part_res_percentage=" + blenderProject.getResPercentage() +
-                                            "&file_extension=" + blenderRenderQueueItem.getBlenderFramePart().getFileExtension();
-
-
-                                    if (sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params)) {
-                                        blenderRenderQueueItem.setRendering(true);
-                                        sethlansNode.setRendering(true);
-                                        blenderProject.setStarted(true);
-                                        blenderProjectDatabaseService.saveOrUpdate(blenderProject);
-                                    }
-                                } else if (sethlansNode.isActive() && sethlansNode.isRendering()) {
-
-                                    if (count == 20) {
-                                        LOG.debug(sethlansNode.getHostname() + " is busy. Will attempt in next loop. " + blenderRenderQueueItem.getBlenderFramePart());
-                                    }
-                                } else if (!sethlansNode.isActive()) {
-                                    LOG.debug(sethlansNode.getHostname() + " no longer active, reassigning " + blenderRenderQueueItem.getBlenderFramePart() +
-                                            " to another node ");
-                                    RandomCollection<SethlansNode> randomWeightedNode =
-                                            getRandomWeightedNode(blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid()));
-                                    blenderRenderQueueItem.setConnection_uuid(randomWeightedNode.next().getConnection_uuid());
+                                } else {
+                                    timedLog(count, cycle, "All nodes are busy. Will attempt in next loop. " + blenderRenderQueueItem.getBlenderFramePart());
                                 }
                                 blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
                                 sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                             }
 
                         }
-                        if (count == 20) {
+                        // If the count has reached the limit, reset to 20 and resume loop
+                        if (count == cycle) {
                             count = 0;
+                        } else {
+                            count++;
                         }
-                        count++;
                     }
                     Thread.sleep(15000);
 
@@ -196,51 +196,24 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
 
     @Override
     public void populateRenderQueue(BlenderProject blenderProject) {
-        RandomCollection<SethlansNode> randomWeightedNode = getRandomWeightedNode(blenderProject);
-        if (randomWeightedNode.next() != null) {
             List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
             for (BlenderFramePart blenderFramePart : blenderFramePartList) {
                 BlenderRenderQueueItem blenderRenderQueueItem = new BlenderRenderQueueItem();
                 blenderRenderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
-
-                SethlansNode node = randomWeightedNode.next();
-                while (node == null) {
-                    node = randomWeightedNode.next();
-                }
-                String connectionuuid = node.getConnection_uuid();
-                blenderRenderQueueItem.setConnection_uuid(connectionuuid);
                 blenderRenderQueueItem.setComplete(false);
                 blenderRenderQueueItem.setPaused(false);
                 blenderRenderQueueItem.setBlenderFramePart(blenderFramePart);
                 blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
             }
             LOG.debug("Render Queue configured \n" + blenderRenderQueueDatabaseService.listPendingRender());
-        } else {
-            LOG.debug("No compatible rendering nodes found for this project.");
+    }
+
+    private void timedLog(int count, int cycle, String message) {
+        if (count == cycle) {
+            LOG.debug(message);
         }
     }
 
-
-    private RandomCollection<SethlansNode> getRandomWeightedNode(BlenderProject blenderProject) {
-        RandomCollection<SethlansNode> nodeRandomCollection = new RandomCollection<>();
-        List<SethlansNode> sortedList =
-                SethlansUtils.getFastestFreeNodes(sethlansNodeDatabaseService.listAll(), blenderProject.getRenderOn());
-        if (sortedList != null) {
-            LOG.debug("Sorted List " + sortedList.toString());
-            for (int i = 0; i < sortedList.size(); i++) {
-                LOG.debug("Current Node List " + sortedList);
-                    LOG.debug("Adding " + sortedList.get(i).getHostname() + " to weighted list using it's original rating.");
-                    nodeRandomCollection.add(sortedList.get(i).getCombinedCPUGPURating(), sortedList.get(i));
-                }
-            LOG.debug("Sorted node list " + nodeRandomCollection.toString());
-
-        } else {
-            LOG.debug("Sorted List was empty.");
-        }
-
-
-        return nodeRandomCollection;
-    }
 
 
     @Autowired
