@@ -189,6 +189,10 @@
                        data-slider-step="1"/>
             </div>
             <div class="form-group">
+                <label for="toggleParts">Split frame into parts for rendering</label>
+                <input type="checkbox" id="toggleParts" checked onchange="togglePart()">
+            </div>
+            <div class="form-group" id="partsGroup" style="display: block">
                 <style>.slider-selection {
                     background: #0C8DCE;
                 }</style>
@@ -226,6 +230,18 @@
                 });
                 selectEngine();
             };
+
+            function togglePart() {
+                if (document.getElementById("toggleParts").checked) {
+                    document.getElementById("partsGroup").style.display = 'block';
+                }
+                else {
+                    document.getElementById("partsGroup").style.display = 'none';
+                    document.getElementById("renderParts").value = 1;
+                }
+
+
+            }
 
             function readRadio() {
                 var typeValue = document.querySelector('input[name="projectType"]:checked').value;
