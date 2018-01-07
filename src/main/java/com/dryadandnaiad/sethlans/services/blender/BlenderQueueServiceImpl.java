@@ -58,12 +58,12 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             Thread.sleep(12000);
 
             int count = 0;
-            int cycle = 20;
+            int cycle = 24;
             //noinspection InfiniteLoopStatement
             while (true) {
                 try {
                     if (!sethlansNodeDatabaseService.listAll().isEmpty() || !blenderRenderQueueDatabaseService.listAll().isEmpty()) {
-                        LOG.debug("Processing Render Queue. Verbose status set for every 5 minutes.");
+                        LOG.debug("Processing Render Queue. Verbose messages every 2 minutes.");
                         List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listAll();
                         for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
                             if (!blenderRenderQueueItem.isComplete() && !blenderRenderQueueItem.isRendering() && !blenderRenderQueueItem.isPaused()) {
@@ -72,6 +72,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                 SethlansNode sethlansNode = SethlansUtils.getFastestFreeNode(sethlansNodeDatabaseService.listAll(), computeType);
                                 if (sethlansNode != null) {
                                     if (sethlansNode.isActive() && !sethlansNode.isRendering()) {
+                                        blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
                                         LOG.debug("Sending " + blenderRenderQueueItem + " to " + sethlansNode.getHostname());
                                         BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
                                         ComputeType projectComputeType = blenderProject.getRenderOn();
@@ -133,7 +134,9 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                     timedLog(count, cycle, "All nodes are busy. Will attempt in next loop. " + blenderRenderQueueItem.getBlenderFramePart());
                                 }
                                 blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
-                                sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                                if (sethlansNode != null) {
+                                    sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                                }
                             }
 
                         }
@@ -144,7 +147,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                             count++;
                         }
                     }
-                    Thread.sleep(15000);
+                    Thread.sleep(5000);
 
                 } catch (InterruptedException e) {
                     LOG.debug("Stopping Blender Queue Service");
@@ -153,6 +156,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
     }
 
     public boolean emptyRenderQueueforProject(BlenderProject blenderProject) {
@@ -196,16 +200,16 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
 
     @Override
     public void populateRenderQueue(BlenderProject blenderProject) {
-            List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
-            for (BlenderFramePart blenderFramePart : blenderFramePartList) {
-                BlenderRenderQueueItem blenderRenderQueueItem = new BlenderRenderQueueItem();
-                blenderRenderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
-                blenderRenderQueueItem.setComplete(false);
-                blenderRenderQueueItem.setPaused(false);
-                blenderRenderQueueItem.setBlenderFramePart(blenderFramePart);
-                blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
-            }
-            LOG.debug("Render Queue configured \n" + blenderRenderQueueDatabaseService.listPendingRender());
+        List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
+        for (BlenderFramePart blenderFramePart : blenderFramePartList) {
+            BlenderRenderQueueItem blenderRenderQueueItem = new BlenderRenderQueueItem();
+            blenderRenderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
+            blenderRenderQueueItem.setComplete(false);
+            blenderRenderQueueItem.setPaused(false);
+            blenderRenderQueueItem.setBlenderFramePart(blenderFramePart);
+            blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+        }
+        LOG.debug("Render Queue configured \n" + blenderRenderQueueDatabaseService.listPendingRender());
     }
 
     private void timedLog(int count, int cycle, String message) {
@@ -213,7 +217,6 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             LOG.debug(message);
         }
     }
-
 
 
     @Autowired
