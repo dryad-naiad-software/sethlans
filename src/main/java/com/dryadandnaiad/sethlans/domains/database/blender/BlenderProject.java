@@ -245,6 +245,7 @@ public class BlenderProject extends AbstractEntityClass {
 
     public int getTotalNumOfFrames() {
         int frameSum = (endFrame - startFrame) / stepFrame;
+        frameSum = frameSum + 1;
         if ((frameSum > 1)) {
             return frameSum;
         } else {
