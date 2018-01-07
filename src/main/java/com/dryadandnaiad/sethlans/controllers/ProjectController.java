@@ -177,6 +177,12 @@ public class ProjectController extends AbstractSethlansController {
 
     }
 
+    @RequestMapping("/project/details/{id}")
+    public String projectDetails(@PathVariable Integer id, Model model) {
+        model.addAttribute("project", blenderProjectDatabaseService.getById(id));
+        return "project/project_details";
+    }
+
     @RequestMapping(value = "/project/new", method = RequestMethod.POST)
     public String newProjectDetails(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm,BindingResult bindingResult, @RequestParam("projectFile")
             MultipartFile projectFile) {

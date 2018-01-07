@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-  ~ Copyright (c) 2017 Dryad and Naiad Software LLC.
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
   ~
   ~ This program is free software; you can redistribute it and/or
   ~ modify it under the terms of the GNU General Public License
@@ -17,7 +17,6 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
-
 <!-- Namespaces -->
 <html lang="en" class="layout-pf layout-pf-fixed" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
@@ -78,9 +77,13 @@
         }
     </style>
 
-    <title>Project Name</title>
+    <!--Favicon -->
+    <link rel="shortcut icon" href="../images/favicon.png" th:href="@{/images/favicon.png}">
+    <!--/*@thymesVar id="project" type="com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject"*/-->
+    <title th:text="${project.getProjectName()}">Project Name</title>
 </head>
 <body>
+
 
 <!-- Javascript Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"
@@ -104,20 +107,11 @@
 <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"
         th:src="@{/webjars/datatables/media/js/dataTables.bootstrap.min.js}"></script>
 
-
 <!-- Local Javascript-->
 <script>
     // Tooltip Javascript
     $(document).ready(function () {
         $('[data-toggle="tooltip"]').tooltip();
-    });
-</script>
-<script>
-    $(document).ready(function () {
-        $('.pop').on('click', function () {
-            $('.imagepreview').attr('src', $(this).find('img').attr('src'));
-            $('#imagemodal').modal('show');
-        });
     });
 </script>
 <!-- Page Javascript -->
@@ -127,12 +121,17 @@
 </nav>
 <!--/.navbar-->
 
-<div class="container">
-    <h2>Project Name</h2>
-    <h4><strong>Status: <span style="color: green;">Rendering</span> </strong></h4>
+<!--/*@thymesVar id="project" type="com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject"*/-->
+<div class="container" th:object="${project}">
+    <h2 id="projectName" th:text="${project.getProjectName()}">Project Name</h2>
+    <h4 id="projectStatus">
+        <strong>Status:
+            <span style="color: grey;" th:if="${!project.isStarted()}">Not Started</span>
+            <span style="color: blue;" th:if="${project.isStarted() and !project.isFinished()}">Rendering</span>
+            <span style="color: green;" th:if="${project.isFinished()}">Complete</span>
+        </strong>
+    </h4>
     <hr/>
-    <h4 class="page-header">Frames</h4>
-    <h4 class="page-header">Parts</h4>
 
     <div class="row">
         <div class="col-md-2">
@@ -155,110 +154,10 @@
                 </a>
             </div>
         </div>
-        <div class="col-md-2">
-            <div class="thumbnail">
-                <a class="pop" href="#">
-                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
-                    <div class="caption">
-                        <p>Part 03</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="thumbnail">
-                <a class="pop" href="#">
-                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
-                    <div class="caption">
-                        <p>Part 04</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="thumbnail">
-                <a class="pop" href="#">
-                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
-                    <div class="caption">
-                        <p>Part 05</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="thumbnail">
-                <a class="pop" href="#">
-                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
-                    <div class="caption">
-                        <p>Part 06</p>
-                    </div>
-                </a>
-            </div>
-        </div>
     </div>
-    <div class="row">
-        <div class="col-md-2">
-            <div class="thumbnail">
-                <a class="pop" href="#">
-                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
-                    <div class="caption">
-                        <p>Part 07</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="thumbnail">
-                <a class="pop" href="#">
-                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
-                    <div class="caption">
-                        <p>Part 08</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="thumbnail">
-                <a class="pop" href="#">
-                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
-                    <div class="caption">
-                        <p>Part 09</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="thumbnail">
-                <a class="pop" href="#">
-                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
-                    <div class="caption">
-                        <p>Part 10</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="thumbnail">
-                <a class="pop" href="#">
-                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
-                    <div class="caption">
-                        <p>Part 11</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="thumbnail">
-                <a class="pop" href="#">
-                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
-                    <div class="caption">
-                        <p>Part 12</p>
-                    </div>
-                </a>
-            </div>
-        </div>
 
-        <!-- Creates the bootstrap modal where the image will appear -->
+
+    <!-- Creates the bootstrap modal where the image will appear -->
         <div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
              aria-hidden="true">
             <div class="modal-dialog">
@@ -271,9 +170,7 @@
                 </div>
             </div>
         </div>
-    </div>
 </div>
-
 
 <!-- Footer Fragment -->
 <div class="content"></div>
@@ -302,11 +199,7 @@
         <p class="text-muted">Place sticky footer content here.</p>
     </div>
 </footer>
-<!-- Javascript Footers -->
 
-<!-- Javascript Libraries -->
-
-<!-- Page Javascript -->
 
 </body>
 </html>
