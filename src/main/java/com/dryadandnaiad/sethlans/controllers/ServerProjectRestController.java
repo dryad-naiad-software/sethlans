@@ -178,6 +178,7 @@ public class ServerProjectRestController {
                         Files.write(path, bytes);
                         SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
                         sethlansNode.setRendering(false);
+                        LOG.debug("Received completed render from " + sethlansNode.getHostname());
                         sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
 
                     } catch (IOException e) {

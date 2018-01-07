@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -73,10 +73,16 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
                     String ip = split[0];
                     String port = split[1];
                     SethlansNode newSethlansNode;
-                    newSethlansNode = discoverUnicastNode(ip, port);
-                    if (newSethlansNode != null) {
-                        sethlansNodeList.add(newSethlansNode);
+                    try {
+                        Thread.sleep(1000);
+                        newSethlansNode = discoverUnicastNode(ip, port);
+                        if (newSethlansNode != null) {
+                            sethlansNodeList.add(newSethlansNode);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
+
                 }
                 listComplete = true;
                 scanInProgress = false;

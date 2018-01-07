@@ -19,20 +19,23 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.NavigableMap;
 import java.util.Random;
 import java.util.TreeMap;
-
 /**
- * Created by Peter Lawrey on 6/20/11.
- * <p>
+ * Created Mario Estrella on 1/1/18.
+ * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
 public class RandomCollection<E> {
-    private final NavigableMap<Double, E> map = new TreeMap<Double, E>();
+    private final NavigableMap<Integer, E> map = new TreeMap<>();
     private final Random random;
-    private double total = 0;
+    private static final Logger LOG = LoggerFactory.getLogger(RandomCollection.class);
+    private int total = 0;
 
     public RandomCollection() {
         this(new Random());
@@ -42,15 +45,18 @@ public class RandomCollection<E> {
         this.random = random;
     }
 
-    public RandomCollection<E> add(double weight, E result) {
-        if (weight <= 0) return this;
-        total += weight;
-        map.put(total, result);
+    public RandomCollection<E> add(int benchmark, E result) {
+        map.put(benchmark, result);
         return this;
     }
 
     public E next() {
-        double value = random.nextDouble() * total;
+        int maximum = map.lastKey();
+        int minimum = map.firstKey() + 1000;
+        int value = random.nextInt((maximum - minimum) + 1) + minimum + total;
+        total = value / 2;
+        LOG.debug("Random Value :" + value);
+        LOG.debug("Total :" + total);
         return map.lowerEntry(value).getValue();
     }
 

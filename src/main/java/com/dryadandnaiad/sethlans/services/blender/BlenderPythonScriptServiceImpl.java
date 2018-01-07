@@ -114,8 +114,11 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             File script;
             if (selectedDeviceIds.size() == 1) {
                 script = new File(renderLocation + File.separator + "script-" + selectedDeviceIds.get(0) + ".py");
-            } else {
+            }
+            if (selectedDeviceIds.size() > 1) {
                 script = new File(renderLocation + File.separator + "script-MULTI_DEV.py");
+            } else {
+                script = new File(renderLocation + File.separator + "script-CPU.py");
             }
 
             FileWriter scriptWriter = new FileWriter(script);
@@ -132,6 +135,7 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             }
 
             // Set Device
+            scriptWriter.write("\n");
             scriptWriter.write("bpy.context.scene.cycles.device = " + "\"" + computeType + "\"" + "\n");
 
             if (computeType.equals(ComputeType.GPU)) {

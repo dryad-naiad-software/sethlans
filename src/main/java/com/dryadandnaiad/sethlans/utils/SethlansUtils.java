@@ -421,6 +421,22 @@ public class SethlansUtils {
 
     }
 
+    public static List<SethlansNode> getFastestFreeNodes(List<SethlansNode> nodeList, ComputeType computeType) {
+        List<SethlansNode> listToSort = new ArrayList<>();
+        for (SethlansNode sethlansNode : nodeList) {
+            if (!sethlansNode.isRendering() && sethlansNode.isBenchmarkComplete() && sethlansNode.isActive()) {
+                listofNodes(computeType, listToSort, sethlansNode);
+            }
+        }
+        LOG.debug("List to sort " + listToSort.toString());
+        if (sortedNodeList(computeType, listToSort)) {
+            return listToSort;
+        } else {
+            return null;
+        }
+
+    }
+
     private static boolean sortedNodeList(ComputeType computeType, List<SethlansNode> listToSort) {
         if (listToSort.size() > 0) {
             switch (computeType) {

@@ -36,7 +36,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -203,7 +202,13 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             for (BlenderFramePart blenderFramePart : blenderFramePartList) {
                 BlenderRenderQueueItem blenderRenderQueueItem = new BlenderRenderQueueItem();
                 blenderRenderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
-                blenderRenderQueueItem.setConnection_uuid(randomWeightedNode.next().getConnection_uuid());
+
+                SethlansNode node = randomWeightedNode.next();
+                while (node == null) {
+                    node = randomWeightedNode.next();
+                }
+                String connectionuuid = node.getConnection_uuid();
+                blenderRenderQueueItem.setConnection_uuid(connectionuuid);
                 blenderRenderQueueItem.setComplete(false);
                 blenderRenderQueueItem.setPaused(false);
                 blenderRenderQueueItem.setBlenderFramePart(blenderFramePart);
@@ -216,51 +221,17 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     }
 
 
-    private boolean nodesEquallyPowered(List<SethlansNode> sortedList) {
-        LOG.debug("Comparing node strength");
-        List<Integer> ratings = new ArrayList<>();
-        Integer sum = 0;
-        for (SethlansNode sethlansNode : sortedList) {
-            ratings.add(sethlansNode.getCombinedCPUGPURating());
-            sum += sethlansNode.getCombinedCPUGPURating();
-        }
-        Integer average = sum / sortedList.size();
-        LOG.debug("Node Average: " + average);
-
-        for (Integer rating : ratings) {
-            if (Math.abs(average - rating) > 18000) {
-                LOG.debug("Rating: " + rating);
-                LOG.debug("Difference: " + Math.abs(average - rating));
-                LOG.debug("Nodes are not equally powered, assigning a weight to each one in order of strength.");
-                return false;
-            }
-
-
-        }
-        LOG.debug("Nodes are equally powered, assigning the same weight to all");
-        return true;
-
-    }
-
     private RandomCollection<SethlansNode> getRandomWeightedNode(BlenderProject blenderProject) {
         RandomCollection<SethlansNode> nodeRandomCollection = new RandomCollection<>();
         List<SethlansNode> sortedList =
-                SethlansUtils.getFastestNodes(sethlansNodeDatabaseService.listAll(), blenderProject.getRenderOn());
+                SethlansUtils.getFastestFreeNodes(sethlansNodeDatabaseService.listAll(), blenderProject.getRenderOn());
         if (sortedList != null) {
             LOG.debug("Sorted List " + sortedList.toString());
             for (int i = 0; i < sortedList.size(); i++) {
                 LOG.debug("Current Node List " + sortedList);
-                if (nodesEquallyPowered(sortedList)) {
-                    LOG.debug("Adding " + sortedList.get(i).getHostname() + " to weighted list using equal values.");
-                    nodeRandomCollection.add(sortedList.get(0).getCombinedCPUGPURating(), sortedList.get(i));
-                } else {
                     LOG.debug("Adding " + sortedList.get(i).getHostname() + " to weighted list using it's original rating.");
                     nodeRandomCollection.add(sortedList.get(i).getCombinedCPUGPURating(), sortedList.get(i));
-                    sortedList.remove(sortedList.get(i));
-                    i--;
                 }
-            }
-
             LOG.debug("Sorted node list " + nodeRandomCollection.toString());
 
         } else {
