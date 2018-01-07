@@ -245,7 +245,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         String error;
         BlenderFramePart blenderFramePart = renderTask.getBlenderFramePart();
         try {
-            LOG.debug("Starting the render of " + renderTask.getProjectName() + ": Part: " + blenderFramePart.getPartNumber());
+            LOG.debug("Starting the render of " + renderTask.getProjectName() + " Frame " + blenderFramePart.getFrameNumber() + ": Part: " + blenderFramePart.getPartNumber());
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
             PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
