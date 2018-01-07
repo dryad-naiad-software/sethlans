@@ -196,8 +196,9 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         params.put("project_uuid", blenderRenderTask.getProject_uuid());
         params.put("part_number", Integer.toString(blenderRenderTask.getBlenderFramePart().getPartNumber()));
         params.put("frame_number", Integer.toString(blenderRenderTask.getBlenderFramePart().getFrameNumber()));
+        String renderedFileName = String.format("%04d", blenderRenderTask.getBlenderFramePart().getFrameNumber());
 
-        File result = new File(blenderRenderTask.getRenderDir() + File.separator + "0001" + "." + blenderRenderTask.getBlenderFramePart().getFileExtension());
+        File result = new File(blenderRenderTask.getRenderDir() + File.separator + renderedFileName + "." + blenderRenderTask.getBlenderFramePart().getFileExtension());
         return sethlansAPIConnectionService.uploadToRemotePOST(serverUrl, params, result);
     }
 

@@ -167,6 +167,13 @@ public class ProjectController extends AbstractSethlansController {
             File image = new File(project.getFrameFileNames().get(0));
             SethlansUtils.serveFile(image, response);
         }
+        if (project.getProjectType().equals(ProjectType.ANIMATION)) {
+            File zipFile = SethlansUtils.createArchive(project.getFrameFileNames(), project.getProjectRootDir(), project.getProjectName().toLowerCase());
+            if (zipFile != null) {
+                SethlansUtils.serveFile(zipFile, response);
+            }
+
+        }
 
     }
 

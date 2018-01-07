@@ -29,6 +29,8 @@ import com.google.common.hash.Hashing;
 import com.google.common.io.Files;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.util.Zip4jConstants;
 import org.apache.commons.lang3.SystemUtils;
 import org.rauschig.jarchivelib.ArchiveFormat;
 import org.rauschig.jarchivelib.Archiver;
@@ -159,6 +161,25 @@ public class SethlansUtils {
         }
         return availableMethods;
 
+    }
+
+    public static File createArchive(List<String> frameFileNames, String projectRootDir, String projectName) {
+        File createdArchive = null;
+        try {
+            ZipFile zipFile = new ZipFile(projectRootDir + File.separator + projectName + ".zip");
+            ZipParameters parameters = new ZipParameters();
+            parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+            parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_MAXIMUM);
+            for (String frameFileName : frameFileNames) {
+                File frame = new File(frameFileName);
+                zipFile.addFile(frame, parameters);
+            }
+            createdArchive = new File(projectRootDir + File.separator + projectName + ".zip");
+        } catch (ZipException e) {
+            LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+        }
+        return createdArchive;
     }
 
 
