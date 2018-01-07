@@ -217,16 +217,20 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
 
 
     private boolean nodesEquallyPowered(List<SethlansNode> sortedList) {
+        LOG.debug("Comparing node strength");
         List<Integer> ratings = new ArrayList<>();
         Integer sum = 0;
         for (SethlansNode sethlansNode : sortedList) {
             ratings.add(sethlansNode.getCombinedCPUGPURating());
-            sum += sethlansNode.getCombinedGPURating();
+            sum += sethlansNode.getCombinedCPUGPURating();
         }
         Integer average = sum / sortedList.size();
+        LOG.debug("Node Average: " + average);
 
         for (Integer rating : ratings) {
             if (Math.abs(average - rating) > 18000) {
+                LOG.debug("Rating: " + rating);
+                LOG.debug("Difference: " + Math.abs(average - rating));
                 LOG.debug("Nodes are not equally powered, assigning a weight to each one in order of strength.");
                 return false;
             }
@@ -244,21 +248,19 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 SethlansUtils.getFastestNodes(sethlansNodeDatabaseService.listAll(), blenderProject.getRenderOn());
         if (sortedList != null) {
             LOG.debug("Sorted List " + sortedList.toString());
-            if (nodesEquallyPowered(sortedList)) {
-                for (SethlansNode sethlansNode : sortedList) {
-                    nodeRandomCollection.add(sortedList.size(), sethlansNode);
-                }
-            } else {
-                for (SethlansNode sethlansNode : sortedList) {
-                    if (nodesEquallyPowered(sortedList)) {
-                        nodeRandomCollection.add(sortedList.get(0).getCombinedCPUGPURating(), sethlansNode);
-                    } else {
-                        nodeRandomCollection.add(sethlansNode.getCombinedCPUGPURating(), sethlansNode);
-                        sortedList.remove(sethlansNode);
-                    }
-
+            for (int i = 0; i < sortedList.size(); i++) {
+                LOG.debug("Current Node List " + sortedList);
+                if (nodesEquallyPowered(sortedList)) {
+                    LOG.debug("Adding " + sortedList.get(i).getHostname() + " to weighted list using equal values.");
+                    nodeRandomCollection.add(sortedList.get(0).getCombinedCPUGPURating(), sortedList.get(i));
+                } else {
+                    LOG.debug("Adding " + sortedList.get(i).getHostname() + " to weighted list using it's original rating.");
+                    nodeRandomCollection.add(sortedList.get(i).getCombinedCPUGPURating(), sortedList.get(i));
+                    sortedList.remove(sortedList.get(i));
+                    i--;
                 }
             }
+
             LOG.debug("Sorted node list " + nodeRandomCollection.toString());
 
         } else {
@@ -268,7 +270,6 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
 
         return nodeRandomCollection;
     }
-
 
 
     @Autowired

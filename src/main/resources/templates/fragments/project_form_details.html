@@ -169,7 +169,7 @@
 
             <div class="form-group">
 
-                <label>Resolution:
+                <label>Render Resolution:
                     <div class="form-inline">
                         <input type="number" th:field="${projectForm.resolutionX}" class="form-control form-inline">
                         <input type="number" th:field="${projectForm.resolutionY}" class="form-control form-inline">
@@ -181,7 +181,7 @@
                 <style>.slider-selection {
                     background: #0C8DCE;
                 }</style>
-                <label for="scaling">Final Image Scaling: &emsp; &emsp; </label>
+                <label for="scaling">Final Image Scaling Percentage: &emsp; &emsp; </label>
                 <input id="scaling" th:field="${projectForm.resPercentage}" type="number"
                        data-slider-min="1"
                        data-slider-max="100"
@@ -195,7 +195,7 @@
                 <label for="renderParts">Number of Rendering Parts per Frame: &emsp; &emsp; </label>
                 <input id="renderParts" th:field="${projectForm.partsPerFrame}" type="number"
                        data-slider-min="2"
-                       data-slider-max="16"
+                       data-slider-max="24"
                        th:attr="data-slider-value=${projectForm.getPartsPerFrame()}"
                        data-slider-step="2"/>
             </div>
