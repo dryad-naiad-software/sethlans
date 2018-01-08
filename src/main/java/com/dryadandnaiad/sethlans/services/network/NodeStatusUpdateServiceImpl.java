@@ -44,20 +44,6 @@ public class NodeStatusUpdateServiceImpl implements NodeStatusUpdateService {
     private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
     private static final Logger LOG = LoggerFactory.getLogger(NodeStatusUpdateServiceImpl.class);
 
-    @Override
-    @Async
-    public void backgroundRequests() {
-        //noinspection InfiniteLoopStatement
-        while (true) {
-            try {
-                Thread.sleep(600000);
-                nodeUpdatePullRequest();
-            } catch (InterruptedException e) {
-                LOG.debug("Stopping Node Status Update Service");
-            }
-
-        }
-    }
 
     @Async
     @Override
