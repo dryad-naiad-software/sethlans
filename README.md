@@ -48,7 +48,8 @@ Obtain the latest release from [here](https://github.com/dryad-naiad-software/se
 ![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/sethlans_dmg.png)
 
 - Copy the Sethlans package to the Applications directory.
-   ![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/sethlans_applications.png)
+   
+![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/sethlans_applications.png)
  
 - Attempting to execute Sethlans for the first time on newer Mac systems will give the following error.
  
