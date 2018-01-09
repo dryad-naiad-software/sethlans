@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.commands.ProjectForm;
 import com.dryadandnaiad.sethlans.converters.ProjectFormToBlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.repositories.BlenderProjectRepository;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,11 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
         List<BlenderProject> blenderProjects = new ArrayList<>();
         blenderProjectRepository.findAll().forEach(blenderProjects::add);
         return blenderProjects;
+    }
+
+    @Override
+    public List<BlenderProject> listAllReverse() {
+        return new ArrayList<>(Lists.reverse(listAll()));
     }
 
     @Override

@@ -11,9 +11,9 @@ Sethlans contains the following technologies:
  
  ## Getting Started
 ### Dependencies
- Sethlans **requires** the **Java 8** JRE, either Oracle Java or OpenJDK is supported.
+Sethlans **requires** the **Java 8** JRE, either Oracle Java or OpenJDK is supported.
  
- Aside from Java, ImageMagick must also be installed.  For Windows and macOS ImageMagick 7.0 has been tested extensively and is the preferred version to use.  For Linux most distributions install 6.9 and Sethlans has been written to work with 6.9 in Linux environments.
+Aside from Java, ImageMagick must also be installed.  For Windows and macOS ImageMagick 7.0 has been tested extensively and is the preferred version to use.  For Linux most distributions install 6.9 and Sethlans has been written to work with 6.9 in Linux environments.
 
 #### Installing ImageMagick dependencies
 ##### MacOS
@@ -48,4 +48,5 @@ Linux Install
 
 #### Initial Setup
 Once Sethlans has been started, navigate with your browser to https://localhost:7443
+
 This will start the Sethlans Setup Wizard.

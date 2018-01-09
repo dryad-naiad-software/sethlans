@@ -102,7 +102,7 @@ public class ProjectController extends AbstractSethlansController {
         LOG.debug("activetypes" + activeTypes.toString());
         getAvailableBlenderBinaries();
         model.addAttribute("availableBlenderBinaries", availableBlenderBinaries);
-        model.addAttribute("projects", blenderProjectDatabaseService.listAll());
+        model.addAttribute("projects", blenderProjectDatabaseService.listAllReverse());
         model.addAttribute("active_nodes", activeNodes);
         model.addAttribute("active_compute_types", activeTypes);
         return "project/project_list";

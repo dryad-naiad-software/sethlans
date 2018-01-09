@@ -22,6 +22,8 @@ package com.dryadandnaiad.sethlans.services.database;
 import com.dryadandnaiad.sethlans.commands.ProjectForm;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 
+import java.util.List;
+
 /**
  * Created Mario Estrella on 4/2/17.
  * Dryad and Naiad Software LLC
@@ -29,6 +31,8 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
  * Project: sethlans
  */
 public interface BlenderProjectDatabaseService extends CRUDService<BlenderProject> {
+
+    List<BlenderProject> listAllReverse();
 
     BlenderProject getByProjectUUID(String projectUUID);
 
