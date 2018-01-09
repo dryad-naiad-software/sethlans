@@ -1,3 +1,4 @@
+
 # Sethlans
 A local distributed render farm for Blender. https://www.blender.org
 
@@ -40,7 +41,19 @@ Fedora Core:
 ### Installation and Initial Setup
 Obtain the latest release from [here](https://github.com/dryad-naiad-software/sethlans/releases).
 
-macOS Install
+macOS:
+
+ 1. Download the Sethlans DMG and double click it.
+
+![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/sethlans_dmg.png)
+
+ 2. Copy the Sethlans package to the Applications directory.
+ 
+   ![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/sethlans_applications.png)
+ 
+ 3.  Attempting to execute Sethlans for the first time on newer Mac systems will give the following error.
+ 
+ ![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/gatekeeper.png)
 
 Windows Install
 
