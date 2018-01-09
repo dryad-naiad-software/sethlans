@@ -43,29 +43,39 @@ Obtain the latest release from [here](https://github.com/dryad-naiad-software/se
 
 ##### macOS
 
- 1. Download the Sethlans DMG and double click it.
+- Download the Sethlans DMG and double click it.
 
 ![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/sethlans_dmg.png)
 
- 2. Copy the Sethlans package to the Applications directory.
- 
+- Copy the Sethlans package to the Applications directory.
    ![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/sethlans_applications.png)
  
- 3.  Attempting to execute Sethlans for the first time on newer Mac systems will give the following error.
+- Attempting to execute Sethlans for the first time on newer Mac systems will give the following error.
  
- ![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/gatekeeper.png)
+  ![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/gatekeeper.png)
  
- 4. Navigate to Settings >> Security and Privacy.  You'll be presented with an option to open Sethlans.
+- Navigate to Settings >> Security and Privacy.  You'll be presented with an option to open Sethlans.
  
  ![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/security_and_privacy.png)
  
- 5. Sethlans will load an icon in the menu bar, this serves as a shortcut to the program while it's running.
+ - Sethlans will load an icon in the menu bar, this serves as a shortcut to the program while it's running.
 
 ![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/sethlans_link.png)
 
 ##### Windows
+- Download the Sethlans EXE file and run it.
+- Recent versions of Windows might prompt the following error. Expand the window and select Run anyway.
 
-Linux Install
+![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/sethlans_windows_defender.png)
+- In the Windows System tray, the Sethlans icon will appear.
+
+![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/sethlans_windows.png)
+
+- Right click, this serves as an interface to the program while it is running.
+
+![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/sethlans_windows_open.png)
+
+##### Linux
 
 #### Initial Setup
 Once Sethlans has been started, navigate with your browser to https://localhost:7443
