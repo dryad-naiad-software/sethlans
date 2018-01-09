@@ -1,4 +1,5 @@
 
+
 # Sethlans
 A local distributed render farm for Blender. https://www.blender.org
 
@@ -78,8 +79,15 @@ Obtain the latest release from [here](https://github.com/dryad-naiad-software/se
 
 ##### Linux
 - Linux installation is simple.  Download the Sethlans JAR file and run the following from a terminal.
-java -jar Sethlans-X.XX.jar 
 
+		java -jar Sethlans-X.X.X.jar
+
+![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/linux_terminal.png)
+
+The console will start Sethlans.  Once the following lines are displayed you can initiate setup.
+
+		Tomcat started on port(s): 7443 (https)
+		Started Sethlans in 11.994 seconds (JVM running for 12.77)
 
 #### Initial Setup
 Once Sethlans has been started, navigate with your browser to https://localhost:7443
