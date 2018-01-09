@@ -77,6 +77,9 @@ Obtain the latest release from [here](https://github.com/dryad-naiad-software/se
 ![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/sethlans_windows_open.png)
 
 ##### Linux
+- Linux installation is simple.  Download the Sethlans JAR file and run the following from a terminal.
+java -jar Sethlans-X.XX.jar 
+
 
 #### Initial Setup
 Once Sethlans has been started, navigate with your browser to https://localhost:7443
