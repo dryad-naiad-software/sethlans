@@ -49,11 +49,15 @@ macOS:
 
  2. Copy the Sethlans package to the Applications directory.
  
-   ![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/sethlans_applications.png)
+![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/sethlans_applications.png)
  
  3.  Attempting to execute Sethlans for the first time on newer Mac systems will give the following error.
  
- ![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/gatekeeper.png)
+![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/gatekeeper.png)
+ 
+ 4. Navigate to Settings >> Security and Privacy.  You'll be presented with an option to open Sethlans.
+
+![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/security_and_privacy.png)
 
 Windows Install
 
