@@ -27,7 +27,7 @@ ImageMagick has [several binaries for Windows](http://www.imagemagick.org/script
 https://www.imagemagick.org/download/binaries/ImageMagick-7.0.7-19-Q16-x64-dll.exe
  
 ##### Linux
-Both Ubuntu 17.10 and Fedora Core 27 were used for testing.  These systems are still using ImageMagick 6.9 and the Sethlans takes this into account.  Obtain the latest version of ImageMagick using your package manager. 
+Both Ubuntu 17.10 and Fedora Core 27 were used for testing.  These systems are still using ImageMagick 6.9 and Sethlans takes this into account.  Obtain the latest version of ImageMagick using your package manager. 
 
 Ubuntu:
  
@@ -36,3 +36,16 @@ Ubuntu:
 Fedora Core:
 
     $ sudo dnf install ImageMagick
+
+### Installation and Initial Setup
+Obtain the latest release from [here](https://github.com/dryad-naiad-software/sethlans/releases).
+
+macOS Install
+
+Windows Install
+
+Linux Install
+
+#### Initial Setup
+Once Sethlans has been started, navigate with your browser to https://localhost:7443
+This will start the Sethlans Setup Wizard.
