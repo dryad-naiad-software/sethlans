@@ -207,7 +207,9 @@
         <h4>Render Progress</h4>
         <tr>
             <td class="col-md-6">Progress</td>
-            <td class="col-md-6"><span th:text="${project.getCurrentPercentage()}">0</span>% Complete</td>
+            <td id="currentPercentage" class="col-md-6"><span th:text="${project.getCurrentPercentage()}">0</span>%
+                Complete
+            </td>
         </tr>
         <tr>
             <td>Details</td>
