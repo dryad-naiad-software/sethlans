@@ -41,7 +41,7 @@ Fedora Core:
 ### Installation and Initial Setup
 Obtain the latest release from [here](https://github.com/dryad-naiad-software/sethlans/releases).
 
-macOS:
+##### macOS
 
  1. Download the Sethlans DMG and double click it.
 
@@ -49,17 +49,21 @@ macOS:
 
  2. Copy the Sethlans package to the Applications directory.
  
-![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/sethlans_applications.png)
+   ![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/sethlans_applications.png)
  
  3.  Attempting to execute Sethlans for the first time on newer Mac systems will give the following error.
  
-![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/gatekeeper.png)
+ ![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/gatekeeper.png)
  
  4. Navigate to Settings >> Security and Privacy.  You'll be presented with an option to open Sethlans.
+ 
+ ![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/security_and_privacy.png)
+ 
+ 5. Sethlans will load an icon in the menu bar, this serves as a shortcut to the program while it's running.
 
-![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/security_and_privacy.png)
+![](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/sethlans_link.png)
 
-Windows Install
+##### Windows
 
 Linux Install
 
