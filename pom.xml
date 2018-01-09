@@ -24,7 +24,7 @@
 
     <groupId>com.dryadandnaiad</groupId>
     <artifactId>Sethlans</artifactId>
-    <version>0.5.0</version>
+    <version>0.6.0</version>
     <packaging>jar</packaging>
 
     <name>Sethlans</name>
