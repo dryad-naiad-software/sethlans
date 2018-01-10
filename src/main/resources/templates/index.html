@@ -121,74 +121,54 @@
 <!-- Page Javascript -->
 <!-- Nav Bar Fragment -->
 <nav class="navbar navbar-pf-vertical" th:replace="fragments/nav :: navbar">
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggle">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-        <a href="/" class="navbar-brand">
-            <img class="navbar-brand-icon" src="//assets/img/logo-alt.svg" alt=""/><img class="navbar-brand-name"
-                                                                                        src="//assets/img/brand-alt.svg"
-                                                                                        alt="PatternFly Enterprise Application"/>
-        </a>
-    </div>
-    <nav class="collapse navbar-collapse">
-        <ul class="nav navbar-nav">
-            <li><a href="#" target="_blank" class="nav-item-iconic nav-item-iconic-new-window"><span title="Launch"
-                                                                                                     class="fa fa-external-link"></span></a>
-            </li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right navbar-iconic">
-            <li class="dropdown">
-                <a class="dropdown-toggle nav-item-iconic" id="notifications" data-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="true">
-                    <span title="Notifications" class="fa pficon-flag"></span>
-                    <span class="badge">2</span>
-                </a>
-                <div class="dropdown-menu infotip bottom-right">
-                    <div class="arrow"></div>
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                            <span class="i pficon pficon-info"></span> Modified Datasources ExampleDS
-                        </li>
-                        <li class="list-group-item">
-                            <span class="i pficon pficon-info"></span> Error: System Failure
-                        </li>
-                    </ul>
-                    <div class="footer">
-                        <a>Clear Messages</a>
-                    </div>
-                </div>
-            </li>
-            <li class="dropdown">
-                <a class="dropdown-toggle nav-item-iconic" id="dropdownMenu1" data-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="true">
-                    <span title="Help" class="fa pficon-help"></span>
-                    <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                    <li><a href="#">Help</a></li>
-                    <li><a href="#">About</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a class="dropdown-toggle nav-item-iconic" id="dropdownMenu2" data-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="true">
-                    <span title="Username" class="fa pficon-user"></span>
-                    <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                    <li><a href="#">Preferences</a></li>
-                    <li><a href="#">Logout</a></li>
-                </ul>
-            </li>
-        </ul>
-    </nav>
+
 </nav>
 <!--/.navbar-->
 
+<style>
+    .sidebarfont {
+        font-family: "Open Sans", Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        color: black;
+    }
+</style>
+<div class="container">
+    <div class="table-responsive col-md-3">
+        <br/>
+        <table class="table table-bordered table-hover">
+            <thead class="thead-default">
+            <tr>
+                <th>Main Menu</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <a id="home" style="color:black" class=" fa fa-home" href="/home">&emsp;
+                        <span class="sidebarfont">Home</span></a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a id="projects" style="color:black" class=" fa fa-list" href="/project">&emsp;
+                        <span class="sidebarfont">Projects</span></a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <a id="settings" style="color:black" class=" fa fa-gears" href="/settings">&emsp;
+                        <span class="sidebarfont">Settings</span></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-9">
+        <br/>
+
+
+    </div>
+</div>
 
 <!-- Footer Fragment -->
 <div class="content"></div>
