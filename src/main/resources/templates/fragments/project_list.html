@@ -110,45 +110,12 @@
         th:src="@{/webjars/datatables/media/js/dataTables.bootstrap.min.js}"></script>
 
 
-<!-- Local Javascript-->
-<script>
-    // Tooltip Javascript
-    $(document).ready(function () {
-        $('[data-toggle="tooltip"]').tooltip();
-    });
-</script>
-<script>
-    setTimeout(function () {
-        window.location.reload(1);
-    }, 15000);
-</script>
+<main th:fragment="project_list">
+    <h2>Projects </h2>
+    <!--/*@thymesVar id="projects" type="java.util.List"*/-->
+    <!--/*@thymesVar id="project" type="com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject"*/-->
+    <h2 th:if="${#lists.isEmpty(projects)}" style="text-align: center">No Projects Available</h2>
 
-<!-- Nav Bar Fragment -->
-<nav class="navbar navbar-pf-vertical" th:replace="fragments/nav :: navbar">
-
-
-</nav>
-<!--/.navbar-->
-
-<!--/*@thymesVar id="availableBlenderBinaries" type="java.util.List"*/-->
-<div class="container" th:object="${availableBlenderBinaries}">
-
-    <h2>Projects <a id="newProjectBtn" href="/project/new" class="btn btn-primary btn-lg pull-right">New Project</a>
-    </h2>
-    <script th:inline="javascript">
-        var listEmpty = /*[[${availableBlenderBinaries.isEmpty()}]]*/ true;
-        window.onload = function () {
-            if (listEmpty) {
-                document.getElementById("newProjectBtn").classList.add("disabled");
-            }
-        }
-    </script>
-
-    <br/>
-    <br/>
-    <div class="container">
-        <h2 th:if="${#lists.isEmpty(projects)}" style="text-align: center">No Projects Available</h2>
-    </div>
     <div class="table-responsive">
         <table id="projectTable" class="table table-striped">
             <thead>
@@ -165,8 +132,7 @@
             </thead>
 
             <tbody>
-            <!--/*@thymesVar id="projects" type="java.util.List"*/-->
-            <!--/*@thymesVar id="project" type="com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject"*/-->
+
             <tr th:each="project : ${projects}">
                 <td><img src="../../images/placeholder.svg"
                          th:if="${#strings.isEmpty(project.getCurrentFrameThumbnail())}"
@@ -245,35 +211,8 @@
             });
         });
     </script>
-</div>
+</main>
 
 
-<!-- Footer Fragment -->
-<div class="content"></div>
-<footer class="footer" th:replace="fragments/footer :: footer">
-    <style>
-        html {
-            position: relative;
-            min-height: 100%;
-        }
-
-        body {
-            /* Margin bottom by footer height */
-            margin-bottom: 60px;
-        }
-
-        .footer {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            /* Set the fixed height of the footer here */
-            height: 60px;
-            background-color: #000;
-        }
-    </style>
-    <div class="container">
-        <p class="text-muted">Place sticky footer content here.</p>
-    </div>
-</footer>
 </body>
 </html>

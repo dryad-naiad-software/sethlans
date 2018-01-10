@@ -64,7 +64,6 @@ import java.util.*;
 public class ProjectController extends AbstractSethlansController {
     private static final Logger LOG = LoggerFactory.getLogger(ProjectController.class);
     private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
-    private List<BlenderBinary> availableBlenderBinaries;
     private WebUploadService webUploadService;
     private BlenderParseBlendFileService blenderParseBlendFileService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
@@ -101,17 +100,18 @@ public class ProjectController extends AbstractSethlansController {
         }
         LOG.debug("activetypes" + activeTypes.toString());
         getAvailableBlenderBinaries();
-        model.addAttribute("availableBlenderBinaries", availableBlenderBinaries);
+        model.addAttribute("project_option", "list");
         model.addAttribute("projects", blenderProjectDatabaseService.listAllReverse());
         model.addAttribute("active_nodes", activeNodes);
         model.addAttribute("active_compute_types", activeTypes);
-        return "project/project_list";
+        return "project/projects";
     }
 
     @RequestMapping("/project/new")
     public String newProject(Model model) {
         model.addAttribute("projectForm", new ProjectForm());
-        return "project/project_form";
+        model.addAttribute("project_option", "project_form");
+        return "project/projects";
     }
 
     @RequestMapping("/project/view/{id}")
@@ -150,14 +150,15 @@ public class ProjectController extends AbstractSethlansController {
         getAvailableBlenderBinaries();
         BlenderProject project = blenderProjectDatabaseService.getById(id);
         ProjectForm projectForm = blenderProjectToProjectForm.convert(project);
-        projectForm.setAvailableBlenderBinaries(availableBlenderBinaries);
+        projectForm.setAvailableBlenderBinaries(getAvailableBlenderBinaries());
         projectForm.setAvailableBlenderVersions();
         if (projectForm.getProjectType().equals(ProjectType.STILL_IMAGE)) {
             projectForm.setEndFrame(200);
         }
         model.addAttribute("projectForm", projectForm);
+        model.addAttribute("project_option", "project_form");
         LOG.debug(projectForm.toString());
-        return "project/project_form";
+        return "project/projects";
     }
 
     @RequestMapping(value = "/project/download/{id}")
@@ -172,9 +173,7 @@ public class ProjectController extends AbstractSethlansController {
             if (zipFile != null) {
                 SethlansUtils.serveFile(zipFile, response);
             }
-
         }
-
     }
 
     @RequestMapping("/project/details/{id}")
@@ -184,8 +183,8 @@ public class ProjectController extends AbstractSethlansController {
     }
 
     @RequestMapping(value = "/project/new", method = RequestMethod.POST)
-    public String newProjectDetails(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm,BindingResult bindingResult, @RequestParam("projectFile")
-            MultipartFile projectFile) {
+    public String newProjectDetails(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm, BindingResult bindingResult,
+                                    @RequestParam("projectFile") MultipartFile projectFile, Model model) {
 
         if (bindingResult != null) {
             LOG.debug("New project with binding result.");
@@ -196,24 +195,26 @@ public class ProjectController extends AbstractSethlansController {
         projectForm.setUploadedFile(projectFile.getOriginalFilename());
         projectForm.setFileLocation(temp + uploadTag + "-" + projectFile.getOriginalFilename());
         projectForm.setBlendFile(blenderParseBlendFileService.parseBlendFile(projectForm.getFileLocation()));
-        projectForm.setAvailableBlenderBinaries(availableBlenderBinaries);
+        projectForm.setAvailableBlenderBinaries(getAvailableBlenderBinaries());
         projectForm.populateForm();
         projectForm.setAvailableBlenderVersions();
         LOG.debug(projectForm.toString());
-        return "project/project_form";
+        model.addAttribute("project_option", "project_form");
+        return "project/projects";
     }
 
     @RequestMapping(value = "/project/new/details", method = RequestMethod.POST)
-    public String projectSummary(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm, BindingResult bindingResult) {
+    public String projectSummary(final @Valid @ModelAttribute("projectForm") ProjectForm projectForm, BindingResult bindingResult, Model model) {
         projectFormValidator.validate(projectForm, bindingResult);
 
         if (bindingResult.hasErrors()) {
             LOG.debug(bindingResult.toString());
             projectForm.setProgress(ProjectFormProgress.DETAILS);
-            projectForm.setAvailableBlenderBinaries(availableBlenderBinaries);
+            projectForm.setAvailableBlenderBinaries(getAvailableBlenderBinaries());
             projectForm.setAvailableBlenderVersions();
             LOG.debug(projectForm.toString());
-            return "project/project_form";
+            model.addAttribute("project_option", "project_form");
+            return "project/projects";
         }
         LOG.debug(projectForm.toString());
         if (projectForm.getProgress() == ProjectFormProgress.FINISHED) {
@@ -226,15 +227,6 @@ public class ProjectController extends AbstractSethlansController {
 
     }
 
-    private void getAvailableBlenderBinaries() {
-        availableBlenderBinaries = new ArrayList<>();
-        List<BlenderBinary> databaseList = blenderBinaryDatabaseService.listAll();
-        for (BlenderBinary blenderBinary : databaseList) {
-            if (blenderBinary.isDownloaded()) {
-                availableBlenderBinaries.add(blenderBinary);
-            }
-        }
-    }
 
     @RequestMapping("/project/thumbnail/{id}")
     public ResponseEntity<byte[]> getThumbnailImage(@PathVariable Integer id) {
@@ -250,6 +242,18 @@ public class ProjectController extends AbstractSethlansController {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @ModelAttribute("availableBlenderBinaries")
+    public List<BlenderBinary> getAvailableBlenderBinaries() {
+        List<BlenderBinary> availableBlenderBinaries = new ArrayList<>();
+        List<BlenderBinary> databaseList = blenderBinaryDatabaseService.listAll();
+        for (BlenderBinary blenderBinary : databaseList) {
+            if (blenderBinary.isDownloaded()) {
+                availableBlenderBinaries.add(blenderBinary);
+            }
+        }
+        return availableBlenderBinaries;
     }
 
 

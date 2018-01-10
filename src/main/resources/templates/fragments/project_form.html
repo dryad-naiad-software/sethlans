@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-  ~ Copyright (c) 2017 Dryad and Naiad Software LLC.
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
   ~
   ~ This program is free software; you can redistribute it and/or
   ~ modify it under the terms of the GNU General Public License
@@ -105,40 +105,27 @@
 <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"
         th:src="@{/webjars/datatables/media/js/dataTables.bootstrap.min.js}"></script>
 
-<!-- Local Javascript-->
-<script>
-    // Tooltip Javascript
-    $(document).ready(function () {
-        $('[data-toggle="tooltip"]').tooltip();
-    });
-</script>
-<!-- Page Javascript -->
-<!-- Nav Bar Fragment -->
-<nav class="navbar navbar-pf-vertical" th:replace="fragments/nav :: navbar">
+<main th:fragment="project_form">
+    <!--/*@thymesVar id="projectForm" type="com.dryadandnaiad.sethlans.commands.ProjectForm"*/-->
+    <div th:switch="${projectForm.progress}">
+        <!-- Project Form Fragment -->
+        <div th:case="${T(com.dryadandnaiad.sethlans.enums.ProjectFormProgress).UPLOAD}"
+             th:include="fragments/project_form_upload :: project_form_upload">
 
+        </div>
+        <div th:case="${T(com.dryadandnaiad.sethlans.enums.ProjectFormProgress).DETAILS}"
+             th:include="fragments/project_form_details :: project_form_details">
 
-</nav>
-<!--/.navbar-->
+        </div>
 
-<!--/*@thymesVar id="projectForm" type="com.dryadandnaiad.sethlans.commands.ProjectForm"*/-->
-<div th:switch="${projectForm.progress}">
-    <!-- Project Form Fragment -->
-    <div th:case="${T(com.dryadandnaiad.sethlans.enums.ProjectFormProgress).UPLOAD}"
-         th:include="fragments/project_form_upload :: project_form_upload">
+        <div th:remove="all" class="container" style="max-width: 600px;">
+            <h2>Project</h2>
+            <p>Valid files are <strong>.blend</strong>, with packed textures, and <strong>ZIP files</strong>. <br/>
+                Use relative paths for all the files in the archive.<br/></p>
 
+        </div>
     </div>
-    <div th:case="${T(com.dryadandnaiad.sethlans.enums.ProjectFormProgress).DETAILS}"
-         th:include="fragments/project_form_details :: project_form_details">
-
-    </div>
-
-    <div th:remove="all" class="container" style="max-width: 600px;">
-        <h2>Project</h2>
-        <p>Valid files are <strong>.blend</strong>, with packed textures, and <strong>ZIP files</strong>. <br/>
-            Use relative paths for all the files in the archive.<br/></p>
-
-    </div>
-</div>
+</main>
 
 <!-- Footer Fragment -->
 <div class="content"></div>

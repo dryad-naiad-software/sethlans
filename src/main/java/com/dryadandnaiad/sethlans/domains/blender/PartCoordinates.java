@@ -25,7 +25,7 @@ package com.dryadandnaiad.sethlans.domains.blender;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class PartCoordinate {
+public class PartCoordinates {
 
     double min_y;
     double max_y;
@@ -48,7 +48,7 @@ public class PartCoordinate {
 
     @Override
     public String toString() {
-        return "PartCoordinate{" +
+        return "PartCoordinates{" +
                 "max_y=" + max_y +
                 ", min_y=" + min_y +
                 '}';

@@ -19,11 +19,10 @@
 
 package com.dryadandnaiad.sethlans.services.blender;
 
-import com.dryadandnaiad.sethlans.domains.blender.PartCoordinate;
+import com.dryadandnaiad.sethlans.domains.blender.PartCoordinates;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
-import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
@@ -50,7 +49,6 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private BlenderQueueService blenderQueueService;
-    private BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService;
 
     private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectServiceImpl.class);
 
@@ -145,7 +143,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     private void configureFrameList(BlenderProject blenderProject) {
         List<BlenderFramePart> blenderFramePartList = new ArrayList<>();
         List<String> frameFileNames = new ArrayList<>();
-        List<PartCoordinate> partCoordinateList = configurePartCoordinates(blenderProject.getPartsPerFrame());
+        List<PartCoordinates> partCoordinatesList = configurePartCoordinates(blenderProject.getPartsPerFrame());
         for (int i = 0; i < blenderProject.getTotalNumOfFrames(); i++) {
             frameFileNames.add(blenderProject.getProject_uuid() + "-" + (i + 1));
             for (int j = 0; j < blenderProject.getPartsPerFrame(); j++) {
@@ -154,8 +152,8 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
                 blenderFramePart.setFrameNumber(i + 1);
                 blenderFramePart.setPartNumber(j + 1);
                 blenderFramePart.setPartFilename(blenderFramePart.getFrameFileName() + "-part" + (j + 1));
-                blenderFramePart.setPartPositionMaxY(partCoordinateList.get(j).getMax_y());
-                blenderFramePart.setPartPositionMinY(partCoordinateList.get(j).getMin_y());
+                blenderFramePart.setPartPositionMaxY(partCoordinatesList.get(j).getMax_y());
+                blenderFramePart.setPartPositionMinY(partCoordinatesList.get(j).getMin_y());
                 blenderFramePart.setFileExtension(blenderProject.getRenderOutputFormat().name().toLowerCase());
                 blenderFramePartList.add(blenderFramePart);
 
@@ -167,8 +165,8 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     }
 
-    private List<PartCoordinate> configurePartCoordinates(int partsPerFrame) {
-        List<PartCoordinate> partCoordinateList = new ArrayList<>();
+    private List<PartCoordinates> configurePartCoordinates(int partsPerFrame) {
+        List<PartCoordinates> partCoordinatesList = new ArrayList<>();
         Integer parts = partsPerFrame;
         Double upperLimit = 1.0;
         Double difference = upperLimit / parts;
@@ -181,17 +179,17 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
             if (i == parts - 1) {
                 endingPoint = 0.0;
             }
-            PartCoordinate partCoordinate = new PartCoordinate();
-            partCoordinate.setMax_y(startingPoint);
-            partCoordinate.setMin_y(endingPoint);
-            partCoordinateList.add(partCoordinate);
+            PartCoordinates partCoordinates = new PartCoordinates();
+            partCoordinates.setMax_y(startingPoint);
+            partCoordinates.setMin_y(endingPoint);
+            partCoordinatesList.add(partCoordinates);
             startingPoint = endingPoint;
             LOG.debug("Ending Point " + endingPoint);
 
         }
-        LOG.debug("Part Coordinate List generated \n" + partCoordinateList);
+        LOG.debug("Part Coordinate List generated \n" + partCoordinatesList);
 
-        return partCoordinateList;
+        return partCoordinatesList;
     }
 
     private String createThumbnail(String frameImage, String directory, String frameFilename, String fileExtension) {
@@ -248,8 +246,4 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         this.blenderQueueService = blenderQueueService;
     }
 
-    @Autowired
-    public void setBlenderRenderQueueDatabaseService(BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService) {
-        this.blenderRenderQueueDatabaseService = blenderRenderQueueDatabaseService;
-    }
 }
