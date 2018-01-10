@@ -40,7 +40,7 @@ Fedora Core:
 
 Sethlans uses the following terminology to describe it's functions.
 
-####Mode
+#### Mode
 - **Server:** Creation of render projects, management of render queues.
 - **Node:** Receives rendering tasks from the server, returns finished products 
 back to the server.
