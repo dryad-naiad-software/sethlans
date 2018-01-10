@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-  ~ Copyright (c) 2017 Dryad and Naiad Software LLC.
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
   ~
   ~ This program is free software; you can redistribute it and/or
   ~ modify it under the terms of the GNU General Public License
@@ -105,23 +105,10 @@
         }
     </style>
     <div id="main" class="navbar-header">
-        <button id="menuButton" type="button" class="navbar-toggle" value="close" onclick="toggleNav()">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
         <a href="/" class="navbar-brand" style="font-family: 'Fjalla One', sans-serif; font-size: 175%">
             <img class="navbar-brand-icon" src="../../images/logo.png" th:src="@{/images/logo.png}" height="32"
                  alt="logo"/>Sethlans
         </a>
-    </div>
-
-    <div id="mySidenav" class="sidenav">
-        <!--/*@thymesVar id="sethlansmode" type="com.dryadandnaiad.sethlans.enums.SethlansMode"*/-->
-        <a id="menuItemProject" th:if="${sethlansmode == 'SERVER' || sethlansmode == 'DUAL'}" href="/project">Projects</a>
-        <a th:if="${sethlansmode == 'NODE' || sethlansmode == 'DUAL'}" href="#">Rendering</a>
-        <a id="sidenavSettings" href="/settings">Settings</a>
     </div>
     <nav class="collapse navbar-collapse">
         <!--/*@thymesVar id="isNewNotification" type="com.dryadandnaiad.sethlans.controllers.AbstractSethlansController"*/-->
@@ -173,28 +160,6 @@
             </li>
         </ul>
     </nav>
-    <script>
-        /* Set the width of the side navigation to 250px */
-        function toggleNav() {
-            if (document.getElementById("menuButton").value == "close") {
-                document.getElementById("menuButton").value = "open";
-                openNav();
-            } else if (document.getElementById("menuButton").value == "open") {
-                document.getElementById("menuButton").value = "close";
-                closeNav();
-            }
-        }
-        function openNav() {
-            document.getElementById("mySidenav").style.width = "200px";
-            document.getElementById("main").style.marginLeft = "200px";
-        }
-
-        /* Set the width of the side navigation to 0 */
-        function closeNav() {
-            document.getElementById("mySidenav").style.width = "0";
-            document.getElementById("main").style.marginLeft = "0";
-        }
-    </script>
 </nav> <!--/.navbar-->
 
 

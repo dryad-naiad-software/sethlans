@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!--
-  ~ Copyright (c) 2017 Dryad and Naiad Software LLC.
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
   ~
   ~ This program is free software; you can redistribute it and/or
   ~ modify it under the terms of the GNU General Public License
@@ -22,25 +22,23 @@
 
 
 <!-- Project Form Fragment -->
-<div th:fragment="project_form_upload">
-    <div class="container" style="max-width: 600px;">
-        <div class="form-group">
-            <h2 class="text-center" id="projectFormTitle">Upload New Project</h2>
-            <br/>
-            <p>Valid files are <strong>.blend</strong> files with packed textures, and <strong>ZIP</strong> files. <br/>
-                Use relative paths for all the files in the archive.<br/></p>
+<main th:fragment="project_form_upload">
 
-            <p>
-            <h3>Upload Instructions</h3>
+    <div class="container" style="max-width: 800px;">
+        <h2 id="projectFormTitle">Upload New Project</h2>
+        <span>Valid files are <strong>.blend</strong> files with packed textures, and <strong>ZIP</strong> files.
+
+               <br/> Use relative paths for all the files in the archive.<br/></span>
+
+        <h3>Upload Instructions</h3>
             <ul>
-                <li>At the moment only <strong>Blender Render</strong> and <strong>Cycles</strong> is
+                <li>Only <strong>Blender Render</strong> and <strong>Cycles</strong> is
                     supported.
                 </li>
-                <li>Set the output file to an <strong>image</strong>, for example jpg or png.</li>
+                <li>Set the output file to an <strong>image</strong>, for example PNG.</li>
                 <li>The path to external data is <strong>relative</strong>.</li>
             </ul>
-            </p>
-        </div>
+
         <!--/*@thymesVar id="projectForm" type="com.dryadandnaiad.sethlans.commands.ProjectForm"*/-->
         <form class="form-horizontal" id="projectWizard" name="projectWizard" enctype="multipart/form-data"
               th:action="@{/project/new}"
@@ -55,6 +53,6 @@
             </div>
         </form>
     </div>
-</div>
+</main>
 
 </html>

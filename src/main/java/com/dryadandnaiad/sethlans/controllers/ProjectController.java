@@ -117,7 +117,8 @@ public class ProjectController extends AbstractSethlansController {
     @RequestMapping("/project/view/{id}")
     public String getProject(@PathVariable Integer id, Model model) {
         model.addAttribute("project", blenderProjectDatabaseService.getById(id));
-        return "project/project_view";
+        model.addAttribute("project_option", "project_view");
+        return "project/projects";
     }
 
     @RequestMapping("/project/delete/{id}")
@@ -179,7 +180,8 @@ public class ProjectController extends AbstractSethlansController {
     @RequestMapping("/project/details/{id}")
     public String projectDetails(@PathVariable Integer id, Model model) {
         model.addAttribute("project", blenderProjectDatabaseService.getById(id));
-        return "project/project_details";
+        model.addAttribute("project_option", "project_details");
+        return "project/projects";
     }
 
     @RequestMapping(value = "/project/new", method = RequestMethod.POST)
@@ -223,7 +225,8 @@ public class ProjectController extends AbstractSethlansController {
             LOG.debug(projectForm.toString());
             return "redirect:/project/view/" + savedProject.getId();
         }
-        return "project/project_view";
+        model.addAttribute("project_option", "project_view");
+        return "project/projects";
 
     }
 

@@ -114,50 +114,44 @@
         $('[data-toggle="tooltip"]').tooltip();
     });
 </script>
-<!-- Page Javascript -->
-<!-- Nav Bar Fragment -->
-<nav class="navbar navbar-pf-vertical" th:replace="fragments/nav :: navbar">
+<main th:fragment="project_details">
+    <!--/*@thymesVar id="project" type="com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject"*/-->
+    <div class="container" th:object="${project}" style="max-width: 1024px;">
+        <h2 id="projectName" th:text="${project.getProjectName()}">Project Name</h2>
+        <h4 id="projectStatus">
+            <strong>Status:
+                <span style="color: grey;" th:if="${!project.isStarted()}">Not Started</span>
+                <span style="color: blue;" th:if="${project.isStarted() and !project.isFinished()}">Rendering</span>
+                <span style="color: green;" th:if="${project.isFinished()}">Complete</span>
+            </strong>
+        </h4>
+        <hr/>
 
-</nav>
-<!--/.navbar-->
-
-<!--/*@thymesVar id="project" type="com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject"*/-->
-<div class="container" th:object="${project}">
-    <h2 id="projectName" th:text="${project.getProjectName()}">Project Name</h2>
-    <h4 id="projectStatus">
-        <strong>Status:
-            <span style="color: grey;" th:if="${!project.isStarted()}">Not Started</span>
-            <span style="color: blue;" th:if="${project.isStarted() and !project.isFinished()}">Rendering</span>
-            <span style="color: green;" th:if="${project.isFinished()}">Complete</span>
-        </strong>
-    </h4>
-    <hr/>
-
-    <div class="row">
-        <div class="col-md-2">
-            <div class="thumbnail">
-                <a class="pop" href="#">
-                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
-                    <div class="caption">
-                        <p>Part 01</p>
-                    </div>
-                </a>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="thumbnail">
+                    <a class="pop" href="#">
+                        <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
+                        <div class="caption">
+                            <p>Part 01</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="thumbnail">
+                    <a class="pop" href="#">
+                        <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
+                        <div class="caption">
+                            <p>Part 02</p>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
-        <div class="col-md-2">
-            <div class="thumbnail">
-                <a class="pop" href="#">
-                    <img src="../../images/placeholder.svg" class="img-rounded" style="width:100%">
-                    <div class="caption">
-                        <p>Part 02</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
 
 
-    <!-- Creates the bootstrap modal where the image will appear -->
+        <!-- Creates the bootstrap modal where the image will appear -->
         <div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
              aria-hidden="true">
             <div class="modal-dialog">
@@ -170,7 +164,8 @@
                 </div>
             </div>
         </div>
-</div>
+    </div>
+</main>
 
 <!-- Footer Fragment -->
 <div class="content"></div>

@@ -241,6 +241,14 @@
             <main th:replace="fragments/project_form :: project_form">
                 <!--Replaced By Fragment-->  </main>
         </div>
+        <div th:if="${project_option.equals('project_view')}">
+            <main th:replace="fragments/project_view :: project_view">
+                <!--Replaced By Fragment-->  </main>
+        </div>
+        <div th:if="${project_option.equals('project_details')}">
+            <main th:replace="fragments/project_details :: project_details">
+                <!--Replaced By Fragment-->  </main>
+        </div>
 
     </div>
     <script>

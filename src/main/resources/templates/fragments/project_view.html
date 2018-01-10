@@ -121,9 +121,9 @@
 
 </nav>
 <!--/.navbar-->
-
+<main th:fragment="project_view">
 <!--/*@thymesVar id="project" type="com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject"*/-->
-<div class="container" th:object="${project}" style="max-width: 600px;">
+    <div class="container" th:object="${project}" style="max-width: 800px;">
     <h2 id="projectName" th:text="${project.getProjectName()}">Project Name</h2>
     <h4 id="projectStatus">
         <strong>Status:
@@ -225,8 +225,8 @@
         </tr>
         </tbody>
     </table>
-    <a class="btn btn-primary pull-right" id="projectReturn" href="/project">Return to Project List</a>
 </div>
+</main>
 
 
 <!-- Footer Fragment -->
