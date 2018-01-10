@@ -148,9 +148,9 @@
                         <span class="sidebarfont">Home</span></a>
                 </td>
             </tr>
-            <tr>
+            <tr th:if="${sethlansmode == 'SERVER' || sethlansmode == 'DUAL'}">
                 <td>
-                    <a id="projects" style="color:black" class=" fa fa-list" href="/project">&emsp;
+                    <a id="projects" style="color:black" class=" fa fa-folder" href="/project">&emsp;
                         <span class="sidebarfont">Projects</span></a>
                 </td>
             </tr>
