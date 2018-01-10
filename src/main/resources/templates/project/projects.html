@@ -152,6 +152,7 @@
                 a.disabled {
                     pointer-events: none;
                     cursor: default;
+                    font-style: italic;
                 }
             </style>
             <script th:inline="javascript" th:object="${availableBlenderBinaries}">
@@ -193,6 +194,11 @@
         </div>
 
     </div>
+    <script>
+        setTimeout(function () {
+            window.location.reload(1);
+        }, 15000);
+    </script>
     <script>
         function checkSubmit(e) {
             if (e && e.keyCode == 13) {

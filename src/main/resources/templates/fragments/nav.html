@@ -53,29 +53,6 @@
 <nav class="navbar navbar-pf-vertical" th:fragment="navbar">
     <style>
         @import url('https://fonts.googleapis.com/css?family=Fjalla+One');
-        /* The side navigation menu */
-        .sidenav {
-            height: 100%; /* 100% Full-height */
-            width: 0; /* 0 width - change this with JavaScript */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Stay on top */
-            top: 0;
-            left: 0;
-            background-color: rgba(0, 0, 0, 0.8); /* Black*/
-            overflow-x: hidden; /* Disable horizontal scroll */
-            padding-top: 60px; /* Place content 60px from the top */
-            transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
-        }
-
-        /* The navigation menu links */
-        .sidenav a {
-            padding: 8px 8px 8px 32px;
-            text-decoration: none;
-            font-size: 16px;
-            color: #ffffff;
-            display: block;
-            transition: 0.3s
-        }
 
         .userfont {
             font-family: "Open Sans", Helvetica, Arial, sans-serif;
@@ -83,26 +60,7 @@
             font-weight: bold;
         }
 
-        /* When you mouse over the navigation links, change their color */
-        .sidenav a:hover, .offcanvas a:focus {
-            color: #39A5DC;
-        }
 
-        /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
-        #main {
-            transition: margin-left .5s;
-        }
-
-        /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
-        @media screen and (max-height: 450px) {
-            .sidenav {
-                padding-top: 15px;
-            }
-
-            .sidenav a {
-                font-size: 18px;
-            }
-        }
     </style>
     <div id="main" class="navbar-header">
         <a href="/" class="navbar-brand" style="font-family: 'Fjalla One', sans-serif; font-size: 175%">
