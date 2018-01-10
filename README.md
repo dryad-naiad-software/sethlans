@@ -16,7 +16,7 @@ Aside from Java, **ImageMagick** must also be installed for **Sethlans Server/Du
 
 #### Installing ImageMagick dependencies
 ##### MacOS
-For macOS I recommend using [Homebrew](https://brew.sh/) to install ImageMagick.
+For macOS we recommend using [Homebrew](https://brew.sh/) to install ImageMagick.
 
     $ brew install imagemagick
 
