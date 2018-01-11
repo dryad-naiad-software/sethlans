@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.PythonImports;
+import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
@@ -108,14 +109,14 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
 
     @Override
     public String writeRenderPythonScript(ComputeType computeType, String renderLocation, List<String> selectedDeviceIds, List<String> unselectedIds,
+                                          RenderOutputFormat renderOutputFormat,
                                           String tileSize, int resolutionX, int resolutionY, int resPercentage, int samples,
                                           double partMaxY, double partMinY) {
         try {
             File script;
             if (selectedDeviceIds.size() == 1) {
                 script = new File(renderLocation + File.separator + "script-" + selectedDeviceIds.get(0) + ".py");
-            }
-            if (selectedDeviceIds.size() > 1) {
+            } else if (selectedDeviceIds.size() > 1) {
                 script = new File(renderLocation + File.separator + "script-MULTI_DEV.py");
             } else {
                 script = new File(renderLocation + File.separator + "script-CPU.py");
@@ -167,7 +168,7 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
 
                 }
 
-                // Disable all OpenCL
+                // Disable all OpenCL for now - OpenCL will be implemented in March.
                 scriptWriter.write("\n");
                 scriptWriter.write("for dev in devices[1]:" + "\n");
                 scriptWriter.write("\tdev.use = False" + "\n");
@@ -196,6 +197,12 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.write("\n");
             scriptWriter.write("bpy.context.scene.render.tile_x = " + tileSize + "\n");
             scriptWriter.write("bpy.context.scene.render.tile_y = " + tileSize + "\n");
+            if (renderOutputFormat.equals(RenderOutputFormat.PNG) || renderOutputFormat.equals(RenderOutputFormat.AVI)) {
+                scriptWriter.write("bpy.context.scene.render.image_settings.file_format = 'PNG'" + "\n");
+            } else if (renderOutputFormat.equals(RenderOutputFormat.EXR)) {
+                scriptWriter.write("bpy.context.scene.render.image_settings.file_format = 'OPEN_EXR'" + "\n");
+            }
+
             scriptWriter.flush();
             scriptWriter.close();
 

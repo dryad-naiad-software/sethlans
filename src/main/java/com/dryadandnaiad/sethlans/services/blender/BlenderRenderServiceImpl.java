@@ -128,6 +128,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                 String script = blenderPythonScriptService.writeRenderPythonScript(blenderRenderTask.getComputeType(),
                         blenderRenderTask.getRenderDir(), cudaIDList,
                         getUnselectedIds(cudaList),
+                        blenderRenderTask.getRenderOutputFormat(),
                         tileSizeGPU,
                         blenderRenderTask.getTaskResolutionX(),
                         blenderRenderTask.getTaskResolutionY(),
@@ -142,7 +143,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                 List<String> emptyList = new ArrayList<>();
                 String script = blenderPythonScriptService.writeRenderPythonScript(blenderRenderTask.getComputeType(),
                         blenderRenderTask.getRenderDir(), emptyList,
-                        emptyList, tileSizeCPU,
+                        emptyList, blenderRenderTask.getRenderOutputFormat(), tileSizeCPU,
                         blenderRenderTask.getTaskResolutionX(),
                         blenderRenderTask.getTaskResolutionY(),
                         blenderRenderTask.getPartResPercentage(),

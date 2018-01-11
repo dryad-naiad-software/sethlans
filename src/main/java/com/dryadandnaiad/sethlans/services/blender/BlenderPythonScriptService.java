@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 
 import java.util.List;
 
@@ -35,6 +36,7 @@ public interface BlenderPythonScriptService {
                                       String deviceId, String tileSize, int resolution_x,
                                       int resolution_y, int res_percentage);
 
-    String writeRenderPythonScript(ComputeType computeType, String renderLocation, List<String> selectedDeviceIds, List<String> unselectedIds,
-                                   String tileSize, int resolutionX, int resolutionY, int resPercentage, int samples, double partMaxY, double partMinY);
+    String writeRenderPythonScript(ComputeType computeType, String renderLocation, List<String> selectedDeviceIds, List<String> unselectedIds, RenderOutputFormat renderOutputFormat,
+                                   String tileSize, int resolutionX, int resolutionY, int resPercentage, int samples,
+                                   double partMaxY, double partMinY);
 }
