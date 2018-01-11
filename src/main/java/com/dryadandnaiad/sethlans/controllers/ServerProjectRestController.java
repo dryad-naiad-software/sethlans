@@ -157,8 +157,8 @@ public class ServerProjectRestController {
             File storedDir = null;
             BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(project_uuid);
             List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.queueItemsByProjectUUID(project_uuid);
-            int projectTotalQueue = blenderRenderQueueItemList.size();
-            int remainingTotalQueue = 0;
+            int projectTotalQueue = blenderProject.getPartsPerFrame() * blenderProject.getTotalNumOfFrames();
+            int remainingTotalQueue = projectTotalQueue;
             int remainingPartsForFrame = 0;
             for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
                 if (blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() == frame_number &&
@@ -186,8 +186,8 @@ public class ServerProjectRestController {
                     }
                 }
 
-                if (!blenderRenderQueueItem.isComplete()) {
-                    remainingTotalQueue++;
+                if (blenderRenderQueueItem.isComplete()) {
+                    remainingTotalQueue--;
                 }
                 if (!blenderRenderQueueItem.isComplete() && blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() == frame_number) {
                     remainingPartsForFrame++;
