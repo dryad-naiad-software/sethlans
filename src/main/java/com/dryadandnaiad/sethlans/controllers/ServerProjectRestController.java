@@ -154,65 +154,71 @@ public class ServerProjectRestController {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         }
         if (!part.isEmpty()) {
-            File storedDir = null;
-            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(project_uuid);
-            List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.queueItemsByProjectUUID(project_uuid);
-            int projectTotalQueue = blenderProject.getPartsPerFrame() * blenderProject.getTotalNumOfFrames();
-            int remainingTotalQueue = projectTotalQueue;
-            int remainingPartsForFrame = 0;
-            for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
-                if (blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() == frame_number &&
-                        blenderRenderQueueItem.getBlenderFramePart().getPartNumber() == part_number) {
-                    blenderRenderQueueItem.setRendering(false);
-                    blenderRenderQueueItem.setComplete(true);
-                    blenderRenderQueueItem.setPaused(false);
-                    blenderRenderQueueItem.getBlenderFramePart().setStoredDir(blenderProject.getProjectRootDir() +
-                            File.separator + "frame_" + frame_number + File.separator);
-                    storedDir = new File(blenderRenderQueueItem.getBlenderFramePart().getStoredDir());
-                    storedDir.mkdirs();
-                    try {
-                        byte[] bytes = part.getBytes();
-                        Path path = Paths.get(storedDir.toString() + File.separator +
-                                blenderRenderQueueItem.getBlenderFramePart().getPartFilename() + "." +
-                                blenderRenderQueueItem.getBlenderFramePart().getFileExtension());
-                        Files.write(path, bytes);
-                        SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
-                        sethlansNode.setRendering(false);
-                        LOG.debug("Received completed render from " + sethlansNode.getHostname());
-                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+            try {
+                Thread.sleep(1000);
 
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                File storedDir = null;
+                BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(project_uuid);
+                List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.queueItemsByProjectUUID(project_uuid);
+                int projectTotalQueue = blenderProject.getPartsPerFrame() * blenderProject.getTotalNumOfFrames();
+                int remainingTotalQueue = projectTotalQueue;
+                int remainingPartsForFrame = 0;
+                for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
+                    if (blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() == frame_number &&
+                            blenderRenderQueueItem.getBlenderFramePart().getPartNumber() == part_number) {
+                        blenderRenderQueueItem.setRendering(false);
+                        blenderRenderQueueItem.setComplete(true);
+                        blenderRenderQueueItem.setPaused(false);
+                        blenderRenderQueueItem.getBlenderFramePart().setStoredDir(blenderProject.getProjectRootDir() +
+                                File.separator + "frame_" + frame_number + File.separator);
+                        storedDir = new File(blenderRenderQueueItem.getBlenderFramePart().getStoredDir());
+                        storedDir.mkdirs();
+                        try {
+                            byte[] bytes = part.getBytes();
+                            Path path = Paths.get(storedDir.toString() + File.separator +
+                                    blenderRenderQueueItem.getBlenderFramePart().getPartFilename() + "." +
+                                    blenderRenderQueueItem.getBlenderFramePart().getFileExtension());
+                            Files.write(path, bytes);
+                            SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
+                            sethlansNode.setRendering(false);
+                            LOG.debug("Received completed render from " + sethlansNode.getHostname());
+                            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    if (blenderRenderQueueItem.isComplete()) {
+                        remainingTotalQueue--;
+                    }
+                    if (!blenderRenderQueueItem.isComplete() && blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() == frame_number) {
+                        remainingPartsForFrame++;
                     }
                 }
-
-                if (blenderRenderQueueItem.isComplete()) {
-                    remainingTotalQueue--;
-                }
-                if (!blenderRenderQueueItem.isComplete() && blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() == frame_number) {
-                    remainingPartsForFrame++;
-                }
-            }
-            for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
-                if (blenderFramePart.getFrameNumber() == frame_number) {
-                    blenderFramePart.setStoredDir(storedDir.toString() + File.separator);
-                }
-            }
-            LOG.debug("Remaining Parts per Frame for Frame " + frame_number + ": " + remainingPartsForFrame + " out of " + blenderProject.getPartsPerFrame());
-            LOG.debug("Remaining Items in Queue: " + remainingTotalQueue);
-            LOG.debug("Project Total Queue " + projectTotalQueue);
-            double currentPercentage = ((projectTotalQueue - remainingTotalQueue) * 100.0) / projectTotalQueue;
-            LOG.debug("Current Percentage " + currentPercentage);
-            blenderProject.setCurrentPercentage((int) Math.rint(currentPercentage));
-            if (remainingPartsForFrame == 0) {
-                if (blenderProjectService.combineParts(blenderProject, frame_number)) {
-                    if (remainingTotalQueue == 0) {
-                        blenderProject.setFinished(true);
-                        blenderProject.setAllImagesProcessed(true);
+                for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
+                    if (blenderFramePart.getFrameNumber() == frame_number) {
+                        blenderFramePart.setStoredDir(storedDir.toString() + File.separator);
                     }
                 }
+                LOG.debug("Remaining Parts per Frame for Frame " + frame_number + ": " + remainingPartsForFrame + " out of " + blenderProject.getPartsPerFrame());
+                LOG.debug("Remaining Items in Queue: " + remainingTotalQueue);
+                LOG.debug("Project Total Queue " + projectTotalQueue);
+                double currentPercentage = ((projectTotalQueue - remainingTotalQueue) * 100.0) / projectTotalQueue;
+                LOG.debug("Current Percentage " + currentPercentage);
+                blenderProject.setCurrentPercentage((int) Math.rint(currentPercentage));
+                if (remainingPartsForFrame == 0) {
+                    if (blenderProjectService.combineParts(blenderProject, frame_number)) {
+                        if (remainingTotalQueue == 0) {
+                            blenderProject.setFinished(true);
+                            blenderProject.setAllImagesProcessed(true);
+                        }
+                    }
+                }
+                blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
         }
     }
 

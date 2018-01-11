@@ -66,6 +66,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                         LOG.debug("Processing Render Queue. Verbose messages every 2 minutes.");
                         List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listAll();
                         for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
+                            Thread.sleep(100);
                             if (!blenderRenderQueueItem.isComplete() && !blenderRenderQueueItem.isRendering() && !blenderRenderQueueItem.isPaused()) {
                                 timedLog(count, cycle, blenderRenderQueueItem.toString() + " is waiting to be rendered.");
                                 ComputeType computeType = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid()).getRenderOn();
@@ -202,12 +203,17 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     public void populateRenderQueue(BlenderProject blenderProject) {
         List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
         for (BlenderFramePart blenderFramePart : blenderFramePartList) {
-            BlenderRenderQueueItem blenderRenderQueueItem = new BlenderRenderQueueItem();
-            blenderRenderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
-            blenderRenderQueueItem.setComplete(false);
-            blenderRenderQueueItem.setPaused(false);
-            blenderRenderQueueItem.setBlenderFramePart(blenderFramePart);
-            blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+            try {
+                BlenderRenderQueueItem blenderRenderQueueItem = new BlenderRenderQueueItem();
+                blenderRenderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
+                blenderRenderQueueItem.setComplete(false);
+                blenderRenderQueueItem.setPaused(false);
+                blenderRenderQueueItem.setBlenderFramePart(blenderFramePart);
+                blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         LOG.debug("Render Queue configured \n" + blenderRenderQueueDatabaseService.listPendingRender());
     }
