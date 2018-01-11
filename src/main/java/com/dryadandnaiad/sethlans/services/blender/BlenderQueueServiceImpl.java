@@ -215,7 +215,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 e.printStackTrace();
             }
         }
-        LOG.debug("Render Queue configured \n" + blenderRenderQueueDatabaseService.listPendingRender());
+        LOG.debug("Render Queue configured \n" + blenderRenderQueueDatabaseService.listPendingRender().size() + " items in queue");
     }
 
     private void timedLog(int count, int cycle, String message) {
