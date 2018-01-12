@@ -317,16 +317,16 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             error = errorStream.toString();
 
             LOG.debug(error);
-            String[] timeToConvert = new String[0];
+            String[] timeToConvert;
             if (time != null) {
                 timeToConvert = time.split(":");
+                int minutes = Integer.parseInt(timeToConvert[0]);
+                int seconds = Integer.parseInt(timeToConvert[1]);
+                int timeInSeconds = seconds + 60 * minutes;
+                int timeInMilliseconds = (int) TimeUnit.MILLISECONDS.convert(timeInSeconds, TimeUnit.SECONDS);
+                LOG.debug("Benchmark time in milliseconds: " + timeInMilliseconds);
+                return timeInMilliseconds;
             }
-            int minutes = Integer.parseInt(timeToConvert[0]);
-            int seconds = Integer.parseInt(timeToConvert[1]);
-            int timeInSeconds = seconds + 60 * minutes;
-            int timeInMilliseconds = (int) TimeUnit.MILLISECONDS.convert(timeInSeconds, TimeUnit.SECONDS);
-            LOG.debug("Benchmark time in milliseconds: " + timeInMilliseconds);
-            return timeInMilliseconds;
 
 
         } catch (IOException | NullPointerException | InterruptedException e) {
