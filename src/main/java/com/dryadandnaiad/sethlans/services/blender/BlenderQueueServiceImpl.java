@@ -51,6 +51,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private static final Logger LOG = LoggerFactory.getLogger(BlenderQueueServiceImpl.class);
     private boolean populatingQueue;
+    private boolean queueBeingPaused;
 
     @Override
     @Async
@@ -63,7 +64,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             //noinspection InfiniteLoopStatement
             while (true) {
                 try {
-                    if (!sethlansNodeDatabaseService.listAll().isEmpty() || !blenderRenderQueueDatabaseService.listAll().isEmpty() || !populatingQueue) {
+                    if (!sethlansNodeDatabaseService.listAll().isEmpty() || !blenderRenderQueueDatabaseService.listAll().isEmpty() || !populatingQueue || !queueBeingPaused) {
                         LOG.debug("Processing Render Queue. Verbose messages every 2 minutes.");
                         List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listAll();
                         for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
@@ -161,6 +162,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
 
     @Override
     public void pauseRenderQueueforProject(BlenderProject blenderProject) {
+        queueBeingPaused = true;
         List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.queueItemsByProjectUUID(blenderProject.getProject_uuid());
         List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.activeNodesRendering();
         for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
@@ -171,17 +173,17 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                     sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                 }
             }
+            blenderProject.setPaused(true);
             blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
 
         }
+        queueBeingPaused = false;
     }
 
     @Override
     public void deleteRenderQueueforProject(BlenderProject blenderProject) {
-        List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.queueItemsByProjectUUID(blenderProject.getProject_uuid());
-        for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
-            blenderRenderQueueDatabaseService.delete(blenderRenderQueueItem);
-        }
+        blenderRenderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
     }
 
     public boolean resumeRenderQueueforProject(BlenderProject blenderProject) {

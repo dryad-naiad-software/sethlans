@@ -206,7 +206,7 @@ public class ServerProjectRestController {
                 LOG.debug("Project Total Queue " + projectTotalQueue);
                 double currentPercentage = ((projectTotalQueue - remainingTotalQueue) * 100.0) / projectTotalQueue;
                 LOG.debug("Current Percentage " + currentPercentage);
-                blenderProject.setCurrentPercentage((int) Math.rint(currentPercentage));
+                blenderProject.setCurrentPercentage((int) currentPercentage);
                 if (remainingPartsForFrame == 0) {
                     if (blenderProjectService.combineParts(blenderProject, frame_number)) {
                         if (remainingTotalQueue == 0) {

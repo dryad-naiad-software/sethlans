@@ -20,6 +20,8 @@ package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
 import com.dryadandnaiad.sethlans.repositories.BlenderRenderQueueRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,8 @@ import java.util.List;
 @Service
 public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueueDatabaseService {
     private BlenderRenderQueueRepository blenderRenderQueueRepository;
+
+    private static final Logger LOG = LoggerFactory.getLogger(BlenderRenderQueueDatabaseServiceImpl.class);
 
     @Override
     public List<BlenderRenderQueueItem> listAll() {
@@ -69,6 +73,17 @@ public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueue
     public void delete(Integer id) {
         BlenderRenderQueueItem blenderRenderQueueItem = blenderRenderQueueRepository.findOne(id);
         blenderRenderQueueRepository.delete(blenderRenderQueueItem);
+    }
+
+    @Override
+    public void deleteAllByProject(String project_uuid) {
+        List<BlenderRenderQueueItem> blenderRenderQueueItemList = listAll();
+        for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
+            if (blenderRenderQueueItem.getProject_uuid().equals(project_uuid)) {
+                blenderRenderQueueRepository.delete(blenderRenderQueueItem);
+            }
+        }
+
     }
 
     @Override

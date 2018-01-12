@@ -178,7 +178,9 @@
                           or  not #lists.contains(active_compute_types, project.renderOn) and !project.isFinished()}">Start</span>
                     <br th:if="${!project.isStarted()}"/>
                     <a th:id="'projectPauseLink-' + ${project.getId()}"
-                       th:if="${project.isStarted() and !project.isFinished()}" href="#">Pause</a>
+                       th:if="${project.isStarted() and !project.isFinished()}"
+                       th:href="${'/project/pause/' + project.getId()}"
+                       href="#">Pause</a>
                     <br th:if="${project.isStarted() and !project.isFinished()}"/>
                     <a th:id="'projectDownloadLink-' + ${project.getId()}"
                        th:if="${project.isFinished() and project.isAllImagesProcessed()}"
@@ -193,8 +195,9 @@
                     <a th:id="'projectEditLink-' + ${project.getId()}"
                        th:href="${'/project/edit/' + project.getId()}"
                        th:if="${!project.isStarted()}" href="#">Edit</a>
-                    <br/>
-                    <a th:id="'projectDeleteLink-' + ${project.getId()}"
+                    <br th:if="${!project.isStarted() || project.isFinished() || project.isPaused()}"/>
+                    <a th:if="${!project.isStarted() || project.isFinished() || project.isPaused()}"
+                       th:id="'projectDeleteLink-' + ${project.getId()}"
                        th:href="${'/project/delete/' + project.getId()}" href="#">Delete</a>
                 </td>
             </tr>
