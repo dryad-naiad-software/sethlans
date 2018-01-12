@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.system;
 
+import com.dryadandnaiad.sethlans.executor.SethlansExecutor;
 import com.dryadandnaiad.sethlans.utils.SethlansState;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
@@ -60,10 +61,14 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
             SethlansState sethlansState = SethlansState.getInstance();
             Thread.sleep(2000);
             sethlansState.sethlansActive = false;
+            SethlansExecutor sethlansExecutor = SethlansExecutor.getInstance();
+            sethlansExecutor.getExecutor().shutdown();
             SpringApplication.exit(applicationContext, () -> 0);
         } catch (InterruptedException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
         }
 
     }
+
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.config;
 
 import com.dryadandnaiad.sethlans.exceptions.CustomAsyncExceptionHandler;
+import com.dryadandnaiad.sethlans.executor.SethlansExecutor;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +28,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
 
@@ -51,13 +51,9 @@ public class CommonBeanConfig implements AsyncConfigurer {
 
     @Override
     public Executor getAsyncExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(20);
-        executor.setMaxPoolSize(35);
-        executor.setQueueCapacity(100);
-        executor.setThreadNamePrefix("AsyncExec-");
-        executor.initialize();
-        return executor;
+        SethlansExecutor sethlansExecutor = SethlansExecutor.getInstance();
+        sethlansExecutor.getExecutor().initialize();
+        return sethlansExecutor.getExecutor();
     }
 
     @Override

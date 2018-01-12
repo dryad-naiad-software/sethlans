@@ -72,7 +72,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
         //noinspection InfiniteLoopStatement
             while (true) {
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(10000);
                     if (doDownload()) {
                         LOG.debug("All downloads complete");
                     } else {

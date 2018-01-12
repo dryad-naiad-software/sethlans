@@ -35,13 +35,18 @@ import java.lang.reflect.Method;
 public class CustomAsyncExceptionHandler
         implements AsyncUncaughtExceptionHandler {
     private static final Logger LOG = LoggerFactory.getLogger(CustomAsyncExceptionHandler.class);
+    // TODO Set to false during releases
+    private boolean devmode = true;
 
     @Override
     public void handleUncaughtException(
             Throwable throwable, Method method, Object... obj) {
 
         LOG.error("Exception message - " + throwable.getMessage());
-        LOG.error("Stacktrace " + Throwables.getStackTraceAsString(throwable));
+        if (devmode) {
+            LOG.error("Stacktrace " + Throwables.getStackTraceAsString(throwable));
+        }
+
         LOG.error("Method name - " + method.getName());
         for (Object param : obj) {
             LOG.error("Parameter value - " + param);
