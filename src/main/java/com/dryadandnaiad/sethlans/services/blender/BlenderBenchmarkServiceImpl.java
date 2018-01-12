@@ -84,7 +84,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     public void benchmarkOnNodeRestart() {
         // If a node gets shutdown, this will attempt to process any pending benchmarks.
         try {
-            Thread.sleep(10000);
+            Thread.sleep(30000);
             LOG.debug("Checking to see if any benchmarks are pending.");
             List<BlenderBenchmarkTask> blenderBenchmarkTaskList = blenderBenchmarkTaskDatabaseService.listAll();
             List<BlenderBenchmarkTask> pendingBenchmarks = new ArrayList<>();

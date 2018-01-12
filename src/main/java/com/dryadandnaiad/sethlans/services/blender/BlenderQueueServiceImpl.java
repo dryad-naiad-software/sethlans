@@ -29,6 +29,7 @@ import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseSe
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     @Async
     public void startQueue() {
         try {
-            Thread.sleep(12000);
+            Thread.sleep(32000);
 
             int count = 0;
             int cycle = 24;
@@ -156,7 +157,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 }
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOG.error(Throwables.getStackTraceAsString(e));
         }
 
     }
@@ -213,7 +214,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
         }
         populatingQueue = false;
-        LOG.debug("Render Queue configured \n" + blenderRenderQueueDatabaseService.listPendingRender().size() + " items in queue");
+        LOG.debug("Render Queue configured, " + blenderRenderQueueDatabaseService.listPendingRender().size() + " items in queue");
     }
 
     private void timedLog(int count, int cycle, String message) {

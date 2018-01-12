@@ -173,9 +173,9 @@
                        th:href="${'/project/start/' + project.getId()}"
                        href="#">Start</a>
                     <span th:id="'projectStartLinkDisabled-' + ${project.getId()}"
-                          th:if="${!project.isStarted()
+                          th:if="${!project.isStarted() and !project.isFinished()
                           and active_nodes.size() == 0
-                          or  not #lists.contains(active_compute_types, project.renderOn)}">Start</span>
+                          or  not #lists.contains(active_compute_types, project.renderOn) and !project.isFinished()}">Start</span>
                     <br th:if="${!project.isStarted()}"/>
                     <a th:id="'projectPauseLink-' + ${project.getId()}"
                        th:if="${project.isStarted() and !project.isFinished()}" href="#">Pause</a>

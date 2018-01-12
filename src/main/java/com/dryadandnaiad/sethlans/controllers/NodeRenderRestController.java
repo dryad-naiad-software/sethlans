@@ -121,6 +121,11 @@ public class NodeRenderRestController {
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
+            List<BlenderBenchmarkTask> blenderBenchmarkTaskList = blenderBenchmarkTaskDatabaseService.listAll();
+            if (blenderBenchmarkTaskList.size() > 0) {
+                LOG.debug("Clearing out any existing benchmarks associated with the requesting server");
+                blenderBenchmarkTaskDatabaseService.deleteAllByConnection(connection_uuid);
+            }
             String[] cudaList = cuda.split(",");
             BlenderBenchmarkTask cpuBenchmarkTask = new BlenderBenchmarkTask();
             cpuBenchmarkTask.setBlenderVersion(blender_version);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -106,11 +106,13 @@ public class Sethlans {
 
     private void startSpring(String[] springArgs) {
         SethlansState sethlansState = SethlansState.getInstance();
+        //noinspection InfiniteLoopStatement
         while (true) {
             try {
                 if (sethlansState.sethlansActive) {
                     Thread.sleep(1000);
                 } else {
+                    Thread.sleep(1000);
                     sethlansState.sethlansActive = SpringApplication.run(Sethlans.class, springArgs).isActive();
                 }
             } catch (InterruptedException e) {

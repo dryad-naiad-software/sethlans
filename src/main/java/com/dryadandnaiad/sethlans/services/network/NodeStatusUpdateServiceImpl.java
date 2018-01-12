@@ -50,7 +50,7 @@ public class NodeStatusUpdateServiceImpl implements NodeStatusUpdateService {
     public void sendUpdateOnStart() {
         try {
             Thread.sleep(16000);
-            nodeUpdatePullRequest();
+            sendRequest();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

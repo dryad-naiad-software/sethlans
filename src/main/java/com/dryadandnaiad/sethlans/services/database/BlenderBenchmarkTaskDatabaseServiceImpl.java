@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -44,6 +44,7 @@ public class BlenderBenchmarkTaskDatabaseServiceImpl implements BlenderBenchmark
         return blenderBenchmarkTasks;
     }
 
+
     @Override
     public BlenderBenchmarkTask getById(Integer id) {
         return blenderBenchmarkTaskRepository.findOne(id);
@@ -53,6 +54,17 @@ public class BlenderBenchmarkTaskDatabaseServiceImpl implements BlenderBenchmark
     public BlenderBenchmarkTask saveOrUpdate(BlenderBenchmarkTask domainObject) {
         return blenderBenchmarkTaskRepository.save(domainObject);
     }
+
+    @Override
+    public void deleteAllByConnection(String connection_uuid) {
+        List<BlenderBenchmarkTask> blenderBenchmarkTasks = listAll();
+        for (BlenderBenchmarkTask blenderBenchmarkTask : blenderBenchmarkTasks) {
+            if (blenderBenchmarkTask.getConnection_uuid().equals(connection_uuid)) {
+                blenderBenchmarkTaskRepository.delete(blenderBenchmarkTask);
+            }
+        }
+    }
+
 
     @Override
     public void delete(Integer id) {

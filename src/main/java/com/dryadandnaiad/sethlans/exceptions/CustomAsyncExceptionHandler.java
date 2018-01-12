@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.exceptions;
 
+import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
@@ -40,7 +41,7 @@ public class CustomAsyncExceptionHandler
             Throwable throwable, Method method, Object... obj) {
 
         LOG.error("Exception message - " + throwable.getMessage());
-        LOG.error("Stacktrace " + throwable.getStackTrace());
+        LOG.error("Stacktrace " + Throwables.getStackTraceAsString(throwable));
         LOG.error("Method name - " + method.getName());
         for (Object param : obj) {
             LOG.error("Parameter value - " + param);

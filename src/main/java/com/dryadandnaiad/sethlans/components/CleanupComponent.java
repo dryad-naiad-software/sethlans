@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,11 +19,47 @@
 
 package com.dryadandnaiad.sethlans.components;
 
+import com.google.common.base.Throwables;
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.IOException;
+
 /**
- * Created Mario Estrella on 4/1/17.
+ * Created Mario Estrella on 1/11/18.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Component
+@Profile({"SERVER", "NODE", "DUAL"})
 public class CleanupComponent {
+    @Value("${sethlans.tempDir}")
+    private String tempDir;
+    @Value("${sethlans.cacheDir}")
+    private String cacheDir;
+
+    private static final Logger LOG = LoggerFactory.getLogger(CleanupComponent.class);
+
+    @PostConstruct
+    public void cleanFiles() {
+        File tempDirToClean = new File(tempDir);
+        File cacheDirToClean = new File(cacheDir);
+        try {
+            if (tempDirToClean.exists()) {
+                FileUtils.cleanDirectory(tempDirToClean);
+            }
+            if (cacheDirToClean.exists()) {
+                FileUtils.cleanDirectory(cacheDirToClean);
+            }
+        } catch (IOException e) {
+            LOG.error(e.getMessage() + Throwables.getStackTraceAsString(e));
+        }
+    }
 }
