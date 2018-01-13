@@ -278,6 +278,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
             String output;
 
+            LOG.debug("Render Output:");
             while ((output = in.readLine()) != null) {
                 LOG.debug(output);
                 if (output.contains("Finished")) {
@@ -285,9 +286,13 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                 }
             }
 
-            error = errorStream.toString();
+            BufferedReader errorIn = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(errorStream.toByteArray())));
 
-            LOG.debug(error);
+
+            LOG.debug("Error Output:");
+            while ((error = errorIn.readLine()) != null) {
+                LOG.debug(error);
+            }
 
 
         } catch (IOException | NullPointerException | InterruptedException e) {

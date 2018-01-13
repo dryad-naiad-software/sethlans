@@ -299,6 +299,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             String output;
             String time = null;
 
+            LOG.debug("Benchmark Output");
             while ((output = in.readLine()) != null) {
                 LOG.debug(output);
                 if (output.contains("Finished")) {
@@ -312,11 +313,14 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                     }
                 }
             }
+            BufferedReader errorIn = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(errorStream.toByteArray())));
 
 
-            error = errorStream.toString();
+            LOG.debug("Error Output");
+            while ((error = errorIn.readLine()) != null) {
+                LOG.debug(error);
+            }
 
-            LOG.debug(error);
             String[] timeToConvert;
             if (time != null) {
                 timeToConvert = time.split(":");
