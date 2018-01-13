@@ -59,7 +59,7 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
     public void restart() {
         try {
             SethlansState sethlansState = SethlansState.getInstance();
-            Thread.sleep(2000);
+            Thread.sleep(1000);
             sethlansState.sethlansActive = false;
             SethlansExecutor sethlansExecutor = SethlansExecutor.getInstance();
             sethlansExecutor.getExecutor().shutdown();

@@ -36,14 +36,14 @@ public class CustomAsyncExceptionHandler
         implements AsyncUncaughtExceptionHandler {
     private static final Logger LOG = LoggerFactory.getLogger(CustomAsyncExceptionHandler.class);
     // TODO Set to false during releases
-    private boolean devmode = true;
+    private boolean debugging = false;
 
     @Override
     public void handleUncaughtException(
             Throwable throwable, Method method, Object... obj) {
 
         LOG.error("Exception message - " + throwable.getMessage());
-        if (devmode) {
+        if (debugging) {
             LOG.error("Stacktrace " + Throwables.getStackTraceAsString(throwable));
         }
 

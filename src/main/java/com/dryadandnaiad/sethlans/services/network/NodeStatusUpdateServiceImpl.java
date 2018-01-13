@@ -49,7 +49,7 @@ public class NodeStatusUpdateServiceImpl implements NodeStatusUpdateService {
     @Override
     public void sendUpdateOnStart() {
         try {
-            Thread.sleep(16000);
+            Thread.sleep(15000);
             sendRequest();
         } catch (InterruptedException e) {
             LOG.debug("Shutting Down Node Status Update Service");
