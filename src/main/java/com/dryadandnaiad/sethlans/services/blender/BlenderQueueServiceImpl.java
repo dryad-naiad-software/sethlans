@@ -64,28 +64,29 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             //noinspection InfiniteLoopStatement
             while (true) {
                 try {
-                    if (!sethlansNodeDatabaseService.listAll().isEmpty() || !blenderRenderQueueDatabaseService.listAll().isEmpty() || !populatingQueue || !queueBeingPaused) {
-                        LOG.debug("Processing Render Queue. Verbose messages every 2 minutes.");
-                        List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listAll();
-                        for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
-                            if (!blenderRenderQueueItem.isComplete() && !blenderRenderQueueItem.isRendering() && !blenderRenderQueueItem.isPaused()) {
-                                timedLog(count, cycle, blenderRenderQueueItem.toString() + " is waiting to be rendered.");
-                                ComputeType computeType = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid()).getRenderOn();
-                                SethlansNode sethlansNode = SethlansUtils.getFastestFreeNode(sethlansNodeDatabaseService.listAll(), computeType);
-                                if (sethlansNode != null && sethlansNode.isActive() && !sethlansNode.isRendering()) {
-                                    blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
-                                    BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
-                                    ComputeType projectComputeType = blenderProject.getRenderOn();
-                                    sendQueueItemToServer(sethlansNode, projectComputeType, blenderProject, blenderRenderQueueItem);
-                                } else {
-                                    timedLog(count, cycle, "All nodes are busy. Will attempt in next loop. " + blenderRenderQueueItem.getBlenderFramePart());
-                                    break;
+                    if (!sethlansNodeDatabaseService.listAll().isEmpty() || !blenderRenderQueueDatabaseService.listAll().isEmpty()) {
+                        if (!populatingQueue || !queueBeingPaused) {
+                            LOG.debug("Processing Render Queue. Verbose messages every 2 minutes.");
+                            List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listAll();
+                            for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
+                                if (!blenderRenderQueueItem.isComplete() && !blenderRenderQueueItem.isRendering() && !blenderRenderQueueItem.isPaused()) {
+                                    timedLog(count, cycle, blenderRenderQueueItem.toString() + " is waiting to be rendered.");
+                                    ComputeType computeType = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid()).getRenderOn();
+                                    SethlansNode sethlansNode = SethlansUtils.getFastestFreeNode(sethlansNodeDatabaseService.listAll(), computeType);
+                                    if (sethlansNode != null && sethlansNode.isActive() && !sethlansNode.isRendering()) {
+                                        blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
+                                        BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
+                                        ComputeType projectComputeType = blenderProject.getRenderOn();
+                                        sendQueueItemToServer(sethlansNode, projectComputeType, blenderProject, blenderRenderQueueItem);
+                                    } else {
+                                        timedLog(count, cycle, "All nodes are busy. Will attempt in next loop. " + blenderRenderQueueItem.getBlenderFramePart());
+                                        break;
+                                    }
                                 }
                             }
                         }
+
                     }
-
-
                     Thread.sleep(5000);
                     if (count == cycle) {
                         count = 0;

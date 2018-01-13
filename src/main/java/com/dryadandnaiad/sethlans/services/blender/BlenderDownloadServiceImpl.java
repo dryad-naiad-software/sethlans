@@ -61,11 +61,6 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
     private int downloadMirror = 0;
     private ApplicationEventPublisher applicationEventPublisher = null;
 
-    @Autowired
-    public void setBlenderBinaryDatabaseService(BlenderBinaryDatabaseService blenderBinaryDatabaseService) {
-        this.blenderBinaryDatabaseService = blenderBinaryDatabaseService;
-    }
-
     @Override
     @Async
     public void downloadRequestedBlenderFilesAsync() {
@@ -262,6 +257,10 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
         }
     }
 
+    @Autowired
+    public void setBlenderBinaryDatabaseService(BlenderBinaryDatabaseService blenderBinaryDatabaseService) {
+        this.blenderBinaryDatabaseService = blenderBinaryDatabaseService;
+    }
 
     @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {

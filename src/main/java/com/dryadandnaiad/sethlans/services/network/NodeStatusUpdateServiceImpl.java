@@ -52,7 +52,7 @@ public class NodeStatusUpdateServiceImpl implements NodeStatusUpdateService {
             Thread.sleep(16000);
             sendRequest();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOG.debug("Shutting Down Node Status Update Service");
         }
 
     }
