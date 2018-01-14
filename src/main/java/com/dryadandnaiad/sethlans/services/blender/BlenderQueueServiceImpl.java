@@ -147,8 +147,6 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         if (sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params)) {
             blenderRenderQueueItem.setRendering(true);
             sethlansNode.setRendering(true);
-            blenderProject.setStarted(true);
-            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
         }
