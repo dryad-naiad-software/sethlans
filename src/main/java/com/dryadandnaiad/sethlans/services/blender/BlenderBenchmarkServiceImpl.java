@@ -194,13 +194,18 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             String filename = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, benchmarkDir.toString());
             if (SethlansUtils.archiveExtract(filename, benchmarkDir)) {
                 LOG.debug("Extraction complete.");
-                if (SethlansUtils.renameBlender(benchmarkDir, benchmarkTask.getBlenderVersion())) {
-                    LOG.debug("Blender executable ready");
-                    benchmarkTask.setBenchmarkDir(benchmarkDir.toString());
-                    benchmarkTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(benchmarkDir));
-                } else {
-                    LOG.debug("Rename failed.");
-                    return false;
+                LOG.debug("Attempting to rename blender directory. Will attempt 3 tries.");
+                int count = 0;
+                while (!renameBlenderDir(benchmarkDir, benchmarkTask)) {
+                    count++;
+                    if (count == 2) {
+                        return false;
+                    }
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -215,6 +220,18 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
 
         }
         return false;
+    }
+
+    private boolean renameBlenderDir(File benchmarkDir, BlenderBenchmarkTask benchmarkTask) {
+        if (SethlansUtils.renameBlenderDirectory(benchmarkDir, benchmarkTask.getBlenderVersion())) {
+            LOG.debug("Blender executable ready");
+            benchmarkTask.setBenchmarkDir(benchmarkDir.toString());
+            benchmarkTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(benchmarkDir));
+            return true;
+        } else {
+            LOG.debug("Rename failed.");
+            return false;
+        }
     }
 
 

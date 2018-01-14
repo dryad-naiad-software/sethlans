@@ -218,13 +218,18 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
             if (SethlansUtils.archiveExtract(filename, renderDir)) {
                 LOG.debug("Extraction complete.");
-                if (SethlansUtils.renameBlender(renderDir, renderTask.getBlenderVersion())) {
-                    LOG.debug("Blender executable ready");
-                    renderTask.setRenderDir(renderDir.toString());
-                    renderTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(renderDir));
-                } else {
-                    LOG.debug("Rename failed.");
-                    return false;
+                LOG.debug("Attempting to rename blender directory. Will attempt 3 tries.");
+                int count = 0;
+                while (!renameBlenderDir(renderDir, renderTask)) {
+                    count++;
+                    if (count == 2) {
+                        return false;
+                    }
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -239,6 +244,18 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
         }
         return false;
+    }
+
+    private boolean renameBlenderDir(File renderDir, BlenderRenderTask renderTask) {
+        if (SethlansUtils.renameBlenderDirectory(renderDir, renderTask.getBlenderVersion())) {
+            LOG.debug("Blender executable ready");
+            renderTask.setRenderDir(renderDir.toString());
+            renderTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(renderDir));
+            return true;
+        } else {
+            LOG.debug("Rename failed.");
+            return false;
+        }
     }
 
     private boolean executeRenderTask(BlenderRenderTask renderTask, String blenderScript) {

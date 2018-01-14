@@ -362,7 +362,7 @@ public class SethlansUtils {
         return executable;
     }
 
-    public static boolean renameBlender(File tempDir, String blenderVersion) {
+    public static boolean renameBlenderDirectory(File tempDir, String blenderVersion) {
         LOG.debug("Starting to rename of extracted directory in " + tempDir + " to " + tempDir + File.separator + "blender");
         File[] files = tempDir.listFiles();
         if (files != null) {
@@ -383,6 +383,9 @@ public class SethlansUtils {
                                 LOG.error(Throwables.getStackTraceAsString(e));
                             }
                         }
+                    } else {
+                        LOG.debug("Unable to rename directory.");
+                        return false;
                     }
                     return true;
                 }
