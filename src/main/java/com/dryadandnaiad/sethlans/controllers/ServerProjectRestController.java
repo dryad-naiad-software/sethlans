@@ -50,6 +50,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created Mario Estrella on 12/10/17.
@@ -155,7 +156,12 @@ public class ServerProjectRestController {
         }
         if (!part.isEmpty()) {
             try {
-                Thread.sleep(1000);
+                String hostname = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid).getHostname();
+                Integer randomSleep;
+                Random r = new Random();
+                randomSleep = r.nextInt(10000 - 2000) + 2000;
+                LOG.debug("Render Task received from " + hostname + " throttling for " + randomSleep + " milliseconds");
+                Thread.sleep(randomSleep);
 
                 File storedDir = null;
                 BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(project_uuid);
