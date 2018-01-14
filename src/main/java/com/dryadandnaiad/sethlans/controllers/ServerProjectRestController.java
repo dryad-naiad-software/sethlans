@@ -159,7 +159,7 @@ public class ServerProjectRestController {
                 String hostname = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid).getHostname();
                 Integer randomSleep;
                 Random r = new Random();
-                randomSleep = r.nextInt(10000 - 2000) + 2000;
+                randomSleep = r.nextInt(15000 - 1500) + 1500;
                 LOG.debug("Render Task received from " + hostname + " throttling for " + randomSleep + " milliseconds");
                 Thread.sleep(randomSleep);
 
