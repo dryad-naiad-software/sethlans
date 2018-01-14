@@ -34,6 +34,10 @@ public interface BlenderProjectDatabaseService extends CRUDService<BlenderProjec
 
     List<BlenderProject> listAllReverse();
 
+    Boolean isProjectDBEntryInUse(String projectUUID);
+
+    Boolean isProjectDBEntryInUse(BlenderProject blenderProject);
+
     BlenderProject getByProjectUUID(String projectUUID);
 
     BlenderProject saveOrUpdateProjectForm(ProjectForm projectForm);

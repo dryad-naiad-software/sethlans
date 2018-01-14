@@ -157,13 +157,19 @@ public class ServerProjectRestController {
         if (!part.isEmpty()) {
             try {
                 String hostname = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid).getHostname();
+                // For busy environments with lots of nodes this prevents the server from getting overwhelmed.
                 Integer randomSleep;
                 Random r = new Random();
-                randomSleep = r.nextInt(20000 - 1000) + 1000;
+                randomSleep = r.nextInt(10000 - 1000) + 1000;
                 LOG.debug("Render Task received from " + hostname + " throttling for " + randomSleep + " milliseconds");
                 Thread.sleep(randomSleep);
 
                 File storedDir = null;
+                // Additional check to avoid writing to the same project at the same time.
+                while (blenderProjectDatabaseService.isProjectDBEntryInUse(project_uuid)) {
+                    Thread.sleep(1000);
+
+                }
                 BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(project_uuid);
                 List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.queueItemsByProjectUUID(project_uuid);
                 int projectTotalQueue = blenderProject.getPartsPerFrame() * blenderProject.getTotalNumOfFrames();
