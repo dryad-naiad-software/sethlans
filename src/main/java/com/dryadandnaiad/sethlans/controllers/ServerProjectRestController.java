@@ -166,11 +166,12 @@ public class ServerProjectRestController {
 
                 File storedDir = null;
                 // Additional check to avoid writing to the same project at the same time.
+                LOG.debug("Checking to see if project is in use.");
                 while (blenderProjectDatabaseService.isProjectDBEntryInUse(project_uuid)) {
-                    LOG.debug("Project is currently in use, waiting for it to be free.");
                     Thread.sleep(1000);
 
                 }
+                LOG.debug("Project is not in use, processing render task from " + hostname + " .");
                 BlenderProject blenderProject = blenderProjectDatabaseService.restControllerGetProjectProxy(project_uuid);
                 List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.queueItemsByProjectUUID(project_uuid);
                 int projectTotalQueue = blenderProject.getPartsPerFrame() * blenderProject.getTotalNumOfFrames();
