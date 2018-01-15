@@ -168,7 +168,8 @@ public class ServerProjectRestController {
                 // Additional check to avoid writing to the same project at the same time.
                 LOG.debug("Checking to see if project is in use.");
                 while (blenderProjectDatabaseService.isProjectDBEntryInUse(project_uuid)) {
-                    Thread.sleep(1000);
+                    Thread.sleep(2000);
+                    LOG.debug("Project in use, sleeping");
 
                 }
                 LOG.debug("Project is not in use, processing render task from " + hostname);
