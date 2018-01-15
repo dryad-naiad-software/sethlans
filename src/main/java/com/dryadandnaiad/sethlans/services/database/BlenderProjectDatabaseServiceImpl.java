@@ -45,7 +45,7 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     private BlenderProjectRepository blenderProjectRepository;
     private ProjectFormToBlenderProject projectFormToBlenderProject;
     private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectDatabaseServiceImpl.class);
-    private Set<BlenderProject> projectAccessed = new HashSet<>();
+    private Set<String> projectAccessed = new HashSet<>();
 
     @Override
     public List<BlenderProject> listAll() {
@@ -66,18 +66,18 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
 
     @Override
     public Boolean isProjectDBEntryInUse(String projectUUID) {
-        return projectAccessed.contains(getByProjectUUID(projectUUID));
+        return projectAccessed.contains(projectUUID);
     }
 
     @Override
     public Boolean isProjectDBEntryInUse(BlenderProject blenderProject) {
-        return projectAccessed.contains(blenderProject);
+        return projectAccessed.contains(blenderProject.getProject_uuid());
     }
 
     @Override
     public BlenderProject restControllerGetProjectProxy(String projectUUID) {
         BlenderProject blenderProject = getByProjectUUID(projectUUID);
-        projectAccessed.add(blenderProject);
+        projectAccessed.add(projectUUID);
         return blenderProject;
     }
 
@@ -94,7 +94,7 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
 
     @Override
     public BlenderProject saveOrUpdate(BlenderProject domainObject) {
-        projectAccessed.remove(domainObject);
+        projectAccessed.remove(domainObject.getProject_uuid());
         return blenderProjectRepository.save(domainObject);
     }
 

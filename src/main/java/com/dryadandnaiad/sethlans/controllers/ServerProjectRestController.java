@@ -171,7 +171,7 @@ public class ServerProjectRestController {
                     Thread.sleep(1000);
 
                 }
-                LOG.debug("Project is not in use, processing render task from " + hostname + " .");
+                LOG.debug("Project is not in use, processing render task from " + hostname);
                 BlenderProject blenderProject = blenderProjectDatabaseService.restControllerGetProjectProxy(project_uuid);
                 List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.queueItemsByProjectUUID(project_uuid);
                 int projectTotalQueue = blenderProject.getPartsPerFrame() * blenderProject.getTotalNumOfFrames();
