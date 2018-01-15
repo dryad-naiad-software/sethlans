@@ -75,11 +75,17 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     }
 
     @Override
+    public BlenderProject restControllerGetProjectProxy(String projectUUID) {
+        BlenderProject blenderProject = getByProjectUUID(projectUUID);
+        projectAccessed.add(blenderProject);
+        return blenderProject;
+    }
+
+    @Override
     public BlenderProject getByProjectUUID(String projectUUID) {
         List<BlenderProject> blenderProjectList = listAll();
         for (BlenderProject blenderProject : blenderProjectList) {
             if (blenderProject.getProject_uuid().equals(projectUUID)) {
-                projectAccessed.add(blenderProject);
                 return blenderProject;
             }
         }

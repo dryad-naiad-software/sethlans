@@ -76,8 +76,8 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         blenderQueueService.deleteRenderQueueforProject(blenderProject);
         try {
             FileUtils.deleteDirectory(new File(blenderProject.getProjectRootDir()));
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | NullPointerException e) {
+            LOG.debug("Directory not present or root dir value null");
         }
         blenderProjectDatabaseService.delete(blenderProject);
     }
