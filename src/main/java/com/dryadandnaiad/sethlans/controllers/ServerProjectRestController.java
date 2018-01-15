@@ -160,7 +160,7 @@ public class ServerProjectRestController {
                 // For busy environments with lots of nodes this prevents the server from getting overwhelmed.
                 Integer randomSleep;
                 Random r = new Random();
-                randomSleep = r.nextInt(10000 - 1000) + 1000;
+                randomSleep = r.nextInt(15000 - 3000) + 3000;
                 LOG.debug("Render Task received from " + hostname + " throttling for " + randomSleep + " milliseconds");
                 Thread.sleep(randomSleep);
 
@@ -168,7 +168,7 @@ public class ServerProjectRestController {
                 // Additional check to avoid writing to the same project at the same time.
                 LOG.debug("Checking to see if project is in use.");
                 while (blenderProjectDatabaseService.isProjectDBEntryInUse(project_uuid)) {
-                    Thread.sleep(2000);
+                    Thread.sleep(3000);
                     LOG.debug("Project in use, sleeping");
 
                 }
