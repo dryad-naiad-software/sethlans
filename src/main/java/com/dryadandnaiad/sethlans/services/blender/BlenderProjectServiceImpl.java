@@ -84,6 +84,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     @Override
     public boolean combineParts(BlenderProject blenderProject, int frameNumber) {
+        List<String> partCleanup = new ArrayList<>();
         String error;
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
@@ -104,6 +105,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
             if (frameNumber == blenderFramePart.getFrameNumber()) {
                 convert.addArgument(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension());
+                partCleanup.add(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension());
                 frameFilename = blenderFramePart.getStoredDir() + blenderFramePart.getFrameFileName() + "." + blenderFramePart.getFileExtension();
                 storedDir = blenderFramePart.getStoredDir();
                 fileExtension = blenderFramePart.getFileExtension();
@@ -133,12 +135,21 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
             LOG.debug(error);
             blenderProject.setCurrentFrameThumbnail(createThumbnail(frameFilename, storedDir, plainFilename, fileExtension));
+            deleteParts(partCleanup);
             return true;
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
         return false;
+    }
+
+    private void deleteParts(List<String> frameParts) {
+        for (String framePart : frameParts) {
+            File part = new File(framePart);
+            part.delete();
+        }
+
     }
 
 
