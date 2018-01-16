@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.services.network;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.google.common.base.Throwables;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,13 +75,13 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
                     String port = split[1];
                     SethlansNode newSethlansNode;
                     try {
-                        Thread.sleep(1000);
                         newSethlansNode = discoverUnicastNode(ip, port);
                         if (newSethlansNode != null) {
+                            LOG.debug(newSethlansNode.toString());
                             sethlansNodeList.add(newSethlansNode);
                         }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    } catch (NullPointerException e) {
+                        LOG.debug(Throwables.getStackTraceAsString(e));
                     }
 
                 }
