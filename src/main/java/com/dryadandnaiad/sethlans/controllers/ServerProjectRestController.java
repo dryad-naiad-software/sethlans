@@ -30,7 +30,6 @@ import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseServic
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
-import com.google.common.base.Throwables;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -235,7 +234,7 @@ public class ServerProjectRestController {
                 blenderProjectDatabaseService.saveOrUpdate(blenderProject);
                 blenderProjectDatabaseService.releaseObject(project_uuid);
             } catch (InterruptedException e) {
-                LOG.error(Throwables.getStackTraceAsString(e));
+                LOG.debug("Shutting down Project Rest Controller");
             }
         }
     }
