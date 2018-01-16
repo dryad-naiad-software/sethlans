@@ -38,6 +38,8 @@ public interface BlenderProjectDatabaseService extends CRUDService<BlenderProjec
 
     Boolean isProjectDBEntryInUse(BlenderProject blenderProject);
 
+    boolean releaseObject(String projectUUID);
+
     BlenderProject restControllerGetProjectProxy(String projectUUID);
 
     BlenderProject getByProjectUUID(String projectUUID);

@@ -75,6 +75,11 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     }
 
     @Override
+    public boolean releaseObject(String projectUUID) {
+        return projectAccessed.remove(projectUUID);
+    }
+
+    @Override
     public BlenderProject restControllerGetProjectProxy(String projectUUID) {
         BlenderProject blenderProject = getByProjectUUID(projectUUID);
         projectAccessed.add(projectUUID);
@@ -94,7 +99,6 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
 
     @Override
     public BlenderProject saveOrUpdate(BlenderProject domainObject) {
-        projectAccessed.remove(domainObject.getProject_uuid());
         return blenderProjectRepository.save(domainObject);
     }
 

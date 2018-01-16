@@ -21,7 +21,10 @@ package com.dryadandnaiad.sethlans.config;
 
 import com.dryadandnaiad.sethlans.exceptions.CustomAsyncExceptionHandler;
 import com.dryadandnaiad.sethlans.executor.SethlansExecutor;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.jasypt.util.password.StrongPasswordEncryptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,6 +45,7 @@ import java.util.concurrent.Executor;
 @EnableAsync
 @EnableJpaRepositories("com.dryadandnaiad.sethlans.repositories")
 public class CommonBeanConfig implements AsyncConfigurer {
+    private static final Logger LOG = LoggerFactory.getLogger(CommonBeanConfig.class);
 
     @Bean
     public StrongPasswordEncryptor strongEncryptor() {
@@ -51,6 +55,7 @@ public class CommonBeanConfig implements AsyncConfigurer {
 
     @Override
     public Executor getAsyncExecutor() {
+        LOG.info("Sethlans Version: " + SethlansUtils.getVersion());
         SethlansExecutor sethlansExecutor = SethlansExecutor.getInstance();
         sethlansExecutor.getExecutor().initialize();
         return sethlansExecutor.getExecutor();
