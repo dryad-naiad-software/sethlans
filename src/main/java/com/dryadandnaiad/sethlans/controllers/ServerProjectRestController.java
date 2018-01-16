@@ -160,7 +160,7 @@ public class ServerProjectRestController {
                 // For busy environments with lots of nodes this prevents the server from getting overwhelmed.
                 Integer randomSleep;
                 Random r = new Random();
-                randomSleep = r.nextInt(30000 - 5000) + 5000;
+                randomSleep = r.nextInt(15000 - 5000) + 5000;
                 LOG.debug("Render Task received from " + hostname + " throttling for " + randomSleep + " milliseconds");
                 Thread.sleep(randomSleep);
 
