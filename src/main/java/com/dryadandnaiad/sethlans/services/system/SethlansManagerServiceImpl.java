@@ -57,16 +57,16 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
     @Override
     @Async
     public void restart() {
+        SethlansState sethlansState = SethlansState.getInstance();
         try {
-            SethlansState sethlansState = SethlansState.getInstance();
-            Thread.sleep(1000);
-            sethlansState.sethlansActive = false;
-            SethlansExecutor sethlansExecutor = SethlansExecutor.getInstance();
-            sethlansExecutor.getExecutor().shutdown();
-            SpringApplication.exit(applicationContext, () -> 0);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
-            LOG.error(Throwables.getStackTraceAsString(e));
+            LOG.debug("");
         }
+        sethlansState.sethlansActive = false;
+        SethlansExecutor sethlansExecutor = SethlansExecutor.getInstance();
+        sethlansExecutor.getExecutor().shutdown();
+        SpringApplication.exit(applicationContext, () -> 0);
 
     }
 
