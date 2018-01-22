@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import lombok.Data;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,7 @@ import java.util.List;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Data
 public class NodeInfo {
     private String hostname;
     private String ipAddress;
@@ -48,19 +50,6 @@ public class NodeInfo {
     private String selectedCores;
     private List<GPUDevice> selectedGPUs = new ArrayList<>();
     private List<String> selectedCUDA;
-
-    public String getHostname() {
-        return hostname;
-    }
-
-    public String getIpAddress() {
-        return ipAddress;
-    }
-
-
-    public String getNetworkPort() {
-        return networkPort;
-    }
 
     private static final Logger LOG = LoggerFactory.getLogger(NodeInfo.class);
 
@@ -104,25 +93,6 @@ public class NodeInfo {
 
     }
 
-    public void setNetworkPort(String networkPort) {
-        this.networkPort = networkPort;
-    }
-
-    public void setComputeType(ComputeType computeType) {
-        this.computeType = computeType;
-    }
-
-    public List<String> getSelectedCUDA() {
-        return selectedCUDA;
-    }
-
-    public void setSelectedCUDA(List<String> selectedCUDA) {
-        this.selectedCUDA = selectedCUDA;
-    }
-
-    public List<GPUDevice> getSelectedGPUs() {
-        return selectedGPUs;
-    }
 
     public void setSelectedGPUs() {
         List<GPUDevice> availableGPUs = GPU.listDevices();
@@ -145,11 +115,4 @@ public class NodeInfo {
         this.cpuinfo = cpu;
     }
 
-    public String getSelectedCores() {
-        return selectedCores;
-    }
-
-    public void setSelectedCores(String selectedCores) {
-        this.selectedCores = selectedCores;
-    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.domains.database.events;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+import lombok.Data;
 
 import javax.persistence.Entity;
 
@@ -30,31 +31,9 @@ import javax.persistence.Entity;
  * Project: sethlans
  */
 @Entity
+@Data
 public class SethlansNotification extends AbstractEntityClass {
     private String message;
     private String key;
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    @Override
-    public String toString() {
-        return "SethlansNotification{" +
-                "message='" + message + '\'' +
-                ", key='" + key + '\'' +
-                '}';
-    }
 }

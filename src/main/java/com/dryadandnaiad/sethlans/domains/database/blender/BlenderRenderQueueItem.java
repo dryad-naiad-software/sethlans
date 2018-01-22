@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.domains.database.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+import lombok.Data;
 
 import javax.persistence.Entity;
 
@@ -30,6 +31,7 @@ import javax.persistence.Entity;
  * Project: sethlans
  */
 @Entity
+@Data
 public class BlenderRenderQueueItem extends AbstractEntityClass {
     private String connection_uuid;
     private String project_uuid;
@@ -38,63 +40,4 @@ public class BlenderRenderQueueItem extends AbstractEntityClass {
     private boolean paused;
     private boolean rendering;
 
-    public String getConnection_uuid() {
-        return connection_uuid;
-    }
-
-    public void setConnection_uuid(String connection_uuid) {
-        this.connection_uuid = connection_uuid;
-    }
-
-    public String getProject_uuid() {
-        return project_uuid;
-    }
-
-    public void setProject_uuid(String project_uuid) {
-        this.project_uuid = project_uuid;
-    }
-
-    public BlenderFramePart getBlenderFramePart() {
-        return blenderFramePart;
-    }
-
-    public void setBlenderFramePart(BlenderFramePart blenderFramePart) {
-        this.blenderFramePart = blenderFramePart;
-    }
-
-    public boolean isComplete() {
-        return complete;
-    }
-
-    public void setComplete(boolean complete) {
-        this.complete = complete;
-    }
-
-    public boolean isPaused() {
-        return paused;
-    }
-
-    public void setPaused(boolean paused) {
-        this.paused = paused;
-    }
-
-    public boolean isRendering() {
-        return rendering;
-    }
-
-    public void setRendering(boolean rendering) {
-        this.rendering = rendering;
-    }
-
-    @Override
-    public String toString() {
-        return "BlenderRenderQueueItem{" +
-                "connection_uuid='" + connection_uuid + '\'' +
-                ", project_uuid='" + project_uuid + '\'' +
-                ", blenderFramePart=" + blenderFramePart +
-                ", complete=" + complete +
-                ", paused=" + paused +
-                ", rendering=" + rendering +
-                '}';
-    }
 }

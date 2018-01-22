@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import lombok.Data;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -38,6 +39,7 @@ import java.util.List;
  * Project: sethlans
  */
 @Entity
+@Data
 public class SethlansNode extends AbstractEntityClass {
     private String hostname;
     private String ipAddress;
@@ -58,126 +60,6 @@ public class SethlansNode extends AbstractEntityClass {
     private boolean rendering;
 
 
-    public String getHostname() {
-        return hostname;
-    }
-
-    public void setHostname(String hostname) {
-        this.hostname = hostname;
-    }
-
-    public String getIpAddress() {
-        return ipAddress;
-    }
-
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
-    }
-
-    public String getNetworkPort() {
-        return networkPort;
-    }
-
-    public void setNetworkPort(String networkPort) {
-        this.networkPort = networkPort;
-    }
-
-    public BlenderBinaryOS getSethlansNodeOS() {
-        return sethlansNodeOS;
-    }
-
-    public void setSethlansNodeOS(BlenderBinaryOS sethlansNodeOS) {
-        this.sethlansNodeOS = sethlansNodeOS;
-    }
-
-    public ComputeType getComputeType() {
-        return computeType;
-    }
-
-    public void setComputeType(ComputeType computeType) {
-        this.computeType = computeType;
-    }
-
-    public CPU getCpuinfo() {
-        return cpuinfo;
-    }
-
-    public void setCpuinfo(CPU cpuinfo) {
-        this.cpuinfo = cpuinfo;
-    }
-
-    public String getSelectedCores() {
-        return selectedCores;
-    }
-
-    public void setSelectedCores(String selectedCores) {
-        this.selectedCores = selectedCores;
-    }
-
-    public List<GPUDevice> getSelectedGPUs() {
-        return selectedGPUs;
-    }
-
-    public void setSelectedGPUs(List<GPUDevice> selectedGPUs) {
-        this.selectedGPUs = selectedGPUs;
-    }
-
-    public List<String> getSelectedCUDA() {
-        return selectedCUDA;
-    }
-
-    public void setSelectedCUDA(List<String> selectedCUDA) {
-        this.selectedCUDA = selectedCUDA;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public boolean isPendingActivation() {
-        return pendingActivation;
-    }
-
-    public void setPendingActivation(boolean pendingActivation) {
-        this.pendingActivation = pendingActivation;
-    }
-
-    public String getConnection_uuid() {
-        return connection_uuid;
-    }
-
-    public void setConnection_uuid(String connection_uuid) {
-        this.connection_uuid = connection_uuid;
-    }
-
-
-    public boolean isBenchmarkComplete() {
-        return benchmarkComplete;
-    }
-
-    public void setBenchmarkComplete(boolean benchmarkComplete) {
-        this.benchmarkComplete = benchmarkComplete;
-    }
-
-    public int getCpuRating() {
-        return cpuRating;
-    }
-
-    public void setCpuRating(int cpuRating) {
-        this.cpuRating = cpuRating;
-    }
-
-    public boolean isRendering() {
-        return rendering;
-    }
-
-    public void setRendering(boolean rendering) {
-        this.rendering = rendering;
-    }
 
     public Integer getCombinedGPURating() {
         List<Integer> gpuRatings = new ArrayList<>();

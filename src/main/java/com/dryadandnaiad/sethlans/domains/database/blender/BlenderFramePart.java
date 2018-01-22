@@ -18,6 +18,8 @@
  */
 package com.dryadandnaiad.sethlans.domains.database.blender;
 
+import lombok.Data;
+
 import javax.persistence.Embeddable;
 
 /**
@@ -27,6 +29,7 @@ import javax.persistence.Embeddable;
  * Project: sethlans
  */
 @Embeddable
+@Data
 public class BlenderFramePart {
     private String frameFileName;
     private int frameNumber;
@@ -37,81 +40,5 @@ public class BlenderFramePart {
     private String fileExtension;
     private String storedDir;
 
-    public String getFrameFileName() {
-        return frameFileName;
-    }
 
-    public void setFrameFileName(String frameFileName) {
-        this.frameFileName = frameFileName;
-    }
-
-    public int getFrameNumber() {
-        return frameNumber;
-    }
-
-    public void setFrameNumber(int frameNumber) {
-        this.frameNumber = frameNumber;
-    }
-
-    public int getPartNumber() {
-        return partNumber;
-    }
-
-    public void setPartNumber(int partNumber) {
-        this.partNumber = partNumber;
-    }
-
-    public Double getPartPositionMinY() {
-        return partPositionMinY;
-    }
-
-    public void setPartPositionMinY(Double partPositionMinY) {
-        this.partPositionMinY = partPositionMinY;
-    }
-
-    public Double getPartPositionMaxY() {
-        return partPositionMaxY;
-    }
-
-    public void setPartPositionMaxY(Double partPositionMaxY) {
-        this.partPositionMaxY = partPositionMaxY;
-    }
-
-    public String getPartFilename() {
-        return partFilename;
-    }
-
-    public void setPartFilename(String partFilename) {
-        this.partFilename = partFilename;
-    }
-
-    public String getFileExtension() {
-        return fileExtension;
-    }
-
-    public void setFileExtension(String fileExtension) {
-        this.fileExtension = fileExtension;
-    }
-
-    public String getStoredDir() {
-        return storedDir;
-    }
-
-    public void setStoredDir(String storedDir) {
-        this.storedDir = storedDir;
-    }
-
-    @Override
-    public String toString() {
-        return "BlenderFramePart{" +
-                "frameFileName='" + frameFileName + '\'' +
-                ", frameNumber=" + frameNumber +
-                ", partNumber=" + partNumber +
-                ", partPositionMinY=" + partPositionMinY +
-                ", partPositionMaxY=" + partPositionMaxY +
-                ", partFilename='" + partFilename + '\'' +
-                ", fileExtension='" + fileExtension + '\'' +
-                ", storedDir='" + storedDir + '\'' +
-                '}';
-    }
 }

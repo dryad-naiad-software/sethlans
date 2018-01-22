@@ -19,38 +19,17 @@
 
 package com.dryadandnaiad.sethlans.domains.blender;
 
+import lombok.Data;
+
 /**
  * Created Mario Estrella on 1/2/18.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Data
 public class PartCoordinates {
 
     double min_y;
     double max_y;
-
-    public double getMin_y() {
-        return min_y;
-    }
-
-    public void setMin_y(double min_y) {
-        this.min_y = min_y;
-    }
-
-    public double getMax_y() {
-        return max_y;
-    }
-
-    public void setMax_y(double max_y) {
-        this.max_y = max_y;
-    }
-
-    @Override
-    public String toString() {
-        return "PartCoordinates{" +
-                "max_y=" + max_y +
-                ", min_y=" + min_y +
-                '}';
-    }
 }

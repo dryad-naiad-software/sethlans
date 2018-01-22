@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.ProjectType;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
+import lombok.Data;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -36,6 +37,7 @@ import java.util.List;
  * Project: sethlans
  */
 @Entity
+@Data
 public class BlenderProject extends AbstractEntityClass {
     private RenderOutputFormat renderOutputFormat;
     private ProjectType projectType;
@@ -66,182 +68,6 @@ public class BlenderProject extends AbstractEntityClass {
     @ElementCollection
     private List<BlenderFramePart> framePartList;
 
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
-
-    public RenderOutputFormat getRenderOutputFormat() {
-        return renderOutputFormat;
-    }
-
-    public void setRenderOutputFormat(RenderOutputFormat renderOutputFormat) {
-        this.renderOutputFormat = renderOutputFormat;
-    }
-
-    public ProjectType getProjectType() {
-        return projectType;
-    }
-
-    public void setProjectType(ProjectType projectType) {
-        this.projectType = projectType;
-    }
-
-    public int getStartFrame() {
-        return startFrame;
-    }
-
-    public void setStartFrame(int startFrame) {
-        this.startFrame = startFrame;
-    }
-
-    public int getEndFrame() {
-        return endFrame;
-    }
-
-    public void setEndFrame(int endFrame) {
-        this.endFrame = endFrame;
-    }
-
-    public int getStepFrame() {
-        return stepFrame;
-    }
-
-    public void setStepFrame(int stepFrame) {
-        this.stepFrame = stepFrame;
-    }
-
-    public int getSamples() {
-        return samples;
-    }
-
-    public void setSamples(int samples) {
-        this.samples = samples;
-    }
-
-    public BlenderEngine getBlenderEngine() {
-        return blenderEngine;
-    }
-
-    public void setBlenderEngine(BlenderEngine blenderEngine) {
-        this.blenderEngine = blenderEngine;
-    }
-
-    public int getResolutionX() {
-        return resolutionX;
-    }
-
-    public void setResolutionX(int resolutionX) {
-        this.resolutionX = resolutionX;
-    }
-
-    public int getResolutionY() {
-        return resolutionY;
-    }
-
-    public void setResolutionY(int resolutionY) {
-        this.resolutionY = resolutionY;
-    }
-
-    public int getResPercentage() {
-        return resPercentage;
-    }
-
-    public void setResPercentage(int resPercentage) {
-        this.resPercentage = resPercentage;
-    }
-
-    public String getBlendFilename() {
-        return blendFilename;
-    }
-
-    public void setBlendFilename(String blendFilename) {
-        this.blendFilename = blendFilename;
-    }
-
-    public String getBlendFileLocation() {
-        return blendFileLocation;
-    }
-
-    public void setBlendFileLocation(String blendFileLocation) {
-        this.blendFileLocation = blendFileLocation;
-    }
-
-    public String getBlenderVersion() {
-        return blenderVersion;
-    }
-
-    public void setBlenderVersion(String blenderVersion) {
-        this.blenderVersion = blenderVersion;
-    }
-
-    public ComputeType getRenderOn() {
-        return renderOn;
-    }
-
-    public void setRenderOn(ComputeType renderOn) {
-        this.renderOn = renderOn;
-    }
-
-    public String getCurrentFrameThumbnail() {
-        return currentFrameThumbnail;
-    }
-
-    public void setCurrentFrameThumbnail(String currentFrameThumbnail) {
-        this.currentFrameThumbnail = currentFrameThumbnail;
-    }
-
-    public void setStarted(boolean started) {
-        this.started = started;
-    }
-
-    public boolean isStarted() {
-        return started;
-    }
-
-
-    public boolean isFinished() {
-        return finished;
-    }
-
-    public void setFinished(boolean finished) {
-        this.finished = finished;
-    }
-
-    public int getCurrentPercentage() {
-        return currentPercentage;
-    }
-
-    public void setCurrentPercentage(int currentPercentage) {
-        this.currentPercentage = currentPercentage;
-    }
-
-    public String getProject_uuid() {
-        return project_uuid;
-    }
-
-    public void setProject_uuid(String project_uuid) {
-        this.project_uuid = project_uuid;
-    }
-
-    public List<BlenderFramePart> getFramePartList() {
-        return framePartList;
-    }
-
-    public void setFramePartList(List<BlenderFramePart> framePartList) {
-        this.framePartList = framePartList;
-    }
-
-    public int getPartsPerFrame() {
-        return partsPerFrame;
-    }
-
-    public void setPartsPerFrame(int partsPerFrame) {
-        this.partsPerFrame = partsPerFrame;
-    }
 
     public int getTotalNumOfFrames() {
         int frameSum = (endFrame - startFrame) / stepFrame;
@@ -251,38 +77,6 @@ public class BlenderProject extends AbstractEntityClass {
         } else {
             return 1;
         }
-    }
-
-    public boolean isAllImagesProcessed() {
-        return allImagesProcessed;
-    }
-
-    public void setAllImagesProcessed(boolean allImagesProcessed) {
-        this.allImagesProcessed = allImagesProcessed;
-    }
-
-    public String getProjectRootDir() {
-        return projectRootDir;
-    }
-
-    public void setProjectRootDir(String projectRootDir) {
-        this.projectRootDir = projectRootDir;
-    }
-
-    public List<String> getFrameFileNames() {
-        return frameFileNames;
-    }
-
-    public void setFrameFileNames(List<String> frameFileNames) {
-        this.frameFileNames = frameFileNames;
-    }
-
-    public boolean isPaused() {
-        return paused;
-    }
-
-    public void setPaused(boolean paused) {
-        this.paused = paused;
     }
 
     @Override

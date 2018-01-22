@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,12 +19,15 @@
 
 package com.dryadandnaiad.sethlans.domains.python;
 
+import lombok.Data;
+
 /**
  * Created Mario Estrella on 3/28/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Data
 public class PythonArchive {
     private String binaryURL;
     private String md5;
@@ -34,38 +37,5 @@ public class PythonArchive {
         this.binaryURL = binary;
         this.md5 = md5;
         this.filename = filename;
-    }
-
-    public String getBinaryURL() {
-        return binaryURL;
-    }
-
-    public void setBinaryURL(String binaryURL) {
-        this.binaryURL = binaryURL;
-    }
-
-    public String getMd5() {
-        return md5;
-    }
-
-    public void setMd5(String md5) {
-        this.md5 = md5;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
-
-    @Override
-    public String toString() {
-        return "PythonArchive{" +
-                "binaryURL='" + binaryURL + '\'' +
-                ", md5='" + md5 + '\'' +
-                ", filename='" + filename + '\'' +
-                '}';
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,6 +19,8 @@
 
 package com.dryadandnaiad.sethlans.domains.blender;
 
+import lombok.Getter;
+
 import java.util.List;
 
 /**
@@ -27,6 +29,7 @@ import java.util.List;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Getter
 public class BlenderZip {
     private String blenderVersion;
     private List<String> windows32;
@@ -40,64 +43,4 @@ public class BlenderZip {
     private String md5Linux32;
     private String md5Linux64;
 
-    public String getBlenderVersion() {
-        return blenderVersion;
-    }
-
-    public String getMd5MacOS() {
-        return md5MacOS;
-    }
-
-    public String getMd5Windows64() {
-        return md5Windows64;
-    }
-
-    public String getMd5Windows32() {
-        return md5Windows32;
-    }
-
-    public String getMd5Linux32() {
-        return md5Linux32;
-    }
-
-    public String getMd5Linux64() {
-        return md5Linux64;
-    }
-
-    public List<String> getWindows32() {
-        return windows32;
-    }
-
-    public List<String> getWindows64() {
-        return windows64;
-    }
-
-    public List<String> getMacOS() {
-        return macOS;
-    }
-
-    public List<String> getLinux32() {
-        return linux32;
-    }
-
-    public List<String> getLinux64() {
-        return linux64;
-    }
-
-    @Override
-    public String toString() {
-        return "BlenderZip{" +
-                "blenderVersion='" + blenderVersion + '\'' +
-                ", windows32=" + windows32 +
-                ", windows64=" + windows64 +
-                ", macOS=" + macOS +
-                ", linux32=" + linux32 +
-                ", linux64=" + linux64 +
-                ", md5MacOS='" + md5MacOS + '\'' +
-                ", md5Windows64='" + md5Windows64 + '\'' +
-                ", md5Windows32='" + md5Windows32 + '\'' +
-                ", md5Linux32='" + md5Linux32 + '\'' +
-                ", md5Linux64='" + md5Linux64 + '\'' +
-                '}';
-    }
 }

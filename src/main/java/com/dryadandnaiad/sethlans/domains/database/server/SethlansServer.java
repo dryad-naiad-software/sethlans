@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.domains.database.server;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+import lombok.Data;
 
 import javax.persistence.Entity;
 
@@ -30,6 +31,7 @@ import javax.persistence.Entity;
  * Project: sethlans
  */
 @Entity
+@Data
 public class SethlansServer extends AbstractEntityClass {
     private String hostname;
     private String ipAddress;
@@ -38,63 +40,4 @@ public class SethlansServer extends AbstractEntityClass {
     private boolean acknowledged;
     private boolean pendingAcknowledgementResponse;
 
-    public String getHostname() {
-        return hostname;
-    }
-
-    public void setHostname(String hostname) {
-        this.hostname = hostname;
-    }
-
-    public String getIpAddress() {
-        return ipAddress;
-    }
-
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
-    }
-
-    public String getNetworkPort() {
-        return networkPort;
-    }
-
-    public void setNetworkPort(String networkPort) {
-        this.networkPort = networkPort;
-    }
-
-    public String getConnection_uuid() {
-        return connection_uuid;
-    }
-
-    public void setConnection_uuid(String connection_uuid) {
-        this.connection_uuid = connection_uuid;
-    }
-
-    public boolean isAcknowledged() {
-        return acknowledged;
-    }
-
-    public void setAcknowledged(boolean acknowledged) {
-        this.acknowledged = acknowledged;
-    }
-
-    public void setPendingAcknowledgementResponse(boolean pendingAcknowledgementResponse) {
-        this.pendingAcknowledgementResponse = pendingAcknowledgementResponse;
-    }
-
-    public boolean isPendingAcknowledgementResponse() {
-        return pendingAcknowledgementResponse;
-    }
-
-    @Override
-    public String toString() {
-        return "SethlansServer{" +
-                "hostname='" + hostname + '\'' +
-                ", ipAddress='" + ipAddress + '\'' +
-                ", networkPort='" + networkPort + '\'' +
-                ", connection_uuid='" + connection_uuid + '\'' +
-                ", acknowledged=" + acknowledged +
-                ", pendingAcknowledgementResponse=" + pendingAcknowledgementResponse +
-                '}';
-    }
 }

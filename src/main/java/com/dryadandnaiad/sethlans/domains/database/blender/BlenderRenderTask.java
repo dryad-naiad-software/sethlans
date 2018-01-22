@@ -23,6 +23,8 @@ import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 
@@ -33,6 +35,8 @@ import javax.persistence.Entity;
  * Project: sethlans
  */
 @Entity
+@NoArgsConstructor
+@Data
 public class BlenderRenderTask extends AbstractEntityClass {
     private String projectName;
     private String connection_uuid;
@@ -52,162 +56,4 @@ public class BlenderRenderTask extends AbstractEntityClass {
     private boolean inProgress;
     private String renderDir;
 
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
-    }
-
-    public String getConnection_uuid() {
-        return connection_uuid;
-    }
-
-    public void setConnection_uuid(String connection_uuid) {
-        this.connection_uuid = connection_uuid;
-    }
-
-    public String getProject_uuid() {
-        return project_uuid;
-    }
-
-    public void setProject_uuid(String project_uuid) {
-        this.project_uuid = project_uuid;
-    }
-
-    public RenderOutputFormat getRenderOutputFormat() {
-        return renderOutputFormat;
-    }
-
-    public void setRenderOutputFormat(RenderOutputFormat renderOutputFormat) {
-        this.renderOutputFormat = renderOutputFormat;
-    }
-
-    public int getSamples() {
-        return samples;
-    }
-
-    public void setSamples(int samples) {
-        this.samples = samples;
-    }
-
-    public BlenderEngine getBlenderEngine() {
-        return blenderEngine;
-    }
-
-    public void setBlenderEngine(BlenderEngine blenderEngine) {
-        this.blenderEngine = blenderEngine;
-    }
-
-    public ComputeType getComputeType() {
-        return computeType;
-    }
-
-    public void setComputeType(ComputeType computeType) {
-        this.computeType = computeType;
-    }
-
-    public String getBlendFilename() {
-        return blendFilename;
-    }
-
-    public void setBlendFilename(String blendFilename) {
-        this.blendFilename = blendFilename;
-    }
-
-    public String getBlenderVersion() {
-        return blenderVersion;
-    }
-
-    public void setBlenderVersion(String blenderVersion) {
-        this.blenderVersion = blenderVersion;
-    }
-
-    public String getBlenderExecutable() {
-        return blenderExecutable;
-    }
-
-    public void setBlenderExecutable(String blenderExecutable) {
-        this.blenderExecutable = blenderExecutable;
-    }
-
-    public BlenderFramePart getBlenderFramePart() {
-        return blenderFramePart;
-    }
-
-    public void setBlenderFramePart(BlenderFramePart blenderFramePart) {
-        this.blenderFramePart = blenderFramePart;
-    }
-
-    public boolean isComplete() {
-        return complete;
-    }
-
-    public void setComplete(boolean complete) {
-        this.complete = complete;
-    }
-
-    public boolean isInProgress() {
-        return inProgress;
-    }
-
-    public void setInProgress(boolean inProgress) {
-        this.inProgress = inProgress;
-    }
-
-    public String getRenderDir() {
-        return renderDir;
-    }
-
-    public void setRenderDir(String renderDir) {
-        this.renderDir = renderDir;
-    }
-
-    public int getTaskResolutionX() {
-        return taskResolutionX;
-    }
-
-    public void setTaskResolutionX(int taskResolutionX) {
-        this.taskResolutionX = taskResolutionX;
-    }
-
-    public int getTaskResolutionY() {
-        return taskResolutionY;
-    }
-
-    public void setTaskResolutionY(int taskResolutionY) {
-        this.taskResolutionY = taskResolutionY;
-    }
-
-    public int getPartResPercentage() {
-        return partResPercentage;
-    }
-
-    public void setPartResPercentage(int partResPercentage) {
-        this.partResPercentage = partResPercentage;
-    }
-
-    @Override
-    public String toString() {
-        return "BlenderRenderTask{" +
-                "projectName='" + projectName + '\'' +
-                ", connection_uuid='" + connection_uuid + '\'' +
-                ", project_uuid='" + project_uuid + '\'' +
-                ", renderOutputFormat=" + renderOutputFormat +
-                ", samples=" + samples +
-                ", blenderEngine=" + blenderEngine +
-                ", computeType=" + computeType +
-                ", blendFilename='" + blendFilename + '\'' +
-                ", blenderVersion='" + blenderVersion + '\'' +
-                ", blenderExecutable='" + blenderExecutable + '\'' +
-                ", blenderFramePart=" + blenderFramePart +
-                ", taskResolutionX=" + taskResolutionX +
-                ", taskResolutionY=" + taskResolutionY +
-                ", partResPercentage=" + partResPercentage +
-                ", complete=" + complete +
-                ", inProgress=" + inProgress +
-                ", renderDir='" + renderDir + '\'' +
-                '}';
-    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,6 +19,8 @@
 
 package com.dryadandnaiad.sethlans.domains.database;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -29,41 +31,17 @@ import java.util.Date;
  * Project: sethlans
  */
 @MappedSuperclass
+@Data
 public class AbstractEntityClass implements EntityObject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Integer id;
-
     @Version
     private Integer version;
-
     private Date dateCreated;
     private Date lastUpdated;
 
-    public Integer getId() {
-        return this.id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
-
-    public Date getDateCreated() {
-        return dateCreated;
-    }
-
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
 
     @PreUpdate
     @PrePersist

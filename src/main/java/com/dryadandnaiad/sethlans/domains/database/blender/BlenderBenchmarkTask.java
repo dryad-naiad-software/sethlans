@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.domains.database.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import lombok.Data;
 
 import javax.persistence.Entity;
 
@@ -31,6 +32,7 @@ import javax.persistence.Entity;
  * Project: sethlans
  */
 @Entity
+@Data
 public class BlenderBenchmarkTask extends AbstractEntityClass {
     private String benchmarkURL;
     private String blenderVersion;
@@ -46,126 +48,5 @@ public class BlenderBenchmarkTask extends AbstractEntityClass {
     private String cudaName;
     private boolean inProgress;
 
-    public String getBenchmarkURL() {
-        return benchmarkURL;
-    }
 
-    public void setBenchmarkURL(String benchmarkURL) {
-        this.benchmarkURL = benchmarkURL;
-    }
-
-    public String getBlenderVersion() {
-        return blenderVersion;
-    }
-
-    public void setBlenderVersion(String blenderVersion) {
-        this.blenderVersion = blenderVersion;
-    }
-
-    public String getConnection_uuid() {
-        return connection_uuid;
-    }
-
-    public void setConnection_uuid(String connection_uuid) {
-        this.connection_uuid = connection_uuid;
-    }
-
-    public int getCpuRating() {
-        return cpuRating;
-    }
-
-    public void setCpuRating(int cpuRating) {
-        this.cpuRating = cpuRating;
-    }
-
-    public ComputeType getComputeType() {
-        return computeType;
-    }
-
-    public void setComputeType(ComputeType computeType) {
-        this.computeType = computeType;
-    }
-
-    public String getBenchmark_uuid() {
-        return benchmark_uuid;
-    }
-
-    public void setBenchmark_uuid(String benchmark_uuid) {
-        this.benchmark_uuid = benchmark_uuid;
-    }
-
-    public String getBlenderExecutable() {
-        return blenderExecutable;
-    }
-
-    public void setBlenderExecutable(String blenderExecutable) {
-        this.blenderExecutable = blenderExecutable;
-    }
-
-    public String getBenchmarkFile() {
-        return benchmarkFile;
-    }
-
-    public void setBenchmarkFile(String benchmarkFile) {
-        this.benchmarkFile = benchmarkFile;
-    }
-
-    public boolean isComplete() {
-        return complete;
-    }
-
-    public void setComplete(boolean complete) {
-        this.complete = complete;
-    }
-
-    public String getBenchmarkDir() {
-        return benchmarkDir;
-    }
-
-    public void setBenchmarkDir(String benchmarkDir) {
-        this.benchmarkDir = benchmarkDir;
-    }
-
-    public int getGpuRating() {
-        return gpuRating;
-    }
-
-    public void setGpuRating(int gpuRating) {
-        this.gpuRating = gpuRating;
-    }
-
-    public String getCudaName() {
-        return cudaName;
-    }
-
-    public void setCudaName(String cudaName) {
-        this.cudaName = cudaName;
-    }
-
-    public boolean isInProgress() {
-        return inProgress;
-    }
-
-    public void setInProgress(boolean inProgress) {
-        this.inProgress = inProgress;
-    }
-
-    @Override
-    public String toString() {
-        return "BlenderBenchmarkTask{" +
-                "benchmarkURL='" + benchmarkURL + '\'' +
-                ", blenderVersion='" + blenderVersion + '\'' +
-                ", connection_uuid='" + connection_uuid + '\'' +
-                ", benchmark_uuid='" + benchmark_uuid + '\'' +
-                ", computeType=" + computeType +
-                ", blenderExecutable='" + blenderExecutable + '\'' +
-                ", benchmarkDir='" + benchmarkDir + '\'' +
-                ", benchmarkFile='" + benchmarkFile + '\'' +
-                ", complete=" + complete +
-                ", cpuRating=" + cpuRating +
-                ", gpuRating=" + gpuRating +
-                ", cudaName='" + cudaName + '\'' +
-                ", inProgress=" + inProgress +
-                '}';
-    }
 }
