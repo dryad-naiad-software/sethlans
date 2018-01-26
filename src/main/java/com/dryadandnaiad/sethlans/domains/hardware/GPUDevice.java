@@ -19,8 +19,8 @@
 
 package com.dryadandnaiad.sethlans.domains.hardware;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
 
@@ -32,7 +32,7 @@ import javax.persistence.Embeddable;
  */
 @Embeddable
 @Data
-@AllArgsConstructor
+@NoArgsConstructor
 public class GPUDevice {
     private String model;
     private long memory; // in B
