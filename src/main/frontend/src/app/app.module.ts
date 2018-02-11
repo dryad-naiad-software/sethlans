@@ -4,15 +4,19 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 
 import {AppComponent} from './app.component';
+import {SetupComponent} from './setup/setup.component';
+import {HttpClientModule} from "@angular/common/http";
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SetupComponent
   ],
   imports: [
     BrowserModule,
-    NgbModule.forRoot()
+    NgbModule.forRoot(),
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

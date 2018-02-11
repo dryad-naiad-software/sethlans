@@ -60,7 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        if(firstTime){
+        if (firstTime) {
             http
                     .authorizeRequests()
                     .antMatchers("/setup", "/", "/bower/**", "/webjars/**", "/css/**", "/images/**", "/setup_finished", "/shutdown", "/home").permitAll()
@@ -68,8 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .and().formLogin().loginPage("/login").failureUrl("/login?error").permitAll()
                     .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login?logout").permitAll()
                     .and().exceptionHandling().accessDeniedPage("/access_denied");
-        }
-        else{
+        } else {
             http
                     .authorizeRequests()
                     .antMatchers("/", "/bower/**", "/webjars/**", "/css/**", "/images/**").permitAll()
@@ -83,9 +82,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        if (!firstTime) {
-            web.ignoring().antMatchers("/api/**");
-        }
+        web.ignoring().antMatchers("/api/**");
 
     }
 
