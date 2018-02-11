@@ -19,37 +19,24 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Created Mario Estrella on 9/10/17.
+ * Created Mario Estrella on 12/25/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Controller
-public class SethlansStateController extends AbstractSethlansController {
-    private static final Logger LOG = LoggerFactory.getLogger(SethlansStateController.class);
-    @Autowired
-    private SethlansManagerService sethlansManagerService;
+@RestController
+@Profile({"NODE", "DUAL"})
+public class NodeBackgroundController {
 
-    @RequestMapping("/restart")
-    public String restartPage() {
-        sethlansManagerService.restart();
-        LOG.debug("Restarting Sethlans...");
-        return "restart";
+    @RequestMapping(value = "/api/update/server_status_update", method = RequestMethod.POST)
+    public void serverStatusToNodeUpdate(@RequestParam String uuid) {
+
     }
-
-    @RequestMapping("/shutdown")
-    public String shutdownPage() {
-        sethlansManagerService.shutdown();
-        LOG.debug("Shutting down Sethlans...");
-        return "shutdown";
-    }
-
 }

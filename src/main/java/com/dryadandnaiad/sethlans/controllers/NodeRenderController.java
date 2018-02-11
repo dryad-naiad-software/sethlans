@@ -52,7 +52,7 @@ import java.util.List;
  */
 @RestController
 @Profile({"NODE", "DUAL"})
-public class NodeRenderRestController {
+public class NodeRenderController {
     @Value("${sethlans.cuda}")
     private String cuda;
 
@@ -61,7 +61,7 @@ public class NodeRenderRestController {
     private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
     private BlenderBenchmarkService blenderBenchmarkService;
     private BlenderRenderService blenderRenderService;
-    private static final Logger LOG = LoggerFactory.getLogger(NodeRenderRestController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NodeRenderController.class);
 
     @RequestMapping(value = "/api/render/request", method = RequestMethod.POST)
     public void renderRequest(@RequestParam String project_name, @RequestParam String connection_uuid, @RequestParam String project_uuid,

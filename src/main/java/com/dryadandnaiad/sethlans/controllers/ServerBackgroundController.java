@@ -42,11 +42,11 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @Profile({"SERVER", "DUAL"})
-public class ServerBackgroundRestController {
+public class ServerBackgroundController {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderBenchmarkService blenderBenchmarkService;
     private NodeDiscoveryService nodeDiscoveryService;
-    private static final Logger LOG = LoggerFactory.getLogger(ServerBackgroundRestController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ServerBackgroundController.class);
 
     @RequestMapping(value = "/api/update/node_status_update", method = RequestMethod.GET)
     public void nodeStatusToServerUpdate(@RequestParam String connection_uuid) {

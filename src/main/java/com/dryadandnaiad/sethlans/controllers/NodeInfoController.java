@@ -40,8 +40,8 @@ import java.util.List;
  */
 @RestController
 @Profile({"NODE", "DUAL"})
-public class NodeInfoRestController {
-    private static final Logger LOG = LoggerFactory.getLogger(NodeInfoRestController.class);
+public class NodeInfoController {
+    private static final Logger LOG = LoggerFactory.getLogger(NodeInfoController.class);
 
     @Value("${server.port}")
     private String sethlansPort;
