@@ -33,7 +33,6 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * Created Mario Estrella on 9/21/17.
@@ -60,29 +59,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        if (firstTime) {
-            http
-                    .authorizeRequests()
-                    .antMatchers("/setup", "/", "/bower/**", "/webjars/**", "/css/**", "/images/**", "/setup_finished", "/shutdown", "/home").permitAll()
-                    .anyRequest().authenticated()
-                    .and().formLogin().loginPage("/login").failureUrl("/login?error").permitAll()
-                    .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login?logout").permitAll()
-                    .and().exceptionHandling().accessDeniedPage("/access_denied");
-        } else {
-            http
-                    .authorizeRequests()
-                    .antMatchers("/", "/bower/**", "/webjars/**", "/css/**", "/images/**").permitAll()
-                    .anyRequest().authenticated()
-                    .and().formLogin().loginPage("/login").failureUrl("/login?error").permitAll()
-                    .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login?logout").permitAll()
-                    .and().exceptionHandling().accessDeniedPage("/access_denied");
-        }
+//        if (firstTime) {
+//            http
+//                    .authorizeRequests()
+//                    .antMatchers("/setup", "/", "/bower/**", "/webjars/**", "/css/**", "/images/**", "/setup_finished", "/shutdown", "/home").permitAll()
+//                    .anyRequest().authenticated()
+//                    .and().formLogin().loginPage("/login").failureUrl("/login?error").permitAll()
+//                    .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login?logout").permitAll()
+//                    .and().exceptionHandling().accessDeniedPage("/access_denied");
+//        } else {
+//            http
+//                    .authorizeRequests()
+//                    .antMatchers("/", "/bower/**", "/webjars/**", "/css/**", "/images/**").permitAll()
+//                    .anyRequest().authenticated()
+//                    .and().formLogin().loginPage("/login").failureUrl("/login?error").permitAll()
+//                    .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login?logout").permitAll()
+//                    .and().exceptionHandling().accessDeniedPage("/access_denied");
+//        }
 
     }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/api/**");
+        web.ignoring().antMatchers("/**");
 
     }
 
