@@ -8,7 +8,7 @@
     "build": "ng build --prod",
     "postbuild": "npm run deploy",
     "predeploy": "rimraf ../resources/static/ && mkdirp ../resources/static",
-    "deploy": "copyfiles -f dist/** ../resources/static",
+    "deploy": "ncp dist ../resources/static",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -50,6 +50,7 @@
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
     "mkdirp": "^0.5.1",
+    "ncp": "^2.0.0",
     "protractor": "~5.1.2",
     "rimraf": "^2.6.2",
     "ts-node": "~4.1.0",
