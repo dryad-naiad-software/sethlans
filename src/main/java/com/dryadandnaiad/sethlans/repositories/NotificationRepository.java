@@ -20,7 +20,7 @@
 package com.dryadandnaiad.sethlans.repositories;
 
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Created Mario Estrella on 12/11/17.
@@ -28,5 +28,5 @@ import org.springframework.data.repository.CrudRepository;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface NotificationRepository extends CrudRepository<SethlansNotification, Integer> {
+public interface NotificationRepository extends JpaRepository<SethlansNotification, Integer> {
 }
