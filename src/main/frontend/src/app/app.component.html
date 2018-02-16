@@ -1,5 +1,13 @@
-<app-navbar></app-navbar>
+<nav *ngIf="firstTime" class="navbar navbar-expand-md navbar-dark bg-dark mb-4 py-1">
+  <div class="container">
+    <a href="/" class="navbar-brand justify-content-around"
+       style="font-family: 'Fjalla One', sans-serif; font-size: 150%">
+      <img [src]="logo" height="32" class="d-inline-block align-top" alt="logo">
+      Sethlans</a>
+  </div>
+</nav>
+<app-navbar *ngIf="!firstTime"></app-navbar>
 <div class="container">
-  <app-setup-wizard></app-setup-wizard>
+  <app-setup-wizard *ngIf="firstTime"></app-setup-wizard>
 </div>
 <app-footer class="fixed-bottom"></app-footer>
