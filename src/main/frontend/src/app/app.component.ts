@@ -20,8 +20,4 @@ export class AppComponent implements OnInit {
   ngOnInit() {
 
   }
-
-  redirectToSetup() {
-    window.location.href = "/setup";
-  }
 }

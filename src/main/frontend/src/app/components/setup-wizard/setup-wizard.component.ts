@@ -1,4 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {Title} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-setup-wizard',
@@ -6,11 +7,14 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./setup-wizard.component.scss']
 })
 export class SetupWizardComponent implements OnInit {
+  title = "Sethlans Setup Wizard";
+  @Input() formData;
 
-  constructor() {
+  constructor(private titleService: Title) {
   }
 
   ngOnInit() {
+    this.titleService.setTitle(this.title);
   }
 
 }

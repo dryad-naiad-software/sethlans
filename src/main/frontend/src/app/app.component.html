@@ -8,6 +8,7 @@
 </nav>
 <app-navbar *ngIf="!firstTime"></app-navbar>
 <div class="container">
-  <router-outlet></router-outlet>
+  <app-setup-wizard *ngIf="firstTime"></app-setup-wizard>
+  <router-outlet *ngIf="!firstTime"></router-outlet>
 </div>
 <app-footer class="fixed-bottom"></app-footer>
