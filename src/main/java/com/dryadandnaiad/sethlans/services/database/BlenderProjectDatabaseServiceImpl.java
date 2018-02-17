@@ -58,7 +58,7 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     }
 
     @Override
-    public BlenderProject getById(Integer id) {
+    public BlenderProject getById(Long id) {
         return blenderProjectRepository.findOne(id);
     }
 
@@ -106,7 +106,7 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
 //    }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         BlenderProject blenderProject = blenderProjectRepository.findOne(id);
         blenderProjectRepository.delete(blenderProject);
     }

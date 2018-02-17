@@ -46,7 +46,7 @@ public class BlenderBenchmarkTaskDatabaseServiceImpl implements BlenderBenchmark
 
 
     @Override
-    public BlenderBenchmarkTask getById(Integer id) {
+    public BlenderBenchmarkTask getById(Long id) {
         return blenderBenchmarkTaskRepository.findOne(id);
     }
 
@@ -67,7 +67,7 @@ public class BlenderBenchmarkTaskDatabaseServiceImpl implements BlenderBenchmark
 
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         BlenderBenchmarkTask blenderBenchmarkTask = blenderBenchmarkTaskRepository.findOne(id);
         blenderBenchmarkTaskRepository.delete(blenderBenchmarkTask);
 

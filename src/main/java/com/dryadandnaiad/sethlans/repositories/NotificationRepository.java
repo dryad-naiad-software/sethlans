@@ -28,5 +28,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface NotificationRepository extends JpaRepository<SethlansNotification, Integer> {
+public interface NotificationRepository extends JpaRepository<SethlansNotification, Long> {
 }

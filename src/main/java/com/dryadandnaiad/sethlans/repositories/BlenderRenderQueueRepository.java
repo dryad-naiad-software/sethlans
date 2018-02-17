@@ -28,5 +28,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Project: sethlans
  */
 
-public interface BlenderRenderQueueRepository extends JpaRepository<BlenderRenderQueueItem, Integer> {
+public interface BlenderRenderQueueRepository extends JpaRepository<BlenderRenderQueueItem, Long> {
 }

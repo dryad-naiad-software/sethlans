@@ -3,6 +3,7 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -12,16 +13,17 @@ import org.springframework.web.bind.annotation.RestController;
  * Project: sethlans
  */
 @RestController
-public class HomeController {
+@RequestMapping("/api/info")
+public class InfoController {
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
 
-    @GetMapping(value = {"/api/info/first_time"})
+    @GetMapping(value = {"/first_time"})
     public boolean isFirstTime() {
         return firstTime;
     }
 
-    @GetMapping(value = {"/api/info/version"})
+    @GetMapping(value = {"/version"})
     public String getVersion() {
         return SethlansUtils.getVersion();
     }

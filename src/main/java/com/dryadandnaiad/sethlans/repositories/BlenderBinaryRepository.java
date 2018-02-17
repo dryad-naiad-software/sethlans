@@ -28,5 +28,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderBinaryRepository extends JpaRepository<BlenderBinary, Integer> {
+public interface BlenderBinaryRepository extends JpaRepository<BlenderBinary, Long> {
 }

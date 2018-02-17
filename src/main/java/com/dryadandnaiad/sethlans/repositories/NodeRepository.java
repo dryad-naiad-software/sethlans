@@ -28,5 +28,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface NodeRepository extends JpaRepository<SethlansNode, Integer> {
+public interface NodeRepository extends JpaRepository<SethlansNode, Long> {
 }

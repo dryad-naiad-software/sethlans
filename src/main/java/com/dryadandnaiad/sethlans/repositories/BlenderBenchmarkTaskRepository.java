@@ -28,5 +28,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderBenchmarkTaskRepository extends JpaRepository<BlenderBenchmarkTask, Integer> {
+public interface BlenderBenchmarkTaskRepository extends JpaRepository<BlenderBenchmarkTask, Long> {
 }

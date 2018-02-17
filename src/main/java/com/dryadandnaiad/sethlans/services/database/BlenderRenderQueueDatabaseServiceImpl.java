@@ -60,7 +60,7 @@ public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueue
     }
 
     @Override
-    public BlenderRenderQueueItem getById(Integer id) {
+    public BlenderRenderQueueItem getById(Long id) {
         return blenderRenderQueueRepository.findOne(id);
     }
 
@@ -70,7 +70,7 @@ public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueue
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         BlenderRenderQueueItem blenderRenderQueueItem = blenderRenderQueueRepository.findOne(id);
         blenderRenderQueueRepository.delete(blenderRenderQueueItem);
     }
