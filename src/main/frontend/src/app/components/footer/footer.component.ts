@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {version} from "punycode";
 
 @Component({
   selector: 'app-footer',
@@ -9,14 +8,13 @@ import {version} from "punycode";
 })
 
 export class FooterComponent implements OnInit {
-  version: string;
+  sethlansVersion: string;
 
   constructor(private http: HttpClient) {
   }
 
   ngOnInit() {
-    this.http.get('/api/info/version', {responseType: 'text'}).subscribe((version: string) => this.version = version);
-    console.log(version);
+    this.http.get('/api/info/version', {responseType: 'text'}).subscribe((version: string) => this.sethlansVersion = version);
   }
 
 }

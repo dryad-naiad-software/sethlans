@@ -18,4 +18,5 @@ import javax.persistence.Entity;
 public class SethlansUser extends AbstractEntityClass {
     private String username;
     private String password;
+    private boolean isActive;
 }

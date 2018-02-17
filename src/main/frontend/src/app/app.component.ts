@@ -14,9 +14,14 @@ export class AppComponent implements OnInit {
   logo: any = "assets/images/logo.png";
 
   constructor(private http: HttpClient) {
+    this.http.get('/api/info/first_time').subscribe((firstTime: boolean) => this.firstTime = firstTime);
   }
 
   ngOnInit() {
-    this.http.get('/api/info/first_time').subscribe((firstTime: boolean) => this.firstTime = firstTime);
+
+  }
+
+  redirectToSetup() {
+    window.location.href = "/setup";
   }
 }
