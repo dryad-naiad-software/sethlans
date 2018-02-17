@@ -1,3 +1,3 @@
-export class FormData {
+export class FormDataService {
 
 }
