@@ -2,6 +2,7 @@ package com.dryadandnaiad.sethlans.domains.database.user;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Entity;
 
@@ -13,6 +14,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class SethlansUser extends AbstractEntityClass {
     private String username;
     private String password;

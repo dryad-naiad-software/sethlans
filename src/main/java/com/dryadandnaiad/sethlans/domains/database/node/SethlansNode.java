@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -40,6 +41,7 @@ import java.util.List;
  */
 @Entity
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class SethlansNode extends AbstractEntityClass {
     private String hostname;
     private String ipAddress;

@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.domains.database.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -35,6 +36,7 @@ import java.util.List;
  */
 @Entity
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class BlenderBinary extends AbstractEntityClass {
     private String blenderVersion;
     private String blenderBinaryOS;

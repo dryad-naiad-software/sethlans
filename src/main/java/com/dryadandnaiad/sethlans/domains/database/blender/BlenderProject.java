@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.ProjectType;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -38,6 +39,7 @@ import java.util.List;
  */
 @Entity
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class BlenderProject extends AbstractEntityClass {
     private RenderOutputFormat renderOutputFormat;
     private ProjectType projectType;

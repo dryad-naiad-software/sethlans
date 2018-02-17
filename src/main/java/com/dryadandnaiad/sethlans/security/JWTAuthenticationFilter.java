@@ -4,7 +4,6 @@ import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,7 +27,11 @@ import static com.dryadandnaiad.sethlans.config.Constants.*;
  * Project: sethlans
  */
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    private AuthenticationManager sethlansAuthenticationManager;
+    private AuthenticationManager authenticationManager;
+
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -36,7 +39,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             SethlansUser creds = new ObjectMapper()
                     .readValue(request.getInputStream(), SethlansUser.class);
 
-            return sethlansAuthenticationManager.authenticate(
+            return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             creds.getUsername(),
                             creds.getPassword(),
@@ -57,8 +60,4 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
     }
 
-    @Autowired
-    public void setSethlansAuthenticationManager(AuthenticationManager sethlansAuthenticationManager) {
-        this.sethlansAuthenticationManager = sethlansAuthenticationManager;
-    }
 }
