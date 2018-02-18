@@ -16,19 +16,19 @@ export class SetupFormDataService {
   }
 
   setSethlansMode(mode: Mode) {
-    this.setupFormData.mode = mode;
+    this.setupFormData.setMode(mode);
   }
 
   getSethlansMode(): Mode {
-    return this.setupFormData.mode;
+    return this.setupFormData.getMode();
   }
 
   setSetupProgress(setupProgres: SetupProgress) {
-    this.setupFormData.setupProgress = setupProgres;
+    this.setupFormData.setProgress(setupProgres);
   }
 
   getSetupProgress(): SetupProgress {
-    return this.setupFormData.setupProgress;
+    return this.setupFormData.getProgress();
   }
 
 
