@@ -17,7 +17,12 @@ import {ModeComponent} from './components/setup-wizard/mode/mode.component';
 import {FormsModule} from "@angular/forms";
 import {SetupFormDataService} from "./components/setup-wizard/service/setupFormData.service";
 import {SetupnavComponent} from './components/setup-wizard/setupnav/setupnav.component';
-import {RegisterComponent} from './components/setup-wizard/register/register.component';
+import {ServerSetupComponent} from './components/setup-wizard/server-setup/server-setup.component';
+import {NodeSetupComponent} from './components/setup-wizard/node-setup/node-setup.component';
+import {DualSetupComponent} from './components/setup-wizard/dual-setup/dual-setup.component';
+import {SetupSummaryComponent} from './components/setup-wizard/setup-summary/setup-summary.component';
+import {SetupRegisterUserComponent} from './components/setup-wizard/setup-register-user/setup-register-user.component';
+import {SetupNetworkingComponent} from './components/setup-wizard/setup-networking/setup-networking.component';
 
 
 @NgModule({
@@ -32,7 +37,12 @@ import {RegisterComponent} from './components/setup-wizard/register/register.com
     HomeComponent,
     ModeComponent,
     SetupnavComponent,
-    RegisterComponent
+    ServerSetupComponent,
+    NodeSetupComponent,
+    DualSetupComponent,
+    SetupSummaryComponent,
+    SetupRegisterUserComponent,
+    SetupNetworkingComponent
   ],
   imports: [
     BrowserModule,

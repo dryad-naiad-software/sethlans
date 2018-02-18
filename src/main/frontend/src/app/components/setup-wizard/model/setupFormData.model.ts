@@ -1,9 +1,11 @@
 import {Mode} from "../../../enums/mode";
 import {SetupProgress} from "../../../enums/setupProgress";
+import {User} from "../../../models/user.model";
 
 export class SetupFormData {
   private mode: Mode;
   private setupProgress: SetupProgress;
+  private user: User;
 
 
   constructor(setupProgress: SetupProgress) {
@@ -24,6 +26,14 @@ export class SetupFormData {
 
   getProgress(): SetupProgress {
     return this.setupProgress;
+  }
+
+  setUser(user: User) {
+    this.user = user;
+  }
+
+  getUser(): User {
+    return this.user;
   }
 
 }

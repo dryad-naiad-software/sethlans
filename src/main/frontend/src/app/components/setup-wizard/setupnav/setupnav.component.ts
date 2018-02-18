@@ -28,13 +28,13 @@ export class SetupnavComponent implements OnInit {
     }
     if (currentProgress == 1) {
       if (currentMode == Mode.SERVER) {
-        this.setupFormData.setProgress(3);
+        this.setupFormData.setProgress(2);
       }
       else if (currentMode == Mode.NODE) {
-        this.setupFormData.setProgress(4);
+        this.setupFormData.setProgress(3);
       }
       else if (currentMode == Mode.DUAL) {
-        this.setupFormData.setProgress(5);
+        this.setupFormData.setProgress(4);
       }
     }
 
@@ -45,7 +45,7 @@ export class SetupnavComponent implements OnInit {
     if (currentProgress == 1) {
       this.setupFormData.setProgress(currentProgress - 1)
     }
-    if (currentProgress == 3 || currentProgress == 4 || currentProgress == 5) {
+    if (currentProgress == 2 || currentProgress == 3 || currentProgress == 4) {
       this.setupFormData.setProgress(1);
     }
 

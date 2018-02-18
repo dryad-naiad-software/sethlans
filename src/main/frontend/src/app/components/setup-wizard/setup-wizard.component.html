@@ -6,7 +6,11 @@
       </div>
       <div class="card-body">
         <app-mode *ngIf="setupFormData.setupProgress === progress.START"></app-mode>
-        <app-register *ngIf="setupFormData.setupProgress === progress.REGISTER_USER"></app-register>
+        <app-setup-register-user
+          *ngIf="setupFormData.setupProgress === progress.REGISTER_USER"></app-setup-register-user>
+        <app-server-setup *ngIf="setupFormData.setupProgress === progress.SERVER"></app-server-setup>
+        <app-node-setup *ngIf="setupFormData.setupProgress === progress.NODE"></app-node-setup>
+        <app-dual-setup *ngIf="setupFormData.setupProgress === progress.DUAL"></app-dual-setup>
         <app-setupnav></app-setupnav>
       </div>
     </div>
