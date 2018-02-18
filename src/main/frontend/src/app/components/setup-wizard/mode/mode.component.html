@@ -4,17 +4,17 @@
     <fieldset class="form-group">
       <div class="form-check" ngbTooltip="Sethlans will be configured as a server" placement="left">
         <label class="form-check-label">
-          <input type="radio" name="mode" class="form-check-input">Server
+          <input type="radio" name="mode" (click)="save(mode.SERVER)" class="form-check-input">Server
         </label>
       </div>
       <div class="form-check" ngbTooltip="Sethlans will be configured as a node only" placement="left">
         <label class="form-check-label">
-          <input type="radio" name="mode" class="form-check-input">Node
+          <input type="radio" name="mode" (click)="save(mode.NODE)" class="form-check-input">Node
         </label>
       </div>
       <div class="form-check" ngbTooltip="Sethlans will act as a server and as a node" placement="left">
         <label class="form-check-label">
-          <input type="radio" name="mode" class="form-check-input">Dual
+          <input type="radio" name="mode" (click)="save(mode.DUAL)" class="form-check-input">Dual
         </label>
       </div>
 

@@ -15,6 +15,8 @@ import {AppRoutingModule} from './app-routing.module';
 import {HomeComponent} from './components/home/home.component';
 import {ModeComponent} from './components/setup-wizard/mode/mode.component';
 import {FormsModule} from "@angular/forms";
+import {SetupFormDataService} from "./components/setup-wizard/service/setupFormData.service";
+import {SetupnavComponent} from './components/setup-wizard/setupnav/setupnav.component';
 
 
 @NgModule({
@@ -27,7 +29,8 @@ import {FormsModule} from "@angular/forms";
     SetupWizardComponent,
     FooterComponent,
     HomeComponent,
-    ModeComponent
+    ModeComponent,
+    SetupnavComponent
   ],
   imports: [
     BrowserModule,
@@ -36,7 +39,7 @@ import {FormsModule} from "@angular/forms";
     HttpClientModule,
     AppRoutingModule
   ],
-  providers: [Title],
+  providers: [Title, SetupFormDataService],
   bootstrap: [AppComponent]
 })
 export class AppModule {
