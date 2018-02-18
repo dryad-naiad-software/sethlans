@@ -17,6 +17,7 @@ import {ModeComponent} from './components/setup-wizard/mode/mode.component';
 import {FormsModule} from "@angular/forms";
 import {SetupFormDataService} from "./components/setup-wizard/service/setupFormData.service";
 import {SetupnavComponent} from './components/setup-wizard/setupnav/setupnav.component';
+import {RegisterComponent} from './components/setup-wizard/register/register.component';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import {SetupnavComponent} from './components/setup-wizard/setupnav/setupnav.com
     FooterComponent,
     HomeComponent,
     ModeComponent,
-    SetupnavComponent
+    SetupnavComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,

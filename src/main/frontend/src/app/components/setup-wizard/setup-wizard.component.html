@@ -1,4 +1,4 @@
-<div class="row pt-5">
+<div class="row pt-md-5">
   <div class="col-md-8 m-auto">
     <div class="card">
       <div class="card-header">
@@ -6,6 +6,7 @@
       </div>
       <div class="card-body">
         <app-mode *ngIf="setupFormData.setupProgress === progress.START"></app-mode>
+        <app-register *ngIf="setupFormData.setupProgress === progress.REGISTER_USER"></app-register>
         <app-setupnav></app-setupnav>
       </div>
     </div>
