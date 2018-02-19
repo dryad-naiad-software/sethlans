@@ -1,15 +1,16 @@
-import {Mode} from "../../../enums/mode";
-import {SetupProgress} from "../../../enums/setupProgress";
-import {User} from "../../../models/user.model";
+import {Mode} from "../enums/mode";
+import {SetupProgress} from "../enums/setupProgress";
+import {User} from "./user.model";
 
 export class SetupFormData {
   private mode: Mode;
   private setupProgress: SetupProgress;
   private user: User;
 
-
-  constructor(setupProgress: SetupProgress) {
-    this.setupProgress = setupProgress;
+  constructor() {
+    this.setupProgress = SetupProgress.START;
+    this.mode = Mode.SERVER;
+    this.user = new User();
   }
 
   setMode(mode: Mode) {

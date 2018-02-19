@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {SetupFormDataService} from "../service/setupFormData.service";
+import {SetupFormDataService} from "../../../services/setupformdata.service";
 
 @Component({
   selector: 'app-setup-register-user',
@@ -14,6 +14,11 @@ export class SetupRegisterUserComponent implements OnInit {
 
   ngOnInit() {
     this.setupFormData = this.setupFormDataService.getSetupFormData();
+  }
+
+  previousStep() {
+    let currentProgress = this.setupFormData.getProgress();
+    this.setupFormData.setProgress(currentProgress - 1);
   }
 
 }

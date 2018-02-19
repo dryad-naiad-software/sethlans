@@ -1,6 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Title} from "@angular/platform-browser";
-import {SetupFormDataService} from "./service/setupFormData.service";
+import {SetupFormDataService} from "../../services/setupformdata.service";
 import {SetupProgress} from "../../enums/setupProgress";
 
 @Component({
@@ -9,17 +8,14 @@ import {SetupProgress} from "../../enums/setupProgress";
   styleUrls: ['./setup-wizard.component.scss']
 })
 export class SetupWizardComponent implements OnInit {
-  title = "Sethlans Setup Wizard";
-  progress: any = SetupProgress;
   @Input() setupFormData;
+  progress: any = SetupProgress;
 
-  constructor(private titleService: Title, private setupFormDataService: SetupFormDataService) {
+  constructor(private setupFormDataService: SetupFormDataService) {
   }
 
   ngOnInit() {
-    this.titleService.setTitle(this.title);
     this.setupFormData = this.setupFormDataService.getSetupFormData();
-
   }
 
 }

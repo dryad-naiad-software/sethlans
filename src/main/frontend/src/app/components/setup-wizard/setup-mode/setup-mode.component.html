@@ -1,0 +1,45 @@
+<div class="col-md-6 m-auto">
+  <h5>Select a mode for this installation</h5>
+  <form #modeForm="ngForm" class="editForm">
+    <fieldset class="form-group">
+      <div class="form-check" ngbTooltip="Sethlans will be configured as a server" placement="left">
+        <label class="form-check-label">
+          <input type="radio"
+                 name="mode"
+                 class="form-check-input"
+                 #mode="ngModel"
+                 [(ngModel)]="selectedMode"
+                 value="SERVER"
+                 required>Server
+        </label>
+      </div>
+      <div class="form-check" ngbTooltip="Sethlans will be configured as a node only" placement="left">
+        <label class="form-check-label">
+          <input type="radio"
+                 name="mode"
+                 class="form-check-input"
+                 #mode="ngModel"
+                 [(ngModel)]="selectedMode"
+                 value="NODE"
+                 required>Node
+        </label>
+      </div>
+      <div class="form-check" ngbTooltip="Sethlans will act as a server and as a node" placement="left">
+        <label class="form-check-label">
+          <input type="radio"
+                 name="mode"
+                 class="form-check-input"
+                 #mode="ngModel"
+                 [(ngModel)]="selectedMode"
+                 value="DUAL"
+                 required>Dual
+        </label>
+      </div>
+
+    </fieldset>
+
+  </form>
+</div>
+<nav>
+  <button [disabled]="mode.errors" class="btn btn-outline-primary float-right" (click)="save(modeForm)">Next</button>
+</nav>

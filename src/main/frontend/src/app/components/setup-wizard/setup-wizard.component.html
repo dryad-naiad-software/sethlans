@@ -2,21 +2,18 @@
   <div class="col-md-8 m-auto">
     <div class="card">
       <div class="card-header">
-        <h4>Sethlans Setup Wizard</h4>
+        <h4 style="font-family: 'Fjalla One', sans-serif; ">Sethlans Setup Wizard</h4>
       </div>
       <div class="card-body">
-        <app-mode *ngIf="setupFormData.setupProgress === progress.START"></app-mode>
-        <app-setup-register-user
-          *ngIf="setupFormData.setupProgress === progress.REGISTER_USER"></app-setup-register-user>
-        <app-server-setup *ngIf="setupFormData.setupProgress === progress.SERVER"></app-server-setup>
-        <app-node-setup *ngIf="setupFormData.setupProgress === progress.NODE"></app-node-setup>
-        <app-dual-setup *ngIf="setupFormData.setupProgress === progress.DUAL"></app-dual-setup>
-        <app-setupnav></app-setupnav>
+        <router-outlet *ngIf="setupFormData.setupProgress === progress.START" name="mode"></router-outlet>
+        <router-outlet *ngIf="setupFormData.setupProgress === progress.REGISTER_USER"
+                       name="user_register"></router-outlet>
       </div>
     </div>
   </div>
 </div>
+
 <div>
-  <!-- For Debugging: show our formData as it is being typed -->
+  Debugging:
   <pre>{{ setupFormData | json }}</pre>
 </div>

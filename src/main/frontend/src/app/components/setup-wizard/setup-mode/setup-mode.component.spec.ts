@@ -1,20 +1,20 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {SetupnavComponent} from './setupnav.component';
+import {SetupModeComponent} from './setup-mode.component';
 
-describe('SetupnavComponent', () => {
-  let component: SetupnavComponent;
-  let fixture: ComponentFixture<SetupnavComponent>;
+describe('SetupModeComponent', () => {
+  let component: SetupModeComponent;
+  let fixture: ComponentFixture<SetupModeComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [SetupnavComponent]
+      declarations: [SetupModeComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SetupnavComponent);
+    fixture = TestBed.createComponent(SetupModeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
