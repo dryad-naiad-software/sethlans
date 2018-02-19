@@ -18,6 +18,7 @@ export class SetupModeComponent implements OnInit {
 
   ngOnInit() {
     this.setupFormData = this.setupFormDataService.getSetupFormData();
+    this.selectedMode = this.setupFormData.getMode();
   }
 
   save() {
