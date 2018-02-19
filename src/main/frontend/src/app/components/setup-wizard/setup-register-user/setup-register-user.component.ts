@@ -21,6 +21,7 @@ export class SetupRegisterUserComponent implements OnInit {
   }
 
   save() {
+    this.user.setActive(true);
     this.setupFormDataService.setUser(this.user);
     this.nextStep();
 
