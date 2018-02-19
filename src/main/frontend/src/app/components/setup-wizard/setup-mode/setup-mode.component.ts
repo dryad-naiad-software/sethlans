@@ -20,7 +20,7 @@ export class SetupModeComponent implements OnInit {
     this.setupFormData = this.setupFormDataService.getSetupFormData();
   }
 
-  save(form: any) {
+  save() {
     this.setupFormDataService.setSethlansMode(this.selectedMode);
     this.nextScreen()
   }

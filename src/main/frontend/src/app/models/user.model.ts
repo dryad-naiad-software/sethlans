@@ -1,7 +1,7 @@
 export class User {
-  private username: string;
-  private password: string;
-  private email: string;
+  username: string;
+  password: string;
+  email: string;
   private active: boolean;
 
   setUserName(username: string) {

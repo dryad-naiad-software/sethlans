@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {SetupFormDataService} from "../../../services/setupformdata.service";
+import {User} from "../../../models/user.model";
 
 @Component({
   selector: 'app-setup-register-user',
@@ -8,12 +9,19 @@ import {SetupFormDataService} from "../../../services/setupformdata.service";
 })
 export class SetupRegisterUserComponent implements OnInit {
   @Input() setupFormData;
+  user: User;
 
   constructor(private setupFormDataService: SetupFormDataService) {
   }
 
   ngOnInit() {
     this.setupFormData = this.setupFormDataService.getSetupFormData();
+    this.user = this.setupFormData.getUser();
+  }
+
+  save() {
+    this.setupFormDataService.setUser(this.user);
+
   }
 
   previousStep() {
