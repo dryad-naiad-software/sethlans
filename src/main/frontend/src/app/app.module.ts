@@ -17,6 +17,7 @@ import {SetupModeComponent} from './components/setup-wizard/setup-mode/setup-mod
 import {SetupRegisterUserComponent} from './components/setup-wizard/setup-register-user/setup-register-user.component';
 import {FormsModule} from "@angular/forms";
 import {SetupFormDataService} from "./services/setupformdata.service";
+import {FieldMatchesValidatorDirective} from "./directives/fieldmatchesvalidator.directive";
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import {SetupFormDataService} from "./services/setupformdata.service";
     SetupWizardComponent,
     SetupModeComponent,
     SetupRegisterUserComponent,
+    FieldMatchesValidatorDirective
   ],
   imports: [
     BrowserModule,
