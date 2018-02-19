@@ -46,12 +46,12 @@
            [(ngModel)]="user.email"
            class="form-control form-control-sm"
            [ngClass]="{'is-invalid':email.errors && email.touched}"
-           required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$">
+           required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" (keydown)="userSubmit($event, userForm)">
     <div class="invalid-feedback" [hidden]="email.valid">Email is required and must be valid</div>
   </div>
 </form>
 <nav>
   <button class="btn btn-outline-secondary" (click)="previousStep()">Previous
   </button>
-  <button [disabled]="!userForm.valid" class="btn btn-outline-primary float-right">Next</button>
+  <button [disabled]="!userForm.valid" class="btn btn-outline-primary float-right" (click)="save()">Next</button>
 </nav>

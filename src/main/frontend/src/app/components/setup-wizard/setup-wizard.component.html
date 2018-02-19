@@ -8,6 +8,9 @@
         <router-outlet *ngIf="setupFormData.setupProgress === progress.START" name="mode"></router-outlet>
         <router-outlet *ngIf="setupFormData.setupProgress === progress.REGISTER_USER"
                        name="user_register"></router-outlet>
+        <router-outlet *ngIf="setupFormData.setupProgress === progress.SERVER" name="server"></router-outlet>
+        <router-outlet *ngIf="setupFormData.setupProgress === progress.NODE" name="node"></router-outlet>
+        <router-outlet *ngIf="setupFormData.setupProgress === progress.DUAL" name="dual"></router-outlet>
       </div>
     </div>
   </div>

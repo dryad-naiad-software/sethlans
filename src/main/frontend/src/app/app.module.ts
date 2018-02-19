@@ -18,6 +18,9 @@ import {SetupRegisterUserComponent} from './components/setup-wizard/setup-regist
 import {FormsModule} from "@angular/forms";
 import {SetupFormDataService} from "./services/setupformdata.service";
 import {FieldMatchesValidatorDirective} from "./directives/fieldmatchesvalidator.directive";
+import {SetupServerComponent} from './components/setup-wizard/setup-server/setup-server.component';
+import {SetupNodeComponent} from './components/setup-wizard/setup-node/setup-node.component';
+import {SetupDualComponent} from './components/setup-wizard/setup-dual/setup-dual.component';
 
 
 @NgModule({
@@ -32,7 +35,10 @@ import {FieldMatchesValidatorDirective} from "./directives/fieldmatchesvalidator
     SetupWizardComponent,
     SetupModeComponent,
     SetupRegisterUserComponent,
-    FieldMatchesValidatorDirective
+    FieldMatchesValidatorDirective,
+    SetupServerComponent,
+    SetupNodeComponent,
+    SetupDualComponent
   ],
   imports: [
     BrowserModule,

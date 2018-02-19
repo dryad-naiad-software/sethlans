@@ -37,4 +37,8 @@ export class User {
     return this.active;
   }
 
+  setPasswordConfirm(passwordConfirm: string) {
+    this.passwordConfirm = passwordConfirm;
+
+  }
 }
