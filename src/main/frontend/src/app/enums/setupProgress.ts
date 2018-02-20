@@ -4,6 +4,6 @@ export enum SetupProgress {
   SERVER,
   NODE,
   DUAL,
-  NETWORK,
+  SETTINGS,
   SUMMARY
 }

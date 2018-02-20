@@ -1,7 +1,8 @@
 @import "~bootstrap/scss/bootstrap";
-
 $fa-font-path: "../node_modules/font-awesome/fonts";
 @import '~font-awesome/scss/font-awesome.scss';
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import url('https://fonts.googleapis.com/css?family=Fjalla+One');
 
 body {
   background: #EAEAEA;

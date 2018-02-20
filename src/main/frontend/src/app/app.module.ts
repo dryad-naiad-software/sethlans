@@ -21,6 +21,8 @@ import {FieldMatchesValidatorDirective} from "./directives/fieldmatchesvalidator
 import {SetupServerComponent} from './components/setup-wizard/setup-server/setup-server.component';
 import {SetupNodeComponent} from './components/setup-wizard/setup-node/setup-node.component';
 import {SetupDualComponent} from './components/setup-wizard/setup-dual/setup-dual.component';
+import {SetupSettingsComponent} from './components/setup-wizard/setup-settings/setup-settings.component';
+import {MatSliderModule} from "@angular/material";
 
 
 @NgModule({
@@ -38,11 +40,13 @@ import {SetupDualComponent} from './components/setup-wizard/setup-dual/setup-dua
     FieldMatchesValidatorDirective,
     SetupServerComponent,
     SetupNodeComponent,
-    SetupDualComponent
+    SetupDualComponent,
+    SetupSettingsComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
+    MatSliderModule,
     NgbModule.forRoot(),
     HttpClientModule,
     AppRoutingModule

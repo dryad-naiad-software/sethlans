@@ -1,10 +1,15 @@
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.domains.hardware.CPU;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * Created Mario Estrella on 2/11/18.
@@ -26,5 +31,20 @@ public class InfoController {
     @GetMapping(value = {"/version"})
     public String getVersion() {
         return SethlansUtils.getVersion();
+    }
+
+    @GetMapping(value = {"/blender_versions"})
+    public List<String> getBlenderVersions() {
+        return BlenderUtils.listVersions();
+    }
+
+    @GetMapping(value = {"/available_methods"})
+    public List<ComputeType> getAvailableMethods() {
+        return SethlansUtils.getAvailableMethods();
+    }
+
+    @GetMapping(value = {"/total_cores"})
+    public Integer getTotalCores() {
+        return new CPU().getCores();
     }
 }

@@ -1,3 +1,17 @@
-<p>
-  setup-server works!
-</p>
+<form #serverForm="ngForm" class="editForm">
+  <div class="form-group">
+    <label for="blenderVersion">Select Default Blender Version</label>
+    <select class="form-control form-control-sm"
+            id="blenderVersion"
+            name="blenderVersion"
+            #blenderVersion="ngModel"
+            [(ngModel)]="server.blenderVersion">
+      <option *ngFor="let version of availableBlenderVersions">{{version}}</option>
+    </select>
+  </div>
+</form>
+<nav>
+  <button class="btn btn-outline-secondary" (click)="previousStep()">Previous
+  </button>
+  <button [disabled]="!serverForm.valid" class="btn btn-outline-primary float-right" (click)="save()">Next</button>
+</nav>
