@@ -3,6 +3,7 @@ import {Node} from "../../../models/node.model";
 import {SetupFormDataService} from "../../../services/setupformdata.service";
 import {HttpClient} from "@angular/common/http";
 import {ComputeMethod} from "../../../enums/compute.method";
+import {GPU} from "../../../models/gpu.model";
 
 
 @Component({
@@ -12,10 +13,11 @@ import {ComputeMethod} from "../../../enums/compute.method";
 })
 export class SetupNodeComponent implements OnInit {
   @Input() setupFormData;
-  node: Node = new Node()
+  node: Node = new Node();
   computeMethodEnum: any = ComputeMethod;
   availableComputeMethods: ComputeMethod[] = [];
   totalCores: number;
+  availableGPUs: GPU[] = [];
 
   constructor(private setupFormDataService: SetupFormDataService, private http: HttpClient) {
   }
@@ -36,6 +38,19 @@ export class SetupNodeComponent implements OnInit {
         this.node.cores = cores;
         console.log(this.totalCores);
       }, (error) => console.log(error));
+    if (this.availableComputeMethods.indexOf(ComputeMethod.GPU)) {
+      this.http.get('/api/info/available_gpus')
+        .subscribe((gpus: any[]) => {
+          this.availableGPUs = gpus;
+          this.node.selectedGPUs = [gpus[0]];
+          console.log(this.availableGPUs);
+        }, (error) => console.log(error));
+    }
+  }
+
+  save() {
+    this.setupFormData.setNode(this.node);
+    this.nextStep();
   }
 
   previousStep() {

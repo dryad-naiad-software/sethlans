@@ -1,4 +1,4 @@
-export class GPUModel {
+export class GPU {
   model: string;
   memory: number;
   rating: number;
