@@ -11,6 +11,7 @@
         <router-outlet *ngIf="setupFormData.setupProgress === progress.SERVER" name="server"></router-outlet>
         <router-outlet *ngIf="setupFormData.setupProgress === progress.NODE" name="node"></router-outlet>
         <router-outlet *ngIf="setupFormData.setupProgress === progress.DUAL" name="dual"></router-outlet>
+        <router-outlet *ngIf="setupFormData.setupProgress === progress.SETTINGS" name="settings"></router-outlet>
       </div>
     </div>
   </div>

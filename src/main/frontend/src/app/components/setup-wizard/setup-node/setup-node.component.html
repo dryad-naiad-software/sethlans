@@ -27,17 +27,16 @@
     <div *ngFor="let gpu of availableGPUs">
       <input type="checkbox"
              class="form-control-sm"
-             name="selectedGPU"
-             value="{{gpu.valueOf()}}"
-             [(ngModel)]="selectedGPUIds.push"
-             #selectedGPU="ngModel"/>
+             name="{{gpu.model}}"
+             value="{{gpu.model}}"
+             (change)="selected($event, gpu)"/>
       <label class="form-check-label form-control-sm">{{gpu.model}}</label>
     </div>
 
 
   </div>
 </form>
-<nav>
+<nav *ngIf="setupFormData.mode === mode.NODE">
   <button class="btn btn-outline-secondary" (click)="previousStep()">Previous
   </button>
   <button [disabled]="!nodeForm.valid" class="btn btn-outline-primary float-right" (click)="save()">Next</button>

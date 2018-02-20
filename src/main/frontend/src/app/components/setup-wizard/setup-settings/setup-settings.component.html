@@ -1,3 +1,8 @@
-<p>
-  setup-settings works!
-</p>
+<form #settingsForm="ngForm" class="editForm">
+
+</form>
+<nav>
+  <button class="btn btn-outline-secondary" (click)="previousStep()">Previous
+  </button>
+  <button [disabled]="!settingsForm.valid" class="btn btn-outline-primary float-right" (click)="save()">Next</button>
+</nav>

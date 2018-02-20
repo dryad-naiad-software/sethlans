@@ -10,7 +10,7 @@
     </select>
   </div>
 </form>
-<nav>
+<nav *ngIf="setupFormData.mode === mode.SERVER">
   <button class="btn btn-outline-secondary" (click)="previousStep()">Previous
   </button>
   <button [disabled]="!serverForm.valid" class="btn btn-outline-primary float-right" (click)="save()">Next</button>

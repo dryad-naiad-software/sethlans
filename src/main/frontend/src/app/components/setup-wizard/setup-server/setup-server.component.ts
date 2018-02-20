@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Server} from "../../../models/server.model";
 import {SetupFormDataService} from "../../../services/setupformdata.service";
 import {HttpClient} from "@angular/common/http";
+import {Mode} from "../../../enums/mode";
 
 @Component({
   selector: 'app-setup-server',
@@ -11,6 +12,7 @@ import {HttpClient} from "@angular/common/http";
 export class SetupServerComponent implements OnInit {
   @Input() setupFormData;
   server: Server = new Server();
+  mode: any = Mode;
   availableBlenderVersions: string[] = [];
 
   constructor(private setupFormDataService: SetupFormDataService, private http: HttpClient) {

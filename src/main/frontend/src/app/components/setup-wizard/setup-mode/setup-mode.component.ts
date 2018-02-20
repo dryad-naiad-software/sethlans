@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Mode} from "../../../enums/mode";
 import {SetupFormDataService} from "../../../services/setupformdata.service";
+import {Server} from "../../../models/server.model";
 
 @Component({
   selector: 'app-setup-mode',
@@ -23,6 +24,10 @@ export class SetupModeComponent implements OnInit {
 
   save() {
     this.setupFormDataService.setSethlansMode(this.selectedMode);
+    if (this.selectedMode === Mode.SERVER) {
+      let server: Server = new Server();
+      this.setupFormData.setServer(server);
+    }
     this.nextScreen()
   }
 
