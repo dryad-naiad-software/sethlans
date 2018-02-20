@@ -19,7 +19,7 @@
       thumb-label="true"
       [max]="totalCores"
       #cores="ngModel"
-      [ngModelOptions]="{standalone: true}"
+      name="cores"
       [(ngModel)]="node.cores"></mat-slider>
   </div>
   <div class="form-group" *ngIf="node.computeMethod !== computeMethodEnum.CPU">
@@ -27,9 +27,7 @@
     <div *ngFor="let gpu of availableGPUs">
       <input type="checkbox"
              class="form-control-sm"
-             #selectedGPU=ngModel
-             [ngModelOptions]="{standalone: true}"
-             [(ngModel)]="node.selectedGPUs"/>
+             name="selectedGPU"/>
       <label class="form-check-label form-control-sm">{{gpu.model}}</label>
     </div>
 

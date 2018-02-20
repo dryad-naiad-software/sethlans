@@ -39,10 +39,10 @@ export class SetupNodeComponent implements OnInit {
         console.log(this.totalCores);
       }, (error) => console.log(error));
     if (this.availableComputeMethods.indexOf(ComputeMethod.GPU)) {
+      this.node.selectedGPUs = [];
       this.http.get('/api/info/available_gpus')
         .subscribe((gpus: any[]) => {
           this.availableGPUs = gpus;
-          this.node.selectedGPUs = [gpus[0]];
           console.log(this.availableGPUs);
         }, (error) => console.log(error));
     }
