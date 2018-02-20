@@ -1,5 +1,19 @@
 <form #settingsForm="ngForm" class="editForm">
-
+  <h5>Network</h5>
+  <div class="form-group">
+    <label for="ipAddress">IP Address:</label>
+    <input id="ipAddress" type="text" class="form-control form-control-sm"/>
+  </div>
+  <div class="form-group">
+    <label for="httpsPort">Sethlans HTTPS Port: </label>
+    <input id="httpsPort" type="number" class="form-control form-control-sm"/>
+  </div>
+  <hr/>
+  <h5>Install Location</h5>
+  <div class="form-group">
+    <label for="rootDir">Sethlans Home Directory</label>
+    <input id="rootDir" type="text" class="form-control form-control-sm"/>
+  </div>
 </form>
 <nav>
   <button class="btn btn-outline-secondary" (click)="previousStep()">Previous
