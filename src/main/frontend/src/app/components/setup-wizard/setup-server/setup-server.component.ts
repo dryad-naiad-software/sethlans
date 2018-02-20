@@ -29,6 +29,7 @@ export class SetupServerComponent implements OnInit {
   }
 
   previousStep() {
+    this.setupFormData.setServer(null);
     this.setupFormData.setProgress(1);
   }
 

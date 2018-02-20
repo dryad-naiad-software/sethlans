@@ -110,7 +110,7 @@ public class GPU {
                 return false;
             }
 
-            devices.add(new GPUDevice(new String(name).trim(), ram.getValue(), "CUDA_" + Integer.toString(num)));
+            devices.add(new GPUDevice(new String(name).trim(), ram.getValue(), "CUDA_" + Integer.toString(num), false, true));
         }
         return true;
     }

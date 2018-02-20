@@ -1,7 +1,9 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.hardware.CPU;
+import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,5 +48,10 @@ public class InfoController {
     @GetMapping(value = {"/total_cores"})
     public Integer getTotalCores() {
         return new CPU().getCores();
+    }
+
+    @GetMapping(value = {"/available_gpus"})
+    public List<GPUDevice> getAvailableGPUs() {
+        return GPU.listDevices();
     }
 }

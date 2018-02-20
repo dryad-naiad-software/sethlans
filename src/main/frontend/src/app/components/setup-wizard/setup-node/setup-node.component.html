@@ -4,10 +4,26 @@
     <select class="form-control form-control-sm"
             id="computeMethod"
             name="computeMethod"
-            #blenderVersion="ngModel"
+            #computeMethod="ngModel"
             [(ngModel)]="node.computeMethod">
       <option *ngFor="let method of availableComputeMethods">{{method}}</option>
     </select>
+
+  </div>
+  <div class="form-group" *ngIf="node.computeMethod !== computeMethodEnum.GPU">
+    <label for="cores">Rendering Cores:</label>
+    <mat-slider
+      id="cores"
+      min="1"
+      step="1"
+      thumb-label="true"
+      [max]="totalCores"
+      #cores="ngModel"
+      [ngModelOptions]="{standalone: true}"
+      [(ngModel)]="node.cores"></mat-slider>
+  </div>
+  <div class="form-group" *ngIf="node.computeMethod !== computeMethodEnum.CPU">
+
   </div>
 </form>
 <nav>

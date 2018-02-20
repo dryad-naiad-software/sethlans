@@ -12,7 +12,8 @@ import {ComputeMethod} from "../../../enums/compute.method";
 })
 export class SetupNodeComponent implements OnInit {
   @Input() setupFormData;
-  node: Node = new Node();
+  node: Node = new Node()
+  computeMethodEnum: any = ComputeMethod;
   availableComputeMethods: ComputeMethod[] = [];
   totalCores: number;
 
@@ -32,11 +33,13 @@ export class SetupNodeComponent implements OnInit {
     this.http.get('/api/info/total_cores', {responseType: 'text'})
       .subscribe((cores: any) => {
         this.totalCores = cores;
+        this.node.cores = cores;
         console.log(this.totalCores);
       }, (error) => console.log(error));
   }
 
   previousStep() {
+    this.setupFormData.setNode(null);
     this.setupFormData.setProgress(1);
   }
 

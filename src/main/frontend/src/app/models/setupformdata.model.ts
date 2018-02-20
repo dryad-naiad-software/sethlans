@@ -15,6 +15,8 @@ export class SetupFormData {
     this.setupProgress = SetupProgress.START;
     this.mode = Mode.SERVER;
     this.user = new User();
+    this.server = null;
+    this.node = null;
   }
 
   setMode(mode: Mode) {
