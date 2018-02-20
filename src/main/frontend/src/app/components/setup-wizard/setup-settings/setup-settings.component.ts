@@ -16,6 +16,21 @@ export class SetupSettingsComponent implements OnInit {
 
   ngOnInit() {
     this.setupFormData = this.setupFormDataService.getSetupFormData();
+    this.http.get('/api/info/root_directory', {responseType: 'text'})
+      .subscribe((rootDirectory: string) => {
+        this.setupFormData.setRootDirectory(rootDirectory);
+        console.log(this.setupFormData.getRootDirectory());
+      });
+    this.http.get('/api/info/sethlans_ip', {responseType: 'text'})
+      .subscribe((sethlansIP: string) => {
+        this.setupFormData.setIPAddress(sethlansIP);
+        console.log(this.setupFormData.getIPAddress());
+      });
+    this.http.get('/api/info/sethlans_port', {responseType: 'text'})
+      .subscribe((sethlansPort: any) => {
+        this.setupFormData.setSethlansPort(sethlansPort);
+        console.log(this.setupFormData.getSethlansPort());
+      });
   }
 
   previousStep() {

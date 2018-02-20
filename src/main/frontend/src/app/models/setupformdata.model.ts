@@ -10,6 +10,9 @@ export class SetupFormData {
   private user: User;
   private server: Server;
   private node: Node;
+  private ipAddress: string;
+  private port: number;
+  private rootDirectory: string;
 
   constructor() {
     this.setupProgress = SetupProgress.START;
@@ -57,6 +60,30 @@ export class SetupFormData {
 
   getNode(): Node {
     return this.node;
+  }
+
+  setIPAddress(ipAddress: string) {
+    this.ipAddress = ipAddress;
+  }
+
+  getIPAddress(): string {
+    return this.ipAddress;
+  }
+
+  setSethlansPort(port: number) {
+    this.port = port;
+  }
+
+  getSethlansPort(): number {
+    return this.port;
+  }
+
+  setRootDirectory(rootDirectory: string) {
+    this.rootDirectory = rootDirectory;
+  }
+
+  getRootDirectory(): string {
+    return this.rootDirectory;
   }
 
 }

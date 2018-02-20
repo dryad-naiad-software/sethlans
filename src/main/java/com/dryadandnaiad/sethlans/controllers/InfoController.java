@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -58,5 +59,28 @@ public class InfoController {
     @GetMapping(value = {"/available_gpus"})
     public List<GPUDevice> getAvailableGPUs() {
         return gpuDevices;
+    }
+
+    @GetMapping(value = {"/root_directory"})
+    public String getRootDirectory() {
+        if (firstTime) {
+            return System.getProperty("user.home") + File.separator + ".sethlans";
+        } else {
+            return null;
+        }
+    }
+
+    @GetMapping(value = {"/sethlans_port"})
+    public String getHttpsPort() {
+        if (firstTime) {
+            return "7443";
+        } else {
+            return SethlansUtils.getPort();
+        }
+    }
+
+    @GetMapping(value = {"/sethlans_ip"})
+    public String getSethlansIPAddress() {
+        return SethlansUtils.getIP();
     }
 }
