@@ -25,6 +25,11 @@ public class InfoController {
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
 
+    private List<String> blenderVersions = BlenderUtils.listVersions();
+    private List<ComputeType> availableMethods = SethlansUtils.getAvailableMethods();
+    private Integer totalCores = new CPU().getCores();
+    private List<GPUDevice> gpuDevices = GPU.listDevices();
+
     @GetMapping(value = {"/first_time"})
     public boolean isFirstTime() {
         return firstTime;
@@ -37,21 +42,21 @@ public class InfoController {
 
     @GetMapping(value = {"/blender_versions"})
     public List<String> getBlenderVersions() {
-        return BlenderUtils.listVersions();
+        return blenderVersions;
     }
 
     @GetMapping(value = {"/available_methods"})
     public List<ComputeType> getAvailableMethods() {
-        return SethlansUtils.getAvailableMethods();
+        return availableMethods;
     }
 
     @GetMapping(value = {"/total_cores"})
     public Integer getTotalCores() {
-        return new CPU().getCores();
+        return totalCores;
     }
 
     @GetMapping(value = {"/available_gpus"})
     public List<GPUDevice> getAvailableGPUs() {
-        return GPU.listDevices();
+        return gpuDevices;
     }
 }
