@@ -18,6 +18,7 @@ export class SetupNodeComponent implements OnInit {
   availableComputeMethods: ComputeMethod[] = [];
   totalCores: number;
   availableGPUs: GPU[] = [];
+  selectedGPUIds: number[] = [];
 
   constructor(private setupFormDataService: SetupFormDataService, private http: HttpClient) {
   }
