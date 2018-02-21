@@ -8,6 +8,7 @@ import {SetupServerComponent} from "./components/setup-wizard/setup-server/setup
 import {SetupNodeComponent} from "./components/setup-wizard/setup-node/setup-node.component";
 import {SetupDualComponent} from "./components/setup-wizard/setup-dual/setup-dual.component";
 import {SetupSettingsComponent} from "./components/setup-wizard/setup-settings/setup-settings.component";
+import {SetupSummaryComponent} from "./components/setup-wizard/setup-summary/setup-summary.component";
 
 ;
 
@@ -20,7 +21,8 @@ const routes: Routes = [
       {path: '', component: SetupServerComponent, outlet: 'server'},
       {path: '', component: SetupNodeComponent, outlet: 'node'},
       {path: '', component: SetupDualComponent, outlet: 'dual'},
-      {path: '', component: SetupSettingsComponent, outlet: 'settings'}
+      {path: '', component: SetupSettingsComponent, outlet: 'settings'},
+      {path: '', component: SetupSummaryComponent, outlet: 'summary'}
     ]
   }
 

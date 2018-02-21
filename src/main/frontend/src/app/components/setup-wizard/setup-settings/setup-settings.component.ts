@@ -46,6 +46,12 @@ export class SetupSettingsComponent implements OnInit {
   }
 
   save() {
+    this.nextStep();
+
+  }
+
+  private nextStep() {
+    this.setupFormData.setProgress(6)
 
   }
 }

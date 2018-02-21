@@ -1,4 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {SetupFormDataService} from "../../../services/setupformdata.service";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-setup-summary',
@@ -6,11 +8,20 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./setup-summary.component.scss']
 })
 export class SetupSummaryComponent implements OnInit {
+  @Input() setupFormData;
 
-  constructor() {
+  constructor(private setupFormDataService: SetupFormDataService, private http: HttpClient) {
   }
 
   ngOnInit() {
+    this.setupFormData = this.setupFormDataService.getSetupFormData();
   }
 
+  finish() {
+
+  }
+
+  previousStep() {
+    this.setupFormData.setProgress(5);
+  }
 }
