@@ -5,6 +5,7 @@
             id="computeMethod"
             name="computeMethod"
             #computeMethod="ngModel"
+            (change)="methodSelection()"
             [(ngModel)]="node.computeMethod">
       <option *ngFor="let method of availableComputeMethods">{{method}}</option>
     </select>
@@ -29,15 +30,15 @@
              class="form-control-sm"
              name="{{gpu.model}}"
              value="{{gpu.model}}"
+             #gpuSelection
+             required
              (change)="selected($event, gpu)"/>
       <label class="form-check-label form-control-sm">{{gpu.model}}</label>
     </div>
-
-
   </div>
 </form>
 <nav *ngIf="setupFormData.mode === mode.NODE">
   <button class="btn btn-outline-secondary" (click)="previousStep()">Previous
   </button>
-  <button [disabled]="!nodeForm.valid" class="btn btn-outline-primary float-right" (click)="save()">Next</button>
+  <button [disabled]="gpuEmpty" class="btn btn-outline-primary float-right" (click)="save()">Next</button>
 </nav>

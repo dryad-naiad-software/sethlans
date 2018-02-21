@@ -20,6 +20,7 @@ export class SetupNodeComponent implements OnInit {
   availableComputeMethods: ComputeMethod[] = [];
   totalCores: number;
   availableGPUs: GPU[] = [];
+  gpuEmpty: boolean = false;
 
   constructor(private setupFormDataService: SetupFormDataService, private http: HttpClient) {
   }
@@ -56,11 +57,25 @@ export class SetupNodeComponent implements OnInit {
     console.log(gpu);
     if (checked) {
       this.node.selectedGPUs.push(gpu);
+      this.gpuEmpty = false;
     } else if (!checked) {
       const index = this.node.selectedGPUs.indexOf(gpu);
       this.node.selectedGPUs.splice(index, 1);
+      this.gpuEmpty = true;
     }
     console.log(this.node.selectedGPUs);
+  }
+
+  methodSelection() {
+    if (this.node.computeMethod !== ComputeMethod.CPU) {
+      if (this.node.selectedGPUs.length == 0) {
+        this.gpuEmpty = true;
+        console.log(this.gpuEmpty);
+      } else {
+        this.gpuEmpty = false;
+        console.log(this.gpuEmpty);
+      }
+    }
   }
 
   save() {
