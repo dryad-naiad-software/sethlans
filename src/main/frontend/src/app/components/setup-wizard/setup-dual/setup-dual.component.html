@@ -3,5 +3,6 @@
 <nav>
   <button class="btn btn-outline-secondary" (click)="previousStep()">Previous
   </button>
-  <button class="btn btn-outline-primary float-right" (click)="save()">Next</button>
+  <button [disabled]="setupFormData.node.gpuEmpty" class="btn btn-outline-primary float-right" (click)="save()">Next
+  </button>
 </nav>

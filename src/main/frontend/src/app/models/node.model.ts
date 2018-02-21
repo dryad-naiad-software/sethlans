@@ -5,4 +5,5 @@ export class Node {
   computeMethod: ComputeMethod;
   cores: number;
   selectedGPUs: GPU[];
+  gpuEmpty: boolean = false;
 }

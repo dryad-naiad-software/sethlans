@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
 import {SetupFormDataService} from "../../../services/setupformdata.service";
 
 @Component({
@@ -6,7 +6,7 @@ import {SetupFormDataService} from "../../../services/setupformdata.service";
   templateUrl: './setup-dual.component.html',
   styleUrls: ['./setup-dual.component.scss']
 })
-export class SetupDualComponent implements OnInit {
+export class SetupDualComponent implements OnInit, AfterViewInit {
   @Input() setupFormData;
 
   constructor(private setupFormDataService: SetupFormDataService) {
@@ -21,6 +21,10 @@ export class SetupDualComponent implements OnInit {
     this.setupFormData.setNode(null);
     this.setupFormData.setServer(null);
 
+  }
+
+  ngAfterViewInit() {
+    this.setupFormData = this.setupFormDataService.getSetupFormData();
   }
 
   save() {
