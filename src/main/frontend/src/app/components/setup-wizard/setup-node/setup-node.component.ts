@@ -75,6 +75,11 @@ export class SetupNodeComponent implements OnInit {
         console.log(this.node.gpuEmpty);
       }
     }
+    if (this.node.computeMethod === ComputeMethod.CPU) {
+      // gpuEmpty is used to control the toggling of the Save button. False means that the node settings can be saved.
+      // CPU mode this is always set to false.
+      this.node.gpuEmpty = false;
+    }
   }
 
   save() {
