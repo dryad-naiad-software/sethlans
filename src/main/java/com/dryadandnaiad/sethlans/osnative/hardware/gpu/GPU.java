@@ -42,24 +42,27 @@ public class GPU {
     private static final Logger LOG = LoggerFactory.getLogger(GPU.class);
     public static List<GPUDevice> devices = null;
 
-    public static boolean generate() {
-        devices = new LinkedList<>();
+    public static boolean generateCUDA() {
+        if (devices == null) {
+            devices = new LinkedList<>();
+        }
+
         String path = getCUDALib();
         if (path == null) {
-            LOG.debug("GPU::generate no CUDA lib path found");
+            LOG.debug("GPU::generateCUDA no CUDA lib path found");
             return false;
         }
         CUDA cudalib;
         try {
             cudalib = Native.loadLibrary(path, CUDA.class);
         } catch (java.lang.UnsatisfiedLinkError e) {
-            LOG.debug("GPU::generate failed to load CUDA lib (path: " + path + ")");
+            LOG.debug("GPU::generateCUDA failed to load CUDA lib (path: " + path + ")");
             return false;
         } catch (java.lang.ExceptionInInitializerError e) {
-            LOG.error("GPU::generate ExceptionInInitializerError " + e.getMessage());
+            LOG.error("GPU::generateCUDA ExceptionInInitializerError " + e.getMessage());
             return false;
         } catch (Exception e) {
-            LOG.error("GPU::generate generic exception" + e.getMessage());
+            LOG.error("GPU::generateCUDA generic exception" + e.getMessage());
             return false;
         }
 
@@ -67,7 +70,7 @@ public class GPU {
 
         result = cudalib.cuInit(0);
         if (result != CUresult.CUDA_SUCCESS) {
-            LOG.info("GPU::generate cuInit failed (ret: " + result + ")");
+            LOG.info("GPU::generateCUDA cuInit failed (ret: " + result + ")");
             if (result == CUresult.CUDA_ERROR_UNKNOWN) {
                 LOG.info("If you are running Linux, this error is usually due to nvidia kernel module 'nvidia_uvm' not loaded. " +
                         "\nRelaunch the application as root or load the module. " +
@@ -84,7 +87,7 @@ public class GPU {
         result = cudalib.cuDeviceGetCount(count);
 
         if (result != CUresult.CUDA_SUCCESS) {
-            LOG.debug("GPU::generate cuDeviceGetCount failed (ret: " + CUresult.stringFor(result) + ")");
+            LOG.debug("GPU::generateCUDA cuDeviceGetCount failed (ret: " + CUresult.stringFor(result) + ")");
             return false;
         }
 
@@ -93,7 +96,7 @@ public class GPU {
 
             result = cudalib.cuDeviceGetName(name, 256, num);
             if (result != CUresult.CUDA_SUCCESS) {
-                LOG.debug("GPU::generate cuDeviceGetName failed (ret: " + CUresult.stringFor(result) + ")");
+                LOG.debug("GPU::generateCUDA cuDeviceGetName failed (ret: " + CUresult.stringFor(result) + ")");
                 continue;
             }
 
@@ -106,12 +109,18 @@ public class GPU {
             }
 
             if (result != CUresult.CUDA_SUCCESS) {
-                LOG.debug("GPU::generate cuDeviceTotalMem failed (ret: " + CUresult.stringFor(result) + ")");
+                LOG.debug("GPU::generateCUDA cuDeviceTotalMem failed (ret: " + CUresult.stringFor(result) + ")");
                 return false;
             }
 
             devices.add(new GPUDevice(new String(name).trim(), ram.getValue(), "CUDA_" + Integer.toString(num), false, true));
         }
+        return true;
+    }
+
+    public static boolean generateOpenCL() {
+        LOG.debug("Generate OPENCL Called");
+
         return true;
     }
 
@@ -130,7 +139,8 @@ public class GPU {
 
     public static List<String> listModels() {
         if (devices == null) {
-            generate();
+            generateCUDA();
+            generateOpenCL();
         }
 
         List<String> devs = new LinkedList<>();
@@ -142,7 +152,8 @@ public class GPU {
 
     public static List<GPUDevice> listDevices() {
         if (devices == null) {
-            generate();
+            generateCUDA();
+            generateOpenCL();
         }
 
         return devices;

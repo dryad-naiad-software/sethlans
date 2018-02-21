@@ -32,7 +32,7 @@ public class GPUTest {
 
     @Test
     public void test_gpu_lists_not_null() {
-        if (GPU.generate()) {
+        if (GPU.generateCUDA()) {
             System.out.println("GPU(s) detected");
             Assert.assertNotNull(GPU.devices);
             Assert.assertNotNull(GPU.listDevices());
