@@ -1,6 +1,8 @@
 <form #userForm="ngForm" class="editForm">
   <h5>Administrator Setup</h5>
-  <div class="form-group" ngbTooltip="Initial Administrator for Sethlans. Minimum of 4 characters." placement="left">
+  <div class="form-group"
+       ngbTooltip="Initial Administrator for Sethlans. Minimum of 4 characters, alpha-numeric characters only."
+       placement="left">
     <label for="username">Username</label>
     <input type="text"
            name="username"
@@ -9,8 +11,14 @@
            [(ngModel)]="user.username"
            [ngClass]="{'is-invalid':username.errors && username.touched}"
            class="form-control form-control-sm"
-           required>
-    <div class="invalid-feedback" [hidden]="username.valid">Username is required</div>
+           required pattern="^[a-zA-Z0-9]{4,}$">
+    <div class="invalid-feedback" [hidden]="username.valid">
+      <ul>
+        <li>Username is required.</li>
+        <li>Minimum of 4 characters, alpha-numeric characters only.</li>
+      </ul>
+    </div>
+
   </div>
   <div class="form-group"
        ngbTooltip="Password needs to be a minimum of 8 characters, at least one uppercase letter and one number."
@@ -25,9 +33,13 @@
            class="form-control form-control-sm"
            required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$">
 
-    <div class="invalid-feedback" [hidden]="password.valid">Password is required</div>
-    <div class="invalid-feedback" [hidden]="password.valid">Password must be a minimum 8 characters, at least one
-      UPPERCASE letter and one number.
+    <div class="invalid-feedback" [hidden]="password.valid">
+      <ul>
+        <li>Password is required.</li>
+        <li>Password must be a minimum 8 characters, at least one
+          UPPERCASE letter and one number.
+        </li>
+      </ul>
     </div>
   </div>
   <div class="form-group" ngbTooltip="Re-enter password" placement="left">
@@ -40,7 +52,11 @@
            class="form-control form-control-sm"
            [ngClass]="{'is-invalid':passwordConfirm.errors && passwordConfirm.touched}"
            required [fieldMatches]="password">
-    <div class="invalid-feedback" [hidden]="passwordConfirm.valid">Passwords must match</div>
+    <div class="invalid-feedback" [hidden]="passwordConfirm.valid">
+      <ul>
+        <li>Passwords must match.</li>
+      </ul>
+    </div>
   </div>
   <div class="form-group" ngbTooltip="Email used for notifications.">
     <label for="email">Email Address</label>
@@ -52,7 +68,11 @@
            class="form-control form-control-sm"
            [ngClass]="{'is-invalid':email.errors && email.touched}"
            required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" (keydown)="userSubmit($event, userForm)">
-    <div class="invalid-feedback" [hidden]="email.valid">Email is required and must be valid</div>
+    <div class="invalid-feedback" [hidden]="email.valid">
+      <ul>
+        <li>Email is required and must be valid.</li>
+      </ul>
+    </div>
   </div>
 </form>
 <nav>

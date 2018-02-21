@@ -11,7 +11,11 @@
            pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
            [ngClass]="{'is-invalid':ipAddress.errors && ipAddress.touched}"
            class="form-control form-control-sm"/>
-    <div class="invalid-feedback" [hidden]="ipAddress.valid">A valid IPv4 address is required.</div>
+    <div class="invalid-feedback" [hidden]="ipAddress.valid">
+      <ul>
+        <li>A valid IPv4 address is required.</li>
+      </ul>
+    </div>
   </div>
   <div class="form-group" ngbTooltip="Default HTTPS port is 7443. Sethlans will communicate on this port."
        placement="left">
@@ -25,7 +29,11 @@
            pattern="^(?:6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[1-9])$"
            [ngClass]="{'is-invalid':httpsPort.errors && httpsPort.touched}"
            class="form-control form-control-sm"/>
-    <div class="invalid-feedback" [hidden]="httpsPort.valid">A valid port is required. Range 1-65535</div>
+    <div class="invalid-feedback" [hidden]="httpsPort.valid">
+      <ul>
+        <li>A valid port is required. Range 1-65535</li>
+      </ul>
+    </div>
   </div>
   <hr/>
   <h5>Install Location</h5>
