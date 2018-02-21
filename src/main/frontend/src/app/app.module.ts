@@ -23,6 +23,7 @@ import {SetupNodeComponent} from './components/setup-wizard/setup-node/setup-nod
 import {SetupDualComponent} from './components/setup-wizard/setup-dual/setup-dual.component';
 import {SetupSettingsComponent} from './components/setup-wizard/setup-settings/setup-settings.component';
 import {MatSliderModule} from "@angular/material";
+import {SetupSummaryComponent} from './components/setup-wizard/setup-summary/setup-summary.component';
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import {MatSliderModule} from "@angular/material";
     SetupServerComponent,
     SetupNodeComponent,
     SetupDualComponent,
-    SetupSettingsComponent
+    SetupSettingsComponent,
+    SetupSummaryComponent
   ],
   imports: [
     BrowserModule,
