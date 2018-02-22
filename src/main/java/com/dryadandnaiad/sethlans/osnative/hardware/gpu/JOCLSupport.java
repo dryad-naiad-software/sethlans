@@ -10,13 +10,12 @@ import java.nio.ByteOrder;
 
 import static org.jocl.CL.clGetDeviceInfo;
 import static org.jocl.CL.clGetPlatformInfo;
-
-/**
- * Created Mario Estrella on 2/21/2018.
- * Dryad and Naiad Software LLC
- * mestrella@dryadandnaiad.com
- * Project: Sethlans
+/*
+ * JOCL - Java bindings for OpenCL
+ *
+ * Copyright 2010 Marco Hutter - http://www.jocl.org/
  */
+
 public class JOCLSupport {
     /**
      * Returns the value of the device info parameter with the given name
