@@ -152,7 +152,7 @@ public class GPU {
             // CL_DEVICE_NAME
             String openCLDeviceId = JOCLSupport.getString(device, CL_DEVICE_NAME);
             // CL_DEVICE_VENDOR
-            String deviceVendor = JOCLSupport.getString(device, CL_DEVICE_VENDOR).toLowerCase();
+            String deviceVendor = JOCLSupport.getString(device, CL_DEVICE_VENDOR);
             // CL_DEVICE_GLOBAL_MEM_SIZE
             memory = JOCLSupport.getLong(device, CL_DEVICE_GLOBAL_MEM_SIZE);
 
