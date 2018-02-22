@@ -156,11 +156,16 @@ public class GPU {
             // CL_DEVICE_GLOBAL_MEM_SIZE
             memory = JOCLSupport.getLong(device, CL_DEVICE_GLOBAL_MEM_SIZE);
 
+            String openCLVersionString = JOCLSupport.getString(device, CL_DEVICE_OPENCL_C_VERSION);
+            float openCLVersion = Float.parseFloat(openCLVersionString.substring(openCLVersionString.toLowerCase().lastIndexOf("c") + 1));
+            LOG.debug("Open CL version " + openCLVersion);
+
+
             deviceID = "OPENCL_" + i;
             model = deviceVendor + " " + openCLDeviceId;
 
 
-            if (!deviceVendor.contains("nvidia")) {
+            if (!deviceVendor.contains("nvidia") && openCLVersion > 1.2) {
                 devices.add(new GPUDevice(model, memory, deviceID, true, false));
             }
 
