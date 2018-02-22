@@ -113,12 +113,12 @@ public class GPU {
             }
 
         } catch (java.lang.UnsatisfiedLinkError e) {
-            LOG.debug("GPU::generateCUDA failed to load CUDA lib (path: " + path + ")");
+            LOG.debug("Failed to load CUDA lib (path: " + path + "). CUDA is probably not installed.");
         } catch (java.lang.ExceptionInInitializerError e) {
-            LOG.error("GPU::generateCUDA ExceptionInInitializerError " + e.getMessage());
+            LOG.error("ExceptionInInitializerError " + e.getMessage());
 
         } catch (Exception e) {
-            LOG.error("GPU::generateCUDA generic exception" + e.getMessage());
+            LOG.error("Generic exception" + e.getMessage());
 
         }
     }
