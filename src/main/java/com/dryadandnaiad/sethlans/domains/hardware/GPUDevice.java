@@ -39,12 +39,12 @@ public class GPUDevice {
     private int rating;
     private boolean openCL;
     private boolean cuda;
-    private String cudaName;
+    private String deviceID;
 
-    public GPUDevice(String model, long ram, String cudaName, boolean openCL, boolean cuda) {
+    public GPUDevice(String model, long ram, String deviceID, boolean openCL, boolean cuda) {
         this.model = model;
         this.memory = ram;
-        this.cudaName = cudaName;
+        this.deviceID = deviceID;
         this.openCL = openCL;
         this.cuda = cuda;
     }

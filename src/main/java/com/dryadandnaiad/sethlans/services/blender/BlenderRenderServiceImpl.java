@@ -325,8 +325,8 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         List<String> unselectedGPUs = new ArrayList<>();
         for (GPUDevice gpuDevice : gpuDeviceList) {
             for (String cuda : cudaList) {
-                if (!cuda.equals(gpuDevice.getCudaName())) {
-                    unselectedGPUs.add(gpuDevice.getCudaName());
+                if (!cuda.equals(gpuDevice.getDeviceID())) {
+                    unselectedGPUs.add(gpuDevice.getDeviceID());
                 }
             }
         }

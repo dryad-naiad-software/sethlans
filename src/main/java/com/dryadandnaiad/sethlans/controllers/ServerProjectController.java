@@ -112,7 +112,7 @@ public class ServerProjectController {
             }
             if (compute_type.equals(ComputeType.GPU)) {
                 for (GPUDevice gpuDevice : sethlansNode.getSelectedGPUs()) {
-                    if (gpuDevice.getCudaName().equals(cuda_name)) {
+                    if (gpuDevice.getDeviceID().equals(cuda_name)) {
                         gpuDevice.setRating(rating);
                         LOG.debug(sethlansNode.toString());
                     }

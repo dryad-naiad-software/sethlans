@@ -124,10 +124,7 @@ public class GPU {
         LOG.debug("Number of platforms: " + numPlatforms[0]);
         String model;
         long memory;
-        int rating;
-        String cudaName = "";
-        boolean openCL = true;
-        boolean cuda = false;
+        String deviceID = "";
 
         // Obtain the platform IDs
         cl_platform_id platforms[] = new cl_platform_id[numPlatforms[0]];
@@ -150,7 +147,9 @@ public class GPU {
             openCLdevices.addAll(Arrays.asList(devicesArray));
         }
 
-        for (cl_device_id device : openCLdevices) {
+        for (int i = 0; i < openCLdevices.size(); i++) {
+            cl_device_id device = openCLdevices.get(i);
+            deviceID = "OPENCL_" + i;
             // CL_DEVICE_NAME
             String deviceName = JOCLSupport.getString(device, CL_DEVICE_NAME);
             // CL_DEVICE_VENDOR
@@ -158,7 +157,7 @@ public class GPU {
             model = deviceVendor + " " + deviceName;
             // CL_DEVICE_GLOBAL_MEM_SIZE
             memory = JOCLSupport.getLong(device, CL_DEVICE_GLOBAL_MEM_SIZE);
-            devices.add(new GPUDevice(model, memory, cudaName, true, false));
+            devices.add(new GPUDevice(model, memory, deviceID, true, false));
         }
     }
 
