@@ -165,7 +165,7 @@ public class GPU {
             model = deviceVendor + " " + openCLDeviceId;
 
 
-            if (!deviceVendor.contains("nvidia") && openCLVersion > 1.2) {
+            if (!deviceVendor.toLowerCase().contains("nvidia") && openCLVersion > 1.2) {
                 devices.add(new GPUDevice(model, memory, deviceID, true, false));
             }
 
