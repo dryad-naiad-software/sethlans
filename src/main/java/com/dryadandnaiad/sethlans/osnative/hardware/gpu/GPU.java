@@ -20,7 +20,6 @@
 package com.dryadandnaiad.sethlans.osnative.hardware.gpu;
 
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
-import com.dryadandnaiad.sethlans.utils.AMDGFXID;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.LongByReference;
@@ -150,21 +149,20 @@ public class GPU {
 
         for (int i = 0; i < openCLdevices.size(); i++) {
             cl_device_id device = openCLdevices.get(i);
-            deviceID = "OPENCL_" + i;
             // CL_DEVICE_NAME
             String openCLDeviceId = JOCLSupport.getString(device, CL_DEVICE_NAME);
-            if (AMDGFXID.getDeviceName(openCLDeviceId) != null) {
-                model = AMDGFXID.getDeviceName(openCLDeviceId);
-            } else {
-                model = openCLDeviceId;
-            }
             // CL_DEVICE_VENDOR
             String deviceVendor = JOCLSupport.getString(device, CL_DEVICE_VENDOR).toLowerCase();
+            // CL_DEVICE_GLOBAL_MEM_SIZE
             memory = JOCLSupport.getLong(device, CL_DEVICE_GLOBAL_MEM_SIZE);
+
+            deviceID = "OPENCL_" + i;
+            model = deviceVendor + " " + openCLDeviceId;
+
+
             if (!deviceVendor.contains("nvidia")) {
                 devices.add(new GPUDevice(model, memory, deviceID, true, false));
             }
-            // CL_DEVICE_GLOBAL_MEM_SIZE
 
 
         }
