@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.osnative.hardware.gpu;
 
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
+import com.dryadandnaiad.sethlans.utils.AMDGFXID;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.LongByReference;
@@ -124,7 +125,7 @@ public class GPU {
         LOG.debug("Number of platforms: " + numPlatforms[0]);
         String model;
         long memory;
-        String deviceID = "";
+        String deviceID;
 
         // Obtain the platform IDs
         cl_platform_id platforms[] = new cl_platform_id[numPlatforms[0]];
@@ -151,13 +152,21 @@ public class GPU {
             cl_device_id device = openCLdevices.get(i);
             deviceID = "OPENCL_" + i;
             // CL_DEVICE_NAME
-            String deviceName = JOCLSupport.getString(device, CL_DEVICE_NAME);
+            String openCLDeviceId = JOCLSupport.getString(device, CL_DEVICE_NAME);
+            if (AMDGFXID.getDeviceName(openCLDeviceId) != null) {
+                model = AMDGFXID.getDeviceName(openCLDeviceId);
+            } else {
+                model = openCLDeviceId;
+            }
             // CL_DEVICE_VENDOR
-            String deviceVendor = JOCLSupport.getString(device, CL_DEVICE_VENDOR);
-            model = deviceVendor + " " + deviceName;
-            // CL_DEVICE_GLOBAL_MEM_SIZE
+            String deviceVendor = JOCLSupport.getString(device, CL_DEVICE_VENDOR).toLowerCase();
             memory = JOCLSupport.getLong(device, CL_DEVICE_GLOBAL_MEM_SIZE);
-            devices.add(new GPUDevice(model, memory, deviceID, true, false));
+            if (!deviceVendor.contains("nvidia")) {
+                devices.add(new GPUDevice(model, memory, deviceID, true, false));
+            }
+            // CL_DEVICE_GLOBAL_MEM_SIZE
+
+
         }
     }
 
