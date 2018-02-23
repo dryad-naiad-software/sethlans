@@ -9,12 +9,20 @@ import {HttpClient} from "@angular/common/http";
 
 export class FooterComponent implements OnInit {
   sethlansVersion: string;
+  sethlansMode: string;
 
   constructor(private http: HttpClient) {
   }
 
   ngOnInit() {
-    this.http.get('/api/info/version', {responseType: 'text'}).subscribe((version: string) => this.sethlansVersion = version);
+    this.http.get('/api/info/version', {responseType: 'text'})
+      .subscribe((version: string) => {
+        this.sethlansVersion = version;
+      });
+    this.http.get('/api/info/sethlans_mode', {responseType: 'text'})
+      .subscribe((sethlansmode: string) => {
+        this.sethlansMode = sethlansmode;
+      });
   }
 
 }

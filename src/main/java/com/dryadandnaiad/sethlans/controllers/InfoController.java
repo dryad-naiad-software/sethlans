@@ -3,6 +3,7 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
@@ -25,6 +26,9 @@ import java.util.List;
 public class InfoController {
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
+
+    @Value("${sethlans.mode}")
+    private SethlansMode mode;
 
     private List<String> blenderVersions = BlenderUtils.listVersions();
     private List<ComputeType> availableMethods = SethlansUtils.getAvailableMethods();
@@ -77,6 +81,11 @@ public class InfoController {
         } else {
             return SethlansUtils.getPort();
         }
+    }
+
+    @GetMapping(value = {"/sethlans_mode"})
+    public String getSethlansMode() {
+        return mode.toString();
     }
 
     @GetMapping(value = {"/sethlans_ip"})

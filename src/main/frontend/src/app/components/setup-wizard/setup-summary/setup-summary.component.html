@@ -1,6 +1,61 @@
-<p>
-  setup-summary works!
-</p>
+<table class="table table-sm">
+  <thead>
+  <tr>
+    <th>Setting</th>
+    <th>Value</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td>Mode</td>
+    <td>{{setupFormData.mode}}</td>
+  </tr>
+  <tr>
+    <td>Administrative User</td>
+    <td>{{setupFormData.user.username}}</td>
+  </tr>
+  <tr>
+    <td>Administrative User Email</td>
+    <td>{{setupFormData.user.email}}</td>
+  </tr>
+  <tr>
+    <td>IP Address</td>
+    <td>{{setupFormData.ipAddress}}</td>
+  </tr>
+  <tr>
+    <td>HTTP Port</td>
+    <td>{{setupFormData.port}}</td>
+  </tr>
+  <tr>
+    <td>Sethlans Home Directory</td>
+    <td>{{setupFormData.rootDirectory}}</td>
+  </tr>
+  <tr *ngIf="setupFormData.mode === mode.SERVER || setupFormData.mode === mode.DUAL">
+    <td>Default Blender Version</td>
+    <td>{{setupFormData.server.blenderVersion}}</td>
+  </tr>
+  <tr *ngIf="setupFormData.mode === mode.NODE || setupFormData.mode === mode.DUAL">
+    <td>Compute Method</td>
+    <td>{{setupFormData.node.computeMethod}}</td>
+  </tr>
+  <tr
+    *ngIf="setupFormData.mode === mode.NODE && setupFormData.node.computeMethod !== computeMethodEnum.GPU || setupFormData.mode === mode.DUAL && setupFormData.node.computeMethod !== computeMethodEnum.GPU ">
+    <td>Rendering Cores</td>
+    <td>{{setupFormData.node.cores}}</td>
+  </tr>
+  <tr
+    *ngIf="setupFormData.mode === mode.NODE && setupFormData.node.computeMethod !== computeMethodEnum.CPU || setupFormData.mode === mode.DUAL && setupFormData.node.computeMethod !== computeMethodEnum.CPU ">
+    <td>Selected GPUs</td>
+    <td>
+      <ul class="list-unstyled">
+        <li *ngFor="let gpu of setupFormData.node.selectedGPUs">{{gpu.model}}</li>
+      </ul>
+    </td>
+  </tr>
+
+
+  </tbody>
+</table>
 <nav>
   <button class="btn btn-outline-secondary" (click)="previousStep()">Previous
   </button>
