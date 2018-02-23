@@ -1,14 +1,12 @@
 package com.dryadandnaiad.sethlans.domains.database.user;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
-import com.dryadandnaiad.sethlans.enums.Roles;
+import com.dryadandnaiad.sethlans.enums.Role;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import java.util.List;
+import javax.persistence.Enumerated;
 
 /**
  * Created Mario Estrella on 2/16/18.
@@ -21,8 +19,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 public class SethlansUser extends AbstractEntityClass {
     private String username;
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<Roles> roles;
+    @Enumerated
+    private Role role;
     private String password;
     private boolean isActive;
 }

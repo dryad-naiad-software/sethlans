@@ -6,6 +6,6 @@ package com.dryadandnaiad.sethlans.enums;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public enum Roles {
+public enum Role {
     SUPER_ADMINISTRATOR, ADMINISTRATOR, USER
 }
