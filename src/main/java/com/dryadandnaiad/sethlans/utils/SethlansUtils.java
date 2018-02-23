@@ -266,7 +266,7 @@ public class SethlansUtils {
                 properties.load(new InputStreamReader(new Resources("sethlans.properties").getResource(), "UTF-8"));
             }
             ip = properties.getProperty("server.ipaddress");
-            LOG.debug(ip);
+            LOG.debug("IP in current config file equals: " + ip);
             if (ip.equals("null")) {
                 if (SystemUtils.IS_OS_LINUX) {
                     // Make a connection to 8.8.8.8 DNS in order to get IP address

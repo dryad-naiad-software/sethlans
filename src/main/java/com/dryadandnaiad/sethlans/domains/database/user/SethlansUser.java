@@ -5,7 +5,9 @@ import com.dryadandnaiad.sethlans.enums.Roles;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import java.util.List;
 
 /**
@@ -19,6 +21,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 public class SethlansUser extends AbstractEntityClass {
     private String username;
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<Roles> roles;
     private String password;
     private boolean isActive;
