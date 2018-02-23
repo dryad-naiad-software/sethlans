@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.domains.database.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.ProjectType;
@@ -45,6 +46,7 @@ public class BlenderProject extends AbstractEntityClass {
     private ProjectType projectType;
     private BlenderEngine blenderEngine;
     private ComputeType renderOn;
+    private SethlansUser sethlansUser;
     private int startFrame;
     private int endFrame;
     private int stepFrame;

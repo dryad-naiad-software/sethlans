@@ -7,5 +7,5 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum Roles {
-    SUPER_ADMINISTRATOR, ADMINISTRATOR, USER, VIEWER
+    SUPER_ADMINISTRATOR, ADMINISTRATOR, USER
 }
