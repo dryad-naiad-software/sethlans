@@ -5,8 +5,10 @@ import com.dryadandnaiad.sethlans.enums.Role;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import java.util.List;
 
 /**
  * Created Mario Estrella on 2/16/18.
@@ -19,8 +21,8 @@ import javax.persistence.Enumerated;
 @EqualsAndHashCode(callSuper = false)
 public class SethlansUser extends AbstractEntityClass {
     private String username;
-    @Enumerated
-    private Role role;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<Role> roles;
     private String password;
     private boolean isActive;
 }
