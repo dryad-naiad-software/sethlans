@@ -80,6 +80,9 @@ export class SetupNodeComponent implements OnInit {
       // CPU mode this is always set to false.
       this.node.gpuEmpty = false;
     }
+    if (this.node.computeMethod === ComputeMethod.GPU) {
+      this.node.cores = null;
+    }
   }
 
   save() {

@@ -1,3 +1,3 @@
 export class Server {
-  blenderVersion: string[];
+  blenderVersion: string;
 }

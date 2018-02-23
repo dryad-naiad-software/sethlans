@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {SetupFormDataService} from "../../../services/setupformdata.service";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Mode} from "../../../enums/mode";
 import {ComputeMethod} from "../../../enums/compute.method";
 
@@ -22,7 +22,15 @@ export class SetupSummaryComponent implements OnInit {
   }
 
   finish() {
-
+    console.log("finished");
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    this.http.post("/api/setup/submit", JSON.stringify(this.setupFormData), httpOptions).subscribe((submitted: boolean) => {
+      console.log(submitted);
+    });
   }
 
   previousStep() {

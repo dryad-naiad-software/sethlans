@@ -26,7 +26,7 @@ export class SetupServerComponent implements OnInit {
         (blenderVersions: any[]) => {
           this.availableBlenderVersions = blenderVersions;
           console.log(this.availableBlenderVersions);
-          this.server.blenderVersion = [blenderVersions[0]]
+          this.server.blenderVersion = this.availableBlenderVersions[0];
         }, (error) => console.log(error));
   }
 
