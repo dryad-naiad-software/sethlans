@@ -1,10 +1,12 @@
 package com.dryadandnaiad.sethlans.domains.database.user;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+import com.dryadandnaiad.sethlans.enums.Roles;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.Entity;
+import java.util.List;
 
 /**
  * Created Mario Estrella on 2/16/18.
@@ -17,6 +19,7 @@ import javax.persistence.Entity;
 @EqualsAndHashCode(callSuper = false)
 public class SethlansUser extends AbstractEntityClass {
     private String username;
+    private List<Roles> roles;
     private String password;
     private boolean isActive;
 }
