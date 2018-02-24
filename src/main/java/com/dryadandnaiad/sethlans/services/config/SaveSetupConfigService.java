@@ -9,5 +9,5 @@ import com.dryadandnaiad.sethlans.forms.SetupForm;
  * Project: sethlans
  */
 public interface SaveSetupConfigService {
-    void saveSettings(SetupForm setupForm);
+    void saveSetupSettings(SetupForm setupForm);
 }

@@ -45,9 +45,7 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
 
     @Override
     public List<SethlansNode> listAll() {
-        List<SethlansNode> sethlansNodes = new ArrayList<>();
-        nodeRepository.findAll().forEach(sethlansNodes::add);
-        return sethlansNodes;
+        return new ArrayList<>(nodeRepository.findAll());
     }
 
     @Override

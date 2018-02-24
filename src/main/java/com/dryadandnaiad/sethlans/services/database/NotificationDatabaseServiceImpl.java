@@ -43,9 +43,7 @@ public class NotificationDatabaseServiceImpl implements NotificationDatabaseServ
 
     @Override
     public List<SethlansNotification> listAll() {
-        List<SethlansNotification> sethlansNotifications = new ArrayList<>();
-        notificationRepository.findAll().forEach(sethlansNotifications::add);
-        return sethlansNotifications;
+        return new ArrayList<>(notificationRepository.findAll());
     }
 
     @Override

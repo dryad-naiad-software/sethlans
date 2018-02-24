@@ -42,9 +42,7 @@ public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueue
 
     @Override
     public List<BlenderRenderQueueItem> listAll() {
-        List<BlenderRenderQueueItem> blenderRenderQueueItems = new ArrayList<>();
-        blenderRenderQueueRepository.findAll().forEach(blenderRenderQueueItems::add);
-        return blenderRenderQueueItems;
+        return new ArrayList<>(blenderRenderQueueRepository.findAll());
     }
 
     @Override

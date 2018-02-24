@@ -30,7 +30,6 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import java.util.List;
 
@@ -48,7 +47,7 @@ public class BlenderProject extends AbstractEntityClass {
     private ProjectType projectType;
     private BlenderEngine blenderEngine;
     private ComputeType renderOn;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private SethlansUser sethlansUser;
     private int startFrame;
     private int endFrame;

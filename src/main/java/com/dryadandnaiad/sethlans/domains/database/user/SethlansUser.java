@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Transient;
 import java.util.List;
 
 /**
@@ -25,4 +26,6 @@ public class SethlansUser extends AbstractEntityClass {
     private List<Role> roles;
     private String password;
     private boolean isActive;
+    @Transient
+    private boolean passwordUpdated;
 }

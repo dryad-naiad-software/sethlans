@@ -39,9 +39,7 @@ public class BlenderBenchmarkTaskDatabaseServiceImpl implements BlenderBenchmark
 
     @Override
     public List<BlenderBenchmarkTask> listAll() {
-        List<BlenderBenchmarkTask> blenderBenchmarkTasks = new ArrayList<>();
-        blenderBenchmarkTaskRepository.findAll().forEach(blenderBenchmarkTasks::add);
-        return blenderBenchmarkTasks;
+        return new ArrayList<>(blenderBenchmarkTaskRepository.findAll());
     }
 
 

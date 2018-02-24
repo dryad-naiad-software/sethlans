@@ -44,9 +44,7 @@ public class BlenderRenderTaskDatabaseServiceImpl implements BlenderRenderTaskDa
 
     @Override
     public List<BlenderRenderTask> listAll() {
-        List<BlenderRenderTask> blenderRenderTasks = new ArrayList<>();
-        blenderRenderTaskRepository.findAll().forEach(blenderRenderTasks::add);
-        return blenderRenderTasks;
+        return new ArrayList<>(blenderRenderTaskRepository.findAll());
     }
 
     @Override
