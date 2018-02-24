@@ -13,6 +13,7 @@
         <router-outlet *ngIf="setupFormData.setupProgress === progress.DUAL" name="dual"></router-outlet>
         <router-outlet *ngIf="setupFormData.setupProgress === progress.SETTINGS" name="settings"></router-outlet>
         <router-outlet *ngIf="setupFormData.setupProgress === progress.SUMMARY" name="summary"></router-outlet>
+        <router-outlet *ngIf="setupFormData.setupProgress === progress.FINISHED" name="finished"></router-outlet>
       </div>
     </div>
   </div>

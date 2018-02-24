@@ -52,7 +52,7 @@ public class NodeInfoController {
     @Value("${sethlans.cores}")
     private String cores;
 
-    @Value("${sethlans.cuda}")
+    @Value("${sethlans.gpu_id}")
     private String cuda;
 
 

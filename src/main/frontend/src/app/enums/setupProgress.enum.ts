@@ -5,5 +5,6 @@ export enum SetupProgress {
   NODE,
   DUAL,
   SETTINGS,
-  SUMMARY
+  SUMMARY,
+  FINISHED
 }

@@ -6,8 +6,8 @@ export class Node {
   private cores: number;
   private selectedGPUs: GPU[];
   private gpuEmpty: boolean = false;
-  private tileSizeCPU: number;
-  private tileSizeGPU: number;
+  private tileSizeCPU: number = 32;
+  private tileSizeGPU: number = 256;
 
   setComputeMethod(computeMethod: ComputeMethod) {
     this.computeMethod = computeMethod;

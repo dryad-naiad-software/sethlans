@@ -24,6 +24,8 @@ import {SetupDualComponent} from './components/setup-wizard/setup-dual/setup-dua
 import {SetupSettingsComponent} from './components/setup-wizard/setup-settings/setup-settings.component';
 import {MatSliderModule} from "@angular/material";
 import {SetupSummaryComponent} from './components/setup-wizard/setup-summary/setup-summary.component';
+import {SetupFinishedComponent} from './components/setup-wizard/setup-finished/setup-finished.component';
+import {WindowRef} from "./services/windowref.service";
 
 
 @NgModule({
@@ -43,7 +45,8 @@ import {SetupSummaryComponent} from './components/setup-wizard/setup-summary/set
     SetupNodeComponent,
     SetupDualComponent,
     SetupSettingsComponent,
-    SetupSummaryComponent
+    SetupSummaryComponent,
+    SetupFinishedComponent
   ],
   imports: [
     BrowserModule,
@@ -53,7 +56,7 @@ import {SetupSummaryComponent} from './components/setup-wizard/setup-summary/set
     HttpClientModule,
     AppRoutingModule
   ],
-  providers: [Title, SetupFormDataService],
+  providers: [Title, SetupFormDataService, WindowRef],
   bootstrap: [AppComponent]
 })
 export class AppModule {

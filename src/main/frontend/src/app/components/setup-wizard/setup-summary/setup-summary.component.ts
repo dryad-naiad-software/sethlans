@@ -29,7 +29,9 @@ export class SetupSummaryComponent implements OnInit {
       })
     };
     this.http.post("/api/setup/submit", JSON.stringify(this.setupFormData), httpOptions).subscribe((submitted: boolean) => {
-      console.log(submitted);
+      if (submitted === true) {
+        this.setupFormData.setProgress(7);
+      }
     });
   }
 

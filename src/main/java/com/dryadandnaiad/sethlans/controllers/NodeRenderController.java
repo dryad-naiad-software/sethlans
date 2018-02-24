@@ -53,7 +53,7 @@ import java.util.List;
 @RestController
 @Profile({"NODE", "DUAL"})
 public class NodeRenderController {
-    @Value("${sethlans.cuda}")
+    @Value("${sethlans.gpu_id}")
     private String cuda;
 
     private SethlansServerDatabaseService sethlansServerDatabaseService;

@@ -61,7 +61,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     @Value("${sethlans.cacheDir}")
     private String cacheDir;
 
-    @Value("${sethlans.cuda}")
+    @Value("${sethlans.gpu_id}")
     private String cuda;
 
     @Value("${sethlans.tileSizeCPU}")
