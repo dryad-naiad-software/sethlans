@@ -55,6 +55,12 @@ public class SethlansUserDatabaseServiceImpl implements SethlansUserDatabaseServ
         sethlansUserRepository.delete(sethlansUser);
     }
 
+    @Override
+    public SethlansUser findByUserName(String username) {
+        return sethlansUserRepository.findByUsername(username);
+
+    }
+
     @Autowired
     public void setSethlansUserRepository(SethlansUserRepository sethlansUserRepository) {
         this.sethlansUserRepository = sethlansUserRepository;

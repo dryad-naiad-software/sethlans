@@ -10,4 +10,6 @@ import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
  */
 public interface SethlansUserDatabaseService extends CRUDService<SethlansUser> {
     void delete(SethlansUser sethlansUser);
+
+    SethlansUser findByUserName(String username);
 }

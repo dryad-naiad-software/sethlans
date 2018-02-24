@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Login} from "../../models/login.model";
 
 @Component({
   selector: 'app-login',
@@ -8,16 +9,22 @@ import {HttpClient} from "@angular/common/http";
 })
 export class LoginComponent implements OnInit {
   logo: any = "assets/images/logo.png";
-  username: string;
-  password: string;
+  login: Login;
 
   constructor(private http: HttpClient) {
   }
 
   ngOnInit() {
+    this.login = new Login();
   }
 
   onSubmit() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    this.http.post("/login", JSON.stringify(this.login), httpOptions).subscribe();
 
   }
 
