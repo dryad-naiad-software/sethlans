@@ -28,4 +28,14 @@ public class SethlansUser extends AbstractEntityClass {
     private boolean isActive;
     @Transient
     private boolean passwordUpdated;
+
+    @Override
+    public String toString() {
+        return "SethlansUser{" +
+                "username='" + username + '\'' +
+                ", roles=" + roles +
+                ", isActive=" + isActive +
+                ", passwordUpdated=" + passwordUpdated +
+                '}';
+    }
 }

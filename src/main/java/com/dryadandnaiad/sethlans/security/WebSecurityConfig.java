@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,7 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
  * Project: sethlans
  */
 @EnableWebSecurity
-public class WebSecurity extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Value("${sethlans.firsttime}")
@@ -32,8 +33,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         if (!firstTime) {
             http.cors().and().csrf().disable().authorizeRequests()
-                    .antMatchers(HttpMethod.POST).permitAll()
+                    .antMatchers("/api/info/*").permitAll()
                     .anyRequest().authenticated()
+                    .and().formLogin().loginPage("/login").permitAll()
                     .and()
                     .addFilter(new JWTAuthenticationFilter(authenticationManager()))
                     .addFilter(new JWTAuthorizationFilter(authenticationManager()))
@@ -49,6 +51,14 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring()
+                .antMatchers(HttpMethod.OPTIONS, "/**")
+                .antMatchers("/*.{*}")
+                .antMatchers("/assets/images/**");
     }
 
     @Bean
