@@ -1,5 +1,5 @@
 export class Server {
-  private blenderVersion: string;
+  blenderVersion: string;
 
   getBlenderVersion(): string {
     return this.blenderVersion;

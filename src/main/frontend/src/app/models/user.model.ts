@@ -1,13 +1,13 @@
 import {Role} from "../enums/role.enum";
 
 export class User {
-  private username: string;
-  private password: string;
-  private passwordConfirm: string;
-  private email: string;
-  private roles: Role[];
-  private active: boolean;
-  private passwordUpdated: boolean;
+  username: string;
+  password: string;
+  passwordConfirm: string;
+  email: string;
+  roles: Role[];
+  active: boolean;
+  passwordUpdated: boolean;
 
 
   setUserName(username: string) {

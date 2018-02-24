@@ -2,12 +2,12 @@ import {ComputeMethod} from "../enums/compute.method.enum";
 import {GPU} from "./gpu.model";
 
 export class Node {
-  private computeMethod: ComputeMethod;
-  private cores: number;
-  private selectedGPUs: GPU[];
-  private gpuEmpty: boolean = false;
-  private tileSizeCPU: number = 32;
-  private tileSizeGPU: number = 256;
+  computeMethod: ComputeMethod;
+  cores: number;
+  selectedGPUs: GPU[];
+  gpuEmpty: boolean = false;
+  tileSizeCPU: number = 32;
+  tileSizeGPU: number = 256;
 
   setComputeMethod(computeMethod: ComputeMethod) {
     this.computeMethod = computeMethod;
