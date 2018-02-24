@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {SetupFormData} from "../models/setupformdata.model";
-import {Mode} from "../enums/mode";
+import {Mode} from "../enums/mode.enum";
 import {User} from "../models/user.model";
 
 @Injectable()

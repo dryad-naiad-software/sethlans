@@ -1,9 +1,14 @@
+import {Role} from "../enums/role.enum";
+
 export class User {
-  username: string;
-  password: string;
-  passwordConfirm: string;
-  email: string;
+  private username: string;
+  private password: string;
+  private passwordConfirm: string;
+  private email: string;
+  private roles: Role[];
   private active: boolean;
+  private passwordUpdated: boolean;
+
 
   setUserName(username: string) {
     this.username = username;
@@ -40,5 +45,21 @@ export class User {
   setPasswordConfirm(passwordConfirm: string) {
     this.passwordConfirm = passwordConfirm;
 
+  }
+
+  getRoles(): Role[] {
+    return this.roles;
+  }
+
+  setRoles(roles: Role[]) {
+    this.roles = roles;
+  }
+
+  isPasswordUpdated(): boolean {
+    return this.passwordUpdated;
+  }
+
+  setPasswordUpdated(passwordUpdated: boolean) {
+    this.passwordUpdated = passwordUpdated;
   }
 }

@@ -1,3 +1,11 @@
 export class Server {
-  blenderVersion: string;
+  private blenderVersion: string;
+
+  getBlenderVersion(): string {
+    return this.blenderVersion;
+  }
+
+  setBlenderVersion(blenderVersion: string) {
+    this.blenderVersion = blenderVersion;
+  }
 }

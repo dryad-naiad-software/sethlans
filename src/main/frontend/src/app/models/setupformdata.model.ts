@@ -1,5 +1,5 @@
-import {Mode} from "../enums/mode";
-import {SetupProgress} from "../enums/setupProgress";
+import {Mode} from "../enums/mode.enum";
+import {SetupProgress} from "../enums/setupProgress.enum";
 import {User} from "./user.model";
 import {Server} from "./server.model";
 import {Node} from "./node.model";

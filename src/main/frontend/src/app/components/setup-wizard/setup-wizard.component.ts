@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {SetupFormDataService} from "../../services/setupformdata.service";
-import {SetupProgress} from "../../enums/setupProgress";
+import {SetupProgress} from "../../enums/setupProgress.enum";
 
 @Component({
   selector: 'app-setup-wizard',

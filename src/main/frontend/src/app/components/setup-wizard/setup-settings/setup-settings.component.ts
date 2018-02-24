@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {SetupFormDataService} from "../../../services/setupformdata.service";
 import {HttpClient} from "@angular/common/http";
-import {Mode} from "../../../enums/mode";
+import {Mode} from "../../../enums/mode.enum";
 
 @Component({
   selector: 'app-setup-settings',

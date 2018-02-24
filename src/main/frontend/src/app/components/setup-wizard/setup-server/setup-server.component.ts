@@ -2,7 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Server} from "../../../models/server.model";
 import {SetupFormDataService} from "../../../services/setupformdata.service";
 import {HttpClient} from "@angular/common/http";
-import {Mode} from "../../../enums/mode";
+import {Mode} from "../../../enums/mode.enum";
 
 @Component({
   selector: 'app-setup-server',
@@ -26,7 +26,7 @@ export class SetupServerComponent implements OnInit {
         (blenderVersions: any[]) => {
           this.availableBlenderVersions = blenderVersions;
           console.log(this.availableBlenderVersions);
-          this.server.blenderVersion = this.availableBlenderVersions[0];
+          this.server.setBlenderVersion(this.availableBlenderVersions[0]);
         }, (error) => console.log(error));
   }
 

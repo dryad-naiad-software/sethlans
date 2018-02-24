@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Mode} from "../../../enums/mode";
+import {Mode} from "../../../enums/mode.enum";
 import {SetupFormDataService} from "../../../services/setupformdata.service";
 import {Server} from "../../../models/server.model";
 

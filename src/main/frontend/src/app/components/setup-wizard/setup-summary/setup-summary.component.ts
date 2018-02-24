@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {SetupFormDataService} from "../../../services/setupformdata.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Mode} from "../../../enums/mode";
-import {ComputeMethod} from "../../../enums/compute.method";
+import {Mode} from "../../../enums/mode.enum";
+import {ComputeMethod} from "../../../enums/compute.method.enum";
 
 @Component({
   selector: 'app-setup-summary',

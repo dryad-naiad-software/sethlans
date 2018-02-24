@@ -2,9 +2,9 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Node} from "../../../models/node.model";
 import {SetupFormDataService} from "../../../services/setupformdata.service";
 import {HttpClient} from "@angular/common/http";
-import {ComputeMethod} from "../../../enums/compute.method";
+import {ComputeMethod} from "../../../enums/compute.method.enum";
 import {GPU} from "../../../models/gpu.model";
-import {Mode} from "../../../enums/mode";
+import {Mode} from "../../../enums/mode.enum";
 
 
 @Component({
@@ -32,16 +32,16 @@ export class SetupNodeComponent implements OnInit {
         (computeMethods: any[]) => {
           this.availableComputeMethods = computeMethods;
           console.log(this.availableComputeMethods);
-          this.node.computeMethod = ComputeMethod.CPU;
+          this.node.setComputeMethod(ComputeMethod.CPU);
         }, (error) => console.log(error));
     this.http.get('/api/info/total_cores', {responseType: 'text'})
       .subscribe((cores: any) => {
         this.totalCores = cores;
-        this.node.cores = cores;
+        this.node.setCores(cores);
         console.log(this.totalCores);
       }, (error) => console.log(error));
     if (this.availableComputeMethods.indexOf(ComputeMethod.GPU)) {
-      this.node.selectedGPUs = [];
+      this.node.setSelectedGPUs([]);
       this.http.get('/api/info/available_gpus')
         .subscribe((gpus: any[]) => {
           this.availableGPUs = gpus;
@@ -55,42 +55,42 @@ export class SetupNodeComponent implements OnInit {
     console.log(event.currentTarget.checked);
     console.log(gpu);
     if (checked) {
-      this.node.selectedGPUs.push(gpu);
-      this.node.gpuEmpty = false;
+      this.node.getSelectedGPUs().push(gpu);
+      this.node.setGpuEmpty(false);
     } else if (!checked) {
-      const index = this.node.selectedGPUs.indexOf(gpu);
-      this.node.selectedGPUs.splice(index, 1);
-      this.node.gpuEmpty = true;
+      const index = this.node.getSelectedGPUs().indexOf(gpu);
+      this.node.getSelectedGPUs().splice(index, 1);
+      this.node.setGpuEmpty(true);
     }
-    console.log(this.node.selectedGPUs);
+    console.log(this.node.getSelectedGPUs());
   }
 
   methodSelection() {
-    if (this.node.computeMethod !== ComputeMethod.CPU) {
-      if (this.node.selectedGPUs.length == 0) {
-        this.node.gpuEmpty = true;
-        console.log(this.node.gpuEmpty);
+    if (this.node.getComputeMethod() !== ComputeMethod.CPU) {
+      if (this.node.getSelectedGPUs().length == 0) {
+        this.node.setGpuEmpty(true);
+        console.log(this.node.isGpuEmpty());
       } else {
-        this.node.gpuEmpty = false;
-        console.log(this.node.gpuEmpty);
+        this.node.setGpuEmpty(false);
+        console.log(this.node.isGpuEmpty());
       }
     }
-    if (this.node.computeMethod === ComputeMethod.CPU) {
+    if (this.node.getComputeMethod() === ComputeMethod.CPU) {
       // gpuEmpty is used to control the toggling of the Save button. False means that the node settings can be saved.
       // CPU mode this is always set to false.
-      this.node.gpuEmpty = false;
+      this.node.setGpuEmpty(false);
     }
-    if (this.node.computeMethod === ComputeMethod.GPU) {
-      this.node.cores = null;
+    if (this.node.getComputeMethod() === ComputeMethod.GPU) {
+      this.node.setCores(null);
     }
   }
 
   save() {
-    if (this.node.computeMethod === ComputeMethod.CPU) {
-      this.node.selectedGPUs = null;
+    if (this.node.getComputeMethod() === ComputeMethod.CPU) {
+      this.node.setSelectedGPUs(null);
     }
-    else if (this.node.computeMethod === ComputeMethod.GPU) {
-      this.node.cores = null;
+    else if (this.node.getComputeMethod() === ComputeMethod.GPU) {
+      this.node.setCores(null);
     }
     this.setupFormData.setNode(this.node);
     this.nextStep();
