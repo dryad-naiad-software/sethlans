@@ -112,6 +112,15 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-data</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-jwt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.0</version>
+        </dependency>
 
         <!-- Tests -->
         <dependency>
@@ -298,6 +307,7 @@
                     </execution>
                 </executions>
             </plugin>
+
 
             <!-- Git Version Plugin -->
             <plugin>

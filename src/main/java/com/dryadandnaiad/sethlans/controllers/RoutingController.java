@@ -12,13 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class RoutingController {
 
-    @RequestMapping("/")
-    public String home() {
-        return "index.html";
-    }
-
-    @RequestMapping("/login")
-    public String login() {
-        return "index.html";
+    @RequestMapping(value = "/**/{[path:[^\\.]*}")
+    public String redirect() {
+        // Forward to home page so that route is preserved.
+        return "forward:/";
     }
 }
