@@ -1,14 +1,11 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {LocalStorageService, SessionStorageService} from "ngx-webstorage";
 import {Observable} from "rxjs/Observable";
-import "rxjs/add/operator/map";
+import {LocalStorageService, SessionStorageService} from "ngx-webstorage";
 
 
 @Injectable()
 export class AuthService {
-
-
   constructor(private http: HttpClient, private localStorage: LocalStorageService, private sessionStorage: SessionStorageService) {
 
   }
@@ -17,14 +14,15 @@ export class AuthService {
     return this.localStorage.retrieve('authenticationToken') || this.sessionStorage.retrieve('authenticationToken')
   }
 
-  login(login): Observable<any> {
+  login(login) {
+    console.log("logging in");
     const data = {
       username: login.username,
       password: login.password,
       rememberMe: login.rememberMe
     };
-    return this.http
-      .post('/login', data, {observe: 'response'}).map(authenticateSuccess.bind(this));
+
+    return this.http.post('/login', data, {observe: 'response'}).subscribe(authenticateSuccess.bind(this));
 
     function authenticateSuccess(resp) {
       const bearerToken = resp.headers.get('Authorization');
@@ -34,6 +32,22 @@ export class AuthService {
         return jwt;
       }
     }
+  }
+
+  storeAuthenticationToken(jwt, rememberMe) {
+    if (rememberMe) {
+      this.localStorage.store('authenticationToken', jwt);
+    } else {
+      this.sessionStorage.store('authenticationToken', jwt);
+    }
+
+  }
+
+  logout(): Observable<any> {
+    return new Observable((observable) => {
+      this.localStorage.clear('authenticationToken');
+      this.sessionStorage.clear('authenticationToken');
+    });
   }
 
 
