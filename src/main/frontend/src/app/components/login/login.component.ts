@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Login} from "../../models/login.model";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-login',
@@ -11,7 +12,7 @@ export class LoginComponent implements OnInit {
   logo: any = "assets/images/logo.png";
   login: Login;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private auth: AuthService) {
   }
 
   ngOnInit() {
@@ -23,11 +24,14 @@ export class LoginComponent implements OnInit {
     body.set('username', this.login.username);
     body.set('password', this.login.password);
 
-    let options = {
-      headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
-    };
 
-    this.http.post('/login', body.toString(), options).subscribe();
+    this.http.post('login', body.toString(), {
+      headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'),
+      responseType: 'text'
+    }).subscribe(() => {
+      let status = this.auth.getAuthStatus(this.login.username);
+      console.log(status)
+    });
   }
 
 }

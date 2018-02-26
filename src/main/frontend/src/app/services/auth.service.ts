@@ -17,6 +17,7 @@ export class AuthService {
       } else {
         this.authenticated = false;
       }
+      return this.authenticated;
     })
   }
 }
