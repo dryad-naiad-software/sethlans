@@ -10,7 +10,7 @@ export class AuthService {
   }
 
   getAuthStatus(username) {
-    this.http.get('/api/info/user', {responseType: 'text'}).subscribe((user: string) => {
+    this.http.get('/api/users/username', {responseType: 'text'}).subscribe((user: string) => {
       console.log(user);
       if (user.toLowerCase() === username.toLowerCase()) {
         this.authenticated = true;
