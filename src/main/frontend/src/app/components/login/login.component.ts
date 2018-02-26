@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Login} from "../../models/login.model";
 import {AuthService} from "../../services/auth.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -11,12 +12,19 @@ import {AuthService} from "../../services/auth.service";
 export class LoginComponent implements OnInit {
   logo: any = "assets/images/logo.png";
   login: Login;
+  loginError: boolean;
 
-  constructor(private http: HttpClient, private auth: AuthService) {
+  constructor(private http: HttpClient, private auth: AuthService, private route: ActivatedRoute) {
+
   }
 
   ngOnInit() {
     this.login = new Login();
+    this.route.queryParams.subscribe(params => {
+      this.loginError = params['error'];
+      console.log("Error present? " + this.loginError);
+    });
+
   }
 
   onSubmit() {
@@ -29,8 +37,7 @@ export class LoginComponent implements OnInit {
       headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'),
       responseType: 'text'
     }).subscribe(() => {
-      let status = this.auth.getAuthStatus(this.login.username);
-      console.log(status)
+      this.auth.getAuthStatusAtLogin(this.login.username);
     });
   }
 
