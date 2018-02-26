@@ -5,17 +5,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * Created Mario Estrella on 2/16/18.
@@ -24,29 +25,54 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
  * Project: sethlans
  */
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
 
+    private AuthenticationProvider authProvider;
+
+    @Autowired
+    public void setAuthProvider(AuthenticationProvider authProvider) {
+        this.authProvider = authProvider;
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         if (!firstTime) {
-            http.cors().and().csrf().disable().authorizeRequests()
+            http.authorizeRequests()
+                    .antMatchers("/api/info/**").permitAll()
                     .anyRequest().authenticated()
-                    .and().formLogin().loginPage("/login").failureUrl("/login?error").permitAll()
-                    .and()
-                    .addFilter(new JWTAuthenticationFilter(authenticationManager()))
-                    .addFilter(new JWTAuthorizationFilter(authenticationManager()))
-                    // this disables session creation on Spring Security
-                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                    .and().formLogin().loginPage("/login").failureUrl("/login?error").defaultSuccessUrl("/").permitAll()
+                    .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll()
+                    .and().csrf()
+                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         } else {
-            http.cors().and().csrf().disable().authorizeRequests()
+            http.authorizeRequests()
                     .antMatchers("/*").permitAll();
         }
 
+    }
+
+
+    @Autowired
+    public void configureAuthManager(AuthenticationManagerBuilder authenticationManagerBuilder) {
+        authenticationManagerBuilder.authenticationProvider(authProvider);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(BCryptPasswordEncoder passwordEncryptor) {
+        return passwordEncryptor;
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider(PasswordEncoder passwordEncoder, UserDetailsService userDetailsService) {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder);
+        return authenticationProvider;
     }
 
     @Override
@@ -54,10 +80,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         if (!firstTime) {
             web.ignoring()
                     .antMatchers(HttpMethod.OPTIONS, "/**")
-                    .antMatchers("/api/info/*")
                     .antMatchers("/*.{*}")
                     .antMatchers("/assets/images/**");
-            ;
+        } else {
+            web.ignoring().antMatchers("/**");
         }
 
     }
@@ -67,12 +93,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
     }
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
-        return source;
-    }
 
     @Autowired
     public void setUserDetailsService(UserDetailsService userDetailsService) {

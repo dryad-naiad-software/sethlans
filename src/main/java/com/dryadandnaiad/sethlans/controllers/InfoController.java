@@ -7,7 +7,11 @@ import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +28,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/info")
 public class InfoController {
+    private static final Logger LOG = LoggerFactory.getLogger(InfoController.class);
+
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
 
@@ -82,6 +88,18 @@ public class InfoController {
             return SethlansUtils.getPort();
         }
     }
+
+    @GetMapping(value = {"/user"})
+    public String getUserName() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getName().equals("anonymousUser")) {
+            return "unauthorized";
+        } else {
+            return auth.getName();
+        }
+
+    }
+
 
     @GetMapping(value = {"/sethlans_mode"})
     public String getSethlansMode() {

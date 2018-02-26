@@ -2,7 +2,7 @@ import {BrowserModule, Title} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {AppComponent} from './app.component';
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {NavbarComponent} from './components/navbar/navbar.component';
 import {LoginComponent} from './components/login/login.component';
 import {SettingsComponent} from './components/settings/settings.component';
@@ -24,8 +24,9 @@ import {MatSliderModule} from "@angular/material";
 import {SetupSummaryComponent} from './components/setup-wizard/setup-summary/setup-summary.component';
 import {SetupFinishedComponent} from './components/setup-wizard/setup-finished/setup-finished.component';
 import {WindowRef} from "./services/windowref.service";
-import {AuthService} from "./services/auth.service";
 import {Ng2Webstorage} from "ngx-webstorage";
+import {AuthService} from "./services/auth.service";
+import {XhrInterceptor} from "./interceptor/XhrInterceptor";
 
 @NgModule({
   declarations: [
@@ -56,8 +57,13 @@ import {Ng2Webstorage} from "ngx-webstorage";
     AppRoutingModule,
     Ng2Webstorage
   ],
-  providers: [Title, SetupFormDataService, WindowRef, AuthService],
+  providers: [Title, SetupFormDataService, WindowRef, AuthService, {
+    provide: HTTP_INTERCEPTORS,
+    useClass: XhrInterceptor,
+    multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule {
 }
+

@@ -2,9 +2,14 @@
   <div class="col-md-6 m-auto">
     <div class="card">
       <div class="card-body bg-dark">
-        <h1 class="text-center pb-4 pt-4" style="font-family: 'Fjalla One', sans-serif;"><img [src]="logo" height="48"
-                                                                                              class="d-inline-block align-top"
-                                                                                              alt="logo">
+        <h1
+          class="text-center pb-4 pt-4"
+          style="font-family: 'Fjalla One', sans-serif;">
+          <img
+            [src]="logo"
+            height="48"
+            class="d-inline-block align-top"
+            alt="logo">
           <span class="text-white">Sethlans</span>
         </h1>
         <form (submit)="onSubmit()" class="pb-4" #loginForm="ngForm">
@@ -16,11 +21,6 @@
             <label for="password" class="text-white">Password</label>
             <input type="password" name="password" id="password" [(ngModel)]="login.password" class="form-control"
                    required>
-          </div>
-          <div class="form-group pb-4" align="center">
-            <label class="checkbox text-white">
-              <input type="checkbox" name="rememberMe" id="rememberMe" [(ngModel)]="login.rememberMe">
-              Remember Me</label>
           </div>
           <input [disabled]="!loginForm.valid" type="submit" value="Login" class="btn btn-outline-light btn-block">
         </form>
