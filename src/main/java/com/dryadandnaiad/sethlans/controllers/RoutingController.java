@@ -33,9 +33,13 @@ public class RoutingController {
         return "forward:/";
 
     }
-
     @RequestMapping(value = "/register")
     public String getRegister() {
+        return "forward:/";
+    }
+
+    @RequestMapping(value = "/user_settings")
+    public String getUserSettings() {
         return "forward:/";
     }
 }

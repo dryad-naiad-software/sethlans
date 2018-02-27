@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.domains.node.NodeInfo;
+import com.dryadandnaiad.sethlans.domains.info.NodeInfo;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -23,10 +23,7 @@ export class RegisterUserComponent implements OnInit {
   }
 
   login() {
-    this.router.navigateByUrl("/login").then(() => {
-      location.reload(true);
-
-    });
+    this.router.navigateByUrl("/login");
   }
 
   submitUser(event, form) {

@@ -17,7 +17,7 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.domains.node;
+package com.dryadandnaiad.sethlans.domains.info;
 
 import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;

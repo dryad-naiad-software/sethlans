@@ -28,6 +28,7 @@ import {Ng2Webstorage} from "ngx-webstorage";
 import {AuthService} from "./services/auth.service";
 import {XhrInterceptor} from "./interceptor/XhrInterceptor";
 import {RegisterUserComponent} from './components/register-user/register-user.component';
+import {UserSettingsComponent} from './components/user-settings/user-settings.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import {RegisterUserComponent} from './components/register-user/register-user.co
     SetupSettingsComponent,
     SetupSummaryComponent,
     SetupFinishedComponent,
-    RegisterUserComponent
+    RegisterUserComponent,
+    UserSettingsComponent
   ],
   imports: [
     BrowserModule,

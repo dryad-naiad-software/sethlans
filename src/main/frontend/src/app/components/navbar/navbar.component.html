@@ -13,9 +13,10 @@
       <ul class="text-white nav ml-md-auto mt-2 mt-md-auto" *ngIf="authenticated">
         <!--User Menu-->
         <li class="nav-item" id="userDropDown" ngbDropdown>
-          <a href="#" class="text-white nav-link dropdown-toggle" ngbDropdownToggle>
+          <a class="text-white nav-link dropdown-toggle" ngbDropdownToggle>
             <span class="fa fa-user"></span>&nbsp;{{username}}</a>
           <div ngbDropdownMenu>
+            <a href="/user_settings" class="dropdown-item">User Settings</a>
             <a href="/logout" class="dropdown-item">Logout</a>
           </div>
         </li>

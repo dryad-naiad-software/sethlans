@@ -13,6 +13,7 @@ import {SetupFinishedComponent} from "./components/setup-wizard/setup-finished/s
 import {LoginComponent} from "./components/login/login.component";
 import {SettingsComponent} from "./components/settings/settings.component";
 import {RegisterUserComponent} from "./components/register-user/register-user.component";
+import {UserSettingsComponent} from "./components/user-settings/user-settings.component";
 
 ;
 
@@ -21,6 +22,7 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'settings', component: SettingsComponent},
   {path: 'register', component: RegisterUserComponent},
+  {path: 'user_settings', component: UserSettingsComponent},
   {
     path: '', component: SetupWizardComponent, outlet: 'setup', children: [
       {path: '', component: SetupModeComponent, outlet: 'mode'},

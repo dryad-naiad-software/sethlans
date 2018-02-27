@@ -45,10 +45,7 @@ export class LoginComponent implements OnInit {
   }
 
   registerUser() {
-    this.router.navigateByUrl("/register").then(() => {
-      location.reload(true);
-
-    });
+    this.router.navigateByUrl("/register");
   }
 
   loginUser(event, form) {

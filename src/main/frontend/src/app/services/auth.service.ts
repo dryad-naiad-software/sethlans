@@ -16,7 +16,7 @@ export class AuthService {
       this.authenticated = user.toLowerCase() === username.toLowerCase();
       if (this.authenticated == true) {
         this.router.navigateByUrl("/").then(() => {
-          location.reload(true);
+          location.reload();
 
         });
       } else {

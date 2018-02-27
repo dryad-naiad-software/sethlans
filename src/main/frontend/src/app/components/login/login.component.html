@@ -14,7 +14,6 @@
         </h1>
         <form (submit)="onSubmit()" class="pb-4" #loginForm="ngForm">
           <div class="alert alert-danger text-center" *ngIf="loginError">Invalid username and/or password.</div>
-          Z
           <div class="form-group">
             <label for="username" class="text-white">Username</label>
             <input type="text" name="username" id="username" [(ngModel)]="login.username" class="form-control" required>

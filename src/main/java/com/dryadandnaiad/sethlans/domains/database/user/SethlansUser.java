@@ -26,6 +26,7 @@ public class SethlansUser extends AbstractEntityClass {
     private List<Role> roles;
     private String password;
     private boolean isActive;
+    private String email;
     @Transient
     private boolean passwordUpdated;
 
@@ -35,6 +36,7 @@ public class SethlansUser extends AbstractEntityClass {
                 "username='" + username + '\'' +
                 ", roles=" + roles +
                 ", isActive=" + isActive +
+                ", email=" + email +
                 ", passwordUpdated=" + passwordUpdated +
                 '}';
     }
