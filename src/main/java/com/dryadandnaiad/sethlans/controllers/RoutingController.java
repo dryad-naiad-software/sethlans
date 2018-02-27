@@ -15,14 +15,17 @@ public class RoutingController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String redirectLogin() {
-        // Forward to home page so that route is preserved.
         return "forward:/";
     }
 
     @RequestMapping(value = "/")
     public String getRoot() {
-        // Forward to home page so that route is preserved.
         return "index.html";
+    }
+
+    @RequestMapping(value = "/settings")
+    public String getSettings() {
+        return "forward:/";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)

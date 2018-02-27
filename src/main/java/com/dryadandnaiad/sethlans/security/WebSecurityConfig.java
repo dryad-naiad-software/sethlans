@@ -1,5 +1,7 @@
 package com.dryadandnaiad.sethlans.security;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +17,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -25,12 +29,14 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
  * Project: sethlans
  */
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
+
+    private static final Logger LOG = LoggerFactory.getLogger(WebSecurityConfig.class);
 
     private AuthenticationProvider authProvider;
 
@@ -45,7 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             http.authorizeRequests()
                     .antMatchers("/api/info/**").permitAll()
                     .anyRequest().authenticated()
-                    .and().formLogin().loginPage("/login").failureUrl("/login?error").defaultSuccessUrl("/").permitAll()
+                    .and().formLogin().loginPage("/login").failureUrl("/login?error").successHandler(successHandler()).permitAll()
                     .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll()
                     .and().csrf()
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
@@ -54,6 +60,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/*").permitAll();
         }
 
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler successHandler() {
+        SimpleUrlAuthenticationSuccessHandler handler = new SimpleUrlAuthenticationSuccessHandler();
+        handler.setUseReferer(true);
+        LOG.debug(handler.toString());
+        return handler;
     }
 
 

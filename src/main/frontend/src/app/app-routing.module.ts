@@ -11,12 +11,14 @@ import {SetupSettingsComponent} from "./components/setup-wizard/setup-settings/s
 import {SetupSummaryComponent} from "./components/setup-wizard/setup-summary/setup-summary.component";
 import {SetupFinishedComponent} from "./components/setup-wizard/setup-finished/setup-finished.component";
 import {LoginComponent} from "./components/login/login.component";
+import {SettingsComponent} from "./components/settings/settings.component";
 
 ;
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'login', component: LoginComponent},
+  {path: 'settings', component: SettingsComponent},
   {
     path: '', component: SetupWizardComponent, outlet: 'setup', children: [
       {path: '', component: SetupModeComponent, outlet: 'mode'},

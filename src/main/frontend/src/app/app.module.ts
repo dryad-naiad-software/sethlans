@@ -27,6 +27,7 @@ import {WindowRef} from "./services/windowref.service";
 import {Ng2Webstorage} from "ngx-webstorage";
 import {AuthService} from "./services/auth.service";
 import {XhrInterceptor} from "./interceptor/XhrInterceptor";
+import {RegisterUserComponent} from './components/register-user/register-user.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import {XhrInterceptor} from "./interceptor/XhrInterceptor";
     SetupDualComponent,
     SetupSettingsComponent,
     SetupSummaryComponent,
-    SetupFinishedComponent
+    SetupFinishedComponent,
+    RegisterUserComponent
   ],
   imports: [
     BrowserModule,
