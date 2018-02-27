@@ -1,7 +1,9 @@
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.forms.SetupForm;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
+import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SetupController {
     private static final Logger LOG = LoggerFactory.getLogger(SetupController.class);
     private SaveSetupConfigService saveSetupConfigService;
+    private SethlansUserDatabaseService sethlansUserDatabaseService;
 
 
     @PostMapping("/submit")
@@ -34,8 +37,27 @@ public class SetupController {
         }
     }
 
+    @PostMapping("/register")
+    public boolean register(@RequestBody SethlansUser user) {
+        if (user != null) {
+            LOG.debug(user.toString());
+            if (sethlansUserDatabaseService.checkifExists(user.getUsername())) {
+                return false;
+            }
+            sethlansUserDatabaseService.saveOrUpdate(user);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @Autowired
     public void setSaveSetupConfigService(SaveSetupConfigService saveSetupConfigService) {
         this.saveSetupConfigService = saveSetupConfigService;
+    }
+
+    @Autowired
+    public void setSethlansUserDatabaseService(SethlansUserDatabaseService sethlansUserDatabaseService) {
+        this.sethlansUserDatabaseService = sethlansUserDatabaseService;
     }
 }

@@ -14,6 +14,7 @@
         </h1>
         <form (submit)="onSubmit()" class="pb-4" #loginForm="ngForm">
           <div class="alert alert-danger text-center" *ngIf="loginError">Invalid username and/or password.</div>
+          Z
           <div class="form-group">
             <label for="username" class="text-white">Username</label>
             <input type="text" name="username" id="username" [(ngModel)]="login.username" class="form-control" required>
@@ -21,11 +22,12 @@
           <div class="form-group pb-2">
             <label for="password" class="text-white">Password</label>
             <input type="password" name="password" id="password" [(ngModel)]="login.password" class="form-control"
+                   (keydown)="loginUser($event, loginForm)"
                    required>
           </div>
           <input [disabled]="!loginForm.valid" type="submit" value="Login" class="btn btn-outline-light btn-block">
         </form>
-        <button class="btn btn-outline-light btn-block">Register New User</button>
+        <button class="btn btn-outline-light btn-block" (click)="registerUser()">Register New User</button>
 
       </div>
     </div>

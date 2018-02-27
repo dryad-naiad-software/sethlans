@@ -49,7 +49,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         if (!firstTime) {
             http.authorizeRequests()
-                    .antMatchers("/api/info/**").permitAll()
+                    .antMatchers("/api/info/**", "/api/setup/register").permitAll()
+                    .antMatchers("/register").permitAll()
                     .anyRequest().authenticated()
                     .and().formLogin().loginPage("/login").failureUrl("/login?error").successHandler(successHandler()).permitAll()
                     .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll()

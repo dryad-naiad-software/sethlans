@@ -35,6 +35,12 @@ public class SethlansUserDatabaseServiceImpl implements SethlansUserDatabaseServ
     }
 
     @Override
+    public boolean checkifExists(String username) {
+        return findByUserName(username) != null;
+
+    }
+
+    @Override
     public SethlansUser saveOrUpdate(SethlansUser domainObject) {
         LOG.debug("Saving/Updating user");
 

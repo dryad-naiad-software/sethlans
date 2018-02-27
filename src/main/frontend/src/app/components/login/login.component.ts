@@ -2,8 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Login} from "../../models/login.model";
 import {AuthService} from "../../services/auth.service";
-import {ActivatedRoute} from "@angular/router";
-import {Location} from "@angular/common";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -15,7 +14,7 @@ export class LoginComponent implements OnInit {
   login: Login;
   loginError: boolean;
 
-  constructor(private http: HttpClient, private auth: AuthService, private route: ActivatedRoute, private location: Location) {
+  constructor(private http: HttpClient, private auth: AuthService, private route: ActivatedRoute, private router: Router) {
 
   }
 
@@ -45,4 +44,17 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  registerUser() {
+    this.router.navigateByUrl("/register").then(() => {
+      location.reload(true);
+
+    });
+  }
+
+  loginUser(event, form) {
+    if (event.key === "Enter" && form.valid) {
+      this.onSubmit();
+    }
+
+  }
 }
