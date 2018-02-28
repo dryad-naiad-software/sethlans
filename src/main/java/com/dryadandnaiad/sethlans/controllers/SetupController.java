@@ -28,6 +28,7 @@ public class SetupController {
 
     @PostMapping("/submit")
     public boolean submit(@RequestBody SetupForm setupForm) {
+        LOG.debug("Submitting Setup Form...");
         if (setupForm != null) {
             LOG.debug(setupForm.toString());
             saveSetupConfigService.saveSetupSettings(setupForm);
@@ -40,11 +41,13 @@ public class SetupController {
     @PostMapping("/register")
     public boolean register(@RequestBody SethlansUser user) {
         if (user != null) {
-            LOG.debug(user.toString());
+            LOG.debug("Registering new user...");
             if (sethlansUserDatabaseService.checkifExists(user.getUsername())) {
+                LOG.debug("User " + user.getUsername() + " already exists!");
                 return false;
             }
             sethlansUserDatabaseService.saveOrUpdate(user);
+            LOG.debug("Saving " + user.toString() + " to database.");
             return true;
         } else {
             return false;

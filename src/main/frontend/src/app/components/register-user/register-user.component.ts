@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {User} from "../../models/user.model";
 import {Role} from "../../enums/role.enum";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 @Component({
@@ -13,12 +13,17 @@ export class RegisterUserComponent implements OnInit {
   logo: any = "assets/images/logo.png";
   user: User;
   userExists: boolean;
+  existingUserName: string;
 
-  constructor(private router: Router, private http: HttpClient) {
+  constructor(private router: Router, private http: HttpClient, private route: ActivatedRoute) {
   }
 
   ngOnInit() {
     this.user = new User();
+    this.route.queryParams.subscribe(params => {
+      this.userExists = params['error'];
+      this.existingUserName = params['username'];
+    });
 
   }
 
@@ -46,7 +51,9 @@ export class RegisterUserComponent implements OnInit {
       if (submitted === true) {
         this.login()
       } else {
-        this.userExists = true;
+        this.router.navigateByUrl("/register?error=true&username=" + this.user.getUserName()).then(() => {
+          location.reload();
+        });
       }
     });
   }

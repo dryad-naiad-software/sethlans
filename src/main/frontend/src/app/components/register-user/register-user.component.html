@@ -13,7 +13,7 @@
           <span class="text-white">Sethlans</span>
         </h1>
         <form (submit)="onSubmit()" class="pb-4" #registerForm="ngForm">
-          <div class="alert alert-danger text-center" *ngIf="userExists">User {{user.username}} already exists</div>
+          <div class="alert alert-danger text-center" *ngIf="userExists">User {{existingUserName}} already exists</div>
           <div class="form-group"
                ngbTooltip="Minimum of 4 characters, alpha-numeric characters only."
                placement="left">
