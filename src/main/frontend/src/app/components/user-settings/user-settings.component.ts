@@ -12,11 +12,16 @@ export class UserSettingsComponent implements OnInit {
   username: string;
   userInfo: UserInfo;
   changePass = false;
+  passFields: PasswordSet;
 
   constructor(private http: HttpClient) {
+    this.passFields = new PasswordSet();
+    this.userInfo = new UserInfo();
   }
 
   ngOnInit() {
+    console.log(this.passFields);
+
     this.http.get('/api/users/username', {responseType: 'text'})
       .subscribe((user: string) => {
         this.username = user;
@@ -28,8 +33,10 @@ export class UserSettingsComponent implements OnInit {
 
   }
 
-  submitForm(event, form) {
+}
 
-  }
-
+class PasswordSet {
+  currentPass: string;
+  newPass: string;
+  newPassConfirm: string;
 }

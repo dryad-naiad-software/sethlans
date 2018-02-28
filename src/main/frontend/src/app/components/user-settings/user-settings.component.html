@@ -6,7 +6,7 @@
           class="text-success">{{username}}</strong></h4>
       </div>
       <div class="card-body">
-        <p>Current Roles: <span *ngFor="let role of userInfo?.roles">{{role}}</span></p>
+        <p>Current Roles: <span *ngFor="let role of userInfo.roles">{{role}}</span></p>
         <form #userSettingForm="ngForm">
           <div class="form-group" ngbTooltip="Email used for notifications." placement="left">
             <label for="email">Email Address</label>
@@ -14,11 +14,11 @@
                    name="email"
                    id="email"
                    #email="ngModel"
-                   value="{{userInfo?.email}}"
+                   value="{{userInfo.email}}"
                    [(ngModel)]="userInfo.email"
                    class="form-control form-control-sm"
                    [ngClass]="{'is-invalid':email.errors && email.touched}"
-                   required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" (keydown)="submitForm($event, userSettingForm)">
+                   required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$">
             <div class="invalid-feedback" [hidden]="email.valid">
               <ul>
                 <li>Email is required and must be valid.</li>
@@ -29,26 +29,65 @@
             <input type="checkbox"
                    name="changePass"
                    id="changePass"
-                   changePass="ngModel"
                    [(ngModel)]="changePass">
-            <label class="form-check-label form-control-sm">Change Password</label>
+            <label class="form-check-label form-control-sm" for="changePass">Change Password</label>
           </div>
           <div class="form-group">
             <label for="currentPass">Current Password</label>
             <input [disabled]="changePass === false"
                    type="password"
                    id="currentPass"
+                   name="currentPass"
+                   #currentPass="ngModel"
+                   [(ngModel)]="passFields.currentPass"
+                   [ngClass]="{'is-invalid':currentPass.errors && currentPass.touched}"
+                   required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
                    class="form-control form-control-sm"/>
+            <div class="invalid-feedback" [hidden]="currentPass.valid">
+              <ul>
+                <li>Password is required.</li>
+                <li>Password must be a minimum 8 characters, at least one
+                  UPPERCASE letter and one number.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="form-group">
             <label for="newPass">New Password</label>
             <input [disabled]="changePass === false"
                    type="password"
                    id="newPass"
+                   name="newPass"
+                   #newPass="ngModel"
+                   [(ngModel)]="passFields.newPass"
+                   [ngClass]="{'is-invalid':newPass.errors && newPass.touched}"
+                   required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
                    class="form-control form-control-sm"/>
-            <label for="confirmPass">Confirm New Password</label>
+            <div class="invalid-feedback" [hidden]="newPass.valid">
+              <ul>
+                <li>Password is required.</li>
+                <li>Password must be a minimum 8 characters, at least one
+                  UPPERCASE letter and one number.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="newPassConfirm">Confirm New Password</label>
             <input [disabled]="changePass === false"
                    type="password"
-                   id="confirmPass"
-                   class="form-control form-control-sm"/>
+                   name="newPassConfirm"
+                   #newPassConfirm="ngModel"
+                   id="newPassConfirm"
+                   [(ngModel)]="passFields.newPassConfirm"
+                   [ngClass]="{'is-invalid':newPassConfirm.errors && newPassConfirm.touched}"
+                   class="form-control form-control-sm"
+                   required [fieldMatches]="newPass"/>
+            <div class="invalid-feedback" [hidden]="newPassConfirm.valid">
+              <ul>
+                <li>Passwords must match.</li>
+              </ul>
+            </div>
           </div>
           <nav class="pt-2">
             <button class="btn btn-outline-secondary">Cancel</button>
