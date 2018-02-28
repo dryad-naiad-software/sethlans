@@ -20,6 +20,13 @@ export class UserSettingsComponent implements OnInit {
     this.userInfo = new UserInfo();
   }
 
+  submitSettingChanges(event, form) {
+    if (event.key === "Enter" && form.valid) {
+      this.saveChanges();
+    }
+
+  }
+
   ngOnInit() {
     console.log(this.passFields);
     this.http.get('/api/users/username', {responseType: 'text'})

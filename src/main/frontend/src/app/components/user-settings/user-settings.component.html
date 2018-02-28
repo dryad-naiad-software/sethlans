@@ -18,7 +18,8 @@
                    [(ngModel)]="userInfo.email"
                    class="form-control form-control-sm"
                    [ngClass]="{'is-invalid':email.errors && email.touched}"
-                   required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$">
+                   required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$"
+                   (keydown)="submitSettingChanges($event, userSettingForm)">
             <div class="invalid-feedback" [hidden]="email.valid">
               <ul>
                 <li>Email is required and must be valid.</li>
@@ -83,7 +84,8 @@
                    [ngClass]="{'is-invalid':newPassConfirm.errors && newPassConfirm.touched}"
                    class="form-control form-control-sm"
                    required [fieldMatches]="newPass"/>
-            <div class="invalid-feedback" [hidden]="newPassConfirm.valid">
+            <div class="invalid-feedback" [hidden]="newPassConfirm.valid"
+                 (keydown)="submitSettingChanges($event, userSettingForm)">
               <ul>
                 <li>Passwords must match.</li>
               </ul>
