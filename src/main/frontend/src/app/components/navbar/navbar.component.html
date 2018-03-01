@@ -8,9 +8,9 @@
             data-target="#navbarSupportedContent" (click)="isCollapsed = !isCollapsed">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngbCollapse]="isCollapsed">
+    <div class="collapse navbar-collapse float-right" id="navbarSupportedContent" [ngbCollapse]="isCollapsed">
       <!--Right Menu-->
-      <ul class="text-white nav ml-md-auto mt-sm-2 mt-md-auto" *ngIf="authenticated">
+      <ul class="text-white nav ml-auto" *ngIf="authenticated">
         <!--Home Menu-->
         <li class="nav-item">
           <a href="/" class="text-white nav-link">
@@ -20,31 +20,37 @@
         </li>
         <!--Admin Menu-->
         <li class="nav-item" id="adminDropDown" ngbDropdown *ngIf="isAdministrator">
-          <a class="text-white nav-link dropdown-toggle" ngbDropdownToggle>
+          <a class="text-white nav-link dropdown-toggle" href="javascript:void(0);" ngbDropdownToggle>
             <i class="fa fa-user-plus"></i>
-            <span>Administration</span>
+            <span>Admin</span>
           </a>
           <div ngbDropdownMenu>
             <a href="/user_management" class="dropdown-item">
-              <i class="fa fa-user"></i>
+              <i class="fa fa-fw fa-user"></i>
               <span>User Management</span>
             </a>
             <a href="/settings" class="dropdown-item">
-              <i class="fa fa-list"></i>
+              <i class="fa fa-fw fa-list"></i>
               <span>Sethlans Configuration</span>
+            </a>
+            <a href="/sethlans-metrics" class="dropdown-item" *ngIf="isSuperAdministrator">
+              <i class="fa fa-fw fa-tachometer"></i>
+              <span>Sethlans Metrics</span>
             </a>
           </div>
         </li>
         <!--User Menu-->
         <li class="nav-item" id="userDropDown" ngbDropdown>
-          <a class="text-white nav-link dropdown-toggle" ngbDropdownToggle>
+          <a class="text-white nav-link dropdown-toggle" href="javascript:void(0);" ngbDropdownToggle>
             <span class="fa fa-user"></span>&nbsp;{{username}}</a>
           <div ngbDropdownMenu>
             <a href="/user_settings" class="dropdown-item">
-              <i class="fa fa-wrench"></i>
+              <i class="fa fa-fw fa-wrench"></i>
               <span>User Settings</span></a>
 
-            <a href="/logout" class="dropdown-item">Logout</a>
+            <a href="/logout" class="dropdown-item">
+              <i class="fa fa-fw fa-sign-out"></i>
+              <span>Logout</span></a>
           </div>
         </li>
       </ul>
