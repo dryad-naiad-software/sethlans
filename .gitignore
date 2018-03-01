@@ -17,3 +17,4 @@ target/
 
 
 git.properties
+/src/main/resources/static/

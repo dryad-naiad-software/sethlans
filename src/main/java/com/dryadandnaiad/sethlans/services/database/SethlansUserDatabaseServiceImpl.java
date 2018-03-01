@@ -47,6 +47,8 @@ public class SethlansUserDatabaseServiceImpl implements SethlansUserDatabaseServ
         if (domainObject.isPasswordUpdated()) {
             LOG.debug("Encrypting password");
             domainObject.setPassword(bCryptPasswordEncoder.encode(domainObject.getPassword()));
+            // after user is updated, set password updated to false in order to prevent encoding an encoded password.
+            domainObject.setPasswordUpdated(false);
         }
         return sethlansUserRepository.save(domainObject);
     }

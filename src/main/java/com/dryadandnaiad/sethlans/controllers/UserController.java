@@ -43,17 +43,41 @@ public class UserController {
     }
 
     @PostMapping(value = {"/pass_change"})
-    public boolean changePassword(@RequestParam("username") String username, @RequestParam("passToCheck") String passToCheck, @RequestParam String newPassword) {
-        PasswordEncoder encoder = new BCryptPasswordEncoder();
-        SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
-        if (encoder.matches(passToCheck, user.getPassword())) {
-            user.setPasswordUpdated(true);
-            user.setPassword(newPassword);
+    public boolean changePassword(@RequestParam String username, @RequestParam String passToCheck, @RequestParam String newPassword) {
+        if (requestMatchesUser(username)) {
+            PasswordEncoder encoder = new BCryptPasswordEncoder();
+            SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
+            if (encoder.matches(passToCheck, user.getPassword())) {
+                LOG.debug("Updating password for " + username);
+                user.setPasswordUpdated(true);
+                user.setPassword(newPassword);
+                sethlansUserDatabaseService.saveOrUpdate(user);
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    @PostMapping(value = {"/email_change"})
+    public boolean changeEmail(@RequestParam String username, @RequestParam String newEmail) {
+        if (requestMatchesUser(username)) {
+            SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
+            LOG.debug("Changing email for " + username);
+            user.setEmail(newEmail);
+            user.setPasswordUpdated(false);
             sethlansUserDatabaseService.saveOrUpdate(user);
             return true;
-        } else {
-            return false;
         }
+        return false;
+
+    }
+
+    private boolean requestMatchesUser(String username) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth.getName().equals(username);
+
     }
 
     @Autowired
