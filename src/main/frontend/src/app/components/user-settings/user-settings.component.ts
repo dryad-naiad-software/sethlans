@@ -47,58 +47,75 @@ export class UserSettingsComponent implements OnInit {
 
   saveChanges(form) {
     if (form.valid) {
-      if (this.changePass === false) {
-        let emailChange = new HttpParams().set('username', this.username).set('newEmail', this.userInfo.email);
-        this.http.post('/api/users/email_change', emailChange, {
-          headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'),
-          responseType: 'text'
-        }).subscribe((response: any) => {
-          console.log(response);
-          if (response == true) {
-            this.router.navigateByUrl("/user_settings?userUpdated=true").then(() => {
-              location.reload();
-            });
-          } else {
-            // this.router.navigateByUrl("/user_settings?userUpdated=false").then(() => {
-            //   location.reload();
-            // });
-          }
-        });
+      if (!this.changePass) {
+        console.log("Change pass false");
+        this.changeEmailandReload();
       }
 
 
-      if (this.changePass === true) {
-        let emailChange = new HttpParams().set('username', this.username).set('newEmail', this.userInfo.email);
-        this.http.post('/api/users/email_change', emailChange, {
-          headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'),
-          responseType: 'text'
-        }).subscribe((response: any) => {
-          if (response == true) {
-            let passChange = new HttpParams().set('username', this.username).set('passToCheck', this.passFields.currentPass).set('newPassword', this.passFields.newPass);
-            this.http.post('/api/users/pass_change', passChange, {
-              headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'),
-              responseType: 'text'
-            }).subscribe((response: any) => {
-              if (response == true) {
-                this.router.navigateByUrl("/user_settings?userUpdated=true").then(() => {
-                  location.reload();
-                });
-              } else {
-                this.router.navigateByUrl("/user_settings?userUpdated=false").then(() => {
-                  location.reload();
-                });
-              }
-            });
-          } else {
-            this.router.navigateByUrl("/user_settings?userUpdated=false").then(() => {
-              location.reload();
-            });
-          }
-        });
-
+      if (this.changePass) {
+        console.log("Change pass true");
+        this.changeEmailNoReload();
+        this.changePassword();
       }
     }
 
+  }
+
+  changeEmailandReload() {
+    let emailChange = new HttpParams().set('username', this.username).set('newEmail', this.userInfo.email);
+    this.http.post('/api/users/email_change', emailChange, {
+      headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'),
+      responseType: 'text'
+    }).subscribe((response: any) => {
+      let retrievedResponse = response as boolean;
+      if (retrievedResponse) {
+        this.router.navigateByUrl("/user_settings?userUpdated=true").then(() => {
+          location.reload();
+        });
+      } else {
+        this.router.navigateByUrl("/user_settings?userUpdated=false").then(() => {
+          location.reload();
+        });
+      }
+    });
+  }
+
+  changeEmailNoReload() {
+    let emailChange = new HttpParams().set('username', this.username).set('newEmail', this.userInfo.email);
+    this.http.post('/api/users/email_change', emailChange, {
+      headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'),
+      responseType: 'text'
+    }).subscribe((response: any) => {
+      let retrievedResponse = response as boolean;
+      if (retrievedResponse) {
+        console.log("response true");
+      } else {
+        this.router.navigateByUrl("/user_settings?userUpdated=false").then(() => {
+          location.reload();
+        });
+      }
+    });
+  }
+
+  changePassword() {
+    let passChange = new HttpParams().set('username', this.username).set('passToCheck', this.passFields.currentPass).set('newPassword', this.passFields.newPass);
+    this.http.post('/api/users/pass_change', passChange, {
+      headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'),
+      responseType: 'text'
+    }).subscribe((passwordResponse: any) => {
+      let retrievedResponse = passwordResponse as boolean;
+      if (retrievedResponse) {
+        console.log("password changed");
+        // this.router.navigateByUrl("/user_settings?userUpdated=true").then(() => {
+        //   location.reload();
+        // });
+      } else {
+        this.router.navigateByUrl("/user_settings?userUpdated=false").then(() => {
+          location.reload();
+        });
+      }
+    });
   }
 }
 
