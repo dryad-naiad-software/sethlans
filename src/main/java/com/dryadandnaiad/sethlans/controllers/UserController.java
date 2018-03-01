@@ -42,6 +42,11 @@ public class UserController {
         return userToSend;
     }
 
+    @PostMapping(value = {"/email_pass_change"})
+    public boolean changeEmailandPassword(@RequestParam String username, @RequestParam String passToCheck, @RequestParam String newPassword, @RequestParam String newEmail) {
+        return changeEmail(username, newEmail) && changePassword(username, passToCheck, newPassword);
+    }
+
     @PostMapping(value = {"/pass_change"})
     public boolean changePassword(@RequestParam String username, @RequestParam String passToCheck, @RequestParam String newPassword) {
         if (requestMatchesUser(username)) {
