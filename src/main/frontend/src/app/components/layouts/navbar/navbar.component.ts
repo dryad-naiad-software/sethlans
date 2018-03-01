@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Role} from "../../enums/role.enum";
-import {UserInfo} from "../../models/userinfo.model";
+import {Role} from "../../../enums/role.enum";
+import {UserInfo} from "../../../models/userinfo.model";
 
 @Component({
   selector: 'app-navbar',

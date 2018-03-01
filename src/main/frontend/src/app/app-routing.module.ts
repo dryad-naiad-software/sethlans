@@ -11,16 +11,16 @@ import {SetupSettingsComponent} from "./components/setup-wizard/setup-settings/s
 import {SetupSummaryComponent} from "./components/setup-wizard/setup-summary/setup-summary.component";
 import {SetupFinishedComponent} from "./components/setup-wizard/setup-finished/setup-finished.component";
 import {LoginComponent} from "./components/login/login.component";
-import {SettingsComponent} from "./components/settings/settings.component";
 import {RegisterUserComponent} from "./components/register-user/register-user.component";
 import {UserSettingsComponent} from "./components/user-settings/user-settings.component";
+import {MetricsComponent} from "./components/admin/metrics/metrics.component";
 
 ;
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'login', component: LoginComponent},
-  {path: 'settings', component: SettingsComponent},
+  {path: 'admin/metrics', component: MetricsComponent},
   {path: 'register', component: RegisterUserComponent},
   {path: 'user_settings', component: UserSettingsComponent},
   {

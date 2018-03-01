@@ -42,4 +42,9 @@ public class RoutingController {
     public String getUserSettings() {
         return "forward:/";
     }
+
+    @RequestMapping(value = "/admin/metrics")
+    public String getMetrics() {
+        return "forward:/";
+    }
 }

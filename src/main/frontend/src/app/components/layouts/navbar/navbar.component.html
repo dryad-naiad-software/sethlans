@@ -25,15 +25,15 @@
             <span>Admin</span>
           </a>
           <div ngbDropdownMenu>
-            <a href="/user_management" class="dropdown-item">
+            <a href="/admin/user_management" class="dropdown-item">
               <i class="fa fa-fw fa-user"></i>
               <span>User Management</span>
             </a>
-            <a href="/settings" class="dropdown-item">
+            <a href="/admin/sethlans_settings" class="dropdown-item">
               <i class="fa fa-fw fa-list"></i>
               <span>Sethlans Configuration</span>
             </a>
-            <a href="/sethlans-metrics" class="dropdown-item" *ngIf="isSuperAdministrator">
+            <a href="/admin/metrics" class="dropdown-item" *ngIf="isSuperAdministrator">
               <i class="fa fa-fw fa-tachometer"></i>
               <span>Sethlans Metrics</span>
             </a>
