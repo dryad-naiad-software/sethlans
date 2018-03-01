@@ -27,19 +27,29 @@ public class UserController {
     @GetMapping(value = {"/username"})
     public String getUserName() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return auth.getName();
+        if (auth == null) {
+            return null;
+        } else {
+            return auth.getName();
+        }
+
 
     }
 
     @GetMapping(value = {"/get_user/{username}"})
     public UserInfo getUserInfo(@PathVariable String username) {
-        SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(username);
-        UserInfo userToSend = new UserInfo();
-        userToSend.setUsername(sethlansUser.getUsername());
-        userToSend.setActive(sethlansUser.isActive());
-        userToSend.setRoles(sethlansUser.getRoles());
-        userToSend.setEmail(sethlansUser.getEmail());
-        return userToSend;
+        if (requestMatchesAuthUser(username)) {
+            SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(username);
+            UserInfo userToSend = new UserInfo();
+            userToSend.setUsername(sethlansUser.getUsername());
+            userToSend.setActive(sethlansUser.isActive());
+            userToSend.setRoles(sethlansUser.getRoles());
+            userToSend.setEmail(sethlansUser.getEmail());
+            return userToSend;
+        } else {
+            return null;
+        }
+
     }
 
     @PostMapping(value = {"/email_pass_change"})
@@ -49,7 +59,7 @@ public class UserController {
 
     @PostMapping(value = {"/pass_change"})
     public boolean changePassword(@RequestParam String username, @RequestParam String passToCheck, @RequestParam String newPassword) {
-        if (requestMatchesUser(username)) {
+        if (requestMatchesAuthUser(username)) {
             PasswordEncoder encoder = new BCryptPasswordEncoder();
             SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
             if (encoder.matches(passToCheck, user.getPassword())) {
@@ -67,7 +77,7 @@ public class UserController {
 
     @PostMapping(value = {"/email_change"})
     public boolean changeEmail(@RequestParam String username, @RequestParam String newEmail) {
-        if (requestMatchesUser(username)) {
+        if (requestMatchesAuthUser(username)) {
             SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
             LOG.debug("Changing email for " + username);
             user.setEmail(newEmail);
@@ -79,10 +89,9 @@ public class UserController {
 
     }
 
-    private boolean requestMatchesUser(String username) {
+    private boolean requestMatchesAuthUser(String username) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return auth.getName().equals(username);
-
     }
 
     @Autowired
