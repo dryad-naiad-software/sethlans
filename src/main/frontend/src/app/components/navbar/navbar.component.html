@@ -10,13 +10,40 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngbCollapse]="isCollapsed">
       <!--Right Menu-->
-      <ul class="text-white nav ml-md-auto mt-2 mt-md-auto" *ngIf="authenticated">
+      <ul class="text-white nav ml-md-auto mt-sm-2 mt-md-auto" *ngIf="authenticated">
+        <!--Home Menu-->
+        <li class="nav-item">
+          <a href="/" class="text-white nav-link">
+            <i class="fa fa-home"></i>
+            <span>Home</span>
+          </a>
+        </li>
+        <!--Admin Menu-->
+        <li class="nav-item" id="adminDropDown" ngbDropdown *ngIf="isAdministrator">
+          <a class="text-white nav-link dropdown-toggle" ngbDropdownToggle>
+            <i class="fa fa-user-plus"></i>
+            <span>Administration</span>
+          </a>
+          <div ngbDropdownMenu>
+            <a href="/user_management" class="dropdown-item">
+              <i class="fa fa-user"></i>
+              <span>User Management</span>
+            </a>
+            <a href="/settings" class="dropdown-item">
+              <i class="fa fa-list"></i>
+              <span>Sethlans Configuration</span>
+            </a>
+          </div>
+        </li>
         <!--User Menu-->
         <li class="nav-item" id="userDropDown" ngbDropdown>
           <a class="text-white nav-link dropdown-toggle" ngbDropdownToggle>
             <span class="fa fa-user"></span>&nbsp;{{username}}</a>
           <div ngbDropdownMenu>
-            <a href="/user_settings" class="dropdown-item">User Settings</a>
+            <a href="/user_settings" class="dropdown-item">
+              <i class="fa fa-wrench"></i>
+              <span>User Settings</span></a>
+
             <a href="/logout" class="dropdown-item">Logout</a>
           </div>
         </li>

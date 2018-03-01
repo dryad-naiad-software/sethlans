@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
+import {Role} from "../../enums/role.enum";
+import {UserInfo} from "../../models/userinfo.model";
 
 @Component({
   selector: 'app-navbar',
@@ -11,6 +13,10 @@ export class NavbarComponent implements OnInit {
   username: string;
   authenticated: boolean;
   isCollapsed = true;
+  userInfo: UserInfo;
+  role: any = Role;
+  isAdministrator = false;
+  isSuperAdministrator = false;
 
   constructor(private http: HttpClient) {
   }
@@ -24,6 +30,16 @@ export class NavbarComponent implements OnInit {
         else {
           this.authenticated = true;
           this.username = user;
+          this.http.get('/api/users/get_user/' + this.username + '').subscribe((userinfo: UserInfo) => {
+            this.userInfo = userinfo;
+            console.log(this.userInfo);
+            if (userinfo.roles.indexOf(Role.ADMINISTRATOR) !== -1 || userinfo.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
+              this.isAdministrator = true;
+            }
+            if (userinfo.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
+              this.isSuperAdministrator = true;
+            }
+          });
         }
 
       });
