@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.context.annotation.Configuration;
 
-import javax.servlet.*;
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRegistration;
 import java.util.EnumSet;
 
 /**
@@ -24,11 +27,12 @@ public class WebConfigurer implements ServletContextInitializer {
     private MetricRegistry metricRegistry;
 
     @Override
-    public void onStartup(ServletContext servletContext) throws ServletException {
+    public void onStartup(ServletContext servletContext) {
         EnumSet<DispatcherType> disps = EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.ASYNC);
         initMetrics(servletContext, disps);
 
     }
+
 
     private void initMetrics(ServletContext servletContext, EnumSet<DispatcherType> disps) {
         LOG.debug("Initializing Metrics registries");
@@ -48,7 +52,7 @@ public class WebConfigurer implements ServletContextInitializer {
         ServletRegistration.Dynamic metricsAdminServlet =
                 servletContext.addServlet("metricsServlet", new MetricsServlet());
 
-        metricsAdminServlet.addMapping("/management/metrics/*");
+        metricsAdminServlet.addMapping("/api/management/metrics/*");
         metricsAdminServlet.setAsyncSupported(true);
         metricsAdminServlet.setLoadOnStartup(2);
     }

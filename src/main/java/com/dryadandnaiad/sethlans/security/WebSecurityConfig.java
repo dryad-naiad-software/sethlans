@@ -1,5 +1,6 @@
 package com.dryadandnaiad.sethlans.security;
 
+import com.dryadandnaiad.sethlans.enums.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             http.authorizeRequests()
                     .antMatchers("/api/info/**", "/api/setup/register").permitAll()
                     .antMatchers("/register").permitAll()
+                    .and().authorizeRequests().antMatchers("/api/management/metrics/**").hasAuthority(Role.SUPER_ADMINISTRATOR.toString())
                     .anyRequest().authenticated()
                     .and().formLogin().loginPage("/login").failureUrl("/login?error").successHandler(successHandler()).permitAll()
                     .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll()
