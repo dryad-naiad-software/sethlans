@@ -1,7 +1,6 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4 py-1">
-  <div class="container">
-    <a href="/" class="navbar-brand"
-       style="font-family: 'Fjalla One', sans-serif; font-size: 150%">
+  <a href="/" class="navbar-brand pl-5"
+     style="font-family: 'Fjalla One', sans-serif; font-size: 150%">
       <img [src]="logo" height="32" class="d-inline-block align-top" alt="logo">
       Sethlans</a>
     <button *ngIf="authenticated" class="navbar-toggler" type="button" data-toggle="collapse"
@@ -10,7 +9,7 @@
     </button>
     <div class="collapse navbar-collapse float-right" id="navbarSupportedContent" [ngbCollapse]="isCollapsed">
       <!--Right Menu-->
-      <ul class="text-white nav ml-auto" *ngIf="authenticated">
+      <ul class="text-white nav ml-auto pr-5" *ngIf="authenticated">
         <!--Home Menu-->
         <li class="nav-item">
           <a href="/" class="text-white nav-link">
@@ -55,7 +54,6 @@
         </li>
       </ul>
     </div>
-  </div>
 </nav>
 
 

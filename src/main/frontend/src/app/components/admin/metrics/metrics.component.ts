@@ -13,4 +13,8 @@ export class MetricsComponent implements OnInit {
   ngOnInit() {
   }
 
+  refresh() {
+
+  }
+
 }
