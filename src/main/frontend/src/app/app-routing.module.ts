@@ -15,6 +15,7 @@ import {RegisterUserComponent} from "./components/register-user/register-user.co
 import {UserSettingsComponent} from "./components/user-settings/user-settings.component";
 import {MetricsComponent} from "./components/admin/metrics/metrics.component";
 import {UserManagementComponent} from "./components/admin/user-management/user-management.component";
+import {SethlansSettingsComponent} from "./components/admin/sethlans-settings/sethlans-settings.component";
 
 ;
 
@@ -23,6 +24,7 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'admin/metrics', component: MetricsComponent},
   {path: 'admin/user_management', component: UserManagementComponent},
+  {path: 'admin/sethlans_settings', component: SethlansSettingsComponent},
   {path: 'register', component: RegisterUserComponent},
   {path: 'user_settings', component: UserSettingsComponent},
   {

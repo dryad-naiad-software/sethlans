@@ -119,8 +119,8 @@ public class SethlansUtils {
         sethlansSettingsInfo.setMode(SethlansMode.valueOf(mode));
         if (SethlansMode.valueOf(mode) == SethlansMode.SERVER || SethlansMode.valueOf(mode) == SethlansMode.DUAL) {
             sethlansSettingsInfo.setProjectDir(SethlansUtils.getProperty(SethlansConfigKeys.PROJECT_DIR.toString()));
-            sethlansSettingsInfo.setBlenderDir(SethlansUtils.getProperty(SethlansConfigKeys.BENCHMARK_DIR.toString()));
-            sethlansSettingsInfo.setBenchmarkDir(SethlansUtils.getProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION.toString()));
+            sethlansSettingsInfo.setBlenderDir(SethlansUtils.getProperty(SethlansConfigKeys.BLENDER_DIR.toString()));
+            sethlansSettingsInfo.setBenchmarkDir(SethlansUtils.getProperty(SethlansConfigKeys.BENCHMARK_DIR.toString()));
         }
         if (SethlansMode.valueOf(mode) == SethlansMode.NODE || SethlansMode.valueOf(mode) == SethlansMode.DUAL) {
             sethlansSettingsInfo.setCacheDir(SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString()));
