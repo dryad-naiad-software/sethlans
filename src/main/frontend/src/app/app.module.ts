@@ -32,6 +32,8 @@ import {MetricsComponent} from './components/admin/metrics/metrics.component';
 import {SethlansSettingsComponent} from './components/admin/sethlans-settings/sethlans-settings.component';
 import {LogsComponent} from './components/admin/logs/logs.component';
 import {UserManagementComponent} from './components/admin/user-management/user-management.component';
+import {MetricsService} from "./services/metrics.service";
+import {MetricsMonitoringModalComponent} from "./components/admin/metrics/metrics-modal.component";
 
 @NgModule({
   declarations: [
@@ -56,7 +58,8 @@ import {UserManagementComponent} from './components/admin/user-management/user-m
     MetricsComponent,
     SethlansSettingsComponent,
     LogsComponent,
-    UserManagementComponent
+    UserManagementComponent,
+    MetricsMonitoringModalComponent
   ],
   imports: [
     BrowserModule,
@@ -67,7 +70,7 @@ import {UserManagementComponent} from './components/admin/user-management/user-m
     AppRoutingModule,
     Ng2Webstorage
   ],
-  providers: [Title, SetupFormDataService, WindowRef, AuthService, {
+  providers: [Title, SetupFormDataService, WindowRef, AuthService, MetricsService, {
     provide: HTTP_INTERCEPTORS,
     useClass: XhrInterceptor,
     multi: true
