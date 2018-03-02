@@ -51,4 +51,9 @@ public class RoutingController {
     public String getUserManagement() {
         return "forward:/";
     }
+
+    @RequestMapping(value = "/admin/sethlans_settings")
+    public String getSethlansSettingsManagement() {
+        return "forward:/";
+    }
 }
