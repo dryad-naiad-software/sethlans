@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.info.SethlansSettingsInfo;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
+import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.google.common.base.Throwables;
 import com.google.common.hash.HashCode;
@@ -107,12 +108,24 @@ public class SethlansUtils {
 
     public static SethlansSettingsInfo getSettings() {
         SethlansSettingsInfo sethlansSettingsInfo = new SethlansSettingsInfo();
+        String mode = SethlansUtils.getProperty(SethlansConfigKeys.MODE.toString());
         sethlansSettingsInfo.setHttpsPort(SethlansUtils.getPort());
         sethlansSettingsInfo.setSethlansIP(SethlansUtils.getIP());
         sethlansSettingsInfo.setRootDir(SethlansUtils.getProperty(SethlansConfigKeys.ROOT_DIR.toString()));
-        sethlansSettingsInfo.setBenchmarkDir(SethlansUtils.getProperty(SethlansConfigKeys.BENCHMARK_DIR.toString()));
+        sethlansSettingsInfo.setBinDir(SethlansUtils.getProperty(SethlansConfigKeys.BINARY_DIR.toString()));
+        sethlansSettingsInfo.setScriptsDir(SethlansUtils.getProperty(SethlansConfigKeys.SCRIPTS_DIR.toString()));
+        sethlansSettingsInfo.setTempDir(SethlansUtils.getProperty(SethlansConfigKeys.TEMP_DIR.toString()));
+        sethlansSettingsInfo.setLogFile(SethlansUtils.getProperty(SethlansConfigKeys.LOGGING_FILE.toString()));
+        sethlansSettingsInfo.setMode(SethlansMode.valueOf(mode));
+        if (SethlansMode.valueOf(mode) == SethlansMode.SERVER || SethlansMode.valueOf(mode) == SethlansMode.DUAL) {
+            sethlansSettingsInfo.setProjectDir(SethlansUtils.getProperty(SethlansConfigKeys.PROJECT_DIR.toString()));
+            sethlansSettingsInfo.setBlenderDir(SethlansUtils.getProperty(SethlansConfigKeys.BENCHMARK_DIR.toString()));
+            sethlansSettingsInfo.setBenchmarkDir(SethlansUtils.getProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION.toString()));
+        }
+        if (SethlansMode.valueOf(mode) == SethlansMode.NODE || SethlansMode.valueOf(mode) == SethlansMode.DUAL) {
+            sethlansSettingsInfo.setCacheDir(SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString()));
+        }
         return sethlansSettingsInfo;
-
     }
 
     private static String updateComment(String comment) {

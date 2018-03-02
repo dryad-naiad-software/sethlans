@@ -32,6 +32,7 @@ public class RoutingController {
     public String loginPost() {
         return "forward:/";
     }
+
     @RequestMapping(value = "/register")
     public String getRegister() {
         return "forward:/";

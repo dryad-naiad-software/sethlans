@@ -1,5 +1,6 @@
 package com.dryadandnaiad.sethlans.domains.info;
 
+import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import lombok.Data;
 
 /**
@@ -21,4 +22,5 @@ public class SethlansSettingsInfo {
     private String tempDir;
     private String scriptsDir;
     private String cacheDir;
+    private SethlansMode mode;
 }
