@@ -1,7 +1,7 @@
 import {Mode} from "../enums/mode.enum";
 
 export class SethlansConfig {
-  httpPort: string;
+  httpsPort: string;
   sethlansIP: string;
   logFile: string;
   projectDir: string;
