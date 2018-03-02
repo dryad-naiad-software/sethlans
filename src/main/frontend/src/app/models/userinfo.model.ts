@@ -6,4 +6,7 @@ export class UserInfo {
   roles: Role[];
   active: boolean;
   password: string;
+  dateCreated: any;
+  lastUpdated: any;
+
 }
