@@ -32,8 +32,6 @@ public class UserController {
         } else {
             return auth.getName();
         }
-
-
     }
 
     @GetMapping(value = {"/get_user/{username}"})
@@ -45,6 +43,9 @@ public class UserController {
             userToSend.setActive(sethlansUser.isActive());
             userToSend.setRoles(sethlansUser.getRoles());
             userToSend.setEmail(sethlansUser.getEmail());
+            userToSend.setId(sethlansUser.getId());
+            userToSend.setLastUpdated(sethlansUser.getLastUpdated());
+            userToSend.setDateCreated(sethlansUser.getDateCreated());
             return userToSend;
         } else {
             return null;

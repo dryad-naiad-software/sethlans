@@ -64,6 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .and()
                     .authorizeRequests()
                     .antMatchers("/api/management/metrics/**").hasAuthority(Role.SUPER_ADMINISTRATOR.toString())
+                    .antMatchers("/api/management/user_list/**").hasAnyAuthority(Role.SUPER_ADMINISTRATOR.toString(), Role.ADMINISTRATOR.toString())
                     .and()
                     .authorizeRequests()
                     .antMatchers("/api/info/**", "/api/setup/register").permitAll()

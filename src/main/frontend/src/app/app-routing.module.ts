@@ -14,6 +14,7 @@ import {LoginComponent} from "./components/login/login.component";
 import {RegisterUserComponent} from "./components/register-user/register-user.component";
 import {UserSettingsComponent} from "./components/user-settings/user-settings.component";
 import {MetricsComponent} from "./components/admin/metrics/metrics.component";
+import {UserManagementComponent} from "./components/admin/user-management/user-management.component";
 
 ;
 
@@ -21,6 +22,7 @@ const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'login', component: LoginComponent},
   {path: 'admin/metrics', component: MetricsComponent},
+  {path: 'admin/user_management', component: UserManagementComponent},
   {path: 'register', component: RegisterUserComponent},
   {path: 'user_settings', component: UserSettingsComponent},
   {

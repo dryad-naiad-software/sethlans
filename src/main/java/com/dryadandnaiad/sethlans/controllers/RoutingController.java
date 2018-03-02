@@ -31,7 +31,6 @@ public class RoutingController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String loginPost() {
         return "forward:/";
-
     }
     @RequestMapping(value = "/register")
     public String getRegister() {
@@ -45,6 +44,11 @@ public class RoutingController {
 
     @RequestMapping(value = "/admin/metrics")
     public String getMetrics() {
+        return "forward:/";
+    }
+
+    @RequestMapping(value = "/admin/user_management")
+    public String getUserManagement() {
         return "forward:/";
     }
 }
