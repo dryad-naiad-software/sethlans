@@ -44,7 +44,8 @@ public enum SethlansConfigKeys {
     SETHLANS_IP("server.ipaddress"),
     TILE_SIZE_CPU("sethlans.tileSizeCPU"),
     TILE_SIZE_GPU("sethlans.tileSizeGPU"),
-    BENCHMARK_DIR("sethlans.benchmarkDir");
+    BENCHMARK_DIR("sethlans.benchmarkDir"),
+    ROOT_DIR("sethlans.rootDir");
 
 
     private final String text;

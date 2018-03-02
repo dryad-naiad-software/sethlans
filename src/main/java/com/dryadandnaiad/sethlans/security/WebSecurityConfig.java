@@ -63,7 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                     .and()
                     .authorizeRequests()
-                    .antMatchers("/api/management/metrics/**", "/admin/metrics").hasAuthority(Role.SUPER_ADMINISTRATOR.toString())
+                    .antMatchers("/api/management/metrics/**", "/admin/metrics", "/admin/sethlans_settings").hasAuthority(Role.SUPER_ADMINISTRATOR.toString())
                     .antMatchers("/api/management/user_list/**", "/admin/**").hasAnyAuthority(Role.SUPER_ADMINISTRATOR.toString(), Role.ADMINISTRATOR.toString())
                     .and()
                     .authorizeRequests()

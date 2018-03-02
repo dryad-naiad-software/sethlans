@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.domains.info.SethlansSettingsInfo;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
@@ -102,6 +103,16 @@ public class SethlansUtils {
             LOG.error(Throwables.getStackTraceAsString(e));
         }
         return false;
+    }
+
+    public static SethlansSettingsInfo getSettings() {
+        SethlansSettingsInfo sethlansSettingsInfo = new SethlansSettingsInfo();
+        sethlansSettingsInfo.setHttpsPort(SethlansUtils.getPort());
+        sethlansSettingsInfo.setSethlansIP(SethlansUtils.getIP());
+        sethlansSettingsInfo.setRootDir(SethlansUtils.getProperty(SethlansConfigKeys.ROOT_DIR.toString()));
+        sethlansSettingsInfo.setBenchmarkDir(SethlansUtils.getProperty(SethlansConfigKeys.BENCHMARK_DIR.toString()));
+        return sethlansSettingsInfo;
+
     }
 
     private static String updateComment(String comment) {
@@ -255,6 +266,21 @@ public class SethlansUtils {
         return hostname;
     }
 
+    public static String getProperty(String key) {
+        final Properties properties = new Properties();
+        try {
+            FileInputStream fileIn = new FileInputStream(configFile);
+            properties.load(fileIn);
+
+            String propertyValue = properties.getProperty(key);
+            LOG.debug("Retrieved value of " + key + ": " + propertyValue);
+            return propertyValue;
+        } catch (IOException e) {
+            LOG.error(Throwables.getStackTraceAsString(e));
+        }
+        return null;
+    }
+
     public static String getIP() {
         String ip = null;
         final Properties properties = new Properties();
@@ -265,7 +291,7 @@ public class SethlansUtils {
             } else {
                 properties.load(new InputStreamReader(new Resources("sethlans.properties").getResource(), "UTF-8"));
             }
-            ip = properties.getProperty("server.ipaddress");
+            ip = properties.getProperty(SethlansConfigKeys.SETHLANS_IP.toString());
             LOG.debug("IP in current config file equals: " + ip);
             if (ip.equals("null")) {
                 if (SystemUtils.IS_OS_LINUX) {
@@ -296,7 +322,7 @@ public class SethlansUtils {
             } else {
                 properties.load(new InputStreamReader(new Resources("sethlans.properties").getResource(), "UTF-8"));
             }
-            firsttime = Boolean.parseBoolean(properties.getProperty("sethlans.firsttime"));
+            firsttime = Boolean.parseBoolean(properties.getProperty(SethlansConfigKeys.FIRST_TIME.toString()));
         } catch (IOException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
         }
@@ -313,7 +339,7 @@ public class SethlansUtils {
             } else {
                 properties.load(new InputStreamReader(new Resources("sethlans.properties").getResource(), "UTF-8"));
             }
-            port = properties.getProperty("server.port");
+            port = properties.getProperty(SethlansConfigKeys.HTTPS_PORT.toString());
         } catch (IOException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
         }

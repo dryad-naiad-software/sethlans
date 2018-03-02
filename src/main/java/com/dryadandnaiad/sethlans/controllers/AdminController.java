@@ -1,8 +1,10 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
+import com.dryadandnaiad.sethlans.domains.info.SethlansSettingsInfo;
 import com.dryadandnaiad.sethlans.domains.info.UserInfo;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +40,11 @@ public class AdminController {
             userInfoList.add(userToSend);
         }
         return userInfoList;
+    }
+
+    @GetMapping(value = "/current_settings")
+    public SethlansSettingsInfo sethlansSettingsInfo() {
+        return SethlansUtils.getSettings();
     }
 
     @Autowired
