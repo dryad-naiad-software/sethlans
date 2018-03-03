@@ -17,6 +17,7 @@
             <span>Home</span>
           </a>
         </li>
+
         <!--Admin Menu-->
         <li class="nav-item" id="adminDropDown" ngbDropdown *ngIf="isAdministrator">
           <a class="text-white nav-link dropdown-toggle" href="javascript:void(0);" ngbDropdownToggle>
@@ -32,11 +33,17 @@
               <i class="fa fa-fw fa-cogs"></i>
               <span>Sethlans Configuration</span>
             </a>
-            <a href="/admin/compute_settings" class="dropdown-item">
+            <a href="/admin/logs" class="dropdown-item">
+              <i class="fa fa-fw fa-book"></i>
+              <span>Sethlans Logs</span>
+            </a>
+            <a href="/admin/compute_settings" class="dropdown-item"
+               *ngIf="currentMode == mode.NODE || currentMode == mode.DUAL">
               <i class="fa fa-fw fa-microchip"></i>
               <span>Compute Settings</span>
             </a>
-            <a href="/admin/blender_version_admin" class="dropdown-item">
+            <a href="/admin/blender_version_admin" class="dropdown-item"
+               *ngIf="currentMode == mode.SERVER || currentMode == mode.DUAL">
               <i class="fa fa-fw fa-list-alt"></i>
               <span>Blender Version Management</span>
             </a>
@@ -59,6 +66,13 @@
               <i class="fa fa-fw fa-sign-out"></i>
               <span>Logout</span></a>
           </div>
+        </li>
+
+        <!--Notifications-->
+        <li class="nav-item">
+          <a href="javascript:void(0);" class="text-white nav-link">
+            <i class="fa fa-flag"></i>
+          </a>
         </li>
       </ul>
     </div>

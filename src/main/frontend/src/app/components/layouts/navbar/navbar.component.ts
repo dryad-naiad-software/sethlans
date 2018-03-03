@@ -25,6 +25,10 @@ export class NavbarComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.http.get('/api/info/sethlans_mode', {responseType: 'text'})
+      .subscribe((sethlansmode: Mode) => {
+        this.currentMode = sethlansmode;
+      });
     this.http.get('/api/users/username', {responseType: 'text'})
       .subscribe((user: string) => {
         if (user.indexOf('<') >= 0) {

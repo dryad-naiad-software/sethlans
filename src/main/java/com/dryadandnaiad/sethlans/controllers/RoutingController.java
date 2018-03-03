@@ -23,8 +23,17 @@ public class RoutingController {
         return "index.html";
     }
 
-    @RequestMapping(value = "/settings")
-    public String getSettings() {
+    @RequestMapping(value = {
+            "/settings",
+            "/register",
+            "/user_settings",
+            "/admin/metrics",
+            "/admin/user_management",
+            "/admin/sethlans_settings",
+            "/admin/compute_settings",
+            "/admin/blender_version_admin",
+            "/admin/logs"})
+    public String getUrl() {
         return "forward:/";
     }
 
@@ -33,28 +42,5 @@ public class RoutingController {
         return "forward:/";
     }
 
-    @RequestMapping(value = "/register")
-    public String getRegister() {
-        return "forward:/";
-    }
 
-    @RequestMapping(value = "/user_settings")
-    public String getUserSettings() {
-        return "forward:/";
-    }
-
-    @RequestMapping(value = "/admin/metrics")
-    public String getMetrics() {
-        return "forward:/";
-    }
-
-    @RequestMapping(value = "/admin/user_management")
-    public String getUserManagement() {
-        return "forward:/";
-    }
-
-    @RequestMapping(value = "/admin/sethlans_settings")
-    public String getSethlansSettingsManagement() {
-        return "forward:/";
-    }
 }

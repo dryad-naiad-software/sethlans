@@ -16,6 +16,9 @@ import {UserSettingsComponent} from "./components/user-settings/user-settings.co
 import {MetricsComponent} from "./components/admin/metrics/metrics.component";
 import {UserManagementComponent} from "./components/admin/user-management/user-management.component";
 import {SethlansSettingsComponent} from "./components/admin/sethlans-settings/sethlans-settings.component";
+import {ComputeSettingsComponent} from "./components/admin/compute-settings/compute-settings.component";
+import {BlenderVersionsComponent} from "./components/admin/blender-versions/blender-versions.component";
+import {LogsComponent} from "./components/admin/logs/logs.component";
 
 ;
 
@@ -25,6 +28,9 @@ const routes: Routes = [
   {path: 'admin/metrics', component: MetricsComponent},
   {path: 'admin/user_management', component: UserManagementComponent},
   {path: 'admin/sethlans_settings', component: SethlansSettingsComponent},
+  {path: 'admin/compute_settings', component: ComputeSettingsComponent},
+  {path: 'admin/blender_version_admin', component: BlenderVersionsComponent},
+  {path: 'admin/logs', component: LogsComponent},
   {path: 'register', component: RegisterUserComponent},
   {path: 'user_settings', component: UserSettingsComponent},
   {
