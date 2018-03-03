@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Role} from "../../../enums/role.enum";
 import {UserInfo} from "../../../models/userinfo.model";
+import {Mode} from "../../../enums/mode.enum";
 
 @Component({
   selector: 'app-navbar',
@@ -17,6 +18,8 @@ export class NavbarComponent implements OnInit {
   role: any = Role;
   isAdministrator = false;
   isSuperAdministrator = false;
+  currentMode: Mode;
+  mode: any = Mode;
 
   constructor(private http: HttpClient) {
   }

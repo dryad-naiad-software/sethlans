@@ -36,6 +36,8 @@ import {MetricsService} from "./services/metrics.service";
 import {MetricsMonitoringModalComponent} from "./components/admin/metrics/metrics-modal.component";
 import {UserAddEditComponent} from './components/admin/user-management/user-add-edit/user-add-edit.component';
 import {UserViewComponent} from './components/admin/user-management/user-view/user-view.component';
+import {ComputeSettingsComponent} from './components/admin/compute-settings/compute-settings.component';
+import {BlenderVersionsComponent} from './components/admin/blender-versions/blender-versions.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +65,9 @@ import {UserViewComponent} from './components/admin/user-management/user-view/us
     UserManagementComponent,
     MetricsMonitoringModalComponent,
     UserAddEditComponent,
-    UserViewComponent
+    UserViewComponent,
+    ComputeSettingsComponent,
+    BlenderVersionsComponent
   ],
   imports: [
     BrowserModule,

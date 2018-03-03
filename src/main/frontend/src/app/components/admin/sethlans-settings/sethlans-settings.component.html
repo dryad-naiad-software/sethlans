@@ -6,149 +6,129 @@
           <span>Sethlans Configuration</span>
         </h2>
       </div>
-        <div class="card-body table-responsive">
-          <table class="table table-striped table-sm">
-            <thead>
-            <h5>Current Main Configuration</h5>
-            </thead>
-            <tbody>
-            <tr>
-              <td style="width: 40%">HTTPS Port</td>
-              <td style="width: 75%">{{sethlansConfig.httpsPort}}</td>
-              <td style="width: 33%">
-                <button class="btn btn-outline-primary btn-sm">Edit</button>
-              </td>
-            </tr>
-            <tr>
-              <td>IP</td>
-              <td>{{sethlansConfig.sethlansIP}}</td>
-              <td>
-                <button class="btn btn-outline-primary btn-sm">Edit</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Mode</td>
-              <td>{{sethlansConfig.mode}}</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>Sethlans Root Directory</td>
-              <td>{{sethlansConfig.rootDir}}</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>Log File</td>
-              <td>{{sethlansConfig.logFile}}</td>
-              <td>
-                <button class="btn btn-outline-primary btn-sm">Edit</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Binaries Directory</td>
-              <td>{{sethlansConfig.binDir}}</td>
-              <td>
-                <button class="btn btn-outline-primary btn-sm">Edit</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Scripts Directory</td>
-              <td>{{sethlansConfig.scriptsDir}}</td>
-              <td>
-                <button class="btn btn-outline-primary btn-sm">Edit</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Temp Directory</td>
-              <td>{{sethlansConfig.tempDir}}</td>
-              <td>
-                <button class="btn btn-outline-primary btn-sm">Edit</button>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-          <table class="table table-striped table-sm"
-                 *ngIf="sethlansConfig.mode == mode.SERVER || sethlansConfig.mode == mode.DUAL">
-            <thead>
-            <h5>Current Server Configuration</h5>
-            </thead>
+      <div class="card-body table-responsive">
+        <table class="table table-striped table-sm">
+          <thead>
+          <h5>Current Main Configuration</h5>
+          </thead>
+          <tbody>
+          <tr>
+            <td style="width: 40%">HTTPS Port</td>
+            <td style="width: 75%">{{sethlansConfig.httpsPort}}</td>
+            <td style="width: 33%">
+              <button class="btn btn-outline-primary btn-sm">Edit</button>
+            </td>
+          </tr>
+          <tr>
+            <td>IP</td>
+            <td>{{sethlansConfig.sethlansIP}}</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm">Edit</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Mode</td>
+            <td>{{sethlansConfig.mode}}</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Sethlans Root Directory</td>
+            <td>{{sethlansConfig.rootDir}}</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Log File</td>
+            <td>{{sethlansConfig.logFile}}</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm">Edit</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Binaries Directory</td>
+            <td>{{sethlansConfig.binDir}}</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm">Edit</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Scripts Directory</td>
+            <td>{{sethlansConfig.scriptsDir}}</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm">Edit</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Temp Directory</td>
+            <td>{{sethlansConfig.tempDir}}</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm">Edit</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <table class="table table-striped table-sm"
+               *ngIf="sethlansConfig.mode == mode.SERVER || sethlansConfig.mode == mode.DUAL">
+          <thead>
+          <h5>Current Server Configuration</h5>
+          </thead>
 
-            <tbody>
-            <tr>
-              <td style="width: 40%">Default Blender Version</td>
-              <td style="width: 75%">2.79</td>
-              <td style="width: 33%">
-                <button class="btn btn-outline-primary btn-sm">Edit</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Blender OS versions installed</td>
-              <td>MacOS</td>
-              <td>
-                <button class="btn btn-outline-primary btn-sm">Edit</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Project Dir</td>
-              <td>{{sethlansConfig.projectDir}}</td>
-              <td>
-                <button class="btn btn-outline-primary btn-sm">Edit</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Blender Binaries Dir</td>
-              <td>{{sethlansConfig.blenderDir}}</td>
-              <td>
-                <button class="btn btn-outline-primary btn-sm">Edit</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Benchmark Directory</td>
-              <td>{{sethlansConfig.benchmarkDir}}</td>
-              <td>
-                <button class="btn btn-outline-primary btn-sm">Edit</button>
-              </td>
-            </tr>
-            </tbody>
+          <tbody>
+          <tr>
+            <td style="width: 40%">Configure Blender Versions</td>
+            <td style="width: 75%"></td>
+            <td style="width: 33%">
+              <button class="btn btn-outline-primary btn-sm">Edit</button>
+            </td>
+          </tr>
 
-          </table>
-          <table class="table table-striped table-sm"
-                 *ngIf="sethlansConfig.mode == mode.NODE || sethlansConfig.mode == mode.DUAL">
-            <thead>
-            <h5>Current Node Configuration</h5>
-            </thead>
-            <tbody>
-            <tr>
-              <td style="width: 40%">Cache Directory</td>
-              <td style="width: 75%">{{sethlansConfig.cacheDir}}</td>
-              <td style="width: 33%">
-                <button class="btn btn-outline-primary btn-sm">Edit</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Current Compute Mode</td>
-              <td>CPU_GPU</td>
-              <td>
-                <button class="btn btn-outline-primary btn-sm">Edit</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Rendering Cores</td>
-              <td>8</td>
-              <td>
-                <button class="btn btn-outline-primary btn-sm">Edit</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Selected Graphics Card(s)</td>
-              <td>NVIDIA 1070 GTX, NVIDIA 710 GT</td>
-              <td>
-                <button class="btn btn-outline-primary btn-sm">Edit</button>
-              </td>
-            </tr>
-            </tbody>
+          <tr>
+            <td>Project Dir</td>
+            <td>{{sethlansConfig.projectDir}}</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm">Edit</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Blender Binaries Dir</td>
+            <td>{{sethlansConfig.blenderDir}}</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm">Edit</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Benchmark Directory</td>
+            <td>{{sethlansConfig.benchmarkDir}}</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm">Edit</button>
+            </td>
+          </tr>
+          </tbody>
 
-          </table>
-        </div>
+        </table>
+        <table class="table table-striped table-sm"
+               *ngIf="sethlansConfig.mode == mode.NODE || sethlansConfig.mode == mode.DUAL">
+          <thead>
+          <h5>Current Node Configuration</h5>
+          </thead>
+          <tbody>
+          <tr>
+            <td style="width: 40%">Cache Directory</td>
+            <td style="width: 75%">{{sethlansConfig.cacheDir}}</td>
+            <td style="width: 33%">
+              <button class="btn btn-outline-primary btn-sm">Edit</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Configure Compute Settings</td>
+            <td></td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm">Edit</button>
+            </td>
+          </tr>
+          </tbody>
+
+        </table>
+      </div>
     </div>
   </div>
 </div>
