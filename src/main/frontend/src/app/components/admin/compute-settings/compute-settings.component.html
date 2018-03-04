@@ -7,15 +7,37 @@
       <div class="card-body table-responsive">
         <table class="table table-striped">
           <thead>
-          <h5>Current Values</h5>
+          <h5>Current Compute Setting Summary</h5>
           </thead>
           <tbody>
           <tr>
             <td>Compute Method</td>
             <td>{{node.computeMethod}}</td>
           </tr>
+          <tr *ngIf="node.computeMethod !== computeMethodEnum.GPU">
+            <td>Rendering Cores</td>
+            <td>{{node.cores}}</td>
+          </tr>
+          <tr *ngIf="node.computeMethod !== computeMethodEnum.GPU">
+            <td>Tile Size: CPU</td>
+            <td>{{node.tileSizeCPU}}</td>
+          </tr>
+          <tr *ngIf="node.computeMethod !== computeMethodEnum.CPU">
+            <td>Selected GPU(s)</td>
+            <td>
+              <ul class="list-unstyled">
+                <li *ngFor="let gpu of node.selectedGPUs"> {{gpu.model}}</li>
+              </ul>
+            </td>
+          </tr>
+          <tr *ngIf="node.computeMethod !== computeMethodEnum.CPU">
+            <td>Tile Size: GPU</td>
+            <td>{{node.tileSizeGPU}}</td>
+          </tr>
           </tbody>
         </table>
+        <hr/>
+        <h5>Update Compute Settings</h5>
       </div>
     </div>
   </div>
