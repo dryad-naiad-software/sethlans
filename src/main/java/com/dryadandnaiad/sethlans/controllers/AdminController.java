@@ -67,16 +67,6 @@ public class AdminController {
         return SethlansUtils.getSettings();
     }
 
-    @GetMapping(value = {"/selected_compute_method"})
-    public ComputeType getSelectedComputeMethod() {
-        return this.selectedComputeMethod;
-    }
-
-    @GetMapping(value = {"/current_cores"})
-    public Integer getCurrentCores() {
-        return Integer.parseInt(this.selectedCores);
-    }
-
     @GetMapping(value = {"/selected_gpus"})
     public List<GPUDevice> getSelectedGPU() {
         List<String> gpuIdsList = Arrays.asList(gpuIds.split(","));
@@ -97,9 +87,19 @@ public class AdminController {
         return Integer.parseInt(this.tileSizeGPU);
     }
 
+    @GetMapping(value = {"/current_cores"})
+    public Integer getCurrentCores() {
+        return Integer.parseInt(this.selectedCores);
+    }
+
     @GetMapping(value = {"/current_tilesize_cpu"})
     public Integer getCurrentTileSizeCPU() {
         return Integer.parseInt(this.titleSizeCPU);
+    }
+
+    @GetMapping(value = {"/selected_compute_method"})
+    public ComputeType getSelectedComputeMethod() {
+        return this.selectedComputeMethod;
     }
 
     @Autowired

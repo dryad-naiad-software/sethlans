@@ -12,27 +12,27 @@
           <tbody>
           <tr>
             <td>Compute Method</td>
-            <td>{{node.computeMethod}}</td>
+            <td>{{currentNode.computeMethod}}</td>
           </tr>
-          <tr *ngIf="node.computeMethod !== computeMethodEnum.GPU">
+          <tr *ngIf="currentNode.computeMethod !== computeMethodEnum.GPU">
             <td>Rendering Cores</td>
-            <td>{{node.cores}}</td>
+            <td>{{currentNode.cores}}</td>
           </tr>
-          <tr *ngIf="node.computeMethod !== computeMethodEnum.GPU">
+          <tr *ngIf="currentNode.computeMethod !== computeMethodEnum.GPU">
             <td>Tile Size: CPU</td>
-            <td>{{node.tileSizeCPU}}</td>
+            <td>{{currentNode.tileSizeCPU}}</td>
           </tr>
-          <tr *ngIf="node.computeMethod !== computeMethodEnum.CPU">
+          <tr *ngIf="currentNode.computeMethod !== computeMethodEnum.CPU">
             <td>Selected GPU(s)</td>
             <td>
               <ul class="list-unstyled">
-                <li *ngFor="let gpu of node.selectedGPUs"> {{gpu.model}}</li>
+                <li *ngFor="let gpu of currentNode.selectedGPUs"> {{gpu.model}}</li>
               </ul>
             </td>
           </tr>
-          <tr *ngIf="node.computeMethod !== computeMethodEnum.CPU">
+          <tr *ngIf="currentNode.computeMethod !== computeMethodEnum.CPU">
             <td>Tile Size: GPU</td>
-            <td>{{node.tileSizeGPU}}</td>
+            <td>{{currentNode.tileSizeGPU}}</td>
           </tr>
           </tbody>
         </table>
