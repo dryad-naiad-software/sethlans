@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -33,6 +35,12 @@ public class InfoController {
 
     @Value("${sethlans.mode}")
     private SethlansMode mode;
+
+    @Value("${sethlans.gpu_id}")
+    private String gpuIds;
+
+    @Value("${sethlans.cores}")
+    private String selectedCores;
 
     private List<String> blenderVersions = BlenderUtils.listVersions();
     private List<ComputeType> availableMethods = SethlansUtils.getAvailableMethods();
@@ -78,6 +86,28 @@ public class InfoController {
         }
     }
 
+    @GetMapping(value = {"/current_cores"})
+    public Integer getCurrentCores() {
+        return Integer.parseInt(this.selectedCores);
+    }
+
+    @GetMapping(value = {"/selected_gpus"})
+    public List<GPUDevice> getSelectedGPU() {
+        List<String> gpuIdsList = Arrays.asList(gpuIds.split(","));
+        List<GPUDevice> gpuDeviceList = getAvailableGPUs();
+        List<GPUDevice> selectedGPUs = new ArrayList<>();
+        for (String gpuID : gpuIdsList) {
+            for (GPUDevice aGpuDeviceList : gpuDeviceList) {
+                if (aGpuDeviceList.getDeviceID().equals(gpuID)) {
+                    selectedGPUs.add(aGpuDeviceList);
+                }
+            }
+
+        }
+
+        return selectedGPUs;
+    }
+
     @GetMapping(value = {"/sethlans_port"})
     public String getHttpsPort() {
         if (firstTime) {
@@ -86,8 +116,6 @@ public class InfoController {
             return SethlansUtils.getPort();
         }
     }
-
-
 
 
     @GetMapping(value = {"/sethlans_mode"})
