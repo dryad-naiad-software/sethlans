@@ -27,7 +27,6 @@ export class ComputeSettingsComponent implements OnInit {
         (computeMethods: any[]) => {
           this.availableComputeMethods = computeMethods;
           console.log(this.availableComputeMethods);
-          this.node.setComputeMethod(ComputeMethod.CPU);
         }, (error) => console.log(error));
     this.http.get('/api/info/total_cores', {responseType: 'text'})
       .subscribe((cores: any) => {
@@ -38,6 +37,9 @@ export class ComputeSettingsComponent implements OnInit {
     this.http.get('/api/info/current_cores', {responseType: 'text'}).subscribe((currentCore: any) => {
       this.currentCores = currentCore;
       this.node.setCores(currentCore);
+    });
+    this.http.get('/api/info/selected_compute_method', {responseType: 'text'}).subscribe((selectedComputeMethod: any) => {
+      this.node.setComputeMethod(selectedComputeMethod);
     });
     if (this.availableComputeMethods.indexOf(ComputeMethod.GPU)) {
       this.http.get('/api/info/available_gpus')

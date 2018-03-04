@@ -42,14 +42,23 @@ public class InfoController {
     @Value("${sethlans.cores}")
     private String selectedCores;
 
+    @Value("${sethlans.computeMethod}")
+    private ComputeType selectedComputeMethod;
+
     private List<String> blenderVersions = BlenderUtils.listVersions();
     private List<ComputeType> availableMethods = SethlansUtils.getAvailableMethods();
     private Integer totalCores = new CPU().getCores();
     private List<GPUDevice> gpuDevices = GPU.listDevices();
 
+
     @GetMapping(value = {"/first_time"})
     public boolean isFirstTime() {
         return firstTime;
+    }
+
+    @GetMapping(value = {"/selected_compute_method"})
+    public ComputeType getSelectedComputeMethod() {
+        return this.selectedComputeMethod;
     }
 
     @GetMapping(value = {"/version"})
