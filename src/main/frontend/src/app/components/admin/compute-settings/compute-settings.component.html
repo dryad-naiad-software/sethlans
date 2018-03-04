@@ -38,6 +38,63 @@
         </table>
         <hr/>
         <h5>Update Compute Settings</h5>
+        <form #updateComputeForm="ngForm" class="editForm">
+          <div class="form-group" ngbTooltip="Render with either a CPU/GPU or ability to use either one."
+               placement="left">
+            <label for="computeMethod">Compute Method Selection</label>
+            <select class="form-control form-control-sm"
+                    id="computeMethod"
+                    name="computeMethod"
+                    value="{{currentNode.getComputeMethod()}}"
+                    #computeMethod="ngModel"
+                    [(ngModel)]="newNode.computeMethod">
+              <option *ngFor="let method of availableComputeMethods">{{method}}</option>
+            </select>
+          </div>
+          <div class="form-group" *ngIf="newNode.computeMethod !== computeMethodEnum.GPU"
+               ngbTooltip="Number of CPU cores to be used for rendering." placement="left">
+            <label for="cores">Rendering Cores:</label>
+            <mat-slider
+              id="cores"
+              min="1"
+              step="1"
+              thumb-label="true"
+              [max]="totalCores"
+              #cores="ngModel"
+              value="{{currentNode.getCores()}}"
+              name="cores"
+              [(ngModel)]="newNode.cores"></mat-slider>
+          </div>
+          <div class="form-group" *ngIf="newNode.computeMethod !== computeMethodEnum.GPU"
+               ngbTooltip="Tile size used for CPU rendering." placement="left">
+            <label for="tileSizeCPU">CPU Render Tile Size:</label>
+            <input type="number"
+                   class="form-control form-control-sm"
+                   name="tileSizeCPU"
+                   id="tileSizeCPU"
+                   value="{{currentNode.getTileSizeCPU()}}"
+                   #tileSizeCPU="ngModel"
+                   [(ngModel)]="newNode.tileSizeCPU">
+          </div>
+          <div class="form-group" *ngIf="newNode.computeMethod !== computeMethodEnum.CPU"
+               ngbTooltip="GPU devices to be used for rendering." placement="left">
+            <label>GPU Devices:</label>
+            <div *ngFor="let gpu of availableGPUs">
+              <input type="checkbox"
+                     class="form-control-sm"
+                     name="{{gpu.model}}"
+                     value="{{gpu.model}}"
+                     #gpuSelection
+                     required
+                     (change)="selected($event, gpu)"/>
+              <label class="form-check-label form-control-sm">{{gpu.model}}</label>
+            </div>
+          </div>
+        </form>
+        <div>
+          Debugging:
+          <pre>{{ newNode | json }}</pre>
+        </div>
       </div>
     </div>
   </div>

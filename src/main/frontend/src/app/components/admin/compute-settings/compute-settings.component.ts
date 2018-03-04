@@ -26,27 +26,36 @@ export class ComputeSettingsComponent implements OnInit {
     this.prePopValues();
     // Populate Current Node
     this.setCurrentNode();
-
   }
+
 
   setCurrentNode() {
     this.http.get('/api/management/selected_compute_method')
       .subscribe((selectedMethod: ComputeMethod) => {
         this.currentNode.setComputeMethod(selectedMethod);
+        this.newNode.setComputeMethod(selectedMethod)
       });
     this.http.get('/api/management/selected_gpus')
       .subscribe((selectedGPUs: GPU[]) => {
         this.selectedGPUs = selectedGPUs;
         this.currentNode.setSelectedGPUs(this.selectedGPUs);
+        this.newNode.setSelectedGPUs(this.selectedGPUs);
         console.log(this.selectedGPUs);
       });
     this.http.get('/api/management/current_cores')
       .subscribe((currentCores: any) => {
         this.currentNode.setCores(currentCores);
+        this.newNode.setCores(currentCores);
       });
     this.http.get('/api/management/current_tilesize_cpu')
       .subscribe((tileSizeCPU: any) => {
         this.currentNode.setTileSizeCPU(tileSizeCPU);
+        this.newNode.setTileSizeCPU(tileSizeCPU)
+      });
+    this.http.get('/api/management/current_tilesize_gpu')
+      .subscribe((tileSizeGPU: any) => {
+        this.currentNode.setTileSizeGPU(tileSizeGPU);
+        this.newNode.setTileSizeGPU(tileSizeGPU);
       });
   }
 
