@@ -2,7 +2,9 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.forms.SetupForm;
+import com.dryadandnaiad.sethlans.forms.subclasses.SetupNode;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
+import com.dryadandnaiad.sethlans.services.config.UpdateComputeService;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,7 @@ public class SetupController {
     private static final Logger LOG = LoggerFactory.getLogger(SetupController.class);
     private SaveSetupConfigService saveSetupConfigService;
     private SethlansUserDatabaseService sethlansUserDatabaseService;
+    private UpdateComputeService updateComputeService;
 
 
     @PostMapping("/submit")
@@ -33,6 +36,17 @@ public class SetupController {
             LOG.debug(setupForm.toString());
             saveSetupConfigService.saveSetupSettings(setupForm);
             return true;
+        } else {
+            return false;
+        }
+    }
+
+    @PostMapping("/update_compute")
+    public boolean submit(@RequestBody SetupNode setupNode) {
+        LOG.debug("Processing Compute Setting Update");
+        if (setupNode != null) {
+            LOG.debug(setupNode.toString());
+            return updateComputeService.saveComputeSettings(setupNode);
         } else {
             return false;
         }
@@ -62,5 +76,10 @@ public class SetupController {
     @Autowired
     public void setSethlansUserDatabaseService(SethlansUserDatabaseService sethlansUserDatabaseService) {
         this.sethlansUserDatabaseService = sethlansUserDatabaseService;
+    }
+
+    @Autowired
+    public void setUpdateComputeService(UpdateComputeService updateComputeService) {
+        this.updateComputeService = updateComputeService;
     }
 }

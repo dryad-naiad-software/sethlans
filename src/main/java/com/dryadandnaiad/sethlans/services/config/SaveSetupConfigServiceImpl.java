@@ -2,7 +2,6 @@ package com.dryadandnaiad.sethlans.services.config;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
-import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
@@ -25,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 
+import static com.dryadandnaiad.sethlans.utils.SethlansUtils.getGPUDeviceString;
 import static com.dryadandnaiad.sethlans.utils.SethlansUtils.writeProperty;
 
 /**
@@ -106,16 +106,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
             writeProperty(SethlansConfigKeys.TILE_SIZE_CPU, Integer.toString(setupForm.getNode().getTileSizeCPU()));
 
             if (!setupForm.getNode().getComputeMethod().equals(ComputeType.CPU)) {
-                if (!setupForm.getNode().getSelectedGPUs().isEmpty()) {
-                    StringBuilder result = new StringBuilder();
-                    for (GPUDevice gpuDevice : setupForm.getNode().getSelectedGPUs()) {
-                        if (result.length() != 0) {
-                            result.append(",");
-                        }
-                        result.append(gpuDevice.getDeviceID());
-                    }
-                    writeProperty(SethlansConfigKeys.GPU_DEVICE, result.toString());
-                }
+                writeProperty(SethlansConfigKeys.GPU_DEVICE, getGPUDeviceString(setupForm.getNode()));
             }
 
             if (!setupForm.getNode().getComputeMethod().equals(ComputeType.GPU)) {

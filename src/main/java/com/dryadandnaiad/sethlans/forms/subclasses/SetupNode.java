@@ -15,9 +15,9 @@ import java.util.List;
 @Data
 public class SetupNode {
     private ComputeType computeMethod;
-    private int cores;
-    private int tileSizeGPU;
-    private int tileSizeCPU;
+    private Integer cores;
+    private Integer tileSizeGPU;
+    private Integer tileSizeCPU;
     private boolean gpuEmpty;
     private List<GPUDevice> selectedGPUs;
 }

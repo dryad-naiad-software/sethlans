@@ -20,10 +20,12 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.domains.info.SethlansSettingsInfo;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.forms.subclasses.SetupNode;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.google.common.base.Throwables;
 import com.google.common.hash.HashCode;
@@ -81,6 +83,20 @@ public class SethlansUtils {
 
     public static String getShortUUID() {
         return UUID.randomUUID().toString().substring(0, 13);
+    }
+
+    public static String getGPUDeviceString(SetupNode setupNode) {
+        if (!setupNode.getSelectedGPUs().isEmpty()) {
+            StringBuilder result = new StringBuilder();
+            for (GPUDevice gpuDevice : setupNode.getSelectedGPUs()) {
+                if (result.length() != 0) {
+                    result.append(",");
+                }
+                result.append(gpuDevice.getDeviceID());
+            }
+            return result.toString();
+        }
+        return null;
     }
 
 
