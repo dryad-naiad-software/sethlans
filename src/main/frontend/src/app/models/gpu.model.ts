@@ -4,5 +4,6 @@ export class GPU {
   rating: number;
   openCL: boolean;
   cuda: boolean;
-  cudaName: string;
+  deviceID: string;
+  selected: boolean;
 }

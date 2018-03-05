@@ -3,6 +3,7 @@ import {ComputeMethod} from "../../../enums/compute.method.enum";
 import {GPU} from "../../../models/gpu.model";
 import {HttpClient} from "@angular/common/http";
 import {Node} from "../../../models/node.model";
+import {_} from "underscore"
 
 @Component({
   selector: 'app-compute-settings',
@@ -15,7 +16,6 @@ export class ComputeSettingsComponent implements OnInit {
   totalCores: number;
   availableGPUs: GPU[] = [];
   currentNode: Node = new Node();
-  selectedGPUs: GPU[];
   newNode: Node = new Node();
 
   constructor(private http: HttpClient) {
@@ -37,10 +37,15 @@ export class ComputeSettingsComponent implements OnInit {
       });
     this.http.get('/api/management/selected_gpus')
       .subscribe((selectedGPUs: GPU[]) => {
-        this.selectedGPUs = selectedGPUs;
-        this.currentNode.setSelectedGPUs(this.selectedGPUs);
-        this.newNode.setSelectedGPUs(this.selectedGPUs);
-        console.log(this.selectedGPUs);
+        this.currentNode.selectedGPUs = [];
+        for (let gpu of selectedGPUs) {
+          this.currentNode.selectedGPUs.push(gpu);
+        }
+        this.newNode.setSelectedGPUs(selectedGPUs);
+        for (let gpu of this.newNode.getSelectedGPUs()) {
+          gpu.selected = true;
+        }
+        console.log(this.currentNode.getSelectedGPUs());
       });
     this.http.get('/api/management/current_cores')
       .subscribe((currentCores: any) => {
@@ -57,6 +62,51 @@ export class ComputeSettingsComponent implements OnInit {
         this.currentNode.setTileSizeGPU(tileSizeGPU);
         this.newNode.setTileSizeGPU(tileSizeGPU);
       });
+  }
+
+  selected(event, gpu: GPU) {
+    let checked = event.currentTarget.checked;
+    console.log(event.currentTarget.checked);
+    if (checked) {
+      gpu.selected = true;
+      this.newNode.getSelectedGPUs().push(gpu);
+      this.newNode.setGpuEmpty(false);
+    } else if (!checked) {
+      let selectedGPUs = this.newNode.getSelectedGPUs();
+      for (let i = 0; i < selectedGPUs.length; i++) {
+        if (selectedGPUs[i].deviceID == gpu.deviceID) {
+          this.newNode.getSelectedGPUs().splice(i, 1);
+        }
+      }
+    }
+    if (this.newNode.getSelectedGPUs().length === 0) {
+      this.newNode.setGpuEmpty(true);
+    }
+  }
+
+  methodSelection() {
+    if (this.newNode.getComputeMethod() !== ComputeMethod.CPU) {
+      if (this.newNode.getSelectedGPUs().length == 0) {
+        this.newNode.setGpuEmpty(true);
+      } else {
+        this.newNode.setGpuEmpty(false);
+        console.log(this.newNode.isGpuEmpty());
+      }
+    }
+    if (this.newNode.getComputeMethod() === ComputeMethod.CPU) {
+      // gpuEmpty is used to control the toggling of the Save button. False means that the node settings can be saved.
+      // CPU mode this is always set to false.
+      this.newNode.setGpuEmpty(false);
+      this.newNode.setTileSizeGPU(this.currentNode.tileSizeGPU);
+      this.newNode.setSelectedGPUs([]);
+      for (let gpu of this.currentNode.selectedGPUs) {
+        this.newNode.selectedGPUs.push(gpu);
+      }
+    }
+    if (this.newNode.getComputeMethod() === ComputeMethod.GPU) {
+      this.newNode.setCores(this.currentNode.cores);
+      this.newNode.setTileSizeCPU(this.currentNode.tileSizeCPU);
+    }
   }
 
   prePopValues() {
@@ -76,6 +126,18 @@ export class ComputeSettingsComponent implements OnInit {
         .subscribe((gpus: any[]) => {
           this.availableGPUs = gpus;
           console.log(this.availableGPUs);
+          this.http.get('/api/management/selected_gpus')
+            .subscribe((selectedGPUs: GPU[]) => {
+              console.log("Test");
+              for (let selectedGPU of selectedGPUs) {
+                for (let availGPU of this.availableGPUs) {
+                  if (selectedGPU.model == availGPU.model) {
+                    availGPU.selected = true;
+                  }
+                }
+              }
+
+            });
         }, (error) => console.log(error));
     }
   }

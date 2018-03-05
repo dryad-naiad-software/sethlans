@@ -50,19 +50,25 @@ export class SetupNodeComponent implements OnInit {
     }
   }
 
-  selected(event, gpu) {
+  selected(event, gpu: GPU) {
     let checked = event.currentTarget.checked;
     console.log(event.currentTarget.checked);
     console.log(gpu);
     if (checked) {
+      gpu.selected = true;
       this.node.getSelectedGPUs().push(gpu);
       this.node.setGpuEmpty(false);
     } else if (!checked) {
-      const index = this.node.getSelectedGPUs().indexOf(gpu);
-      this.node.getSelectedGPUs().splice(index, 1);
+      let selectedGPUs = this.node.getSelectedGPUs();
+      for (let i = 0; i < selectedGPUs.length; i++) {
+        if (selectedGPUs[i].deviceID == gpu.deviceID) {
+          this.node.getSelectedGPUs().splice(i, 1);
+        }
+      }
+    }
+    if (this.node.getSelectedGPUs().length === 0) {
       this.node.setGpuEmpty(true);
     }
-    console.log(this.node.getSelectedGPUs());
   }
 
   methodSelection() {
