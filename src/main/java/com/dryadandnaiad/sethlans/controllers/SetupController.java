@@ -6,6 +6,7 @@ import com.dryadandnaiad.sethlans.forms.subclasses.SetupNode;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
 import com.dryadandnaiad.sethlans.services.config.UpdateComputeService;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
+import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ public class SetupController {
     private SaveSetupConfigService saveSetupConfigService;
     private SethlansUserDatabaseService sethlansUserDatabaseService;
     private UpdateComputeService updateComputeService;
+    private SethlansManagerService sethlansManagerService;
 
 
     @PostMapping("/submit")
@@ -46,7 +48,9 @@ public class SetupController {
         LOG.debug("Processing Compute Setting Update");
         if (setupNode != null) {
             LOG.debug(setupNode.toString());
-            return updateComputeService.saveComputeSettings(setupNode);
+            boolean updateComplete = updateComputeService.saveComputeSettings(setupNode);
+            sethlansManagerService.restart();
+            return updateComplete;
         } else {
             return false;
         }
@@ -81,5 +85,10 @@ public class SetupController {
     @Autowired
     public void setUpdateComputeService(UpdateComputeService updateComputeService) {
         this.updateComputeService = updateComputeService;
+    }
+
+    @Autowired
+    public void setSethlansManagerService(SethlansManagerService sethlansManagerService) {
+        this.sethlansManagerService = sethlansManagerService;
     }
 }

@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {ComputeMethod} from "../../../enums/compute.method.enum";
 import {GPU} from "../../../models/gpu.model";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Node} from "../../../models/node.model";
 import {_} from "underscore"
 import {Router} from "@angular/router";
+import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-compute-settings',
@@ -19,7 +20,7 @@ export class ComputeSettingsComponent implements OnInit {
   currentNode: Node = new Node();
   newNode: Node = new Node();
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient, private router: Router, private modalService: NgbModal) {
   }
 
   ngOnInit() {
@@ -29,6 +30,30 @@ export class ComputeSettingsComponent implements OnInit {
     this.setCurrentNode();
   }
 
+  confirm(content) {
+    this.modalService.open(content);
+  }
+
+  updateAndRestart(content) {
+    let options: NgbModalOptions = {
+      backdrop: "static"
+    };
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    this.http.post("/api/setup/update_compute", JSON.stringify(this.newNode), httpOptions).subscribe((submitted: boolean) => {
+      if (submitted === true) {
+        setTimeout(() => {
+          this.router.navigateByUrl("/").then(() => {
+            location.reload();
+          });
+        }, 15000);
+      }
+    });
+    this.modalService.open(content, options);
+  }
 
   setCurrentNode() {
     this.http.get('/api/management/selected_compute_method')

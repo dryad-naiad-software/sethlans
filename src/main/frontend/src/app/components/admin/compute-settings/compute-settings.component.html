@@ -38,7 +38,7 @@
         </table>
         <hr/>
         <h5>Update Compute Settings</h5>
-        <form #updateComputeForm="ngForm" class="editForm">
+        <form #updateComputeForm="ngForm" class="editForm" (submit)="confirm(verifyContent)">
           <div class="form-group" ngbTooltip="Render with either a CPU/GPU or ability to use either one."
                placement="left">
             <label for="computeMethod">Compute Method Selection</label>
@@ -115,7 +115,7 @@
           <nav class="pt-2">
             <input [disabled]="!updateComputeForm.valid"
                    type="submit"
-                   value="Update and Restart"
+                   value="Confirm Changes"
                    class="btn btn-outline-dark float-right">
             <button class="btn btn-outline-secondary" (click)="cancel()">Cancel</button>
           </nav>
@@ -128,3 +128,57 @@
     </div>
   </div>
 </div>
+<ng-template #verifyContent let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Pending Changes</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <table class="table table-striped">
+      <tbody>
+      <tr>
+        <td>Compute Method</td>
+        <td>{{newNode.computeMethod}}</td>
+      </tr>
+      <tr *ngIf="newNode.computeMethod !== computeMethodEnum.GPU">
+        <td>Rendering Cores</td>
+        <td>{{newNode.cores}}</td>
+      </tr>
+      <tr *ngIf="newNode.computeMethod !== computeMethodEnum.GPU">
+        <td>Tile Size: CPU</td>
+        <td>{{newNode.tileSizeCPU}}</td>
+      </tr>
+      <tr *ngIf="newNode.computeMethod !== computeMethodEnum.CPU">
+        <td>Selected GPU(s)</td>
+        <td>
+          <ul class="list-unstyled">
+            <li *ngFor="let gpu of newNode.selectedGPUs"> {{gpu.model}}</li>
+          </ul>
+        </td>
+      </tr>
+      <tr *ngIf="newNode.computeMethod !== computeMethodEnum.CPU">
+        <td>Tile Size: GPU</td>
+        <td>{{newNode.tileSizeGPU}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark mr-auto" (click)="c('Close click')">Close</button>
+    <button type="button" class="btn btn-outline-dark ml-auto"
+            (click)="c('Close click'); updateAndRestart(restartModal)">Update and Restart
+    </button>
+  </div>
+</ng-template>
+<ng-template #restartModal>
+  <div class="modal-header">
+    <h4 class="modal-title">Modal title</h4>
+  </div>
+  <div class="modal-body">
+    <p class="text-center"> Sethans is restarting.</p>
+    <p class="text-center">This page will automatically redirect in 15 seconds &nbsp; &nbsp;<span
+      class="fa fa-circle-o-notch fa-spin"></span></p>
+  </div>
+</ng-template>

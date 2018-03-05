@@ -22,10 +22,12 @@ public class UpdateComputeServiceImpl implements UpdateComputeService {
             case CPU:
                 writeProperty(SethlansConfigKeys.CPU_CORES, setupNode.getCores().toString());
                 writeProperty(SethlansConfigKeys.TILE_SIZE_CPU, setupNode.getTileSizeCPU().toString());
+                writeProperty(SethlansConfigKeys.GPU_DEVICE, "");
                 return true;
             case GPU:
                 writeProperty(SethlansConfigKeys.TILE_SIZE_GPU, setupNode.getTileSizeGPU().toString());
                 writeProperty(SethlansConfigKeys.GPU_DEVICE, getGPUDeviceString(setupNode));
+                writeProperty(SethlansConfigKeys.CPU_CORES, "");
                 return true;
 
             case CPU_GPU:
