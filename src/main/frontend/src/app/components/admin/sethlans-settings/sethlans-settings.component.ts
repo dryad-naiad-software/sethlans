@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {SethlansConfig} from "../../../models/sethlans_config.model";
 import {Mode} from "../../../enums/mode.enum";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-sethlans-settings',
@@ -12,7 +13,7 @@ export class SethlansSettingsComponent implements OnInit {
   sethlansConfig: SethlansConfig;
   mode: any = Mode;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
   }
 
   ngOnInit() {
@@ -20,6 +21,14 @@ export class SethlansSettingsComponent implements OnInit {
       this.sethlansConfig = sethlansConfig;
       console.log(this.sethlansConfig);
     });
+  }
+
+  goToComputeConfigure() {
+    this.router.navigateByUrl("/admin/compute_settings");
+  }
+
+  goToBlenderVersions() {
+    this.router.navigateByUrl("/admin/blender_version_admin");
   }
 
 }
