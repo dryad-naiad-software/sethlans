@@ -112,6 +112,13 @@
                      [(ngModel)]="newNode.tileSizeGPU">
             </div>
           </div>
+          <nav class="pt-2">
+            <input [disabled]="!updateComputeForm.valid"
+                   type="submit"
+                   value="Save Changes"
+                   class="btn btn-outline-dark float-right">
+            <button class="btn btn-outline-secondary" (click)="cancel()">Cancel</button>
+          </nav>
         </form>
         <!--<div>-->
         <!--Debugging:-->

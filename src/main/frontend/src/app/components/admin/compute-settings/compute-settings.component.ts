@@ -4,6 +4,7 @@ import {GPU} from "../../../models/gpu.model";
 import {HttpClient} from "@angular/common/http";
 import {Node} from "../../../models/node.model";
 import {_} from "underscore"
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-compute-settings',
@@ -18,7 +19,7 @@ export class ComputeSettingsComponent implements OnInit {
   currentNode: Node = new Node();
   newNode: Node = new Node();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
   }
 
   ngOnInit() {
@@ -82,6 +83,12 @@ export class ComputeSettingsComponent implements OnInit {
     if (this.newNode.getSelectedGPUs().length === 0) {
       this.newNode.setGpuEmpty(true);
     }
+  }
+
+  cancel() {
+    this.router.navigateByUrl("/admin/compute_settings").then(() => {
+      location.reload();
+    });
   }
 
   methodSelection() {
