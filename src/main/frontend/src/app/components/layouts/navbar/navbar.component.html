@@ -10,11 +10,18 @@
     <div class="collapse navbar-collapse float-right" id="navbarSupportedContent" [ngbCollapse]="isCollapsed">
       <!--Right Menu-->
       <ul class="text-white nav ml-auto pr-5" *ngIf="authenticated">
-        <!--Home Menu-->
+        <!--Notifications-->
         <li class="nav-item">
-          <a href="/" class="text-white nav-link">
-            <i class="fa fa-home"></i>
-            <span>Home</span>
+          <a href="javascript:void(0);" class="text-white nav-link">
+            <i class="fa fa-bell"></i>
+          </a>
+        </li>
+
+        <!--Projects Menu-->
+        <li class="nav-item" *ngIf="currentMode == mode.SERVER || currentMode == mode.DUAL">
+          <a href="/projects" class="text-white nav-link">
+            <i class="fa fa-puzzle-piece"></i>
+            <span>Projects</span>
           </a>
         </li>
 
@@ -44,7 +51,7 @@
             </a>
             <a href="/admin/blender_version_admin" class="dropdown-item"
                *ngIf="currentMode == mode.SERVER || currentMode == mode.DUAL">
-              <i class="fa fa-fw fa-list-alt"></i>
+              <i class="fa fa-fw fa-archive"></i>
               <span>Blender Version Management</span>
             </a>
             <a href="/admin/metrics" class="dropdown-item" *ngIf="isSuperAdministrator">
@@ -68,14 +75,59 @@
           </div>
         </li>
 
-        <!--Notifications-->
-        <li class="nav-item">
-          <a href="javascript:void(0);" class="text-white nav-link">
-            <i class="fa fa-flag"></i>
+        <!--Help Menu-->
+        <li class="nav-item" ngbDropdown>
+          <a href="javascript:void(0);" class="text-white nav-link" ngbDropdownToggle>
+            <i class="fa fa-info-circle"></i>
+            <span>Help</span>
           </a>
+          <div ngbDropdownMenu>
+            <a href="/help" class="dropdown-item">
+              <i class="fa fa-fw fa-question-circle"></i>
+              <span>Help</span></a>
+
+            <button class="dropdown-item" (click)="open(about)">
+              <i class="fa fa-fw fa-star"></i>
+              <span>About</span></button>
+          </div>
         </li>
       </ul>
     </div>
 </nav>
+<ng-template #about let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; font-size: 200%"><img [src]="logoDark"
+                                                                                                height="48"
+                                                                                                class="d-inline-block align-top"
+                                                                                                alt="logo">&nbsp;Sethlans
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Sethlans Version {{sethlansVersion}}</p>
+    <p>A local distributed render farm for Blender.</p>
+    <p>Copyright 2018 Dryad and
+      Naiad Software
+      LLC.</p>
+    <p>
+      This program is free software; you can redistribute it and/or
+      modify it under the terms of the GNU General Public License
+      as published by the Free Software Foundation; either version 2
+      of the License, or (at your option) any later version.</p>
 
+    <p>This program is distributed in the hope that it will be useful,
+      but WITHOUT ANY WARRANTY; without even the implied warranty of
+      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+      GNU General Public License for more details.</p>
+
+    <p>You should have received a copy of the GNU General Public License
+      along with this program; if not, write to the Free Software
+      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="c('Close click')">Close</button>
+  </div>
+</ng-template>
 

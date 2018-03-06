@@ -26,6 +26,8 @@ public class RoutingController {
     @RequestMapping(value = {
             "/settings",
             "/register",
+            "/projects",
+            "/help",
             "/user_settings",
             "/admin/metrics",
             "/admin/user_management",

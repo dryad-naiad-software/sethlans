@@ -3,6 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {Role} from "../../../enums/role.enum";
 import {UserInfo} from "../../../models/userinfo.model";
 import {Mode} from "../../../enums/mode.enum";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-navbar',
@@ -11,6 +12,7 @@ import {Mode} from "../../../enums/mode.enum";
 })
 export class NavbarComponent implements OnInit {
   logo: any = "assets/images/logo.png";
+  logoDark: any = "assets/images/logo-dark.png";
   username: string;
   authenticated: boolean;
   isCollapsed = true;
@@ -20,11 +22,20 @@ export class NavbarComponent implements OnInit {
   isSuperAdministrator = false;
   currentMode: Mode;
   mode: any = Mode;
+  sethlansVersion: string;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private modalService: NgbModal) {
+  }
+
+  open(content) {
+    this.modalService.open(content);
   }
 
   ngOnInit() {
+    this.http.get('/api/info/version', {responseType: 'text'})
+      .subscribe((version: string) => {
+        this.sethlansVersion = version;
+      });
     this.http.get('/api/info/sethlans_mode', {responseType: 'text'})
       .subscribe((sethlansmode: Mode) => {
         this.currentMode = sethlansmode;

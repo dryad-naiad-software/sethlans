@@ -19,8 +19,8 @@ import {SethlansSettingsComponent} from "./components/admin/sethlans-settings/se
 import {ComputeSettingsComponent} from "./components/admin/compute-settings/compute-settings.component";
 import {BlenderVersionsComponent} from "./components/admin/blender-versions/blender-versions.component";
 import {LogsComponent} from "./components/admin/logs/logs.component";
+import {ProjectsComponent} from "./components/projects/projects.component";
 
-;
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -33,6 +33,7 @@ const routes: Routes = [
   {path: 'admin/logs', component: LogsComponent},
   {path: 'register', component: RegisterUserComponent},
   {path: 'user_settings', component: UserSettingsComponent},
+  {path: 'projects', component: ProjectsComponent},
   {
     path: '', component: SetupWizardComponent, outlet: 'setup', children: [
       {path: '', component: SetupModeComponent, outlet: 'mode'},
