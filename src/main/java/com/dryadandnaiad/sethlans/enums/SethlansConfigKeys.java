@@ -45,7 +45,8 @@ public enum SethlansConfigKeys {
     TILE_SIZE_CPU("sethlans.tileSizeCPU"),
     TILE_SIZE_GPU("sethlans.tileSizeGPU"),
     BENCHMARK_DIR("sethlans.benchmarkDir"),
-    ROOT_DIR("sethlans.rootDir");
+    ROOT_DIR("sethlans.rootDir"),
+    SESSION_TIMEOUT("server.session.timeout");
 
 
     private final String text;
