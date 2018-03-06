@@ -38,6 +38,8 @@ import {UserViewComponent} from './components/admin/user-management/user-view/us
 import {ComputeSettingsComponent} from './components/admin/compute-settings/compute-settings.component';
 import {BlenderVersionsComponent} from './components/admin/blender-versions/blender-versions.component';
 import {ProjectsComponent} from './components/projects/projects.component';
+import {NodesComponent} from './components/admin/nodes/nodes.component';
+import {ServersComponent} from './components/admin/servers/servers.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +69,9 @@ import {ProjectsComponent} from './components/projects/projects.component';
     UserViewComponent,
     ComputeSettingsComponent,
     BlenderVersionsComponent,
-    ProjectsComponent
+    ProjectsComponent,
+    NodesComponent,
+    ServersComponent
   ],
   imports: [
     BrowserModule,

@@ -6,6 +6,7 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./projects.component.scss']
 })
 export class ProjectsComponent implements OnInit {
+  placeholder: any = "assets/images/placeholder.svg";
 
   constructor() {
   }

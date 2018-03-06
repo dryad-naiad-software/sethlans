@@ -9,50 +9,52 @@
           </button>
         </h2>
       </div>
-      <div class="card-body table-responsive">
-        <table class="table">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table">
+            <thead class="thead-light">
+            <tr>
+              <th scope="col">Username</th>
+              <th scope="col">Email</th>
+              <th scope="col">Status</th>
+              <th scope="col">Roles</th>
+              <th scope="col">Created</th>
+              <th scope="col">Last Updated</th>
+              <th scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let user of userInfoList">
+              <td>{{user.username}}</td>
+              <td>{{user.email}}</td>
+              <td *ngIf="user.active">
+                <button class="btn-success btn btn-sm">Active</button>
+              </td>
+              <td *ngIf="!user.active">
+                <button class="btn btn-danger btn-sm">Inactive</button>
+              </td>
+              <td>{{user.roles}}</td>
+              <td>{{user.dateCreated | date:'MM/dd/yy HH:mm'}}</td>
+              <td>{{user.lastUpdated | date:'MM/dd/yy HH:mm'}}</td>
+              <td>
+                <div class="btn-group-vertical">
+                  <button class="btn btn-outline-dark btn-sm" type="button">View</button>
+                  <button class="btn btn-outline-primary btn-sm" type="button">Edit</button>
+                  <button class="btn btn-outline-danger btn-sm" type="button">Delete</button>
+                </div>
+              </td>
+            </tr>
+            </tbody>
 
-          <thead class="thead-light">
-          <tr>
-            <th scope="col">Username</th>
-            <th scope="col">Email</th>
-            <th scope="col">Status</th>
-            <th scope="col">Roles</th>
-            <th scope="col">Created</th>
-            <th scope="col">Last Updated</th>
-            <th scope="col">Actions</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let user of userInfoList">
-            <td>{{user.username}}</td>
-            <td>{{user.email}}</td>
-            <td *ngIf="user.active">
-              <button class="btn-success btn btn-sm">Active</button>
-            </td>
-            <td *ngIf="!user.active">
-              <button class="btn btn-danger btn-sm">Inactive</button>
-            </td>
-            <td>{{user.roles}}</td>
-            <td>{{user.dateCreated | date:'MM/dd/yy HH:mm'}}</td>
-            <td>{{user.lastUpdated | date:'MM/dd/yy HH:mm'}}</td>
-            <td>
-              <div class="btn-group-vertical">
-                <button class="btn btn-outline-info btn-sm" type="button">View</button>
-                <button class="btn btn-outline-primary btn-sm" type="button">Edit</button>
-                <button class="btn btn-outline-danger btn-sm" type="button">Delete</button>
-              </div>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-        <nav>
-          <ul class="pagination justify-content-center">
-            <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">Next</a></li>
-          </ul>
-        </nav>
+          </table>
+          <nav>
+            <ul class="pagination justify-content-center">
+              <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+          </nav>
+        </div>
 
       </div>
     </div>

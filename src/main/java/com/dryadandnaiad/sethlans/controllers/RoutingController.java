@@ -32,6 +32,8 @@ public class RoutingController {
             "/admin/metrics",
             "/admin/user_management",
             "/admin/sethlans_settings",
+            "/admin/nodes",
+            "/admin/servers",
             "/admin/compute_settings",
             "/admin/blender_version_admin",
             "/admin/logs"})

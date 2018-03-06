@@ -20,6 +20,8 @@ import {ComputeSettingsComponent} from "./components/admin/compute-settings/comp
 import {BlenderVersionsComponent} from "./components/admin/blender-versions/blender-versions.component";
 import {LogsComponent} from "./components/admin/logs/logs.component";
 import {ProjectsComponent} from "./components/projects/projects.component";
+import {ServersComponent} from "./components/admin/servers/servers.component";
+import {NodesComponent} from "./components/admin/nodes/nodes.component";
 
 
 const routes: Routes = [
@@ -28,8 +30,10 @@ const routes: Routes = [
   {path: 'admin/metrics', component: MetricsComponent},
   {path: 'admin/user_management', component: UserManagementComponent},
   {path: 'admin/sethlans_settings', component: SethlansSettingsComponent},
+  {path: 'admin/servers', component: ServersComponent},
   {path: 'admin/compute_settings', component: ComputeSettingsComponent},
   {path: 'admin/blender_version_admin', component: BlenderVersionsComponent},
+  {path: 'admin/nodes', component: NodesComponent},
   {path: 'admin/logs', component: LogsComponent},
   {path: 'register', component: RegisterUserComponent},
   {path: 'user_settings', component: UserSettingsComponent},
