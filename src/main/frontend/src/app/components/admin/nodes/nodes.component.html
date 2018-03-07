@@ -4,16 +4,17 @@
       <div class="card-header">
         <h2>
           <span>Nodes</span>
-          <button class="ml-2 btn btn-outline-dark float-right">
+          <button class="ml-2 btn btn-outline-dark float-right" (click)="openModal(addModal)">
             <span class="fa fa-plus"></span> <span>Add Node</span>
           </button>
-          <button class="btn btn-outline-dark float-right">
+          <button class="btn btn-outline-dark float-right" (click)="openModal(scanModal)">
             <span class="fa fa-search"></span> <span>Scan</span>
           </button>
         </h2>
       </div>
       <div class="card-body">
-        <div class="table-responsive">
+        <h2 class="text-center mt-5 mb-5" *ngIf="nodeList.length == 0">No Nodes Present</h2>
+        <div class="table-responsive" *ngIf="nodeList.length > 0">
           <table datatable class="table">
             <thead class="thead-light">
             <tr>
@@ -57,3 +58,31 @@
     </div>
   </div>
 </div>
+<ng-template #addModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Add Sethlans Node</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark mr-auto" (click)="c('Close click')">Close</button>
+    <button type="button" class="btn btn-outline-dark ml-auto"
+            (click)="c('Close click'); updateAndRestart(restartModal)">Update and Restart
+    </button>
+  </div>
+</ng-template>
+<ng-template #scanModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Scan for Sethlans Nodes</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark mr-auto" (click)="c('Close click')">Close</button>
+    <button type="button" class="btn btn-outline-dark ml-auto"
+            (click)="c('Close click'); updateAndRestart(restartModal)">Update and Restart
+    </button>
+  </div>
+</ng-template>

@@ -29,8 +29,11 @@ export class ComputeSettingsComponent implements OnInit {
     this.setCurrentNode();
   }
 
-  confirm(content) {
-    this.modalService.open(content);
+  open(content) {
+    let options: NgbModalOptions = {
+      backdrop: "static"
+    };
+    this.modalService.open(content, options);
   }
 
   updateAndRestart(content) {
@@ -109,10 +112,8 @@ export class ComputeSettingsComponent implements OnInit {
     }
   }
 
-  cancel() {
-    this.router.navigateByUrl("/admin/compute_settings").then(() => {
-      location.reload();
-    });
+  cancel(form: any) {
+    form.reset();
   }
 
   methodSelection() {
