@@ -40,6 +40,7 @@ import {BlenderVersionsComponent} from './components/admin/blender-versions/blen
 import {ProjectsComponent} from './components/projects/projects.component';
 import {NodesComponent} from './components/admin/nodes/nodes.component';
 import {ServersComponent} from './components/admin/servers/servers.component';
+import {HelpComponent} from './components/help/help.component';
 
 @NgModule({
   declarations: [
@@ -71,7 +72,8 @@ import {ServersComponent} from './components/admin/servers/servers.component';
     BlenderVersionsComponent,
     ProjectsComponent,
     NodesComponent,
-    ServersComponent
+    ServersComponent,
+    HelpComponent
   ],
   imports: [
     BrowserModule,

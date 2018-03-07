@@ -22,11 +22,13 @@ import {LogsComponent} from "./components/admin/logs/logs.component";
 import {ProjectsComponent} from "./components/projects/projects.component";
 import {ServersComponent} from "./components/admin/servers/servers.component";
 import {NodesComponent} from "./components/admin/nodes/nodes.component";
+import {HelpComponent} from "./components/help/help.component";
 
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'login', component: LoginComponent},
+  {path: 'help', component: HelpComponent},
   {path: 'admin/metrics', component: MetricsComponent},
   {path: 'admin/user_management', component: UserManagementComponent},
   {path: 'admin/sethlans_settings', component: SethlansSettingsComponent},
