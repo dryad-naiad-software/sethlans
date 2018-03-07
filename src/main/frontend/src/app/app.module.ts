@@ -41,6 +41,9 @@ import {ProjectsComponent} from './components/projects/projects.component';
 import {NodesComponent} from './components/admin/nodes/nodes.component';
 import {ServersComponent} from './components/admin/servers/servers.component';
 import {HelpComponent} from './components/help/help.component';
+import {NodeScreenComponent} from './components/home/node-screen/node-screen.component';
+import {ServerScreenComponent} from './components/home/server-screen/server-screen.component';
+import {DataTablesModule} from "angular-datatables";
 
 @NgModule({
   declarations: [
@@ -73,12 +76,15 @@ import {HelpComponent} from './components/help/help.component';
     ProjectsComponent,
     NodesComponent,
     ServersComponent,
-    HelpComponent
+    HelpComponent,
+    NodeScreenComponent,
+    ServerScreenComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     MatSliderModule,
+    DataTablesModule,
     NgbModule.forRoot(),
     HttpClientModule,
     AppRoutingModule,
