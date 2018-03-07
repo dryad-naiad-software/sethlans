@@ -1,3 +1,66 @@
-<p>
-  nodes works!
-</p>
+<div class="row pb-5">
+  <div class="col-md-10 m-auto">
+    <div class="card">
+      <div class="card-header">
+        <h2>
+          <span>Nodes</span>
+          <button class="ml-2 btn btn-outline-dark float-right">
+            <span class="fa fa-plus"></span> <span>Add Node</span>
+          </button>
+          <button class="btn btn-outline-dark float-right">
+            <span class="fa fa-search"></span> <span>Scan</span>
+          </button>
+        </h2>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table">
+            <thead class="thead-light">
+            <tr>
+              <th>Node Status</th>
+              <th>Hostname</th>
+              <th>IP Address</th>
+              <th>Port</th>
+              <th>OS</th>
+              <th>Compute Methods</th>
+              <th>CPU Name</th>
+              <th>Selected Cores</th>
+              <th>Selected GPU(s)</th>
+              <th>Benchmark Rating</th>
+              <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>Pending Activation</td>
+              <td>COOKIE</td>
+              <td>10.10.10.10</td>
+              <td>7443</td>
+              <td>Windows64</td>
+              <td>CPU</td>
+              <td>Intel(R) Core(TM) i7-3770 CPU @ 3.40Ghz</td>
+              <td>8</td>
+              <td>NVIDIA 1070 GTX</td>
+              <td>640000</td>
+              <td>
+                <div class="btn-group-vertical">
+                  <button class="btn btn-outline-primary btn-sm" type="button">Update</button>
+                  <button class="btn btn-outline-danger btn-sm" type="button">Delete</button>
+                </div>
+              </td>
+            </tr>
+
+            </tbody>
+          </table>
+          <nav>
+            <ul class="pagination justify-content-center">
+              <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+              <li class="page-item active"><a class="page-link" href="#">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
