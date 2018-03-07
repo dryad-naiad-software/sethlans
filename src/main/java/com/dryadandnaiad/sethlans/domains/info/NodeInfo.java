@@ -49,7 +49,7 @@ public class NodeInfo {
     private CPU cpuinfo;
     private String selectedCores;
     private List<GPUDevice> selectedGPUs = new ArrayList<>();
-    private List<String> selectedCUDA;
+    private List<String> selectedDeviceID;
 
     private static final Logger LOG = LoggerFactory.getLogger(NodeInfo.class);
 
@@ -82,10 +82,6 @@ public class NodeInfo {
     }
 
 
-    public ComputeType getComputeType() {
-        return computeType;
-    }
-
     public void populateNodeInfo() {
         this.hostname = SethlansUtils.getHostname();
 
@@ -96,17 +92,13 @@ public class NodeInfo {
 
     public void setSelectedGPUs() {
         List<GPUDevice> availableGPUs = GPU.listDevices();
-        for (String cuda : selectedCUDA) {
+        for (String cuda : selectedDeviceID) {
             for (GPUDevice gpu : availableGPUs) {
                 if (gpu.getDeviceID().equals(cuda)) {
                     selectedGPUs.add(gpu);
                 }
             }
         }
-    }
-
-    public CPU getCpuinfo() {
-        return cpuinfo;
     }
 
     public void setCpuinfo() {

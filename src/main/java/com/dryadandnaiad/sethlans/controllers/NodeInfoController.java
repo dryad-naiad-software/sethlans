@@ -53,10 +53,10 @@ public class NodeInfoController {
     private String cores;
 
     @Value("${sethlans.gpu_id}")
-    private String cuda;
+    private String deviceID;
 
 
-    @RequestMapping(value = "/api/nodeinfo", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/info/nodeinfo", method = RequestMethod.GET)
     public NodeInfo nodeInfo() {
         LOG.debug("Node info requested.");
         NodeInfo nodeInfo = new NodeInfo();
@@ -71,9 +71,9 @@ public class NodeInfoController {
         }
 
         if (computeType == ComputeType.GPU || computeType == ComputeType.CPU_GPU) {
-            List<String> cudaList = Arrays.asList(cuda.split(","));
+            List<String> deviceList = Arrays.asList(deviceID.split(","));
             nodeInfo.setCpuinfo();
-            nodeInfo.setSelectedCUDA(cudaList);
+            nodeInfo.setSelectedDeviceID(deviceList);
             nodeInfo.setSelectedGPUs();
 
         }

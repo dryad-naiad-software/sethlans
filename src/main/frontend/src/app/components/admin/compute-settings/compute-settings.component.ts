@@ -3,7 +3,6 @@ import {ComputeMethod} from "../../../enums/compute.method.enum";
 import {GPU} from "../../../models/gpu.model";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Node} from "../../../models/node.model";
-import {_} from "underscore"
 import {Router} from "@angular/router";
 import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 
