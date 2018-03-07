@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {Subject} from "rxjs/Subject";
 
 @Component({
   selector: 'app-projects',
@@ -7,6 +8,7 @@ import {Component, OnInit} from '@angular/core';
 })
 export class ProjectsComponent implements OnInit {
   placeholder: any = "assets/images/placeholder.svg";
+  dtTrigger: Subject<any> = new Subject();
 
   constructor() {
   }

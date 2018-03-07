@@ -11,7 +11,7 @@
       </div>
       <div class="card-body">
         <div class="table-responsive">
-          <table class="table">
+          <table datatable class="table" [dtTrigger]="dtTrigger">
             <thead class="thead-light">
             <tr>
               <th scope="col">Username</th>
@@ -20,7 +20,7 @@
               <th scope="col">Roles</th>
               <th scope="col">Created</th>
               <th scope="col">Last Updated</th>
-              <th scope="col">Actions</th>
+              <th data-orderable="false" scope="col">Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -28,10 +28,10 @@
               <td>{{user.username}}</td>
               <td>{{user.email}}</td>
               <td *ngIf="user.active">
-                <button class="btn-success btn btn-sm">Active</button>
+                <span class="font-weight-bold text-success">Active</span>
               </td>
               <td *ngIf="!user.active">
-                <button class="btn btn-danger btn-sm">Inactive</button>
+                <span class="font-weight-bold text-danger">Inactive</span>
               </td>
               <td>{{user.roles}}</td>
               <td>{{user.dateCreated | date:'MM/dd/yy HH:mm'}}</td>
@@ -47,13 +47,6 @@
             </tbody>
 
           </table>
-          <nav>
-            <ul class="pagination justify-content-center">
-              <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-              <li class="page-item active"><a class="page-link" href="#">1</a></li>
-              <li class="page-item"><a class="page-link" href="#">Next</a></li>
-            </ul>
-          </nav>
         </div>
 
       </div>
