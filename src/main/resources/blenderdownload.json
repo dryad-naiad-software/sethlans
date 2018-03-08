@@ -15,14 +15,6 @@
       "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.79/blender-2.79-windows64.zip",
       "https://www.blend4web.com/blender/release/Blender2.79/blender-2.79-windows64.zip"
     ],
-    "windows32": [
-      "http://download.blender.org/release/Blender2.79/blender-2.79-windows32.zip",
-      "http://mirror.cs.umn.edu/blender.org/release/Blender2.79/blender-2.79-windows32.zip",
-      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.79/blender-2.79-windows32.zip",
-      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.79/blender-2.79-windows32.zip",
-      "https://www.blend4web.com/blender/release/Blender2.79/blender-2.79-windows32.zip"
-
-    ],
     "linux64": [
       "http://download.blender.org/release/Blender2.79/blender-2.79-linux-glibc219-x86_64.tar.bz2",
       "http://mirror.cs.umn.edu/blender.org/release/Blender2.79/blender-2.79-linux-glibc219-x86_64.tar.bz2",
@@ -30,19 +22,9 @@
       "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.79/blender-2.79-linux-glibc219-x86_64.tar.bz2",
       "https://www.blend4web.com/blender/release/Blender2.79/blender-2.79-linux-glibc219-x86_64.tar.bz2"
     ],
-    "linux32": [
-      "http://download.blender.org/release/Blender2.79/blender-2.79-linux-glibc219-i686.tar.bz2",
-      "http://mirror.cs.umn.edu/blender.org/release/Blender2.79/blender-2.79-linux-glibc219-i686.tar.bz2",
-      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.79/blender-2.79-linux-glibc219-i686.tar.bz2",
-      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.79/blender-2.79-linux-glibc219-i686.tar.bz2",
-      "https://www.blend4web.com/blender/release/Blender2.79/blender-2.79-linux-glibc219-i686.tar.bz2"
-
-    ],
     "md5MacOS": "0862f00f186d12c4c63637c1de98e654",
     "md5Windows64": "17d9f5bda91ac2e7be2e148ac95f1272",
-    "md5Windows32": "b465be6c2fba82a93502844c725d32bb",
-    "md5Linux64": "f89177ef97cad7d78d06cda7b9e66c8d",
-    "md5Linux32": "63519170d305753c52f475303b515a8f"
+    "md5Linux64": "f89177ef97cad7d78d06cda7b9e66c8d"
   },
   {
     "blenderVersion": "2.78c",
@@ -60,13 +42,6 @@
       "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.78/blender-2.78c-windows64.zip",
       "https://www.blend4web.com/blender/release/Blender2.78/blender-2.78c-windows64.zip"
     ],
-    "windows32": [
-      "http://download.blender.org/release/Blender2.78/blender-2.78c-windows32.zip",
-      "http://mirror.cs.umn.edu/blender.org/release/Blender2.78/blender-2.78c-windows32.zip",
-      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.78/blender-2.78c-windows32.zip",
-      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.78/blender-2.78c-windows32.zip",
-      "https://www.blend4web.com/blender/release/Blender2.78/blender-2.78c-windows32.zip"
-    ],
     "linux64": [
       "http://download.blender.org/release/Blender2.78/blender-2.78c-linux-glibc219-x86_64.tar.bz2",
       "http://mirror.cs.umn.edu/blender.org/release/Blender2.78/blender-2.78c-linux-glibc219-x86_64.tar.bz2",
@@ -74,17 +49,8 @@
       "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.78/blender-2.78c-linux-glibc219-x86_64.tar.bz2",
       "https://www.blend4web.com/blender/release/Blender2.78/blender-2.78c-linux-glibc219-x86_64.tar.bz2"
     ],
-    "linux32": [
-      "http://download.blender.org/release/Blender2.78/blender-2.78c-linux-glibc219-i686.tar.bz2",
-      "http://mirror.cs.umn.edu/blender.org/release/Blender2.78/blender-2.78c-linux-glibc219-i686.tar.bz2",
-      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.78/blender-2.78c-linux-glibc219-i686.tar.bz2",
-      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.78/blender-2.78c-linux-glibc219-i686.tar.bz2",
-      "https://www.blend4web.com/blender/release/Blender2.78/blender-2.78c-linux-glibc219-i686.tar.bz2"
-    ],
     "md5MacOS": "c21a525c7c2793b619253e431c5503f9",
     "md5Windows64": "7fcdb2ab615f5c37c2ad3b62c1935695",
-    "md5Windows32": "859aad90f7f568ee1c681dfaeeaa6843",
-    "md5Linux64": "6aec4319f0a0cd632f48e07e2866d2ab",
-    "md5Linux32": "be5315ba731ab4c80ba6b24562022124"
+    "md5Linux64": "6aec4319f0a0cd632f48e07e2866d2ab"
   }
 ]

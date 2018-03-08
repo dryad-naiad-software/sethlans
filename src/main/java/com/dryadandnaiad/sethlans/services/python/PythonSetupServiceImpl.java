@@ -115,6 +115,7 @@ public class PythonSetupServiceImpl implements PythonSetupService {
     }
 
     private boolean setPythonBinary() {
+        // TODO Python is no longer being downloaded. JSON download can be disabled.
         GetRawDataService getJSONData = new GetRawDataServiceImpl();
         String data = getJSONData.getLocalResult("pythondownload.json");
         try {
@@ -133,17 +134,11 @@ public class PythonSetupServiceImpl implements PythonSetupService {
                 if (realArch.equals("64")) {
                     this.pythonArchive = new PythonArchive(pythonDownload.get("windows64"), pythonDownload.get("windows64_md5"), pythonDownload.get("windows64_filename"));
                     return true;
-                } else {
-                    this.pythonArchive = new PythonArchive(pythonDownload.get("windows32"), pythonDownload.get("windows32_md5"), pythonDownload.get("windows32_filename"));
-                    return true;
                 }
             }
             if (SystemUtils.IS_OS_LINUX) {
                 if (SystemUtils.OS_ARCH.contains("64")) {
                     this.pythonArchive = new PythonArchive(pythonDownload.get("linux64"), pythonDownload.get("linux64_md5"), pythonDownload.get("linux64_filename"));
-                    return true;
-                } else {
-                    this.pythonArchive = new PythonArchive(pythonDownload.get("linux32"), pythonDownload.get("linux32_md5"), pythonDownload.get("linux32_filename"));
                     return true;
                 }
             }

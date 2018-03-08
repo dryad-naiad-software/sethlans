@@ -1,17 +1,11 @@
 {
   "macos": "archives/python/python-3.5-macOS.txz",
   "windows64": "archives/python/python-3.5-windows64.txz",
-  "windows32": "archives/python/python-3.5-windows32.txz",
   "linux64": "archives/python/python-3.5-linux64.txz",
-  "linux32": "archives/python/python-3.5-linux32.txz",
   "macos_md5": "8181fb98212600d40456cb3779355d7b",
   "windows64_md5": "30bea47464dc6b88268f39a5c55d2e64",
-  "windows32_md5": "69223e488e6763806cab342e5274b785",
   "linux64_md5": "d043d592044a17ffa59fbd217923c8e9",
-  "linux32_md5": "89148160cb7dc4792025005f576252c6",
   "macos_filename": "python-3.5-macOS.txz",
   "windows64_filename": "python-3.5-windows64.txz",
-  "windows32_filename": "python-3.5-windows32.txz",
-  "linux64_filename": "python-3.5-linux64.txz",
-  "linux32_filename": "python-3.5-linux32.txz"
+  "linux64_filename": "python-3.5-linux64.txz"
 }

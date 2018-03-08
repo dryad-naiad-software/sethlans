@@ -64,8 +64,6 @@ public class NodeInfo {
                     ? "64" : "32";
             if (realArch.equals("64")) {
                 this.sethlansNodeOS = BlenderBinaryOS.Windows64;
-            } else {
-                this.sethlansNodeOS = BlenderBinaryOS.Windows32;
             }
         }
         if (SystemUtils.IS_OS_MAC) {
@@ -74,8 +72,6 @@ public class NodeInfo {
         if (SystemUtils.IS_OS_LINUX) {
             if (SystemUtils.OS_ARCH.contains("64")) {
                 this.sethlansNodeOS = BlenderBinaryOS.Linux64;
-            } else {
-                this.sethlansNodeOS = BlenderBinaryOS.Linux32;
             }
         }
         return sethlansNodeOS;
