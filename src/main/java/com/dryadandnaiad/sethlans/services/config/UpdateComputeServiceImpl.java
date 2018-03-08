@@ -19,7 +19,7 @@
 package com.dryadandnaiad.sethlans.services.config;
 
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
-import com.dryadandnaiad.sethlans.forms.subclasses.SetupNode;
+import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import org.springframework.stereotype.Service;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansUtils.getGPUDeviceString;

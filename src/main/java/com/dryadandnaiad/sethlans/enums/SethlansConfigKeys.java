@@ -40,6 +40,7 @@ public enum SethlansConfigKeys {
     GPU_DEVICE("sethlans.gpu_id"),
     CPU_CORES("sethlans.cores"),
     PYTHON_BIN("sethlans.python.binary"),
+    IMAGEMAGICK_BIN("sethlans.imagemagick.binary"),
     SCRIPTS_DIR("sethlans.scriptsDir"),
     SETHLANS_IP("server.ipaddress"),
     TILE_SIZE_CPU("sethlans.tileSizeCPU"),

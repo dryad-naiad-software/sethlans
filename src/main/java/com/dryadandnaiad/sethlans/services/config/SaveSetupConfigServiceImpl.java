@@ -5,7 +5,7 @@ import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
-import com.dryadandnaiad.sethlans.forms.SetupForm;
+import com.dryadandnaiad.sethlans.forms.setup.SetupForm;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
 import com.dryadandnaiad.sethlans.services.imagemagick.ImageMagickSetupService;

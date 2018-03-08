@@ -1,4 +1,4 @@
-package com.dryadandnaiad.sethlans.forms.subclasses;
+package com.dryadandnaiad.sethlans.forms.setup.subclasses;
 
 import lombok.Data;
 

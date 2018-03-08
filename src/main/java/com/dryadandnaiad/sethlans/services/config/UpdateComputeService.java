@@ -18,7 +18,7 @@
  */
 package com.dryadandnaiad.sethlans.services.config;
 
-import com.dryadandnaiad.sethlans.forms.subclasses.SetupNode;
+import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 
 /**
  * Created Mario Estrella on 3/5/18.

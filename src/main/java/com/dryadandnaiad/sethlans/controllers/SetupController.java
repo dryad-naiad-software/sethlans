@@ -1,8 +1,8 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
-import com.dryadandnaiad.sethlans.forms.SetupForm;
-import com.dryadandnaiad.sethlans.forms.subclasses.SetupNode;
+import com.dryadandnaiad.sethlans.forms.setup.SetupForm;
+import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
 import com.dryadandnaiad.sethlans.services.config.UpdateComputeService;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;

@@ -1,9 +1,9 @@
-package com.dryadandnaiad.sethlans.forms;
+package com.dryadandnaiad.sethlans.forms.setup;
 
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
-import com.dryadandnaiad.sethlans.forms.subclasses.SetupNode;
-import com.dryadandnaiad.sethlans.forms.subclasses.SetupServer;
+import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
+import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupServer;
 import lombok.Data;
 
 /**

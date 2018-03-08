@@ -1,6 +1,6 @@
 package com.dryadandnaiad.sethlans.services.config;
 
-import com.dryadandnaiad.sethlans.forms.SetupForm;
+import com.dryadandnaiad.sethlans.forms.setup.SetupForm;
 
 /**
  * Created Mario Estrella on 2/23/18.
