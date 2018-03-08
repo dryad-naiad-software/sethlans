@@ -8,6 +8,7 @@ import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.forms.SetupForm;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
+import com.dryadandnaiad.sethlans.services.imagemagick.ImageMagickSetupService;
 import com.dryadandnaiad.sethlans.services.python.PythonSetupService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
 import com.dryadandnaiad.sethlans.utils.Resources;
@@ -38,6 +39,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
     private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
     private SethlansUserDatabaseService sethlansUserDatabaseService;
     private PythonSetupService pythonSetupService;
+    private ImageMagickSetupService imageMagickSetupService;
     private SethlansManagerService sethlansManagerService;
     private static final Logger LOG = LoggerFactory.getLogger(SaveSetupConfigServiceImpl.class);
 
@@ -167,5 +169,10 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
     @Autowired
     public void setSethlansManagerService(SethlansManagerService sethlansManagerService) {
         this.sethlansManagerService = sethlansManagerService;
+    }
+
+    @Autowired
+    public void setImageMagickSetupService(ImageMagickSetupService imageMagickSetupService) {
+        this.imageMagickSetupService = imageMagickSetupService;
     }
 }
