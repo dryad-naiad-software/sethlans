@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.domains.info.SethlansSettingsInfo;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
@@ -97,6 +98,14 @@ public class SethlansUtils {
             return result.toString();
         }
         return null;
+    }
+
+    public static SethlansServer getCurrentServerInfo() {
+        SethlansServer currentServer = new SethlansServer();
+        currentServer.setNetworkPort(getPort());
+        currentServer.setHostname(getHostname());
+        currentServer.setIpAddress(getIP());
+        return currentServer;
     }
 
 

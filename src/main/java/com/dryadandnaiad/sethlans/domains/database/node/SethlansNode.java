@@ -53,7 +53,7 @@ public class SethlansNode extends AbstractEntityClass {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<GPUDevice> selectedGPUs = new ArrayList<>();
     @ElementCollection
-    private List<String> selectedCUDA;
+    private List<String> selectedDeviceID;
     private boolean active;
     private boolean pendingActivation;
     private String connection_uuid;
@@ -99,7 +99,7 @@ public class SethlansNode extends AbstractEntityClass {
                 ", cpuinfo=" + cpuinfo +
                 ", selectedCores='" + selectedCores + '\'' +
                 ", selectedGPUs=" + selectedGPUs +
-                ", selectedCUDA=" + selectedCUDA +
+                ", selectedDeviceID=" + selectedDeviceID +
                 ", combinedGPURating=" + getCombinedGPURating() +
                 ", combinedCPUGPURating=" + getCombinedCPUGPURating() +
                 ", active=" + active +

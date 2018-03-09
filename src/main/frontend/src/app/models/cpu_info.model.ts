@@ -16,27 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
-import {ComputeMethod} from "../enums/compute.method.enum";
-import {BlenderBinaryOS} from "../enums/blenderbinaryos.enum";
-import {CPUInfo} from "./cpu_info.model";
-import {GPU} from "./gpu.model";
-
-export class NodeInfo {
-  hostname: string;
-  ipAddress: string;
-  networkPort: string;
-  sethlansNodeOS: BlenderBinaryOS;
-  computeType: ComputeMethod;
-  cpuinfo: CPUInfo;
-  selectedCores: string;
-  selectedGPUs: GPU[];
-  selectedDeviceID: string[];
-  active: boolean;
-  pendingActivation: boolean;
-  cpuRating: number;
-  benchmarkComplete: boolean;
-  rendering: boolean;
-  combinedGPURating: number;
-  combinedCPUGPURating: number;
+export class CPUInfo {
+  name: string;
+  model: string;
+  family: string;
+  arch: string;
+  cores: number;
+  totalMemory: string;
 }

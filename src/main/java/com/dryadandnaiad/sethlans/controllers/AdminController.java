@@ -1,6 +1,26 @@
+/*
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
+import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.domains.info.SethlansSettingsInfo;
@@ -10,16 +30,15 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
+import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -35,6 +54,9 @@ public class AdminController {
     private SethlansUserDatabaseService sethlansUserDatabaseService;
     private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
     private static final Logger LOG = LoggerFactory.getLogger(AdminController.class);
+
+    private NodeDiscoveryService nodeDiscoveryService;
+    private SethlansNodeDatabaseService sethlansNodeDatabaseService;
 
     @Value("${sethlans.gpu_id}")
     private String gpuIds;
@@ -67,6 +89,16 @@ public class AdminController {
             userInfoList.add(userToSend);
         }
         return userInfoList;
+    }
+
+    @GetMapping(value = {"/node_check"})
+    public SethlansNode checkNode(@RequestParam String ip, @RequestParam String port) {
+        return nodeDiscoveryService.discoverUnicastNode(ip, port);
+    }
+
+    @GetMapping(value = {"/node_list"})
+    public List<SethlansNode> getNodes() {
+        return sethlansNodeDatabaseService.listAll();
     }
 
     @GetMapping(value = "/primary_blender_version")
@@ -145,5 +177,15 @@ public class AdminController {
     @Autowired
     public void setBlenderBinaryDatabaseService(BlenderBinaryDatabaseService blenderBinaryDatabaseService) {
         this.blenderBinaryDatabaseService = blenderBinaryDatabaseService;
+    }
+
+    @Autowired
+    public void setNodeDiscoveryService(NodeDiscoveryService nodeDiscoveryService) {
+        this.nodeDiscoveryService = nodeDiscoveryService;
+    }
+
+    @Autowired
+    public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {
+        this.sethlansNodeDatabaseService = sethlansNodeDatabaseService;
     }
 }

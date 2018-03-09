@@ -1,3 +1,22 @@
+<!--
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
 <div class="row pb-5">
   <div class="col-md-10 m-auto">
     <div class="card">
@@ -17,7 +36,8 @@
           <tbody>
           <tr>
             <td>Compute Method</td>
-            <td>{{currentNode.computeMethod}}</td>
+            <td *ngIf="currentNode.computeMethod != computeMethodEnum.CPU_GPU">{{currentNode.computeMethod}}</td>
+            <td *ngIf="currentNode.computeMethod == computeMethodEnum.CPU_GPU">CPU & GPU</td>
           </tr>
           <tr *ngIf="currentNode.computeMethod !== computeMethodEnum.GPU">
             <td>Rendering Cores</td>
@@ -50,7 +70,7 @@
   </div>
 </div>
 
-<ng-template #computeForm>
+<ng-template #computeForm let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4 class="modal-title">Change Compute Settings</h4>
     <button type="button" class="close" aria-label="Close" (click)="cancel()">
@@ -135,7 +155,7 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-outline-secondary mr-auto" (click)="cancel(updateComputeForm)">Cancel</button>
+    <button class="btn btn-outline-secondary mr-auto" (click)="cancel()">Cancel</button>
     <button [disabled]="newNode.gpuEmpty"
             class="btn btn-outline-dark ml-auto" (click)="c('Close click'); open(verifyContent)">Confirm Changes
     </button>
@@ -145,7 +165,7 @@
 <ng-template #verifyContent let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4 class="modal-title">Pending Changes</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+    <button type="button" class="close" aria-label="Close" (click)="cancel()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -154,7 +174,8 @@
       <tbody>
       <tr>
         <td>Compute Method</td>
-        <td>{{newNode.computeMethod}}</td>
+        <td *ngIf="newNode.computeMethod != computeMethodEnum.CPU_GPU">{{newNode.computeMethod}}</td>
+        <td *ngIf="newNode.computeMethod == computeMethodEnum.CPU_GPU">CPU & GPU</td>
       </tr>
       <tr *ngIf="newNode.computeMethod !== computeMethodEnum.GPU">
         <td>Rendering Cores</td>
@@ -180,7 +201,8 @@
     </table>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark mr-auto" (click)="c('Close click')">Close</button>
+    <button type="button" class="btn btn-outline-secondary mr-auto" (click)="c('Close click'); open(computeForm)">Back
+    </button>
     <button type="button" class="btn btn-outline-dark ml-auto"
             (click)="c('Close click'); updateAndRestart(restartModal)">Update and Restart
     </button>
@@ -188,7 +210,7 @@
 </ng-template>
 <ng-template #restartModal>
   <div class="modal-header">
-    <h4 class="modal-title">Modal title</h4>
+    <h4 class="modal-title">Changes Complete</h4>
   </div>
   <div class="modal-body">
     <p class="text-center"> Sethans is restarting.</p>
