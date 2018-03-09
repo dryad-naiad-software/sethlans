@@ -91,6 +91,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
             writeProperty(SethlansConfigKeys.BLENDER_DIR, blenderDirectory);
             writeProperty(SethlansConfigKeys.BENCHMARK_DIR, benchmarkDirectory);
             writeProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION, setupForm.getServer().getBlenderVersion());
+            imageMagickSetupService.installImageMagick(binDirectory);
             LOG.debug("Server Settings Saved");
 
             LOG.debug("Creating Sethlans server directories.");

@@ -6,31 +6,10 @@ Sethlans contains the following technologies:
  - Spring Boot 1.5.10
  - Python 3.5.2
  - Java 8
- - ImageMagick 6.9/7.0
+ - ImageMagick 7.0
  - Blender 2.78+
  - Angular 5
  
-### Dependencies
-Sethlans **requires**  **Java 8**, either Oracle Java or OpenJDK is supported.
- 
-Aside from Java, **ImageMagick** must also be installed for **Sethlans Server/Dual** Modes when running on Linux.  For Linux most distributions install 6.9 and Sethlans has been written to work with 6.9 in Linux environments.
-
-#### Installing ImageMagick dependencies
-
-##### Windows and macOS
-ImageMagick 7.0 is included for Windows and MacOS.
- 
-##### Linux
-Both Ubuntu 17.10 and Fedora Core 27 were used for testing.  These systems are still using ImageMagick 6.9 and Sethlans takes this into account.  Obtain the latest version of ImageMagick using your package manager. 
-
-Ubuntu:
- 
-    $ sudo apt-get install imagemagick
-
-Fedora Core:
-
-    $ sudo dnf install ImageMagick
-
 ### Terminology
 
 Sethlans uses the following terminology to describe it's functions.

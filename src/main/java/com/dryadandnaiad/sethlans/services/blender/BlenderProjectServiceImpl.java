@@ -28,10 +28,10 @@ import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +50,8 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private BlenderQueueService blenderQueueService;
+    @Value("${sethlans.imagemagick.binary}")
+    private String imageMagickExec;
 
     private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectServiceImpl.class);
 
@@ -90,14 +92,8 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
         PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
         CommandLine convert;
-        if (!SystemUtils.IS_OS_WINDOWS) {
-            convert = new CommandLine("convert");
-
-        } else {
-            convert = new CommandLine("magick");
-            convert.addArgument("convert");
-
-        }
+        convert = new CommandLine(imageMagickExec);
+        convert.addArgument("convert");
         String frameFilename = null;
         String storedDir = null;
         String fileExtension = null;
@@ -211,14 +207,10 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
         PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
         CommandLine convert;
-        if (!SystemUtils.IS_OS_WINDOWS) {
-            convert = new CommandLine("convert");
+        convert = new CommandLine(imageMagickExec);
+        convert.addArgument("convert");
 
-        } else {
-            convert = new CommandLine("magick");
-            convert.addArgument("convert");
 
-        }
         convert.addArgument("-resize");
         convert.addArgument("77x60!");
         convert.addArgument(frameImage);
