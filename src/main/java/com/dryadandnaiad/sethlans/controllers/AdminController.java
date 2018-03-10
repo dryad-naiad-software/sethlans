@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.domains.info.SethlansSettingsInfo;
@@ -31,6 +32,7 @@ import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
@@ -57,6 +59,7 @@ public class AdminController {
 
     private NodeDiscoveryService nodeDiscoveryService;
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
+    private SethlansServerDatabaseService sethlansServerDatabaseService;
 
     @Value("${sethlans.gpu_id}")
     private String gpuIds;
@@ -100,6 +103,13 @@ public class AdminController {
     public List<SethlansNode> getNodes() {
         return sethlansNodeDatabaseService.listAll();
     }
+
+    @GetMapping(value = {"/server_list"})
+    public List<SethlansServer> getServers() {
+        return sethlansServerDatabaseService.listAll();
+    }
+
+
 
     @GetMapping(value = "/primary_blender_version")
     public String primaryBlenderVersion() {
@@ -187,5 +197,10 @@ public class AdminController {
     @Autowired
     public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {
         this.sethlansNodeDatabaseService = sethlansNodeDatabaseService;
+    }
+
+    @Autowired
+    public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
+        this.sethlansServerDatabaseService = sethlansServerDatabaseService;
     }
 }

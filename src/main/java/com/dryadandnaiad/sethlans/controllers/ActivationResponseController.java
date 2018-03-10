@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -39,12 +39,13 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @Profile({"SERVER", "DUAL"})
+@RequestMapping("/api/nodeactivate/")
 public class ActivationResponseController {
     private static final Logger LOG = LoggerFactory.getLogger(ActivationResponseController.class);
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private NodeActivationService nodeActivationService;
 
-    @RequestMapping(value = "/api/nodeactivate/response", method = RequestMethod.POST)
+    @RequestMapping(value = "/response", method = RequestMethod.POST)
     public void nodeActivationRequest(@RequestParam String nodehostname, @RequestParam String ipAddress,
                                       @RequestParam String port, @RequestParam String connection_uuid) {
         LOG.debug("Received node activation response");

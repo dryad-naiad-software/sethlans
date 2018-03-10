@@ -42,12 +42,13 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @Profile({"NODE", "DUAL"})
+@RequestMapping("/api/nodeactivate/")
 public class ActivationRequestController implements ApplicationEventPublisherAware {
     private static final Logger LOG = LoggerFactory.getLogger(ActivationRequestController.class);
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private ApplicationEventPublisher applicationEventPublisher;
 
-    @RequestMapping(value = "/api/nodeactivate/request", method = RequestMethod.POST)
+    @RequestMapping(value = "/request", method = RequestMethod.POST)
     public void nodeActivationRequest(@RequestParam String serverhostname, @RequestParam String ipAddress,
                                       @RequestParam String port, @RequestParam String connection_uuid) {
         LOG.debug("Received node activation request");
@@ -67,7 +68,7 @@ public class ActivationRequestController implements ApplicationEventPublisherAwa
         }
     }
 
-    @RequestMapping(value = "/api/nodeactivate/removal", method = RequestMethod.POST)
+    @RequestMapping(value = "/removal", method = RequestMethod.POST)
     public void serverDeletionRequest(@RequestParam String connection_uuid) {
         LOG.debug("Received server deletion request");
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) != null) {
@@ -79,7 +80,7 @@ public class ActivationRequestController implements ApplicationEventPublisherAwa
 
     }
 
-    @RequestMapping(value = "/api/nodeactivate/acknowledge", method = RequestMethod.POST)
+    @RequestMapping(value = "/acknowledge", method = RequestMethod.POST)
     public void nodeActivationAcknowledge(@RequestParam String connection_uuid) {
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) != null) {
             SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connection_uuid);

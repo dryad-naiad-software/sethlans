@@ -86,7 +86,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/api/management/**", "/admin/**", "/api/setup/update_compute", "/api/setup/node_add").hasAnyAuthority(Role.SUPER_ADMINISTRATOR.toString(), Role.ADMINISTRATOR.toString())
                     .and()
                     .authorizeRequests()
-                    .antMatchers("/api/info/**", "/api/setup/register", "/api/nodeactivate/**").permitAll()
+                    .antMatchers("/api/info/**", "/api/setup/register").permitAll()
                     .antMatchers("/register").permitAll()
                     .anyRequest().authenticated();
         } else {
@@ -129,6 +129,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             web.ignoring()
                     .antMatchers(HttpMethod.OPTIONS, "/**")
                     .antMatchers("/*.{*}")
+                    .antMatchers("/api/nodeactivate/**")
                     .antMatchers("/assets/images/**");
         } else {
             web.ignoring().antMatchers("/**");

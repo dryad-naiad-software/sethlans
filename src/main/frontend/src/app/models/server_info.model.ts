@@ -16,29 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
-import {Component, OnInit} from '@angular/core';
-import {Subject} from "rxjs/Subject";
-import {ServerInfo} from "../../../models/server_info.model";
-import {HttpClient} from "@angular/common/http";
-
-@Component({
-  selector: 'app-servers',
-  templateUrl: './servers.component.html',
-  styleUrls: ['./servers.component.scss']
-})
-export class ServersComponent implements OnInit {
-  dtTrigger: Subject<any> = new Subject();
-  serverList: ServerInfo[];
-
-  constructor(private http: HttpClient) {
-  }
-
-  ngOnInit() {
-    this.http.get('/api/management/server_list')
-      .subscribe((servers: ServerInfo[]) => {
-        this.serverList = servers;
-      });
-  }
-
+export class ServerInfo {
+  hostname: string;
+  ipAddress: string;
+  networkPort: string;
+  acknowledged: boolean;
+  pendingAcknowledgementResponse: boolean;
 }
+

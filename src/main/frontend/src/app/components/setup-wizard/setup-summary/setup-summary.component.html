@@ -16,7 +16,9 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
-
+<div *ngIf="finished" class="alert alert-success">
+  <h5 class="text-center">Processing Setup</h5>
+</div>
 <table class="table table-sm">
   <thead>
   <tr>
@@ -89,5 +91,5 @@
 <nav>
   <button class="btn btn-outline-secondary" (click)="previousStep()">Previous
   </button>
-  <button class="btn btn-outline-primary float-right" (click)="finish()">Finish</button>
+  <button [disabled]="finished" class="btn btn-outline-primary float-right" (click)="finish()">Finish</button>
 </nav>
