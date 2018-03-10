@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
@@ -37,6 +38,7 @@ import javax.persistence.Entity;
 @Entity
 @NoArgsConstructor
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class BlenderRenderTask extends AbstractEntityClass {
     private String projectName;
     private String connection_uuid;

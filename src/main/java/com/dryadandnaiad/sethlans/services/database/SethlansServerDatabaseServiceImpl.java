@@ -45,13 +45,11 @@ public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabase
 
     @Override
     public List<SethlansServer> listAll() {
-        List<SethlansServer> sethlansServers = new ArrayList<>();
-        serverRepository.findAll().forEach(sethlansServers::add);
-        return sethlansServers;
+        return new ArrayList<>(serverRepository.findAll());
     }
 
     @Override
-    public SethlansServer getById(Integer id) {
+    public SethlansServer getById(Long id) {
         return serverRepository.findOne(id);
     }
 
@@ -61,7 +59,7 @@ public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabase
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         SethlansServer sethlansServer = serverRepository.findOne(id);
         this.applicationEventPublisher.publishEvent(new SethlansEvent(this, sethlansServer.getConnection_uuid() + "-" + NotificationOrigin.ACTIVATION_REQUEST, false));
         serverRepository.delete(sethlansServer);

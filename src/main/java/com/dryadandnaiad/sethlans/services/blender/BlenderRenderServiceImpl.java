@@ -35,13 +35,13 @@ import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.util.StringUtils;
 
 import java.io.*;
 import java.util.*;
@@ -61,7 +61,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     @Value("${sethlans.cacheDir}")
     private String cacheDir;
 
-    @Value("${sethlans.cuda}")
+    @Value("${sethlans.gpu_id}")
     private String cuda;
 
     @Value("${sethlans.tileSizeCPU}")
@@ -325,8 +325,8 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         List<String> unselectedGPUs = new ArrayList<>();
         for (GPUDevice gpuDevice : gpuDeviceList) {
             for (String cuda : cudaList) {
-                if (!cuda.equals(gpuDevice.getCudaName())) {
-                    unselectedGPUs.add(gpuDevice.getCudaName());
+                if (!cuda.equals(gpuDevice.getDeviceID())) {
+                    unselectedGPUs.add(gpuDevice.getDeviceID());
                 }
             }
         }

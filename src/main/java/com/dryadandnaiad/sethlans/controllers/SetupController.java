@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,109 +19,109 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.commands.SetupForm;
-import com.dryadandnaiad.sethlans.enums.SetupProgress;
+import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
+import com.dryadandnaiad.sethlans.forms.setup.SetupForm;
+import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
-import com.dryadandnaiad.sethlans.services.python.PythonSetupService;
+import com.dryadandnaiad.sethlans.services.config.UpdateComputeService;
+import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
+import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
+import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
-import com.dryadandnaiad.sethlans.utils.BlenderUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.Validator;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
- * Created Mario Estrella on 3/17/17.
+ * Created Mario Estrella on 2/11/18.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Controller
-@Profile("SETUP")
-@RequestMapping("/setup")
-@SessionAttributes("setupForm")
-public class SetupController extends AbstractSethlansController {
-    @Value("${sethlans.firsttime}")
-    private boolean firstTime;
-
+@RestController
+@RequestMapping("/api/setup")
+public class SetupController {
     private static final Logger LOG = LoggerFactory.getLogger(SetupController.class);
-    private Validator setupFormValidator;
-    private SethlansManagerService sethlansManagerService;
     private SaveSetupConfigService saveSetupConfigService;
-    private PythonSetupService pythonSetupService;
+    private SethlansUserDatabaseService sethlansUserDatabaseService;
+    private UpdateComputeService updateComputeService;
+    private SethlansManagerService sethlansManagerService;
+    private NodeDiscoveryService nodeDiscoveryService;
+    private SethlansNodeDatabaseService sethlansNodeDatabaseService;
+    private NodeActivationService nodeActivationService;
 
-    @RequestMapping
-    public String getStartPage(final Model model) {
-        if (firstTime) {
-            model.addAttribute("setupForm", new SetupForm());
-            return "setup";
+
+    @PostMapping("/submit")
+    public boolean submit(@RequestBody SetupForm setupForm) {
+        LOG.debug("Submitting Setup Form...");
+        if (setupForm != null) {
+            LOG.debug(setupForm.toString());
+            saveSetupConfigService.saveSetupSettings(setupForm);
+            return true;
+        } else {
+            return false;
         }
-        return "redirect:/";
-
     }
 
-    @Override
-    public String getUserName() {
-        return "username";
-    }
-
-    @RequestMapping(method = RequestMethod.POST)
-    public String processPage(final @Valid @ModelAttribute("setupForm") SetupForm setupForm, BindingResult bindingResult) throws InterruptedException {
-        LOG.debug("Current progress \n" + setupForm.toString());
-        setupFormValidator.validate(setupForm, bindingResult);
-
-        if (setupForm.getProgress() == SetupProgress.MODE) {
-            setupForm.setDirectories();
-        }
-
-        if (bindingResult.hasErrors()) {
-            LOG.debug(bindingResult.toString());
-            setupForm.setProgress(setupForm.getPrevious());
-        }
-
-        if (setupForm.getProgress() == SetupProgress.FINISHED) {
-            switch (setupForm.getMode()) {
-                case SERVER:
-                    saveSetupConfigService.saveServerSettings(setupForm);
-                    break;
-                case DUAL:
-                    saveSetupConfigService.saveDualSettings(setupForm);
-                    break;
-                case NODE:
-                    saveSetupConfigService.saveNodeSettings(setupForm);
-                    break;
-                default:
-                    System.exit(1);
-            }
-            saveSetupConfigService.saveSethlansSettings(setupForm);
-            saveSetupConfigService.wizardCompleted(setupForm);
-            LOG.debug("Downloading and Installing Python");
-            pythonSetupService.installPython(setupForm.getBinDirectory());
-            pythonSetupService.setupScripts(setupForm.getScriptsDirectory());
-            LOG.info("Setup complete complete. Restarting Sethlans");
+    @PostMapping("/update_compute")
+    public boolean submit(@RequestBody SetupNode setupNode) {
+        LOG.debug("Processing Compute Setting Update");
+        if (setupNode != null) {
+            LOG.debug(setupNode.toString());
+            boolean updateComplete = updateComputeService.saveComputeSettings(setupNode);
             sethlansManagerService.restart();
-            return "setup_finished";
+            return updateComplete;
+        } else {
+            return false;
         }
-
-        return "setup";
     }
 
-    @ModelAttribute("blender_versions")
-    public List<String> getBlenderVersions() {
-        return BlenderUtils.listVersions();
+    @GetMapping("/node_add")
+    public boolean addNode(@RequestParam String ip, @RequestParam String port) {
+        SethlansNode sethlansNode = nodeDiscoveryService.discoverUnicastNode(ip, port);
+        List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.listAll();
+        if (!sethlansNodeList.isEmpty()) {
+            LOG.debug("Nodes found in database, starting comparison.");
+            if (sethlansNodeDatabaseService.checkForDuplicatesAndSave(sethlansNode)) {
+                if (sethlansNode.isPendingActivation()) {
+                    nodeActivationService.sendActivationRequest(sethlansNode, SethlansUtils.getCurrentServerInfo());
+                    return true;
+
+                }
+            }
+        } else {
+            LOG.debug("No nodes present in database.");
+            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+            LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
+            if (sethlansNode.isPendingActivation()) {
+                nodeActivationService.sendActivationRequest(sethlansNode, SethlansUtils.getCurrentServerInfo());
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @PostMapping("/register")
+    public boolean register(@RequestBody SethlansUser user) {
+        if (user != null) {
+            LOG.debug("Registering new user...");
+            if (sethlansUserDatabaseService.checkifExists(user.getUsername())) {
+                LOG.debug("User " + user.getUsername() + " already exists!");
+                return false;
+            }
+            sethlansUserDatabaseService.saveOrUpdate(user);
+            LOG.debug("Saving " + user.toString() + " to database.");
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Autowired
@@ -130,25 +130,32 @@ public class SetupController extends AbstractSethlansController {
     }
 
     @Autowired
+    public void setSethlansUserDatabaseService(SethlansUserDatabaseService sethlansUserDatabaseService) {
+        this.sethlansUserDatabaseService = sethlansUserDatabaseService;
+    }
+
+    @Autowired
+    public void setUpdateComputeService(UpdateComputeService updateComputeService) {
+        this.updateComputeService = updateComputeService;
+    }
+
+    @Autowired
     public void setSethlansManagerService(SethlansManagerService sethlansManagerService) {
         this.sethlansManagerService = sethlansManagerService;
     }
 
     @Autowired
-    @Qualifier("setupFormValidator")
-    public void setSetupFormValidator(Validator setupFormValidator) {
-        this.setupFormValidator = setupFormValidator;
+    public void setNodeDiscoveryService(NodeDiscoveryService nodeDiscoveryService) {
+        this.nodeDiscoveryService = nodeDiscoveryService;
     }
 
     @Autowired
-    public void setPythonSetupService(PythonSetupService pythonSetupService) {
-        this.pythonSetupService = pythonSetupService;
+    public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {
+        this.sethlansNodeDatabaseService = sethlansNodeDatabaseService;
     }
 
-    @Override
-    @ModelAttribute("sethlansmode")
-    public String getMode() {
-        String modeName = "SETUP";
-        return modeName;
+    @Autowired
+    public void setNodeActivationService(NodeActivationService nodeActivationService) {
+        this.nodeActivationService = nodeActivationService;
     }
 }

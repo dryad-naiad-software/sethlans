@@ -99,18 +99,17 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
 
     @Override
     public SethlansNode discoverUnicastNode(String ip, String port) {
+        LOG.debug("Searching for Sethlans Node at " + ip + ":" + port);
         Gson gson = new Gson();
         SethlansNode sethlansNode = null;
         try {
-            sethlansNode = gson.fromJson(getRawDataService.getNodeResult("https://" + ip + ":" + port + "/api/nodeinfo"), SethlansNode.class);
+            sethlansNode = gson.fromJson(getRawDataService.getNodeResult("https://" + ip + ":" + port + "/api/info/nodeinfo"), SethlansNode.class);
             sethlansNode.setPendingActivation(true);
             sethlansNode.setActive(false);
             sethlansNode.setConnection_uuid(UUID.randomUUID().toString());
 
         } catch (NullPointerException e) {
-            LOG.error("Unable to read JSON data from" + ip + ":" + port);
-            LOG.error(e.getMessage());
-
+            LOG.error("Unable to read JSON data from " + ip + ":" + port);
         }
         return sethlansNode;
     }

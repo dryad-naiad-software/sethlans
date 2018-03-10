@@ -20,7 +20,7 @@
 package com.dryadandnaiad.sethlans.repositories;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Created Mario Estrella on 3/23/17.
@@ -28,5 +28,5 @@ import org.springframework.data.repository.CrudRepository;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderBinaryRepository extends CrudRepository<BlenderBinary, Integer> {
+public interface BlenderBinaryRepository extends JpaRepository<BlenderBinary, Long> {
 }

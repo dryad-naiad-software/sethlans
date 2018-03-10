@@ -1,0 +1,14 @@
+<nav *ngIf="firstTime" class="navbar navbar-expand-md navbar-dark bg-dark mb-4 py-1">
+  <a href="/" class="pl-5 navbar-brand justify-content-around"
+     style="font-family: 'Fjalla One', sans-serif; font-size: 150%">
+      <img [src]="logo" height="32" class="d-inline-block align-top" alt="logo">
+      Sethlans</a>
+</nav>
+<app-navbar *ngIf="!firstTime"></app-navbar>
+<div class="px-5 pb-5">
+  <router-outlet *ngIf="!firstTime"></router-outlet>
+  <router-outlet *ngIf="firstTime" name="setup"></router-outlet>
+</div>
+
+<app-footer class="fixed-bottom"></app-footer>
+

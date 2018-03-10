@@ -1,0 +1,197 @@
+<!--
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
+<div class="row pb-5">
+  <div class="col-md-10 m-auto">
+    <div class="card">
+      <div class="card-header">
+        <h2>
+          <span>Nodes</span>
+          <button class="ml-2 btn btn-outline-dark float-right" (click)="openModal(addModal)">
+            <span class="fa fa-plus"></span> <span>Add Node</span>
+          </button>
+          <button class="btn btn-outline-dark float-right" (click)="openModal(scanModal)">
+            <span class="fa fa-search"></span> <span>Scan</span>
+          </button>
+        </h2>
+      </div>
+      <div class="card-body">
+        <h2 class="text-center mt-5 mb-5" *ngIf="nodeList.length == 0">No Nodes Present</h2>
+        <div class="table-responsive" *ngIf="nodeList.length > 0">
+          <table datatable class="table">
+            <thead class="thead-light">
+            <tr>
+              <th>Node Status</th>
+              <th>Hostname</th>
+              <th>IP Address</th>
+              <th>Port</th>
+              <th>OS</th>
+              <th>Compute Methods</th>
+              <th>CPU Name</th>
+              <th>Selected Cores</th>
+              <th>Selected GPU(s)</th>
+              <th>Benchmark Rating</th>
+              <th data-orderable="false">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let node of nodeList">
+              <td *ngIf="node.pendingActivation == true">Pending Activation</td>
+              <td>{{node.hostname}}</td>
+              <td>{{node.ipAddress}}</td>
+              <td>{{node.networkPort}}</td>
+              <td>{{node.sethlansNodeOS}}</td>
+              <td *ngIf="node.computeType == computeMethodEnum.CPU_GPU">CPU & GPU</td>
+              <td *ngIf="node.computeType != computeMethodEnum.CPU_GPU">{{node.computeType}}</td>
+              <td>{{node.cpuinfo.name}}</td>
+              <td>{{node.selectedCores}}</td>
+              <td>
+                <ul class="list-unstyled">
+                  <li *ngFor="let gpu of node.selectedGPUs"> {{gpu.model}}</li>
+                </ul>
+              </td>
+              <td>640000</td>
+              <td>
+                <div class="btn-group-vertical">
+                  <button class="btn btn-outline-primary btn-sm" type="button">Update</button>
+                  <button class="btn btn-outline-danger btn-sm" type="button">Delete</button>
+                </div>
+              </td>
+            </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Add Node Modal-->
+<ng-template #addModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Add Sethlans Node</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click'); resetAddNode()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #addNodeForm="ngForm" class="editForm">
+      <div class="form-group">
+        <label for="ipAddress">IP Address or Hostname</label>
+        <input type="text" class="form-control" id="ipAddress" name="ipAddress" [(ngModel)]="ipAddress">
+      </div>
+      <div class="form-group">
+        <label for="port">Port</label>
+        <input type="number" class="form-control" id="port" name="port" [(ngModel)]="port">
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary mr-auto" (click)="c('Close click'); resetAddNode()">Close
+    </button>
+    <button type="button" class="btn btn-outline-dark ml-auto"
+            (click)="c('Close click'); openNodeSummaryModal(verifySingleNodeModal)">Next
+    </button>
+  </div>
+</ng-template>
+
+<!--Scan Node Modal-->
+<ng-template #scanModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Scan for Sethlans Nodes</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary mr-auto" (click)="c('Close click')">Close</button>
+    <button type="button" class="btn btn-outline-dark ml-auto"
+            (click)="c('Close click')">Next
+    </button>
+  </div>
+</ng-template>
+
+<!--Verify Node Modal-->
+<ng-template #verifySingleNodeModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Node Summary</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf="nodeToAdd == null">
+      <p class="text-center">{{ipAddress}}:{{port}} is not a valid Sethlans Node</p>
+    </div>
+    <div *ngIf="nodeToAdd != null">
+      <table class="table table-striped">
+        <tr>
+          <td>Hostname</td>
+          <td>{{nodeToAdd.hostname}}</td>
+        </tr>
+        <tr>
+          <td>IP Address</td>
+          <td>{{nodeToAdd.ipAddress}}</td>
+        </tr>
+        <tr>
+          <td>Network Port</td>
+          <td>{{nodeToAdd.networkPort}}</td>
+        </tr>
+        <tr>
+          <td>Node OS</td>
+          <td>{{nodeToAdd.sethlansNodeOS}}</td>
+        </tr>
+        <tr>
+          <td>Compute Type</td>
+          <td *ngIf="nodeToAdd.computeType == computeMethodEnum.CPU_GPU">CPU & GPU</td>
+          <td *ngIf="nodeToAdd.computeType != computeMethodEnum.CPU_GPU">{{nodeToAdd.computeType}}</td>
+        </tr>
+        <tr *ngIf="nodeToAdd.computeType != computeMethodEnum.GPU">
+          <td>CPU Name</td>
+          <td>{{nodeToAdd.cpuinfo.name}}</td>
+        </tr>
+        <tr *ngIf="nodeToAdd.computeType != computeMethodEnum.GPU">
+          <td>Cores</td>
+          <td>{{nodeToAdd.selectedCores}}</td>
+        </tr>
+        <tr *ngIf="nodeToAdd.computeType != computeMethodEnum.CPU">
+          <td>Selected GPU(s)</td>
+          <td>
+            <ul class="list-unstyled">
+              <li *ngFor="let gpu of nodeToAdd.selectedGPUs"> {{gpu.model}}</li>
+            </ul>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary mr-auto" (click)="c('Close click'); openModal(addModal)">
+      Back
+    </button>
+    <button [disabled]="nodeToAdd == null" type="button" class="btn btn-outline-dark ml-auto"
+            (click)="c('Close click'); addNode()">Add Node
+    </button>
+  </div>
+</ng-template>

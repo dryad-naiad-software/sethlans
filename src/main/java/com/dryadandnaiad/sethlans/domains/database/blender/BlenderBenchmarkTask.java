@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.domains.database.blender;
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Entity;
 
@@ -33,6 +34,7 @@ import javax.persistence.Entity;
  */
 @Entity
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class BlenderBenchmarkTask extends AbstractEntityClass {
     private String benchmarkURL;
     private String blenderVersion;

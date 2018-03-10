@@ -19,100 +19,160 @@
 
 package com.dryadandnaiad.sethlans.osnative.hardware.gpu;
 
-/**
- * Created Mario Estrella on 3/19/17.
- * Dryad and Naiad Software LLC
- * mestrella@dryadandnaiad.com
- * Project: sethlans
- */
-
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.LongByReference;
 import jcuda.driver.CUresult;
 import org.apache.commons.lang3.SystemUtils;
+import org.jocl.cl_device_id;
+import org.jocl.cl_platform_id;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.jocl.CL.*;
+
+/**
+ * Created Mario Estrella on 3/19/17.
+ * Dryad and Naiad Software LLC
+ * mestrella@dryadandnaiad.com
+ * Project: sethlans
+ */
 public class GPU {
     private static final Logger LOG = LoggerFactory.getLogger(GPU.class);
     public static List<GPUDevice> devices = null;
 
-    public static boolean generate() {
-        devices = new LinkedList<>();
+    private static void generateCUDA() {
+        LOG.debug("Looking for Compatible CUDA Devices");
+        if (devices == null) {
+            devices = new LinkedList<>();
+        }
+
         String path = getCUDALib();
         if (path == null) {
-            LOG.debug("GPU::generate no CUDA lib path found");
-            return false;
+            LOG.debug("no CUDA lib path found");
+
         }
         CUDA cudalib;
+        int result;
         try {
             cudalib = Native.loadLibrary(path, CUDA.class);
+            result = cudalib.cuInit(0);
+            if (result != CUresult.CUDA_SUCCESS) {
+                LOG.info("cuInit failed (ret: " + result + ")");
+                if (result == CUresult.CUDA_ERROR_UNKNOWN) {
+                    LOG.info("If you are running Linux, this error is usually due to nvidia kernel module 'nvidia_uvm' not loaded. " +
+                            "\nRelaunch the application as root or load the module. " +
+                            "\nMost of time it does fix the issue.");
+                    return;
+                }
+            }
+
+            if (result == CUresult.CUDA_ERROR_NO_DEVICE) {
+                LOG.debug("No Device Found");
+                return;
+            }
+
+            IntByReference count = new IntByReference();
+            result = cudalib.cuDeviceGetCount(count);
+
+            if (result != CUresult.CUDA_SUCCESS) {
+                LOG.debug("cuDeviceGetCount failed (ret: " + CUresult.stringFor(result) + ")");
+                return;
+            }
+
+            for (int num = 0; num < count.getValue(); num++) {
+                byte name[] = new byte[256];
+
+                result = cudalib.cuDeviceGetName(name, 256, num);
+                if (result != CUresult.CUDA_SUCCESS) {
+                    LOG.debug("cuDeviceGetName failed (ret: " + CUresult.stringFor(result) + ")");
+                    continue;
+                }
+
+                LongByReference ram = new LongByReference();
+                try {
+                    result = cudalib.cuDeviceTotalMem_v2(ram, num);
+                } catch (UnsatisfiedLinkError e) {
+                    // fall back to old function
+                    result = cudalib.cuDeviceTotalMem(ram, num);
+                }
+
+                if (result != CUresult.CUDA_SUCCESS) {
+                    LOG.debug("cuDeviceTotalMem failed (ret: " + CUresult.stringFor(result) + ")");
+                    return;
+                }
+
+                LOG.debug("One CUDA Device found, adding to list.");
+                devices.add(new GPUDevice(new String(name).trim(), ram.getValue(), "CUDA_" + Integer.toString(num), false, true));
+            }
+
         } catch (java.lang.UnsatisfiedLinkError e) {
-            LOG.debug("GPU::generate failed to load CUDA lib (path: " + path + ")");
-            return false;
+            LOG.debug("Failed to load CUDA lib (path: " + path + "). CUDA is probably not installed.");
         } catch (java.lang.ExceptionInInitializerError e) {
-            LOG.error("GPU::generate ExceptionInInitializerError " + e.getMessage());
-            return false;
+            LOG.error("ExceptionInInitializerError " + e.getMessage());
+
         } catch (Exception e) {
-            LOG.error("GPU::generate generic exception" + e.getMessage());
-            return false;
+            LOG.error("Generic exception" + e.getMessage());
+
+        }
+    }
+
+    private static void generateOpenCL() {
+        LOG.debug("Looking for Compatible OpenCL Devices");
+        if (devices == null) {
+            devices = new LinkedList<>();
+        }
+        int numPlatforms[] = new int[1];
+        clGetPlatformIDs(0, null, numPlatforms);
+        String model;
+        long memory;
+        String deviceID;
+        // Obtain the platform IDs
+        cl_platform_id platforms[] = new cl_platform_id[numPlatforms[0]];
+        clGetPlatformIDs(platforms.length, platforms, null);
+
+        // Collect all devices of all platforms
+        List<cl_device_id> openCLdevices = new ArrayList<cl_device_id>();
+        for (cl_platform_id platform : platforms) {
+
+            String platformName = JOCLSupport.getString(platform, CL_PLATFORM_NAME);
+            // Obtain the number of devices for the current platform
+            int numDevices[] = new int[1];
+            clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, null, numDevices);
+            cl_device_id devicesArray[] = new cl_device_id[numDevices[0]];
+            clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, numDevices[0], devicesArray, null);
+
+            openCLdevices.addAll(Arrays.asList(devicesArray));
         }
 
-        int result;
+        for (int i = 0; i < openCLdevices.size(); i++) {
+            cl_device_id device = openCLdevices.get(i);
+            // CL_DEVICE_NAME
+            String openCLDeviceId = JOCLSupport.getString(device, CL_DEVICE_NAME);
+            // CL_DEVICE_VENDOR
+            String deviceVendor = JOCLSupport.getString(device, CL_DEVICE_VENDOR);
+            // CL_DEVICE_GLOBAL_MEM_SIZE
+            memory = JOCLSupport.getLong(device, CL_DEVICE_GLOBAL_MEM_SIZE);
+            String openCLVersionString = JOCLSupport.getString(device, CL_DEVICE_OPENCL_C_VERSION);
+            float openCLVersion = Float.parseFloat(openCLVersionString.substring(openCLVersionString.toLowerCase().lastIndexOf("c") + 1));
+            deviceID = "OPENCL_" + i;
+            model = deviceVendor + " " + openCLDeviceId;
 
-        result = cudalib.cuInit(0);
-        if (result != CUresult.CUDA_SUCCESS) {
-            LOG.info("GPU::generate cuInit failed (ret: " + result + ")");
-            if (result == CUresult.CUDA_ERROR_UNKNOWN) {
-                LOG.info("If you are running Linux, this error is usually due to nvidia kernel module 'nvidia_uvm' not loaded. " +
-                        "\nRelaunch the application as root or load the module. " +
-                        "\nMost of time it does fix the issue.");
+
+            if (!deviceVendor.toLowerCase().contains("nvidia") && openCLVersion > 1.2) {
+                LOG.debug("One OpenCL device found, adding to list");
+                LOG.debug("Open CL version " + openCLVersion);
+                devices.add(new GPUDevice(model, memory, deviceID, true, false));
             }
-            return false;
+
+
         }
-
-        if (result == CUresult.CUDA_ERROR_NO_DEVICE) {
-            return false;
-        }
-
-        IntByReference count = new IntByReference();
-        result = cudalib.cuDeviceGetCount(count);
-
-        if (result != CUresult.CUDA_SUCCESS) {
-            LOG.debug("GPU::generate cuDeviceGetCount failed (ret: " + CUresult.stringFor(result) + ")");
-            return false;
-        }
-
-        for (int num = 0; num < count.getValue(); num++) {
-            byte name[] = new byte[256];
-
-            result = cudalib.cuDeviceGetName(name, 256, num);
-            if (result != CUresult.CUDA_SUCCESS) {
-                LOG.debug("GPU::generate cuDeviceGetName failed (ret: " + CUresult.stringFor(result) + ")");
-                continue;
-            }
-
-            LongByReference ram = new LongByReference();
-            try {
-                result = cudalib.cuDeviceTotalMem_v2(ram, num);
-            } catch (UnsatisfiedLinkError e) {
-                // fall back to old function
-                result = cudalib.cuDeviceTotalMem(ram, num);
-            }
-
-            if (result != CUresult.CUDA_SUCCESS) {
-                LOG.debug("GPU::generate cuDeviceTotalMem failed (ret: " + CUresult.stringFor(result) + ")");
-                return false;
-            }
-
-            devices.add(new GPUDevice(new String(name).trim(), ram.getValue(), "CUDA_" + Integer.toString(num)));
-        }
-        return true;
     }
 
     private static String getCUDALib() {
@@ -130,7 +190,8 @@ public class GPU {
 
     public static List<String> listModels() {
         if (devices == null) {
-            generate();
+            generateCUDA();
+            generateOpenCL();
         }
 
         List<String> devs = new LinkedList<>();
@@ -142,7 +203,8 @@ public class GPU {
 
     public static List<GPUDevice> listDevices() {
         if (devices == null) {
-            generate();
+            generateCUDA();
+            generateOpenCL();
         }
 
         return devices;

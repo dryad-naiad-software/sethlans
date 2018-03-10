@@ -1,0 +1,58 @@
+<div class="row pb-5">
+  <div class="col-md-10 m-auto">
+    <div class="card">
+      <div class="card-header">
+        <h2>
+          <span>Projects</span>
+        <button class="btn btn-outline-dark float-right">
+          <span class="fa fa-plus"></span> <span>New Project</span>
+        </button>
+        </h2>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table datatable class="table">
+            <thead class="thead-light">
+            <tr>
+              <th>Name</th>
+              <th>Blender Version</th>
+              <th>Type</th>
+              <th>Render On</th>
+              <th>Resolution</th>
+              <th>Status</th>
+              <th data-orderable="false">Preview</th>
+              <th data-orderable="false">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+
+              <td>Test</td>
+              <td>2.79</td>
+              <td>Still Image</td>
+              <td>CPU & GPU</td>
+              <td>1920 x 1080</td>
+              <td>Not Started</td>
+              <td><img [src]="placeholder"
+                       height="60"
+                       class="d-inline-block align-top"
+                       alt="placeholder">
+              </td>
+              <td>
+                <div class="btn-group-vertical">
+                  <button class="btn btn-outline-primary btn-sm" type="button">Start</button>
+                  <button class="btn btn-outline-dark btn-sm" type="button">View</button>
+                  <button class="btn btn-outline-dark btn-sm" type="button">Edit</button>
+                  <button class="btn btn-outline-danger btn-sm" type="button">Delete</button>
+                </div>
+              </td>
+
+            </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

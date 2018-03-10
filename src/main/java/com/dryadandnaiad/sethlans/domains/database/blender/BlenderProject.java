@@ -20,14 +20,17 @@
 package com.dryadandnaiad.sethlans.domains.database.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.ProjectType;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import java.util.List;
 
 /**
@@ -38,11 +41,14 @@ import java.util.List;
  */
 @Entity
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class BlenderProject extends AbstractEntityClass {
     private RenderOutputFormat renderOutputFormat;
     private ProjectType projectType;
     private BlenderEngine blenderEngine;
     private ComputeType renderOn;
+    @ManyToOne
+    private SethlansUser sethlansUser;
     private int startFrame;
     private int endFrame;
     private int stepFrame;
@@ -83,6 +89,7 @@ public class BlenderProject extends AbstractEntityClass {
     public String toString() {
         return "BlenderProject{" +
                 "projectName='" + projectName + '\'' +
+                ", sethlansUser=" + sethlansUser +
                 ", renderOutputFormat=" + renderOutputFormat +
                 ", projectType=" + projectType +
                 ", startFrame=" + startFrame +

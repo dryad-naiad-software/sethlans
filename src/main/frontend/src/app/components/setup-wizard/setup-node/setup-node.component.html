@@ -1,0 +1,75 @@
+<form #nodeForm="ngForm" class="editForm">
+  <div class="form-group" ngbTooltip="Render with either a CPU/GPU or ability to use either one." placement="left">
+    <label for="computeMethod">Compute Method Selection</label>
+    <select class="form-control form-control-sm"
+            id="computeMethod"
+            name="computeMethod"
+            #computeMethod="ngModel"
+            (change)="methodSelection()"
+            [(ngModel)]="node.computeMethod">
+      <option *ngFor="let method of availableComputeMethods">{{method}}</option>
+    </select>
+
+  </div>
+  <div *ngIf="node.computeMethod !== computeMethodEnum.GPU">
+    <hr/>
+    <h6>CPU Settings:</h6>
+    <div class="form-group" *ngIf="node.computeMethod !== computeMethodEnum.GPU"
+         ngbTooltip="Number of CPU cores to be used for rendering." placement="left">
+      <label for="cores">Rendering Cores:</label>
+      <mat-slider
+        id="cores"
+        min="1"
+        step="1"
+        thumb-label="true"
+        [max]="totalCores"
+        #cores="ngModel"
+        name="cores"
+        [(ngModel)]="node.cores"></mat-slider>
+    </div>
+    <div class="form-group" *ngIf="node.computeMethod !== computeMethodEnum.GPU"
+         ngbTooltip="Tile size used for CPU rendering." placement="left">
+      <label for="tileSizeCPU">CPU Render Tile Size:</label>
+      <input type="number"
+             class="form-control form-control-sm"
+             name="tileSizeCPU"
+             id="tileSizeCPU"
+             #tileSizeCPU="ngModel"
+             [(ngModel)]="setupFormData.node.tileSizeCPU">
+    </div>
+  </div>
+  <div *ngIf="node.computeMethod !== computeMethodEnum.CPU">
+    <hr/>
+    <h6>GPU Settings:</h6>
+    <br/>
+    <div class="form-group" *ngIf="node.computeMethod !== computeMethodEnum.CPU"
+         ngbTooltip="GPU devices to be used for rendering." placement="left">
+      <label>GPU Devices:</label>
+      <div *ngFor="let gpu of availableGPUs">
+        <input type="checkbox"
+               class="form-control-sm"
+               name="{{gpu.model}}"
+               value="{{gpu.model}}"
+               #gpuSelection
+               required
+               (change)="selected($event, gpu)"/>
+        <label class="form-check-label form-control-sm">{{gpu.model}}</label>
+      </div>
+    </div>
+    <div class="form-group" *ngIf="node.computeMethod !== computeMethodEnum.CPU"
+         ngbTooltip="Tile size used for CPU rendering." placement="left">
+      <label for="tileSizeGPU">GPU Render Tile Size:</label>
+      <input type="number"
+             class="form-control form-control-sm"
+             name="tileSizeGPU"
+             id="tileSizeGPU"
+             #tileSizeCPU="ngModel"
+             [(ngModel)]="setupFormData.node.tileSizeGPU">
+    </div>
+  </div>
+</form>
+<nav *ngIf="setupFormData.mode === mode.NODE">
+  <button class="btn btn-outline-secondary" (click)="previousStep()">Previous
+  </button>
+  <button [disabled]="node.gpuEmpty" class="btn btn-outline-primary float-right" (click)="save()">Next</button>
+</nav>

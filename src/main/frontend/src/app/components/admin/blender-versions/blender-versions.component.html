@@ -1,0 +1,39 @@
+<div class="row pb-5">
+  <div class="col-md-10 m-auto">
+    <div class="card">
+      <div class="card-header">
+        <h2>Blender Version Management</h2>
+      </div>
+      <div class="card-body table-responsive">
+        <table class="table">
+          <thead>
+          <th>Blender Version</th>
+          <th>Blender Binary OS</th>
+          <th>Primary</th>
+          </thead>
+          <tbody>
+          <tr>
+            <td>2.79</td>
+            <td>MacOS</td>
+            <td>true</td>
+          </tr>
+          </tbody>
+
+        </table>
+
+        <form #blenderVersions="ngForm" class="editForm">
+          <div class="form-group" ngbTooltip="Blender version that Sethlans will use for rendering tasks."
+               placement="left">
+            <label for="blenderVersion">Add Blender Version</label>
+            <select class="form-control form-control-sm"
+                    id="blenderVersion"
+                    name="blenderVersion">
+              <option *ngFor="let version of availableBlenderVersions">{{version}}</option>
+            </select>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>

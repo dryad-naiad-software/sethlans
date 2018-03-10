@@ -20,7 +20,7 @@
 package com.dryadandnaiad.sethlans.repositories;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Created Mario Estrella on 4/2/17.
@@ -28,5 +28,5 @@ import org.springframework.data.repository.CrudRepository;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderRenderTaskRepository extends CrudRepository<BlenderRenderTask, Integer> {
+public interface BlenderRenderTaskRepository extends JpaRepository<BlenderRenderTask, Long> {
 }

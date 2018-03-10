@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -40,6 +41,7 @@ import java.util.List;
  */
 @Entity
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class SethlansNode extends AbstractEntityClass {
     private String hostname;
     private String ipAddress;
@@ -51,7 +53,7 @@ public class SethlansNode extends AbstractEntityClass {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<GPUDevice> selectedGPUs = new ArrayList<>();
     @ElementCollection
-    private List<String> selectedCUDA;
+    private List<String> selectedDeviceID;
     private boolean active;
     private boolean pendingActivation;
     private String connection_uuid;
@@ -97,7 +99,7 @@ public class SethlansNode extends AbstractEntityClass {
                 ", cpuinfo=" + cpuinfo +
                 ", selectedCores='" + selectedCores + '\'' +
                 ", selectedGPUs=" + selectedGPUs +
-                ", selectedCUDA=" + selectedCUDA +
+                ", selectedDeviceID=" + selectedDeviceID +
                 ", combinedGPURating=" + getCombinedGPURating() +
                 ", combinedCPUGPURating=" + getCombinedCPUGPURating() +
                 ", active=" + active +

@@ -1,0 +1,65 @@
+<!--
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
+<div class="row pb-5">
+  <div class="col-md-10 m-auto">
+    <div class="card">
+      <div class="card-header">
+        <h2>
+          <span>Servers</span>
+        </h2>
+      </div>
+      <div class="card-body">
+        <h3 class="text-center mt-5 mb-5" *ngIf="serverList.length == 0">This Node is not associated with any
+          servers</h3>
+        <div class="table-responsive" *ngIf="serverList.length > 0">
+          <table datatable class="table">
+            <thead class="thead-light">
+            <tr>
+              <th>Server Status</th>
+              <th>Hostname</th>
+              <th>IP Address</th>
+              <th>Port</th>
+              <th data-orderable="false">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let server of serverList">
+              <td *ngIf="server.acknowledged == false">Pending Acknowledgement</td>
+              <td *ngIf="server.acknowledged == true">Active</td>
+              <td>{{server.hostname}}</td>
+              <td>{{server.ipAddress}}</td>
+              <td>{{server.networkPort}}</td>
+              <td>
+                <div class="btn-group-vertical">
+                  <button *ngIf="server.acknowledged == false" class="btn btn-outline-primary btn-sm" type="button">
+                    Acknowledge
+                  </button>
+                  <button class="btn btn-outline-danger btn-sm" type="button">Delete</button>
+                </div>
+              </td>
+            </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -32,15 +32,11 @@ import java.util.List;
 @Getter
 public class BlenderZip {
     private String blenderVersion;
-    private List<String> windows32;
     private List<String> windows64;
     private List<String> macOS;
-    private List<String> linux32;
     private List<String> linux64;
     private String md5MacOS;
     private String md5Windows64;
-    private String md5Windows32;
-    private String md5Linux32;
     private String md5Linux64;
 
 }

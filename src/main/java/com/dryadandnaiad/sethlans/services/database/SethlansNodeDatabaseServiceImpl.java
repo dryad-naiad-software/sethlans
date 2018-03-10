@@ -45,13 +45,11 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
 
     @Override
     public List<SethlansNode> listAll() {
-        List<SethlansNode> sethlansNodes = new ArrayList<>();
-        nodeRepository.findAll().forEach(sethlansNodes::add);
-        return sethlansNodes;
+        return new ArrayList<>(nodeRepository.findAll());
     }
 
     @Override
-    public SethlansNode getById(Integer id) {
+    public SethlansNode getById(Long id) {
         return nodeRepository.findOne(id);
     }
 
@@ -61,7 +59,7 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         SethlansNode sethlansNode = nodeRepository.findOne(id);
         String connectionURL = "https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() + "/api/nodeactivate/removal";
         String params = "connection_uuid=" + sethlansNode.getConnection_uuid();

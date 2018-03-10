@@ -43,13 +43,11 @@ public class NotificationDatabaseServiceImpl implements NotificationDatabaseServ
 
     @Override
     public List<SethlansNotification> listAll() {
-        List<SethlansNotification> sethlansNotifications = new ArrayList<>();
-        notificationRepository.findAll().forEach(sethlansNotifications::add);
-        return sethlansNotifications;
+        return new ArrayList<>(notificationRepository.findAll());
     }
 
     @Override
-    public SethlansNotification getById(Integer id) {
+    public SethlansNotification getById(Long id) {
         return notificationRepository.findOne(id);
     }
 
@@ -76,7 +74,7 @@ public class NotificationDatabaseServiceImpl implements NotificationDatabaseServ
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         SethlansNotification sethlansNotification = notificationRepository.findOne(id);
         notificationRepository.delete(sethlansNotification);
     }

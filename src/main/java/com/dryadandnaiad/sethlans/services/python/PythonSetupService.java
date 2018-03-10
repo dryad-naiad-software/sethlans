@@ -19,8 +19,6 @@
 
 package com.dryadandnaiad.sethlans.services.python;
 
-import com.dryadandnaiad.sethlans.domains.python.PythonArchive;
-
 /**
  * Created Mario Estrella on 3/27/17.
  * Dryad and Naiad Software LLC
@@ -31,9 +29,5 @@ public interface PythonSetupService {
     boolean installPython(String binaryDir);
 
     boolean setupScripts(String scriptsDir);
-
-    String downloadPython(String binDir);
-
-    PythonArchive getPythonArchive();
 
 }

@@ -44,13 +44,11 @@ public class BlenderRenderTaskDatabaseServiceImpl implements BlenderRenderTaskDa
 
     @Override
     public List<BlenderRenderTask> listAll() {
-        List<BlenderRenderTask> blenderRenderTasks = new ArrayList<>();
-        blenderRenderTaskRepository.findAll().forEach(blenderRenderTasks::add);
-        return blenderRenderTasks;
+        return new ArrayList<>(blenderRenderTaskRepository.findAll());
     }
 
     @Override
-    public BlenderRenderTask getById(Integer id) {
+    public BlenderRenderTask getById(Long id) {
         return blenderRenderTaskRepository.findOne(id);
     }
 
@@ -60,7 +58,7 @@ public class BlenderRenderTaskDatabaseServiceImpl implements BlenderRenderTaskDa
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         BlenderRenderTask blenderRenderTask = blenderRenderTaskRepository.findOne(id);
         blenderRenderTaskRepository.delete(blenderRenderTask);
 

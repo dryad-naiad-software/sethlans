@@ -40,13 +40,11 @@ public class BlenderBinaryDatabaseServiceImpl implements BlenderBinaryDatabaseSe
 
     @Override
     public List<BlenderBinary> listAll() {
-        List<BlenderBinary> blenderBinaries = new ArrayList<>();
-        blenderBinaryRepository.findAll().forEach(blenderBinaries::add);
-        return blenderBinaries;
+        return new ArrayList<>(blenderBinaryRepository.findAll());
     }
 
     @Override
-    public BlenderBinary getById(Integer id) {
+    public BlenderBinary getById(Long id) {
         return blenderBinaryRepository.findOne(id);
     }
 
@@ -56,7 +54,7 @@ public class BlenderBinaryDatabaseServiceImpl implements BlenderBinaryDatabaseSe
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         BlenderBinary blenderBinary = blenderBinaryRepository.findOne(id);
         blenderBinaryRepository.delete(blenderBinary);
 

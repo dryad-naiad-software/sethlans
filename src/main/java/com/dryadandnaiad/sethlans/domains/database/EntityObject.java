@@ -27,7 +27,7 @@ package com.dryadandnaiad.sethlans.domains.database;
  */
 public interface EntityObject {
 
-    Integer getId();
+    Long getId();
 
-    void setId(Integer id);
+    void setId(Long id);
 }

@@ -19,8 +19,6 @@
 
 package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.commands.ProjectForm;
-import com.dryadandnaiad.sethlans.converters.ProjectFormToBlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.repositories.BlenderProjectRepository;
 import com.google.common.collect.Lists;
@@ -43,15 +41,13 @@ import java.util.Set;
 @Service
 public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabaseService {
     private BlenderProjectRepository blenderProjectRepository;
-    private ProjectFormToBlenderProject projectFormToBlenderProject;
+    //    private ProjectFormToBlenderProject projectFormToBlenderProject;
     private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectDatabaseServiceImpl.class);
     private Set<String> projectAccessed = new HashSet<>();
 
     @Override
     public List<BlenderProject> listAll() {
-        List<BlenderProject> blenderProjects = new ArrayList<>();
-        blenderProjectRepository.findAll().forEach(blenderProjects::add);
-        return blenderProjects;
+        return new ArrayList<>(blenderProjectRepository.findAll());
     }
 
     @Override
@@ -60,7 +56,7 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     }
 
     @Override
-    public BlenderProject getById(Integer id) {
+    public BlenderProject getById(Long id) {
         return blenderProjectRepository.findOne(id);
     }
 
@@ -102,13 +98,13 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
         return blenderProjectRepository.save(domainObject);
     }
 
-    @Override
-    public BlenderProject saveOrUpdateProjectForm(ProjectForm projectForm) {
-        return saveOrUpdate(projectFormToBlenderProject.convert(projectForm));
-    }
+//    @Override
+//    public BlenderProject saveOrUpdateProjectForm(ProjectForm projectForm) {
+//        return saveOrUpdate(projectFormToBlenderProject.convert(projectForm));
+//    }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
         BlenderProject blenderProject = blenderProjectRepository.findOne(id);
         blenderProjectRepository.delete(blenderProject);
     }
@@ -123,9 +119,9 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
         this.blenderProjectRepository = blenderProjectRepository;
     }
 
-    @Autowired
-    public void setProjectFormToBlenderProject(ProjectFormToBlenderProject projectFormToBlenderProject) {
-        this.projectFormToBlenderProject = projectFormToBlenderProject;
-    }
+//    @Autowired
+//    public void setProjectFormToBlenderProject(ProjectFormToBlenderProject projectFormToBlenderProject) {
+//        this.projectFormToBlenderProject = projectFormToBlenderProject;
+//    }
 
 }

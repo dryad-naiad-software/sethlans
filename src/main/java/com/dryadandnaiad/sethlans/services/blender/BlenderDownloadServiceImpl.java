@@ -216,13 +216,6 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                 for (BlenderZip blenderBinary : blenderBinaries) {
                     if (blenderBinary.getBlenderVersion().equals(blenderZipEntity.getBlenderVersion())) {
                         switch (blenderZipEntity.getBlenderBinaryOS().toLowerCase()) {
-                            case "windows32":
-                                filename = blenderBinary.getWindows32().get(0);
-                                blenderZipEntity.setDownloadMirrors(blenderBinary.getWindows32());
-                                blenderZipEntity.setBlenderFile(filename.substring(filename.lastIndexOf("/") + 1));
-                                blenderZipEntity.setBlenderFileMd5(blenderBinary.getMd5Windows32());
-                                blenderBinaryDatabaseService.saveOrUpdate(blenderZipEntity);
-                                break;
                             case "windows64":
                                 filename = blenderBinary.getWindows64().get(0);
                                 blenderZipEntity.setDownloadMirrors(blenderBinary.getWindows64());
@@ -242,13 +235,6 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                                 blenderZipEntity.setDownloadMirrors(blenderBinary.getLinux64());
                                 blenderZipEntity.setBlenderFile(filename.substring(filename.lastIndexOf("/") + 1));
                                 blenderZipEntity.setBlenderFileMd5(blenderBinary.getMd5Linux64());
-                                blenderBinaryDatabaseService.saveOrUpdate(blenderZipEntity);
-                                break;
-                            case "linux32":
-                                filename = blenderBinary.getLinux32().get(0);
-                                blenderZipEntity.setDownloadMirrors(blenderBinary.getLinux32());
-                                blenderZipEntity.setBlenderFile(filename.substring(filename.lastIndexOf("/") + 1));
-                                blenderZipEntity.setBlenderFileMd5(blenderBinary.getMd5Linux32());
                                 blenderBinaryDatabaseService.saveOrUpdate(blenderZipEntity);
                                 break;
                             default:

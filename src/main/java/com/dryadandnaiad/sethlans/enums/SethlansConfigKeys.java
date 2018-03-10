@@ -37,14 +37,17 @@ public enum SethlansConfigKeys {
     BINARY_DIR("sethlans.binDir"),
     TEMP_DIR("sethlans.tempDir"),
     CACHE_DIR("sethlans.cacheDir"),
-    CUDA_DEVICE("sethlans.cuda"),
+    GPU_DEVICE("sethlans.gpu_id"),
     CPU_CORES("sethlans.cores"),
     PYTHON_BIN("sethlans.python.binary"),
+    IMAGEMAGICK_BIN("sethlans.imagemagick.binary"),
     SCRIPTS_DIR("sethlans.scriptsDir"),
     SETHLANS_IP("server.ipaddress"),
     TILE_SIZE_CPU("sethlans.tileSizeCPU"),
     TILE_SIZE_GPU("sethlans.tileSizeGPU"),
-    BENCHMARK_DIR("sethlans.benchmarkDir");
+    BENCHMARK_DIR("sethlans.benchmarkDir"),
+    ROOT_DIR("sethlans.rootDir"),
+    SESSION_TIMEOUT("server.session.timeout");
 
 
     private final String text;

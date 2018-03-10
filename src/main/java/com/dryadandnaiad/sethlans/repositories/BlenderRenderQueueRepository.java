@@ -19,7 +19,7 @@
 package com.dryadandnaiad.sethlans.repositories;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Created Mario Estrella on 12/28/17.
@@ -28,5 +28,5 @@ import org.springframework.data.repository.CrudRepository;
  * Project: sethlans
  */
 
-public interface BlenderRenderQueueRepository extends CrudRepository<BlenderRenderQueueItem, Integer> {
+public interface BlenderRenderQueueRepository extends JpaRepository<BlenderRenderQueueItem, Long> {
 }

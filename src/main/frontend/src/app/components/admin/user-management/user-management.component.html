@@ -1,0 +1,55 @@
+<div class="row">
+  <div class="col-md-10 m-auto">
+    <div class="card">
+      <div class="card-header">
+        <h2>
+          <span>User Management</span>
+          <button class="btn btn-outline-dark float-right">
+            <span class="fa fa-plus"></span> <span>Create new user</span>
+          </button>
+        </h2>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table datatable class="table" [dtTrigger]="dtTrigger">
+            <thead class="thead-light">
+            <tr>
+              <th scope="col">Username</th>
+              <th scope="col">Email</th>
+              <th scope="col">Status</th>
+              <th scope="col">Roles</th>
+              <th scope="col">Created</th>
+              <th scope="col">Last Updated</th>
+              <th data-orderable="false" scope="col">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let user of userInfoList">
+              <td>{{user.username}}</td>
+              <td>{{user.email}}</td>
+              <td *ngIf="user.active">
+                <span class="font-weight-bold text-success">Active</span>
+              </td>
+              <td *ngIf="!user.active">
+                <span class="font-weight-bold text-danger">Inactive</span>
+              </td>
+              <td>{{user.roles}}</td>
+              <td>{{user.dateCreated | date:'MM/dd/yy HH:mm'}}</td>
+              <td>{{user.lastUpdated | date:'MM/dd/yy HH:mm'}}</td>
+              <td>
+                <div class="btn-group-vertical">
+                  <button class="btn btn-outline-dark btn-sm" type="button">View</button>
+                  <button class="btn btn-outline-primary btn-sm" type="button">Edit</button>
+                  <button class="btn btn-outline-danger btn-sm" type="button">Delete</button>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

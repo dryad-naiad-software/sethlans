@@ -32,16 +32,16 @@ import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.LongByReference;
 
 public interface CUDA extends Library {
-    public int cuInit(int flags);
+    int cuInit(int flags);
 
     /*
      * @return: CUDA_SUCCESS, CUDA_ERROR_DEINITIALIZED, CUDA_ERROR_NOT_INITIALIZED, CUDA_ERROR_INVALID_CONTEXT, CUDA_ERROR_INVALID_VALUE
     */
-    public int cuDeviceGetCount(IntByReference count);
+    int cuDeviceGetCount(IntByReference count);
 
-    public int cuDeviceGetName(byte[] name, int len, int dev);
+    int cuDeviceGetName(byte[] name, int len, int dev);
 
-    public int cuDeviceTotalMem_v2(LongByReference bytes, int dev);
+    int cuDeviceTotalMem_v2(LongByReference bytes, int dev);
 
-    public int cuDeviceTotalMem(LongByReference bytes, int dev);
+    int cuDeviceTotalMem(LongByReference bytes, int dev);
 }

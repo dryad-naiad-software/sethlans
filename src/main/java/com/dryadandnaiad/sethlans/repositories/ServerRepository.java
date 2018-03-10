@@ -20,7 +20,7 @@
 package com.dryadandnaiad.sethlans.repositories;
 
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Created Mario Estrella on 12/4/17.
@@ -28,5 +28,5 @@ import org.springframework.data.repository.CrudRepository;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface ServerRepository extends CrudRepository<SethlansServer, Integer> {
+public interface ServerRepository extends JpaRepository<SethlansServer, Long> {
 }
