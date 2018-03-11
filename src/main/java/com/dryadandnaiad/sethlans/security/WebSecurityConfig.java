@@ -130,6 +130,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.OPTIONS, "/**")
                     .antMatchers("/*.{*}")
                     .antMatchers("/api/nodeactivate/**")
+                    .antMatchers("/api/benchmark/**")
+                    .antMatchers("/api/benchmark_files/**")
+                    .antMatchers("/api/project/**")
+                    .antMatchers("/api/render/**")
+                    .antMatchers("/api/update/**")
                     .antMatchers("/assets/images/**");
         } else {
             web.ignoring().antMatchers("/**");

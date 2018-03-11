@@ -46,6 +46,7 @@ export class NodesComponent implements OnInit {
     this.http.get('/api/management/node_list')
       .subscribe((nodes: NodeInfo[]) => {
         this.nodeList = nodes;
+        console.log(nodes)
       });
   }
 

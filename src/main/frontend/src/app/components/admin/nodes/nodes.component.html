@@ -53,6 +53,13 @@
             <tbody>
             <tr *ngFor="let node of nodeList">
               <td *ngIf="node.pendingActivation == true">Pending Activation</td>
+              <td *ngIf="node.pendingActivation == false && node.benchmarkComplete == false">Pending Benchmark</td>
+              <td *ngIf="node.pendingActivation == false && node.benchmarkComplete == true && node.active == true">
+                Active
+              </td>
+              <td *ngIf="node.pendingActivation == false && node.benchmarkComplete == true && node.active == false">
+                Disabled
+              </td>
               <td>{{node.hostname}}</td>
               <td>{{node.ipAddress}}</td>
               <td>{{node.networkPort}}</td>
@@ -66,7 +73,21 @@
                   <li *ngFor="let gpu of node.selectedGPUs"> {{gpu.model}}</li>
                 </ul>
               </td>
-              <td>640000</td>
+              <td *ngIf="node.benchmarkComplete == false">N/A</td>
+              <td *ngIf="node.benchmarkComplete == true && node.computeType == computeMethodEnum.CPU">CPU:
+                {{node.cpuRating}}
+              </td>
+              <td *ngIf="node.benchmarkComplete == true && node.computeType == computeMethodEnum.GPU">
+                <ul class="list-unstyled">
+                  <li *ngFor="let gpu of node.selectedGPUs">{{gpu.deviceID}}: {{gpu.rating}}</li>
+                </ul>
+              </td>
+              <td *ngIf="node.benchmarkComplete == true && node.computeType == computeMethodEnum.CPU_GPU">
+                <ul class="list-unstyled">
+                  <li>CPU: {{node.cpuRating}}</li>
+                  <li *ngFor="let gpu of node.selectedGPUs">{{gpu.deviceID}}: {{gpu.rating}}</li>
+                </ul>
+              </td>
               <td>
                 <div class="btn-group-vertical">
                   <button class="btn btn-outline-primary btn-sm" type="button">Update</button>

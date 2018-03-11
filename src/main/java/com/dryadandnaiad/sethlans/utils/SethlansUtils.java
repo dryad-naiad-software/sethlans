@@ -108,6 +108,16 @@ public class SethlansUtils {
         return currentServer;
     }
 
+    public static SethlansNode getCurrentNodeInfo() {
+        SethlansNode currentNode = new SethlansNode();
+        currentNode.setNetworkPort(getPort());
+        currentNode.setHostname(getHostname());
+        currentNode.setIpAddress(getIP());
+        return currentNode;
+    }
+
+
+
 
     public static boolean writeProperty(SethlansConfigKeys configKey, String value) {
         String comment = "";

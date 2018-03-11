@@ -30,7 +30,7 @@ import {Router} from "@angular/router";
 })
 export class ServersComponent implements OnInit {
   dtTrigger: Subject<any> = new Subject();
-  serverList: ServerInfo[];
+  serverList: ServerInfo[] = [];
 
   constructor(private http: HttpClient, private router: Router) {
   }
@@ -41,6 +41,15 @@ export class ServersComponent implements OnInit {
         this.serverList = servers;
       });
   }
+
+  acknowledgeServer(id) {
+    this.http.get('/api/setup/server_acknowledge/' + id + "/", {responseType: 'text'}).subscribe((success: any) => {
+      this.router.navigateByUrl("/admin/servers").then(() => {
+        location.reload();
+      })
+    });
+  }
+
 
   deleteServer(id) {
     this.http.get('/api/setup/server_delete/' + id + "/", {responseType: 'text'}).subscribe((success: any) => {

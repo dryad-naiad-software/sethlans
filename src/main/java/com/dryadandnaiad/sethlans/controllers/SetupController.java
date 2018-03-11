@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.forms.setup.SetupForm;
 import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
@@ -82,6 +83,16 @@ public class SetupController {
         } else {
             return false;
         }
+    }
+
+    @GetMapping("/server_acknowledge/{id}")
+    public boolean acknowledgeNode(@PathVariable Long id) {
+        SethlansServer sethlansServer = sethlansServerDatabaseService.getById(id);
+        sethlansServer.setPendingAcknowledgementResponse(true);
+        LOG.debug(sethlansServer.toString());
+        sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
+        nodeActivationService.sendActivationResponse(sethlansServer, SethlansUtils.getCurrentNodeInfo());
+        return true;
     }
 
     @GetMapping("/node_add")
