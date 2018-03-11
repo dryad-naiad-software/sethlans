@@ -66,22 +66,39 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.write("bpy.context.scene.cycles.device = " + "\"" + computeType + "\"" + "\n");
 
             if (computeType.equals(ComputeType.GPU)) {
-                // CUDA Setting
-                scriptWriter.write("\n");
-                scriptWriter.write("bpy.context.user_preferences.addons['cycles'].preferences.compute_device_type = \"CUDA\"" + "\n");
-                scriptWriter.write("devices = bpy.context.user_preferences.addons['cycles'].preferences.get_devices()" + "\n");
-                //CUDA = 0, OpenCL = 1
-                scriptWriter.write("cuda_devices = devices[0]" + "\n");
-                scriptWriter.write("cuda_id = " + deviceId + "\n");
-                scriptWriter.write("\n");
-                // Sets the CUDA device defined in cuda_id to true.
-                scriptWriter.write("for i in range(len(cuda_devices)):" + "\n");
-                scriptWriter.write("\tcuda_devices[i].use = (i == cuda_id)" + "\n");
+                if (cuda) {
+                    // CUDA Setting
+                    scriptWriter.write("\n");
+                    scriptWriter.write("bpy.context.user_preferences.addons['cycles'].preferences.compute_device_type = \"CUDA\"" + "\n");
+                    scriptWriter.write("devices = bpy.context.user_preferences.addons['cycles'].preferences.get_devices()" + "\n");
+                    //CUDA = 0
+                    scriptWriter.write("render_devices = devices[0]" + "\n");
+                    scriptWriter.write("device_id = " + deviceId + "\n");
+                    scriptWriter.write("\n");
+                    // Sets the CUDA device defined in device_id to true.
+                    scriptWriter.write("for i in range(len(render_devices)):" + "\n");
+                    scriptWriter.write("\trender_devices[i].use = (i == device_id)" + "\n");
 
-                // Disable all OpenCL
-                scriptWriter.write("\n");
-                scriptWriter.write("for dev in devices[1]:" + "\n");
-                scriptWriter.write("\tdev.use = False" + "\n");
+                    // Disable all OpenCL
+                    scriptWriter.write("\n");
+                    scriptWriter.write("for dev in devices[1]:" + "\n");
+                    scriptWriter.write("\tdev.use = False" + "\n");
+                } else {
+                    // OpenCL
+                    scriptWriter.write("\n");
+                    scriptWriter.write("bpy.context.user_preferences.addons['cycles'].preferences.compute_device_type = \"OPENCL\"" + "\n");
+                    scriptWriter.write("devices = bpy.context.user_preferences.addons['cycles'].preferences.get_devices()" + "\n");
+
+                    //OpenCL = 1
+                    scriptWriter.write("render_devices = devices[1]" + "\n");
+                    scriptWriter.write("device_id = " + deviceId + "\n");
+                    scriptWriter.write("\n");
+
+                    // Sets the OpenCL device defined in device_id to true.
+                    scriptWriter.write("for i in range(len(render_devices)):" + "\n");
+                    scriptWriter.write("\trender_devices[i].use = (i == device_id)" + "\n");
+                }
+
             }
 
 

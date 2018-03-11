@@ -240,11 +240,22 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         File benchmarkDir = new File(tempDir + File.separator + benchmarkTask.getBenchmark_uuid() + "_" + benchmarkTask.getBenchmarkURL());
         if (downloadRequiredFiles(benchmarkDir, benchmarkTask)) {
             benchmarkTask = blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
+
             if (benchmarkTask.getComputeType().equals(ComputeType.GPU)) {
                 LOG.debug("Creating benchmark script using " + benchmarkTask.getDeviceID());
                 String deviceID = StringUtils.substringAfter(benchmarkTask.getDeviceID(), "_");
-                String script = blenderPythonScriptService.writeBenchmarkPythonScript(benchmarkTask.getComputeType(),
-                        benchmarkTask.getBenchmarkDir(), deviceID, true, "128", 800, 600, 50);
+                String script = null;
+                if (SethlansUtils.isCuda(benchmarkTask.getDeviceID())) {
+                    LOG.debug("CUDA Device found, using cuda parameters for script");
+                    script = blenderPythonScriptService.writeBenchmarkPythonScript(benchmarkTask.getComputeType(),
+                            benchmarkTask.getBenchmarkDir(), deviceID, true, "128", 800, 600, 50);
+                } else {
+                    LOG.debug("OpenCL Device found, using opencl parameters for script");
+
+                    script = blenderPythonScriptService.writeBenchmarkPythonScript(benchmarkTask.getComputeType(),
+                            benchmarkTask.getBenchmarkDir(), deviceID, false, "128", 800, 600, 50);
+                }
+
                 int rating = executeBlenderBenchmark(benchmarkTask, script);
                 if (rating == 0) {
                     LOG.debug("Benchmark failed.");

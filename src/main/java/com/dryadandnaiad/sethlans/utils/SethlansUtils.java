@@ -600,5 +600,9 @@ public class SethlansUtils {
         }
     }
 
+    public static boolean isCuda(String deviceID) {
+        return deviceID.contains("CUDA");
+    }
+
 
 }
