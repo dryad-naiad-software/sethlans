@@ -22,7 +22,7 @@
     <div class="card">
       <div class="card-header">
         <h2>
-          <span>Nodes</span>
+          <span style="font-family: 'Fjalla One', sans-serif; ">Nodes</span>
           <button class="ml-2 btn btn-outline-dark float-right" (click)="openModal(addModal)">
             <span class="fa fa-plus"></span> <span>Add Node</span>
           </button>
@@ -107,7 +107,7 @@
 <!--Add Node Modal-->
 <ng-template #addModal let-c="close" let-d="dismiss">
   <div class="modal-header">
-    <h4 class="modal-title">Add Sethlans Node</h4>
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Add Sethlans Node</h4>
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click'); resetAddNode()">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -136,7 +136,7 @@
 <!--Scan Node Modal-->
 <ng-template #scanModal let-c="close" let-d="dismiss">
   <div class="modal-header">
-    <h4 class="modal-title">Scan for Sethlans Nodes</h4>
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Scan for Sethlans Nodes</h4>
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -155,7 +155,7 @@
 <!--Verify Node Modal-->
 <ng-template #verifySingleNodeModal let-c="close" let-d="dismiss">
   <div class="modal-header">
-    <h4 class="modal-title">Node Summary</h4>
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Node Summary</h4>
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
