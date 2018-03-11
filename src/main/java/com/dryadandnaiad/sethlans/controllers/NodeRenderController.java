@@ -142,7 +142,7 @@ public class NodeRenderController {
                 BlenderBenchmarkTask gpuBenchmarkTask = new BlenderBenchmarkTask();
                 gpuBenchmarkTask.setBlenderVersion(blender_version);
                 gpuBenchmarkTask.setComplete(false);
-                gpuBenchmarkTask.setCudaName(cuda);
+                gpuBenchmarkTask.setDeviceID(cuda);
                 gpuBenchmarkTask.setBenchmarkURL("bmw_gpu");
                 gpuBenchmarkTask.setComputeType(ComputeType.GPU);
                 gpuBenchmarkTask.setConnection_uuid(connection_uuid);

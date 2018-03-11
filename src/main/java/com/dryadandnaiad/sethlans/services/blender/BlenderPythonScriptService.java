@@ -33,10 +33,10 @@ import java.util.List;
 public interface BlenderPythonScriptService {
 
     String writeBenchmarkPythonScript(ComputeType computeType, String renderLocation,
-                                      String deviceId, String tileSize, int resolution_x,
+                                      String deviceId, boolean cuda, String tileSize, int resolution_x,
                                       int resolution_y, int res_percentage);
 
-    String writeRenderPythonScript(ComputeType computeType, String renderLocation, List<String> selectedDeviceIds, List<String> unselectedIds, RenderOutputFormat renderOutputFormat,
+    String writeRenderPythonScript(ComputeType computeType, String renderLocation, List<String> selectedDeviceIds, List<String> unselectedIds, boolean cuda, RenderOutputFormat renderOutputFormat,
                                    String tileSize, int resolutionX, int resolutionY, int resPercentage, int samples,
                                    double partMaxY, double partMinY);
 }

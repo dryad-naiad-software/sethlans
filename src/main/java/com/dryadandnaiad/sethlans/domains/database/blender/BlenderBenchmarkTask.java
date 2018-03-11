@@ -47,7 +47,7 @@ public class BlenderBenchmarkTask extends AbstractEntityClass {
     private boolean complete;
     private int cpuRating;
     private int gpuRating;
-    private String cudaName;
+    private String deviceID;
     private boolean inProgress;
 
 

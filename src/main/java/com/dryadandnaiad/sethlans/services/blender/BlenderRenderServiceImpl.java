@@ -62,7 +62,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     private String cacheDir;
 
     @Value("${sethlans.gpu_id}")
-    private String cuda;
+    private String deviceID;
 
     @Value("${sethlans.tileSizeCPU}")
     private String tileSizeCPU;
@@ -119,15 +119,15 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         if (downloadRequiredFiles(renderDir, blenderRenderTask)) {
             blenderRenderTask = blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
             if (blenderRenderTask.getComputeType().equals(ComputeType.GPU)) {
-                List<String> cudaList = Arrays.asList(cuda.split(","));
-                List<String> cudaIDList = new ArrayList<>();
-                LOG.debug("Running render task using " + cuda);
-                for (String cuda : cudaList) {
-                    cudaIDList.add(StringUtils.substringAfter(cuda, "_"));
+                List<String> deviceList = Arrays.asList(deviceID.split(","));
+                List<String> deviceIDList = new ArrayList<>();
+                LOG.debug("Running render task using " + deviceID);
+                for (String cuda : deviceList) {
+                    deviceIDList.add(StringUtils.substringAfter(cuda, "_"));
                 }
                 String script = blenderPythonScriptService.writeRenderPythonScript(blenderRenderTask.getComputeType(),
-                        blenderRenderTask.getRenderDir(), cudaIDList,
-                        getUnselectedIds(cudaList),
+                        blenderRenderTask.getRenderDir(), deviceIDList,
+                        getUnselectedIds(deviceList), false,
                         blenderRenderTask.getRenderOutputFormat(),
                         tileSizeGPU,
                         blenderRenderTask.getTaskResolutionX(),
@@ -143,7 +143,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                 List<String> emptyList = new ArrayList<>();
                 String script = blenderPythonScriptService.writeRenderPythonScript(blenderRenderTask.getComputeType(),
                         blenderRenderTask.getRenderDir(), emptyList,
-                        emptyList, blenderRenderTask.getRenderOutputFormat(), tileSizeCPU,
+                        emptyList, false, blenderRenderTask.getRenderOutputFormat(), tileSizeCPU,
                         blenderRenderTask.getTaskResolutionX(),
                         blenderRenderTask.getTaskResolutionY(),
                         blenderRenderTask.getPartResPercentage(),

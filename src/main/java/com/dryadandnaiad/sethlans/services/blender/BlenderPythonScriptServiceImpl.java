@@ -44,7 +44,7 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
 
 
     @Override
-    public String writeBenchmarkPythonScript(ComputeType computeType, String renderLocation, String deviceId,
+    public String writeBenchmarkPythonScript(ComputeType computeType, String renderLocation, String deviceId, boolean cuda,
                                              String tileSize, int resolutionX, int resolutionY, int resPercentage) {
         try {
             File script = new File(renderLocation + File.separator + "script-" + deviceId + ".py");
@@ -109,6 +109,7 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
 
     @Override
     public String writeRenderPythonScript(ComputeType computeType, String renderLocation, List<String> selectedDeviceIds, List<String> unselectedIds,
+                                          boolean cuda,
                                           RenderOutputFormat renderOutputFormat,
                                           String tileSize, int resolutionX, int resolutionY, int resPercentage, int samples,
                                           double partMaxY, double partMinY) {
