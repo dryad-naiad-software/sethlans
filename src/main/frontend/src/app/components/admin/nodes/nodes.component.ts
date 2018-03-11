@@ -71,6 +71,15 @@ export class NodesComponent implements OnInit {
     this.modalService.open(content, options);
   }
 
+  deleteNode(id) {
+    this.http.get('/api/setup/node_delete/' + id + "/", {responseType: 'text'}).subscribe((success: any) => {
+      console.log(success);
+      this.router.navigateByUrl("/admin/nodes").then(() => {
+        location.reload();
+      });
+    });
+  }
+
   addNode() {
     this.http.get('/api/setup/node_add?ip=' + this.ipAddress + "&port=" + this.port, {responseType: 'text'}).subscribe((success: any) => {
       console.log(success);
@@ -78,7 +87,7 @@ export class NodesComponent implements OnInit {
         location.reload();
       });
 
-    })
+    });
 
   }
 

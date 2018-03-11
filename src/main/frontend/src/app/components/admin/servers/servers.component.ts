@@ -21,6 +21,7 @@ import {Component, OnInit} from '@angular/core';
 import {Subject} from "rxjs/Subject";
 import {ServerInfo} from "../../../models/server_info.model";
 import {HttpClient} from "@angular/common/http";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-servers',
@@ -31,7 +32,7 @@ export class ServersComponent implements OnInit {
   dtTrigger: Subject<any> = new Subject();
   serverList: ServerInfo[];
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
   }
 
   ngOnInit() {
@@ -39,6 +40,15 @@ export class ServersComponent implements OnInit {
       .subscribe((servers: ServerInfo[]) => {
         this.serverList = servers;
       });
+  }
+
+  deleteServer(id) {
+    this.http.get('/api/setup/server_delete/' + id + "/", {responseType: 'text'}).subscribe((success: any) => {
+      console.log(success);
+      this.router.navigateByUrl("/admin/servers").then(() => {
+        location.reload();
+      });
+    });
   }
 
 }

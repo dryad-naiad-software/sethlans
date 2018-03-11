@@ -17,6 +17,7 @@
  *
  */
 export class ServerInfo {
+  id: number;
   hostname: string;
   ipAddress: string;
   networkPort: string;

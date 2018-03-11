@@ -23,6 +23,7 @@ import {CPUInfo} from "./cpu_info.model";
 import {GPU} from "./gpu.model";
 
 export class NodeInfo {
+  id: number;
   hostname: string;
   ipAddress: string;
   networkPort: string;

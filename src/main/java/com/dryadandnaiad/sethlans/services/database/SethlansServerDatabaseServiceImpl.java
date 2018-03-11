@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.enums.NotificationOrigin;
 import com.dryadandnaiad.sethlans.events.SethlansEvent;
 import com.dryadandnaiad.sethlans.repositories.ServerRepository;
+import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
@@ -42,6 +43,8 @@ public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabase
 
     private ServerRepository serverRepository;
     private ApplicationEventPublisher applicationEventPublisher;
+    private SethlansAPIConnectionService sethlansAPIConnectionService;
+
 
     @Override
     public List<SethlansServer> listAll() {
@@ -61,6 +64,9 @@ public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabase
     @Override
     public void delete(Long id) {
         SethlansServer sethlansServer = serverRepository.findOne(id);
+        String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/nodeactivate/server_removal";
+        String params = "connection_uuid=" + sethlansServer.getConnection_uuid();
+        sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params);
         this.applicationEventPublisher.publishEvent(new SethlansEvent(this, sethlansServer.getConnection_uuid() + "-" + NotificationOrigin.ACTIVATION_REQUEST, false));
         serverRepository.delete(sethlansServer);
 
@@ -83,6 +89,11 @@ public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabase
             }
         }
         return null;
+    }
+
+    @Autowired
+    public void setSethlansAPIConnectionService(SethlansAPIConnectionService sethlansAPIConnectionService) {
+        this.sethlansAPIConnectionService = sethlansAPIConnectionService;
     }
 
     @Autowired

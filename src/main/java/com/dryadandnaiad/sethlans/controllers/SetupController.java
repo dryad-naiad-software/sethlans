@@ -26,6 +26,7 @@ import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
 import com.dryadandnaiad.sethlans.services.config.UpdateComputeService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
@@ -55,6 +56,7 @@ public class SetupController {
     private NodeDiscoveryService nodeDiscoveryService;
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private NodeActivationService nodeActivationService;
+    private SethlansServerDatabaseService sethlansServerDatabaseService;
 
 
     @PostMapping("/submit")
@@ -108,6 +110,18 @@ public class SetupController {
         return false;
     }
 
+    @GetMapping("/node_delete/{id}")
+    public boolean deleteNode(@PathVariable Long id) {
+        sethlansNodeDatabaseService.delete(id);
+        return true;
+    }
+
+    @GetMapping("/server_delete/{id}")
+    public boolean deleteServer(@PathVariable Long id) {
+        sethlansServerDatabaseService.delete(id);
+        return true;
+    }
+
     @PostMapping("/register")
     public boolean register(@RequestBody SethlansUser user) {
         if (user != null) {
@@ -157,5 +171,10 @@ public class SetupController {
     @Autowired
     public void setNodeActivationService(NodeActivationService nodeActivationService) {
         this.nodeActivationService = nodeActivationService;
+    }
+
+    @Autowired
+    public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
+        this.sethlansServerDatabaseService = sethlansServerDatabaseService;
     }
 }

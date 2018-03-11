@@ -51,7 +51,8 @@
                   <button *ngIf="server.acknowledged == false" class="btn btn-outline-primary btn-sm" type="button">
                     Acknowledge
                   </button>
-                  <button class="btn btn-outline-danger btn-sm" type="button">Delete</button>
+                  <button class="btn btn-outline-danger btn-sm" type="button" (click)="deleteServer(server.id)">Delete
+                  </button>
                 </div>
               </td>
             </tr>

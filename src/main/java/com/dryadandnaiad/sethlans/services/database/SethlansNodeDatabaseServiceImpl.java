@@ -125,6 +125,12 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
         }
     }
 
+    @Override
+    public void deleteByConnectionUUID(String connection_uuid) {
+        SethlansNode sethlansNode = getByConnectionUUID(connection_uuid);
+        nodeRepository.delete(sethlansNode);
+    }
+
     @Autowired
     public void setNodeRepository(NodeRepository nodeRepository) {
         this.nodeRepository = nodeRepository;
