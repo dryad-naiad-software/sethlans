@@ -122,8 +122,8 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                 List<String> deviceList = Arrays.asList(deviceID.split(","));
                 List<String> deviceIDList = new ArrayList<>();
                 LOG.debug("Running render task using " + deviceID);
-                for (String cuda : deviceList) {
-                    deviceIDList.add(StringUtils.substringAfter(cuda, "_"));
+                for (String device : deviceList) {
+                    deviceIDList.add(StringUtils.substringAfter(device, "_"));
                 }
                 String script = blenderPythonScriptService.writeRenderPythonScript(blenderRenderTask.getComputeType(),
                         blenderRenderTask.getRenderDir(), deviceIDList,
