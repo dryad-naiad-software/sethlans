@@ -34,6 +34,7 @@ export class ServersComponent implements OnInit {
   dtTrigger: Subject<any> = new Subject();
   serverList: ServerInfo[] = [];
   ackClicked: boolean = false;
+  serverScanComplete: boolean = false;
 
   constructor(private http: HttpClient, private router: Router) {
   }
@@ -48,15 +49,16 @@ export class ServersComponent implements OnInit {
     this.http.get('/api/management/server_list')
       .subscribe((servers: ServerInfo[]) => {
         this.serverList = servers;
+        this.serverScanComplete = true;
       });
   }
 
   acknowledgeServer(id) {
-    this.ackClicked = true;
-    this.http.get('/api/setup/server_acknowledge/' + id + "/", {responseType: 'text'}).subscribe((success: any) => {
-      this.router.navigateByUrl("/admin/servers").then(() => {
-        location.reload();
-      })
+    this.http.get('/api/setup/server_acknowledge/' + id + "/").subscribe((success: boolean) => {
+      if (success == true) {
+        this.ackClicked = true;
+      }
+
     });
   }
 

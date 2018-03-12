@@ -32,7 +32,7 @@
         </h2>
       </div>
       <div class="card-body">
-        <h2 class="text-center mt-5 mb-5" *ngIf="nodeList.length == 0">No Nodes Present</h2>
+        <h2 class="text-center mt-5 mb-5" *ngIf="nodeList.length == 0 && nodeScanComplete == true">No Nodes Present</h2>
         <div class="table-responsive" *ngIf="nodeList.length > 0">
           <table datatable class="table">
             <thead class="thead-light">
@@ -66,13 +66,16 @@
               <td>{{node.sethlansNodeOS}}</td>
               <td *ngIf="node.computeType == computeMethodEnum.CPU_GPU">CPU & GPU</td>
               <td *ngIf="node.computeType != computeMethodEnum.CPU_GPU">{{node.computeType}}</td>
-              <td>{{node.cpuinfo.name}}</td>
-              <td>{{node.selectedCores}}</td>
-              <td>
+              <td *ngIf="node.computeType != computeMethodEnum.GPU">{{node.cpuinfo.name}}</td>
+              <td *ngIf="node.computeType == computeMethodEnum.GPU">N/A</td>
+              <td *ngIf="node.computeType != computeMethodEnum.GPU">{{node.selectedCores}}</td>
+              <td *ngIf="node.computeType == computeMethodEnum.GPU">N/A</td>
+              <td *ngIf="node.computeType != computeMethodEnum.CPU">
                 <ul class="list-unstyled">
                   <li *ngFor="let gpu of node.selectedGPUs"> {{gpu.model}}</li>
                 </ul>
               </td>
+              <td *ngIf="node.computeType == computeMethodEnum.CPU">N/A</td>
               <td *ngIf="node.benchmarkComplete == false">N/A</td>
               <td *ngIf="node.benchmarkComplete == true && node.computeType == computeMethodEnum.CPU">CPU:
                 {{node.cpuRating}}

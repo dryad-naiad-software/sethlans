@@ -39,6 +39,7 @@ export class NodesComponent implements OnInit {
   nodeToAdd: NodeInfo;
   computeMethodEnum: any = ComputeMethod;
   summaryComplete: boolean = false;
+  nodeScanComplete: boolean = false;
 
 
   constructor(private modalService: NgbModal, private http: HttpClient, private router: Router) {
@@ -54,6 +55,7 @@ export class NodesComponent implements OnInit {
     this.http.get('/api/management/node_list')
       .subscribe((nodes: NodeInfo[]) => {
         this.nodeList = nodes;
+        this.nodeScanComplete = true;
       });
   }
 
@@ -102,12 +104,10 @@ export class NodesComponent implements OnInit {
   }
 
   addNode() {
-    this.http.get('/api/setup/node_add?ip=' + this.ipAddress + "&port=" + this.port, {responseType: 'text'}).subscribe((success: any) => {
-      console.log(success);
-      this.router.navigateByUrl("/admin/nodes").then(() => {
-        location.reload();
-      });
-
+    this.http.get('/api/setup/node_add?ip=' + this.ipAddress + "&port=" + this.port).subscribe((success: boolean) => {
+      if (success == true) {
+        this.resetAddNode();
+      }
     });
 
   }
