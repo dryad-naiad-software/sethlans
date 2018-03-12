@@ -1,3 +1,22 @@
+<!--
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
 <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4 py-1">
   <a href="/" class="navbar-brand pl-5"
      style="font-family: 'Fjalla One', sans-serif; font-size: 150%">
@@ -11,10 +30,19 @@
     <!--Right Menu-->
     <ul class="text-white nav ml-auto pr-5" *ngIf="authenticated">
       <!--Notifications-->
-      <li class="nav-item">
-        <a href="javascript:void(0);" class="text-white nav-link">
+      <li class="nav-item" id="notificationsDropDown" ngbDropdown>
+        <a href="javascript:void(0);" class="text-white nav-link" ngbDropdownToggle>
           <i class="fa fa-bell"></i>
+          <span *ngIf="notifications == true" class="badge badge-notify">!</span>
         </a>
+        <div ngbDropdownMenu>
+          <a *ngIf="notifications == false" href="javascript:void(0);" class="dropdown-item"><i
+            class="fa fa-fw fa-info-circle"></i>&nbsp;&nbsp;No new notifications</a>
+          <span *ngIf="notifications == true">
+            <a href="javascript:void(0);" class="dropdown-item" *ngFor="let notification of notificationList"><i
+              class="fa fa-fw fa-info-circle"></i>&nbsp;&nbsp;{{notification}}</a>
+          </span>
+        </div>
       </li>
 
       <!--Projects Menu-->

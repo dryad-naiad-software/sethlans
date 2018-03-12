@@ -135,6 +135,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/api/project/**")
                     .antMatchers("/api/render/**")
                     .antMatchers("/api/update/**")
+                    .antMatchers("/api/notifications/**")
                     .antMatchers("/assets/images/**");
         } else {
             web.ignoring().antMatchers("/**");
