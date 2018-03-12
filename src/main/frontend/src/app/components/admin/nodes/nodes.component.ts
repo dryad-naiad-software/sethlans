@@ -64,17 +64,21 @@ export class NodesComponent implements OnInit {
     this.modalService.open(content, options);
   }
 
+
   backModalAdd(content) {
     let options: NgbModalOptions = {
       backdrop: "static"
     };
     this.nodeToAdd = null;
+    this.summaryComplete = false;
     this.modalService.open(content, options);
   }
 
   resetAddNode() {
     this.ipAddress = "";
     this.port = "";
+    this.nodeToAdd = null;
+    this.summaryComplete = false;
   }
 
   openNodeSummaryModal(content) {
