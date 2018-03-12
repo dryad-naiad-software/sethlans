@@ -36,10 +36,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -60,8 +57,8 @@ import java.util.Random;
  */
 @RestController
 @Profile({"SERVER", "DUAL"})
-public class ServerProjectController {
-    private static final Logger LOG = LoggerFactory.getLogger(ServerProjectController.class);
+public class ProjectController {
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectController.class);
 
     @Value("${sethlans.benchmarkDir}")
     private String benchmarkDir;
@@ -251,6 +248,16 @@ public class ServerProjectController {
 
     }
 
+    @GetMapping(value = "/api/project/nodes_ready")
+    public boolean nodesReady() {
+        return sethlansNodeDatabaseService.activeNodes();
+    }
+
+    @GetMapping(value = "/api/project/project_list")
+    public List<BlenderProject> getProjects() {
+        // TODO unless user
+        return blenderProjectDatabaseService.listAllReverse();
+    }
 
     @Autowired
     public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {

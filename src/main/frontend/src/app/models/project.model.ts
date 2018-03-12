@@ -16,29 +16,32 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+import {User} from "./user.model";
+import {ComputeMethod} from "../enums/compute.method.enum";
 
-package com.dryadandnaiad.sethlans.services.database;
+export class Project {
+  renderOn: ComputeMethod;
+  sethlansUser: User;
+  startFrame: number;
+  endFrame: number;
+  stepFrame: number;
+  samples: number;
+  resolutionX: number;
+  resolutionY: number;
+  resPercentage: number;
+  currentPercentage: number;
+  partsPerFrame: number;
+  started: boolean;
+  finished: boolean;
+  allImagesProcessed: boolean;
+  paused: boolean;
+  projectName: string;
+  blendFileName: string;
+  blendFileLocation: string;
+  blenderVersion: string;
+  currentFrameThumbnail: string;
+  project_uuid: string;
+  projectRootDir: string;
+  frameFileNames: string[];
 
-import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
-
-import java.util.List;
-
-/**
- * Created Mario Estrella on 10/29/17.
- * Dryad and Naiad Software LLC
- * mestrella@dryadandnaiad.com
- * Project: sethlans
- */
-public interface SethlansNodeDatabaseService extends CRUDService<SethlansNode> {
-    SethlansNode getByConnectionUUID(String uuid);
-
-    List<SethlansNode> activeNodesNotRendering();
-
-    boolean activeNodes();
-
-    List<SethlansNode> activeNodesRendering();
-
-    boolean checkForDuplicatesAndSave(SethlansNode sethlansNode);
-
-    void deleteByConnectionUUID(String connection_uuid);
 }

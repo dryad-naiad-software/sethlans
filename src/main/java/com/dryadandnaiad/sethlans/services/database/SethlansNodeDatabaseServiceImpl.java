@@ -92,6 +92,17 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
     }
 
     @Override
+    public boolean activeNodes() {
+        List<SethlansNode> nodes = listAll();
+        for (SethlansNode node : nodes) {
+            if (node.isActive() && node.isBenchmarkComplete()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public List<SethlansNode> activeNodesRendering() {
         List<SethlansNode> nodes = listAll();
         List<SethlansNode> nodesRendering = new ArrayList<>();

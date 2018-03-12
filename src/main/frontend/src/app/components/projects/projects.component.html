@@ -23,10 +23,12 @@
       <div class="card-header">
         <h2>
           <span style="font-family: 'Fjalla One', sans-serif; ">Projects</span>
-        <button class="btn btn-outline-dark float-right">
+          <button [disabled]="!nodesReady" class="btn btn-outline-dark float-right">
           <span class="fa fa-plus"></span> <span>New Project</span>
         </button>
         </h2>
+        <div *ngIf="!nodesReady" class="col-md-3 m-auto alert alert-warning"><h5 class="text-center">No active nodes
+          present.<br> Project creation disabled.</h5></div>
       </div>
       <div class="card-body">
         <div class="table-responsive">
