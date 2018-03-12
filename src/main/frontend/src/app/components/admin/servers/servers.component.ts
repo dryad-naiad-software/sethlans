@@ -22,6 +22,8 @@ import {Subject} from "rxjs/Subject";
 import {ServerInfo} from "../../../models/server_info.model";
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
+import {Observable} from "rxjs/Observable";
+import "rxjs/add/observable/timer";
 
 @Component({
   selector: 'app-servers',
@@ -36,6 +38,12 @@ export class ServersComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.populateServerList();
+    let timer = Observable.timer(5000, 2000);
+    timer.subscribe(() => this.populateServerList());
+  }
+
+  populateServerList() {
     this.http.get('/api/management/server_list')
       .subscribe((servers: ServerInfo[]) => {
         this.serverList = servers;

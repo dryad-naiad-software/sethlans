@@ -24,6 +24,7 @@ import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 import {HttpClient} from "@angular/common/http";
 import {ComputeMethod} from "../../../enums/compute.method.enum";
 import {Router} from "@angular/router";
+import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: 'app-nodes',
@@ -43,10 +44,15 @@ export class NodesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.populateNodeList();
+    let timer = Observable.timer(5000, 5000);
+    timer.subscribe(() => this.populateNodeList());
+  }
+
+  populateNodeList() {
     this.http.get('/api/management/node_list')
       .subscribe((nodes: NodeInfo[]) => {
         this.nodeList = nodes;
-        console.log(nodes)
       });
   }
 
