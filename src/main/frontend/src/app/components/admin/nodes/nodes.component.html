@@ -160,7 +160,10 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-  <div class="modal-body">
+  <div class="modal-body" *ngIf="summaryComplete == false">
+    <p>Querying {{ipAddress}}:{{port}} &nbsp;&nbsp; <span class="fa fa-circle-o-notch fa-spin"></span></p>
+  </div>
+  <div class="modal-body" *ngIf="summaryComplete == true">
     <div *ngIf="nodeToAdd == null">
       <p class="text-center">{{ipAddress}}:{{port}} is not a valid Sethlans Node</p>
     </div>
@@ -209,7 +212,7 @@
 
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-secondary mr-auto" (click)="c('Close click'); openModal(addModal)">
+    <button type="button" class="btn btn-outline-secondary mr-auto" (click)="c('Close click'); backModalAdd(addModal)">
       Back
     </button>
     <button [disabled]="nodeToAdd == null" type="button" class="btn btn-outline-dark ml-auto"

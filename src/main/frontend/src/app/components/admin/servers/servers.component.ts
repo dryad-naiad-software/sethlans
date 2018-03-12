@@ -33,6 +33,7 @@ import "rxjs/add/observable/timer";
 export class ServersComponent implements OnInit {
   dtTrigger: Subject<any> = new Subject();
   serverList: ServerInfo[] = [];
+  ackClicked: boolean = false;
 
   constructor(private http: HttpClient, private router: Router) {
   }
@@ -51,6 +52,7 @@ export class ServersComponent implements OnInit {
   }
 
   acknowledgeServer(id) {
+    this.ackClicked = true;
     this.http.get('/api/setup/server_acknowledge/' + id + "/", {responseType: 'text'}).subscribe((success: any) => {
       this.router.navigateByUrl("/admin/servers").then(() => {
         location.reload();

@@ -38,6 +38,7 @@ export class NodesComponent implements OnInit {
   port: string;
   nodeToAdd: NodeInfo;
   computeMethodEnum: any = ComputeMethod;
+  summaryComplete: boolean = false;
 
 
   constructor(private modalService: NgbModal, private http: HttpClient, private router: Router) {
@@ -63,6 +64,14 @@ export class NodesComponent implements OnInit {
     this.modalService.open(content, options);
   }
 
+  backModalAdd(content) {
+    let options: NgbModalOptions = {
+      backdrop: "static"
+    };
+    this.nodeToAdd = null;
+    this.modalService.open(content, options);
+  }
+
   resetAddNode() {
     this.ipAddress = "";
     this.port = "";
@@ -74,6 +83,7 @@ export class NodesComponent implements OnInit {
     };
     this.http.get('/api/management/node_check?ip=' + this.ipAddress + "&port=" + this.port).subscribe((node: NodeInfo) => {
       this.nodeToAdd = node;
+      this.summaryComplete = true;
     });
     this.modalService.open(content, options);
   }

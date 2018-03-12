@@ -36,8 +36,8 @@
           <span *ngIf="notifications == true" class="badge badge-notify">!</span>
         </a>
         <div ngbDropdownMenu>
-          <a *ngIf="notifications == false" href="javascript:void(0);" class="dropdown-item"><i
-            class="fa fa-fw fa-info-circle"></i>&nbsp;&nbsp;No new notifications</a>
+          <a *ngIf="notifications == false" href="javascript:void(0);" class="dropdown-item">
+            <i class="fa fa-fw fa-info-circle"></i>&nbsp;&nbsp;No new notifications</a>
           <span *ngIf="notifications == true">
             <a href="javascript:void(0);" class="dropdown-item" *ngFor="let notification of notificationList"><i
               class="fa fa-fw fa-info-circle"></i>&nbsp;&nbsp;{{notification}}</a>
