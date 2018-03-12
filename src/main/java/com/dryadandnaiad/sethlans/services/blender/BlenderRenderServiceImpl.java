@@ -119,15 +119,17 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         if (downloadRequiredFiles(renderDir, blenderRenderTask)) {
             blenderRenderTask = blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
             if (blenderRenderTask.getComputeType().equals(ComputeType.GPU)) {
+                boolean isCuda = false;
                 List<String> deviceList = Arrays.asList(deviceID.split(","));
                 List<String> deviceIDList = new ArrayList<>();
                 LOG.debug("Running render task using " + deviceID);
                 for (String device : deviceList) {
                     deviceIDList.add(StringUtils.substringAfter(device, "_"));
+                    SethlansUtils.isCuda(device);
                 }
                 String script = blenderPythonScriptService.writeRenderPythonScript(blenderRenderTask.getComputeType(),
                         blenderRenderTask.getRenderDir(), deviceIDList,
-                        getUnselectedIds(deviceList), false,
+                        getUnselectedIds(deviceList), isCuda,
                         blenderRenderTask.getRenderOutputFormat(),
                         tileSizeGPU,
                         blenderRenderTask.getTaskResolutionX(),

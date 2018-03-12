@@ -158,38 +158,71 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.write("bpy.context.scene.cycles.device = " + "\"" + computeType + "\"" + "\n");
 
             if (computeType.equals(ComputeType.GPU)) {
-                // CUDA Setting
-                scriptWriter.write("\n");
-                scriptWriter.write("bpy.context.user_preferences.addons['cycles'].preferences.compute_device_type = \"CUDA\"" + "\n");
-                scriptWriter.write("devices = bpy.context.user_preferences.addons['cycles'].preferences.get_devices()" + "\n");
-                if (selectedDeviceIds.size() == 1) {
-                    scriptWriter.write("cuda_devices = devices[0]" + "\n");
-                    scriptWriter.write("cuda_id = " + selectedDeviceIds.get(0) + "\n");
+                if (cuda) {
+                    // CUDA Setting
                     scriptWriter.write("\n");
+                    scriptWriter.write("bpy.context.user_preferences.addons['cycles'].preferences.compute_device_type = \"CUDA\"" + "\n");
+                    scriptWriter.write("devices = bpy.context.user_preferences.addons['cycles'].preferences.get_devices()" + "\n");
+                    if (selectedDeviceIds.size() == 1) {
+                        scriptWriter.write("cuda_devices = devices[0]" + "\n");
+                        scriptWriter.write("cuda_id = " + selectedDeviceIds.get(0) + "\n");
+                        scriptWriter.write("\n");
 
-                    // Sets the CUDA device defined in cuda_id to true.
-                    scriptWriter.write("for i in range(len(cuda_devices)):" + "\n");
-                    scriptWriter.write("\tcuda_devices[i].use = (i == cuda_id)" + "\n");
-                } else {
-                    scriptWriter.write("cuda_devices = devices[0]" + "\n");
-                    scriptWriter.write("\n");
+                        // Sets the CUDA device defined in cuda_id to true.
+                        scriptWriter.write("for i in range(len(cuda_devices)):" + "\n");
+                        scriptWriter.write("\tcuda_devices[i].use = (i == cuda_id)" + "\n");
+                    } else {
+                        scriptWriter.write("cuda_devices = devices[0]" + "\n");
+                        scriptWriter.write("\n");
 
-                    // Sets the CUDA device defined in cuda_id to true.
-                    for (String deviceId : selectedDeviceIds) {
-                        scriptWriter.write("cuda_devices[" + deviceId + "].use = True" + "\n");
+                        // Sets the CUDA device defined in cuda_id to true.
+                        for (String deviceId : selectedDeviceIds) {
+                            scriptWriter.write("cuda_devices[" + deviceId + "].use = True" + "\n");
+                        }
+                        if (unselectedIds.size() > 0) {
+                            for (String unselectedId : unselectedIds) {
+                                scriptWriter.write("cuda_devices[" + unselectedId + "].use = False" + "\n");
+                            }
+                        }
+
                     }
-                    if (unselectedIds.size() > 0) {
-                        for (String unselectedId : unselectedIds) {
-                            scriptWriter.write("cuda_devices[" + unselectedId + "].use = False" + "\n");
+
+                    // Disable all OpenCL for now - OpenCL will be implemented in March.
+                    scriptWriter.write("\n");
+                    scriptWriter.write("for dev in devices[1]:" + "\n");
+                    scriptWriter.write("\tdev.use = False" + "\n");
+                } else {
+                    // OpenCL
+                    scriptWriter.write("\n");
+                    scriptWriter.write("bpy.context.user_preferences.addons['cycles'].preferences.compute_device_type = \"OPENCL\"" + "\n");
+                    scriptWriter.write("devices = bpy.context.user_preferences.addons['cycles'].preferences.get_devices()" + "\n");
+
+                    if (selectedDeviceIds.size() == 1) {
+                        //OpenCL = 1
+                        scriptWriter.write("render_devices = devices[1]" + "\n");
+                        scriptWriter.write("device_id = " + selectedDeviceIds.get(0) + "\n");
+                        scriptWriter.write("\n");
+
+                        // Sets the OpenCL device defined in device_id to true.
+                        scriptWriter.write("for i in range(len(render_devices)):" + "\n");
+                        scriptWriter.write("\trender_devices[i].use = (i == device_id)" + "\n");
+                    } else {
+                        scriptWriter.write("render_devices = devices[1]" + "\n");
+                        scriptWriter.write("\n");
+
+                        // Sets the OpenCL device defined in device_id to true.
+                        for (String deviceId : selectedDeviceIds) {
+                            scriptWriter.write("render_devices[" + deviceId + "].use = True" + "\n");
+                        }
+                        if (unselectedIds.size() > 0) {
+                            for (String unselectedId : unselectedIds) {
+                                scriptWriter.write("render_devices[" + unselectedId + "].use = False" + "\n");
+                            }
                         }
                     }
 
                 }
 
-                // Disable all OpenCL for now - OpenCL will be implemented in March.
-                scriptWriter.write("\n");
-                scriptWriter.write("for dev in devices[1]:" + "\n");
-                scriptWriter.write("\tdev.use = False" + "\n");
             }
 
 
