@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
+import com.dryadandnaiad.sethlans.domains.info.ProjectInfo;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.blender.BlenderProjectService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
@@ -36,6 +37,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,6 +49,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -248,15 +252,39 @@ public class ProjectController {
 
     }
 
-    @GetMapping(value = "/api/project/nodes_ready")
+    @GetMapping(value = "/api/project_ui/nodes_ready")
     public boolean nodesReady() {
         return sethlansNodeDatabaseService.activeNodes();
     }
 
-    @GetMapping(value = "/api/project/project_list")
-    public List<BlenderProject> getProjects() {
-        // TODO unless user
-        return blenderProjectDatabaseService.listAllReverse();
+    @GetMapping(value = "/api/project_ui/project_list")
+    public List<ProjectInfo> getProjects() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            LOG.debug("Listing all projects");
+            return convertBlenderProjectToProjectInfo(blenderProjectDatabaseService.listAllReverse());
+        } else {
+            LOG.debug("Listing projects made by " + auth.getName());
+            return convertBlenderProjectToProjectInfo(blenderProjectDatabaseService.getProjectsByUser(auth.getName()));
+        }
+
+    }
+
+    private List<ProjectInfo> convertBlenderProjectToProjectInfo(List<BlenderProject> projectsToConvert) {
+        List<ProjectInfo> projectsToReturn = new ArrayList<>();
+        for (BlenderProject blenderProject : projectsToConvert) {
+            ProjectInfo projectInfo = new ProjectInfo();
+            projectInfo.setProjectType(blenderProject.getProjectType());
+            projectInfo.setProjectName(blenderProject.getProjectName());
+            projectInfo.setBlenderVersion(blenderProject.getBlenderVersion());
+            projectInfo.setRenderOn(blenderProject.getRenderOn());
+            projectInfo.setUsername(blenderProject.getSethlansUser().getUsername());
+            projectInfo.setResolutionX(blenderProject.getResolutionX());
+            projectInfo.setResolutionY(blenderProject.getResolutionY());
+            projectsToReturn.add(projectInfo);
+        }
+        return projectsToReturn;
     }
 
     @Autowired

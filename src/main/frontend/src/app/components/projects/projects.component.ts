@@ -48,7 +48,7 @@ export class ProjectsComponent implements OnInit {
   }
 
   getNodeStatus() {
-    this.http.get('/api/project/nodes_ready').subscribe((success: boolean) => {
+    this.http.get('/api/project_ui/nodes_ready').subscribe((success: boolean) => {
       if (success == true) {
         this.nodesReady = true;
       }

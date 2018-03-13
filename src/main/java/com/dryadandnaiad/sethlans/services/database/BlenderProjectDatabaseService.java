@@ -31,6 +31,8 @@ import java.util.List;
  */
 public interface BlenderProjectDatabaseService extends CRUDService<BlenderProject> {
 
+    List<BlenderProject> getProjectsByUser(String username);
+
     List<BlenderProject> listAllReverse();
 
     Boolean isProjectDBEntryInUse(String projectUUID);

@@ -89,8 +89,12 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             List<BlenderBenchmarkTask> blenderBenchmarkTaskList = blenderBenchmarkTaskDatabaseService.listAll();
             List<BlenderBenchmarkTask> pendingBenchmarks = new ArrayList<>();
             for (BlenderBenchmarkTask benchmarkTask : blenderBenchmarkTaskList) {
-                if (!benchmarkTask.isComplete()) {
+                if (!benchmarkTask.isComplete() && sethlansServerDatabaseService.getByConnectionUUID(benchmarkTask.getConnection_uuid()) != null) {
                     pendingBenchmarks.add(benchmarkTask);
+                }
+                if (!benchmarkTask.isComplete() && sethlansServerDatabaseService.getByConnectionUUID(benchmarkTask.getConnection_uuid()) == null) {
+                    LOG.debug("Removing stale benchmarks.");
+                    blenderBenchmarkTaskDatabaseService.deleteAllByConnection(benchmarkTask.getConnection_uuid());
                 }
             }
             if (pendingBenchmarks.size() > 1) {

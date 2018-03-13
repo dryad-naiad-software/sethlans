@@ -51,6 +51,19 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     }
 
     @Override
+    public List<BlenderProject> getProjectsByUser(String username) {
+        List<BlenderProject> allProjects = listAll();
+        List<BlenderProject> listToReturn = new ArrayList<>();
+        for (BlenderProject project : allProjects) {
+            if (project.getSethlansUser().getUsername().equals(username)) {
+                listToReturn.add(project);
+            }
+
+        }
+        return listToReturn;
+    }
+
+    @Override
     public List<BlenderProject> listAllReverse() {
         return new ArrayList<>(Lists.reverse(listAll()));
     }
