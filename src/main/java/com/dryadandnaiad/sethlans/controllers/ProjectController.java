@@ -26,10 +26,13 @@ import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.domains.info.ProjectInfo;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.forms.ProjectForm;
+import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderProjectService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.slf4j.Logger;
@@ -73,10 +76,16 @@ public class ProjectController {
     @Value("${sethlans.projectDir}")
     private String projectDir;
 
+    @Value("${sethlans.tempDir}")
+    private String temp;
+
+
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService;
     private BlenderProjectService blenderProjectService;
+    private WebUploadService webUploadService;
+    private BlenderParseBlendFileService blenderParseBlenderFileService;
 
     @RequestMapping(value = "/api/project/blender_binary", method = RequestMethod.GET)
     public void downloadBlenderBinary(HttpServletResponse response, @RequestParam String connection_uuid,
@@ -268,6 +277,19 @@ public class ProjectController {
 
     }
 
+    @PostMapping(value = "/api/project_form/upload_project")
+    public ProjectForm newProjectUpload(@RequestParam MultipartFile projectFile) {
+        String uploadTag = SethlansUtils.getShortUUID();
+        webUploadService.store(projectFile, uploadTag);
+        ProjectForm newProject = new ProjectForm();
+        newProject.setUploadedFile(projectFile.getOriginalFilename());
+        newProject.setFileLocation(temp + uploadTag + "-" + projectFile.getOriginalFilename());
+        newProject.setBlendFile(blenderParseBlenderFileService.parseBlendFile(newProject.getFileLocation()));
+        newProject.populateForm();
+        LOG.debug(newProject.toString());
+        return newProject;
+    }
+
     private List<ProjectInfo> convertBlenderProjectToProjectInfo(List<BlenderProject> projectsToConvert) {
         List<ProjectInfo> projectsToReturn = new ArrayList<>();
         for (BlenderProject blenderProject : projectsToConvert) {
@@ -302,5 +324,15 @@ public class ProjectController {
     @Autowired
     public void setBlenderProjectService(BlenderProjectService blenderProjectService) {
         this.blenderProjectService = blenderProjectService;
+    }
+
+    @Autowired
+    public void setWebUploadService(WebUploadService webUploadService) {
+        this.webUploadService = webUploadService;
+    }
+
+    @Autowired
+    public void setBlenderParseBlenderFileService(BlenderParseBlendFileService blenderParseBlenderFileService) {
+        this.blenderParseBlenderFileService = blenderParseBlenderFileService;
     }
 }
