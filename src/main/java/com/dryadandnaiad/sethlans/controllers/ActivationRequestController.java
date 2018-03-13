@@ -60,6 +60,7 @@ public class ActivationRequestController implements ApplicationEventPublisherAwa
             sethlansServer.setIpAddress(ipAddress);
             sethlansServer.setNetworkPort(port);
             sethlansServer.setConnection_uuid(connection_uuid);
+            sethlansServer.setNodeUpdated(false);
             sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
             LOG.debug(sethlansServer.toString());
             LOG.debug("Processed node activation request");

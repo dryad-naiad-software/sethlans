@@ -47,7 +47,7 @@ export class NodesComponent implements OnInit {
 
   ngOnInit() {
     this.populateNodeList();
-    let timer = Observable.timer(5000, 5000);
+    let timer = Observable.timer(5000, 1000);
     timer.subscribe(() => this.populateNodeList());
   }
 

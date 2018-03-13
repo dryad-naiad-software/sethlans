@@ -85,10 +85,15 @@ public class NodeStatusUpdateServiceImpl implements NodeStatusUpdateService {
         List<SethlansServer> sethlansServers = sethlansServerDatabaseService.listAll();
         if (!sethlansServers.isEmpty()) {
             for (SethlansServer sethlansServer : sethlansServers) {
-                LOG.debug("Sending node status update request to " + sethlansServer.getHostname());
-                String url = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/update/node_status_update/";
-                String param = "connection_uuid=" + sethlansServer.getConnection_uuid();
-                sethlansAPIConnectionService.sendToRemoteGET(url, param);
+                if (sethlansServer.isNodeUpdated()) {
+                    LOG.debug("Sending node status update request to " + sethlansServer.getHostname());
+                    String url = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/update/node_status_update/";
+                    String param = "connection_uuid=" + sethlansServer.getConnection_uuid();
+                    if (sethlansAPIConnectionService.sendToRemoteGET(url, param)) {
+                        sethlansServer.setNodeUpdated(false);
+                        sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
+                    }
+                }
             }
         } else {
             LOG.debug("No connections to Sethlans servers present.  No updates sent.");

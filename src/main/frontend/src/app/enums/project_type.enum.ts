@@ -17,29 +17,7 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.domains.database.server;
-
-import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-import javax.persistence.Entity;
-
-/**
- * Created Mario Estrella on 12/4/17.
- * Dryad and Naiad Software LLC
- * mestrella@dryadandnaiad.com
- * Project: sethlans
- */
-@Entity
-@Data
-@EqualsAndHashCode(callSuper = false)
-public class SethlansServer extends AbstractEntityClass {
-    private String hostname;
-    private String ipAddress;
-    private String networkPort;
-    private String connection_uuid;
-    private boolean acknowledged;
-    private boolean pendingAcknowledgementResponse;
-    private boolean nodeUpdated;
+export enum ProjectType {
+  ANIMATION = "Animation",
+  STILL_IMAGE = "Still Image"
 }

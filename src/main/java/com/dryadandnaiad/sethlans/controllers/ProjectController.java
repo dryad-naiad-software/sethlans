@@ -260,12 +260,9 @@ public class ProjectController {
     @GetMapping(value = "/api/project_ui/project_list")
     public List<ProjectInfo> getProjects() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-            LOG.debug("Listing all projects");
             return convertBlenderProjectToProjectInfo(blenderProjectDatabaseService.listAllReverse());
         } else {
-            LOG.debug("Listing projects made by " + auth.getName());
             return convertBlenderProjectToProjectInfo(blenderProjectDatabaseService.getProjectsByUser(auth.getName()));
         }
 

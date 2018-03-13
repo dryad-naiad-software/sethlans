@@ -41,7 +41,7 @@ export class ServersComponent implements OnInit {
 
   ngOnInit() {
     this.populateServerList();
-    let timer = Observable.timer(5000, 2000);
+    let timer = Observable.timer(5000, 1000);
     timer.subscribe(() => this.populateServerList());
   }
 

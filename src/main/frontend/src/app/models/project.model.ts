@@ -17,9 +17,16 @@
  *
  */
 import {ComputeMethod} from "../enums/compute.method.enum";
+import {ProjectType} from "../enums/project_type.enum";
 
 export class Project {
+  projectName: string;
+  blenderVersion: string;
+  projectType: ProjectType;
   renderOn: ComputeMethod;
+  resolutionX: number;
+  resolutionY: number;
+  username: string;
 
 
 }

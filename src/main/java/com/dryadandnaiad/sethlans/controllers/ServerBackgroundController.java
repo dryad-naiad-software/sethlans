@@ -20,7 +20,6 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
-import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
@@ -48,6 +47,7 @@ public class ServerBackgroundController {
     private NodeDiscoveryService nodeDiscoveryService;
     private static final Logger LOG = LoggerFactory.getLogger(ServerBackgroundController.class);
 
+
     @RequestMapping(value = "/api/update/node_status_update", method = RequestMethod.GET)
     public void nodeStatusToServerUpdate(@RequestParam String connection_uuid) {
         // This is a pull request.  UUID is provided and the server will update it's information from the node.
@@ -57,8 +57,7 @@ public class ServerBackgroundController {
             SethlansNode sethlansNodetoUpdate = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
             LOG.debug("Sync request received for " + sethlansNodetoUpdate.getHostname());
             SethlansNode tempNode = nodeDiscoveryService.discoverUnicastNode(sethlansNodetoUpdate.getIpAddress(), sethlansNodetoUpdate.getNetworkPort());
-            boolean checkNode = checkNodeUpdate(sethlansNodetoUpdate, tempNode);
-            if (checkNode && sethlansNodetoUpdate.isActive()) {
+            if (sethlansNodetoUpdate.isActive()) {
                 sethlansNodetoUpdate.setBenchmarkComplete(false);
                 updateNode(sethlansNodetoUpdate, tempNode);
                 try {
@@ -68,7 +67,7 @@ public class ServerBackgroundController {
                     LOG.debug(Throwables.getStackTraceAsString(e));
                 }
 
-            } else if (checkNode) {
+            } else {
                 updateNode(sethlansNodetoUpdate, tempNode);
             }
             LOG.debug(sethlansNodetoUpdate.getHostname() + " has been synced.");
@@ -85,32 +84,6 @@ public class ServerBackgroundController {
         sethlansNodetoUpdate.setSelectedGPUs(tempNode.getSelectedGPUs());
         LOG.debug("Saving changes to database.");
         sethlansNodeDatabaseService.saveOrUpdate(sethlansNodetoUpdate);
-    }
-
-    private boolean checkNodeUpdate(SethlansNode originalNode, SethlansNode nodeUpdate) {
-        if (!originalNode.getComputeType().equals(nodeUpdate.getComputeType())) {
-            LOG.debug("Compute Type Changed");
-            return true;
-        }
-        if (nodeUpdate.getComputeType().equals(ComputeType.CPU) || nodeUpdate.getComputeType().equals(ComputeType.CPU_GPU)) {
-            if (!originalNode.getSelectedCores().equals(nodeUpdate.getSelectedCores())) {
-                LOG.debug("Number of Cores Changed.  Now: " + nodeUpdate.getSelectedCores());
-                return true;
-            }
-        }
-
-        if (nodeUpdate.getComputeType().equals(ComputeType.GPU) || nodeUpdate.getComputeType().equals(ComputeType.CPU_GPU)) {
-            if (!originalNode.getSelectedDeviceID().toString().equals(nodeUpdate.getSelectedDeviceID().toString())) {
-                LOG.debug("Selected CUDA Changed. Now: " + nodeUpdate.getSelectedDeviceID());
-                return true;
-            }
-            if (!originalNode.getSelectedGPUs().toString().equals(nodeUpdate.getSelectedGPUs().toString())) {
-                LOG.debug("Selected GPUs Changed. Now: " + nodeUpdate.getSelectedGPUs().toString());
-                return true;
-            }
-        }
-
-        return false;
     }
 
     @Autowired
