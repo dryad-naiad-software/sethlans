@@ -100,20 +100,17 @@
       <li>The path to external data is <strong>relative</strong>.</li>
     </ul>
 
-    <form class="editForm" enctype="multipart/form-data">
-      <div class="form-group">
-        <input id="projectUpload" name="projectFile" type="file" class="file file-loading"
-               data-show-preview="false" data-max-file-count="1"
-               accept=".blend,.zip">
-      </div>
-    </form>
+
+    <p-fileUpload mode="basic" name="myfile[]" url="/api/project_form/upload_project/"
+                  (onUpload)="onUpload($event)"></p-fileUpload>
+
 
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-secondary mr-auto" (click)="c('Close click')">Close
     </button>
     <button type="button" class="btn btn-outline-dark ml-auto"
-            (click)="c('Close click')">Next
+            (click)="c('Close click'); upload()">Next
     </button>
   </div>
 </ng-template>

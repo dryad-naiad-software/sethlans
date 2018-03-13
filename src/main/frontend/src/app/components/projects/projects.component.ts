@@ -17,13 +17,13 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Subject} from "rxjs/Subject";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import {Project} from "../../models/project.model";
 import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
-import 'bootstrap-fileinput';
+
 
 @Component({
   selector: 'app-projects',
@@ -31,11 +31,21 @@ import 'bootstrap-fileinput';
   styleUrls: ['./projects.component.scss']
 })
 export class ProjectsComponent implements OnInit {
+  @ViewChild('fileInput') fileInput;
   placeholder: any = "assets/images/placeholder.svg";
   dtTrigger: Subject<any> = new Subject();
   nodesReady: boolean = false;
-  projects: Project[];
+  projects: Project[] = [];
   projectLoadComplete: boolean = false;
+
+  uploadedFiles: any[] = [];
+
+  onUpload(event) {
+    for (let file of event.files) {
+      this.uploadedFiles.push(file);
+    }
+    console.log(this.uploadedFiles);
+  }
 
   constructor(private http: HttpClient, private modalService: NgbModal) {
   }
@@ -72,5 +82,6 @@ export class ProjectsComponent implements OnInit {
     };
     this.modalService.open(content, options);
   }
+
 
 }

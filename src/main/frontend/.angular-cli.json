@@ -21,7 +21,9 @@
       "styles": [
         "styles.scss",
         "styles.css",
-        "../node_modules/datatables.net-dt/css/jquery.dataTables.css"
+        "../node_modules/datatables.net-dt/css/jquery.dataTables.css",
+        "../node_modules/primeng/resources/primeng.min.css",
+        "../node_modules/primeng/resources/themes/darkness/theme.css"
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.js",

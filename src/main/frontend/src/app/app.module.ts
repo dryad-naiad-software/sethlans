@@ -44,6 +44,8 @@ import {HelpComponent} from './components/help/help.component';
 import {NodeScreenComponent} from './components/home/node-screen/node-screen.component';
 import {ServerScreenComponent} from './components/home/server-screen/server-screen.component';
 import {DataTablesModule} from "angular-datatables";
+import {FileUploadModule} from 'primeng/primeng';
+
 
 @NgModule({
   declarations: [
@@ -83,6 +85,7 @@ import {DataTablesModule} from "angular-datatables";
   imports: [
     BrowserModule,
     FormsModule,
+    FileUploadModule,
     MatSliderModule,
     DataTablesModule,
     NgbModule.forRoot(),
