@@ -23,6 +23,8 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import {Project} from "../../models/project.model";
 import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
+import {RenderOutputFormat} from "../../enums/render_output_format.enum";
+import {ProjectType} from "../../enums/project_type.enum";
 
 
 @Component({
@@ -38,6 +40,8 @@ export class ProjectsComponent implements OnInit {
   projectLoadComplete: boolean = false;
   projectDetails: Project;
   availableBlenderVersions: any[];
+  formats = RenderOutputFormat;
+  projectTypes = ProjectType;
 
 
   constructor(private http: HttpClient, private modalService: NgbModal) {
@@ -80,6 +84,9 @@ export class ProjectsComponent implements OnInit {
   loadProjectDetails(content, event) {
     let response: any = JSON.parse(event.xhr.response);
     this.projectDetails = <Project>response;
+    if (this.projectDetails.selectedBlenderversion == null) {
+      this.projectDetails.selectedBlenderversion = this.availableBlenderVersions[0];
+    }
     console.log(this.projectDetails);
     let options: NgbModalOptions = {
       backdrop: "static"
