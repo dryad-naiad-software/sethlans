@@ -16,30 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-import {ComputeMethod} from "../enums/compute.method.enum";
-import {ProjectType} from "../enums/project_type.enum";
-import {BlenderEngine} from "../enums/blender_engine.enum";
-import {RenderOutputFormat} from "../enums/render_output_format.enum";
-
-export class Project {
-  projectName: string;
-  projectType: ProjectType;
-  renderOn: ComputeMethod;
-  resolutionX: number;
-  resolutionY: number;
-  username: string;
-  blenderEngine: BlenderEngine;
-  startFrame: number;
-  stepFrame: number;
-  endFrame: number;
-  samples: number;
-  resPercentage: number;
-  uploadedFile: string;
-  uuid: string;
-  selectedBlenderversion: string;
-  partsPerFrame: number;
-  fileLocation: string;
-  outputFormat: RenderOutputFormat;
-
-
+export enum BlenderEngine {
+  CYCLES = "Cycles",
+  BLENDER_RENDER = "Blender Render"
 }

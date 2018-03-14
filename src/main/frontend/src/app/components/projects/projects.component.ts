@@ -17,7 +17,7 @@
  *
  */
 
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Subject} from "rxjs/Subject";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
@@ -31,21 +31,14 @@ import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
   styleUrls: ['./projects.component.scss']
 })
 export class ProjectsComponent implements OnInit {
-  @ViewChild('fileInput') fileInput;
   placeholder: any = "assets/images/placeholder.svg";
   dtTrigger: Subject<any> = new Subject();
   nodesReady: boolean = false;
   projects: Project[] = [];
   projectLoadComplete: boolean = false;
+  projectDetails: Project;
+  availableBlenderVersions: any[];
 
-  uploadedFiles: any[] = [];
-
-  onUpload(event) {
-    for (let file of event.files) {
-      this.uploadedFiles.push(file);
-    }
-    console.log(this.uploadedFiles);
-  }
 
   constructor(private http: HttpClient, private modalService: NgbModal) {
   }
@@ -53,6 +46,7 @@ export class ProjectsComponent implements OnInit {
   ngOnInit() {
     this.getNodeStatus();
     this.getProjectList();
+    this.getAvailableBlenderVersions()
     let timer = Observable.timer(5000, 2000);
     timer.subscribe(() => {
       this.getNodeStatus();
@@ -60,16 +54,19 @@ export class ProjectsComponent implements OnInit {
     });
   }
 
+  getAvailableBlenderVersions() {
+    this.http.get('/api/info/blender_versions')
+      .subscribe(
+        (blenderVersions: any[]) => {
+          this.availableBlenderVersions = blenderVersions;
+        });
+  }
+
   getProjectList() {
     this.http.get('/api/project_ui/project_list').subscribe((projects: Project[]) => {
       this.projects = projects;
       this.projectLoadComplete = true;
     });
-
-  }
-
-  static beforeSend(event: any) {
-    event.xhr.setRequestHeader('X-XSRF-TOKEN', document.cookie.slice(document.cookie.indexOf("TOKEN=") + "TOKEN=".length));
   }
 
   getNodeStatus() {
@@ -79,6 +76,21 @@ export class ProjectsComponent implements OnInit {
       }
     });
   }
+
+  loadProjectDetails(content, event) {
+    let response: any = JSON.parse(event.xhr.response);
+    this.projectDetails = <Project>response;
+    console.log(this.projectDetails);
+    let options: NgbModalOptions = {
+      backdrop: "static"
+    };
+    this.modalService.open(content, options);
+  }
+
+  beforeSend(event: any) {
+    event.xhr.setRequestHeader('X-XSRF-TOKEN', document.cookie.slice(document.cookie.indexOf("TOKEN=") + "TOKEN=".length));
+  }
+
 
   openModal(content) {
     let options: NgbModalOptions = {

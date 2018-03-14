@@ -28,7 +28,8 @@
             <span class="fa fa-plus"></span> <span>New Project</span>
           </button>
         </h2>
-        <div *ngIf="!nodesReady" class="col-md-3 m-auto alert alert-warning"><h5 class="text-center">No active nodes
+        <div *ngIf="!nodesReady && projectLoadComplete == true" class="col-md-3 m-auto alert alert-warning"><h5
+          class="text-center">No active nodes
           present.<br> Project creation disabled.</h5></div>
       </div>
       <div class="card-body">
@@ -101,10 +102,47 @@
     </ul>
 
 
-    <p-fileUpload name="projectFile" (onBeforeSend)="beforeSend($event)" url="/api/project_form/upload_project/"
+    <p-fileUpload name="projectFile" (onBeforeSend)="beforeSend($event)"
+                  (onUpload)="c('Close click'); loadProjectDetails(projectDetailsModal, $event)"
+                  url="/api/project_form/upload_project/"
                   accept=".blend,.zip"></p-fileUpload>
 
 
   </div>
 </ng-template>
 
+<!--Project Form-->
+<ng-template #projectDetailsModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Project Details</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #projectDetailsForm="ngForm" class="editForm">
+      <div class="form-group">
+        <label for="projectName">Project Name</label>
+        <input class="form-control" type="text" name="projectName" id="projectName"
+               [(ngModel)]="projectDetails.projectName">
+      </div>
+      <div class="form-group">
+        <label for="blenderVersion">Available Blender Versions</label>
+        <select class="form-control" id="blenderVersion" [(ngModel)]="projectDetails.selectedBlenderversion">
+          <option *ngFor="let version of availableBlenderVersions">{{version}}</option>
+        </select>
+      </div>
+
+    </form>
+
+    <div>
+      Debugging:
+      <pre>{{ projectDetails | json }}</pre>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-outline-secondary mr-auto" (click)="c('Close click')">Cancel</button>
+    <button class="btn btn-outline-dark ml-auto" (click)="c('Close click')">Submit Project</button>
+
+  </div>
+</ng-template>
