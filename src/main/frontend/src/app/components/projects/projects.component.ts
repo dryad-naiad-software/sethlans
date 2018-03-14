@@ -25,6 +25,7 @@ import {Project} from "../../models/project.model";
 import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 import {RenderOutputFormat} from "../../enums/render_output_format.enum";
 import {ProjectType} from "../../enums/project_type.enum";
+import {ComputeMethod} from "../../enums/compute.method.enum";
 
 
 @Component({
@@ -42,6 +43,7 @@ export class ProjectsComponent implements OnInit {
   availableBlenderVersions: any[];
   formats = RenderOutputFormat;
   projectTypes = ProjectType;
+  computeMethods = ComputeMethod;
 
 
   constructor(private http: HttpClient, private modalService: NgbModal) {
@@ -84,6 +86,10 @@ export class ProjectsComponent implements OnInit {
   loadProjectDetails(content, event) {
     let response: any = JSON.parse(event.xhr.response);
     this.projectDetails = <Project>response;
+    if (this.projectDetails.projectType == this.projectTypes.STILL_IMAGE) {
+      this.projectDetails.endFrame = 1;
+      this.projectDetails.stepFrame = 1;
+    }
     if (this.projectDetails.selectedBlenderversion == null) {
       this.projectDetails.selectedBlenderversion = this.availableBlenderVersions[0];
     }

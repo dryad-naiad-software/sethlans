@@ -28,6 +28,7 @@
             <span class="fa fa-plus"></span> <span>New Project</span>
           </button>
         </h2>
+      </div>
         <div class="card-body">
         <h2 class="text-center mt-5 mb-5" *ngIf="projects.length == 0 && projectLoadComplete == true">No Projects
           Available</h2>
@@ -148,6 +149,26 @@
                                                  value="{{projectTypes.ANIMATION}}">Animation</label>
         </div>
       </fieldset>
+      <div class="form-group">
+        <label for="startFrame">Start Frame</label>
+        <input type="number" class="form-control" id="startFrame" name="startFrame"
+               [(ngModel)]="projectDetails.startFrame">
+        <label for="endFrame">End Frame</label>
+        <input [disabled]="projectDetails.projectType == projectTypes.STILL_IMAGE" type="number" class="form-control"
+               id="endFrame" name="endFrame" [(ngModel)]="projectDetails.endFrame">
+        <label for="stepFrame">Frame Step</label>
+        <input [disabled]="projectDetails.projectType == projectTypes.STILL_IMAGE" type="number" class="form-control"
+               id="stepFrame" name="stepFrame" [(ngModel)]="projectDetails.stepFrame">
+      </div>
+      <div class="form-group">
+        <label for="renderOn">Render On</label>
+        <select class="form-control" id="renderOn" name="renderOn" [(ngModel)]="projectDetails.renderOn">
+          <option *ngFor="let computeMethod of computeMethods | keys"><span
+            *ngIf="computeMethod.value != computeMethods.CPU_GPU">{{computeMethod.value}}</span>
+
+          </option>
+        </select>
+      </div>
 
 
     </form>
