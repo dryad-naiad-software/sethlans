@@ -278,7 +278,7 @@ public class ProjectController {
     }
 
     @PostMapping(value = "/api/project_form/upload_project")
-    public ProjectForm newProjectUpload(@RequestParam MultipartFile projectFile) {
+    public ProjectForm newProjectUpload(@RequestParam("projectFile") MultipartFile projectFile) {
         LOG.debug("Upload Attempted");
         String uploadTag = SethlansUtils.getShortUUID();
         webUploadService.store(projectFile, uploadTag);

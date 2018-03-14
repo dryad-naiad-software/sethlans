@@ -101,17 +101,10 @@
     </ul>
 
 
-    <p-fileUpload mode="basic" name="myfile[]" url="/api/project_form/upload_project/"
-                  (onUpload)="onUpload($event)"></p-fileUpload>
+    <p-fileUpload name="projectFile" (onBeforeSend)="beforeSend($event)" url="/api/project_form/upload_project/"
+                  accept=".blend,.zip"></p-fileUpload>
 
 
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline-secondary mr-auto" (click)="c('Close click')">Close
-    </button>
-    <button type="button" class="btn btn-outline-dark ml-auto"
-            (click)="c('Close click'); upload()">Next
-    </button>
   </div>
 </ng-template>
 

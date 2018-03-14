@@ -68,6 +68,10 @@ export class ProjectsComponent implements OnInit {
 
   }
 
+  static beforeSend(event: any) {
+    event.xhr.setRequestHeader('X-XSRF-TOKEN', document.cookie.slice(document.cookie.indexOf("TOKEN=") + "TOKEN=".length));
+  }
+
   getNodeStatus() {
     this.http.get('/api/project_ui/nodes_ready').subscribe((success: boolean) => {
       if (success == true) {
