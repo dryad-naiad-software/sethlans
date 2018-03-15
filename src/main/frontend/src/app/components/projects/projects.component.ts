@@ -48,7 +48,6 @@ export class ProjectsComponent implements OnInit {
   engines = BlenderEngine;
   useParts: boolean = true;
 
-
   constructor(private http: HttpClient, private modalService: NgbModal) {
   }
 

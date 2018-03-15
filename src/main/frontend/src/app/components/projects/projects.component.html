@@ -29,7 +29,7 @@
           </button>
         </h2>
       </div>
-        <div class="card-body">
+      <div class="card-body">
         <h2 class="text-center mt-5 mb-5" *ngIf="projects.length == 0 && projectLoadComplete == true">No Projects
           Available</h2>
         <div class="table-responsive" *ngIf="projects.length > 0">
@@ -100,7 +100,7 @@
 
 
     <p-fileUpload name="projectFile" (onBeforeSend)="beforeSend($event)"
-                  (onUpload)="c('Close click'); loadProjectDetails(projectDetailsModal, $event)"
+                  (onUpload)="c('Close click'); loadProjectDetails(projectDetailsPart1Modal, $event)"
                   url="/api/project_form/upload_project/"
                   accept=".blend,.zip"></p-fileUpload>
 
@@ -108,16 +108,16 @@
   </div>
 </ng-template>
 
-<!--Project Form-->
-<ng-template #projectDetailsModal let-c="close" let-d="dismiss">
+<!--Project Details Form Part 1-->
+<ng-template #projectDetailsPart1Modal let-c="close" let-d="dismiss">
   <div class="modal-header">
-    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Project Details</h4>
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">New Project Details</h4>
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
-    <form #projectDetailsForm="ngForm" class="editForm">
+    <form #projectDetailsForm1="ngForm" class="editForm">
       <div class="form-group">
         <label for="projectName">Project Name</label>
         <input class="form-control"
@@ -127,7 +127,7 @@
                #projectName="ngModel"
                [ngClass]="{'is-invalid':projectName.errors && projectName.touched}"
                [(ngModel)]="projectDetails.projectName"
-               required pattern="^{4,}$">
+               required pattern=".{4,}">
         <div class="invalid-feedback" [hidden]="projectName.valid">
           <ul>
             <li>Project Name is required.</li>
@@ -148,6 +148,28 @@
           <option *ngFor="let format of formats | keys">{{format.value}}</option>
         </select>
       </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-outline-secondary mr-auto" (click)="c('Close click')">Cancel</button>
+    <button [disabled]="!projectDetailsForm1.valid" class="btn btn-outline-dark ml-auto"
+            (click)="c('Close click'); openModal(projectDetailsPart2Modal)">
+      Project Settings
+    </button>
+
+  </div>
+</ng-template>
+
+<!--Project Form Part 2-->
+<ng-template #projectDetailsPart2Modal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">New Project Detailss</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #projectDetailsForm2="ngForm" class="editForm">
       <fieldset class="form-group">
         <label>Project Type</label>
         <div class="form-check">
@@ -172,6 +194,29 @@
         <input [disabled]="projectDetails.projectType == projectTypes.STILL_IMAGE" type="number" class="form-control"
                id="stepFrame" name="stepFrame" [(ngModel)]="projectDetails.stepFrame">
       </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-outline-secondary mr-auto" (click)="c('Close click')">Cancel</button>
+    <button [disabled]="!projectDetailsForm2.valid" class="btn btn-outline-dark ml-auto"
+            (click)="c('Close click'); openModal(projectDetailsPart3Modal)">
+      Render Settings
+    </button>
+
+  </div>
+
+</ng-template>
+
+<!--Project Form Part 3-->
+<ng-template #projectDetailsPart3Modal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">New Project Details</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #projectDetailsForm3="ngForm" class="editForm">
       <div class="form-group">
         <label for="renderOn">Render On</label>
         <select class="form-control" id="renderOn" name="renderOn" [(ngModel)]="projectDetails.renderOn">
@@ -247,11 +292,36 @@
   </div>
   <div class="modal-footer">
     <button class="btn btn-outline-secondary mr-auto" (click)="c('Close click')">Cancel</button>
-    <button [disabled]="!projectDetailsForm.valid" class="btn btn-outline-dark ml-auto" (click)="c('Close click')">
+    <button [disabled]="!projectDetailsForm3.valid" class="btn btn-outline-dark ml-auto"
+            (click)="c('Close click'); openModal(projectCreationSummaryModal)">
       Project Summary
     </button>
 
   </div>
+
+</ng-template>
+
+<!--Project Form Part 3-->
+<ng-template #projectCreationSummaryModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">New Project Summary</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <table>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-outline-secondary mr-auto" (click)="c('Close click')">Cancel</button>
+    <button class="btn btn-outline-dark ml-auto"
+            (click)="c('Close click')">
+      Project Summary
+    </button>
+
+  </div>
+
 </ng-template>
 <div>
   Debugging:
