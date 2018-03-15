@@ -46,10 +46,12 @@ export class ProjectsComponent implements OnInit {
   projectTypes = ProjectType;
   computeMethods = ComputeMethod;
   engines = BlenderEngine;
+  useParts: boolean = true;
 
 
   constructor(private http: HttpClient, private modalService: NgbModal) {
   }
+
 
   ngOnInit() {
     this.getNodeStatus();
@@ -69,6 +71,7 @@ export class ProjectsComponent implements OnInit {
           this.availableBlenderVersions = blenderVersions;
         });
   }
+
 
   getProjectList() {
     this.http.get('/api/project_ui/project_list').subscribe((projects: Project[]) => {

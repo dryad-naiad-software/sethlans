@@ -120,11 +120,23 @@
     <form #projectDetailsForm="ngForm" class="editForm">
       <div class="form-group">
         <label for="projectName">Project Name</label>
-        <input class="form-control" type="text" name="projectName" id="projectName"
-               [(ngModel)]="projectDetails.projectName">
+        <input class="form-control"
+               type="text"
+               name="projectName"
+               id="projectName"
+               #projectName="ngModel"
+               [ngClass]="{'is-invalid':projectName.errors && projectName.touched}"
+               [(ngModel)]="projectDetails.projectName"
+               required pattern="^{4,}$">
+        <div class="invalid-feedback" [hidden]="projectName.valid">
+          <ul>
+            <li>Project Name is required.</li>
+            <li>Minimum of 4 characters, alpha-numeric characters only.</li>
+          </ul>
+        </div>
       </div>
       <div class="form-group">
-        <label for="selectedBlenderVersion">Available Blender Versions</label>
+        <label for="selectedBlenderVersion">Blender Version for Rendering</label>
         <select class="form-control" id="selectedBlenderVersion" name="selectedBlenderVersion"
                 [(ngModel)]="projectDetails.selectedBlenderversion">
           <option *ngFor="let version of availableBlenderVersions">{{version}}</option>
@@ -152,7 +164,7 @@
       <div class="form-group">
         <label for="startFrame">Start Frame</label>
         <input type="number" class="form-control" id="startFrame" name="startFrame"
-               [(ngModel)]="projectDetails.startFrame">
+               [(ngModel)]="projectDetails.startFrame" pattern="^[1-9][0-9]*$">
         <label for="endFrame">End Frame</label>
         <input [disabled]="projectDetails.projectType == projectTypes.STILL_IMAGE" type="number" class="form-control"
                id="endFrame" name="endFrame" [(ngModel)]="projectDetails.endFrame">
@@ -174,8 +186,19 @@
       </div>
       <div class="form-group">
         <label for="samples">Samples</label>
-        <input [disabled]="projectDetails.blenderEngine.toString().valueOf() == 'BLENDER_RENDER'" type="number"
-               id="samples" class="form-control" name="samples" [(ngModel)]="projectDetails.samples">
+        <input [disabled]="projectDetails.blenderEngine.toString().valueOf() == 'BLENDER_RENDER'"
+               type="number"
+               id="samples"
+               class="form-control"
+               #samples="ngModel"
+               name="samples"
+               [ngClass]="{'is-invalid':samples.errors && samples.touched}"
+               [(ngModel)]="projectDetails.samples" pattern="^[1-9][0-9]*$">
+        <div class="invalid-feedback" [hidden]="samples.valid">
+          <ul>
+            <li>Value of Samples must be greater than 0.</li>
+          </ul>
+        </div>
       </div>
       <div class="form-group">
         <label>Render Resolution
@@ -201,18 +224,36 @@
             [(ngModel)]="projectDetails.resPercentage"></mat-slider>
         </div>
       </div>
+      <div class="form-group">
+        <input type="checkbox" id="useParts" name="useParts" [(ngModel)]="useParts" onchange="setParts()">
+        <label for="useParts">Split frame into parts for rendering</label>
+      </div>
 
-
+      <div class="form-group">
+        <label for="partsPerFrame">Number of Rendering Parts Per Frame:</label> <span *ngIf="useParts">{{projectDetails.partsPerFrame}}</span>
+        <span *ngIf="!useParts" class="text-danger">Disabled</span>
+        <div class="form-inline">
+          <mat-slider [disabled]="!useParts"
+                      id="partsPerFrame"
+                      name="partsPerFrame"
+                      min="2"
+                      step="2"
+                      thumb-label="true"
+                      max="24"
+                      [(ngModel)]="projectDetails.partsPerFrame"></mat-slider>
+        </div>
+      </div>
     </form>
-
-    <div>
-      Debugging:
-      <pre>{{ projectDetails | json }}</pre>
-    </div>
   </div>
   <div class="modal-footer">
     <button class="btn btn-outline-secondary mr-auto" (click)="c('Close click')">Cancel</button>
-    <button class="btn btn-outline-dark ml-auto" (click)="c('Close click')">Submit Project</button>
+    <button [disabled]="!projectDetailsForm.valid" class="btn btn-outline-dark ml-auto" (click)="c('Close click')">
+      Project Summary
+    </button>
 
   </div>
 </ng-template>
+<div>
+  Debugging:
+  <pre>{{ projectDetails | json }}</pre>
+</div>
