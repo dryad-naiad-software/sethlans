@@ -17,6 +17,6 @@
  *
  */
 export enum BlenderEngine {
-  CYCLES = "Cycles",
-  BLENDER_RENDER = "Blender Render"
+  CYCLES,
+  BLENDER_RENDER
 }

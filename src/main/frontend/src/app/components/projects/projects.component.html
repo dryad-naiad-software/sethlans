@@ -163,11 +163,43 @@
       <div class="form-group">
         <label for="renderOn">Render On</label>
         <select class="form-control" id="renderOn" name="renderOn" [(ngModel)]="projectDetails.renderOn">
-          <option *ngFor="let computeMethod of computeMethods | keys"><span
-            *ngIf="computeMethod.value != computeMethods.CPU_GPU">{{computeMethod.value}}</span>
-
-          </option>
+          <option *ngFor="let computeMethod of computeMethods | keys">{{computeMethod.value}}</option>
         </select>
+      </div>
+      <div class="form-group">
+        <label for="blenderEngine">Rendering Engine</label>
+        <select class="form-control" id="blenderEngine" name="blenderEngine" [(ngModel)]="projectDetails.blenderEngine">
+          <option *ngFor="let engine of engines | keys">{{engine.value}}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="samples">Samples</label>
+        <input [disabled]="projectDetails.blenderEngine.toString().valueOf() == 'BLENDER_RENDER'" type="number"
+               id="samples" class="form-control" name="samples" [(ngModel)]="projectDetails.samples">
+      </div>
+      <div class="form-group">
+        <label>Render Resolution
+          <div class="form-inline">
+            <input type="number" class="form-control form-inline" id="resolutionX" name="resolutionX"
+                   [(ngModel)]="projectDetails.resolutionX">
+            &times;
+            <input type="number" class="form-control form-inline" id="resolutionY" name="resolutionY"
+                   [(ngModel)]="projectDetails.resolutionY">
+          </div>
+        </label>
+      </div>
+      <div class="form-group">
+        <label for="resPercentage">Render Image Scaling Percentage:</label> <strong>{{projectDetails.resPercentage}}&#37;</strong>
+        <div class="form-inline">
+          <mat-slider
+            id="resPercentage"
+            name="resPercentage"
+            min="1"
+            step="1"
+            thumb-label="true"
+            max="100"
+            [(ngModel)]="projectDetails.resPercentage"></mat-slider>
+        </div>
       </div>
 
 

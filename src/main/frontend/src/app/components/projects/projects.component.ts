@@ -26,6 +26,7 @@ import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 import {RenderOutputFormat} from "../../enums/render_output_format.enum";
 import {ProjectType} from "../../enums/project_type.enum";
 import {ComputeMethod} from "../../enums/compute.method.enum";
+import {BlenderEngine} from "../../enums/blender_engine.enum";
 
 
 @Component({
@@ -44,6 +45,7 @@ export class ProjectsComponent implements OnInit {
   formats = RenderOutputFormat;
   projectTypes = ProjectType;
   computeMethods = ComputeMethod;
+  engines = BlenderEngine;
 
 
   constructor(private http: HttpClient, private modalService: NgbModal) {
