@@ -64,28 +64,30 @@
               <td>{{node.ipAddress}}</td>
               <td>{{node.networkPort}}</td>
               <td>{{node.sethlansNodeOS}}</td>
-              <td *ngIf="node.computeType == computeMethodEnum.CPU_GPU">CPU & GPU</td>
-              <td *ngIf="node.computeType != computeMethodEnum.CPU_GPU">{{node.computeType}}</td>
-              <td *ngIf="node.computeType != computeMethodEnum.GPU">{{node.cpuinfo.name}}</td>
-              <td *ngIf="node.computeType == computeMethodEnum.GPU">N/A</td>
-              <td *ngIf="node.computeType != computeMethodEnum.GPU">{{node.selectedCores}}</td>
-              <td *ngIf="node.computeType == computeMethodEnum.GPU">N/A</td>
-              <td *ngIf="node.computeType != computeMethodEnum.CPU">
+              <td *ngIf="node.computeType.toString().valueOf() == 'CPU_GPU'.valueOf()">CPU & GPU</td>
+              <td *ngIf="node.computeType.toString().valueOf() != 'CPU_GPU'.valueOf()">{{node.computeType}}</td>
+              <td *ngIf="node.computeType.toString().valueOf() != 'GPU'.valueOf()">{{node.cpuinfo.name}}</td>
+              <td *ngIf="node.computeType.toString().valueOf() == 'GPU'.valueOf()">N/A</td>
+              <td *ngIf="node.computeType.toString().valueOf() != 'GPU'.valueOf()">{{node.selectedCores}}</td>
+              <td *ngIf="node.computeType.toString().valueOf() == 'GPU'.valueOf()">N/A</td>
+              <td *ngIf="node.computeType.toString().valueOf() != 'CPU'.valueOf()">
                 <ul class="list-unstyled">
                   <li *ngFor="let gpu of node.selectedGPUs"> {{gpu.model}}</li>
                 </ul>
               </td>
-              <td *ngIf="node.computeType == computeMethodEnum.CPU">N/A</td>
+              <td *ngIf="node.computeType.toString().valueOf() == 'CPU'.valueOf()">N/A</td>
               <td *ngIf="node.benchmarkComplete == false">N/A</td>
-              <td *ngIf="node.benchmarkComplete == true && node.computeType == computeMethodEnum.CPU">CPU:
+              <td *ngIf="node.benchmarkComplete == true && node.computeType.toString().valueOf() == 'CPU'.valueOf()">
+                CPU:
                 {{node.cpuRating}}
               </td>
-              <td *ngIf="node.benchmarkComplete == true && node.computeType == computeMethodEnum.GPU">
+              <td *ngIf="node.benchmarkComplete == true && node.computeType.toString().valueOf() == 'GPU'.valueOf()">
                 <ul class="list-unstyled">
                   <li *ngFor="let gpu of node.selectedGPUs">{{gpu.deviceID}}: {{gpu.rating}}</li>
                 </ul>
               </td>
-              <td *ngIf="node.benchmarkComplete == true && node.computeType == computeMethodEnum.CPU_GPU">
+              <td
+                *ngIf="node.benchmarkComplete == true && node.computeType.toString().valueOf() == 'CPU_GPU'.valueOf()">
                 <ul class="list-unstyled">
                   <li>CPU: {{node.cpuRating}}</li>
                   <li *ngFor="let gpu of node.selectedGPUs">{{gpu.deviceID}}: {{gpu.rating}}</li>

@@ -138,7 +138,7 @@ public class GPU {
         clGetPlatformIDs(platforms.length, platforms, null);
 
         // Collect all devices of all platforms
-        List<cl_device_id> openCLdevices = new ArrayList<cl_device_id>();
+        List<cl_device_id> openCLdevices = new ArrayList<>();
         for (cl_platform_id platform : platforms) {
 
             String platformName = JOCLSupport.getString(platform, CL_PLATFORM_NAME);
@@ -163,7 +163,7 @@ public class GPU {
             float openCLVersion = Float.parseFloat(openCLVersionString.substring(openCLVersionString.toLowerCase().lastIndexOf("c") + 1));
             deviceID = "OPENCL_" + i;
             model = deviceVendor + " " + openCLDeviceId;
-
+            // TODO add intel to the exclusion
 
             if (!deviceVendor.toLowerCase().contains("nvidia") && openCLVersion > 1.2) {
                 LOG.debug("One OpenCL device found, adding to list");
