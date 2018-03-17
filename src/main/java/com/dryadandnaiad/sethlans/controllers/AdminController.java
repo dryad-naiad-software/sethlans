@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
+import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.domains.info.SethlansSettingsInfo;
 import com.dryadandnaiad.sethlans.domains.info.UserInfo;
@@ -166,7 +167,11 @@ public class AdminController {
 
     @GetMapping(value = {"/current_cores"})
     public Integer getCurrentCores() {
-        return Integer.parseInt(this.selectedCores);
+        if (this.selectedCores == null || this.selectedCores.isEmpty()) {
+            return new CPU().getCores();
+        } else {
+            return Integer.parseInt(this.selectedCores);
+        }
     }
 
     @GetMapping(value = {"/current_tilesize_cpu"})
