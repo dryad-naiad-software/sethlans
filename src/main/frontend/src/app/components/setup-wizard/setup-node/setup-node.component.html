@@ -1,22 +1,3 @@
-<!--
-  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
-  ~
-  ~ This program is free software; you can redistribute it and/or
-  ~ modify it under the terms of the GNU General Public License
-  ~ as published by the Free Software Foundation; either version 2
-  ~ of the License, or (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program; if not, write to the Free Software
-  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-  ~
-  -->
-
 <form #nodeForm="ngForm" class="editForm">
   <div class="form-group" ngbTooltip="Render with either a CPU/GPU or ability to use either one." placement="left">
     <label for="computeMethod">Compute Method Selection</label>
@@ -30,13 +11,12 @@
     </select>
 
   </div>
-  <div *ngIf="node.computeMethod.toString().valueOf() != 'GPU'">
+  <div *ngIf="node.computeMethod !== computeMethodEnum.GPU">
     <hr/>
     <h6>CPU Settings:</h6>
-    <div class="form-group" *ngIf="node.computeMethod.toString().valueOf() != 'GPU'"
+    <div class="form-group" *ngIf="node.computeMethod !== computeMethodEnum.GPU"
          ngbTooltip="Number of CPU cores to be used for rendering." placement="left">
-      <label for="cores">Rendering Cores:</label> {{node.cores}}
-      <div class="form-inline">
+      <label for="cores">Rendering Cores:</label>
       <mat-slider
         id="cores"
         min="1"
@@ -46,9 +26,8 @@
         #cores="ngModel"
         name="cores"
         [(ngModel)]="node.cores"></mat-slider>
-      </div>
     </div>
-    <div class="form-group" *ngIf="node.computeMethod.toString().valueOf() != 'GPU'"
+    <div class="form-group" *ngIf="node.computeMethod !== computeMethodEnum.GPU"
          ngbTooltip="Tile size used for CPU rendering." placement="left">
       <label for="tileSizeCPU">CPU Render Tile Size:</label>
       <input type="number"
@@ -63,7 +42,7 @@
     <hr/>
     <h6>GPU Settings:</h6>
     <br/>
-    <div class="form-group" *ngIf="node.computeMethod.toString().valueOf() != 'CPU'"
+    <div class="form-group" *ngIf="node.computeMethod !== computeMethodEnum.CPU"
          ngbTooltip="GPU devices to be used for rendering." placement="left">
       <label>GPU Devices:</label>
       <div *ngFor="let gpu of availableGPUs">
@@ -77,7 +56,7 @@
         <label class="form-check-label form-control-sm">{{gpu.model}}</label>
       </div>
     </div>
-    <div class="form-group" *ngIf="node.computeMethod.toString().valueOf() != 'CPU'"
+    <div class="form-group" *ngIf="node.computeMethod !== computeMethodEnum.CPU"
          ngbTooltip="Tile size used for CPU rendering." placement="left">
       <label for="tileSizeGPU">GPU Render Tile Size:</label>
       <input type="number"
@@ -92,8 +71,5 @@
 <nav *ngIf="setupFormData.mode === mode.NODE">
   <button class="btn btn-outline-secondary" (click)="previousStep()">Previous
   </button>
-  <button
-    [disabled]="node.gpuEmpty || node.computeMethod.toString() == 'CPU' && node.cores == 0 || node.computeMethod.toString() == 'CPU_GPU' && node.cores == 0"
-    class="btn btn-outline-primary float-right" (click)="save()">Next
-  </button>
+  <button [disabled]="node.gpuEmpty" class="btn btn-outline-primary float-right" (click)="save()">Next</button>
 </nav>

@@ -2,9 +2,9 @@ import {Component, Input, OnInit} from '@angular/core';
 import {Node} from "../../../models/node.model";
 import {SetupFormDataService} from "../../../services/setupformdata.service";
 import {HttpClient} from "@angular/common/http";
-import {ComputeMethod} from "../../../enums/compute.method.enum";
 import {GPU} from "../../../models/gpu.model";
 import {Mode} from "../../../enums/mode.enum";
+import {SetupComputeMethod} from "../../../enums/setup_compute.method.enum";
 
 
 @Component({
@@ -16,8 +16,8 @@ export class SetupNodeComponent implements OnInit {
   @Input() setupFormData;
   node: Node = new Node();
   mode: any = Mode;
-  computeMethodEnum: any = ComputeMethod;
-  availableComputeMethods: ComputeMethod[] = [];
+  computeMethodEnum: any = SetupComputeMethod;
+  availableComputeMethods: SetupComputeMethod[] = [];
   totalCores: number;
   availableGPUs: GPU[] = [];
 
@@ -32,7 +32,7 @@ export class SetupNodeComponent implements OnInit {
         (computeMethods: any[]) => {
           this.availableComputeMethods = computeMethods;
           console.log(this.availableComputeMethods);
-          this.node.setComputeMethod(ComputeMethod.CPU);
+          this.node.setComputeMethod(this.computeMethodEnum.CPU);
         }, (error) => console.log(error));
     this.http.get('/api/info/total_cores', {responseType: 'text'})
       .subscribe((cores: any) => {
@@ -40,7 +40,7 @@ export class SetupNodeComponent implements OnInit {
         this.node.setCores(cores);
         console.log(this.totalCores);
       }, (error) => console.log(error));
-    if (this.availableComputeMethods.indexOf(ComputeMethod.GPU)) {
+    if (this.availableComputeMethods.indexOf(this.computeMethodEnum.CPU)) {
       this.node.setSelectedGPUs([]);
       this.http.get('/api/info/available_gpus')
         .subscribe((gpus: any[]) => {
@@ -72,7 +72,7 @@ export class SetupNodeComponent implements OnInit {
   }
 
   methodSelection() {
-    if (this.node.getComputeMethod() !== ComputeMethod.CPU) {
+    if (this.node.getComputeMethod() !== this.computeMethodEnum.CPU) {
       if (this.node.getSelectedGPUs().length == 0) {
         this.node.setGpuEmpty(true);
         console.log(this.node.isGpuEmpty());
@@ -81,21 +81,21 @@ export class SetupNodeComponent implements OnInit {
         console.log(this.node.isGpuEmpty());
       }
     }
-    if (this.node.getComputeMethod() === ComputeMethod.CPU) {
+    if (this.node.getComputeMethod() === this.computeMethodEnum.CPU) {
       // gpuEmpty is used to control the toggling of the Save button. False means that the node settings can be saved.
       // CPU mode this is always set to false.
       this.node.setGpuEmpty(false);
     }
-    if (this.node.getComputeMethod() === ComputeMethod.GPU) {
+    if (this.node.getComputeMethod() === this.computeMethodEnum.GPU) {
       this.node.setCores(null);
     }
   }
 
   save() {
-    if (this.node.getComputeMethod() === ComputeMethod.CPU) {
+    if (this.node.getComputeMethod() === this.computeMethodEnum.CPU) {
       this.node.setSelectedGPUs(null);
     }
-    else if (this.node.getComputeMethod() === ComputeMethod.GPU) {
+    else if (this.node.getComputeMethod() === this.computeMethodEnum.GPU) {
       this.node.setCores(null);
     }
     this.setupFormData.setNode(this.node);
