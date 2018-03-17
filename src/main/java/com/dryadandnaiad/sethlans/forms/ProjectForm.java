@@ -49,8 +49,8 @@ public class ProjectForm {
     private String fileLocation;
     private String selectedBlenderversion;
     private ComputeType renderOn;
-    private BlendFile blendFile;
     private RenderOutputFormat outputFormat;
+    private String username;
     private String uuid;
     private int partsPerFrame;
 
@@ -65,7 +65,7 @@ public class ProjectForm {
         this.partsPerFrame = 4;
     }
 
-    public void populateForm() {
+    public void populateForm(BlendFile blendFile) {
         this.samples = blendFile.getCyclesSamples();
         this.startFrame = blendFile.getFrameStart();
         this.endFrame = blendFile.getFrameEnd();

@@ -47,13 +47,12 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-
-              <td>Test</td>
-              <td>2.79</td>
-              <td>Still Image</td>
-              <td>CPU & GPU</td>
-              <td>1920 x 1080</td>
+            <tr *ngFor="let project of projects">
+              <td>{{project.projectName}}</td>
+              <td>{{project.selectedBlenderversion}}</td>
+              <td>{{project.projectType}}</td>
+              <td>{{project.renderOn}}</td>
+              <td>{{project.resolutionX}} x {{project.resolutionY}}</td>
               <td>Not Started</td>
               <td><img [src]="placeholder"
                        height="60"
@@ -197,7 +196,9 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-outline-secondary mr-auto" (click)="c('Close click')">Cancel</button>
+    <button class="btn btn-outline-secondary mr-auto" (click)="c('Close click'); openModal(projectDetailsPart1Modal)">
+      Back
+    </button>
     <button [disabled]="!projectDetailsForm2.valid" class="btn btn-outline-dark ml-auto"
             (click)="c('Close click'); openModal(projectDetailsPart3Modal)">
       Render Settings
@@ -291,7 +292,9 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-outline-secondary mr-auto" (click)="c('Close click')">Cancel</button>
+    <button class="btn btn-outline-secondary mr-auto" (click)="c('Close click'); openModal(projectDetailsPart2Modal)">
+      Back
+    </button>
     <button [disabled]="!projectDetailsForm3.valid" class="btn btn-outline-dark ml-auto"
             (click)="c('Close click'); openModal(projectCreationSummaryModal)">
       Project Summary
@@ -324,30 +327,60 @@
         <td>Output Format</td>
         <td>{{projectDetails.outputFormat}}</td>
       </tr>
-      <tr>
+      <tr *ngIf="projectDetails.projectType.toString().valueOf() == 'STILL_IMAGE'.valueOf()">
         <td>Project Type</td>
-        <td>{{projectDetails.projectType}}</td>
+        <td>Still Image</td>
+      </tr>
+      <tr *ngIf="projectDetails.projectType.toString().valueOf() == 'ANIMATION'.valueOf()">
+        <td>Project Type</td>
+        <td>Animation</td>
       </tr>
       <tr>
         <td>Start Frame</td>
         <td>{{projectDetails.startFrame}}</td>
       </tr>
-      <tr>
+      <tr *ngIf="projectDetails.projectType.toString().valueOf() == 'ANIMATION'.valueOf()">
         <td>End Frame</td>
         <td>{{projectDetails.endFrame}}</td>
       </tr>
-      <tr>
+      <tr *ngIf="projectDetails.projectType.toString().valueOf() == 'ANIMATION'.valueOf()">
         <td>Frame Step</td>
         <td>{{projectDetails.stepFrame}}</td>
+      </tr>
+      <tr>
+        <td>Render On</td>
+        <td>{{projectDetails.renderOn}}</td>
+      </tr>
+      <tr>
+        <td>Rendering Engine</td>
+        <td>{{projectDetails.blenderEngine}}</td>
+      </tr>
+      <tr>
+        <td>Samples</td>
+        <td>{{projectDetails.samples}}</td>
+      </tr>
+      <tr>
+        <td>Render Resolution</td>
+        <td>{{projectDetails.resolutionX}} &times; {{projectDetails.resolutionY}}</td>
+      </tr>
+      <tr>
+        <td>Image Scaling Percentage</td>
+        <td>{{projectDetails.resPercentage}}&#37;</td>
+      </tr>
+      <tr>
+        <td>Parts Per Frame</td>
+        <td>{{projectDetails.partsPerFrame}}</td>
       </tr>
       </tbody>
     </table>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-outline-secondary mr-auto" (click)="c('Close click')">Cancel</button>
+    <button class="btn btn-outline-secondary mr-auto" (click)="c('Close click'); openModal(projectDetailsPart3Modal)">
+      Back
+    </button>
     <button class="btn btn-outline-dark ml-auto"
-            (click)="c('Close click')">
-      Project Summary
+            (click)="c('Close click'); submitProject()">
+      Submit Project
     </button>
 
   </div>

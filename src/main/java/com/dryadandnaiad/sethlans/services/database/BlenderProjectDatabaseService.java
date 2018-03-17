@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.forms.ProjectForm;
 
 import java.util.List;
 
@@ -45,7 +46,7 @@ public interface BlenderProjectDatabaseService extends CRUDService<BlenderProjec
 
     BlenderProject getByProjectUUID(String projectUUID);
 
-//    BlenderProject saveOrUpdateProjectForm(ProjectForm projectForm);
+    BlenderProject saveOrUpdateProjectForm(ProjectForm projectForm);
 
     void delete(BlenderProject blenderProject);
 }

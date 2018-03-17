@@ -285,10 +285,21 @@ public class ProjectController {
         ProjectForm newProject = new ProjectForm();
         newProject.setUploadedFile(projectFile.getOriginalFilename());
         newProject.setFileLocation(temp + uploadTag + "-" + projectFile.getOriginalFilename());
-        newProject.setBlendFile(blenderParseBlenderFileService.parseBlendFile(newProject.getFileLocation()));
-        newProject.populateForm();
+        newProject.populateForm(blenderParseBlenderFileService.parseBlendFile(newProject.getFileLocation()));
         LOG.debug(newProject.toString());
         return newProject;
+    }
+
+    @PostMapping(value = "/api/project_form/submit_project")
+    public boolean submitProject(@RequestBody ProjectForm projectForm) {
+        if (projectForm != null) {
+            LOG.debug("Project Submitted" + projectForm);
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            projectForm.setUsername(auth.getName());
+            blenderProjectDatabaseService.saveOrUpdateProjectForm(projectForm);
+            return true;
+        }
+        return false;
     }
 
     private List<ProjectInfo> convertBlenderProjectToProjectInfo(List<BlenderProject> projectsToConvert) {

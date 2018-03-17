@@ -19,7 +19,7 @@
 
 import {Component, OnInit} from '@angular/core';
 import {Subject} from "rxjs/Subject";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import {Project} from "../../models/project.model";
 import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
@@ -85,6 +85,19 @@ export class ProjectsComponent implements OnInit {
         this.nodesReady = true;
       }
     });
+  }
+
+  submitProject() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    if (this.useParts == false) {
+      this.projectDetails.partsPerFrame = 1;
+    }
+    this.http.post('/api/project_form/submit_project', JSON.stringify(this.projectDetails), httpOptions).subscribe()
+
   }
 
   loadProjectDetails(content, event) {
