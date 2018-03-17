@@ -75,6 +75,7 @@ export class ProjectsComponent implements OnInit {
   getProjectList() {
     this.http.get('/api/project_ui/project_list').subscribe((projects: Project[]) => {
       this.projects = projects;
+      console.log(projects);
       this.projectLoadComplete = true;
     });
   }
