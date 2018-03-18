@@ -54,9 +54,8 @@ export class ProjectsComponent implements OnInit {
 
   ngOnInit() {
     this.getNodeStatus();
-    this.getProjectList();
-    this.getAvailableBlenderVersions()
-    let timer = Observable.timer(5000, 2000);
+    this.getAvailableBlenderVersions();
+    let timer = Observable.timer(1000, 5000);
     timer.subscribe(() => {
       this.getNodeStatus();
       this.getProjectList();
@@ -74,7 +73,10 @@ export class ProjectsComponent implements OnInit {
 
   getProjectList() {
     this.http.get('/api/project_ui/project_list').subscribe((projects: Project[]) => {
-      this.projects = projects;
+      this.projects = [];
+      for (let project of projects) {
+        this.projects.push(project);
+      }
       console.log(projects);
       this.projectLoadComplete = true;
     });

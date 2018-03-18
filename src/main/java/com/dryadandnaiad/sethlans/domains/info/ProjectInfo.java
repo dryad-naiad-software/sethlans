@@ -31,8 +31,9 @@ import lombok.Data;
  */
 @Data
 public class ProjectInfo {
+    private Long id;
     private String projectName;
-    private String blenderVersion;
+    private String selectedBlenderversion;
     private ProjectType projectType;
     private ComputeType renderOn;
     private int resolutionX;

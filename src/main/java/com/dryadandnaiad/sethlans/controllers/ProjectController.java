@@ -306,9 +306,10 @@ public class ProjectController {
         List<ProjectInfo> projectsToReturn = new ArrayList<>();
         for (BlenderProject blenderProject : projectsToConvert) {
             ProjectInfo projectInfo = new ProjectInfo();
+            projectInfo.setId(blenderProject.getId());
             projectInfo.setProjectType(blenderProject.getProjectType());
             projectInfo.setProjectName(blenderProject.getProjectName());
-            projectInfo.setBlenderVersion(blenderProject.getBlenderVersion());
+            projectInfo.setSelectedBlenderversion(blenderProject.getBlenderVersion());
             projectInfo.setRenderOn(blenderProject.getRenderOn());
             projectInfo.setUsername(blenderProject.getSethlansUser().getUsername());
             projectInfo.setResolutionX(blenderProject.getResolutionX());
