@@ -55,10 +55,12 @@ export class ProjectsComponent implements OnInit {
   ngOnInit() {
     this.getNodeStatus();
     this.getAvailableBlenderVersions();
+    this.dtTrigger.next();
     let timer = Observable.timer(1000, 5000);
     timer.subscribe(() => {
       this.getNodeStatus();
       this.getProjectList();
+      this.dtTrigger.next();
     });
   }
 
