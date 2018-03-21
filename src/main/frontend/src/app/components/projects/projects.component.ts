@@ -16,9 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
 import {Component, OnInit} from '@angular/core';
-import {Subject} from "rxjs/Subject";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import {Project} from "../../models/project.model";
@@ -36,7 +34,6 @@ import {BlenderEngine} from "../../enums/blender_engine.enum";
 })
 export class ProjectsComponent implements OnInit {
   placeholder: any = "assets/images/placeholder.svg";
-  dtTrigger: Subject<any> = new Subject();
   nodesReady: boolean = false;
   projects: Project[] = [];
   projectLoadComplete: boolean = false;
@@ -55,12 +52,11 @@ export class ProjectsComponent implements OnInit {
   ngOnInit() {
     this.getNodeStatus();
     this.getAvailableBlenderVersions();
-    this.dtTrigger.next();
-    let timer = Observable.timer(1000, 5000);
+    this.getProjectList();
+
+    let timer = Observable.timer(5000, 5000);
     timer.subscribe(() => {
       this.getNodeStatus();
-      this.getProjectList();
-      this.dtTrigger.next();
     });
   }
 
@@ -79,7 +75,6 @@ export class ProjectsComponent implements OnInit {
       for (let project of projects) {
         this.projects.push(project);
       }
-      console.log(projects);
       this.projectLoadComplete = true;
     });
   }
