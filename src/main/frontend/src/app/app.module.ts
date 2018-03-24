@@ -65,6 +65,8 @@ import {ServerScreenComponent} from './components/home/server-screen/server-scre
 import {DataTablesModule} from "angular-datatables";
 import {FileUploadModule} from 'primeng/primeng';
 import {KeysPipe} from "./pipes/keys.pipe";
+import {ProjectModalComponent} from './components/projects/project-modal/project-modal.component';
+import {ProjectDetailsComponent} from './components/projects/project-details/project-details.component';
 
 
 @NgModule({
@@ -101,7 +103,9 @@ import {KeysPipe} from "./pipes/keys.pipe";
     ServersComponent,
     HelpComponent,
     NodeScreenComponent,
-    ServerScreenComponent
+    ServerScreenComponent,
+    ProjectModalComponent,
+    ProjectDetailsComponent
   ],
   imports: [
     BrowserModule,
