@@ -17,9 +17,14 @@
  *
  */
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import {Project} from "../../models/project.model";
+import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
+import {RenderOutputFormat} from "../../enums/render_output_format.enum";
+import {ProjectType} from "../../enums/project_type.enum";
+import {ComputeMethod} from "../../enums/compute.method.enum";
+import {BlenderEngine} from "../../enums/blender_engine.enum";
 
 
 @Component({
@@ -32,19 +37,35 @@ export class ProjectsComponent implements OnInit {
   nodesReady: boolean = false;
   projects: Project[] = [];
   projectLoadComplete: boolean = false;
+  projectDetails: Project;
+  availableBlenderVersions: any[];
+  formats = RenderOutputFormat;
+  projectTypes = ProjectType;
+  computeMethods = ComputeMethod;
+  engines = BlenderEngine;
+  useParts: boolean = true;
 
-
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private modalService: NgbModal) {
   }
 
 
   ngOnInit() {
     this.getNodeStatus();
+    this.getAvailableBlenderVersions();
     this.getProjectList();
+
     let timer = Observable.timer(5000, 5000);
     timer.subscribe(() => {
       this.getNodeStatus();
     });
+  }
+
+  getAvailableBlenderVersions() {
+    this.http.get('/api/info/blender_versions')
+      .subscribe(
+        (blenderVersions: any[]) => {
+          this.availableBlenderVersions = blenderVersions;
+        });
   }
 
 
@@ -65,5 +86,48 @@ export class ProjectsComponent implements OnInit {
       }
     });
   }
+
+  submitProject() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    if (this.useParts == false) {
+      this.projectDetails.partsPerFrame = 1;
+    }
+    this.http.post('/api/project_form/submit_project', JSON.stringify(this.projectDetails), httpOptions).subscribe()
+
+  }
+
+  loadProjectDetails(content, event) {
+    let response: any = JSON.parse(event.xhr.response);
+    this.projectDetails = <Project>response;
+    if (this.projectDetails.projectType == this.projectTypes.STILL_IMAGE) {
+      this.projectDetails.endFrame = 1;
+      this.projectDetails.stepFrame = 1;
+    }
+    if (this.projectDetails.selectedBlenderversion == null) {
+      this.projectDetails.selectedBlenderversion = this.availableBlenderVersions[0];
+    }
+    console.log(this.projectDetails);
+    let options: NgbModalOptions = {
+      backdrop: "static"
+    };
+    this.modalService.open(content, options);
+  }
+
+  beforeSend(event: any) {
+    event.xhr.setRequestHeader('X-XSRF-TOKEN', document.cookie.slice(document.cookie.indexOf("TOKEN=") + "TOKEN=".length));
+  }
+
+
+  openModal(content) {
+    let options: NgbModalOptions = {
+      backdrop: "static"
+    };
+    this.modalService.open(content, options);
+  }
+
 
 }
