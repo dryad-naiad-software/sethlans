@@ -21,7 +21,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {SetupFormDataService} from "../../../services/setupformdata.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Mode} from "../../../enums/mode.enum";
-import {ComputeMethod} from "../../../enums/compute.method.enum";
+import {SetupComputeMethod} from "../../../enums/setup_compute.method.enum";
 
 @Component({
   selector: 'app-setup-summary',
@@ -31,7 +31,7 @@ import {ComputeMethod} from "../../../enums/compute.method.enum";
 export class SetupSummaryComponent implements OnInit {
   @Input() setupFormData;
   mode: any = Mode;
-  computeMethodEnum: any = ComputeMethod;
+  computeMethodEnum: any = SetupComputeMethod;
   finished = false;
 
   constructor(private setupFormDataService: SetupFormDataService, private http: HttpClient) {
