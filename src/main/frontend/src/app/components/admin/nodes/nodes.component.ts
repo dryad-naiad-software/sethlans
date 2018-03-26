@@ -17,7 +17,7 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {Subject} from "rxjs/Subject";
 import {NodeInfo} from "../../../models/node_info.model";
 import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
@@ -25,13 +25,17 @@ import {HttpClient} from "@angular/common/http";
 import {ComputeMethod} from "../../../enums/compute.method.enum";
 import {Router} from "@angular/router";
 import {Observable} from "rxjs/Observable";
+import {NodeListService} from "../../../services/node_list.service";
+import {DataTableDirective} from "angular-datatables";
 
 @Component({
   selector: 'app-nodes',
   templateUrl: './nodes.component.html',
   styleUrls: ['./nodes.component.scss']
 })
-export class NodesComponent implements OnInit {
+export class NodesComponent implements OnInit, AfterViewInit {
+  @ViewChild(DataTableDirective)
+  dtElement: DataTableDirective;
   dtTrigger: Subject<any> = new Subject();
   nodeList: NodeInfo[] = [];
   ipAddress: string;
@@ -43,26 +47,21 @@ export class NodesComponent implements OnInit {
   dtOptions: DataTables.Settings = {};
 
 
-
-  constructor(private modalService: NgbModal, private http: HttpClient, private router: Router) {
+  constructor(private modalService: NgbModal, private http: HttpClient, private router: Router, private nodeListService: NodeListService) {
   }
 
   ngOnInit() {
-    this.populateNodeList();
     this.dtOptions = {
-      searching: false,
       ordering: false
     };
-    let timer = Observable.timer(5000, 1000);
-    timer.subscribe(() => this.populateNodeList());
+    let timer = Observable.timer(0, 60000);
+    timer.subscribe(() => this.rerender());
   }
 
-  populateNodeList() {
-    this.http.get('/api/management/node_list')
-      .subscribe((nodes: NodeInfo[]) => {
-        this.nodeList = nodes;
-        this.nodeScanComplete = true;
-      });
+  ngAfterViewInit(): void {
+    this.nodeListService.getNodeList().subscribe(value => {
+      this.nodeList = value;
+    });
   }
 
   openModal(content) {
@@ -119,6 +118,16 @@ export class NodesComponent implements OnInit {
   }
 
   scanNode() {
+  }
+
+  rerender(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      this.nodeListService.getNodeList().subscribe(value => {
+        this.nodeList = value;
+      });
+    });
   }
 
 

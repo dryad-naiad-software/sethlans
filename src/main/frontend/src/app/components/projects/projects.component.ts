@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import {Project} from "../../models/project.model";
@@ -26,6 +26,9 @@ import {ProjectType} from "../../enums/project_type.enum";
 import {ComputeMethod} from "../../enums/compute.method.enum";
 import {BlenderEngine} from "../../enums/blender_engine.enum";
 import {ProjectListService} from "../../services/project_list.service";
+import {Subject} from "rxjs/Subject";
+import {DataTableDirective} from "angular-datatables";
+import {Router} from "@angular/router";
 
 
 @Component({
@@ -34,7 +37,9 @@ import {ProjectListService} from "../../services/project_list.service";
   styleUrls: ['./projects.component.scss']
 })
 export class ProjectsComponent implements OnInit, AfterViewInit {
-
+  @ViewChild(DataTableDirective)
+  dtElement: DataTableDirective;
+  dtTrigger: Subject<any> = new Subject();
   placeholder: any = "assets/images/placeholder.svg";
   nodesReady: boolean = false;
   projectSize: number;
@@ -49,11 +54,14 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
   dtOptions: DataTables.Settings = {};
 
 
-  constructor(private http: HttpClient, private modalService: NgbModal, private projectService: ProjectListService) {
+  constructor(private http: HttpClient, private modalService: NgbModal, private projectService: ProjectListService, private router: Router) {
   }
 
   ngAfterViewInit(): void {
-
+    this.projectService.getProjectList().subscribe(value => {
+      this.projects = value;
+      this.dtTrigger.next();
+    });
   }
 
   ngOnInit() {
@@ -61,18 +69,19 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
     this.getAvailableBlenderVersions();
     this.getProjectListSize();
     this.dtOptions = {
-      searching: false,
-      ordering: false
     };
-    this.projectService.getProjectList().subscribe(value => {
-      this.projects = value;
-    });
+
 
     let timer = Observable.timer(5000, 5000);
     timer.subscribe(() => {
       this.getNodeStatus();
       this.getProjectListSize();
     });
+
+    let timer2 = Observable.timer(0, 60000);
+    timer2.subscribe(() => {
+      this.rerender();
+    })
   }
 
   getAvailableBlenderVersions() {
@@ -107,7 +116,11 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
     if (this.useParts == false) {
       this.projectDetails.partsPerFrame = 1;
     }
-    this.http.post('/api/project_form/submit_project', JSON.stringify(this.projectDetails), httpOptions).subscribe()
+    this.http.post('/api/project_form/submit_project', JSON.stringify(this.projectDetails), httpOptions).subscribe(() => {
+      this.router.navigateByUrl("/projects").then(() => {
+        location.reload();
+      });
+    })
 
   }
 
@@ -130,6 +143,17 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
 
   beforeSend(event: any) {
     event.xhr.setRequestHeader('X-XSRF-TOKEN', document.cookie.slice(document.cookie.indexOf("TOKEN=") + "TOKEN=".length));
+  }
+
+  rerender(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      this.projectService.getProjectList().subscribe(value => {
+        this.projects = value;
+        this.dtTrigger.next();
+      });
+    });
   }
 
 

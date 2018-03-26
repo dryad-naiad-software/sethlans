@@ -33,7 +33,7 @@
         <h2 class="text-center mt-5 mb-5" *ngIf="projectSize == 0">No Projects
           Available</h2>
         <div class="table-responsive" *ngIf="projectSize > 0">
-          <table datatable class="table" [dtOptions]="dtOptions">
+          <table datatable [dtTrigger]="dtTrigger" class="table" [dtOptions]="dtOptions">
             <thead>
             <tr>
               <th>Name</th>
@@ -42,8 +42,8 @@
               <th>Render On</th>
               <th>Resolution</th>
               <th>Status</th>
-              <th>Preview</th>
-              <th>Actions</th>
+              <th data-orderable="false">Preview</th>
+              <th data-orderable="false">Actions</th>
             </tr>
             </thead>
             <tbody>
