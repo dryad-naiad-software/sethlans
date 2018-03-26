@@ -37,6 +37,7 @@ export class NodesComponent implements OnInit, AfterViewInit {
   ipAddress: string;
   port: string;
   nodeToAdd: NodeInfo;
+  nodeToEditId: number;
   computeMethodEnum: any = ComputeMethod;
   summaryComplete: boolean = false;
   nodeScanComplete: boolean = false;
@@ -85,6 +86,7 @@ export class NodesComponent implements OnInit, AfterViewInit {
   }
 
   resetAddNode() {
+    this.nodeToEditId = null;
     this.ipAddress = "";
     this.port = "";
     this.nodeToAdd = null;
@@ -110,13 +112,22 @@ export class NodesComponent implements OnInit, AfterViewInit {
     });
   }
 
+  updateNode(id, content) {
+    let options: NgbModalOptions = {
+      backdrop: "static"
+    };
+
+  }
+
   addNode() {
-    this.http.get('/api/setup/node_add?ip=' + this.ipAddress + "&port=" + this.port).subscribe((success: boolean) => {
-      if (success == true) {
-        this.resetAddNode();
-        this.reload();
-      }
-    });
+    if (this.nodeToEditId == undefined || this.nodeToEditId == null) {
+      this.http.get('/api/setup/node_add?ip=' + this.ipAddress + "&port=" + this.port).subscribe((success: boolean) => {
+        if (success == true) {
+          this.resetAddNode();
+          this.reload();
+        }
+      });
+    }
 
   }
 

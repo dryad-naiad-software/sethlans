@@ -95,7 +95,9 @@
               </td>
               <td>
                 <div class="btn-group-vertical">
-                  <button class="btn btn-outline-primary btn-sm" type="button">Update</button>
+                  <button class="btn btn-outline-primary btn-sm" type="button" (click)="updateNode(node.id, addModal)">
+                    Update
+                  </button>
                   <button class="btn btn-outline-danger btn-sm" type="button" (click)="deleteNode(node.id)">Delete
                   </button>
                 </div>
@@ -112,7 +114,7 @@
 <!--Add Node Modal-->
 <ng-template #addModal let-c="close" let-d="dismiss">
   <div class="modal-header">
-    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Add Sethlans Node</h4>
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Add/Edit Sethlans Node</h4>
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click'); resetAddNode()">
       <span aria-hidden="true">&times;</span>
     </button>
