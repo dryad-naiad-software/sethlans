@@ -61,6 +61,7 @@ export class NodesComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.nodeListService.getNodeList().subscribe(value => {
       this.nodeList = value;
+      this.dtTrigger.next();
     });
   }
 
@@ -126,6 +127,7 @@ export class NodesComponent implements OnInit, AfterViewInit {
       dtInstance.destroy();
       this.nodeListService.getNodeList().subscribe(value => {
         this.nodeList = value;
+        this.dtTrigger.next();
       });
     });
   }

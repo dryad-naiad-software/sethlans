@@ -17,20 +17,24 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {Subject} from "rxjs/Subject";
 import {ServerInfo} from "../../../models/server_info.model";
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {Observable} from "rxjs/Observable";
 import "rxjs/add/observable/timer";
+import {ServerListService} from "../../../services/server_list.service";
+import {DataTableDirective} from "angular-datatables";
 
 @Component({
   selector: 'app-servers',
   templateUrl: './servers.component.html',
   styleUrls: ['./servers.component.scss']
 })
-export class ServersComponent implements OnInit {
+export class ServersComponent implements OnInit, AfterViewInit {
+  @ViewChild(DataTableDirective)
+  dtElement: DataTableDirective;
   dtTrigger: Subject<any> = new Subject();
   serverList: ServerInfo[] = [];
   ackClicked: boolean = false;
@@ -38,31 +42,30 @@ export class ServersComponent implements OnInit {
   dtOptions: DataTables.Settings = {};
 
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient, private router: Router, private serverListService: ServerListService) {
   }
 
   ngOnInit() {
-    this.populateServerList();
     this.dtOptions = {
-      searching: false,
       ordering: false
     };
-    let timer = Observable.timer(5000, 1000);
-    timer.subscribe(() => this.populateServerList());
+    let timer = Observable.timer(0, 60000);
+    timer.subscribe(() => this.rerender());
   }
 
-  populateServerList() {
-    this.http.get('/api/management/server_list')
-      .subscribe((servers: ServerInfo[]) => {
-        this.serverList = servers;
-        this.serverScanComplete = true;
-      });
+  ngAfterViewInit(): void {
+    this.serverListService.getServerList().subscribe(value => {
+      this.serverList = value;
+      this.dtTrigger.next();
+    });
   }
+
 
   acknowledgeServer(id) {
     this.http.get('/api/setup/server_acknowledge/' + id + "/").subscribe((success: boolean) => {
       if (success == true) {
         this.ackClicked = true;
+        this.rerender();
       }
 
     });
@@ -74,6 +77,18 @@ export class ServersComponent implements OnInit {
       console.log(success);
       this.router.navigateByUrl("/admin/servers").then(() => {
         location.reload();
+      });
+    });
+  }
+
+  rerender(): void {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      this.serverListService.getServerList().subscribe(value => {
+        this.serverList = value;
+        this.dtTrigger.next();
+
       });
     });
   }

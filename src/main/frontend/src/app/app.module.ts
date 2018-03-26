@@ -67,6 +67,7 @@ import {FileUploadModule} from 'primeng/primeng';
 import {KeysPipe} from "./pipes/keys.pipe";
 import {ProjectListService} from "./services/project_list.service";
 import {NodeListService} from "./services/node_list.service";
+import {ServerListService} from "./services/server_list.service";
 
 
 @NgModule({
@@ -116,7 +117,7 @@ import {NodeListService} from "./services/node_list.service";
     AppRoutingModule,
     Ng2Webstorage
   ],
-  providers: [Title, ProjectListService, NodeListService, SetupFormDataService, WindowRef, AuthService, MetricsService, {
+  providers: [Title, ProjectListService, NodeListService, ServerListService, SetupFormDataService, WindowRef, AuthService, MetricsService, {
     provide: HTTP_INTERCEPTORS,
     useClass: XhrInterceptor,
     multi: true

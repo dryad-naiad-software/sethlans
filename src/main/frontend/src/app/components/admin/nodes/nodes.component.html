@@ -34,7 +34,7 @@
       <div class="card-body">
         <h2 class="text-center mt-5 mb-5" *ngIf="nodeList.length == 0 && nodeScanComplete == true">No Nodes Present</h2>
         <div class="table-responsive" *ngIf="nodeList.length > 0">
-          <table datatable class="table" [dtOptions]="dtOptions">
+          <table datatable [dtTrigger]="dtTrigger" class="table" [dtOptions]="dtOptions">
             <thead class="thead-light">
             <tr>
               <th>Node Status</th>
