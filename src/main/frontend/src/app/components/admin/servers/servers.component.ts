@@ -71,7 +71,8 @@ export class ServersComponent implements OnInit, AfterViewInit {
     this.http.get('/api/setup/server_acknowledge/' + id + "/").subscribe((success: boolean) => {
       if (success == true) {
         this.ackClicked = true;
-        this.rerender();
+        let timer = Observable.timer(10000);
+        timer.subscribe(() => this.rerender());
       }
 
     });

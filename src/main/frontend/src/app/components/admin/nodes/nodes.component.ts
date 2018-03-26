@@ -117,6 +117,7 @@ export class NodesComponent implements OnInit, AfterViewInit {
     this.http.get('/api/setup/node_add?ip=' + this.ipAddress + "&port=" + this.port).subscribe((success: boolean) => {
       if (success == true) {
         this.resetAddNode();
+        this.rerender();
       }
     });
 
