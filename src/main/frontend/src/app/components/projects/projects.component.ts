@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import {Project} from "../../models/project.model";
@@ -25,6 +25,7 @@ import {RenderOutputFormat} from "../../enums/render_output_format.enum";
 import {ProjectType} from "../../enums/project_type.enum";
 import {ComputeMethod} from "../../enums/compute.method.enum";
 import {BlenderEngine} from "../../enums/blender_engine.enum";
+import {ProjectListService} from "../../services/project_list.service";
 
 
 @Component({
@@ -32,31 +33,45 @@ import {BlenderEngine} from "../../enums/blender_engine.enum";
   templateUrl: './projects.component.html',
   styleUrls: ['./projects.component.scss']
 })
-export class ProjectsComponent implements OnInit {
+export class ProjectsComponent implements OnInit, AfterViewInit {
+
   placeholder: any = "assets/images/placeholder.svg";
   nodesReady: boolean = false;
-  projects: Project[] = [];
-  projectLoadComplete: boolean = false;
+  projectSize: number;
   projectDetails: Project;
+  projects: Project[];
   availableBlenderVersions: any[];
   formats = RenderOutputFormat;
   projectTypes = ProjectType;
   computeMethods = ComputeMethod;
   engines = BlenderEngine;
   useParts: boolean = true;
+  dtOptions: DataTables.Settings = {};
 
-  constructor(private http: HttpClient, private modalService: NgbModal) {
+
+  constructor(private http: HttpClient, private modalService: NgbModal, private projectService: ProjectListService) {
   }
 
+  ngAfterViewInit(): void {
+
+  }
 
   ngOnInit() {
     this.getNodeStatus();
     this.getAvailableBlenderVersions();
-    this.getProjectList();
+    this.getProjectListSize();
+    this.dtOptions = {
+      searching: false,
+      ordering: false
+    };
+    this.projectService.getProjectList().subscribe(value => {
+      this.projects = value;
+    });
 
     let timer = Observable.timer(5000, 5000);
     timer.subscribe(() => {
       this.getNodeStatus();
+      this.getProjectListSize();
     });
   }
 
@@ -68,16 +83,12 @@ export class ProjectsComponent implements OnInit {
         });
   }
 
-
-  getProjectList() {
-    this.http.get('/api/project_ui/project_list').subscribe((projects: Project[]) => {
-      this.projects = [];
-      for (let project of projects) {
-        this.projects.push(project);
-      }
-      this.projectLoadComplete = true;
+  getProjectListSize() {
+    this.http.get<number>("/api/project_ui/num_of_projects").subscribe((projectSize: number) => {
+      this.projectSize = projectSize;
     });
   }
+
 
   getNodeStatus() {
     this.http.get('/api/project_ui/nodes_ready').subscribe((success: boolean) => {

@@ -35,12 +35,18 @@ export class ServersComponent implements OnInit {
   serverList: ServerInfo[] = [];
   ackClicked: boolean = false;
   serverScanComplete: boolean = false;
+  dtOptions: DataTables.Settings = {};
+
 
   constructor(private http: HttpClient, private router: Router) {
   }
 
   ngOnInit() {
     this.populateServerList();
+    this.dtOptions = {
+      searching: false,
+      ordering: false
+    };
     let timer = Observable.timer(5000, 1000);
     timer.subscribe(() => this.populateServerList());
   }

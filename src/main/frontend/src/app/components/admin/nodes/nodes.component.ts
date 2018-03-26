@@ -40,6 +40,8 @@ export class NodesComponent implements OnInit {
   computeMethodEnum: any = ComputeMethod;
   summaryComplete: boolean = false;
   nodeScanComplete: boolean = false;
+  dtOptions: DataTables.Settings = {};
+
 
 
   constructor(private modalService: NgbModal, private http: HttpClient, private router: Router) {
@@ -47,6 +49,10 @@ export class NodesComponent implements OnInit {
 
   ngOnInit() {
     this.populateNodeList();
+    this.dtOptions = {
+      searching: false,
+      ordering: false
+    };
     let timer = Observable.timer(5000, 1000);
     timer.subscribe(() => this.populateNodeList());
   }

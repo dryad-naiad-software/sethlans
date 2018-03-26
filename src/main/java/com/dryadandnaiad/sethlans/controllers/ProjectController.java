@@ -87,7 +87,7 @@ public class ProjectController {
     private WebUploadService webUploadService;
     private BlenderParseBlendFileService blenderParseBlenderFileService;
 
-    @RequestMapping(value = "/api/project/blender_binary", method = RequestMethod.GET)
+    @GetMapping(value = "/api/project/blender_binary")
     public void downloadBlenderBinary(HttpServletResponse response, @RequestParam String connection_uuid,
                                       @RequestParam String version, @RequestParam String os) {
         if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) == null) {
@@ -109,7 +109,7 @@ public class ProjectController {
         }
     }
 
-    @RequestMapping(value = "/api/benchmark/response", method = RequestMethod.POST)
+    @PostMapping(value = "/api/benchmark/response")
     public void benchmarkResponse(@RequestParam String connection_uuid, @RequestParam int rating, @RequestParam String cuda_name,
                                   @RequestParam ComputeType compute_type, @RequestParam boolean complete) {
         SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
@@ -133,7 +133,7 @@ public class ProjectController {
         }
     }
 
-    @RequestMapping(value = "/api/benchmark_files/bmw_cpu", method = RequestMethod.GET)
+    @GetMapping(value = "/api/benchmark_files/bmw_cpu")
     public void downloadCPUBenchmark(HttpServletResponse response, @RequestParam String connection_uuid) {
         if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
@@ -145,7 +145,7 @@ public class ProjectController {
 
     }
 
-    @RequestMapping(value = "/api/benchmark_files/bmw_gpu", method = RequestMethod.GET)
+    @GetMapping(value = "/api/benchmark_files/bmw_gpu")
     public void downloadGPUBenchmark(HttpServletResponse response, @RequestParam String connection_uuid) {
         if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
@@ -155,7 +155,7 @@ public class ProjectController {
         }
     }
 
-    @RequestMapping(value = "/api/project/response", method = RequestMethod.POST)
+    @PostMapping(value = "/api/project/response")
     public void projectResponse(@RequestParam String connection_uuid,
                                 @RequestParam String project_uuid,
                                 @RequestParam MultipartFile part,
@@ -249,7 +249,7 @@ public class ProjectController {
         }
     }
 
-    @RequestMapping(value = "/api/project/blend_file/", method = RequestMethod.GET)
+    @GetMapping(value = "/api/project/blend_file/")
     public void downloadBlendfile(HttpServletResponse response, @RequestParam String connection_uuid, @RequestParam String project_uuid) {
         if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
@@ -259,6 +259,16 @@ public class ProjectController {
             SethlansUtils.serveFile(blend_file, response);
         }
 
+    }
+
+    @GetMapping(value = "/api/project_ui/num_of_projects")
+    public Integer numberOfProjects() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            return blenderProjectDatabaseService.listAllReverse().size();
+        } else {
+            return blenderProjectDatabaseService.getProjectsByUser(auth.getName()).size();
+        }
     }
 
     @GetMapping(value = "/api/project_ui/nodes_ready")

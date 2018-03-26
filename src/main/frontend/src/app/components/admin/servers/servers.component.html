@@ -30,14 +30,14 @@
           associated with any
           servers</h3>
         <div class="table-responsive" *ngIf="serverList.length > 0">
-          <table datatable class="table">
+          <table datatable class="table" [dtOptions]="dtOptions">
             <thead class="thead-light">
             <tr>
               <th>Server Status</th>
               <th>Hostname</th>
               <th>IP Address</th>
               <th>Port</th>
-              <th data-orderable="false">Actions</th>
+              <th>Actions</th>
             </tr>
             </thead>
             <tbody>
