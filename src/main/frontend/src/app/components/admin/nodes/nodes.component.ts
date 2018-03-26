@@ -17,8 +17,7 @@
  *
  */
 
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {Subject} from "rxjs/Subject";
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {NodeInfo} from "../../../models/node_info.model";
 import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 import {HttpClient} from "@angular/common/http";
@@ -26,7 +25,6 @@ import {ComputeMethod} from "../../../enums/compute.method.enum";
 import {Router} from "@angular/router";
 import {Observable} from "rxjs/Observable";
 import {NodeListService} from "../../../services/node_list.service";
-import {DataTableDirective} from "angular-datatables";
 
 @Component({
   selector: 'app-nodes',
@@ -34,9 +32,6 @@ import {DataTableDirective} from "angular-datatables";
   styleUrls: ['./nodes.component.scss']
 })
 export class NodesComponent implements OnInit, AfterViewInit {
-  @ViewChild(DataTableDirective)
-  dtElement: DataTableDirective;
-  dtTrigger: Subject<any> = new Subject();
   nodeListSize: number;
   nodeList: NodeInfo[] = [];
   ipAddress: string;
@@ -55,13 +50,14 @@ export class NodesComponent implements OnInit, AfterViewInit {
     this.dtOptions = {};
     this.getNodeListSize();
     let timer = Observable.timer(60000, 60000);
-    timer.subscribe(() => this.rerender());
+    timer.subscribe(() => this.reload());
+    let timer2 = Observable.timer(5000, 2000);
+    timer2.subscribe(() => this.getNodeListSize());
   }
 
   ngAfterViewInit(): void {
     this.nodeListService.getNodeList().subscribe(value => {
       this.nodeList = value;
-      this.dtTrigger.next();
     });
   }
 
@@ -109,7 +105,8 @@ export class NodesComponent implements OnInit, AfterViewInit {
   deleteNode(id) {
     this.http.get('/api/setup/node_delete/' + id + "/", {responseType: 'text'}).subscribe((success: any) => {
       console.log(success);
-      this.rerender();
+      this.reload();
+
     });
   }
 
@@ -117,7 +114,7 @@ export class NodesComponent implements OnInit, AfterViewInit {
     this.http.get('/api/setup/node_add?ip=' + this.ipAddress + "&port=" + this.port).subscribe((success: boolean) => {
       if (success == true) {
         this.resetAddNode();
-        this.rerender();
+        this.reload();
       }
     });
 
@@ -126,15 +123,8 @@ export class NodesComponent implements OnInit, AfterViewInit {
   scanNode() {
   }
 
-  rerender(): void {
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      this.nodeListService.getNodeList().subscribe(value => {
-        this.nodeList = value;
-        this.dtTrigger.next();
-      });
-    });
+  reload(): void {
+    this.router.navigateByUrl("/admin/nodes").then(() => location.reload());
   }
 
 
