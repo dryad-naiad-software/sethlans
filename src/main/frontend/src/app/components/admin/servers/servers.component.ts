@@ -33,23 +33,24 @@ import {DataTableDirective} from "angular-datatables";
   styleUrls: ['./servers.component.scss']
 })
 export class ServersComponent implements OnInit, AfterViewInit {
-  @ViewChild(DataTableDirective)
-  dtElement: DataTableDirective;
-  dtTrigger: Subject<any> = new Subject();
+  serverSize: number;
   serverList: ServerInfo[] = [];
   ackClicked: boolean = false;
   serverScanComplete: boolean = false;
+  @ViewChild(DataTableDirective)
+  dtElement: DataTableDirective;
   dtOptions: DataTables.Settings = {};
-
+  dtTrigger: Subject<any> = new Subject<any>();
 
   constructor(private http: HttpClient, private router: Router, private serverListService: ServerListService) {
   }
 
   ngOnInit() {
+    this.getServerListSize();
     this.dtOptions = {
-      ordering: false
     };
-    let timer = Observable.timer(0, 60000);
+
+    let timer = Observable.timer(60000, 60000);
     timer.subscribe(() => this.rerender());
   }
 
@@ -60,6 +61,11 @@ export class ServersComponent implements OnInit, AfterViewInit {
     });
   }
 
+  getServerListSize() {
+    this.http.get<number>("/api/management/server_list_size").subscribe((serverSize: number) => {
+      this.serverSize = serverSize;
+    });
+  }
 
   acknowledgeServer(id) {
     this.http.get('/api/setup/server_acknowledge/' + id + "/").subscribe((success: boolean) => {
@@ -75,9 +81,7 @@ export class ServersComponent implements OnInit, AfterViewInit {
   deleteServer(id) {
     this.http.get('/api/setup/server_delete/' + id + "/", {responseType: 'text'}).subscribe((success: any) => {
       console.log(success);
-      this.router.navigateByUrl("/admin/servers").then(() => {
-        location.reload();
-      });
+      this.rerender();
     });
   }
 
@@ -88,7 +92,6 @@ export class ServersComponent implements OnInit, AfterViewInit {
       this.serverListService.getServerList().subscribe(value => {
         this.serverList = value;
         this.dtTrigger.next();
-
       });
     });
   }

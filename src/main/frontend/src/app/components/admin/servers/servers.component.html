@@ -26,10 +26,10 @@
         </h2>
       </div>
       <div class="card-body">
-        <h3 class="text-center mt-5 mb-5" *ngIf="serverList.length == 0 && serverScanComplete == true">This Node is not
+        <h3 class="text-center mt-5 mb-5" *ngIf="serverSize == 0">This Node is not
           associated with any
           servers</h3>
-        <div class="table-responsive" *ngIf="serverList.length > 0">
+        <div class="table-responsive" *ngIf="serverSize > 0">
           <table datatable [dtTrigger]="dtTrigger" class="table" [dtOptions]="dtOptions">
             <thead class="thead-light">
             <tr>
@@ -37,7 +37,7 @@
               <th>Hostname</th>
               <th>IP Address</th>
               <th>Port</th>
-              <th>Actions</th>
+              <th data-orderable="false">Actions</th>
             </tr>
             </thead>
             <tbody>

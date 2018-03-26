@@ -105,11 +105,20 @@ public class AdminController {
         return sethlansNodeDatabaseService.listAll();
     }
 
+    @GetMapping(value = {"/node_list_size"})
+    public Integer getNodeListSize() {
+        return sethlansNodeDatabaseService.listAll().size();
+    }
+
     @GetMapping(value = {"/server_list"})
     public List<SethlansServer> getServers() {
         return sethlansServerDatabaseService.listAll();
     }
 
+    @GetMapping(value = {"/server_list_size"})
+    public Integer getServerListSize() {
+        return sethlansServerDatabaseService.listAll().size();
+    }
 
 
     @GetMapping(value = "/primary_blender_version")

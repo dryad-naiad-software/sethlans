@@ -37,6 +37,7 @@ export class NodesComponent implements OnInit, AfterViewInit {
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
   dtTrigger: Subject<any> = new Subject();
+  nodeListSize: number;
   nodeList: NodeInfo[] = [];
   ipAddress: string;
   port: string;
@@ -51,10 +52,9 @@ export class NodesComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.dtOptions = {
-      ordering: false
-    };
-    let timer = Observable.timer(0, 60000);
+    this.dtOptions = {};
+    this.getNodeListSize();
+    let timer = Observable.timer(60000, 60000);
     timer.subscribe(() => this.rerender());
   }
 
@@ -62,6 +62,12 @@ export class NodesComponent implements OnInit, AfterViewInit {
     this.nodeListService.getNodeList().subscribe(value => {
       this.nodeList = value;
       this.dtTrigger.next();
+    });
+  }
+
+  getNodeListSize() {
+    this.http.get<number>("/api/management/node_list_size").subscribe((nodeSize: number) => {
+      this.nodeListSize = nodeSize;
     });
   }
 
@@ -103,9 +109,7 @@ export class NodesComponent implements OnInit, AfterViewInit {
   deleteNode(id) {
     this.http.get('/api/setup/node_delete/' + id + "/", {responseType: 'text'}).subscribe((success: any) => {
       console.log(success);
-      this.router.navigateByUrl("/admin/nodes").then(() => {
-        location.reload();
-      });
+      this.rerender();
     });
   }
 
