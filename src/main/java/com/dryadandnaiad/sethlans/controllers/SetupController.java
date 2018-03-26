@@ -127,6 +127,18 @@ public class SetupController {
         return true;
     }
 
+    @GetMapping("/node_edit/{id}")
+    public boolean updateNode(@PathVariable Long id, @RequestParam String ip, @RequestParam String port) {
+        SethlansNode sethlansNodeToEdit = sethlansNodeDatabaseService.getById(id);
+        SethlansNode newNode = nodeDiscoveryService.discoverUnicastNode(ip, port);
+        newNode.setId(sethlansNodeToEdit.getId());
+        newNode.setVersion(sethlansNodeToEdit.getVersion());
+        newNode.setDateCreated(sethlansNodeToEdit.getDateCreated());
+        newNode.setLastUpdated(sethlansNodeToEdit.getLastUpdated());
+        sethlansNodeDatabaseService.saveOrUpdate(newNode);
+        return true;
+    }
+
     @GetMapping("/server_delete/{id}")
     public boolean deleteServer(@PathVariable Long id) {
         sethlansServerDatabaseService.delete(id);

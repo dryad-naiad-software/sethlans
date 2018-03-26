@@ -100,6 +100,11 @@ public class AdminController {
         return nodeDiscoveryService.discoverUnicastNode(ip, port);
     }
 
+    @GetMapping(value = {"/node_update_info/{id}"})
+    public SethlansNode getNodeById(@PathVariable Long id) {
+        return sethlansNodeDatabaseService.getById(id);
+    }
+
     @GetMapping(value = {"/node_list"})
     public List<SethlansNode> getNodes() {
         return sethlansNodeDatabaseService.listAll();

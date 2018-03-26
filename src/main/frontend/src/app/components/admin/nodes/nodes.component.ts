@@ -116,6 +116,13 @@ export class NodesComponent implements OnInit, AfterViewInit {
     let options: NgbModalOptions = {
       backdrop: "static"
     };
+    this.nodeToEditId = id;
+    this.http.get('/api/management/node_update_info/' + this.nodeToEditId + "/").subscribe((node: NodeInfo) => {
+      this.ipAddress = node.ipAddress;
+      this.port = node.networkPort;
+      this.modalService.open(content, options);
+    })
+
 
   }
 
@@ -127,6 +134,13 @@ export class NodesComponent implements OnInit, AfterViewInit {
           this.reload();
         }
       });
+    } else {
+      this.http.get('/api/setup/node_edit/' + this.nodeToEditId + '/' + '?ip=' + this.ipAddress + '&port=' + this.port).subscribe((success: boolean) => {
+        if (success == true) {
+          this.resetAddNode();
+          this.reload();
+        }
+      })
     }
 
   }
