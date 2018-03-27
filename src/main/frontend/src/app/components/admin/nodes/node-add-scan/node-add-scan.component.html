@@ -1,0 +1,163 @@
+<!--
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
+<!--Add Node Modal-->
+<ng-template #addModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Add/Edit Sethlans Node</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click'); resetAddNode()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #addNodeForm="ngForm" class="editForm">
+      <div class="form-group">
+        <label for="ipAddress">IP Address or Hostname</label>
+        <input type="text" class="form-control" id="ipAddress" name="ipAddress" [(ngModel)]="ipAddress"
+               (keydown.enter)="c('Close click'); openNodeSummaryModal(verifySingleNodeModal)">
+      </div>
+      <div class="form-group">
+        <label for="port">Port</label>
+        <input type="number" class="form-control" id="port" name="port" [(ngModel)]="port"
+               (keydown.enter)="c('Close click'); openNodeSummaryModal(verifySingleNodeModal)">
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary mr-auto" (click)="c('Close click'); resetAddNode()">Close
+    </button>
+    <button type="button" class="btn btn-outline-dark ml-auto"
+            (click)="c('Close click'); openNodeSummaryModal(verifySingleNodeModal)">Next
+    </button>
+  </div>
+</ng-template>
+
+
+<!--Verify Node Modal-->
+<ng-template #verifySingleNodeModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Node Summary</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" *ngIf="summaryComplete == false">
+    <p>Querying {{ipAddress}}:{{port}} &nbsp;&nbsp; <span class="fa fa-circle-o-notch fa-spin"></span></p>
+  </div>
+  <div class="modal-body" *ngIf="summaryComplete == true">
+    <div *ngIf="nodeToAdd == null">
+      <p class="text-center">{{ipAddress}}:{{port}} is not a valid Sethlans Node</p>
+    </div>
+    <div *ngIf="nodeToAdd != null">
+      <table class="table table-striped">
+        <tr>
+          <td>Hostname</td>
+          <td>{{nodeToAdd.hostname}}</td>
+        </tr>
+        <tr>
+          <td>IP Address</td>
+          <td>{{nodeToAdd.ipAddress}}</td>
+        </tr>
+        <tr>
+          <td>Network Port</td>
+          <td>{{nodeToAdd.networkPort}}</td>
+        </tr>
+        <tr>
+          <td>Node OS</td>
+          <td>{{nodeToAdd.sethlansNodeOS}}</td>
+        </tr>
+        <tr>
+          <td>Compute Type</td>
+          <td *ngIf="nodeToAdd.computeType.toString().valueOf() == 'CPU_GPU'.valueOf()">CPU & GPU</td>
+          <td *ngIf="nodeToAdd.computeType.toString().valueOf() != 'CPU_GPU'.valueOf()">{{nodeToAdd.computeType}}</td>
+        </tr>
+        <tr *ngIf="nodeToAdd.computeType.toString().valueOf() != 'GPU'.valueOf() ">
+          <td>CPU Name</td>
+          <td>{{nodeToAdd.cpuinfo.name}}</td>
+        </tr>
+        <tr *ngIf="nodeToAdd.computeType.toString().valueOf() != 'GPU'.valueOf()">
+          <td>Cores</td>
+          <td>{{nodeToAdd.selectedCores}}</td>
+        </tr>
+        <tr *ngIf="nodeToAdd.computeType.toString().valueOf() != 'CPU'.valueOf()">
+          <td>Selected GPU(s)</td>
+          <td>
+            <ul class="list-unstyled">
+              <li *ngFor="let gpu of nodeToAdd.selectedGPUs"> {{gpu.model}}</li>
+            </ul>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary mr-auto" (click)="c('Close click'); backModalAdd(addModal)">
+      Back
+    </button>
+    <button [disabled]="nodeToAdd == null" type="button" class="btn btn-outline-dark ml-auto"
+            (click)="c('Close click'); addNode()">Add/Edit Node
+    </button>
+  </div>
+</ng-template>
+
+<!--Scan Node Modal-->
+<ng-template #scanModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Scan for Sethlans Nodes</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p class="text-center" *ngIf="nodeScanComplete == false">Scanning for Nodes on the network. &nbsp; &nbsp;<span
+      class="fa fa-circle-o-notch fa-spin"></span></p>
+    <table *ngIf="nodeScanComplete == true">
+      <thead>
+      <tr>
+        <th>Hostname</th>
+        <th>IP Address</th>
+        <th>Network Port</th>
+        <th>Node OS</th>
+        <th>Compute Type</th>
+        <th>CPU Name</th>
+        <th>Cores</th>
+        <th>Selected Cores</th>
+        <th>Selected GPU(s)</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>Test</td>
+      </tr>
+
+      </tbody>
+
+    </table>
+
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary mr-auto" (click)="c('Close click')">Close</button>
+    <button type="button" class="btn btn-outline-dark ml-auto"
+            (click)="c('Close click')">Next
+    </button>
+  </div>
+</ng-template>

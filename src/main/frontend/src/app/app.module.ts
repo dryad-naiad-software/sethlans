@@ -68,6 +68,7 @@ import {KeysPipe} from "./pipes/keys.pipe";
 import {ProjectListService} from "./services/project_list.service";
 import {NodeListService} from "./services/node_list.service";
 import {ServerListService} from "./services/server_list.service";
+import {NodeAddScanComponent} from './components/admin/nodes/node-add-scan/node-add-scan.component';
 
 
 @NgModule({
@@ -104,7 +105,8 @@ import {ServerListService} from "./services/server_list.service";
     ServersComponent,
     HelpComponent,
     NodeScreenComponent,
-    ServerScreenComponent
+    ServerScreenComponent,
+    NodeAddScanComponent
   ],
   imports: [
     BrowserModule,

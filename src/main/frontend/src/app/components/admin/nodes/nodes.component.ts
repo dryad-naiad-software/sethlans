@@ -19,9 +19,7 @@
 
 import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {NodeInfo} from "../../../models/node_info.model";
-import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 import {HttpClient} from "@angular/common/http";
-import {ComputeMethod} from "../../../enums/compute.method.enum";
 import {Router} from "@angular/router";
 import {Observable} from "rxjs/Observable";
 import {NodeListService} from "../../../services/node_list.service";
@@ -34,17 +32,12 @@ import {NodeListService} from "../../../services/node_list.service";
 export class NodesComponent implements OnInit, AfterViewInit {
   nodeListSize: number;
   nodeList: NodeInfo[] = [];
-  ipAddress: string;
-  port: string;
-  nodeToAdd: NodeInfo;
-  nodeToEditId: number;
-  computeMethodEnum: any = ComputeMethod;
-  summaryComplete: boolean = false;
-  nodeScanComplete: boolean = false;
+
+
   dtOptions: DataTables.Settings = {};
 
 
-  constructor(private modalService: NgbModal, private http: HttpClient, private router: Router, private nodeListService: NodeListService) {
+  constructor(private http: HttpClient, private router: Router, private nodeListService: NodeListService) {
   }
 
   ngOnInit() {
@@ -68,84 +61,12 @@ export class NodesComponent implements OnInit, AfterViewInit {
     });
   }
 
-  openModal(content) {
-    let options: NgbModalOptions = {
-      backdrop: "static"
-    };
-    this.modalService.open(content, options);
-  }
-
-
-  backModalAdd(content) {
-    let options: NgbModalOptions = {
-      backdrop: "static"
-    };
-    this.nodeToAdd = null;
-    this.summaryComplete = false;
-    this.modalService.open(content, options);
-  }
-
-  resetAddNode() {
-    this.nodeToEditId = null;
-    this.ipAddress = "";
-    this.port = "";
-    this.nodeToAdd = null;
-    this.summaryComplete = false;
-  }
-
-  openNodeSummaryModal(content) {
-    let options: NgbModalOptions = {
-      backdrop: "static"
-    };
-    this.http.get('/api/management/node_check?ip=' + this.ipAddress + "&port=" + this.port).subscribe((node: NodeInfo) => {
-      this.nodeToAdd = node;
-      this.summaryComplete = true;
-    });
-    this.modalService.open(content, options);
-  }
-
   deleteNode(id) {
     this.http.get('/api/setup/node_delete/' + id + "/", {responseType: 'text'}).subscribe((success: any) => {
       console.log(success);
       this.reload();
 
     });
-  }
-
-  updateNode(id, content) {
-    let options: NgbModalOptions = {
-      backdrop: "static"
-    };
-    this.nodeToEditId = id;
-    this.http.get('/api/management/node_update_info/' + this.nodeToEditId + "/").subscribe((node: NodeInfo) => {
-      this.ipAddress = node.ipAddress;
-      this.port = node.networkPort;
-      this.modalService.open(content, options);
-    })
-
-
-  }
-
-  addNode() {
-    if (this.nodeToEditId == undefined || this.nodeToEditId == null) {
-      this.http.get('/api/setup/node_add?ip=' + this.ipAddress + "&port=" + this.port).subscribe((success: boolean) => {
-        if (success == true) {
-          this.resetAddNode();
-          this.reload();
-        }
-      });
-    } else {
-      this.http.get('/api/setup/node_edit/' + this.nodeToEditId + '/' + '?ip=' + this.ipAddress + '&port=' + this.port).subscribe((success: boolean) => {
-        if (success == true) {
-          this.resetAddNode();
-          this.reload();
-        }
-      })
-    }
-
-  }
-
-  scanNode() {
   }
 
   reload(): void {
