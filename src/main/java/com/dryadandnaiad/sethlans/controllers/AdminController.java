@@ -100,6 +100,13 @@ public class AdminController {
         return nodeDiscoveryService.discoverUnicastNode(ip, port);
     }
 
+    @GetMapping(value = {"node_scan"})
+    public List<SethlansNode> nodeScan() throws InterruptedException {
+        nodeDiscoveryService.multicastDiscovery();
+        Thread.sleep(20000);
+        return nodeDiscoveryService.discoverMulticastNodes();
+    }
+
     @GetMapping(value = {"/node_update_info/{id}"})
     public SethlansNode getNodeById(@PathVariable Long id) {
         return sethlansNodeDatabaseService.getById(id);

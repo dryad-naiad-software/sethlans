@@ -142,24 +142,7 @@
   </div>
 </ng-template>
 
-<!--Scan Node Modal-->
-<ng-template #scanModal let-c="close" let-d="dismiss">
-  <div class="modal-header">
-    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Scan for Sethlans Nodes</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
 
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-outline-secondary mr-auto" (click)="c('Close click')">Close</button>
-    <button type="button" class="btn btn-outline-dark ml-auto"
-            (click)="c('Close click')">Next
-    </button>
-  </div>
-</ng-template>
 
 <!--Verify Node Modal-->
 <ng-template #verifySingleNodeModal let-c="close" let-d="dismiss">
@@ -226,6 +209,25 @@
     </button>
     <button [disabled]="nodeToAdd == null" type="button" class="btn btn-outline-dark ml-auto"
             (click)="c('Close click'); addNode()">Add/Edit Node
+    </button>
+  </div>
+</ng-template>
+
+<!--Scan Node Modal-->
+<ng-template #scanModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Scan for Sethlans Nodes</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary mr-auto" (click)="c('Close click')">Close</button>
+    <button type="button" class="btn btn-outline-dark ml-auto"
+            (click)="c('Close click')">Next
     </button>
   </div>
 </ng-template>
