@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -55,6 +55,7 @@ public class MulticastSenderServiceImpl implements MulticastSenderService {
         try {
             byte[] buffer = message.getBytes();
             MulticastSocket multicastSocket = new MulticastSocket(multicastSocketPort);
+            multicastSocket.setInterface(InetAddress.getByName(ip));
             multicastSocket.setReuseAddress(true);
             InetAddress group = InetAddress.getByName(multicastIP);
             int count = 0;

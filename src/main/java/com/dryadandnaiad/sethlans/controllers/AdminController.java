@@ -102,6 +102,7 @@ public class AdminController {
 
     @GetMapping(value = {"node_scan"})
     public List<SethlansNode> nodeScan() throws InterruptedException {
+        nodeDiscoveryService.resetNodeList();
         nodeDiscoveryService.multicastDiscovery();
         Thread.sleep(20000);
         return nodeDiscoveryService.discoverMulticastNodes();
