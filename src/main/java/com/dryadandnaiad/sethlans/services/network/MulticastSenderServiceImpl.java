@@ -55,7 +55,6 @@ public class MulticastSenderServiceImpl implements MulticastSenderService {
         try {
             byte[] buffer = message.getBytes();
             MulticastSocket multicastSocket = new MulticastSocket(multicastSocketPort);
-            multicastSocket.setInterface(InetAddress.getByName(ip));
             multicastSocket.setReuseAddress(true);
             InetAddress group = InetAddress.getByName(multicastIP);
             int count = 0;

@@ -16,9 +16,8 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
-
 <div class="row pb-5">
-  <div class="col-md-6 m-auto">
+  <div class="col-md-8 m-auto">
     <div class="card">
       <div class="card-header">
         <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Add Sethlans Nodes</h4>
@@ -26,28 +25,51 @@
       <div class="card-body">
         <p class="text-center" *ngIf="nodeScanComplete == false">Scanning for Nodes on the network. &nbsp; &nbsp;<span
           class="fa fa-circle-o-notch fa-spin"></span></p>
-        <table class="table" *ngIf="nodeScanComplete == true">
-          <thead>
-          <tr>
-            <th></th>
-            <th>Hostname</th>
-            <th>IP Address</th>
-            <th>Network Port</th>
-            <th>Node OS</th>
-            <th>Compute Type</th>
-            <th>CPU Name</th>
-            <th>Cores</th>
-            <th>Selected GPU(s)</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td><input type="checkbox"></td>
-            <td>Test2</td>
-          </tr>
-          </tbody>
-        </table>
-
+        <div class="table-responsive" *ngIf="nodeScanComplete == true && scanList.length > 0">
+          <table datatable class="table">
+            <thead class="thead-light">
+            <tr>
+              <th data-orderable="false"></th>
+              <th>Hostname</th>
+              <th>IP Address</th>
+              <th>Network Port</th>
+              <th>Node OS</th>
+              <th>Compute Type</th>
+              <th>CPU Name</th>
+              <th>Cores</th>
+              <th>Selected GPU(s)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let node of scanList">
+              <td><input type="checkbox" name="{{node.ipAddress}},{{node.networkPort}}"
+                         value="{{node.ipAddress}},{{node.networkPort}}" (change)="selectNode($event)"></td>
+              <td>{{node.hostname}}</td>
+              <td>{{node.ipAddress}}</td>
+              <td>{{node.networkPort}}</td>
+              <td>{{node.sethlansNodeOS}}</td>
+              <td *ngIf="node.computeType.toString().valueOf() == 'CPU_GPU'.valueOf()">CPU & GPU</td>
+              <td *ngIf="node.computeType.toString().valueOf() != 'CPU_GPU'.valueOf()">{{node.computeType}}</td>
+              <td *ngIf="node.computeType.toString().valueOf() != 'GPU'.valueOf()">{{node.cpuinfo.name}}</td>
+              <td *ngIf="node.computeType.toString().valueOf() == 'GPU'.valueOf()">N/A</td>
+              <td *ngIf="node.computeType.toString().valueOf() != 'GPU'.valueOf()">{{node.selectedCores}}</td>
+              <td *ngIf="node.computeType.toString().valueOf() == 'GPU'.valueOf()">N/A</td>
+              <td *ngIf="node.computeType.toString().valueOf() != 'CPU'.valueOf()">
+                <ul class="list-unstyled">
+                  <li *ngFor="let gpu of node.selectedGPUs"> {{gpu.model}}</li>
+                </ul>
+              </td>
+              <td *ngIf="node.computeType.toString().valueOf() == 'CPU'.valueOf()">N/A</td>
+            </tr>
+            </tbody>
+          </table>
+          <hr/>
+          <button type="button" class="btn btn-outline-secondary mr-auto" (click)="returnToNodes()">Cancel</button>
+          <button [disabled]="selectedNodeIP.length == 0" type="button" class="btn btn-outline-dark ml-auto float-right"
+                  (click)="addSelectedNodes()"
+          >Add Selected Nodes
+          </button>
+        </div>
       </div>
     </div>
 

@@ -20,7 +20,7 @@
 import {Component, OnInit} from '@angular/core';
 import {NodeInfo} from "../../../../models/node_info.model";
 import {Router} from "@angular/router";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 @Component({
   selector: 'app-node-scan',
@@ -30,6 +30,7 @@ import {HttpClient} from "@angular/common/http";
 export class NodeScanComponent implements OnInit {
   nodeScanComplete: boolean = false;
   scanList: NodeInfo[];
+  selectedNodeIP: string[] = [];
 
 
   constructor(private http: HttpClient, private router: Router) {
@@ -46,6 +47,34 @@ export class NodeScanComponent implements OnInit {
       this.scanList = scanList;
       this.nodeScanComplete = true;
     })
+  }
+
+  returnToNodes(): void {
+    this.router.navigateByUrl("/admin/nodes");
+  }
+
+  addSelectedNodes() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    this.http.post('/api/setup/multi_node_add', JSON.stringify(this.selectedNodeIP), httpOptions).subscribe((success: boolean) => {
+      this.returnToNodes();
+    });
+
+  }
+
+  selectNode(event) {
+    var index = this.selectedNodeIP.indexOf(event.target.value);
+    if (event.target.checked) {
+      this.selectedNodeIP.push(event.target.value);
+    } else {
+      if (index !== -1) {
+        this.selectedNodeIP.splice(index, 1);
+      }
+    }
+    console.log(this.selectedNodeIP);
   }
 
 }

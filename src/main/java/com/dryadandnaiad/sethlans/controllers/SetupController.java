@@ -33,6 +33,7 @@ import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +93,15 @@ public class SetupController {
         LOG.debug(sethlansServer.toString());
         sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
         nodeActivationService.sendActivationResponse(sethlansServer, SethlansUtils.getCurrentNodeInfo());
+        return true;
+    }
+
+    @PostMapping("/multi_node_add")
+    public boolean addMultiNodes(@RequestBody String[] nodeIPArray) {
+        for (String node : nodeIPArray) {
+            String[] nodeInfo = StringUtils.split(node, ",");
+            addNode(nodeInfo[0], nodeInfo[1]);
+        }
         return true;
     }
 

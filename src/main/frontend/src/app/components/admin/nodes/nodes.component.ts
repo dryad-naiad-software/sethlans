@@ -67,12 +67,12 @@ export class NodesComponent implements OnInit, AfterViewInit {
   }
 
   addNode() {
-    this.router.navigateByUrl("/admin/nodes/add");
+    this.router.navigateByUrl("/admin/nodes/add").then(() => location.reload());
 
   }
 
   scanNode() {
-    this.router.navigateByUrl("/admin/nodes/scan");
+    this.router.navigateByUrl("/admin/nodes/scan").then(() => location.reload());
 
   }
 
