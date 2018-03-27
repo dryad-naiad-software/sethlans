@@ -196,18 +196,18 @@
         </tr>
         <tr>
           <td>Compute Type</td>
-          <td *ngIf="nodeToAdd.computeType == computeMethodEnum.CPU_GPU">CPU & GPU</td>
-          <td *ngIf="nodeToAdd.computeType != computeMethodEnum.CPU_GPU">{{nodeToAdd.computeType}}</td>
+          <td *ngIf="nodeToAdd.computeType.toString().valueOf() == 'CPU_GPU'.valueOf()">CPU & GPU</td>
+          <td *ngIf="nodeToAdd.computeType.toString().valueOf() != 'CPU_GPU'.valueOf()">{{nodeToAdd.computeType}}</td>
         </tr>
-        <tr *ngIf="nodeToAdd.computeType != computeMethodEnum.GPU">
+        <tr *ngIf="nodeToAdd.computeType.toString().valueOf() != 'GPU'.valueOf() ">
           <td>CPU Name</td>
           <td>{{nodeToAdd.cpuinfo.name}}</td>
         </tr>
-        <tr *ngIf="nodeToAdd.computeType != computeMethodEnum.GPU">
+        <tr *ngIf="nodeToAdd.computeType.toString().valueOf() != 'GPU'.valueOf()">
           <td>Cores</td>
           <td>{{nodeToAdd.selectedCores}}</td>
         </tr>
-        <tr *ngIf="nodeToAdd.computeType != computeMethodEnum.CPU">
+        <tr *ngIf="nodeToAdd.computeType.toString().valueOf() != 'CPU'.valueOf()">
           <td>Selected GPU(s)</td>
           <td>
             <ul class="list-unstyled">
