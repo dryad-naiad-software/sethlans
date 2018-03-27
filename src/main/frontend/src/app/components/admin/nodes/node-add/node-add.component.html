@@ -1,0 +1,113 @@
+<!--
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
+<div class="row pb-5">
+  <div class="col-md-6 m-auto">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Add Sethlans Node</h4>
+      </div>
+      <div class="card-body">
+        <div id="addForm" *ngIf="formSubmitted == false">
+          <form #addNodeForm="ngForm" class="editForm">
+            <div class="form-group">
+              <label for="ipAddress">IP Address or Hostname</label>
+              <input type="text" class="form-control" id="ipAddress" name="ipAddress" [(ngModel)]="ipAddress"
+                     (keydown.enter)="verifyNode()">
+            </div>
+            <div class="form-group">
+              <label for="port">Port</label>
+              <input type="number" class="form-control" id="port" name="port" [(ngModel)]="port"
+                     (keydown.enter)="verifyNode()">
+            </div>
+          </form>
+          <button type="button" class="btn btn-outline-secondary mr-auto" (click)="returnToNodes()">Cancel
+          </button>
+          <button type="button" class="btn btn-outline-dark ml-auto float-right"
+                  (click)="verifyNode()">Next
+          </button>
+        </div>
+        <div id="summaryScreen" *ngIf="formSubmitted == true">
+          <div *ngIf="summaryComplete == false">
+            <p>Querying {{ipAddress}}:{{port}} &nbsp;&nbsp; <span class="fa fa-circle-o-notch fa-spin"></span></p>
+          </div>
+          <div *ngIf="summaryComplete == true">
+            <div *ngIf="nodeToAdd == null">
+              <p class="text-center">{{ipAddress}}:{{port}} is not a valid Sethlans Node</p>
+            </div>
+            <div *ngIf="nodeToAdd != null">
+              <table class="table table-striped">
+                <tr>
+                  <td>Hostname</td>
+                  <td>{{nodeToAdd.hostname}}</td>
+                </tr>
+                <tr>
+                  <td>IP Address</td>
+                  <td>{{nodeToAdd.ipAddress}}</td>
+                </tr>
+                <tr>
+                  <td>Network Port</td>
+                  <td>{{nodeToAdd.networkPort}}</td>
+                </tr>
+                <tr>
+                  <td>Node OS</td>
+                  <td>{{nodeToAdd.sethlansNodeOS}}</td>
+                </tr>
+                <tr>
+                  <td>Compute Type</td>
+                  <td *ngIf="nodeToAdd.computeType.toString().valueOf() == 'CPU_GPU'.valueOf()">CPU & GPU</td>
+                  <td *ngIf="nodeToAdd.computeType.toString().valueOf() != 'CPU_GPU'.valueOf()">
+                    {{nodeToAdd.computeType}}
+                  </td>
+                </tr>
+                <tr *ngIf="nodeToAdd.computeType.toString().valueOf() != 'GPU'.valueOf() ">
+                  <td>CPU Name</td>
+                  <td>{{nodeToAdd.cpuinfo.name}}</td>
+                </tr>
+                <tr *ngIf="nodeToAdd.computeType.toString().valueOf() != 'GPU'.valueOf()">
+                  <td>Cores</td>
+                  <td>{{nodeToAdd.selectedCores}}</td>
+                </tr>
+                <tr *ngIf="nodeToAdd.computeType.toString().valueOf() != 'CPU'.valueOf()">
+                  <td>Selected GPU(s)</td>
+                  <td>
+                    <ul class="list-unstyled">
+                      <li *ngFor="let gpu of nodeToAdd.selectedGPUs"> {{gpu.model}}</li>
+                    </ul>
+                  </td>
+                </tr>
+              </table>
+              <button type="button" class="btn btn-outline-secondary mr-auto" (click)="returnToNodes()">Cancel
+              </button>
+              <button type="button" class="btn btn-outline-dark ml-auto float-right"
+                      (click)="addNode()">Add Node
+              </button>
+
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

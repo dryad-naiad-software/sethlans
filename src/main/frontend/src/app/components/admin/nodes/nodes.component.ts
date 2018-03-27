@@ -32,10 +32,7 @@ import {NodeListService} from "../../../services/node_list.service";
 export class NodesComponent implements OnInit, AfterViewInit {
   nodeListSize: number;
   nodeList: NodeInfo[] = [];
-
-
   dtOptions: DataTables.Settings = {};
-
 
   constructor(private http: HttpClient, private router: Router, private nodeListService: NodeListService) {
   }
@@ -67,6 +64,16 @@ export class NodesComponent implements OnInit, AfterViewInit {
       this.reload();
 
     });
+  }
+
+  addNode() {
+    this.router.navigateByUrl("/admin/nodes/add");
+
+  }
+
+  scanNode() {
+    this.router.navigateByUrl("/admin/nodes/scan");
+
   }
 
   reload(): void {

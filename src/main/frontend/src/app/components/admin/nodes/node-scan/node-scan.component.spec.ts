@@ -19,21 +19,21 @@
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {NodeAddScanComponent} from './node-add-scan.component';
+import {NodeScanComponent} from './node-scan.component';
 
-describe('NodeAddScanComponent', () => {
-  let component: NodeAddScanComponent;
-  let fixture: ComponentFixture<NodeAddScanComponent>;
+describe('NodeScanComponent', () => {
+  let component: NodeScanComponent;
+  let fixture: ComponentFixture<NodeScanComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [NodeAddScanComponent]
+      declarations: [NodeScanComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NodeAddScanComponent);
+    fixture = TestBed.createComponent(NodeScanComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

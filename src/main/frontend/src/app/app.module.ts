@@ -68,7 +68,9 @@ import {KeysPipe} from "./pipes/keys.pipe";
 import {ProjectListService} from "./services/project_list.service";
 import {NodeListService} from "./services/node_list.service";
 import {ServerListService} from "./services/server_list.service";
-import {NodeAddScanComponent} from './components/admin/nodes/node-add-scan/node-add-scan.component';
+import {NodeAddComponent} from './components/admin/nodes/node-add/node-add.component';
+import {NodeScanComponent} from './components/admin/nodes/node-scan/node-scan.component';
+import {NodeEditComponent} from './components/admin/nodes/node-edit/node-edit.component';
 
 
 @NgModule({
@@ -106,7 +108,9 @@ import {NodeAddScanComponent} from './components/admin/nodes/node-add-scan/node-
     HelpComponent,
     NodeScreenComponent,
     ServerScreenComponent,
-    NodeAddScanComponent
+    NodeAddComponent,
+    NodeScanComponent,
+    NodeEditComponent
   ],
   imports: [
     BrowserModule,

@@ -42,7 +42,9 @@ import {ProjectsComponent} from "./components/projects/projects.component";
 import {ServersComponent} from "./components/admin/servers/servers.component";
 import {NodesComponent} from "./components/admin/nodes/nodes.component";
 import {HelpComponent} from "./components/help/help.component";
-import {NodeAddScanComponent} from "./components/admin/nodes/node-add-scan/node-add-scan.component";
+import {NodeAddComponent} from "./components/admin/nodes/node-add/node-add.component";
+import {NodeEditComponent} from "./components/admin/nodes/node-edit/node-edit.component";
+import {NodeScanComponent} from "./components/admin/nodes/node-scan/node-scan.component";
 
 
 const routes: Routes = [
@@ -56,7 +58,9 @@ const routes: Routes = [
   {path: 'admin/compute_settings', component: ComputeSettingsComponent},
   {path: 'admin/blender_version_admin', component: BlenderVersionsComponent},
   {path: 'admin/nodes', component: NodesComponent},
-  {path: 'admin/nodes/add', component: NodeAddScanComponent},
+  {path: 'admin/nodes/add', component: NodeAddComponent},
+  {path: 'admin/nodes/edit', component: NodeEditComponent},
+  {path: 'admin/nodes/scan', component: NodeScanComponent},
   {path: 'admin/logs', component: LogsComponent},
   {path: 'register', component: RegisterUserComponent},
   {path: 'user_settings', component: UserSettingsComponent},
