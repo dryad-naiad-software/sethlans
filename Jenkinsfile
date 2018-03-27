@@ -30,48 +30,7 @@ stage('compile') {
                                         [$class: 'RequesterRecipientProvider']]))
     }
 }
-stage('unitests') {
-    parallel linux: {
-        node('linux') {
-            sh "rm -rf *"
-            checkout scm
-            sh 'mvn clean test'
-            junit '**/target/surefire-reports/*.xml'
-        }
-        if(currentBuild.currentResult == 'UNSTABLE' || currentBuild.currentResult == 'FAILURE') {
-            emailext(body: '${DEFAULT_CONTENT}', mimeType: 'text/html',
-                    replyTo: '$DEFAULT_REPLYTO', subject: '${DEFAULT_SUBJECT}',
-                    to: emailextrecipients([[$class: 'CulpritsRecipientProvider'],
-                                            [$class: 'RequesterRecipientProvider']]))
-        }
-    }, windows: {
-        node('windows') {
-            sh "rm -rf *"
-            checkout scm
-            sh 'mvn clean test'
-            junit '**/target/surefire-reports/*.xml'
-        }
-        if(currentBuild.currentResult == 'UNSTABLE' || currentBuild.currentResult == 'FAILURE') {
-            emailext(body: '${DEFAULT_CONTENT}', mimeType: 'text/html',
-                    replyTo: '$DEFAULT_REPLYTO', subject: '${DEFAULT_SUBJECT}',
-                    to: emailextrecipients([[$class: 'CulpritsRecipientProvider'],
-                                            [$class: 'RequesterRecipientProvider']]))
-        }
-    }, mac: {
-        node('mac') {
-            sh "rm -rf *"
-            checkout scm
-            sh 'mvn clean test'
-            junit '**/target/surefire-reports/*.xml'
-        }
-        if(currentBuild.currentResult == 'UNSTABLE' || currentBuild.currentResult == 'FAILURE') {
-            emailext(body: '${DEFAULT_CONTENT}', mimeType: 'text/html',
-                    replyTo: '$DEFAULT_REPLYTO', subject: '${DEFAULT_SUBJECT}',
-                    to: emailextrecipients([[$class: 'CulpritsRecipientProvider'],
-                                            [$class: 'RequesterRecipientProvider']]))
-        }
-    }, failFast: false
-}
+
 stage('publish') {
     node('package') {
         sh "rm -rf *"
