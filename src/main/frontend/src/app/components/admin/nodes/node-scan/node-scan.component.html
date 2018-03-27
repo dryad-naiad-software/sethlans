@@ -21,11 +21,25 @@
   <div class="col-md-6 m-auto">
     <div class="card">
       <div class="card-header">
-        <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Scan for Sethlans Nodes</h4>
+        <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Add Sethlans Nodes</h4>
       </div>
       <div class="card-body">
         <p class="text-center" *ngIf="nodeScanComplete == false">Scanning for Nodes on the network. &nbsp; &nbsp;<span
           class="fa fa-circle-o-notch fa-spin"></span></p>
+        <table class="table" *ngIf="nodeScanComplete == true">
+          <thead>
+          <tr>
+            <th></th>
+            <th>Test</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td>Test2</td>
+          </tr>
+          </tbody>
+        </table>
 
       </div>
     </div>
@@ -33,9 +47,5 @@
 
   </div>
 </div>
-</div>
-</div>
-</div>
-
 
 
