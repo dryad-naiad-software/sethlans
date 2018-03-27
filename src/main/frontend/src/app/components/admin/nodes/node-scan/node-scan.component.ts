@@ -18,6 +18,9 @@
  */
 
 import {Component, OnInit} from '@angular/core';
+import {NodeInfo} from "../../../../models/node_info.model";
+import {Router} from "@angular/router";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-node-scan',
@@ -25,11 +28,24 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./node-scan.component.scss']
 })
 export class NodeScanComponent implements OnInit {
+  nodeScanComplete: boolean = false;
+  scanList: NodeInfo[];
 
-  constructor() {
+
+  constructor(private http: HttpClient, private router: Router) {
   }
 
   ngOnInit() {
+    this.scanNode();
+  }
+
+  scanNode() {
+    this.scanList = [];
+    this.nodeScanComplete = false;
+    this.http.get('/api/management/node_scan').subscribe((scanList: NodeInfo[]) => {
+      this.scanList = scanList;
+      this.nodeScanComplete = true;
+    })
   }
 
 }
