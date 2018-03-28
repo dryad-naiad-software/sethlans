@@ -19,7 +19,7 @@
 
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {ComputeMethod} from "../../../enums/compute.method.enum";
 import {RenderOutputFormat} from "../../../enums/render_output_format.enum";
 import {Project} from "../../../models/project.model";
@@ -41,16 +41,27 @@ export class ProjectEditComponent implements OnInit {
   computeMethods = ComputeMethod;
   engines = BlenderEngine;
   status: number = 0;
+  id: number;
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute) {
   }
 
   ngOnInit() {
+    this.getAvailableBlenderVersions();
+    this.route.params.subscribe(params => {
+      this.id = +params['id'];
+      this.loadProjectDetails();
+    })
   }
 
   loadProjectDetails() {
+    this.http.get('/api/project_ui/project_details/' + this.id + '/').subscribe((projectDetails: Project) => {
+      this.projectDetails = projectDetails;
+      this.projectLoaded = true;
+      console.log(projectDetails);
+    });
 
-    this.projectLoaded = true;
+
   }
 
   getAvailableBlenderVersions() {
@@ -71,7 +82,15 @@ export class ProjectEditComponent implements OnInit {
 
   returnToProjects(): void {
     this.router.navigateByUrl("/projects").then(() => location.reload());
-    ;
+  }
+
+  setParts() {
+    this.projectDetails.useParts = !this.projectDetails.useParts;
+    if (this.projectDetails.useParts == true) {
+      this.projectDetails.partsPerFrame = 4;
+    } else {
+      this.projectDetails.partsPerFrame = 1;
+    }
   }
 
 }

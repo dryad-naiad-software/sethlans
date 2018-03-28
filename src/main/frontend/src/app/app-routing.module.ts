@@ -62,15 +62,15 @@ const routes: Routes = [
   {path: 'admin/blender_version_admin', component: BlenderVersionsComponent},
   {path: 'admin/nodes', component: NodesComponent},
   {path: 'admin/nodes/add', component: NodeAddComponent},
-  {path: 'admin/nodes/edit', component: NodeEditComponent},
+  {path: 'admin/nodes/edit/:id', component: NodeEditComponent},
   {path: 'admin/nodes/scan', component: NodeScanComponent},
   {path: 'admin/logs', component: LogsComponent},
   {path: 'register', component: RegisterUserComponent},
   {path: 'user_settings', component: UserSettingsComponent},
   {path: 'projects', component: ProjectsComponent},
   {path: 'projects/add', component: ProjectAddComponent},
-  {path: 'projects/edit', component: ProjectEditComponent},
-  {path: 'projects/view', component: ProjectViewComponent},
+  {path: 'projects/edit/:id', component: ProjectEditComponent},
+  {path: 'projects/view/:id', component: ProjectViewComponent},
   {
     path: '', component: SetupWizardComponent, outlet: 'setup', children: [
       {path: '', component: SetupModeComponent, outlet: 'mode'},

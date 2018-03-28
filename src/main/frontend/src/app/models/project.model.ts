@@ -43,6 +43,7 @@ export class Project {
   partsPerFrame: number;
   fileLocation: string;
   outputFormat: RenderOutputFormat;
+  useParts: boolean;
 
 
 }

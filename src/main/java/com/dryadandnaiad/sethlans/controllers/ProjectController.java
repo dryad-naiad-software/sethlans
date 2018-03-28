@@ -147,17 +147,7 @@ public class ProjectController {
     private List<ProjectInfo> convertBlenderProjectsToProjectInfo(List<BlenderProject> projectsToConvert) {
         List<ProjectInfo> projectsToReturn = new ArrayList<>();
         for (BlenderProject blenderProject : projectsToConvert) {
-            ProjectInfo projectInfo = new ProjectInfo();
-            projectInfo.setId(blenderProject.getId());
-            projectInfo.setProjectStatus(blenderProject.getProjectStatus());
-            projectInfo.setProjectType(blenderProject.getProjectType());
-            projectInfo.setProjectName(blenderProject.getProjectName());
-            projectInfo.setSelectedBlenderversion(blenderProject.getBlenderVersion());
-            projectInfo.setRenderOn(blenderProject.getRenderOn());
-            projectInfo.setUsername(blenderProject.getSethlansUser().getUsername());
-            projectInfo.setResolutionX(blenderProject.getResolutionX());
-            projectInfo.setResolutionY(blenderProject.getResolutionY());
-            projectsToReturn.add(projectInfo);
+            projectsToReturn.add(convertBlenderProjectToProjectInfo(blenderProject));
         }
         return projectsToReturn;
     }
@@ -165,14 +155,27 @@ public class ProjectController {
     private ProjectInfo convertBlenderProjectToProjectInfo(BlenderProject blenderProject) {
         ProjectInfo projectInfo = new ProjectInfo();
         projectInfo.setId(blenderProject.getId());
+        projectInfo.setStartFrame(blenderProject.getStartFrame());
+        projectInfo.setEndFrame(blenderProject.getEndFrame());
+        projectInfo.setStepFrame(blenderProject.getStepFrame());
+        projectInfo.setSamples(blenderProject.getSamples());
         projectInfo.setProjectStatus(blenderProject.getProjectStatus());
         projectInfo.setProjectType(blenderProject.getProjectType());
         projectInfo.setProjectName(blenderProject.getProjectName());
         projectInfo.setSelectedBlenderversion(blenderProject.getBlenderVersion());
         projectInfo.setRenderOn(blenderProject.getRenderOn());
+        projectInfo.setOutputFormat(blenderProject.getRenderOutputFormat());
         projectInfo.setUsername(blenderProject.getSethlansUser().getUsername());
         projectInfo.setResolutionX(blenderProject.getResolutionX());
         projectInfo.setResolutionY(blenderProject.getResolutionY());
+        projectInfo.setBlenderEngine(blenderProject.getBlenderEngine());
+        projectInfo.setResPercentage(blenderProject.getResPercentage());
+        projectInfo.setPartsPerFrame(blenderProject.getPartsPerFrame());
+        if (projectInfo.getPartsPerFrame() > 1) {
+            projectInfo.setUseParts(true);
+        } else {
+            projectInfo.setUseParts(false);
+        }
         return projectInfo;
     }
 

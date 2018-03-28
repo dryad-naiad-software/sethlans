@@ -19,9 +19,7 @@
 
 package com.dryadandnaiad.sethlans.domains.info;
 
-import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.enums.ProjectStatus;
-import com.dryadandnaiad.sethlans.enums.ProjectType;
+import com.dryadandnaiad.sethlans.enums.*;
 import lombok.Data;
 
 /**
@@ -37,9 +35,18 @@ public class ProjectInfo {
     private String selectedBlenderversion;
     private ProjectType projectType;
     private ComputeType renderOn;
+    private BlenderEngine blenderEngine;
     private int resolutionX;
     private int resolutionY;
+    private int startFrame;
+    private int endFrame;
+    private int stepFrame;
+    private int samples;
+    private int resPercentage;
+    private int partsPerFrame;
     private String username;
     private ProjectStatus projectStatus;
     private boolean allImagesProcessed;
+    private RenderOutputFormat outputFormat;
+    private boolean useParts;
 }

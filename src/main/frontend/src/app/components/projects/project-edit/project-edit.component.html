@@ -47,14 +47,18 @@
               <label for="selectedBlenderVersion">Blender Version for Rendering</label>
               <select class="form-control" id="selectedBlenderVersion" name="selectedBlenderVersion"
                       [(ngModel)]="projectDetails.selectedBlenderversion">
-                <option *ngFor="let version of availableBlenderVersions">{{version}}</option>
+                <option *ngFor="let version of availableBlenderVersions"
+                        [selected]="projectDetails.selectedBlenderversion">{{version}}
+                </option>
               </select>
             </div>
             <div class="form-group">
               <label for="outputFormat">Output Format</label>
               <select class="form-control" id="outputFormat" name="outputFormat"
                       [(ngModel)]="projectDetails.outputFormat">
-                <option *ngFor="let format of formats | keys">{{format.value}}</option>
+                <option *ngFor="let format of formats | keys" [selected]="projectDetails.outputFormat">
+                  {{format.value}}
+                </option>
               </select>
             </div>
             <fieldset class="form-group">
@@ -95,7 +99,9 @@
             <div class="form-group">
               <label for="renderOn">Render On</label>
               <select class="form-control" id="renderOn" name="renderOn" [(ngModel)]="projectDetails.renderOn">
-                <option *ngFor="let computeMethod of computeMethods | keys">{{computeMethod.value}}</option>
+                <option *ngFor="let computeMethod of computeMethods | keys" [selected]="projectDetails.renderOn">
+                  {{computeMethod.value}}
+                </option>
               </select>
             </div>
             <div class="form-group">
@@ -146,13 +152,15 @@
               </div>
             </div>
             <div class="form-group">
-              <input type="checkbox" id="useParts" name="useParts" [(ngModel)]="useParts" onchange="setParts()">
+              <input type="checkbox" id="useParts" name="useParts" [(ngModel)]="projectDetails.useParts"
+                     onchange="setParts()">
               <label for="useParts">Split frame into parts for rendering</label>
             </div>
 
             <div class="form-group">
-              <label for="partsPerFrame">Number of Rendering Parts Per Frame:</label> <span *ngIf="useParts">{{projectDetails.partsPerFrame}}</span>
-              <span *ngIf="!useParts" class="text-danger">Disabled</span>
+              <label for="partsPerFrame">Number of Rendering Parts Per Frame:</label> <span
+              *ngIf="projectDetails.useParts">{{projectDetails.partsPerFrame}}</span>
+              <span *ngIf="!projectDetails.useParts" class="text-danger">Disabled</span>
               <div class="form-inline">
                 <mat-slider [disabled]="!useParts"
                             id="partsPerFrame"
@@ -229,7 +237,7 @@
               <td>Image Scaling Percentage</td>
               <td>{{projectDetails.resPercentage}}&#37;</td>
             </tr>
-            <tr>
+            <tr *ngIf="projectDetails.useParts == true">
               <td>Parts Per Frame</td>
               <td>{{projectDetails.partsPerFrame}}</td>
             </tr>

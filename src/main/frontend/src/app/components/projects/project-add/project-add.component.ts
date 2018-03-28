@@ -36,7 +36,6 @@ export class ProjectAddComponent implements OnInit {
   projectTypes = ProjectType;
   availableBlenderVersions: any[];
   projectLoaded: boolean = false;
-  useParts: boolean = true;
   formats = RenderOutputFormat;
   computeMethods = ComputeMethod;
   engines = BlenderEngine;
@@ -82,7 +81,7 @@ export class ProjectAddComponent implements OnInit {
         'Content-Type': 'application/json',
       })
     };
-    if (this.useParts == false) {
+    if (this.projectDetails.useParts == false) {
       this.projectDetails.partsPerFrame = 1;
     }
     this.http.post('/api/project_form/submit_project', JSON.stringify(this.projectDetails), httpOptions).subscribe(() => {
@@ -102,7 +101,15 @@ export class ProjectAddComponent implements OnInit {
 
   returnToProjects(): void {
     this.router.navigateByUrl("/projects").then(() => location.reload());
-    ;
+  }
+
+  setParts() {
+    this.projectDetails.useParts = !this.projectDetails.useParts;
+    if (this.projectDetails.useParts == true) {
+      this.projectDetails.partsPerFrame = 4;
+    } else {
+      this.projectDetails.partsPerFrame = 1;
+    }
   }
 
 }

@@ -168,8 +168,9 @@
             </div>
 
             <div class="form-group">
-              <label for="partsPerFrame">Number of Rendering Parts Per Frame:</label> <span *ngIf="useParts">{{projectDetails.partsPerFrame}}</span>
-              <span *ngIf="!useParts" class="text-danger">Disabled</span>
+              <label for="partsPerFrame">Number of Rendering Parts Per Frame:</label> <span
+              *ngIf="projectDetails.useParts">{{projectDetails.partsPerFrame}}</span>
+              <span *ngIf="!projectDetails.useParts" class="text-danger">Disabled</span>
               <div class="form-inline">
                 <mat-slider [disabled]="!useParts"
                             id="partsPerFrame"
@@ -246,7 +247,7 @@
               <td>Image Scaling Percentage</td>
               <td>{{projectDetails.resPercentage}}&#37;</td>
             </tr>
-            <tr>
+            <tr *ngIf="projectDetails.useParts == true">
               <td>Parts Per Frame</td>
               <td>{{projectDetails.partsPerFrame}}</td>
             </tr>

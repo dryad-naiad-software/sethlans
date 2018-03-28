@@ -63,7 +63,8 @@
                 <div class="btn-group-vertical">
                   <button class="btn btn-outline-primary btn-sm" type="button">Start</button>
                   <button class="btn btn-outline-dark btn-sm" type="button">View</button>
-                  <button class="btn btn-outline-dark btn-sm" type="button">Edit</button>
+                  <button class="btn btn-outline-dark btn-sm" type="button" (click)="editProject(project.id)">Edit
+                  </button>
                   <button class="btn btn-outline-danger btn-sm" type="button" (click)="deleteProject(project.id)">
                     Delete
                   </button>
