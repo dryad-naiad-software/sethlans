@@ -90,9 +90,9 @@ public class ProjectController {
     public List<ProjectInfo> getProjects() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-            return convertBlenderProjectToProjectInfo(blenderProjectDatabaseService.listAllReverse());
+            return convertBlenderProjectsToProjectInfo(blenderProjectDatabaseService.listAllReverse());
         } else {
-            return convertBlenderProjectToProjectInfo(blenderProjectDatabaseService.getProjectsByUser(auth.getName()));
+            return convertBlenderProjectsToProjectInfo(blenderProjectDatabaseService.getProjectsByUser(auth.getName()));
         }
 
     }
@@ -105,6 +105,16 @@ public class ProjectController {
             return true;
         } else {
             return blenderProjectDatabaseService.deleteWithVerification(auth.getName(), id);
+        }
+    }
+
+    @GetMapping(value = "/api/project_ui/project_details/{id}")
+    public ProjectInfo getProject(@PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            return convertBlenderProjectToProjectInfo(blenderProjectDatabaseService.getById(id));
+        } else {
+            return convertBlenderProjectToProjectInfo(blenderProjectDatabaseService.getProjectByUser(auth.getName(), id));
         }
     }
 
@@ -134,7 +144,7 @@ public class ProjectController {
         return false;
     }
 
-    private List<ProjectInfo> convertBlenderProjectToProjectInfo(List<BlenderProject> projectsToConvert) {
+    private List<ProjectInfo> convertBlenderProjectsToProjectInfo(List<BlenderProject> projectsToConvert) {
         List<ProjectInfo> projectsToReturn = new ArrayList<>();
         for (BlenderProject blenderProject : projectsToConvert) {
             ProjectInfo projectInfo = new ProjectInfo();
@@ -150,6 +160,20 @@ public class ProjectController {
             projectsToReturn.add(projectInfo);
         }
         return projectsToReturn;
+    }
+
+    private ProjectInfo convertBlenderProjectToProjectInfo(BlenderProject blenderProject) {
+        ProjectInfo projectInfo = new ProjectInfo();
+        projectInfo.setId(blenderProject.getId());
+        projectInfo.setProjectStatus(blenderProject.getProjectStatus());
+        projectInfo.setProjectType(blenderProject.getProjectType());
+        projectInfo.setProjectName(blenderProject.getProjectName());
+        projectInfo.setSelectedBlenderversion(blenderProject.getBlenderVersion());
+        projectInfo.setRenderOn(blenderProject.getRenderOn());
+        projectInfo.setUsername(blenderProject.getSethlansUser().getUsername());
+        projectInfo.setResolutionX(blenderProject.getResolutionX());
+        projectInfo.setResolutionY(blenderProject.getResolutionY());
+        return projectInfo;
     }
 
 

@@ -88,6 +88,16 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     }
 
     @Override
+    public BlenderProject getProjectByUser(String username, Long id) {
+        BlenderProject blenderProject = blenderProjectRepository.findOne(id);
+        if (blenderProject.getSethlansUser().getUsername().equals(username)) {
+            return blenderProject;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
     public Boolean isProjectDBEntryInUse(String projectUUID) {
         return projectAccessed.contains(projectUUID);
     }

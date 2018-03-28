@@ -24,7 +24,7 @@
         <h4 style="font-family: 'Fjalla One', sans-serif; ">New Project</h4>
       </div>
       <div class="card-body">
-        <div class="col-md-7 m-auto" *ngIf="projectLoaded == false">
+        <div *ngIf="projectLoaded == false">
            <span>Valid files are <strong>.blend</strong> files with packed textures, and <strong>ZIP</strong> files.
              <br/> Use relative paths for all the files in the archive.<br/></span>
           <ul>
@@ -35,7 +35,7 @@
             <li>The path to external data is <strong>relative</strong>.</li>
           </ul>
 
-          <p-fileUpload name="projectFile" (onBeforeSend)="beforeSend($event)"
+          <p-fileUpload name="projectFile" (onBeforeSend)="beforeSend($event)" mode="basic"
                         (onUpload)="loadProjectDetails($event)"
                         url="/api/project_form/upload_project/"
                         accept=".blend,.zip"></p-fileUpload>

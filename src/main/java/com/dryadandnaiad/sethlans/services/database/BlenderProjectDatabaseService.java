@@ -38,6 +38,8 @@ public interface BlenderProjectDatabaseService extends CRUDService<BlenderProjec
 
     List<BlenderProject> listAllReverse();
 
+    BlenderProject getProjectByUser(String username, Long id);
+
     Boolean isProjectDBEntryInUse(String projectUUID);
 
     Boolean isProjectDBEntryInUse(BlenderProject blenderProject);
