@@ -48,17 +48,8 @@ export class ProjectEditComponent implements OnInit {
   ngOnInit() {
   }
 
-  loadProjectDetails(event) {
-    let response: any = JSON.parse(event.xhr.response);
-    this.projectDetails = <Project>response;
-    if (this.projectDetails.projectType == this.projectTypes.STILL_IMAGE) {
-      this.projectDetails.endFrame = 1;
-      this.projectDetails.stepFrame = 1;
-    }
-    if (this.projectDetails.selectedBlenderversion == null) {
-      this.projectDetails.selectedBlenderversion = this.availableBlenderVersions[0];
-    }
-    console.log(this.projectDetails);
+  loadProjectDetails() {
+
     this.projectLoaded = true;
   }
 
