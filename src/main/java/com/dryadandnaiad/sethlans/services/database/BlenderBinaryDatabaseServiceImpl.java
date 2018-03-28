@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,7 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created Mario Estrella on 3/23/17.
@@ -41,6 +43,16 @@ public class BlenderBinaryDatabaseServiceImpl implements BlenderBinaryDatabaseSe
     @Override
     public List<BlenderBinary> listAll() {
         return new ArrayList<>(blenderBinaryRepository.findAll());
+    }
+
+    @Override
+    public Set<String> installedBlenderVersions() {
+        Set<String> installedBlenderVersions = new HashSet<>();
+        List<BlenderBinary> binaries = listAll();
+        for (BlenderBinary binary : binaries) {
+            installedBlenderVersions.add(binary.getBlenderVersion());
+        }
+        return installedBlenderVersions;
     }
 
     @Override

@@ -45,6 +45,9 @@ import {HelpComponent} from "./components/help/help.component";
 import {NodeAddComponent} from "./components/admin/nodes/node-add/node-add.component";
 import {NodeEditComponent} from "./components/admin/nodes/node-edit/node-edit.component";
 import {NodeScanComponent} from "./components/admin/nodes/node-scan/node-scan.component";
+import {ProjectAddComponent} from "./components/projects/project-add/project-add.component";
+import {ProjectEditComponent} from "./components/projects/project-edit/project-edit.component";
+import {ProjectViewComponent} from "./components/projects/project-view/project-view.component";
 
 
 const routes: Routes = [
@@ -65,6 +68,9 @@ const routes: Routes = [
   {path: 'register', component: RegisterUserComponent},
   {path: 'user_settings', component: UserSettingsComponent},
   {path: 'projects', component: ProjectsComponent},
+  {path: 'projects/add', component: ProjectAddComponent},
+  {path: 'projects/edit', component: ProjectEditComponent},
+  {path: 'projects/view', component: ProjectViewComponent},
   {
     path: '', component: SetupWizardComponent, outlet: 'setup', children: [
       {path: '', component: SetupModeComponent, outlet: 'mode'},

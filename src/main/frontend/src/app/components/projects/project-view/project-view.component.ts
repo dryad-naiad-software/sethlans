@@ -17,18 +17,19 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.database;
+import {Component, OnInit} from '@angular/core';
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
+@Component({
+  selector: 'app-project-view',
+  templateUrl: './project-view.component.html',
+  styleUrls: ['./project-view.component.scss']
+})
+export class ProjectViewComponent implements OnInit {
 
-import java.util.Set;
+  constructor() {
+  }
 
-/**
- * Created Mario Estrella on 3/23/17.
- * Dryad and Naiad Software LLC
- * mestrella@dryadandnaiad.com
- * Project: sethlans
- */
-public interface BlenderBinaryDatabaseService extends CRUDService<BlenderBinary> {
-    Set<String> installedBlenderVersions();
+  ngOnInit() {
+  }
+
 }

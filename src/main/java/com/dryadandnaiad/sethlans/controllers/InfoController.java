@@ -24,10 +24,12 @@ import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
+import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created Mario Estrella on 2/11/18.
@@ -46,6 +49,7 @@ import java.util.List;
 @RequestMapping("/api/info")
 public class InfoController {
     private static final Logger LOG = LoggerFactory.getLogger(InfoController.class);
+    private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
 
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
@@ -66,6 +70,10 @@ public class InfoController {
         return firstTime;
     }
 
+    @GetMapping(value = {"/installed_blender_versions"})
+    public Set<String> getInstalledBlenderVersions() {
+        return blenderBinaryDatabaseService.installedBlenderVersions();
+    }
 
     @GetMapping(value = {"/version"})
     public String getVersion() {
@@ -122,5 +130,8 @@ public class InfoController {
         return SethlansUtils.getIP();
     }
 
-
+    @Autowired
+    public void setBlenderBinaryDatabaseService(BlenderBinaryDatabaseService blenderBinaryDatabaseService) {
+        this.blenderBinaryDatabaseService = blenderBinaryDatabaseService;
+    }
 }

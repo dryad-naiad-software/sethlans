@@ -71,6 +71,9 @@ import {ServerListService} from "./services/server_list.service";
 import {NodeAddComponent} from './components/admin/nodes/node-add/node-add.component';
 import {NodeScanComponent} from './components/admin/nodes/node-scan/node-scan.component';
 import {NodeEditComponent} from './components/admin/nodes/node-edit/node-edit.component';
+import {ProjectAddComponent} from './components/projects/project-add/project-add.component';
+import {ProjectEditComponent} from './components/projects/project-edit/project-edit.component';
+import {ProjectViewComponent} from './components/projects/project-view/project-view.component';
 
 
 @NgModule({
@@ -110,7 +113,10 @@ import {NodeEditComponent} from './components/admin/nodes/node-edit/node-edit.co
     ServerScreenComponent,
     NodeAddComponent,
     NodeScanComponent,
-    NodeEditComponent
+    NodeEditComponent,
+    ProjectAddComponent,
+    ProjectEditComponent,
+    ProjectViewComponent
   ],
   imports: [
     BrowserModule,

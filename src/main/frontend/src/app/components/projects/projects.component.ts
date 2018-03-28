@@ -17,14 +17,9 @@
  *
  */
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import {Project} from "../../models/project.model";
-import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
-import {RenderOutputFormat} from "../../enums/render_output_format.enum";
-import {ProjectType} from "../../enums/project_type.enum";
-import {ComputeMethod} from "../../enums/compute.method.enum";
-import {BlenderEngine} from "../../enums/blender_engine.enum";
 import {ProjectListService} from "../../services/project_list.service";
 import {Subject} from "rxjs/Subject";
 import {DataTableDirective} from "angular-datatables";
@@ -43,18 +38,11 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
   placeholder: any = "assets/images/placeholder.svg";
   nodesReady: boolean = false;
   projectSize: number;
-  projectDetails: Project;
   projects: Project[];
-  availableBlenderVersions: any[];
-  formats = RenderOutputFormat;
-  projectTypes = ProjectType;
-  computeMethods = ComputeMethod;
-  engines = BlenderEngine;
-  useParts: boolean = true;
   dtOptions: DataTables.Settings = {};
 
 
-  constructor(private http: HttpClient, private modalService: NgbModal, private projectService: ProjectListService, private router: Router) {
+  constructor(private http: HttpClient, private projectService: ProjectListService, private router: Router) {
   }
 
   ngAfterViewInit(): void {
@@ -66,7 +54,6 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.getNodeStatus();
-    this.getAvailableBlenderVersions();
     this.getProjectListSize();
     this.dtOptions = {
     };
@@ -84,13 +71,7 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
     })
   }
 
-  getAvailableBlenderVersions() {
-    this.http.get('/api/info/blender_versions')
-      .subscribe(
-        (blenderVersions: any[]) => {
-          this.availableBlenderVersions = blenderVersions;
-        });
-  }
+
 
   getProjectListSize() {
     this.http.get<number>("/api/project_ui/num_of_projects").subscribe((projectSize: number) => {
@@ -107,43 +88,6 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  submitProject() {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      })
-    };
-    if (this.useParts == false) {
-      this.projectDetails.partsPerFrame = 1;
-    }
-    this.http.post('/api/project_form/submit_project', JSON.stringify(this.projectDetails), httpOptions).subscribe(() => {
-      this.router.navigateByUrl("/projects").then(() => {
-        location.reload();
-      });
-    })
-
-  }
-
-  loadProjectDetails(content, event) {
-    let response: any = JSON.parse(event.xhr.response);
-    this.projectDetails = <Project>response;
-    if (this.projectDetails.projectType == this.projectTypes.STILL_IMAGE) {
-      this.projectDetails.endFrame = 1;
-      this.projectDetails.stepFrame = 1;
-    }
-    if (this.projectDetails.selectedBlenderversion == null) {
-      this.projectDetails.selectedBlenderversion = this.availableBlenderVersions[0];
-    }
-    console.log(this.projectDetails);
-    let options: NgbModalOptions = {
-      backdrop: "static"
-    };
-    this.modalService.open(content, options);
-  }
-
-  beforeSend(event: any) {
-    event.xhr.setRequestHeader('X-XSRF-TOKEN', document.cookie.slice(document.cookie.indexOf("TOKEN=") + "TOKEN=".length));
-  }
 
   rerender(): void {
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
@@ -156,13 +100,10 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
     });
   }
 
-
-  openModal(content) {
-    let options: NgbModalOptions = {
-      backdrop: "static"
-    };
-    this.modalService.open(content, options);
+  addProject() {
+    this.router.navigateByUrl("/projects/add").then(() => location.reload());
   }
+
 
 
 }

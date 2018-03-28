@@ -17,18 +17,28 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.database;
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
+import {ProjectViewComponent} from './project-view.component';
 
-import java.util.Set;
+describe('ProjectViewComponent', () => {
+  let component: ProjectViewComponent;
+  let fixture: ComponentFixture<ProjectViewComponent>;
 
-/**
- * Created Mario Estrella on 3/23/17.
- * Dryad and Naiad Software LLC
- * mestrella@dryadandnaiad.com
- * Project: sethlans
- */
-public interface BlenderBinaryDatabaseService extends CRUDService<BlenderBinary> {
-    Set<String> installedBlenderVersions();
-}
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ProjectViewComponent]
+    })
+      .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ProjectViewComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
