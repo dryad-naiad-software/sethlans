@@ -31,6 +31,8 @@ export class NodeScanComponent implements OnInit {
   nodeScanComplete: boolean = false;
   scanList: NodeInfo[];
   selectedNodeIP: string[] = [];
+  dtOptions: DataTables.Settings = {};
+
 
 
   constructor(private http: HttpClient, private router: Router) {
@@ -38,6 +40,10 @@ export class NodeScanComponent implements OnInit {
 
   ngOnInit() {
     this.scanNode();
+    this.dtOptions = {
+      ordering: false
+    };
+
   }
 
   scanNode() {

@@ -26,10 +26,10 @@
         <p class="text-center" *ngIf="nodeScanComplete == false">Scanning for Nodes on the network. &nbsp; &nbsp;<span
           class="fa fa-circle-o-notch fa-spin"></span></p>
         <div class="table-responsive" *ngIf="nodeScanComplete == true && scanList.length > 0">
-          <table datatable class="table">
+          <table datatable [dtOptions]="dtOptions" class="table">
             <thead class="thead-light">
             <tr>
-              <th data-orderable="false"></th>
+              <th></th>
               <th>Hostname</th>
               <th>IP Address</th>
               <th>Network Port</th>
