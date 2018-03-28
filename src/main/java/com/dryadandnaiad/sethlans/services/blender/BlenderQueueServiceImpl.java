@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
@@ -170,7 +171,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                     sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                 }
             }
-            blenderProject.setPaused(true);
+            blenderProject.setProjectStatus(ProjectStatus.PAUSED);
             blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
             blenderProjectDatabaseService.saveOrUpdate(blenderProject);
 

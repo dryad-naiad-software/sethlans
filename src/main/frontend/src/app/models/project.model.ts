@@ -20,11 +20,13 @@ import {ComputeMethod} from "../enums/compute.method.enum";
 import {ProjectType} from "../enums/project_type.enum";
 import {BlenderEngine} from "../enums/blender_engine.enum";
 import {RenderOutputFormat} from "../enums/render_output_format.enum";
+import {ProjectStatus} from "../enums/project_status.enum";
 
 export class Project {
   id: number;
   projectName: string;
   projectType: ProjectType;
+  projectStatus: ProjectStatus;
   renderOn: ComputeMethod;
   resolutionX: number;
   resolutionY: number;

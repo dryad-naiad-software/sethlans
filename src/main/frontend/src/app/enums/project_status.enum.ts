@@ -16,30 +16,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
-package com.dryadandnaiad.sethlans.domains.info;
-
-import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.enums.ProjectStatus;
-import com.dryadandnaiad.sethlans.enums.ProjectType;
-import lombok.Data;
-
-/**
- * Created Mario Estrella on 3/12/2018.
- * Dryad and Naiad Software LLC
- * mestrella@dryadandnaiad.com
- * Project: sethlans
- */
-@Data
-public class ProjectInfo {
-    private Long id;
-    private String projectName;
-    private String selectedBlenderversion;
-    private ProjectType projectType;
-    private ComputeType renderOn;
-    private int resolutionX;
-    private int resolutionY;
-    private String username;
-    private ProjectStatus projectStatus;
-    private boolean allImagesProcessed;
+export enum ProjectStatus {
+  NOT_STARTED,
+  STARTED,
+  PAUSED,
+  FINISHED
 }

@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueIte
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.blender.BlenderProjectService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
@@ -231,7 +232,7 @@ public class ProjectRestController {
                 if (remainingPartsForFrame == 0) {
                     if (blenderProjectService.combineParts(blenderProject, frame_number)) {
                         if (remainingTotalQueue == 0) {
-                            blenderProject.setFinished(true);
+                            blenderProject.setProjectStatus(ProjectStatus.FINISHED);
                             blenderProject.setAllImagesProcessed(true);
                         }
                     }

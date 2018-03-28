@@ -20,10 +20,7 @@
 package com.dryadandnaiad.sethlans.forms;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlendFile;
-import com.dryadandnaiad.sethlans.enums.BlenderEngine;
-import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.enums.ProjectType;
-import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
+import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import lombok.Data;
 
@@ -44,6 +41,7 @@ public class ProjectForm {
     private int resolutionY;
     private int resPercentage;
     private ProjectType projectType;
+    private ProjectStatus projectStatus;
     private BlenderEngine blenderEngine;
     private String uploadedFile;
     private String fileLocation;

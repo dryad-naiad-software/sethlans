@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.info.ProjectInfo;
+import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
@@ -126,6 +127,7 @@ public class ProjectController {
             LOG.debug("Project Submitted" + projectForm);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             projectForm.setUsername(auth.getName());
+            projectForm.setProjectStatus(ProjectStatus.NOT_STARTED);
             blenderProjectDatabaseService.saveOrUpdateProjectForm(projectForm);
             return true;
         }
@@ -137,6 +139,7 @@ public class ProjectController {
         for (BlenderProject blenderProject : projectsToConvert) {
             ProjectInfo projectInfo = new ProjectInfo();
             projectInfo.setId(blenderProject.getId());
+            projectInfo.setProjectStatus(blenderProject.getProjectStatus());
             projectInfo.setProjectType(blenderProject.getProjectType());
             projectInfo.setProjectName(blenderProject.getProjectName());
             projectInfo.setSelectedBlenderversion(blenderProject.getBlenderVersion());

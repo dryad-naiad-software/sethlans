@@ -21,10 +21,7 @@ package com.dryadandnaiad.sethlans.domains.database.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
-import com.dryadandnaiad.sethlans.enums.BlenderEngine;
-import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.enums.ProjectType;
-import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
+import com.dryadandnaiad.sethlans.enums.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -58,10 +55,8 @@ public class BlenderProject extends AbstractEntityClass {
     private int resPercentage;
     private int currentPercentage;
     private int partsPerFrame;
-    private boolean started;
-    private boolean finished;
     private boolean allImagesProcessed;
-    private boolean paused;
+    private ProjectStatus projectStatus;
     private String projectName;
     private String blendFilename;
     private String blendFileLocation;
@@ -105,9 +100,7 @@ public class BlenderProject extends AbstractEntityClass {
                 ", blendFileLocation='" + blendFileLocation + '\'' +
                 ", blenderVersion='" + blenderVersion + '\'' +
                 ", currentFrameThumbnail='" + currentFrameThumbnail + '\'' +
-                ", started=" + started +
-                ", finished=" + finished +
-                ", paused=" + paused +
+                ", projectStatus ='" + projectStatus + '\'' +
                 ", currentPercentage=" + currentPercentage +
                 ", partsPerFrame=" + partsPerFrame +
                 ", frameList=" + framePartList +
