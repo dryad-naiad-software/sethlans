@@ -104,6 +104,14 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
     this.router.navigateByUrl("/projects/add").then(() => location.reload());
   }
 
+  deleteProject(id) {
+    this.http.get('/api/project_actions/delete_project/' + id + '/').subscribe((success: boolean) => {
+      if (success == true) {
+        this.router.navigateByUrl('/projects').then(() => location.reload());
+      }
+    })
+  }
+
 
 
 }

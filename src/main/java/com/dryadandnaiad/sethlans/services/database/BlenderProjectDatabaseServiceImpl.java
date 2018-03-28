@@ -66,6 +66,18 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     }
 
     @Override
+    public boolean deleteWithVerification(String username, Long id) {
+        BlenderProject blenderProject = blenderProjectRepository.findOne(id);
+        if (blenderProject.getSethlansUser().getUsername().equals(username)) {
+            delete(id);
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    @Override
     public List<BlenderProject> listAllReverse() {
         return new ArrayList<>(Lists.reverse(listAll()));
     }

@@ -22,6 +22,7 @@ import {BlenderEngine} from "../enums/blender_engine.enum";
 import {RenderOutputFormat} from "../enums/render_output_format.enum";
 
 export class Project {
+  id: number;
   projectName: string;
   projectType: ProjectType;
   renderOn: ComputeMethod;
