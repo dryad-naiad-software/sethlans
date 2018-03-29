@@ -18,7 +18,7 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {ActivatedRoute, Router} from "@angular/router";
 import {ComputeMethod} from "../../../enums/compute.method.enum";
 import {RenderOutputFormat} from "../../../enums/render_output_format.enum";
@@ -54,15 +54,38 @@ export class ProjectEditComponent implements OnInit {
     })
   }
 
+  setParts() {
+    if (this.projectDetails.useParts == true) {
+      this.projectDetails.partsPerFrame = 4;
+    } else {
+      this.projectDetails.partsPerFrame = 1;
+    }
+  }
+
   loadProjectDetails() {
     this.http.get('/api/project_ui/project_details/' + this.id + '/').subscribe((projectDetails: Project) => {
       this.projectDetails = projectDetails;
       this.projectLoaded = true;
       console.log(projectDetails);
     });
-
-
   }
+
+  editProject() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    if (this.projectDetails.useParts == false) {
+      this.projectDetails.partsPerFrame = 1;
+    }
+    this.http.post('/api/project_form/edit_project/' + this.id + '/', JSON.stringify(this.projectDetails), httpOptions).subscribe((success: boolean) => {
+      this.router.navigateByUrl("/projects").then(() => {
+        location.reload();
+      });
+    })
+  }
+
 
   getAvailableBlenderVersions() {
     this.http.get('/api/info/installed_blender_versions')
@@ -84,13 +107,5 @@ export class ProjectEditComponent implements OnInit {
     this.router.navigateByUrl("/projects").then(() => location.reload());
   }
 
-  setParts() {
-    this.projectDetails.useParts = !this.projectDetails.useParts;
-    if (this.projectDetails.useParts == true) {
-      this.projectDetails.partsPerFrame = 4;
-    } else {
-      this.projectDetails.partsPerFrame = 1;
-    }
-  }
 
 }

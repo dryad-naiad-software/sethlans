@@ -144,6 +144,32 @@ public class ProjectController {
         return false;
     }
 
+    @PostMapping(value = "/api/project_form/edit_project/{id}")
+    public boolean editProject(@RequestBody ProjectForm projectForm, @PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
+        if (projectForm != null && blenderProject != null) {
+            LOG.debug("Project Edited" + projectForm);
+            blenderProject.setProjectName(projectForm.getProjectName());
+            blenderProject.setBlenderVersion(projectForm.getSelectedBlenderversion());
+            blenderProject.setRenderOutputFormat(projectForm.getOutputFormat());
+            blenderProject.setProjectType(projectForm.getProjectType());
+            blenderProject.setStartFrame(projectForm.getStartFrame());
+            blenderProject.setEndFrame(projectForm.getEndFrame());
+            blenderProject.setStepFrame(projectForm.getStepFrame());
+            blenderProject.setRenderOn(projectForm.getRenderOn());
+            blenderProject.setBlenderEngine(projectForm.getBlenderEngine());
+            blenderProject.setSamples(projectForm.getSamples());
+            blenderProject.setResolutionX(projectForm.getResolutionX());
+            blenderProject.setResolutionY(projectForm.getResolutionY());
+            blenderProject.setResPercentage(projectForm.getResPercentage());
+            blenderProject.setPartsPerFrame(projectForm.getPartsPerFrame());
+            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+            return true;
+        }
+        return false;
+    }
+
     private List<ProjectInfo> convertBlenderProjectsToProjectInfo(List<BlenderProject> projectsToConvert) {
         List<ProjectInfo> projectsToReturn = new ArrayList<>();
         for (BlenderProject blenderProject : projectsToConvert) {

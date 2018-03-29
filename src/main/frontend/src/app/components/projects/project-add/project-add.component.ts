@@ -60,6 +60,8 @@ export class ProjectAddComponent implements OnInit {
       this.projectDetails.selectedBlenderversion = this.availableBlenderVersions[0];
     }
     console.log(this.projectDetails);
+    this.projectDetails.useParts = true;
+    this.projectDetails.partsPerFrame = 4;
     this.projectLoaded = true;
   }
 
@@ -104,7 +106,6 @@ export class ProjectAddComponent implements OnInit {
   }
 
   setParts() {
-    this.projectDetails.useParts = !this.projectDetails.useParts;
     if (this.projectDetails.useParts == true) {
       this.projectDetails.partsPerFrame = 4;
     } else {

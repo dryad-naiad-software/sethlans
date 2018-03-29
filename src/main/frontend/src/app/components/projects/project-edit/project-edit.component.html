@@ -153,7 +153,7 @@
             </div>
             <div class="form-group">
               <input type="checkbox" id="useParts" name="useParts" [(ngModel)]="projectDetails.useParts"
-                     onchange="setParts()">
+                     (change)="setParts()">
               <label for="useParts">Split frame into parts for rendering</label>
             </div>
 
@@ -162,7 +162,7 @@
               *ngIf="projectDetails.useParts">{{projectDetails.partsPerFrame}}</span>
               <span *ngIf="!projectDetails.useParts" class="text-danger">Disabled</span>
               <div class="form-inline">
-                <mat-slider [disabled]="!useParts"
+                <mat-slider [disabled]="!projectDetails.useParts"
                             id="partsPerFrame"
                             name="partsPerFrame"
                             min="2"
@@ -247,11 +247,17 @@
             Back
           </button>
           <button class="btn btn-outline-dark ml-auto float-right"
-                  (click)="submitProject()">
-            Submit Project
+                  (click)="editProject()">
+            Edit Project
           </button>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+
+<!--<div>-->
+<!--Debugging:-->
+<!--<pre>{{ projectDetails | json }}</pre>-->
+<!--</div>-->

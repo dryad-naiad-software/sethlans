@@ -51,7 +51,6 @@ public class ProjectForm {
     private String username;
     private String uuid;
     private int partsPerFrame;
-
     public ProjectForm() {
         this.startFrame = 1;
         this.endFrame = 200;

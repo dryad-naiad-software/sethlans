@@ -18,6 +18,9 @@
  */
 
 import {Component, OnInit} from '@angular/core';
+import {Project} from "../../../models/project.model";
+import {ActivatedRoute, Router} from "@angular/router";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-project-view',
@@ -25,11 +28,32 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./project-view.component.scss']
 })
 export class ProjectViewComponent implements OnInit {
+  projectDetails: Project;
+  id: number;
+  projectLoaded: boolean = false;
+  placeholder: any = "assets/images/placeholder.svg";
 
-  constructor() {
+
+  constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute) {
   }
 
   ngOnInit() {
+    this.route.params.subscribe(params => {
+      this.id = +params['id'];
+      this.loadProjectDetails();
+    })
+  }
+
+  loadProjectDetails() {
+    this.http.get('/api/project_ui/project_details/' + this.id + '/').subscribe((projectDetails: Project) => {
+      this.projectDetails = projectDetails;
+      this.projectLoaded = true;
+      console.log(projectDetails);
+    });
+  }
+
+  returnToProjects(): void {
+    this.router.navigateByUrl("/projects").then(() => location.reload());
   }
 
 }
