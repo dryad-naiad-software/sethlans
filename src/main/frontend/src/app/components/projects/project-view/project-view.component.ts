@@ -21,6 +21,7 @@ import {Component, OnInit} from '@angular/core';
 import {Project} from "../../../models/project.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
+import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: 'app-project-view',
@@ -32,6 +33,8 @@ export class ProjectViewComponent implements OnInit {
   id: number;
   projectLoaded: boolean = false;
   placeholder: any = "assets/images/placeholder.svg";
+  currentProgress: number;
+
 
 
   constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute) {
@@ -41,7 +44,13 @@ export class ProjectViewComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.id = +params['id'];
       this.loadProjectDetails();
-    })
+      this.currentProgressCheck();
+    });
+    let timer = Observable.timer(5000, 5000);
+    timer.subscribe(() => {
+      this.currentProgressCheck();
+    });
+
   }
 
   loadProjectDetails() {
@@ -50,6 +59,12 @@ export class ProjectViewComponent implements OnInit {
       this.projectLoaded = true;
       console.log(projectDetails);
     });
+  }
+
+  currentProgressCheck() {
+    this.http.get('/api/project_ui/progress/' + this.id + '/').subscribe((currentProgress: number) => {
+      this.currentProgress = currentProgress;
+    })
   }
 
   returnToProjects(): void {

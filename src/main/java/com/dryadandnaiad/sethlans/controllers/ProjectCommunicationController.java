@@ -61,8 +61,8 @@ import java.util.Random;
  */
 @RestController
 @Profile({"SERVER", "DUAL"})
-public class ProjectRestController {
-    private static final Logger LOG = LoggerFactory.getLogger(ProjectRestController.class);
+public class ProjectCommunicationController {
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectCommunicationController.class);
 
     @Value("${sethlans.benchmarkDir}")
     private String benchmarkDir;

@@ -125,7 +125,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                 LOG.debug("Running render task using " + deviceID);
                 for (String device : deviceList) {
                     deviceIDList.add(StringUtils.substringAfter(device, "_"));
-                    SethlansUtils.isCuda(device);
+                    isCuda = SethlansUtils.isCuda(device);
                 }
                 String script = blenderPythonScriptService.writeRenderPythonScript(blenderRenderTask.getComputeType(),
                         blenderRenderTask.getRenderDir(), deviceIDList,

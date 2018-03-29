@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.domains.info.ProjectInfo;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
+import com.dryadandnaiad.sethlans.services.blender.BlenderProjectService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
@@ -69,6 +70,7 @@ public class ProjectController {
     private BlenderParseBlendFileService blenderParseBlenderFileService;
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
+    private BlenderProjectService blenderProjectService;
 
 
     @GetMapping(value = "/api/project_ui/num_of_projects")
@@ -106,6 +108,26 @@ public class ProjectController {
         } else {
             return blenderProjectDatabaseService.deleteWithVerification(auth.getName(), id);
         }
+    }
+
+    @GetMapping(value = "/api/project_actions/start_project/{id}")
+    public boolean startProject(@PathVariable Long id) {
+        BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
+        blenderProject.setProjectStatus(ProjectStatus.STARTED);
+        blenderProject = blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+        blenderProjectService.startProject(blenderProject);
+        return true;
+    }
+
+    @GetMapping(value = "/api/project_ui/progress/{id}")
+    public int currentProgress(@PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            return blenderProjectDatabaseService.getById(id).getCurrentPercentage();
+        } else {
+            return blenderProjectDatabaseService.getProjectByUser(auth.getName(), id).getCurrentPercentage();
+        }
+
     }
 
     @GetMapping(value = "/api/project_ui/project_details/{id}")
@@ -225,5 +247,10 @@ public class ProjectController {
     @Autowired
     public void setBlenderProjectDatabaseService(BlenderProjectDatabaseService blenderProjectDatabaseService) {
         this.blenderProjectDatabaseService = blenderProjectDatabaseService;
+    }
+
+    @Autowired
+    public void setBlenderProjectService(BlenderProjectService blenderProjectService) {
+        this.blenderProjectService = blenderProjectService;
     }
 }

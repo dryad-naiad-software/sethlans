@@ -61,7 +61,9 @@
               </td>
               <td>
                 <div class="btn-group-vertical">
-                  <button class="btn btn-outline-primary btn-sm" type="button">Start</button>
+                  <button class="btn btn-outline-primary btn-sm" type="button" (click)="startProject(project.id)">
+                    Start
+                  </button>
                   <button class="btn btn-outline-dark btn-sm" type="button" (click)="viewProject(project.id)">View
                   </button>
                   <button class="btn btn-outline-dark btn-sm" type="button" (click)="editProject(project.id)">Edit

@@ -72,6 +72,13 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
   }
 
 
+  startProject(id) {
+    this.http.get("/api/project_actions/start_project/" + id + "/").subscribe((success: boolean) => {
+      if (success) {
+        this.router.navigateByUrl("/projects").then(() => location.reload());
+      }
+    });
+  }
 
   getProjectListSize() {
     this.http.get<number>("/api/project_ui/num_of_projects").subscribe((projectSize: number) => {

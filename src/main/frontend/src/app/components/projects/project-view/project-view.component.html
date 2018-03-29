@@ -24,7 +24,7 @@
         <h4 style="font-family: 'Fjalla One', sans-serif; ">Project Details - {{projectDetails.projectName}}</h4>
       </div>
       <div class="card-body">
-        <table class="table table-striped table-sm">
+        <table class="table table-sm">
           <tbody>
           <tr>
             <td>Project Status</td>
@@ -85,7 +85,8 @@
           <tr>
             <td>Current Progress</td>
             <td class="pt-2 pb-2">
-              <ngb-progressbar showValue="true" type="success" [striped]="true" [value]="55"></ngb-progressbar>
+              <ngb-progressbar showValue="true" type="success" [striped]="true"
+                               [value]="currentProgress"></ngb-progressbar>
             </td>
           </tr>
           <tr>
