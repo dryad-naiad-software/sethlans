@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.components;
 
 import com.dryadandnaiad.sethlans.services.blender.BlenderDownloadService;
+import com.dryadandnaiad.sethlans.services.blender.BlenderProcessRenderQueueService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderQueueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -37,12 +38,18 @@ import javax.annotation.PostConstruct;
 @Component
 public class ServerBackgroundComponent {
     private BlenderQueueService blenderQueueService;
+    private BlenderProcessRenderQueueService blenderProcessRenderQueueService;
 
     private BlenderDownloadService blenderDownloadService;
 
     @PostConstruct
-    public void startRenderQueue() {
+    public void startQueue() {
         blenderQueueService.startQueue();
+    }
+
+    @PostConstruct
+    public void RenderQueue() {
+        blenderProcessRenderQueueService.startQueue();
     }
 
 
@@ -61,5 +68,10 @@ public class ServerBackgroundComponent {
     @Autowired
     public void setBlenderDownloadService(BlenderDownloadService blenderDownloadService) {
         this.blenderDownloadService = blenderDownloadService;
+    }
+
+    @Autowired
+    public void setBlenderProcessRenderQueueService(BlenderProcessRenderQueueService blenderProcessRenderQueueService) {
+        this.blenderProcessRenderQueueService = blenderProcessRenderQueueService;
     }
 }

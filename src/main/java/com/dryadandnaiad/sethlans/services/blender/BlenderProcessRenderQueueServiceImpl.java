@@ -49,8 +49,8 @@ import java.util.List;
  * Project: sethlans
  */
 @Service
-public class BlenderProcessFilesQueueServiceImpl implements BlenderProcessFilesQueueService {
-    private static final Logger LOG = LoggerFactory.getLogger(BlenderProcessFilesQueueServiceImpl.class);
+public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRenderQueueService {
+    private static final Logger LOG = LoggerFactory.getLogger(BlenderProcessRenderQueueServiceImpl.class);
     private BlenderProcessQueueDatabaseService blenderProcessQueueDatabaseService;
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
@@ -69,8 +69,14 @@ public class BlenderProcessFilesQueueServiceImpl implements BlenderProcessFilesQ
 
     }
 
+    @Override
     @Async
     public void startQueue() {
+        try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            LOG.debug("Stopping Render Queue Service");
+        }
         while (true) {
             try {
                 Thread.sleep(5000);
@@ -157,7 +163,7 @@ public class BlenderProcessFilesQueueServiceImpl implements BlenderProcessFilesQ
 
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                LOG.debug("Stopping Render Queue Service");
             }
 
         }

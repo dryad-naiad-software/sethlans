@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueItem;
+import org.springframework.scheduling.annotation.Async;
 
 /**
  * Created Mario Estrella on 3/30/2018.
@@ -27,7 +28,10 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueIt
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderProcessFilesQueueService {
+public interface BlenderProcessRenderQueueService {
 
     void addQueueItem(BlenderProcessQueueItem blenderProcessQueueItem);
+
+    @Async
+    void startQueue();
 }

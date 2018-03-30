@@ -24,7 +24,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.services.blender.BlenderProcessFilesQueueService;
+import com.dryadandnaiad.sethlans.services.blender.BlenderProcessRenderQueueService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
@@ -70,7 +70,7 @@ public class ProjectCommunicationController {
 
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
-    private BlenderProcessFilesQueueService blenderProcessFilesQueueService;
+    private BlenderProcessRenderQueueService blenderProcessRenderQueueService;
 
 
     @GetMapping(value = "/api/project/blender_binary")
@@ -157,7 +157,7 @@ public class ProjectCommunicationController {
                 blenderProcessQueueItem.setPart(part);
                 blenderProcessQueueItem.setPart_number(part_number);
                 blenderProcessQueueItem.setFrame_number(frame_number);
-                blenderProcessFilesQueueService.addQueueItem(blenderProcessQueueItem);
+                blenderProcessRenderQueueService.addQueueItem(blenderProcessQueueItem);
 
 
             }
@@ -190,7 +190,7 @@ public class ProjectCommunicationController {
 
 
     @Autowired
-    public void setBlenderProcessFilesQueueService(BlenderProcessFilesQueueService blenderProcessFilesQueueService) {
-        this.blenderProcessFilesQueueService = blenderProcessFilesQueueService;
+    public void setBlenderProcessRenderQueueService(BlenderProcessRenderQueueService blenderProcessRenderQueueService) {
+        this.blenderProcessRenderQueueService = blenderProcessRenderQueueService;
     }
 }
