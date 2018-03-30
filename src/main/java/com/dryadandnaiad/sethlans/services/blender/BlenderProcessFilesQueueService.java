@@ -17,32 +17,17 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.database;
+package com.dryadandnaiad.sethlans.services.blender;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
-import com.dryadandnaiad.sethlans.forms.ProjectForm;
-
-import java.util.List;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueItem;
 
 /**
- * Created Mario Estrella on 4/2/17.
+ * Created Mario Estrella on 3/30/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderProjectDatabaseService extends CRUDService<BlenderProject> {
+public interface BlenderProcessFilesQueueService {
 
-    List<BlenderProject> getProjectsByUser(String username);
-
-    boolean deleteWithVerification(String username, Long id);
-
-    List<BlenderProject> listAllReverse();
-
-    BlenderProject getProjectByUser(String username, Long id);
-
-    BlenderProject getByProjectUUID(String projectUUID);
-
-    BlenderProject saveOrUpdateProjectForm(ProjectForm projectForm);
-
-    void delete(BlenderProject blenderProject);
+    void addQueueItem(BlenderProcessQueueItem blenderProcessQueueItem);
 }

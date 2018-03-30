@@ -30,9 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created Mario Estrella on 4/2/17.
@@ -45,7 +43,6 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     private BlenderProjectRepository blenderProjectRepository;
     private ProjectFormToBlenderProject projectFormToBlenderProject;
     private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectDatabaseServiceImpl.class);
-    private Set<String> projectAccessed = new HashSet<>();
 
     @Override
     public List<BlenderProject> listAll() {
@@ -97,27 +94,6 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
         }
     }
 
-    @Override
-    public Boolean isProjectDBEntryInUse(String projectUUID) {
-        return projectAccessed.contains(projectUUID);
-    }
-
-    @Override
-    public Boolean isProjectDBEntryInUse(BlenderProject blenderProject) {
-        return projectAccessed.contains(blenderProject.getProject_uuid());
-    }
-
-    @Override
-    public boolean releaseObject(String projectUUID) {
-        return projectAccessed.remove(projectUUID);
-    }
-
-    @Override
-    public BlenderProject restControllerGetProjectProxy(String projectUUID) {
-        BlenderProject blenderProject = getByProjectUUID(projectUUID);
-        projectAccessed.add(projectUUID);
-        return blenderProject;
-    }
 
     @Override
     public BlenderProject getByProjectUUID(String projectUUID) {

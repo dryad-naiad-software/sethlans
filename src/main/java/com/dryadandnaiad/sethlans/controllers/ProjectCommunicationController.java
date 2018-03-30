@@ -19,16 +19,13 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.enums.ProjectStatus;
-import com.dryadandnaiad.sethlans.services.blender.BlenderProjectService;
+import com.dryadandnaiad.sethlans.services.blender.BlenderProcessFilesQueueService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
-import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -46,12 +43,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Random;
 
 /**
  * Created Mario Estrella on 12/10/17.
@@ -79,8 +70,7 @@ public class ProjectCommunicationController {
 
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
-    private BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService;
-    private BlenderProjectService blenderProjectService;
+    private BlenderProcessFilesQueueService blenderProcessFilesQueueService;
 
 
     @GetMapping(value = "/api/project/blender_binary")
@@ -159,94 +149,20 @@ public class ProjectCommunicationController {
                                 @RequestParam int frame_number) {
         if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
-        }
-        if (!part.isEmpty()) {
-            try {
-                String hostname = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid).getHostname();
-                // For busy environments with lots of nodes this prevents the server from getting overwhelmed.
-                Integer randomSleep;
-                Random r = new Random();
-                randomSleep = r.nextInt(15000 - 5000) + 5000;
-                LOG.debug("Render Task received from " + hostname + " throttling for " + randomSleep + " milliseconds");
-                Thread.sleep(randomSleep);
+        } else {
+            if (!part.isEmpty()) {
+                BlenderProcessQueueItem blenderProcessQueueItem = new BlenderProcessQueueItem();
+                blenderProcessQueueItem.setConnection_uuid(connection_uuid);
+                blenderProcessQueueItem.setProject_uuid(project_uuid);
+                blenderProcessQueueItem.setPart(part);
+                blenderProcessQueueItem.setPart_number(part_number);
+                blenderProcessQueueItem.setFrame_number(frame_number);
+                blenderProcessFilesQueueService.addQueueItem(blenderProcessQueueItem);
 
-                File storedDir = null;
-                // Additional check to avoid writing to the same project at the same time.
-                LOG.debug("Checking to see if project is in use.");
-                while (blenderProjectDatabaseService.isProjectDBEntryInUse(project_uuid)) {
-                    randomSleep = r.nextInt(30000 - 5000) + 5000;
-                    Thread.sleep(randomSleep);
-                    LOG.debug("Project in use, sleeping for " + randomSleep);
 
-                }
-                LOG.debug("Project is not in use, processing render task from " + hostname);
-                BlenderProject blenderProject = blenderProjectDatabaseService.restControllerGetProjectProxy(project_uuid);
-                List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.queueItemsByProjectUUID(project_uuid);
-                int projectTotalQueue = blenderProject.getPartsPerFrame() * blenderProject.getTotalNumOfFrames();
-                int remainingTotalQueue = projectTotalQueue;
-                int remainingPartsForFrame = 0;
-                for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
-                    if (blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() == frame_number &&
-                            blenderRenderQueueItem.getBlenderFramePart().getPartNumber() == part_number) {
-                        blenderRenderQueueItem.setRendering(false);
-                        blenderRenderQueueItem.setComplete(true);
-                        blenderRenderQueueItem.setPaused(false);
-                        blenderRenderQueueItem.getBlenderFramePart().setStoredDir(blenderProject.getProjectRootDir() +
-                                File.separator + "frame_" + frame_number + File.separator);
-                        storedDir = new File(blenderRenderQueueItem.getBlenderFramePart().getStoredDir());
-                        storedDir.mkdirs();
-                        try {
-                            byte[] bytes = part.getBytes();
-                            Path path = Paths.get(storedDir.toString() + File.separator +
-                                    blenderRenderQueueItem.getBlenderFramePart().getPartFilename() + "." +
-                                    blenderRenderQueueItem.getBlenderFramePart().getFileExtension());
-                            Files.write(path, bytes);
-                            SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
-                            sethlansNode.setRendering(false);
-                            LOG.debug("Processing completed render from " + sethlansNode.getHostname());
-                            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    if (blenderRenderQueueItem.isComplete()) {
-                        remainingTotalQueue--;
-                    }
-                    if (!blenderRenderQueueItem.isComplete() && blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() == frame_number) {
-                        remainingPartsForFrame++;
-                    }
-                }
-                for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
-                    if (blenderFramePart.getFrameNumber() == frame_number) {
-                        blenderFramePart.setStoredDir(storedDir.toString() + File.separator);
-                    }
-                }
-                LOG.debug("Remaining Parts per Frame for Frame " + frame_number + ": " + remainingPartsForFrame + " out of " + blenderProject.getPartsPerFrame());
-                LOG.debug("Remaining Items in Queue: " + remainingTotalQueue);
-                LOG.debug("Project Total Queue " + projectTotalQueue);
-                double currentPercentage = ((projectTotalQueue - remainingTotalQueue) * 100.0) / projectTotalQueue;
-                LOG.debug("Current Percentage " + currentPercentage);
-                blenderProject.setCurrentPercentage((int) currentPercentage);
-                if (remainingTotalQueue > 0) {
-                    blenderProject.setProjectStatus(ProjectStatus.RENDERING);
-                }
-                if (remainingPartsForFrame == 0) {
-                    if (blenderProjectService.combineParts(blenderProject, frame_number)) {
-                        if (remainingTotalQueue == 0) {
-                            blenderProject.setProjectStatus(ProjectStatus.FINISHED);
-                            blenderProject.setAllImagesProcessed(true);
-                        }
-                    }
-
-                }
-                blenderProjectDatabaseService.saveOrUpdate(blenderProject);
-                blenderProjectDatabaseService.releaseObject(project_uuid);
-            } catch (InterruptedException e) {
-                LOG.debug("Shutting down Project Rest Controller");
             }
         }
+
     }
 
     @GetMapping(value = "/api/project/blend_file/")
@@ -272,15 +188,9 @@ public class ProjectCommunicationController {
         this.blenderProjectDatabaseService = blenderProjectDatabaseService;
     }
 
-    @Autowired
-    public void setBlenderRenderQueueDatabaseService(BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService) {
-        this.blenderRenderQueueDatabaseService = blenderRenderQueueDatabaseService;
-    }
 
     @Autowired
-    public void setBlenderProjectService(BlenderProjectService blenderProjectService) {
-        this.blenderProjectService = blenderProjectService;
+    public void setBlenderProcessFilesQueueService(BlenderProcessFilesQueueService blenderProcessFilesQueueService) {
+        this.blenderProcessFilesQueueService = blenderProcessFilesQueueService;
     }
-
-
 }
