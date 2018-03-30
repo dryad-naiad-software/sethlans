@@ -229,6 +229,9 @@ public class ProjectCommunicationController {
                 double currentPercentage = ((projectTotalQueue - remainingTotalQueue) * 100.0) / projectTotalQueue;
                 LOG.debug("Current Percentage " + currentPercentage);
                 blenderProject.setCurrentPercentage((int) currentPercentage);
+                if (remainingTotalQueue > 0) {
+                    blenderProject.setProjectStatus(ProjectStatus.RENDERING);
+                }
                 if (remainingPartsForFrame == 0) {
                     if (blenderProjectService.combineParts(blenderProject, frame_number)) {
                         if (remainingTotalQueue == 0) {
@@ -236,6 +239,7 @@ public class ProjectCommunicationController {
                             blenderProject.setAllImagesProcessed(true);
                         }
                     }
+
                 }
                 blenderProjectDatabaseService.saveOrUpdate(blenderProject);
                 blenderProjectDatabaseService.releaseObject(project_uuid);

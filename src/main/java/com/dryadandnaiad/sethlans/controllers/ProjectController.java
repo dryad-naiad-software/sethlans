@@ -130,6 +130,17 @@ public class ProjectController {
 
     }
 
+    @GetMapping(value = "/api/project_ui/status/{id}")
+    public ProjectStatus currentStatus(@PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            return blenderProjectDatabaseService.getById(id).getProjectStatus();
+        } else {
+            return blenderProjectDatabaseService.getProjectByUser(auth.getName(), id).getProjectStatus();
+        }
+
+    }
+
     @GetMapping(value = "/api/project_ui/project_details/{id}")
     public ProjectInfo getProject(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

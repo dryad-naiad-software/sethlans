@@ -19,6 +19,7 @@
 export enum ProjectStatus {
   NOT_STARTED,
   STARTED,
+  RENDERING,
   PAUSED,
   FINISHED
 }

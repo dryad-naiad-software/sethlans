@@ -22,6 +22,7 @@ import {Project} from "../../../models/project.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
+import {ProjectStatus} from "../../../enums/project_status.enum";
 
 @Component({
   selector: 'app-project-view',
@@ -34,6 +35,7 @@ export class ProjectViewComponent implements OnInit {
   projectLoaded: boolean = false;
   placeholder: any = "assets/images/placeholder.svg";
   currentProgress: number;
+  projectStatus: ProjectStatus;
 
 
 
@@ -45,10 +47,12 @@ export class ProjectViewComponent implements OnInit {
       this.id = +params['id'];
       this.loadProjectDetails();
       this.currentProgressCheck();
+      this.currentStatuscheck();
     });
     let timer = Observable.timer(5000, 5000);
     timer.subscribe(() => {
       this.currentProgressCheck();
+      this.currentStatuscheck();
     });
 
   }
@@ -64,6 +68,12 @@ export class ProjectViewComponent implements OnInit {
   currentProgressCheck() {
     this.http.get('/api/project_ui/progress/' + this.id + '/').subscribe((currentProgress: number) => {
       this.currentProgress = currentProgress;
+    })
+  }
+
+  currentStatuscheck() {
+    this.http.get('/api/project_ui/status/' + this.id + '/').subscribe((currentStatus: ProjectStatus) => {
+      this.projectStatus = currentStatus;
     })
   }
 
