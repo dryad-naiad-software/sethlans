@@ -29,16 +29,20 @@ import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseServic
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,31 +117,72 @@ public class ProjectController {
     @GetMapping(value = "/api/project_actions/start_project/{id}")
     public boolean startProject(@PathVariable Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
+        if (blenderProject == null) {
+            return false;
+        }
         blenderProject.setProjectStatus(ProjectStatus.STARTED);
         blenderProject = blenderProjectDatabaseService.saveOrUpdate(blenderProject);
         blenderProjectService.startProject(blenderProject);
         return true;
     }
 
+    @GetMapping("/api/project_ui/thumbnail/{id}")
+    public ResponseEntity<byte[]> getThumbnailImage(@PathVariable Long id) {
+        BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
+        if (blenderProject == null) {
+            return null;
+        }
+        if (blenderProject.getCurrentFrameThumbnail().isEmpty()) {
+            return null;
+        }
+        try {
+            File image = new File(blenderProject.getCurrentFrameThumbnail());
+            InputStream in = new BufferedInputStream(new FileInputStream(image));
+            byte[] imageToSend = IOUtils.toByteArray(in);
+            if (blenderProject.getCurrentFrameThumbnail().contains("png")) {
+                return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(imageToSend);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @GetMapping(value = "/api/project_ui/progress/{id}")
     public int currentProgress(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        BlenderProject blenderProject;
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-            return blenderProjectDatabaseService.getById(id).getCurrentPercentage();
+            blenderProject = blenderProjectDatabaseService.getById(id);
+            if (blenderProject != null) {
+                return blenderProject.getCurrentPercentage();
+            }
         } else {
-            return blenderProjectDatabaseService.getProjectByUser(auth.getName(), id).getCurrentPercentage();
+            blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
+            if (blenderProject != null) {
+                return blenderProject.getCurrentPercentage();
+            }
         }
+        return 0;
 
     }
 
     @GetMapping(value = "/api/project_ui/status/{id}")
     public ProjectStatus currentStatus(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        BlenderProject blenderProject;
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-            return blenderProjectDatabaseService.getById(id).getProjectStatus();
+            blenderProject = blenderProjectDatabaseService.getById(id);
+            if (blenderProject != null) {
+                return blenderProject.getProjectStatus();
+            }
         } else {
-            return blenderProjectDatabaseService.getProjectByUser(auth.getName(), id).getProjectStatus();
+            blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
+            if (blenderProject != null) {
+                return blenderProject.getProjectStatus();
+            }
         }
+        return null;
 
     }
 
@@ -180,7 +225,12 @@ public class ProjectController {
     @PostMapping(value = "/api/project_form/edit_project/{id}")
     public boolean editProject(@RequestBody ProjectForm projectForm, @PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
+        BlenderProject blenderProject;
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            blenderProject = blenderProjectDatabaseService.getById(id);
+        } else {
+            blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
+        }
         if (projectForm != null && blenderProject != null) {
             LOG.debug("Project Edited" + projectForm);
             blenderProject.setProjectName(projectForm.getProjectName());
