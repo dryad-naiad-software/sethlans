@@ -41,7 +41,6 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
   projects: Project[];
   dtOptions: DataTables.Settings = {};
 
-
   constructor(private http: HttpClient, private projectService: ProjectListService, private router: Router) {
   }
 

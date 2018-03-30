@@ -212,7 +212,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
 
         convert.addArgument("-resize");
-        convert.addArgument("77x60!");
+        convert.addArgument("200x100!");
         convert.addArgument(frameImage);
         convert.addArgument(directory + frameFilename + "-thumbnail" + "." + fileExtension);
         LOG.debug(convert.toString());

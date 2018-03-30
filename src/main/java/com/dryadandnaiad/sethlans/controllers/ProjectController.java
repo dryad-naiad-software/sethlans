@@ -126,6 +126,20 @@ public class ProjectController {
         return true;
     }
 
+    @GetMapping("/api/project_ui/thumbnail_status/{id}")
+    public boolean thumbnailPresent(@PathVariable Long id) {
+        BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
+        if (blenderProject == null) {
+            return false;
+        } else {
+            if (blenderProject.getCurrentFrameThumbnail() == null) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     @GetMapping("/api/project_ui/thumbnail/{id}")
     public ResponseEntity<byte[]> getThumbnailImage(@PathVariable Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);

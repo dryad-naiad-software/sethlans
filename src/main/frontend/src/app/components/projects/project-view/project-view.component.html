@@ -91,10 +91,16 @@
           </tr>
           <tr>
             <td>Preview</td>
-            <td><img [src]="placeholder"
-                     height="60"
-                     class="d-inline-block align-top"
-                     alt="placeholder">
+            <td *ngIf="thumbnailStatus == false || thumbnailStatus == undefined"><img [src]="placeholder"
+                                                                                      height="100"
+                                                                                      class="d-inline-block align-top"
+                                                                                      alt="placeholder">
+            </td>
+            <td *ngIf="thumbnailStatus == true">
+              <img [src]="currentThumbnail"
+                   height="100"
+                   class="d-inline-block align-top"
+                   alt="thumbnail">
             </td>
           </tr>
           </tbody>

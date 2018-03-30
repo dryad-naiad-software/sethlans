@@ -36,6 +36,8 @@ export class ProjectViewComponent implements OnInit {
   placeholder: any = "assets/images/placeholder.svg";
   currentProgress: number;
   projectStatus: ProjectStatus;
+  currentThumbnail: any;
+  thumbnailStatus: boolean;
 
 
 
@@ -47,12 +49,14 @@ export class ProjectViewComponent implements OnInit {
       this.id = +params['id'];
       this.loadProjectDetails();
       this.currentProgressCheck();
-      this.currentStatuscheck();
+      this.currentStatusCheck();
+      this.getThumbnailStatus();
     });
     let timer = Observable.timer(5000, 5000);
     timer.subscribe(() => {
       this.currentProgressCheck();
-      this.currentStatuscheck();
+      this.currentStatusCheck();
+      this.getThumbnailStatus();
     });
 
   }
@@ -71,7 +75,7 @@ export class ProjectViewComponent implements OnInit {
     })
   }
 
-  currentStatuscheck() {
+  currentStatusCheck() {
     this.http.get('/api/project_ui/status/' + this.id + '/').subscribe((currentStatus: ProjectStatus) => {
       this.projectStatus = currentStatus;
     })
@@ -79,6 +83,15 @@ export class ProjectViewComponent implements OnInit {
 
   returnToProjects(): void {
     this.router.navigateByUrl("/projects").then(() => location.reload());
+  }
+
+  getThumbnailStatus() {
+    this.http.get('/api/project_ui/thumbnail_status/' + this.id + '/').subscribe((thumbnailStatus: boolean) => {
+      this.thumbnailStatus = thumbnailStatus;
+      if (thumbnailStatus == true) {
+        this.currentThumbnail = '/api/project_ui/thumbnail/' + this.id + '/';
+      }
+    })
   }
 
 }

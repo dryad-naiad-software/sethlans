@@ -55,15 +55,26 @@
               <td>{{project.resolutionX}} x {{project.resolutionY}}</td>
               <td>{{project.projectStatus}}</td>
               <td><img [src]="placeholder"
-                       height="60"
+                       height="100"
                        class="d-inline-block align-top"
                        alt="placeholder">
               </td>
               <td>
                 <div class="btn-group-vertical">
-                  <button class="btn btn-outline-primary btn-sm" type="button" (click)="startProject(project.id)">
+                  <button *ngIf="project.projectStatus.valueOf().toString() == 'NOT_STARTED'.valueOf()"
+                          class="btn btn-outline-primary btn-sm" type="button" (click)="startProject(project.id)">
                     Start
                   </button>
+                  <button
+                    *ngIf="project.projectStatus.valueOf().toString() == 'STARTED'.valueOf() || project.projectStatus.valueOf().toString() == 'RENDERING'.valueOf() "
+                    class="btn btn-outline-warning btn-sm" type="button">
+                    Pause
+                  </button>
+                  <button *ngIf="project.projectStatus.valueOf().toString() == 'FINISHED'.valueOf()"
+                          class="btn btn-outline-success btn-sm" type="button">
+                    Download
+                  </button>
+
                   <button class="btn btn-outline-dark btn-sm" type="button" (click)="viewProject(project.id)">View
                   </button>
                   <button class="btn btn-outline-dark btn-sm" type="button" (click)="editProject(project.id)">Edit
