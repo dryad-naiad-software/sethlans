@@ -108,6 +108,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
                 plainFilename = blenderFramePart.getFrameFileName();
             }
         }
+        convert.addArgument("-verbose");
         convert.addArgument("-append");
         convert.addArgument(frameFilename);
         blenderProject.getFrameFileNames().add(frameFilename);
@@ -143,7 +144,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     private void deleteParts(List<String> frameParts) {
         for (String framePart : frameParts) {
             File part = new File(framePart);
-            part.delete();
+            //part.delete();
         }
 
     }
