@@ -22,6 +22,8 @@ package com.dryadandnaiad.sethlans.components;
 import com.dryadandnaiad.sethlans.services.blender.BlenderDownloadService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderProcessRenderQueueService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderQueueService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -39,16 +41,18 @@ import javax.annotation.PostConstruct;
 public class ServerBackgroundComponent {
     private BlenderQueueService blenderQueueService;
     private BlenderProcessRenderQueueService blenderProcessRenderQueueService;
-
     private BlenderDownloadService blenderDownloadService;
+    private static final Logger LOG = LoggerFactory.getLogger(ServerBackgroundComponent.class);
 
     @PostConstruct
-    public void startQueue() {
+    public void projectQueue() {
+        LOG.debug("Starting Project Queue Service");
         blenderQueueService.startQueue();
     }
 
     @PostConstruct
-    public void RenderQueue() {
+    public void renderQueue() {
+        LOG.debug("Starting Render Queue Service");
         blenderProcessRenderQueueService.startQueue();
     }
 

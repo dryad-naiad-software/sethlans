@@ -22,9 +22,10 @@ package com.dryadandnaiad.sethlans.domains.database.blender;
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Entity;
+import javax.persistence.Lob;
+import java.sql.Blob;
 
 /**
  * Created Mario Estrella on 3/30/2018.
@@ -38,7 +39,8 @@ import javax.persistence.Entity;
 public class BlenderProcessQueueItem extends AbstractEntityClass {
     String connection_uuid;
     String project_uuid;
-    MultipartFile part;
+    @Lob
+    Blob part;
     int part_number;
     int frame_number;
 }

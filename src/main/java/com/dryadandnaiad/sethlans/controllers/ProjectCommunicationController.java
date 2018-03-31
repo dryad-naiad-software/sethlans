@@ -41,8 +41,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
 
 /**
  * Created Mario Estrella on 12/10/17.
@@ -151,15 +156,22 @@ public class ProjectCommunicationController {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
             if (!part.isEmpty()) {
-                BlenderProcessQueueItem blenderProcessQueueItem = new BlenderProcessQueueItem();
-                blenderProcessQueueItem.setConnection_uuid(connection_uuid);
-                blenderProcessQueueItem.setProject_uuid(project_uuid);
-                blenderProcessQueueItem.setPart(part);
-                blenderProcessQueueItem.setPart_number(part_number);
-                blenderProcessQueueItem.setFrame_number(frame_number);
-                blenderProcessRenderQueueService.addQueueItem(blenderProcessQueueItem);
-
-
+                try {
+                    Blob blob = new SerialBlob(part.getBytes());
+                    BlenderProcessQueueItem blenderProcessQueueItem = new BlenderProcessQueueItem();
+                    blenderProcessQueueItem.setConnection_uuid(connection_uuid);
+                    blenderProcessQueueItem.setProject_uuid(project_uuid);
+                    blenderProcessQueueItem.setPart(blob);
+                    blenderProcessQueueItem.setPart_number(part_number);
+                    blenderProcessQueueItem.setFrame_number(frame_number);
+                    blenderProcessRenderQueueService.addQueueItem(blenderProcessQueueItem);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (SerialException e) {
+                    e.printStackTrace();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
 

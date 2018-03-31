@@ -24,6 +24,8 @@ import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.enums.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -67,6 +69,7 @@ public class BlenderProject extends AbstractEntityClass {
     @ElementCollection
     private List<String> frameFileNames;
     @ElementCollection
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<BlenderFramePart> framePartList;
 
 

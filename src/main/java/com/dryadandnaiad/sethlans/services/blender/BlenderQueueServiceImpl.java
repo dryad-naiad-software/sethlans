@@ -68,7 +68,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 Thread.sleep(30000);
                 if (!sethlansNodeDatabaseService.listAll().isEmpty() || !blenderRenderQueueDatabaseService.listAll().isEmpty()) {
                     if (!populatingQueue || !queueBeingPaused) {
-                        LOG.debug("Processing Render Queue. Verbose messages every 2 minutes.");
+                        LOG.debug("Processing Project Queue. Verbose messages every 2 minutes.");
                         List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listAll();
                         for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
                             if (!blenderRenderQueueItem.isComplete() && !blenderRenderQueueItem.isRendering() && !blenderRenderQueueItem.isPaused()) {
@@ -97,7 +97,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 }
 
             } catch (InterruptedException e) {
-                LOG.debug("Stopping Blender Queue Service");
+                LOG.debug("Stopping Project Queue Service");
                 break;
             }
         }
@@ -194,7 +194,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
 
 
     @Override
-    public void populateRenderQueue(BlenderProject blenderProject) {
+    public void populateProjectQueue(BlenderProject blenderProject) {
         populatingQueue = true;
         List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
         for (BlenderFramePart blenderFramePart : blenderFramePartList) {

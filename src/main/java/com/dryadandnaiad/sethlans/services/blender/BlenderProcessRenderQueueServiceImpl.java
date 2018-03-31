@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -60,11 +61,11 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
 
     @Override
     public void addQueueItem(BlenderProcessQueueItem blenderProcessQueueItem) {
-        populatingQueue = false;
+        populatingQueue = true;
         String hostname = sethlansNodeDatabaseService.getByConnectionUUID(blenderProcessQueueItem.getConnection_uuid()).getHostname();
         LOG.debug("Completed Render Task received from " + hostname + ". Adding to processing queue.");
         blenderProcessQueueDatabaseService.saveOrUpdate(blenderProcessQueueItem);
-        populatingQueue = true;
+        populatingQueue = false;
 
 
     }
@@ -106,18 +107,18 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
 
                                 try {
                                     // Save sent file
-                                    byte[] bytes = blenderProcessQueueItem.getPart().getBytes();
+                                    byte[] bytes = blenderProcessQueueItem.getPart().getBytes(1, (int) blenderProcessQueueItem.getPart().length());
                                     Path path = Paths.get(storedDir.toString() + File.separator +
                                             blenderRenderQueueItem.getBlenderFramePart().getPartFilename() + "." +
                                             blenderRenderQueueItem.getBlenderFramePart().getFileExtension());
                                     Files.write(path, bytes);
                                     SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderProcessQueueItem.getConnection_uuid());
                                     sethlansNode.setRendering(false);
-                                    LOG.debug("Processing completed render from " + sethlansNode.getHostname() + "Part: " + blenderProcessQueueItem.getPart_number()
-                                            + " of Frame: " + blenderProcessQueueItem.getFrame_number());
+                                    LOG.debug("Processing completed render from " + sethlansNode.getHostname() + ". Part: " + blenderProcessQueueItem.getPart_number()
+                                            + " Frame: " + blenderProcessQueueItem.getFrame_number());
                                     sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
 
-                                } catch (IOException e) {
+                                } catch (IOException | SQLException e) {
                                     e.printStackTrace();
                                 }
                             }

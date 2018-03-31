@@ -36,5 +36,5 @@ public interface BlenderQueueService {
 
     void deleteRenderQueueforProject(BlenderProject blenderProject);
 
-    void populateRenderQueue(BlenderProject blenderProject);
+    void populateProjectQueue(BlenderProject blenderProject);
 }

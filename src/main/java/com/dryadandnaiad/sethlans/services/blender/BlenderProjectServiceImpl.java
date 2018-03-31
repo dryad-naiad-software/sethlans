@@ -59,7 +59,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Async
     public void startProject(BlenderProject blenderProject) {
         configureFrameList(blenderProject);
-        blenderQueueService.populateRenderQueue(blenderProject);
+        blenderQueueService.populateProjectQueue(blenderProject);
     }
 
     @Override
