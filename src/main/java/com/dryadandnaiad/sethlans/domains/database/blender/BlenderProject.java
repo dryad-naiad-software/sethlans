@@ -67,6 +67,7 @@ public class BlenderProject extends AbstractEntityClass {
     private String project_uuid;
     private String projectRootDir;
     @ElementCollection
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<String> frameFileNames;
     @ElementCollection
     @LazyCollection(LazyCollectionOption.FALSE)

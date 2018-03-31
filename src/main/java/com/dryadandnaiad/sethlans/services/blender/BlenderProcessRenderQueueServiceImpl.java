@@ -121,6 +121,7 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
                                 } catch (IOException | SQLException e) {
                                     e.printStackTrace();
                                 }
+                                blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
                             }
 
                             if (blenderRenderQueueItem.isComplete()) {
