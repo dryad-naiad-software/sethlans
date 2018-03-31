@@ -82,7 +82,7 @@ export class ProjectViewComponent implements OnInit {
   }
 
   returnToProjects(): void {
-    this.router.navigateByUrl("/projects").then(() => location.reload());
+    window.location.href = "/projects";
   }
 
   getThumbnailStatus() {

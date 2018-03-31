@@ -68,9 +68,7 @@ export class UserSettingsComponent implements OnInit {
   }
 
   cancel() {
-    this.router.navigateByUrl("/").then(() => {
-      location.reload();
-    });
+    window.location.href = "/";
   }
 
   saveChanges(form) {

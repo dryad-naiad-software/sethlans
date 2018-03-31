@@ -56,7 +56,7 @@ export class NodeScanComponent implements OnInit {
   }
 
   returnToNodes(): void {
-    this.router.navigateByUrl("/admin/nodes");
+    window.location.href = "/admin/nodes";
   }
 
   addSelectedNodes() {

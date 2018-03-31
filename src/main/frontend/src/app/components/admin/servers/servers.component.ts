@@ -85,8 +85,7 @@ export class ServersComponent implements OnInit, AfterViewInit {
   }
 
   reload(): void {
-    this.router.navigateByUrl("/admin/servers").then(() => location.reload());
-
+    window.location.href = "/admin/servers";
   }
 
 }

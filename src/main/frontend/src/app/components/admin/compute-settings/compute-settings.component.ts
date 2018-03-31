@@ -132,9 +132,7 @@ export class ComputeSettingsComponent implements OnInit {
   }
 
   cancel() {
-    this.router.navigateByUrl("/admin/compute_settings").then(() => {
-      location.reload();
-    });
+    window.location.href = "/admin/compute_settings";
   }
 
   methodSelection() {

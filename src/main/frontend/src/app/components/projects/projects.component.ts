@@ -94,21 +94,21 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
   }
 
   addProject() {
-    this.router.navigateByUrl("/projects/add");
+    window.location.href = "/projects/add";
   }
 
   editProject(id) {
-    this.router.navigate(['/projects/edit', id]);
+    window.location.href = "/projects/edit/" + id;
   }
 
   viewProject(id) {
-    this.router.navigate(['/projects/view', id])
+    window.location.href = "/projects/view/" + id;
   }
 
   deleteProject(id) {
     this.http.get('/api/project_actions/delete_project/' + id + '/').subscribe((success: boolean) => {
       if (success == true) {
-        this.router.navigateByUrl('/projects').then(() => location.reload());
+        window.location.href = "/projects";
       }
     })
   }
