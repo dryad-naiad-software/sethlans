@@ -294,6 +294,7 @@ public class ProjectController {
         projectInfo.setBlenderEngine(blenderProject.getBlenderEngine());
         projectInfo.setResPercentage(blenderProject.getResPercentage());
         projectInfo.setPartsPerFrame(blenderProject.getPartsPerFrame());
+        projectInfo.setCurrentPercentage(blenderProject.getCurrentPercentage());
         if (projectInfo.getPartsPerFrame() > 1) {
             projectInfo.setUseParts(true);
         } else {

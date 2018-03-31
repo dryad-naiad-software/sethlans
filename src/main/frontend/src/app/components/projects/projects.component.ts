@@ -74,9 +74,7 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
   }
 
   getProjectListSize() {
-    this.http.get<number>("/api/project_ui/num_of_projects").subscribe((projectSize: number) => {
-      this.projectSize = projectSize;
-    });
+    this.projectService.getProjectListSize().subscribe(value => this.projectSize = value);
   }
 
 

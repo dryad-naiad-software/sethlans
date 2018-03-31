@@ -51,4 +51,5 @@ public class ProjectInfo {
     private boolean useParts;
     private boolean thumbnailPresent;
     private String thumbnailURL;
+    private int currentPercentage;
 }

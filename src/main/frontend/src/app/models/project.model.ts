@@ -46,6 +46,7 @@ export class Project {
   useParts: boolean;
   thumbnailPresent: boolean;
   thumbnailURL: string;
+  currentPercentage: number;
 
 
 }

@@ -31,6 +31,10 @@ export class ProjectListService {
     return this.http.get<Project[]>('/api/project_ui/project_list');
   }
 
+  getProjectListSize(): Observable<number> {
+    return this.http.get<number>("/api/project_ui/num_of_projects");
+  }
+
 
 }
 

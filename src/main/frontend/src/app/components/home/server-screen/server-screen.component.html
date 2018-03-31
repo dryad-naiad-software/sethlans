@@ -1,14 +1,49 @@
-<div class="row pb-5">
-  <div class="col-md-10 m-auto">
-    <div class="card">
-      <div class="card-header">
-        <h2>
-          <span>SERVER</span>
-        </h2>
-      </div>
-      <div class="card-body">
-        <p>Help</p>
-      </div>
+<!--
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
+<div class="container">
+  <div class="row">
+    <div class="col-6">
+      <h5>Project Status</h5>
+      <table datatable [dtTrigger]="dtTrigger" [dtOptions]="dtOptions" class="table table-sm">
+        <thead>
+        <tr>
+          <th>Project Name</th>
+          <th>Project Status</th>
+          <th data-orderable="false">Percent Complete</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let project of projects">
+          <td><a [href]="'/projects/view/'+ project.id ">{{project.projectName}}</a></td>
+          <td>{{project.projectStatus}}</td>
+          <td class="pt-2 pb-2">
+            <ngb-progressbar showValue="true" type="success" [striped]="true"
+                             [value]="project.currentPercentage"></ngb-progressbar>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+  </div>
+    <div class="col-3">
+      <h5>Available Nodes</h5>
+
     </div>
   </div>
 </div>
