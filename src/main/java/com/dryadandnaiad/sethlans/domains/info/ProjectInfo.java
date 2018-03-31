@@ -49,4 +49,6 @@ public class ProjectInfo {
     private boolean allImagesProcessed;
     private RenderOutputFormat outputFormat;
     private boolean useParts;
+    private boolean thumbnailPresent;
+    private String thumbnailURL;
 }

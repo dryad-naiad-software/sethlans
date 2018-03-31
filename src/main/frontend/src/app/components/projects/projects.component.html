@@ -33,7 +33,7 @@
         <h2 class="text-center mt-5 mb-5" *ngIf="projectSize == 0">No Projects
           Available</h2>
         <div class="table-responsive" *ngIf="projectSize > 0">
-          <table datatable [dtTrigger]="dtTrigger" class="table" [dtOptions]="dtOptions">
+          <table datatable class="table" [dtOptions]="dtOptions">
             <thead>
             <tr>
               <th>Name</th>
@@ -54,15 +54,19 @@
               <td>{{project.renderOn}}</td>
               <td>{{project.resolutionX}} x {{project.resolutionY}}</td>
               <td>{{project.projectStatus}}</td>
-              <td><img [src]="placeholder"
-                       height="100"
-                       class="d-inline-block align-top"
-                       alt="placeholder">
+              <td *ngIf="project.thumbnailPresent == false"><img [src]="placeholder"
+                                                                 height="100"
+                                                                 class="d-inline-block align-top"
+                                                                 alt="placeholder">
+              </td>
+              <td *ngIf="project.thumbnailPresent == true">
+                <img [src]="project.thumbnailURL" height="100" class="d-inline-block align-top" alt="thumbnail">
               </td>
               <td>
                 <div class="btn-group-vertical">
                   <button *ngIf="project.projectStatus.valueOf().toString() == 'NOT_STARTED'.valueOf()"
-                          class="btn btn-outline-primary btn-sm" type="button" (click)="startProject(project.id)">
+                          class="btn btn-outline-primary btn-sm btn-block" type="button"
+                          (click)="startProject(project.id)">
                     Start
                   </button>
                   <button
@@ -75,12 +79,21 @@
                     Download
                   </button>
 
-                  <button class="btn btn-outline-dark btn-sm" type="button" (click)="viewProject(project.id)">View
+                  <button class="btn btn-outline-dark btn-sm" type="button" style="width: 90px"
+                          (click)="viewProject(project.id)">View
                   </button>
-                  <button class="btn btn-outline-dark btn-sm" type="button" (click)="editProject(project.id)">Edit
+                  <button *ngIf="project.projectStatus.valueOf().toString() == 'NOT_STARTED'.valueOf()"
+                          class="btn btn-outline-dark btn-sm" type="button" (click)="editProject(project.id)">Edit
                   </button>
-                  <button class="btn btn-outline-danger btn-sm" type="button" (click)="deleteProject(project.id)">
+                  <button
+                    *ngIf="project.projectStatus.valueOf().toString() == 'NOT_STARTED'.valueOf() ||  project.projectStatus.valueOf().toString() == 'FINISHED'.valueOf()"
+                    class="btn btn-outline-danger btn-sm" type="button" (click)="deleteProject(project.id)">
                     Delete
+                  </button>
+                  <button
+                    *ngIf="project.projectStatus.valueOf().toString() == 'STARTED'.valueOf() ||  project.projectStatus.valueOf().toString() == 'RENDERING'.valueOf()"
+                    class="btn btn-outline-danger btn-sm" type="button">
+                    Stop
                   </button>
                 </div>
               </td>

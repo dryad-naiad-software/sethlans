@@ -16,13 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import {Project} from "../../models/project.model";
 import {ProjectListService} from "../../services/project_list.service";
-import {Subject} from "rxjs/Subject";
-import {DataTableDirective} from "angular-datatables";
 import {Router} from "@angular/router";
 
 
@@ -32,9 +30,6 @@ import {Router} from "@angular/router";
   styleUrls: ['./projects.component.scss']
 })
 export class ProjectsComponent implements OnInit, AfterViewInit {
-  @ViewChild(DataTableDirective)
-  dtElement: DataTableDirective;
-  dtTrigger: Subject<any> = new Subject();
   placeholder: any = "assets/images/placeholder.svg";
   nodesReady: boolean = false;
   projectSize: number;
@@ -47,7 +42,6 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.projectService.getProjectList().subscribe(value => {
       this.projects = value;
-      this.dtTrigger.next();
     });
   }
 
@@ -64,9 +58,9 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
       this.getProjectListSize();
     });
 
-    let timer2 = Observable.timer(0, 60000);
+    let timer2 = Observable.timer(60000, 60000);
     timer2.subscribe(() => {
-      this.rerender();
+      this.reload();
     })
   }
 
@@ -95,15 +89,8 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
   }
 
 
-  rerender(): void {
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      this.projectService.getProjectList().subscribe(value => {
-        this.projects = value;
-        this.dtTrigger.next();
-      });
-    });
+  reload(): void {
+    this.router.navigateByUrl("/projects").then(() => location.reload());
   }
 
   addProject() {

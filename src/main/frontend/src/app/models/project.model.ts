@@ -44,6 +44,8 @@ export class Project {
   fileLocation: string;
   outputFormat: RenderOutputFormat;
   useParts: boolean;
+  thumbnailPresent: boolean;
+  thumbnailURL: string;
 
 
 }

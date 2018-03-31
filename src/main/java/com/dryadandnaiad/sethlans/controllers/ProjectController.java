@@ -299,6 +299,11 @@ public class ProjectController {
         } else {
             projectInfo.setUseParts(false);
         }
+        projectInfo.setThumbnailPresent(thumbnailPresent(blenderProject.getId()));
+        if (projectInfo.isThumbnailPresent()) {
+            projectInfo.setThumbnailURL("/api/project_ui/thumbnail/" + blenderProject.getId() + "/");
+
+        }
         return projectInfo;
     }
 
