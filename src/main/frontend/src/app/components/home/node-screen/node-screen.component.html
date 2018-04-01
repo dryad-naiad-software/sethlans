@@ -22,8 +22,10 @@
     <h5>Node Information</h5>
     <ul>
       <li>Current Compute Type: <strong>{{computeType}}</strong></li>
-      <li>Selected Cores: <strong>{{selectedCores}}</strong></li>
-      <li>Selected GPU(s): <strong>NVIDIA 1070 GTX</strong></li>
+      <li *ngIf="computeType.valueOf().toString() != 'GPU'.valueOf()">Selected Cores: <strong>{{selectedCores}}</strong>
+      </li>
+      <li *ngIf="computeType.valueOf().toString() != 'CPU'.valueOf()">Selected GPU(s): <strong>NVIDIA 1070 GTX</strong>
+      </li>
       <li>Total number of renders completed: 10</li>
     </ul>
   </div>
