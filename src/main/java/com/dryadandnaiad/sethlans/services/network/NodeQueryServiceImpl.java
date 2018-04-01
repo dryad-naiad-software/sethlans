@@ -48,10 +48,10 @@ public class NodeQueryServiceImpl implements NodeQueryService {
         } catch (InterruptedException e) {
             LOG.debug("Stopping Node Query Service");
         }
+        int count = 0;
         while (true) {
             try {
-                Thread.sleep(2000);
-                LOG.debug("Checking to see if nodes are down.");
+                Thread.sleep(5000);
                 for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
                     if (sethlansNode.isBenchmarkComplete()) {
                         boolean response = sethlansAPIConnectionService.queryNode("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() + "/api/info/node_keep_alive");
@@ -65,6 +65,11 @@ public class NodeQueryServiceImpl implements NodeQueryService {
                         sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                     }
 
+                }
+                count++;
+                if (count == 10) {
+                    LOG.debug("One node heartbeat sent every 5 seconds.  Sent 10 Multicast packets.");
+                    count = 0;
                 }
             } catch (InterruptedException e) {
                 LOG.debug("Stopping Node Query Service");
