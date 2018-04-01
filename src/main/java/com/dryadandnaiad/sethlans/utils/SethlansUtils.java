@@ -116,9 +116,6 @@ public class SethlansUtils {
         return currentNode;
     }
 
-
-
-
     public static boolean writeProperty(SethlansConfigKeys configKey, String value) {
         String comment = "";
         String key = configKey.toString();
@@ -241,7 +238,6 @@ public class SethlansUtils {
         return createdArchive;
     }
 
-
     public static boolean archiveExtract(String toExtract, File extractLocation) {
         File archive = new File(extractLocation + File.separator + toExtract);
         try {
@@ -285,7 +281,6 @@ public class SethlansUtils {
 
         return false;
     }
-
 
     public static void openWebpage(URL url) {
         Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
@@ -358,6 +353,10 @@ public class SethlansUtils {
         }
 
         return ip;
+    }
+
+    public static String getCores() {
+        return getProperty(SethlansConfigKeys.CPU_CORES.toString());
     }
 
     public static boolean getFirstTime() {
@@ -501,38 +500,6 @@ public class SethlansUtils {
         if (sortedNodeList(computeType, listToSort)) return listToSort.get(0);
 
         return null;
-    }
-
-    public static List<SethlansNode> getFastestNodes(List<SethlansNode> nodeList, ComputeType computeType) {
-        List<SethlansNode> listToSort = new ArrayList<>();
-        for (SethlansNode sethlansNode : nodeList) {
-            if (sethlansNode.isBenchmarkComplete() && sethlansNode.isActive()) {
-                listofNodes(computeType, listToSort, sethlansNode);
-            }
-        }
-        LOG.debug("List to sort " + listToSort.toString());
-        if (sortedNodeList(computeType, listToSort)) {
-            return listToSort;
-        } else {
-            return null;
-        }
-
-    }
-
-    public static List<SethlansNode> getFastestFreeNodes(List<SethlansNode> nodeList, ComputeType computeType) {
-        List<SethlansNode> listToSort = new ArrayList<>();
-        for (SethlansNode sethlansNode : nodeList) {
-            if (!sethlansNode.isRendering() && sethlansNode.isBenchmarkComplete() && sethlansNode.isActive()) {
-                listofNodes(computeType, listToSort, sethlansNode);
-            }
-        }
-        LOG.debug("List to sort " + listToSort.toString());
-        if (sortedNodeList(computeType, listToSort)) {
-            return listToSort;
-        } else {
-            return null;
-        }
-
     }
 
     private static boolean sortedNodeList(ComputeType computeType, List<SethlansNode> listToSort) {

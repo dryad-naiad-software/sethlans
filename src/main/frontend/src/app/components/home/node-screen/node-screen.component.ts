@@ -28,8 +28,9 @@ import {ComputeMethod} from "../../../enums/compute.method.enum";
 })
 export class NodeScreenComponent implements OnInit {
   computeType: ComputeMethod;
-  cpuBenchmarkRating: number;
-  gpuBenchmarkRating: number;
+  cpuName: string;
+  totalMemory: string;
+  selectedCores: string;
 
   constructor(private http: HttpClient) {
   }
@@ -39,13 +40,18 @@ export class NodeScreenComponent implements OnInit {
       this.computeType = computeType;
     });
 
-    this.http.get('/api/info/cpu_rating').subscribe((cpuRating: number) => {
-      this.cpuBenchmarkRating = cpuRating;
+    this.http.get('/api/info/total_memory', {responseType: 'text'}).subscribe((memory: string) => {
+      this.totalMemory = memory;
     })
 
-    this.http.get('/api/info/gpu_rating').subscribe((gpuRating: number) => {
-      this.gpuBenchmarkRating = gpuRating;
+    this.http.get('/api/info/cpu_name', {responseType: 'text'}).subscribe((cpuName: string) => {
+      this.cpuName = cpuName;
     })
+
+    this.http.get('/api/info/selected_cores', {responseType: 'text'}).subscribe((cores: string) => {
+      this.selectedCores = cores;
+    })
+
   }
 
 }

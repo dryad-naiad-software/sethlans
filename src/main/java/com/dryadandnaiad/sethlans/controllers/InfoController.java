@@ -84,6 +84,23 @@ public class InfoController {
         return blenderBinaryDatabaseService.installedBlenderVersions();
     }
 
+    @GetMapping(value = {"/cpu_name"})
+    public String cpuInfo() {
+        CPU cpu = new CPU();
+        return cpu.getName();
+    }
+
+    @GetMapping(value = {"/selected_cores"})
+    public String selectedCores() {
+        return SethlansUtils.getCores();
+    }
+
+    @GetMapping(value = {"/total_memory"})
+    public String totalMemory() {
+        CPU cpu = new CPU();
+        return cpu.getTotalMemory();
+    }
+
     @GetMapping(value = {"/version"})
     public String getVersion() {
         return SethlansUtils.getVersion();
