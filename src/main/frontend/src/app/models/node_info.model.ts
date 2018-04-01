@@ -34,6 +34,7 @@ export class NodeInfo {
   selectedGPUs: GPU[];
   selectedDeviceID: string[];
   active: boolean;
+  disabled: boolean;
   pendingActivation: boolean;
   cpuRating: number;
   benchmarkComplete: boolean;

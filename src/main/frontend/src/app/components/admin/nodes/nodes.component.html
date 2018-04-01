@@ -58,6 +58,9 @@
                 Active
               </td>
               <td *ngIf="node.pendingActivation == false && node.benchmarkComplete == true && node.active == false">
+                Inactive
+              </td>
+              <td *ngIf="node.pendingActivation == false && node.benchmarkComplete == true && node.disabled == true">
                 Disabled
               </td>
               <td>{{node.hostname}}</td>
