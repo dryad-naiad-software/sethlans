@@ -68,7 +68,7 @@ public class NodeQueryServiceImpl implements NodeQueryService {
                 }
                 count++;
                 if (count == 10) {
-                    LOG.debug("One node heartbeat sent every 5 seconds.  Sent 10 Multicast packets.");
+                    LOG.debug("One node heartbeat sent every 5 seconds.  Sent 10 heartbeat requests.");
                     count = 0;
                 }
             } catch (InterruptedException e) {
