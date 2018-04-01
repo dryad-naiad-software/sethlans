@@ -148,12 +148,12 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
                         blenderProject.setCurrentPercentage((int) currentPercentage);
 
                         if (remainingTotalQueue > 0) {
-                            blenderProject.setProjectStatus(ProjectStatus.RENDERING);
+                            blenderProject.setProjectStatus(ProjectStatus.Rendering);
                         }
                         if (remainingPartsForFrame == 0) {
                             if (blenderProjectService.combineParts(blenderProject, blenderProcessQueueItem.getFrame_number())) {
                                 if (remainingTotalQueue == 0) {
-                                    blenderProject.setProjectStatus(ProjectStatus.FINISHED);
+                                    blenderProject.setProjectStatus(ProjectStatus.Finished);
                                     blenderProject.setAllImagesProcessed(true);
                                 }
                             }
@@ -166,6 +166,7 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
                 }
             } catch (InterruptedException e) {
                 LOG.debug("Stopping Render Queue Service");
+                break;
             }
 
         }

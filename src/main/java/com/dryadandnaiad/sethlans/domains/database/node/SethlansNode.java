@@ -55,6 +55,7 @@ public class SethlansNode extends AbstractEntityClass {
     @ElementCollection
     private List<String> selectedDeviceID;
     private boolean active;
+    private boolean disabled;
     private boolean pendingActivation;
     private String connection_uuid;
     private int cpuRating;

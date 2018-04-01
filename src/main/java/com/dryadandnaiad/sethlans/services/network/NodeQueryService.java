@@ -17,14 +17,17 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.enums;
+package com.dryadandnaiad.sethlans.services.network;
+
+import org.springframework.scheduling.annotation.Async;
 
 /**
- * Created Mario Estrella on 3/27/2018.
+ * Created Mario Estrella on 4/1/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public enum ProjectStatus {
-    Pending, Started, Rendering, Paused, Finished
+public interface NodeQueryService {
+    @Async
+    void start();
 }

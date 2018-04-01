@@ -64,34 +64,34 @@
               </td>
               <td>
                 <div class="btn-group-vertical">
-                  <button *ngIf="project.projectStatus.valueOf().toString() == 'NOT_STARTED'.valueOf()"
+                  <button *ngIf="project.projectStatus.valueOf().toString() == 'Pending'.valueOf()"
                           class="btn btn-outline-primary btn-sm btn-block" type="button"
                           (click)="startProject(project.id)">
                     Start
                   </button>
                   <button
-                    *ngIf="project.projectStatus.valueOf().toString() == 'STARTED'.valueOf() || project.projectStatus.valueOf().toString() == 'RENDERING'.valueOf() "
+                    *ngIf="project.projectStatus.valueOf().toString() == 'Started'.valueOf() || project.projectStatus.valueOf().toString() == 'Rendering'.valueOf() "
                     class="btn btn-outline-warning btn-sm" type="button">
                     Pause
                   </button>
-                  <button *ngIf="project.projectStatus.valueOf().toString() == 'FINISHED'.valueOf()"
-                          class="btn btn-outline-success btn-sm" type="button">
+                  <button *ngIf="project.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
+                          class="btn btn-outline-success btn-sm" type="button" (click)="downloadProject(project.id)">
                     Download
                   </button>
 
                   <button class="btn btn-outline-dark btn-sm" type="button" style="width: 90px"
                           (click)="viewProject(project.id)">View
                   </button>
-                  <button *ngIf="project.projectStatus.valueOf().toString() == 'NOT_STARTED'.valueOf()"
+                  <button *ngIf="project.projectStatus.valueOf().toString() == 'Pending'.valueOf()"
                           class="btn btn-outline-dark btn-sm" type="button" (click)="editProject(project.id)">Edit
                   </button>
                   <button
-                    *ngIf="project.projectStatus.valueOf().toString() == 'NOT_STARTED'.valueOf() ||  project.projectStatus.valueOf().toString() == 'FINISHED'.valueOf()"
+                    *ngIf="project.projectStatus.valueOf().toString() == 'Pending'.valueOf() ||  project.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
                     class="btn btn-outline-danger btn-sm" type="button" (click)="deleteProject(project.id)">
                     Delete
                   </button>
                   <button
-                    *ngIf="project.projectStatus.valueOf().toString() == 'STARTED'.valueOf() ||  project.projectStatus.valueOf().toString() == 'RENDERING'.valueOf()"
+                    *ngIf="project.projectStatus.valueOf().toString() == 'Started'.valueOf() ||  project.projectStatus.valueOf().toString() == 'Rendering'.valueOf()"
                     class="btn btn-outline-danger btn-sm" type="button">
                     Stop
                   </button>

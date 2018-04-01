@@ -38,11 +38,11 @@ import java.util.List;
  * Project: sethlans
  */
 @Service
-public class NodeStatusUpdateServiceImpl implements NodeStatusUpdateService {
+public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
-    private static final Logger LOG = LoggerFactory.getLogger(NodeStatusUpdateServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NodeSendUpdateServiceImpl.class);
 
 
     @Async

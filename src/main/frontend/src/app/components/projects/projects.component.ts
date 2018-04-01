@@ -103,6 +103,10 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
     window.location.href = "/projects/view/" + id;
   }
 
+  downloadProject(id) {
+    window.location.href = "/api/project_actions/download_project/" + id
+  }
+
   deleteProject(id) {
     this.http.get('/api/project_actions/delete_project/' + id + '/').subscribe((success: boolean) => {
       if (success == true) {

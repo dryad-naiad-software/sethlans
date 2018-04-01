@@ -22,7 +22,7 @@ package com.dryadandnaiad.sethlans.components;
 import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderRenderService;
 import com.dryadandnaiad.sethlans.services.network.MulticastSenderService;
-import com.dryadandnaiad.sethlans.services.network.NodeStatusUpdateService;
+import com.dryadandnaiad.sethlans.services.network.NodeSendUpdateService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ public class NodeBackgroundComponent {
 
     private static final Logger LOG = LoggerFactory.getLogger(NodeBackgroundComponent.class);
     private MulticastSenderService multicastSenderService;
-    private NodeStatusUpdateService nodeStatusUpdateService;
+    private NodeSendUpdateService nodeSendUpdateService;
     private BlenderBenchmarkService blenderBenchmarkService;
     private BlenderRenderService blenderRenderService;
 
@@ -62,7 +62,7 @@ public class NodeBackgroundComponent {
 
     @PostConstruct
     public void startNodeStatusUpdates() {
-        nodeStatusUpdateService.sendUpdateOnStart();
+        nodeSendUpdateService.sendUpdateOnStart();
     }
 
     @PostConstruct
@@ -83,8 +83,8 @@ public class NodeBackgroundComponent {
     }
 
     @Autowired
-    public void setNodeStatusUpdateService(NodeStatusUpdateService nodeStatusUpdateService) {
-        this.nodeStatusUpdateService = nodeStatusUpdateService;
+    public void setNodeSendUpdateService(NodeSendUpdateService nodeSendUpdateService) {
+        this.nodeSendUpdateService = nodeSendUpdateService;
     }
 
 

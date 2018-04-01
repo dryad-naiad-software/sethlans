@@ -171,7 +171,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                     sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                 }
             }
-            blenderProject.setProjectStatus(ProjectStatus.PAUSED);
+            blenderProject.setProjectStatus(ProjectStatus.Paused);
             blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
             blenderProjectDatabaseService.saveOrUpdate(blenderProject);
 

@@ -27,7 +27,7 @@ import org.springframework.scheduling.annotation.Async;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface NodeStatusUpdateService {
+public interface NodeSendUpdateService {
 
     @Async
     void sendUpdateOnStart();

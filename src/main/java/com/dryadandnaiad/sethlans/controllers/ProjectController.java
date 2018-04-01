@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.info.ProjectInfo;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
+import com.dryadandnaiad.sethlans.enums.ProjectType;
 import com.dryadandnaiad.sethlans.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderProjectService;
@@ -42,6 +43,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -114,13 +116,30 @@ public class ProjectController {
         }
     }
 
+    @RequestMapping(value = "/api/project_actions/download_project/{id}")
+    public void downloadProject(@PathVariable Long id, HttpServletResponse response) {
+        BlenderProject project = blenderProjectDatabaseService.getById(id);
+        if (project.getProjectType().equals(ProjectType.STILL_IMAGE)) {
+            File image = new File(project.getFrameFileNames().get(0));
+            SethlansUtils.serveFile(image, response);
+        }
+        if (project.getProjectType().equals(ProjectType.ANIMATION)) {
+            File zipFile = SethlansUtils.createArchive(project.getFrameFileNames(), project.getProjectRootDir(), project.getProjectName().toLowerCase());
+            if (zipFile != null) {
+                SethlansUtils.serveFile(zipFile, response);
+            }
+
+        }
+
+    }
+
     @GetMapping(value = "/api/project_actions/start_project/{id}")
     public boolean startProject(@PathVariable Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
         if (blenderProject == null) {
             return false;
         }
-        blenderProject.setProjectStatus(ProjectStatus.STARTED);
+        blenderProject.setProjectStatus(ProjectStatus.Started);
         blenderProject = blenderProjectDatabaseService.saveOrUpdate(blenderProject);
         blenderProjectService.startProject(blenderProject);
         return true;
@@ -229,7 +248,7 @@ public class ProjectController {
             LOG.debug("Project Submitted" + projectForm);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             projectForm.setUsername(auth.getName());
-            projectForm.setProjectStatus(ProjectStatus.NOT_STARTED);
+            projectForm.setProjectStatus(ProjectStatus.Pending);
             blenderProjectDatabaseService.saveOrUpdateProjectForm(projectForm);
             return true;
         }

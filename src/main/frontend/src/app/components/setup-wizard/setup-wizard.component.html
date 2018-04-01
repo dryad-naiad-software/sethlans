@@ -1,3 +1,22 @@
+<!--
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
 <div class="row pt-md-3">
   <div class="col-md-6 m-auto">
     <div class="card">
@@ -13,7 +32,7 @@
         <router-outlet *ngIf="setupFormData.setupProgress === progress.DUAL" name="dual"></router-outlet>
         <router-outlet *ngIf="setupFormData.setupProgress === progress.SETTINGS" name="settings"></router-outlet>
         <router-outlet *ngIf="setupFormData.setupProgress === progress.SUMMARY" name="summary"></router-outlet>
-        <router-outlet *ngIf="setupFormData.setupProgress === progress.FINISHED" name="finished"></router-outlet>
+        <router-outlet *ngIf="setupFormData.setupProgress === progress.Finished" name="finished"></router-outlet>
       </div>
     </div>
   </div>
