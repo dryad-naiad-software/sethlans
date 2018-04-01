@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,6 +56,10 @@ public class NodeInfoController {
     @Value("${sethlans.gpu_id}")
     private String deviceID;
 
+    @GetMapping(value = "/api/info/node_keep_alive")
+    public boolean nodeKeepAlive() {
+        return true;
+    }
 
     @RequestMapping(value = "/api/info/nodeinfo", method = RequestMethod.GET)
     public NodeInfo nodeInfo() {
