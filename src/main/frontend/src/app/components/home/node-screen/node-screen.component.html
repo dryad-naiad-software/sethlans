@@ -17,3 +17,43 @@
   ~
   -->
 
+<div class="row">
+  <div class="col-5">
+    <h5>Node Information</h5>
+    <ul>
+      <li>Current Compute Type: CPU</li>
+      <li>Total number of renders completed: 10</li>
+      <li>Combined Benchmark Rating: 190000</li>
+    </ul>
+  </div>
+
+  <div class="col-4">
+    <h5>System Stats</h5>
+    <ul>
+      <li>Processor: Intel Core i7 6700K</li>
+      <li>Memory: 16GB</li>
+      <li>Graphics Card(s):
+        <ul>
+          <li>NVIDIA 1070 GTX</li>
+          <li>NVIDIA 710 GT</li>
+        </ul>
+      </li>
+      <li>Disk Space:
+        <ngb-progressbar
+          type="info"
+          [value]="2000"
+          [max]="6000">2GB of 6GB
+        </ngb-progressbar>
+      </li>
+
+    </ul>
+
+  </div>
+  <div class="col-3">
+    <h5>Render Stats</h5>
+    <ul>
+      <li>Number of Render Slots: 1</li>
+    </ul>
+
+  </div>
+</div>

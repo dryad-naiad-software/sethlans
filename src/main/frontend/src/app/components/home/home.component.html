@@ -27,6 +27,7 @@
       </div>
       <div class="card-body">
         <app-server-screen *ngIf="currentMode == mode.SERVER || currentMode == mode.DUAL"></app-server-screen>
+        <hr *ngIf="currentMode == mode.DUAL"/>
         <app-node-screen *ngIf="currentMode == mode.NODE || currentMode == mode.DUAL"></app-node-screen>
       </div>
     </div>
