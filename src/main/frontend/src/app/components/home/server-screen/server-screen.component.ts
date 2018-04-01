@@ -35,6 +35,10 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
   dtOptions: DataTables.Settings = {};
   data: any;
   dataArray: number [];
+  totalNodes: number;
+  activeNodes: number;
+  inactiveNodes: number;
+  disabledNodes: number;
 
 
   constructor(private projectService: ProjectListService, private http: HttpClient) {
@@ -45,6 +49,20 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
     this.dtOptions = {
       searching: false
     };
+    this.http.get('/api/info/total_nodes').subscribe((totalNodes: number) => {
+      this.totalNodes = totalNodes;
+    });
+    this.http.get('/api/info/active_nodes').subscribe((activeNodes: number) => {
+      this.activeNodes = activeNodes;
+    });
+    this.http.get('/api/info/disabled_nodes').subscribe((disabledNodes: number) => {
+      this.disabledNodes = disabledNodes;
+    });
+    this.http.get('/api/info/inactive_nodes').subscribe((inactiveNodes: number) => {
+      this.inactiveNodes = inactiveNodes;
+    });
+
+
     this.http.get('/api/info/active_nodes_value_array').subscribe((numberArray: number[]) => {
       this.dataArray = numberArray;
       this.data = {
@@ -78,5 +96,6 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
 
 
   }
+
 
 }

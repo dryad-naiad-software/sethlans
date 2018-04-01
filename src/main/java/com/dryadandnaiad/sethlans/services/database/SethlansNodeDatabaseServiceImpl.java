@@ -187,6 +187,29 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
         nodeRepository.delete(sethlansNode);
     }
 
+    @Override
+    public List<SethlansNode> inactiveNodeList() {
+        List<SethlansNode> inactiveList = new ArrayList<>();
+        for (SethlansNode sethlansNode : listAll()) {
+            if (!sethlansNode.isActive() || !sethlansNode.isBenchmarkComplete()) {
+                inactiveList.add(sethlansNode);
+            }
+        }
+        return inactiveList;
+    }
+
+    @Override
+    public List<SethlansNode> disabledNodeList() {
+        List<SethlansNode> disabledList = new ArrayList<>();
+        for (SethlansNode sethlansNode : listAll()) {
+            if (sethlansNode.isDisabled()) {
+                disabledList.add(sethlansNode);
+            }
+
+        }
+        return disabledList;
+    }
+
     @Autowired
     public void setNodeRepository(NodeRepository nodeRepository) {
         this.nodeRepository = nodeRepository;

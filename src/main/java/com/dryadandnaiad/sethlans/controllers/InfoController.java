@@ -55,6 +55,10 @@ public class InfoController {
     private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private SethlansServerDatabaseService sethlansServerDatabaseService;
+    private List<String> blenderVersions = BlenderUtils.listVersions();
+    private List<ComputeType> availableMethods = SethlansUtils.getAvailableMethods();
+    private Integer totalCores = new CPU().getCores();
+    private List<GPUDevice> gpuDevices = GPU.listDevices();
 
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
@@ -62,13 +66,13 @@ public class InfoController {
     @Value("${sethlans.mode}")
     private SethlansMode mode;
 
+    @Value("${sethlans.computeMethod}")
+    private ComputeType computeType;
 
-
-    private List<String> blenderVersions = BlenderUtils.listVersions();
-    private List<ComputeType> availableMethods = SethlansUtils.getAvailableMethods();
-    private Integer totalCores = new CPU().getCores();
-    private List<GPUDevice> gpuDevices = GPU.listDevices();
-
+    @GetMapping(value = {"/compute_type"})
+    public ComputeType getCurrentComputeType() {
+        return computeType;
+    }
 
     @GetMapping(value = {"/first_time"})
     public boolean isFirstTime() {
@@ -122,6 +126,21 @@ public class InfoController {
         } else {
             return SethlansUtils.getPort();
         }
+    }
+
+    @GetMapping(value = {"/total_nodes"})
+    public int getTotalNodes() {
+        return sethlansNodeDatabaseService.listAll().size();
+    }
+
+    @GetMapping(value = {"/inactive_nodes"})
+    public int getInactiveNodes() {
+        return sethlansNodeDatabaseService.inactiveNodeList().size();
+    }
+
+    @GetMapping(value = {"/disabled_nodes"})
+    public int getDisabledNodes() {
+        return sethlansNodeDatabaseService.disabledNodeList().size();
     }
 
     @GetMapping(value = {"/active_nodes"})

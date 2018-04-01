@@ -49,4 +49,8 @@ public interface SethlansNodeDatabaseService extends CRUDService<SethlansNode> {
     boolean checkForDuplicatesAndSave(SethlansNode sethlansNode);
 
     void deleteByConnectionUUID(String connection_uuid);
+
+    List<SethlansNode> inactiveNodeList();
+
+    List<SethlansNode> disabledNodeList();
 }
