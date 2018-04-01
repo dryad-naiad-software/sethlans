@@ -36,6 +36,14 @@ public interface SethlansNodeDatabaseService extends CRUDService<SethlansNode> {
 
     boolean activeNodes();
 
+    List<SethlansNode> activeNodeList();
+
+    List<SethlansNode> activeCPUNodes();
+
+    List<SethlansNode> activeGPUNodes();
+
+    List<SethlansNode> activeCPUGPUNodes();
+
     List<SethlansNode> activeNodesRendering();
 
     boolean checkForDuplicatesAndSave(SethlansNode sethlansNode);

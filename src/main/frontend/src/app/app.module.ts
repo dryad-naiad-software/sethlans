@@ -74,6 +74,7 @@ import {NodeEditComponent} from './components/admin/nodes/node-edit/node-edit.co
 import {ProjectAddComponent} from './components/projects/project-add/project-add.component';
 import {ProjectEditComponent} from './components/projects/project-edit/project-edit.component';
 import {ProjectViewComponent} from './components/projects/project-view/project-view.component';
+import {ChartModule} from "primeng/chart";
 
 
 @NgModule({
@@ -122,6 +123,7 @@ import {ProjectViewComponent} from './components/projects/project-view/project-v
     BrowserModule,
     FormsModule,
     FileUploadModule,
+    ChartModule,
     MatSliderModule,
     DataTablesModule,
     NgbModule.forRoot(),

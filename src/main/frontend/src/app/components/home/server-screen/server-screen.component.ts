@@ -21,6 +21,7 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ProjectListService} from "../../../services/project_list.service";
 import {Project} from "../../../models/project.model";
 import {Subject} from "rxjs/Subject";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-server-screen',
@@ -32,15 +33,39 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
   projectSize: number;
   dtTrigger: Subject<any> = new Subject();
   dtOptions: DataTables.Settings = {};
+  data: any;
+  dataArray: number [];
 
 
-  constructor(private projectService: ProjectListService) {
+  constructor(private projectService: ProjectListService, private http: HttpClient) {
+
   }
 
   ngOnInit() {
     this.dtOptions = {
       searching: false
     };
+    this.http.get('/api/info/active_nodes_value_array').subscribe((numberArray: number[]) => {
+      this.dataArray = numberArray;
+      this.data = {
+        labels: ['CPU', 'GPU', 'CPU_GPU'],
+        datasets: [
+          {
+            data: this.dataArray,
+            backgroundColor: [
+              "#43C519",
+              "#1943C5",
+              "#C51943"
+            ],
+            hoverBackgroundColor: [
+              "#43C519",
+              "#1943C5",
+              "#C51943"
+            ]
+          }]
+      };
+    });
+
 
     this.projectService.getProjectListSize().subscribe(value => this.projectSize = value);
     this.projectService.getProjectList().subscribe(value => {

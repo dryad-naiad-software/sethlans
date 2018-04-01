@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import org.slf4j.Logger;
@@ -100,6 +101,50 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
             }
         }
         return false;
+    }
+
+    @Override
+    public List<SethlansNode> activeNodeList() {
+        List<SethlansNode> activeNodes = new ArrayList<>();
+        for (SethlansNode node : listAll()) {
+            if (node.isActive() && node.isBenchmarkComplete()) {
+                activeNodes.add(node);
+            }
+        }
+        return activeNodes;
+    }
+
+    @Override
+    public List<SethlansNode> activeCPUNodes() {
+        List<SethlansNode> activeNodes = new ArrayList<>();
+        for (SethlansNode node : listAll()) {
+            if (node.isActive() && node.isBenchmarkComplete() && node.getComputeType() == ComputeType.CPU) {
+                activeNodes.add(node);
+            }
+        }
+        return activeNodes;
+    }
+
+    @Override
+    public List<SethlansNode> activeGPUNodes() {
+        List<SethlansNode> activeNodes = new ArrayList<>();
+        for (SethlansNode node : listAll()) {
+            if (node.isActive() && node.isBenchmarkComplete() && node.getComputeType() == ComputeType.GPU) {
+                activeNodes.add(node);
+            }
+        }
+        return activeNodes;
+    }
+
+    @Override
+    public List<SethlansNode> activeCPUGPUNodes() {
+        List<SethlansNode> activeNodes = new ArrayList<>();
+        for (SethlansNode node : listAll()) {
+            if (node.isActive() && node.isBenchmarkComplete() && node.getComputeType() == ComputeType.CPU_GPU) {
+                activeNodes.add(node);
+            }
+        }
+        return activeNodes;
     }
 
     @Override

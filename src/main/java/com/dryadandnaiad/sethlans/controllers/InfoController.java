@@ -25,6 +25,8 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
@@ -36,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -50,6 +53,8 @@ import java.util.Set;
 public class InfoController {
     private static final Logger LOG = LoggerFactory.getLogger(InfoController.class);
     private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
+    private SethlansNodeDatabaseService sethlansNodeDatabaseService;
+    private SethlansServerDatabaseService sethlansServerDatabaseService;
 
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
@@ -119,6 +124,35 @@ public class InfoController {
         }
     }
 
+    @GetMapping(value = {"/active_nodes"})
+    public int getActiveNodes() {
+        return sethlansNodeDatabaseService.activeNodeList().size();
+    }
+
+    @GetMapping(value = {"/active_nodes_cpu"})
+    public int getActiveCPUNodes() {
+        return sethlansNodeDatabaseService.activeCPUNodes().size();
+    }
+
+    @GetMapping(value = {"/active_nodes_gpu"})
+    public int getActiveGPUNodes() {
+        return sethlansNodeDatabaseService.activeGPUNodes().size();
+    }
+
+    @GetMapping(value = {"/active_nodes_cpu_gpu"})
+    public int getActiveCPUGPUNodes() {
+        return sethlansNodeDatabaseService.activeCPUGPUNodes().size();
+    }
+
+    @GetMapping(value = {"/active_nodes_value_array"})
+    public List<Integer> getNumberOfActiveNodesArray() {
+        List<Integer> numberOfActiveNodesArray = new ArrayList<>();
+        numberOfActiveNodesArray.add(getActiveCPUNodes());
+        numberOfActiveNodesArray.add(getActiveGPUNodes());
+        numberOfActiveNodesArray.add(getActiveCPUGPUNodes());
+        return numberOfActiveNodesArray;
+    }
+
 
     @GetMapping(value = {"/sethlans_mode"})
     public String getSethlansMode() {
@@ -133,5 +167,15 @@ public class InfoController {
     @Autowired
     public void setBlenderBinaryDatabaseService(BlenderBinaryDatabaseService blenderBinaryDatabaseService) {
         this.blenderBinaryDatabaseService = blenderBinaryDatabaseService;
+    }
+
+    @Autowired
+    public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {
+        this.sethlansNodeDatabaseService = sethlansNodeDatabaseService;
+    }
+
+    @Autowired
+    public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
+        this.sethlansServerDatabaseService = sethlansServerDatabaseService;
     }
 }
