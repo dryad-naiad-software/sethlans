@@ -75,14 +75,22 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                 timedLog(count, cycle, blenderRenderQueueItem.toString() + " is waiting to be rendered.");
                                 ComputeType computeType = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid()).getRenderOn();
                                 SethlansNode sethlansNode = SethlansUtils.getFastestFreeNode(sethlansNodeDatabaseService.listAll(), computeType);
-                                if (sethlansNode != null && sethlansNode.isActive() && !sethlansNode.isRendering()) {
+                                if (sethlansNode != null && sethlansNode.isActive() && !sethlansNode.isRendering() && !sethlansNode.isDisabled()) {
                                     blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
                                     BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
                                     ComputeType projectComputeType = blenderProject.getRenderOn();
-                                    sendQueueItemToServer(sethlansNode, projectComputeType, blenderProject, blenderRenderQueueItem);
+                                    sendQueueItemToNode(sethlansNode, projectComputeType, blenderProject, blenderRenderQueueItem);
                                 } else {
                                     timedLog(count, cycle, "All nodes are busy. Will attempt in next loop. " + blenderRenderQueueItem.getBlenderFramePart());
                                     break;
+                                }
+                            }
+                            if (!blenderRenderQueueItem.isComplete() && blenderRenderQueueItem.isRendering() && !blenderRenderQueueItem.isPaused()) {
+                                SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid());
+                                if (!sethlansNode.isActive()) {
+                                    LOG.debug(sethlansNode.getHostname() + " is no longer active. Returning " + blenderRenderQueueItem + " to pending render state.");
+                                    blenderRenderQueueItem.setRendering(false);
+                                    blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
                                 }
                             }
                         }
@@ -103,7 +111,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         }
     }
 
-    private void sendQueueItemToServer(SethlansNode sethlansNode, ComputeType projectComputeType, BlenderProject blenderProject, BlenderRenderQueueItem blenderRenderQueueItem) {
+    private void sendQueueItemToNode(SethlansNode sethlansNode, ComputeType projectComputeType, BlenderProject blenderProject, BlenderRenderQueueItem blenderRenderQueueItem) {
         LOG.debug("Sending " + blenderRenderQueueItem + " to " + sethlansNode.getHostname());
         // If both the project and the node is CPU and GPU, use the method with the lowest rating.
         if (sethlansNode.getComputeType().equals(ComputeType.CPU_GPU) && projectComputeType.equals(ComputeType.CPU_GPU)) {
