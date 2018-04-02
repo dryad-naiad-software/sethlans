@@ -155,8 +155,8 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
 
         if (sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params)) {
             blenderRenderQueueItem.setRendering(true);
-            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() - 1);
-            if (sethlansNode.getAvailableRenderingSlots() == 0) {
+            sethlansNode.setAvailableCPURenderingSlots(sethlansNode.getAvailableCPURenderingSlots() - 1);
+            if (sethlansNode.getAvailableCPURenderingSlots() == 0) {
                 sethlansNode.setRenderingSlotsFull(true);
             }
             blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
@@ -179,7 +179,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             for (SethlansNode sethlansNode : sethlansNodeList) {
                 if (sethlansNode.getConnection_uuid().equals(blenderRenderQueueItem.getConnection_uuid())) {
                     sethlansNode.setRenderingSlotsFull(false);
-                    sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                    sethlansNode.setAvailableCPURenderingSlots(sethlansNode.getTotalRenderingSlots());
                     sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                 }
             }

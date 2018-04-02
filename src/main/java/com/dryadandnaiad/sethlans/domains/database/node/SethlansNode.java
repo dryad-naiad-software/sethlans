@@ -62,7 +62,8 @@ public class SethlansNode extends AbstractEntityClass {
     private boolean benchmarkComplete;
     private boolean renderingSlotsFull;
     private int totalRenderingSlots;
-    private int availableRenderingSlots;
+    private int availableCPURenderingSlots;
+    private int availableGPURenderingSlots;
 
 
     public Integer getCombinedGPURating() {

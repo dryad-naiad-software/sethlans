@@ -108,7 +108,7 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
             sethlansNode.setDisabled(false);
             sethlansNode.setActive(false);
             sethlansNode.setTotalRenderingSlots(1);
-            sethlansNode.setAvailableRenderingSlots(1);
+            sethlansNode.setAvailableCPURenderingSlots(1);
             sethlansNode.setConnection_uuid(UUID.randomUUID().toString());
 
         } catch (NullPointerException e) {
