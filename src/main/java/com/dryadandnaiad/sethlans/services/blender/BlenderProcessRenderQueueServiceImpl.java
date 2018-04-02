@@ -113,7 +113,7 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
                                             blenderRenderQueueItem.getBlenderFramePart().getFileExtension());
                                     Files.write(path, bytes);
                                     SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderProcessQueueItem.getConnection_uuid());
-                                    sethlansNode.setRendering(false);
+                                    sethlansNode.setRenderingSlotsFull(false);
                                     LOG.debug("Processing completed render from " + sethlansNode.getHostname() + ". Part: " + blenderProcessQueueItem.getPart_number()
                                             + " Frame: " + blenderProcessQueueItem.getFrame_number());
                                     sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);

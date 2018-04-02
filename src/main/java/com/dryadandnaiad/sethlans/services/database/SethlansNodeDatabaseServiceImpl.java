@@ -84,7 +84,7 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
         List<SethlansNode> nodes = listAll();
         List<SethlansNode> nodesNotRendering = new ArrayList<>();
         for (SethlansNode node : nodes) {
-            if (!node.isRendering() && node.isActive() && node.isBenchmarkComplete()) {
+            if (!node.isRenderingSlotsFull() && node.isActive() && node.isBenchmarkComplete()) {
                 nodesNotRendering.add(node);
 
             }
@@ -152,7 +152,7 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
         List<SethlansNode> nodes = listAll();
         List<SethlansNode> nodesRendering = new ArrayList<>();
         for (SethlansNode node : nodes) {
-            if (node.isRendering() && node.isActive() && node.isBenchmarkComplete()) {
+            if (node.isRenderingSlotsFull() && node.isActive() && node.isBenchmarkComplete()) {
                 nodesRendering.add(node);
 
             }

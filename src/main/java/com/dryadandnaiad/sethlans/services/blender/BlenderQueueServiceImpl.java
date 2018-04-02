@@ -75,7 +75,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                 timedLog(count, cycle, blenderRenderQueueItem.toString() + " is waiting to be rendered.");
                                 ComputeType computeType = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid()).getRenderOn();
                                 SethlansNode sethlansNode = SethlansUtils.getFastestFreeNode(sethlansNodeDatabaseService.listAll(), computeType);
-                                if (sethlansNode != null && sethlansNode.isActive() && !sethlansNode.isRendering() && !sethlansNode.isDisabled()) {
+                                if (sethlansNode != null && sethlansNode.isActive() && !sethlansNode.isRenderingSlotsFull() && !sethlansNode.isDisabled()) {
                                     blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
                                     BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
                                     ComputeType projectComputeType = blenderProject.getRenderOn();
@@ -155,7 +155,10 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
 
         if (sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params)) {
             blenderRenderQueueItem.setRendering(true);
-            sethlansNode.setRendering(true);
+            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() - 1);
+            if (sethlansNode.getAvailableRenderingSlots() == 0) {
+                sethlansNode.setRenderingSlotsFull(true);
+            }
             blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
         }
@@ -175,7 +178,8 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             blenderRenderQueueItem.setPaused(true);
             for (SethlansNode sethlansNode : sethlansNodeList) {
                 if (sethlansNode.getConnection_uuid().equals(blenderRenderQueueItem.getConnection_uuid())) {
-                    sethlansNode.setRendering(false);
+                    sethlansNode.setRenderingSlotsFull(false);
+                    sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
                     sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                 }
             }
