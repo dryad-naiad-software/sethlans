@@ -19,7 +19,6 @@
 
 import {Component, OnInit} from '@angular/core';
 import {NodeInfo} from "../../../../models/node_info.model";
-import {Router} from "@angular/router";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 @Component({
@@ -32,10 +31,10 @@ export class NodeScanComponent implements OnInit {
   scanList: NodeInfo[];
   selectedNodeIP: string[] = [];
   dtOptions: DataTables.Settings = {};
+  connectionIds: string[];
 
 
-
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient) {
   }
 
   ngOnInit() {
@@ -65,10 +64,22 @@ export class NodeScanComponent implements OnInit {
         'Content-Type': 'application/json',
       })
     };
-    this.http.post('/api/setup/multi_node_add', JSON.stringify(this.selectedNodeIP), httpOptions).subscribe((success: boolean) => {
-      this.returnToNodes();
+    this.http.post('/api/setup/multi_node_add', JSON.stringify(this.selectedNodeIP), httpOptions).subscribe((connectionIds: string[]) => {
+      this.connectionIds = connectionIds;
+      this.acknowledgeSelectedNodes()
     });
 
+  }
+
+  acknowledgeSelectedNodes() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    this.http.post('/api/setup/multi_auto_acknowledge', JSON.stringify(this.connectionIds), httpOptions).subscribe(() => {
+      this.returnToNodes();
+    });
   }
 
   selectNode(event) {

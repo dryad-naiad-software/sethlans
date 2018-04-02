@@ -31,12 +31,12 @@
         <tbody>
         <tr *ngFor="let project of projects">
           <td><a [href]="'/projects/view/'+ project.id ">{{project.projectName}}</a></td>
-          <td *ngIf="project.projectStatus.valueOf().toString() != 'Finished'.valueOf()">{{project.projectStatus}}</td>
-          <td *ngIf="project.projectStatus.valueOf().toString() == 'Finished'.valueOf()"><a
+          <td *ngIf="project.projectStatus?.valueOf().toString() != 'Finished'.valueOf()">{{project.projectStatus}}</td>
+          <td *ngIf="project.projectStatus?.valueOf().toString() == 'Finished'.valueOf()"><a
             [href]="'/api/project_actions/download_project/' + project.id"> {{project.projectStatus}}</a></td>
           <td class="pt-2 pb-2">
             <ngb-progressbar showValue="true" type="success"
-                             [value]="project.currentPercentage"></ngb-progressbar>
+                             [value]="project?.currentPercentage"></ngb-progressbar>
           </td>
         </tr>
         </tbody>

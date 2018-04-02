@@ -54,13 +54,13 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
 
     @Override
     @Async
-    public void sendActivationRequest(SethlansNode sethlansNode, SethlansServer sethlansServer) {
+    public void sendActivationRequest(SethlansNode sethlansNode, SethlansServer sethlansServer, boolean auto) {
         LOG.debug("Sending Activation Request to Node");
         String ip = sethlansNode.getIpAddress();
         String port = sethlansNode.getNetworkPort();
         String activateURL = "https://" + ip + ":" + port + "/api/nodeactivate/request";
         String params = "serverhostname=" + sethlansServer.getHostname() + "&ipAddress=" + sethlansServer.getIpAddress()
-                + "&port=" + sethlansServer.getNetworkPort() + "&connection_uuid=" + sethlansNode.getConnection_uuid();
+                + "&port=" + sethlansServer.getNetworkPort() + "&connection_uuid=" + sethlansNode.getConnection_uuid() + "&auto=" + auto;
         if (sethlansAPIConnectionService.sendToRemotePOST(activateURL, params)) {
             addBlenderBinary(sethlansNode.getSethlansNodeOS().toString());
         }
@@ -70,14 +70,14 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
 
     @Override
     @Async
-    public void sendActivationResponse(SethlansServer sethlansServer, SethlansNode sethlansNode) {
+    public void sendActivationResponse(SethlansServer sethlansServer, SethlansNode sethlansNode, boolean auto) {
         LOG.debug("Sending Activation Response to Server");
         String ip = sethlansServer.getIpAddress();
         String port = sethlansServer.getNetworkPort();
         String responseURL = "https://" + ip + ":" + port + "/api/nodeactivate/response";
         String params = "nodehostname=" + sethlansNode.getHostname() + "&ipAddress=" + sethlansNode.getIpAddress()
                 + "&port=" + sethlansNode.getNetworkPort() + "&connection_uuid=" + sethlansServer.getConnection_uuid();
-        if (sethlansAPIConnectionService.sendToRemotePOST(responseURL, params)) {
+        if (sethlansAPIConnectionService.sendToRemotePOST(responseURL, params) && !auto) {
             this.applicationEventPublisher.publishEvent(new SethlansEvent(this, sethlansServer.getConnection_uuid() + "-" + NotificationOrigin.ACTIVATION_REQUEST, false));
 
         }

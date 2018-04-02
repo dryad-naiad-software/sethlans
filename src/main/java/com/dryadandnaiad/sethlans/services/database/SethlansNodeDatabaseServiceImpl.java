@@ -80,11 +80,11 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
     }
 
     @Override
-    public List<SethlansNode> activeNodesNotRendering() {
+    public List<SethlansNode> activeNodeswithFreeSlots() {
         List<SethlansNode> nodes = listAll();
         List<SethlansNode> nodesNotRendering = new ArrayList<>();
         for (SethlansNode node : nodes) {
-            if (!node.isRenderingSlotsFull() && node.isActive() && node.isBenchmarkComplete()) {
+            if (node.getAvailableRenderingSlots() > 0 && node.isActive() && node.isBenchmarkComplete()) {
                 nodesNotRendering.add(node);
 
             }
@@ -148,11 +148,11 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
     }
 
     @Override
-    public List<SethlansNode> activeNodesRendering() {
+    public List<SethlansNode> activeNodesWithNoFreeSlots() {
         List<SethlansNode> nodes = listAll();
         List<SethlansNode> nodesRendering = new ArrayList<>();
         for (SethlansNode node : nodes) {
-            if (node.isRenderingSlotsFull() && node.isActive() && node.isBenchmarkComplete()) {
+            if (node.getAvailableRenderingSlots() == 0 && node.isActive() && node.isBenchmarkComplete()) {
                 nodesRendering.add(node);
 
             }

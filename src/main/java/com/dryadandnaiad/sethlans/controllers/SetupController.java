@@ -19,27 +19,17 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
-import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.forms.setup.SetupForm;
-import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
-import com.dryadandnaiad.sethlans.services.config.UpdateComputeService;
-import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
-import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
-import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
-import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
-import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created Mario Estrella on 2/11/18.
@@ -53,12 +43,6 @@ public class SetupController {
     private static final Logger LOG = LoggerFactory.getLogger(SetupController.class);
     private SaveSetupConfigService saveSetupConfigService;
     private SethlansUserDatabaseService sethlansUserDatabaseService;
-    private UpdateComputeService updateComputeService;
-    private SethlansManagerService sethlansManagerService;
-    private NodeDiscoveryService nodeDiscoveryService;
-    private SethlansNodeDatabaseService sethlansNodeDatabaseService;
-    private NodeActivationService nodeActivationService;
-    private SethlansServerDatabaseService sethlansServerDatabaseService;
 
 
     @PostMapping("/submit")
@@ -73,87 +57,12 @@ public class SetupController {
         }
     }
 
-    @PostMapping("/update_compute")
-    public boolean submit(@RequestBody SetupNode setupNode) {
-        LOG.debug("Processing Compute Setting Update");
-        if (setupNode != null) {
-            LOG.debug(setupNode.toString());
-            boolean updateComplete = updateComputeService.saveComputeSettings(setupNode);
-            sethlansManagerService.restart();
-            return updateComplete;
-        } else {
-            return false;
-        }
-    }
 
-    @GetMapping("/server_acknowledge/{id}")
-    public boolean acknowledgeNode(@PathVariable Long id) {
-        SethlansServer sethlansServer = sethlansServerDatabaseService.getById(id);
-        sethlansServer.setPendingAcknowledgementResponse(true);
-        LOG.debug(sethlansServer.toString());
-        sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
-        nodeActivationService.sendActivationResponse(sethlansServer, SethlansUtils.getCurrentNodeInfo());
-        return true;
-    }
 
-    @PostMapping("/multi_node_add")
-    public boolean addMultiNodes(@RequestBody String[] nodeIPArray) {
-        for (String node : nodeIPArray) {
-            String[] nodeInfo = StringUtils.split(node, ",");
-            addNode(nodeInfo[0], nodeInfo[1]);
-        }
-        return true;
-    }
 
-    @GetMapping("/node_add")
-    public boolean addNode(@RequestParam String ip, @RequestParam String port) {
-        SethlansNode sethlansNode = nodeDiscoveryService.discoverUnicastNode(ip, port);
-        List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.listAll();
-        if (!sethlansNodeList.isEmpty()) {
-            LOG.debug("Nodes found in database, starting comparison.");
-            if (sethlansNodeDatabaseService.checkForDuplicatesAndSave(sethlansNode)) {
-                if (sethlansNode.isPendingActivation()) {
-                    nodeActivationService.sendActivationRequest(sethlansNode, SethlansUtils.getCurrentServerInfo());
-                    return true;
 
-                }
-            }
-        } else {
-            LOG.debug("No nodes present in database.");
-            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-            LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
-            if (sethlansNode.isPendingActivation()) {
-                nodeActivationService.sendActivationRequest(sethlansNode, SethlansUtils.getCurrentServerInfo());
-                return true;
-            }
-        }
 
-        return false;
-    }
 
-    @GetMapping("/node_delete/{id}")
-    public boolean deleteNode(@PathVariable Long id) {
-        sethlansNodeDatabaseService.delete(id);
-        return true;
-    }
-
-    @GetMapping("/node_edit/{id}")
-    public boolean updateNode(@PathVariable Long id, @RequestParam String ip, @RequestParam String port) {
-        SethlansNode sethlansNodeToEdit = sethlansNodeDatabaseService.getById(id);
-        SethlansNode newNode = nodeDiscoveryService.discoverUnicastNode(ip, port);
-        newNode.setId(sethlansNodeToEdit.getId());
-        newNode.setVersion(sethlansNodeToEdit.getVersion());
-        newNode.setDateCreated(sethlansNodeToEdit.getDateCreated());
-        newNode.setLastUpdated(sethlansNodeToEdit.getLastUpdated());
-        sethlansNodeDatabaseService.saveOrUpdate(newNode);
-        return true;
-    }
-
-    @GetMapping("/server_delete/{id}")
-    public boolean deleteServer(@PathVariable Long id) {
-        sethlansServerDatabaseService.delete(id);
-        return true;
-    }
 
     @PostMapping("/register")
     public boolean register(@RequestBody SethlansUser user) {
@@ -181,33 +90,9 @@ public class SetupController {
         this.sethlansUserDatabaseService = sethlansUserDatabaseService;
     }
 
-    @Autowired
-    public void setUpdateComputeService(UpdateComputeService updateComputeService) {
-        this.updateComputeService = updateComputeService;
-    }
 
-    @Autowired
-    public void setSethlansManagerService(SethlansManagerService sethlansManagerService) {
-        this.sethlansManagerService = sethlansManagerService;
-    }
 
-    @Autowired
-    public void setNodeDiscoveryService(NodeDiscoveryService nodeDiscoveryService) {
-        this.nodeDiscoveryService = nodeDiscoveryService;
-    }
 
-    @Autowired
-    public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {
-        this.sethlansNodeDatabaseService = sethlansNodeDatabaseService;
-    }
 
-    @Autowired
-    public void setNodeActivationService(NodeActivationService nodeActivationService) {
-        this.nodeActivationService = nodeActivationService;
-    }
 
-    @Autowired
-    public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
-        this.sethlansServerDatabaseService = sethlansServerDatabaseService;
-    }
 }

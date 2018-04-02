@@ -21,13 +21,13 @@
   <div class="col-4">
     <h5>Node Information</h5>
     <ul>
-      <li *ngIf="computeType.valueOf().toString() == 'CPU_GPU'.valueOf()">Current Compute Type: <i>CPU & GPU</i></li>
-      <li *ngIf="computeType.valueOf().toString() != 'CPU_GPU'.valueOf()">Current Compute Type: <i>{{computeType}}</i>
+      <li *ngIf="computeType?.valueOf().toString() == 'CPU_GPU'.valueOf()">Current Compute Type: <i>CPU & GPU</i></li>
+      <li *ngIf="computeType?.valueOf().toString() != 'CPU_GPU'.valueOf()">Current Compute Type: <i>{{computeType}}</i>
       </li>
 
-      <li *ngIf="computeType.valueOf().toString() != 'GPU'.valueOf()">Selected Cores: <i>{{selectedCores}}</i>
+      <li *ngIf="computeType?.valueOf().toString() != 'GPU'.valueOf()">Selected Cores: <i>{{selectedCores}}</i>
       </li>
-      <li *ngIf="computeType.valueOf().toString() != 'CPU'.valueOf()">Selected GPU(s):
+      <li *ngIf="computeType?.valueOf().toString() != 'CPU'.valueOf()">Selected GPU(s):
         <ul>
           <li *ngFor="let gpu of selectedGPUModels"><i>{{gpu}}</i></li>
         </ul>

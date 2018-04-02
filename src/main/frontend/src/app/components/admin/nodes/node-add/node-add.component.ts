@@ -34,7 +34,8 @@ export class NodeAddComponent implements OnInit {
   nodeToAdd: NodeInfo;
   summaryComplete: boolean = false;
   computeMethodEnum: any = ComputeMethod;
-  formSubmitted: boolean = false;
+  formSubmitted: boolean = false
+  connectionID: string;
 
 
   constructor(private http: HttpClient, private router: Router) {
@@ -52,9 +53,17 @@ export class NodeAddComponent implements OnInit {
   }
 
   addNode() {
-    this.http.get('/api/setup/node_add?ip=' + this.ipAddress + "&port=" + this.port).subscribe((success: boolean) => {
+    this.http.get('/api/setup/node_add?ip=' + this.ipAddress + "&port=" + this.port, {responseType: 'text'}).subscribe((connectionID: string) => {
+      this.connectionID = connectionID;
+      this.activateNode();
+    });
+  }
+
+  activateNode() {
+    this.http.get('/api/setup/auto_acknowledge/' + this.connectionID + "/").subscribe(() => {
       this.returnToNodes();
     });
+
   }
 
   returnToNodes(): void {

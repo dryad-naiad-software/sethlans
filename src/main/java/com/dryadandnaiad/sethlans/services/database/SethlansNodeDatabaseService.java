@@ -32,7 +32,7 @@ import java.util.List;
 public interface SethlansNodeDatabaseService extends CRUDService<SethlansNode> {
     SethlansNode getByConnectionUUID(String uuid);
 
-    List<SethlansNode> activeNodesNotRendering();
+    List<SethlansNode> activeNodeswithFreeSlots();
 
     boolean activeNodes();
 
@@ -44,7 +44,7 @@ public interface SethlansNodeDatabaseService extends CRUDService<SethlansNode> {
 
     List<SethlansNode> activeCPUGPUNodes();
 
-    List<SethlansNode> activeNodesRendering();
+    List<SethlansNode> activeNodesWithNoFreeSlots();
 
     boolean checkForDuplicatesAndSave(SethlansNode sethlansNode);
 

@@ -44,13 +44,16 @@ import org.springframework.web.bind.annotation.RestController;
 @Profile({"NODE", "DUAL"})
 @RequestMapping("/api/nodeactivate/")
 public class ActivationRequestController implements ApplicationEventPublisherAware {
+    /**
+     * This is the Rest Controller on the Node that receives the requests for node activations
+     */
     private static final Logger LOG = LoggerFactory.getLogger(ActivationRequestController.class);
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private ApplicationEventPublisher applicationEventPublisher;
 
     @RequestMapping(value = "/request", method = RequestMethod.POST)
     public void nodeActivationRequest(@RequestParam String serverhostname, @RequestParam String ipAddress,
-                                      @RequestParam String port, @RequestParam String connection_uuid) {
+                                      @RequestParam String port, @RequestParam String connection_uuid, @RequestParam boolean auto) {
         LOG.debug("Received node activation request");
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) != null) {
             LOG.debug("Server UUID is already present on node. Skipping Activation");
@@ -65,7 +68,9 @@ public class ActivationRequestController implements ApplicationEventPublisherAwa
             LOG.debug(sethlansServer.toString());
             LOG.debug("Processed node activation request");
             String notification = "New Server Request: " + serverhostname;
-            this.applicationEventPublisher.publishEvent(new SethlansEvent(this, connection_uuid + "-" + NotificationOrigin.ACTIVATION_REQUEST.toString(), notification, true));
+            if (!auto) {
+                this.applicationEventPublisher.publishEvent(new SethlansEvent(this, connection_uuid + "-" + NotificationOrigin.ACTIVATION_REQUEST.toString(), notification, true));
+            }
         }
     }
 

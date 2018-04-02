@@ -491,7 +491,7 @@ public class SethlansUtils {
     public static SethlansNode getFastestFreeNode(List<SethlansNode> nodeList, ComputeType computeType) {
         List<SethlansNode> listToSort = new ArrayList<>();
         for (SethlansNode sethlansNode : nodeList) {
-            if (!sethlansNode.isRenderingSlotsFull() && sethlansNode.isBenchmarkComplete() && sethlansNode.isActive()) {
+            if (sethlansNode.getAvailableRenderingSlots() > 0 && sethlansNode.isBenchmarkComplete() && sethlansNode.isActive()) {
                 listofNodes(computeType, listToSort, sethlansNode);
             }
         }

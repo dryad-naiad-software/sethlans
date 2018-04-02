@@ -190,7 +190,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     public void pauseRenderQueueforProject(BlenderProject blenderProject) {
         queueBeingPaused = true;
         List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.queueItemsByProjectUUID(blenderProject.getProject_uuid());
-        List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.activeNodesRendering();
+        List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.activeNodesWithNoFreeSlots();
         for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
             blenderRenderQueueItem.setPaused(true);
             for (SethlansNode sethlansNode : sethlansNodeList) {

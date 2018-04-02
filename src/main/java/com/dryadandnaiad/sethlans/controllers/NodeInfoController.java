@@ -19,8 +19,13 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.domains.hardware.CPU;
+import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.domains.info.NodeInfo;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
+import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +35,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,9 +47,13 @@ import java.util.List;
  * Project: sethlans
  */
 @RestController
-@Profile({"NODE", "DUAL"})
+@Profile({"NODE", "DUAL", "SETUP"})
+@RequestMapping("/api/info")
 public class NodeInfoController {
     private static final Logger LOG = LoggerFactory.getLogger(NodeInfoController.class);
+    private List<ComputeType> availableMethods = SethlansUtils.getAvailableMethods();
+    private Integer totalCores = new CPU().getCores();
+    private List<GPUDevice> gpuDevices = GPU.listDevices();
 
     @Value("${server.port}")
     private String sethlansPort;
@@ -56,12 +67,12 @@ public class NodeInfoController {
     @Value("${sethlans.gpu_id}")
     private String deviceID;
 
-    @GetMapping(value = "/api/info/node_keep_alive")
+    @GetMapping(value = "/node_keep_alive")
     public boolean nodeKeepAlive() {
         return true;
     }
 
-    @RequestMapping(value = "/api/info/nodeinfo", method = RequestMethod.GET)
+    @RequestMapping(value = "/nodeinfo", method = RequestMethod.GET)
     public NodeInfo nodeInfo() {
         LOG.debug("Node info requested.");
         NodeInfo nodeInfo = new NodeInfo();
@@ -83,5 +94,80 @@ public class NodeInfoController {
 
         }
         return nodeInfo;
+    }
+
+    @GetMapping(value = {"/available_methods"})
+    public List<ComputeType> getAvailableMethods() {
+        return availableMethods;
+    }
+
+    @GetMapping(value = {"/total_cores"})
+    public Integer getTotalCores() {
+        return totalCores;
+    }
+
+    @GetMapping(value = {"/available_gpus"})
+    public List<GPUDevice> getAvailableGPUs() {
+        return gpuDevices;
+    }
+
+    @GetMapping(value = {"/client_selected_gpu_models"})
+    public List<String> getSelectedGPUModels() {
+        List<String> selectedGPUs = new ArrayList<>();
+        try {
+            List<String> deviceList = Arrays.asList(SethlansUtils.getProperty(SethlansConfigKeys.GPU_DEVICE.toString()).split(","));
+            List<GPUDevice> availableGPUs = GPU.listDevices();
+            for (String deviceID : deviceList) {
+                for (GPUDevice gpu : availableGPUs) {
+                    if (gpu.getDeviceID().equals(deviceID)) {
+                        selectedGPUs.add(gpu.getModel());
+                    }
+                }
+            }
+        } catch (NullPointerException e) {
+            LOG.debug("No Selected GPU present");
+
+        }
+
+        return selectedGPUs;
+    }
+
+    @GetMapping(value = {"/client_used_space"})
+    public Long getClientUsedSpace() {
+        return getClientTotalSpace() - getClientFreeSpace();
+    }
+
+
+    @GetMapping(value = {"/client_free_space"})
+    public Long getClientFreeSpace() {
+        return new File(SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString())).getFreeSpace() / 1024 / 1024 / 1024;
+    }
+
+    @GetMapping(value = {"/client_total_space"})
+    public Long getClientTotalSpace() {
+        return new File(SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString())).getTotalSpace() / 1024 / 1024 / 1024;
+
+    }
+
+    @GetMapping(value = {"/cpu_name"})
+    public String cpuInfo() {
+        CPU cpu = new CPU();
+        return cpu.getName();
+    }
+
+    @GetMapping(value = {"/selected_cores"})
+    public String selectedCores() {
+        return SethlansUtils.getCores();
+    }
+
+    @GetMapping(value = {"/total_memory"})
+    public String totalMemory() {
+        CPU cpu = new CPU();
+        return cpu.getTotalMemory();
+    }
+
+    @GetMapping(value = {"/compute_type"})
+    public ComputeType getCurrentComputeType() {
+        return computeType;
     }
 }

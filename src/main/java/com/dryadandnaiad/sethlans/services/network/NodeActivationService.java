@@ -32,10 +32,10 @@ import org.springframework.scheduling.annotation.Async;
 public interface NodeActivationService {
 
     @Async
-    void sendActivationRequest(SethlansNode sethlansNode, SethlansServer sethlansServer);
+    void sendActivationRequest(SethlansNode sethlansNode, SethlansServer sethlansServer, boolean auto);
 
     @Async
-    void sendActivationResponse(SethlansServer sethlansServer, SethlansNode sethlansNode);
+    void sendActivationResponse(SethlansServer sethlansServer, SethlansNode sethlansNode, boolean auto);
 
     @Async
     void sendResponseAcknowledgement(SethlansNode sethlansNode, String connection_uuid);

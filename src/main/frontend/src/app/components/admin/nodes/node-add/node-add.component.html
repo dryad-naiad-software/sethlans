@@ -50,6 +50,9 @@
           <div *ngIf="summaryComplete == true">
             <div *ngIf="nodeToAdd == null">
               <p class="text-center">{{ipAddress}}:{{port}} is not a valid Sethlans Node</p>
+              <button type="button" class="btn btn-outline-secondary ml-auto float-right" (click)="returnToNodes()">
+                Cancel
+              </button>
             </div>
             <div *ngIf="nodeToAdd != null">
               <table class="table table-striped">

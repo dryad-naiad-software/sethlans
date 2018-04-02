@@ -41,6 +41,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Profile({"SERVER", "DUAL"})
 @RequestMapping("/api/nodeactivate/")
 public class ActivationResponseController {
+    /**
+     * This is the Rest Controller on the Server that sends node activation requests
+     */
     private static final Logger LOG = LoggerFactory.getLogger(ActivationResponseController.class);
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private NodeActivationService nodeActivationService;

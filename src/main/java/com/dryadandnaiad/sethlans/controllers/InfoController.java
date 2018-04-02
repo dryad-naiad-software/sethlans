@@ -19,15 +19,9 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.domains.hardware.CPU;
-import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
-import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
-import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
-import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
@@ -39,8 +33,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -55,12 +47,8 @@ import java.util.Set;
 public class InfoController {
     private static final Logger LOG = LoggerFactory.getLogger(InfoController.class);
     private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
-    private SethlansNodeDatabaseService sethlansNodeDatabaseService;
-    private SethlansServerDatabaseService sethlansServerDatabaseService;
     private List<String> blenderVersions = BlenderUtils.listVersions();
-    private List<ComputeType> availableMethods = SethlansUtils.getAvailableMethods();
-    private Integer totalCores = new CPU().getCores();
-    private List<GPUDevice> gpuDevices = GPU.listDevices();
+
 
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
@@ -70,11 +58,6 @@ public class InfoController {
 
     @Value("${sethlans.computeMethod}")
     private ComputeType computeType;
-
-    @GetMapping(value = {"/compute_type"})
-    public ComputeType getCurrentComputeType() {
-        return computeType;
-    }
 
     @GetMapping(value = {"/first_time"})
     public boolean isFirstTime() {
@@ -86,22 +69,6 @@ public class InfoController {
         return blenderBinaryDatabaseService.installedBlenderVersions();
     }
 
-    @GetMapping(value = {"/cpu_name"})
-    public String cpuInfo() {
-        CPU cpu = new CPU();
-        return cpu.getName();
-    }
-
-    @GetMapping(value = {"/selected_cores"})
-    public String selectedCores() {
-        return SethlansUtils.getCores();
-    }
-
-    @GetMapping(value = {"/total_memory"})
-    public String totalMemory() {
-        CPU cpu = new CPU();
-        return cpu.getTotalMemory();
-    }
 
     @GetMapping(value = {"/version"})
     public String getVersion() {
@@ -111,52 +78,6 @@ public class InfoController {
     @GetMapping(value = {"/blender_versions"})
     public List<String> getBlenderVersions() {
         return blenderVersions;
-    }
-
-    @GetMapping(value = {"/available_methods"})
-    public List<ComputeType> getAvailableMethods() {
-        return availableMethods;
-    }
-
-    @GetMapping(value = {"/client_free_space"})
-    public Long getClientFreeSpace() {
-        return new File(SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString())).getFreeSpace() / 1024 / 1024 / 1024;
-    }
-
-    @GetMapping(value = {"/client_total_space"})
-    public Long getClientTotalSpace() {
-        return new File(SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString())).getTotalSpace() / 1024 / 1024 / 1024;
-
-    }
-
-    @GetMapping(value = {"/client_selected_gpu_models"})
-    public List<String> getSelectedGPUModels() {
-        List<String> selectedGPUs = new ArrayList<>();
-        List<String> deviceList = Arrays.asList(SethlansUtils.getProperty(SethlansConfigKeys.GPU_DEVICE.toString()).split(","));
-        List<GPUDevice> availableGPUs = GPU.listDevices();
-        for (String deviceID : deviceList) {
-            for (GPUDevice gpu : availableGPUs) {
-                if (gpu.getDeviceID().equals(deviceID)) {
-                    selectedGPUs.add(gpu.getModel());
-                }
-            }
-        }
-        return selectedGPUs;
-    }
-
-    @GetMapping(value = {"/client_used_space"})
-    public Long getClientUsedSpace() {
-        return getClientTotalSpace() - getClientFreeSpace();
-    }
-
-    @GetMapping(value = {"/total_cores"})
-    public Integer getTotalCores() {
-        return totalCores;
-    }
-
-    @GetMapping(value = {"/available_gpus"})
-    public List<GPUDevice> getAvailableGPUs() {
-        return gpuDevices;
     }
 
     @GetMapping(value = {"/root_directory"})
@@ -178,49 +99,7 @@ public class InfoController {
         }
     }
 
-    @GetMapping(value = {"/total_nodes"})
-    public int getTotalNodes() {
-        return sethlansNodeDatabaseService.listAll().size();
-    }
 
-    @GetMapping(value = {"/inactive_nodes"})
-    public int getInactiveNodes() {
-        return sethlansNodeDatabaseService.inactiveNodeList().size();
-    }
-
-    @GetMapping(value = {"/disabled_nodes"})
-    public int getDisabledNodes() {
-        return sethlansNodeDatabaseService.disabledNodeList().size();
-    }
-
-    @GetMapping(value = {"/active_nodes"})
-    public int getActiveNodes() {
-        return sethlansNodeDatabaseService.activeNodeList().size();
-    }
-
-    @GetMapping(value = {"/active_nodes_cpu"})
-    public int getActiveCPUNodes() {
-        return sethlansNodeDatabaseService.activeCPUNodes().size();
-    }
-
-    @GetMapping(value = {"/active_nodes_gpu"})
-    public int getActiveGPUNodes() {
-        return sethlansNodeDatabaseService.activeGPUNodes().size();
-    }
-
-    @GetMapping(value = {"/active_nodes_cpu_gpu"})
-    public int getActiveCPUGPUNodes() {
-        return sethlansNodeDatabaseService.activeCPUGPUNodes().size();
-    }
-
-    @GetMapping(value = {"/active_nodes_value_array"})
-    public List<Integer> getNumberOfActiveNodesArray() {
-        List<Integer> numberOfActiveNodesArray = new ArrayList<>();
-        numberOfActiveNodesArray.add(getActiveCPUNodes());
-        numberOfActiveNodesArray.add(getActiveGPUNodes());
-        numberOfActiveNodesArray.add(getActiveCPUGPUNodes());
-        return numberOfActiveNodesArray;
-    }
 
 
     @GetMapping(value = {"/sethlans_mode"})
@@ -238,13 +117,5 @@ public class InfoController {
         this.blenderBinaryDatabaseService = blenderBinaryDatabaseService;
     }
 
-    @Autowired
-    public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {
-        this.sethlansNodeDatabaseService = sethlansNodeDatabaseService;
-    }
 
-    @Autowired
-    public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
-        this.sethlansServerDatabaseService = sethlansServerDatabaseService;
-    }
 }
