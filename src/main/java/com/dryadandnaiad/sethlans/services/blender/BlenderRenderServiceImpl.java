@@ -77,36 +77,20 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
     @Override
     @Async
-    public void resumeRenderOnNodeRestart() {
+    public void clearQueueOnNodeRestart() {
         // If a node gets shutdown, this will attempt to process any pending benchmarks.
         try {
             Thread.sleep(30000);
             LOG.debug("Checking to see if any render tasks are pending.");
             List<BlenderRenderTask> blenderRenderTaskList = blenderRenderTaskDatabaseService.listAll();
-            List<BlenderRenderTask> pendingRenderTask = new ArrayList<>();
-            for (BlenderRenderTask blenderRenderTask : blenderRenderTaskList) {
-                if (!blenderRenderTask.isComplete()) {
-                    pendingRenderTask.add(blenderRenderTask);
-                }
-            }
-
-            if (pendingRenderTask.size() == 1) {
-                LOG.debug("There is one render task pending.");
-                if (pendingRenderTask.get(0).getRenderDir() != null) {
-                    File file = new File(pendingRenderTask.get(0).getRenderDir());
-                    if (file.exists()) {
-                        FileUtils.deleteDirectory(new File(pendingRenderTask.get(0).getRenderDir()));
-                        LOG.debug("Deleting directory " + pendingRenderTask.get(0).getRenderDir());
-                    }
-                }
-                startRenderService(pendingRenderTask.get(0).getProject_uuid());
+            if (blenderRenderTaskList.size() > 0) {
+                LOG.debug("Clearing all Render Tasks in the database");
+                blenderRenderTaskDatabaseService.deleteAll();
             } else {
                 LOG.debug("No render tasks are pending.");
             }
         } catch (InterruptedException e) {
             LOG.debug("Shutting down Render Service");
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

@@ -30,5 +30,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
 public interface BlenderRenderTaskDatabaseService extends CRUDService<BlenderRenderTask> {
     void delete(BlenderRenderTask blenderRenderTask);
 
+    void deleteAll();
+
     BlenderRenderTask getByProjectUUID(String project_uuid);
 }

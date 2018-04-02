@@ -73,7 +73,7 @@ public class NodeBackgroundComponent {
 
     @PostConstruct
     public void startRender() {
-        blenderRenderService.resumeRenderOnNodeRestart();
+        blenderRenderService.clearQueueOnNodeRestart();
 
     }
 

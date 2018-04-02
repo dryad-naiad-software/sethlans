@@ -28,7 +28,7 @@ import org.springframework.scheduling.annotation.Async;
  * Project: sethlans
  */
 public interface BlenderRenderService {
-    void resumeRenderOnNodeRestart();
+    void clearQueueOnNodeRestart();
 
     @Async
     void startRenderService(String projectUUID);
