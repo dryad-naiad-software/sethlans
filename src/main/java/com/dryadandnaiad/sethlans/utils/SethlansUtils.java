@@ -19,6 +19,8 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
@@ -418,36 +420,81 @@ public class SethlansUtils {
         return null;
     }
 
-    public static String assignBlenderExecutable(File tempDir) {
+    public static String assignBlenderExecutable(File binDir, String blenderVersion) {
         String executable = null;
         if (getOS().equals("MacOS")) {
-            executable = tempDir.toString() + File.separator + "blender/blender.app/Contents/MacOS/blender";
+            executable = binDir.toString() + File.separator + "blender-" + blenderVersion + "/blender.app/Contents/MacOS/blender";
         }
         if (getOS().equals("Windows64") || getOS().equals("Windows32")) {
-            executable = tempDir.toString() + File.separator + "blender/blender.exe";
+            executable = binDir.toString() + File.separator + "blender-" + blenderVersion + "/blender.exe";
         }
         if (getOS().equals("Linux64") || getOS().equals("Linux32")) {
-            executable = tempDir.toString() + File.separator + "blender/blender";
+            executable = binDir.toString() + File.separator + "blender-" + blenderVersion + "/blender";
         }
         LOG.debug("Setting executable to: " + executable);
         return executable;
     }
 
-    public static boolean renameBlenderDirectory(File tempDir, String blenderVersion) {
-        LOG.debug("Starting to rename of extracted directory in " + tempDir + " to " + tempDir + File.separator + "blender");
-        File[] files = tempDir.listFiles();
+    public static void addCachedBlenderVersion(String blenderVersion) {
+        writeProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES, blenderVersion);
+    }
+
+    public static boolean renameBlenderDir(File renderDir, File binDir, BlenderRenderTask renderTask, String cachedBlenderBinaries) {
+        if (SethlansUtils.renameBlenderDirectory(binDir, renderTask.getBlenderVersion())) {
+            LOG.debug("Blender executable ready");
+            renderTask.setRenderDir(renderDir.toString());
+            renderTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(binDir, renderTask.getBlenderVersion()));
+            if (cachedBlenderBinaries == null || cachedBlenderBinaries.isEmpty() || cachedBlenderBinaries.equals("null")) {
+                SethlansUtils.addCachedBlenderVersion(renderTask.getBlenderVersion());
+            } else {
+                SethlansUtils.appendCachedBlenderVersion(renderTask.getBlenderVersion());
+            }
+            return true;
+        } else {
+            LOG.debug("Rename failed.");
+            return false;
+        }
+
+    }
+
+    public static boolean renameBlenderDir(File benchmarkDir, File binDir, BlenderBenchmarkTask benchmarkTask, String cachedBlenderBinaries) {
+        if (SethlansUtils.renameBlenderDirectory(binDir, benchmarkTask.getBlenderVersion())) {
+            LOG.debug("Blender executable ready");
+            benchmarkTask.setBenchmarkDir(benchmarkDir.toString());
+            benchmarkTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(binDir, benchmarkTask.getBlenderVersion()));
+            if (cachedBlenderBinaries == null || cachedBlenderBinaries.isEmpty() || cachedBlenderBinaries.equals("null")) {
+                SethlansUtils.addCachedBlenderVersion(benchmarkTask.getBlenderVersion());
+            } else {
+                SethlansUtils.appendCachedBlenderVersion(benchmarkTask.getBlenderVersion());
+            }
+            return true;
+        } else {
+            LOG.debug("Rename failed.");
+            return false;
+        }
+
+    }
+
+    public static void appendCachedBlenderVersion(String blenderVersion) {
+        String currentVersions = getProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES.toString());
+        writeProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES, currentVersions + ", " + blenderVersion);
+    }
+
+    public static boolean renameBlenderDirectory(File binDir, String blenderVersion) {
+        LOG.debug("Starting to rename of extracted directory in " + binDir + " to " + binDir + File.separator + "blender-" + blenderVersion);
+        File[] files = binDir.listFiles();
         if (files != null) {
             for (File file : files) {
-                LOG.debug("Searching " + tempDir + " for extracted directory.");
+                LOG.debug("Searching " + binDir + " for extracted directory.");
                 LOG.debug("Examining " + file);
                 LOG.debug("Searching for directories containing " + blenderVersion);
                 if (file.isDirectory() && file.toString().contains(blenderVersion)) {
                     LOG.debug(file.toString());
                     LOG.debug("Directory found, renaming");
-                    if (file.renameTo(new File(tempDir + File.separator + "blender"))) {
+                    if (file.renameTo(new File(binDir + File.separator + "blender-" + blenderVersion))) {
                         if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
                             try {
-                                ProcessBuilder pb = new ProcessBuilder("chmod", "-R", "+x", tempDir.toString());
+                                ProcessBuilder pb = new ProcessBuilder("chmod", "-R", "+x", binDir.toString());
                                 pb.start();
                                 LOG.debug("Setting blender files as executable.");
                             } catch (IOException e) {

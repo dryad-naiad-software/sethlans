@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
@@ -62,6 +63,10 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
 
     @Value("${sethlans.primaryBlenderVersion}")
     private String primaryBlenderVersion;
+
+    @Value("${sethlans.binDir}")
+    private String binDir;
+
 
     private static final Logger LOG = LoggerFactory.getLogger(BlenderBenchmarkServiceImpl.class);
     private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
@@ -183,40 +188,57 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         return sethlansAPIConnectionService.sendToRemotePOST(serverUrl, params);
     }
 
-
     private boolean downloadRequiredFiles(File benchmarkDir, BlenderBenchmarkTask benchmarkTask) {
         LOG.debug("Downloading required files");
         SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(benchmarkTask.getConnection_uuid());
         String serverIP = sethlansServer.getIpAddress();
         String serverPort = sethlansServer.getNetworkPort();
+        String cachedBlenderBinaries = SethlansUtils.getProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES.toString());
 
         if (benchmarkDir.mkdirs()) {
 
-            //Download Blender from server
-            String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blender_binary/";
-            String params = "connection_uuid=" + benchmarkTask.getConnection_uuid() + "&version=" + benchmarkTask.getBlenderVersion() + "&os=" + SethlansUtils.getOS();
-            String filename = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, benchmarkDir.toString());
-            if (SethlansUtils.archiveExtract(filename, benchmarkDir)) {
-                LOG.debug("Extraction complete.");
-                LOG.debug("Attempting to rename blender directory. Will attempt 3 tries.");
-                int count = 0;
-                while (!renameBlenderDir(benchmarkDir, benchmarkTask)) {
-                    count++;
-                    if (count == 2) {
-                        return false;
-                    }
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+            String[] cachedBinariesList;
+            boolean versionCached = false;
+            cachedBinariesList = cachedBlenderBinaries.split(",");
+            for (String binary : cachedBinariesList) {
+                if (binary.equals(benchmarkTask.getBlenderVersion())) {
+                    versionCached = true;
+                    LOG.debug(binary + " renderer is already cached.  Skipping Download.");
+
+                }
+            }
+            if (!versionCached) {
+                //Download Blender from server
+                String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blender_binary/";
+                String params = "connection_uuid=" + benchmarkTask.getConnection_uuid() + "&version=" + benchmarkTask.getBlenderVersion() + "&os=" + SethlansUtils.getOS();
+                String filename = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, binDir);
+                if (SethlansUtils.archiveExtract(filename, new File(binDir))) {
+                    LOG.debug("Extraction complete.");
+                    LOG.debug("Attempting to rename blender directory. Will attempt 3 tries.");
+                    int count = 0;
+                    while (!SethlansUtils.renameBlenderDir(benchmarkDir, new File(binDir), benchmarkTask, cachedBlenderBinaries)) {
+                        count++;
+                        if (count == 2) {
+                            return false;
+                        }
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
+            } else {
+                benchmarkTask.setBenchmarkDir(benchmarkDir.toString());
+                benchmarkTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(new File(binDir), benchmarkTask.getBlenderVersion()));
             }
 
 
+
+
             // Download benchmark from server
-            connectionURL = "https://" + serverIP + ":" + serverPort + "/api/benchmark_files/" + benchmarkTask.getBenchmarkURL() + "/";
-            params = "connection_uuid=" + benchmarkTask.getConnection_uuid();
+            String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/benchmark_files/" + benchmarkTask.getBenchmarkURL() + "/";
+            String params = "connection_uuid=" + benchmarkTask.getConnection_uuid();
             String benchmarkFile = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, benchmarkDir.toString());
             benchmarkTask.setBenchmarkFile(benchmarkFile);
             LOG.debug("Required files downloaded.");
@@ -225,19 +247,6 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         }
         return false;
     }
-
-    private boolean renameBlenderDir(File benchmarkDir, BlenderBenchmarkTask benchmarkTask) {
-        if (SethlansUtils.renameBlenderDirectory(benchmarkDir, benchmarkTask.getBlenderVersion())) {
-            LOG.debug("Blender executable ready");
-            benchmarkTask.setBenchmarkDir(benchmarkDir.toString());
-            benchmarkTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(benchmarkDir));
-            return true;
-        } else {
-            LOG.debug("Rename failed.");
-            return false;
-        }
-    }
-
 
     private void prepareScriptandExecute(BlenderBenchmarkTask benchmarkTask) {
         LOG.debug("Processing benchmark task: \n" + benchmarkTask.toString());

@@ -121,6 +121,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
 
         if (setupForm.getMode() == SethlansMode.NODE || setupForm.getMode() == SethlansMode.DUAL) {
             writeProperty(SethlansConfigKeys.CACHE_DIR, workingDirectory);
+            writeProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES, "");
             writeProperty(SethlansConfigKeys.COMPUTE_METHOD, setupForm.getNode().getComputeMethod().toString());
             writeProperty(SethlansConfigKeys.TILE_SIZE_GPU, Integer.toString(setupForm.getNode().getTileSizeGPU()));
             writeProperty(SethlansConfigKeys.TILE_SIZE_CPU, Integer.toString(setupForm.getNode().getTileSizeCPU()));
