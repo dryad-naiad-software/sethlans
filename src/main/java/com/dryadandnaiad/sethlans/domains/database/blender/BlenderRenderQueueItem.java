@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.domains.database.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -38,6 +39,7 @@ public class BlenderRenderQueueItem extends AbstractEntityClass {
     private String connection_uuid;
     private String project_uuid;
     private BlenderFramePart blenderFramePart;
+    private ComputeType renderComputeType;
     private boolean complete;
     private boolean paused;
     private boolean rendering;

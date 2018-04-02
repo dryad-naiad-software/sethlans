@@ -60,11 +60,10 @@ public class SethlansNode extends AbstractEntityClass {
     private String connection_uuid;
     private int cpuRating;
     private boolean benchmarkComplete;
-    private boolean renderingSlotsFull;
     private int totalRenderingSlots;
-    private int availableCPURenderingSlots;
-    private int availableGPURenderingSlots;
-
+    private int availableRenderingSlots;
+    private boolean cpuSlotInUse;
+    private boolean gpuSlotInUse;
 
     public Integer getCombinedGPURating() {
         List<Integer> gpuRatings = new ArrayList<>();
@@ -110,7 +109,6 @@ public class SethlansNode extends AbstractEntityClass {
                 ", connection_uuid='" + connection_uuid + '\'' +
                 ", cpuRating=" + cpuRating +
                 ", benchmarkComplete=" + benchmarkComplete +
-                ", rendering=" + renderingSlotsFull +
                 '}';
     }
 }

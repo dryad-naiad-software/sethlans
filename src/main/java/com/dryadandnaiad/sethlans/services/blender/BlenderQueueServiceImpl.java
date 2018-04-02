@@ -75,7 +75,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                 timedLog(count, cycle, blenderRenderQueueItem.toString() + " is waiting to be rendered.");
                                 ComputeType computeType = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid()).getRenderOn();
                                 SethlansNode sethlansNode = SethlansUtils.getFastestFreeNode(sethlansNodeDatabaseService.listAll(), computeType);
-                                if (sethlansNode != null && sethlansNode.isActive() && !sethlansNode.isRenderingSlotsFull() && !sethlansNode.isDisabled()) {
+                                if (sethlansNode != null && sethlansNode.isActive() && sethlansNode.getAvailableRenderingSlots() > 0 && !sethlansNode.isDisabled()) {
                                     blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
                                     BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
                                     ComputeType projectComputeType = blenderProject.getRenderOn();
@@ -115,7 +115,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         LOG.debug("Sending " + blenderRenderQueueItem + " to " + sethlansNode.getHostname());
         // If both the project and the node is CPU and GPU, use the method with the lowest rating.
         if (sethlansNode.getComputeType().equals(ComputeType.CPU_GPU) && projectComputeType.equals(ComputeType.CPU_GPU)) {
-            if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating()) {
+            if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating() && !sethlansNode.isGpuSlotInUse()) {
                 projectComputeType = ComputeType.GPU;
             } else {
                 projectComputeType = ComputeType.CPU;
@@ -153,16 +153,33 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 "&file_extension=" + blenderRenderQueueItem.getBlenderFramePart().getFileExtension();
 
 
+        if (!sethlansNode.isGpuSlotInUse() && projectComputeType == ComputeType.GPU) {
+            sendToRemote(sethlansNode, projectComputeType, blenderRenderQueueItem, connectionURL, params);
+        }
+
+        if (!sethlansNode.isCpuSlotInUse() && projectComputeType == ComputeType.CPU) {
+            sendToRemote(sethlansNode, projectComputeType, blenderRenderQueueItem, connectionURL, params);
+        }
+
+    }
+
+    private void sendToRemote(SethlansNode sethlansNode, ComputeType projectComputeType, BlenderRenderQueueItem blenderRenderQueueItem, String connectionURL, String params) {
         if (sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params)) {
             blenderRenderQueueItem.setRendering(true);
-            sethlansNode.setAvailableCPURenderingSlots(sethlansNode.getAvailableCPURenderingSlots() - 1);
-            if (sethlansNode.getAvailableCPURenderingSlots() == 0) {
-                sethlansNode.setRenderingSlotsFull(true);
+            blenderRenderQueueItem.setRenderComputeType(projectComputeType);
+            if (projectComputeType == ComputeType.GPU) {
+                sethlansNode.setGpuSlotInUse(true);
+                sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() - 1);
+            }
+            if (projectComputeType == ComputeType.CPU) {
+                sethlansNode.setCpuSlotInUse(true);
+                sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() - 1);
             }
             blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
         }
     }
+
 
     public boolean emptyRenderQueueforProject(BlenderProject blenderProject) {
         // Placeholder for stop/delete method.
@@ -178,8 +195,9 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             blenderRenderQueueItem.setPaused(true);
             for (SethlansNode sethlansNode : sethlansNodeList) {
                 if (sethlansNode.getConnection_uuid().equals(blenderRenderQueueItem.getConnection_uuid())) {
-                    sethlansNode.setRenderingSlotsFull(false);
-                    sethlansNode.setAvailableCPURenderingSlots(sethlansNode.getTotalRenderingSlots());
+                    sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                    sethlansNode.setCpuSlotInUse(false);
+                    sethlansNode.setGpuSlotInUse(false);
                     sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                 }
             }
