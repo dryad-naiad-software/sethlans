@@ -20,6 +20,7 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {ComputeMethod} from "../../../enums/compute.method.enum";
+import {GPU} from "../../../models/gpu.model";
 
 @Component({
   selector: 'app-node-screen',
@@ -31,6 +32,12 @@ export class NodeScreenComponent implements OnInit {
   cpuName: string;
   totalMemory: string;
   selectedCores: string;
+  freeSpace: number;
+  totalSpace: number;
+  usedSpace: number;
+  selectedGPUModels: string[];
+  availableGPUs: GPU[];
+
 
   constructor(private http: HttpClient) {
   }
@@ -42,15 +49,35 @@ export class NodeScreenComponent implements OnInit {
 
     this.http.get('/api/info/total_memory', {responseType: 'text'}).subscribe((memory: string) => {
       this.totalMemory = memory;
-    })
+    });
 
     this.http.get('/api/info/cpu_name', {responseType: 'text'}).subscribe((cpuName: string) => {
       this.cpuName = cpuName;
-    })
+    });
 
     this.http.get('/api/info/selected_cores', {responseType: 'text'}).subscribe((cores: string) => {
       this.selectedCores = cores;
+    });
+
+    this.http.get('/api/info/client_free_space').subscribe((freespace: number) => {
+      this.freeSpace = freespace;
+    });
+
+    this.http.get('/api/info/client_total_space').subscribe((totalspace: number) => {
+      this.totalSpace = totalspace;
+    });
+
+    this.http.get('/api/info/client_used_space').subscribe((usedspace: number) => {
+      this.usedSpace = usedspace;
     })
+
+    this.http.get('/api/info/client_selected_gpu_models').subscribe((selectedGPUs: string[]) => {
+      this.selectedGPUModels = selectedGPUs;
+    })
+    this.http.get('/api/info/available_gpus')
+      .subscribe((gpus: any[]) => {
+        this.availableGPUs = gpus;
+      });
 
   }
 

@@ -88,9 +88,9 @@ public class NodeInfo {
 
     public void setSelectedGPUs() {
         List<GPUDevice> availableGPUs = GPU.listDevices();
-        for (String cuda : selectedDeviceID) {
+        for (String deviceID : selectedDeviceID) {
             for (GPUDevice gpu : availableGPUs) {
-                if (gpu.getDeviceID().equals(cuda)) {
+                if (gpu.getDeviceID().equals(deviceID)) {
                     selectedGPUs.add(gpu);
                 }
             }

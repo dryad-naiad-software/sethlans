@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
 package com.dryadandnaiad.sethlans.services.config;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
@@ -51,9 +70,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
         String scriptsDirectory = setupForm.getRootDirectory() + File.separator + "scripts" + File.separator;
         String projectDirectory = setupForm.getRootDirectory() + File.separator + "projects" + File.separator;
         String blenderDirectory = setupForm.getRootDirectory() + File.separator + "blenderzip" + File.separator;
-        ;
         String tempDirectory = setupForm.getRootDirectory() + File.separator + "temp" + File.separator;
-        ;
         String workingDirectory = setupForm.getRootDirectory() + File.separator + "cache" + File.separator;
         String logDirectory = setupForm.getRootDirectory() + File.separator + "logs" + File.separator;
         String binDirectory = setupForm.getRootDirectory() + File.separator + "bin" + File.separator;
@@ -117,6 +134,8 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
             }
 
             // Create Node Directories
+            LOG.debug("Creating Sethlans node directories.");
+            createDirectories(new File(workingDirectory));
             LOG.debug("Node Settings Saved");
         }
         // Setup wizard complete

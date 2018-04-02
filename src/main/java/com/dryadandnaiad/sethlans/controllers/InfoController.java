@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
@@ -39,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -114,6 +116,37 @@ public class InfoController {
     @GetMapping(value = {"/available_methods"})
     public List<ComputeType> getAvailableMethods() {
         return availableMethods;
+    }
+
+    @GetMapping(value = {"/client_free_space"})
+    public Long getClientFreeSpace() {
+        return new File(SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString())).getFreeSpace() / 1024 / 1024 / 1024;
+    }
+
+    @GetMapping(value = {"/client_total_space"})
+    public Long getClientTotalSpace() {
+        return new File(SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString())).getTotalSpace() / 1024 / 1024 / 1024;
+
+    }
+
+    @GetMapping(value = {"/client_selected_gpu_models"})
+    public List<String> getSelectedGPUModels() {
+        List<String> selectedGPUs = new ArrayList<>();
+        List<String> deviceList = Arrays.asList(SethlansUtils.getProperty(SethlansConfigKeys.GPU_DEVICE.toString()).split(","));
+        List<GPUDevice> availableGPUs = GPU.listDevices();
+        for (String deviceID : deviceList) {
+            for (GPUDevice gpu : availableGPUs) {
+                if (gpu.getDeviceID().equals(deviceID)) {
+                    selectedGPUs.add(gpu.getModel());
+                }
+            }
+        }
+        return selectedGPUs;
+    }
+
+    @GetMapping(value = {"/client_used_space"})
+    public Long getClientUsedSpace() {
+        return getClientTotalSpace() - getClientFreeSpace();
     }
 
     @GetMapping(value = {"/total_cores"})

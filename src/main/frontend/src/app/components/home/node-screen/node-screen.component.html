@@ -18,34 +18,39 @@
   -->
 
 <div class="row">
-  <div class="col-5">
+  <div class="col-4">
     <h5>Node Information</h5>
     <ul>
-      <li>Current Compute Type: <strong>{{computeType}}</strong></li>
-      <li *ngIf="computeType.valueOf().toString() != 'GPU'.valueOf()">Selected Cores: <strong>{{selectedCores}}</strong>
+      <li *ngIf="computeType.valueOf().toString() == 'CPU_GPU'.valueOf()">Current Compute Type: <i>CPU & GPU</i></li>
+      <li *ngIf="computeType.valueOf().toString() != 'CPU_GPU'.valueOf()">Current Compute Type: <i>{{computeType}}</i>
       </li>
-      <li *ngIf="computeType.valueOf().toString() != 'CPU'.valueOf()">Selected GPU(s): <strong>NVIDIA 1070 GTX</strong>
+
+      <li *ngIf="computeType.valueOf().toString() != 'GPU'.valueOf()">Selected Cores: <i>{{selectedCores}}</i>
+      </li>
+      <li *ngIf="computeType.valueOf().toString() != 'CPU'.valueOf()">Selected GPU(s):
+        <ul>
+          <li *ngFor="let gpu of selectedGPUModels"><i>{{gpu}}</i></li>
+        </ul>
       </li>
       <li>Total number of renders completed: 10</li>
     </ul>
   </div>
 
-  <div class="col-4">
-    <h5>System Stats</h5>
+  <div class="col-5">
+    <h5>System Information</h5>
     <ul>
-      <li>Processor: <strong>{{cpuName}}</strong></li>
-      <li>Memory: <strong>{{totalMemory}}</strong></li>
+      <li>Processor: <i>{{cpuName}}</i></li>
+      <li>Memory: <i>{{totalMemory}}</i></li>
       <li>Installed Graphics Card(s):
         <ul>
-          <li>NVIDIA 1070 GTX</li>
-          <li>NVIDIA 710 GT</li>
+          <li *ngFor="let gpu of availableGPUs"><i>{{gpu.model}}</i></li>
         </ul>
       </li>
       <li>Disk Space:
         <ngb-progressbar
           type="info"
-          [value]="2000"
-          [max]="6000">2GB of 6GB
+          [value]="usedSpace"
+          [max]="totalSpace">{{freeSpace}}GiB of {{totalSpace}}GiB Free
         </ngb-progressbar>
       </li>
 
@@ -53,7 +58,7 @@
 
   </div>
   <div class="col-3">
-    <h5>Render Stats</h5>
+    <h5>Render Information</h5>
     <ul>
       <li>Number of Render Slots: 1</li>
     </ul>

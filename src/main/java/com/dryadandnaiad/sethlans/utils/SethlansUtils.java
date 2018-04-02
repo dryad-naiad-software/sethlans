@@ -315,9 +315,7 @@ public class SethlansUtils {
             FileInputStream fileIn = new FileInputStream(configFile);
             properties.load(fileIn);
 
-            String propertyValue = properties.getProperty(key);
-            LOG.debug("Retrieved value of " + key + ": " + propertyValue);
-            return propertyValue;
+            return properties.getProperty(key);
         } catch (IOException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
         }
