@@ -60,7 +60,10 @@
   <div class="col-3">
     <h5>Render Information</h5>
     <ul>
-      <li>Number of Render Slots: 1</li>
+      <li>Number of Render Slots:
+        <i *ngIf="computeType?.valueOf().toString() == 'CPU_GPU'.valueOf()">2</i>
+        <i *ngIf="computeType?.valueOf().toString() != 'CPU_GPU'.valueOf()">1</i>
+      </li>
     </ul>
 
   </div>

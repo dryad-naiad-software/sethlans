@@ -39,6 +39,7 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
   activeNodes: number;
   inactiveNodes: number;
   disabledNodes: number;
+  totalSlots: number;
 
 
   constructor(private projectService: ProjectListService, private http: HttpClient) {
@@ -62,6 +63,9 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
       this.inactiveNodes = inactiveNodes;
     });
 
+    this.http.get('/api/info/total_slots').subscribe((totalSlots: number) => {
+      this.totalSlots = totalSlots;
+    });
 
     this.http.get('/api/info/active_nodes_value_array').subscribe((numberArray: number[]) => {
       this.dataArray = numberArray;
