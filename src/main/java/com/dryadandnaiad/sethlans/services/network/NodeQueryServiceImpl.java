@@ -59,11 +59,12 @@ public class NodeQueryServiceImpl implements NodeQueryService {
                             sethlansNode.setActive(false);
                             sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
                             LOG.debug(sethlansNode.getHostname() + " is down.");
+                            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                         } else if (!sethlansNode.isDisabled() && !sethlansNode.isActive()) {
                             sethlansNode.setActive(true);
                             LOG.debug(sethlansNode.getHostname() + " is back online.");
+                            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                         }
-                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                     }
 
                 }
