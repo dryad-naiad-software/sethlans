@@ -116,17 +116,21 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         // If both the project and the node is CPU and GPU, use the method with the lowest rating.
         if (sethlansNode.getComputeType().equals(ComputeType.CPU_GPU) && projectComputeType.equals(ComputeType.CPU_GPU)) {
             if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating() && !sethlansNode.isGpuSlotInUse()) {
+                // Use GPU if it is free and is the faster benchmark
                 projectComputeType = ComputeType.GPU;
             }
             if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating() && sethlansNode.isGpuSlotInUse()) {
+                // Use CPU if the GPU is busy but the GPU is the faster benchmark
                 projectComputeType = ComputeType.CPU;
             }
 
             if (sethlansNode.getCombinedGPURating() > sethlansNode.getCpuRating() && sethlansNode.isCpuSlotInUse()) {
+                // Use the GPU if the CPU is the faster benchmark but is in use.
                 projectComputeType = ComputeType.GPU;
             }
 
             if (sethlansNode.getCombinedGPURating() > sethlansNode.getCpuRating() && !sethlansNode.isCpuSlotInUse()) {
+                // Use the CPU if it is free and is the faster benchmark.
                 projectComputeType = ComputeType.CPU;
             }
         }
