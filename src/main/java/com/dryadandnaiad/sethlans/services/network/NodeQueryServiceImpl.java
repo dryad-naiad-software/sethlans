@@ -57,11 +57,15 @@ public class NodeQueryServiceImpl implements NodeQueryService {
                         boolean response = sethlansAPIConnectionService.queryNode("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() + "/api/info/node_keep_alive");
                         if (!response) {
                             sethlansNode.setActive(false);
+                            sethlansNode.setGpuSlotInUse(false);
+                            sethlansNode.setCpuSlotInUse(false);
                             sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
                             LOG.debug(sethlansNode.getHostname() + " is down.");
                             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                         } else if (!sethlansNode.isDisabled() && !sethlansNode.isActive()) {
                             sethlansNode.setActive(true);
+                            sethlansNode.setGpuSlotInUse(false);
+                            sethlansNode.setCpuSlotInUse(false);
                             LOG.debug(sethlansNode.getHostname() + " is back online.");
                             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                         }

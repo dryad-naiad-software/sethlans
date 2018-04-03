@@ -24,7 +24,6 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueIt
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
-import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProcessQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
@@ -114,12 +113,21 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
                                             blenderRenderQueueItem.getBlenderFramePart().getFileExtension());
                                     Files.write(path, bytes);
                                     SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderProcessQueueItem.getConnection_uuid());
-                                    sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
-                                    if (blenderRenderQueueItem.getRenderComputeType() == ComputeType.CPU) {
-                                        sethlansNode.setCpuSlotInUse(false);
-                                    } else {
-                                        sethlansNode.setGpuSlotInUse(false);
+                                    switch (blenderRenderQueueItem.getRenderComputeType()) {
+                                        case CPU:
+                                            sethlansNode.setCpuSlotInUse(false);
+                                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+                                            LOG.debug(sethlansNode.getAvailableRenderingSlots() + " current slots");
+                                            break;
+                                        case GPU:
+                                            sethlansNode.setGpuSlotInUse(false);
+                                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+                                            LOG.debug(sethlansNode.getAvailableRenderingSlots() + " current slots");
+                                            break;
+                                        default:
+                                            LOG.debug("Invalid compute type specified for rendering.");
                                     }
+
                                     LOG.debug("Processing completed render from " + sethlansNode.getHostname() + ". Part: " + blenderProcessQueueItem.getPart_number()
                                             + " Frame: " + blenderProcessQueueItem.getFrame_number());
                                     sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);

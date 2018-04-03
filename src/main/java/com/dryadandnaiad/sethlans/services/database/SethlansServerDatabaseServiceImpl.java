@@ -69,7 +69,6 @@ public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabase
         sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params);
         this.applicationEventPublisher.publishEvent(new SethlansEvent(this, sethlansServer.getConnection_uuid() + "-" + NotificationOrigin.ACTIVATION_REQUEST, false));
         serverRepository.delete(sethlansServer);
-
     }
 
     @Override

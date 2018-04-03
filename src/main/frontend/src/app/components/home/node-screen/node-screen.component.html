@@ -41,7 +41,7 @@
     <ul>
       <li>Processor: <i>{{cpuName}}</i></li>
       <li>Memory: <i>{{totalMemory}}</i></li>
-      <li>Installed Graphics Card(s):
+      <li *ngIf="availableGPUs.length == 0">Installed Graphics Card(s):
         <ul>
           <li *ngFor="let gpu of availableGPUs"><i>{{gpu.model}}</i></li>
         </ul>

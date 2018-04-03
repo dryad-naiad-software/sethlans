@@ -77,11 +77,8 @@ export class ServersComponent implements OnInit, AfterViewInit {
 
 
   deleteServer(id) {
-    this.http.get('/api/setup/server_delete/' + id + "/", {responseType: 'text'}).subscribe((success: any) => {
-      console.log(success);
-      this.reload();
-
-    });
+    this.http.get('/api/setup/server_delete/' + id + "/");
+    this.reload();
   }
 
   reload(): void {
