@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.services.network;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.google.common.base.Throwables;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
@@ -107,8 +108,13 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
             sethlansNode.setPendingActivation(true);
             sethlansNode.setDisabled(false);
             sethlansNode.setActive(false);
-            sethlansNode.setTotalRenderingSlots(1);
-            sethlansNode.setAvailableRenderingSlots(1);
+            if (sethlansNode.getComputeType() == ComputeType.CPU_GPU) {
+                sethlansNode.setTotalRenderingSlots(2);
+                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+            } else {
+                sethlansNode.setTotalRenderingSlots(1);
+                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+            }
             sethlansNode.setCpuSlotInUse(false);
             sethlansNode.setGpuSlotInUse(false);
             sethlansNode.setConnection_uuid(UUID.randomUUID().toString());
