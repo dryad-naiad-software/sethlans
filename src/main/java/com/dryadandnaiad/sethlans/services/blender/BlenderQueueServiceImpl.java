@@ -117,7 +117,16 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         if (sethlansNode.getComputeType().equals(ComputeType.CPU_GPU) && projectComputeType.equals(ComputeType.CPU_GPU)) {
             if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating() && !sethlansNode.isGpuSlotInUse()) {
                 projectComputeType = ComputeType.GPU;
-            } else {
+            }
+            if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating() && sethlansNode.isGpuSlotInUse()) {
+                projectComputeType = ComputeType.CPU;
+            }
+
+            if (sethlansNode.getCombinedGPURating() > sethlansNode.getCpuRating() && sethlansNode.isCpuSlotInUse()) {
+                projectComputeType = ComputeType.GPU;
+            }
+
+            if (sethlansNode.getCombinedGPURating() > sethlansNode.getCpuRating() && !sethlansNode.isCpuSlotInUse()) {
                 projectComputeType = ComputeType.CPU;
             }
         }

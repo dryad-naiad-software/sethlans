@@ -44,7 +44,6 @@ public class SetupController {
     private SaveSetupConfigService saveSetupConfigService;
     private SethlansUserDatabaseService sethlansUserDatabaseService;
 
-
     @PostMapping("/submit")
     public boolean submit(@RequestBody SetupForm setupForm) {
         LOG.debug("Submitting Setup Form...");
@@ -56,13 +55,6 @@ public class SetupController {
             return false;
         }
     }
-
-
-
-
-
-
-
 
     @PostMapping("/register")
     public boolean register(@RequestBody SethlansUser user) {
