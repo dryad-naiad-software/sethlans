@@ -23,11 +23,16 @@ import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.utils.Resources;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecuteResultHandler;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,22 +52,15 @@ public class ImageMagickSetupServiceImpl implements ImageMagickSetupService {
     @Override
     public boolean installImageMagick(String binaryDir) {
         String imageMagicFile = copyImageMagick(binaryDir);
+        if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
+            SethlansUtils.writeProperty(SethlansConfigKeys.IMAGEMAGICK_BIN, File.separator + "convert");
+            return true;
+        }
         if (SethlansUtils.archiveExtract(imageMagicFile, new File(binaryDir))) {
-            if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
-                try {
-                    ProcessBuilder pb = new ProcessBuilder("chmod", "-R", "+x", binaryDir + "imagemagick" + File.separator + "bin");
-                    pb.start();
-                } catch (IOException e) {
-                    LOG.error(Throwables.getStackTraceAsString(e));
-                    return false;
-                }
-            }
             if (SystemUtils.IS_OS_WINDOWS) {
-                SethlansUtils.writeProperty(SethlansConfigKeys.IMAGEMAGICK_BIN, binaryDir + "imagemagick" + File.separator + "bin" + File.separator + "magick.exe");
+                SethlansUtils.writeProperty(SethlansConfigKeys.IMAGEMAGICK_BIN, binaryDir + "imagemagick" + File.separator + "bin" + File.separator + "convert.exe");
             }
-            if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
-                SethlansUtils.writeProperty(SethlansConfigKeys.IMAGEMAGICK_BIN, binaryDir + "imagemagick" + File.separator + "bin" + File.separator + "magick");
-            }
+
 
             return true;
         }
@@ -89,26 +87,10 @@ public class ImageMagickSetupServiceImpl implements ImageMagickSetupService {
                     return filename;
                 }
             }
-            if (SystemUtils.IS_OS_LINUX) {
-                if (SystemUtils.OS_ARCH.contains("64")) {
-                    String filename = "imagemagick.linux64.txz";
-                    String linux64 = "archives/imagemagick/" + filename;
-                    LOG.debug("Preparing ImageMagick binaries for Linux");
-                    InputStream inputStream = new Resources(linux64).getResource();
-                    String path = binaryDir + filename;
-                    Files.copy(inputStream, Paths.get(path));
-                    return filename;
 
-                }
-            }
             if (SystemUtils.IS_OS_MAC) {
-                String filename = "imagemagick.macOS.txz";
-                String macOS = "archives/imagemagick/" + filename;
-                LOG.debug("Preparing ImageMagick binaries for Mac");
-                InputStream inputStream = new Resources(macOS).getResource();
-                String path = binaryDir + filename;
-                Files.copy(inputStream, Paths.get(path));
-                return filename;
+                installHomeBrew();
+
 
             }
         } catch (IOException e) {
@@ -116,4 +98,24 @@ public class ImageMagickSetupServiceImpl implements ImageMagickSetupService {
         }
         return null;
     }
+
+    private void installHomeBrew() {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
+        PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
+        CommandLine ruby = new CommandLine("/usr/bin/ruby");
+        ruby.addArgument("-e");
+        ruby.addArgument("\"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)\"");
+        ruby.addArgument("< /dev/null");
+        DefaultExecutor executor = new DefaultExecutor();
+        executor.setStreamHandler(pumpStreamHandler);
+        DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
+        SethlansUtils.runCommand(outputStream, errorStream, ruby, executor, resultHandler);
+    }
+
+    private void installImageMagickmacOS() {
+
+    }
+
+
 }

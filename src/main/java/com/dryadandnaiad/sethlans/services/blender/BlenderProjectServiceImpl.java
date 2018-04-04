@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.blender.PartCoordinates;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
@@ -93,7 +94,6 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
         CommandLine convert;
         convert = new CommandLine(imageMagickExec);
-        convert.addArgument("convert");
         String frameFilename = null;
         String storedDir = null;
         String fileExtension = null;
@@ -202,15 +202,12 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     }
 
     private String createThumbnail(String frameImage, String directory, String frameFilename, String fileExtension) {
-        String error;
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
         PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
         CommandLine convert;
         convert = new CommandLine(imageMagickExec);
         convert.addArgument("convert");
-
-
         convert.addArgument("-resize");
         convert.addArgument("128x101!");
         convert.addArgument(frameImage);
@@ -219,25 +216,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         DefaultExecutor executor = new DefaultExecutor();
         executor.setStreamHandler(pumpStreamHandler);
         DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
-        try {
-            executor.execute(convert, resultHandler);
-            resultHandler.waitFor();
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray())));
-
-            String output;
-
-            while ((output = in.readLine()) != null) {
-                LOG.debug(output);
-            }
-
-            error = errorStream.toString();
-
-            LOG.debug(error);
-        } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
-        }
-
+        SethlansUtils.runCommand(outputStream, errorStream, convert, executor, resultHandler);
         return directory + frameFilename + "-thumbnail" + "." + fileExtension;
     }
 

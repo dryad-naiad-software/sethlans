@@ -38,6 +38,9 @@ import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.util.Zip4jConstants;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecuteResultHandler;
+import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.lang3.SystemUtils;
 import org.rauschig.jarchivelib.ArchiveFormat;
 import org.rauschig.jarchivelib.Archiver;
@@ -614,6 +617,28 @@ public class SethlansUtils {
 
     public static boolean isCuda(String deviceID) {
         return deviceID.contains("CUDA");
+    }
+
+    public static void runCommand(ByteArrayOutputStream outputStream, ByteArrayOutputStream errorStream, CommandLine commandLine, DefaultExecutor executor, DefaultExecuteResultHandler resultHandler) {
+        String error;
+        try {
+            executor.execute(commandLine, resultHandler);
+            resultHandler.waitFor();
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray())));
+
+            String output;
+
+            while ((output = in.readLine()) != null) {
+                LOG.debug(output);
+            }
+
+            error = errorStream.toString();
+
+            LOG.debug(error);
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
