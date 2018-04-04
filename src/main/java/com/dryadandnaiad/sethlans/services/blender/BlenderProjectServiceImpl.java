@@ -24,10 +24,6 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
-import marvin.image.MarvinImage;
-import marvin.io.MarvinImageIO;
-import marvinplugins.MarvinPluginCollection;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,12 +46,8 @@ import java.util.List;
  */
 @Service
 public class BlenderProjectServiceImpl implements BlenderProjectService {
-
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private BlenderQueueService blenderQueueService;
-    private List<String> directoriesToDelete = new ArrayList<>();
-
-
     private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectServiceImpl.class);
 
     @Override
@@ -63,25 +55,6 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     public void startProject(BlenderProject blenderProject) {
         configureFrameList(blenderProject);
         blenderQueueService.populateProjectQueue(blenderProject);
-    }
-
-    @Async
-    public void cleanupProjectDir() {
-        try {
-            Thread.sleep(15000);
-            for (String directory : directoriesToDelete) {
-                LOG.debug("Removing " + directory);
-                FileUtils.deleteDirectory(new File(directory));
-                directoriesToDelete.remove(directory);
-
-            }
-
-        } catch (InterruptedException e) {
-            LOG.debug("Cleanup interrupted");
-        } catch (IOException e) {
-            LOG.debug("Directory not present or root dir value null");
-            LOG.debug(e.getMessage());
-        }
     }
 
     @Override
@@ -106,72 +79,14 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     @Override
     public void deleteProject(Long id) {
-        directoriesToDelete.add(blenderProjectDatabaseService.getById(id).getProjectRootDir());
         blenderProjectDatabaseService.delete(id);
-        cleanupProjectDir();
     }
 
     @Override
     public void deleteProject(String username, Long id) {
-        directoriesToDelete.add(blenderProjectDatabaseService.getById(id).getProjectRootDir());
         blenderProjectDatabaseService.deleteWithVerification(username, id);
-        cleanupProjectDir();
     }
 
-    @Override
-    public boolean combineParts(BlenderProject blenderProject, int frameNumber) {
-        List<String> partCleanup = new ArrayList<>();
-        List<BufferedImage> images = new ArrayList<>();
-
-        String frameFilename = null;
-        String storedDir = null;
-        String fileExtension = null;
-        String plainFilename = null;
-        for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
-            if (frameNumber == blenderFramePart.getFrameNumber()) {
-                try {
-                    images.add(ImageIO.read(new File(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension())));
-
-                    partCleanup.add(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension());
-                    frameFilename = blenderFramePart.getStoredDir() + blenderFramePart.getFrameFileName() + "." + blenderFramePart.getFileExtension();
-                    storedDir = blenderFramePart.getStoredDir();
-                    fileExtension = blenderFramePart.getFileExtension();
-                    plainFilename = blenderFramePart.getFrameFileName();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        BufferedImage concatImage = new BufferedImage(
-                images.get(0).getWidth(), images.get(0).getHeight() * blenderProject.getPartsPerFrame(),
-                BufferedImage.TYPE_INT_ARGB);
-        Graphics g = concatImage.getGraphics();
-
-        int count = 0;
-        for (BufferedImage image : images) {
-            if (count == 0) {
-                g.drawImage(image, 0, 0, null);
-            } else {
-                g.drawImage(image, 0, image.getHeight() * count, null);
-
-            }
-
-            count++;
-        }
-
-
-        try {
-            ImageIO.write(concatImage, "PNG", new File(frameFilename)); // export concat image
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        blenderProject.getFrameFileNames().add(frameFilename);
-        blenderProject.setCurrentFrameThumbnail(createThumbnail(frameFilename, storedDir, plainFilename, fileExtension));
-
-        deleteParts(partCleanup);
-        return true;
-    }
 
     private void deleteParts(List<String> frameParts) {
         for (String framePart : frameParts) {
@@ -234,12 +149,69 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         return partCoordinatesList;
     }
 
+    @Override
+    public boolean combineParts(BlenderProject blenderProject, int frameNumber) {
+        List<String> partCleanup = new ArrayList<>();
+        List<BufferedImage> images = new ArrayList<>();
+        String frameFilename = null;
+        String storedDir = null;
+        String fileExtension = null;
+        String plainFilename = null;
+        for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
+            if (frameNumber == blenderFramePart.getFrameNumber()) {
+                try {
+                    images.add(ImageIO.read(new File(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension())));
+                    partCleanup.add(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension());
+                    frameFilename = blenderFramePart.getStoredDir() + blenderFramePart.getFrameFileName() + "." + blenderFramePart.getFileExtension();
+                    storedDir = blenderFramePart.getStoredDir();
+                    fileExtension = blenderFramePart.getFileExtension();
+                    plainFilename = blenderFramePart.getFrameFileName();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        BufferedImage concatImage = new BufferedImage(
+                images.get(0).getWidth(), images.get(0).getHeight() * blenderProject.getPartsPerFrame(),
+                BufferedImage.TYPE_INT_ARGB);
+        Graphics g = concatImage.getGraphics();
+        int count = 0;
+        for (BufferedImage image : images) {
+            if (count == 0) {
+                g.drawImage(image, 0, 0, null);
+            } else {
+                g.drawImage(image, 0, image.getHeight() * count, null);
+            }
+            count++;
+        }
+
+        try {
+            ImageIO.write(concatImage, fileExtension.toUpperCase(), new File(frameFilename));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        blenderProject.getFrameFileNames().add(frameFilename);
+        blenderProject.setCurrentFrameThumbnail(createThumbnail(frameFilename, storedDir, plainFilename, fileExtension));
+        deleteParts(partCleanup);
+        return true;
+    }
+
     private String createThumbnail(String frameImage, String directory, String frameFilename, String fileExtension) {
         if (fileExtension.toLowerCase().contains("png")) {
-            MarvinImage image = MarvinImageIO.loadImage(frameImage);
-            MarvinImage thumbnail = new MarvinImage();
-            MarvinPluginCollection.scale(image, thumbnail, 128, 101);
-            MarvinImageIO.saveImage(thumbnail, directory + frameFilename + "-thumbnail" + "." + fileExtension);
+            try {
+                BufferedImage image = ImageIO.read(new File(frameImage));
+                BufferedImage thumbnail = new BufferedImage(128, 101, image.getType());
+                Graphics2D g = thumbnail.createGraphics();
+                g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                        RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                g.drawImage(image, 0, 0, 128, 101, 0, 0, image.getWidth(),
+                        image.getHeight(), null);
+                g.dispose();
+                ImageIO.write(thumbnail, fileExtension.toUpperCase(), new File(directory + frameFilename + "-thumbnail" + "." + fileExtension));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
         // TODO MarvinImageIO doesn't support openEXR so that will need to be processed by another library
 
