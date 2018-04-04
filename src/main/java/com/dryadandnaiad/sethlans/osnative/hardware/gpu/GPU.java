@@ -124,54 +124,58 @@ public class GPU {
     }
 
     private static void generateOpenCL() {
-        LOG.debug("Looking for Compatible OpenCL Devices");
-        if (devices == null) {
-            devices = new LinkedList<>();
-        }
-        int numPlatforms[] = new int[1];
-        clGetPlatformIDs(0, null, numPlatforms);
-        String model;
-        long memory;
-        String deviceID;
-        // Obtain the platform IDs
-        cl_platform_id platforms[] = new cl_platform_id[numPlatforms[0]];
-        clGetPlatformIDs(platforms.length, platforms, null);
+        try {
+            LOG.debug("Looking for Compatible OpenCL Devices");
+            if (devices == null) {
+                devices = new LinkedList<>();
+            }
+            int numPlatforms[] = new int[1];
+            clGetPlatformIDs(0, null, numPlatforms);
+            String model;
+            long memory;
+            String deviceID;
+            // Obtain the platform IDs
+            cl_platform_id platforms[] = new cl_platform_id[numPlatforms[0]];
+            clGetPlatformIDs(platforms.length, platforms, null);
 
-        // Collect all devices of all platforms
-        List<cl_device_id> openCLdevices = new ArrayList<>();
-        for (cl_platform_id platform : platforms) {
+            // Collect all devices of all platforms
+            List<cl_device_id> openCLdevices = new ArrayList<>();
+            for (cl_platform_id platform : platforms) {
 
-            String platformName = JOCLSupport.getString(platform, CL_PLATFORM_NAME);
-            // Obtain the number of devices for the current platform
-            int numDevices[] = new int[1];
-            clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, null, numDevices);
-            cl_device_id devicesArray[] = new cl_device_id[numDevices[0]];
-            clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, numDevices[0], devicesArray, null);
+                String platformName = JOCLSupport.getString(platform, CL_PLATFORM_NAME);
+                // Obtain the number of devices for the current platform
+                int numDevices[] = new int[1];
+                clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, null, numDevices);
+                cl_device_id devicesArray[] = new cl_device_id[numDevices[0]];
+                clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, numDevices[0], devicesArray, null);
 
-            openCLdevices.addAll(Arrays.asList(devicesArray));
-        }
-
-        for (int i = 0; i < openCLdevices.size(); i++) {
-            cl_device_id device = openCLdevices.get(i);
-            // CL_DEVICE_NAME
-            String openCLDeviceId = JOCLSupport.getString(device, CL_DEVICE_NAME);
-            // CL_DEVICE_VENDOR
-            String deviceVendor = JOCLSupport.getString(device, CL_DEVICE_VENDOR);
-            // CL_DEVICE_GLOBAL_MEM_SIZE
-            memory = JOCLSupport.getLong(device, CL_DEVICE_GLOBAL_MEM_SIZE);
-            String openCLVersionString = JOCLSupport.getString(device, CL_DEVICE_OPENCL_C_VERSION);
-            float openCLVersion = Float.parseFloat(openCLVersionString.substring(openCLVersionString.toLowerCase().lastIndexOf("c") + 1));
-            deviceID = "OPENCL_" + i;
-            model = deviceVendor + " " + openCLDeviceId;
-            // TODO add intel to the exclusion
-
-            if (!deviceVendor.toLowerCase().contains("nvidia") && openCLVersion > 1.2) {
-                LOG.debug("One OpenCL device found, adding to list");
-                LOG.debug("Open CL version " + openCLVersion);
-                devices.add(new GPUDevice(model, memory, deviceID, true, false));
+                openCLdevices.addAll(Arrays.asList(devicesArray));
             }
 
+            for (int i = 0; i < openCLdevices.size(); i++) {
+                cl_device_id device = openCLdevices.get(i);
+                // CL_DEVICE_NAME
+                String openCLDeviceId = JOCLSupport.getString(device, CL_DEVICE_NAME);
+                // CL_DEVICE_VENDOR
+                String deviceVendor = JOCLSupport.getString(device, CL_DEVICE_VENDOR);
+                // CL_DEVICE_GLOBAL_MEM_SIZE
+                memory = JOCLSupport.getLong(device, CL_DEVICE_GLOBAL_MEM_SIZE);
+                String openCLVersionString = JOCLSupport.getString(device, CL_DEVICE_OPENCL_C_VERSION);
+                float openCLVersion = Float.parseFloat(openCLVersionString.substring(openCLVersionString.toLowerCase().lastIndexOf("c") + 1));
+                deviceID = "OPENCL_" + i;
+                model = deviceVendor + " " + openCLDeviceId;
+                // TODO add intel to the exclusion
 
+                if (!deviceVendor.toLowerCase().contains("nvidia") && openCLVersion > 1.2) {
+                    LOG.debug("One OpenCL device found, adding to list");
+                    LOG.debug("Open CL version " + openCLVersion);
+                    devices.add(new GPUDevice(model, memory, deviceID, true, false));
+                }
+
+
+            }
+        } catch (UnsatisfiedLinkError e) {
+            LOG.debug(e.getMessage() + " Most likely, OpenCL not present on system.");
         }
     }
 
