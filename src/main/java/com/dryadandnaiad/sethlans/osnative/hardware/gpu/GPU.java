@@ -175,7 +175,7 @@ public class GPU {
 
             }
         } catch (UnsatisfiedLinkError e) {
-            LOG.debug("OpenCL not present on system.");
+            LOG.debug(e.getMessage() + " Most likely, OpenCL not present on system.");
         }
     }
 
