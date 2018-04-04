@@ -100,6 +100,7 @@ public class ImageMagickSetupServiceImpl implements ImageMagickSetupService {
     }
 
     private void installHomeBrew() {
+        LOG.debug("Installing Homebrew");
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
         PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
