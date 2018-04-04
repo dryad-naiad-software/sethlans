@@ -293,6 +293,12 @@
             <artifactId>MarvinFramework</artifactId>
             <version>1.5.5</version>
         </dependency>
+
+        <!--<dependency>-->
+        <!--<groupId>org.bytedeco</groupId>-->
+        <!--<artifactId>javacv-platform</artifactId>-->
+        <!--<version>1.4.1</version>-->
+        <!--</dependency>-->
         <!-- https://mvnrepository.com/artifact/org.aksw.gson/gson-utils-parent -->
         <dependency>
             <groupId>org.aksw.gson</groupId>

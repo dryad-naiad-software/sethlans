@@ -34,6 +34,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -117,7 +120,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Override
     public boolean combineParts(BlenderProject blenderProject, int frameNumber) {
         List<String> partCleanup = new ArrayList<>();
-        List<MarvinImage> images = new ArrayList<>();
+        List<BufferedImage> images = new ArrayList<>();
 
         String frameFilename = null;
         String storedDir = null;
@@ -125,17 +128,39 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         String plainFilename = null;
         for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
             if (frameNumber == blenderFramePart.getFrameNumber()) {
-                images.add(MarvinImageIO.loadImage(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension()));
-                partCleanup.add(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension());
-                frameFilename = blenderFramePart.getStoredDir() + blenderFramePart.getFrameFileName() + "." + blenderFramePart.getFileExtension();
-                storedDir = blenderFramePart.getStoredDir();
-                fileExtension = blenderFramePart.getFileExtension();
-                plainFilename = blenderFramePart.getFrameFileName();
+                try {
+                    images.add(ImageIO.read(new File(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension())));
+
+                    partCleanup.add(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension());
+                    frameFilename = blenderFramePart.getStoredDir() + blenderFramePart.getFrameFileName() + "." + blenderFramePart.getFileExtension();
+                    storedDir = blenderFramePart.getStoredDir();
+                    fileExtension = blenderFramePart.getFileExtension();
+                    plainFilename = blenderFramePart.getFrameFileName();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
-        MarvinImage output = images.get(0).clone();
-        MarvinImageIO.saveImage(output, frameFilename);
+        int heightTotal = 0;
+        for (BufferedImage image : images) {
+            heightTotal += image.getHeight();
+        }
+
+        int heightCurr = 0;
+        BufferedImage concatImage = new BufferedImage(100, heightTotal, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = concatImage.createGraphics();
+        for (BufferedImage image : images) {
+            g2d.drawImage(image, 0, heightCurr, null);
+            heightCurr += image.getHeight();
+        }
+        g2d.dispose();
+
+        try {
+            ImageIO.write(concatImage, "png", new File(frameFilename)); // export concat image
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         blenderProject.getFrameFileNames().add(frameFilename);
         blenderProject.setCurrentFrameThumbnail(createThumbnail(frameFilename, storedDir, plainFilename, fileExtension));
 

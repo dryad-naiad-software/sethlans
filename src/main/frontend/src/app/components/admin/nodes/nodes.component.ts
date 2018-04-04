@@ -40,7 +40,7 @@ export class NodesComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.dtOptions = {};
     this.getNodeListSize();
-    let timer = Observable.timer(60000, 60000);
+    let timer = Observable.timer(45000, 45000);
     timer.subscribe(() => this.reload());
     let timer2 = Observable.timer(5000, 2000);
     timer2.subscribe(() => this.getNodeListSize());
