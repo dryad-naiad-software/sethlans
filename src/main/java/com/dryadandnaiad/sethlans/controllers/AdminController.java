@@ -77,6 +77,16 @@ public class AdminController {
     @Value("${sethlans.tileSizeCPU}")
     private String titleSizeCPU;
 
+    @GetMapping(value = "/restart")
+    public void restart() {
+
+    }
+
+    @GetMapping(value = "/shutdown")
+    public void shutdown() {
+
+    }
+
     @GetMapping(value = "/user_list")
     public List<UserInfo> sethlansUserList() {
         List<SethlansUser> sethlansUsers = sethlansUserDatabaseService.listAll();

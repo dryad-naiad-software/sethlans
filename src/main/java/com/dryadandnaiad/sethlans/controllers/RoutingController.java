@@ -46,7 +46,7 @@ public class RoutingController {
             "/settings",
             "/register",
             "/projects",
-            "/reboot",
+            "/restart",
             "/shutdown",
             "/projects/add",
             "/projects/edit/**",
