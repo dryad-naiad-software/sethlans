@@ -76,6 +76,8 @@ import {ProjectEditComponent} from './components/projects/project-edit/project-e
 import {ProjectViewComponent} from './components/projects/project-view/project-view.component';
 import {ChartModule} from "primeng/chart";
 import {GetStartedWizardComponent} from './components/get-started-wizard/get-started-wizard.component';
+import {RestartComponent} from "./components/admin/restart/restart.component";
+import {ShutdownComponent} from "./components/admin/shutdown/shutdown.component";
 
 
 @NgModule({
@@ -119,7 +121,9 @@ import {GetStartedWizardComponent} from './components/get-started-wizard/get-sta
     ProjectAddComponent,
     ProjectEditComponent,
     ProjectViewComponent,
-    GetStartedWizardComponent
+    GetStartedWizardComponent,
+    RestartComponent,
+    ShutdownComponent
   ],
   imports: [
     BrowserModule,

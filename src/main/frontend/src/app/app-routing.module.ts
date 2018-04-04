@@ -48,11 +48,15 @@ import {NodeScanComponent} from "./components/admin/nodes/node-scan/node-scan.co
 import {ProjectAddComponent} from "./components/projects/project-add/project-add.component";
 import {ProjectEditComponent} from "./components/projects/project-edit/project-edit.component";
 import {ProjectViewComponent} from "./components/projects/project-view/project-view.component";
+import {ShutdownComponent} from "./components/admin/shutdown/shutdown.component";
+import {RestartComponent} from "./components/admin/restart/restart.component";
 
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'login', component: LoginComponent},
+  {path: 'shutdown', component: ShutdownComponent},
+  {path: 'restart', component: RestartComponent},
   {path: 'help', component: HelpComponent},
   {path: 'admin/metrics', component: MetricsComponent},
   {path: 'admin/user_management', component: UserManagementComponent},
