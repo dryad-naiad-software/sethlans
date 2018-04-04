@@ -70,7 +70,9 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         try {
             Thread.sleep(15000);
             for (String directory : directoriesToDelete) {
+                LOG.debug("Removing " + directory);
                 FileUtils.deleteDirectory(new File(directory));
+                directoriesToDelete.remove(directory);
 
             }
 
@@ -78,6 +80,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
             LOG.debug("Cleanup interrupted");
         } catch (IOException e) {
             LOG.debug("Directory not present or root dir value null");
+            LOG.debug(e.getMessage());
         }
     }
 
@@ -102,19 +105,17 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     }
 
     @Override
-    public boolean deleteProject(Long id) {
+    public void deleteProject(Long id) {
         directoriesToDelete.add(blenderProjectDatabaseService.getById(id).getProjectRootDir());
         blenderProjectDatabaseService.delete(id);
         cleanupProjectDir();
-        return true;
     }
 
     @Override
-    public boolean deleteProject(String username, Long id) {
+    public void deleteProject(String username, Long id) {
         directoriesToDelete.add(blenderProjectDatabaseService.getById(id).getProjectRootDir());
         blenderProjectDatabaseService.deleteWithVerification(username, id);
         cleanupProjectDir();
-        return true;
     }
 
     @Override
@@ -142,22 +143,26 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
             }
         }
 
-        int heightTotal = 0;
+        BufferedImage concatImage = new BufferedImage(
+                images.get(0).getWidth(), images.get(0).getHeight() * blenderProject.getPartsPerFrame(),
+                BufferedImage.TYPE_INT_ARGB);
+        Graphics g = concatImage.getGraphics();
+
+        int count = 0;
         for (BufferedImage image : images) {
-            heightTotal += image.getHeight();
+            if (count == 0) {
+                g.drawImage(image, 0, 0, null);
+            } else {
+                g.drawImage(image, 0, image.getHeight() * count, null);
+
+            }
+
+            count++;
         }
 
-        int heightCurr = 0;
-        BufferedImage concatImage = new BufferedImage(100, heightTotal, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2d = concatImage.createGraphics();
-        for (BufferedImage image : images) {
-            g2d.drawImage(image, 0, heightCurr, null);
-            heightCurr += image.getHeight();
-        }
-        g2d.dispose();
 
         try {
-            ImageIO.write(concatImage, "png", new File(frameFilename)); // export concat image
+            ImageIO.write(concatImage, "PNG", new File(frameFilename)); // export concat image
         } catch (IOException e) {
             e.printStackTrace();
         }

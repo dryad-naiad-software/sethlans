@@ -106,13 +106,12 @@ public class ProjectController {
     }
 
     @GetMapping(value = "/api/project_actions/delete_project/{id}")
-    public boolean deleteProject(@PathVariable Long id) {
+    public void deleteProject(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
             blenderProjectService.deleteProject(id);
-            return true;
         } else {
-            return blenderProjectService.deleteProject(auth.getName(), id);
+            blenderProjectService.deleteProject(auth.getName(), id);
         }
     }
 
@@ -176,6 +175,7 @@ public class ProjectController {
             if (blenderProject.getCurrentFrameThumbnail().contains("png")) {
                 return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(imageToSend);
             }
+            in.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

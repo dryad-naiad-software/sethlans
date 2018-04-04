@@ -91,7 +91,9 @@
                     Delete
                   </button>
                   <button
-                    *ngIf="project.projectStatus.valueOf().toString() == 'Started'.valueOf() ||  project.projectStatus.valueOf().toString() == 'Rendering'.valueOf() || project.projectStatus.valueOf().toString() == 'Pending'.valueOf()"
+                    *ngIf="project.projectStatus.valueOf().toString() == 'Started'.valueOf() ||
+                    project.projectStatus.valueOf().toString() == 'Rendering'.valueOf() ||
+                    project.projectStatus.valueOf().toString() == 'Pending'.valueOf()"
                     class="btn btn-outline-danger btn-sm" type="button">
                     Stop
                   </button>
