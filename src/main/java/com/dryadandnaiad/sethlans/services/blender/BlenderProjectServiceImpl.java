@@ -23,20 +23,18 @@ import com.dryadandnaiad.sethlans.domains.blender.PartCoordinates;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecuteResultHandler;
-import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.PumpStreamHandler;
+import marvin.image.MarvinImage;
+import marvin.io.MarvinImageIO;
+import marvinplugins.MarvinPluginCollection;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,8 +49,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private BlenderQueueService blenderQueueService;
-    @Value("${sethlans.imagemagick.binary}")
-    private String imageMagickExec;
+
 
     private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectServiceImpl.class);
 
@@ -88,19 +85,15 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Override
     public boolean combineParts(BlenderProject blenderProject, int frameNumber) {
         List<String> partCleanup = new ArrayList<>();
-        String error;
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
-        PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
-        CommandLine convert;
-        convert = new CommandLine(imageMagickExec);
+        List<MarvinImage> images = new ArrayList<>();
+
         String frameFilename = null;
         String storedDir = null;
         String fileExtension = null;
         String plainFilename = null;
         for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
             if (frameNumber == blenderFramePart.getFrameNumber()) {
-                convert.addArgument(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension());
+                images.add(MarvinImageIO.loadImage(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension()));
                 partCleanup.add(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension());
                 frameFilename = blenderFramePart.getStoredDir() + blenderFramePart.getFrameFileName() + "." + blenderFramePart.getFileExtension();
                 storedDir = blenderFramePart.getStoredDir();
@@ -108,35 +101,13 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
                 plainFilename = blenderFramePart.getFrameFileName();
             }
         }
-        convert.addArgument("-append");
-        convert.addArgument(frameFilename);
-        blenderProject.getFrameFileNames().add(frameFilename);
-        LOG.debug(convert.toString());
-        DefaultExecutor executor = new DefaultExecutor();
-        executor.setStreamHandler(pumpStreamHandler);
-        DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
-        try {
-            executor.execute(convert, resultHandler);
-            resultHandler.waitFor();
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray())));
+        MarvinImage output = images.get(0).clone();
+        MarvinImageIO.saveImage(output, frameFilename);
 
-            String output;
+        blenderProject.setCurrentFrameThumbnail(createThumbnail(frameFilename, storedDir, plainFilename, fileExtension));
 
-            while ((output = in.readLine()) != null) {
-                LOG.debug(output);
-            }
-
-            error = errorStream.toString();
-
-            LOG.debug(error);
-            blenderProject.setCurrentFrameThumbnail(createThumbnail(frameFilename, storedDir, plainFilename, fileExtension));
-            deleteParts(partCleanup);
-            return true;
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-
+        deleteParts(partCleanup);
         return false;
     }
 
@@ -202,21 +173,14 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     }
 
     private String createThumbnail(String frameImage, String directory, String frameFilename, String fileExtension) {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
-        PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
-        CommandLine convert;
-        convert = new CommandLine(imageMagickExec);
-        convert.addArgument("convert");
-        convert.addArgument("-resize");
-        convert.addArgument("128x101!");
-        convert.addArgument(frameImage);
-        convert.addArgument(directory + frameFilename + "-thumbnail" + "." + fileExtension);
-        LOG.debug(convert.toString());
-        DefaultExecutor executor = new DefaultExecutor();
-        executor.setStreamHandler(pumpStreamHandler);
-        DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
-        SethlansUtils.runCommand(outputStream, errorStream, convert, executor, resultHandler);
+        if (fileExtension.toLowerCase().contains("png")) {
+            MarvinImage image = MarvinImageIO.loadImage(frameImage);
+            MarvinImage thumbnail = new MarvinImage();
+            MarvinPluginCollection.scale(image, thumbnail, 128, 101);
+            MarvinImageIO.saveImage(thumbnail, directory + frameFilename + "-thumbnail" + "." + fileExtension);
+        }
+        // TODO MarvinImageIO doesn't support openEXR so that will need to be processed by another library
+
         return directory + frameFilename + "-thumbnail" + "." + fileExtension;
     }
 
