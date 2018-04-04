@@ -109,10 +109,10 @@ public class ProjectController {
     public boolean deleteProject(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-            blenderProjectDatabaseService.delete(id);
+            blenderProjectService.deleteProject(id);
             return true;
         } else {
-            return blenderProjectDatabaseService.deleteWithVerification(auth.getName(), id);
+            return blenderProjectService.deleteProject(auth.getName(), id);
         }
     }
 
@@ -120,6 +120,7 @@ public class ProjectController {
     public void downloadProject(@PathVariable Long id, HttpServletResponse response) {
         BlenderProject project = blenderProjectDatabaseService.getById(id);
         if (project.getProjectType().equals(ProjectType.STILL_IMAGE)) {
+            LOG.debug(project.getFrameFileNames().size() + "\n" + project.toString());
             File image = new File(project.getFrameFileNames().get(0));
             SethlansUtils.serveFile(image, response);
         }
@@ -139,7 +140,7 @@ public class ProjectController {
         if (blenderProject == null) {
             return false;
         }
-        blenderProject.setProjectStatus(ProjectStatus.Started);
+        blenderProject.setProjectStatus(ProjectStatus.Pending);
         blenderProject = blenderProjectDatabaseService.saveOrUpdate(blenderProject);
         blenderProjectService.startProject(blenderProject);
         return true;
@@ -248,7 +249,7 @@ public class ProjectController {
             LOG.debug("Project Submitted" + projectForm);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             projectForm.setUsername(auth.getName());
-            projectForm.setProjectStatus(ProjectStatus.Pending);
+            projectForm.setProjectStatus(ProjectStatus.Added);
             blenderProjectDatabaseService.saveOrUpdateProjectForm(projectForm);
             return true;
         }

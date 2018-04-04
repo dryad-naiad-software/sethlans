@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.services.blender;
 import com.dryadandnaiad.sethlans.domains.blender.PartCoordinates;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import marvin.image.MarvinImage;
 import marvin.io.MarvinImageIO;
@@ -49,6 +50,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private BlenderQueueService blenderQueueService;
+    private List<String> directoriesToDelete = new ArrayList<>();
 
 
     private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectServiceImpl.class);
@@ -60,26 +62,56 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         blenderQueueService.populateProjectQueue(blenderProject);
     }
 
+    @Async
+    public void cleanupProjectDir() {
+        try {
+            Thread.sleep(15000);
+            for (String directory : directoriesToDelete) {
+                FileUtils.deleteDirectory(new File(directory));
+
+            }
+
+        } catch (InterruptedException e) {
+            LOG.debug("Cleanup interrupted");
+        } catch (IOException e) {
+            LOG.debug("Directory not present or root dir value null");
+        }
+    }
+
     @Override
     public void restartProject(BlenderProject blenderProject) {
-
+        // TODO queue needs unpause and start method.
     }
 
     @Override
     public void pauseProject(BlenderProject blenderProject) {
         blenderQueueService.pauseRenderQueueforProject(blenderProject);
+        blenderProject.setProjectStatus(ProjectStatus.Paused);
+        blenderProjectDatabaseService.saveOrUpdate(blenderProject);
     }
 
     @Override
     public void stopProject(BlenderProject blenderProject) {
         blenderQueueService.pauseRenderQueueforProject(blenderProject);
         blenderQueueService.deleteRenderQueueforProject(blenderProject);
-        try {
-            FileUtils.deleteDirectory(new File(blenderProject.getProjectRootDir()));
-        } catch (IOException | NullPointerException e) {
-            LOG.debug("Directory not present or root dir value null");
-        }
-        blenderProjectDatabaseService.delete(blenderProject);
+        blenderProject.setProjectStatus(ProjectStatus.Added);
+        blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+    }
+
+    @Override
+    public boolean deleteProject(Long id) {
+        directoriesToDelete.add(blenderProjectDatabaseService.getById(id).getProjectRootDir());
+        blenderProjectDatabaseService.delete(id);
+        cleanupProjectDir();
+        return true;
+    }
+
+    @Override
+    public boolean deleteProject(String username, Long id) {
+        directoriesToDelete.add(blenderProjectDatabaseService.getById(id).getProjectRootDir());
+        blenderProjectDatabaseService.deleteWithVerification(username, id);
+        cleanupProjectDir();
+        return true;
     }
 
     @Override
@@ -104,11 +136,11 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
         MarvinImage output = images.get(0).clone();
         MarvinImageIO.saveImage(output, frameFilename);
-
+        blenderProject.getFrameFileNames().add(frameFilename);
         blenderProject.setCurrentFrameThumbnail(createThumbnail(frameFilename, storedDir, plainFilename, fileExtension));
 
         deleteParts(partCleanup);
-        return false;
+        return true;
     }
 
     private void deleteParts(List<String> frameParts) {

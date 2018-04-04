@@ -28,7 +28,9 @@
           <tbody>
           <tr>
             <td>Project Status</td>
-            <td>{{projectStatus}}</td>
+            <td *ngIf="projectStatus.valueOf().toString() != 'Finished'.valueOf()">{{projectStatus}}</td>
+            <td *ngIf="projectStatus.valueOf().toString() == 'Finished'.valueOf()"><a
+              [href]="'/api/project_actions/download_project/' + projectDetails.id">{{projectStatus}}</a></td>
           </tr>
           <tr>
             <td>Selected Blender Version</td>

@@ -58,7 +58,7 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
       this.getProjectListSize();
     });
 
-    let timer2 = Observable.timer(60000, 60000);
+    let timer2 = Observable.timer(45000, 30000);
     timer2.subscribe(() => {
       this.reload();
     })

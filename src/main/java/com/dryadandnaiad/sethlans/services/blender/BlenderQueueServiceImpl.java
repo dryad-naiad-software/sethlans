@@ -188,6 +188,11 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 sethlansNode.setCpuSlotInUse(true);
                 sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() - 1);
             }
+            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
+            if (blenderProject.getProjectStatus() == ProjectStatus.Pending) {
+                blenderProject.setProjectStatus(ProjectStatus.Started);
+                blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+            }
             blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
         }

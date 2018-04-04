@@ -39,7 +39,7 @@ export class HomeComponent implements OnInit {
       .subscribe((sethlansmode: Mode) => {
         this.currentMode = sethlansmode;
       });
-    let timer = Observable.timer(60000, 60000);
+    let timer = Observable.timer(45000, 30000);
     timer.subscribe(() => this.reload());
   }
 

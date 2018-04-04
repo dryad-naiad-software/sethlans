@@ -36,5 +36,9 @@ public interface BlenderProjectService {
 
     void stopProject(BlenderProject blenderProject);
 
+    boolean deleteProject(Long id);
+
+    boolean deleteProject(String username, Long id);
+
     boolean combineParts(BlenderProject blenderProject, int frameNumber);
 }

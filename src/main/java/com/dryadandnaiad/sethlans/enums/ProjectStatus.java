@@ -26,5 +26,5 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum ProjectStatus {
-    Pending, Started, Rendering, Paused, Finished
+    Added, Pending, Started, Rendering, Paused, Finished
 }

@@ -17,6 +17,7 @@
  *
  */
 export enum ProjectStatus {
+  Added,
   Pending,
   Started,
   Rendering,
