@@ -36,6 +36,7 @@ import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
+import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +62,7 @@ public class AdminController {
     private NodeDiscoveryService nodeDiscoveryService;
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private SethlansServerDatabaseService sethlansServerDatabaseService;
+    private SethlansManagerService sethlansManagerService;
 
     @Value("${sethlans.gpu_id}")
     private String gpuIds;
@@ -79,12 +81,14 @@ public class AdminController {
 
     @GetMapping(value = "/restart")
     public void restart() {
-
+        sethlansManagerService.restart();
+        LOG.debug("Restarting Sethlans...");
     }
 
     @GetMapping(value = "/shutdown")
     public void shutdown() {
-
+        sethlansManagerService.shutdown();
+        LOG.debug("Shutting down Sethlans...");
     }
 
     @GetMapping(value = "/user_list")
@@ -239,5 +243,10 @@ public class AdminController {
     @Autowired
     public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
         this.sethlansServerDatabaseService = sethlansServerDatabaseService;
+    }
+
+    @Autowired
+    public void setSethlansManagerService(SethlansManagerService sethlansManagerService) {
+        this.sethlansManagerService = sethlansManagerService;
     }
 }

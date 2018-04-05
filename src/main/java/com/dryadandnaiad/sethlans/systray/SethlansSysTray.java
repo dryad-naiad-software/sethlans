@@ -56,8 +56,6 @@ public class SethlansSysTray extends TrayIcon implements Runnable {
     private void menuItems() {
         MenuItem exitItem = new MenuItem("Exit");
         MenuItem openBrowser = new MenuItem("Open Sethlans in browser");
-        MenuItem settingsItem = null;
-        MenuItem aboutItem = null;
 
         openBrowser.addActionListener(e -> {
             try {
@@ -67,25 +65,10 @@ public class SethlansSysTray extends TrayIcon implements Runnable {
             }
         });
 
-        if (!SethlansUtils.getFirstTime()) {
-            settingsItem = new MenuItem("Settings");
-
-            settingsItem.addActionListener(e -> {
-                try {
-                    OpenBrowser.settings();
-                } catch (MalformedURLException e1) {
-                    LOG.error("Malformed URL" + e1.getMessage());
-                }
-            });
-        }
-
         exitItem.addActionListener(e -> {
             System.exit(0);
         });
         popup.add(openBrowser);
-        if (!SethlansUtils.getFirstTime()) {
-            popup.add(settingsItem);
-        }
         popup.add(exitItem);
     }
 

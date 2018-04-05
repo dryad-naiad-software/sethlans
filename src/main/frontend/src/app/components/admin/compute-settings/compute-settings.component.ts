@@ -67,9 +67,7 @@ export class ComputeSettingsComponent implements OnInit {
     this.http.post("/api/setup/update_compute", JSON.stringify(this.newNode), httpOptions).subscribe((submitted: boolean) => {
       if (submitted === true) {
         setTimeout(() => {
-          this.router.navigateByUrl("/").then(() => {
-            location.reload();
-          });
+          window.location.href = "/";
         }, 15000);
       }
     });
