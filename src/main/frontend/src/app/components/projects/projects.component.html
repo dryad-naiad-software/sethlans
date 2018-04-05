@@ -21,13 +21,13 @@
   <div class="col-md-10 m-auto">
     <div class="card">
       <div class="card-header">
-        <h2>
+        <h4>
           <span style="font-family: 'Fjalla One', sans-serif; ">Projects</span>
           <button [disabled]="!nodesReady" class="btn btn-outline-dark float-right"
                   (click)="addProject()">
             <span class="fa fa-plus"></span> <span>New Project</span>
           </button>
-        </h2>
+        </h4>
       </div>
       <div class="card-body">
         <h2 class="text-center mt-5 mb-5" *ngIf="projectSize == 0">No Projects
