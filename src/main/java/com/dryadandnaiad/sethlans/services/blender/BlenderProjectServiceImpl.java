@@ -111,7 +111,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
                 blenderFramePart.setPartFilename(blenderFramePart.getFrameFileName() + "-part" + (j + 1));
                 blenderFramePart.setPartPositionMaxY(partCoordinatesList.get(j).getMax_y());
                 blenderFramePart.setPartPositionMinY(partCoordinatesList.get(j).getMin_y());
-                blenderFramePart.setFileExtension(blenderProject.getRenderOutputFormat().name().toLowerCase());
+                blenderFramePart.setFileExtension("png");
                 blenderFramePartList.add(blenderFramePart);
 
             }
@@ -197,7 +197,6 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     }
 
     private String createThumbnail(String frameImage, String directory, String frameFilename, String fileExtension) {
-        if (fileExtension.toLowerCase().contains("png")) {
             try {
                 BufferedImage image = ImageIO.read(new File(frameImage));
                 BufferedImage thumbnail = new BufferedImage(128, 101, image.getType());
@@ -212,10 +211,26 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
                 e.printStackTrace();
             }
 
-        }
-        // TODO MarvinImageIO doesn't support openEXR so that will need to be processed by another library
-
         return directory + frameFilename + "-thumbnail" + "." + fileExtension;
+    }
+
+    @Override
+    public boolean createMP4(BlenderProject blenderProject) {
+        String movieFileDirectory = blenderProject.getProjectRootDir() + File.separator + "MP4" + File.separator;
+        String movieFile = blenderProject.getProjectName().toLowerCase().replaceAll(" ", "_") + ".mp4";
+        blenderProject.setMovieFileLocation(movieFileDirectory + movieFile);
+        new File(movieFileDirectory).mkdir();
+
+        return true;
+    }
+
+    @Override
+    public boolean createAVI(BlenderProject blenderProject) {
+        String movieFileDirectory = blenderProject.getProjectRootDir() + File.separator + "AVI" + File.separator;
+        String movieFile = blenderProject.getProjectName().toLowerCase().replaceAll(" ", "_") + ".avi";
+        blenderProject.setMovieFileLocation(movieFileDirectory + movieFile);
+        new File(movieFileDirectory).mkdir();
+        return true;
     }
 
     @Autowired

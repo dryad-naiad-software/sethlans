@@ -41,4 +41,8 @@ public interface BlenderProjectService {
     void deleteProject(String username, Long id);
 
     boolean combineParts(BlenderProject blenderProject, int frameNumber);
+
+    boolean createMP4(BlenderProject blenderProject);
+
+    boolean createAVI(BlenderProject blenderProject);
 }

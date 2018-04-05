@@ -67,19 +67,30 @@
                 <option *ngFor="let version of availableBlenderVersions">{{version}}</option>
               </select>
             </div>
-            <div class="form-group">
+            <div class="form-group" *ngIf="projectDetails.projectType == projectTypes.ANIMATION">
               <label for="outputFormat">Output Format</label>
               <select class="form-control" id="outputFormat" name="outputFormat"
                       [(ngModel)]="projectDetails.outputFormat">
-                <option *ngFor="let format of formats | keys">{{format.value}}</option>
+                <option *ngFor="let format of formats | keys" [selected]="formats.PNG.valueOf()">{{format.value}}
+                </option>
               </select>
             </div>
+            <div class="form-group" *ngIf="projectDetails.projectType == projectTypes.STILL_IMAGE">
+              <label for="outputFormat2">Output Format</label>
+              <select class="form-control" id="outputFormat2" name="outputFormat"
+                      [(ngModel)]="projectDetails.outputFormat">
+                <option [selected]="formats.PNG.valueOf()">PNG</option>
+              </select>
+            </div>
+
+
             <fieldset class="form-group">
               <label>Project Type</label>
               <div class="form-check">
                 <label class="form-check-label"><input type="radio" name="projectType" class="form-check-input"
                                                        [(ngModel)]="projectDetails.projectType"
-                                                       value="{{projectTypes.STILL_IMAGE}}">Still Image</label>
+                                                       value="{{projectTypes.STILL_IMAGE}}"
+                                                       (click)="setDefaultFormat()">Still Image</label>
               </div>
               <div class="form-check">
                 <label class="form-check-label"><input type="radio" name="projectType" class="form-check-input"

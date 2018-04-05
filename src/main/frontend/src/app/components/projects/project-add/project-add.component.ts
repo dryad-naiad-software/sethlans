@@ -113,4 +113,8 @@ export class ProjectAddComponent implements OnInit {
     }
   }
 
+  setDefaultFormat() {
+    this.projectDetails.outputFormat = "PNG";
+  }
+
 }

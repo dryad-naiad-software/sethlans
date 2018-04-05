@@ -17,5 +17,5 @@
  *
  */
 export enum RenderOutputFormat {
-  PNG, AVI, EXR
+  PNG, MP4, AVI
 }

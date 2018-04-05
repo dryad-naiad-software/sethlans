@@ -107,5 +107,9 @@ export class ProjectEditComponent implements OnInit {
     this.router.navigateByUrl("/projects").then(() => location.reload());
   }
 
+  setDefaultFormat() {
+    this.projectDetails.outputFormat = "PNG";
+  }
+
 
 }

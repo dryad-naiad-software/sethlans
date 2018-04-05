@@ -25,6 +25,8 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
+import com.dryadandnaiad.sethlans.enums.ProjectType;
+import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import com.dryadandnaiad.sethlans.services.database.BlenderProcessQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
@@ -167,6 +169,12 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
                         if (remainingPartsForFrame == 0) {
                             if (blenderProjectService.combineParts(blenderProject, blenderProcessQueueItem.getFrame_number())) {
                                 if (remainingTotalQueue == 0) {
+                                    if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
+                                        blenderProjectService.createAVI(blenderProject);
+                                    }
+                                    if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
+                                        blenderProjectService.createMP4(blenderProject);
+                                    }
                                     blenderProject.setProjectStatus(ProjectStatus.Finished);
                                     blenderProject.setAllImagesProcessed(true);
                                 }

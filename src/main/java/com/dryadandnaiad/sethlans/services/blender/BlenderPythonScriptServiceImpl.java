@@ -248,11 +248,8 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.write("\n");
             scriptWriter.write("bpy.context.scene.render.tile_x = " + tileSize + "\n");
             scriptWriter.write("bpy.context.scene.render.tile_y = " + tileSize + "\n");
-            if (renderOutputFormat.equals(RenderOutputFormat.PNG) || renderOutputFormat.equals(RenderOutputFormat.AVI)) {
-                scriptWriter.write("bpy.context.scene.render.image_settings.file_format = 'PNG'" + "\n");
-            } else if (renderOutputFormat.equals(RenderOutputFormat.EXR)) {
-                scriptWriter.write("bpy.context.scene.render.image_settings.file_format = 'OPEN_EXR'" + "\n");
-            }
+            scriptWriter.write("bpy.context.scene.render.image_settings.file_format = 'PNG'" + "\n");
+
 
             scriptWriter.flush();
             scriptWriter.close();

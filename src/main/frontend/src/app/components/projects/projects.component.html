@@ -41,6 +41,7 @@
               <th>Type</th>
               <th>Render On</th>
               <th>Resolution</th>
+              <th>Output Format</th>
               <th>Status</th>
               <th data-orderable="false">Preview</th>
               <th data-orderable="false">Actions</th>
@@ -53,6 +54,7 @@
               <td>{{project.projectType}}</td>
               <td>{{project.renderOn}}</td>
               <td>{{project.resolutionX}} x {{project.resolutionY}}</td>
+              <td>{{project.outputFormat}}</td>
               <td>{{project.projectStatus}}</td>
               <td *ngIf="project.thumbnailPresent == false"><img [src]="placeholder"
                                                                  height="100"

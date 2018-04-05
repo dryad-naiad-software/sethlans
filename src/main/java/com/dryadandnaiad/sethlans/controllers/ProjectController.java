@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.info.ProjectInfo;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.enums.ProjectType;
+import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import com.dryadandnaiad.sethlans.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderProjectService;
@@ -123,7 +124,7 @@ public class ProjectController {
             File image = new File(project.getFrameFileNames().get(0));
             SethlansUtils.serveFile(image, response);
         }
-        if (project.getProjectType().equals(ProjectType.ANIMATION)) {
+        if (project.getProjectType().equals(ProjectType.ANIMATION) && project.getRenderOutputFormat().equals(RenderOutputFormat.PNG)) {
             File zipFile = SethlansUtils.createArchive(project.getFrameFileNames(), project.getProjectRootDir(), project.getProjectName().toLowerCase());
             if (zipFile != null) {
                 SethlansUtils.serveFile(zipFile, response);
@@ -248,6 +249,9 @@ public class ProjectController {
         if (projectForm != null) {
             LOG.debug("Project Submitted" + projectForm);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (projectForm.getProjectType() == ProjectType.STILL_IMAGE) {
+                projectForm.setOutputFormat(RenderOutputFormat.PNG);
+            }
             projectForm.setUsername(auth.getName());
             projectForm.setProjectStatus(ProjectStatus.Added);
             blenderProjectDatabaseService.saveOrUpdateProjectForm(projectForm);
