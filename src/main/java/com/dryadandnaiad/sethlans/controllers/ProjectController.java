@@ -173,10 +173,9 @@ public class ProjectController {
             File image = new File(blenderProject.getCurrentFrameThumbnail());
             InputStream in = new BufferedInputStream(new FileInputStream(image));
             byte[] imageToSend = IOUtils.toByteArray(in);
-            if (blenderProject.getCurrentFrameThumbnail().contains("png")) {
-                return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(imageToSend);
-            }
             in.close();
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(imageToSend);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
