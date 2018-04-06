@@ -27,6 +27,7 @@ import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.forms.setup.SetupForm;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
+import com.dryadandnaiad.sethlans.services.ffmpeg.FFmpegSetupService;
 import com.dryadandnaiad.sethlans.services.python.PythonSetupService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
 import com.dryadandnaiad.sethlans.utils.Resources;
@@ -58,6 +59,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
     private SethlansUserDatabaseService sethlansUserDatabaseService;
     private PythonSetupService pythonSetupService;
     private SethlansManagerService sethlansManagerService;
+    private FFmpegSetupService fFmpegSetupService;
     private static final Logger LOG = LoggerFactory.getLogger(SaveSetupConfigServiceImpl.class);
 
 
@@ -106,6 +108,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
             writeProperty(SethlansConfigKeys.BLENDER_DIR, blenderDirectory);
             writeProperty(SethlansConfigKeys.BENCHMARK_DIR, benchmarkDirectory);
             writeProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION, setupForm.getServer().getBlenderVersion());
+            fFmpegSetupService.installFFmpeg(binDirectory);
             LOG.debug("Server Settings Saved");
 
             LOG.debug("Creating Sethlans server directories.");
@@ -187,5 +190,10 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
     @Autowired
     public void setSethlansManagerService(SethlansManagerService sethlansManagerService) {
         this.sethlansManagerService = sethlansManagerService;
+    }
+
+    @Autowired
+    public void setfFmpegSetupService(FFmpegSetupService fFmpegSetupService) {
+        this.fFmpegSetupService = fFmpegSetupService;
     }
 }
