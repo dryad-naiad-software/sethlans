@@ -52,4 +52,5 @@ public class ProjectInfo {
     private boolean thumbnailPresent;
     private String thumbnailURL;
     private int currentPercentage;
+    private String frameRate;
 }

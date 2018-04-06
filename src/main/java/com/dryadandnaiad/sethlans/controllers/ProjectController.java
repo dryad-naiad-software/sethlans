@@ -47,6 +47,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -251,6 +252,7 @@ public class ProjectController {
             if (projectForm.getProjectType() == ProjectType.STILL_IMAGE) {
                 projectForm.setOutputFormat(RenderOutputFormat.PNG);
             }
+            projectForm.setFrameRate(checkFrameRate(projectForm.getFrameRate()));
             projectForm.setUsername(auth.getName());
             projectForm.setProjectStatus(ProjectStatus.Added);
             blenderProjectDatabaseService.saveOrUpdateProjectForm(projectForm);
@@ -284,6 +286,7 @@ public class ProjectController {
             blenderProject.setResolutionY(projectForm.getResolutionY());
             blenderProject.setResPercentage(projectForm.getResPercentage());
             blenderProject.setPartsPerFrame(projectForm.getPartsPerFrame());
+            blenderProject.setFrameRate(projectForm.getFrameRate());
             blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             return true;
         }
@@ -312,6 +315,7 @@ public class ProjectController {
         projectInfo.setRenderOn(blenderProject.getRenderOn());
         projectInfo.setOutputFormat(blenderProject.getRenderOutputFormat());
         projectInfo.setUsername(blenderProject.getSethlansUser().getUsername());
+        projectInfo.setFrameRate(blenderProject.getFrameRate());
         projectInfo.setResolutionX(blenderProject.getResolutionX());
         projectInfo.setResolutionY(blenderProject.getResolutionY());
         projectInfo.setBlenderEngine(blenderProject.getBlenderEngine());
@@ -329,6 +333,16 @@ public class ProjectController {
 
         }
         return projectInfo;
+    }
+
+    private String checkFrameRate(String frameRate) {
+        List<String> supportedFrameRates = Arrays.asList("23.98", "24", "25", "29.97", "30", "50", "59.94", "60");
+        for (String supportedFrameRate : supportedFrameRates) {
+            if (supportedFrameRate.equals(frameRate)) {
+                return frameRate;
+            }
+        }
+        return "30";
     }
 
 

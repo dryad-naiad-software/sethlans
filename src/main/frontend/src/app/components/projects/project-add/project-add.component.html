@@ -35,6 +35,9 @@
             <li>The path to external data is <strong>relative</strong>.</li>
           </ul>
 
+          <p *ngIf="uploading" class="alert alert-info text-center">Uploading File &nbsp; &nbsp;<span
+            class="fa fa-circle-o-notch fa-spin"></span></p>
+
           <p-fileUpload name="projectFile" (onBeforeSend)="beforeSend($event)" mode="basic"
                         (onUpload)="loadProjectDetails($event)"
                         url="/api/project_form/upload_project/"
@@ -75,6 +78,15 @@
                 </option>
               </select>
             </div>
+            <div class="form-group"
+                 *ngIf="projectDetails.projectType == projectTypes.ANIMATION && projectDetails.outputFormat == 'AVI' || projectDetails.outputFormat == 'MP4'">
+              <label for="frameRate">Frame Rate</label>
+              <select class="form-control" id="frameRate" name="frameRate"
+                      [(ngModel)]="projectDetails.frameRate">
+                <option *ngFor="let frameRate of frameRates">{{frameRate}}
+                </option>
+              </select>
+            </div>
             <div class="form-group" *ngIf="projectDetails.projectType == projectTypes.STILL_IMAGE">
               <label for="outputFormat2">Output Format</label>
               <select class="form-control" id="outputFormat2" name="outputFormat"
@@ -95,7 +107,8 @@
               <div class="form-check">
                 <label class="form-check-label"><input type="radio" name="projectType" class="form-check-input"
                                                        [(ngModel)]="projectDetails.projectType"
-                                                       value="{{projectTypes.ANIMATION}}">Animation</label>
+                                                       value="{{projectTypes.ANIMATION}}"
+                                                       (click)="setDefaultFrameRate()">Animation</label>
               </div>
             </fieldset>
             <div class="form-group">
@@ -238,6 +251,11 @@
             <tr *ngIf="projectDetails.projectType.toString().valueOf() == 'ANIMATION'.valueOf()">
               <td>Frame Step</td>
               <td>{{projectDetails.stepFrame}}</td>
+            </tr>
+            <tr
+              *ngIf="projectDetails.projectType.toString().valueOf() == 'ANIMATION'.valueOf() && projectDetails.outputFormat == 'MP4' || projectDetails.outputFormat == 'AVI'">
+              <td>Frame Rate</td>
+              <td>{{projectDetails.frameRate}}</td>
             </tr>
             <tr>
               <td>Render On</td>

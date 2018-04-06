@@ -59,6 +59,7 @@ public class BlenderProject extends AbstractEntityClass {
     private int partsPerFrame;
     private boolean allImagesProcessed;
     private ProjectStatus projectStatus;
+    private String frameRate;
     private String projectName;
     private String blendFilename;
     private String blendFileLocation;

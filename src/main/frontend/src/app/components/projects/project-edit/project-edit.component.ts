@@ -42,6 +42,8 @@ export class ProjectEditComponent implements OnInit {
   engines = BlenderEngine;
   status: number = 0;
   id: number;
+  frameRates: string[] = ["23.98", "24", "25", "29.97", "30", "50", "59.94", "60"];
+
 
   constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute) {
   }
@@ -109,6 +111,10 @@ export class ProjectEditComponent implements OnInit {
 
   setDefaultFormat() {
     this.projectDetails.outputFormat = "PNG";
+  }
+
+  setDefaultFrameRate() {
+    this.projectDetails.frameRate = "23.98";
   }
 
 

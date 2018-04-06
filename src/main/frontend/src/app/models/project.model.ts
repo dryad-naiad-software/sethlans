@@ -46,6 +46,7 @@ export class Project {
   thumbnailPresent: boolean;
   thumbnailURL: string;
   currentPercentage: number;
+  frameRate: string;
 
 
 }

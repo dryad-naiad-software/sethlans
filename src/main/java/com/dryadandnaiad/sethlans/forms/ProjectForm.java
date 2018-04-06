@@ -43,6 +43,7 @@ public class ProjectForm {
     private ProjectType projectType;
     private ProjectStatus projectStatus;
     private BlenderEngine blenderEngine;
+    private String frameRate;
     private String uploadedFile;
     private String fileLocation;
     private String selectedBlenderversion;

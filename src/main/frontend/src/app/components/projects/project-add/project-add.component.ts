@@ -40,6 +40,8 @@ export class ProjectAddComponent implements OnInit {
   computeMethods = ComputeMethod;
   engines = BlenderEngine;
   status: number = 0;
+  uploading: boolean = false;
+  frameRates: string[] = ["23.98", "24", "25", "29.97", "30", "50", "59.94", "60"];
 
 
   constructor(private http: HttpClient, private router: Router) {
@@ -74,6 +76,7 @@ export class ProjectAddComponent implements OnInit {
   }
 
   beforeSend(event: any) {
+    this.uploading = true;
     event.xhr.setRequestHeader('X-XSRF-TOKEN', document.cookie.slice(document.cookie.indexOf("TOKEN=") + "TOKEN=".length));
   }
 
@@ -115,6 +118,11 @@ export class ProjectAddComponent implements OnInit {
 
   setDefaultFormat() {
     this.projectDetails.outputFormat = "PNG";
+  }
+
+  setDefaultFrameRate() {
+    this.projectDetails.frameRate = "23.98";
+    this.projectDetails.endFrame = 50;
   }
 
 }

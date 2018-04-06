@@ -64,6 +64,7 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
         blenderProject.setResPercentage(projectForm.getResPercentage());
         blenderProject.setBlendFilename(projectForm.getUploadedFile());
         blenderProject.setPartsPerFrame(projectForm.getPartsPerFrame());
+        blenderProject.setFrameRate(projectForm.getFrameRate());
 
 
         RandomString randomString = new RandomString(6);
