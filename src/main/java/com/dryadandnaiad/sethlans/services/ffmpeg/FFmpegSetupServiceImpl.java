@@ -58,10 +58,10 @@ public class FFmpegSetupServiceImpl implements FFmpegSetupService {
                 }
             }
             if (SystemUtils.IS_OS_WINDOWS) {
-                SethlansUtils.writeProperty(SethlansConfigKeys.FFMPEG_BIN, binaryDir + "ffmpeg" + File.separator + "bin" + File.separator + "magick.exe");
+                SethlansUtils.writeProperty(SethlansConfigKeys.FFMPEG_BIN, binaryDir + "ffmpeg" + File.separator + "bin" + File.separator + "ffmpeg.exe");
             }
             if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
-                SethlansUtils.writeProperty(SethlansConfigKeys.FFMPEG_BIN, binaryDir + "ffmpeg" + File.separator + "bin" + File.separator + "magick");
+                SethlansUtils.writeProperty(SethlansConfigKeys.FFMPEG_BIN, binaryDir + "ffmpeg" + File.separator + "bin" + File.separator + "ffmpeg");
             }
 
             return true;
