@@ -60,12 +60,12 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
 
 
         int count = 0;
-        int cycle = 24;
+        int cycle = 48;
         //noinspection InfiniteLoopStatement
         while (true) {
 
             try {
-                Thread.sleep(30000);
+                Thread.sleep(15000);
                 if (!sethlansNodeDatabaseService.listAll().isEmpty() || !blenderRenderQueueDatabaseService.listAll().isEmpty()) {
                     if (!populatingQueue || !queueBeingPaused) {
                         LOG.debug("Processing Project Queue. Verbose messages every 2 minutes.");
