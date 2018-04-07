@@ -62,7 +62,7 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
         }
         ffmpeg.addArgument("-c:v");
         if (blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
-            ffmpeg.addArgument("rawvideo");
+            ffmpeg.addArgument("huffyuv");
 
         }
         if (blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
