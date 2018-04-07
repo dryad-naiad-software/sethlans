@@ -57,11 +57,12 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
         PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
         CommandLine ffmpeg = new CommandLine(SethlansUtils.getProperty(SethlansConfigKeys.FFMPEG_BIN.toString()));
         try {
-            Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(blenderProject.getProjectRootDir() +
-                    File.separator + "imageList.txt"), "utf-8"));
+            PrintWriter printWriter = new PrintWriter(new FileWriter(blenderProject.getProjectRootDir() +
+                    File.separator + "imageList.txt"));
             for (String frameFileName : blenderProject.getFrameFileNames()) {
-                writer.write("file '" + frameFileName + "'");
+                printWriter.println("file '" + frameFileName + "'");
             }
+            printWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
