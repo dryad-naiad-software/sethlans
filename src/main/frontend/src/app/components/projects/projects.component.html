@@ -43,7 +43,7 @@
               <th>Resolution</th>
               <th>Format</th>
               <th>Status</th>
-              <th>Percent Complete</th>
+              <th>Render Progress</th>
               <th data-orderable="false">Preview</th>
               <th data-orderable="false">Actions</th>
             </tr>
@@ -57,9 +57,10 @@
               <td>{{project.resolutionX}} x {{project.resolutionY}}</td>
               <td>{{project.outputFormat}}</td>
               <td>{{project.projectStatus}}</td>
-              <td class="pt-2 pb-2" placement="top" ngbTooltip="{{project.currentPercentage}}%">
-                <ngb-progressbar showValue="true" type="success"
-                                 [value]="project?.currentPercentage"></ngb-progressbar>
+              <td>
+                <ngb-progressbar type="success"
+                                 [value]="project?.currentPercentage"><span *ngIf="project.currentPercentage == 100">Complete</span>
+                </ngb-progressbar>
               </td>
               <td *ngIf="project.thumbnailPresent == false"><img [src]="placeholder"
                                                                  height="100"

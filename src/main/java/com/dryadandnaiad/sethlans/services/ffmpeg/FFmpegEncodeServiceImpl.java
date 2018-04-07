@@ -59,6 +59,8 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
         try {
             PrintWriter printWriter = new PrintWriter(new FileWriter(blenderProject.getProjectRootDir() +
                     File.separator + "imageList.txt"));
+            ffmpeg.addArgument("-f");
+            ffmpeg.addArgument("concat");
             for (String frameFileName : blenderProject.getFrameFileNames()) {
                 printWriter.println("file '" + frameFileName + "'");
             }
@@ -66,6 +68,8 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        ffmpeg.addArgument("-safe");
+        ffmpeg.addArgument("0");
         ffmpeg.addArgument("-i");
         ffmpeg.addArgument(blenderProject.getProjectRootDir() + File.separator + "imageList.txt");
         ffmpeg.addArgument("-c:v");

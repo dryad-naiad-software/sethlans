@@ -60,15 +60,15 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
 
 
         int count = 0;
-        int cycle = 48;
+        int cycle = 50;
         //noinspection InfiniteLoopStatement
         while (true) {
 
             try {
-                Thread.sleep(15000);
+                Thread.sleep(10000);
                 if (!sethlansNodeDatabaseService.listAll().isEmpty() || !blenderRenderQueueDatabaseService.listAll().isEmpty()) {
                     if (!populatingQueue || !queueBeingPaused) {
-                        LOG.debug("Processing Project Queue. Verbose messages every 2 minutes.");
+                        LOG.debug("Processing Project Queue.");
                         List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listAll();
                         for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
                             if (!blenderRenderQueueItem.isComplete() && !blenderRenderQueueItem.isRendering() && !blenderRenderQueueItem.isPaused()) {

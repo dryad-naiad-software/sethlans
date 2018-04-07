@@ -25,7 +25,7 @@
         <tr>
           <th>Name</th>
           <th>Status</th>
-          <th data-orderable="false">Percent Complete</th>
+          <th data-orderable="false">Render Progress</th>
         </tr>
         </thead>
         <tbody>
@@ -35,8 +35,9 @@
           <td *ngIf="project.projectStatus?.valueOf().toString() == 'Finished'.valueOf()"><a
             [href]="'/api/project_actions/download_project/' + project.id"> {{project.projectStatus}}</a></td>
           <td class="pt-2 pb-2" placement="right" ngbTooltip="{{project.currentPercentage}}%">
-            <ngb-progressbar showValue="true" type="success"
-                             [value]="project?.currentPercentage"></ngb-progressbar>
+            <ngb-progressbar type="success"
+                             [value]="project?.currentPercentage"><span *ngIf="project.currentPercentage == 100">Complete</span>
+            </ngb-progressbar>
           </td>
         </tr>
         </tbody>
