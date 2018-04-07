@@ -132,6 +132,11 @@ public class ProjectController {
             }
 
         }
+        if (project.getProjectType().equals(ProjectType.ANIMATION) && project.getRenderOutputFormat().equals(RenderOutputFormat.MP4)
+                || project.getRenderOutputFormat().equals(RenderOutputFormat.AVI)) {
+            File video = new File(project.getMovieFileLocation());
+            SethlansUtils.serveFile(video, response);
+        }
 
     }
 

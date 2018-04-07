@@ -42,7 +42,7 @@ public interface BlenderProjectService {
 
     boolean combineParts(BlenderProject blenderProject, int frameNumber);
 
-    boolean createMP4(BlenderProject blenderProject);
+    void createMP4(BlenderProject blenderProject);
 
-    boolean createAVI(BlenderProject blenderProject);
+    void createAVI(BlenderProject blenderProject);
 }

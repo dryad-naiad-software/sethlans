@@ -79,7 +79,7 @@ public class FFmpegSetupServiceImpl implements FFmpegSetupService {
                         || wow64Arch != null && wow64Arch.endsWith("64")
                         ? "64" : "32";
                 if (realArch.equals("64")) {
-                    String filename = "ffmpeg.windows64.txz";
+                    String filename = "ffmpeg-windows64.txz";
                     String windows64 = "archives/ffmpeg/" + filename;
                     LOG.debug("Preparing FFmpeg binaries for Windows");
                     InputStream inputStream = new Resources(windows64).getResource();
@@ -90,7 +90,7 @@ public class FFmpegSetupServiceImpl implements FFmpegSetupService {
             }
             if (SystemUtils.IS_OS_LINUX) {
                 if (SystemUtils.OS_ARCH.contains("64")) {
-                    String filename = "ffmpeg.linux64.txz";
+                    String filename = "ffmpeg-linux64.txz";
                     String linux64 = "archives/ffmpeg/" + filename;
                     LOG.debug("Preparing FFmpeg binaries for Linux");
                     InputStream inputStream = new Resources(linux64).getResource();
@@ -101,7 +101,7 @@ public class FFmpegSetupServiceImpl implements FFmpegSetupService {
                 }
             }
             if (SystemUtils.IS_OS_MAC) {
-                String filename = "ffmpeg.macOS.txz";
+                String filename = "ffmpeg-macOS.txz";
                 String macOS = "archives/ffmpeg/" + filename;
                 LOG.debug("Preparing FFmpeg binaries for Mac");
                 InputStream inputStream = new Resources(macOS).getResource();

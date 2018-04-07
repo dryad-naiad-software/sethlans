@@ -170,12 +170,15 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
                             if (blenderProjectService.combineParts(blenderProject, blenderProcessQueueItem.getFrame_number())) {
                                 if (remainingTotalQueue == 0) {
                                     if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
+                                        blenderProject.setProjectStatus(ProjectStatus.Processing);
                                         blenderProjectService.createAVI(blenderProject);
                                     }
                                     if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
+                                        blenderProject.setProjectStatus(ProjectStatus.Processing);
                                         blenderProjectService.createMP4(blenderProject);
+                                    } else {
+                                        blenderProject.setProjectStatus(ProjectStatus.Finished);
                                     }
-                                    blenderProject.setProjectStatus(ProjectStatus.Finished);
                                     blenderProject.setAllImagesProcessed(true);
                                 }
                             }

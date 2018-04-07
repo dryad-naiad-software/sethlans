@@ -16,12 +16,18 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-export enum ProjectStatus {
-  Added,
-  Pending,
-  Started,
-  Rendering,
-  Paused,
-  Processing,
-  Finished
+
+package com.dryadandnaiad.sethlans.services.ffmpeg;
+
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+
+/**
+ * Created Mario Estrella on 4/6/2018.
+ * Dryad and Naiad Software LLC
+ * mestrella@dryadandnaiad.com
+ * Project: sethlans
+ */
+public interface FFmpegEncodeService {
+
+    void encodeImagesToVideo(BlenderProject blenderProject);
 }

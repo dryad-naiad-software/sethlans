@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
+import com.dryadandnaiad.sethlans.services.ffmpeg.FFmpegEncodeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,7 @@ import java.util.List;
 public class BlenderProjectServiceImpl implements BlenderProjectService {
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private BlenderQueueService blenderQueueService;
+    private FFmpegEncodeService fFmpegEncodeService;
     private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectServiceImpl.class);
 
     @Override
@@ -215,22 +217,27 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     }
 
     @Override
-    public boolean createMP4(BlenderProject blenderProject) {
+    public void createMP4(BlenderProject blenderProject) {
         String movieFileDirectory = blenderProject.getProjectRootDir() + File.separator + "MP4" + File.separator;
         String movieFile = blenderProject.getProjectName().toLowerCase().replaceAll(" ", "_") + ".mp4";
         blenderProject.setMovieFileLocation(movieFileDirectory + movieFile);
         new File(movieFileDirectory).mkdir();
+        fFmpegEncodeService.encodeImagesToVideo(blenderProject);
 
-        return true;
     }
 
     @Override
-    public boolean createAVI(BlenderProject blenderProject) {
+    public void createAVI(BlenderProject blenderProject) {
         String movieFileDirectory = blenderProject.getProjectRootDir() + File.separator + "AVI" + File.separator;
         String movieFile = blenderProject.getProjectName().toLowerCase().replaceAll(" ", "_") + ".avi";
         blenderProject.setMovieFileLocation(movieFileDirectory + movieFile);
         new File(movieFileDirectory).mkdir();
-        return true;
+        fFmpegEncodeService.encodeImagesToVideo(blenderProject);
+    }
+
+    @Autowired
+    public void setfFmpegEncodeService(FFmpegEncodeService fFmpegEncodeService) {
+        this.fFmpegEncodeService = fFmpegEncodeService;
     }
 
     @Autowired
