@@ -56,10 +56,17 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
         ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
         PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
         CommandLine ffmpeg = new CommandLine(SethlansUtils.getProperty(SethlansConfigKeys.FFMPEG_BIN.toString()));
-        for (String frameFileName : blenderProject.getFrameFileNames()) {
-            ffmpeg.addArgument("-i");
-            ffmpeg.addArgument(frameFileName);
+        try {
+            Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(blenderProject.getProjectRootDir() +
+                    File.separator + "imageList.txt"), "utf-8"));
+            for (String frameFileName : blenderProject.getFrameFileNames()) {
+                writer.write("file '" + frameFileName + "'");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        ffmpeg.addArgument("-i");
+        ffmpeg.addArgument(blenderProject.getProjectRootDir() + File.separator + "imageList.txt");
         ffmpeg.addArgument("-c:v");
         if (blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
             ffmpeg.addArgument("huffyuv");
