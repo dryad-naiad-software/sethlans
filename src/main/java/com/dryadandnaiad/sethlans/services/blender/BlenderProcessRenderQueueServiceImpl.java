@@ -119,16 +119,15 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
                                         case CPU:
                                             sethlansNode.setCpuSlotInUse(false);
                                             sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
-                                            LOG.debug(sethlansNode.getAvailableRenderingSlots() + " current slots");
                                             break;
                                         case GPU:
                                             sethlansNode.setGpuSlotInUse(false);
                                             sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
-                                            LOG.debug(sethlansNode.getAvailableRenderingSlots() + " current slots");
                                             break;
                                         default:
                                             LOG.debug("Invalid compute type specified for rendering.");
                                     }
+                                    LOG.debug(sethlansNode.getHostname() + " has " + sethlansNode.getAvailableRenderingSlots() + " available rendering slot(s)");
 
                                     LOG.debug("Processing completed render from " + sethlansNode.getHostname() + ". Part: " + blenderProcessQueueItem.getPart_number()
                                             + " Frame: " + blenderProcessQueueItem.getFrame_number());
