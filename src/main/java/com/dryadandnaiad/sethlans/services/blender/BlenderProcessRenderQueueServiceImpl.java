@@ -68,8 +68,6 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
         LOG.debug("Completed Render Task received from " + hostname + ". Adding to processing queue.");
         blenderProcessQueueDatabaseService.saveOrUpdate(blenderProcessQueueItem);
         populatingQueue = false;
-
-
     }
 
     @Override
@@ -82,7 +80,7 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
         }
         while (true) {
             try {
-                Thread.sleep(5000);
+                Thread.sleep(2000);
                 if (!populatingQueue) {
                     List<BlenderProcessQueueItem> blenderProcessQueueItemList = blenderProcessQueueDatabaseService.listAll();
                     if (!blenderProcessQueueItemList.isEmpty()) {
