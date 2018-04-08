@@ -115,7 +115,6 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
 
     private void sendQueueItemToNode(SethlansNode sethlansNode, ComputeType projectComputeType, BlenderProject blenderProject, BlenderRenderQueueItem blenderRenderQueueItem) {
         sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(sethlansNode.getConnection_uuid()); // Refresh node from DB first.
-        LOG.debug("Sending " + blenderRenderQueueItem + " to " + sethlansNode.getHostname());
         // If both the project and the node is CPU and GPU, use the method with the lowest rating.
         if (sethlansNode.getComputeType().equals(ComputeType.CPU_GPU) && projectComputeType.equals(ComputeType.CPU_GPU)) {
             if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating() && !sethlansNode.isGpuSlotInUse()) {
@@ -170,17 +169,22 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
 
 
         if (!sethlansNode.isGpuSlotInUse() && projectComputeType == ComputeType.GPU) {
+
             sendToRemote(sethlansNode, projectComputeType, blenderRenderQueueItem, connectionURL, params);
         }
 
         if (!sethlansNode.isCpuSlotInUse() && projectComputeType == ComputeType.CPU) {
+
             sendToRemote(sethlansNode, projectComputeType, blenderRenderQueueItem, connectionURL, params);
         }
 
     }
 
     private void sendToRemote(SethlansNode sethlansNode, ComputeType projectComputeType, BlenderRenderQueueItem blenderRenderQueueItem, String connectionURL, String params) {
+
         sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(sethlansNode.getConnection_uuid()); // Refresh node from DB first.
+        LOG.debug("Sending " + blenderRenderQueueItem + " to " + sethlansNode.getHostname());
+
         if (sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params)) {
             blenderRenderQueueItem.setRendering(true);
             blenderRenderQueueItem.setRenderComputeType(projectComputeType);
