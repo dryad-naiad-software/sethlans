@@ -55,7 +55,7 @@ public class ServerBackgroundComponent {
     @PostConstruct
     public void renderQueue() {
         LOG.debug("Starting Render Queue Service");
-        blenderProcessRenderQueueService.startQueue();
+        blenderProcessRenderQueueService.startRenderProcessingQueue();
     }
 
 

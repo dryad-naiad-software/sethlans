@@ -134,7 +134,10 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
 
   stopProject(id) {
     this.http.get('/api/project_actions/stop_project/' + id + '/').subscribe();
-    window.location.href = "/projects";
+    setTimeout(() => {
+      window.location.href = "/projects";
+    }, 3000);
+
 
   }
 

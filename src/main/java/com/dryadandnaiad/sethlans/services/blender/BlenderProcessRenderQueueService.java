@@ -33,5 +33,5 @@ public interface BlenderProcessRenderQueueService {
     void addQueueItem(BlenderProcessQueueItem blenderProcessQueueItem);
 
     @Async
-    void startQueue();
+    void startRenderProcessingQueue();
 }

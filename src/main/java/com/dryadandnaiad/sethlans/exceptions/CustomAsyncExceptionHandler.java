@@ -46,6 +46,9 @@ public class CustomAsyncExceptionHandler
         for (Object param : obj) {
             LOG.error("Parameter value - " + param);
         }
+        if (method.getName().equals("startRenderProcessingQueue")) {
+
+        }
         LOG.error("Stacktrace: \n" + Throwables.getStackTraceAsString(throwable));
     }
 

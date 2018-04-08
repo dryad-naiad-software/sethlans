@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
@@ -48,6 +49,7 @@ import java.io.*;
 public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
     private static final Logger LOG = LoggerFactory.getLogger(FFmpegEncodeServiceImpl.class);
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
+    private BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService;
 
     @Async
     @Override
@@ -102,6 +104,8 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
             BlenderProject projectToUpdate = blenderProjectDatabaseService.getById(blenderProject.getId());
             projectToUpdate.setProjectStatus(ProjectStatus.Finished);
             blenderProjectDatabaseService.saveOrUpdate(projectToUpdate);
+            blenderRenderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
+
             FileUtils.deleteDirectory(new File(blenderProject.getProjectRootDir() + File.separator + "temp"));
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -111,5 +115,10 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
     @Autowired
     public void setBlenderProjectDatabaseService(BlenderProjectDatabaseService blenderProjectDatabaseService) {
         this.blenderProjectDatabaseService = blenderProjectDatabaseService;
+    }
+
+    @Autowired
+    public void setBlenderRenderQueueDatabaseService(BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService) {
+        this.blenderRenderQueueDatabaseService = blenderRenderQueueDatabaseService;
     }
 }

@@ -107,6 +107,8 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             } catch (InterruptedException e) {
                 LOG.debug("Stopping Project Queue Service");
                 break;
+            } catch (NullPointerException e) {
+
             }
         }
     }
@@ -216,9 +218,13 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             blenderRenderQueueItem.setPaused(true);
             for (SethlansNode sethlansNode : sethlansNodeList) {
                 if (sethlansNode.getConnection_uuid().equals(blenderRenderQueueItem.getConnection_uuid())) {
-                    sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                    sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+                    if (sethlansNode.getAvailableRenderingSlots() > sethlansNode.getTotalRenderingSlots()) {
+                        sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                    }
                     sethlansNode.setCpuSlotInUse(false);
                     sethlansNode.setGpuSlotInUse(false);
+                    sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(sethlansNode.getConnection_uuid()).getVersion());
                     sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                 }
             }

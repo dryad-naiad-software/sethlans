@@ -72,7 +72,7 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
 
     @Override
     @Async
-    public void startQueue() {
+    public void startRenderProcessingQueue() {
         try {
             Thread.sleep(20000);
         } catch (InterruptedException e) {
@@ -82,6 +82,7 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
             try {
                 Thread.sleep(10000);
                 if (!populatingQueue) {
+                    LOG.debug("Running processing queue. ");
                     List<BlenderProcessQueueItem> blenderProcessQueueItemList = blenderProcessQueueDatabaseService.listAll();
                     if (!blenderProcessQueueItemList.isEmpty()) {
                         BlenderProcessQueueItem blenderProcessQueueItem = blenderProcessQueueItemList.get(0);
@@ -182,6 +183,7 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
                                         blenderProjectService.createMP4(blenderProject);
                                     } else {
                                         blenderProject.setProjectStatus(ProjectStatus.Finished);
+                                        blenderRenderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
                                     }
                                     blenderProject.setAllImagesProcessed(true);
                                 }
@@ -196,6 +198,8 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
             } catch (InterruptedException e) {
                 LOG.debug("Stopping Render Queue Service");
                 break;
+            } catch (NullPointerException e) {
+
             }
 
         }

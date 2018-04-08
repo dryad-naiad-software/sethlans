@@ -92,6 +92,19 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         blenderQueueService.pauseRenderQueueforProject(blenderProject);
         blenderQueueService.deleteRenderQueueforProject(blenderProject);
         blenderProject.setProjectStatus(ProjectStatus.Added);
+        int count = blenderProject.getFrameFileNames().size();
+        for (int i = 0; i < count; i++) {
+            int frame = i + 1;
+            try {
+                FileUtils.deleteDirectory(new File(blenderProject.getProjectRootDir() + File.separator + "frame_" + frame));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        blenderProject.setFrameFileNames(new ArrayList<>());
+        blenderProject.setCurrentFrameThumbnail(null);
+        blenderProject.setCurrentPercentage(0);
         blenderProjectDatabaseService.saveOrUpdate(blenderProject);
     }
 
@@ -288,5 +301,6 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     public void setBlenderQueueService(BlenderQueueService blenderQueueService) {
         this.blenderQueueService = blenderQueueService;
     }
+
 
 }
