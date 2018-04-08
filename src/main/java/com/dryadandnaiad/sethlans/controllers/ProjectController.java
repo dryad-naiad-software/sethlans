@@ -127,6 +127,16 @@ public class ProjectController {
         }
     }
 
+    @GetMapping(value = "/api/project_actions/resume_project/{id}")
+    public void resumeProject(@PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            blenderProjectService.resumeProject(id);
+        } else {
+            blenderProjectService.pauseProject(auth.getName(), id);
+        }
+    }
+
     @GetMapping(value = "/api/project_actions/delete_project/{id}")
     public void deleteProject(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

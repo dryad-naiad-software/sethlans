@@ -35,7 +35,7 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
   nodesReady: boolean = false;
   projectSize: number;
   projects: Project[];
-  projectForDeletion: Project;
+  selectedProject: Project;
   dtOptions: DataTables.Settings = {};
 
   constructor(private http: HttpClient, private projectService: ProjectListService, private router: Router, private modalService: NgbModal) {
@@ -64,15 +64,6 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
     timer2.subscribe(() => {
       this.reload();
     })
-  }
-
-
-  startProject(id) {
-    this.http.get("/api/project_actions/start_project/" + id + "/").subscribe((success: boolean) => {
-      if (success) {
-        this.router.navigateByUrl("/projects").then(() => location.reload());
-      }
-    });
   }
 
   getProjectListSize() {
@@ -109,18 +100,42 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
     window.location.href = "/api/project_actions/download_project/" + id;
   }
 
-  confirmDelete(project, content) {
-    this.projectForDeletion = project;
+
+  confirm(project, content) {
+    this.selectedProject = project;
     let options: NgbModalOptions = {
       backdrop: "static"
     };
     this.modalService.open(content, options);
   }
 
-  deleteProject(id) {
-    this.http.get('/api/project_actions/delete_project/' + id + '/').subscribe(() => {
+  startProject(id) {
+    this.http.get("/api/project_actions/start_project/" + id + "/").subscribe((success: boolean) => {
+      if (success) {
+        this.router.navigateByUrl("/projects").then(() => location.reload());
+      }
     });
+  }
+
+  deleteProject(id) {
+    this.http.get('/api/project_actions/delete_project/' + id + '/').subscribe();
     window.location.href = "/projects";
+  }
+
+  pauseProject(id) {
+    this.http.get('/api/project_actions/pause_project/' + id + '/').subscribe();
+    window.location.href = "/projects";
+  }
+
+  resumeProject(id) {
+    this.http.get('/api/project_actions/resume_project/' + id + '/').subscribe();
+    window.location.href = "/projects";
+  }
+
+  stopProject(id) {
+    this.http.get('/api/project_actions/stop_project/' + id + '/').subscribe();
+    window.location.href = "/projects";
+
   }
 
 

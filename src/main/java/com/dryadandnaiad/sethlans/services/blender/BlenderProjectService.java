@@ -30,7 +30,10 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 public interface BlenderProjectService {
     void startProject(BlenderProject blenderProject);
 
-    void restartProject(BlenderProject blenderProject);
+    void resumeProject(Long id);
+
+    void resumeProject(String username, Long id);
+
 
     void pauseProject(Long id);
 

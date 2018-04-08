@@ -61,7 +61,12 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     }
 
     @Override
-    public void restartProject(BlenderProject blenderProject) {
+    public void resumeProject(Long id) {
+        // TODO queue needs unpause and start method.
+    }
+
+    @Override
+    public void resumeProject(String username, Long id) {
         // TODO queue needs unpause and start method.
     }
 
