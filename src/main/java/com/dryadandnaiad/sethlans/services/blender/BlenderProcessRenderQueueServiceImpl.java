@@ -80,7 +80,7 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
         }
         while (true) {
             try {
-                Thread.sleep(2000);
+                Thread.sleep(5000);
                 if (!populatingQueue) {
                     List<BlenderProcessQueueItem> blenderProcessQueueItemList = blenderProcessQueueDatabaseService.listAll();
                     if (!blenderProcessQueueItemList.isEmpty()) {
@@ -117,10 +117,16 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
                                         case CPU:
                                             sethlansNode.setCpuSlotInUse(false);
                                             sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+                                            if (sethlansNode.getAvailableRenderingSlots() > sethlansNode.getTotalRenderingSlots()) {
+                                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                                            }
                                             break;
                                         case GPU:
                                             sethlansNode.setGpuSlotInUse(false);
                                             sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+                                            if (sethlansNode.getAvailableRenderingSlots() > sethlansNode.getTotalRenderingSlots()) {
+                                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                                            }
                                             break;
                                         default:
                                             LOG.debug("Invalid compute type specified for rendering.");

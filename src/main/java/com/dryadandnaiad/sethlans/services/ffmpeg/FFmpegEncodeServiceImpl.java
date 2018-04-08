@@ -29,6 +29,7 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,25 +57,20 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
         ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
         PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
         CommandLine ffmpeg = new CommandLine(SethlansUtils.getProperty(SethlansConfigKeys.FFMPEG_BIN.toString()));
-        try {
-            PrintWriter printWriter = new PrintWriter(new FileWriter(blenderProject.getProjectRootDir() +
-                    File.separator + "imageList.txt"));
-            ffmpeg.addArgument("-f");
-            ffmpeg.addArgument("concat");
-            for (String frameFileName : blenderProject.getFrameFileNames()) {
-                printWriter.println("file '" + frameFileName + "'");
-            }
-            printWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        ffmpeg.addArgument("-safe");
-        ffmpeg.addArgument("0");
         ffmpeg.addArgument("-i");
-        ffmpeg.addArgument(blenderProject.getProjectRootDir() + File.separator + "imageList.txt");
+        for (String frameFileName : blenderProject.getFrameFileNames()) {
+            try {
+                FileUtils.copyFileToDirectory(new File(frameFileName), new File(blenderProject.getProjectRootDir() + File.separator + "temp" + File.separator));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        ffmpeg.addArgument(blenderProject.getProjectRootDir() + File.separator + "temp" + File.separator + blenderProject.getProject_uuid() + "-" + "%d.png");
         ffmpeg.addArgument("-c:v");
         if (blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
-            ffmpeg.addArgument("huffyuv");
+            ffmpeg.addArgument("utvideo");
+            ffmpeg.addArgument("-pix_fmt");
+            ffmpeg.addArgument("yuv422p");
 
         }
         if (blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {

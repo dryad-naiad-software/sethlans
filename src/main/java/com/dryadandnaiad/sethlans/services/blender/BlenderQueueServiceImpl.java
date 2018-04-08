@@ -60,7 +60,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
 
 
         int count = 0;
-        int cycle = 60;
+        int cycle = 20;
         //noinspection InfiniteLoopStatement
         while (true) {
 
@@ -112,6 +112,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     }
 
     private void sendQueueItemToNode(SethlansNode sethlansNode, ComputeType projectComputeType, BlenderProject blenderProject, BlenderRenderQueueItem blenderRenderQueueItem) {
+        sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(sethlansNode.getConnection_uuid()); // Refresh node from DB first.
         LOG.debug("Sending " + blenderRenderQueueItem + " to " + sethlansNode.getHostname());
         // If both the project and the node is CPU and GPU, use the method with the lowest rating.
         if (sethlansNode.getComputeType().equals(ComputeType.CPU_GPU) && projectComputeType.equals(ComputeType.CPU_GPU)) {
@@ -177,6 +178,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     }
 
     private void sendToRemote(SethlansNode sethlansNode, ComputeType projectComputeType, BlenderRenderQueueItem blenderRenderQueueItem, String connectionURL, String params) {
+        sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(sethlansNode.getConnection_uuid()); // Refresh node from DB first.
         if (sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params)) {
             blenderRenderQueueItem.setRendering(true);
             blenderRenderQueueItem.setRenderComputeType(projectComputeType);
