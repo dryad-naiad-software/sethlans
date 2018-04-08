@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.ffmpeg.FFmpegEncodeService;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,14 +66,33 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     }
 
     @Override
-    public void pauseProject(BlenderProject blenderProject) {
+    public void pauseProject(Long id) {
+        BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
         blenderQueueService.pauseRenderQueueforProject(blenderProject);
         blenderProject.setProjectStatus(ProjectStatus.Paused);
         blenderProjectDatabaseService.saveOrUpdate(blenderProject);
     }
 
     @Override
-    public void stopProject(BlenderProject blenderProject) {
+    public void pauseProject(String username, Long id) {
+        BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(username, id);
+        blenderQueueService.pauseRenderQueueforProject(blenderProject);
+        blenderProject.setProjectStatus(ProjectStatus.Paused);
+        blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+    }
+
+    @Override
+    public void stopProject(Long id) {
+        BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
+        blenderQueueService.pauseRenderQueueforProject(blenderProject);
+        blenderQueueService.deleteRenderQueueforProject(blenderProject);
+        blenderProject.setProjectStatus(ProjectStatus.Added);
+        blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+    }
+
+    @Override
+    public void stopProject(String username, Long id) {
+        BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(username, id);
         blenderQueueService.pauseRenderQueueforProject(blenderProject);
         blenderQueueService.deleteRenderQueueforProject(blenderProject);
         blenderProject.setProjectStatus(ProjectStatus.Added);
@@ -81,12 +101,26 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     @Override
     public void deleteProject(Long id) {
+        String directory = blenderProjectDatabaseService.getById(id).getProjectRootDir();
         blenderProjectDatabaseService.delete(id);
+        try {
+            Thread.sleep(20000);
+            FileUtils.deleteDirectory(new File(directory));
+        } catch (InterruptedException | IOException e) {
+            LOG.error("Error occurred deleting project " + e.getMessage());
+        }
     }
 
     @Override
     public void deleteProject(String username, Long id) {
+        String directory = blenderProjectDatabaseService.getProjectByUser(username, id).getProjectRootDir();
         blenderProjectDatabaseService.deleteWithVerification(username, id);
+        try {
+            Thread.sleep(20000);
+            FileUtils.deleteDirectory(new File(directory));
+        } catch (InterruptedException | IOException e) {
+            LOG.error("Error occurred deleting project " + e.getMessage());
+        }
     }
 
 
@@ -199,19 +233,19 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     }
 
     private String createThumbnail(String frameImage, String directory, String frameFilename, String fileExtension) {
-            try {
-                BufferedImage image = ImageIO.read(new File(frameImage));
-                BufferedImage thumbnail = new BufferedImage(128, 101, image.getType());
-                Graphics2D g = thumbnail.createGraphics();
-                g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                        RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-                g.drawImage(image, 0, 0, 128, 101, 0, 0, image.getWidth(),
-                        image.getHeight(), null);
-                g.dispose();
-                ImageIO.write(thumbnail, fileExtension.toUpperCase(), new File(directory + frameFilename + "-thumbnail" + "." + fileExtension));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            BufferedImage image = ImageIO.read(new File(frameImage));
+            BufferedImage thumbnail = new BufferedImage(128, 101, image.getType());
+            Graphics2D g = thumbnail.createGraphics();
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                    RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g.drawImage(image, 0, 0, 128, 101, 0, 0, image.getWidth(),
+                    image.getHeight(), null);
+            g.dispose();
+            ImageIO.write(thumbnail, fileExtension.toUpperCase(), new File(directory + frameFilename + "-thumbnail" + "." + fileExtension));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return directory + frameFilename + "-thumbnail" + "." + fileExtension;
     }

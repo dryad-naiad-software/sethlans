@@ -80,7 +80,7 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
         }
         while (true) {
             try {
-                Thread.sleep(5000);
+                Thread.sleep(10000);
                 if (!populatingQueue) {
                     List<BlenderProcessQueueItem> blenderProcessQueueItemList = blenderProcessQueueDatabaseService.listAll();
                     if (!blenderProcessQueueItemList.isEmpty()) {
@@ -135,6 +135,7 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
 
                                     LOG.debug("Processing completed render from " + sethlansNode.getHostname() + ". Part: " + blenderProcessQueueItem.getPart_number()
                                             + " Frame: " + blenderProcessQueueItem.getFrame_number());
+                                    sethlansNode.setVersion(sethlansNodeDatabaseService.getById(sethlansNode.getId()).getVersion());
                                     sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
 
                                 } catch (IOException | SQLException e) {

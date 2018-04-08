@@ -65,7 +65,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         while (true) {
 
             try {
-                Thread.sleep(5000);
+                Thread.sleep(10000);
                 if (!sethlansNodeDatabaseService.listAll().isEmpty() || !blenderRenderQueueDatabaseService.listAll().isEmpty()) {
                     if (!populatingQueue || !queueBeingPaused) {
                         LOG.debug("Processing Project Queue.");
@@ -196,6 +196,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             }
             blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+            sethlansNode.setVersion(sethlansNodeDatabaseService.getById(sethlansNode.getId()).getVersion());
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
         }
     }

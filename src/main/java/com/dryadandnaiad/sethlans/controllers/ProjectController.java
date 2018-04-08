@@ -107,6 +107,26 @@ public class ProjectController {
 
     }
 
+    @GetMapping(value = "/api/project_actions/stop_project/{id}")
+    public void stopProject(@PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            blenderProjectService.stopProject(id);
+        } else {
+            blenderProjectService.stopProject(auth.getName(), id);
+        }
+    }
+
+    @GetMapping(value = "/api/project_actions/pause_project/{id}")
+    public void pauseProject(@PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            blenderProjectService.pauseProject(id);
+        } else {
+            blenderProjectService.pauseProject(auth.getName(), id);
+        }
+    }
+
     @GetMapping(value = "/api/project_actions/delete_project/{id}")
     public void deleteProject(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -119,7 +139,13 @@ public class ProjectController {
 
     @RequestMapping(value = "/api/project_actions/download_project/{id}")
     public void downloadProject(@PathVariable Long id, HttpServletResponse response) {
-        BlenderProject project = blenderProjectDatabaseService.getById(id);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        BlenderProject project;
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            project = blenderProjectDatabaseService.getById(id);
+        } else {
+            project = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
+        }
         if (project.getProjectType().equals(ProjectType.STILL_IMAGE)) {
             LOG.debug(project.getFrameFileNames().size() + "\n" + project.toString());
             File image = new File(project.getFrameFileNames().get(0));
@@ -142,7 +168,14 @@ public class ProjectController {
 
     @GetMapping(value = "/api/project_actions/start_project/{id}")
     public boolean startProject(@PathVariable Long id) {
-        BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        BlenderProject blenderProject;
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            blenderProject = blenderProjectDatabaseService.getById(id);
+        } else {
+            blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
+        }
         if (blenderProject == null) {
             return false;
         }

@@ -95,7 +95,8 @@
                   </button>
                   <button
                     *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf() ||  project.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
-                    class="btn btn-outline-danger btn-sm" type="button" (click)="deleteProject(project.id)">
+                    class="btn btn-outline-danger btn-sm" type="button"
+                    (click)="confirmDelete(project, deleteConfirmation)">
                     Delete
                   </button>
                   <button
@@ -120,4 +121,21 @@
     </div>
   </div>
 </div>
+<!--Delete Project Confirmation-->
+<ng-template #deleteConfirmation let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Delete Project</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete <strong>{{projectForDeletion.projectName}}</strong>?</p>
+    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c('Close click')">No
+    </button>
+    <button type="button" class="btn btn-outline-danger ml-auto float-right"
+            (click)="c('Close click'); deleteProject(projectForDeletion.id)">Yes
+    </button>
+  </div>
 
+</ng-template>

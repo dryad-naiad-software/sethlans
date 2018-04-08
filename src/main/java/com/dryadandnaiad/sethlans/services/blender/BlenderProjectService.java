@@ -32,9 +32,13 @@ public interface BlenderProjectService {
 
     void restartProject(BlenderProject blenderProject);
 
-    void pauseProject(BlenderProject blenderProject);
+    void pauseProject(Long id);
 
-    void stopProject(BlenderProject blenderProject);
+    void pauseProject(String username, Long id);
+
+    void stopProject(Long id);
+
+    void stopProject(String username, Long id);
 
     void deleteProject(Long id);
 

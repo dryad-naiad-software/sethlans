@@ -22,6 +22,7 @@ import {Observable} from "rxjs/Observable";
 import {Project} from "../../models/project.model";
 import {ProjectListService} from "../../services/project_list.service";
 import {Router} from "@angular/router";
+import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 
 
 @Component({
@@ -34,9 +35,10 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
   nodesReady: boolean = false;
   projectSize: number;
   projects: Project[];
+  projectForDeletion: Project;
   dtOptions: DataTables.Settings = {};
 
-  constructor(private http: HttpClient, private projectService: ProjectListService, private router: Router) {
+  constructor(private http: HttpClient, private projectService: ProjectListService, private router: Router, private modalService: NgbModal) {
   }
 
   ngAfterViewInit(): void {
@@ -105,6 +107,14 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
 
   downloadProject(id) {
     window.location.href = "/api/project_actions/download_project/" + id;
+  }
+
+  confirmDelete(project, content) {
+    this.projectForDeletion = project;
+    let options: NgbModalOptions = {
+      backdrop: "static"
+    };
+    this.modalService.open(content, options);
   }
 
   deleteProject(id) {

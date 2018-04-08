@@ -102,6 +102,7 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
             BlenderProject projectToUpdate = blenderProjectDatabaseService.getById(blenderProject.getId());
             projectToUpdate.setProjectStatus(ProjectStatus.Finished);
             blenderProjectDatabaseService.saveOrUpdate(projectToUpdate);
+            FileUtils.deleteDirectory(new File(blenderProject.getProjectRootDir() + File.separator + "temp"));
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
