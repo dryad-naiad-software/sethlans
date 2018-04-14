@@ -350,6 +350,11 @@ public class ProjectController {
     }
 
     private ProjectInfo convertBlenderProjectToProjectInfo(BlenderProject blenderProject) {
+        long second = (blenderProject.getTotalRenderTime() / 1000) % 60;
+        long minute = (blenderProject.getTotalRenderTime() / (1000 * 60)) % 60;
+        long hour = (blenderProject.getTotalRenderTime() / (1000 * 60 * 60)) % 24;
+
+        String time = String.format("%02d:%02d:%02d", hour, minute, second);
         ProjectInfo projectInfo = new ProjectInfo();
         projectInfo.setId(blenderProject.getId());
         projectInfo.setStartFrame(blenderProject.getStartFrame());
@@ -361,6 +366,7 @@ public class ProjectController {
         projectInfo.setProjectName(blenderProject.getProjectName());
         projectInfo.setSelectedBlenderversion(blenderProject.getBlenderVersion());
         projectInfo.setRenderOn(blenderProject.getRenderOn());
+        projectInfo.setTotalRenderTime(time);
         projectInfo.setOutputFormat(blenderProject.getRenderOutputFormat());
         projectInfo.setUsername(blenderProject.getSethlansUser().getUsername());
         projectInfo.setFrameRate(blenderProject.getFrameRate());

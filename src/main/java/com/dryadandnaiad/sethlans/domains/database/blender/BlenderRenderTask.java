@@ -57,5 +57,6 @@ public class BlenderRenderTask extends AbstractEntityClass {
     private boolean complete;
     private boolean inProgress;
     private String renderDir;
+    private Long renderTime;
 
 }

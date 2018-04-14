@@ -53,4 +53,5 @@ public class ProjectInfo {
     private String thumbnailURL;
     private int currentPercentage;
     private String frameRate;
+    private String totalRenderTime;
 }

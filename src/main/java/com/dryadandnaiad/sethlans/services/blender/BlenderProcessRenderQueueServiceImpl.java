@@ -167,6 +167,7 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
                         LOG.debug("Current Percentage " + currentPercentage);
 
                         blenderProject.setCurrentPercentage((int) currentPercentage);
+                        blenderProject.setTotalRenderTime(blenderProject.getTotalRenderTime() + blenderProcessQueueItem.getRenderTime());
 
                         if (remainingTotalQueue > 0) {
                             blenderProject.setProjectStatus(ProjectStatus.Rendering);

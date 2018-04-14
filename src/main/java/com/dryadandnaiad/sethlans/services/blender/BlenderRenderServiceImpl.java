@@ -46,6 +46,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created Mario Estrella on 12/18/17.
@@ -147,10 +148,12 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     }
 
     private void saveOnSuccess(BlenderRenderTask blenderRenderTask, String script) {
-        if (executeRenderTask(blenderRenderTask, script)) {
+        Long renderTime = executeRenderTask(blenderRenderTask, script);
+        if (renderTime != -1L) {
             LOG.debug("Render Successful! Updating task status.");
             blenderRenderTask.setInProgress(false);
             blenderRenderTask.setComplete(true);
+            blenderRenderTask.setRenderTime(renderTime);
             blenderRenderTask = blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
             int count = 0;
             while (true) {
@@ -188,6 +191,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         params.put("project_uuid", blenderRenderTask.getProject_uuid());
         params.put("part_number", Integer.toString(blenderRenderTask.getBlenderFramePart().getPartNumber()));
         params.put("frame_number", Integer.toString(blenderRenderTask.getBlenderFramePart().getFrameNumber()));
+        params.put("render_time", Long.toString(blenderRenderTask.getRenderTime()));
         String renderedFileName = String.format("%04d", blenderRenderTask.getBlenderFramePart().getFrameNumber());
 
         File result = new File(blenderRenderTask.getRenderDir() + File.separator + renderedFileName + "." + blenderRenderTask.getBlenderFramePart().getFileExtension());
@@ -253,8 +257,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         return false;
     }
 
-    private boolean executeRenderTask(BlenderRenderTask renderTask, String blenderScript) {
-        boolean success = false;
+    private Long executeRenderTask(BlenderRenderTask renderTask, String blenderScript) {
         String error;
         BlenderFramePart blenderFramePart = renderTask.getBlenderFramePart();
         try {
@@ -290,11 +293,20 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
             String output;
 
+            String time = null;
+
             LOG.debug("Render Output:");
             while ((output = in.readLine()) != null) {
                 LOG.debug(output);
                 if (output.contains("Finished")) {
-                    success = true;
+                    String[] finished = output.split("\\|");
+                    for (String item : finished) {
+                        LOG.debug(item);
+                        if (item.contains("Time:")) {
+                            time = StringUtils.substringAfter(item, ":");
+                            time = StringUtils.substringBefore(time, ".");
+                        }
+                    }
                 }
             }
 
@@ -306,12 +318,23 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                 LOG.debug(error);
             }
 
+            String[] timeToConvert;
+            if (time != null) {
+                timeToConvert = time.split(":");
+                int minutes = Integer.parseInt(timeToConvert[0]);
+                int seconds = Integer.parseInt(timeToConvert[1]);
+                int timeInSeconds = seconds + 60 * minutes;
+                long timeInMilliseconds = TimeUnit.MILLISECONDS.convert(timeInSeconds, TimeUnit.SECONDS);
+                LOG.debug("Benchmark time in milliseconds: " + timeInMilliseconds);
+                return timeInMilliseconds;
+            }
+
 
         } catch (IOException | NullPointerException | InterruptedException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
 
         }
-        return success;
+        return -1L;
 
     }
 

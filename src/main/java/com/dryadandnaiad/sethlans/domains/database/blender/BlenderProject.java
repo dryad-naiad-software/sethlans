@@ -68,6 +68,7 @@ public class BlenderProject extends AbstractEntityClass {
     private String project_uuid;
     private String projectRootDir;
     private String movieFileLocation;
+    private Long totalRenderTime;
     @ElementCollection
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<String> frameFileNames;

@@ -57,8 +57,8 @@ import java.sql.SQLException;
  */
 @RestController
 @Profile({"SERVER", "DUAL"})
-public class ProjectCommunicationController {
-    private static final Logger LOG = LoggerFactory.getLogger(ProjectCommunicationController.class);
+public class ServerRenderController {
+    private static final Logger LOG = LoggerFactory.getLogger(ServerRenderController.class);
 
     @Value("${sethlans.benchmarkDir}")
     private String benchmarkDir;
@@ -151,7 +151,7 @@ public class ProjectCommunicationController {
                                 @RequestParam String project_uuid,
                                 @RequestParam MultipartFile part,
                                 @RequestParam int part_number,
-                                @RequestParam int frame_number) {
+                                @RequestParam int frame_number, @RequestParam long render_time) {
         if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
@@ -164,6 +164,7 @@ public class ProjectCommunicationController {
                     blenderProcessQueueItem.setPart(blob);
                     blenderProcessQueueItem.setPart_number(part_number);
                     blenderProcessQueueItem.setFrame_number(frame_number);
+                    blenderProcessQueueItem.setRenderTime(render_time);
                     blenderProcessRenderQueueService.addQueueItem(blenderProcessQueueItem);
                 } catch (IOException e) {
                     e.printStackTrace();

@@ -43,4 +43,5 @@ public class BlenderProcessQueueItem extends AbstractEntityClass {
     Blob part;
     int part_number;
     int frame_number;
+    long renderTime;
 }

@@ -92,7 +92,9 @@ public class ServerInfoController {
     public int getTotalSlots() {
         int totalSlotsCount = 0;
         for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
-            totalSlotsCount = totalSlotsCount + sethlansNode.getTotalRenderingSlots();
+            if (sethlansNode.isActive() && !sethlansNode.isDisabled()) {
+                totalSlotsCount = totalSlotsCount + sethlansNode.getTotalRenderingSlots();
+            }
         }
         return totalSlotsCount;
     }

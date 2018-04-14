@@ -270,7 +270,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                 }
 
                 int rating = executeBlenderBenchmark(benchmarkTask, script);
-                if (rating == 0) {
+                if (rating == -1) {
                     LOG.debug("Benchmark failed.");
                     LOG.debug(benchmarkTask.toString());
                 } else {
@@ -287,7 +287,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                 String script = blenderPythonScriptService.writeBenchmarkPythonScript(benchmarkTask.getComputeType(),
                         benchmarkTask.getBenchmarkDir(), "0", false, "16", 800, 600, 50);
                 int rating = executeBlenderBenchmark(benchmarkTask, script);
-                if (rating == 0) {
+                if (rating == -1) {
                     LOG.debug("Benchmark failed.");
                     LOG.debug(benchmarkTask.toString());
                 } else {
@@ -378,7 +378,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             LOG.error(Throwables.getStackTraceAsString(e));
 
         }
-        return 0;
+        return -1;
     }
 
     @Autowired
