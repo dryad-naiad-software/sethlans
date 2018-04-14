@@ -1,13 +1,6 @@
 
 # Sethlans
-A local distributed render farm for Blender. https://www.blender.org
-
-Sethlans contains the following technologies:
- - Spring Boot 1.5.10
- - Python 3.5.2
- - Java 8
- - Blender 2.78+
- - Angular 5
+A local render farm system for Blender. https://www.blender.org
  
 ### Terminology
 

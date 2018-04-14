@@ -462,6 +462,7 @@
                     <iconFile>icon/sethlans.icns</iconFile>
                     <generateDiskImageFile>true</generateDiskImageFile>
                     <diskImageFile>${project.build.directory}/${binLocation}/${fileName}.dmg</diskImageFile>
+                    <jrePath>jre/macOS/jre1.8.0_162.jre</jrePath>
                 </configuration>
                 <executions>
                     <execution>
