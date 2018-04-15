@@ -30,7 +30,6 @@
         <authors>
             <author name="@{info.company.name}" email="@{info.company.email}"/>
         </authors>
-
     </info>
 
     <guiprefs width="640" height="480" resizable="no">
@@ -66,10 +65,10 @@
         </panel>
         <panel classname="TargetPanel"/>
         <panel classname="PacksPanel"/>
-        <panel classname="ShortcutPanel"/>
         <panel classname="SummaryPanel"/>
         <panel classname="InstallPanel"/>
-        <panel classname="FinishPanel"/>
+        <panel classname="ShortcutPanel"/>
+        <panel classname="SimpleFinishPanel"/>
     </panels>
 
 
@@ -88,17 +87,13 @@
     <resources>
         <res id="LicencePanel.licence" src="license/license.txt"/>
         <res id="shortcutSpec.xml" src="shortcutSpec.xml"/>
+        <!--<res id="Heading.image" src="C:\Users\mestrella\Desktop\izpack5-example-installer-master\installer\src\main\izpack\izpack-logo-medium.png"/>-->
 
     </resources>
     <natives>
-        <native type="izpack" name="ShellLink_x64.dll"/>
-        <native type="3rdparty" name="COIOSHelper_x64.dll" stage="both"/>
+        <native type="izpack" name="ShellLink_x64.dll">
+            <os family="windows"/>
+        </native>
     </natives>
-
-    <listeners>
-        <listener classname="RegistryInstallerListener" stage="install"/>
-        <listener classname="RegistryUninstallerListener" stage="uninstall"/>
-    </listeners>
-
 
 </installation>

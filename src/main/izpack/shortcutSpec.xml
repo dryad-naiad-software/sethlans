@@ -21,17 +21,38 @@
                   xmlns:izpack="http://izpack.org/schema/shortcuts"
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://izpack.org/schema/shortcuts http://izpack.org/schema/5.0/izpack-shortcuts-5.0.xsd">
-    <programGroup defaultName="Sethlans" location="applications"/>
-
+    <skipIfNotSupported/>
+    <defaultCurrentUser/>
+    <programGroup defaultName="$APP_NAME" location="startMenu"/>
+    <shortcut name="$APP_NAME Uninstaller"
+              target="$INSTALL_PATH/Uninstaller/uninstaller.jar"
+              commandLine=""
+              workingDirectory="$INSTALL_PATH/Uninstaller"
+              description=""
+              initialState="normal"
+              programGroup="yes"
+              desktop="no"
+              applications="no"
+              startMenu="no"
+              startup="no"
+              runAsAdministrator="true"
+              iconFile="%SystemRoot%\system32\SHELL32.dll" iconIndex="31">
+        <createForPack name="Sethlans Required Files"/>
+    </shortcut>
     <shortcut
-            name="Sethlans @{info.version}"
+            name="$APP_NAME $APP_VER"
             target="$INSTALL_PATH\bin\Sethlans.exe"
-            desktop="yes"
             iconFile="$INSTALL_PATH\bin\Sethlans.exe"
             iconIndex="0"
+            commandLine=""
+            workingDirectory="$INSTALL_PATH/"
+            description=""
+            initialState="normal"
             programGroup="yes"
-            applications="yes"
-            startMenu="yes">
+            desktop="yes"
+            applications="no"
+            startMenu="no"
+            startup="no">
         <createForPack name="Sethlans"/>
     </shortcut>
 </izpack:shortcuts>
