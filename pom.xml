@@ -615,6 +615,13 @@
                         </configuration>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.izpack</groupId>
+                        <artifactId>izpack-native</artifactId>
+                        <version>5.1.2</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
         </plugins>

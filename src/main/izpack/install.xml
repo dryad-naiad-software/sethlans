@@ -54,9 +54,6 @@
         <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
     </variables>
 
-    <resources>
-        <res id="LicencePanel.licence" src="license/license.txt"/>
-    </resources>
 
     <panels>
         <panel classname="HelloPanel"/>
@@ -69,9 +66,12 @@
         </panel>
         <panel classname="TargetPanel"/>
         <panel classname="PacksPanel"/>
+        <panel classname="ShortcutPanel"/>
+        <panel classname="SummaryPanel"/>
         <panel classname="InstallPanel"/>
         <panel classname="FinishPanel"/>
     </panels>
+
 
     <!--The packs section. We specify here our packs.-->
     <packs>
@@ -80,9 +80,25 @@
             <file src="Sethlans.exe" targetdir="$INSTALL_PATH/bin" override="true"/>
             <pack200/>
         </pack>
-        <pack name="JRE" required="yes" preselected="yes" hidden="true">
+        <pack name="Sethlans Required Files" required="yes" preselected="yes" hidden="true">
             <description>Java 1.8 JRE</description>
             <file src="jre1.8.0_162.zip" targetdir="$INSTALL_PATH/lib" unpack="true"/>
         </pack>
     </packs>
+    <resources>
+        <res id="LicencePanel.licence" src="license/license.txt"/>
+        <res id="shortcutSpec.xml" src="shortcutSpec.xml"/>
+
+    </resources>
+    <natives>
+        <native type="izpack" name="ShellLink_x64.dll"/>
+        <native type="3rdparty" name="COIOSHelper_x64.dll" stage="both"/>
+    </natives>
+
+    <listeners>
+        <listener classname="RegistryInstallerListener" stage="install"/>
+        <listener classname="RegistryUninstallerListener" stage="uninstall"/>
+    </listeners>
+
+
 </installation>
