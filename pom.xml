@@ -516,7 +516,7 @@
                             <!-- base for relative paths in izpack descriptor -->
                             <baseDir>${izpack.staging}</baseDir>
                             <installFile>${izpack.staging}/install.xml</installFile>
-                            <output>${project.build.directory}/${binLocation}/${fileName}-win-installer.jar</output>
+                            <output>${project.build.directory}/staging/${fileName}-win-installer.jar</output>
                         </configuration>
                     </execution>
                 </executions>
@@ -535,7 +535,7 @@
                         <configuration>
                             <headerType>gui</headerType>
                             <jar>
-                                ${project.build.directory}/${binLocation}/${fileName}-win-installer.jar
+                                ${project.build.directory}/staging/${fileName}-win-installer.jar
                             </jar>
                             <outfile>
                                 ${project.build.directory}/${binLocation}/${fileName}.exe
