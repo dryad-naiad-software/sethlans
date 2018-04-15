@@ -531,13 +531,53 @@
                             </classPath>
                             <icon>${project.basedir}/src/main/resources/icon/sethlans.ico</icon>
                             <jre>
-                                <path>../jre1.8.0_162</path>
+                                <path>../lib/jre1.8.0_162</path>
                                 <minVersion>1.8.0</minVersion>
                                 <jdkPreference>preferJre</jdkPreference>
                                 <bundledJre64Bit>true</bundledJre64Bit>
                                 <runtimeBits>64</runtimeBits>
+                            </jre>
+                            <versionInfo>
+                                <productName>Sethlans</productName>
+                                <fileVersion>${project.version}.0</fileVersion>
+                                <txtFileVersion>${project.version}.0</txtFileVersion>
+                                <fileDescription>${project.name}</fileDescription>
+                                <copyright>2017 ${project.organization.name}</copyright>
+                                <productVersion>${project.version}.0</productVersion>
+                                <txtProductVersion>${project.version}</txtProductVersion>
+                                <companyName>${project.organization.name}</companyName>
+                                <internalName>${project.name}</internalName>
+                                <originalFilename>${project.name}.exe</originalFilename>
+                            </versionInfo>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>installer</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                        <configuration>
+                            <headerType>gui</headerType>
+                            <jar>
+                                ${izpack.staging}/${fileName}-win-installer.jar
+                            </jar>
+                            <manifest>${izpack.staging}/${fileName}.manifest</manifest>
+
+                            <outfile>
+                                ${project.build.directory}/${binLocation}/${fileName}.exe
+                            </outfile>
+                            <errTitle>Sethlans</errTitle>
+                            <downloadUrl>https://www.java.com</downloadUrl>
+                            <classPath>
+                                <mainClass>com.izforge.izpack.installer.bootstrap.Installer</mainClass>
+                            </classPath>
+                            <icon>${izpack.staging}/icon/sethlans.ico</icon>
+                            <jre>
                                 <minVersion>1.8.0</minVersion>
                                 <jdkPreference>preferJre</jdkPreference>
+                                <runtimeBits>64</runtimeBits>
+
                             </jre>
                             <versionInfo>
                                 <productName>Sethlans</productName>

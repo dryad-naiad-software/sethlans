@@ -17,25 +17,11 @@
  *
  */
 
-stage('compile') {
-    node {
-        sh "rm -rf *"
-        checkout scm
-        sh 'mvn clean compile'
-    }
-    if(currentBuild.currentResult == 'UNSTABLE' || currentBuild.currentResult == 'FAILURE') {
-        emailext(body: '${DEFAULT_CONTENT}', mimeType: 'text/html',
-                replyTo: '$DEFAULT_REPLYTO', subject: '${DEFAULT_SUBJECT}',
-                to: emailextrecipients([[$class: 'CulpritsRecipientProvider'],
-                                        [$class: 'RequesterRecipientProvider']]))
-    }
-}
-
-stage('publish') {
+stage('build') {
     node('package') {
         sh "rm -rf *"
         checkout scm
-        sh 'mvn clean package -DskipTests'
+        sh 'mvn clean install'
         archiveArtifacts artifacts: '**/target/binaries/*.jar, **/target/binaries/*.exe, **/target/binaries/*.dmg', fingerprint: true
     }
     emailext(body: '${DEFAULT_CONTENT}', mimeType: 'text/html',

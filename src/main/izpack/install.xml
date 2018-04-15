@@ -82,7 +82,7 @@
         </pack>
         <pack name="JRE" required="yes" preselected="yes" hidden="true">
             <description>Java 1.8 JRE</description>
-            <file src="jre1.8.0_162.zip" targetdir="$INSTALL_PATH/" unpack="true"/>
+            <file src="jre1.8.0_162.zip" targetdir="$INSTALL_PATH/lib" unpack="true"/>
         </pack>
     </packs>
 </installation>
