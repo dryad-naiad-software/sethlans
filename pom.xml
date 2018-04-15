@@ -454,30 +454,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>create-staging-area</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <copy todir="${izpack.staging}">
-                                    <fileset dir="${basedir}/src/main/izpack"/>
-                                    <fileset dir="${project.build.directory}/${binLocation}">
-                                        <include name="*.jar"/>
-                                    </fileset>
-                                </copy>
-                                <copy file="${basedir}/src/main/resources/sethlans.manifest"
-                                      tofile="${izpack.staging}/${fileName}.manifest"/>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+
 
             <!-- Creates an OSX app Bundle -->
             <plugin>
@@ -505,20 +482,25 @@
             </plugin>
             <!-- Creates Windows executable file -->
             <plugin>
-                <groupId>org.codehaus.izpack</groupId>
-                <artifactId>izpack-maven-plugin</artifactId>
-                <version>5.1.2</version>
+                <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>create-staging-area</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>izpack</goal>
+                            <goal>run</goal>
                         </goals>
                         <configuration>
-                            <!-- base for relative paths in izpack descriptor -->
-                            <baseDir>${izpack.staging}</baseDir>
-                            <installFile>${izpack.staging}/install.xml</installFile>
-                            <output>${project.build.directory}/staging/${fileName}-win-installer.jar</output>
+                            <target>
+                                <copy todir="${izpack.staging}">
+                                    <fileset dir="${basedir}/src/main/izpack"/>
+                                    <fileset dir="${basedir}/jre/win64">
+                                        <include name="*.zip"/>
+                                    </fileset>
+                                </copy>
+                                <copy file="${basedir}/src/main/resources/sethlans.manifest"
+                                      tofile="${izpack.staging}/${fileName}.manifest"/>
+                            </target>
                         </configuration>
                     </execution>
                 </executions>
@@ -529,7 +511,7 @@
                 <version>1.7.21</version>
                 <executions>
                     <execution>
-                        <id>l4j-gui</id>
+                        <id>sethlans-main</id>
                         <phase>package</phase>
                         <goals>
                             <goal>launch4j</goal>
@@ -537,20 +519,23 @@
                         <configuration>
                             <headerType>gui</headerType>
                             <jar>
-                                ${project.build.directory}/staging/${fileName}-win-installer.jar
+                                ${project.build.directory}/${binLocation}/${fileName}.jar
                             </jar>
                             <outfile>
-                                ${project.build.directory}/${binLocation}/${fileName}.exe
+                                ${izpack.staging}/Sethlans.exe
                             </outfile>
-                            <manifest>${izpack.staging}/${fileName}.manifest</manifest>
-
                             <errTitle>Sethlans</errTitle>
-                            <downloadUrl>http://java.com/download</downloadUrl>
+                            <downloadUrl>https://www.java.com</downloadUrl>
                             <classPath>
-                                <mainClass>com.izforge.izpack.installer.bootstrap.Installer</mainClass>
+                                <mainClass>${sLauncherClass}</mainClass>
                             </classPath>
-                            <icon>src/main/izpack/icon/sethlans.ico</icon>
+                            <icon>${project.basedir}/src/main/resources/icon/sethlans.ico</icon>
                             <jre>
+                                <path>../jre1.8.0_162</path>
+                                <minVersion>1.8.0</minVersion>
+                                <jdkPreference>preferJre</jdkPreference>
+                                <bundledJre64Bit>true</bundledJre64Bit>
+                                <runtimeBits>64</runtimeBits>
                                 <minVersion>1.8.0</minVersion>
                                 <jdkPreference>preferJre</jdkPreference>
                             </jre>
@@ -571,6 +556,26 @@
                 </executions>
             </plugin>
 
+
+            <plugin>
+                <groupId>org.codehaus.izpack</groupId>
+                <artifactId>izpack-maven-plugin</artifactId>
+                <version>5.1.2</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>izpack</goal>
+                        </goals>
+                        <configuration>
+                            <!-- base for relative paths in izpack descriptor -->
+                            <baseDir>${izpack.staging}</baseDir>
+                            <installFile>${izpack.staging}/install.xml</installFile>
+                            <output>${project.build.directory}/staging/${fileName}-win-installer.jar</output>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
         </plugins>
     </build>

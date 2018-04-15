@@ -59,9 +59,7 @@
     </resources>
 
     <panels>
-        <panel classname="HelloPanel">
-            <help iso3="eng" src="welcome.html"/>
-        </panel>
+        <panel classname="HelloPanel"/>
 
         <panel classname="LicencePanel">
             <configuration>
@@ -79,8 +77,12 @@
     <packs>
         <pack name="Sethlans" required="yes" preselected="yes" hidden="false">
             <description>Sethlans @{info.version}</description>
-            <file src="@{fileName}.jar" targetdir="$INSTALL_PATH/" override="true"/>
+            <file src="Sethlans.exe" targetdir="$INSTALL_PATH/bin" override="true"/>
             <pack200/>
+        </pack>
+        <pack name="JRE" required="yes" preselected="yes" hidden="true">
+            <description>Java 1.8 JRE</description>
+            <file src="jre1.8.0_162.zip" targetdir="$INSTALL_PATH/" unpack="true"/>
         </pack>
     </packs>
 </installation>
