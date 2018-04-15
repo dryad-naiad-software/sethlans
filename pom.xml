@@ -471,6 +471,8 @@
                                         <include name="*.jar"/>
                                     </fileset>
                                 </copy>
+                                <copy file="${basedir}/src/main/resources/sethlans.manifest"
+                                      tofile="${izpack.staging}/${fileName}.manifest"/>
                             </target>
                         </configuration>
                     </execution>
@@ -540,6 +542,8 @@
                             <outfile>
                                 ${project.build.directory}/${binLocation}/${fileName}.exe
                             </outfile>
+                            <manifest>${izpack.staging}/${fileName}.manifest</manifest>
+
                             <errTitle>Sethlans</errTitle>
                             <downloadUrl>http://java.com/download</downloadUrl>
                             <classPath>

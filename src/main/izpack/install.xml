@@ -33,12 +33,16 @@
 
     </info>
 
-    <guiprefs width="800" height="600" resizable="no">
-        <laf name="substance">
-            <os family="windows"/>
-            <param name="variant" value="mist-silver"/>
-        </laf>
+    <guiprefs width="640" height="480" resizable="no">
         <modifier key="useHeadingPanel" value="yes"/>
+        <modifier key="useButtonIcons" value="no"/>
+        <modifier key="useLabelIcons" value="no"/>
+        <modifier key="headingImageOnLeft" value="yes"/>
+        <modifier key="headingLineCount" value="1"/>
+        <modifier key="headingFontSize" value="1.5"/>
+        <modifier key="headingBackgroundColor" value="0x00ffffff"/>
+        <modifier key="headingPanelCounter" value="text"/>
+        <modifier key="headingPanelCounterPos" value="inHeading"/>
     </guiprefs>
 
     <locale>
@@ -55,6 +59,10 @@
     </resources>
 
     <panels>
+        <panel classname="HelloPanel">
+            <help iso3="eng" src="welcome.html"/>
+        </panel>
+
         <panel classname="LicencePanel">
             <configuration>
                 <param name="console-text-paging" value="true"/>
