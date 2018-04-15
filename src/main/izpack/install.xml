@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
+<installation version="5.0">
+    <variables>
+        <variable name="RESOURCEROOT" value="src/main/izpack"/>
+    </variables>
+
+    <info>
+        <appname>@{info.appName}</appname>
+        <appversion>@{info.version}</appversion>
+        <authors>
+            <author name="@{info.company.name}" email="@{info.company.email}"/>
+        </authors>
+
+    </info>
+
+    <guiprefs width="800" height="600" resizable="no">
+        <laf name="substance">
+            <os family="windows"/>
+            <param name="variant" value="mist-silver"/>
+        </laf>
+        <modifier key="useHeadingPanel" value="yes"/>
+    </guiprefs>
+
+    <locale>
+        <langpack iso3="eng"/>
+    </locale>
+
+    <variables>
+        <variable name="InstallerFrame.logfilePath" value="$INSTALL_PATH/Uninstaller/install.log"/>
+        <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
+    </variables>
+
+    <resources>
+        <res id="LicencePanel.licence" src="license/license.txt"/>
+    </resources>
+
+    <panels>
+        <panel classname="LicencePanel">
+            <configuration>
+                <param name="console-text-paging" value="true"/>
+                <param name="console-text-wordwrap" value="false"/>
+            </configuration>
+        </panel>
+        <panel classname="TargetPanel"/>
+        <panel classname="PacksPanel"/>
+        <panel classname="InstallPanel"/>
+        <panel classname="FinishPanel"/>
+    </panels>
+
+    <!--The packs section. We specify here our packs.-->
+    <packs>
+        <pack name="Sethlans" required="yes" preselected="yes" hidden="false">
+            <description>Sethlans @{info.version}</description>
+            <file src="@{fileName}.jar" targetdir="$INSTALL_PATH/" override="true"/>
+            <pack200/>
+        </pack>
+    </packs>
+</installation>

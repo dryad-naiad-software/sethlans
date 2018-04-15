@@ -42,6 +42,10 @@
     </organization>
 
     <properties>
+        <info.appName>${project.name}</info.appName>
+        <info.company.name>${project.organization.name}</info.company.name>
+        <info.company.email>support@dryadandnaiad.com</info.company.email>
+        <info.version>${project.version}</info.version>
         <sLauncherClass>org.springframework.boot.loader.JarLauncher</sLauncherClass>
         <fileName>${project.artifactId}-${project.version}.${git.closest.tag.commit.count}</fileName>
         <timestamp>${maven.build.timestamp}</timestamp>
@@ -52,6 +56,8 @@
         <binLocation>binaries</binLocation>
         <node.version>v9.8.0</node.version>
         <npm.version>5.6.0</npm.version>
+        <izpack.staging>${project.build.directory}/staging</izpack.staging>
+
 
     </properties>
 
@@ -448,6 +454,28 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>create-staging-area</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <copy todir="${izpack.staging}">
+                                    <fileset dir="${basedir}/src/main/izpack"/>
+                                    <fileset dir="${project.build.directory}/${binLocation}">
+                                        <include name="*.jar"/>
+                                    </fileset>
+                                </copy>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
             <!-- Creates an OSX app Bundle -->
             <plugin>
@@ -475,6 +503,25 @@
             </plugin>
             <!-- Creates Windows executable file -->
             <plugin>
+                <groupId>org.codehaus.izpack</groupId>
+                <artifactId>izpack-maven-plugin</artifactId>
+                <version>5.1.2</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>izpack</goal>
+                        </goals>
+                        <configuration>
+                            <!-- base for relative paths in izpack descriptor -->
+                            <baseDir>${izpack.staging}</baseDir>
+                            <installFile>${izpack.staging}/install.xml</installFile>
+                            <output>${project.build.directory}/${binLocation}/${fileName}-win-installer.jar</output>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>com.akathist.maven.plugins.launch4j</groupId>
                 <artifactId>launch4j-maven-plugin</artifactId>
                 <version>1.7.21</version>
@@ -488,7 +535,7 @@
                         <configuration>
                             <headerType>gui</headerType>
                             <jar>
-                                ${project.build.directory}/${binLocation}/${fileName}.jar
+                                ${project.build.directory}/${binLocation}/${fileName}-win-installer.jar
                             </jar>
                             <outfile>
                                 ${project.build.directory}/${binLocation}/${fileName}.exe
@@ -496,9 +543,9 @@
                             <errTitle>Sethlans</errTitle>
                             <downloadUrl>http://java.com/download</downloadUrl>
                             <classPath>
-                                <mainClass>${sLauncherClass}</mainClass>
+                                <mainClass>com.izforge.izpack.installer.bootstrap.Installer</mainClass>
                             </classPath>
-                            <icon>${project.basedir}/src/main/resources/icon/sethlans.ico</icon>
+                            <icon>src/main/izpack/icon/sethlans.ico</icon>
                             <jre>
                                 <minVersion>1.8.0</minVersion>
                                 <jdkPreference>preferJre</jdkPreference>
@@ -519,6 +566,8 @@
                     </execution>
                 </executions>
             </plugin>
+
+
         </plugins>
     </build>
 </project>
