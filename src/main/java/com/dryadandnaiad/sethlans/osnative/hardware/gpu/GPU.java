@@ -164,9 +164,9 @@ public class GPU {
                 float openCLVersion = Float.parseFloat(openCLVersionString.substring(openCLVersionString.toLowerCase().lastIndexOf("c") + 1));
                 deviceID = "OPENCL_" + i;
                 model = deviceVendor + " " + openCLDeviceId;
-                // TODO add intel to the exclusion
 
                 if (!deviceVendor.toLowerCase().contains("nvidia") || !deviceVendor.toLowerCase().contains("intel") && openCLVersion >= 2.0) {
+                    LOG.debug("Device Vendor " + deviceVendor);
                     LOG.debug("One OpenCL device found, adding to list");
                     LOG.debug("Open CL version " + openCLVersion);
                     devices.add(new GPUDevice(model, memory, deviceID, true, false));
