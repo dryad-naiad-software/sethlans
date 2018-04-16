@@ -97,7 +97,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                     }
 
                 }
-                Thread.sleep(5000);
+                Thread.sleep(10000);
                 if (count == cycle) {
                     count = 0;
                 } else {
@@ -199,6 +199,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
             if (blenderProject.getProjectStatus() == ProjectStatus.Pending) {
                 blenderProject.setProjectStatus(ProjectStatus.Started);
+                blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
                 blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             }
             blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);

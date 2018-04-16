@@ -166,7 +166,7 @@ public class GPU {
                 model = deviceVendor + " " + openCLDeviceId;
                 // TODO add intel to the exclusion
 
-                if (!deviceVendor.toLowerCase().contains("nvidia") && openCLVersion > 1.2) {
+                if (!deviceVendor.toLowerCase().contains("nvidia") || !deviceVendor.toLowerCase().contains("intel") && openCLVersion >= 2.0) {
                     LOG.debug("One OpenCL device found, adding to list");
                     LOG.debug("Open CL version " + openCLVersion);
                     devices.add(new GPUDevice(model, memory, deviceID, true, false));

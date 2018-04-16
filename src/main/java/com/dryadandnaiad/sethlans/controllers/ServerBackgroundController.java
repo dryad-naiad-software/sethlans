@@ -54,14 +54,14 @@ public class ServerBackgroundController {
             if (sethlansNode.isBenchmarkComplete()) {
                 LOG.debug("Received Idle Notification from " + sethlansNode.getHostname());
                 if (sethlansNode.getComputeType() != ComputeType.CPU_GPU) {
-                    if (compute_type == ComputeType.CPU) {
+                    if (compute_type == ComputeType.CPU && sethlansNode.isCpuSlotInUse()) {
                         LOG.debug("CPU is idle, updating database.");
                         sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
                         sethlansNode.setCpuSlotInUse(false);
                         sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid).getVersion());
                         sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                     }
-                    if (compute_type == ComputeType.GPU) {
+                    if (compute_type == ComputeType.GPU && sethlansNode.isGpuSlotInUse()) {
                         LOG.debug("GPU is idle, updating database.");
 
                         sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
@@ -72,28 +72,33 @@ public class ServerBackgroundController {
                 } else {
                     switch (compute_type) {
                         case CPU_GPU:
-                            LOG.debug("Both slots are idle, updating database.");
-                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                            sethlansNode.setCpuSlotInUse(false);
-                            sethlansNode.setGpuSlotInUse(false);
-                            sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid).getVersion());
-                            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                            if (sethlansNode.isCpuSlotInUse() && sethlansNode.isGpuSlotInUse()) {
+                                LOG.debug("Both slots are idle, updating database.");
+                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                                sethlansNode.setCpuSlotInUse(false);
+                                sethlansNode.setGpuSlotInUse(false);
+                                sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid).getVersion());
+                                sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                            }
                             break;
                         case CPU:
-                            LOG.debug("CPU is idle, updating database.");
+                            if (sethlansNode.isCpuSlotInUse()) {
+                                LOG.debug("CPU is idle, updating database.");
+                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+                                sethlansNode.setCpuSlotInUse(false);
+                                sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid).getVersion());
+                                sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                            }
 
-                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
-                            sethlansNode.setCpuSlotInUse(false);
-                            sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid).getVersion());
-                            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                             break;
                         case GPU:
+                            if (sethlansNode.isGpuSlotInUse()) {
+                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+                                sethlansNode.setGpuSlotInUse(false);
+                                sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid).getVersion());
+                                sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                            }
                             LOG.debug("GPU is idle, updating database.");
-
-                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
-                            sethlansNode.setGpuSlotInUse(false);
-                            sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid).getVersion());
-                            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                             break;
                     }
 

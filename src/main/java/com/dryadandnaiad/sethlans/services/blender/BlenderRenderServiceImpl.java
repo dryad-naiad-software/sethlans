@@ -326,7 +326,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                 int seconds = Integer.parseInt(timeToConvert[1]);
                 int timeInSeconds = seconds + 60 * minutes;
                 long timeInMilliseconds = TimeUnit.MILLISECONDS.convert(timeInSeconds, TimeUnit.SECONDS);
-                LOG.debug("Benchmark time in milliseconds: " + timeInMilliseconds);
+                LOG.debug("Render time in milliseconds: " + timeInMilliseconds);
                 return timeInMilliseconds;
             }
 
