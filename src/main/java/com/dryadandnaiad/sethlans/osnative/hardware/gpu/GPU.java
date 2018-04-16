@@ -165,7 +165,7 @@ public class GPU {
                 deviceID = "OPENCL_" + i;
                 model = deviceVendor + " " + openCLDeviceId;
 
-                if (!deviceVendor.toLowerCase().contains("nvidia") || !deviceVendor.toLowerCase().contains("intel") && openCLVersion >= 2.0) {
+                if (!deviceVendor.toLowerCase().contains("nvidia") || !deviceVendor.toLowerCase().contains("intel") && openCLVersion < 2.0) {
                     LOG.debug("Device Vendor " + deviceVendor);
                     LOG.debug("One OpenCL device found, adding to list");
                     LOG.debug("Open CL version " + openCLVersion);
