@@ -63,6 +63,7 @@ public class NodeBackgroundComponent {
     @PostConstruct
     public void startNodeStatusUpdates() {
         nodeSendUpdateService.sendUpdateOnStart();
+        nodeSendUpdateService.idleNodeNotification();
     }
 
     @PostConstruct

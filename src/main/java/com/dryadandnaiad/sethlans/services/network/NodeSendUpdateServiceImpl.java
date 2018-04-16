@@ -65,57 +65,74 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
     @Override
     @Async
     public void idleNodeNotification() {
-        int counter = 0;
-        ComputeType computeType = ComputeType.valueOf(SethlansUtils.getProperty(SethlansConfigKeys.COMPUTE_METHOD.toString()));
-        int slots;
-        if (computeType.equals(ComputeType.CPU_GPU)) {
-            slots = 2;
-        } else {
-            slots = 1;
-        }
-        while (true) {
-            try {
-                Thread.sleep(1000);
-                if (blenderRenderTaskDatabaseService.listAll().size() == 0) {
-                    counter++;
-                }
-                if (slots == 2 && blenderRenderTaskDatabaseService.listAll().size() == 1) {
-                    counter++;
-                }
-                if (slots == 2 && blenderRenderTaskDatabaseService.listAll().size() == 2) {
-                    counter = 0;
-                }
-                if (slots == 1 && blenderRenderTaskDatabaseService.listAll().size() == 1) {
-                    counter = 0;
-                }
-                if (counter > 59) {
-                    if (slots == 1) {
-                        // connect to server and let it know that all slots are free
-                    }
-                    if (slots == 2) {
+        try {
+            Thread.sleep(15000);
+            int counter = 0;
+            ComputeType computeType = ComputeType.valueOf(SethlansUtils.getProperty(SethlansConfigKeys.COMPUTE_METHOD.toString()));
+            int slots;
+            if (computeType.equals(ComputeType.CPU_GPU)) {
+                slots = 2;
+            } else {
+                slots = 1;
+            }
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                    if (sethlansServerDatabaseService.listAll().size() > 0) {
                         if (blenderRenderTaskDatabaseService.listAll().size() == 0) {
-                            // connect to server and let it know that all slots are free
-                        } else {
-                            for (BlenderRenderTask blenderRenderTask : blenderRenderTaskDatabaseService.listAll()) {
-                                if (blenderRenderTask.getComputeType().equals(ComputeType.CPU)) {
-                                    // GPU is free
+                            counter++;
+                        }
+                        if (slots == 2 && blenderRenderTaskDatabaseService.listAll().size() == 1) {
+                            counter++;
+                        }
+                        if (slots == 2 && blenderRenderTaskDatabaseService.listAll().size() == 2) {
+                            counter = 0;
+                        }
+                        if (slots == 1 && blenderRenderTaskDatabaseService.listAll().size() == 1) {
+                            counter = 0;
+                        }
+                        if (counter > 59) {
+                            LOG.debug("Informing server of idle slot(s)");
+                            if (slots == 1) {
+                                sendIdleUpdate(computeType);
+                            }
+                            if (slots == 2) {
+                                if (blenderRenderTaskDatabaseService.listAll().size() == 0) {
+                                    sendIdleUpdate(computeType);
                                 } else {
-                                    // CPU is free
+                                    for (BlenderRenderTask blenderRenderTask : blenderRenderTaskDatabaseService.listAll()) {
+                                        if (blenderRenderTask.getComputeType().equals(ComputeType.CPU)) {
+                                            sendIdleUpdate(ComputeType.GPU);
+                                        } else {
+                                            sendIdleUpdate(ComputeType.CPU);
+                                        }
+                                    }
                                 }
                             }
+                            counter = 0;
                         }
                     }
 
-
+                } catch (InterruptedException e) {
+                    LOG.debug("Shutting Down Node Idle Notification Service");
+                    break;
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                break;
+
+
             }
-
-
+        } catch (InterruptedException e) {
+            LOG.debug("Shutting Down Node Idle Notification Service");
         }
 
+
+    }
+
+    private void sendIdleUpdate(ComputeType computeType) {
+        for (SethlansServer sethlansServer : sethlansServerDatabaseService.listAll()) {
+            String url = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/update/node_idle_notification";
+            String param = "connection_uuid=" + sethlansServer.getConnection_uuid() + "&compute_type=" + computeType;
+            sethlansAPIConnectionService.sendToRemotePOST(url, param);
+        }
     }
 
 
