@@ -68,6 +68,8 @@ public class NodeQueryServiceImpl implements NodeQueryService {
                             sethlansNode.setCpuSlotInUse(false);
                             LOG.debug(sethlansNode.getHostname() + " is back online.");
                             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                        } else {
+
                         }
                     }
 

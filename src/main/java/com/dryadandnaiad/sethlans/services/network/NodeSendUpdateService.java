@@ -32,5 +32,6 @@ public interface NodeSendUpdateService {
     @Async
     void sendUpdateOnStart();
 
-    void nodeUpdatePullRequest();
+    @Async
+    void idleNodeNotification();
 }

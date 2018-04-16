@@ -19,10 +19,13 @@
 
 package com.dryadandnaiad.sethlans.services.network;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
-import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
+import com.dryadandnaiad.sethlans.services.database.BlenderRenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +44,7 @@ import java.util.List;
 public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
-    private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
+    private BlenderRenderTaskDatabaseService blenderRenderTaskDatabaseService;
     private static final Logger LOG = LoggerFactory.getLogger(NodeSendUpdateServiceImpl.class);
 
 
@@ -54,32 +57,67 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
         } catch (InterruptedException e) {
             LOG.debug("Shutting Down Node Status Update Service");
         }
-
     }
 
-
+    /**
+     * Sends an update if the node has been idle too long
+     */
     @Override
-    public void nodeUpdatePullRequest() {
-        List<BlenderBenchmarkTask> blenderBenchmarkTaskList = blenderBenchmarkTaskDatabaseService.listAll();
-        if (!blenderBenchmarkTaskList.isEmpty()) {
-            for (BlenderBenchmarkTask blenderBenchmarkTask : blenderBenchmarkTaskList) {
-                if (blenderBenchmarkTask.isInProgress()) {
-                    LOG.debug("A benchmark is in progress, node update requests on hold for 10 minutes.");
-                    try {
-                        Thread.sleep(600000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    sendRequest();
-                }
-            }
+    @Async
+    public void idleNodeNotification() {
+        int counter = 0;
+        ComputeType computeType = ComputeType.valueOf(SethlansUtils.getProperty(SethlansConfigKeys.COMPUTE_METHOD.toString()));
+        int slots;
+        if (computeType.equals(ComputeType.CPU_GPU)) {
+            slots = 2;
         } else {
-            sendRequest();
+            slots = 1;
+        }
+        while (true) {
+            try {
+                Thread.sleep(1000);
+                if (blenderRenderTaskDatabaseService.listAll().size() == 0) {
+                    counter++;
+                }
+                if (slots == 2 && blenderRenderTaskDatabaseService.listAll().size() == 1) {
+                    counter++;
+                }
+                if (slots == 2 && blenderRenderTaskDatabaseService.listAll().size() == 2) {
+                    counter = 0;
+                }
+                if (slots == 1 && blenderRenderTaskDatabaseService.listAll().size() == 1) {
+                    counter = 0;
+                }
+                if (counter > 59) {
+                    if (slots == 1) {
+                        // connect to server and let it know that all slots are free
+                    }
+                    if (slots == 2) {
+                        if (blenderRenderTaskDatabaseService.listAll().size() == 0) {
+                            // connect to server and let it know that all slots are free
+                        } else {
+                            for (BlenderRenderTask blenderRenderTask : blenderRenderTaskDatabaseService.listAll()) {
+                                if (blenderRenderTask.getComputeType().equals(ComputeType.CPU)) {
+                                    // GPU is free
+                                } else {
+                                    // CPU is free
+                                }
+                            }
+                        }
+                    }
+
+
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                break;
+            }
+
+
         }
 
-
     }
+
 
     private void sendRequest() {
         List<SethlansServer> sethlansServers = sethlansServerDatabaseService.listAll();
@@ -112,7 +150,7 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
     }
 
     @Autowired
-    public void setBlenderBenchmarkTaskDatabaseService(BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService) {
-        this.blenderBenchmarkTaskDatabaseService = blenderBenchmarkTaskDatabaseService;
+    public void setBlenderRenderTaskDatabaseService(BlenderRenderTaskDatabaseService blenderRenderTaskDatabaseService) {
+        this.blenderRenderTaskDatabaseService = blenderRenderTaskDatabaseService;
     }
 }
