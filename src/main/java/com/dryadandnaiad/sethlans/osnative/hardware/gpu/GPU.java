@@ -164,9 +164,12 @@ public class GPU {
                 float openCLVersion = Float.parseFloat(openCLVersionString.substring(openCLVersionString.toLowerCase().lastIndexOf("c") + 1));
                 deviceID = "OPENCL_" + i;
                 model = deviceVendor + " " + openCLDeviceId;
+                boolean invalidModel = false;
+                if (deviceVendor.toLowerCase().contains("nvidia") || deviceVendor.toLowerCase().contains("intel")) {
+                    invalidModel = true;
+                }
 
-                if (!deviceVendor.toLowerCase().contains("nvidia") || !deviceVendor.toLowerCase().contains("intel") || openCLVersion >= 2.0) {
-                    LOG.debug("Device Vendor " + deviceVendor);
+                if (!invalidModel && openCLVersion > 1.2) {
                     LOG.debug("One OpenCL device found, adding to list");
                     LOG.debug("Open CL version " + openCLVersion);
                     devices.add(new GPUDevice(model, memory, deviceID, true, false));
