@@ -17,17 +17,12 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
-<izpack:shortcuts version="5.0"
-                  xmlns:izpack="http://izpack.org/schema/shortcuts"
-                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                  xsi:schemaLocation="http://izpack.org/schema/shortcuts http://izpack.org/schema/5.0/izpack-shortcuts-5.0.xsd">
-    <skipIfNotSupported/>
+<shortcuts>
     <defaultCurrentUser/>
     <programGroup defaultName="$APP_NAME" location="startMenu"/>
     <shortcut name="$APP_NAME Uninstaller"
-              target="$INSTALL_PATH/Uninstaller/uninstaller.jar"
-              commandLine=""
-              workingDirectory="$INSTALL_PATH/Uninstaller"
+              target="javaw.exe"
+              commandLine="-jar &quot;$INSTALL_PATH/Uninstaller/uninstaller.jar&quot;"
               description=""
               initialState="normal"
               programGroup="yes"
@@ -55,4 +50,4 @@
             startup="no">
         <createForPack name="Sethlans"/>
     </shortcut>
-</izpack:shortcuts>
+</shortcuts>
