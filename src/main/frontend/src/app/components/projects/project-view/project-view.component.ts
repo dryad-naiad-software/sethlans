@@ -38,6 +38,7 @@ export class ProjectViewComponent implements OnInit {
   projectStatus: ProjectStatus;
   currentThumbnail: any;
   thumbnailStatus: boolean;
+  totalRenderTime: string;
 
 
 
@@ -51,12 +52,14 @@ export class ProjectViewComponent implements OnInit {
       this.currentProgressCheck();
       this.currentStatusCheck();
       this.getThumbnailStatus();
+      this.getTotalRenderTime();
     });
     let timer = Observable.timer(5000, 5000);
     timer.subscribe(() => {
       this.currentProgressCheck();
       this.currentStatusCheck();
       this.getThumbnailStatus();
+      this.getTotalRenderTime();
     });
 
   }
@@ -91,6 +94,12 @@ export class ProjectViewComponent implements OnInit {
       if (thumbnailStatus == true) {
         this.currentThumbnail = '/api/project_ui/thumbnail/' + this.id + '/';
       }
+    })
+  }
+
+  getTotalRenderTime() {
+    this.http.get('/api/project_ui/render_time/' + this.id + '/', {responseType: 'text'}).subscribe((renderTime: string) => {
+      this.totalRenderTime = renderTime;
     })
   }
 

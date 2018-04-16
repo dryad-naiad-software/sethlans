@@ -231,6 +231,24 @@ public class ProjectController {
         return null;
     }
 
+    @GetMapping(value = "/api/project_ui/render_time/{id}")
+    public String renderTime(@PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        BlenderProject blenderProject;
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            blenderProject = blenderProjectDatabaseService.getById(id);
+            if (blenderProject != null) {
+                return convertBlenderProjectToProjectInfo(blenderProject).getTotalRenderTime();
+            }
+        } else {
+            blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
+            if (blenderProject != null) {
+                return convertBlenderProjectToProjectInfo(blenderProject).getTotalRenderTime();
+            }
+        }
+        return null;
+    }
+
     @GetMapping(value = "/api/project_ui/progress/{id}")
     public int currentProgress(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
