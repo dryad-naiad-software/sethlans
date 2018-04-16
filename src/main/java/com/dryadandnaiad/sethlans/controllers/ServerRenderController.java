@@ -149,6 +149,7 @@ public class ServerRenderController {
     @PostMapping(value = "/api/project/response")
     public void projectResponse(@RequestParam String connection_uuid,
                                 @RequestParam String project_uuid,
+                                @RequestParam ComputeType compute_type,
                                 @RequestParam MultipartFile part,
                                 @RequestParam int part_number,
                                 @RequestParam int frame_number, @RequestParam long render_time) {
@@ -166,6 +167,28 @@ public class ServerRenderController {
                     blenderProcessQueueItem.setFrame_number(frame_number);
                     blenderProcessQueueItem.setRenderTime(render_time);
                     blenderProcessRenderQueueService.addQueueItem(blenderProcessQueueItem);
+                    SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderProcessQueueItem.getConnection_uuid());
+                    switch (compute_type) {
+                        case CPU:
+                            sethlansNode.setCpuSlotInUse(false);
+                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+                            if (sethlansNode.getAvailableRenderingSlots() > sethlansNode.getTotalRenderingSlots()) {
+                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                            }
+                            break;
+                        case GPU:
+                            sethlansNode.setGpuSlotInUse(false);
+                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+                            if (sethlansNode.getAvailableRenderingSlots() > sethlansNode.getTotalRenderingSlots()) {
+                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                            }
+                            break;
+                        default:
+                            LOG.debug("Invalid compute type specified for rendering.");
+                    }
+                    LOG.debug(sethlansNode.getHostname() + " has " + sethlansNode.getAvailableRenderingSlots() + " available rendering slot(s)");
+                    sethlansNode.setVersion(sethlansNodeDatabaseService.getById(sethlansNode.getId()).getVersion());
+                    sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (SerialException e) {

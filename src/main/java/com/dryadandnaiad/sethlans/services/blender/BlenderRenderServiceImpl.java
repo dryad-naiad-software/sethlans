@@ -190,6 +190,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         params.put("connection_uuid", blenderRenderTask.getConnection_uuid());
         params.put("project_uuid", blenderRenderTask.getProject_uuid());
         params.put("part_number", Integer.toString(blenderRenderTask.getBlenderFramePart().getPartNumber()));
+        params.put("compute_type", blenderRenderTask.getComputeType().toString());
         params.put("frame_number", Integer.toString(blenderRenderTask.getBlenderFramePart().getFrameNumber()));
         params.put("render_time", Long.toString(blenderRenderTask.getRenderTime()));
         String renderedFileName = String.format("%04d", blenderRenderTask.getBlenderFramePart().getFrameNumber());

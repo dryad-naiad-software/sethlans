@@ -23,7 +23,6 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
-import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.enums.ProjectType;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
@@ -113,31 +112,11 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
                                             blenderRenderQueueItem.getBlenderFramePart().getPartFilename() + "." +
                                             blenderRenderQueueItem.getBlenderFramePart().getFileExtension());
                                     Files.write(path, bytes);
-                                    SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderProcessQueueItem.getConnection_uuid());
-                                    switch (blenderRenderQueueItem.getRenderComputeType()) {
-                                        case CPU:
-                                            sethlansNode.setCpuSlotInUse(false);
-                                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
-                                            if (sethlansNode.getAvailableRenderingSlots() > sethlansNode.getTotalRenderingSlots()) {
-                                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                                            }
-                                            break;
-                                        case GPU:
-                                            sethlansNode.setGpuSlotInUse(false);
-                                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
-                                            if (sethlansNode.getAvailableRenderingSlots() > sethlansNode.getTotalRenderingSlots()) {
-                                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                                            }
-                                            break;
-                                        default:
-                                            LOG.debug("Invalid compute type specified for rendering.");
-                                    }
-                                    LOG.debug(sethlansNode.getHostname() + " has " + sethlansNode.getAvailableRenderingSlots() + " available rendering slot(s)");
 
-                                    LOG.debug("Processing completed render from " + sethlansNode.getHostname() + ". Part: " + blenderProcessQueueItem.getPart_number()
+
+                                    LOG.debug("Processing completed render from " + sethlansNodeDatabaseService.getByConnectionUUID(blenderProcessQueueItem.getConnection_uuid()).getHostname() + ". Part: " + blenderProcessQueueItem.getPart_number()
                                             + " Frame: " + blenderProcessQueueItem.getFrame_number());
-                                    sethlansNode.setVersion(sethlansNodeDatabaseService.getById(sethlansNode.getId()).getVersion());
-                                    sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+
 
                                 } catch (IOException | SQLException e) {
                                     e.printStackTrace();
