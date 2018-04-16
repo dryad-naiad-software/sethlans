@@ -51,7 +51,7 @@ public class ServerBackgroundController {
     public void nodeIdleNotification(@RequestParam String connection_uuid, ComputeType compute_type) {
         if (blenderRenderQueueDatabaseService.listAll().size() > 0) {
             SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
-            if (sethlansNode.isBenchmarkComplete()) {
+            if (sethlansNode != null && sethlansNode.isBenchmarkComplete()) {
                 LOG.debug("Received Idle Notification from " + sethlansNode.getHostname());
                 if (sethlansNode.getComputeType() != ComputeType.CPU_GPU) {
                     if (compute_type == ComputeType.CPU && sethlansNode.isCpuSlotInUse()) {

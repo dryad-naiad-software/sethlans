@@ -42,7 +42,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.rowset.serial.SerialBlob;
-import javax.sql.rowset.serial.SerialException;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -158,6 +157,7 @@ public class ServerRenderController {
         } else {
             if (!part.isEmpty()) {
                 try {
+                    Thread.sleep(2000);
                     Blob blob = new SerialBlob(part.getBytes());
                     BlenderProcessQueueItem blenderProcessQueueItem = new BlenderProcessQueueItem();
                     blenderProcessQueueItem.setConnection_uuid(connection_uuid);
@@ -189,11 +189,7 @@ public class ServerRenderController {
                     LOG.debug(sethlansNode.getHostname() + " has " + sethlansNode.getAvailableRenderingSlots() + " available rendering slot(s)");
                     sethlansNode.setVersion(sethlansNodeDatabaseService.getById(sethlansNode.getId()).getVersion());
                     sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (SerialException e) {
-                    e.printStackTrace();
-                } catch (SQLException e) {
+                } catch (IOException | InterruptedException | SQLException e) {
                     e.printStackTrace();
                 }
             }

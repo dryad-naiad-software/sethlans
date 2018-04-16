@@ -97,7 +97,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                     }
 
                 }
-                Thread.sleep(10000);
+                Thread.sleep(5000);
                 if (count == cycle) {
                     count = 0;
                 } else {

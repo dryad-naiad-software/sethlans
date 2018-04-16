@@ -91,8 +91,9 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
                         if (slots == 1 && blenderRenderTaskDatabaseService.listAll().size() == 1) {
                             counter = 0;
                         }
-                        if (counter > 119) {
+                        if (counter > 499) {
                             LOG.debug("Informing server of idle slot(s)");
+                            counter = 0;
                             if (slots == 1) {
                                 sendIdleUpdate(computeType);
                             }
@@ -109,7 +110,7 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
                                     }
                                 }
                             }
-                            counter = 0;
+
                         }
                     }
 
