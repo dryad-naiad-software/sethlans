@@ -23,11 +23,14 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueIt
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
+import com.dryadandnaiad.sethlans.domains.node.NodeUpdate;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.blender.BlenderProcessRenderQueueService;
+import com.dryadandnaiad.sethlans.services.blender.RenderNodeUpdateService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.google.common.base.Throwables;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +78,7 @@ public class ServerRenderController {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private BlenderProcessRenderQueueService blenderProcessRenderQueueService;
+    private RenderNodeUpdateService renderNodeUpdateService;
 
 
     @GetMapping(value = "/api/project/blender_binary")
@@ -157,7 +161,6 @@ public class ServerRenderController {
         } else {
             if (!part.isEmpty()) {
                 try {
-                    Thread.sleep(2000);
                     Blob blob = new SerialBlob(part.getBytes());
                     BlenderProcessQueueItem blenderProcessQueueItem = new BlenderProcessQueueItem();
                     blenderProcessQueueItem.setConnection_uuid(connection_uuid);
@@ -167,30 +170,14 @@ public class ServerRenderController {
                     blenderProcessQueueItem.setFrame_number(frame_number);
                     blenderProcessQueueItem.setRenderTime(render_time);
                     blenderProcessRenderQueueService.addQueueItem(blenderProcessQueueItem);
-                    SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderProcessQueueItem.getConnection_uuid());
-                    switch (compute_type) {
-                        case CPU:
-                            sethlansNode.setCpuSlotInUse(false);
-                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
-                            if (sethlansNode.getAvailableRenderingSlots() > sethlansNode.getTotalRenderingSlots()) {
-                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                            }
-                            break;
-                        case GPU:
-                            sethlansNode.setGpuSlotInUse(false);
-                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
-                            if (sethlansNode.getAvailableRenderingSlots() > sethlansNode.getTotalRenderingSlots()) {
-                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                            }
-                            break;
-                        default:
-                            LOG.debug("Invalid compute type specified for rendering.");
-                    }
-                    LOG.debug(sethlansNode.getHostname() + " has " + sethlansNode.getAvailableRenderingSlots() + " available rendering slot(s)");
-                    sethlansNode.setVersion(sethlansNodeDatabaseService.getById(sethlansNode.getId()).getVersion());
-                    sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                } catch (IOException | InterruptedException | SQLException e) {
-                    e.printStackTrace();
+                    NodeUpdate nodeUpdate = new NodeUpdate();
+                    nodeUpdate.setComputeType(compute_type);
+                    nodeUpdate.setSethlansNode(sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid));
+                    nodeUpdate.setInUse(false);
+                    renderNodeUpdateService.addUpdateNodeItem(nodeUpdate);
+
+                } catch (IOException | SQLException e) {
+                    LOG.error(Throwables.getStackTraceAsString(e));
                 }
             }
         }
@@ -220,6 +207,10 @@ public class ServerRenderController {
         this.blenderProjectDatabaseService = blenderProjectDatabaseService;
     }
 
+    @Autowired
+    public void setRenderNodeUpdateService(RenderNodeUpdateService renderNodeUpdateService) {
+        this.renderNodeUpdateService = renderNodeUpdateService;
+    }
 
     @Autowired
     public void setBlenderProcessRenderQueueService(BlenderProcessRenderQueueService blenderProcessRenderQueueService) {

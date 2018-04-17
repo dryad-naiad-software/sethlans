@@ -181,10 +181,9 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
             } catch (NullPointerException e) {
 
             }
-
         }
-
     }
+
 
     @Autowired
     public void setBlenderProcessQueueDatabaseService(BlenderProcessQueueDatabaseService blenderProcessQueueDatabaseService) {

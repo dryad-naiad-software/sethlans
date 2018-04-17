@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.components;
 import com.dryadandnaiad.sethlans.services.blender.BlenderDownloadService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderProcessRenderQueueService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderQueueService;
+import com.dryadandnaiad.sethlans.services.blender.RenderNodeUpdateService;
 import com.dryadandnaiad.sethlans.services.network.NodeQueryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +45,7 @@ public class ServerBackgroundComponent {
     private BlenderProcessRenderQueueService blenderProcessRenderQueueService;
     private BlenderDownloadService blenderDownloadService;
     private NodeQueryService nodeQueryService;
+    private RenderNodeUpdateService renderNodeUpdateService;
     private static final Logger LOG = LoggerFactory.getLogger(ServerBackgroundComponent.class);
 
     @PostConstruct
@@ -56,6 +58,8 @@ public class ServerBackgroundComponent {
     public void renderQueue() {
         LOG.debug("Starting Render Queue Service");
         blenderProcessRenderQueueService.startRenderProcessingQueue();
+        renderNodeUpdateService.startRenderNodeUpdateQueue();
+
     }
 
 
@@ -90,5 +94,10 @@ public class ServerBackgroundComponent {
     @Autowired
     public void setNodeQueryService(NodeQueryService nodeQueryService) {
         this.nodeQueryService = nodeQueryService;
+    }
+
+    @Autowired
+    public void setRenderNodeUpdateService(RenderNodeUpdateService renderNodeUpdateService) {
+        this.renderNodeUpdateService = renderNodeUpdateService;
     }
 }

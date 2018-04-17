@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.domains.node.NodeUpdate;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
@@ -188,14 +189,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         if (sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params)) {
             blenderRenderQueueItem.setRendering(true);
             blenderRenderQueueItem.setRenderComputeType(projectComputeType);
-            if (projectComputeType == ComputeType.GPU) {
-                sethlansNode.setGpuSlotInUse(true);
-                sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() - 1);
-            }
-            if (projectComputeType == ComputeType.CPU) {
-                sethlansNode.setCpuSlotInUse(true);
-                sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() - 1);
-            }
+
             BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
             if (blenderProject.getProjectStatus() == ProjectStatus.Pending) {
                 blenderProject.setProjectStatus(ProjectStatus.Started);
@@ -203,8 +197,12 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             }
             blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
-            sethlansNode.setVersion(sethlansNodeDatabaseService.getById(sethlansNode.getId()).getVersion());
-            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+
+            NodeUpdate nodeUpdate = new NodeUpdate();
+            nodeUpdate.setComputeType(projectComputeType);
+            nodeUpdate.setInUse(true);
+            nodeUpdate.setSethlansNode(sethlansNode);
+
         }
     }
 
