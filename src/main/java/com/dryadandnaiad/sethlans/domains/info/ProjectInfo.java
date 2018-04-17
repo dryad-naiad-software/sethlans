@@ -54,4 +54,5 @@ public class ProjectInfo {
     private int currentPercentage;
     private String frameRate;
     private String totalRenderTime;
+    private String projectTime;
 }

@@ -150,19 +150,23 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
 
                         if (remainingTotalQueue > 0) {
                             blenderProject.setProjectStatus(ProjectStatus.Rendering);
+                            blenderProject.setEndTime(System.currentTimeMillis());
                         }
                         if (remainingPartsForFrame == 0) {
                             if (blenderProjectService.combineParts(blenderProject, blenderProcessQueueItem.getFrame_number())) {
                                 if (remainingTotalQueue == 0) {
                                     if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
                                         blenderProject.setProjectStatus(ProjectStatus.Processing);
+                                        blenderProject.setEndTime(System.currentTimeMillis());
                                         blenderProjectService.createAVI(blenderProject);
                                     }
                                     if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
                                         blenderProject.setProjectStatus(ProjectStatus.Processing);
+                                        blenderProject.setEndTime(System.currentTimeMillis());
                                         blenderProjectService.createMP4(blenderProject);
                                     } else {
                                         blenderProject.setProjectStatus(ProjectStatus.Finished);
+                                        blenderProject.setEndTime(System.currentTimeMillis());
                                         blenderRenderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
                                     }
                                     blenderProject.setAllImagesProcessed(true);

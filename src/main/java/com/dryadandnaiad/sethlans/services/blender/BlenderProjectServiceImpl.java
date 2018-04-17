@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.ffmpeg.FFmpegEncodeService;
+import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +76,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
         blenderQueueService.pauseRenderQueueforProject(blenderProject);
         blenderProject.setProjectStatus(ProjectStatus.Paused);
+        blenderProject.setEndTime(System.currentTimeMillis());
         blenderProjectDatabaseService.saveOrUpdate(blenderProject);
     }
 
@@ -83,6 +85,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(username, id);
         blenderQueueService.pauseRenderQueueforProject(blenderProject);
         blenderProject.setProjectStatus(ProjectStatus.Paused);
+        blenderProject.setEndTime(System.currentTimeMillis());
         blenderProjectDatabaseService.saveOrUpdate(blenderProject);
     }
 
@@ -92,6 +95,9 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         blenderQueueService.pauseRenderQueueforProject(blenderProject);
         blenderQueueService.deleteRenderQueueforProject(blenderProject);
         blenderProject.setProjectStatus(ProjectStatus.Added);
+        blenderProject.setStartTime(0L);
+        blenderProject.setEndTime(0L);
+
         int count = blenderProject.getFrameFileNames().size();
         for (int i = 0; i < count; i++) {
             int frame = i + 1;
@@ -114,6 +120,8 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         blenderQueueService.pauseRenderQueueforProject(blenderProject);
         blenderQueueService.deleteRenderQueueforProject(blenderProject);
         blenderProject.setProjectStatus(ProjectStatus.Added);
+        blenderProject.setStartTime(0L);
+        blenderProject.setEndTime(0L);
         blenderProjectDatabaseService.saveOrUpdate(blenderProject);
     }
 
@@ -221,7 +229,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
                     fileExtension = blenderFramePart.getFileExtension();
                     plainFilename = blenderFramePart.getFrameFileName();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    LOG.error(Throwables.getStackTraceAsString(e));
                 }
             }
         }
@@ -242,7 +250,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         try {
             ImageIO.write(concatImage, fileExtension.toUpperCase(), new File(frameFilename));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error(Throwables.getStackTraceAsString(e));
         }
         blenderProject.getFrameFileNames().add(frameFilename);
         blenderProject.setCurrentFrameThumbnail(createThumbnail(frameFilename, storedDir, plainFilename, fileExtension));
@@ -262,7 +270,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
             g.dispose();
             ImageIO.write(thumbnail, fileExtension.toUpperCase(), new File(directory + frameFilename + "-thumbnail" + "." + fileExtension));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error(Throwables.getStackTraceAsString(e));
         }
 
         return directory + frameFilename + "-thumbnail" + "." + fileExtension;

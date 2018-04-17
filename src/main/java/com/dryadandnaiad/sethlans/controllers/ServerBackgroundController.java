@@ -19,9 +19,11 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
+import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
@@ -45,11 +47,21 @@ public class ServerBackgroundController {
     private BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService;
     private BlenderBenchmarkService blenderBenchmarkService;
     private NodeDiscoveryService nodeDiscoveryService;
+    private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private static final Logger LOG = LoggerFactory.getLogger(ServerBackgroundController.class);
+
+    private boolean isFirstProjectRecent(BlenderProject blenderProject) {
+        long projectStart = blenderProject.getStartTime();
+        long currentTime = System.currentTimeMillis();
+        long timeDifference = currentTime - projectStart;
+        long minutes = timeDifference / (60 * 1000);
+        return projectStart == 0L || minutes < 30;
+    }
 
     @PostMapping(value = "/api/update/node_idle_notification")
     public void nodeIdleNotification(@RequestParam String connection_uuid, ComputeType compute_type) {
-        if (blenderRenderQueueDatabaseService.listAll().size() > 0) {
+        BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueDatabaseService.listAll().get(0).getProject_uuid());
+        if (blenderRenderQueueDatabaseService.listAll().size() > 0 && !isFirstProjectRecent(blenderProject)) {
             SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
             if (sethlansNode != null && sethlansNode.isBenchmarkComplete()) {
                 LOG.debug("Received Idle Notification from " + sethlansNode.getHostname());
@@ -173,5 +185,10 @@ public class ServerBackgroundController {
     @Autowired
     public void setBlenderRenderQueueDatabaseService(BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService) {
         this.blenderRenderQueueDatabaseService = blenderRenderQueueDatabaseService;
+    }
+
+    @Autowired
+    public void setBlenderProjectDatabaseService(BlenderProjectDatabaseService blenderProjectDatabaseService) {
+        this.blenderProjectDatabaseService = blenderProjectDatabaseService;
     }
 }
