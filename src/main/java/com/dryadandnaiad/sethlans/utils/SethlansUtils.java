@@ -538,19 +538,8 @@ public class SethlansUtils {
         return version;
     }
 
-    public static SethlansNode getFastestFreeNode(List<SethlansNode> nodeList, ComputeType computeType) {
-        List<SethlansNode> listToSort = new ArrayList<>();
-        for (SethlansNode sethlansNode : nodeList) {
-            if (sethlansNode.getAvailableRenderingSlots() > 0 && sethlansNode.isBenchmarkComplete() && sethlansNode.isActive()) {
-                listofNodes(computeType, listToSort, sethlansNode);
-            }
-        }
-        if (sortedNodeList(computeType, listToSort)) return listToSort.get(0);
 
-        return null;
-    }
-
-    private static boolean sortedNodeList(ComputeType computeType, List<SethlansNode> listToSort) {
+    public static boolean sortedNodeList(ComputeType computeType, List<SethlansNode> listToSort) {
         if (listToSort.size() > 0) {
             switch (computeType) {
                 case CPU:
@@ -570,7 +559,7 @@ public class SethlansUtils {
         return false;
     }
 
-    private static void listofNodes(ComputeType computeType, List<SethlansNode> listToSort, SethlansNode sethlansNode) {
+    public static void listofNodes(ComputeType computeType, List<SethlansNode> listToSort, SethlansNode sethlansNode) {
         switch (computeType) {
             case CPU:
                 if (sethlansNode.getComputeType().equals(ComputeType.CPU)) {

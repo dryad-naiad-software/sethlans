@@ -121,6 +121,13 @@ public class ServerBackgroundController {
             SethlansNode tempNode = nodeDiscoveryService.discoverUnicastNode(sethlansNodetoUpdate.getIpAddress(), sethlansNodetoUpdate.getNetworkPort());
             if (sethlansNodetoUpdate.isActive()) {
                 sethlansNodetoUpdate.setBenchmarkComplete(false);
+                if (tempNode.getComputeType().equals(ComputeType.CPU_GPU)) {
+                    sethlansNodetoUpdate.setTotalRenderingSlots(2);
+                    sethlansNodetoUpdate.setAvailableRenderingSlots(2);
+                } else {
+                    sethlansNodetoUpdate.setTotalRenderingSlots(1);
+                    sethlansNodetoUpdate.setAvailableRenderingSlots(1);
+                }
                 updateNode(sethlansNodetoUpdate, tempNode);
                 try {
                     Thread.sleep(10000);

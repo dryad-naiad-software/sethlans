@@ -37,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,6 +52,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
+    private RenderNodeUpdateService renderNodeUpdateService;
     private static final Logger LOG = LoggerFactory.getLogger(BlenderQueueServiceImpl.class);
     private boolean populatingQueue;
     private boolean queueBeingPaused;
@@ -66,16 +68,22 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         while (true) {
 
             try {
-                Thread.sleep(10000);
+                Thread.sleep(5000);
                 if (!sethlansNodeDatabaseService.listAll().isEmpty() || !blenderRenderQueueDatabaseService.listAll().isEmpty()) {
                     if (!populatingQueue || !queueBeingPaused) {
                         LOG.debug("Processing Project Queue.");
                         List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listAll();
+                        List<SethlansNode> listToSort = new ArrayList<>();
                         for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
+                            Thread.sleep(500);
                             if (!blenderRenderQueueItem.isComplete() && !blenderRenderQueueItem.isRendering() && !blenderRenderQueueItem.isPaused()) {
                                 timedLog(count, cycle, blenderRenderQueueItem.toString() + " is waiting to be rendered.");
                                 ComputeType computeType = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid()).getRenderOn();
-                                SethlansNode sethlansNode = SethlansUtils.getFastestFreeNode(sethlansNodeDatabaseService.listAll(), computeType);
+                                if (listToSort.size() == 0) {
+                                    listToSort = getSortedList(listToSort, computeType);
+                                }
+                                SethlansNode sethlansNode = listToSort.get(0);
+                                listToSort.remove(0);
                                 if (sethlansNode != null && sethlansNode.isActive() && sethlansNode.getAvailableRenderingSlots() > 0 && !sethlansNode.isDisabled()) {
                                     blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
                                     BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
@@ -98,7 +106,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                     }
 
                 }
-                Thread.sleep(5000);
+                Thread.sleep(1000);
                 if (count == cycle) {
                     count = 0;
                 } else {
@@ -202,6 +210,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             nodeUpdate.setComputeType(projectComputeType);
             nodeUpdate.setInUse(true);
             nodeUpdate.setSethlansNode(sethlansNode);
+            renderNodeUpdateService.addUpdateNodeItem(nodeUpdate);
 
         }
     }
@@ -275,6 +284,20 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         }
     }
 
+    private List<SethlansNode> getSortedList(List<SethlansNode> listToSort, ComputeType computeType) {
+        LOG.debug("getting sorted list");
+        for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
+            if (sethlansNode.getAvailableRenderingSlots() > 0 && sethlansNode.isBenchmarkComplete() && sethlansNode.isActive()) {
+                SethlansUtils.listofNodes(computeType, listToSort, sethlansNode);
+            }
+        }
+        if (SethlansUtils.sortedNodeList(computeType, listToSort)) {
+            return listToSort;
+        }
+
+        return null;
+    }
+
 
     @Autowired
     public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {
@@ -294,5 +317,10 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     @Autowired
     public void setBlenderProjectDatabaseService(BlenderProjectDatabaseService blenderProjectDatabaseService) {
         this.blenderProjectDatabaseService = blenderProjectDatabaseService;
+    }
+
+    @Autowired
+    public void setRenderNodeUpdateService(RenderNodeUpdateService renderNodeUpdateService) {
+        this.renderNodeUpdateService = renderNodeUpdateService;
     }
 }
