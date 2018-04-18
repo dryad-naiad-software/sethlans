@@ -35,8 +35,7 @@
             <thead class="thead-light">
             <tr>
               <th>Date</th>
-              <th>Log Level</th>
-              <th>Thread</th>
+              <th>Level</th>
               <th>Class</th>
               <th data-orderable="false">Message</th>
             </tr>
@@ -45,7 +44,6 @@
             <tr *ngFor="let log of logList">
               <td>{{log.date}}</td>
               <td>{{log.level}}</td>
-              <td>{{log.thread}}</td>
               <td>{{log.loggingClass}}</td>
               <td style="word-break: break-word">{{log.message}}</td>
             </tr>
