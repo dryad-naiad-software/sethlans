@@ -179,18 +179,18 @@
       <tbody>
       <tr>
         <td>Compute Method</td>
-        <td *ngIf="newNode.computeMethod != computeMethodEnum.CPU_GPU">{{newNode.computeMethod}}</td>
-        <td *ngIf="newNode.computeMethod == computeMethodEnum.CPU_GPU">CPU & GPU</td>
+        <td *ngIf="newNode.computeMethod.toString().valueOf() != 'CPU_GPU'.valueOf()">{{newNode.computeMethod}}</td>
+        <td *ngIf="newNode.computeMethod.toString().valueOf() == 'CPU_GPU'.valueOf()">CPU & GPU</td>
       </tr>
-      <tr *ngIf="newNode.computeMethod !== computeMethodEnum.GPU">
+      <tr *ngIf="newNode.computeMethod.toString().valueOf() != 'GPU'.valueOf()">
         <td>Rendering Cores</td>
         <td>{{newNode.cores}}</td>
       </tr>
-      <tr *ngIf="newNode.computeMethod !== computeMethodEnum.GPU">
+      <tr *ngIf="newNode.computeMethod.toString().valueOf() != 'GPU'.valueOf()">
         <td>Tile Size: CPU</td>
         <td>{{newNode.tileSizeCPU}}</td>
       </tr>
-      <tr *ngIf="newNode.computeMethod !== computeMethodEnum.CPU">
+      <tr *ngIf="newNode.computeMethod.toString().valueOf() != 'CPU'.valueOf()">
         <td>Selected GPU(s)</td>
         <td>
           <ul class="list-unstyled">
@@ -198,7 +198,7 @@
           </ul>
         </td>
       </tr>
-      <tr *ngIf="newNode.computeMethod !== computeMethodEnum.CPU">
+      <tr *ngIf="newNode.computeMethod.toString().valueOf() != 'CPU'.valueOf()">
         <td>Tile Size: GPU</td>
         <td>{{newNode.tileSizeGPU}}</td>
       </tr>

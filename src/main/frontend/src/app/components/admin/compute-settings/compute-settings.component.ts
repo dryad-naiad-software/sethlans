@@ -94,8 +94,14 @@ export class ComputeSettingsComponent implements OnInit {
       });
     this.http.get('/api/management/current_cores')
       .subscribe((currentCores: any) => {
-        this.currentNode.setCores(currentCores);
-        this.newNode.setCores(currentCores);
+        if (currentCores == 0) {
+          this.currentNode.setCores(this.totalCores);
+          this.newNode.setCores(this.totalCores);
+        } else {
+          this.currentNode.setCores(currentCores);
+          this.newNode.setCores(currentCores);
+        }
+
       });
     this.http.get('/api/management/current_tilesize_cpu')
       .subscribe((tileSizeCPU: any) => {
