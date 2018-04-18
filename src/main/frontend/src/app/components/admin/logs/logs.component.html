@@ -42,9 +42,9 @@
             </thead>
             <tbody>
             <tr *ngFor="let log of logList">
-              <td>{{log.date}}</td>
+              <td style="width: 200px;">{{log.date}}</td>
               <td>{{log.level}}</td>
-              <td>{{log.loggingClass}}</td>
+              <td style="width: 300px; word-break: break-word">{{log.loggingClass}}</td>
               <td style="word-break: break-word">{{log.message}}</td>
             </tr>
 
