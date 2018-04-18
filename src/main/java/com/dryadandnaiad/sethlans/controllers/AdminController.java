@@ -36,6 +36,7 @@ import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
+import com.dryadandnaiad.sethlans.services.system.SethlansLogRetrievalService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
@@ -57,6 +58,7 @@ import java.util.*;
 public class AdminController {
     private SethlansUserDatabaseService sethlansUserDatabaseService;
     private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
+    private SethlansLogRetrievalService sethlansLogRetrievalService;
     private static final Logger LOG = LoggerFactory.getLogger(AdminController.class);
 
     private NodeDiscoveryService nodeDiscoveryService;
@@ -112,6 +114,12 @@ public class AdminController {
     @GetMapping(value = {"/node_check"})
     public SethlansNode checkNode(@RequestParam String ip, @RequestParam String port) {
         return nodeDiscoveryService.discoverUnicastNode(ip, port);
+    }
+
+    @GetMapping(value = {"/get_logs"})
+    public void getSethlansLogs() {
+        sethlansLogRetrievalService.sethlansLogList();
+
     }
 
     @GetMapping(value = {"node_scan"})
@@ -248,5 +256,10 @@ public class AdminController {
     @Autowired
     public void setSethlansManagerService(SethlansManagerService sethlansManagerService) {
         this.sethlansManagerService = sethlansManagerService;
+    }
+
+    @Autowired
+    public void setSethlansLogRetrievalService(SethlansLogRetrievalService sethlansLogRetrievalService) {
+        this.sethlansLogRetrievalService = sethlansLogRetrievalService;
     }
 }
