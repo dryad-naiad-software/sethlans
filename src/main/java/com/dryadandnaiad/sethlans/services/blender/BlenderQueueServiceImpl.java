@@ -201,7 +201,9 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
             if (blenderProject.getProjectStatus() == ProjectStatus.Pending) {
                 blenderProject.setProjectStatus(ProjectStatus.Started);
-                blenderProject.setStartTime(System.currentTimeMillis());
+                long time = System.currentTimeMillis();
+                blenderProject.setStartTime(time);
+                blenderProject.setEndTime(time);
                 blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
                 blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             }

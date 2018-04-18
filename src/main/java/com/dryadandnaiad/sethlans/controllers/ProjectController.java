@@ -249,6 +249,24 @@ public class ProjectController {
         return null;
     }
 
+    @GetMapping(value = "/api/project_ui/project_duration/{id}")
+    public String projectDuration(@PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        BlenderProject blenderProject;
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            blenderProject = blenderProjectDatabaseService.getById(id);
+            if (blenderProject != null) {
+                return convertBlenderProjectToProjectInfo(blenderProject).getProjectTime();
+            }
+        } else {
+            blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
+            if (blenderProject != null) {
+                return convertBlenderProjectToProjectInfo(blenderProject).getProjectTime();
+            }
+        }
+        return null;
+    }
+
     @GetMapping(value = "/api/project_ui/progress/{id}")
     public int currentProgress(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -368,11 +386,6 @@ public class ProjectController {
     }
 
     private ProjectInfo convertBlenderProjectToProjectInfo(BlenderProject blenderProject) {
-        long second = (blenderProject.getTotalRenderTime() / 1000) % 60;
-        long minute = (blenderProject.getTotalRenderTime() / (1000 * 60)) % 60;
-        long hour = (blenderProject.getTotalRenderTime() / (1000 * 60 * 60)) % 24;
-
-        String time = String.format("%02d:%02d:%02d", hour, minute, second);
         ProjectInfo projectInfo = new ProjectInfo();
         projectInfo.setId(blenderProject.getId());
         projectInfo.setStartFrame(blenderProject.getStartFrame());
@@ -384,7 +397,8 @@ public class ProjectController {
         projectInfo.setProjectName(blenderProject.getProjectName());
         projectInfo.setSelectedBlenderversion(blenderProject.getBlenderVersion());
         projectInfo.setRenderOn(blenderProject.getRenderOn());
-        projectInfo.setTotalRenderTime(time);
+        projectInfo.setTotalRenderTime(getTimeFromMills(blenderProject.getTotalRenderTime()));
+        projectInfo.setProjectTime(getTimeFromMills((blenderProject.getEndTime() - blenderProject.getStartTime())));
         projectInfo.setOutputFormat(blenderProject.getRenderOutputFormat());
         projectInfo.setUsername(blenderProject.getSethlansUser().getUsername());
         projectInfo.setFrameRate(blenderProject.getFrameRate());
@@ -405,6 +419,14 @@ public class ProjectController {
 
         }
         return projectInfo;
+    }
+
+    private String getTimeFromMills(Long time) {
+        long second = (time / 1000) % 60;
+        long minute = (time / (1000 * 60)) % 60;
+        long hour = (time / (1000 * 60 * 60));
+
+        return String.format("%02d:%02d:%02d", hour, minute, second);
     }
 
     private String checkFrameRate(String frameRate) {

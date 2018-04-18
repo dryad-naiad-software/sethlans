@@ -22,6 +22,7 @@ import {ProjectListService} from "../../../services/project_list.service";
 import {Project} from "../../../models/project.model";
 import {Subject} from "rxjs/Subject";
 import {HttpClient} from "@angular/common/http";
+import {Mode} from "../../../enums/mode.enum";
 
 @Component({
   selector: 'app-server-screen',
@@ -40,6 +41,13 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
   inactiveNodes: number;
   disabledNodes: number;
   totalSlots: number;
+  cpuName: string;
+  totalMemory: string;
+  freeSpace: number;
+  totalSpace: number;
+  usedSpace: number;
+  currentMode: Mode;
+  mode: any = Mode;
 
 
   constructor(private projectService: ProjectListService, private http: HttpClient) {
@@ -48,10 +56,34 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.dtOptions = {
-      searching: false
+      searching: false,
+      pageLength: 5,
+      lengthChange: false
     };
+    this.http.get('/api/info/sethlans_mode', {responseType: 'text'})
+      .subscribe((sethlansmode: Mode) => {
+        this.currentMode = sethlansmode;
+      });
+    this.http.get('/api/info/total_memory', {responseType: 'text'}).subscribe((memory: string) => {
+      this.totalMemory = memory;
+    });
+
+    this.http.get('/api/info/cpu_name', {responseType: 'text'}).subscribe((cpuName: string) => {
+      this.cpuName = cpuName;
+    });
     this.http.get('/api/info/total_nodes').subscribe((totalNodes: number) => {
       this.totalNodes = totalNodes;
+    });
+    this.http.get('/api/info/client_free_space').subscribe((freespace: number) => {
+      this.freeSpace = freespace;
+    });
+
+    this.http.get('/api/info/client_total_space').subscribe((totalspace: number) => {
+      this.totalSpace = totalspace;
+    });
+
+    this.http.get('/api/info/client_used_space').subscribe((usedspace: number) => {
+      this.usedSpace = usedspace;
     });
     this.http.get('/api/info/active_nodes').subscribe((activeNodes: number) => {
       this.activeNodes = activeNodes;

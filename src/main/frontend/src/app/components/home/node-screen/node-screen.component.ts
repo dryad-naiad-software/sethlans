@@ -69,7 +69,7 @@ export class NodeScreenComponent implements OnInit {
 
     this.http.get('/api/info/client_used_space').subscribe((usedspace: number) => {
       this.usedSpace = usedspace;
-    })
+    });
 
     this.http.get('/api/info/client_selected_gpu_models').subscribe((selectedGPUs: string[]) => {
       this.selectedGPUModels = selectedGPUs;

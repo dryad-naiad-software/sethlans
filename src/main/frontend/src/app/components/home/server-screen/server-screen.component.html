@@ -60,3 +60,21 @@
       </ul>
     </div>
   </div>
+<div class="row" *ngIf="currentMode == mode.SERVER">
+  <div class="col-4">
+    <h5>System Information</h5>
+    <ul>
+      <li>Processor: <i>{{cpuName}}</i></li>
+      <li>Memory: <i>{{totalMemory}}</i></li>
+      <li>Disk Space:
+        <ngb-progressbar
+          type="info"
+          [value]="usedSpace"
+          [max]="totalSpace">{{freeSpace}}GiB of {{totalSpace}}GiB Free
+        </ngb-progressbar>
+      </li>
+
+    </ul>
+
+  </div>
+</div>
