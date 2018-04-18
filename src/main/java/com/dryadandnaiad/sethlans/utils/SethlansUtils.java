@@ -81,7 +81,7 @@ public class SethlansUtils {
         try {
             imageURL = new ClassPathResource(image).getURL();
         } catch (IOException e) {
-            LOG.error("Failed Creating Image. Resource not found.\n" + e.getMessage());
+            LOG.error("Failed Creating Image. Resource not found. " + e.getMessage());
             System.exit(1);
         }
         return new ImageIcon(imageURL, description).getImage();
@@ -204,7 +204,7 @@ public class SethlansUtils {
 
     public static boolean fileCheckMD5(File file, String md5) throws IOException {
         HashCode hash = Files.hash(file, Hashing.md5());
-        LOG.debug("Hash md5: " + hash.toString() + "\n JSON md5: " + md5);
+        LOG.debug("Hash md5: " + hash.toString() + " JSON md5: " + md5);
         if (hash.toString().equals(md5)) {
             return true;
         }

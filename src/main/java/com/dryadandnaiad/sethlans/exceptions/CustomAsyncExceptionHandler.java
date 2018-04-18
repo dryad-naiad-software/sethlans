@@ -49,7 +49,7 @@ public class CustomAsyncExceptionHandler
         if (method.getName().equals("startRenderProcessingQueue")) {
 
         }
-        LOG.error("Stacktrace: \n" + Throwables.getStackTraceAsString(throwable));
+        LOG.error("Stacktrace: " + Throwables.getStackTraceAsString(throwable));
     }
 
 }

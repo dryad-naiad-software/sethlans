@@ -23,25 +23,31 @@
       <div class="card-header">
         <h4>
           <span style="font-family: 'Fjalla One', sans-serif; ">Logs</span>
+          <button class="btn btn-outline-dark float-right"
+                  (click)="reloadLogs()">
+            <span class="fa fa-refresh"></span> <span>Refresh</span>
+          </button>
         </h4>
       </div>
       <div class="card-body">
         <div class="table-responsive">
-          <table datatable class="table">
+          <table datatable class="table table-sm" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
             <thead class="thead-light">
             <tr>
-              <th>Server Status</th>
-              <th>Hostname</th>
-              <th>IP Address</th>
-              <th>Port</th>
+              <th>Date</th>
+              <th>Log Level</th>
+              <th>Thread</th>
+              <th>Class</th>
+              <th data-orderable="false">Message</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-              <td>Pending Acknowledgement</td>
-              <td>COOKIE</td>
-              <td>10.10.10.10</td>
-              <td>7443</td>
+            <tr *ngFor="let log of logList">
+              <td>{{log.date}}</td>
+              <td>{{log.level}}</td>
+              <td>{{log.thread}}</td>
+              <td>{{log.loggingClass}}</td>
+              <td style="word-break: break-word">{{log.message}}</td>
             </tr>
 
             </tbody>

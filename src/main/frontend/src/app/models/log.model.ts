@@ -17,21 +17,10 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.domains.info;
-
-import lombok.Data;
-
-/**
- * Created Mario Estrella on 4/17/2018.
- * Dryad and Naiad Software LLC
- * mestrella@dryadandnaiad.com
- * Project: sethlans
- */
-@Data
-public class Log {
-    private String date;
-    private String level;
-    private String thread;
-    private String loggingClass;
-    private String message;
+export class Log {
+  date: string;
+  level: string;
+  thread: string;
+  loggingClass: string;
+  message: string;
 }

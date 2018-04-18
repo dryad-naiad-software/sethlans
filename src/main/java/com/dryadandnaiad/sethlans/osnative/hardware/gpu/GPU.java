@@ -67,8 +67,8 @@ public class GPU {
                 LOG.info("cuInit failed (ret: " + result + ")");
                 if (result == CUresult.CUDA_ERROR_UNKNOWN) {
                     LOG.info("If you are running Linux, this error is usually due to nvidia kernel module 'nvidia_uvm' not loaded. " +
-                            "\nRelaunch the application as root or load the module. " +
-                            "\nMost of time it does fix the issue.");
+                            "Relaunch the application as root or load the module. " +
+                            "Most of time it does fix the issue.");
                     return;
                 }
             }

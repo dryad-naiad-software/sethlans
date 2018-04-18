@@ -179,7 +179,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
             }
         }
         blenderProject.setFramePartList(blenderFramePartList);
-        LOG.debug("Project Frames configured \n" + blenderFramePartList);
+        LOG.debug("Project Frames configured " + blenderFramePartList);
         blenderProjectDatabaseService.saveOrUpdate(blenderProject);
 
     }
@@ -206,7 +206,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
             LOG.debug("Ending Point " + endingPoint);
 
         }
-        LOG.debug("Part Coordinate List generated \n" + partCoordinatesList);
+        LOG.debug("Part Coordinate List generated " + partCoordinatesList);
 
         return partCoordinatesList;
     }

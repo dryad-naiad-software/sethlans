@@ -81,7 +81,7 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
 
 
   reload(): void {
-    this.router.navigateByUrl("/projects").then(() => location.reload());
+    window.location.href = "/projects";
   }
 
   addProject() {
@@ -112,7 +112,7 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
   startProject(id) {
     this.http.get("/api/project_actions/start_project/" + id + "/").subscribe((success: boolean) => {
       if (success) {
-        this.router.navigateByUrl("/projects").then(() => location.reload());
+        window.location.href = "/projects";
       }
     });
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -48,7 +48,7 @@ public class BlenderUtils {
 
         GetRawDataService getJSONData = new GetRawDataServiceImpl();
         String data = getJSONData.getLocalResult("blenderdownload.json");
-        LOG.debug("Retrieved JSON: \n" + data.substring(0, 100) + "...");
+        LOG.debug("Retrieved JSON: " + data.substring(0, 100) + "...");
         if (data != null || !data.isEmpty()) {
             blenderZipList = new LinkedList<>();
             Gson gson = new Gson();
