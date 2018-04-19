@@ -83,9 +83,12 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                     Thread.sleep(1000);
                                     listToSort = getSortedList(listToSort, computeType);
                                 }
+                                if (listToSort.size() == 0 && listFirstCycle) {
+                                    listToSort = getSortedList(listToSort, computeType);
+                                    listFirstCycle = false;
+                                }
                                 SethlansNode sethlansNode = listToSort.get(0);
                                 listToSort.remove(0);
-                                listFirstCycle = false;
                                 if (sethlansNode != null && sethlansNode.isActive() && sethlansNode.getAvailableRenderingSlots() > 0 && !sethlansNode.isDisabled()) {
                                     blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
                                     BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
