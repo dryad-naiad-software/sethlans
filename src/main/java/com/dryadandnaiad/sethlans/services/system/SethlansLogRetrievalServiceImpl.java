@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,16 +47,9 @@ public class SethlansLogRetrievalServiceImpl implements SethlansLogRetrievalServ
     @Override
     public List<Log> sethlansLogList() {
         List<Log> logList = new ArrayList<>();
-        File folder = new File(SethlansUtils.getProperty(SethlansConfigKeys.ROOT_DIR.toString()) + File.separator + "logs");
-        if (folder.exists()) {
-            File[] listOfFiles = folder.listFiles();
-            for (int i = 0; i < (listOfFiles != null ? listOfFiles.length : 0); i++) {
-                if (listOfFiles[i].isFile()) {
-                    LOG.debug("Reading log entries from " + listOfFiles[i].getName());
-                    populateLogList(folder + File.separator + listOfFiles[i].getName(), logList);
-                }
-            }
-        }
+        String sethlansLog = SethlansUtils.getProperty(SethlansConfigKeys.LOGGING_FILE.toString());
+        LOG.debug("Reading log entries from " + sethlansLog);
+        populateLogList(sethlansLog, logList);
         return logList;
     }
 

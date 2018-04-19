@@ -97,7 +97,7 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
             BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray())));
             String output;
             while ((output = in.readLine()) != null) {
-                output = output.replace("\n", " ").replace("\r", " "); // FFmpeg seems to include linebreaks in their strings.
+                output = output.replaceAll("(\\r|\\n)", " "); // FFmpeg seems to include linebreaks in their strings.
                 LOG.debug(output);
             }
             error = errorStream.toString();

@@ -79,6 +79,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                 timedLog(count, cycle, blenderRenderQueueItem.toString() + " is waiting to be rendered.");
                                 ComputeType computeType = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid()).getRenderOn();
                                 if (listToSort.size() == 0) {
+                                    Thread.sleep(1000);
                                     listToSort = getSortedList(listToSort, computeType);
                                 }
                                 SethlansNode sethlansNode = listToSort.get(0);
