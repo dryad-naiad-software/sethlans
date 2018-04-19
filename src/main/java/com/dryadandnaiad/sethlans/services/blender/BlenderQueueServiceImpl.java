@@ -63,7 +63,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
 
 
         int count = 0;
-        int cycle = 20;
+        int cycle = 10;
         //noinspection InfiniteLoopStatement
         while (true) {
 
@@ -84,7 +84,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                 SethlansNode sethlansNode = listToSort.get(0);
                                 LOG.debug("Assigned " + sethlansNode.getHostname() + " to queue item. Removing from sorted list.");
                                 listToSort.remove(0);
-                                if (sethlansNode != null && sethlansNode.isActive() && sethlansNode.getAvailableRenderingSlots() > 0 && !sethlansNode.isDisabled()) {
+                                if (sethlansNode.isActive() && sethlansNode.getAvailableRenderingSlots() > 0 && !sethlansNode.isDisabled()) {
                                     blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
                                     BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
                                     ComputeType projectComputeType = blenderProject.getRenderOn();
@@ -99,6 +99,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                 if (!sethlansNode.isActive()) {
                                     LOG.debug(sethlansNode.getHostname() + " is no longer active. Returning " + blenderRenderQueueItem + " to pending render state.");
                                     blenderRenderQueueItem.setRendering(false);
+                                    blenderRenderQueueItem.setConnection_uuid(null);
                                     blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
                                 }
                             }
@@ -230,7 +231,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     @Override
     public void pauseRenderQueueforProject(BlenderProject blenderProject) {
         queueBeingPaused = true;
-        List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.queueItemsByProjectUUID(blenderProject.getProject_uuid());
+        List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProject_uuid());
         List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.activeNodesWithNoFreeSlots();
         for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
             blenderRenderQueueItem.setPaused(true);

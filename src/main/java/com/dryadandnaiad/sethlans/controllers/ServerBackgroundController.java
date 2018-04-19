@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.node.NodeSlotUpdate;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
@@ -35,6 +36,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Created Mario Estrella on 12/25/17.
@@ -74,7 +77,9 @@ public class ServerBackgroundController {
     }
 
     private void updateNode(String connection_uuid, ComputeType compute_type) {
+
         SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
+        List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listQueueItemsByConnectionUUID(connection_uuid);
         if (sethlansNode != null && sethlansNode.isBenchmarkComplete()) {
             LOG.debug("Received Idle Notification from " + sethlansNode.getHostname());
             if (sethlansNode.isCpuSlotInUse() || sethlansNode.isGpuSlotInUse()) {
@@ -86,6 +91,11 @@ public class ServerBackgroundController {
                 nodeSlotUpdate.setOffline(false);
                 nodeSlotUpdate.setInUse(false);
                 nodeSlotUpdateService.addUpdateNodeItem(nodeSlotUpdate);
+                for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
+                    blenderRenderQueueItem.setRendering(false);
+                    blenderRenderQueueItem.setConnection_uuid(null);
+                    blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+                }
             }
         }
 

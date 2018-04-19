@@ -36,7 +36,7 @@ public interface BlenderRenderQueueDatabaseService extends CRUDService<BlenderRe
 
     void delete(BlenderRenderQueueItem blenderRenderQueueItem);
 
-    List<BlenderRenderQueueItem> queueItemsByConnectionUUID(String connection_uuid);
+    List<BlenderRenderQueueItem> listQueueItemsByConnectionUUID(String connection_uuid);
 
-    List<BlenderRenderQueueItem> queueItemsByProjectUUID(String project_uuid);
+    List<BlenderRenderQueueItem> listQueueItemsByProjectUUID(String project_uuid);
 }

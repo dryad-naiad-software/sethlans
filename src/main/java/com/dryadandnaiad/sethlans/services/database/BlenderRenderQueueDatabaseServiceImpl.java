@@ -48,14 +48,14 @@ public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueue
     @Override
     public List<BlenderRenderQueueItem> listPendingRender() {
         List<BlenderRenderQueueItem> blenderRenderQueueItemsPending = new ArrayList<>();
-        List<BlenderRenderQueueItem> fullList = listAll();
-        for (BlenderRenderQueueItem blenderRenderQueueItem : fullList) {
+        for (BlenderRenderQueueItem blenderRenderQueueItem : listAll()) {
             if (!blenderRenderQueueItem.isComplete()) {
                 blenderRenderQueueItemsPending.add(blenderRenderQueueItem);
             }
         }
         return blenderRenderQueueItemsPending;
     }
+
 
     @Override
     public BlenderRenderQueueItem getById(Long id) {
@@ -90,7 +90,7 @@ public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueue
     }
 
     @Override
-    public List<BlenderRenderQueueItem> queueItemsByConnectionUUID(String connection_uuid) {
+    public List<BlenderRenderQueueItem> listQueueItemsByConnectionUUID(String connection_uuid) {
         List<BlenderRenderQueueItem> blenderRenderQueueItemList = listAll();
         List<BlenderRenderQueueItem> sortedList = new ArrayList<>();
         for (BlenderRenderQueueItem blenderRenderQueueItem :
@@ -104,7 +104,7 @@ public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueue
     }
 
     @Override
-    public List<BlenderRenderQueueItem> queueItemsByProjectUUID(String project_uuid) {
+    public List<BlenderRenderQueueItem> listQueueItemsByProjectUUID(String project_uuid) {
         List<BlenderRenderQueueItem> blenderRenderQueueItemList = listAll();
         List<BlenderRenderQueueItem> sortedList = new ArrayList<>();
         for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {

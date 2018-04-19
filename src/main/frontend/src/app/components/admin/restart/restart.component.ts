@@ -34,7 +34,7 @@ export class RestartComponent implements OnInit {
     this.http.get("/api/management/restart").subscribe(() => {
       setTimeout(() => {
         window.location.href = "/";
-      }, 15000);
+      }, 90000);
     });
 
   }

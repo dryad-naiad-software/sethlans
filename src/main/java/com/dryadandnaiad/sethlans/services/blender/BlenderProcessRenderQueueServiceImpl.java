@@ -87,7 +87,7 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
                         BlenderProcessQueueItem blenderProcessQueueItem = blenderProcessQueueItemList.get(0);
                         File storedDir = null;
                         BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderProcessQueueItem.getProject_uuid());
-                        List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.queueItemsByProjectUUID(blenderProject.getProject_uuid());
+                        List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProject_uuid());
 
                         int projectTotalQueue = blenderProject.getPartsPerFrame() * blenderProject.getTotalNumOfFrames();
                         int remainingTotalQueue = projectTotalQueue;
