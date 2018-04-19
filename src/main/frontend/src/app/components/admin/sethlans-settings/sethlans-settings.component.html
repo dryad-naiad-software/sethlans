@@ -56,22 +56,8 @@
             <td></td>
           </tr>
           <tr>
-            <td>Log File</td>
-            <td>{{sethlansConfig.logFile}}</td>
-            <td>
-              <button class="btn btn-outline-primary btn-sm">Edit</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Binaries Directory</td>
-            <td>{{sethlansConfig.binDir}}</td>
-            <td>
-              <button class="btn btn-outline-primary btn-sm">Edit</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Scripts Directory</td>
-            <td>{{sethlansConfig.scriptsDir}}</td>
+            <td>Log Level</td>
+            <td>DEBUG</td>
             <td>
               <button class="btn btn-outline-primary btn-sm">Edit</button>
             </td>
@@ -93,31 +79,9 @@
 
           <tbody>
           <tr>
-            <td style="width: 40%">Configure Blender Versions</td>
-            <td style="width: 75%"></td>
+            <td style="width: 40%">Project Directory</td>
+            <td style="width: 75%">{{sethlansConfig.projectDir}}</td>
             <td style="width: 33%">
-              <button class="btn btn-outline-primary btn-sm" (click)="goToBlenderVersions()">Edit</button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>Project Dir</td>
-            <td>{{sethlansConfig.projectDir}}</td>
-            <td>
-              <button class="btn btn-outline-primary btn-sm">Edit</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Blender Binaries Dir</td>
-            <td>{{sethlansConfig.blenderDir}}</td>
-            <td>
-              <button class="btn btn-outline-primary btn-sm">Edit</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Benchmark Directory</td>
-            <td>{{sethlansConfig.benchmarkDir}}</td>
-            <td>
               <button class="btn btn-outline-primary btn-sm">Edit</button>
             </td>
           </tr>
@@ -137,16 +101,14 @@
               <button class="btn btn-outline-primary btn-sm">Edit</button>
             </td>
           </tr>
-          <tr>
-            <td>Configure Compute Settings</td>
-            <td></td>
-            <td>
-              <button class="btn btn-outline-primary btn-sm" (click)="goToComputeConfigure()">Edit</button>
-            </td>
-          </tr>
+
           </tbody>
 
         </table>
+
+        <button type="button" class="btn btn-outline-dark ml-auto float-right"
+        >Save Changes
+        </button>
       </div>
     </div>
   </div>

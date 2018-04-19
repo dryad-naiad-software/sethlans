@@ -83,6 +83,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
         //Write Properties
         writeProperty(SethlansConfigKeys.HTTPS_PORT, setupForm.getPort());
         writeProperty(SethlansConfigKeys.SETHLANS_IP, setupForm.getIpAddress());
+        writeProperty(SethlansConfigKeys.LOGGING_DIR, logDirectory);
         writeProperty(SethlansConfigKeys.LOGGING_FILE, logDirectory + "sethlans.log");
         writeProperty(SethlansConfigKeys.MODE, setupForm.getMode().toString());
         writeProperty(SethlansConfigKeys.BINARY_DIR, binDirectory);

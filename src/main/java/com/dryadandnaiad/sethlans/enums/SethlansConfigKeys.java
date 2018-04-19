@@ -33,6 +33,7 @@ public enum SethlansConfigKeys {
     COMPUTE_METHOD("sethlans.computeMethod"),
     PRIMARY_BLENDER_VERSION("sethlans.primaryBlenderVersion"),
     PROJECT_DIR("sethlans.projectDir"),
+    LOGGING_DIR("sethlans.logDir"),
     BLENDER_DIR("sethlans.blenderDir"),
     BINARY_DIR("sethlans.binDir"),
     TEMP_DIR("sethlans.tempDir"),
