@@ -23,10 +23,10 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueIt
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
-import com.dryadandnaiad.sethlans.domains.node.NodeUpdate;
+import com.dryadandnaiad.sethlans.domains.node.NodeSlotUpdate;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.blender.BlenderProcessRenderQueueService;
-import com.dryadandnaiad.sethlans.services.blender.RenderNodeUpdateService;
+import com.dryadandnaiad.sethlans.services.blender.NodeSlotUpdateService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
@@ -78,7 +78,7 @@ public class ServerRenderController {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private BlenderProcessRenderQueueService blenderProcessRenderQueueService;
-    private RenderNodeUpdateService renderNodeUpdateService;
+    private NodeSlotUpdateService nodeSlotUpdateService;
 
 
     @GetMapping(value = "/api/project/blender_binary")
@@ -170,11 +170,13 @@ public class ServerRenderController {
                     blenderProcessQueueItem.setFrame_number(frame_number);
                     blenderProcessQueueItem.setRenderTime(render_time);
                     blenderProcessRenderQueueService.addQueueItem(blenderProcessQueueItem);
-                    NodeUpdate nodeUpdate = new NodeUpdate();
-                    nodeUpdate.setComputeType(compute_type);
-                    nodeUpdate.setSethlansNode(sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid));
-                    nodeUpdate.setInUse(false);
-                    renderNodeUpdateService.addUpdateNodeItem(nodeUpdate);
+                    NodeSlotUpdate nodeSlotUpdate = new NodeSlotUpdate();
+                    nodeSlotUpdate.setComputeType(compute_type);
+                    nodeSlotUpdate.setSethlansNode(sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid));
+                    nodeSlotUpdate.setInUse(false);
+                    nodeSlotUpdate.setOffline(false);
+                    nodeSlotUpdate.setViaQuery(false);
+                    nodeSlotUpdateService.addUpdateNodeItem(nodeSlotUpdate);
 
                 } catch (IOException | SQLException e) {
                     LOG.error(Throwables.getStackTraceAsString(e));
@@ -208,8 +210,8 @@ public class ServerRenderController {
     }
 
     @Autowired
-    public void setRenderNodeUpdateService(RenderNodeUpdateService renderNodeUpdateService) {
-        this.renderNodeUpdateService = renderNodeUpdateService;
+    public void setNodeSlotUpdateService(NodeSlotUpdateService nodeSlotUpdateService) {
+        this.nodeSlotUpdateService = nodeSlotUpdateService;
     }
 
     @Autowired

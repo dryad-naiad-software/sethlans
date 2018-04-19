@@ -21,8 +21,10 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.domains.node.NodeSlotUpdate;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
+import com.dryadandnaiad.sethlans.services.blender.NodeSlotUpdateService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
@@ -44,6 +46,7 @@ import org.springframework.web.bind.annotation.*;
 @Profile({"SERVER", "DUAL"})
 public class ServerBackgroundController {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
+    private NodeSlotUpdateService nodeSlotUpdateService;
     private BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService;
     private BlenderBenchmarkService blenderBenchmarkService;
     private NodeDiscoveryService nodeDiscoveryService;
@@ -65,61 +68,18 @@ public class ServerBackgroundController {
             SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
             if (sethlansNode != null && sethlansNode.isBenchmarkComplete()) {
                 LOG.debug("Received Idle Notification from " + sethlansNode.getHostname());
-                if (sethlansNode.getComputeType() != ComputeType.CPU_GPU) {
-                    if (compute_type == ComputeType.CPU && sethlansNode.isCpuSlotInUse()) {
-                        LOG.debug("CPU is idle, updating database.");
-                        sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                        sethlansNode.setCpuSlotInUse(false);
-                        sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid).getVersion());
-                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                    }
-                    if (compute_type == ComputeType.GPU && sethlansNode.isGpuSlotInUse()) {
-                        LOG.debug("GPU is idle, updating database.");
-
-                        sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                        sethlansNode.setGpuSlotInUse(false);
-                        sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid).getVersion());
-                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                    }
-                } else {
-                    switch (compute_type) {
-                        case CPU_GPU:
-                            if (sethlansNode.isCpuSlotInUse() && sethlansNode.isGpuSlotInUse()) {
-                                LOG.debug("Both slots are idle, updating database.");
-                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                                sethlansNode.setCpuSlotInUse(false);
-                                sethlansNode.setGpuSlotInUse(false);
-                                sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid).getVersion());
-                                sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                            }
-                            break;
-                        case CPU:
-                            if (sethlansNode.isCpuSlotInUse()) {
-                                LOG.debug("CPU is idle, updating database.");
-                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
-                                sethlansNode.setCpuSlotInUse(false);
-                                sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid).getVersion());
-                                sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                            }
-
-                            break;
-                        case GPU:
-                            if (sethlansNode.isGpuSlotInUse()) {
-                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
-                                sethlansNode.setGpuSlotInUse(false);
-                                sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid).getVersion());
-                                sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                            }
-                            LOG.debug("GPU is idle, updating database.");
-                            break;
-                    }
-
+                if (sethlansNode.isCpuSlotInUse() || sethlansNode.isGpuSlotInUse()) {
+                    LOG.debug(compute_type.getName() + " is idle, updating database.");
+                    NodeSlotUpdate nodeSlotUpdate = new NodeSlotUpdate();
+                    nodeSlotUpdate.setSethlansNode(sethlansNode);
+                    nodeSlotUpdate.setComputeType(compute_type);
+                    nodeSlotUpdate.setViaQuery(false);
+                    nodeSlotUpdate.setOffline(false);
+                    nodeSlotUpdate.setInUse(false);
+                    nodeSlotUpdateService.addUpdateNodeItem(nodeSlotUpdate);
                 }
             }
-
         }
-
-
     }
 
     @RequestMapping(value = "/api/update/node_status_update", method = RequestMethod.GET)
@@ -147,13 +107,10 @@ public class ServerBackgroundController {
                 } catch (InterruptedException e) {
                     LOG.debug(Throwables.getStackTraceAsString(e));
                 }
-
             } else {
                 updateNode(sethlansNodetoUpdate, tempNode);
             }
             LOG.debug(sethlansNodetoUpdate.getHostname() + " has been synced.");
-
-
         }
     }
 
@@ -190,5 +147,10 @@ public class ServerBackgroundController {
     @Autowired
     public void setBlenderProjectDatabaseService(BlenderProjectDatabaseService blenderProjectDatabaseService) {
         this.blenderProjectDatabaseService = blenderProjectDatabaseService;
+    }
+
+    @Autowired
+    public void setNodeSlotUpdateService(NodeSlotUpdateService nodeSlotUpdateService) {
+        this.nodeSlotUpdateService = nodeSlotUpdateService;
     }
 }

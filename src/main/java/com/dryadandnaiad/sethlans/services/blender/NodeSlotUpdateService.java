@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.blender;
 
-import com.dryadandnaiad.sethlans.domains.node.NodeUpdate;
+import com.dryadandnaiad.sethlans.domains.node.NodeSlotUpdate;
 
 /**
  * Created Mario Estrella on 4/16/2018.
@@ -27,9 +27,9 @@ import com.dryadandnaiad.sethlans.domains.node.NodeUpdate;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface RenderNodeUpdateService {
+public interface NodeSlotUpdateService {
 
-    void addUpdateNodeItem(NodeUpdate nodeUpdate);
+    void addUpdateNodeItem(NodeSlotUpdate nodeSlotUpdate);
 
     void startRenderNodeUpdateQueue();
 }

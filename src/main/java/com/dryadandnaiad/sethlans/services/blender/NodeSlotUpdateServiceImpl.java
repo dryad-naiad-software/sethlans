@@ -20,7 +20,7 @@
 package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
-import com.dryadandnaiad.sethlans.domains.node.NodeUpdate;
+import com.dryadandnaiad.sethlans.domains.node.NodeSlotUpdate;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,14 +38,14 @@ import java.util.List;
  * Project: sethlans
  */
 @Service
-public class RenderNodeUpdateServiceImpl implements RenderNodeUpdateService {
-    private List<NodeUpdate> nodeQueue = new ArrayList<>();
+public class NodeSlotUpdateServiceImpl implements NodeSlotUpdateService {
+    private List<NodeSlotUpdate> nodeQueue = new ArrayList<>();
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
-    private static final Logger LOG = LoggerFactory.getLogger(RenderNodeUpdateServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NodeSlotUpdateServiceImpl.class);
 
     @Override
-    public void addUpdateNodeItem(NodeUpdate nodeUpdate) {
-        nodeQueue.add(nodeUpdate);
+    public void addUpdateNodeItem(NodeSlotUpdate nodeSlotUpdate) {
+        nodeQueue.add(nodeSlotUpdate);
     }
 
     @Async
@@ -61,9 +61,16 @@ public class RenderNodeUpdateServiceImpl implements RenderNodeUpdateService {
                 Thread.sleep(200);
                 if (nodeQueue.size() > 0) {
                     LOG.debug("Running Node Update Queue");
-                    if (nodeQueue.get(0).isInUse()) {
+                    if (nodeQueue.get(0).isOffline() && nodeQueue.get(0).isViaQuery()) {
+                        nodeUpdateOffline(nodeQueue.get(0));
+                    }
+                    if (!nodeQueue.get(0).isOffline() && nodeQueue.get(0).isViaQuery()) {
+                        nodeUpdateOnline(nodeQueue.get(0));
+                    }
+                    if (nodeQueue.get(0).isInUse() && !nodeQueue.get(0).isViaQuery()) {
                         nodeUpdateTrue(nodeQueue.get(0));
-                    } else {
+                    }
+                    if (!nodeQueue.get(0).isInUse() && !nodeQueue.get(0).isViaQuery()) {
                         nodeUpdateFalse(nodeQueue.get(0));
                     }
                     nodeQueue.remove(0);
@@ -75,9 +82,28 @@ public class RenderNodeUpdateServiceImpl implements RenderNodeUpdateService {
         }
     }
 
-    private void nodeUpdateFalse(NodeUpdate nodeUpdate) {
-        SethlansNode sethlansNode = nodeUpdate.getSethlansNode();
-        switch (nodeUpdate.getComputeType()) {
+    private void nodeUpdateOnline(NodeSlotUpdate nodeSlotUpdate) {
+        SethlansNode sethlansNode = nodeSlotUpdate.getSethlansNode();
+        sethlansNode.setActive(true);
+        sethlansNode.setGpuSlotInUse(false);
+        sethlansNode.setCpuSlotInUse(false);
+        sethlansNode.setVersion(sethlansNodeDatabaseService.getById(sethlansNode.getId()).getVersion());
+        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+    }
+
+    private void nodeUpdateOffline(NodeSlotUpdate nodeSlotUpdate) {
+        SethlansNode sethlansNode = nodeSlotUpdate.getSethlansNode();
+        sethlansNode.setActive(false);
+        sethlansNode.setGpuSlotInUse(false);
+        sethlansNode.setCpuSlotInUse(false);
+        sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+        sethlansNode.setVersion(sethlansNodeDatabaseService.getById(sethlansNode.getId()).getVersion());
+        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+    }
+
+    private void nodeUpdateFalse(NodeSlotUpdate nodeSlotUpdate) {
+        SethlansNode sethlansNode = nodeSlotUpdate.getSethlansNode();
+        switch (nodeSlotUpdate.getComputeType()) {
             case CPU:
                 sethlansNode.setCpuSlotInUse(false);
                 sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
@@ -100,9 +126,9 @@ public class RenderNodeUpdateServiceImpl implements RenderNodeUpdateService {
         sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
     }
 
-    private void nodeUpdateTrue(NodeUpdate nodeUpdate) {
-        SethlansNode sethlansNode = nodeUpdate.getSethlansNode();
-        switch (nodeUpdate.getComputeType()) {
+    private void nodeUpdateTrue(NodeSlotUpdate nodeSlotUpdate) {
+        SethlansNode sethlansNode = nodeSlotUpdate.getSethlansNode();
+        switch (nodeSlotUpdate.getComputeType()) {
             case CPU:
                 sethlansNode.setCpuSlotInUse(true);
                 sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() - 1);

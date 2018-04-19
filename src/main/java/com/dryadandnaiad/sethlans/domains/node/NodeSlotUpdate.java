@@ -30,8 +30,10 @@ import lombok.Data;
  * Project: sethlans
  */
 @Data
-public class NodeUpdate {
+public class NodeSlotUpdate {
     private SethlansNode sethlansNode;
     private ComputeType computeType;
     private boolean inUse;
+    private boolean offline;
+    private boolean viaQuery;
 }

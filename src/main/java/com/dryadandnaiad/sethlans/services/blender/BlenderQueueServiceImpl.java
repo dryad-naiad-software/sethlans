@@ -23,7 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
-import com.dryadandnaiad.sethlans.domains.node.NodeUpdate;
+import com.dryadandnaiad.sethlans.domains.node.NodeSlotUpdate;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
@@ -52,7 +52,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
-    private RenderNodeUpdateService renderNodeUpdateService;
+    private NodeSlotUpdateService nodeSlotUpdateService;
     private static final Logger LOG = LoggerFactory.getLogger(BlenderQueueServiceImpl.class);
     private boolean populatingQueue;
     private boolean queueBeingPaused;
@@ -74,19 +74,11 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                         LOG.debug("Processing Project Queue.");
                         List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listAll();
                         List<SethlansNode> listToSort = new ArrayList<>();
-                        boolean listFirstCycle = true;
                         for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
                             if (!blenderRenderQueueItem.isComplete() && !blenderRenderQueueItem.isRendering() && !blenderRenderQueueItem.isPaused()) {
                                 timedLog(count, cycle, blenderRenderQueueItem.toString() + " is waiting to be rendered.");
                                 ComputeType computeType = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid()).getRenderOn();
-                                if (listToSort.size() == 0 && !listFirstCycle) {
-                                    Thread.sleep(1000);
-                                    listToSort = getSortedList(listToSort, computeType);
-                                }
-                                if (listToSort.size() == 0 && listFirstCycle) {
-                                    listToSort = getSortedList(listToSort, computeType);
-                                    listFirstCycle = false;
-                                }
+                                listToSort = getSortedList(listToSort, computeType);
                                 SethlansNode sethlansNode = listToSort.get(0);
                                 listToSort.remove(0);
                                 if (sethlansNode != null && sethlansNode.isActive() && sethlansNode.getAvailableRenderingSlots() > 0 && !sethlansNode.isDisabled()) {
@@ -127,7 +119,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         }
     }
 
-    private void sendQueueItemToNode(SethlansNode sethlansNode, ComputeType projectComputeType, BlenderProject blenderProject, BlenderRenderQueueItem blenderRenderQueueItem) {
+    private void sendQueueItemToNode(SethlansNode sethlansNode, ComputeType projectComputeType, BlenderProject blenderProject, BlenderRenderQueueItem blenderRenderQueueItem) throws InterruptedException {
         sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(sethlansNode.getConnection_uuid()); // Refresh node from DB first.
         // If both the project and the node is CPU and GPU, use the method with the lowest rating.
         if (sethlansNode.getComputeType().equals(ComputeType.CPU_GPU) && projectComputeType.equals(ComputeType.CPU_GPU)) {
@@ -194,7 +186,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
 
     }
 
-    private void sendToRemote(SethlansNode sethlansNode, ComputeType projectComputeType, BlenderRenderQueueItem blenderRenderQueueItem, String connectionURL, String params) {
+    private void sendToRemote(SethlansNode sethlansNode, ComputeType projectComputeType, BlenderRenderQueueItem blenderRenderQueueItem, String connectionURL, String params) throws InterruptedException {
 
         sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(sethlansNode.getConnection_uuid()); // Refresh node from DB first.
         LOG.debug("Sending " + blenderRenderQueueItem + " to " + sethlansNode.getHostname());
@@ -214,11 +206,14 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             }
             blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
 
-            NodeUpdate nodeUpdate = new NodeUpdate();
-            nodeUpdate.setComputeType(projectComputeType);
-            nodeUpdate.setInUse(true);
-            nodeUpdate.setSethlansNode(sethlansNode);
-            renderNodeUpdateService.addUpdateNodeItem(nodeUpdate);
+            NodeSlotUpdate nodeSlotUpdate = new NodeSlotUpdate();
+            nodeSlotUpdate.setComputeType(projectComputeType);
+            nodeSlotUpdate.setInUse(true);
+            nodeSlotUpdate.setOffline(false);
+            nodeSlotUpdate.setViaQuery(false);
+            nodeSlotUpdate.setSethlansNode(sethlansNode);
+            nodeSlotUpdateService.addUpdateNodeItem(nodeSlotUpdate);
+            Thread.sleep(1000);
 
         }
     }
@@ -328,7 +323,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     }
 
     @Autowired
-    public void setRenderNodeUpdateService(RenderNodeUpdateService renderNodeUpdateService) {
-        this.renderNodeUpdateService = renderNodeUpdateService;
+    public void setNodeSlotUpdateService(NodeSlotUpdateService nodeSlotUpdateService) {
+        this.nodeSlotUpdateService = nodeSlotUpdateService;
     }
 }

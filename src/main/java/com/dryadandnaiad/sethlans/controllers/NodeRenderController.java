@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
+import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderRenderService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
@@ -75,43 +76,44 @@ public class NodeRenderController {
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
+            ComputeType computeType = ComputeType.valueOf(SethlansUtils.getProperty(SethlansConfigKeys.COMPUTE_METHOD.toString()));
             LOG.debug("Render Request Received, preparing render task.");
             List<BlenderRenderTask> blenderRenderTaskList = blenderRenderTaskDatabaseService.listAll();
-            LOG.debug("Cleaning up any stray tasks.");
-            for (BlenderRenderTask blenderRenderTask : blenderRenderTaskList) {
-                blenderRenderTaskDatabaseService.delete(blenderRenderTask);
+            if (computeType == ComputeType.CPU_GPU && blenderRenderTaskList.size() == 2 || computeType != ComputeType.CPU_GPU && blenderRenderTaskList.size() == 1) {
+                LOG.debug("All slots are currently full. Rejecting request");
+            } else {
+                BlenderRenderTask blenderRenderTask;
+                BlenderFramePart framePart = new BlenderFramePart();
+                framePart.setFrameNumber(frame_number);
+                framePart.setFileExtension(file_extension);
+                framePart.setFrameFileName(frame_filename);
+                framePart.setPartFilename(part_filename);
+                framePart.setPartNumber(part_number);
+                framePart.setPartPositionMinY(part_position_min_y);
+                framePart.setPartPositionMaxY(part_position_max_y);
+
+                // Create a new task
+                blenderRenderTask = new BlenderRenderTask();
+                blenderRenderTask.setProject_uuid(project_uuid);
+                blenderRenderTask.setProjectName(project_name);
+                blenderRenderTask.setConnection_uuid(connection_uuid);
+                blenderRenderTask.setRenderOutputFormat(render_output_format);
+                blenderRenderTask.setSamples(samples);
+                blenderRenderTask.setBlenderEngine(blender_engine);
+                blenderRenderTask.setComputeType(compute_type);
+                blenderRenderTask.setBlendFilename(blend_file);
+                blenderRenderTask.setBlenderVersion(blender_version);
+                blenderRenderTask.setBlenderFramePart(framePart);
+                blenderRenderTask.setTaskResolutionX(part_resolution_x);
+                blenderRenderTask.setTaskResolutionY(part_resolution_y);
+                blenderRenderTask.setPartResPercentage(part_res_percentage);
+                blenderRenderTask.setComplete(false);
+                LOG.debug(blenderRenderTask.toString());
+                blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
+                blenderRenderService.startRenderService(project_uuid);
             }
 
-            BlenderRenderTask blenderRenderTask;
-            BlenderFramePart framePart = new BlenderFramePart();
-            framePart.setFrameNumber(frame_number);
-            framePart.setFileExtension(file_extension);
-            framePart.setFrameFileName(frame_filename);
-            framePart.setPartFilename(part_filename);
-            framePart.setPartNumber(part_number);
-            framePart.setPartPositionMinY(part_position_min_y);
-            framePart.setPartPositionMaxY(part_position_max_y);
 
-
-            // Create a new task
-            blenderRenderTask = new BlenderRenderTask();
-            blenderRenderTask.setProject_uuid(project_uuid);
-            blenderRenderTask.setProjectName(project_name);
-            blenderRenderTask.setConnection_uuid(connection_uuid);
-            blenderRenderTask.setRenderOutputFormat(render_output_format);
-            blenderRenderTask.setSamples(samples);
-            blenderRenderTask.setBlenderEngine(blender_engine);
-            blenderRenderTask.setComputeType(compute_type);
-            blenderRenderTask.setBlendFilename(blend_file);
-            blenderRenderTask.setBlenderVersion(blender_version);
-            blenderRenderTask.setBlenderFramePart(framePart);
-            blenderRenderTask.setTaskResolutionX(part_resolution_x);
-            blenderRenderTask.setTaskResolutionY(part_resolution_y);
-            blenderRenderTask.setPartResPercentage(part_res_percentage);
-            blenderRenderTask.setComplete(false);
-            LOG.debug(blenderRenderTask.toString());
-            blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
-            blenderRenderService.startRenderService(project_uuid);
 
         }
     }
