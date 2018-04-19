@@ -80,6 +80,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                 ComputeType computeType = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid()).getRenderOn();
                                 listToSort = getSortedList(listToSort, computeType);
                                 SethlansNode sethlansNode = listToSort.get(0);
+                                LOG.debug("Assigned " + sethlansNode.getHostname() + " to queue item. Removing from sorted list.");
                                 listToSort.remove(0);
                                 if (sethlansNode != null && sethlansNode.isActive() && sethlansNode.getAvailableRenderingSlots() > 0 && !sethlansNode.isDisabled()) {
                                     blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
@@ -288,24 +289,26 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     }
 
     private List<SethlansNode> getSortedList(List<SethlansNode> listToSort, ComputeType computeType) {
-        for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
-            if (sethlansNode.getAvailableRenderingSlots() > 0 && sethlansNode.isBenchmarkComplete() && sethlansNode.isActive()) {
-                SethlansUtils.listofNodes(computeType, listToSort, sethlansNode);
+        if (listToSort.size() == 0) {
+            for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
+                if (sethlansNode.getAvailableRenderingSlots() > 0 && sethlansNode.isBenchmarkComplete() && sethlansNode.isActive()) {
+                    SethlansUtils.listofNodes(computeType, listToSort, sethlansNode);
+                }
             }
-        }
-        if (SethlansUtils.sortedNodeList(computeType, listToSort)) {
-            LOG.debug("Returned List:");
-            for (SethlansNode sethlansNode : listToSort) {
-                LOG.debug(sethlansNode.getHostname() +
-                        ": Available Slots(" + sethlansNode.getAvailableRenderingSlots() +
-                        "). Compute Type(" + sethlansNode.getComputeType().getName() +
-                        "). CPU in use(" + sethlansNode.isCpuSlotInUse() +
-                        "). GPU in use (" + sethlansNode.isGpuSlotInUse() + ")");
+            if (SethlansUtils.sortedNodeList(computeType, listToSort)) {
+                LOG.debug("Returned List:");
+                for (SethlansNode sethlansNode : listToSort) {
+                    LOG.debug(sethlansNode.getHostname() +
+                            ": Available Slots(" + sethlansNode.getAvailableRenderingSlots() +
+                            "). Compute Type(" + sethlansNode.getComputeType().getName() +
+                            "). CPU in use(" + sethlansNode.isCpuSlotInUse() +
+                            "). GPU in use (" + sethlansNode.isGpuSlotInUse() + ")");
+                }
+                return listToSort;
             }
-            return listToSort;
         }
 
-        return null;
+        return listToSort;
     }
 
 
