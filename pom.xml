@@ -48,6 +48,7 @@
         <info.version>${project.version}</info.version>
         <sLauncherClass>org.springframework.boot.loader.JarLauncher</sLauncherClass>
         <fileName>${project.artifactId}-${project.version}.${git.closest.tag.commit.count}</fileName>
+        <buildNumber>${git.closest.tag.commit.count}</buildNumber>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -454,33 +455,7 @@
                     </execution>
                 </executions>
             </plugin>
-
-
-            <!-- Creates an OSX app Bundle -->
-            <plugin>
-                <groupId>sh.tak.appbundler</groupId>
-                <artifactId>appbundle-maven-plugin</artifactId>
-                <version>1.2.0</version>
-                <configuration>
-                    <buildDirectory>
-                        ${project.build.directory}/${binLocation}/${fileName}-macOS
-                    </buildDirectory>
-                    <mainClass>${sLauncherClass}</mainClass>
-                    <iconFile>icon/sethlans.icns</iconFile>
-                    <generateDiskImageFile>true</generateDiskImageFile>
-                    <diskImageFile>${project.build.directory}/${binLocation}/${fileName}.dmg</diskImageFile>
-                    <jrePath>jre/macOS/jre1.8.0_162.jre</jrePath>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>bundle</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- Creates Windows executable file -->
+            <!--Staging area-->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
@@ -500,11 +475,40 @@
                                 </copy>
                                 <copy file="${basedir}/src/main/resources/sethlans.manifest"
                                       tofile="${izpack.staging}/${fileName}.manifest"/>
+                                <unzip src="${basedir}/jre/macOS/jre1.8.0_162.jre.zip"
+                                       dest="${project.build.directory}"/>
                             </target>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Creates an OSX app Bundle -->
+            <plugin>
+                <groupId>sh.tak.appbundler</groupId>
+                <artifactId>appbundle-maven-plugin</artifactId>
+                <version>1.2.0</version>
+                <configuration>
+                    <buildDirectory>
+                        ${project.build.directory}/${binLocation}/${fileName}-macOS
+                    </buildDirectory>
+                    <mainClass>${sLauncherClass}</mainClass>
+                    <iconFile>icon/sethlans.icns</iconFile>
+                    <generateDiskImageFile>true</generateDiskImageFile>
+                    <diskImageFile>${project.build.directory}/${binLocation}/${fileName}.dmg</diskImageFile>
+                    <jrePath>${project.build.directory}/jre1.8.0_162.jre</jrePath>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>bundle</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Creates Windows executable file -->
+
             <plugin>
                 <groupId>com.akathist.maven.plugins.launch4j</groupId>
                 <artifactId>launch4j-maven-plugin</artifactId>
@@ -539,11 +543,11 @@
                             </jre>
                             <versionInfo>
                                 <productName>Sethlans</productName>
-                                <fileVersion>${project.version}.0</fileVersion>
-                                <txtFileVersion>${project.version}.0</txtFileVersion>
+                                <fileVersion>${project.version}.${buildNumber}</fileVersion>
+                                <txtFileVersion>${project.version}.${buildNumber}</txtFileVersion>
                                 <fileDescription>${project.name}</fileDescription>
-                                <copyright>2017 ${project.organization.name}</copyright>
-                                <productVersion>${project.version}.0</productVersion>
+                                <copyright>2018 ${project.organization.name}</copyright>
+                                <productVersion>${project.version}.${buildNumber}</productVersion>
                                 <txtProductVersion>${project.version}</txtProductVersion>
                                 <companyName>${project.organization.name}</companyName>
                                 <internalName>${project.name}</internalName>
@@ -580,12 +584,12 @@
 
                             </jre>
                             <versionInfo>
-                                <productName>Sethlans</productName>
-                                <fileVersion>${project.version}.0</fileVersion>
-                                <txtFileVersion>${project.version}.0</txtFileVersion>
+                                <productName>Sethlans Installer</productName>
+                                <fileVersion>${project.version}.${buildNumber}</fileVersion>
+                                <txtFileVersion>${project.version}.${buildNumber}</txtFileVersion>
                                 <fileDescription>${project.name}</fileDescription>
-                                <copyright>2017 ${project.organization.name}</copyright>
-                                <productVersion>${project.version}.0</productVersion>
+                                <copyright>2018 ${project.organization.name}</copyright>
+                                <productVersion>${project.version}.${buildNumber}</productVersion>
                                 <txtProductVersion>${project.version}</txtProductVersion>
                                 <companyName>${project.organization.name}</companyName>
                                 <internalName>${project.name}</internalName>
