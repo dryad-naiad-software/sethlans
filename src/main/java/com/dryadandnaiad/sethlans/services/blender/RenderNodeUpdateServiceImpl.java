@@ -58,7 +58,7 @@ public class RenderNodeUpdateServiceImpl implements RenderNodeUpdateService {
         }
         while (true) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(200);
                 if (nodeQueue.size() > 0) {
                     LOG.debug("Running Node Update Queue");
                     if (nodeQueue.get(0).isInUse()) {

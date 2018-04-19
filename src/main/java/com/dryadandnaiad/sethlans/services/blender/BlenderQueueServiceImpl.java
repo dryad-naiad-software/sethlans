@@ -74,16 +74,18 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                         LOG.debug("Processing Project Queue.");
                         List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listAll();
                         List<SethlansNode> listToSort = new ArrayList<>();
+                        boolean listFirstCycle = true;
                         for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
                             if (!blenderRenderQueueItem.isComplete() && !blenderRenderQueueItem.isRendering() && !blenderRenderQueueItem.isPaused()) {
                                 timedLog(count, cycle, blenderRenderQueueItem.toString() + " is waiting to be rendered.");
                                 ComputeType computeType = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid()).getRenderOn();
-                                if (listToSort.size() == 0) {
+                                if (listToSort.size() == 0 && !listFirstCycle) {
                                     Thread.sleep(1000);
                                     listToSort = getSortedList(listToSort, computeType);
                                 }
                                 SethlansNode sethlansNode = listToSort.get(0);
                                 listToSort.remove(0);
+                                listFirstCycle = false;
                                 if (sethlansNode != null && sethlansNode.isActive() && sethlansNode.getAvailableRenderingSlots() > 0 && !sethlansNode.isDisabled()) {
                                     blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
                                     BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
