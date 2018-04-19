@@ -593,7 +593,8 @@
                                 <txtProductVersion>${project.version}</txtProductVersion>
                                 <companyName>${project.organization.name}</companyName>
                                 <internalName>${project.name}</internalName>
-                                <originalFilename>${project.name}.exe</originalFilename>
+                                <originalFilename>${project.name}.${project.version}.${buildNumber}.exe
+                                </originalFilename>
                             </versionInfo>
                         </configuration>
                     </execution>
