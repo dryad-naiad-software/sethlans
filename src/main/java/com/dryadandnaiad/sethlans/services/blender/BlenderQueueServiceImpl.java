@@ -288,13 +288,20 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     }
 
     private List<SethlansNode> getSortedList(List<SethlansNode> listToSort, ComputeType computeType) {
-        LOG.debug("getting sorted list");
         for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
             if (sethlansNode.getAvailableRenderingSlots() > 0 && sethlansNode.isBenchmarkComplete() && sethlansNode.isActive()) {
                 SethlansUtils.listofNodes(computeType, listToSort, sethlansNode);
             }
         }
         if (SethlansUtils.sortedNodeList(computeType, listToSort)) {
+            LOG.debug("Returned List:");
+            for (SethlansNode sethlansNode : listToSort) {
+                LOG.debug(sethlansNode.getHostname() +
+                        ": Available Slots(" + sethlansNode.getAvailableRenderingSlots() +
+                        "). Compute Type(" + sethlansNode.getComputeType().getName() +
+                        "). CPU in use(" + sethlansNode.isCpuSlotInUse() +
+                        "). GPU in use (" + sethlansNode.isGpuSlotInUse() + ")");
+            }
             return listToSort;
         }
 

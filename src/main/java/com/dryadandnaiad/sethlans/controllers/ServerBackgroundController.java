@@ -63,23 +63,32 @@ public class ServerBackgroundController {
 
     @PostMapping(value = "/api/update/node_idle_notification")
     public void nodeIdleNotification(@RequestParam String connection_uuid, ComputeType compute_type) {
-        BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueDatabaseService.listAll().get(0).getProject_uuid());
-        if (blenderRenderQueueDatabaseService.listAll().size() > 0 && !isFirstProjectRecent(blenderProject)) {
-            SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
-            if (sethlansNode != null && sethlansNode.isBenchmarkComplete()) {
-                LOG.debug("Received Idle Notification from " + sethlansNode.getHostname());
-                if (sethlansNode.isCpuSlotInUse() || sethlansNode.isGpuSlotInUse()) {
-                    LOG.debug(compute_type.getName() + " is idle, updating database.");
-                    NodeSlotUpdate nodeSlotUpdate = new NodeSlotUpdate();
-                    nodeSlotUpdate.setSethlansNode(sethlansNode);
-                    nodeSlotUpdate.setComputeType(compute_type);
-                    nodeSlotUpdate.setViaQuery(false);
-                    nodeSlotUpdate.setOffline(false);
-                    nodeSlotUpdate.setInUse(false);
-                    nodeSlotUpdateService.addUpdateNodeItem(nodeSlotUpdate);
-                }
+        if (blenderProjectDatabaseService.listAll().size() != 0) {
+            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueDatabaseService.listAll().get(0).getProject_uuid());
+            if (blenderRenderQueueDatabaseService.listAll().size() > 0 && !isFirstProjectRecent(blenderProject)) {
+                updateNode(connection_uuid, compute_type);
+            }
+        } else {
+            updateNode(connection_uuid, compute_type);
+        }
+    }
+
+    private void updateNode(String connection_uuid, ComputeType compute_type) {
+        SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
+        if (sethlansNode != null && sethlansNode.isBenchmarkComplete()) {
+            LOG.debug("Received Idle Notification from " + sethlansNode.getHostname());
+            if (sethlansNode.isCpuSlotInUse() || sethlansNode.isGpuSlotInUse()) {
+                LOG.debug(compute_type.getName() + " is idle, updating database.");
+                NodeSlotUpdate nodeSlotUpdate = new NodeSlotUpdate();
+                nodeSlotUpdate.setSethlansNode(sethlansNode);
+                nodeSlotUpdate.setComputeType(compute_type);
+                nodeSlotUpdate.setViaQuery(false);
+                nodeSlotUpdate.setOffline(false);
+                nodeSlotUpdate.setInUse(false);
+                nodeSlotUpdateService.addUpdateNodeItem(nodeSlotUpdate);
             }
         }
+
     }
 
     @RequestMapping(value = "/api/update/node_status_update", method = RequestMethod.GET)
