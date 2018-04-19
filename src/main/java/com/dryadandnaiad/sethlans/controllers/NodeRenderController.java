@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
+import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
@@ -31,6 +32,7 @@ import com.dryadandnaiad.sethlans.services.blender.BlenderRenderService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
+import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +64,7 @@ public class NodeRenderController {
     private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
     private BlenderBenchmarkService blenderBenchmarkService;
     private BlenderRenderService blenderRenderService;
+    private SethlansAPIConnectionService sethlansAPIConnectionService;
     private static final Logger LOG = LoggerFactory.getLogger(NodeRenderController.class);
 
     @RequestMapping(value = "/api/render/request", method = RequestMethod.POST)
@@ -81,6 +84,10 @@ public class NodeRenderController {
             List<BlenderRenderTask> blenderRenderTaskList = blenderRenderTaskDatabaseService.listAll();
             if (computeType == ComputeType.CPU_GPU && blenderRenderTaskList.size() == 2 || computeType != ComputeType.CPU_GPU && blenderRenderTaskList.size() == 1) {
                 LOG.debug("All slots are currently full. Rejecting request");
+                SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connection_uuid);
+                String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_reject/";
+                String params = "connection_uuid=" + connection_uuid + "&project_uuid=" + project_uuid + "&frame_number=" + frame_number + "&part_number=" + part_number;
+                sethlansAPIConnectionService.sendToRemoteGET(connectionURL, params);
             } else {
                 BlenderRenderTask blenderRenderTask;
                 BlenderFramePart framePart = new BlenderFramePart();
@@ -203,5 +210,10 @@ public class NodeRenderController {
     @Autowired
     public void setBlenderRenderService(BlenderRenderService blenderRenderService) {
         this.blenderRenderService = blenderRenderService;
+    }
+
+    @Autowired
+    public void setSethlansAPIConnectionService(SethlansAPIConnectionService sethlansAPIConnectionService) {
+        this.sethlansAPIConnectionService = sethlansAPIConnectionService;
     }
 }

@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.domains.node.NodeSlotUpdate;
@@ -28,6 +29,7 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.blender.BlenderProcessRenderQueueService;
 import com.dryadandnaiad.sethlans.services.blender.NodeSlotUpdateService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
@@ -79,6 +81,7 @@ public class ServerRenderController {
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private BlenderProcessRenderQueueService blenderProcessRenderQueueService;
     private NodeSlotUpdateService nodeSlotUpdateService;
+    private BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService;
 
 
     @GetMapping(value = "/api/project/blender_binary")
@@ -186,6 +189,23 @@ public class ServerRenderController {
 
     }
 
+    @GetMapping(value = "/api/project/node_reject/")
+    public void rejectedProject(@RequestParam String connection_uuid,
+                                @RequestParam String project_uuid,
+                                @RequestParam int frame_number, @RequestParam int part_number) {
+        for (BlenderRenderQueueItem renderQueueItem : blenderRenderQueueDatabaseService.listQueueItemsByProjectUUID(project_uuid)) {
+            if (renderQueueItem.getConnection_uuid().equals(connection_uuid) &&
+                    renderQueueItem.getBlenderFramePart().getFrameNumber() == frame_number &&
+                    renderQueueItem.getBlenderFramePart().getPartNumber() == part_number) {
+                renderQueueItem.setRendering(false);
+                renderQueueItem.setConnection_uuid(null);
+                blenderRenderQueueDatabaseService.saveOrUpdate(renderQueueItem);
+            }
+
+        }
+
+    }
+
     @GetMapping(value = "/api/project/blend_file/")
     public void downloadBlendfile(HttpServletResponse response, @RequestParam String connection_uuid, @RequestParam String project_uuid) {
         if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) == null) {
@@ -198,6 +218,10 @@ public class ServerRenderController {
 
     }
 
+    @Autowired
+    public void setBlenderRenderQueueDatabaseService(BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService) {
+        this.blenderRenderQueueDatabaseService = blenderRenderQueueDatabaseService;
+    }
 
     @Autowired
     public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {
