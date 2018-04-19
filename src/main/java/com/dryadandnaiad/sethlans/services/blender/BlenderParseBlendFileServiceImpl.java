@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -103,7 +103,7 @@ public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileSe
             }
             return new BlendFile(sceneName.substring(2), engine, frameStart, frameEnd, frameSkip, resPercent, resolutionX, resolutionY, cameraName.substring(2), cyclesSamples);
         } catch (IOException | NullPointerException e) {
-            LOG.error("Error parsing " + blendFile + "\n" + error);
+            LOG.error("Error parsing " + blendFile + " " + error);
             LOG.error(Throwables.getStackTraceAsString(e));
 
         } catch (InterruptedException e) {

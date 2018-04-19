@@ -157,7 +157,7 @@ public class ProjectController {
             project = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
         }
         if (project.getProjectType().equals(ProjectType.STILL_IMAGE)) {
-            LOG.debug(project.getFrameFileNames().size() + "\n" + project.toString());
+            LOG.debug(project.getFrameFileNames().size() + " " + project.toString());
             File image = new File(project.getFrameFileNames().get(0));
             SethlansUtils.serveFile(image, response);
         }

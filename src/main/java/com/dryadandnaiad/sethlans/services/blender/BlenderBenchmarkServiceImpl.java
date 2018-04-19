@@ -249,7 +249,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     }
 
     private void prepareScriptandExecute(BlenderBenchmarkTask benchmarkTask) {
-        LOG.debug("Processing benchmark task: \n" + benchmarkTask.toString());
+        LOG.debug("Processing benchmark task: " + benchmarkTask.toString());
         File benchmarkDir = new File(tempDir + File.separator + benchmarkTask.getBenchmark_uuid() + "_" + benchmarkTask.getBenchmarkURL());
         if (downloadRequiredFiles(benchmarkDir, benchmarkTask)) {
             benchmarkTask = blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);

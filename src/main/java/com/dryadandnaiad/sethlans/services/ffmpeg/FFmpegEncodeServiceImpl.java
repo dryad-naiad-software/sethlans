@@ -97,6 +97,7 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
             BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray())));
             String output;
             while ((output = in.readLine()) != null) {
+                output = output.replace("\n", " ").replace("\r", " "); // FFmpeg seems to include linebreaks in their strings.
                 LOG.debug(output);
             }
             error = errorStream.toString();
@@ -108,7 +109,7 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
 
             FileUtils.deleteDirectory(new File(blenderProject.getProjectRootDir() + File.separator + "temp"));
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         }
     }
 
