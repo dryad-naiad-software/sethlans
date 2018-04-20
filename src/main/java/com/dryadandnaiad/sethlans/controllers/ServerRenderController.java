@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.domains.node.NodeSlotUpdate;
@@ -194,7 +195,8 @@ public class ServerRenderController {
                                 @RequestParam int frame_number, @RequestParam int part_number) {
         LOG.debug(connection_uuid + " " + project_uuid + " " + frame_number + " " + part_number + " Received");
         LOG.debug("Received rejected render from " + sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid).getHostname() + ". Returning to queue.");
-//        for (BlenderRenderQueueItem renderQueueItem : blenderRenderQueueDatabaseService.listQueueItemsByProjectUUID(project_uuid)) {
+        for (BlenderRenderQueueItem renderQueueItem : blenderRenderQueueDatabaseService.listQueueItemsByProjectUUID(project_uuid)) {
+            LOG.debug(renderQueueItem.toString());
 //            if (renderQueueItem.getConnection_uuid().equals(connection_uuid) &&
 //                    renderQueueItem.getBlenderFramePart().getFrameNumber() == frame_number &&
 //                    renderQueueItem.getBlenderFramePart().getPartNumber() == part_number) {
@@ -203,7 +205,7 @@ public class ServerRenderController {
 //                blenderRenderQueueDatabaseService.saveOrUpdate(renderQueueItem);
 //            }
 //
-//        }
+        }
 
     }
 
