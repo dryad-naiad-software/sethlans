@@ -70,6 +70,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 if (queueItemUpdateList.size() > 0) {
                     for (BlenderRenderQueueItem blenderRenderQueueItem : queueItemUpdateList) {
                         blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+                        queueItemUpdateList.remove(blenderRenderQueueItem);
                     }
                 }
                 if (!sethlansNodeDatabaseService.listAll().isEmpty() || !blenderRenderQueueDatabaseService.listAll().isEmpty()) {
@@ -177,14 +178,13 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 if (projectComputeType.equals(ComputeType.CPU_GPU)) {
                     if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating() && !sethlansNode.isGpuSlotInUse()) {
                         projectComputeType = ComputeType.GPU;
-                    }
-                    if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating() && sethlansNode.isGpuSlotInUse()) {
+                    } else if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating() && sethlansNode.isGpuSlotInUse()) {
                         projectComputeType = ComputeType.CPU;
-                    }
-                    if (sethlansNode.getCombinedGPURating() > sethlansNode.getCpuRating() && sethlansNode.isCpuSlotInUse()) {
+                    } else if (sethlansNode.getCombinedGPURating() > sethlansNode.getCpuRating() && sethlansNode.isCpuSlotInUse()) {
                         projectComputeType = ComputeType.GPU;
-                    }
-                    if (sethlansNode.getCombinedGPURating() > sethlansNode.getCpuRating() && !sethlansNode.isCpuSlotInUse()) {
+                    } else if (sethlansNode.getCombinedGPURating() > sethlansNode.getCpuRating() && !sethlansNode.isCpuSlotInUse()) {
+                        projectComputeType = ComputeType.CPU;
+                    } else {
                         projectComputeType = ComputeType.CPU;
                     }
                 }
