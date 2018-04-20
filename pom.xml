@@ -477,8 +477,11 @@
                         <configuration>
                             <target>
                                 <zip destfile="${project.build.directory}/${binLocation}/${fileName}-macOS.zip">
-                                    <fileset dir="${project.build.directory}/${binLocation}/${fileName}-macOS"/>
+                                    <fileset dir="${project.build.directory}/${binLocation}"
+                                             includes="${fileName}.dmg"/>
                                 </zip>
+                                <delete file="${project.build.directory}/${binLocation}/${fileName}.dmg"/>
+
                             </target>
                         </configuration>
                     </execution>
@@ -496,7 +499,8 @@
                     </buildDirectory>
                     <mainClass>${sLauncherClass}</mainClass>
                     <iconFile>icon/sethlans.icns</iconFile>
-                    <generateDiskImageFile>false</generateDiskImageFile>
+                    <generateDiskImageFile>true</generateDiskImageFile>
+                    <diskImageFile>${project.build.directory}/${binLocation}/${fileName}.dmg</diskImageFile>
                     <jrePath>${project.build.directory}/jre1.8.0_162.jre</jrePath>
                 </configuration>
                 <executions>
