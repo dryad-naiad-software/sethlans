@@ -172,29 +172,28 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                      BlenderProject blenderProject, BlenderRenderQueueItem blenderRenderQueueItem) throws InterruptedException {
         sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(sethlansNode.getConnection_uuid()); // Refresh node from DB first.
         // If both the project and the node is CPU and GPU, use the method with the lowest rating.
+        ComputeType computeTypeToSend = projectComputeType;
 
         switch (sethlansNode.getComputeType()) {
             case CPU_GPU:
                 if (projectComputeType.equals(ComputeType.CPU_GPU)) {
                     if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating() && !sethlansNode.isGpuSlotInUse()) {
-                        projectComputeType = ComputeType.GPU;
+                        computeTypeToSend = ComputeType.GPU;
                     } else if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating() && sethlansNode.isGpuSlotInUse()) {
-                        projectComputeType = ComputeType.CPU;
+                        computeTypeToSend = ComputeType.CPU;
                     } else if (sethlansNode.getCombinedGPURating() > sethlansNode.getCpuRating() && sethlansNode.isCpuSlotInUse()) {
-                        projectComputeType = ComputeType.GPU;
+                        computeTypeToSend = ComputeType.GPU;
                     } else if (sethlansNode.getCombinedGPURating() > sethlansNode.getCpuRating() && !sethlansNode.isCpuSlotInUse()) {
-                        projectComputeType = ComputeType.CPU;
-                    } else {
-                        projectComputeType = ComputeType.CPU;
+                        computeTypeToSend = ComputeType.CPU;
                     }
                 }
             case CPU:
                 if (projectComputeType.equals(ComputeType.CPU_GPU)) {
-                    projectComputeType = ComputeType.CPU;
+                    computeTypeToSend = ComputeType.CPU;
                 }
             case GPU:
                 if (projectComputeType.equals(ComputeType.CPU_GPU)) {
-                    projectComputeType = ComputeType.GPU;
+                    computeTypeToSend = ComputeType.GPU;
                 }
 
         }
@@ -207,7 +206,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 "&render_output_format=" + blenderProject.getRenderOutputFormat() +
                 "&samples=" + blenderProject.getSamples() +
                 "&blender_engine=" + blenderProject.getBlenderEngine() +
-                "&compute_type=" + projectComputeType +
+                "&compute_type=" + computeTypeToSend +
                 "&blend_file=" + blenderProject.getBlendFilename() +
                 "&blender_version=" + blenderProject.getBlenderVersion() +
                 "&frame_filename=" + blenderRenderQueueItem.getBlenderFramePart().getFrameFileName() +
@@ -220,14 +219,14 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 "&part_position_max_y=" + blenderRenderQueueItem.getBlenderFramePart().getPartPositionMaxY() +
                 "&part_res_percentage=" + blenderProject.getResPercentage() +
                 "&file_extension=" + blenderRenderQueueItem.getBlenderFramePart().getFileExtension();
-        switch (projectComputeType) {
+        switch (computeTypeToSend) {
             case GPU:
                 if (!sethlansNode.isGpuSlotInUse()) {
-                    sendToRemote(sethlansNode, projectComputeType, blenderRenderQueueItem, connectionURL, params);
+                    sendToRemote(sethlansNode, computeTypeToSend, blenderRenderQueueItem, connectionURL, params);
                 }
             case CPU:
                 if (!sethlansNode.isCpuSlotInUse()) {
-                    sendToRemote(sethlansNode, projectComputeType, blenderRenderQueueItem, connectionURL, params);
+                    sendToRemote(sethlansNode, computeTypeToSend, blenderRenderQueueItem, connectionURL, params);
 
                 }
             default:
