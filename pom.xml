@@ -480,6 +480,7 @@
                                      basedir="${project.build.directory}/${binLocation}"
                                      includes="${project.build.directory}/${binLocation}/${fileName}.dmg"
                                 />
+                                <delete file="${project.build.directory}/${binLocation}/${fileName}.dmg"/>
                             </target>
                         </configuration>
                     </execution>
