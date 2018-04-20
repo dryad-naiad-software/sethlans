@@ -193,6 +193,7 @@ public class ServerRenderController {
     public void rejectedProject(@RequestParam String connection_uuid,
                                 @RequestParam String project_uuid,
                                 @RequestParam int frame_number, @RequestParam int part_number) {
+        LOG.debug("Received rejected render from " + sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid).getHostname() + ". Returning to queue.");
         for (BlenderRenderQueueItem renderQueueItem : blenderRenderQueueDatabaseService.listQueueItemsByProjectUUID(project_uuid)) {
             if (renderQueueItem.getConnection_uuid().equals(connection_uuid) &&
                     renderQueueItem.getBlenderFramePart().getFrameNumber() == frame_number &&
