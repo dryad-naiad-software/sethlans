@@ -30,18 +30,21 @@ import {Observable} from "rxjs/Observable";
 export class HomeComponent implements OnInit {
   currentMode: Mode;
   mode: any = Mode;
-  firstTime: boolean;
 
 
   constructor(private http: HttpClient) {
-    this.http.get('/api/info/first_time').subscribe((firstTime: boolean) => this.firstTime = firstTime);
   }
 
   ngOnInit() {
-    if (this.firstTime == false) {
-      let timer = Observable.timer(45000, 30000);
-      timer.subscribe(() => this.reload());
-    }
+    this.http.get('/api/info/first_time').subscribe((firstTime: boolean) => {
+      if (firstTime == false) {
+        let timer = Observable.timer(45000, 30000);
+        timer.subscribe(() => {
+          this.reload()
+        });
+      }
+    });
+
     this.http.get('/api/info/sethlans_mode', {responseType: 'text'})
       .subscribe((sethlansmode: Mode) => {
         this.currentMode = sethlansmode;
