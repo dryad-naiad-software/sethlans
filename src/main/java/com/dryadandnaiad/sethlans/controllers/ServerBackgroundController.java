@@ -67,7 +67,7 @@ public class ServerBackgroundController {
     @PostMapping(value = "/api/update/node_idle_notification")
     public void nodeIdleNotification(@RequestParam String connection_uuid, ComputeType compute_type) {
         try {
-            if (blenderProjectDatabaseService.listAll().size() != 0) {
+            if (blenderProjectDatabaseService.listAll().size() != 0 && blenderRenderQueueDatabaseService.listAll().size() != 0) {
                 BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueDatabaseService.listAll().get(0).getProject_uuid());
                 if (blenderProject == null) {
                     updateNode(connection_uuid, compute_type);

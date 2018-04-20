@@ -310,6 +310,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                     }
                 }
             }
+            in.close();
 
             BufferedReader errorIn = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(errorStream.toByteArray())));
 
@@ -318,6 +319,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             while ((error = errorIn.readLine()) != null) {
                 LOG.debug(error);
             }
+            errorIn.close();
 
             String[] timeToConvert;
             if (time != null) {

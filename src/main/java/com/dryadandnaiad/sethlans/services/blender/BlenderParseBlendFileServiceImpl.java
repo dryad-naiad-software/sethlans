@@ -75,7 +75,13 @@ public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileSe
 
             String output = in.readLine();
 
-            error = errorStream.toString();
+            in.close();
+
+            BufferedReader err = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray())));
+            while ((error = err.readLine()) != null) {
+                LOG.debug(error);
+            }
+            err.close();
 
             List<String> values;
             values = Arrays.asList(output.split("\\s*,\\s*"));

@@ -84,6 +84,7 @@ public class SethlansLogRetrievalServiceImpl implements SethlansLogRetrievalServ
                 }
 
             }
+            input.close();
         } catch (IOException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
         }

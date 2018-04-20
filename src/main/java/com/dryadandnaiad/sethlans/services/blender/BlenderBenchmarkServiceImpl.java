@@ -354,6 +354,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                     }
                 }
             }
+            in.close();
             BufferedReader errorIn = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(errorStream.toByteArray())));
 
 
@@ -361,6 +362,8 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             while ((error = errorIn.readLine()) != null) {
                 LOG.debug(error);
             }
+            errorIn.close();
+
 
             String[] timeToConvert;
             if (time != null) {

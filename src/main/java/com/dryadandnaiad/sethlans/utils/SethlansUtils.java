@@ -621,8 +621,13 @@ public class SethlansUtils {
             while ((output = in.readLine()) != null) {
                 LOG.debug(output);
             }
+            in.close();
 
-            error = errorStream.toString();
+            BufferedReader err = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray())));
+            while ((error = err.readLine()) != null) {
+                LOG.debug(error);
+            }
+            err.close();
 
             LOG.debug(error);
         } catch (InterruptedException | IOException e) {

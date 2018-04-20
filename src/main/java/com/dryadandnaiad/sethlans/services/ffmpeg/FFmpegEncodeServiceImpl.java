@@ -97,11 +97,16 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
             BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray())));
             String output;
             while ((output = in.readLine()) != null) {
-                output = output.replaceAll("(\\r|\\n)", " "); // FFmpeg seems to include linebreaks in their strings.
                 LOG.debug(output);
             }
-            error = errorStream.toString();
-            LOG.debug(error);
+            in.close();
+
+            BufferedReader err = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray())));
+            while ((error = err.readLine()) != null) {
+                LOG.debug(error);
+            }
+            err.close();
+
             BlenderProject projectToUpdate = blenderProjectDatabaseService.getById(blenderProject.getId());
             projectToUpdate.setProjectStatus(ProjectStatus.Finished);
             blenderProjectDatabaseService.saveOrUpdate(projectToUpdate);

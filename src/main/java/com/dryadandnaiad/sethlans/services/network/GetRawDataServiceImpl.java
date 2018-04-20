@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -63,6 +63,7 @@ public class GetRawDataServiceImpl implements GetRawDataService {
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 result.append(line).append("\n");
             }
+            reader.close();
 
             return result.toString();
 
@@ -110,6 +111,7 @@ public class GetRawDataServiceImpl implements GetRawDataService {
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 result.append(line).append("\n");
             }
+            reader.close();
 
             return result.toString();
 
@@ -145,6 +147,7 @@ public class GetRawDataServiceImpl implements GetRawDataService {
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 result.append(line).append("\n");
             }
+            reader.close();
 
             return result.toString();
         } catch (NoSuchFileException | UnsupportedEncodingException | FileNotFoundException ex) {
