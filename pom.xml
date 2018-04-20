@@ -468,22 +468,22 @@
                             </target>
                         </configuration>
                     </execution>
-                <!--<execution>-->
-                <!--<id>compress-mac-dmg</id>-->
-                <!--<phase>install</phase>-->
-                <!--<goals>-->
-                <!--<goal>run</goal>-->
-                <!--</goals>-->
-                <!--<configuration>-->
-                <!--<target>-->
-                <!--<zip destfile="${project.build.directory}/${binLocation}/${fileName}-macOS.zip"-->
-                <!--basedir="${project.build.directory}/${binLocation}"-->
-                <!--includes="${project.build.directory}/${binLocation}/${fileName}.dmg"-->
-                <!--/>-->
-                <!--</target>-->
-                <!--</configuration>-->
-                <!--</execution>-->
-                <!--</executions>-->
+                    <execution>
+                        <id>compress-mac-dmg</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <zip destfile="${project.build.directory}/${binLocation}/${fileName}-macOS.zip">
+                                    <fileset dir="${project.build.directory}/${binLocation}"
+                                             includes="${fileName}.dmg"/>
+                                </zip>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Creates an OSX app Bundle -->
