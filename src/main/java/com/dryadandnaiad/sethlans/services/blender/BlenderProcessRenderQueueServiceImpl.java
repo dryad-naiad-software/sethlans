@@ -30,6 +30,7 @@ import com.dryadandnaiad.sethlans.services.database.BlenderProcessQueueDatabaseS
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,7 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private BlenderProjectService blenderProjectService;
     private BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService;
+    private BlenderQueueService blenderQueueService;
     private boolean populatingQueue;
 
     @Override
@@ -121,7 +123,7 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
                                 } catch (IOException | SQLException e) {
                                     e.printStackTrace();
                                 }
-                                blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+                                blenderQueueService.addQueueUpdateItem(blenderRenderQueueItem);
                             }
 
                             if (blenderRenderQueueItem.isComplete()) {
@@ -183,6 +185,7 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
                 LOG.debug("Stopping Render Queue Service");
                 break;
             } catch (NullPointerException e) {
+                LOG.error(Throwables.getStackTraceAsString(e));
 
             }
         }
@@ -212,5 +215,10 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
     @Autowired
     public void setBlenderProjectService(BlenderProjectService blenderProjectService) {
         this.blenderProjectService = blenderProjectService;
+    }
+
+    @Autowired
+    public void setBlenderQueueService(BlenderQueueService blenderQueueService) {
+        this.blenderQueueService = blenderQueueService;
     }
 }

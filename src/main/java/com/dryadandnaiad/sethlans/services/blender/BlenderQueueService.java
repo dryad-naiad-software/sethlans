@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
 import org.springframework.scheduling.annotation.Async;
 
 /**
@@ -37,4 +38,6 @@ public interface BlenderQueueService {
     void deleteRenderQueueforProject(BlenderProject blenderProject);
 
     void populateProjectQueue(BlenderProject blenderProject);
+
+    void addQueueUpdateItem(BlenderRenderQueueItem blenderRenderQueueItem);
 }

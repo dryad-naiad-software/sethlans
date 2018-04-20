@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.node.NodeSlotUpdate;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
+import com.dryadandnaiad.sethlans.services.blender.BlenderQueueService;
 import com.dryadandnaiad.sethlans.services.blender.NodeSlotUpdateService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
@@ -54,6 +55,7 @@ public class ServerBackgroundController {
     private BlenderBenchmarkService blenderBenchmarkService;
     private NodeDiscoveryService nodeDiscoveryService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
+    private BlenderQueueService blenderQueueService;
     private static final Logger LOG = LoggerFactory.getLogger(ServerBackgroundController.class);
 
     private boolean isFirstProjectRecent(BlenderProject blenderProject) {
@@ -103,7 +105,7 @@ public class ServerBackgroundController {
                 for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
                     blenderRenderQueueItem.setRendering(false);
                     blenderRenderQueueItem.setConnection_uuid(null);
-                    blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+                    blenderQueueService.addQueueUpdateItem(blenderRenderQueueItem);
                 }
             }
         }
@@ -181,5 +183,10 @@ public class ServerBackgroundController {
     @Autowired
     public void setNodeSlotUpdateService(NodeSlotUpdateService nodeSlotUpdateService) {
         this.nodeSlotUpdateService = nodeSlotUpdateService;
+    }
+
+    @Autowired
+    public void setBlenderQueueService(BlenderQueueService blenderQueueService) {
+        this.blenderQueueService = blenderQueueService;
     }
 }

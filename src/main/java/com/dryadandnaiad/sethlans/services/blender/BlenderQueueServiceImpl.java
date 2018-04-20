@@ -56,19 +56,25 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     private static final Logger LOG = LoggerFactory.getLogger(BlenderQueueServiceImpl.class);
     private boolean populatingQueue;
     private boolean queueBeingPaused;
+    private List<BlenderRenderQueueItem> queueItemUpdateList;
+
+
 
     @Override
     @Async
     public void startQueue() {
-
-
         int count = 0;
         int cycle = 10;
         //noinspection InfiniteLoopStatement
         while (true) {
-
             try {
                 Thread.sleep(5000);
+                if (queueItemUpdateList.size() > 0) {
+                    for (BlenderRenderQueueItem blenderRenderQueueItem : queueItemUpdateList) {
+                        blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+                    }
+
+                }
                 if (!sethlansNodeDatabaseService.listAll().isEmpty() || !blenderRenderQueueDatabaseService.listAll().isEmpty()) {
                     if (!populatingQueue || !queueBeingPaused) {
                         LOG.debug("Processing Project Queue.");
@@ -100,7 +106,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                     LOG.debug(sethlansNode.getHostname() + " is no longer active. Returning " + blenderRenderQueueItem + " to pending render state.");
                                     blenderRenderQueueItem.setRendering(false);
                                     blenderRenderQueueItem.setConnection_uuid(null);
-                                    blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+                                    addQueueUpdateItem(blenderRenderQueueItem);
                                 }
                             }
                         }
@@ -208,7 +214,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
                 blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             }
-            blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+            addQueueUpdateItem(blenderRenderQueueItem);
 
             NodeSlotUpdate nodeSlotUpdate = new NodeSlotUpdate();
             nodeSlotUpdate.setComputeType(projectComputeType);
@@ -248,7 +254,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 }
             }
             blenderProject.setProjectStatus(ProjectStatus.Paused);
-            blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+            addQueueUpdateItem(blenderRenderQueueItem);
             blenderProjectDatabaseService.saveOrUpdate(blenderProject);
 
         }
@@ -310,6 +316,11 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         }
 
         return null;
+    }
+
+    @Override
+    public void addQueueUpdateItem(BlenderRenderQueueItem blenderRenderQueueItem) {
+        queueItemUpdateList.add(blenderRenderQueueItem);
     }
 
 

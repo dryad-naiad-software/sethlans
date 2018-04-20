@@ -27,6 +27,7 @@ import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.domains.node.NodeSlotUpdate;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.blender.BlenderProcessRenderQueueService;
+import com.dryadandnaiad.sethlans.services.blender.BlenderQueueService;
 import com.dryadandnaiad.sethlans.services.blender.NodeSlotUpdateService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
@@ -81,8 +82,8 @@ public class ServerRenderController {
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private BlenderProcessRenderQueueService blenderProcessRenderQueueService;
     private NodeSlotUpdateService nodeSlotUpdateService;
+    private BlenderQueueService blenderQueueService;
     private BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService;
-
 
     @GetMapping(value = "/api/project/blender_binary")
     public void downloadBlenderBinary(HttpServletResponse response, @RequestParam String connection_uuid,
@@ -202,7 +203,7 @@ public class ServerRenderController {
                     renderQueueItem.getBlenderFramePart().getPartNumber() == part_number) {
                 renderQueueItem.setRendering(false);
                 renderQueueItem.setConnection_uuid(null);
-                blenderRenderQueueDatabaseService.saveOrUpdate(renderQueueItem);
+                blenderQueueService.addQueueUpdateItem(renderQueueItem);
             }
         }
     }
@@ -217,6 +218,11 @@ public class ServerRenderController {
             SethlansUtils.serveFile(blend_file, response);
         }
 
+    }
+
+    @Autowired
+    public void setBlenderQueueService(BlenderQueueService blenderQueueService) {
+        this.blenderQueueService = blenderQueueService;
     }
 
     @Autowired
