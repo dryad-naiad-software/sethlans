@@ -22,7 +22,7 @@ stage('build') {
         sh "rm -rf *"
         checkout scm
         sh 'mvn clean install'
-        archiveArtifacts artifacts: '**/target/binaries/*.*, fingerprint: true
+        archiveArtifacts artifacts: '**/target/binaries/*.*', fingerprint: true
     }
     emailext(body: '${DEFAULT_CONTENT}', mimeType: 'text/html',
             replyTo: '$DEFAULT_REPLYTO', subject: '${DEFAULT_SUBJECT}',
