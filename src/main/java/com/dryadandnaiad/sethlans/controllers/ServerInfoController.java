@@ -20,13 +20,16 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,6 +100,23 @@ public class ServerInfoController {
             }
         }
         return totalSlotsCount;
+    }
+
+    @GetMapping(value = {"/server_used_space"})
+    public Long getClientUsedSpace() {
+        return getClientTotalSpace() - getClientFreeSpace();
+    }
+
+
+    @GetMapping(value = {"/server_free_space"})
+    public Long getClientFreeSpace() {
+        return new File(SethlansUtils.getProperty(SethlansConfigKeys.PROJECT_DIR.toString())).getFreeSpace() / 1024 / 1024 / 1024;
+    }
+
+    @GetMapping(value = {"/server_total_space"})
+    public Long getClientTotalSpace() {
+        return new File(SethlansUtils.getProperty(SethlansConfigKeys.PROJECT_DIR.toString())).getTotalSpace() / 1024 / 1024 / 1024;
+
     }
 
 

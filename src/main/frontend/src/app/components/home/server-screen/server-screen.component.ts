@@ -74,15 +74,15 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
     this.http.get('/api/info/total_nodes').subscribe((totalNodes: number) => {
       this.totalNodes = totalNodes;
     });
-    this.http.get('/api/info/client_free_space').subscribe((freespace: number) => {
+    this.http.get('/api/info/server_free_space').subscribe((freespace: number) => {
       this.freeSpace = freespace;
     });
 
-    this.http.get('/api/info/client_total_space').subscribe((totalspace: number) => {
+    this.http.get('/api/info/server_total_space').subscribe((totalspace: number) => {
       this.totalSpace = totalspace;
     });
 
-    this.http.get('/api/info/client_used_space').subscribe((usedspace: number) => {
+    this.http.get('/api/info/server_used_space').subscribe((usedspace: number) => {
       this.usedSpace = usedspace;
     });
     this.http.get('/api/info/active_nodes').subscribe((activeNodes: number) => {

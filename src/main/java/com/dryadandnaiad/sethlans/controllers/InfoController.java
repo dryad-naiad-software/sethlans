@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
@@ -89,6 +90,17 @@ public class InfoController {
         }
     }
 
+    @GetMapping(value = {"/total_memory"})
+    public String totalMemory() {
+        CPU cpu = new CPU();
+        return cpu.getTotalMemory();
+    }
+
+    @GetMapping(value = {"/cpu_name"})
+    public String cpuInfo() {
+        CPU cpu = new CPU();
+        return cpu.getName();
+    }
 
     @GetMapping(value = {"/sethlans_port"})
     public String getHttpsPort() {

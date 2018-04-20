@@ -66,21 +66,30 @@ public class ServerBackgroundController {
 
     @PostMapping(value = "/api/update/node_idle_notification")
     public void nodeIdleNotification(@RequestParam String connection_uuid, ComputeType compute_type) {
-        if (blenderProjectDatabaseService.listAll().size() != 0) {
-            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueDatabaseService.listAll().get(0).getProject_uuid());
-            if (blenderRenderQueueDatabaseService.listAll().size() > 0 && !isFirstProjectRecent(blenderProject)) {
+        try {
+            if (blenderProjectDatabaseService.listAll().size() != 0) {
+                BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueDatabaseService.listAll().get(0).getProject_uuid());
+                if (blenderProject == null) {
+                    updateNode(connection_uuid, compute_type);
+
+                }
+                if (blenderRenderQueueDatabaseService.listAll().size() > 0 && !isFirstProjectRecent(blenderProject)) {
+                    updateNode(connection_uuid, compute_type);
+                }
+            } else {
                 updateNode(connection_uuid, compute_type);
             }
-        } else {
-            updateNode(connection_uuid, compute_type);
+        } catch (NullPointerException e) {
+            LOG.error(Throwables.getStackTraceAsString(e));
+
         }
     }
 
     private void updateNode(String connection_uuid, ComputeType compute_type) {
 
         SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
-        List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listQueueItemsByConnectionUUID(connection_uuid);
         if (sethlansNode != null && sethlansNode.isBenchmarkComplete()) {
+            List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listQueueItemsByConnectionUUID(sethlansNode.getConnection_uuid());
             LOG.debug("Received Idle Notification from " + sethlansNode.getHostname());
             if (sethlansNode.isCpuSlotInUse() || sethlansNode.isGpuSlotInUse()) {
                 LOG.debug(compute_type.getName() + " is idle, updating database.");
