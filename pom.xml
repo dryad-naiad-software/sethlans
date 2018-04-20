@@ -480,6 +480,8 @@
                                     <fileset dir="${project.build.directory}/${binLocation}"
                                              includes="${fileName}.dmg"/>
                                 </zip>
+                                <delete file="${project.build.directory}/${binLocation}/${fileName}.dmg"/>
+
                             </target>
                         </configuration>
                     </execution>
