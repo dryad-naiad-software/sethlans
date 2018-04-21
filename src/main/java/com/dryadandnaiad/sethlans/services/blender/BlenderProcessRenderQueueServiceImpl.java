@@ -81,7 +81,7 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
         }
         while (true) {
             try {
-                Thread.sleep(5000);
+                Thread.sleep(1000);
                 if (!populatingQueue) {
                     LOG.debug("Running processing queue. ");
                     List<BlenderProcessQueueItem> blenderProcessQueueItemList = blenderProcessQueueDatabaseService.listAll();
@@ -116,7 +116,9 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
                                     Files.write(path, bytes);
 
 
-                                    LOG.debug("Processing completed render from " + sethlansNodeDatabaseService.getByConnectionUUID(blenderProcessQueueItem.getConnection_uuid()).getHostname() + ". Part: " + blenderProcessQueueItem.getPart_number()
+                                    LOG.debug("Processing completed render from " +
+                                            sethlansNodeDatabaseService.getByConnectionUUID(blenderProcessQueueItem.getConnection_uuid()).getHostname()
+                                            + ". Part: " + blenderProcessQueueItem.getPart_number()
                                             + " Frame: " + blenderProcessQueueItem.getFrame_number());
 
 
@@ -124,14 +126,16 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
                                     e.printStackTrace();
                                 }
                                 blenderQueueService.addQueueUpdateItem(blenderRenderQueueItem);
-                            }
 
+                            }
                             if (blenderRenderQueueItem.isComplete()) {
                                 remainingTotalQueue--;
                             }
                             if (!blenderRenderQueueItem.isComplete() && blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() == blenderProcessQueueItem.getFrame_number()) {
                                 remainingPartsForFrame++;
                             }
+
+
                         }
 
                         for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
