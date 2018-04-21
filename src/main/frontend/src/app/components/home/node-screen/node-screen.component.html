@@ -49,8 +49,10 @@
         <ngb-progressbar
           type="info"
           [value]="usedSpace"
-          [max]="totalSpace">{{freeSpace}}GiB of {{totalSpace}}GiB Free
+          [max]="totalSpace">
         </ngb-progressbar>
+        <span class="float-left"><i class="fa fa-square" style="color: #17a2b8"></i>Used - {{usedSpace}} GiB</span>
+        <span class="float-right"><i class="fa fa-square" style="color: #e9ecef"></i>Free - {{freeSpace}} GiB</span>
       </li>
 
     </ul>
