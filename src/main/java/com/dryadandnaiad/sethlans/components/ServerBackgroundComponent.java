@@ -20,9 +20,6 @@
 package com.dryadandnaiad.sethlans.components;
 
 import com.dryadandnaiad.sethlans.services.blender.BlenderDownloadService;
-import com.dryadandnaiad.sethlans.services.blender.BlenderProcessRenderQueueService;
-import com.dryadandnaiad.sethlans.services.blender.BlenderQueueService;
-import com.dryadandnaiad.sethlans.services.blender.NodeSlotUpdateService;
 import com.dryadandnaiad.sethlans.services.network.NodeQueryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,26 +38,9 @@ import javax.annotation.PostConstruct;
 @Profile({"SERVER", "DUAL"})
 @Component
 public class ServerBackgroundComponent {
-    private BlenderQueueService blenderQueueService;
-    private BlenderProcessRenderQueueService blenderProcessRenderQueueService;
     private BlenderDownloadService blenderDownloadService;
     private NodeQueryService nodeQueryService;
-    private NodeSlotUpdateService nodeSlotUpdateService;
     private static final Logger LOG = LoggerFactory.getLogger(ServerBackgroundComponent.class);
-
-    @PostConstruct
-    public void projectQueue() {
-        LOG.debug("Starting Project Queue Service");
-        blenderQueueService.startQueue();
-    }
-
-    @PostConstruct
-    public void renderQueue() {
-        LOG.debug("Starting Render Queue Service");
-        blenderProcessRenderQueueService.startRenderProcessingQueue();
-        nodeSlotUpdateService.startRenderNodeUpdateQueue();
-
-    }
 
 
     @PostConstruct
@@ -76,28 +56,13 @@ public class ServerBackgroundComponent {
     }
 
     @Autowired
-    public void setBlenderQueueService(BlenderQueueService blenderQueueService) {
-        this.blenderQueueService = blenderQueueService;
-    }
-
-
-    @Autowired
     public void setBlenderDownloadService(BlenderDownloadService blenderDownloadService) {
         this.blenderDownloadService = blenderDownloadService;
     }
 
-    @Autowired
-    public void setBlenderProcessRenderQueueService(BlenderProcessRenderQueueService blenderProcessRenderQueueService) {
-        this.blenderProcessRenderQueueService = blenderProcessRenderQueueService;
-    }
 
     @Autowired
     public void setNodeQueryService(NodeQueryService nodeQueryService) {
         this.nodeQueryService = nodeQueryService;
-    }
-
-    @Autowired
-    public void setNodeSlotUpdateService(NodeSlotUpdateService nodeSlotUpdateService) {
-        this.nodeSlotUpdateService = nodeSlotUpdateService;
     }
 }

@@ -19,21 +19,13 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
-import com.dryadandnaiad.sethlans.domains.node.NodeSlotUpdate;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.services.blender.BlenderProcessRenderQueueService;
-import com.dryadandnaiad.sethlans.services.blender.BlenderQueueService;
-import com.dryadandnaiad.sethlans.services.blender.NodeSlotUpdateService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
-import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
-import com.google.common.base.Throwables;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,12 +39,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.rowset.serial.SerialBlob;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
-import java.sql.Blob;
-import java.sql.SQLException;
 
 /**
  * Created Mario Estrella on 12/10/17.
@@ -80,10 +68,7 @@ public class ServerRenderController {
 
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
-    private BlenderProcessRenderQueueService blenderProcessRenderQueueService;
-    private NodeSlotUpdateService nodeSlotUpdateService;
-    private BlenderQueueService blenderQueueService;
-    private BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService;
+
 
     @GetMapping(value = "/api/project/blender_binary")
     public void downloadBlenderBinary(HttpServletResponse response, @RequestParam String connection_uuid,
@@ -160,33 +145,7 @@ public class ServerRenderController {
                                 @RequestParam MultipartFile part,
                                 @RequestParam int part_number,
                                 @RequestParam int frame_number, @RequestParam long render_time) {
-        if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) == null) {
-            LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
-        } else {
-            if (!part.isEmpty()) {
-                try {
-                    Blob blob = new SerialBlob(part.getBytes());
-                    BlenderProcessQueueItem blenderProcessQueueItem = new BlenderProcessQueueItem();
-                    blenderProcessQueueItem.setConnection_uuid(connection_uuid);
-                    blenderProcessQueueItem.setProject_uuid(project_uuid);
-                    blenderProcessQueueItem.setPart(blob);
-                    blenderProcessQueueItem.setPart_number(part_number);
-                    blenderProcessQueueItem.setFrame_number(frame_number);
-                    blenderProcessQueueItem.setRenderTime(render_time);
-                    blenderProcessRenderQueueService.addQueueItem(blenderProcessQueueItem);
-                    NodeSlotUpdate nodeSlotUpdate = new NodeSlotUpdate();
-                    nodeSlotUpdate.setComputeType(compute_type);
-                    nodeSlotUpdate.setSethlansNode(sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid));
-                    nodeSlotUpdate.setInUse(false);
-                    nodeSlotUpdate.setOffline(false);
-                    nodeSlotUpdate.setViaQuery(false);
-                    nodeSlotUpdateService.addUpdateNodeItem(nodeSlotUpdate);
 
-                } catch (IOException | SQLException e) {
-                    LOG.error(Throwables.getStackTraceAsString(e));
-                }
-            }
-        }
 
     }
 
@@ -194,18 +153,7 @@ public class ServerRenderController {
     public void rejectedProject(@RequestParam String connection_uuid,
                                 @RequestParam String project_uuid,
                                 @RequestParam int frame_number, @RequestParam int part_number) {
-        SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
-        LOG.debug("Received rejected render from " + sethlansNode.getHostname() + ". Returning to queue.");
-        BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(project_uuid);
-        for (BlenderRenderQueueItem renderQueueItem : blenderRenderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProject_uuid())) {
-            if (renderQueueItem.getConnection_uuid() != null && renderQueueItem.getConnection_uuid().equals(sethlansNode.getConnection_uuid()) &&
-                    renderQueueItem.getBlenderFramePart().getFrameNumber() == frame_number &&
-                    renderQueueItem.getBlenderFramePart().getPartNumber() == part_number) {
-                renderQueueItem.setRendering(false);
-                renderQueueItem.setConnection_uuid(null);
-                blenderQueueService.addQueueUpdateItem(renderQueueItem);
-            }
-        }
+
     }
 
     @GetMapping(value = "/api/project/blend_file/")
@@ -220,15 +168,7 @@ public class ServerRenderController {
 
     }
 
-    @Autowired
-    public void setBlenderQueueService(BlenderQueueService blenderQueueService) {
-        this.blenderQueueService = blenderQueueService;
-    }
 
-    @Autowired
-    public void setBlenderRenderQueueDatabaseService(BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService) {
-        this.blenderRenderQueueDatabaseService = blenderRenderQueueDatabaseService;
-    }
 
     @Autowired
     public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {
@@ -238,15 +178,5 @@ public class ServerRenderController {
     @Autowired
     public void setBlenderProjectDatabaseService(BlenderProjectDatabaseService blenderProjectDatabaseService) {
         this.blenderProjectDatabaseService = blenderProjectDatabaseService;
-    }
-
-    @Autowired
-    public void setNodeSlotUpdateService(NodeSlotUpdateService nodeSlotUpdateService) {
-        this.nodeSlotUpdateService = nodeSlotUpdateService;
-    }
-
-    @Autowired
-    public void setBlenderProcessRenderQueueService(BlenderProcessRenderQueueService blenderProcessRenderQueueService) {
-        this.blenderProcessRenderQueueService = blenderProcessRenderQueueService;
     }
 }

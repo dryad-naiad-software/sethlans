@@ -95,17 +95,13 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
                             LOG.debug("Informing server of idle slot(s)");
                             counter = 0;
                             if (slots == 1) {
-                                sendIdleUpdate(computeType);
                             }
                             if (slots == 2) {
                                 if (blenderRenderTaskDatabaseService.listAll().size() == 0) {
-                                    sendIdleUpdate(computeType);
                                 } else {
                                     for (BlenderRenderTask blenderRenderTask : blenderRenderTaskDatabaseService.listAll()) {
                                         if (blenderRenderTask.getComputeType().equals(ComputeType.CPU)) {
-                                            sendIdleUpdate(ComputeType.GPU);
                                         } else {
-                                            sendIdleUpdate(ComputeType.CPU);
                                         }
                                     }
                                 }
@@ -126,14 +122,6 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
         }
 
 
-    }
-
-    private void sendIdleUpdate(ComputeType computeType) {
-        for (SethlansServer sethlansServer : sethlansServerDatabaseService.listAll()) {
-            String url = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/update/node_idle_notification";
-            String param = "connection_uuid=" + sethlansServer.getConnection_uuid() + "&compute_type=" + computeType;
-            sethlansAPIConnectionService.sendToRemotePOST(url, param);
-        }
     }
 
 

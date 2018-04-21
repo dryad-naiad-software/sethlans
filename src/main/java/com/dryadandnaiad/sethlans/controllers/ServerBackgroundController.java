@@ -20,13 +20,9 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
-import com.dryadandnaiad.sethlans.domains.node.NodeSlotUpdate;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
-import com.dryadandnaiad.sethlans.services.blender.BlenderQueueService;
-import com.dryadandnaiad.sethlans.services.blender.NodeSlotUpdateService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
@@ -36,9 +32,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created Mario Estrella on 12/25/17.
@@ -50,12 +47,10 @@ import java.util.List;
 @Profile({"SERVER", "DUAL"})
 public class ServerBackgroundController {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
-    private NodeSlotUpdateService nodeSlotUpdateService;
     private BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService;
     private BlenderBenchmarkService blenderBenchmarkService;
     private NodeDiscoveryService nodeDiscoveryService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
-    private BlenderQueueService blenderQueueService;
     private static final Logger LOG = LoggerFactory.getLogger(ServerBackgroundController.class);
 
     private boolean isFirstProjectRecent(BlenderProject blenderProject) {
@@ -66,51 +61,7 @@ public class ServerBackgroundController {
         return projectStart == 0L || minutes < 30;
     }
 
-    @PostMapping(value = "/api/update/node_idle_notification")
-    public void nodeIdleNotification(@RequestParam String connection_uuid, ComputeType compute_type) {
-        try {
-            if (blenderProjectDatabaseService.listAll().size() != 0 && blenderRenderQueueDatabaseService.listAll().size() != 0) {
-                BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueDatabaseService.listAll().get(0).getProject_uuid());
-                if (blenderProject == null) {
-                    updateNode(connection_uuid, compute_type);
 
-                }
-                if (blenderRenderQueueDatabaseService.listAll().size() > 0 && !isFirstProjectRecent(blenderProject)) {
-                    updateNode(connection_uuid, compute_type);
-                }
-            } else {
-                updateNode(connection_uuid, compute_type);
-            }
-        } catch (NullPointerException e) {
-            LOG.error(Throwables.getStackTraceAsString(e));
-
-        }
-    }
-
-    private void updateNode(String connection_uuid, ComputeType compute_type) {
-
-        SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
-        if (sethlansNode != null && sethlansNode.isBenchmarkComplete()) {
-            List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listQueueItemsByConnectionUUID(sethlansNode.getConnection_uuid());
-            LOG.debug("Received Idle Notification from " + sethlansNode.getHostname());
-            if (sethlansNode.isCpuSlotInUse() || sethlansNode.isGpuSlotInUse()) {
-                LOG.debug(compute_type.getName() + " is idle, updating database.");
-                NodeSlotUpdate nodeSlotUpdate = new NodeSlotUpdate();
-                nodeSlotUpdate.setSethlansNode(sethlansNode);
-                nodeSlotUpdate.setComputeType(compute_type);
-                nodeSlotUpdate.setViaQuery(false);
-                nodeSlotUpdate.setOffline(false);
-                nodeSlotUpdate.setInUse(false);
-                nodeSlotUpdateService.addUpdateNodeItem(nodeSlotUpdate);
-                for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
-                    blenderRenderQueueItem.setRendering(false);
-                    blenderRenderQueueItem.setConnection_uuid(null);
-                    blenderQueueService.addQueueUpdateItem(blenderRenderQueueItem);
-                }
-            }
-        }
-
-    }
 
     @RequestMapping(value = "/api/update/node_status_update", method = RequestMethod.GET)
     public void nodeStatusToServerUpdate(@RequestParam String connection_uuid) {
@@ -180,13 +131,5 @@ public class ServerBackgroundController {
         this.blenderProjectDatabaseService = blenderProjectDatabaseService;
     }
 
-    @Autowired
-    public void setNodeSlotUpdateService(NodeSlotUpdateService nodeSlotUpdateService) {
-        this.nodeSlotUpdateService = nodeSlotUpdateService;
-    }
 
-    @Autowired
-    public void setBlenderQueueService(BlenderQueueService blenderQueueService) {
-        this.blenderQueueService = blenderQueueService;
-    }
 }

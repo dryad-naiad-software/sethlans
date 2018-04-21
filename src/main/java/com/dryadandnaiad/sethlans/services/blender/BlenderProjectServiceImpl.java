@@ -50,7 +50,6 @@ import java.util.List;
 @Service
 public class BlenderProjectServiceImpl implements BlenderProjectService {
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
-    private BlenderQueueService blenderQueueService;
     private FFmpegEncodeService fFmpegEncodeService;
     private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectServiceImpl.class);
 
@@ -58,7 +57,6 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Async
     public void startProject(BlenderProject blenderProject) {
         configureFrameList(blenderProject);
-        blenderQueueService.populateProjectQueue(blenderProject);
     }
 
     @Override
@@ -74,7 +72,6 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Override
     public void pauseProject(Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
-        blenderQueueService.pauseRenderQueueforProject(blenderProject);
         blenderProject.setProjectStatus(ProjectStatus.Paused);
         blenderProject.setEndTime(System.currentTimeMillis());
         blenderProjectDatabaseService.saveOrUpdate(blenderProject);
@@ -83,7 +80,6 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Override
     public void pauseProject(String username, Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(username, id);
-        blenderQueueService.pauseRenderQueueforProject(blenderProject);
         blenderProject.setProjectStatus(ProjectStatus.Paused);
         blenderProject.setEndTime(System.currentTimeMillis());
         blenderProjectDatabaseService.saveOrUpdate(blenderProject);
@@ -92,8 +88,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Override
     public void stopProject(Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
-        blenderQueueService.pauseRenderQueueforProject(blenderProject);
-        blenderQueueService.deleteRenderQueueforProject(blenderProject);
+
         blenderProject.setProjectStatus(ProjectStatus.Added);
         blenderProject.setStartTime(0L);
         blenderProject.setEndTime(0L);
@@ -117,8 +112,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Override
     public void stopProject(String username, Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(username, id);
-        blenderQueueService.pauseRenderQueueforProject(blenderProject);
-        blenderQueueService.deleteRenderQueueforProject(blenderProject);
+
         blenderProject.setProjectStatus(ProjectStatus.Added);
         blenderProject.setStartTime(0L);
         blenderProject.setEndTime(0L);
@@ -305,10 +299,6 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         this.blenderProjectDatabaseService = blenderProjectDatabaseService;
     }
 
-    @Autowired
-    public void setBlenderQueueService(BlenderQueueService blenderQueueService) {
-        this.blenderQueueService = blenderQueueService;
-    }
 
 
 }
