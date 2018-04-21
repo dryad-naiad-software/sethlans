@@ -29,6 +29,8 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
  */
 public interface BlenderQueueService {
 
+    void startQueue();
+
     void populateQueueWithProject(BlenderProject blenderProject);
 
     void pauseBlenderProjectQueue(BlenderProject blenderProject);

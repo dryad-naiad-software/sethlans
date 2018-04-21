@@ -22,7 +22,6 @@ package com.dryadandnaiad.sethlans.services.blender;
 import com.dryadandnaiad.sethlans.domains.blender.PartCoordinates;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
-import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.ffmpeg.FFmpegEncodeService;
 import com.google.common.base.Throwables;
@@ -99,45 +98,26 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Override
     public void stopProject(Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
-
-        blenderProject.setProjectStatus(ProjectStatus.Added);
-        blenderProject.setStartTime(0L);
-        blenderProject.setEndTime(0L);
-        blenderProject.setTotalProjectTime(0L);
-
+        blenderQueueService.stopBlenderProjectQueue(blenderProject);
         int count = blenderProject.getFrameFileNames().size();
         deleteProjectFrames(blenderProject, count);
-
-        blenderProject.setFrameFileNames(new ArrayList<>());
-        blenderProject.setCurrentFrameThumbnail(null);
-        blenderProject.setCurrentPercentage(0);
-        blenderProjectDatabaseService.saveOrUpdate(blenderProject);
-    }
-
-    private void deleteProjectFrames(BlenderProject blenderProject, int count) {
-        for (int i = 0; i < count; i++) {
-            int frame = i + 1;
-            try {
-                FileUtils.deleteDirectory(new File(blenderProject.getProjectRootDir() + File.separator + "frame_" + frame));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override
     public void stopProject(String username, Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(username, id);
-
-
+        blenderQueueService.stopBlenderProjectQueue(blenderProject);
         int count = blenderProject.getFrameFileNames().size();
         deleteProjectFrames(blenderProject, count);
 
     }
 
+
     @Override
     public void deleteProject(Long id) {
-        String directory = blenderProjectDatabaseService.getById(id).getProjectRootDir();
+        BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
+        blenderQueueService.stopBlenderProjectQueue(blenderProject);
+        String directory = blenderProject.getProjectRootDir();
         blenderProjectDatabaseService.delete(id);
         try {
             Thread.sleep(20000);
@@ -149,7 +129,9 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     @Override
     public void deleteProject(String username, Long id) {
-        String directory = blenderProjectDatabaseService.getProjectByUser(username, id).getProjectRootDir();
+        BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(username, id);
+        blenderQueueService.stopBlenderProjectQueue(blenderProject);
+        String directory = blenderProject.getProjectRootDir();
         blenderProjectDatabaseService.deleteWithVerification(username, id);
         try {
             Thread.sleep(20000);
@@ -159,6 +141,71 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         }
     }
 
+    @Override
+    public boolean combineParts(BlenderProject blenderProject, int frameNumber) {
+        List<String> partCleanup = new ArrayList<>();
+        List<BufferedImage> images = new ArrayList<>();
+        String frameFilename = null;
+        String storedDir = null;
+        String fileExtension = null;
+        String plainFilename = null;
+        for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
+            if (frameNumber == blenderFramePart.getFrameNumber()) {
+                try {
+                    images.add(ImageIO.read(new File(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension())));
+                    partCleanup.add(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension());
+                    frameFilename = blenderFramePart.getStoredDir() + blenderFramePart.getFrameFileName() + "." + blenderFramePart.getFileExtension();
+                    storedDir = blenderFramePart.getStoredDir();
+                    fileExtension = blenderFramePart.getFileExtension();
+                    plainFilename = blenderFramePart.getFrameFileName();
+                } catch (IOException e) {
+                    LOG.error(Throwables.getStackTraceAsString(e));
+                }
+            }
+        }
+        BufferedImage concatImage = new BufferedImage(
+                images.get(0).getWidth(), images.get(0).getHeight() * blenderProject.getPartsPerFrame(),
+                BufferedImage.TYPE_INT_ARGB);
+        Graphics g = concatImage.getGraphics();
+        int count = 0;
+        for (BufferedImage image : images) {
+            if (count == 0) {
+                g.drawImage(image, 0, 0, null);
+            } else {
+                g.drawImage(image, 0, image.getHeight() * count, null);
+            }
+            count++;
+        }
+
+        try {
+            ImageIO.write(concatImage, fileExtension.toUpperCase(), new File(frameFilename));
+        } catch (IOException e) {
+            LOG.error(Throwables.getStackTraceAsString(e));
+        }
+        blenderProject.getFrameFileNames().add(frameFilename);
+        blenderProject.setCurrentFrameThumbnail(createThumbnail(frameFilename, storedDir, plainFilename, fileExtension));
+        deleteParts(partCleanup);
+        return true;
+    }
+
+    @Override
+    public void createMP4(BlenderProject blenderProject) {
+        String movieFileDirectory = blenderProject.getProjectRootDir() + File.separator + "MP4" + File.separator;
+        String movieFile = blenderProject.getProjectName().toLowerCase().replaceAll(" ", "_") + ".mp4";
+        blenderProject.setMovieFileLocation(movieFileDirectory + movieFile);
+        new File(movieFileDirectory).mkdir();
+        fFmpegEncodeService.encodeImagesToVideo(blenderProject);
+
+    }
+
+    @Override
+    public void createAVI(BlenderProject blenderProject) {
+        String movieFileDirectory = blenderProject.getProjectRootDir() + File.separator + "AVI" + File.separator;
+        String movieFile = blenderProject.getProjectName().toLowerCase().replaceAll(" ", "_") + ".avi";
+        blenderProject.setMovieFileLocation(movieFileDirectory + movieFile);
+        new File(movieFileDirectory).mkdir();
+        fFmpegEncodeService.encodeImagesToVideo(blenderProject);
+    }
 
     private void deleteParts(List<String> frameParts) {
         for (String framePart : frameParts) {
@@ -168,6 +215,17 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     }
 
+
+    private void deleteProjectFrames(BlenderProject blenderProject, int count) {
+        for (int i = 0; i < count; i++) {
+            int frame = i + 1;
+            try {
+                FileUtils.deleteDirectory(new File(blenderProject.getProjectRootDir() + File.separator + "frame_" + frame));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     private void configureFrameList(BlenderProject blenderProject) {
         List<BlenderFramePart> blenderFramePartList = new ArrayList<>();
@@ -221,52 +279,6 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         return partCoordinatesList;
     }
 
-    @Override
-    public boolean combineParts(BlenderProject blenderProject, int frameNumber) {
-        List<String> partCleanup = new ArrayList<>();
-        List<BufferedImage> images = new ArrayList<>();
-        String frameFilename = null;
-        String storedDir = null;
-        String fileExtension = null;
-        String plainFilename = null;
-        for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
-            if (frameNumber == blenderFramePart.getFrameNumber()) {
-                try {
-                    images.add(ImageIO.read(new File(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension())));
-                    partCleanup.add(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension());
-                    frameFilename = blenderFramePart.getStoredDir() + blenderFramePart.getFrameFileName() + "." + blenderFramePart.getFileExtension();
-                    storedDir = blenderFramePart.getStoredDir();
-                    fileExtension = blenderFramePart.getFileExtension();
-                    plainFilename = blenderFramePart.getFrameFileName();
-                } catch (IOException e) {
-                    LOG.error(Throwables.getStackTraceAsString(e));
-                }
-            }
-        }
-        BufferedImage concatImage = new BufferedImage(
-                images.get(0).getWidth(), images.get(0).getHeight() * blenderProject.getPartsPerFrame(),
-                BufferedImage.TYPE_INT_ARGB);
-        Graphics g = concatImage.getGraphics();
-        int count = 0;
-        for (BufferedImage image : images) {
-            if (count == 0) {
-                g.drawImage(image, 0, 0, null);
-            } else {
-                g.drawImage(image, 0, image.getHeight() * count, null);
-            }
-            count++;
-        }
-
-        try {
-            ImageIO.write(concatImage, fileExtension.toUpperCase(), new File(frameFilename));
-        } catch (IOException e) {
-            LOG.error(Throwables.getStackTraceAsString(e));
-        }
-        blenderProject.getFrameFileNames().add(frameFilename);
-        blenderProject.setCurrentFrameThumbnail(createThumbnail(frameFilename, storedDir, plainFilename, fileExtension));
-        deleteParts(partCleanup);
-        return true;
-    }
 
     private String createThumbnail(String frameImage, String directory, String frameFilename, String fileExtension) {
         try {
@@ -286,24 +298,6 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         return directory + frameFilename + "-thumbnail" + "." + fileExtension;
     }
 
-    @Override
-    public void createMP4(BlenderProject blenderProject) {
-        String movieFileDirectory = blenderProject.getProjectRootDir() + File.separator + "MP4" + File.separator;
-        String movieFile = blenderProject.getProjectName().toLowerCase().replaceAll(" ", "_") + ".mp4";
-        blenderProject.setMovieFileLocation(movieFileDirectory + movieFile);
-        new File(movieFileDirectory).mkdir();
-        fFmpegEncodeService.encodeImagesToVideo(blenderProject);
-
-    }
-
-    @Override
-    public void createAVI(BlenderProject blenderProject) {
-        String movieFileDirectory = blenderProject.getProjectRootDir() + File.separator + "AVI" + File.separator;
-        String movieFile = blenderProject.getProjectName().toLowerCase().replaceAll(" ", "_") + ".avi";
-        blenderProject.setMovieFileLocation(movieFileDirectory + movieFile);
-        new File(movieFileDirectory).mkdir();
-        fFmpegEncodeService.encodeImagesToVideo(blenderProject);
-    }
 
     @Autowired
     public void setfFmpegEncodeService(FFmpegEncodeService fFmpegEncodeService) {

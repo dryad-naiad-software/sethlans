@@ -28,6 +28,7 @@ import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseSe
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -46,6 +47,17 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     private boolean modifyingQueue = false;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
 
+
+    @Async
+    @Override
+    public void startQueue() {
+        try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            LOG.debug("Stopping Blender Queue Service");
+        }
+    }
+
     @Override
     public void populateQueueWithProject(BlenderProject blenderProject) {
         if (!modifyingQueue) {
@@ -62,13 +74,13 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             modifyingQueue = false;
             LOG.debug("Render Queue configured, " + blenderRenderQueueDatabaseService.listPendingRender().size() + " items in queue");
         }
-
     }
 
     @Override
     public void pauseBlenderProjectQueue(BlenderProject blenderProject) {
         if (!modifyingQueue) {
             modifyingQueue = true;
+            LOG.debug("Pausing queue for " + blenderProject.getProjectName());
             List<BlenderRenderQueueItem> blenderRenderQueueItemList =
                     blenderRenderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProject_uuid());
             for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
@@ -78,11 +90,11 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 }
             }
             blenderProject.setProjectStatus(ProjectStatus.Paused);
-            blenderProject.setEndTime(System.currentTimeMillis());
-            long totalTimeAtPause = blenderProject.getEndTime() - blenderProject.getStartTime();
+            blenderProject.setQueueItemEndTime(System.currentTimeMillis());
+            long totalTimeAtPause = blenderProject.getQueueItemEndTime() - blenderProject.getQueueItemStartTime();
             blenderProject.setTotalProjectTime(blenderProject.getTotalRenderTime() + totalTimeAtPause);
-            blenderProject.setStartTime(0L);
-            blenderProject.setEndTime(0L);
+            blenderProject.setQueueItemStartTime(0L);
+            blenderProject.setQueueItemEndTime(0L);
             blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             modifyingQueue = false;
         }
@@ -92,6 +104,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     public void resumeBlenderProjectQueue(BlenderProject blenderProject) {
         if (!modifyingQueue) {
             modifyingQueue = true;
+            LOG.debug("Resuming queue for " + blenderProject.getProjectName());
             List<BlenderRenderQueueItem> blenderRenderQueueItemList =
                     blenderRenderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProject_uuid());
             for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
@@ -111,10 +124,11 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     public void stopBlenderProjectQueue(BlenderProject blenderProject) {
         if (!modifyingQueue) {
             modifyingQueue = true;
+            LOG.debug("Stopping queue for " + blenderProject.getProjectName());
             blenderRenderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
             blenderProject.setProjectStatus(ProjectStatus.Added);
-            blenderProject.setStartTime(0L);
-            blenderProject.setEndTime(0L);
+            blenderProject.setQueueItemStartTime(0L);
+            blenderProject.setQueueItemEndTime(0L);
             blenderProject.setTotalProjectTime(0L);
             blenderProject.setFrameFileNames(new ArrayList<>());
             blenderProject.setCurrentFrameThumbnail(null);

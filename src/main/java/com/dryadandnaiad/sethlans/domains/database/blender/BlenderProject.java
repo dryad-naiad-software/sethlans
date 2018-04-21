@@ -70,8 +70,8 @@ public class BlenderProject extends AbstractEntityClass {
     private String movieFileLocation;
     private Long totalRenderTime;
     private Long totalProjectTime;
-    private Long startTime;
-    private Long endTime;
+    private Long queueItemStartTime;
+    private Long queueItemEndTime;
     @ElementCollection
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<String> frameFileNames;
