@@ -38,4 +38,6 @@ public interface BlenderQueueService {
     void resumeBlenderProjectQueue(BlenderProject blenderProject);
 
     void stopBlenderProjectQueue(BlenderProject blenderProject);
+
+    void nodeRejectQueueItem(String connection_uuid);
 }

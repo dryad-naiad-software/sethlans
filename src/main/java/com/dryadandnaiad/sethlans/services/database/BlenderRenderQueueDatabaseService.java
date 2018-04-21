@@ -34,6 +34,8 @@ public interface BlenderRenderQueueDatabaseService extends CRUDService<BlenderRe
 
     List<BlenderRenderQueueItem> listPendingRenderWithNodeAssigned();
 
+    BlenderRenderQueueItem getByQueueUUID(String queueUUID);
+
     void deleteAllByProject(String project_uuid);
 
     void delete(BlenderRenderQueueItem blenderRenderQueueItem);

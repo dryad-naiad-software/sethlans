@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.services.blender.BlenderQueueService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
@@ -68,6 +69,7 @@ public class ServerRenderController {
 
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
+    private BlenderQueueService blenderQueueService;
 
 
     @GetMapping(value = "/api/project/blender_binary")
@@ -150,10 +152,8 @@ public class ServerRenderController {
     }
 
     @GetMapping(value = "/api/project/node_reject/")
-    public void rejectedProject(@RequestParam String connection_uuid,
-                                @RequestParam String project_uuid,
-                                @RequestParam int frame_number, @RequestParam int part_number) {
-
+    public void rejectedProject(@RequestParam String queue_item_uuid) {
+        blenderQueueService.nodeRejectQueueItem(queue_item_uuid);
     }
 
     @GetMapping(value = "/api/project/blend_file/")
@@ -178,5 +178,10 @@ public class ServerRenderController {
     @Autowired
     public void setBlenderProjectDatabaseService(BlenderProjectDatabaseService blenderProjectDatabaseService) {
         this.blenderProjectDatabaseService = blenderProjectDatabaseService;
+    }
+
+    @Autowired
+    public void setBlenderQueueService(BlenderQueueService blenderQueueService) {
+        this.blenderQueueService = blenderQueueService;
     }
 }

@@ -69,6 +69,7 @@ public class NodeRenderController {
 
     @RequestMapping(value = "/api/render/request", method = RequestMethod.POST)
     public void renderRequest(@RequestParam String project_name, @RequestParam String connection_uuid, @RequestParam String project_uuid,
+                              @RequestParam String queue_item_uuid,
                               @RequestParam RenderOutputFormat render_output_format,
                               @RequestParam int samples, @RequestParam BlenderEngine blender_engine, @RequestParam ComputeType compute_type,
                               @RequestParam String blend_file, @RequestParam String blender_version,
@@ -86,7 +87,7 @@ public class NodeRenderController {
                 LOG.debug("All slots are currently full. Rejecting request");
                 SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connection_uuid);
                 String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_reject/";
-                String params = "connection_uuid=" + connection_uuid + "&project_uuid=" + project_uuid + "&frame_number=" + frame_number + "&part_number=" + part_number;
+                String params = "queue_uuid=" + queue_item_uuid;
                 sethlansAPIConnectionService.sendToRemoteGET(connectionURL, params);
             } else {
                 BlenderRenderTask blenderRenderTask;
@@ -103,6 +104,7 @@ public class NodeRenderController {
                 blenderRenderTask = new BlenderRenderTask();
                 blenderRenderTask.setProject_uuid(project_uuid);
                 blenderRenderTask.setProjectName(project_name);
+                blenderRenderTask.setServer_queue_uuid(queue_item_uuid);
                 blenderRenderTask.setConnection_uuid(connection_uuid);
                 blenderRenderTask.setRenderOutputFormat(render_output_format);
                 blenderRenderTask.setSamples(samples);

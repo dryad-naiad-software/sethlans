@@ -43,6 +43,7 @@ public class BlenderRenderTask extends AbstractEntityClass {
     private String projectName;
     private String connection_uuid;
     private String project_uuid;
+    private String server_queue_uuid;
     private RenderOutputFormat renderOutputFormat;
     private int samples;
     private BlenderEngine blenderEngine;

@@ -75,6 +75,17 @@ public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueue
     }
 
     @Override
+    public BlenderRenderQueueItem getByQueueUUID(String queueUUID) {
+        for (BlenderRenderQueueItem blenderRenderQueueItem : listAll()) {
+            if (blenderRenderQueueItem.getQueueItem_uuid().equals(queueUUID)) {
+                return blenderRenderQueueItem;
+            }
+
+        }
+        return null;
+    }
+
+    @Override
     public BlenderRenderQueueItem saveOrUpdate(BlenderRenderQueueItem domainObject) {
         return blenderRenderQueueRepository.save(domainObject);
     }

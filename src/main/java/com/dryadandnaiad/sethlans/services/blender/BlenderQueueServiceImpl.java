@@ -28,6 +28,7 @@ import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created Mario Estrella on 4/21/2018.
@@ -52,6 +54,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     private List<SethlansNode> sortedSethlansNodeList = new ArrayList<>();
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
+    private SethlansAPIConnectionService sethlansAPIConnectionService;
 
 
     @Async
@@ -83,6 +86,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 blenderRenderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
                 blenderRenderQueueItem.setProjectName(blenderProject.getProjectName());
                 blenderRenderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
+                blenderRenderQueueItem.setQueueItem_uuid(UUID.randomUUID().toString());
                 blenderRenderQueueItem.setComplete(false);
                 blenderRenderQueueItem.setPaused(false);
                 blenderRenderQueueItem.setConnection_uuid(null);
@@ -91,6 +95,8 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             }
             modifyingQueue = false;
             LOG.debug("Render Queue configured, " + blenderRenderQueueDatabaseService.listPendingRender().size() + " items in queue");
+        } else {
+            pauseBlenderProjectQueue(blenderProject);
         }
     }
 
@@ -115,6 +121,8 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             blenderProject.setQueueItemEndTime(0L);
             blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             modifyingQueue = false;
+        } else {
+            pauseBlenderProjectQueue(blenderProject);
         }
     }
 
@@ -134,6 +142,8 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             blenderProject.setProjectStatus(ProjectStatus.Pending);
             blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             modifyingQueue = false;
+        } else {
+            resumeBlenderProjectQueue(blenderProject);
         }
 
     }
@@ -152,6 +162,25 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             blenderProject.setCurrentFrameThumbnail(null);
             blenderProject.setCurrentPercentage(0);
             blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+            modifyingQueue = false;
+        } else {
+            stopBlenderProjectQueue(blenderProject);
+        }
+    }
+
+    @Override
+    public void nodeRejectQueueItem(String queue_uuid) {
+        if (!modifyingQueue) {
+            modifyingQueue = true;
+            BlenderRenderQueueItem blenderRenderQueueItem = blenderRenderQueueDatabaseService.getByQueueUUID(queue_uuid);
+            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
+            blenderRenderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
+            blenderRenderQueueItem.setConnection_uuid(null);
+            blenderRenderQueueItem.setRendering(false);
+            blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+            modifyingQueue = false;
+        } else {
+            nodeRejectQueueItem(queue_uuid);
         }
     }
 
@@ -172,6 +201,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                             getSortedNodeList(ComputeType.CPU_GPU);
                             sethlansNode = sortedSethlansNodeList.get(0);
                             blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
+                            blenderRenderQueueItem = setQueueItemComputeType(sethlansNode, blenderRenderQueueItem);
                             sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() - 1);
                             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                             break;
@@ -202,16 +232,18 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             modifyingQueue = true;
             List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listPendingRenderWithNodeAssigned();
             for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
+                BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
                 SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid());
                 String connectionURL = "https://" + sethlansNode.getIpAddress() + ":" +
                         sethlansNode.getNetworkPort() + "/api/render/request";
                 String params = "project_name=" + blenderProject.getProjectName() +
                         "&connection_uuid=" + sethlansNode.getConnection_uuid() +
                         "&project_uuid=" + blenderProject.getProject_uuid() +
+                        "&queue_item_uuid=" + blenderRenderQueueItem.getQueueItem_uuid() +
                         "&render_output_format=" + blenderProject.getRenderOutputFormat() +
                         "&samples=" + blenderProject.getSamples() +
                         "&blender_engine=" + blenderProject.getBlenderEngine() +
-                        "&compute_type=" + computeTypeToSend +
+                        "&compute_type=" + blenderRenderQueueItem.getRenderComputeType() +
                         "&blend_file=" + blenderProject.getBlendFilename() +
                         "&blender_version=" + blenderProject.getBlenderVersion() +
                         "&frame_filename=" + blenderRenderQueueItem.getBlenderFramePart().getFrameFileName() +
@@ -224,9 +256,39 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                         "&part_position_max_y=" + blenderRenderQueueItem.getBlenderFramePart().getPartPositionMaxY() +
                         "&part_res_percentage=" + blenderProject.getResPercentage() +
                         "&file_extension=" + blenderRenderQueueItem.getBlenderFramePart().getFileExtension();
+                LOG.debug("Sending " + blenderRenderQueueItem + " to " + sethlansNode.getHostname());
+                sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params);
+                blenderRenderQueueItem.setRendering(true);
+                blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
             }
-
             modifyingQueue = false;
+        }
+    }
+
+
+    private BlenderRenderQueueItem setQueueItemComputeType(SethlansNode sethlansNode, BlenderRenderQueueItem blenderRenderQueueItem) {
+        // Before sending to a node the compute type must be either GPU or CPU,  CPU&GPU is only used for sorting at the server level.
+        if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating() && !sethlansNode.isGpuSlotInUse()) {
+            blenderRenderQueueItem.setRenderComputeType(ComputeType.GPU);
+            return blenderRenderQueueItem;
+        } else if (sethlansNode.getCombinedGPURating() > sethlansNode.getCpuRating() && !sethlansNode.isCpuSlotInUse()) {
+            blenderRenderQueueItem.setRenderComputeType(ComputeType.CPU);
+            return blenderRenderQueueItem;
+        } else if (sethlansNode.getCombinedGPURating() == sethlansNode.getCpuRating() && !sethlansNode.isCpuSlotInUse()) {
+            blenderRenderQueueItem.setRenderComputeType(ComputeType.CPU);
+            return blenderRenderQueueItem;
+
+        } else if (sethlansNode.isCpuSlotInUse()) {
+            blenderRenderQueueItem.setRenderComputeType(ComputeType.GPU);
+            return blenderRenderQueueItem;
+
+        } else if (sethlansNode.isGpuSlotInUse()) {
+            blenderRenderQueueItem.setRenderComputeType(ComputeType.CPU);
+            return blenderRenderQueueItem;
+
+        } else {
+            blenderRenderQueueItem.setRenderComputeType(ComputeType.CPU);
+            return blenderRenderQueueItem;
         }
     }
 
@@ -263,4 +325,12 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {
         this.sethlansNodeDatabaseService = sethlansNodeDatabaseService;
     }
+
+    @Autowired
+    public void setSethlansAPIConnectionService(SethlansAPIConnectionService sethlansAPIConnectionService) {
+        this.sethlansAPIConnectionService = sethlansAPIConnectionService;
+    }
+
 }
+
+

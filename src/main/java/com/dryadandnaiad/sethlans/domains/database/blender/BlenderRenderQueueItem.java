@@ -39,6 +39,7 @@ public class BlenderRenderQueueItem extends AbstractEntityClass {
     private String connection_uuid;
     private String project_uuid;
     private String projectName;
+    private String queueItem_uuid;
     private BlenderFramePart blenderFramePart;
     private ComputeType renderComputeType;
     private boolean complete;
