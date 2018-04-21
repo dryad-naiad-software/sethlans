@@ -1,0 +1,135 @@
+/*
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
+package com.dryadandnaiad.sethlans.services.blender;
+
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
+import com.dryadandnaiad.sethlans.enums.ProjectStatus;
+import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created Mario Estrella on 4/21/2018.
+ * Dryad and Naiad Software LLC
+ * mestrella@dryadandnaiad.com
+ * Project: sethlans
+ */
+@Service
+public class BlenderQueueServiceImpl implements BlenderQueueService {
+    private static final Logger LOG = LoggerFactory.getLogger(BlenderQueueServiceImpl.class);
+    private BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService;
+    private boolean modifyingQueue = false;
+    private BlenderProjectDatabaseService blenderProjectDatabaseService;
+
+    @Override
+    public void populateQueueWithProject(BlenderProject blenderProject) {
+        if (!modifyingQueue) {
+            modifyingQueue = true;
+            List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
+            for (BlenderFramePart blenderFramePart : blenderFramePartList) {
+                BlenderRenderQueueItem blenderRenderQueueItem = new BlenderRenderQueueItem();
+                blenderRenderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
+                blenderRenderQueueItem.setComplete(false);
+                blenderRenderQueueItem.setPaused(false);
+                blenderRenderQueueItem.setBlenderFramePart(blenderFramePart);
+                blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+            }
+            modifyingQueue = false;
+            LOG.debug("Render Queue configured, " + blenderRenderQueueDatabaseService.listPendingRender().size() + " items in queue");
+        }
+
+    }
+
+    @Override
+    public void pauseBlenderProjectQueue(BlenderProject blenderProject) {
+        if (!modifyingQueue) {
+            modifyingQueue = true;
+            List<BlenderRenderQueueItem> blenderRenderQueueItemList =
+                    blenderRenderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProject_uuid());
+            for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
+                if (!blenderRenderQueueItem.isComplete()) {
+                    blenderRenderQueueItem.setPaused(true);
+                    blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+                }
+            }
+            blenderProject.setProjectStatus(ProjectStatus.Paused);
+            blenderProject.setEndTime(System.currentTimeMillis());
+            long totalTimeAtPause = blenderProject.getEndTime() - blenderProject.getStartTime();
+            blenderProject.setTotalProjectTime(blenderProject.getTotalRenderTime() + totalTimeAtPause);
+            blenderProject.setStartTime(0L);
+            blenderProject.setEndTime(0L);
+            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+            modifyingQueue = false;
+        }
+    }
+
+    @Override
+    public void resumeBlenderProjectQueue(BlenderProject blenderProject) {
+        if (!modifyingQueue) {
+            modifyingQueue = true;
+            List<BlenderRenderQueueItem> blenderRenderQueueItemList =
+                    blenderRenderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProject_uuid());
+            for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
+                if (!blenderRenderQueueItem.isComplete()) {
+                    blenderRenderQueueItem.setPaused(false);
+                    blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+                }
+            }
+            blenderProject.setProjectStatus(ProjectStatus.Pending);
+            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+            modifyingQueue = false;
+        }
+
+    }
+
+    @Override
+    public void stopBlenderProjectQueue(BlenderProject blenderProject) {
+        if (!modifyingQueue) {
+            modifyingQueue = true;
+            blenderRenderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
+            blenderProject.setProjectStatus(ProjectStatus.Added);
+            blenderProject.setStartTime(0L);
+            blenderProject.setEndTime(0L);
+            blenderProject.setTotalProjectTime(0L);
+            blenderProject.setFrameFileNames(new ArrayList<>());
+            blenderProject.setCurrentFrameThumbnail(null);
+            blenderProject.setCurrentPercentage(0);
+            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+        }
+    }
+
+    @Autowired
+    public void setBlenderRenderQueueDatabaseService(BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService) {
+        this.blenderRenderQueueDatabaseService = blenderRenderQueueDatabaseService;
+    }
+
+    @Autowired
+    public void setBlenderProjectDatabaseService(BlenderProjectDatabaseService blenderProjectDatabaseService) {
+        this.blenderProjectDatabaseService = blenderProjectDatabaseService;
+    }
+}

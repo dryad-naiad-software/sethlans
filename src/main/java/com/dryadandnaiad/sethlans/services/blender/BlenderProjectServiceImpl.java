@@ -50,6 +50,7 @@ import java.util.List;
 @Service
 public class BlenderProjectServiceImpl implements BlenderProjectService {
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
+    private BlenderQueueService blenderQueueService;
     private FFmpegEncodeService fFmpegEncodeService;
     private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectServiceImpl.class);
 
@@ -57,32 +58,42 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Async
     public void startProject(BlenderProject blenderProject) {
         configureFrameList(blenderProject);
+        blenderQueueService.populateQueueWithProject(blenderProject);
     }
 
     @Override
     public void resumeProject(Long id) {
-        // TODO queue needs unpause and start method.
+        BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
+        if (!blenderProject.isAllImagesProcessed()) {
+            blenderQueueService.resumeBlenderProjectQueue(blenderProject);
+
+        }
     }
 
     @Override
     public void resumeProject(String username, Long id) {
-        // TODO queue needs unpause and start method.
+        BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(username, id);
+        if (!blenderProject.isAllImagesProcessed()) {
+            blenderQueueService.resumeBlenderProjectQueue(blenderProject);
+
+        }
+
     }
 
     @Override
     public void pauseProject(Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
-        blenderProject.setProjectStatus(ProjectStatus.Paused);
-        blenderProject.setEndTime(System.currentTimeMillis());
-        blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+        if (!blenderProject.isAllImagesProcessed()) {
+            blenderQueueService.pauseBlenderProjectQueue(blenderProject);
+        }
     }
 
     @Override
     public void pauseProject(String username, Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(username, id);
-        blenderProject.setProjectStatus(ProjectStatus.Paused);
-        blenderProject.setEndTime(System.currentTimeMillis());
-        blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+        if (!blenderProject.isAllImagesProcessed()) {
+            blenderQueueService.pauseBlenderProjectQueue(blenderProject);
+        }
     }
 
     @Override
@@ -92,8 +103,18 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         blenderProject.setProjectStatus(ProjectStatus.Added);
         blenderProject.setStartTime(0L);
         blenderProject.setEndTime(0L);
+        blenderProject.setTotalProjectTime(0L);
 
         int count = blenderProject.getFrameFileNames().size();
+        deleteProjectFrames(blenderProject, count);
+
+        blenderProject.setFrameFileNames(new ArrayList<>());
+        blenderProject.setCurrentFrameThumbnail(null);
+        blenderProject.setCurrentPercentage(0);
+        blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+    }
+
+    private void deleteProjectFrames(BlenderProject blenderProject, int count) {
         for (int i = 0; i < count; i++) {
             int frame = i + 1;
             try {
@@ -102,21 +123,16 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
                 e.printStackTrace();
             }
         }
-
-        blenderProject.setFrameFileNames(new ArrayList<>());
-        blenderProject.setCurrentFrameThumbnail(null);
-        blenderProject.setCurrentPercentage(0);
-        blenderProjectDatabaseService.saveOrUpdate(blenderProject);
     }
 
     @Override
     public void stopProject(String username, Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(username, id);
 
-        blenderProject.setProjectStatus(ProjectStatus.Added);
-        blenderProject.setStartTime(0L);
-        blenderProject.setEndTime(0L);
-        blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+
+        int count = blenderProject.getFrameFileNames().size();
+        deleteProjectFrames(blenderProject, count);
+
     }
 
     @Override
@@ -299,6 +315,8 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         this.blenderProjectDatabaseService = blenderProjectDatabaseService;
     }
 
-
-
+    @Autowired
+    public void setBlenderQueueService(BlenderQueueService blenderQueueService) {
+        this.blenderQueueService = blenderQueueService;
+    }
 }

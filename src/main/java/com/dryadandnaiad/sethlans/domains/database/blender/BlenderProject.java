@@ -69,6 +69,7 @@ public class BlenderProject extends AbstractEntityClass {
     private String projectRootDir;
     private String movieFileLocation;
     private Long totalRenderTime;
+    private Long totalProjectTime;
     private Long startTime;
     private Long endTime;
     @ElementCollection

@@ -19,7 +19,6 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
@@ -52,15 +51,6 @@ public class ServerBackgroundController {
     private NodeDiscoveryService nodeDiscoveryService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private static final Logger LOG = LoggerFactory.getLogger(ServerBackgroundController.class);
-
-    private boolean isFirstProjectRecent(BlenderProject blenderProject) {
-        long projectStart = blenderProject.getStartTime();
-        long currentTime = System.currentTimeMillis();
-        long timeDifference = currentTime - projectStart;
-        long minutes = timeDifference / (60 * 1000);
-        return projectStart == 0L || minutes < 30;
-    }
-
 
 
     @RequestMapping(value = "/api/update/node_status_update", method = RequestMethod.GET)
