@@ -20,11 +20,13 @@
 package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
+import com.dryadandnaiad.sethlans.services.database.BlenderProcessQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
@@ -55,6 +57,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
+    private BlenderProcessQueueDatabaseService blenderProcessQueueDatabaseService;
 
 
     @Async
@@ -67,7 +70,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         }
         while (true) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(1000);
                 assignNodeToQueueItem();
                 sendQueueItemsToAssignedNode();
             } catch (InterruptedException e) {
@@ -181,6 +184,65 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             modifyingQueue = false;
         } else {
             nodeRejectQueueItem(queue_uuid);
+        }
+    }
+
+    @Override
+    public void nodeAcknowledgeQueueItem(String queue_uuid) {
+        if (!modifyingQueue) {
+            modifyingQueue = true;
+            BlenderRenderQueueItem blenderRenderQueueItem = blenderRenderQueueDatabaseService.getByQueueUUID(queue_uuid);
+            ComputeType computeType = blenderRenderQueueItem.getRenderComputeType();
+            SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid());
+            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() - 1);
+            if (sethlansNode.getAvailableRenderingSlots() < 0) {
+                sethlansNode.setAvailableRenderingSlots(0);
+            }
+            switch (computeType) {
+                case CPU:
+                    sethlansNode.setCpuSlotInUse(true);
+                    break;
+                case GPU:
+                    sethlansNode.setGpuSlotInUse(true);
+                    break;
+                default:
+                    LOG.error("Invalid compute type, this message should not occur.");
+            }
+
+            modifyingQueue = false;
+        } else {
+            nodeAcknowledgeQueueItem(queue_uuid);
+        }
+    }
+
+    @Override
+    public void addItemToProcess(BlenderProcessQueueItem blenderProcessQueueItem) {
+        if (!modifyingQueue) {
+            modifyingQueue = true;
+            BlenderRenderQueueItem blenderRenderQueueItem = blenderRenderQueueDatabaseService.getByQueueUUID(blenderProcessQueueItem.getQueueUUID());
+            SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderProcessQueueItem.getConnection_uuid());
+            ComputeType computeType = blenderRenderQueueItem.getRenderComputeType();
+            blenderProcessQueueDatabaseService.saveOrUpdate(blenderProcessQueueItem);
+            LOG.debug("Completed Render Task received from " + sethlansNode.getHostname() + ". Adding to processing queue.");
+            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+            if (sethlansNode.getAvailableRenderingSlots() > sethlansNode.getTotalRenderingSlots()) {
+                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+            }
+            switch (computeType) {
+                case GPU:
+                    sethlansNode.setGpuSlotInUse(false);
+                    break;
+                case CPU:
+                    sethlansNode.setCpuSlotInUse(false);
+                    break;
+                default:
+                    LOG.error("Invalid compute type, this message should not occur.");
+            }
+
+
+            modifyingQueue = false;
+        } else {
+            addItemToProcess(blenderProcessQueueItem);
         }
     }
 
@@ -331,6 +393,10 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         this.sethlansAPIConnectionService = sethlansAPIConnectionService;
     }
 
+    @Autowired
+    public void setBlenderProcessQueueDatabaseService(BlenderProcessQueueDatabaseService blenderProcessQueueDatabaseService) {
+        this.blenderProcessQueueDatabaseService = blenderProcessQueueDatabaseService;
+    }
 }
 
 

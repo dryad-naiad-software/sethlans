@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.blender;
 
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 
 /**
@@ -40,4 +41,8 @@ public interface BlenderQueueService {
     void stopBlenderProjectQueue(BlenderProject blenderProject);
 
     void nodeRejectQueueItem(String connection_uuid);
+
+    void nodeAcknowledgeQueueItem(String queue_uuid);
+
+    void addItemToProcess(BlenderProcessQueueItem blenderProcessQueueItem);
 }

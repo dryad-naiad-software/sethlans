@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
@@ -27,6 +28,7 @@ import com.dryadandnaiad.sethlans.services.blender.BlenderQueueService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.google.common.base.Throwables;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,8 +42,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.rowset.serial.SerialBlob;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
 
 /**
  * Created Mario Estrella on 12/10/17.
@@ -142,11 +148,25 @@ public class ServerRenderController {
 
     @PostMapping(value = "/api/project/response")
     public void projectResponse(@RequestParam String connection_uuid,
-                                @RequestParam String project_uuid,
-                                @RequestParam ComputeType compute_type,
                                 @RequestParam MultipartFile part,
-                                @RequestParam int part_number,
-                                @RequestParam int frame_number, @RequestParam long render_time) {
+                                @RequestParam String queue_uuid, @RequestParam long render_time) {
+        if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) == null) {
+            LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
+        } else {
+            if (!part.isEmpty()) {
+                try {
+                    Blob blob = new SerialBlob(part.getBytes());
+                    BlenderProcessQueueItem blenderProcessQueueItem = new BlenderProcessQueueItem();
+                    blenderProcessQueueItem.setConnection_uuid(connection_uuid);
+                    blenderProcessQueueItem.setPart(blob);
+                    blenderProcessQueueItem.setQueueUUID(queue_uuid);
+                    blenderProcessQueueItem.setRenderTime(render_time);
+                    blenderQueueService.addItemToProcess(blenderProcessQueueItem);
+                } catch (IOException | SQLException e) {
+                    LOG.error(Throwables.getStackTraceAsString(e));
+                }
+            }
+        }
 
 
     }
@@ -167,8 +187,6 @@ public class ServerRenderController {
         }
 
     }
-
-
 
     @Autowired
     public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {

@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.components;
 
 import com.dryadandnaiad.sethlans.services.blender.BlenderDownloadService;
+import com.dryadandnaiad.sethlans.services.blender.BlenderQueueService;
 import com.dryadandnaiad.sethlans.services.network.NodeQueryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,14 @@ import javax.annotation.PostConstruct;
 public class ServerBackgroundComponent {
     private BlenderDownloadService blenderDownloadService;
     private NodeQueryService nodeQueryService;
+    private BlenderQueueService blenderQueueService;
     private static final Logger LOG = LoggerFactory.getLogger(ServerBackgroundComponent.class);
+
+    @PostConstruct
+    public void startBlenderQueue() {
+        LOG.debug("Starting Blender Queue Service.");
+        blenderQueueService.startQueue();
+    }
 
 
     @PostConstruct
@@ -64,5 +72,10 @@ public class ServerBackgroundComponent {
     @Autowired
     public void setNodeQueryService(NodeQueryService nodeQueryService) {
         this.nodeQueryService = nodeQueryService;
+    }
+
+    @Autowired
+    public void setBlenderQueueService(BlenderQueueService blenderQueueService) {
+        this.blenderQueueService = blenderQueueService;
     }
 }
