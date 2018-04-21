@@ -167,12 +167,15 @@ public class ServerRenderController {
                 }
             }
         }
-
-
     }
 
-    @GetMapping(value = "/api/project/node_reject/")
-    public void rejectedProject(@RequestParam String queue_item_uuid) {
+    @GetMapping(value = "/api/project/node_accept_item/")
+    public void acceptedQueueItem(@RequestParam String queue_item_uuid) {
+        blenderQueueService.nodeRejectQueueItem(queue_item_uuid);
+    }
+
+    @GetMapping(value = "/api/project/node_reject_item/")
+    public void rejectedQueueItem(@RequestParam String queue_item_uuid) {
         blenderQueueService.nodeRejectQueueItem(queue_item_uuid);
     }
 

@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -73,6 +74,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 Thread.sleep(1000);
                 assignNodeToQueueItem();
                 sendQueueItemsToAssignedNode();
+                processReceivedQueueItems();
             } catch (InterruptedException e) {
                 LOG.debug("Stopping Blender Queue Service");
             }
@@ -177,6 +179,8 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             modifyingQueue = true;
             BlenderRenderQueueItem blenderRenderQueueItem = blenderRenderQueueDatabaseService.getByQueueUUID(queue_uuid);
             BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
+            LOG.debug("Received rejection for queue item " + queue_uuid + " adding back to pending queue.");
+
             blenderRenderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
             blenderRenderQueueItem.setConnection_uuid(null);
             blenderRenderQueueItem.setRendering(false);
@@ -194,6 +198,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             BlenderRenderQueueItem blenderRenderQueueItem = blenderRenderQueueDatabaseService.getByQueueUUID(queue_uuid);
             ComputeType computeType = blenderRenderQueueItem.getRenderComputeType();
             SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid());
+            LOG.debug("Received node acknowledgement from " + sethlansNode.getHostname() + " for queue item " + queue_uuid);
             sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() - 1);
             if (sethlansNode.getAvailableRenderingSlots() < 0) {
                 sethlansNode.setAvailableRenderingSlots(0);
@@ -219,10 +224,14 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     public void addItemToProcess(BlenderProcessQueueItem blenderProcessQueueItem) {
         if (!modifyingQueue) {
             modifyingQueue = true;
+            blenderProcessQueueDatabaseService.saveOrUpdate(blenderProcessQueueItem);
             BlenderRenderQueueItem blenderRenderQueueItem = blenderRenderQueueDatabaseService.getByQueueUUID(blenderProcessQueueItem.getQueueUUID());
             SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderProcessQueueItem.getConnection_uuid());
             ComputeType computeType = blenderRenderQueueItem.getRenderComputeType();
-            blenderProcessQueueDatabaseService.saveOrUpdate(blenderProcessQueueItem);
+            blenderRenderQueueItem.setRendering(false);
+            blenderRenderQueueItem.setComplete(true);
+            blenderRenderQueueItem.setPaused(false);
+            blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
             LOG.debug("Completed Render Task received from " + sethlansNode.getHostname() + ". Adding to processing queue.");
             sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
             if (sethlansNode.getAvailableRenderingSlots() > sethlansNode.getTotalRenderingSlots()) {
@@ -238,12 +247,29 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 default:
                     LOG.error("Invalid compute type, this message should not occur.");
             }
+            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
 
 
             modifyingQueue = false;
         } else {
             addItemToProcess(blenderProcessQueueItem);
         }
+    }
+
+    private void processReceivedQueueItems() {
+        if (!modifyingQueue) {
+            modifyingQueue = true;
+            LOG.debug("Running processing queue. ");
+            List<BlenderProcessQueueItem> blenderProcessQueueItemList = blenderProcessQueueDatabaseService.listAll();
+            if (!blenderProcessQueueItemList.isEmpty()) {
+                for (BlenderProcessQueueItem blenderProcessQueueItem : blenderProcessQueueItemList) {
+                    File storedDir = null;
+                }
+            }
+
+            modifyingQueue = false;
+        }
+
     }
 
     private void assignNodeToQueueItem() {

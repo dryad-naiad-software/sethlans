@@ -86,10 +86,14 @@ public class NodeRenderController {
             if (computeType == ComputeType.CPU_GPU && blenderRenderTaskList.size() == 2 || computeType != ComputeType.CPU_GPU && blenderRenderTaskList.size() == 1) {
                 LOG.debug("All slots are currently full. Rejecting request");
                 SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connection_uuid);
-                String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_reject/";
+                String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_reject_item/";
                 String params = "queue_uuid=" + queue_item_uuid;
                 sethlansAPIConnectionService.sendToRemoteGET(connectionURL, params);
             } else {
+                SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connection_uuid);
+                String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_accept_item/";
+                String params = "queue_uuid=" + queue_item_uuid;
+                sethlansAPIConnectionService.sendToRemoteGET(connectionURL, params);
                 BlenderRenderTask blenderRenderTask;
                 BlenderFramePart framePart = new BlenderFramePart();
                 framePart.setFrameNumber(frame_number);
@@ -121,9 +125,6 @@ public class NodeRenderController {
                 blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
                 blenderRenderService.startRenderService(project_uuid);
             }
-
-
-
         }
     }
 
