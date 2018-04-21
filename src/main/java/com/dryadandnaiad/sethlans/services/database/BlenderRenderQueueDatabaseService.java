@@ -32,6 +32,8 @@ import java.util.List;
 public interface BlenderRenderQueueDatabaseService extends CRUDService<BlenderRenderQueueItem> {
     List<BlenderRenderQueueItem> listPendingRender();
 
+    List<BlenderRenderQueueItem> listPendingRenderWithNodeAssigned();
+
     void deleteAllByProject(String project_uuid);
 
     void delete(BlenderRenderQueueItem blenderRenderQueueItem);

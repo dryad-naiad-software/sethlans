@@ -49,7 +49,19 @@ public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueue
     public List<BlenderRenderQueueItem> listPendingRender() {
         List<BlenderRenderQueueItem> blenderRenderQueueItemsPending = new ArrayList<>();
         for (BlenderRenderQueueItem blenderRenderQueueItem : listAll()) {
-            if (!blenderRenderQueueItem.isComplete()) {
+            if (!blenderRenderQueueItem.isComplete() && !blenderRenderQueueItem.isRendering() && !blenderRenderQueueItem.isPaused()) {
+                blenderRenderQueueItemsPending.add(blenderRenderQueueItem);
+            }
+        }
+        return blenderRenderQueueItemsPending;
+    }
+
+    @Override
+    public List<BlenderRenderQueueItem> listPendingRenderWithNodeAssigned() {
+        List<BlenderRenderQueueItem> blenderRenderQueueItemsPending = new ArrayList<>();
+        for (BlenderRenderQueueItem blenderRenderQueueItem : listAll()) {
+            if (!blenderRenderQueueItem.isComplete() && !blenderRenderQueueItem.isRendering()
+                    && !blenderRenderQueueItem.isPaused() && blenderRenderQueueItem.getConnection_uuid() != null) {
                 blenderRenderQueueItemsPending.add(blenderRenderQueueItem);
             }
         }

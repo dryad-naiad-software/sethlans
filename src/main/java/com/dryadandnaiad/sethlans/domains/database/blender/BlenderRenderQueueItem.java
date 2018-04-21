@@ -38,6 +38,7 @@ import javax.persistence.Entity;
 public class BlenderRenderQueueItem extends AbstractEntityClass {
     private String connection_uuid;
     private String project_uuid;
+    private String projectName;
     private BlenderFramePart blenderFramePart;
     private ComputeType renderComputeType;
     private boolean complete;
