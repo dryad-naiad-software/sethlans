@@ -457,13 +457,13 @@
                             <target>
                                 <copy todir="${izpack.staging}">
                                     <fileset dir="${basedir}/src/main/izpack"/>
-                                    <fileset dir="${basedir}/jre/win64">
+                                    <fileset dir="${basedir}/src/main/jre/win64">
                                         <include name="*.zip"/>
                                     </fileset>
                                 </copy>
                                 <copy file="${basedir}/src/main/resources/sethlans.manifest"
                                       tofile="${izpack.staging}/${fileName}.manifest"/>
-                                <unzip src="${basedir}/jre/macOS/jre1.8.0_162.jre.zip"
+                                <unzip src="${basedir}/src/main/jre/macOS/jre1.8.0_162.jre.zip"
                                        dest="${project.build.directory}"/>
                             </target>
                         </configuration>
