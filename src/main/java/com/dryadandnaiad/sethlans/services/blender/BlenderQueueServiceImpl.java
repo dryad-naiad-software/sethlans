@@ -62,19 +62,34 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
 
     @Override
     @Async
-    public void startQueue() {
-        //noinspection InfiniteLoopStatement
+    public void queueUpdateList() {
         while (true) {
             try {
                 Thread.sleep(50);
-                if (queueItemUpdateList.size() > 0 || queueItemUpdateList != null) {
+                if (queueItemUpdateList.size() > 0) {
                     LOG.debug("Processing Queue Update List");
                     for (BlenderRenderQueueItem blenderRenderQueueItem : queueItemUpdateList) {
                         blenderRenderQueueItem.setVersion(blenderRenderQueueDatabaseService.getById(blenderRenderQueueItem.getId()).getVersion());
                         blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
                     }
                     queueItemUpdateList = new ArrayList<>();
+                } else {
+                    Thread.sleep(1000);
                 }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    @Override
+    @Async
+    public void startQueue() {
+        //noinspection InfiniteLoopStatement
+        while (true) {
+            try {
+                Thread.sleep(5000);
                 if (!sethlansNodeDatabaseService.listAll().isEmpty() || !blenderRenderQueueDatabaseService.listAll().isEmpty()) {
                     if (!populatingQueue || !queueBeingPaused) {
                         LOG.debug("Processing Project Queue.");

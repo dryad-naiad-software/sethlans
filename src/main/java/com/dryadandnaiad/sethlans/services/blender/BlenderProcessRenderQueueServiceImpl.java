@@ -125,11 +125,9 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
                                 } catch (IOException | SQLException e) {
                                     e.printStackTrace();
                                 }
+                                remainingTotalQueue--;
                                 blenderQueueService.addQueueUpdateItem(blenderRenderQueueItem);
 
-                            }
-                            if (blenderRenderQueueItem.isComplete()) {
-                                remainingTotalQueue--;
                             }
                             if (!blenderRenderQueueItem.isComplete() && blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() == blenderProcessQueueItem.getFrame_number()) {
                                 remainingPartsForFrame++;

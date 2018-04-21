@@ -31,6 +31,9 @@ import org.springframework.scheduling.annotation.Async;
  */
 public interface BlenderQueueService {
     @Async
+    void queueUpdateList();
+
+    @Async
     void startQueue();
 
     void pauseRenderQueueforProject(BlenderProject blenderProject);

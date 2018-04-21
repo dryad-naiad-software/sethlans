@@ -52,6 +52,7 @@ public class ServerBackgroundComponent {
     public void projectQueue() {
         LOG.debug("Starting Project Queue Service");
         blenderQueueService.startQueue();
+        blenderQueueService.queueUpdateList();
     }
 
     @PostConstruct
