@@ -66,7 +66,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         //noinspection InfiniteLoopStatement
         while (true) {
             try {
-                Thread.sleep(5000);
+                Thread.sleep(1000);
                 if (queueItemUpdateList.size() > 0 || queueItemUpdateList != null) {
                     LOG.debug("Processing Queue Update List");
                     for (BlenderRenderQueueItem blenderRenderQueueItem : queueItemUpdateList) {

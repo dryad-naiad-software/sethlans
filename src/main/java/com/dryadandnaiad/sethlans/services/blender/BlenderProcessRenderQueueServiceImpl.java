@@ -81,7 +81,7 @@ public class BlenderProcessRenderQueueServiceImpl implements BlenderProcessRende
         }
         while (true) {
             try {
-                Thread.sleep(10000);
+                Thread.sleep(5000);
                 if (!populatingQueue) {
                     LOG.debug("Running processing queue. ");
                     List<BlenderProcessQueueItem> blenderProcessQueueItemList = blenderProcessQueueDatabaseService.listAll();
