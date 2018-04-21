@@ -68,6 +68,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             try {
                 Thread.sleep(5000);
                 if (queueItemUpdateList.size() > 0 || queueItemUpdateList != null) {
+                    LOG.debug("Processing Queue Update List");
                     for (BlenderRenderQueueItem blenderRenderQueueItem : queueItemUpdateList) {
                         blenderRenderQueueItem.setVersion(blenderRenderQueueDatabaseService.getById(blenderRenderQueueItem.getId()).getVersion());
                         blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
