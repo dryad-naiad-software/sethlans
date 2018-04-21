@@ -67,7 +67,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         while (true) {
             try {
                 Thread.sleep(5000);
-                if (queueItemUpdateList.size() > 0) {
+                if (queueItemUpdateList.size() > 0 || queueItemUpdateList != null) {
                     for (BlenderRenderQueueItem blenderRenderQueueItem : queueItemUpdateList) {
                         blenderRenderQueueItem.setVersion(blenderRenderQueueDatabaseService.getById(blenderRenderQueueItem.getId()).getVersion());
                         blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
@@ -231,7 +231,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
 
                 }
             default:
-                LOG.debug("Invalid project compute type. Unable to send to remote.");
+                LOG.debug("No compatible systems found, returning item to queue.");
         }
 
     }
