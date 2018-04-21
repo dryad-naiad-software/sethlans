@@ -85,10 +85,11 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                         + blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() + " Part: "
                                         + blenderRenderQueueItem.getBlenderFramePart().getPartNumber() + " is waiting to be rendered.");
                                 ComputeType computeType = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid()).getRenderOn();
-                                if ((listToSort != null ? listToSort.size() : 0) == 0) {
+                                if (listToSort.size() == 0) {
                                     listToSort = getSortedList(listToSort, computeType);
                                 }
-                                if ((listToSort != null ? listToSort.size() : 0) > 0) {
+                                assert listToSort != null;
+                                if (listToSort.size() > 0) {
                                     SethlansNode sethlansNode = listToSort.get(0);
                                     LOG.debug("Assigned " + sethlansNode.getHostname() + " to queue item. Removing from sorted list.");
                                     listToSort.remove(0);
