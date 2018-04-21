@@ -39,6 +39,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -180,7 +185,6 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             BlenderRenderQueueItem blenderRenderQueueItem = blenderRenderQueueDatabaseService.getByQueueUUID(queue_uuid);
             BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
             LOG.debug("Received rejection for queue item " + queue_uuid + " adding back to pending queue.");
-
             blenderRenderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
             blenderRenderQueueItem.setConnection_uuid(null);
             blenderRenderQueueItem.setRendering(false);
@@ -196,6 +200,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         if (!modifyingQueue) {
             modifyingQueue = true;
             BlenderRenderQueueItem blenderRenderQueueItem = blenderRenderQueueDatabaseService.getByQueueUUID(queue_uuid);
+            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
             ComputeType computeType = blenderRenderQueueItem.getRenderComputeType();
             SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid());
             LOG.debug("Received node acknowledgement from " + sethlansNode.getHostname() + " for queue item " + queue_uuid);
@@ -213,7 +218,12 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 default:
                     LOG.error("Invalid compute type, this message should not occur.");
             }
-
+            if (blenderProject.getProjectStatus().equals(ProjectStatus.Pending)) {
+                blenderProject.setProjectStatus(ProjectStatus.Started);
+            }
+            blenderProject.setQueueItemStartTime(System.currentTimeMillis());
+            blenderProject.setQueueItemEndTime(0L);
+            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             modifyingQueue = false;
         } else {
             nodeAcknowledgeQueueItem(queue_uuid);
@@ -227,10 +237,13 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             blenderProcessQueueDatabaseService.saveOrUpdate(blenderProcessQueueItem);
             BlenderRenderQueueItem blenderRenderQueueItem = blenderRenderQueueDatabaseService.getByQueueUUID(blenderProcessQueueItem.getQueueUUID());
             SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderProcessQueueItem.getConnection_uuid());
+            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
             ComputeType computeType = blenderRenderQueueItem.getRenderComputeType();
             blenderRenderQueueItem.setRendering(false);
             blenderRenderQueueItem.setComplete(true);
             blenderRenderQueueItem.setPaused(false);
+            blenderRenderQueueItem.getBlenderFramePart().setStoredDir(blenderProject.getProjectRootDir() +
+                    File.separator + "frame_" + blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() + File.separator);
             blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
             LOG.debug("Completed Render Task received from " + sethlansNode.getHostname() + ". Adding to processing queue.");
             sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
@@ -247,9 +260,9 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 default:
                     LOG.error("Invalid compute type, this message should not occur.");
             }
+            blenderProject.setQueueItemEndTime(System.currentTimeMillis());
+            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-
-
             modifyingQueue = false;
         } else {
             addItemToProcess(blenderProcessQueueItem);
@@ -263,7 +276,37 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             List<BlenderProcessQueueItem> blenderProcessQueueItemList = blenderProcessQueueDatabaseService.listAll();
             if (!blenderProcessQueueItemList.isEmpty()) {
                 for (BlenderProcessQueueItem blenderProcessQueueItem : blenderProcessQueueItemList) {
-                    File storedDir = null;
+                    BlenderRenderQueueItem blenderRenderQueueItem = blenderRenderQueueDatabaseService.getByQueueUUID(blenderProcessQueueItem.getQueueUUID());
+                    int partNumber = blenderRenderQueueItem.getBlenderFramePart().getPartNumber();
+                    int frameNumber = blenderRenderQueueItem.getBlenderFramePart().getFrameNumber();
+                    BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
+                    int projectTotalQueue = blenderProject.getPartsPerFrame() * blenderProject.getTotalNumOfFrames();
+                    int remainingTotalQueue = projectTotalQueue;
+                    int remainingPartsForFrame = 0;
+
+                    File storedDir = new File(blenderRenderQueueItem.getBlenderFramePart().getStoredDir());
+                    storedDir.mkdirs();
+                    try {
+                        // Save sent file
+                        byte[] bytes = blenderProcessQueueItem.getPart().getBytes(1, (int) blenderProcessQueueItem.getPart().length());
+                        Path path = Paths.get(storedDir.toString() + File.separator +
+                                blenderRenderQueueItem.getBlenderFramePart().getPartFilename() + "." +
+                                blenderRenderQueueItem.getBlenderFramePart().getFileExtension());
+                        Files.write(path, bytes);
+
+
+                        LOG.debug("Processing completed render from " +
+                                sethlansNodeDatabaseService.getByConnectionUUID(blenderProcessQueueItem.getConnection_uuid()).getHostname() +
+                                ". Part: " + partNumber
+                                + " Frame: " + frameNumber);
+
+
+                    } catch (IOException | SQLException e) {
+                        e.printStackTrace();
+                    }
+                    remainingTotalQueue--;
+
+
                 }
             }
 
