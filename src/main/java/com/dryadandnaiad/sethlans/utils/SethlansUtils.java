@@ -587,6 +587,14 @@ public class SethlansUtils {
         }
     }
 
+    public static boolean isDirectoryEmpty(File directory) {
+        if (directory.isDirectory()) {
+            String[] files = directory.list();
+            return files == null || files.length <= 0;
+        }
+        return true;
+    }
+
     public static void serveFile(File file, HttpServletResponse response) {
         try {
             String mimeType = "application/octet-stream";

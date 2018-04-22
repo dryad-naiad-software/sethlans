@@ -301,7 +301,6 @@ public class ProjectController {
             }
         }
         return null;
-
     }
 
     @GetMapping(value = "/api/project_ui/project_details/{id}")

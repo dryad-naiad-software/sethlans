@@ -169,6 +169,34 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         if (!modifyingQueue) {
             modifyingQueue = true;
             LOG.debug("Stopping queue for " + blenderProject.getProjectName());
+            for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProject_uuid())) {
+                if (blenderRenderQueueItem.getConnection_uuid() != null) {
+                    SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid());
+                    switch (blenderRenderQueueItem.getRenderComputeType()) {
+                        case CPU:
+                            sethlansNode.setCpuSlotInUse(false);
+                            if (sethlansNode.getAvailableRenderingSlots() <= 0) {
+                                sethlansNode.setAvailableRenderingSlots(1);
+                            } else {
+                                sethlansNode.setAvailableRenderingSlots(Math.max(sethlansNode.getTotalRenderingSlots(), sethlansNode.getAvailableRenderingSlots() + 1));
+                            }
+                            break;
+                        case GPU:
+                            sethlansNode.setGpuSlotInUse(false);
+                            if (sethlansNode.getAvailableRenderingSlots() <= 0) {
+                                sethlansNode.setAvailableRenderingSlots(1);
+                            } else {
+                                sethlansNode.setAvailableRenderingSlots(Math.max(sethlansNode.getTotalRenderingSlots(), sethlansNode.getAvailableRenderingSlots() + 1));
+                            }
+                            break;
+                        default:
+                            LOG.error("Wrong compute type used, this message should not be displayed.");
+                    }
+                    sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid()).getVersion());
+                    sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                }
+
+            }
             blenderRenderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
             if (!blenderProject.isAllImagesProcessed()) {
                 blenderProject.setProjectStatus(ProjectStatus.Added);
@@ -233,6 +261,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             blenderRenderQueueItem.setVersion(blenderRenderQueueDatabaseService.getByQueueUUID(queue_uuid).getVersion());
             blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
             sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid()).getVersion());
+            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
             modifyingQueue = false;
             return true;
         }

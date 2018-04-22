@@ -38,6 +38,7 @@ public enum SethlansConfigKeys {
     BINARY_DIR("sethlans.binDir"),
     TEMP_DIR("sethlans.tempDir"),
     CACHE_DIR("sethlans.cacheDir"),
+    BLEND_FILE_CACHE_DIR("sethlans.blendFileCacheDir"),
     FFMPEG_BIN("sethlans.ffmpeg.binary"),
     CACHED_BLENDER_BINARIES("sethlans.cachedBlenderBinaries"),
     GPU_DEVICE("sethlans.gpu_id"),

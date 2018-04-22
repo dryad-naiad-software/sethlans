@@ -71,7 +71,8 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
         String projectDirectory = setupForm.getRootDirectory() + File.separator + "projects" + File.separator;
         String blenderDirectory = setupForm.getRootDirectory() + File.separator + "blenderzip" + File.separator;
         String tempDirectory = setupForm.getRootDirectory() + File.separator + "temp" + File.separator;
-        String workingDirectory = setupForm.getRootDirectory() + File.separator + "cache" + File.separator;
+        String workingDirectory = setupForm.getRootDirectory() + File.separator + "render_cache" + File.separator;
+        String blendfileDirectory = setupForm.getRootDirectory() + File.separator + "blendfile_cache" + File.separator;
         String logDirectory = setupForm.getRootDirectory() + File.separator + "logs" + File.separator;
         String binDirectory = setupForm.getRootDirectory() + File.separator + "bin" + File.separator;
         String benchmarkDirectory = setupForm.getRootDirectory() + File.separator + "benchmarks" + File.separator;
@@ -122,6 +123,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
 
         if (setupForm.getMode() == SethlansMode.NODE || setupForm.getMode() == SethlansMode.DUAL) {
             writeProperty(SethlansConfigKeys.CACHE_DIR, workingDirectory);
+            writeProperty(SethlansConfigKeys.BLEND_FILE_CACHE_DIR, blendfileDirectory);
             writeProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES, "");
             writeProperty(SethlansConfigKeys.COMPUTE_METHOD, setupForm.getNode().getComputeMethod().toString());
             writeProperty(SethlansConfigKeys.TILE_SIZE_GPU, Integer.toString(setupForm.getNode().getTileSizeGPU()));
@@ -138,6 +140,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
             // Create Node Directories
             LOG.debug("Creating Sethlans node directories.");
             createDirectories(new File(workingDirectory));
+            createDirectories(new File(blendfileDirectory));
             LOG.debug("Node Settings Saved");
         }
         // Setup wizard complete

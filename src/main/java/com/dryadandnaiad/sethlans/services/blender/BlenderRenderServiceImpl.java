@@ -60,9 +60,6 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     @Value("${sethlans.cores}")
     String cores;
 
-    @Value("${sethlans.cacheDir}")
-    private String cacheDir;
-
     @Value("${sethlans.binDir}")
     private String binDir;
 
@@ -105,8 +102,11 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     public void startRenderService(String projectUUID) {
         BlenderRenderTask blenderRenderTask = blenderRenderTaskDatabaseService.getByProjectUUID(projectUUID);
         blenderRenderTask.setInProgress(true);
+        String cacheDir = SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString());
+        File blendFileDir = new File(SethlansUtils.getProperty(SethlansConfigKeys.BLEND_FILE_CACHE_DIR.toString())
+                + File.separator + blenderRenderTask.getProjectName().toLowerCase().replace(" ", "_") + "-" + blenderRenderTask.getProject_uuid());
         File renderDir = new File(cacheDir + File.separator + blenderRenderTask.getBlenderFramePart().getPartFilename());
-        if (downloadRequiredFiles(renderDir, blenderRenderTask)) {
+        if (downloadRequiredFiles(renderDir, blendFileDir, blenderRenderTask)) {
             blenderRenderTask = blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
             if (blenderRenderTask.getComputeType().equals(ComputeType.GPU)) {
                 boolean isCuda = false;
@@ -196,7 +196,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         return sethlansAPIConnectionService.uploadToRemotePOST(serverUrl, params, result);
     }
 
-    private boolean downloadRequiredFiles(File renderDir, BlenderRenderTask renderTask) {
+    private boolean downloadRequiredFiles(File renderDir, File blendFileDir, BlenderRenderTask renderTask) {
         LOG.debug("Downloading required files");
         SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(renderTask.getConnection_uuid());
         String serverIP = sethlansServer.getIpAddress();
@@ -214,6 +214,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                     LOG.debug(binary + " renderer is already cached.  Skipping Download.");
                 }
             }
+
 
             if (!versionCached) {
                 String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blender_binary/";
@@ -245,15 +246,26 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             }
 
             // Download Blend File from server
+            blendFileDir.mkdirs();
             String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blend_file/";
             String params = "connection_uuid=" + renderTask.getConnection_uuid() + "&project_uuid=" + renderTask.getProject_uuid();
-            String blendFile = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, renderDir.toString());
-            renderTask.setBlendFilename(blendFile);
-            LOG.debug("Required files downloaded.");
+            if (SethlansUtils.isDirectoryEmpty(blendFileDir)) {
+                String blendFile = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, blendFileDir.toString());
+                renderTask.setBlendFilename(blendFileDir + File.separator + blendFile);
+                LOG.debug("Required files downloaded.");
+            } else {
+                LOG.debug("Blend file for this project exists, using cached version");
+                String[] fileList = blendFileDir.list();
+                if (fileList != null) {
+                    String blendFile = blendFileDir + File.separator + fileList[0];
+                    renderTask.setBlendFilename(blendFile);
+                }
+            }
             return true;
         }
         return false;
     }
+
 
     private Long executeRenderTask(BlenderRenderTask renderTask, String blenderScript) {
         String error;
@@ -266,7 +278,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             CommandLine commandLine = new CommandLine(renderTask.getBlenderExecutable());
 
             commandLine.addArgument("-b");
-            commandLine.addArgument(renderTask.getRenderDir() + File.separator + renderTask.getBlendFilename());
+            commandLine.addArgument(renderTask.getBlendFilename());
             commandLine.addArgument("-P");
             commandLine.addArgument(blenderScript);
             commandLine.addArgument("-E");
