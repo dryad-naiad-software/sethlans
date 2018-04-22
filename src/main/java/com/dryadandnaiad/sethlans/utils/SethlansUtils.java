@@ -423,13 +423,14 @@ public class SethlansUtils {
     public static String assignBlenderExecutable(File binDir, String blenderVersion) {
         String executable = null;
         if (getOS().equals("MacOS")) {
-            executable = binDir.toString() + File.separator + "blender-" + blenderVersion + "/blender.app/Contents/MacOS/blender";
+            executable = binDir.toString() + File.separator + "blender-" +
+                    blenderVersion + File.separator + "blender.app" + File.separator + "Contents" + File.separator + "MacOS" + File.separator + "blender";
         }
         if (getOS().equals("Windows64") || getOS().equals("Windows32")) {
-            executable = binDir.toString() + File.separator + "blender-" + blenderVersion + "/blender.exe";
+            executable = binDir.toString() + File.separator + "blender-" + blenderVersion + File.separator + "blender.exe";
         }
         if (getOS().equals("Linux64") || getOS().equals("Linux32")) {
-            executable = binDir.toString() + File.separator + "blender-" + blenderVersion + "/blender";
+            executable = binDir.toString() + File.separator + "blender-" + blenderVersion + File.separator + "blender";
         }
         LOG.debug("Setting executable to: " + executable);
         return executable;
