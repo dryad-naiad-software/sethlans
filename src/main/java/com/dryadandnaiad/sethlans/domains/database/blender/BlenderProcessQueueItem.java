@@ -38,10 +38,8 @@ import java.sql.Blob;
 @EqualsAndHashCode(callSuper = false)
 public class BlenderProcessQueueItem extends AbstractEntityClass {
     String connection_uuid;
-    String project_uuid;
     @Lob
     Blob part;
-    int part_number;
-    int frame_number;
+    String queueUUID;
     long renderTime;
 }

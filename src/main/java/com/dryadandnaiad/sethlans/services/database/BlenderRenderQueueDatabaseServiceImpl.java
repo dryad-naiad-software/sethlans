@@ -49,7 +49,19 @@ public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueue
     public List<BlenderRenderQueueItem> listPendingRender() {
         List<BlenderRenderQueueItem> blenderRenderQueueItemsPending = new ArrayList<>();
         for (BlenderRenderQueueItem blenderRenderQueueItem : listAll()) {
-            if (!blenderRenderQueueItem.isComplete()) {
+            if (!blenderRenderQueueItem.isComplete() && !blenderRenderQueueItem.isRendering() && !blenderRenderQueueItem.isPaused()) {
+                blenderRenderQueueItemsPending.add(blenderRenderQueueItem);
+            }
+        }
+        return blenderRenderQueueItemsPending;
+    }
+
+    @Override
+    public List<BlenderRenderQueueItem> listPendingRenderWithNodeAssigned() {
+        List<BlenderRenderQueueItem> blenderRenderQueueItemsPending = new ArrayList<>();
+        for (BlenderRenderQueueItem blenderRenderQueueItem : listAll()) {
+            if (!blenderRenderQueueItem.isComplete() && !blenderRenderQueueItem.isRendering()
+                    && !blenderRenderQueueItem.isPaused() && blenderRenderQueueItem.getConnection_uuid() != null) {
                 blenderRenderQueueItemsPending.add(blenderRenderQueueItem);
             }
         }
@@ -60,6 +72,17 @@ public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueue
     @Override
     public BlenderRenderQueueItem getById(Long id) {
         return blenderRenderQueueRepository.findOne(id);
+    }
+
+    @Override
+    public BlenderRenderQueueItem getByQueueUUID(String queueUUID) {
+        for (BlenderRenderQueueItem blenderRenderQueueItem : listAll()) {
+            if (blenderRenderQueueItem.getQueueItem_uuid().equals(queueUUID)) {
+                return blenderRenderQueueItem;
+            }
+
+        }
+        return null;
     }
 
     @Override
@@ -110,6 +133,31 @@ public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueue
         List<BlenderRenderQueueItem> sortedList = new ArrayList<>();
         for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
             if (blenderRenderQueueItem.getProject_uuid().equals(project_uuid)) {
+                sortedList.add(blenderRenderQueueItem);
+            }
+        }
+        return sortedList;
+    }
+
+    @Override
+    public List<BlenderRenderQueueItem> listRemainingPartsInProjectQueueByFrameNumber(String project_uuid, int frameNumber) {
+        List<BlenderRenderQueueItem> remainingQueueForProject = listRemainingQueueItemsByProjectUUID(project_uuid);
+        List<BlenderRenderQueueItem> queueItemsByFrame = new ArrayList<>();
+        for (BlenderRenderQueueItem blenderRenderQueueItem : remainingQueueForProject) {
+            if (blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() == frameNumber) {
+                queueItemsByFrame.add(blenderRenderQueueItem);
+            }
+        }
+        return queueItemsByFrame;
+
+    }
+
+    @Override
+    public List<BlenderRenderQueueItem> listRemainingQueueItemsByProjectUUID(String project_uuid) {
+        List<BlenderRenderQueueItem> mainProjectLIst = listQueueItemsByProjectUUID(project_uuid);
+        List<BlenderRenderQueueItem> sortedList = new ArrayList<>();
+        for (BlenderRenderQueueItem blenderRenderQueueItem : mainProjectLIst) {
+            if (!blenderRenderQueueItem.isComplete()) {
                 sortedList.add(blenderRenderQueueItem);
             }
         }

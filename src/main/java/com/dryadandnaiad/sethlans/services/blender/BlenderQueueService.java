@@ -19,28 +19,33 @@
 
 package com.dryadandnaiad.sethlans.services.blender;
 
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
-import org.springframework.scheduling.annotation.Async;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
 
 /**
- * Created Mario Estrella on 1/1/18.
+ * Created Mario Estrella on 4/21/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
 public interface BlenderQueueService {
-    @Async
-    void queueUpdateList();
 
-    @Async
     void startQueue();
 
-    void pauseRenderQueueforProject(BlenderProject blenderProject);
+    boolean populateQueueWithProject(BlenderProject blenderProject);
 
-    void deleteRenderQueueforProject(BlenderProject blenderProject);
+    boolean pauseBlenderProjectQueue(BlenderProject blenderProject);
 
-    void populateProjectQueue(BlenderProject blenderProject);
+    boolean resumeBlenderProjectQueue(BlenderProject blenderProject);
 
-    void addQueueUpdateItem(BlenderRenderQueueItem blenderRenderQueueItem);
+    boolean stopBlenderProjectQueue(BlenderProject blenderProject);
+
+    boolean nodeRejectQueueItem(String connection_uuid);
+
+    boolean nodeAcknowledgeQueueItem(String queue_uuid);
+
+    boolean addItemToProcess(BlenderProcessQueueItem blenderProcessQueueItem);
+
+    boolean nodeIdle(String connection_uuid, ComputeType computeType);
 }

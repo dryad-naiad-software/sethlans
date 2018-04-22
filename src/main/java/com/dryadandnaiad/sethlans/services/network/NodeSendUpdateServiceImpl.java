@@ -91,7 +91,7 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
                         if (slots == 1 && blenderRenderTaskDatabaseService.listAll().size() == 1) {
                             counter = 0;
                         }
-                        if (counter > 299) {
+                        if (counter > 59) {
                             LOG.debug("Informing server of idle slot(s)");
                             counter = 0;
                             if (slots == 1) {
@@ -104,8 +104,10 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
                                     for (BlenderRenderTask blenderRenderTask : blenderRenderTaskDatabaseService.listAll()) {
                                         if (blenderRenderTask.getComputeType().equals(ComputeType.CPU)) {
                                             sendIdleUpdate(ComputeType.GPU);
+
                                         } else {
                                             sendIdleUpdate(ComputeType.CPU);
+
                                         }
                                     }
                                 }
@@ -135,6 +137,8 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
             sethlansAPIConnectionService.sendToRemotePOST(url, param);
         }
     }
+
+
 
 
     private void sendRequest() {
