@@ -21,6 +21,7 @@ import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {ComputeMethod} from "../../../enums/compute.method.enum";
 import {GPU} from "../../../models/gpu.model";
+import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: 'app-node-screen',
@@ -43,6 +44,14 @@ export class NodeScreenComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getInfo();
+    let timer = Observable.timer(10000, 10000);
+    timer.subscribe(() => {
+      this.getInfo()
+    });
+  }
+
+  getInfo() {
     this.http.get('/api/info/compute_type').subscribe((computeType: ComputeMethod) => {
       this.computeType = computeType;
     });
@@ -73,7 +82,7 @@ export class NodeScreenComponent implements OnInit {
 
     this.http.get('/api/info/client_selected_gpu_models').subscribe((selectedGPUs: string[]) => {
       this.selectedGPUModels = selectedGPUs;
-    })
+    });
     this.http.get('/api/info/available_gpus')
       .subscribe((gpus: any[]) => {
         this.availableGPUs = gpus;
