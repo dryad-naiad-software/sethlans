@@ -55,7 +55,7 @@ public class ServerBackgroundController {
     private boolean isFirstProjectRecent(BlenderProject blenderProject) {
         long projectTime = blenderProject.getTotalProjectTime();
         long minutes = projectTime / (60 * 1000);
-        return projectTime == 0L || minutes < 30;
+        return projectTime == 0L || minutes < 10;
     }
 
     @PostMapping(value = "/api/update/node_idle_notification")
@@ -71,10 +71,22 @@ public class ServerBackgroundController {
                     sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                 }
                 if (blenderRenderQueueDatabaseService.listAll().size() > 0 && !isFirstProjectRecent(blenderProject)) {
-                    blenderQueueService.nodeIdle(connection_uuid, compute_type);
+                    while (!blenderQueueService.nodeIdle(connection_uuid, compute_type)) {
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             } else {
-                blenderQueueService.nodeIdle(connection_uuid, compute_type);
+                while (!blenderQueueService.nodeIdle(connection_uuid, compute_type)) {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         } catch (NullPointerException e) {
             LOG.error(Throwables.getStackTraceAsString(e));

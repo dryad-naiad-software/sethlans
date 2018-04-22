@@ -22,28 +22,15 @@ package com.dryadandnaiad.sethlans.services.blender;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 
 /**
- * Created Mario Estrella on 12/9/17.
+ * Created Mario Estrella on 4/21/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderProjectService {
-    void startProject(BlenderProject blenderProject);
+public interface ProcessImageAndAnimationService {
+    void createMP4(BlenderProject blenderProject);
 
-    void resumeProject(Long id);
+    void createAVI(BlenderProject blenderProject);
 
-    void resumeProject(String username, Long id);
-
-    void pauseProject(Long id);
-
-    void pauseProject(String username, Long id);
-
-    void stopProject(Long id);
-
-    void stopProject(String username, Long id);
-
-    void deleteProject(Long id);
-
-    void deleteProject(String username, Long id);
-
+    boolean combineParts(BlenderProject blenderProject, int frameNumber);
 }

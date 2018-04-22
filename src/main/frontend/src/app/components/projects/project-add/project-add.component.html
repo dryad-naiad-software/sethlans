@@ -25,6 +25,8 @@
       </div>
       <div class="card-body">
         <div *ngIf="projectLoaded == false">
+          <p *ngIf="uploading" class="alert alert-info text-center">Uploading File &nbsp; &nbsp;<span
+            class="fa fa-circle-o-notch fa-spin"></span></p>
            <span>Valid files are <strong>.blend</strong> files with packed textures, and <strong>ZIP</strong> files.
              <br/> Use relative paths for all the files in the archive.<br/></span>
           <ul>
@@ -34,9 +36,6 @@
             <li>Set the output file to an <strong>image</strong>, for example <strong>PNG</strong>.</li>
             <li>The path to external data is <strong>relative</strong>.</li>
           </ul>
-
-          <p *ngIf="uploading" class="alert alert-info text-center">Uploading File &nbsp; &nbsp;<span
-            class="fa fa-circle-o-notch fa-spin"></span></p>
 
           <p-fileUpload name="projectFile" (onBeforeSend)="beforeSend($event)" mode="basic"
                         (onUpload)="loadProjectDetails($event)"

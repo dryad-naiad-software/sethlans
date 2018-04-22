@@ -33,19 +33,19 @@ public interface BlenderQueueService {
 
     void startQueue();
 
-    void populateQueueWithProject(BlenderProject blenderProject);
+    boolean populateQueueWithProject(BlenderProject blenderProject);
 
-    void pauseBlenderProjectQueue(BlenderProject blenderProject);
+    boolean pauseBlenderProjectQueue(BlenderProject blenderProject);
 
-    void resumeBlenderProjectQueue(BlenderProject blenderProject);
+    boolean resumeBlenderProjectQueue(BlenderProject blenderProject);
 
-    void stopBlenderProjectQueue(BlenderProject blenderProject);
+    boolean stopBlenderProjectQueue(BlenderProject blenderProject);
 
-    void nodeRejectQueueItem(String connection_uuid);
+    boolean nodeRejectQueueItem(String connection_uuid);
 
-    void nodeAcknowledgeQueueItem(String queue_uuid);
+    boolean nodeAcknowledgeQueueItem(String queue_uuid);
 
-    void addItemToProcess(BlenderProcessQueueItem blenderProcessQueueItem);
+    boolean addItemToProcess(BlenderProcessQueueItem blenderProcessQueueItem);
 
-    void nodeIdle(String connection_uuid, ComputeType computeType);
+    boolean nodeIdle(String connection_uuid, ComputeType computeType);
 }

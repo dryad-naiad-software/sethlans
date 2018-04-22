@@ -23,8 +23,6 @@ import com.dryadandnaiad.sethlans.domains.blender.PartCoordinates;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
-import com.dryadandnaiad.sethlans.services.ffmpeg.FFmpegEncodeService;
-import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,55 +45,82 @@ import java.util.List;
 public class BlenderProjectServiceImpl implements BlenderProjectService {
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private BlenderQueueService blenderQueueService;
-    private FFmpegEncodeService fFmpegEncodeService;
     private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectServiceImpl.class);
 
     @Override
     @Async
     public void startProject(BlenderProject blenderProject) {
         configureFrameList(blenderProject);
-        blenderQueueService.populateQueueWithProject(blenderProject);
+        while (!blenderQueueService.populateQueueWithProject(blenderProject)) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
     public void resumeProject(Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
-        if (!blenderProject.isAllImagesProcessed()) {
-            blenderQueueService.resumeBlenderProjectQueue(blenderProject);
-
-        }
+        sendResumeToQueueService(blenderProject);
     }
+
 
     @Override
     public void resumeProject(String username, Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(username, id);
+        sendResumeToQueueService(blenderProject);
+
+    }
+
+    private void sendResumeToQueueService(BlenderProject blenderProject) {
         if (!blenderProject.isAllImagesProcessed()) {
-            blenderQueueService.resumeBlenderProjectQueue(blenderProject);
+            while (!blenderQueueService.resumeBlenderProjectQueue(blenderProject)) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
 
         }
-
     }
 
     @Override
     public void pauseProject(Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
-        if (!blenderProject.isAllImagesProcessed()) {
-            blenderQueueService.pauseBlenderProjectQueue(blenderProject);
-        }
+        sendPauseToQueueService(blenderProject);
     }
 
     @Override
     public void pauseProject(String username, Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(username, id);
+        sendPauseToQueueService(blenderProject);
+    }
+
+    private void sendPauseToQueueService(BlenderProject blenderProject) {
         if (!blenderProject.isAllImagesProcessed()) {
-            blenderQueueService.pauseBlenderProjectQueue(blenderProject);
+            while (!blenderQueueService.pauseBlenderProjectQueue(blenderProject)) {
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
     @Override
     public void stopProject(Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
-        blenderQueueService.stopBlenderProjectQueue(blenderProject);
+        while (!blenderQueueService.stopBlenderProjectQueue(blenderProject)) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         int count = blenderProject.getFrameFileNames().size();
         deleteProjectFrames(blenderProject, count);
     }
@@ -106,7 +128,13 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Override
     public void stopProject(String username, Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(username, id);
-        blenderQueueService.stopBlenderProjectQueue(blenderProject);
+        while (!blenderQueueService.stopBlenderProjectQueue(blenderProject)) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         int count = blenderProject.getFrameFileNames().size();
         deleteProjectFrames(blenderProject, count);
 
@@ -134,87 +162,12 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         String directory = blenderProject.getProjectRootDir();
         blenderProjectDatabaseService.deleteWithVerification(username, id);
         try {
-            Thread.sleep(20000);
+            Thread.sleep(10000);
             FileUtils.deleteDirectory(new File(directory));
         } catch (InterruptedException | IOException e) {
             LOG.error("Error occurred deleting project " + e.getMessage());
         }
     }
-
-    @Override
-    public boolean combineParts(BlenderProject blenderProject, int frameNumber) {
-        List<String> partCleanup = new ArrayList<>();
-        List<BufferedImage> images = new ArrayList<>();
-        String frameFilename = null;
-        String storedDir = null;
-        String fileExtension = null;
-        String plainFilename = null;
-        for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
-            if (frameNumber == blenderFramePart.getFrameNumber()) {
-                try {
-                    images.add(ImageIO.read(new File(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension())));
-                    partCleanup.add(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension());
-                    frameFilename = blenderFramePart.getStoredDir() + blenderFramePart.getFrameFileName() + "." + blenderFramePart.getFileExtension();
-                    storedDir = blenderFramePart.getStoredDir();
-                    fileExtension = blenderFramePart.getFileExtension();
-                    plainFilename = blenderFramePart.getFrameFileName();
-                } catch (IOException e) {
-                    LOG.error(Throwables.getStackTraceAsString(e));
-                }
-            }
-        }
-        BufferedImage concatImage = new BufferedImage(
-                images.get(0).getWidth(), images.get(0).getHeight() * blenderProject.getPartsPerFrame(),
-                BufferedImage.TYPE_INT_ARGB);
-        Graphics g = concatImage.getGraphics();
-        int count = 0;
-        for (BufferedImage image : images) {
-            if (count == 0) {
-                g.drawImage(image, 0, 0, null);
-            } else {
-                g.drawImage(image, 0, image.getHeight() * count, null);
-            }
-            count++;
-        }
-
-        try {
-            ImageIO.write(concatImage, fileExtension.toUpperCase(), new File(frameFilename));
-        } catch (IOException e) {
-            LOG.error(Throwables.getStackTraceAsString(e));
-        }
-        blenderProject.getFrameFileNames().add(frameFilename);
-        blenderProject.setCurrentFrameThumbnail(createThumbnail(frameFilename, storedDir, plainFilename, fileExtension));
-        deleteParts(partCleanup);
-        return true;
-    }
-
-    @Override
-    public void createMP4(BlenderProject blenderProject) {
-        String movieFileDirectory = blenderProject.getProjectRootDir() + File.separator + "MP4" + File.separator;
-        String movieFile = blenderProject.getProjectName().toLowerCase().replaceAll(" ", "_") + ".mp4";
-        blenderProject.setMovieFileLocation(movieFileDirectory + movieFile);
-        new File(movieFileDirectory).mkdir();
-        fFmpegEncodeService.encodeImagesToVideo(blenderProject);
-
-    }
-
-    @Override
-    public void createAVI(BlenderProject blenderProject) {
-        String movieFileDirectory = blenderProject.getProjectRootDir() + File.separator + "AVI" + File.separator;
-        String movieFile = blenderProject.getProjectName().toLowerCase().replaceAll(" ", "_") + ".avi";
-        blenderProject.setMovieFileLocation(movieFileDirectory + movieFile);
-        new File(movieFileDirectory).mkdir();
-        fFmpegEncodeService.encodeImagesToVideo(blenderProject);
-    }
-
-    private void deleteParts(List<String> frameParts) {
-        for (String framePart : frameParts) {
-            File part = new File(framePart);
-            part.delete();
-        }
-
-    }
-
 
     private void deleteProjectFrames(BlenderProject blenderProject, int count) {
         for (int i = 0; i < count; i++) {
@@ -277,31 +230,6 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         LOG.debug("Part Coordinate List generated " + partCoordinatesList);
 
         return partCoordinatesList;
-    }
-
-
-    private String createThumbnail(String frameImage, String directory, String frameFilename, String fileExtension) {
-        try {
-            BufferedImage image = ImageIO.read(new File(frameImage));
-            BufferedImage thumbnail = new BufferedImage(128, 101, image.getType());
-            Graphics2D g = thumbnail.createGraphics();
-            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                    RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-            g.drawImage(image, 0, 0, 128, 101, 0, 0, image.getWidth(),
-                    image.getHeight(), null);
-            g.dispose();
-            ImageIO.write(thumbnail, fileExtension.toUpperCase(), new File(directory + frameFilename + "-thumbnail" + "." + fileExtension));
-        } catch (IOException e) {
-            LOG.error(Throwables.getStackTraceAsString(e));
-        }
-
-        return directory + frameFilename + "-thumbnail" + "." + fileExtension;
-    }
-
-
-    @Autowired
-    public void setfFmpegEncodeService(FFmpegEncodeService fFmpegEncodeService) {
-        this.fFmpegEncodeService = fFmpegEncodeService;
     }
 
     @Autowired

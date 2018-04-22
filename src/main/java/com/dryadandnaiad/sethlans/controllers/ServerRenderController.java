@@ -161,7 +161,13 @@ public class ServerRenderController {
                     blenderProcessQueueItem.setPart(blob);
                     blenderProcessQueueItem.setQueueUUID(queue_uuid);
                     blenderProcessQueueItem.setRenderTime(render_time);
-                    blenderQueueService.addItemToProcess(blenderProcessQueueItem);
+                    while (!blenderQueueService.addItemToProcess(blenderProcessQueueItem)) {
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 } catch (IOException | SQLException e) {
                     LOG.error(Throwables.getStackTraceAsString(e));
                 }
@@ -171,12 +177,24 @@ public class ServerRenderController {
 
     @GetMapping(value = "/api/project/node_accept_item/")
     public void acceptedQueueItem(@RequestParam String queue_item_uuid) {
-        blenderQueueService.nodeRejectQueueItem(queue_item_uuid);
+        while (!blenderQueueService.nodeAcknowledgeQueueItem(queue_item_uuid)) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @GetMapping(value = "/api/project/node_reject_item/")
     public void rejectedQueueItem(@RequestParam String queue_item_uuid) {
-        blenderQueueService.nodeRejectQueueItem(queue_item_uuid);
+        while (!blenderQueueService.nodeRejectQueueItem(queue_item_uuid)) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @GetMapping(value = "/api/project/blend_file/")
