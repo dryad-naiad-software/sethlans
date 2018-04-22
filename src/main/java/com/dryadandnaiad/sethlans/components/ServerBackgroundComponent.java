@@ -48,7 +48,6 @@ public class ServerBackgroundComponent {
     public void startBlenderQueue() {
         LOG.debug("Starting Blender Queue Service.");
         blenderQueueService.startQueue();
-        blenderQueueService.queueUpdateList();
     }
 
 
