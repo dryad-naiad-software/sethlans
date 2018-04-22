@@ -20,7 +20,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Mode} from "../../enums/mode.enum";
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: 'app-home',
@@ -36,15 +35,6 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get('/api/info/first_time').subscribe((firstTime: boolean) => {
-      if (firstTime == false) {
-        let timer = Observable.timer(60000, 60000);
-        timer.subscribe(() => {
-          this.reload()
-        });
-      }
-    });
-
     this.http.get('/api/info/sethlans_mode', {responseType: 'text'})
       .subscribe((sethlansmode: Mode) => {
         this.currentMode = sethlansmode;

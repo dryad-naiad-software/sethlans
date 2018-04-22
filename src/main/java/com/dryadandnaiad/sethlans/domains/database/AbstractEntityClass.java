@@ -38,7 +38,7 @@ public class AbstractEntityClass implements EntityObject {
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
     @Version
-    private Integer version;
+    private Long version;
     private Date dateCreated;
     private Date lastUpdated;
 

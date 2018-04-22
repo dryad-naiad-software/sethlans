@@ -73,7 +73,7 @@ public class ServerBackgroundController {
                 if (blenderRenderQueueDatabaseService.listAll().size() > 0 && !isFirstProjectRecent(blenderProject)) {
                     while (!blenderQueueService.nodeIdle(connection_uuid, compute_type)) {
                         try {
-                            Thread.sleep(500);
+                            Thread.sleep(200);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -82,7 +82,7 @@ public class ServerBackgroundController {
             } else {
                 while (!blenderQueueService.nodeIdle(connection_uuid, compute_type)) {
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(200);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

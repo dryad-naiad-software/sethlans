@@ -53,7 +53,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         configureFrameList(blenderProject);
         while (!blenderQueueService.populateQueueWithProject(blenderProject)) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -78,7 +78,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         if (!blenderProject.isAllImagesProcessed()) {
             while (!blenderQueueService.resumeBlenderProjectQueue(blenderProject)) {
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -103,7 +103,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         if (!blenderProject.isAllImagesProcessed()) {
             while (!blenderQueueService.pauseBlenderProjectQueue(blenderProject)) {
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -116,7 +116,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
         while (!blenderQueueService.stopBlenderProjectQueue(blenderProject)) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -130,7 +130,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(username, id);
         while (!blenderQueueService.stopBlenderProjectQueue(blenderProject)) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -147,12 +147,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         blenderQueueService.stopBlenderProjectQueue(blenderProject);
         String directory = blenderProject.getProjectRootDir();
         blenderProjectDatabaseService.delete(id);
-        try {
-            Thread.sleep(20000);
-            FileUtils.deleteDirectory(new File(directory));
-        } catch (InterruptedException | IOException e) {
-            LOG.error("Error occurred deleting project " + e.getMessage());
-        }
+        deleteDirectory(directory);
     }
 
     @Override
@@ -161,13 +156,18 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         blenderQueueService.stopBlenderProjectQueue(blenderProject);
         String directory = blenderProject.getProjectRootDir();
         blenderProjectDatabaseService.deleteWithVerification(username, id);
+        deleteDirectory(directory);
+    }
+
+    private void deleteDirectory(String directory) {
         try {
-            Thread.sleep(10000);
+            Thread.sleep(5000);
             FileUtils.deleteDirectory(new File(directory));
         } catch (InterruptedException | IOException e) {
             LOG.error("Error occurred deleting project " + e.getMessage());
         }
     }
+
 
     private void deleteProjectFrames(BlenderProject blenderProject, int count) {
         for (int i = 0; i < count; i++) {

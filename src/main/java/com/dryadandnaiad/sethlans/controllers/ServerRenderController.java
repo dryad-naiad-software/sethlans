@@ -163,7 +163,7 @@ public class ServerRenderController {
                     blenderProcessQueueItem.setRenderTime(render_time);
                     while (!blenderQueueService.addItemToProcess(blenderProcessQueueItem)) {
                         try {
-                            Thread.sleep(500);
+                            Thread.sleep(200);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -179,7 +179,7 @@ public class ServerRenderController {
     public void acceptedQueueItem(@RequestParam String queue_item_uuid) {
         while (!blenderQueueService.nodeAcknowledgeQueueItem(queue_item_uuid)) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -190,7 +190,7 @@ public class ServerRenderController {
     public void rejectedQueueItem(@RequestParam String queue_item_uuid) {
         while (!blenderQueueService.nodeRejectQueueItem(queue_item_uuid)) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

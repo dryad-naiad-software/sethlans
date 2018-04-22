@@ -77,7 +77,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         }
         while (true) {
             try {
-                Thread.sleep(2500);
+                Thread.sleep(1000);
                 assignNodeToQueueItem();
                 sendQueueItemsToAssignedNode();
                 processReceivedQueueItems();
@@ -170,13 +170,15 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             modifyingQueue = true;
             LOG.debug("Stopping queue for " + blenderProject.getProjectName());
             blenderRenderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
-            blenderProject.setProjectStatus(ProjectStatus.Added);
-            blenderProject.setTotalProjectTime(0L);
-            blenderProject.setFrameFileNames(new ArrayList<>());
-            blenderProject.setCurrentFrameThumbnail(null);
-            blenderProject.setCurrentPercentage(0);
-            blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
-            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+            if (!blenderProject.isAllImagesProcessed()) {
+                blenderProject.setProjectStatus(ProjectStatus.Added);
+                blenderProject.setTotalProjectTime(0L);
+                blenderProject.setFrameFileNames(new ArrayList<>());
+                blenderProject.setCurrentFrameThumbnail(null);
+                blenderProject.setCurrentPercentage(0);
+                blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
+                blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+            }
             modifyingQueue = false;
             return true;
         }
@@ -193,6 +195,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             blenderRenderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
             blenderRenderQueueItem.setConnection_uuid(null);
             blenderRenderQueueItem.setRendering(false);
+            blenderRenderQueueItem.setVersion(blenderRenderQueueDatabaseService.getByQueueUUID(queue_uuid).getVersion());
             blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
             modifyingQueue = false;
             return true;
@@ -223,9 +226,12 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             if (blenderProject.getProjectStatus().equals(ProjectStatus.Pending)) {
                 blenderProject.setProjectStatus(ProjectStatus.Started);
             }
-            blenderRenderQueueItem.setStartTime(System.currentTimeMillis());
             blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
             blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+            blenderRenderQueueItem.setStartTime(System.currentTimeMillis());
+            blenderRenderQueueItem.setRendering(true);
+            blenderRenderQueueItem.setVersion(blenderRenderQueueDatabaseService.getByQueueUUID(queue_uuid).getVersion());
+            blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
             sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid()).getVersion());
             modifyingQueue = false;
             return true;
@@ -326,6 +332,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 LOG.debug("Running processing queue. ");
                 for (BlenderProcessQueueItem blenderProcessQueueItem : blenderProcessQueueItemList) {
                     BlenderRenderQueueItem blenderRenderQueueItem = blenderRenderQueueDatabaseService.getByQueueUUID(blenderProcessQueueItem.getQueueUUID());
+                    blenderRenderQueueItem.setEndTime(System.currentTimeMillis());
                     int partNumber = blenderRenderQueueItem.getBlenderFramePart().getPartNumber();
                     int frameNumber = blenderRenderQueueItem.getBlenderFramePart().getFrameNumber();
                     BlenderProject blenderProject =
@@ -401,10 +408,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                         }
 
                     }
-
-
                     long time = blenderRenderQueueItem.getEndTime() - blenderRenderQueueItem.getStartTime();
-                    LOG.debug(time + " in milliseconds");
                     blenderProject.setTotalProjectTime(blenderProject.getTotalProjectTime() + time);
                     blenderProjectDatabaseService.saveOrUpdate(blenderProject);
                     blenderProcessQueueDatabaseService.delete(blenderProcessQueueItem);
@@ -468,6 +472,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             modifyingQueue = true;
             List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listPendingRenderWithNodeAssigned();
             for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
+                modifyingQueue = true;
                 BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
                 SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid());
                 String connectionURL = "https://" + sethlansNode.getIpAddress() + ":" +
@@ -493,9 +498,8 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                         "&part_res_percentage=" + blenderProject.getResPercentage() +
                         "&file_extension=" + blenderRenderQueueItem.getBlenderFramePart().getFileExtension();
                 LOG.debug("Sending " + blenderRenderQueueItem + " to " + sethlansNode.getHostname());
+                modifyingQueue = false;
                 sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params);
-                blenderRenderQueueItem.setRendering(true);
-                blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
             }
             modifyingQueue = false;
         }
