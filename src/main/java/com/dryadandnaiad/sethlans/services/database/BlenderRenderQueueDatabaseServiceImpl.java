@@ -139,8 +139,17 @@ public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueue
         return sortedList;
     }
 
-    public int numberOfPartsRemainingForFrame(String project_uuid, int frameNumber) {
-        return 0;
+    @Override
+    public List<BlenderRenderQueueItem> listRemainingPartsInProjectQueueByFrameNumber(String project_uuid, int frameNumber) {
+        List<BlenderRenderQueueItem> remainingQueueForProject = listRemainingQueueItemsByProjectUUID(project_uuid);
+        List<BlenderRenderQueueItem> queueItemsByFrame = new ArrayList<>();
+        for (BlenderRenderQueueItem blenderRenderQueueItem : remainingQueueForProject) {
+            if (blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() == frameNumber) {
+                queueItemsByFrame.add(blenderRenderQueueItem);
+            }
+        }
+        return queueItemsByFrame;
+
     }
 
     @Override

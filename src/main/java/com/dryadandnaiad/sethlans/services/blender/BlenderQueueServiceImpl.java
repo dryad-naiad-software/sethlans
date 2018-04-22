@@ -26,6 +26,8 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueIte
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
+import com.dryadandnaiad.sethlans.enums.ProjectType;
+import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import com.dryadandnaiad.sethlans.services.database.BlenderProcessQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
@@ -64,6 +66,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private BlenderProcessQueueDatabaseService blenderProcessQueueDatabaseService;
+    private BlenderProjectService blenderProjectService;
 
 
     @Async
@@ -279,10 +282,15 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                     BlenderRenderQueueItem blenderRenderQueueItem = blenderRenderQueueDatabaseService.getByQueueUUID(blenderProcessQueueItem.getQueueUUID());
                     int partNumber = blenderRenderQueueItem.getBlenderFramePart().getPartNumber();
                     int frameNumber = blenderRenderQueueItem.getBlenderFramePart().getFrameNumber();
-                    BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
-                    int projectTotalQueue = blenderRenderQueueDatabaseService.listQueueItemsByProjectUUID(blenderRenderQueueItem.getProject_uuid()).size();
-                    int remainingTotalQueue = blenderRenderQueueDatabaseService.listRemainingQueueItemsByProjectUUID(blenderRenderQueueItem.getProject_uuid()).size();
-                    int remainingPartsForFrame = 0;
+                    BlenderProject blenderProject =
+                            blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
+                    int projectTotalQueue =
+                            blenderRenderQueueDatabaseService.listQueueItemsByProjectUUID(blenderRenderQueueItem.getProject_uuid()).size();
+                    int remainingTotalQueue =
+                            blenderRenderQueueDatabaseService.listRemainingQueueItemsByProjectUUID(blenderRenderQueueItem.getProject_uuid()).size();
+                    int remainingPartsForFrame =
+                            blenderRenderQueueDatabaseService.listRemainingPartsInProjectQueueByFrameNumber(
+                                    blenderRenderQueueItem.getProject_uuid(), frameNumber).size();
 
                     File storedDir = new File(blenderRenderQueueItem.getBlenderFramePart().getStoredDir());
                     storedDir.mkdirs();
@@ -304,12 +312,49 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                     } catch (IOException | SQLException e) {
                         e.printStackTrace();
                     }
-                    remainingTotalQueue--;
+                    LOG.debug("Remaining parts per frame for Frame " + frameNumber + ": " + remainingPartsForFrame);
+                    LOG.debug("Remaining items in project Queue " + remainingTotalQueue);
+                    LOG.debug("Project total Queue " + projectTotalQueue);
+
+                    double currentPercentage = ((projectTotalQueue - remainingTotalQueue) * 100.0) / projectTotalQueue;
+                    LOG.debug("Current Percentage " + currentPercentage);
+                    blenderProject.setCurrentPercentage((int) currentPercentage);
+
+                    blenderProject.setTotalRenderTime(blenderProject.getTotalRenderTime() + blenderProcessQueueItem.getRenderTime());
+                    if (remainingTotalQueue > 0) {
+                        blenderProject.setProjectStatus(ProjectStatus.Rendering);
+                    }
+                    if (remainingPartsForFrame == 0) {
+                        if (blenderProjectService.combineParts(blenderProject, frameNumber)) {
+                            if (remainingTotalQueue == 0) {
+                                if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
+                                    blenderProject.setQueueItemStartTime(System.currentTimeMillis());
+                                    blenderProject.setProjectStatus(ProjectStatus.Processing);
+                                    blenderProjectService.createAVI(blenderProject);
+                                    blenderProject.setQueueItemEndTime(System.currentTimeMillis());
+
+                                }
+                                if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
+                                    blenderProject.setQueueItemStartTime(System.currentTimeMillis());
+                                    blenderProject.setProjectStatus(ProjectStatus.Processing);
+                                    blenderProjectService.createMP4(blenderProject);
+                                    blenderProject.setQueueItemEndTime(System.currentTimeMillis());
+                                } else {
+                                    blenderProject.setProjectStatus(ProjectStatus.Finished);
+                                    blenderRenderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
+                                }
+                                blenderProject.setAllImagesProcessed(true);
+                            }
+                        }
+
+                    }
+                    long time = blenderProject.getQueueItemEndTime() - blenderProject.getQueueItemStartTime();
+                    blenderProject.setTotalProjectTime(blenderProject.getTotalProjectTime() + time);
+                    blenderProjectDatabaseService.saveOrUpdate(blenderProject);
 
 
                 }
             }
-
             modifyingQueue = false;
         }
 
@@ -465,6 +510,11 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     @Autowired
     public void setBlenderProcessQueueDatabaseService(BlenderProcessQueueDatabaseService blenderProcessQueueDatabaseService) {
         this.blenderProcessQueueDatabaseService = blenderProcessQueueDatabaseService;
+    }
+
+    @Autowired
+    public void setBlenderProjectService(BlenderProjectService blenderProjectService) {
+        this.blenderProjectService = blenderProjectService;
     }
 }
 
