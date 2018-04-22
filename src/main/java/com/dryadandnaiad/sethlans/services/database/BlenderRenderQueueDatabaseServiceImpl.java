@@ -139,6 +139,22 @@ public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueue
         return sortedList;
     }
 
+    public int numberOfPartsRemainingForFrame(String project_uuid, int frameNumber) {
+        return 0;
+    }
+
+    @Override
+    public List<BlenderRenderQueueItem> listRemainingQueueItemsByProjectUUID(String project_uuid) {
+        List<BlenderRenderQueueItem> mainProjectLIst = listQueueItemsByProjectUUID(project_uuid);
+        List<BlenderRenderQueueItem> sortedList = new ArrayList<>();
+        for (BlenderRenderQueueItem blenderRenderQueueItem : mainProjectLIst) {
+            if (!blenderRenderQueueItem.isComplete()) {
+                sortedList.add(blenderRenderQueueItem);
+            }
+        }
+        return sortedList;
+    }
+
     @Autowired
     public void setBlenderRenderQueueRepository(BlenderRenderQueueRepository blenderRenderQueueRepository) {
         this.blenderRenderQueueRepository = blenderRenderQueueRepository;

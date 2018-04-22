@@ -280,8 +280,8 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                     int partNumber = blenderRenderQueueItem.getBlenderFramePart().getPartNumber();
                     int frameNumber = blenderRenderQueueItem.getBlenderFramePart().getFrameNumber();
                     BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
-                    int projectTotalQueue = blenderProject.getPartsPerFrame() * blenderProject.getTotalNumOfFrames();
-                    int remainingTotalQueue = projectTotalQueue;
+                    int projectTotalQueue = blenderRenderQueueDatabaseService.listQueueItemsByProjectUUID(blenderRenderQueueItem.getProject_uuid()).size();
+                    int remainingTotalQueue = blenderRenderQueueDatabaseService.listRemainingQueueItemsByProjectUUID(blenderRenderQueueItem.getProject_uuid()).size();
                     int remainingPartsForFrame = 0;
 
                     File storedDir = new File(blenderRenderQueueItem.getBlenderFramePart().getStoredDir());
