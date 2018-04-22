@@ -441,6 +441,44 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
         }
     }
 
+    @Override
+    public void nodeIdle(String connection_uuid, ComputeType computeType) {
+        if (!modifyingQueue) {
+            modifyingQueue = true;
+            SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
+            switch (computeType) {
+                case GPU:
+                    sethlansNode.setGpuSlotInUse(false);
+                    break;
+                case CPU:
+                    sethlansNode.setCpuSlotInUse(false);
+                    break;
+                case CPU_GPU:
+                    sethlansNode.setCpuSlotInUse(false);
+                    sethlansNode.setGpuSlotInUse(false);
+                    break;
+            }
+
+            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+            if (sethlansNode.getAvailableRenderingSlots() > sethlansNode.getTotalRenderingSlots()) {
+                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+            }
+
+            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+            List<BlenderRenderQueueItem> listOfItemsWIthNode = blenderRenderQueueDatabaseService.listQueueItemsByConnectionUUID(connection_uuid);
+            for (BlenderRenderQueueItem blenderRenderQueueItem : listOfItemsWIthNode) {
+                if (!blenderRenderQueueItem.isComplete()) {
+                    blenderRenderQueueItem.setConnection_uuid(null);
+                    blenderRenderQueueItem.setRendering(false);
+                    BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
+                    blenderRenderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
+                }
+            }
+            modifyingQueue = false;
+        }
+
+    }
+
 
     private BlenderRenderQueueItem setQueueItemComputeType(SethlansNode sethlansNode, BlenderRenderQueueItem blenderRenderQueueItem) {
         // Before sending to a node the compute type must be either GPU or CPU,  CPU&GPU is only used for sorting at the server level.

@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
 
 /**
  * Created Mario Estrella on 4/21/2018.
@@ -45,4 +46,6 @@ public interface BlenderQueueService {
     void nodeAcknowledgeQueueItem(String queue_uuid);
 
     void addItemToProcess(BlenderProcessQueueItem blenderProcessQueueItem);
+
+    void nodeIdle(String connection_uuid, ComputeType computeType);
 }
