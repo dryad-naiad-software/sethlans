@@ -179,7 +179,6 @@ public class ProjectController {
     @GetMapping(value = "/api/project_actions/start_project/{id}")
     public boolean startProject(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-
         BlenderProject blenderProject;
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
             blenderProject = blenderProjectDatabaseService.getById(id);
@@ -398,7 +397,7 @@ public class ProjectController {
         projectInfo.setSelectedBlenderversion(blenderProject.getBlenderVersion());
         projectInfo.setRenderOn(blenderProject.getRenderOn());
         projectInfo.setTotalRenderTime(getTimeFromMills(blenderProject.getTotalRenderTime()));
-        projectInfo.setProjectTime(getTimeFromMills((blenderProject.getEndTime() - blenderProject.getStartTime())));
+        projectInfo.setProjectTime(getTimeFromMills(blenderProject.getTotalProjectTime()));
         projectInfo.setOutputFormat(blenderProject.getRenderOutputFormat());
         projectInfo.setUsername(blenderProject.getSethlansUser().getUsername());
         projectInfo.setFrameRate(blenderProject.getFrameRate());

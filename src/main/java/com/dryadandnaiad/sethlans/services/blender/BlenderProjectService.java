@@ -34,7 +34,6 @@ public interface BlenderProjectService {
 
     void resumeProject(String username, Long id);
 
-
     void pauseProject(Long id);
 
     void pauseProject(String username, Long id);
@@ -47,9 +46,4 @@ public interface BlenderProjectService {
 
     void deleteProject(String username, Long id);
 
-    boolean combineParts(BlenderProject blenderProject, int frameNumber);
-
-    void createMP4(BlenderProject blenderProject);
-
-    void createAVI(BlenderProject blenderProject);
 }

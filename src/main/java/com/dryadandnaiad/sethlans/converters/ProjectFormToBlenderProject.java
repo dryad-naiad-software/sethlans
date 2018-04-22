@@ -79,8 +79,7 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
                 blenderProject.setBlendFileLocation(blenderProjectDirectory + File.separator + projectForm.getUploadedFile());
                 blenderProject.setProjectRootDir(blenderProjectDirectory.toString());
                 blenderProject.setTotalRenderTime(0L);
-                blenderProject.setStartTime(0L);
-                blenderProject.setEndTime(0L);
+                blenderProject.setTotalProjectTime(0L);
             } else {
                 throw new Exception(projectForm.getUploadedFile() + " failed to move");
             }

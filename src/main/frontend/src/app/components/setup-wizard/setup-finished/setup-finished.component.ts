@@ -41,7 +41,7 @@ export class SetupFinishedComponent implements OnInit {
     setTimeout(() => {
         this.document.location.href = this.sethlansURL;
       }
-      , 90000);
+      , 60000);
   }
 
 }

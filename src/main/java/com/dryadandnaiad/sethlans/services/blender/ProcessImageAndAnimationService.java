@@ -19,17 +19,18 @@
 
 package com.dryadandnaiad.sethlans.services.blender;
 
-import com.dryadandnaiad.sethlans.domains.node.NodeSlotUpdate;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 
 /**
- * Created Mario Estrella on 4/16/2018.
+ * Created Mario Estrella on 4/21/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface NodeSlotUpdateService {
+public interface ProcessImageAndAnimationService {
+    void createMP4(BlenderProject blenderProject);
 
-    void addUpdateNodeItem(NodeSlotUpdate nodeSlotUpdate);
+    void createAVI(BlenderProject blenderProject);
 
-    void startRenderNodeUpdateQueue();
+    boolean combineParts(BlenderProject blenderProject, int frameNumber);
 }

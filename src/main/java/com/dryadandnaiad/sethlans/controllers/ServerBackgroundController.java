@@ -20,13 +20,10 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
-import com.dryadandnaiad.sethlans.domains.node.NodeSlotUpdate;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderQueueService;
-import com.dryadandnaiad.sethlans.services.blender.NodeSlotUpdateService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
@@ -38,8 +35,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 /**
  * Created Mario Estrella on 12/25/17.
  * Dryad and Naiad Software LLC
@@ -50,7 +45,6 @@ import java.util.List;
 @Profile({"SERVER", "DUAL"})
 public class ServerBackgroundController {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
-    private NodeSlotUpdateService nodeSlotUpdateService;
     private BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService;
     private BlenderBenchmarkService blenderBenchmarkService;
     private NodeDiscoveryService nodeDiscoveryService;
@@ -59,11 +53,9 @@ public class ServerBackgroundController {
     private static final Logger LOG = LoggerFactory.getLogger(ServerBackgroundController.class);
 
     private boolean isFirstProjectRecent(BlenderProject blenderProject) {
-        long projectStart = blenderProject.getStartTime();
-        long currentTime = System.currentTimeMillis();
-        long timeDifference = currentTime - projectStart;
-        long minutes = timeDifference / (60 * 1000);
-        return projectStart == 0L || minutes < 30;
+        long projectTime = blenderProject.getTotalProjectTime();
+        long minutes = projectTime / (60 * 1000);
+        return projectTime == 0L || minutes < 10;
     }
 
     @PostMapping(value = "/api/update/node_idle_notification")
@@ -71,15 +63,30 @@ public class ServerBackgroundController {
         try {
             if (blenderProjectDatabaseService.listAll().size() != 0 && blenderRenderQueueDatabaseService.listAll().size() != 0) {
                 BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueDatabaseService.listAll().get(0).getProject_uuid());
+                SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
                 if (blenderProject == null) {
-                    updateNode(connection_uuid, compute_type);
-
+                    sethlansNode.setCpuSlotInUse(false);
+                    sethlansNode.setGpuSlotInUse(false);
+                    sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                    sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                 }
                 if (blenderRenderQueueDatabaseService.listAll().size() > 0 && !isFirstProjectRecent(blenderProject)) {
-                    updateNode(connection_uuid, compute_type);
+                    while (!blenderQueueService.nodeIdle(connection_uuid, compute_type)) {
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             } else {
-                updateNode(connection_uuid, compute_type);
+                while (!blenderQueueService.nodeIdle(connection_uuid, compute_type)) {
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         } catch (NullPointerException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
@@ -87,30 +94,6 @@ public class ServerBackgroundController {
         }
     }
 
-    private void updateNode(String connection_uuid, ComputeType compute_type) {
-
-        SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
-        if (sethlansNode != null && sethlansNode.isBenchmarkComplete()) {
-            List<BlenderRenderQueueItem> blenderRenderQueueItemList = blenderRenderQueueDatabaseService.listQueueItemsByConnectionUUID(sethlansNode.getConnection_uuid());
-            LOG.debug("Received Idle Notification from " + sethlansNode.getHostname());
-            if (sethlansNode.isCpuSlotInUse() || sethlansNode.isGpuSlotInUse()) {
-                LOG.debug(compute_type.getName() + " is idle, updating database.");
-                NodeSlotUpdate nodeSlotUpdate = new NodeSlotUpdate();
-                nodeSlotUpdate.setSethlansNode(sethlansNode);
-                nodeSlotUpdate.setComputeType(compute_type);
-                nodeSlotUpdate.setViaQuery(false);
-                nodeSlotUpdate.setOffline(false);
-                nodeSlotUpdate.setInUse(false);
-                nodeSlotUpdateService.addUpdateNodeItem(nodeSlotUpdate);
-                for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
-                    blenderRenderQueueItem.setRendering(false);
-                    blenderRenderQueueItem.setConnection_uuid(null);
-                    blenderQueueService.addQueueUpdateItem(blenderRenderQueueItem);
-                }
-            }
-        }
-
-    }
 
     @RequestMapping(value = "/api/update/node_status_update", method = RequestMethod.GET)
     public void nodeStatusToServerUpdate(@RequestParam String connection_uuid) {
@@ -178,11 +161,6 @@ public class ServerBackgroundController {
     @Autowired
     public void setBlenderProjectDatabaseService(BlenderProjectDatabaseService blenderProjectDatabaseService) {
         this.blenderProjectDatabaseService = blenderProjectDatabaseService;
-    }
-
-    @Autowired
-    public void setNodeSlotUpdateService(NodeSlotUpdateService nodeSlotUpdateService) {
-        this.nodeSlotUpdateService = nodeSlotUpdateService;
     }
 
     @Autowired
