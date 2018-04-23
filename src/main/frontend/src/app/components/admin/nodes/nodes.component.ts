@@ -22,6 +22,7 @@ import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import {NodeListService} from "../../../services/node_list.service";
 import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
+import Utils from "../../../utils/utils";
 
 @Component({
   selector: 'app-nodes',
@@ -34,6 +35,8 @@ export class NodesComponent implements OnInit {
   dataSource = new MatTableDataSource();
   displayedColumns = ['nodeStatus', 'hostname', 'ipAddress', 'port', 'os', 'computeMethods', 'cpuName', 'selectedCores', 'selectedGPUs', 'benchmark', 'actions'];
   nodeListSize: number;
+  inActiveList: boolean[] = [];
+  pendingList: boolean[] = [];
 
 
   constructor(private http: HttpClient, private nodeListService: NodeListService) {
@@ -52,6 +55,24 @@ export class NodesComponent implements OnInit {
         this.loadTable();
       }
       this.nodeListSize = value;
+    });
+    this.nodeListService.getUpdatingNodeList().subscribe(value => {
+      let newInActiveList: boolean[] = [];
+      let newPendingList: boolean[] = [];
+      for (let i = 0; i < value.length; i++) {
+        newInActiveList.push(value[i].active);
+        newPendingList.push(value[i].benchmarkComplete);
+      }
+      if (!Utils.isEqual(newInActiveList, this.inActiveList)) {
+        this.loadTable();
+      }
+
+      if (!Utils.isEqual(newPendingList, this.pendingList)) {
+        this.loadTable();
+      }
+
+      this.inActiveList = newInActiveList;
+      this.pendingList = newPendingList;
     })
   }
 
@@ -72,6 +93,7 @@ export class NodesComponent implements OnInit {
 
   deleteNode(id) {
     this.http.get('/api/setup/node_delete/' + id + "/", {responseType: 'text'}).subscribe((success: any) => {
+      this.loadTable();
     });
   }
 

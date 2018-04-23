@@ -140,6 +140,17 @@ public class AdminController {
         return sethlansNodeDatabaseService.listAll();
     }
 
+    @GetMapping(value = {"/nodes_updating_list"})
+    public List<SethlansNode> getNodesUpdating() {
+        List<SethlansNode> listToSend = new ArrayList<>();
+        for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
+            if (!sethlansNode.isActive() || !sethlansNode.isBenchmarkComplete()) {
+                listToSend.add(sethlansNode);
+            }
+        }
+        return listToSend;
+    }
+
     @GetMapping(value = {"/node_list_size"})
     public Integer getNodeListSize() {
         return sethlansNodeDatabaseService.listAll().size();
