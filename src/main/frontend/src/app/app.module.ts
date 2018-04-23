@@ -38,7 +38,7 @@ import {SetupServerComponent} from './components/setup-wizard/setup-server/setup
 import {SetupNodeComponent} from './components/setup-wizard/setup-node/setup-node.component';
 import {SetupDualComponent} from './components/setup-wizard/setup-dual/setup-dual.component';
 import {SetupSettingsComponent} from './components/setup-wizard/setup-settings/setup-settings.component';
-import {MatSliderModule} from "@angular/material";
+import {MatPaginatorModule, MatSliderModule, MatTableModule} from "@angular/material";
 import {SetupSummaryComponent} from './components/setup-wizard/setup-summary/setup-summary.component';
 import {SetupFinishedComponent} from './components/setup-wizard/setup-finished/setup-finished.component';
 import {WindowRef} from "./services/windowref.service";
@@ -131,6 +131,8 @@ import {ShutdownComponent} from "./components/admin/shutdown/shutdown.component"
     FileUploadModule,
     ChartModule,
     MatSliderModule,
+    MatTableModule,
+    MatPaginatorModule,
     DataTablesModule,
     NgbModule.forRoot(),
     HttpClientModule,

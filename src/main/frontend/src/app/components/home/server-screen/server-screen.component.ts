@@ -17,31 +17,26 @@
  *
  */
 
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ProjectListService} from "../../../services/project_list.service";
-import {Project} from "../../../models/project.model";
-import {Subject} from "rxjs/Subject";
 import {HttpClient} from "@angular/common/http";
 import {Mode} from "../../../enums/mode.enum";
 import {Observable} from "rxjs/Observable";
-import {DataTableDirective} from "angular-datatables";
-import {ProjectStatus} from "../../../enums/project_status.enum";
+import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
 
 @Component({
   selector: 'app-server-screen',
   templateUrl: './server-screen.component.html',
   styleUrls: ['./server-screen.component.scss']
 })
-export class ServerScreenComponent implements OnInit, AfterViewInit {
-  @ViewChild(DataTableDirective)
-  dtElement: DataTableDirective;
-
-  projects: Project[];
+export class ServerScreenComponent implements OnInit {
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  dataSource = new MatTableDataSource();
+  displayedColumns = ['projectName', 'projectStatus', 'progress'];
   projectSize: number;
-  dtTrigger: Subject<any> = new Subject();
-  dtOptions: DataTables.Settings = {};
-  data: any;
-  dataArray: number [];
+  chartData: any;
+  chartDataArray: number [];
   totalNodes: number;
   activeNodes: number;
   inactiveNodes: number;
@@ -54,8 +49,6 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
   usedSpace: number;
   currentMode: Mode;
   mode: any = Mode;
-  currentPercentageArray: number[] = [];
-  currentStatusArray: ProjectStatus[] = [];
 
 
   constructor(private projectService: ProjectListService, private http: HttpClient) {
@@ -63,26 +56,13 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.dtOptions = {
-      searching: false,
-      pageLength: 5,
-      lengthChange: false
-    };
     this.getInfo();
     let timer = Observable.timer(5000, 5000);
     timer.subscribe(() => {
       this.getInfo();
     });
-
-    this.projectService.getProjectList().subscribe(value => {
-      this.projects = value;
-      this.dtTrigger.next();
-    });
   }
 
-  ngAfterViewInit(): void {
-
-  }
 
   getInfo() {
     this.http.get('/api/info/sethlans_mode', {responseType: 'text'})
@@ -127,18 +107,23 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
     this.http.get('/api/info/total_slots').subscribe((totalSlots: number) => {
       this.totalSlots = totalSlots;
     });
+
+    this.projectService.getProjectList().subscribe(data => {
+      this.dataSource = new MatTableDataSource<any>(data);
+      this.dataSource.paginator = this.paginator;
+    });
   }
 
 
 
   chartLoad() {
     this.http.get('/api/info/active_nodes_value_array').subscribe((numberArray: number[]) => {
-      this.dataArray = numberArray;
-      this.data = {
+      this.chartDataArray = numberArray;
+      this.chartData = {
         labels: ['CPU', 'GPU', 'CPU_GPU'],
         datasets: [
           {
-            data: this.dataArray,
+            data: this.chartDataArray,
             backgroundColor: [
               "#43C519",
               "#1943C5",

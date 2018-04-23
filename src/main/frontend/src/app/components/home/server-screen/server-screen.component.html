@@ -20,32 +20,34 @@
   <div class="row">
     <div class="col-4">
       <h5>Project Status</h5>
-      <table datatable [dtTrigger]="dtTrigger" [dtOptions]="dtOptions" class="table table-sm">
-        <thead>
-        <tr>
-          <th>Name</th>
-          <th>Status</th>
-          <th data-orderable="false">Render Progress</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let project of projects">
-          <td><a [href]="'/projects/view/'+ project.id ">{{project.projectName}}</a></td>
-          <td *ngIf="project.projectStatus?.valueOf().toString() != 'Finished'.valueOf()">{{project.projectStatus}}</td>
-          <td *ngIf="project.projectStatus?.valueOf().toString() == 'Finished'.valueOf()"><a
-            [href]="'/api/project_actions/download_project/' + project.id"> {{project.projectStatus}}</a></td>
-          <td class="pt-2 pb-2" placement="right" ngbTooltip="{{project.currentPercentage}}%">
+      <mat-table #projectTable [dataSource]="dataSource">
+        <ng-container matColumnDef="projectName">
+          <mat-header-cell *matHeaderCellDef> Name</mat-header-cell>
+          <mat-cell *matCellDef="let project"> {{project.projectName}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="projectStatus">
+          <mat-header-cell *matHeaderCellDef> Status</mat-header-cell>
+          <mat-cell *matCellDef="let project"> {{project.projectStatus}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="progress">
+          <mat-header-cell *matHeaderCellDef>Render Progress</mat-header-cell>
+          <mat-cell *matCellDef="let project">
             <ngb-progressbar type="success"
-                             [value]="project?.currentPercentage"><span *ngIf="project.currentPercentage == 100">Complete</span>
+                             [value]="project.currentPercentage" placement="right"
+                             ngbTooltip="{{project.currentPercentage}}%">
+              <span *ngIf="project.currentPercentage == 100">Complete</span>
             </ngb-progressbar>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-  </div>
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+      <mat-paginator #paginator [pageSize]="5"></mat-paginator>
+
+    </div>
     <div class="col-5">
       <h5>Active Node Distribution</h5>
-      <p-chart type="doughnut" [data]="data"></p-chart>
+      <p-chart type="doughnut" [data]="chartData"></p-chart>
     </div>
     <div class="col-3">
       <h5>Connected Node Stats</h5>
