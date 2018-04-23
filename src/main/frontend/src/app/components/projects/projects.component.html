@@ -30,98 +30,129 @@
         </h4>
       </div>
       <div class="card-body">
-        <h2 class="text-center mt-5 mb-5" *ngIf="projectSize == 0">No Projects
-          Available</h2>
-        <div class="table-responsive" *ngIf="projectSize > 0">
-          <table datatable class="table" [dtOptions]="dtOptions">
-            <thead>
-            <tr>
-              <th>Name</th>
-              <th>Blender</th>
-              <th>Type</th>
-              <th>Render On</th>
-              <th>Resolution</th>
-              <th>Format</th>
-              <th>Status</th>
-              <th>Render Progress</th>
-              <th data-orderable="false">Preview</th>
-              <th data-orderable="false">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let project of projects">
-              <td style="width: 200px;">{{project.projectName}}</td>
-              <td>{{project.selectedBlenderversion}}</td>
-              <td>{{project.projectType}}</td>
-              <td>{{project.renderOn}}</td>
-              <td>{{project.resolutionX}} x {{project.resolutionY}}</td>
-              <td>{{project.outputFormat}}</td>
-              <td>{{project.projectStatus}}</td>
-              <td>
-                <ngb-progressbar type="success"
-                                 [value]="project?.currentPercentage"><span *ngIf="project.currentPercentage == 100">Complete</span>
-                </ngb-progressbar>
-              </td>
-              <td *ngIf="project.thumbnailPresent == false"><img [src]="placeholder"
-                                                                 height="100"
-                                                                 class="d-inline-block align-top"
-                                                                 alt="placeholder">
-              </td>
-              <td *ngIf="project.thumbnailPresent == true">
-                <img [src]="project.thumbnailURL" height="100" class="d-inline-block align-top" alt="thumbnail">
-              </td>
-              <td>
-                <div class="btn-group-vertical">
-                  <button *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf()"
-                          class="btn btn-outline-primary btn-sm btn-block" type="button"
-                          (click)="startProject(project.id)">
-                    Start
-                  </button>
-                  <button *ngIf="project.projectStatus.valueOf().toString() == 'Paused'.valueOf()"
-                          class="btn btn-outline-primary btn-sm btn-block" type="button"
-                          (click)="resumeProject(project.id)">
-                    Resume
-                  </button>
-                  <button
-                    *ngIf="project.projectStatus.valueOf().toString() == 'Started'.valueOf() || project.projectStatus.valueOf().toString() == 'Rendering'.valueOf() "
-                    class="btn btn-outline-warning btn-sm" type="button" (click)="pauseProject(project.id)">
-                    Pause
-                  </button>
-                  <button *ngIf="project.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
-                          class="btn btn-outline-success btn-sm" type="button" (click)="downloadProject(project.id)">
-                    Download
-                  </button>
+        <mat-table #projectTable [dataSource]="dataSource" matSort>
+          <ng-container matColumnDef="projectName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Name</mat-header-cell>
+            <mat-cell *matCellDef="let project"><a [href]="'/projects/view/'+ project.id ">{{project.projectName}}</a>
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="blender">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Blender</mat-header-cell>
+            <mat-cell *matCellDef="let project">
+              {{project.selectedBlenderversion}}
+            </mat-cell>
+          </ng-container>
 
-                  <button class="btn btn-outline-dark btn-sm" type="button" style="width: 90px"
-                          (click)="viewProject(project.id)">View
-                  </button>
-                  <button *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf()"
-                          class="btn btn-outline-dark btn-sm" type="button" (click)="editProject(project.id)">Edit
-                  </button>
-                  <button
-                    *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf() ||  project.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
-                    class="btn btn-outline-danger btn-sm" type="button"
-                    (click)="confirm(project, deleteConfirmation)">
-                    Delete
-                  </button>
-                  <button
-                    *ngIf="project.projectStatus.valueOf().toString() == 'Started'.valueOf() ||
+          <ng-container matColumnDef="type">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Type</mat-header-cell>
+            <mat-cell *matCellDef="let project">
+              {{project.projectType}}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="renderOn">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Render On</mat-header-cell>
+            <mat-cell *matCellDef="let project">
+              {{project.renderOn}}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="resolution">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Resolution</mat-header-cell>
+            <mat-cell *matCellDef="let project">
+              {{project.resolutionX}} x {{project.resolutionY}}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="format">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Format</mat-header-cell>
+            <mat-cell *matCellDef="let project">
+              {{project.outputFormat}}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="projectStatus">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Status</mat-header-cell>
+            <mat-cell *matCellDef="let project">
+              {{project.projectStatus}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="progress">
+            <mat-header-cell *matHeaderCellDef>Render Progress</mat-header-cell>
+            <mat-cell *matCellDef="let project">
+              <ngb-progressbar type="success"
+                               [value]="project.currentPercentage" placement="right"
+                               ngbTooltip="{{project.currentPercentage}}%">
+                <span *ngIf="project.currentPercentage == 100">Complete</span>
+              </ngb-progressbar>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="preview">
+            <mat-header-cell *matHeaderCellDef>Preview</mat-header-cell>
+            <mat-cell *matCellDef="let project">
+              <span *ngIf="project.thumbnailPresent == false"><img [src]="placeholder"
+                                                                   height="100"
+                                                                   class="d-inline-block align-top"
+                                                                   alt="placeholder">
+              </span>
+              <span *ngIf="project.thumbnailPresent == true">
+                <img [src]="project.thumbnailURL" height="100" class="d-inline-block align-top" alt="thumbnail">
+              </span>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+            <mat-cell *matCellDef="let project">
+              <div class="btn-group-vertical">
+                <button *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf()"
+                        class="btn btn-outline-primary btn-sm btn-block" type="button"
+                        (click)="startProject(project.id)">
+                  Start
+                </button>
+                <button *ngIf="project.projectStatus.valueOf().toString() == 'Paused'.valueOf()"
+                        class="btn btn-outline-primary btn-sm btn-block" type="button"
+                        (click)="resumeProject(project.id)">
+                  Resume
+                </button>
+                <button
+                  *ngIf="project.projectStatus.valueOf().toString() == 'Started'.valueOf() || project.projectStatus.valueOf().toString() == 'Rendering'.valueOf() "
+                  class="btn btn-outline-warning btn-sm" type="button" (click)="pauseProject(project.id)">
+                  Pause
+                </button>
+                <button *ngIf="project.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
+                        class="btn btn-outline-success btn-sm" type="button" (click)="downloadProject(project.id)">
+                  Download
+                </button>
+
+                <button class="btn btn-outline-dark btn-sm" type="button" style="width: 90px"
+                        (click)="viewProject(project.id)">View
+                </button>
+                <button *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf()"
+                        class="btn btn-outline-dark btn-sm" type="button" (click)="editProject(project.id)">Edit
+                </button>
+                <button
+                  *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf() ||  project.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
+                  class="btn btn-outline-danger btn-sm" type="button"
+                  (click)="confirm(project, deleteConfirmation)">
+                  Delete
+                </button>
+                <button
+                  *ngIf="project.projectStatus.valueOf().toString() == 'Started'.valueOf() ||
                     project.projectStatus.valueOf().toString() == 'Rendering'.valueOf() ||
                     project.projectStatus.valueOf().toString() == 'Pending'.valueOf() ||
                     project.projectStatus.valueOf().toString() == 'Processing'.valueOf()"
-                    class="btn btn-outline-danger btn-sm" type="button" (click)="confirm(project, stopConfirmation)">
-                    Stop
-                  </button>
-                </div>
-              </td>
-
-            </tr>
-
-            </tbody>
-          </table>
-
-
-        </div>
+                  class="btn btn-outline-danger btn-sm" type="button" (click)="confirm(project, stopConfirmation)">
+                  Stop
+                </button>
+              </div>
+            </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #paginator [pageSize]="5"></mat-paginator>
       </div>
     </div>
   </div>

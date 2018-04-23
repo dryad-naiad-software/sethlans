@@ -30,7 +30,7 @@
         <mat-form-field>
           <input matInput id="table-search" (keyup)="applyFilter($event.target.value)" placeholder="Search">
         </mat-form-field>
-        <mat-table #projectTable [dataSource]="dataSource" matSort>
+        <mat-table #serverTable [dataSource]="dataSource" matSort>
           <ng-container matColumnDef="serverStatus">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Server Status</mat-header-cell>
             <mat-cell *matCellDef="let server"><span *ngIf="server.acknowledged == false">Pending Acknowledgement</span>

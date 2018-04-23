@@ -16,13 +16,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import {Project} from "../../models/project.model";
 import {ProjectListService} from "../../services/project_list.service";
 import {Router} from "@angular/router";
 import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
+import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
+import {ProjectStatus} from "../../enums/project_status.enum";
+import Utils from "../../utils/utils";
 
 
 @Component({
@@ -30,58 +33,72 @@ import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
   templateUrl: './projects.component.html',
   styleUrls: ['./projects.component.scss']
 })
-export class ProjectsComponent implements OnInit, AfterViewInit {
+export class ProjectsComponent implements OnInit {
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  dataSource = new MatTableDataSource();
+  displayedColumns = ['projectName', 'blender', 'type', 'renderOn', 'resolution', 'format', 'projectStatus', 'progress', 'preview', 'actions'];
   placeholder: any = "assets/images/placeholder.svg";
   nodesReady: boolean = false;
   projectSize: number;
-  projects: Project[];
   selectedProject: Project;
-  dtOptions: DataTables.Settings = {};
+  currentPercentageArray: number[] = [];
+  currentStatusArray: ProjectStatus[] = [];
 
   constructor(private http: HttpClient, private projectService: ProjectListService, private router: Router, private modalService: NgbModal) {
   }
 
-  ngAfterViewInit(): void {
-    this.projectService.getProjectList().subscribe(value => {
-      this.projects = value;
-    });
-  }
 
   ngOnInit() {
-    this.getNodeStatus();
-    this.getProjectListSize();
-    this.dtOptions = {
-    };
-
-
-    let timer = Observable.timer(5000, 5000);
+    this.getInfo();
+    let timer = Observable.timer(1000, 1000);
     timer.subscribe(() => {
-      this.getNodeStatus();
-      this.getProjectListSize();
+      this.getInfo();
     });
 
-    let timer2 = Observable.timer(45000, 30000);
-    timer2.subscribe(() => {
-      this.reload();
-    })
   }
 
-  getProjectListSize() {
-    this.projectService.getProjectListSize().subscribe(value => this.projectSize = value);
-  }
-
-
-  getNodeStatus() {
+  getInfo() {
     this.http.get('/api/project_ui/nodes_ready').subscribe((success: boolean) => {
       if (success == true) {
         this.nodesReady = true;
       }
     });
+
+    this.projectService.getProjectListSize().subscribe(value => {
+      if (this.projectSize != value) {
+        this.projectLoad();
+      }
+      this.projectSize = value
+    });
+
+    this.projectService.getProjectListInProgress().subscribe(value => {
+      let newPercentageArray: number[] = [];
+      let newStatusArray: ProjectStatus[] = [];
+      for (let i = 0; i < value.length; i++) {
+        newPercentageArray.push(value[i].currentPercentage);
+        newStatusArray.push(value[i].projectStatus);
+      }
+      if (!Utils.isEqual(newPercentageArray, this.currentPercentageArray)) {
+        this.projectLoad();
+      }
+
+      if (!Utils.isEqual(newStatusArray, this.currentStatusArray)) {
+        this.projectLoad();
+      }
+
+      this.currentPercentageArray = newPercentageArray;
+      this.currentStatusArray = newStatusArray;
+    });
   }
 
 
-  reload(): void {
-    window.location.href = "/projects";
+  projectLoad() {
+    this.projectService.getProjectList().subscribe(data => {
+      this.dataSource = new MatTableDataSource<any>(data);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    });
   }
 
   addProject() {
@@ -112,35 +129,28 @@ export class ProjectsComponent implements OnInit, AfterViewInit {
   startProject(id) {
     this.http.get("/api/project_actions/start_project/" + id + "/").subscribe((success: boolean) => {
       if (success) {
-        window.location.href = "/projects";
+        this.projectLoad();
       }
     });
   }
 
   deleteProject(id) {
     this.http.get('/api/project_actions/delete_project/' + id + '/').subscribe();
-    window.location.href = "/projects";
   }
 
   pauseProject(id) {
     this.http.get('/api/project_actions/pause_project/' + id + '/').subscribe();
-    window.location.href = "/projects";
+    this.projectLoad();
   }
 
   resumeProject(id) {
     this.http.get('/api/project_actions/resume_project/' + id + '/').subscribe();
-    window.location.href = "/projects";
+    this.projectLoad();
   }
 
   stopProject(id) {
     this.http.get('/api/project_actions/stop_project/' + id + '/').subscribe();
-    setTimeout(() => {
-      window.location.href = "/projects";
-    }, 3000);
-
-
   }
-
 
 
 }
