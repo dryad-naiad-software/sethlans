@@ -17,10 +17,10 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Log} from "../../../models/log.model";
 import {HttpClient} from "@angular/common/http";
-import {Subject} from "rxjs/Subject";
+import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
 
 @Component({
   selector: 'app-logs',
@@ -28,21 +28,20 @@ import {Subject} from "rxjs/Subject";
   styleUrls: ['./logs.component.scss']
 })
 export class LogsComponent implements OnInit {
-  logList: Log[];
-  dtOptions: DataTables.Settings = {};
-  dtTrigger: Subject<any> = new Subject();
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  dataSource = new MatTableDataSource();
+  displayedColumns = ['date', 'level', 'class', 'message'];
 
 
   constructor(private http: HttpClient) {
   }
 
   ngOnInit() {
-    this.dtOptions = {
-      order: [[0, "desc"]]
-    };
     this.http.get('/api/management/get_logs/').subscribe((logList: Log[]) => {
-      this.logList = logList;
-      this.dtTrigger.next();
+      this.dataSource = new MatTableDataSource<any>(logList);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort
     });
 
   }
