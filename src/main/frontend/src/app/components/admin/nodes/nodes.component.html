@@ -116,7 +116,7 @@
           </ng-container>
 
           <ng-container matColumnDef="benchmark">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Selected GPU(s)</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Benchmark</mat-header-cell>
             <mat-cell *matCellDef="let node">
               <span *ngIf="node.benchmarkComplete == false">N/A</span>
               <span *ngIf="node.benchmarkComplete == true && node.computeType.toString().valueOf() == 'CPU'.valueOf()">
