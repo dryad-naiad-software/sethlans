@@ -23,11 +23,17 @@
       <mat-table #projectTable [dataSource]="dataSource">
         <ng-container matColumnDef="projectName">
           <mat-header-cell *matHeaderCellDef> Name</mat-header-cell>
-          <mat-cell *matCellDef="let project"> {{project.projectName}}</mat-cell>
+          <mat-cell *matCellDef="let project"><a [href]="'/projects/view/'+ project.id ">{{project.projectName}}</a>
+          </mat-cell>
         </ng-container>
         <ng-container matColumnDef="projectStatus">
           <mat-header-cell *matHeaderCellDef> Status</mat-header-cell>
-          <mat-cell *matCellDef="let project"> {{project.projectStatus}}</mat-cell>
+          <mat-cell *matCellDef="let project">
+            <span
+              *ngIf="project.projectStatus?.valueOf().toString() != 'Finished'.valueOf()">{{project.projectStatus}}</span>
+            <a *ngIf="project.projectStatus?.valueOf().toString() == 'Finished'.valueOf()"
+               [href]="'/api/project_actions/download_project/' + project.id"> {{project.projectStatus}}</a>
+          </mat-cell>
         </ng-container>
         <ng-container matColumnDef="progress">
           <mat-header-cell *matHeaderCellDef>Render Progress</mat-header-cell>
