@@ -455,7 +455,13 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             int totalAvailableSlots = sethlansNodeDatabaseService.activeNodeswithFreeSlots().size();
             if (blenderRenderQueueItemList.size() > 0 && totalAvailableSlots > 0) {
                 List<SethlansNode> sortedSethlansNodeList;
-                for (int i = 0; i < totalAvailableSlots; i++) {
+                int count;
+                if (totalAvailableSlots > blenderRenderQueueItemList.size()) {
+                    count = blenderRenderQueueItemList.size();
+                } else {
+                    count = totalAvailableSlots;
+                }
+                for (int i = 0; i < count; i++) {
                     BlenderRenderQueueItem blenderRenderQueueItem = blenderRenderQueueItemList.get(i);
                     LOG.debug(blenderRenderQueueItem.getProjectName() + " uuid: " +
                             blenderRenderQueueItem.getProject_uuid() + " Frame: "
