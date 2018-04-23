@@ -45,7 +45,7 @@ export class NodeScreenComponent implements OnInit {
 
   ngOnInit() {
     this.getInfo();
-    let timer = Observable.timer(10000, 10000);
+    let timer = Observable.timer(5000, 5000);
     timer.subscribe(() => {
       this.getInfo()
     });

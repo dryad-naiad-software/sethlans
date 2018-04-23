@@ -23,6 +23,8 @@ import {HttpClient} from "@angular/common/http";
 import {Mode} from "../../../enums/mode.enum";
 import {Observable} from "rxjs/Observable";
 import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
+import {ProjectStatus} from "../../../enums/project_status.enum";
+import Utils from "../../../utils/utils";
 
 @Component({
   selector: 'app-server-screen',
@@ -49,6 +51,8 @@ export class ServerScreenComponent implements OnInit {
   usedSpace: number;
   currentMode: Mode;
   mode: any = Mode;
+  currentPercentageArray: number[] = [];
+  currentStatusArray: ProjectStatus[] = [];
 
 
   constructor(private projectService: ProjectListService, private http: HttpClient) {
@@ -57,6 +61,7 @@ export class ServerScreenComponent implements OnInit {
 
   ngOnInit() {
     this.getInfo();
+    this.projectLoad();
     let timer = Observable.timer(5000, 5000);
     timer.subscribe(() => {
       this.getInfo();
@@ -65,6 +70,12 @@ export class ServerScreenComponent implements OnInit {
 
 
   getInfo() {
+    this.projectService.getProjectListSize().subscribe(value => {
+      if (this.projectSize != value) {
+        this.projectLoad();
+      }
+      this.projectSize = value
+    });
     this.http.get('/api/info/sethlans_mode', {responseType: 'text'})
       .subscribe((sethlansmode: Mode) => {
         this.currentMode = sethlansmode;
@@ -107,7 +118,28 @@ export class ServerScreenComponent implements OnInit {
     this.http.get('/api/info/total_slots').subscribe((totalSlots: number) => {
       this.totalSlots = totalSlots;
     });
+    this.projectService.getProjectListInProgress().subscribe(value => {
+      let newPercentageArray: number[] = [];
+      let newStatusArray: ProjectStatus[] = [];
+      for (let i = 0; i < value.length; i++) {
+        newPercentageArray.push(value[i].currentPercentage);
+        newStatusArray.push(value[i].projectStatus);
+      }
+      if (!Utils.isEqual(newPercentageArray, this.currentPercentageArray)) {
+        this.projectLoad();
+      }
 
+      if (!Utils.isEqual(newStatusArray, this.currentStatusArray)) {
+        this.projectLoad();
+      }
+
+      this.currentPercentageArray = newPercentageArray;
+      this.currentStatusArray = newStatusArray;
+    });
+  }
+
+
+  projectLoad() {
     this.projectService.getProjectList().subscribe(data => {
       this.dataSource = new MatTableDataSource<any>(data);
       this.dataSource.paginator = this.paginator;
