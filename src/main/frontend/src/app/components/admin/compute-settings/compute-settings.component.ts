@@ -101,7 +101,6 @@ export class ComputeSettingsComponent implements OnInit {
           this.currentNode.setCores(currentCores);
           this.newNode.setCores(currentCores);
         }
-
       });
     this.http.get('/api/management/current_tilesize_cpu')
       .subscribe((tileSizeCPU: any) => {

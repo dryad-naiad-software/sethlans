@@ -32,4 +32,9 @@ export class NodeListService {
     return this.http.get<NodeInfo[]>('/api/management/node_list');
   }
 
+  getNodeListSize(): Observable<number> {
+    return this.http.get<number>("/api/management/node_list_size");
+  }
+
+
 }

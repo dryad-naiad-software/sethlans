@@ -17,52 +17,61 @@
  *
  */
 
-import {AfterViewInit, Component, OnInit} from '@angular/core';
-import {NodeInfo} from "../../../models/node_info.model";
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Router} from "@angular/router";
 import {Observable} from "rxjs/Observable";
 import {NodeListService} from "../../../services/node_list.service";
+import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
 
 @Component({
   selector: 'app-nodes',
   templateUrl: './nodes.component.html',
   styleUrls: ['./nodes.component.scss']
 })
-export class NodesComponent implements OnInit, AfterViewInit {
+export class NodesComponent implements OnInit {
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  dataSource = new MatTableDataSource();
+  displayedColumns = ['nodeStatus', 'hostname', 'ipAddress', 'port', 'os', 'computeMethods', 'cpuName', 'selectedCores', 'selectedGPUs', 'benchmark', 'actions'];
   nodeListSize: number;
-  nodeList: NodeInfo[] = [];
-  dtOptions: DataTables.Settings = {};
 
-  constructor(private http: HttpClient, private router: Router, private nodeListService: NodeListService) {
+
+  constructor(private http: HttpClient, private nodeListService: NodeListService) {
   }
 
   ngOnInit() {
-    this.dtOptions = {};
-    this.getNodeListSize();
-    let timer = Observable.timer(45000, 45000);
-    timer.subscribe(() => this.reload());
-    let timer2 = Observable.timer(5000, 2000);
-    timer2.subscribe(() => this.getNodeListSize());
+    this.getInfo();
+    let timer = Observable.timer(5000, 5000);
+    timer.subscribe(() => this.getInfo());
+
   }
 
-  ngAfterViewInit(): void {
-    this.nodeListService.getNodeList().subscribe(value => {
-      this.nodeList = value;
-    });
+  getInfo() {
+    this.nodeListService.getNodeListSize().subscribe(value => {
+      if (this.nodeListSize != value) {
+        this.loadTable();
+      }
+      this.nodeListSize = value;
+    })
   }
 
-  getNodeListSize() {
-    this.http.get<number>("/api/management/node_list_size").subscribe((nodeSize: number) => {
-      this.nodeListSize = nodeSize;
-    });
+  loadTable() {
+    this.nodeListService.getNodeList().subscribe(data => {
+      this.dataSource = new MatTableDataSource<any>(data);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    })
   }
+
+  applyFilter(filterValue: string) {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
 
   deleteNode(id) {
     this.http.get('/api/setup/node_delete/' + id + "/", {responseType: 'text'}).subscribe((success: any) => {
-      console.log(success);
-      this.reload();
-
     });
   }
 
@@ -72,10 +81,6 @@ export class NodesComponent implements OnInit, AfterViewInit {
 
   scanNode() {
     window.location.href = "/admin/nodes/scan";
-  }
-
-  reload(): void {
-    window.location.href = "/admin/nodes";
   }
 
 
