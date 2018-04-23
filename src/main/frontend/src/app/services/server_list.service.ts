@@ -30,4 +30,8 @@ export class ServerListService {
   getServerList(): Observable<ServerInfo[]> {
     return this.http.get<ServerInfo[]>('/api/management/server_list');
   }
+
+  getServerListSize(): Observable<number> {
+    return this.http.get<number>("/api/management/server_list_size");
+  }
 }

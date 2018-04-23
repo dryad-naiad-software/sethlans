@@ -18,54 +18,63 @@
   -->
 
 <div class="row pb-5">
-  <div class="col-md-10 m-auto">
+  <div class="col-md-8 m-auto">
     <div class="card">
       <div class="card-header">
         <h4>
           <span style="font-family: 'Fjalla One', sans-serif; ">Servers</span>
         </h4>
       </div>
+
       <div class="card-body">
-        <h3 class="text-center mt-5 mb-5" *ngIf="serverSize == 0">This Node is not
-          associated with any
-          servers</h3>
-        <div class="table-responsive" *ngIf="serverSize > 0">
-          <table datatable class="table" [dtOptions]="dtOptions">
-            <thead>
-            <tr>
-              <th>Server Status</th>
-              <th>Hostname</th>
-              <th>IP Address</th>
-              <th>Port</th>
-              <th data-orderable="false">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let server of serverList">
-              <td *ngIf="server.acknowledged == false">Pending Acknowledgement</td>
-              <td *ngIf="server.acknowledged == true && server.pendingAcknowledgementResponse == true">Pending
+        <mat-form-field>
+          <input matInput id="table-search" (keyup)="applyFilter($event.target.value)" placeholder="Search">
+        </mat-form-field>
+        <mat-table #projectTable [dataSource]="dataSource" matSort>
+          <ng-container matColumnDef="serverStatus">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Server Status</mat-header-cell>
+            <mat-cell *matCellDef="let server"><span *ngIf="server.acknowledged == false">Pending Acknowledgement</span>
+              <span *ngIf="server.acknowledged == true && server.pendingAcknowledgementResponse == true">Pending
                 Response
-              </td>
-              <td *ngIf="server.acknowledged == true && server.pendingAcknowledgementResponse == false">Active</td>
-              <td>{{server.hostname}}</td>
-              <td>{{server.ipAddress}}</td>
-              <td>{{server.networkPort}}</td>
-              <td>
-                <div class="btn-group-vertical">
-                  <button [disabled]="ackClicked" *ngIf="server.acknowledged == false"
-                          class="btn btn-outline-primary btn-sm" type="button"
-                          (click)="acknowledgeServer(server.id)">
-                    Acknowledge
-                  </button>
-                  <button class="btn btn-outline-danger btn-sm" type="button" (click)="deleteServer(server.id)">Delete
-                  </button>
-                </div>
-              </td>
-            </tr>
-            </tbody>
-          </table>
+              </span>
+              <span *ngIf="server.acknowledged == true && server.pendingAcknowledgementResponse == false">Active</span>
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="hostname">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Hostname</mat-header-cell>
+            <mat-cell *matCellDef="let server">{{server.hostname}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="ipAddress">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>IP Address</mat-header-cell>
+            <mat-cell *matCellDef="let server">{{server.ipAddress}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="port">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Port</mat-header-cell>
+            <mat-cell *matCellDef="let server">{{server.networkPort}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+            <mat-cell *matCellDef="let server">
+              <div class="btn-group-vertical">
+                <button [disabled]="ackClicked" *ngIf="server.acknowledged == false"
+                        class="btn btn-outline-primary btn-sm" type="button"
+                        (click)="acknowledgeServer(server.id)">
+                  Acknowledge
+                </button>
+                <button class="btn btn-outline-danger btn-sm" type="button" (click)="deleteServer(server.id)">Delete
+                </button>
+              </div>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[10,25,50]"></mat-paginator>
         </div>
       </div>
     </div>
   </div>
-</div>

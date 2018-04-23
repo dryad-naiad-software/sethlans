@@ -17,50 +17,59 @@
  *
  */
 
-import {AfterViewInit, Component, OnInit} from '@angular/core';
-import {ServerInfo} from "../../../models/server_info.model";
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {Observable} from "rxjs/Observable";
 import "rxjs/add/observable/timer";
 import {ServerListService} from "../../../services/server_list.service";
+import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
 
 @Component({
   selector: 'app-servers',
   templateUrl: './servers.component.html',
   styleUrls: ['./servers.component.scss']
 })
-export class ServersComponent implements OnInit, AfterViewInit {
+export class ServersComponent implements OnInit {
   serverSize: number;
-  serverList: ServerInfo[] = [];
   ackClicked: boolean = false;
-  serverScanComplete: boolean = false;
-  dtOptions: DataTables.Settings = {};
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  dataSource = new MatTableDataSource();
+  displayedColumns = ['serverStatus', 'hostname', 'ipAddress', 'port', 'actions'];
 
 
   constructor(private http: HttpClient, private router: Router, private serverListService: ServerListService) {
   }
 
   ngOnInit() {
-    this.getServerListSize();
-    this.dtOptions = {
-    };
+    this.getInfo();
 
-    let timer2 = Observable.timer(5000, 2000);
-    let timer = Observable.timer(45000, 45000);
-    timer.subscribe(() => this.reload());
-    timer2.subscribe(() => this.getServerListSize());
+    let timer = Observable.timer(5000, 5000);
+    timer.subscribe(() => this.getInfo());
   }
 
-  ngAfterViewInit(): void {
-    this.serverListService.getServerList().subscribe(value => {
-      this.serverList = value;
-    });
+  getInfo() {
+    this.serverListService.getServerListSize().subscribe(value => {
+      if (this.serverSize != value) {
+        this.loadTable();
+      }
+      this.serverSize = value;
+    })
   }
 
-  getServerListSize() {
-    this.http.get<number>("/api/management/server_list_size").subscribe((serverSize: number) => {
-      this.serverSize = serverSize;
+  applyFilter(filterValue: string) {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
+
+  loadTable() {
+    this.serverListService.getServerList().subscribe(data => {
+      this.dataSource = new MatTableDataSource<any>(data);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
     });
   }
 
@@ -68,8 +77,6 @@ export class ServersComponent implements OnInit, AfterViewInit {
     this.http.get('/api/setup/server_acknowledge/' + id + "/").subscribe((success: boolean) => {
       if (success == true) {
         this.ackClicked = true;
-        let timer = Observable.timer(5000);
-        timer.subscribe(() => this.reload());
       }
 
     });
@@ -77,12 +84,10 @@ export class ServersComponent implements OnInit, AfterViewInit {
 
 
   deleteServer(id) {
-    this.http.get('/api/setup/server_delete/' + id + "/");
-    this.reload();
+    this.http.get('/api/setup/server_delete/' + id + "/").subscribe(() => {
+      this.loadTable();
+    });
   }
 
-  reload(): void {
-    window.location.href = "/admin/servers";
-  }
 
 }

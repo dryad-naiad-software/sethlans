@@ -38,7 +38,14 @@ import {SetupServerComponent} from './components/setup-wizard/setup-server/setup
 import {SetupNodeComponent} from './components/setup-wizard/setup-node/setup-node.component';
 import {SetupDualComponent} from './components/setup-wizard/setup-dual/setup-dual.component';
 import {SetupSettingsComponent} from './components/setup-wizard/setup-settings/setup-settings.component';
-import {MatPaginatorModule, MatSliderModule, MatTableModule} from "@angular/material";
+import {
+  MatFormFieldModule,
+  MatInputModule,
+  MatPaginatorModule,
+  MatSliderModule,
+  MatSortModule,
+  MatTableModule
+} from "@angular/material";
 import {SetupSummaryComponent} from './components/setup-wizard/setup-summary/setup-summary.component';
 import {SetupFinishedComponent} from './components/setup-wizard/setup-finished/setup-finished.component';
 import {WindowRef} from "./services/windowref.service";
@@ -78,6 +85,7 @@ import {ChartModule} from "primeng/chart";
 import {GetStartedWizardComponent} from './components/get-started-wizard/get-started-wizard.component';
 import {RestartComponent} from "./components/admin/restart/restart.component";
 import {ShutdownComponent} from "./components/admin/shutdown/shutdown.component";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 
 @NgModule({
@@ -127,12 +135,16 @@ import {ShutdownComponent} from "./components/admin/shutdown/shutdown.component"
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     FileUploadModule,
     ChartModule,
     MatSliderModule,
     MatTableModule,
     MatPaginatorModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSortModule,
     DataTablesModule,
     NgbModule.forRoot(),
     HttpClientModule,

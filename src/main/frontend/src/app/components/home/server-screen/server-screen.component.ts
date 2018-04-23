@@ -17,7 +17,7 @@
  *
  */
 
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {ProjectListService} from "../../../services/project_list.service";
 import {HttpClient} from "@angular/common/http";
 import {Mode} from "../../../enums/mode.enum";
@@ -31,7 +31,7 @@ import Utils from "../../../utils/utils";
   templateUrl: './server-screen.component.html',
   styleUrls: ['./server-screen.component.scss']
 })
-export class ServerScreenComponent implements OnInit {
+export class ServerScreenComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   dataSource = new MatTableDataSource();
@@ -143,6 +143,7 @@ export class ServerScreenComponent implements OnInit {
     this.projectService.getProjectList().subscribe(data => {
       this.dataSource = new MatTableDataSource<any>(data);
       this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
     });
   }
 
@@ -169,6 +170,9 @@ export class ServerScreenComponent implements OnInit {
           }]
       };
     });
+  }
+
+  ngAfterViewInit(): void {
   }
 
 
