@@ -81,31 +81,6 @@ public class ProjectController {
     private BlenderProjectService blenderProjectService;
 
 
-    @GetMapping(value = "/api/project_ui/num_of_projects")
-    public Integer numberOfProjects() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-            return blenderProjectDatabaseService.listAllReverse().size();
-        } else {
-            return blenderProjectDatabaseService.getProjectsByUser(auth.getName()).size();
-        }
-    }
-
-    @GetMapping(value = "/api/project_ui/nodes_ready")
-    public boolean nodesReady() {
-        return sethlansNodeDatabaseService.activeNodes();
-    }
-
-    @GetMapping(value = "/api/project_ui/project_list")
-    public List<ProjectInfo> getProjects() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-            return convertBlenderProjectsToProjectInfo(blenderProjectDatabaseService.listAllReverse());
-        } else {
-            return convertBlenderProjectsToProjectInfo(blenderProjectDatabaseService.getProjectsByUser(auth.getName()));
-        }
-
-    }
 
     @GetMapping(value = "/api/project_actions/stop_project/{id}")
     public void stopProject(@PathVariable Long id) {
@@ -192,6 +167,58 @@ public class ProjectController {
         blenderProject = blenderProjectDatabaseService.saveOrUpdate(blenderProject);
         blenderProjectService.startProject(blenderProject);
         return true;
+    }
+
+    @GetMapping(value = "/api/project_ui/num_of_projects")
+    public Integer numberOfProjects() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            return blenderProjectDatabaseService.listAllReverse().size();
+        } else {
+            return blenderProjectDatabaseService.getProjectsByUser(auth.getName()).size();
+        }
+    }
+
+    @GetMapping(value = "/api/project_ui/nodes_ready")
+    public boolean nodesReady() {
+        return sethlansNodeDatabaseService.activeNodes();
+    }
+
+    @GetMapping(value = "/api/project_ui/project_list")
+    public List<ProjectInfo> getProjects() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            return convertBlenderProjectsToProjectInfo(blenderProjectDatabaseService.listAll());
+        } else {
+            return convertBlenderProjectsToProjectInfo(blenderProjectDatabaseService.getProjectsByUser(auth.getName()));
+        }
+
+    }
+
+
+    @GetMapping(value = "/api/project_ui/project_list_in_progress")
+    public List<ProjectInfo> getUnFinishedProjects() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            List<BlenderProject> blenderProjectList = blenderProjectDatabaseService.listAll();
+            List<BlenderProject> unfinishedProjects = new ArrayList<>();
+            for (BlenderProject blenderProject : blenderProjectList) {
+                if (!blenderProject.getProjectStatus().equals(ProjectStatus.Finished)) {
+                    unfinishedProjects.add(blenderProject);
+                }
+            }
+            return convertBlenderProjectsToProjectInfo(unfinishedProjects);
+        } else {
+            List<BlenderProject> blenderProjectList = blenderProjectDatabaseService.getProjectsByUser(auth.getName());
+            List<BlenderProject> unfinishedProjects = new ArrayList<>();
+            for (BlenderProject blenderProject : blenderProjectList) {
+                if (!blenderProject.getProjectStatus().equals(ProjectStatus.Finished)) {
+                    unfinishedProjects.add(blenderProject);
+                }
+            }
+            return convertBlenderProjectsToProjectInfo(unfinishedProjects);
+        }
+
     }
 
     @GetMapping("/api/project_ui/thumbnail_status/{id}")

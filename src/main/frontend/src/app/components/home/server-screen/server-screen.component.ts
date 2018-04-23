@@ -69,7 +69,6 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
       lengthChange: false
     };
     this.getInfo();
-    this.chartLoad();
     let timer = Observable.timer(5000, 5000);
     timer.subscribe(() => {
       this.getInfo();
@@ -77,10 +76,6 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
 
     this.projectService.getProjectList().subscribe(value => {
       this.projects = value;
-      for (let i = 0; i < value.length; i++) {
-        this.currentPercentageArray.push(value[i].currentPercentage);
-        this.currentStatusArray.push(value[i].projectStatus);
-      }
       this.dtTrigger.next();
     });
   }
@@ -102,9 +97,6 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
       this.cpuName = cpuName;
     });
     this.http.get('/api/info/total_nodes').subscribe((totalNodes: number) => {
-      if (this.totalNodes != totalNodes) {
-        this.chartLoad();
-      }
       this.totalNodes = totalNodes;
 
     });
@@ -135,106 +127,9 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
     this.http.get('/api/info/total_slots').subscribe((totalSlots: number) => {
       this.totalSlots = totalSlots;
     });
-
-    this.projectService.getProjectListSize().subscribe(value => {
-      if (this.projectSize != value) {
-        this.loadTable();
-      }
-      this.projectSize = value
-    });
-
-    this.projectService.getProjectList().subscribe(value => {
-      let newPercentageArray: number[] = [];
-      let newStatusArray: ProjectStatus[] = [];
-      for (let i = 0; i < value.length; i++) {
-        newPercentageArray.push(value[i].currentPercentage);
-        newStatusArray.push(value[i].projectStatus);
-      }
-      if (!this.isEqual(newPercentageArray, this.currentPercentageArray)) {
-        this.loadTable();
-      }
-
-      if (!this.isEqual(newStatusArray, this.currentStatusArray)) {
-        this.loadTable();
-      }
-
-      this.currentPercentageArray = newPercentageArray;
-      this.currentStatusArray = newStatusArray;
-    });
   }
 
-  isEqual(value, other) {
-    // Get the value type
-    var type = Object.prototype.toString.call(value);
 
-    // If the two objects are not the same type, return false
-    if (type !== Object.prototype.toString.call(other)) return false;
-
-    // If items are not an object or array, return false
-    if (['[object Array]', '[object Object]'].indexOf(type) < 0) return false;
-
-    // Compare the length of the length of the two items
-    var valueLen = type === '[object Array]' ? value.length : Object.keys(value).length;
-    var otherLen = type === '[object Array]' ? other.length : Object.keys(other).length;
-    if (valueLen !== otherLen) return false;
-
-    // Compare two items
-    var compare = function (item1, item2) {
-
-      // Get the object type
-      var itemType = Object.prototype.toString.call(item1);
-
-      // If an object or array, compare recursively
-      if (['[object Array]', '[object Object]'].indexOf(itemType) >= 0) {
-        if (!isEqual(item1, item2)) return false;
-      }
-
-      // Otherwise, do a simple comparison
-      else {
-
-        // If the two items are not the same type, return false
-        if (itemType !== Object.prototype.toString.call(item2)) return false;
-
-        // Else if it's a function, convert to a string and compare
-        // Otherwise, just compare
-        if (itemType === '[object Function]') {
-          if (item1.toString() !== item2.toString()) return false;
-        } else {
-          if (item1 !== item2) return false;
-        }
-
-      }
-    };
-
-    // Compare properties
-    if (type === '[object Array]') {
-      for (var i = 0; i < valueLen; i++) {
-        if (compare(value[i], other[i]) === false) return false;
-      }
-    } else {
-      for (var key in value) {
-        if (value.hasOwnProperty(key)) {
-          if (compare(value[key], other[key]) === false) return false;
-        }
-      }
-    }
-
-    // If nothing failed, return true
-    return true;
-  }
-
-  loadTable() {
-    this.projectService.getProjectList().subscribe(value => {
-      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-        // Destroy the table first
-        dtInstance.destroy();
-        this.projects = value;
-        // Call the dtTrigger to rerender again
-        this.dtTrigger.next();
-
-      });
-    });
-  }
 
   chartLoad() {
     this.http.get('/api/info/active_nodes_value_array').subscribe((numberArray: number[]) => {
