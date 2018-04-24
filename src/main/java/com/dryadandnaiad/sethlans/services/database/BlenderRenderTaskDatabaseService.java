@@ -32,5 +32,5 @@ public interface BlenderRenderTaskDatabaseService extends CRUDService<BlenderRen
 
     void deleteAll();
 
-    BlenderRenderTask getByProjectUUID(String project_uuid);
+    BlenderRenderTask getByQueueUUID(String queue_uuid);
 }

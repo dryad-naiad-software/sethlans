@@ -90,6 +90,7 @@ public class NodeRenderController {
                 String params = "queue_item_uuid=" + queue_item_uuid;
                 sethlansAPIConnectionService.sendToRemoteGET(connectionURL, params);
             } else {
+                LOG.debug("Adding task to render queue.");
                 SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connection_uuid);
                 String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_accept_item/";
                 String params = "queue_item_uuid=" + queue_item_uuid;
@@ -123,7 +124,7 @@ public class NodeRenderController {
                 blenderRenderTask.setComplete(false);
                 LOG.debug(blenderRenderTask.toString());
                 blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
-                blenderRenderService.startRenderService(project_uuid);
+                blenderRenderService.startRender(blenderRenderTask.getServer_queue_uuid());
             }
         }
     }

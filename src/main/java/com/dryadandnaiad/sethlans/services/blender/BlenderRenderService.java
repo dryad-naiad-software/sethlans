@@ -31,6 +31,6 @@ public interface BlenderRenderService {
     void clearQueueOnNodeRestart();
 
     @Async
-    void startRenderService(String projectUUID);
+    void startRender(String projectUUID);
 
 }

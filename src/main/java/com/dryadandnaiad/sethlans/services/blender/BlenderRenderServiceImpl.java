@@ -99,8 +99,8 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
     @Override
     @Async
-    public void startRenderService(String projectUUID) {
-        BlenderRenderTask blenderRenderTask = blenderRenderTaskDatabaseService.getByProjectUUID(projectUUID);
+    public void startRender(String queueUUID) {
+        BlenderRenderTask blenderRenderTask = blenderRenderTaskDatabaseService.getByQueueUUID(queueUUID);
         blenderRenderTask.setInProgress(true);
         String cacheDir = SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString());
         File blendFileDir = new File(SethlansUtils.getProperty(SethlansConfigKeys.BLEND_FILE_CACHE_DIR.toString())

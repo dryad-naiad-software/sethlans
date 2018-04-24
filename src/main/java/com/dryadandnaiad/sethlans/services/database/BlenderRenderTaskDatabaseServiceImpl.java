@@ -74,17 +74,19 @@ public class BlenderRenderTaskDatabaseServiceImpl implements BlenderRenderTaskDa
         blenderRenderTaskRepository.deleteAll();
     }
 
+
     @Override
-    public BlenderRenderTask getByProjectUUID(String project_uuid) {
-        List<BlenderRenderTask> blenderRenderTasks = listAll();
-        for (BlenderRenderTask blenderRenderTask : blenderRenderTasks) {
-            if (project_uuid.equals(blenderRenderTask.getProject_uuid())) {
+    public BlenderRenderTask getByQueueUUID(String queue_uuid) {
+        for (BlenderRenderTask blenderRenderTask : listAll()) {
+            if (queue_uuid.equals(blenderRenderTask.getServer_queue_uuid())) {
                 return blenderRenderTask;
             } else {
-                LOG.error("Render Task for this project is currently not in database");
+                LOG.error("No task found for this uuid");
             }
+
         }
         return null;
+
     }
 
     @Autowired
