@@ -23,6 +23,8 @@ import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
+import org.hibernate.StaleStateException;
+import org.hibernate.dialect.lock.OptimisticEntityLockException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +58,12 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
 
     @Override
     public SethlansNode saveOrUpdate(SethlansNode domainObject) {
-        return nodeRepository.save(domainObject);
+        try {
+            return nodeRepository.save(domainObject);
+        } catch (OptimisticEntityLockException | StaleStateException e) {
+            LOG.error("Was unable to save node update.");
+            return domainObject;
+        }
     }
 
     @Override
