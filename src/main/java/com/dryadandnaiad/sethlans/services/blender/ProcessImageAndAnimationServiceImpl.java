@@ -118,6 +118,8 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
         if (errorCount == 0) {
             LOG.debug("Images combined successfully, deleting parts...");
             deleteParts(partCleanup);
+        } else {
+            LOG.debug("Some images are not complete, will reattempt to combine them.");
         }
         return true;
     }
