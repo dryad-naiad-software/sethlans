@@ -34,6 +34,7 @@ import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseSe
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -406,6 +407,11 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                         blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
                     }
                     if (remainingPartsForFrame == 0) {
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            LOG.error(Throwables.getStackTraceAsString(e));
+                        }
                         if (processImageAndAnimationService.combineParts(blenderProject, frameNumber)) {
                             if (remainingTotalQueue == 0) {
                                 if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
