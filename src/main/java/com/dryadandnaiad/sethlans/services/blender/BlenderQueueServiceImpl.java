@@ -275,8 +275,9 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             blenderProcessQueueDatabaseService.saveOrUpdate(blenderProcessQueueItem);
             BlenderRenderQueueItem blenderRenderQueueItem = blenderRenderQueueDatabaseService.getByQueueUUID(blenderProcessQueueItem.getQueueUUID());
             SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderProcessQueueItem.getConnection_uuid());
-            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
             ComputeType computeType = blenderRenderQueueItem.getRenderComputeType();
+            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
+
             blenderRenderQueueItem.setRendering(false);
             blenderRenderQueueItem.setComplete(true);
             blenderRenderQueueItem.setPaused(false);
@@ -296,7 +297,6 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 default:
                     LOG.error("Invalid compute type, this message should not occur.");
             }
-            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             sethlansNode.setAvailableRenderingSlots(Math.max(sethlansNode.getTotalRenderingSlots(), sethlansNode.getAvailableRenderingSlots() + 1));
 
             sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(blenderProcessQueueItem.getConnection_uuid()).getVersion());
