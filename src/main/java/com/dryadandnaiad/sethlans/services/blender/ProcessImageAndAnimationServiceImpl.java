@@ -88,7 +88,7 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
                     fileExtension = blenderFramePart.getFileExtension();
                     plainFilename = blenderFramePart.getFrameFileName();
                 } catch (IOException e) {
-                    LOG.debug("Unable to read image.");
+                    LOG.error("Unable to read image.");
                     errorCount++;
                     LOG.error(Throwables.getStackTraceAsString(e));
                 }
@@ -116,6 +116,7 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
         blenderProject.getFrameFileNames().add(frameFilename);
         blenderProject.setCurrentFrameThumbnail(createThumbnail(frameFilename, storedDir, plainFilename, fileExtension));
         if (errorCount == 0) {
+            LOG.debug("Images combined successfully, deleting parts...");
             deleteParts(partCleanup);
         }
         return true;
