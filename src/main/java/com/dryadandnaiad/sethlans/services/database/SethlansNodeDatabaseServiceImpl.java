@@ -28,6 +28,7 @@ import org.hibernate.dialect.lock.OptimisticEntityLockException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
     public SethlansNode saveOrUpdate(SethlansNode domainObject) {
         try {
             return nodeRepository.save(domainObject);
-        } catch (OptimisticEntityLockException | StaleStateException e) {
+        } catch (ObjectOptimisticLockingFailureException | OptimisticEntityLockException | StaleStateException e) {
             LOG.error("Was unable to save node update.");
             return domainObject;
         }

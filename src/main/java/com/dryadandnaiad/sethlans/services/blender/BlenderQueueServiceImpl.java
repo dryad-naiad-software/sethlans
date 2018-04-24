@@ -296,6 +296,10 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                     LOG.error("Invalid compute type, this message should not occur.");
             }
             sethlansNode.setAvailableRenderingSlots(Math.max(sethlansNode.getTotalRenderingSlots(), sethlansNode.getAvailableRenderingSlots() + 1));
+            if (sethlansNode.getAvailableRenderingSlots() == sethlansNode.getTotalRenderingSlots()) {
+                sethlansNode.setGpuSlotInUse(false);
+                sethlansNode.setCpuSlotInUse(false);
+            }
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
             modifyingQueue = false;
             return true;
