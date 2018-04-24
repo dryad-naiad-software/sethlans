@@ -74,16 +74,22 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
         String storedDir = null;
         String fileExtension = null;
         String plainFilename = null;
+        LOG.debug("Combining images");
+        int errorCount = 0;
         for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
             if (frameNumber == blenderFramePart.getFrameNumber()) {
                 try {
-                    images.add(ImageIO.read(new File(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension())));
+                    String file = blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension();
+                    LOG.debug("Reading file " + file);
+                    images.add(ImageIO.read(new File(file)));
                     partCleanup.add(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension());
                     frameFilename = blenderFramePart.getStoredDir() + blenderFramePart.getFrameFileName() + "." + blenderFramePart.getFileExtension();
                     storedDir = blenderFramePart.getStoredDir();
                     fileExtension = blenderFramePart.getFileExtension();
                     plainFilename = blenderFramePart.getFrameFileName();
                 } catch (IOException e) {
+                    LOG.debug("Unable to read image.");
+                    errorCount++;
                     LOG.error(Throwables.getStackTraceAsString(e));
                 }
             }
@@ -109,7 +115,9 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
         }
         blenderProject.getFrameFileNames().add(frameFilename);
         blenderProject.setCurrentFrameThumbnail(createThumbnail(frameFilename, storedDir, plainFilename, fileExtension));
-        deleteParts(partCleanup);
+        if (errorCount == 0) {
+            deleteParts(partCleanup);
+        }
         return true;
     }
 

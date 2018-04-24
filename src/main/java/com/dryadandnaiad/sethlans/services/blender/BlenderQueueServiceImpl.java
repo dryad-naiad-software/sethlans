@@ -126,6 +126,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 }
             }
             blenderProject.setProjectStatus(ProjectStatus.Paused);
+            blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
             blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
             blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             modifyingQueue = false;
@@ -193,6 +194,8 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             if (!blenderProject.isAllImagesProcessed()) {
                 blenderProject.setProjectStatus(ProjectStatus.Added);
                 blenderProject.setTotalProjectTime(0L);
+                blenderProject.setProjectStart(0L);
+                blenderProject.setProjectEnd(0L);
                 blenderProject.setFrameFileNames(new ArrayList<>());
                 blenderProject.setCurrentFrameThumbnail(null);
                 blenderProject.setCurrentPercentage(0);
