@@ -478,10 +478,13 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                 switch (blenderRenderQueueItem.getRenderComputeType()) {
                                     case CPU:
                                         sethlansNode.setCpuSlotInUse(true);
+                                        break;
                                     case GPU:
                                         sethlansNode.setGpuSlotInUse(true);
+                                        break;
                                     case CPU_GPU:
                                         LOG.error("Failure in logic this message should not be displayed.");
+                                        break;
                                 }
                                 sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
                                 sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid()).getVersion());
