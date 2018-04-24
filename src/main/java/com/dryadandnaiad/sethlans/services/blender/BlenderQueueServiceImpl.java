@@ -474,15 +474,26 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                             sethlansNode = sortedSethlansNodeList.get(0);
                             blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
                             blenderRenderQueueItem = setQueueItemComputeType(sethlansNode, blenderRenderQueueItem);
-                            sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
-                            sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid()).getVersion());
-                            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                            if (blenderRenderQueueItem != null) {
+                                switch (blenderRenderQueueItem.getRenderComputeType()) {
+                                    case CPU:
+                                        sethlansNode.setCpuSlotInUse(true);
+                                    case GPU:
+                                        sethlansNode.setGpuSlotInUse(true);
+                                    case CPU_GPU:
+                                        LOG.error("Failure in logic this message should not be displayed.");
+                                }
+                                sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
+                                sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid()).getVersion());
+                                sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                            }
                             break;
                         case CPU:
                             sortedSethlansNodeList = getSortedNodeList(ComputeType.CPU);
                             sethlansNode = sortedSethlansNodeList.get(0);
                             blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
                             sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
+                            sethlansNode.setCpuSlotInUse(true);
                             sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid()).getVersion());
                             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                             break;
@@ -491,6 +502,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                             sethlansNode = sortedSethlansNodeList.get(0);
                             blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
                             sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
+                            sethlansNode.setGpuSlotInUse(true);
                             sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid()).getVersion());
                             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                             break;
