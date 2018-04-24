@@ -118,11 +118,9 @@ public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueue
         List<BlenderRenderQueueItem> sortedList = new ArrayList<>();
         for (BlenderRenderQueueItem blenderRenderQueueItem :
                 blenderRenderQueueItemList) {
-            if (blenderRenderQueueItem.getConnection_uuid() != null && blenderRenderQueueItem.getConnection_uuid().equals(connection_uuid)) {
+            if (blenderRenderQueueItem.getConnection_uuid().equals(connection_uuid)) {
                 sortedList.add(blenderRenderQueueItem);
             }
-
-
         }
         return sortedList;
     }

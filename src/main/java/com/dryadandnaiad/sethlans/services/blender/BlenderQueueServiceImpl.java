@@ -330,6 +330,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                 }
 
                 List<BlenderRenderQueueItem> listOfItemsWIthNode = blenderRenderQueueDatabaseService.listQueueItemsByConnectionUUID(connection_uuid);
+                LOG.debug("List of queue items assigned to idle node " + listOfItemsWIthNode);
                 for (BlenderRenderQueueItem blenderRenderQueueItem : listOfItemsWIthNode) {
                     if (!blenderRenderQueueItem.isComplete()) {
                         blenderRenderQueueItem.setConnection_uuid(null);
