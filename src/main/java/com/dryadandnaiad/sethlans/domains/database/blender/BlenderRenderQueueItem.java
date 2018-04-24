@@ -45,7 +45,5 @@ public class BlenderRenderQueueItem extends AbstractEntityClass {
     private boolean complete;
     private boolean paused;
     private boolean rendering;
-    private Long startTime;
-    private Long endTime;
 
 }
