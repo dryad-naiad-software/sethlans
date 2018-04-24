@@ -49,6 +49,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created Mario Estrella on 4/21/2018.
@@ -244,6 +245,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             }
             if (blenderProject.getProjectStatus().equals(ProjectStatus.Pending)) {
                 blenderProject.setProjectStatus(ProjectStatus.Started);
+                blenderProject.setProjectStart(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
             }
             blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
             blenderProjectDatabaseService.saveOrUpdate(blenderProject);
@@ -398,6 +400,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                     blenderProject.setTotalRenderTime(blenderProject.getTotalRenderTime() + blenderProcessQueueItem.getRenderTime());
                     if (remainingTotalQueue > 0) {
                         blenderProject.setProjectStatus(ProjectStatus.Rendering);
+                        blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
                     }
                     if (remainingPartsForFrame == 0) {
                         if (processImageAndAnimationService.combineParts(blenderProject, frameNumber)) {
@@ -412,6 +415,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                     processImageAndAnimationService.createMP4(blenderProject);
                                 } else {
                                     blenderProject.setProjectStatus(ProjectStatus.Finished);
+                                    blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
                                     blenderRenderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
                                 }
                                 blenderProject.setAllImagesProcessed(true);
@@ -419,6 +423,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                         }
 
                     }
+                    blenderProject.setTotalProjectTime(blenderProject.getProjectEnd() - blenderProject.getProjectStart());
                     blenderProjectDatabaseService.saveOrUpdate(blenderProject);
                     blenderProcessQueueDatabaseService.delete(blenderProcessQueueItem);
                 }

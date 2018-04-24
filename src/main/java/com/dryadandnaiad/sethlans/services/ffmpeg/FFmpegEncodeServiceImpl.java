@@ -38,6 +38,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created Mario Estrella on 4/6/2018.
@@ -109,6 +110,7 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
 
             BlenderProject projectToUpdate = blenderProjectDatabaseService.getById(blenderProject.getId());
             projectToUpdate.setProjectStatus(ProjectStatus.Finished);
+            projectToUpdate.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
             blenderProjectDatabaseService.saveOrUpdate(projectToUpdate);
             blenderRenderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
 
