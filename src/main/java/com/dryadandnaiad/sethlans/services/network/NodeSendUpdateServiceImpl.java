@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
+import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
@@ -46,6 +47,7 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private BlenderRenderTaskDatabaseService blenderRenderTaskDatabaseService;
+    private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
     private static final Logger LOG = LoggerFactory.getLogger(NodeSendUpdateServiceImpl.class);
 
 
@@ -79,7 +81,7 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
             while (true) {
                 try {
                     Thread.sleep(1000);
-                    if (sethlansServerDatabaseService.listAll().size() > 0) {
+                    if (sethlansServerDatabaseService.listActive().size() > 0 && blenderBenchmarkTaskDatabaseService.listAll().size() == 0) {
                         if (blenderRenderTaskDatabaseService.listAll().size() == 0) {
                             counter++;
                         }
@@ -92,7 +94,7 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
                         if (slots == 1 && blenderRenderTaskDatabaseService.listAll().size() == 1) {
                             counter = 0;
                         }
-                        if (counter > 59) {
+                        if (counter > 120) {
                             LOG.debug("Informing server of idle slot(s)");
                             counter = 0;
                             if (slots == 1) {
@@ -161,6 +163,10 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
         }
     }
 
+    @Autowired
+    public void setBlenderBenchmarkTaskDatabaseService(BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService) {
+        this.blenderBenchmarkTaskDatabaseService = blenderBenchmarkTaskDatabaseService;
+    }
 
     @Autowired
     public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {

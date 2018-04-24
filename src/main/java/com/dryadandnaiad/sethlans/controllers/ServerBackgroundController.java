@@ -19,12 +19,10 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderQueueService;
-import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
@@ -48,38 +46,14 @@ public class ServerBackgroundController {
     private BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService;
     private BlenderBenchmarkService blenderBenchmarkService;
     private NodeDiscoveryService nodeDiscoveryService;
-    private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private BlenderQueueService blenderQueueService;
     private static final Logger LOG = LoggerFactory.getLogger(ServerBackgroundController.class);
 
-    private boolean isFirstProjectRecent(BlenderProject blenderProject) {
-        long projectTime = blenderProject.getTotalProjectTime();
-        long minutes = projectTime / (60 * 1000);
-        return projectTime == 0L || minutes < 10;
-    }
 
     @PostMapping(value = "/api/update/node_idle_notification")
     public void nodeIdleNotification(@RequestParam String connection_uuid, ComputeType compute_type) {
         try {
-            if (blenderProjectDatabaseService.listAll().size() != 0 && blenderRenderQueueDatabaseService.listAll().size() != 0) {
-                BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueDatabaseService.listAll().get(0).getProject_uuid());
-                SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
-                if (blenderProject == null) {
-                    sethlansNode.setCpuSlotInUse(false);
-                    sethlansNode.setGpuSlotInUse(false);
-                    sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                    sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                }
-                if (blenderRenderQueueDatabaseService.listAll().size() > 0 && !isFirstProjectRecent(blenderProject)) {
-                    while (!blenderQueueService.nodeIdle(connection_uuid, compute_type)) {
-                        try {
-                            Thread.sleep(200);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            } else {
+            if (blenderRenderQueueDatabaseService.listAll().size() > 0) {
                 while (!blenderQueueService.nodeIdle(connection_uuid, compute_type)) {
                     try {
                         Thread.sleep(200);
@@ -88,6 +62,7 @@ public class ServerBackgroundController {
                     }
                 }
             }
+
         } catch (NullPointerException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
 
@@ -156,11 +131,6 @@ public class ServerBackgroundController {
     @Autowired
     public void setBlenderRenderQueueDatabaseService(BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService) {
         this.blenderRenderQueueDatabaseService = blenderRenderQueueDatabaseService;
-    }
-
-    @Autowired
-    public void setBlenderProjectDatabaseService(BlenderProjectDatabaseService blenderProjectDatabaseService) {
-        this.blenderProjectDatabaseService = blenderProjectDatabaseService;
     }
 
     @Autowired

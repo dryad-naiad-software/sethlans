@@ -52,6 +52,17 @@ public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabase
     }
 
     @Override
+    public List<SethlansServer> listActive() {
+        List<SethlansServer> listToReturn = new ArrayList<>();
+        for (SethlansServer sethlansServer : listAll()) {
+            if (sethlansServer.isAcknowledged()) {
+                listToReturn.add(sethlansServer);
+            }
+        }
+        return listToReturn;
+    }
+
+    @Override
     public SethlansServer getById(Long id) {
         return serverRepository.findOne(id);
     }
