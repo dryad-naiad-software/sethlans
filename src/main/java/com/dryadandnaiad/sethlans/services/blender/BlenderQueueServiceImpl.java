@@ -192,7 +192,6 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                         default:
                             LOG.error("Wrong compute type used, this message should not be displayed.");
                     }
-                    sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid()).getVersion());
                     sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                 }
 
@@ -260,7 +259,6 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             blenderRenderQueueItem.setRendering(true);
             blenderRenderQueueItem.setVersion(blenderRenderQueueDatabaseService.getByQueueUUID(queue_uuid).getVersion());
             blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
-            sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid()).getVersion());
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
             modifyingQueue = false;
             return true;
@@ -298,8 +296,6 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                     LOG.error("Invalid compute type, this message should not occur.");
             }
             sethlansNode.setAvailableRenderingSlots(Math.max(sethlansNode.getTotalRenderingSlots(), sethlansNode.getAvailableRenderingSlots() + 1));
-
-            sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(blenderProcessQueueItem.getConnection_uuid()).getVersion());
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
             modifyingQueue = false;
             return true;
@@ -318,20 +314,17 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                     case GPU:
                         sethlansNode.setGpuSlotInUse(false);
                         sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                        sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid).getVersion());
                         sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                         break;
                     case CPU:
                         sethlansNode.setCpuSlotInUse(false);
                         sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                        sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid).getVersion());
                         sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                         break;
                     case CPU_GPU:
                         sethlansNode.setCpuSlotInUse(false);
                         sethlansNode.setGpuSlotInUse(false);
                         sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                        sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid).getVersion());
                         sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                         break;
                 }
@@ -487,7 +480,6 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                         break;
                                 }
                                 sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
-                                sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid()).getVersion());
                                 sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                             }
                             break;
@@ -497,7 +489,6 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                             blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
                             sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
                             sethlansNode.setCpuSlotInUse(true);
-                            sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid()).getVersion());
                             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                             break;
                         case GPU:
@@ -506,7 +497,6 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                             blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
                             sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
                             sethlansNode.setGpuSlotInUse(true);
-                            sethlansNode.setVersion(sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid()).getVersion());
                             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                             break;
                     }

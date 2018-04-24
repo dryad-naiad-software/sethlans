@@ -26,6 +26,8 @@ import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.OptimisticLockType;
+import org.hibernate.annotations.OptimisticLocking;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -40,6 +42,7 @@ import java.util.List;
  * Project: sethlans
  */
 @Entity
+@OptimisticLocking(type = OptimisticLockType.NONE)
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class SethlansNode extends AbstractEntityClass {
