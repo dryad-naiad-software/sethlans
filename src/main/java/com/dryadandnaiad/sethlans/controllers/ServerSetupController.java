@@ -104,6 +104,8 @@ public class ServerSetupController {
 
     @GetMapping("/node_delete/{id}")
     public boolean deleteNode(@PathVariable Long id) {
+        //TODO delete render tasks associated with this server first.
+
         sethlansNodeDatabaseService.delete(id);
         return true;
     }
