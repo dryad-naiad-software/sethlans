@@ -28,5 +28,8 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueIt
  * Project: sethlans
  */
 public interface BlenderProcessQueueDatabaseService extends CRUDService<BlenderProcessQueueItem> {
+
+    BlenderProcessQueueItem getProcessByQueueItem(String queueUUID);
+
     void delete(BlenderProcessQueueItem blenderProcessQueueItem);
 }

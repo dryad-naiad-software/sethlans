@@ -164,6 +164,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             modifyingQueue = true;
             LOG.debug("Stopping queue for " + blenderProject.getProjectName());
             for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProject_uuid())) {
+                blenderProcessQueueDatabaseService.delete(blenderProcessQueueDatabaseService.getProcessByQueueItem(blenderRenderQueueItem.getQueueItem_uuid()));
                 if (blenderRenderQueueItem.getConnection_uuid() != null) {
                     SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(blenderRenderQueueItem.getConnection_uuid());
                     switch (blenderRenderQueueItem.getRenderComputeType()) {
@@ -401,7 +402,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                     blenderProject.setCurrentPercentage((int) currentPercentage);
 
                     blenderProject.setTotalRenderTime(blenderProject.getTotalRenderTime() + blenderProcessQueueItem.getRenderTime());
-                    if (remainingTotalQueue > 0) {
+                    if (remainingTotalQueue > 0 && !blenderProject.getProjectStatus().equals(ProjectStatus.Paused)) {
                         blenderProject.setProjectStatus(ProjectStatus.Rendering);
                         blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
                     }
