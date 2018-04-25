@@ -460,40 +460,46 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                     switch (blenderRenderQueueItem.getRenderComputeType()) {
                         case CPU_GPU:
                             sortedSethlansNodeList = getSortedNodeList(ComputeType.CPU_GPU);
-                            sethlansNode = sortedSethlansNodeList.get(0);
-                            blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
-                            blenderRenderQueueItem = setQueueItemComputeType(sethlansNode, blenderRenderQueueItem);
-                            if (blenderRenderQueueItem != null) {
-                                switch (blenderRenderQueueItem.getRenderComputeType()) {
-                                    case CPU:
-                                        sethlansNode.setCpuSlotInUse(true);
-                                        break;
-                                    case GPU:
-                                        sethlansNode.setGpuSlotInUse(true);
-                                        break;
-                                    case CPU_GPU:
-                                        LOG.error("Failure in logic this message should not be displayed.");
-                                        break;
+                            if (sortedSethlansNodeList != null) {
+                                sethlansNode = sortedSethlansNodeList.get(0);
+                                blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
+                                blenderRenderQueueItem = setQueueItemComputeType(sethlansNode, blenderRenderQueueItem);
+                                if (blenderRenderQueueItem != null) {
+                                    switch (blenderRenderQueueItem.getRenderComputeType()) {
+                                        case CPU:
+                                            sethlansNode.setCpuSlotInUse(true);
+                                            break;
+                                        case GPU:
+                                            sethlansNode.setGpuSlotInUse(true);
+                                            break;
+                                        case CPU_GPU:
+                                            LOG.error("Failure in logic this message should not be displayed.");
+                                            break;
+                                    }
+                                    sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
+                                    sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                                 }
-                                sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
-                                sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                             }
                             break;
                         case CPU:
                             sortedSethlansNodeList = getSortedNodeList(ComputeType.CPU);
-                            sethlansNode = sortedSethlansNodeList.get(0);
-                            blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
-                            sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
-                            sethlansNode.setCpuSlotInUse(true);
-                            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                            if (sortedSethlansNodeList != null) {
+                                sethlansNode = sortedSethlansNodeList.get(0);
+                                blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
+                                sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
+                                sethlansNode.setCpuSlotInUse(true);
+                                sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                            }
                             break;
                         case GPU:
                             sortedSethlansNodeList = getSortedNodeList(ComputeType.GPU);
-                            sethlansNode = sortedSethlansNodeList.get(0);
-                            blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
-                            sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
-                            sethlansNode.setGpuSlotInUse(true);
-                            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                            if (sortedSethlansNodeList != null) {
+                                sethlansNode = sortedSethlansNodeList.get(0);
+                                blenderRenderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
+                                sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
+                                sethlansNode.setGpuSlotInUse(true);
+                                sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                            }
                             break;
                     }
                     blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
