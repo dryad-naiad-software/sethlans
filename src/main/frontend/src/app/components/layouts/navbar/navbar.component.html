@@ -78,7 +78,7 @@
             </a>
           </div>
           <div *ngIf="currentMode == mode.SERVER || currentMode == mode.DUAL">
-            <div class="dropdown-divider"></div>
+            <div class="dropdown-divider" *ngIf="currentMode == mode.DUAL"></div>
             <h6 class="dropdown-header">Server Management</h6>
             <a href="/admin/nodes" class="dropdown-item">
               <i class="fa fa-fw fa-desktop"></i>

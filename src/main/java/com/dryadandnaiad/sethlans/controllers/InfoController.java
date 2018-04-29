@@ -79,8 +79,8 @@ public class InfoController {
     }
 
     @GetMapping(value = {"/blender_versions"})
-    public List<String> getBlenderVersions() {
-        return blenderVersions;
+    public Map getBlenderVersions() {
+        return Collections.singletonMap("blenderVersions", blenderVersions);
     }
 
     @GetMapping(value = {"/root_directory"})

@@ -80,8 +80,8 @@ export class NavbarComponent implements OnInit {
 
   getMode() {
     this.http.get('/api/info/sethlans_mode')
-      .subscribe((sethlansmode: Mode) => {
-        this.currentMode = sethlansmode;
+      .subscribe((sethlansmode) => {
+        this.currentMode = sethlansmode['mode'];
       });
   }
 
