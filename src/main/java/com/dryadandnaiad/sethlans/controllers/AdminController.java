@@ -168,8 +168,9 @@ public class AdminController {
 
 
     @GetMapping(value = "/primary_blender_version")
-    public String primaryBlenderVersion() {
-        return SethlansUtils.getProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION.toString());
+    public Map primaryBlenderVersion() {
+        return Collections.singletonMap("primary_blender",
+                SethlansUtils.getProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION.toString()));
     }
 
     @GetMapping(value = "/blender_versions")

@@ -79,21 +79,21 @@ export class NavbarComponent implements OnInit {
   }
 
   getMode() {
-    this.http.get('/api/info/sethlans_mode', {responseType: 'text'})
+    this.http.get('/api/info/sethlans_mode')
       .subscribe((sethlansmode: Mode) => {
         this.currentMode = sethlansmode;
       });
   }
 
   getUserName() {
-    this.http.get('/api/users/username', {responseType: 'text'})
-      .subscribe((user: string) => {
-        if (user.indexOf('<') >= 0) {
+    this.http.get('/api/users/username')
+      .subscribe((user) => {
+        if (user['username'].indexOf('<') >= 0) {
           this.authenticated = false;
         }
         else {
           this.authenticated = true;
-          this.username = user;
+          this.username = user['username'];
           this.http.get('/api/users/get_user/' + this.username + '').subscribe((userinfo: UserInfo) => {
             this.userInfo = userinfo;
             console.log(this.userInfo);
@@ -110,9 +110,9 @@ export class NavbarComponent implements OnInit {
   }
 
   getVersion() {
-    this.http.get('/api/info/version', {responseType: 'text'})
-      .subscribe((version: string) => {
-        this.sethlansVersion = version;
+    this.http.get('/api/info/version')
+      .subscribe((version) => {
+        this.sethlansVersion = version['version'];
       });
   }
 

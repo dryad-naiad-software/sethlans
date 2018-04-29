@@ -34,7 +34,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -72,8 +74,8 @@ public class InfoController {
 
 
     @GetMapping(value = {"/version"})
-    public String getVersion() {
-        return SethlansUtils.getVersion();
+    public Map getVersion() {
+        return Collections.singletonMap("version", SethlansUtils.getVersion());
     }
 
     @GetMapping(value = {"/blender_versions"})
@@ -82,9 +84,9 @@ public class InfoController {
     }
 
     @GetMapping(value = {"/root_directory"})
-    public String getRootDirectory() {
+    public Map getRootDirectory() {
         if (firstTime) {
-            return System.getProperty("user.home") + File.separator + ".sethlans";
+            return Collections.singletonMap("root_dir", System.getProperty("user.home") + File.separator + ".sethlans");
         } else {
             return null;
         }
@@ -103,11 +105,11 @@ public class InfoController {
     }
 
     @GetMapping(value = {"/sethlans_port"})
-    public String getHttpsPort() {
+    public Map getHttpsPort() {
         if (firstTime) {
-            return "7443";
+            return Collections.singletonMap("port", "7443");
         } else {
-            return SethlansUtils.getPort();
+            return Collections.singletonMap("port", SethlansUtils.getPort());
         }
     }
 
@@ -115,13 +117,13 @@ public class InfoController {
 
 
     @GetMapping(value = {"/sethlans_mode"})
-    public String getSethlansMode() {
-        return mode.toString();
+    public Map getSethlansMode() {
+        return Collections.singletonMap("mode", mode.toString());
     }
 
     @GetMapping(value = {"/sethlans_ip"})
-    public String getSethlansIPAddress() {
-        return SethlansUtils.getIP();
+    public Map getSethlansIPAddress() {
+        return Collections.singletonMap("ip", SethlansUtils.getIP());
     }
 
     @Autowired

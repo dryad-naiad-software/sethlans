@@ -35,9 +35,9 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get('/api/info/sethlans_mode', {responseType: 'text'})
-      .subscribe((sethlansmode: Mode) => {
-        this.currentMode = sethlansmode;
+    this.http.get('/api/info/sethlans_mode')
+      .subscribe((sethlansmode) => {
+        this.currentMode = sethlansmode['mode'];
       });
   }
 
