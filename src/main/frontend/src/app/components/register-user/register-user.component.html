@@ -35,7 +35,7 @@
 
           </div>
           <div class="form-group"
-               ngbTooltip="Password needs to be a minimum of 8 characters, at least one uppercase letter and one number."
+               ngbTooltip="Password needs to be a minimum of 8 characters"
                placement="left">
             <label class="text-white" for="password">Password</label>
             <input type="password"
@@ -45,13 +45,12 @@
                    id="password"
                    [ngClass]="{'is-invalid':password.errors && password.touched}"
                    class="form-control form-control-sm"
-                   required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$">
+                   required pattern="^.{8,35}$">
 
             <div class="invalid-feedback" [hidden]="password.valid">
               <ul>
                 <li>Password is required.</li>
-                <li>Password must be a minimum 8 characters, at least one
-                  UPPERCASE letter and one number.
+                <li>Password must be a minimum 8 characters.
                 </li>
               </ul>
             </div>
