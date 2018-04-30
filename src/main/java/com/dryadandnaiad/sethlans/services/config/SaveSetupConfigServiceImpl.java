@@ -81,6 +81,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
 
         // Set User
         SethlansUser administrator = setupForm.getUser();
+        administrator.setUsername(administrator.getUsername().toLowerCase());
         administrator.setRoles(Arrays.asList(Role.SUPER_ADMINISTRATOR));
         administrator.setActive(true);
         administrator.setPasswordUpdated(true);
