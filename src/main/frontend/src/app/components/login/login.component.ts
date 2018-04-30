@@ -56,8 +56,9 @@ export class LoginComponent implements OnInit {
 
 
     this.http.post('login', body.toString(), {
-      headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+      headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'), responseType: 'text'
     }).subscribe(() => {
+      console.log("test");
       this.auth.getAuthStatusAtLogin(this.login.username);
     });
   }
