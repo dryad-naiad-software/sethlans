@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
+import com.google.common.base.Throwables;
 import org.hibernate.StaleStateException;
 import org.hibernate.dialect.lock.OptimisticEntityLockException;
 import org.slf4j.Logger;
@@ -63,6 +64,7 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
             return nodeRepository.save(domainObject);
         } catch (ObjectOptimisticLockingFailureException | OptimisticEntityLockException | StaleStateException e) {
             LOG.error("Was unable to save node update.");
+            LOG.error(Throwables.getStackTraceAsString(e));
             return domainObject;
         }
     }

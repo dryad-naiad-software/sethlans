@@ -168,18 +168,19 @@ public class AdminController {
 
 
     @GetMapping(value = "/primary_blender_version")
-    public String primaryBlenderVersion() {
-        return SethlansUtils.getProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION.toString());
+    public Map primaryBlenderVersion() {
+        return Collections.singletonMap("primary_blender",
+                SethlansUtils.getProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION.toString()));
     }
 
-    @GetMapping(value = "/blender_versions")
-    public Set<String> blenderBinaryList() {
+    @GetMapping(value = "/installed_blender_versions")
+    public Map blenderBinaryList() {
         List<BlenderBinary> blenderBinaries = blenderBinaryDatabaseService.listAll();
         Set<String> listOfVersions = new HashSet<>();
         for (BlenderBinary blenderBinary : blenderBinaries) {
             listOfVersions.add(blenderBinary.getBlenderVersion());
         }
-        return listOfVersions;
+        return Collections.singletonMap("installedBlenderVersions", listOfVersions);
     }
 
     @GetMapping(value = "/get_current_binary_os/{version}")

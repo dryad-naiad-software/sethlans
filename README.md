@@ -1,5 +1,7 @@
 
 # Sethlans
+
+[![Join the chat at https://gitter.im/sethlans-render/Lobby](https://badges.gitter.im/sethlans-render/Lobby.svg)](https://gitter.im/sethlans-render/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 A local render farm system for Blender. https://www.blender.org
  
 ### Terminology
