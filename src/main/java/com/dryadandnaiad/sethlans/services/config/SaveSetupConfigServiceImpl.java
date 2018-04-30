@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.services.config;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.forms.setup.SetupForm;
@@ -43,6 +44,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansUtils.getGPUDeviceString;
 import static com.dryadandnaiad.sethlans.utils.SethlansUtils.writeProperty;
@@ -79,6 +81,9 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
 
         // Set User
         SethlansUser administrator = setupForm.getUser();
+        administrator.setRoles(Arrays.asList(Role.SUPER_ADMINISTRATOR));
+        administrator.setActive(true);
+        administrator.setPasswordUpdated(true);
         sethlansUserDatabaseService.saveOrUpdate(administrator);
 
         //Write Properties
