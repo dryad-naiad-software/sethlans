@@ -31,7 +31,9 @@ export class AuthService {
 
   getAuthStatusAtLogin(username) {
     this.http.get('/api/users/username').subscribe((user) => {
-      this.authenticated = user['username'].toLowerCase() === username.toLowerCase();
+      let usernameFromServer: string = user['username'];
+      console.log(usernameFromServer);
+      this.authenticated = usernameFromServer.toLowerCase() === username.toLowerCase();
       if (this.authenticated == true) {
         this.router.navigateByUrl("/").then(() => {
           location.reload();
