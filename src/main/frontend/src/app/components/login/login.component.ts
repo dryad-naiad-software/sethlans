@@ -38,8 +38,8 @@ export class LoginComponent implements OnInit {
 
   loginSubmit() {
     this.auth.authenticate(this.login, () => {
-      this.router.navigateByUrl('/login');
-      this.loginError = true;
+      this.router.navigateByUrl('/login').then(() => this.loginError = true
+      );
     });
 
   }

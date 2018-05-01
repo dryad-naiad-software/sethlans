@@ -36,11 +36,12 @@ export class AuthService {
     this.http.post('login', body.toString(), {
       headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'),
       responseType: 'text'}).subscribe(() => {
-        console.log("called");
-      this.http.get('/api/users/username').subscribe(response => {
+      this.http.get('/api/users/username').subscribe(() => {
         window.location.href = "/";
       });
-      return callback && callback();
+      setTimeout(function () {
+        return callback && callback();
+      }, 1000);
 
     });
 
