@@ -44,6 +44,9 @@
                    required>
           </div>
           <input [disabled]="!loginForm.valid" type="submit" value="Login" class="btn btn-outline-light btn-block">
+          <input type="hidden"
+                 name="${_csrf.parameterName}"
+                 value="${_csrf.token}"/>
         </form>
         <button class="btn btn-outline-light btn-block" (click)="registerUser()">Register New User</button>
 

@@ -70,7 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         if (!firstTime) {
             http
-                    .formLogin()
+                    .formLogin().loginPage("/login")
                     .successHandler(successHandler()).permitAll()
                     .and()
                     .logout()
@@ -103,7 +103,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint() {
-        LOG.debug("Called entry point");
         return new Http403ForbiddenEntryPoint();
     }
 

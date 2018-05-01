@@ -5,6 +5,7 @@ import com.dryadandnaiad.sethlans.security.SethlansUserDetails;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -20,19 +21,21 @@ import java.util.Collection;
 public class SethlansUsertoSethlansUserDetails implements Converter<SethlansUser, UserDetails> {
     @Override
     public UserDetails convert(SethlansUser user) {
-        SethlansUserDetails userDetails = new SethlansUserDetails();
-        userDetails.setUsername(user.getUsername().toLowerCase());
-        userDetails.setPassword(user.getPassword());
-        userDetails.setEnabled(user.isActive());
+        if(user != null) {
+            SethlansUserDetails userDetails = new SethlansUserDetails();
+            userDetails.setUsername(user.getUsername().toLowerCase());
+            userDetails.setPassword(user.getPassword());
+            userDetails.setEnabled(user.isActive());
 
-        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+            Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-        user.getRoles().forEach(role -> {
-            authorities.add(new SimpleGrantedAuthority(role.toString()));
-        });
+            user.getRoles().forEach(role -> {
+                authorities.add(new SimpleGrantedAuthority(role.toString()));
+            });
 
-        userDetails.setAuthorities(authorities);
-
-        return userDetails;
+            userDetails.setAuthorities(authorities);
+            return userDetails;
+        }
+        throw new UsernameNotFoundException("User not present in database");
     }
 }

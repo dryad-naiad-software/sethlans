@@ -29,17 +29,19 @@ export class AuthService {
 
   authenticate(credentials, callback) {
 
-    const headers = new HttpHeaders(credentials ? {
-      authorization: 'Basic ' + btoa(credentials.username + ':' + credentials.password)
-    } : {});
+    let body = new URLSearchParams();
+    body.set('username', credentials.username);
+    body.set('password', credentials.password);
 
-    this.http.get('/api/users/username', {headers: headers}).subscribe(response => {
-      if (response['username']) {
-        this.authenticated = true;
-      } else {
-        this.authenticated = false;
-      }
+    this.http.post('login', body.toString(), {
+      headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'),
+      responseType: 'text'}).subscribe(() => {
+        console.log("called");
+      this.http.get('/api/users/username').subscribe(response => {
+        window.location.href = "/";
+      });
       return callback && callback();
+
     });
 
   }

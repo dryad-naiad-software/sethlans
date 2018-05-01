@@ -38,11 +38,10 @@ export class LoginComponent implements OnInit {
 
   loginSubmit() {
     this.auth.authenticate(this.login, () => {
-      this.router.navigateByUrl('/');
-    });
-    if (this.auth.authenticated == false) {
+      this.router.navigateByUrl('/login');
       this.loginError = true;
-    }
+    });
+
   }
 
   ngOnInit() {
