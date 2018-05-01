@@ -128,7 +128,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         if (!firstTime) {
             web.ignoring()
                     .antMatchers(HttpMethod.OPTIONS, "/**")
-                    .antMatchers("/*.{*}")
+                    .antMatchers("/*.bundle.*")
                     .antMatchers("/api/nodeactivate/**")
                     .antMatchers("/api/benchmark/**")
                     .antMatchers("/api/benchmark_files/**")

@@ -51,7 +51,7 @@ import {SetupFinishedComponent} from './components/setup-wizard/setup-finished/s
 import {WindowRef} from "./services/windowref.service";
 import {Ng2Webstorage} from "ngx-webstorage";
 import {AuthService} from "./services/auth.service";
-import {XhrInterceptor} from "./interceptor/XhrInterceptor";
+import {XhrInterceptor} from "./interceptor/xhrInterceptor";
 import {RegisterUserComponent} from './components/register-user/register-user.component';
 import {UserSettingsComponent} from './components/user-settings/user-settings.component';
 import {MetricsComponent} from './components/admin/metrics/metrics.component';

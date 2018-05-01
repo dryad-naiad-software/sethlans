@@ -18,7 +18,7 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {Login} from "../../models/login.model";
 import {AuthService} from "../../services/auth.service";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -37,8 +37,16 @@ export class LoginComponent implements OnInit {
 
   }
 
+  loginSubmit() {
+    this.auth.authenticate(this.login, () => {
+      this.router.navigateByUrl('/');
+    });
+    this.loginError = true;
+  }
+
   ngOnInit() {
     this.login = new Login();
+    this.loginError = false;
     this.route.queryParams.subscribe(params => {
       this.loginError = params['error'];
       console.log("Error present? " + this.loginError);
@@ -49,18 +57,6 @@ export class LoginComponent implements OnInit {
 
   }
 
-  onSubmit() {
-    let body = new URLSearchParams();
-    body.set('username', this.login.username);
-    body.set('password', this.login.password);
-
-
-    this.http.post('login', body.toString(), {
-      headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
-    }).subscribe(() => {
-      this.auth.getAuthStatusAtLogin(this.login.username);
-    });
-  }
 
   registerUser() {
     this.router.navigateByUrl("/register");
@@ -68,7 +64,7 @@ export class LoginComponent implements OnInit {
 
   loginUser(event, form) {
     if (event.key === "Enter" && form.valid) {
-      this.onSubmit();
+      this.loginSubmit();
     }
 
   }
