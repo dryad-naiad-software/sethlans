@@ -2,7 +2,6 @@ import {Component, Input, OnInit} from '@angular/core';
 import {SetupFormDataService} from "../../../services/setupformdata.service";
 import {User} from "../../../models/user.model";
 import {Mode} from "../../../enums/mode.enum";
-import {Role} from "../../../enums/role.enum";
 
 @Component({
   selector: 'app-setup-register-user',
@@ -22,9 +21,6 @@ export class SetupRegisterUserComponent implements OnInit {
   }
 
   save() {
-    this.user.setActive(true);
-    this.user.setPasswordUpdated(true);
-    this.user.setRoles([Role.SUPER_ADMINISTRATOR]);
     this.setupFormDataService.setUser(this.user);
     this.nextStep();
 
