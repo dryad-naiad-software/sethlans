@@ -37,9 +37,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
@@ -70,17 +71,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         if (!firstTime) {
             http
                     .formLogin()
-                    .loginPage("/login")
-                    .failureUrl("/login?error")
                     .successHandler(successHandler()).permitAll()
                     .and()
                     .logout()
                     .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                     .permitAll()
                     .and()
-                    .csrf()
-                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                    .and()
+                    .csrf().disable()
                     .authorizeRequests()
                     .antMatchers("/api/management/metrics/**", "/admin/metrics", "/admin/sethlans_settings").hasAuthority(Role.SUPER_ADMINISTRATOR.toString())
                     .antMatchers("/api/management/**", "/admin/**", "/api/setup/update_compute", "/api/setup/node_add").hasAnyAuthority(Role.SUPER_ADMINISTRATOR.toString(), Role.ADMINISTRATOR.toString())
@@ -98,10 +95,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public AuthenticationSuccessHandler successHandler() {
-        SimpleUrlAuthenticationSuccessHandler handler = new SimpleUrlAuthenticationSuccessHandler();
+        SimpleUrlAuthenticationSuccessHandler handler = new SethlansUrlAuthenticationSuccessHandler();
         handler.setUseReferer(true);
         LOG.debug(handler.toString());
         return handler;
+    }
+
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        LOG.debug("Called entry point");
+        return new Http403ForbiddenEntryPoint();
     }
 
 
@@ -129,6 +132,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             web.ignoring()
                     .antMatchers(HttpMethod.OPTIONS, "/**")
                     .antMatchers("/*.bundle.*")
+                    .antMatchers("/color.*.png")
+                    .antMatchers("/*.woff*")
+                    .antMatchers("/*.ttf")
+                    .antMatchers("/*.eot")
+                    .antMatchers("/*.svg")
+                    .antMatchers("/line.*.gif")
                     .antMatchers("/api/nodeactivate/**")
                     .antMatchers("/api/benchmark/**")
                     .antMatchers("/api/benchmark_files/**")

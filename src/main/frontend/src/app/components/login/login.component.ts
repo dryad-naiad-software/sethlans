@@ -34,27 +34,20 @@ export class LoginComponent implements OnInit {
   loginError: boolean;
 
   constructor(private http: HttpClient, private auth: AuthService, private route: ActivatedRoute, private router: Router) {
-
   }
 
   loginSubmit() {
     this.auth.authenticate(this.login, () => {
       this.router.navigateByUrl('/');
     });
-    this.loginError = true;
+    if (this.auth.authenticated == false) {
+      this.loginError = true;
+    }
   }
 
   ngOnInit() {
     this.login = new Login();
     this.loginError = false;
-    this.route.queryParams.subscribe(params => {
-      this.loginError = params['error'];
-      console.log("Error present? " + this.loginError);
-    });
-    this.route.url.subscribe(url => {
-      console.log(url);
-    })
-
   }
 
 
