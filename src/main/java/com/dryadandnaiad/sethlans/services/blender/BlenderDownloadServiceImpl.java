@@ -27,6 +27,7 @@ import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
     @Value("${sethlans.blenderDir}")
     private String downloadLocation;
     private int downloadMirror = 0;
+    private boolean atBoot = true;
     private ApplicationEventPublisher applicationEventPublisher = null;
 
     @Override
@@ -71,18 +73,18 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
             LOG.debug("Stopping Blender Binary Download Service");
         }
         while (true) {
-                try {
-                    if (doDownload()) {
-                        LOG.debug("All downloads complete");
-                    } else {
-                        LOG.debug("Blender Download Service failed");
-                    }
-                    Thread.sleep(30000);
-                } catch (InterruptedException e) {
-                    LOG.debug("Stopping Blender Binary Download Service");
-                    break;
+            try {
+                if (doDownload()) {
+                    LOG.debug("All downloads complete");
+                } else {
+                    LOG.debug("Blender Download Service failed");
                 }
+                Thread.sleep(30000);
+            } catch (InterruptedException e) {
+                LOG.debug("Stopping Blender Binary Download Service");
+                break;
             }
+        }
     }
 
     private boolean doDownload() {
@@ -95,7 +97,16 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                 blenderVersion = blenderBinary.getBlenderVersion();
                 File saveLocation = new File(downloadLocation + File.separator + "binaries" +
                         File.separator + blenderVersion + File.separator);
-                //noinspection ResultOfMethodCallIgnored
+                if (atBoot && saveLocation.exists()) {
+                    try {
+                        FileUtils.deleteDirectory(saveLocation);
+                        this.applicationEventPublisher.publishEvent(new SethlansEvent
+                                (this, blenderVersion + "-" + NotificationOrigin.BLENDER_DOWNLOAD_SERVICE.toString(), false));
+                        atBoot = false;
+                    } catch (IOException e) {
+                        LOG.error(e.getMessage());
+                    }
+                }
                 saveLocation.mkdirs();
                 URL url;
                 HttpURLConnection connection = null;
@@ -139,17 +150,8 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                         this.applicationEventPublisher.publishEvent(new SethlansEvent(this, blenderVersion + "-" + NotificationOrigin.BLENDER_DOWNLOAD_SERVICE.toString(),
                                 blenderFileInfo, true));  // Sets the download notification
 
-                        // Checks to see if previous file is there.  In case of a failure user will need to delete file with extension = pending.
-                        if (toDownload.exists()) {
-                            LOG.debug("Previous download did not complete successfully, deleting and re-downloading.");
-                            if (toDownload.delete()) {
-                                LOG.debug("Re-Downloading " + filename + "...");
-                                Files.copy(stream, Paths.get(toDownload.toString()));
-                            }
-                        } else {
-                            LOG.debug("Saving file to " + toDownload.toString());
-                            Files.copy(stream, Paths.get(toDownload.toString()));
-                        }
+                        LOG.debug("Saving file to " + toDownload.toString());
+                        Files.copy(stream, Paths.get(toDownload.toString()));
 
                         // Check MD5 sum
                         LOG.debug("Starting MD5sum check");
