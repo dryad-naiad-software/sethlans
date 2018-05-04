@@ -140,6 +140,9 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
             }
 
             if (!setupForm.getNode().getComputeMethod().equals(ComputeType.GPU)) {
+                if (setupForm.getNode().getCores() <= 0) {
+                    setupForm.getNode().setCores(1);
+                }
                 writeProperty(SethlansConfigKeys.CPU_CORES, Integer.toString(setupForm.getNode().getCores()));
             }
 

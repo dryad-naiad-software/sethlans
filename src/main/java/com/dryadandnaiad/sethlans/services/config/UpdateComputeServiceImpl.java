@@ -42,6 +42,9 @@ public class UpdateComputeServiceImpl implements UpdateComputeService {
 
     @Override
     public boolean saveComputeSettings(SetupNode setupNode) {
+        if (setupNode.getCores() <= 0) {
+            setupNode.setCores(1);
+        }
 
         writeProperty(SethlansConfigKeys.COMPUTE_METHOD, setupNode.getComputeMethod().toString());
         switch (setupNode.getComputeMethod()) {
