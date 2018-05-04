@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
@@ -88,7 +89,7 @@ public class InfoController {
         if (firstTime) {
             return Collections.singletonMap("root_dir", System.getProperty("user.home") + File.separator + ".sethlans");
         } else {
-            return null;
+            return Collections.singletonMap("root_dir", SethlansUtils.getProperty(SethlansConfigKeys.ROOT_DIR.toString()));
         }
     }
 
