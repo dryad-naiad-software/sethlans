@@ -151,6 +151,17 @@ public class AdminController {
         return listToSend;
     }
 
+    @GetMapping(value = {"/node_info_by_uuid"})
+    public SethlansNode getNodeByUUID(@PathVariable String connection_uuid) {
+        return sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
+    }
+
+    @GetMapping(value = {"/is_benchmark_complete"})
+    public boolean isBenchmarkComplete(@PathVariable String connection_uuid) {
+        SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
+        return sethlansNode.isBenchmarkComplete();
+    }
+
     @GetMapping(value = {"/node_list_size"})
     public Integer getNodeListSize() {
         return sethlansNodeDatabaseService.listAll().size();
