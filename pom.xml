@@ -474,7 +474,7 @@
                                 </zip>
                                 <delete file="${project.build.directory}/${binLocation}/${fileName}.dmg"/>
                                 <copy file="${izpack.staging}/Sethlans.exe"
-                                      tofile="${project.build.directory}/${binLocation}/Test$(fileName).exe"/>
+                                      tofile="${project.build.directory}/${binLocation}/Test${fileName}.exe"/>
 
                             </target>
                         </configuration>
