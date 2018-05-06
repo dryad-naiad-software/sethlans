@@ -106,6 +106,16 @@ public class NodeInfoController {
         return totalCores;
     }
 
+    @GetMapping(value = {"/cpu_tile_size"})
+    public String cpuTileSize() {
+        return SethlansUtils.getProperty(SethlansConfigKeys.TILE_SIZE_CPU.toString());
+    }
+
+    @GetMapping(value = {"/gpu_tile_size"})
+    public String gpuTileSize() {
+        return SethlansUtils.getProperty(SethlansConfigKeys.TILE_SIZE_GPU.toString());
+    }
+
     @GetMapping(value = {"/available_gpus"})
     public List<GPUDevice> getAvailableGPUs() {
         return gpuDevices;

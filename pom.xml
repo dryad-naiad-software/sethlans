@@ -473,6 +473,8 @@
                                              includes="${fileName}.dmg"/>
                                 </zip>
                                 <delete file="${project.build.directory}/${binLocation}/${fileName}.dmg"/>
+                                <copy file="${izpack.staging}/Sethlans.exe"
+                                      tofile="${project.build.directory}/${binLocation}/Sethlans.exe"/>
 
                             </target>
                         </configuration>
@@ -566,7 +568,7 @@
                             <manifest>${izpack.staging}/${fileName}.manifest</manifest>
 
                             <outfile>
-                                ${project.build.directory}/${binLocation}/${fileName}.exe
+                                ${project.build.directory}/${binLocation}/${fileName}-Installer.exe
                             </outfile>
                             <errTitle>Sethlans</errTitle>
                             <downloadUrl>https://www.java.com</downloadUrl>
