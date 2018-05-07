@@ -91,8 +91,14 @@ public class ServerRenderController {
                 if (files.length > 1) {
                     LOG.error("More files than expected, only one archive per os + version expected");
                 } else {
-                    File blenderBinary = files[0];
-                    SethlansUtils.serveFile(blenderBinary, response);
+                    try {
+                        File blenderBinary = files[0];
+                        SethlansUtils.serveFile(blenderBinary, response);
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        LOG.error(e.getMessage());
+                        LOG.error(dir.toString() + " directory size is equal to " + files.length);
+
+                    }
                 }
             } else {
                 LOG.error("No files found.");
