@@ -74,11 +74,11 @@ export class ServersComponent implements OnInit {
   }
 
   acknowledgeServer(id) {
-    this.http.get('/api/setup/server_acknowledge/' + id + "/").subscribe((success: boolean) => {
-      if (success == true) {
+    this.http.get('/api/setup/server_acknowledge/' + id + "/").subscribe(() => {
         this.ackClicked = true;
-      }
-
+      setTimeout(() => {
+        window.location.href = "/admin/servers";
+      }, 1000);
     });
   }
 

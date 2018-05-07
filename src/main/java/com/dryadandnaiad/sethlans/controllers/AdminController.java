@@ -152,12 +152,12 @@ public class AdminController {
     }
 
     @GetMapping(value = {"/node_info_by_uuid"})
-    public SethlansNode getNodeByUUID(@PathVariable String connection_uuid) {
+    public SethlansNode getNodeByUUID(@RequestParam String connection_uuid) {
         return sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
     }
 
     @GetMapping(value = {"/is_benchmark_complete"})
-    public boolean isBenchmarkComplete(@PathVariable String connection_uuid) {
+    public boolean isBenchmarkComplete(@RequestParam String connection_uuid) {
         SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
         return sethlansNode.isBenchmarkComplete();
     }
