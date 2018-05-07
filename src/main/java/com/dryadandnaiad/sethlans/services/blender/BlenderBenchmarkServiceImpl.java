@@ -212,6 +212,15 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                 String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blender_binary/";
                 String params = "connection_uuid=" + benchmarkTask.getConnection_uuid() + "&version=" + benchmarkTask.getBlenderVersion() + "&os=" + SethlansUtils.getOS();
                 String filename = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, binDir);
+                while (filename.isEmpty() || filename == null) {
+                    try {
+                        LOG.info("Was unable to get blender binary, retrying in 5 seconds");
+                        Thread.sleep(5000);
+                        filename = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, binDir);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
                 if (SethlansUtils.archiveExtract(filename, new File(binDir))) {
                     LOG.debug("Extraction complete.");
                     LOG.debug("Attempting to rename blender directory. Will attempt 3 tries.");
