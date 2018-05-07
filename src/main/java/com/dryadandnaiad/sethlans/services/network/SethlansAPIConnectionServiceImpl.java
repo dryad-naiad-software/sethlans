@@ -190,7 +190,7 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
         } catch (IOException e) {
             LOG.error(e.getMessage());
         }
-        return null;
+        return "";
     }
 
     @Override
