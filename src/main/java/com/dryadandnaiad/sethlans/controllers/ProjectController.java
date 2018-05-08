@@ -81,6 +81,16 @@ public class ProjectController {
     private BlenderProjectService blenderProjectService;
 
 
+    @GetMapping(value = "/api/project_actions/delete_all_projects")
+    public void deleteAllProjects() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            blenderProjectService.deleteAllProjects();
+        } else {
+            blenderProjectService.deleteAllUserProjects(auth.getName());
+        }
+
+    }
 
     @GetMapping(value = "/api/project_actions/stop_project/{id}")
     public void stopProject(@PathVariable Long id) {
@@ -369,6 +379,7 @@ public class ProjectController {
         }
         return false;
     }
+
 
     @PostMapping(value = "/api/project_form/edit_project/{id}")
     public boolean editProject(@RequestBody ProjectForm projectForm, @PathVariable Long id) {

@@ -151,6 +151,23 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     }
 
     @Override
+    public void deleteAllProjects() {
+        List<BlenderProject> allProjects = blenderProjectDatabaseService.listAll();
+        for (BlenderProject project : allProjects) {
+            deleteProject(project.getId());
+        }
+    }
+
+    @Override
+    public void deleteAllUserProjects(String username) {
+        List<BlenderProject> allUserProjects = blenderProjectDatabaseService.getProjectsByUser(username);
+        for (BlenderProject project : allUserProjects) {
+            deleteProject(project.getId());
+        }
+
+    }
+
+    @Override
     public void deleteProject(String username, Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(username, id);
         blenderQueueService.stopBlenderProjectQueue(blenderProject);
@@ -161,7 +178,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     private void deleteDirectory(String directory) {
         try {
-            Thread.sleep(5000);
+            Thread.sleep(1000);
             FileUtils.deleteDirectory(new File(directory));
         } catch (InterruptedException | IOException e) {
             LOG.error("Error occurred deleting project " + e.getMessage());

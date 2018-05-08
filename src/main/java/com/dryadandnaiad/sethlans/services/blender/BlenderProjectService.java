@@ -44,6 +44,10 @@ public interface BlenderProjectService {
 
     void deleteProject(Long id);
 
+    void deleteAllProjects();
+
+    void deleteAllUserProjects(String username);
+
     void deleteProject(String username, Long id);
 
 }
