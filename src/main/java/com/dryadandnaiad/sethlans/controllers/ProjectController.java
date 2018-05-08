@@ -364,7 +364,7 @@ public class ProjectController {
     }
 
     @PostMapping(value = "/api/project_form/submit_project")
-    public boolean submitProject(@RequestBody ProjectForm projectForm) {
+    public long submitProject(@RequestBody ProjectForm projectForm) {
         if (projectForm != null) {
             LOG.debug("Project Submitted" + projectForm);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -374,10 +374,9 @@ public class ProjectController {
             projectForm.setFrameRate(checkFrameRate(projectForm.getFrameRate()));
             projectForm.setUsername(auth.getName());
             projectForm.setProjectStatus(ProjectStatus.Added);
-            blenderProjectDatabaseService.saveOrUpdateProjectForm(projectForm);
-            return true;
+            return blenderProjectDatabaseService.saveOrUpdateProjectForm(projectForm).getId();
         }
-        return false;
+        return 0;
     }
 
 
