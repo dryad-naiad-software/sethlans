@@ -73,30 +73,24 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     @Override
     public void startQueue() {
         try {
-
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            LOG.debug("Stopping Blender Queue Service");
+        }
+        while (true) {
             try {
-                Thread.sleep(20000);
+                Thread.sleep(1000);
+                assignNodeToQueueItem();
+                sendQueueItemsToAssignedNode();
+                processReceivedQueueItems();
             } catch (InterruptedException e) {
                 LOG.debug("Stopping Blender Queue Service");
-            }
-            while (true) {
-                try {
-                    Thread.sleep(1000);
-                    assignNodeToQueueItem();
-                    sendQueueItemsToAssignedNode();
-                    processReceivedQueueItems();
-                } catch (InterruptedException e) {
-                    LOG.debug("Stopping Blender Queue Service");
-                    break;
-                }
+                break;
+
             }
 
-        } catch (Exception e) {
-            LOG.error("Unknown Exception caught, catching and logging");
-            LOG.error(e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
-            startQueue();
         }
+
     }
 
     @Override
@@ -418,24 +412,24 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                         blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
                     }
                     if (remainingPartsForFrame == 0) {
-                            if (processImageAndAnimationService.combineParts(blenderProject, frameNumber)) {
-                                if (remainingTotalQueue == 0) {
-                                    if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
-                                        blenderProject.setProjectStatus(ProjectStatus.Processing);
-                                        processImageAndAnimationService.createAVI(blenderProject);
+                        if (processImageAndAnimationService.combineParts(blenderProject, frameNumber)) {
+                            if (remainingTotalQueue == 0) {
+                                if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
+                                    blenderProject.setProjectStatus(ProjectStatus.Processing);
+                                    processImageAndAnimationService.createAVI(blenderProject);
 
-                                    }
-                                    if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
-                                        blenderProject.setProjectStatus(ProjectStatus.Processing);
-                                        processImageAndAnimationService.createMP4(blenderProject);
-                                    } else {
-                                        blenderProject.setProjectStatus(ProjectStatus.Finished);
-                                        blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
-                                        blenderRenderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
-                                    }
-                                    blenderProject.setAllImagesProcessed(true);
                                 }
+                                if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
+                                    blenderProject.setProjectStatus(ProjectStatus.Processing);
+                                    processImageAndAnimationService.createMP4(blenderProject);
+                                } else {
+                                    blenderProject.setProjectStatus(ProjectStatus.Finished);
+                                    blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
+                                    blenderRenderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
+                                }
+                                blenderProject.setAllImagesProcessed(true);
                             }
+                        }
 
                     }
                     blenderRenderQueueItem = blenderRenderQueueDatabaseService.getById(blenderRenderQueueItem.getId());
