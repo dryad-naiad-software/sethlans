@@ -86,6 +86,11 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
         administrator.setActive(true);
         administrator.setPasswordUpdated(true);
         sethlansUserDatabaseService.saveOrUpdate(administrator);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            LOG.debug(e.getMessage());
+        }
 
         //Write Properties
         writeProperty(SethlansConfigKeys.HTTPS_PORT, setupForm.getPort());
@@ -97,7 +102,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
         writeProperty(SethlansConfigKeys.SCRIPTS_DIR, scriptsDirectory);
         writeProperty(SethlansConfigKeys.TEMP_DIR, tempDirectory);
         writeProperty(SethlansConfigKeys.ROOT_DIR, setupForm.getRootDirectory());
-        writeProperty("spring.jpa.hibernate.ddl-auto", "none");
+        writeProperty("spring.jpa.hibernate.ddl-auto", "validate");
         LOG.debug("Main Sethlans properties saved.");
 
         // Creating main Sethlan Directories

@@ -171,6 +171,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+            <version>1.4.197</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.tukaani/xz -->

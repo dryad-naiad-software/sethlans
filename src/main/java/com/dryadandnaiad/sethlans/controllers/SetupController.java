@@ -49,7 +49,6 @@ public class SetupController {
         LOG.debug("Submitting Setup Form...");
         if (setupForm != null) {
             LOG.debug(setupForm.toString());
-            LOG.debug(setupForm.getUser().getPassword());
             if (setupForm.getUser().getPassword().isEmpty() || setupForm.getUser().getUsername().isEmpty()) {
                 return false;
             }

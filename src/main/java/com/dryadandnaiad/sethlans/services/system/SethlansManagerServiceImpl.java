@@ -21,7 +21,6 @@ package com.dryadandnaiad.sethlans.services.system;
 
 import com.dryadandnaiad.sethlans.executor.SethlansExecutor;
 import com.dryadandnaiad.sethlans.utils.SethlansState;
-import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,10 +45,10 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
     @Async
     public void shutdown() {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(5000);
             System.exit(0);
         } catch (InterruptedException e) {
-            LOG.error(Throwables.getStackTraceAsString(e));
+            LOG.info("System Restart service closed");
         }
 
     }
@@ -59,9 +58,10 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
     public void restart() {
         SethlansState sethlansState = SethlansState.getInstance();
         try {
-            Thread.sleep(2000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
-            LOG.debug("");
+            LOG.info("System Shutdown service closed");
+
         }
         sethlansState.sethlansActive = false;
         SethlansExecutor sethlansExecutor = SethlansExecutor.getInstance();
