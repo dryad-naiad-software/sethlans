@@ -67,7 +67,8 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
     }
 
     @Override
-    public boolean combineParts(BlenderProject blenderProject, int frameNumber) {
+    public boolean combineParts(BlenderProject blenderProject, int frameNumber) throws InterruptedException {
+        Thread.sleep(2000);
         List<String> partCleanup = new ArrayList<>();
         List<BufferedImage> images = new ArrayList<>();
         String frameFilename = null;

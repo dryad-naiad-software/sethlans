@@ -407,23 +407,27 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                         blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
                     }
                     if (remainingPartsForFrame == 0) {
-                        if (processImageAndAnimationService.combineParts(blenderProject, frameNumber)) {
-                            if (remainingTotalQueue == 0) {
-                                if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
-                                    blenderProject.setProjectStatus(ProjectStatus.Processing);
-                                    processImageAndAnimationService.createAVI(blenderProject);
+                        try {
+                            if (processImageAndAnimationService.combineParts(blenderProject, frameNumber)) {
+                                if (remainingTotalQueue == 0) {
+                                    if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
+                                        blenderProject.setProjectStatus(ProjectStatus.Processing);
+                                        processImageAndAnimationService.createAVI(blenderProject);
 
+                                    }
+                                    if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
+                                        blenderProject.setProjectStatus(ProjectStatus.Processing);
+                                        processImageAndAnimationService.createMP4(blenderProject);
+                                    } else {
+                                        blenderProject.setProjectStatus(ProjectStatus.Finished);
+                                        blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
+                                        blenderRenderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
+                                    }
+                                    blenderProject.setAllImagesProcessed(true);
                                 }
-                                if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
-                                    blenderProject.setProjectStatus(ProjectStatus.Processing);
-                                    processImageAndAnimationService.createMP4(blenderProject);
-                                } else {
-                                    blenderProject.setProjectStatus(ProjectStatus.Finished);
-                                    blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
-                                    blenderRenderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
-                                }
-                                blenderProject.setAllImagesProcessed(true);
                             }
+                        } catch (InterruptedException e) {
+                            LOG.error(e.getMessage());
                         }
 
                     }
