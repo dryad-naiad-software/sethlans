@@ -94,7 +94,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             LOG.error("Unknown Exception caught, catching and logging");
             LOG.error(e.getMessage());
             LOG.error(Throwables.getStackTraceAsString(e));
-
+            startQueue();
         }
     }
 
