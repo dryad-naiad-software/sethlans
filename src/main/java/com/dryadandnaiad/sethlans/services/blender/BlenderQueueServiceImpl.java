@@ -394,15 +394,15 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                 blenderRenderQueueItem.getBlenderFramePart().getFileExtension());
                         Files.write(path, bytes);
 
-
                         LOG.debug("Processing completed render from " +
                                 sethlansNodeDatabaseService.getByConnectionUUID(blenderProcessQueueItem.getConnection_uuid()).getHostname() +
                                 ". Part: " + partNumber
                                 + " Frame: " + frameNumber);
+                        Thread.sleep(5000);
 
 
-                    } catch (IOException | SQLException e) {
-                        e.printStackTrace();
+                    } catch (IOException | InterruptedException | SQLException e) {
+                        LOG.error(Throwables.getStackTraceAsString(e));
                     }
                     LOG.debug("Remaining parts per frame for Frame " + frameNumber + ": " + remainingPartsForFrame);
                     LOG.debug("Remaining items in project Queue " + remainingTotalQueue);
