@@ -87,6 +87,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                     processReceivedQueueItems();
                 } catch (InterruptedException e) {
                     LOG.debug("Stopping Blender Queue Service");
+                    break;
                 }
             }
 
