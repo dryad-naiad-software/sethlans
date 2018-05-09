@@ -439,6 +439,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
 
                     }
                     blenderProject.setTotalProjectTime(blenderProject.getProjectEnd() - blenderProject.getProjectStart());
+                    blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
                     blenderProjectDatabaseService.saveOrUpdate(blenderProject);
                     blenderProcessQueueDatabaseService.delete(blenderProcessQueueItem);
                 }
