@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -55,14 +55,21 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
     @Override
     @Async
     public void sendActivationRequest(SethlansNode sethlansNode, SethlansServer sethlansServer, boolean auto) {
-        LOG.debug("Sending Activation Request to Node");
-        String ip = sethlansNode.getIpAddress();
-        String port = sethlansNode.getNetworkPort();
-        String activateURL = "https://" + ip + ":" + port + "/api/nodeactivate/request";
-        String params = "serverhostname=" + sethlansServer.getHostname() + "&ipAddress=" + sethlansServer.getIpAddress()
-                + "&port=" + sethlansServer.getNetworkPort() + "&connection_uuid=" + sethlansNode.getConnection_uuid() + "&auto=" + auto;
-        if (sethlansAPIConnectionService.sendToRemotePOST(activateURL, params)) {
-            addBlenderBinary(sethlansNode.getSethlansNodeOS().toString());
+        try {
+            LOG.debug("Sending Activation Request to Node");
+            String ip = sethlansNode.getIpAddress();
+            String port = sethlansNode.getNetworkPort();
+            String activateURL = "https://" + ip + ":" + port + "/api/nodeactivate/request";
+            String params = "serverhostname=" + sethlansServer.getHostname() + "&ipAddress=" + sethlansServer.getIpAddress()
+                    + "&port=" + sethlansServer.getNetworkPort() + "&connection_uuid=" + sethlansNode.getConnection_uuid() + "&auto=" + auto;
+            if (sethlansAPIConnectionService.sendToRemotePOST(activateURL, params)) {
+                addBlenderBinary(sethlansNode.getSethlansNodeOS().toString());
+            }
+        } catch (Exception e) {
+            LOG.error("Unknown Exception caught, catching and logging");
+            LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+
         }
 
 
@@ -71,14 +78,21 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
     @Override
     @Async
     public void sendActivationResponse(SethlansServer sethlansServer, SethlansNode sethlansNode, boolean auto) {
-        LOG.debug("Sending Activation Response to Server");
-        String ip = sethlansServer.getIpAddress();
-        String port = sethlansServer.getNetworkPort();
-        String responseURL = "https://" + ip + ":" + port + "/api/nodeactivate/response";
-        String params = "nodehostname=" + sethlansNode.getHostname() + "&ipAddress=" + sethlansNode.getIpAddress()
-                + "&port=" + sethlansNode.getNetworkPort() + "&connection_uuid=" + sethlansServer.getConnection_uuid();
-        if (sethlansAPIConnectionService.sendToRemotePOST(responseURL, params) && !auto) {
-            this.applicationEventPublisher.publishEvent(new SethlansEvent(this, sethlansServer.getConnection_uuid() + "-" + NotificationOrigin.ACTIVATION_REQUEST, false));
+        try {
+            LOG.debug("Sending Activation Response to Server");
+            String ip = sethlansServer.getIpAddress();
+            String port = sethlansServer.getNetworkPort();
+            String responseURL = "https://" + ip + ":" + port + "/api/nodeactivate/response";
+            String params = "nodehostname=" + sethlansNode.getHostname() + "&ipAddress=" + sethlansNode.getIpAddress()
+                    + "&port=" + sethlansNode.getNetworkPort() + "&connection_uuid=" + sethlansServer.getConnection_uuid();
+            if (sethlansAPIConnectionService.sendToRemotePOST(responseURL, params) && !auto) {
+                this.applicationEventPublisher.publishEvent(new SethlansEvent(this, sethlansServer.getConnection_uuid() + "-" + NotificationOrigin.ACTIVATION_REQUEST, false));
+
+            }
+        } catch (Exception e) {
+            LOG.error("Unknown Exception caught, catching and logging");
+            LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
 
         }
     }
@@ -86,36 +100,43 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
     @Override
     @Async
     public void sendResponseAcknowledgement(SethlansNode sethlansNode, String connection_uuid) {
-        LOG.debug("Sending Response Acknowledgement to Node");
-        String ip = sethlansNode.getIpAddress();
-        String port = sethlansNode.getNetworkPort();
-        String acknowledgeURL = "https://" + ip + ":" + port + "/api/nodeactivate/acknowledge";
-        String params = "connection_uuid=" + sethlansNode.getConnection_uuid();
-        boolean pendingDownloads = true;
-        if (sethlansAPIConnectionService.sendToRemotePOST(acknowledgeURL, params)) {
-            while (pendingDownloads) {
-                pendingDownloads = false;
-                List<BlenderBinary> blenderBinaries = blenderBinaryDatabaseService.listAll();
-                for (BlenderBinary blenderBinary : blenderBinaries) {
-                    if (!blenderBinary.isDownloaded()) {
-                        LOG.debug("Blender binary download is in progress, holding off on sending benchmark request");
-                        try {
-                            pendingDownloads = true;
-                            Thread.sleep(120000);
-                        } catch (InterruptedException e) {
-                            LOG.error(Throwables.getStackTraceAsString(e));
-                        }
+        try {
+            LOG.debug("Sending Response Acknowledgement to Node");
+            String ip = sethlansNode.getIpAddress();
+            String port = sethlansNode.getNetworkPort();
+            String acknowledgeURL = "https://" + ip + ":" + port + "/api/nodeactivate/acknowledge";
+            String params = "connection_uuid=" + sethlansNode.getConnection_uuid();
+            boolean pendingDownloads = true;
+            if (sethlansAPIConnectionService.sendToRemotePOST(acknowledgeURL, params)) {
+                while (pendingDownloads) {
+                    pendingDownloads = false;
+                    List<BlenderBinary> blenderBinaries = blenderBinaryDatabaseService.listAll();
+                    for (BlenderBinary blenderBinary : blenderBinaries) {
+                        if (!blenderBinary.isDownloaded()) {
+                            LOG.debug("Blender binary download is in progress, holding off on sending benchmark request");
+                            try {
+                                pendingDownloads = true;
+                                Thread.sleep(120000);
+                            } catch (InterruptedException e) {
+                                LOG.error(Throwables.getStackTraceAsString(e));
+                            }
 
+                        }
                     }
+
+                }
+                try {
+                    Thread.sleep(5000);
+                    blenderBenchmarkService.sendBenchmarktoNode(sethlansNode);
+                } catch (InterruptedException e) {
+                    LOG.error(Throwables.getStackTraceAsString(e));
                 }
 
             }
-            try {
-                Thread.sleep(5000);
-                blenderBenchmarkService.sendBenchmarktoNode(sethlansNode);
-            } catch (InterruptedException e) {
-                LOG.error(Throwables.getStackTraceAsString(e));
-            }
+        } catch (Exception e) {
+            LOG.error("Unknown Exception caught, catching and logging");
+            LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
 
         }
     }

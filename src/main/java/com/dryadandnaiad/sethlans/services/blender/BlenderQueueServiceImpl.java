@@ -34,6 +34,7 @@ import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseSe
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,19 +73,28 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
     @Override
     public void startQueue() {
         try {
-            Thread.sleep(20000);
-        } catch (InterruptedException e) {
-            LOG.debug("Stopping Blender Queue Service");
-        }
-        while (true) {
+
             try {
-                Thread.sleep(1000);
-                assignNodeToQueueItem();
-                sendQueueItemsToAssignedNode();
-                processReceivedQueueItems();
+                Thread.sleep(20000);
             } catch (InterruptedException e) {
                 LOG.debug("Stopping Blender Queue Service");
             }
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                    assignNodeToQueueItem();
+                    sendQueueItemsToAssignedNode();
+                    processReceivedQueueItems();
+                } catch (InterruptedException e) {
+                    LOG.debug("Stopping Blender Queue Service");
+                }
+            }
+
+        } catch (Exception e) {
+            LOG.error("Unknown Exception caught, catching and logging");
+            LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+
         }
     }
 
@@ -350,6 +360,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
 
     private void processReceivedQueueItems() {
         if (!modifyingQueue) {
+
             modifyingQueue = true;
             List<BlenderProcessQueueItem> blenderProcessQueueItemList = blenderProcessQueueDatabaseService.listAll();
             if (!blenderProcessQueueItemList.isEmpty()) {

@@ -50,9 +50,10 @@ public class MulticastSenderServiceImpl implements MulticastSenderService {
     @Async
     @Override
     public void sendSethlansIPAndPort(String ip, String port) {
-        String message = ip + ":" + port;
-        int multicastSocketPort = Integer.parseInt(multicastPort);
         try {
+            String message = ip + ":" + port;
+            int multicastSocketPort = Integer.parseInt(multicastPort);
+
             byte[] buffer = message.getBytes();
             MulticastSocket multicastSocket = new MulticastSocket(multicastSocketPort);
             multicastSocket.setReuseAddress(true);
@@ -72,6 +73,11 @@ public class MulticastSenderServiceImpl implements MulticastSenderService {
             LOG.error(Throwables.getStackTraceAsString(e));
         } catch (InterruptedException e) {
             LOG.debug("Stopping Multicast Sender Service");
+        } catch (Exception e) {
+            LOG.error("Unknown Exception caught, catching and logging");
+            LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+
         }
 
 

@@ -69,21 +69,27 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
         //noinspection InfiniteLoopStatement
         try {
             Thread.sleep(10000);
+
+            while (true) {
+                try {
+                    if (doDownload()) {
+                        LOG.debug("All downloads complete");
+                    } else {
+                        LOG.debug("Blender Download Service failed");
+                    }
+                    Thread.sleep(30000);
+                } catch (InterruptedException e) {
+                    LOG.debug("Stopping Blender Binary Download Service");
+                    break;
+                }
+            }
         } catch (InterruptedException e) {
             LOG.debug("Stopping Blender Binary Download Service");
-        }
-        while (true) {
-            try {
-                if (doDownload()) {
-                    LOG.debug("All downloads complete");
-                } else {
-                    LOG.debug("Blender Download Service failed");
-                }
-                Thread.sleep(30000);
-            } catch (InterruptedException e) {
-                LOG.debug("Stopping Blender Binary Download Service");
-                break;
-            }
+        } catch (Exception e) {
+            LOG.error("Unknown Exception caught, catching and logging");
+            LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+
         }
     }
 

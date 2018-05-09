@@ -63,32 +63,39 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
 
     @Async
     public void multicastDiscovery() {
-        if(!scanInProgress && !listComplete) {
-            scanInProgress = true;
-            LOG.debug("Starting Discovery");
-            Set<String> nodeList = multicastReceiverService.currentSethlansClients();
-            if (nodeList != null) {
-                sethlansNodeList = new ArrayList<>();
-                for (String node : nodeList) {
-                    LOG.debug(node);
-                    String[] split = node.split(":");
-                    String ip = split[0];
-                    String port = split[1];
-                    SethlansNode newSethlansNode;
-                    try {
-                        newSethlansNode = discoverUnicastNode(ip, port);
-                        if (newSethlansNode != null) {
-                            LOG.debug(newSethlansNode.toString());
-                            sethlansNodeList.add(newSethlansNode);
+        try {
+            if (!scanInProgress && !listComplete) {
+                scanInProgress = true;
+                LOG.debug("Starting Discovery");
+                Set<String> nodeList = multicastReceiverService.currentSethlansClients();
+                if (nodeList != null) {
+                    sethlansNodeList = new ArrayList<>();
+                    for (String node : nodeList) {
+                        LOG.debug(node);
+                        String[] split = node.split(":");
+                        String ip = split[0];
+                        String port = split[1];
+                        SethlansNode newSethlansNode;
+                        try {
+                            newSethlansNode = discoverUnicastNode(ip, port);
+                            if (newSethlansNode != null) {
+                                LOG.debug(newSethlansNode.toString());
+                                sethlansNodeList.add(newSethlansNode);
+                            }
+                        } catch (NullPointerException e) {
+                            LOG.debug(Throwables.getStackTraceAsString(e));
                         }
-                    } catch (NullPointerException e) {
-                        LOG.debug(Throwables.getStackTraceAsString(e));
-                    }
 
+                    }
+                    listComplete = true;
+                    scanInProgress = false;
                 }
-                listComplete = true;
-                scanInProgress = false;
             }
+        } catch (Exception e) {
+            LOG.error("Unknown Exception caught, catching and logging");
+            LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+
         }
     }
 

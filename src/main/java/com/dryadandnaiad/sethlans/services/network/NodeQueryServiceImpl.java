@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.services.network;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.node.NodeSlotUpdate;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,45 +47,51 @@ public class NodeQueryServiceImpl implements NodeQueryService {
         try {
             Thread.sleep(15000);
 
+
+            int count = 0;
+            while (true) {
+                try {
+                    Thread.sleep(5000);
+                    for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
+                        if (sethlansNode.isBenchmarkComplete()) {
+                            boolean response = sethlansAPIConnectionService.queryNode("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() + "/api/info/node_keep_alive");
+                            if (!response) {
+                                LOG.debug(sethlansNode.getHostname() + " is down.");
+                                NodeSlotUpdate nodeSlotUpdate = new NodeSlotUpdate();
+                                nodeSlotUpdate.setOffline(true);
+                                nodeSlotUpdate.setComputeType(sethlansNode.getComputeType());
+                                nodeSlotUpdate.setSethlansNode(sethlansNode);
+                                nodeSlotUpdate.setInUse(false);
+                                nodeSlotUpdate.setViaQuery(true);
+                            } else if (!sethlansNode.isDisabled() && !sethlansNode.isActive()) {
+                                NodeSlotUpdate nodeSlotUpdate = new NodeSlotUpdate();
+                                nodeSlotUpdate.setViaQuery(true);
+                                nodeSlotUpdate.setInUse(false);
+                                nodeSlotUpdate.setSethlansNode(sethlansNode);
+                                nodeSlotUpdate.setComputeType(sethlansNode.getComputeType());
+                                nodeSlotUpdate.setOffline(false);
+                                LOG.debug(sethlansNode.getHostname() + " is back online.");
+                            }
+                        }
+
+                    }
+                    count++;
+                    if (count == 10) {
+                        LOG.debug("One node heartbeat sent every 5 seconds.  Sent 10 heartbeat requests.");
+                        count = 0;
+                    }
+                } catch (InterruptedException e) {
+                    LOG.debug("Stopping Node Query Service");
+                    break;
+                }
+            }
         } catch (InterruptedException e) {
             LOG.debug("Stopping Node Query Service");
-        }
-        int count = 0;
-        while (true) {
-            try {
-                Thread.sleep(5000);
-                for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
-                    if (sethlansNode.isBenchmarkComplete()) {
-                        boolean response = sethlansAPIConnectionService.queryNode("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() + "/api/info/node_keep_alive");
-                        if (!response) {
-                            LOG.debug(sethlansNode.getHostname() + " is down.");
-                            NodeSlotUpdate nodeSlotUpdate = new NodeSlotUpdate();
-                            nodeSlotUpdate.setOffline(true);
-                            nodeSlotUpdate.setComputeType(sethlansNode.getComputeType());
-                            nodeSlotUpdate.setSethlansNode(sethlansNode);
-                            nodeSlotUpdate.setInUse(false);
-                            nodeSlotUpdate.setViaQuery(true);
-                        } else if (!sethlansNode.isDisabled() && !sethlansNode.isActive()) {
-                            NodeSlotUpdate nodeSlotUpdate = new NodeSlotUpdate();
-                            nodeSlotUpdate.setViaQuery(true);
-                            nodeSlotUpdate.setInUse(false);
-                            nodeSlotUpdate.setSethlansNode(sethlansNode);
-                            nodeSlotUpdate.setComputeType(sethlansNode.getComputeType());
-                            nodeSlotUpdate.setOffline(false);
-                            LOG.debug(sethlansNode.getHostname() + " is back online.");
-                        }
-                    }
+        } catch (Exception e) {
+            LOG.error("Unknown Exception caught, catching and logging");
+            LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
 
-                }
-                count++;
-                if (count == 10) {
-                    LOG.debug("One node heartbeat sent every 5 seconds.  Sent 10 heartbeat requests.");
-                    count = 0;
-                }
-            } catch (InterruptedException e) {
-                LOG.debug("Stopping Node Query Service");
-                break;
-            }
         }
 
 

@@ -117,6 +117,11 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             }
         } catch (InterruptedException e) {
             LOG.debug("Shutting down Benchmark Service");
+        } catch (Exception e) {
+            LOG.error("Unknown Exception caught, catching and logging");
+            LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+
         }
 
     }
@@ -124,16 +129,31 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     @Override
     @Async
     public void processReceivedBenchmark(String benchmark_uuid) {
-        startBenchmarkService(benchmark_uuid);
+        try {
+            startBenchmarkService(benchmark_uuid);
+        } catch (Exception e) {
+            LOG.error("Unknown Exception caught, catching and logging");
+            LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+
+        }
     }
 
     @Override
     @Async
     public void processReceivedBenchmarks(List<String> benchmark_uuids) {
-        this.remainingBenchmarks = benchmark_uuids.size();
-        for (String benchmark_uuid : benchmark_uuids) {
-            startBenchmarkService(benchmark_uuid);
+        try {
+            this.remainingBenchmarks = benchmark_uuids.size();
+            for (String benchmark_uuid : benchmark_uuids) {
+                startBenchmarkService(benchmark_uuid);
+            }
+        } catch (Exception e) {
+            LOG.error("Unknown Exception caught, catching and logging");
+            LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+
         }
+
     }
 
     private void startBenchmarkService(String benchmark_uuid) {
@@ -241,8 +261,6 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                 benchmarkTask.setBenchmarkDir(benchmarkDir.toString());
                 benchmarkTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(new File(binDir), benchmarkTask.getBlenderVersion()));
             }
-
-
 
 
             // Download benchmark from server

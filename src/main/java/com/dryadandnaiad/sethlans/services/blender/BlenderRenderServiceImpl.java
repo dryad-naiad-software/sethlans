@@ -94,56 +94,68 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             }
         } catch (InterruptedException e) {
             LOG.debug("Shutting down Render Service");
+        } catch (Exception e) {
+            LOG.error("Unknown Exception caught, catching and logging");
+            LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+
         }
     }
 
     @Override
     @Async
     public void startRender(String queueUUID) {
-        BlenderRenderTask blenderRenderTask = blenderRenderTaskDatabaseService.getByQueueUUID(queueUUID);
-        blenderRenderTask.setInProgress(true);
-        String cacheDir = SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString());
-        File blendFileDir = new File(SethlansUtils.getProperty(SethlansConfigKeys.BLEND_FILE_CACHE_DIR.toString())
-                + File.separator + blenderRenderTask.getProjectName().toLowerCase().replace(" ", "_") + "-" + blenderRenderTask.getProject_uuid());
-        File renderDir = new File(cacheDir + File.separator + blenderRenderTask.getBlenderFramePart().getPartFilename());
-        if (downloadRequiredFiles(renderDir, blendFileDir, blenderRenderTask)) {
-            blenderRenderTask = blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
-            if (blenderRenderTask.getComputeType().equals(ComputeType.GPU)) {
-                boolean isCuda = false;
-                List<String> deviceList = Arrays.asList(deviceID.split(","));
-                List<String> deviceIDList = new ArrayList<>();
-                LOG.debug("Running render task using " + deviceID);
-                for (String device : deviceList) {
-                    deviceIDList.add(StringUtils.substringAfter(device, "_"));
-                    isCuda = SethlansUtils.isCuda(device);
-                }
-                String script = blenderPythonScriptService.writeRenderPythonScript(blenderRenderTask.getComputeType(),
-                        blenderRenderTask.getRenderDir(), deviceIDList,
-                        getUnselectedIds(deviceList), isCuda,
-                        blenderRenderTask.getRenderOutputFormat(),
-                        tileSizeGPU,
-                        blenderRenderTask.getTaskResolutionX(),
-                        blenderRenderTask.getTaskResolutionY(),
-                        blenderRenderTask.getPartResPercentage(),
-                        blenderRenderTask.getSamples(),
-                        blenderRenderTask.getBlenderFramePart().getPartPositionMaxY(),
-                        blenderRenderTask.getBlenderFramePart().getPartPositionMinY());
-                saveOnSuccess(blenderRenderTask, script);
+        try {
+            BlenderRenderTask blenderRenderTask = blenderRenderTaskDatabaseService.getByQueueUUID(queueUUID);
+            blenderRenderTask.setInProgress(true);
+            String cacheDir = SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString());
+            File blendFileDir = new File(SethlansUtils.getProperty(SethlansConfigKeys.BLEND_FILE_CACHE_DIR.toString())
+                    + File.separator + blenderRenderTask.getProjectName().toLowerCase().replace(" ", "_") + "-" + blenderRenderTask.getProject_uuid());
+            File renderDir = new File(cacheDir + File.separator + blenderRenderTask.getBlenderFramePart().getPartFilename());
+            if (downloadRequiredFiles(renderDir, blendFileDir, blenderRenderTask)) {
+                blenderRenderTask = blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
+                if (blenderRenderTask.getComputeType().equals(ComputeType.GPU)) {
+                    boolean isCuda = false;
+                    List<String> deviceList = Arrays.asList(deviceID.split(","));
+                    List<String> deviceIDList = new ArrayList<>();
+                    LOG.debug("Running render task using " + deviceID);
+                    for (String device : deviceList) {
+                        deviceIDList.add(StringUtils.substringAfter(device, "_"));
+                        isCuda = SethlansUtils.isCuda(device);
+                    }
+                    String script = blenderPythonScriptService.writeRenderPythonScript(blenderRenderTask.getComputeType(),
+                            blenderRenderTask.getRenderDir(), deviceIDList,
+                            getUnselectedIds(deviceList), isCuda,
+                            blenderRenderTask.getRenderOutputFormat(),
+                            tileSizeGPU,
+                            blenderRenderTask.getTaskResolutionX(),
+                            blenderRenderTask.getTaskResolutionY(),
+                            blenderRenderTask.getPartResPercentage(),
+                            blenderRenderTask.getSamples(),
+                            blenderRenderTask.getBlenderFramePart().getPartPositionMaxY(),
+                            blenderRenderTask.getBlenderFramePart().getPartPositionMinY());
+                    saveOnSuccess(blenderRenderTask, script);
 
-            } else {
-                LOG.debug("Running render task using CPU");
-                List<String> emptyList = new ArrayList<>();
-                String script = blenderPythonScriptService.writeRenderPythonScript(blenderRenderTask.getComputeType(),
-                        blenderRenderTask.getRenderDir(), emptyList,
-                        emptyList, false, blenderRenderTask.getRenderOutputFormat(), tileSizeCPU,
-                        blenderRenderTask.getTaskResolutionX(),
-                        blenderRenderTask.getTaskResolutionY(),
-                        blenderRenderTask.getPartResPercentage(),
-                        blenderRenderTask.getSamples(),
-                        blenderRenderTask.getBlenderFramePart().getPartPositionMaxY(),
-                        blenderRenderTask.getBlenderFramePart().getPartPositionMinY());
-                saveOnSuccess(blenderRenderTask, script);
+                } else {
+                    LOG.debug("Running render task using CPU");
+                    List<String> emptyList = new ArrayList<>();
+                    String script = blenderPythonScriptService.writeRenderPythonScript(blenderRenderTask.getComputeType(),
+                            blenderRenderTask.getRenderDir(), emptyList,
+                            emptyList, false, blenderRenderTask.getRenderOutputFormat(), tileSizeCPU,
+                            blenderRenderTask.getTaskResolutionX(),
+                            blenderRenderTask.getTaskResolutionY(),
+                            blenderRenderTask.getPartResPercentage(),
+                            blenderRenderTask.getSamples(),
+                            blenderRenderTask.getBlenderFramePart().getPartPositionMaxY(),
+                            blenderRenderTask.getBlenderFramePart().getPartPositionMinY());
+                    saveOnSuccess(blenderRenderTask, script);
+                }
             }
+        } catch (Exception e) {
+            LOG.error("Unknown Exception caught, catching and logging");
+            LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+
         }
     }
 

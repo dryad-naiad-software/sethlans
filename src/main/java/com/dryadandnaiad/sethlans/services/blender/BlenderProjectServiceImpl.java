@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.blender.PartCoordinates;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
+import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,13 +51,20 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Override
     @Async
     public void startProject(BlenderProject blenderProject) {
-        configureFrameList(blenderProject);
-        while (!blenderQueueService.populateQueueWithProject(blenderProject)) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        try {
+            configureFrameList(blenderProject);
+            while (!blenderQueueService.populateQueueWithProject(blenderProject)) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+        } catch (Exception e) {
+            LOG.error("Unknown Exception caught, catching and logging");
+            LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+
         }
     }
 

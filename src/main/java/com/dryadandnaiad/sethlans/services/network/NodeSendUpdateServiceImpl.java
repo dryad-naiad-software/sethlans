@@ -27,6 +27,7 @@ import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabase
 import com.dryadandnaiad.sethlans.services.database.BlenderRenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanCreationNotAllowedException;
@@ -59,6 +60,11 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
             sendRequest();
         } catch (InterruptedException e) {
             LOG.debug("Shutting Down Node Status Update Service");
+        } catch (Exception e) {
+            LOG.error("Unknown Exception caught, catching and logging");
+            LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+
         }
     }
 
@@ -128,6 +134,11 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
             }
         } catch (InterruptedException e) {
             LOG.debug("Shutting Down Node Idle Notification Service");
+        } catch (Exception e) {
+            LOG.error("Unknown Exception caught, catching and logging");
+            LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+
         }
 
 
