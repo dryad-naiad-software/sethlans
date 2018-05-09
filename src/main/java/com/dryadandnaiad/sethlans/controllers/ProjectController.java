@@ -370,6 +370,8 @@ public class ProjectController {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (projectForm.getProjectType() == ProjectType.STILL_IMAGE) {
                 projectForm.setOutputFormat(RenderOutputFormat.PNG);
+                projectForm.setEndFrame(projectForm.getStartFrame());
+                projectForm.setStepFrame(1);
             }
             projectForm.setFrameRate(checkFrameRate(projectForm.getFrameRate()));
             projectForm.setUsername(auth.getName());
