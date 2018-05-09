@@ -285,7 +285,6 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(blenderRenderQueueItem.getProject_uuid());
 
             blenderRenderQueueItem.setRendering(false);
-            blenderRenderQueueItem.setComplete(true);
             blenderRenderQueueItem.setPaused(false);
             blenderRenderQueueItem.getBlenderFramePart().setStoredDir(blenderProject.getProjectRootDir() +
                     File.separator + "frame_" + blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() + File.separator);
@@ -439,6 +438,10 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                             }
 
                     }
+                    blenderRenderQueueItem = blenderRenderQueueDatabaseService.getById(blenderRenderQueueItem.getId());
+                    blenderRenderQueueItem.setComplete(true);
+                    blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+
                     blenderProject.setTotalProjectTime(blenderProject.getProjectEnd() - blenderProject.getProjectStart());
                     blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
                     blenderProjectDatabaseService.saveOrUpdate(blenderProject);
