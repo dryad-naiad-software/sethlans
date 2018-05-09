@@ -398,7 +398,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                 sethlansNodeDatabaseService.getByConnectionUUID(blenderProcessQueueItem.getConnection_uuid()).getHostname() +
                                 ". Part: " + partNumber
                                 + " Frame: " + frameNumber);
-                        Thread.sleep(5000);
+                        Thread.sleep(10000);
 
 
                     } catch (IOException | InterruptedException | SQLException e) {
@@ -418,7 +418,6 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                         blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
                     }
                     if (remainingPartsForFrame == 0) {
-                        try {
                             if (processImageAndAnimationService.combineParts(blenderProject, frameNumber)) {
                                 if (remainingTotalQueue == 0) {
                                     if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
@@ -437,9 +436,6 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                     blenderProject.setAllImagesProcessed(true);
                                 }
                             }
-                        } catch (InterruptedException e) {
-                            LOG.error(e.getMessage());
-                        }
 
                     }
                     blenderProject.setTotalProjectTime(blenderProject.getProjectEnd() - blenderProject.getProjectStart());

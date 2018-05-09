@@ -32,5 +32,5 @@ public interface ProcessImageAndAnimationService {
 
     void createAVI(BlenderProject blenderProject);
 
-    boolean combineParts(BlenderProject blenderProject, int frameNumber) throws InterruptedException;
+    boolean combineParts(BlenderProject blenderProject, int frameNumber);
 }
