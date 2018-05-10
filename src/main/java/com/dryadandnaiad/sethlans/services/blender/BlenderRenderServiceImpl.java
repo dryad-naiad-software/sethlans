@@ -201,6 +201,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         Map<String, String> params = new HashMap<>();
         params.put("connection_uuid", blenderRenderTask.getConnection_uuid());
         params.put("queue_uuid", blenderRenderTask.getServer_queue_uuid());
+        params.put("project_uuid", blenderRenderTask.getProject_uuid());
         params.put("render_time", Long.toString(blenderRenderTask.getRenderTime()));
         String renderedFileName = String.format("%04d", blenderRenderTask.getBlenderFramePart().getFrameNumber());
 

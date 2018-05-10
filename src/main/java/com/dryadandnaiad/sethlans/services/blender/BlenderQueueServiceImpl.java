@@ -372,6 +372,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                     int remainingPartsForFrame =
                             blenderRenderQueueDatabaseService.listRemainingPartsInProjectQueueByFrameNumber(
                                     blenderRenderQueueItem.getProject_uuid(), frameNumber).size();
+                    int numberOfProjectItemsToProcess = blenderProcessQueueDatabaseService.getListOfProcessByProject(blenderProject.getProject_uuid()).size();
 
                     File storedDir = new File(blenderRenderQueueItem.getBlenderFramePart().getStoredDir());
                     for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
@@ -416,7 +417,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                     blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
                     if (remainingPartsForFrame == 0) {
                         if (processImageAndAnimationService.combineParts(blenderProject, frameNumber)) {
-                            if (remainingTotalQueue == 0) {
+                            if (remainingTotalQueue == 0 && numberOfProjectItemsToProcess == 0) {
                                 if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
                                     blenderProject.setProjectStatus(ProjectStatus.Processing);
                                     processImageAndAnimationService.createAVI(blenderProject);

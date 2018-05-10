@@ -53,6 +53,17 @@ public class BlenderProcessQueueDatabaseServiceImpl implements BlenderProcessQue
     }
 
     @Override
+    public List<BlenderProcessQueueItem> getListOfProcessByProject(String projectUUID) {
+        List<BlenderProcessQueueItem> processByProject = new ArrayList<>();
+        for (BlenderProcessQueueItem blenderProcessQueueItem : listAll()) {
+            if (blenderProcessQueueItem.getProjectUUID().equals(projectUUID)) {
+                processByProject.add(blenderProcessQueueItem);
+            }
+        }
+        return processByProject;
+    }
+
+    @Override
     public BlenderProcessQueueItem getById(Long id) {
         return blenderProcessQueueRepository.findOne(id);
     }

@@ -21,6 +21,8 @@ package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueItem;
 
+import java.util.List;
+
 /**
  * Created Mario Estrella on 3/30/2018.
  * Dryad and Naiad Software LLC
@@ -30,6 +32,8 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueIt
 public interface BlenderProcessQueueDatabaseService extends CRUDService<BlenderProcessQueueItem> {
 
     BlenderProcessQueueItem getProcessByQueueItem(String queueUUID);
+
+    List<BlenderProcessQueueItem> getListOfProcessByProject(String projectUUID);
 
     void delete(BlenderProcessQueueItem blenderProcessQueueItem);
 }

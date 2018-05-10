@@ -41,5 +41,6 @@ public class BlenderProcessQueueItem extends AbstractEntityClass {
     @Lob
     Blob part;
     String queueUUID;
+    String projectUUID;
     long renderTime;
 }

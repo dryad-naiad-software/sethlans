@@ -155,7 +155,7 @@ public class ServerRenderController {
     @PostMapping(value = "/api/project/response")
     public void projectResponse(@RequestParam String connection_uuid,
                                 @RequestParam MultipartFile part,
-                                @RequestParam String queue_uuid, @RequestParam long render_time) {
+                                @RequestParam String queue_uuid, @RequestParam String project_uuid, @RequestParam long render_time) {
         if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
@@ -166,6 +166,7 @@ public class ServerRenderController {
                     blenderProcessQueueItem.setConnection_uuid(connection_uuid);
                     blenderProcessQueueItem.setPart(blob);
                     blenderProcessQueueItem.setQueueUUID(queue_uuid);
+                    blenderProcessQueueItem.setProjectUUID(project_uuid);
                     blenderProcessQueueItem.setRenderTime(render_time);
                     while (!blenderQueueService.addItemToProcess(blenderProcessQueueItem)) {
                         try {
