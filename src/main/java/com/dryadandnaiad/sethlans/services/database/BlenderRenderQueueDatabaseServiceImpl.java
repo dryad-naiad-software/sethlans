@@ -155,10 +155,11 @@ public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueue
         List<BlenderRenderQueueItem> mainProjectLIst = listQueueItemsByProjectUUID(project_uuid);
         List<BlenderRenderQueueItem> sortedList = new ArrayList<>();
         for (BlenderRenderQueueItem blenderRenderQueueItem : mainProjectLIst) {
-            if (!blenderRenderQueueItem.isComplete()) {
+            if (!blenderRenderQueueItem.isComplete() || blenderRenderQueueItem.getBlenderFramePart().getStoredDir() == null) {
                 sortedList.add(blenderRenderQueueItem);
             }
         }
+        LOG.debug("Remaining size " + sortedList.size());
         return sortedList;
     }
 
