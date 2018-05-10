@@ -24,7 +24,6 @@ import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
-import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
@@ -50,7 +49,6 @@ import java.util.concurrent.TimeUnit;
 public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
     private static final Logger LOG = LoggerFactory.getLogger(FFmpegEncodeServiceImpl.class);
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
-    private BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService;
 
     @Async
     @Override
@@ -112,7 +110,6 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
             projectToUpdate.setProjectStatus(ProjectStatus.Finished);
             projectToUpdate.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
             blenderProjectDatabaseService.saveOrUpdate(projectToUpdate);
-            blenderRenderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
 
             FileUtils.deleteDirectory(new File(blenderProject.getProjectRootDir() + File.separator + "temp"));
         } catch (IOException | InterruptedException e) {
@@ -125,8 +122,4 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
         this.blenderProjectDatabaseService = blenderProjectDatabaseService;
     }
 
-    @Autowired
-    public void setBlenderRenderQueueDatabaseService(BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService) {
-        this.blenderRenderQueueDatabaseService = blenderRenderQueueDatabaseService;
-    }
 }

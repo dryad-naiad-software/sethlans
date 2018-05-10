@@ -420,7 +420,6 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                 if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
                                     blenderProject.setProjectStatus(ProjectStatus.Processing);
                                     processImageAndAnimationService.createAVI(blenderProject);
-
                                 }
                                 if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
                                     blenderProject.setProjectStatus(ProjectStatus.Processing);
@@ -428,14 +427,11 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                                 } else {
                                     blenderProject.setProjectStatus(ProjectStatus.Finished);
                                     blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
-                                    blenderRenderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
                                 }
                                 blenderProject.setAllImagesProcessed(true);
                             }
                         }
-
                     }
-
 
                     blenderProject.setTotalProjectTime(blenderProject.getProjectEnd() - blenderProject.getProjectStart());
                     blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
