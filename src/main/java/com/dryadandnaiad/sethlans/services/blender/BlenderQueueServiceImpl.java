@@ -411,6 +411,9 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                         blenderProject.setProjectStatus(ProjectStatus.Rendering);
                         blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
                     }
+                    blenderRenderQueueItem = blenderRenderQueueDatabaseService.getById(blenderRenderQueueItem.getId());
+                    blenderRenderQueueItem.setComplete(true);
+                    blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
                     if (remainingPartsForFrame == 0) {
                         if (processImageAndAnimationService.combineParts(blenderProject, frameNumber)) {
                             if (remainingTotalQueue == 0) {
@@ -432,9 +435,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                         }
 
                     }
-                    blenderRenderQueueItem = blenderRenderQueueDatabaseService.getById(blenderRenderQueueItem.getId());
-                    blenderRenderQueueItem.setComplete(true);
-                    blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
+
 
                     blenderProject.setTotalProjectTime(blenderProject.getProjectEnd() - blenderProject.getProjectStart());
                     blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
