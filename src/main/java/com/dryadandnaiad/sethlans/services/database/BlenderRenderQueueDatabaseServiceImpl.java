@@ -104,7 +104,17 @@ public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueue
                 blenderRenderQueueRepository.delete(blenderRenderQueueItem);
             }
         }
+    }
 
+    @Override
+    public void deleteFramePartsOfProject(String project_uuid, int frameNumber) {
+        List<BlenderRenderQueueItem> blenderRenderQueueItemList = listAll();
+        for (BlenderRenderQueueItem blenderRenderQueueItem : blenderRenderQueueItemList) {
+            if (blenderRenderQueueItem.getProject_uuid().equals(project_uuid)
+                    && blenderRenderQueueItem.getBlenderFramePart().getFrameNumber() == frameNumber) {
+                blenderRenderQueueRepository.delete(blenderRenderQueueItem);
+            }
+        }
     }
 
     @Override
@@ -139,6 +149,8 @@ public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueue
 
     @Override
     public List<BlenderRenderQueueItem> listRemainingPartsInProjectQueueByFrameNumber(String project_uuid, int frameNumber) {
+        // TODO remaining parts needs to be tracked intelligently.
+
         List<BlenderRenderQueueItem> remainingQueueForProject = listRemainingQueueItemsByProjectUUID(project_uuid);
         List<BlenderRenderQueueItem> queueItemsByFrame = new ArrayList<>();
         for (BlenderRenderQueueItem blenderRenderQueueItem : remainingQueueForProject) {
@@ -147,7 +159,6 @@ public class BlenderRenderQueueDatabaseServiceImpl implements BlenderRenderQueue
             }
         }
         return queueItemsByFrame;
-
     }
 
     @Override

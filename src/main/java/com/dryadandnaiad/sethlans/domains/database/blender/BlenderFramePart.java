@@ -39,6 +39,7 @@ public class BlenderFramePart {
     private String partFilename;
     private String fileExtension;
     private String storedDir;
+    private boolean processed;
 
 
 }

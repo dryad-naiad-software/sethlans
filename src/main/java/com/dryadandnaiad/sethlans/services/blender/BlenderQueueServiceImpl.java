@@ -358,7 +358,7 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             modifyingQueue = true;
             List<BlenderProcessQueueItem> blenderProcessQueueItemList = blenderProcessQueueDatabaseService.listAll();
             if (!blenderProcessQueueItemList.isEmpty()) {
-                LOG.debug("Running processing queue. ");
+                LOG.debug("Running processing queue.");
                 for (BlenderProcessQueueItem blenderProcessQueueItem : blenderProcessQueueItemList) {
                     BlenderRenderQueueItem blenderRenderQueueItem = blenderRenderQueueDatabaseService.getByQueueUUID(blenderProcessQueueItem.getQueueUUID());
                     int partNumber = blenderRenderQueueItem.getBlenderFramePart().getPartNumber();
@@ -369,10 +369,10 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                             blenderRenderQueueDatabaseService.listQueueItemsByProjectUUID(blenderRenderQueueItem.getProject_uuid()).size();
                     int remainingTotalQueue =
                             blenderRenderQueueDatabaseService.listRemainingQueueItemsByProjectUUID(blenderRenderQueueItem.getProject_uuid()).size();
+                    // TODO remaining parts needs to be tracked intelligently.
                     int remainingPartsForFrame =
                             blenderRenderQueueDatabaseService.listRemainingPartsInProjectQueueByFrameNumber(
                                     blenderRenderQueueItem.getProject_uuid(), frameNumber).size();
-                    int numberOfProjectItemsToProcess = blenderProcessQueueDatabaseService.getListOfProcessByProject(blenderProject.getProject_uuid()).size();
 
                     File storedDir = new File(blenderRenderQueueItem.getBlenderFramePart().getStoredDir());
                     for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
@@ -415,25 +415,6 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
                     blenderRenderQueueItem = blenderRenderQueueDatabaseService.getById(blenderRenderQueueItem.getId());
                     blenderRenderQueueItem.setComplete(true);
                     blenderRenderQueueDatabaseService.saveOrUpdate(blenderRenderQueueItem);
-                    if (remainingPartsForFrame == 0) {
-                        if (processImageAndAnimationService.combineParts(blenderProject, frameNumber)) {
-                            if (remainingTotalQueue == 0 && numberOfProjectItemsToProcess == 0) {
-                                if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
-                                    blenderProject.setProjectStatus(ProjectStatus.Processing);
-                                    processImageAndAnimationService.createAVI(blenderProject);
-                                }
-                                if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
-                                    blenderProject.setProjectStatus(ProjectStatus.Processing);
-                                    processImageAndAnimationService.createMP4(blenderProject);
-                                } else {
-                                    blenderProject.setProjectStatus(ProjectStatus.Finished);
-                                    blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
-                                }
-                                blenderProject.setAllImagesProcessed(true);
-                            }
-                        }
-                    }
-
                     blenderProject.setTotalProjectTime(blenderProject.getProjectEnd() - blenderProject.getProjectStart());
                     blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
                     blenderProjectDatabaseService.saveOrUpdate(blenderProject);
@@ -442,7 +423,38 @@ public class BlenderQueueServiceImpl implements BlenderQueueService {
             }
             modifyingQueue = false;
         }
+    }
 
+    private void processImages() {
+        if (!modifyingQueue) {
+            modifyingQueue = true;
+            // TODO go through frames, if all parts are processed then process image.
+            modifyingQueue = false;
+
+        }
+
+
+    }
+
+    private void finishProject(int frameNumber, BlenderProject blenderProject, int remainingTotalQueue, int remainingPartsForFrame, int numberOfProjectItemsToProcess) {
+        if (remainingPartsForFrame == 0) {
+            if (processImageAndAnimationService.combineParts(blenderProject, frameNumber)) {
+                if (remainingTotalQueue == 0 && numberOfProjectItemsToProcess == 0) {
+                    if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
+                        blenderProject.setProjectStatus(ProjectStatus.Processing);
+                        processImageAndAnimationService.createAVI(blenderProject);
+                    }
+                    if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
+                        blenderProject.setProjectStatus(ProjectStatus.Processing);
+                        processImageAndAnimationService.createMP4(blenderProject);
+                    } else {
+                        blenderProject.setProjectStatus(ProjectStatus.Finished);
+                        blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
+                    }
+                    blenderProject.setAllImagesProcessed(true);
+                }
+            }
+        }
     }
 
     private void assignNodeToQueueItem() {
