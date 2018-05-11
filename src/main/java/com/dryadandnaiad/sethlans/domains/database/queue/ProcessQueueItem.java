@@ -17,20 +17,30 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.database;
+package com.dryadandnaiad.sethlans.domains.database.queue;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
+import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+import java.sql.Blob;
 
 /**
- * Created Mario Estrella on 12/12/17.
+ * Created Mario Estrella on 3/30/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderRenderTaskDatabaseService extends CRUDService<BlenderRenderTask> {
-    void delete(BlenderRenderTask blenderRenderTask);
-
-    void deleteAll();
-
-    BlenderRenderTask getByQueueUUID(String queue_uuid);
+@Entity
+@Data
+@EqualsAndHashCode(callSuper = false)
+public class ProcessQueueItem extends AbstractEntityClass {
+    String connection_uuid;
+    @Lob
+    Blob part;
+    String queueUUID;
+    String projectUUID;
+    long renderTime;
 }

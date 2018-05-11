@@ -17,16 +17,24 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.repositories;
+package com.dryadandnaiad.sethlans.domains.database.queue;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueItem;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import javax.persistence.Entity;
 
 /**
- * Created Mario Estrella on 3/30/2018.
+ * Created Mario Estrella on 5/10/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderProcessQueueRepository extends JpaRepository<BlenderProcessQueueItem, Long> {
+@Data
+@Entity
+@EqualsAndHashCode(callSuper = false)
+public class ProcessFrameItem extends AbstractEntityClass {
+    String projectUUID;
+    Integer frameNumber;
 }

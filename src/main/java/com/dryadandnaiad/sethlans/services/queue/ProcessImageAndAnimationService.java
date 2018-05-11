@@ -17,23 +17,20 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.database;
+package com.dryadandnaiad.sethlans.services.queue;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueItem;
-
-import java.util.List;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 
 /**
- * Created Mario Estrella on 3/30/2018.
+ * Created Mario Estrella on 4/21/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderProcessQueueDatabaseService extends CRUDService<BlenderProcessQueueItem> {
+public interface ProcessImageAndAnimationService {
+    void createMP4(BlenderProject blenderProject);
 
-    BlenderProcessQueueItem getProcessByQueueItem(String queueUUID);
+    void createAVI(BlenderProject blenderProject);
 
-    List<BlenderProcessQueueItem> getListOfProcessByProject(String projectUUID);
-
-    void delete(BlenderProcessQueueItem blenderProcessQueueItem);
+    boolean combineParts(BlenderProject blenderProject, int frameNumber);
 }

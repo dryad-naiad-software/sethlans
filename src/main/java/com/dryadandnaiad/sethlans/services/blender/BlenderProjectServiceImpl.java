@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.blender.PartCoordinates;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
+import com.dryadandnaiad.sethlans.services.queue.QueueService;
 import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -45,7 +46,7 @@ import java.util.List;
 @Service
 public class BlenderProjectServiceImpl implements BlenderProjectService {
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
-    private BlenderQueueService blenderQueueService;
+    private QueueService queueService;
     private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectServiceImpl.class);
 
     @Override
@@ -53,7 +54,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     public void startProject(BlenderProject blenderProject) {
         try {
             configureFrameList(blenderProject);
-            while (!blenderQueueService.populateQueueWithProject(blenderProject)) {
+            while (!queueService.populateQueueWithProject(blenderProject)) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -84,7 +85,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     private void sendResumeToQueueService(BlenderProject blenderProject) {
         if (!blenderProject.isAllImagesProcessed()) {
-            while (!blenderQueueService.resumeBlenderProjectQueue(blenderProject)) {
+            while (!queueService.resumeBlenderProjectQueue(blenderProject)) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -109,7 +110,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     private void sendPauseToQueueService(BlenderProject blenderProject) {
         if (!blenderProject.isAllImagesProcessed()) {
-            while (!blenderQueueService.pauseBlenderProjectQueue(blenderProject)) {
+            while (!queueService.pauseBlenderProjectQueue(blenderProject)) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -122,7 +123,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Override
     public void stopProject(Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
-        while (!blenderQueueService.stopBlenderProjectQueue(blenderProject)) {
+        while (!queueService.stopBlenderProjectQueue(blenderProject)) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
@@ -136,7 +137,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Override
     public void stopProject(String username, Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(username, id);
-        while (!blenderQueueService.stopBlenderProjectQueue(blenderProject)) {
+        while (!queueService.stopBlenderProjectQueue(blenderProject)) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
@@ -152,7 +153,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Override
     public void deleteProject(Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
-        blenderQueueService.stopBlenderProjectQueue(blenderProject);
+        queueService.stopBlenderProjectQueue(blenderProject);
         String directory = blenderProject.getProjectRootDir();
         blenderProjectDatabaseService.delete(id);
         deleteDirectory(directory);
@@ -178,7 +179,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Override
     public void deleteProject(String username, Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(username, id);
-        blenderQueueService.stopBlenderProjectQueue(blenderProject);
+        queueService.stopBlenderProjectQueue(blenderProject);
         String directory = blenderProject.getProjectRootDir();
         blenderProjectDatabaseService.deleteWithVerification(username, id);
         deleteDirectory(directory);
@@ -263,7 +264,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     }
 
     @Autowired
-    public void setBlenderQueueService(BlenderQueueService blenderQueueService) {
-        this.blenderQueueService = blenderQueueService;
+    public void setQueueService(QueueService queueService) {
+        this.queueService = queueService;
     }
 }

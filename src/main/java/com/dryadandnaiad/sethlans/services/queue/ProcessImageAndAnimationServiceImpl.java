@@ -17,7 +17,7 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.blender;
+package com.dryadandnaiad.sethlans.services.queue;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;

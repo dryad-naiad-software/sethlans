@@ -21,7 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
+import com.dryadandnaiad.sethlans.domains.database.queue.RenderTask;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
@@ -30,7 +30,7 @@ import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderRenderService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
-import com.dryadandnaiad.sethlans.services.database.BlenderRenderTaskDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.RenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
@@ -60,7 +60,7 @@ public class NodeRenderController {
     private String cuda;
 
     private SethlansServerDatabaseService sethlansServerDatabaseService;
-    private BlenderRenderTaskDatabaseService blenderRenderTaskDatabaseService;
+    private RenderTaskDatabaseService renderTaskDatabaseService;
     private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
     private BlenderBenchmarkService blenderBenchmarkService;
     private BlenderRenderService blenderRenderService;
@@ -82,8 +82,8 @@ public class NodeRenderController {
         } else {
             ComputeType computeType = ComputeType.valueOf(SethlansUtils.getProperty(SethlansConfigKeys.COMPUTE_METHOD.toString()));
             LOG.debug("Render Request Received, preparing render task.");
-            List<BlenderRenderTask> blenderRenderTaskList = blenderRenderTaskDatabaseService.listAll();
-            if (computeType == ComputeType.CPU_GPU && blenderRenderTaskList.size() == 2 || computeType != ComputeType.CPU_GPU && blenderRenderTaskList.size() == 1) {
+            List<RenderTask> renderTaskList = renderTaskDatabaseService.listAll();
+            if (computeType == ComputeType.CPU_GPU && renderTaskList.size() == 2 || computeType != ComputeType.CPU_GPU && renderTaskList.size() == 1) {
                 LOG.debug("All slots are currently full. Rejecting request");
                 SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connection_uuid);
                 String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_reject_item/";
@@ -95,7 +95,7 @@ public class NodeRenderController {
                 String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_accept_item/";
                 String params = "queue_item_uuid=" + queue_item_uuid;
                 sethlansAPIConnectionService.sendToRemoteGET(connectionURL, params);
-                BlenderRenderTask blenderRenderTask;
+                RenderTask renderTask;
                 BlenderFramePart framePart = new BlenderFramePart();
                 framePart.setFrameNumber(frame_number);
                 framePart.setFileExtension(file_extension);
@@ -106,25 +106,25 @@ public class NodeRenderController {
                 framePart.setPartPositionMaxY(part_position_max_y);
 
                 // Create a new task
-                blenderRenderTask = new BlenderRenderTask();
-                blenderRenderTask.setProject_uuid(project_uuid);
-                blenderRenderTask.setProjectName(project_name);
-                blenderRenderTask.setServer_queue_uuid(queue_item_uuid);
-                blenderRenderTask.setConnection_uuid(connection_uuid);
-                blenderRenderTask.setRenderOutputFormat(render_output_format);
-                blenderRenderTask.setSamples(samples);
-                blenderRenderTask.setBlenderEngine(blender_engine);
-                blenderRenderTask.setComputeType(compute_type);
-                blenderRenderTask.setBlendFilename(blend_file);
-                blenderRenderTask.setBlenderVersion(blender_version);
-                blenderRenderTask.setBlenderFramePart(framePart);
-                blenderRenderTask.setTaskResolutionX(part_resolution_x);
-                blenderRenderTask.setTaskResolutionY(part_resolution_y);
-                blenderRenderTask.setPartResPercentage(part_res_percentage);
-                blenderRenderTask.setComplete(false);
-                LOG.debug(blenderRenderTask.toString());
-                blenderRenderTaskDatabaseService.saveOrUpdate(blenderRenderTask);
-                blenderRenderService.startRender(blenderRenderTask.getServer_queue_uuid());
+                renderTask = new RenderTask();
+                renderTask.setProject_uuid(project_uuid);
+                renderTask.setProjectName(project_name);
+                renderTask.setServer_queue_uuid(queue_item_uuid);
+                renderTask.setConnection_uuid(connection_uuid);
+                renderTask.setRenderOutputFormat(render_output_format);
+                renderTask.setSamples(samples);
+                renderTask.setBlenderEngine(blender_engine);
+                renderTask.setComputeType(compute_type);
+                renderTask.setBlendFilename(blend_file);
+                renderTask.setBlenderVersion(blender_version);
+                renderTask.setBlenderFramePart(framePart);
+                renderTask.setTaskResolutionX(part_resolution_x);
+                renderTask.setTaskResolutionY(part_resolution_y);
+                renderTask.setPartResPercentage(part_res_percentage);
+                renderTask.setComplete(false);
+                LOG.debug(renderTask.toString());
+                renderTaskDatabaseService.saveOrUpdate(renderTask);
+                blenderRenderService.startRender(renderTask.getServer_queue_uuid());
             }
         }
     }
@@ -192,8 +192,8 @@ public class NodeRenderController {
 
 
     @Autowired
-    public void setBlenderRenderTaskDatabaseService(BlenderRenderTaskDatabaseService blenderRenderTaskDatabaseService) {
-        this.blenderRenderTaskDatabaseService = blenderRenderTaskDatabaseService;
+    public void setRenderTaskDatabaseService(RenderTaskDatabaseService renderTaskDatabaseService) {
+        this.renderTaskDatabaseService = renderTaskDatabaseService;
     }
 
     @Autowired

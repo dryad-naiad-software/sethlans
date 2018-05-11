@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,17 +16,24 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-package com.dryadandnaiad.sethlans.repositories;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
-import org.springframework.data.jpa.repository.JpaRepository;
+package com.dryadandnaiad.sethlans.services.database;
+
+import com.dryadandnaiad.sethlans.domains.database.queue.ProcessQueueItem;
+
+import java.util.List;
 
 /**
- * Created Mario Estrella on 12/28/17.
+ * Created Mario Estrella on 3/30/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+public interface ProcessQueueDatabaseService extends CRUDService<ProcessQueueItem> {
 
-public interface BlenderRenderQueueRepository extends JpaRepository<BlenderRenderQueueItem, Long> {
+    ProcessQueueItem getProcessByQueueItem(String queueUUID);
+
+    List<ProcessQueueItem> getListOfProcessByProject(String projectUUID);
+
+    void delete(ProcessQueueItem processQueueItem);
 }

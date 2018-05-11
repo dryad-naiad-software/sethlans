@@ -16,21 +16,17 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+package com.dryadandnaiad.sethlans.repositories;
 
-package com.dryadandnaiad.sethlans.services.blender;
-
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.queue.RenderQueueItem;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * Created Mario Estrella on 4/21/2018.
+ * Created Mario Estrella on 12/28/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface ProcessImageAndAnimationService {
-    void createMP4(BlenderProject blenderProject);
 
-    void createAVI(BlenderProject blenderProject);
-
-    boolean combineParts(BlenderProject blenderProject, int frameNumber);
+public interface RenderQueueRepository extends JpaRepository<RenderQueueItem, Long> {
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,16 +17,20 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.repositories;
+package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.dryadandnaiad.sethlans.domains.database.queue.RenderTask;
 
 /**
- * Created Mario Estrella on 4/2/17.
+ * Created Mario Estrella on 12/12/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderRenderTaskRepository extends JpaRepository<BlenderRenderTask, Long> {
+public interface RenderTaskDatabaseService extends CRUDService<RenderTask> {
+    void delete(RenderTask renderTask);
+
+    void deleteAll();
+
+    RenderTask getByQueueUUID(String queue_uuid);
 }

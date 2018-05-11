@@ -19,8 +19,8 @@
 
 package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
-import com.dryadandnaiad.sethlans.repositories.BlenderRenderTaskRepository;
+import com.dryadandnaiad.sethlans.domains.database.queue.RenderTask;
+import com.dryadandnaiad.sethlans.repositories.RenderTaskRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,50 +36,50 @@ import java.util.List;
  * Project: sethlans
  */
 @Service
-public class BlenderRenderTaskDatabaseServiceImpl implements BlenderRenderTaskDatabaseService {
+public class RenderTaskDatabaseServiceImpl implements RenderTaskDatabaseService {
 
-    private BlenderRenderTaskRepository blenderRenderTaskRepository;
-    private static final Logger LOG = LoggerFactory.getLogger(BlenderRenderTaskDatabaseServiceImpl.class);
+    private RenderTaskRepository renderTaskRepository;
+    private static final Logger LOG = LoggerFactory.getLogger(RenderTaskDatabaseServiceImpl.class);
 
 
     @Override
-    public List<BlenderRenderTask> listAll() {
-        return new ArrayList<>(blenderRenderTaskRepository.findAll());
+    public List<RenderTask> listAll() {
+        return new ArrayList<>(renderTaskRepository.findAll());
     }
 
     @Override
-    public BlenderRenderTask getById(Long id) {
-        return blenderRenderTaskRepository.findOne(id);
+    public RenderTask getById(Long id) {
+        return renderTaskRepository.findOne(id);
     }
 
     @Override
-    public BlenderRenderTask saveOrUpdate(BlenderRenderTask domainObject) {
-        return blenderRenderTaskRepository.save(domainObject);
+    public RenderTask saveOrUpdate(RenderTask domainObject) {
+        return renderTaskRepository.save(domainObject);
     }
 
     @Override
     public void delete(Long id) {
-        BlenderRenderTask blenderRenderTask = blenderRenderTaskRepository.findOne(id);
-        blenderRenderTaskRepository.delete(blenderRenderTask);
+        RenderTask renderTask = renderTaskRepository.findOne(id);
+        renderTaskRepository.delete(renderTask);
 
     }
 
     @Override
-    public void delete(BlenderRenderTask blenderRenderTask) {
-        blenderRenderTaskRepository.delete(blenderRenderTask);
+    public void delete(RenderTask renderTask) {
+        renderTaskRepository.delete(renderTask);
     }
 
     @Override
     public void deleteAll() {
-        blenderRenderTaskRepository.deleteAll();
+        renderTaskRepository.deleteAll();
     }
 
 
     @Override
-    public BlenderRenderTask getByQueueUUID(String queue_uuid) {
-        for (BlenderRenderTask blenderRenderTask : listAll()) {
-            if (queue_uuid.equals(blenderRenderTask.getServer_queue_uuid())) {
-                return blenderRenderTask;
+    public RenderTask getByQueueUUID(String queue_uuid) {
+        for (RenderTask renderTask : listAll()) {
+            if (queue_uuid.equals(renderTask.getServer_queue_uuid())) {
+                return renderTask;
             } else {
                 LOG.error("No task found for this uuid");
             }
@@ -90,8 +90,8 @@ public class BlenderRenderTaskDatabaseServiceImpl implements BlenderRenderTaskDa
     }
 
     @Autowired
-    public void setBlenderRenderTaskRepository(BlenderRenderTaskRepository blenderRenderTaskRepository) {
-        this.blenderRenderTaskRepository = blenderRenderTaskRepository;
+    public void setRenderTaskRepository(RenderTaskRepository renderTaskRepository) {
+        this.renderTaskRepository = renderTaskRepository;
     }
 
 

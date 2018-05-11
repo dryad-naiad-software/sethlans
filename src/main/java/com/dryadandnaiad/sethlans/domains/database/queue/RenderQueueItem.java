@@ -17,47 +17,34 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.domains.database.blender;
+package com.dryadandnaiad.sethlans.domains.database.queue;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
-import com.dryadandnaiad.sethlans.enums.BlenderEngine;
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 
 /**
- * Created Mario Estrella on 3/24/17.
+ * Created Mario Estrella on 12/28/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
 @Entity
-@NoArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class BlenderRenderTask extends AbstractEntityClass {
-    private String projectName;
+public class RenderQueueItem extends AbstractEntityClass {
     private String connection_uuid;
     private String project_uuid;
-    private String server_queue_uuid;
-    private RenderOutputFormat renderOutputFormat;
-    private int samples;
-    private BlenderEngine blenderEngine;
-    private ComputeType computeType;
-    private String blendFilename;
-    private String blenderVersion;
-    private String blenderExecutable;
+    private String projectName;
+    private String queueItem_uuid;
     private BlenderFramePart blenderFramePart;
-    private int taskResolutionX;
-    private int taskResolutionY;
-    private int partResPercentage;
+    private ComputeType renderComputeType;
     private boolean complete;
-    private boolean inProgress;
-    private String renderDir;
-    private Long renderTime;
+    private boolean paused;
+    private boolean rendering;
 
 }

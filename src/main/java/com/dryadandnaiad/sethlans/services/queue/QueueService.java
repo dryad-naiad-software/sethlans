@@ -17,10 +17,10 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.blender;
+package com.dryadandnaiad.sethlans.services.queue;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.queue.ProcessQueueItem;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 
 /**
@@ -29,7 +29,7 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderQueueService {
+public interface QueueService {
 
     void startQueue();
 
@@ -45,7 +45,7 @@ public interface BlenderQueueService {
 
     boolean nodeAcknowledgeQueueItem(String queue_uuid);
 
-    boolean addItemToProcess(BlenderProcessQueueItem blenderProcessQueueItem);
+    boolean addItemToProcess(ProcessQueueItem processQueueItem);
 
     boolean nodeIdle(String connection_uuid, ComputeType computeType);
 }

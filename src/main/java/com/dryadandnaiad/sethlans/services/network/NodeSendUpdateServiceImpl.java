@@ -19,12 +19,12 @@
 
 package com.dryadandnaiad.sethlans.services.network;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
+import com.dryadandnaiad.sethlans.domains.database.queue.RenderTask;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
-import com.dryadandnaiad.sethlans.services.database.BlenderRenderTaskDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.RenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
@@ -47,7 +47,7 @@ import java.util.List;
 public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
-    private BlenderRenderTaskDatabaseService blenderRenderTaskDatabaseService;
+    private RenderTaskDatabaseService renderTaskDatabaseService;
     private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
     private static final Logger LOG = LoggerFactory.getLogger(NodeSendUpdateServiceImpl.class);
 
@@ -88,16 +88,16 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
                 try {
                     Thread.sleep(1000);
                     if (sethlansServerDatabaseService.listActive().size() > 0 && blenderBenchmarkTaskDatabaseService.listAll().size() == 0) {
-                        if (blenderRenderTaskDatabaseService.listAll().size() == 0) {
+                        if (renderTaskDatabaseService.listAll().size() == 0) {
                             counter++;
                         }
-                        if (slots == 2 && blenderRenderTaskDatabaseService.listAll().size() == 1) {
+                        if (slots == 2 && renderTaskDatabaseService.listAll().size() == 1) {
                             counter++;
                         }
-                        if (slots == 2 && blenderRenderTaskDatabaseService.listAll().size() == 2) {
+                        if (slots == 2 && renderTaskDatabaseService.listAll().size() == 2) {
                             counter = 0;
                         }
-                        if (slots == 1 && blenderRenderTaskDatabaseService.listAll().size() == 1) {
+                        if (slots == 1 && renderTaskDatabaseService.listAll().size() == 1) {
                             counter = 0;
                         }
                         if (counter > 119) {
@@ -107,11 +107,11 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
                                 sendIdleUpdate(computeType);
                             }
                             if (slots == 2) {
-                                if (blenderRenderTaskDatabaseService.listAll().size() == 0) {
+                                if (renderTaskDatabaseService.listAll().size() == 0) {
                                     sendIdleUpdate(computeType);
                                 } else {
-                                    for (BlenderRenderTask blenderRenderTask : blenderRenderTaskDatabaseService.listAll()) {
-                                        if (blenderRenderTask.getComputeType().equals(ComputeType.CPU)) {
+                                    for (RenderTask renderTask : renderTaskDatabaseService.listAll()) {
+                                        if (renderTask.getComputeType().equals(ComputeType.CPU)) {
                                             sendIdleUpdate(ComputeType.GPU);
 
                                         } else {
@@ -190,7 +190,7 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
     }
 
     @Autowired
-    public void setBlenderRenderTaskDatabaseService(BlenderRenderTaskDatabaseService blenderRenderTaskDatabaseService) {
-        this.blenderRenderTaskDatabaseService = blenderRenderTaskDatabaseService;
+    public void setRenderTaskDatabaseService(RenderTaskDatabaseService renderTaskDatabaseService) {
+        this.renderTaskDatabaseService = renderTaskDatabaseService;
     }
 }

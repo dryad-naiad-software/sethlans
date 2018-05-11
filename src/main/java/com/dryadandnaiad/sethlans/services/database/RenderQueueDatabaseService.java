@@ -18,7 +18,7 @@
  */
 package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderQueueItem;
+import com.dryadandnaiad.sethlans.domains.database.queue.RenderQueueItem;
 
 import java.util.List;
 
@@ -29,24 +29,24 @@ import java.util.List;
  * Project: sethlans
  */
 
-public interface BlenderRenderQueueDatabaseService extends CRUDService<BlenderRenderQueueItem> {
-    List<BlenderRenderQueueItem> listPendingRender();
+public interface RenderQueueDatabaseService extends CRUDService<RenderQueueItem> {
+    List<RenderQueueItem> listPendingRender();
 
-    List<BlenderRenderQueueItem> listPendingRenderWithNodeAssigned();
+    List<RenderQueueItem> listPendingRenderWithNodeAssigned();
 
-    BlenderRenderQueueItem getByQueueUUID(String queueUUID);
+    RenderQueueItem getByQueueUUID(String queueUUID);
 
     void deleteAllByProject(String project_uuid);
 
-    void deleteFramePartsOfProject(String project_uuid, int frameNumber);
+    void delete(RenderQueueItem renderQueueItem);
 
-    void delete(BlenderRenderQueueItem blenderRenderQueueItem);
+    List<RenderQueueItem> listQueueItemsByConnectionUUID(String connection_uuid);
 
-    List<BlenderRenderQueueItem> listQueueItemsByConnectionUUID(String connection_uuid);
+    List<RenderQueueItem> listQueueItemsByProjectUUID(String project_uuid);
 
-    List<BlenderRenderQueueItem> listQueueItemsByProjectUUID(String project_uuid);
+    List<RenderQueueItem> queueItemsByFrameNumber(String project_uuid, int frameNumber);
 
-    List<BlenderRenderQueueItem> listRemainingPartsInProjectQueueByFrameNumber(String project_uuid, int frameNumber);
+    List<RenderQueueItem> listRemainingPartsInProjectQueueByFrameNumber(String project_uuid, int frameNumber);
 
-    List<BlenderRenderQueueItem> listRemainingQueueItemsByProjectUUID(String project_uuid);
+    List<RenderQueueItem> listRemainingQueueItemsByProjectUUID(String project_uuid);
 }

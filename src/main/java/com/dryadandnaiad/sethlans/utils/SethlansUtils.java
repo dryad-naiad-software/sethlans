@@ -20,8 +20,8 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderRenderTask;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.domains.database.queue.RenderTask;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.domains.info.SethlansSettingsInfo;
@@ -440,7 +440,7 @@ public class SethlansUtils {
         writeProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES, blenderVersion);
     }
 
-    public static boolean renameBlenderDir(File renderDir, File binDir, BlenderRenderTask renderTask, String cachedBlenderBinaries) {
+    public static boolean renameBlenderDir(File renderDir, File binDir, RenderTask renderTask, String cachedBlenderBinaries) {
         if (SethlansUtils.renameBlenderDirectory(binDir, renderTask.getBlenderVersion())) {
             LOG.debug("Blender executable ready");
             renderTask.setRenderDir(renderDir.toString());

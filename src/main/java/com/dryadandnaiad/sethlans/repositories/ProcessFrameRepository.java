@@ -16,28 +16,17 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-package com.dryadandnaiad.sethlans.domains.database.blender;
 
-import lombok.Data;
+package com.dryadandnaiad.sethlans.repositories;
 
-import javax.persistence.Embeddable;
+import com.dryadandnaiad.sethlans.domains.database.queue.ProcessFrameItem;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * Created Mario Estrella on 12/28/17.
+ * Created Mario Estrella on 5/10/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Embeddable
-@Data
-public class BlenderFramePart {
-    private String frameFileName;
-    private int frameNumber;
-    private int partNumber;
-    private Double partPositionMinY;
-    private Double partPositionMaxY;
-    private String partFilename;
-    private String fileExtension;
-    private String storedDir;
-    private boolean combined;
+public interface ProcessFrameRepository extends JpaRepository<ProcessFrameItem, Long> {
 }

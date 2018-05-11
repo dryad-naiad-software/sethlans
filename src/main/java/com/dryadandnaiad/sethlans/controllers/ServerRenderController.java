@@ -19,14 +19,14 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProcessQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.domains.database.queue.ProcessQueueItem;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.services.blender.BlenderQueueService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.services.queue.QueueService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -75,7 +75,7 @@ public class ServerRenderController {
 
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
-    private BlenderQueueService blenderQueueService;
+    private QueueService queueService;
 
 
     @GetMapping(value = "/api/project/blender_binary")
@@ -162,13 +162,13 @@ public class ServerRenderController {
             if (!part.isEmpty()) {
                 try {
                     Blob blob = new SerialBlob(part.getBytes());
-                    BlenderProcessQueueItem blenderProcessQueueItem = new BlenderProcessQueueItem();
-                    blenderProcessQueueItem.setConnection_uuid(connection_uuid);
-                    blenderProcessQueueItem.setPart(blob);
-                    blenderProcessQueueItem.setQueueUUID(queue_uuid);
-                    blenderProcessQueueItem.setProjectUUID(project_uuid);
-                    blenderProcessQueueItem.setRenderTime(render_time);
-                    while (!blenderQueueService.addItemToProcess(blenderProcessQueueItem)) {
+                    ProcessQueueItem processQueueItem = new ProcessQueueItem();
+                    processQueueItem.setConnection_uuid(connection_uuid);
+                    processQueueItem.setPart(blob);
+                    processQueueItem.setQueueUUID(queue_uuid);
+                    processQueueItem.setProjectUUID(project_uuid);
+                    processQueueItem.setRenderTime(render_time);
+                    while (!queueService.addItemToProcess(processQueueItem)) {
                         try {
                             Thread.sleep(200);
                         } catch (InterruptedException e) {
@@ -184,7 +184,7 @@ public class ServerRenderController {
 
     @GetMapping(value = "/api/project/node_accept_item/")
     public void acceptedQueueItem(@RequestParam String queue_item_uuid) {
-        while (!blenderQueueService.nodeAcknowledgeQueueItem(queue_item_uuid)) {
+        while (!queueService.nodeAcknowledgeQueueItem(queue_item_uuid)) {
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
@@ -195,7 +195,7 @@ public class ServerRenderController {
 
     @GetMapping(value = "/api/project/node_reject_item/")
     public void rejectedQueueItem(@RequestParam String queue_item_uuid) {
-        while (!blenderQueueService.nodeRejectQueueItem(queue_item_uuid)) {
+        while (!queueService.nodeRejectQueueItem(queue_item_uuid)) {
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
@@ -227,7 +227,7 @@ public class ServerRenderController {
     }
 
     @Autowired
-    public void setBlenderQueueService(BlenderQueueService blenderQueueService) {
-        this.blenderQueueService = blenderQueueService;
+    public void setQueueService(QueueService queueService) {
+        this.queueService = queueService;
     }
 }

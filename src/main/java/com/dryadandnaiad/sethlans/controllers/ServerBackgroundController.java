@@ -22,10 +22,10 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
-import com.dryadandnaiad.sethlans.services.blender.BlenderQueueService;
-import com.dryadandnaiad.sethlans.services.database.BlenderRenderQueueDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.RenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
+import com.dryadandnaiad.sethlans.services.queue.QueueService;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,18 +43,18 @@ import org.springframework.web.bind.annotation.*;
 @Profile({"SERVER", "DUAL"})
 public class ServerBackgroundController {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
-    private BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService;
+    private RenderQueueDatabaseService renderQueueDatabaseService;
     private BlenderBenchmarkService blenderBenchmarkService;
     private NodeDiscoveryService nodeDiscoveryService;
-    private BlenderQueueService blenderQueueService;
+    private QueueService queueService;
     private static final Logger LOG = LoggerFactory.getLogger(ServerBackgroundController.class);
 
 
     @PostMapping(value = "/api/update/node_idle_notification")
     public void nodeIdleNotification(@RequestParam String connection_uuid, ComputeType compute_type) {
         try {
-            if (blenderRenderQueueDatabaseService.listAll().size() > 0) {
-                while (!blenderQueueService.nodeIdle(connection_uuid, compute_type)) {
+            if (renderQueueDatabaseService.listAll().size() > 0) {
+                while (!queueService.nodeIdle(connection_uuid, compute_type)) {
                     try {
                         Thread.sleep(200);
                     } catch (InterruptedException e) {
@@ -129,12 +129,12 @@ public class ServerBackgroundController {
     }
 
     @Autowired
-    public void setBlenderRenderQueueDatabaseService(BlenderRenderQueueDatabaseService blenderRenderQueueDatabaseService) {
-        this.blenderRenderQueueDatabaseService = blenderRenderQueueDatabaseService;
+    public void setRenderQueueDatabaseService(RenderQueueDatabaseService renderQueueDatabaseService) {
+        this.renderQueueDatabaseService = renderQueueDatabaseService;
     }
 
     @Autowired
-    public void setBlenderQueueService(BlenderQueueService blenderQueueService) {
-        this.blenderQueueService = blenderQueueService;
+    public void setQueueService(QueueService queueService) {
+        this.queueService = queueService;
     }
 }

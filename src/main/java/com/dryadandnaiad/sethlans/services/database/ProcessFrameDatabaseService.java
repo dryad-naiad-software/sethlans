@@ -17,30 +17,16 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.domains.database.blender;
+package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import java.sql.Blob;
+import com.dryadandnaiad.sethlans.domains.database.queue.ProcessFrameItem;
 
 /**
- * Created Mario Estrella on 3/30/2018.
+ * Created Mario Estrella on 5/10/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Entity
-@Data
-@EqualsAndHashCode(callSuper = false)
-public class BlenderProcessQueueItem extends AbstractEntityClass {
-    String connection_uuid;
-    @Lob
-    Blob part;
-    String queueUUID;
-    String projectUUID;
-    long renderTime;
+public interface ProcessFrameDatabaseService extends CRUDService<ProcessFrameItem> {
+    void delete(ProcessFrameItem processFrameItem);
 }
