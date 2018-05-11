@@ -79,6 +79,7 @@ public class QueueServiceImpl implements QueueService {
         while (true) {
             try {
                 Thread.sleep(1000);
+                // TODO add node operations before assignments
                 assignQueueItemToNode();
                 sendQueueItemsToAssignedNode();
                 processReceivedFiles();
@@ -216,57 +217,14 @@ public class QueueServiceImpl implements QueueService {
     }
 
     @Override
-    public boolean nodeRejectQueueItem(String queue_uuid) {
-        if (!modifyingQueue) {
-            modifyingQueue = true;
-            RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(queue_uuid);
-            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
-            LOG.debug("Received rejection for queue item " + queue_uuid + " adding back to pending queue.");
-            renderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
-            renderQueueItem.setConnection_uuid(null);
-            renderQueueItem.setRendering(false);
-            renderQueueItem.setVersion(renderQueueDatabaseService.getByQueueUUID(queue_uuid).getVersion());
-            renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
-            modifyingQueue = false;
-            return true;
-        }
-        return false;
+    public void nodeRejectQueueItem(String queue_uuid) {
+        //TODO create a db table to handle node operations
     }
 
     @Override
-    public boolean nodeAcknowledgeQueueItem(String queue_uuid) {
-        if (!modifyingQueue) {
-            modifyingQueue = true;
-            RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(queue_uuid);
-            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
-            ComputeType computeType = renderQueueItem.getRenderComputeType();
-            SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(renderQueueItem.getConnection_uuid());
-            LOG.debug("Received node acknowledgement from " + sethlansNode.getHostname() + " for queue item " + queue_uuid);
-            sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
-            switch (computeType) {
-                case CPU:
-                    sethlansNode.setCpuSlotInUse(true);
-                    break;
-                case GPU:
-                    sethlansNode.setGpuSlotInUse(true);
-                    break;
-                default:
-                    LOG.error("Invalid compute type, this message should not occur.");
-            }
-            if (blenderProject.getProjectStatus().equals(ProjectStatus.Pending)) {
-                blenderProject.setProjectStatus(ProjectStatus.Started);
-                blenderProject.setProjectStart(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
-            }
-            blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
-            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
-            renderQueueItem.setRendering(true);
-            renderQueueItem.setVersion(renderQueueDatabaseService.getByQueueUUID(queue_uuid).getVersion());
-            renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
-            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-            modifyingQueue = false;
-            return true;
-        }
-        return false;
+    public void nodeAcknowledgeQueueItem(String queue_uuid) {
+        //TODO create a db table to handle node operations
+
     }
 
     @Override
@@ -458,13 +416,16 @@ public class QueueServiceImpl implements QueueService {
                     if (renderQueueDatabaseService.listRemainingQueueItemsByProjectUUID(blenderProject.getProject_uuid()).size() == 0) {
                         if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
                             blenderProject.setProjectStatus(ProjectStatus.Processing);
+                            blenderProject.setCurrentPercentage(100);
                             processImageAndAnimationService.createAVI(blenderProject);
                         }
                         if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
                             blenderProject.setProjectStatus(ProjectStatus.Processing);
+                            blenderProject.setCurrentPercentage(100);
                             processImageAndAnimationService.createMP4(blenderProject);
                         } else {
                             blenderProject.setProjectStatus(ProjectStatus.Finished);
+                            blenderProject.setCurrentPercentage(100);
                             blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
                         }
                         blenderProject.setAllImagesProcessed(true);

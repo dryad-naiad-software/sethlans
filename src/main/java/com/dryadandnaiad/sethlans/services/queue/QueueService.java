@@ -41,9 +41,9 @@ public interface QueueService {
 
     boolean stopBlenderProjectQueue(BlenderProject blenderProject);
 
-    boolean nodeRejectQueueItem(String connection_uuid);
+    void nodeRejectQueueItem(String connection_uuid);
 
-    boolean nodeAcknowledgeQueueItem(String queue_uuid);
+    void nodeAcknowledgeQueueItem(String queue_uuid);
 
     boolean addItemToProcess(ProcessQueueItem processQueueItem);
 

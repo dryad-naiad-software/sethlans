@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.queue;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.ffmpeg.FFmpegEncodeService;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
@@ -45,6 +46,7 @@ import java.util.List;
 @Service
 public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnimationService {
     private static final Logger LOG = LoggerFactory.getLogger(ProcessImageAndAnimationServiceImpl.class);
+    private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private FFmpegEncodeService fFmpegEncodeService;
 
     @Override
@@ -115,6 +117,8 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
         }
         blenderProject.getFrameFileNames().add(frameFilename);
         blenderProject.setCurrentFrameThumbnail(createThumbnail(frameFilename, storedDir, plainFilename, fileExtension));
+        blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+
         if (errorCount == 0) {
             LOG.debug("Images combined successfully, deleting parts...");
             deleteParts(partCleanup);
@@ -153,5 +157,10 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
     @Autowired
     public void setfFmpegEncodeService(FFmpegEncodeService fFmpegEncodeService) {
         this.fFmpegEncodeService = fFmpegEncodeService;
+    }
+
+    @Autowired
+    public void setBlenderProjectDatabaseService(BlenderProjectDatabaseService blenderProjectDatabaseService) {
+        this.blenderProjectDatabaseService = blenderProjectDatabaseService;
     }
 }
