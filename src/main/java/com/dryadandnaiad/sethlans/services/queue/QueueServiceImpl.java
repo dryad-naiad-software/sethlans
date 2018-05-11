@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessFrameItem;
+import com.dryadandnaiad.sethlans.domains.database.queue.ProcessNodeStatus;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderQueueItem;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
@@ -67,6 +68,7 @@ public class QueueServiceImpl implements QueueService {
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private ProcessQueueDatabaseService processQueueDatabaseService;
     private ProcessFrameDatabaseService processFrameDatabaseService;
+    private List<ProcessNodeStatus> nodeStatuses = new ArrayList<>();
 
     @Async
     @Override
@@ -79,7 +81,8 @@ public class QueueServiceImpl implements QueueService {
         while (true) {
             try {
                 Thread.sleep(1000);
-                // TODO add node operations before assignments
+                processNodeAcknowledgements();
+                // TODO queue actions such as pause, stop and resume method
                 assignQueueItemToNode();
                 sendQueueItemsToAssignedNode();
                 processReceivedFiles();
@@ -88,11 +91,62 @@ public class QueueServiceImpl implements QueueService {
             } catch (InterruptedException e) {
                 LOG.debug("Stopping Blender Queue Service");
                 break;
-
             }
+        }
+    }
+
+    private void processNodeAcknowledgements() {
+        if (!modifyingQueue) {
+            modifyingQueue = true;
+            if (nodeStatuses.size() > 0) {
+                List<ProcessNodeStatus> itemsProcessed = new ArrayList<>();
+                for (ProcessNodeStatus processNodeStatus : nodeStatuses) {
+                    if (processNodeStatus.isAccepted()) {
+                        RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID());
+                        BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
+                        ComputeType computeType = renderQueueItem.getRenderComputeType();
+                        LOG.debug("Compute Type " + renderQueueItem.getRenderComputeType());
+                        SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(renderQueueItem.getConnection_uuid());
+                        LOG.debug("Received node acknowledgement from " + sethlansNode.getHostname() + " for queue item " + processNodeStatus.getQueueUUID());
+                        sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
+                        switch (computeType) {
+                            case CPU:
+                                sethlansNode.setCpuSlotInUse(true);
+                                break;
+                            case GPU:
+                                sethlansNode.setGpuSlotInUse(true);
+                                break;
+                            default:
+                                LOG.error("Invalid compute type, this message should not occur.");
+                        }
+                        if (blenderProject.getProjectStatus().equals(ProjectStatus.Pending)) {
+                            blenderProject.setProjectStatus(ProjectStatus.Started);
+                            blenderProject.setProjectStart(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
+                        }
+                        blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
+                        blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+                        renderQueueItem.setRendering(true);
+                        renderQueueItem.setVersion(renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID()).getVersion());
+                        renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
+                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                    }
+                    if (!processNodeStatus.isAccepted()) {
+                        RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID());
+                        BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
+                        LOG.debug("Received rejection for queue item " + processNodeStatus.getQueueUUID() + " adding back to pending queue.");
+                        renderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
+                        renderQueueItem.setConnection_uuid(null);
+                        renderQueueItem.setRendering(false);
+                        renderQueueItem.setVersion(renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID()).getVersion());
+                        renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
+                    }
+                    itemsProcessed.add(processNodeStatus);
+                }
+                nodeStatuses.removeAll(itemsProcessed);
+            }
+            modifyingQueue = false;
 
         }
-
     }
 
     @Override
@@ -218,13 +272,12 @@ public class QueueServiceImpl implements QueueService {
 
     @Override
     public void nodeRejectQueueItem(String queue_uuid) {
-        //TODO create a db table to handle node operations
+        nodeStatuses.add(new ProcessNodeStatus(queue_uuid, false));
     }
 
     @Override
     public void nodeAcknowledgeQueueItem(String queue_uuid) {
-        //TODO create a db table to handle node operations
-
+        nodeStatuses.add(new ProcessNodeStatus(queue_uuid, true));
     }
 
     @Override
@@ -236,9 +289,6 @@ public class QueueServiceImpl implements QueueService {
             SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(processQueueItem.getConnection_uuid());
             ComputeType computeType = renderQueueItem.getRenderComputeType();
             BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
-
-            renderQueueItem.setRendering(false);
-            renderQueueItem.setPaused(false);
             renderQueueItem.getBlenderFramePart().setStoredDir(blenderProject.getProjectRootDir() +
                     File.separator + "frame_" + renderQueueItem.getBlenderFramePart().getFrameNumber() + File.separator);
             renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
@@ -313,7 +363,6 @@ public class QueueServiceImpl implements QueueService {
 
     private void processReceivedFiles() {
         if (!modifyingQueue) {
-
             modifyingQueue = true;
             List<ProcessQueueItem> processQueueItemList = processQueueDatabaseService.listAll();
             if (!processQueueItemList.isEmpty()) {
@@ -324,13 +373,7 @@ public class QueueServiceImpl implements QueueService {
                     int frameNumber = renderQueueItem.getBlenderFramePart().getFrameNumber();
                     BlenderProject blenderProject =
                             blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
-                    int projectTotalQueue =
-                            renderQueueDatabaseService.listQueueItemsByProjectUUID(renderQueueItem.getProject_uuid()).size();
-                    int remainingTotalQueue =
-                            renderQueueDatabaseService.listRemainingQueueItemsByProjectUUID(renderQueueItem.getProject_uuid()).size();
-                    int remainingPartsForFrame =
-                            renderQueueDatabaseService.listRemainingPartsInProjectQueueByFrameNumber(
-                                    renderQueueItem.getProject_uuid(), frameNumber).size();
+
 
                     File storedDir = new File(renderQueueItem.getBlenderFramePart().getStoredDir());
                     for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
@@ -340,23 +383,30 @@ public class QueueServiceImpl implements QueueService {
                     }
                     storedDir.mkdirs();
                     try {
-                        // Save sent file
+                        LOG.debug("Processing completed file from " +
+                                sethlansNodeDatabaseService.getByConnectionUUID(processQueueItem.getConnection_uuid()).getHostname() +
+                                ". Part: " + partNumber
+                                + " Frame: " + frameNumber);
                         byte[] bytes = processQueueItem.getPart().getBytes(1, (int) processQueueItem.getPart().length());
                         Path path = Paths.get(storedDir.toString() + File.separator +
                                 renderQueueItem.getBlenderFramePart().getPartFilename() + "." +
                                 renderQueueItem.getBlenderFramePart().getFileExtension());
                         Files.write(path, bytes);
-
-                        LOG.debug("Processing completed render from " +
-                                sethlansNodeDatabaseService.getByConnectionUUID(processQueueItem.getConnection_uuid()).getHostname() +
-                                ". Part: " + partNumber
-                                + " Frame: " + frameNumber);
-                        Thread.sleep(10000);
-
-
+                        Thread.sleep(5000);
                     } catch (IOException | InterruptedException | SQLException e) {
                         LOG.error(Throwables.getStackTraceAsString(e));
                     }
+                    renderQueueItem = renderQueueDatabaseService.getById(renderQueueItem.getId());
+                    renderQueueItem.setComplete(true);
+                    renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
+                    LOG.debug("Processing complete.");
+                    int projectTotalQueue =
+                            renderQueueDatabaseService.listQueueItemsByProjectUUID(renderQueueItem.getProject_uuid()).size();
+                    int remainingTotalQueue =
+                            renderQueueDatabaseService.listRemainingQueueItemsByProjectUUID(renderQueueItem.getProject_uuid()).size();
+                    int remainingPartsForFrame =
+                            renderQueueDatabaseService.listRemainingPartsInProjectQueueByFrameNumber(
+                                    renderQueueItem.getProject_uuid(), frameNumber).size();
                     LOG.debug("Remaining parts per frame for Frame " + frameNumber + ": " + remainingPartsForFrame);
                     LOG.debug("Remaining items in project Queue " + remainingTotalQueue);
                     LOG.debug("Project total Queue " + projectTotalQueue);
@@ -376,10 +426,6 @@ public class QueueServiceImpl implements QueueService {
                         processFrameItem.setFrameNumber(frameNumber);
                         processFrameDatabaseService.saveOrUpdate(processFrameItem);
                     }
-
-                    renderQueueItem = renderQueueDatabaseService.getById(renderQueueItem.getId());
-                    renderQueueItem.setComplete(true);
-                    renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
                     blenderProject.setTotalProjectTime(blenderProject.getProjectEnd() - blenderProject.getProjectStart());
                     blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
                     blenderProjectDatabaseService.saveOrUpdate(blenderProject);
@@ -454,57 +500,62 @@ public class QueueServiceImpl implements QueueService {
                 }
                 for (int i = 0; i < count; i++) {
                     RenderQueueItem renderQueueItem = renderQueueItemList.get(i);
-                    LOG.debug(renderQueueItem.getProjectName() + " uuid: " +
-                            renderQueueItem.getProject_uuid() + " Frame: "
-                            + renderQueueItem.getBlenderFramePart().getFrameNumber() + " Part: "
-                            + renderQueueItem.getBlenderFramePart().getPartNumber() + " is waiting to be rendered.");
-                    SethlansNode sethlansNode;
-                    switch (renderQueueItem.getRenderComputeType()) {
-                        case CPU_GPU:
-                            sortedSethlansNodeList = getSortedNodeList(ComputeType.CPU_GPU);
-                            if (sortedSethlansNodeList != null) {
-                                sethlansNode = sortedSethlansNodeList.get(0);
-                                renderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
-                                renderQueueItem = setQueueItemComputeType(sethlansNode, renderQueueItem);
-                                if (renderQueueItem != null) {
-                                    switch (renderQueueItem.getRenderComputeType()) {
-                                        case CPU:
-                                            sethlansNode.setCpuSlotInUse(true);
-                                            break;
-                                        case GPU:
-                                            sethlansNode.setGpuSlotInUse(true);
-                                            break;
-                                        case CPU_GPU:
-                                            LOG.error("Failure in logic this message should not be displayed.");
-                                            break;
+                    if (!renderQueueItem.isRendering()) {
+                        LOG.debug(renderQueueItem.getProjectName() + " uuid: " +
+                                renderQueueItem.getProject_uuid() + " Frame: "
+                                + renderQueueItem.getBlenderFramePart().getFrameNumber() + " Part: "
+                                + renderQueueItem.getBlenderFramePart().getPartNumber() + " is waiting to be rendered.");
+                        SethlansNode sethlansNode;
+                        switch (renderQueueItem.getRenderComputeType()) {
+                            case CPU_GPU:
+                                sortedSethlansNodeList = getSortedNodeList(ComputeType.CPU_GPU);
+                                if (sortedSethlansNodeList != null) {
+                                    sethlansNode = sortedSethlansNodeList.get(0);
+                                    renderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
+                                    renderQueueItem = setQueueItemComputeType(sethlansNode, renderQueueItem);
+                                    if (renderQueueItem != null) {
+                                        switch (renderQueueItem.getRenderComputeType()) {
+                                            case CPU:
+                                                sethlansNode.setCpuSlotInUse(true);
+                                                break;
+                                            case GPU:
+                                                sethlansNode.setGpuSlotInUse(true);
+                                                break;
+                                            case CPU_GPU:
+                                                LOG.error("Failure in logic this message should not be displayed.");
+                                                break;
+                                        }
+                                        sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
+                                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                                     }
+                                }
+                                break;
+                            case CPU:
+                                sortedSethlansNodeList = getSortedNodeList(ComputeType.CPU);
+                                if (sortedSethlansNodeList != null) {
+                                    sethlansNode = sortedSethlansNodeList.get(0);
+                                    renderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
                                     sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
+                                    sethlansNode.setCpuSlotInUse(true);
                                     sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                                 }
-                            }
-                            break;
-                        case CPU:
-                            sortedSethlansNodeList = getSortedNodeList(ComputeType.CPU);
-                            if (sortedSethlansNodeList != null) {
-                                sethlansNode = sortedSethlansNodeList.get(0);
-                                renderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
-                                sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
-                                sethlansNode.setCpuSlotInUse(true);
-                                sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                            }
-                            break;
-                        case GPU:
-                            sortedSethlansNodeList = getSortedNodeList(ComputeType.GPU);
-                            if (sortedSethlansNodeList != null) {
-                                sethlansNode = sortedSethlansNodeList.get(0);
-                                renderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
-                                sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
-                                sethlansNode.setGpuSlotInUse(true);
-                                sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                            }
-                            break;
+                                break;
+                            case GPU:
+                                sortedSethlansNodeList = getSortedNodeList(ComputeType.GPU);
+                                if (sortedSethlansNodeList != null) {
+                                    sethlansNode = sortedSethlansNodeList.get(0);
+                                    renderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
+                                    sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
+                                    sethlansNode.setGpuSlotInUse(true);
+                                    sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                                }
+                                break;
+                        }
+                        if (renderQueueItem != null) {
+                            renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
+                        }
                     }
-                    renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
+
                 }
             }
             modifyingQueue = false;

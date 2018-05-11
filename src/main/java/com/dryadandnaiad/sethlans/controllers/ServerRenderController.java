@@ -184,24 +184,12 @@ public class ServerRenderController {
 
     @GetMapping(value = "/api/project/node_accept_item/")
     public void acceptedQueueItem(@RequestParam String queue_item_uuid) {
-        while (!queueService.nodeAcknowledgeQueueItem(queue_item_uuid)) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        queueService.nodeAcknowledgeQueueItem(queue_item_uuid);
     }
 
     @GetMapping(value = "/api/project/node_reject_item/")
     public void rejectedQueueItem(@RequestParam String queue_item_uuid) {
-        while (!queueService.nodeRejectQueueItem(queue_item_uuid)) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        queueService.nodeRejectQueueItem(queue_item_uuid);
     }
 
     @GetMapping(value = "/api/project/blend_file/")
