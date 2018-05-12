@@ -43,6 +43,7 @@ import static com.dryadandnaiad.sethlans.services.queue.QueueProcessActions.proc
 import static com.dryadandnaiad.sethlans.services.queue.QueueProjectActions.queueProjectActions;
 
 /**
+/**
  * Created Mario Estrella on 4/21/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
@@ -73,7 +74,7 @@ public class QueueServiceImpl implements QueueService {
         }
         while (true) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(500);
                 freeIdleNode();
                 projectActions();
                 processNodeAcknowledgements();
@@ -112,7 +113,7 @@ public class QueueServiceImpl implements QueueService {
     }
 
     @Override
-    public boolean addItemToProcess(ProcessQueueItem processQueueItem) {
+    public void addItemToProcess(ProcessQueueItem processQueueItem) {
         if (!modifyingQueue) {
             modifyingQueue = true;
             processQueueDatabaseService.saveOrUpdate(processQueueItem);
@@ -144,9 +145,7 @@ public class QueueServiceImpl implements QueueService {
             LOG.debug(sethlansNode.getHostname() + " state: " + sethlansNode.toString());
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
             modifyingQueue = false;
-            return true;
         }
-        return false;
     }
 
     private void projectActions() {

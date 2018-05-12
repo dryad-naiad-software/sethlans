@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class QueueProcessActions {
+class QueueProcessActions {
     private static final Logger LOG = LoggerFactory.getLogger(QueueProcessActions.class);
 
     static void processReceivedFile(ProcessQueueItem processQueueItem,

@@ -168,13 +168,7 @@ public class ServerRenderController {
                     processQueueItem.setQueueUUID(queue_uuid);
                     processQueueItem.setProjectUUID(project_uuid);
                     processQueueItem.setRenderTime(render_time);
-                    while (!queueService.addItemToProcess(processQueueItem)) {
-                        try {
-                            Thread.sleep(200);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    queueService.addItemToProcess(processQueueItem);
                 } catch (IOException | SQLException e) {
                     LOG.error(Throwables.getStackTraceAsString(e));
                 }
