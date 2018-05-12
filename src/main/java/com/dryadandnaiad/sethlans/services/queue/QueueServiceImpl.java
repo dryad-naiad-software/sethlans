@@ -26,7 +26,6 @@ import com.dryadandnaiad.sethlans.domains.database.queue.*;
 import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.services.database.*;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
-import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,17 +33,13 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static com.dryadandnaiad.sethlans.services.queue.QueueNodeActions.*;
+import static com.dryadandnaiad.sethlans.services.queue.QueueProcessActions.processReceivedFile;
 import static com.dryadandnaiad.sethlans.services.queue.QueueProjectActions.queueProjectActions;
 
 /**
@@ -247,68 +242,9 @@ public class QueueServiceImpl implements QueueService {
             if (!processQueueItemList.isEmpty()) {
                 LOG.debug("Running processing queue.");
                 for (ProcessQueueItem processQueueItem : processQueueItemList) {
-                    RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processQueueItem.getQueueUUID());
-                    int partNumber = renderQueueItem.getBlenderFramePart().getPartNumber();
-                    int frameNumber = renderQueueItem.getBlenderFramePart().getFrameNumber();
-                    BlenderProject blenderProject =
-                            blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
-
-
-                    File storedDir = new File(renderQueueItem.getBlenderFramePart().getStoredDir());
-                    for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
-                        if (blenderFramePart.getFrameNumber() == frameNumber) {
-                            blenderFramePart.setStoredDir(storedDir.toString() + File.separator);
-                        }
-                    }
-                    storedDir.mkdirs();
-                    try {
-                        LOG.debug("Processing received file from " +
-                                sethlansNodeDatabaseService.getByConnectionUUID(processQueueItem.getConnection_uuid()).getHostname() + ". Frame: " + frameNumber +
-                                " Part: " + partNumber
-                        );
-                        byte[] bytes = processQueueItem.getPart().getBytes(1, (int) processQueueItem.getPart().length());
-                        Path path = Paths.get(storedDir.toString() + File.separator +
-                                renderQueueItem.getBlenderFramePart().getPartFilename() + "." +
-                                renderQueueItem.getBlenderFramePart().getFileExtension());
-                        Files.write(path, bytes);
-                        Thread.sleep(5000);
-                    } catch (IOException | InterruptedException | SQLException e) {
-                        LOG.error(Throwables.getStackTraceAsString(e));
-                    }
-                    renderQueueItem = renderQueueDatabaseService.getById(renderQueueItem.getId());
-                    renderQueueItem.setComplete(true);
-                    renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
-                    LOG.debug("Processing complete.");
-                    int projectTotalQueue =
-                            renderQueueDatabaseService.listQueueItemsByProjectUUID(renderQueueItem.getProject_uuid()).size();
-                    int remainingTotalQueue =
-                            renderQueueDatabaseService.listRemainingQueueItemsByProjectUUID(renderQueueItem.getProject_uuid()).size();
-                    int remainingPartsForFrame =
-                            renderQueueDatabaseService.listRemainingPartsInProjectQueueByFrameNumber(
-                                    renderQueueItem.getProject_uuid(), frameNumber).size();
-                    LOG.debug("Remaining parts per frame for Frame " + frameNumber + ": " + remainingPartsForFrame);
-                    LOG.debug("Remaining items in project Queue " + remainingTotalQueue);
-                    LOG.debug("Project total Queue " + projectTotalQueue);
-
-                    double currentPercentage = ((projectTotalQueue - remainingTotalQueue) * 100.0) / projectTotalQueue;
-                    LOG.debug("Current Percentage " + currentPercentage);
-                    blenderProject.setCurrentPercentage((int) currentPercentage);
-
-                    blenderProject.setTotalRenderTime(blenderProject.getTotalRenderTime() + processQueueItem.getRenderTime());
-                    if (remainingTotalQueue > 0 && !blenderProject.getProjectStatus().equals(ProjectStatus.Paused)) {
-                        blenderProject.setProjectStatus(ProjectStatus.Rendering);
-                        blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
-                    }
-                    if (remainingPartsForFrame == 0) {
-                        ProcessFrameItem processFrameItem = new ProcessFrameItem();
-                        processFrameItem.setProjectUUID(blenderProject.getProject_uuid());
-                        processFrameItem.setFrameNumber(frameNumber);
-                        processFrameDatabaseService.saveOrUpdate(processFrameItem);
-                    }
-                    blenderProject.setTotalProjectTime(blenderProject.getProjectEnd() - blenderProject.getProjectStart());
-                    blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
-                    blenderProjectDatabaseService.saveOrUpdate(blenderProject);
-                    processQueueDatabaseService.delete(processQueueItem);
+                    processReceivedFile(processQueueItem, renderQueueDatabaseService,
+                            blenderProjectDatabaseService, sethlansNodeDatabaseService,
+                            processFrameDatabaseService, processQueueDatabaseService);
                 }
             }
             modifyingQueue = false;
@@ -412,5 +348,3 @@ public class QueueServiceImpl implements QueueService {
         this.processFrameDatabaseService = processFrameDatabaseService;
     }
 }
-
-
