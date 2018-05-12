@@ -202,7 +202,6 @@ public class QueueServiceImpl implements QueueService {
     public boolean populateQueueWithProject(BlenderProject blenderProject) {
         if (!modifyingQueue) {
             modifyingQueue = true;
-            LOG.debug("Entering populateQueueWithProject");
             List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
             for (BlenderFramePart blenderFramePart : blenderFramePartList) {
                 RenderQueueItem renderQueueItem = new RenderQueueItem();
