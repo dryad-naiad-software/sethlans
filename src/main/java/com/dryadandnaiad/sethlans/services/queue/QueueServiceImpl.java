@@ -155,7 +155,7 @@ public class QueueServiceImpl implements QueueService {
             LOG.debug("Entering projectActions");
             if (queueActionItemList.size() > 0) {
                 List<QueueActionItem> processedAction = new ArrayList<>();
-                for (QueueActionItem queueActionItem : queueActionItemList) {
+                for (QueueActionItem queueActionItem : new ArrayList<>(queueActionItemList)) {
                     queueProjectActions(queueActionItem, renderQueueDatabaseService,
                             blenderProjectDatabaseService, processQueueDatabaseService,
                             sethlansNodeDatabaseService, processedAction);
@@ -172,7 +172,7 @@ public class QueueServiceImpl implements QueueService {
             LOG.debug("Entering freeIdleNode");
             if (idleNodes.size() > 0) {
                 List<ProcessIdleNode> processedNodes = new ArrayList<>();
-                for (ProcessIdleNode idleNode : idleNodes) {
+                for (ProcessIdleNode idleNode : new ArrayList<>(idleNodes)) {
                     processIdleNodes(sethlansNodeDatabaseService, idleNode,
                             renderQueueDatabaseService, blenderProjectDatabaseService, processedNodes);
                 }
@@ -245,7 +245,7 @@ public class QueueServiceImpl implements QueueService {
             List<ProcessQueueItem> processQueueItemList = processQueueDatabaseService.listAll();
             if (!processQueueItemList.isEmpty()) {
                 LOG.debug("Running processing queue.");
-                for (ProcessQueueItem processQueueItem : processQueueItemList) {
+                for (ProcessQueueItem processQueueItem : new ArrayList<>(processQueueItemList)) {
                     processReceivedFile(processQueueItem, renderQueueDatabaseService,
                             blenderProjectDatabaseService, sethlansNodeDatabaseService,
                             processFrameDatabaseService, processQueueDatabaseService);
