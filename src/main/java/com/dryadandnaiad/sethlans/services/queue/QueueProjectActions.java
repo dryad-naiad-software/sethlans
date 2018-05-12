@@ -82,7 +82,11 @@ class QueueProjectActions {
             case STOP:
                 LOG.debug("Stopping queue for " + blenderProject.getProjectName());
                 for (RenderQueueItem renderQueueItem : renderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProject_uuid())) {
-                    processQueueDatabaseService.delete(processQueueDatabaseService.getProcessByQueueItem(renderQueueItem.getQueueItem_uuid()));
+                    if (processQueueDatabaseService.getListOfProcessByProject(blenderProject.getProject_uuid()).size() > 0) {
+                        if (processQueueDatabaseService.getProcessByQueueItem(renderQueueItem.getQueueItem_uuid()) != null) {
+                            processQueueDatabaseService.delete(processQueueDatabaseService.getProcessByQueueItem(renderQueueItem.getQueueItem_uuid()));
+                        }
+                    }
                     if (renderQueueItem.getConnection_uuid() != null) {
                         SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(renderQueueItem.getConnection_uuid());
                         switch (renderQueueItem.getRenderComputeType()) {
