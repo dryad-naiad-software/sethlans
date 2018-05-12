@@ -55,7 +55,6 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
     @Override
     @Async
     public void sendActivationRequest(SethlansNode sethlansNode, SethlansServer sethlansServer, boolean auto) {
-        try {
             LOG.debug("Sending Activation Request to Node");
             String ip = sethlansNode.getIpAddress();
             String port = sethlansNode.getNetworkPort();
@@ -65,12 +64,6 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
             if (sethlansAPIConnectionService.sendToRemotePOST(activateURL, params)) {
                 addBlenderBinary(sethlansNode.getSethlansNodeOS().toString());
             }
-        } catch (Exception e) {
-            LOG.error("Unknown Exception caught, catching and logging");
-            LOG.error(e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
-
-        }
 
 
     }
@@ -78,7 +71,6 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
     @Override
     @Async
     public void sendActivationResponse(SethlansServer sethlansServer, SethlansNode sethlansNode, boolean auto) {
-        try {
             LOG.debug("Sending Activation Response to Server");
             String ip = sethlansServer.getIpAddress();
             String port = sethlansServer.getNetworkPort();
@@ -89,18 +81,12 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
                 this.applicationEventPublisher.publishEvent(new SethlansEvent(this, sethlansServer.getConnection_uuid() + "-" + NotificationOrigin.ACTIVATION_REQUEST, false));
 
             }
-        } catch (Exception e) {
-            LOG.error("Unknown Exception caught, catching and logging");
-            LOG.error(e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
 
-        }
     }
 
     @Override
     @Async
     public void sendResponseAcknowledgement(SethlansNode sethlansNode, String connection_uuid) {
-        try {
             LOG.debug("Sending Response Acknowledgement to Node");
             String ip = sethlansNode.getIpAddress();
             String port = sethlansNode.getNetworkPort();
@@ -133,12 +119,6 @@ public class NodeActivationServiceImpl implements NodeActivationService, Applica
                 }
 
             }
-        } catch (Exception e) {
-            LOG.error("Unknown Exception caught, catching and logging");
-            LOG.error(e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
-
-        }
     }
 
 

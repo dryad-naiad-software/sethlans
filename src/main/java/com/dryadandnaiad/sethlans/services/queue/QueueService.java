@@ -35,11 +35,11 @@ public interface QueueService {
 
     boolean populateQueueWithProject(BlenderProject blenderProject);
 
-    boolean pauseBlenderProjectQueue(BlenderProject blenderProject);
+    void pauseBlenderProjectQueue(BlenderProject blenderProject);
 
-    boolean resumeBlenderProjectQueue(BlenderProject blenderProject);
+    void resumeBlenderProjectQueue(BlenderProject blenderProject);
 
-    boolean stopBlenderProjectQueue(BlenderProject blenderProject);
+    void stopBlenderProjectQueue(BlenderProject blenderProject);
 
     void nodeRejectQueueItem(String connection_uuid);
 
@@ -47,5 +47,5 @@ public interface QueueService {
 
     boolean addItemToProcess(ProcessQueueItem processQueueItem);
 
-    boolean nodeIdle(String connection_uuid, ComputeType computeType);
+    void queueIdleNode(String connection_uuid, ComputeType computeType);
 }

@@ -27,7 +27,6 @@ import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabase
 import com.dryadandnaiad.sethlans.services.database.RenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
-import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanCreationNotAllowedException;
@@ -51,7 +50,6 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
     private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
     private static final Logger LOG = LoggerFactory.getLogger(NodeSendUpdateServiceImpl.class);
 
-
     @Async
     @Override
     public void sendUpdateOnStart() {
@@ -60,22 +58,15 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
             sendRequest();
         } catch (InterruptedException e) {
             LOG.debug("Shutting Down Node Status Update Service");
-        } catch (Exception e) {
-            LOG.error("Unknown Exception caught, catching and logging");
-            LOG.error(e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
-
         }
     }
 
-    /**
-     * Sends an update if the node has been idle too long
-     */
     @Override
     @Async
     public void idleNodeNotification() {
         try {
             Thread.sleep(15000);
+            LOG.debug("Starting Idle Notification Service.");
             int counter = 0;
             ComputeType computeType = ComputeType.valueOf(SethlansUtils.getProperty(SethlansConfigKeys.COMPUTE_METHOD.toString()));
             int slots;
@@ -87,7 +78,8 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
             while (true) {
                 try {
                     Thread.sleep(1000);
-                    if (sethlansServerDatabaseService.listActive().size() > 0 && blenderBenchmarkTaskDatabaseService.listAll().size() == 0) {
+
+                    if (sethlansServerDatabaseService.listActive().size() > 0 && blenderBenchmarkTaskDatabaseService.allBenchmarksComplete()) {
                         if (renderTaskDatabaseService.listAll().size() == 0) {
                             counter++;
                         }
@@ -100,7 +92,7 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
                         if (slots == 1 && renderTaskDatabaseService.listAll().size() == 1) {
                             counter = 0;
                         }
-                        if (counter > 119) {
+                        if (counter > 59) {
                             LOG.debug("Informing server of idle slot(s)");
                             counter = 0;
                             if (slots == 1) {
@@ -134,11 +126,6 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
             }
         } catch (InterruptedException e) {
             LOG.debug("Shutting Down Node Idle Notification Service");
-        } catch (Exception e) {
-            LOG.error("Unknown Exception caught, catching and logging");
-            LOG.error(e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
-
         }
 
 

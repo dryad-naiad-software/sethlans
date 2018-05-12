@@ -22,7 +22,6 @@ package com.dryadandnaiad.sethlans.services.network;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.node.NodeSlotUpdate;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
-import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,11 +86,6 @@ public class NodeQueryServiceImpl implements NodeQueryService {
             }
         } catch (InterruptedException e) {
             LOG.debug("Stopping Node Query Service");
-        } catch (Exception e) {
-            LOG.error("Unknown Exception caught, catching and logging");
-            LOG.error(e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
-
         }
 
 

@@ -94,18 +94,12 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             }
         } catch (InterruptedException e) {
             LOG.debug("Shutting down Render Service");
-        } catch (Exception e) {
-            LOG.error("Unknown Exception caught, catching and logging");
-            LOG.error(e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
-
         }
     }
 
     @Override
     @Async
     public void startRender(String queueUUID) {
-        try {
             RenderTask renderTask = renderTaskDatabaseService.getByQueueUUID(queueUUID);
             renderTask.setInProgress(true);
             String cacheDir = SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString());
@@ -151,12 +145,6 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                     saveOnSuccess(renderTask, script);
                 }
             }
-        } catch (Exception e) {
-            LOG.error("Unknown Exception caught, catching and logging");
-            LOG.error(e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
-
-        }
     }
 
     private void saveOnSuccess(RenderTask renderTask, String script) {

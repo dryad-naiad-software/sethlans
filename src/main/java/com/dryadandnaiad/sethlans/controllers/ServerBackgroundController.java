@@ -52,20 +52,8 @@ public class ServerBackgroundController {
 
     @PostMapping(value = "/api/update/node_idle_notification")
     public void nodeIdleNotification(@RequestParam String connection_uuid, ComputeType compute_type) {
-        try {
-            if (renderQueueDatabaseService.listAll().size() > 0) {
-                while (!queueService.nodeIdle(connection_uuid, compute_type)) {
-                    try {
-                        Thread.sleep(200);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-        } catch (NullPointerException e) {
-            LOG.error(Throwables.getStackTraceAsString(e));
-
+        if (renderQueueDatabaseService.listAll().size() > 0) {
+            queueService.queueIdleNode(connection_uuid, compute_type);
         }
     }
 

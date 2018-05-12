@@ -61,6 +61,8 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
     @Override
     public SethlansNode saveOrUpdate(SethlansNode domainObject) {
         try {
+            LOG.debug("Saving node update");
+            LOG.debug(domainObject.toString());
             return nodeRepository.save(domainObject);
         } catch (ObjectOptimisticLockingFailureException | OptimisticEntityLockException | StaleStateException e) {
             LOG.error("Was unable to save node update.");

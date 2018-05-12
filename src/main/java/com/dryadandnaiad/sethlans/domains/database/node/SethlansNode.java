@@ -111,6 +111,10 @@ public class SethlansNode extends AbstractEntityClass {
                 ", connection_uuid='" + connection_uuid + '\'' +
                 ", cpuRating=" + cpuRating +
                 ", benchmarkComplete=" + benchmarkComplete +
+                ", gpuInUse=" + gpuSlotInUse +
+                ", cpuInUse=" + cpuSlotInUse +
+                ", totalSlots=" + totalRenderingSlots +
+                ", availableSlots=" + availableRenderingSlots +
                 '}';
     }
 }

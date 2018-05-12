@@ -117,7 +117,7 @@ public class RenderQueueDatabaseServiceImpl implements RenderQueueDatabaseServic
         List<RenderQueueItem> sortedList = new ArrayList<>();
         for (RenderQueueItem renderQueueItem :
                 renderQueueItemList) {
-            if (renderQueueItem.getConnection_uuid().equals(connection_uuid)) {
+            if (renderQueueItem.getConnection_uuid() != null && renderQueueItem.getConnection_uuid().equals(connection_uuid)) {
                 sortedList.add(renderQueueItem);
             }
         }

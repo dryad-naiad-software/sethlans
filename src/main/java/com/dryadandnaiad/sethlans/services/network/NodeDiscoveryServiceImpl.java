@@ -63,7 +63,6 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
 
     @Async
     public void multicastDiscovery() {
-        try {
             if (!scanInProgress && !listComplete) {
                 scanInProgress = true;
                 LOG.debug("Starting Discovery");
@@ -91,12 +90,6 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
                     scanInProgress = false;
                 }
             }
-        } catch (Exception e) {
-            LOG.error("Unknown Exception caught, catching and logging");
-            LOG.error(e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
-
-        }
     }
 
     public void resetNodeList(){

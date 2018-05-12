@@ -85,11 +85,6 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
             }
         } catch (InterruptedException e) {
             LOG.debug("Stopping Blender Binary Download Service");
-        } catch (Exception e) {
-            LOG.error("Unknown Exception caught, catching and logging");
-            LOG.error(e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
-
         }
     }
 

@@ -17,21 +17,14 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.database;
-
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
+package com.dryadandnaiad.sethlans.enums;
 
 /**
- * Created Mario Estrella on 12/12/17.
+ * Created Mario Estrella on 5/11/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderBenchmarkTaskDatabaseService extends CRUDService<BlenderBenchmarkTask> {
-
-    boolean allBenchmarksComplete();
-
-    void deleteAllByConnection(String connection_uuid);
-
-    BlenderBenchmarkTask getByBenchmarkUUID(String uuid);
+public enum QueueAction {
+    STOP, PAUSE, RESUME
 }

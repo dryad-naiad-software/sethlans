@@ -54,6 +54,18 @@ public class BlenderBenchmarkTaskDatabaseServiceImpl implements BlenderBenchmark
     }
 
     @Override
+    public boolean allBenchmarksComplete() {
+        List<BlenderBenchmarkTask> tasks = listAll();
+        List<BlenderBenchmarkTask> complete = new ArrayList<>();
+        for (BlenderBenchmarkTask task : tasks) {
+            if (task.isComplete()) {
+                complete.add(task);
+            }
+        }
+        return tasks.size() == complete.size();
+    }
+
+    @Override
     public void deleteAllByConnection(String connection_uuid) {
         List<BlenderBenchmarkTask> blenderBenchmarkTasks = listAll();
         for (BlenderBenchmarkTask blenderBenchmarkTask : blenderBenchmarkTasks) {

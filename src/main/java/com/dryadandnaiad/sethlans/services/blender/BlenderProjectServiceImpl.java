@@ -24,7 +24,6 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.queue.QueueService;
-import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +51,6 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Override
     @Async
     public void startProject(BlenderProject blenderProject) {
-        try {
             configureFrameList(blenderProject);
             while (!queueService.populateQueueWithProject(blenderProject)) {
                 try {
@@ -61,12 +59,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
                     e.printStackTrace();
                 }
             }
-        } catch (Exception e) {
-            LOG.error("Unknown Exception caught, catching and logging");
-            LOG.error(e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
 
-        }
     }
 
     @Override
@@ -85,14 +78,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     private void sendResumeToQueueService(BlenderProject blenderProject) {
         if (!blenderProject.isAllImagesProcessed()) {
-            while (!queueService.resumeBlenderProjectQueue(blenderProject)) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
+            queueService.resumeBlenderProjectQueue(blenderProject);
         }
     }
 
@@ -110,26 +96,14 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     private void sendPauseToQueueService(BlenderProject blenderProject) {
         if (!blenderProject.isAllImagesProcessed()) {
-            while (!queueService.pauseBlenderProjectQueue(blenderProject)) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+            queueService.pauseBlenderProjectQueue(blenderProject);
         }
     }
 
     @Override
     public void stopProject(Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
-        while (!queueService.stopBlenderProjectQueue(blenderProject)) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        queueService.stopBlenderProjectQueue(blenderProject);
         int count = blenderProject.getFrameFileNames().size();
         deleteProjectFrames(blenderProject, count);
     }
@@ -137,13 +111,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Override
     public void stopProject(String username, Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(username, id);
-        while (!queueService.stopBlenderProjectQueue(blenderProject)) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        queueService.stopBlenderProjectQueue(blenderProject);
         int count = blenderProject.getFrameFileNames().size();
         deleteProjectFrames(blenderProject, count);
 
