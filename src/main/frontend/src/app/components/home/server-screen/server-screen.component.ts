@@ -76,9 +76,9 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
       }
       this.projectSize = value
     });
-    this.http.get('/api/info/sethlans_mode', {responseType: 'text'})
-      .subscribe((sethlansmode: Mode) => {
-        this.currentMode = sethlansmode;
+    this.http.get('/api/info/sethlans_mode')
+      .subscribe((sethlansmode) => {
+        this.currentMode = sethlansmode['mode'];
       });
     this.http.get('/api/info/total_memory', {responseType: 'text'}).subscribe((memory: string) => {
       this.totalMemory = memory;
