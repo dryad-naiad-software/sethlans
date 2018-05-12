@@ -194,7 +194,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
             }
         }
         blenderProject.setFramePartList(blenderFramePartList);
-        LOG.debug("Project Frames configured " + blenderFramePartList);
+        LOG.debug("Project Frames configured.");
         blenderProjectDatabaseService.saveOrUpdate(blenderProject);
 
     }
