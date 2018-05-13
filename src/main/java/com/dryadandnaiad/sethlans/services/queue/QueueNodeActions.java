@@ -120,14 +120,19 @@ class QueueNodeActions {
             }
 
             List<RenderQueueItem> listOfItemsWIthNode = renderQueueDatabaseService.listQueueItemsByConnectionUUID(idleNode.getConnectionUUID());
-            LOG.debug("List of queue items assigned to idle node " + listOfItemsWIthNode);
+            List<RenderQueueItem> queueItemsNotComplete = new ArrayList<>();
             for (RenderQueueItem renderQueueItem : listOfItemsWIthNode) {
                 if (!renderQueueItem.isComplete()) {
-                    renderQueueItem.setConnection_uuid(null);
-                    renderQueueItem.setRendering(false);
-                    BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
-                    renderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
+                    queueItemsNotComplete.add(renderQueueItem);
                 }
+            }
+            LOG.debug("Number of queue items assigned to idle node " + queueItemsNotComplete.size());
+            for (RenderQueueItem renderQueueItem : queueItemsNotComplete) {
+                renderQueueItem.setConnection_uuid(null);
+                renderQueueItem.setRendering(false);
+                BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
+                renderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
+                renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
             }
         }
         processedNodes.add(idleNode);
