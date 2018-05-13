@@ -126,7 +126,7 @@ class QueueNodeActions {
                     queueItemsNotComplete.add(renderQueueItem);
                 }
             }
-            LOG.debug("Number of queue items assigned to idle node " + queueItemsNotComplete.size());
+            LOG.debug("Number of queue items assigned to " + sethlansNode.getHostname() + ": " + queueItemsNotComplete.size());
             for (RenderQueueItem renderQueueItem : queueItemsNotComplete) {
                 renderQueueItem.setConnection_uuid(null);
                 renderQueueItem.setRendering(false);
