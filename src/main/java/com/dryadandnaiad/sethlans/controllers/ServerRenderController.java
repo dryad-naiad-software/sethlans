@@ -160,6 +160,8 @@ public class ServerRenderController {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
             if (!part.isEmpty()) {
+                SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
+                LOG.debug("Received response from " + sethlansNode.getHostname() + ", adding to processing Queue.");
                 try {
                     Blob blob = new SerialBlob(part.getBytes());
                     ProcessQueueItem processQueueItem = new ProcessQueueItem();

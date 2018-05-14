@@ -63,6 +63,7 @@ public class QueueServiceImpl implements QueueService {
     private List<ProcessNodeStatus> nodeStatuses = new ArrayList<>();
     private List<ProcessIdleNode> idleNodes = new ArrayList<>();
     private List<QueueActionItem> queueActionItemList = new ArrayList<>();
+    private List<ProcessQueueItem> incomingQueueItemList = new ArrayList<>();
 
     @Async
     @Override
@@ -78,12 +79,14 @@ public class QueueServiceImpl implements QueueService {
                 freeIdleNode();
                 projectActions();
                 processNodeAcknowledgements();
+                incomingCompleteItems();
                 projectActions();
                 assignQueueItemToNode();
                 projectActions();
                 sendQueueItemsToAssignedNode();
                 projectActions();
                 processNodeAcknowledgements();
+                incomingCompleteItems();
                 projectActions();
                 processReceivedFiles();
                 projectActions();
@@ -114,37 +117,48 @@ public class QueueServiceImpl implements QueueService {
 
     @Override
     public void addItemToProcess(ProcessQueueItem processQueueItem) {
+        incomingQueueItemList.add(processQueueItem);
+    }
+
+    private void incomingCompleteItems() {
         if (!modifyingQueue) {
             modifyingQueue = true;
-            LOG.debug("Entering addItemToProcess");
-            processQueueDatabaseService.saveOrUpdate(processQueueItem);
-            RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processQueueItem.getQueueUUID());
-            SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(processQueueItem.getConnection_uuid());
-            ComputeType computeType = renderQueueItem.getRenderComputeType();
-            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
-            renderQueueItem.getBlenderFramePart().setStoredDir(blenderProject.getProjectRootDir() +
-                    File.separator + "frame_" + renderQueueItem.getBlenderFramePart().getFrameNumber() + File.separator);
-            renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
+            if (incomingQueueItemList.size() > 0) {
+                LOG.debug("Entering incomingCompleteItems");
+                List<ProcessQueueItem> itemsReviewed = new ArrayList<>();
+                for (ProcessQueueItem processQueueItem : new ArrayList<>(incomingQueueItemList)) {
+                    processQueueDatabaseService.saveOrUpdate(processQueueItem);
+                    RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processQueueItem.getQueueUUID());
+                    SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(processQueueItem.getConnection_uuid());
+                    ComputeType computeType = renderQueueItem.getRenderComputeType();
+                    BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
+                    renderQueueItem.getBlenderFramePart().setStoredDir(blenderProject.getProjectRootDir() +
+                            File.separator + "frame_" + renderQueueItem.getBlenderFramePart().getFrameNumber() + File.separator);
+                    renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
 
-            LOG.debug("Completed Render Task received from " + sethlansNode.getHostname() + ". Adding to processing queue.");
+                    LOG.debug("Completed Render Task received from " + sethlansNode.getHostname() + ". Adding to processing queue.");
 
-            switch (computeType) {
-                case GPU:
-                    sethlansNode.setGpuSlotInUse(false);
-                    break;
-                case CPU:
-                    sethlansNode.setCpuSlotInUse(false);
-                    break;
-                default:
-                    LOG.error("Invalid compute type, this message should not occur.");
+                    switch (computeType) {
+                        case GPU:
+                            sethlansNode.setGpuSlotInUse(false);
+                            break;
+                        case CPU:
+                            sethlansNode.setCpuSlotInUse(false);
+                            break;
+                        default:
+                            LOG.error("Invalid compute type, this message should not occur.");
+                    }
+                    sethlansNode.setAvailableRenderingSlots(Math.max(sethlansNode.getTotalRenderingSlots(), sethlansNode.getAvailableRenderingSlots() + 1));
+                    if (sethlansNode.getAvailableRenderingSlots() == sethlansNode.getTotalRenderingSlots()) {
+                        sethlansNode.setGpuSlotInUse(false);
+                        sethlansNode.setCpuSlotInUse(false);
+                    }
+                    LOG.debug(sethlansNode.getHostname() + " state: " + sethlansNode.toString());
+                    sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                    itemsReviewed.add(processQueueItem);
+                }
+                incomingQueueItemList.removeAll(itemsReviewed);
             }
-            sethlansNode.setAvailableRenderingSlots(Math.max(sethlansNode.getTotalRenderingSlots(), sethlansNode.getAvailableRenderingSlots() + 1));
-            if (sethlansNode.getAvailableRenderingSlots() == sethlansNode.getTotalRenderingSlots()) {
-                sethlansNode.setGpuSlotInUse(false);
-                sethlansNode.setCpuSlotInUse(false);
-            }
-            LOG.debug(sethlansNode.getHostname() + " state: " + sethlansNode.toString());
-            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
             modifyingQueue = false;
         }
     }
