@@ -75,7 +75,7 @@ public class QueueServiceImpl implements QueueService {
         }
         while (true) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(100);
                 incomingCompleteItems();
                 freeIdleNode();
                 projectActions();
