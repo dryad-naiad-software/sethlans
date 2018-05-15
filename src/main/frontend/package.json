@@ -1,6 +1,6 @@
 {
   "name": "sethlans",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "license": "GPL v2",
   "scripts": {
     "ng": "ng",
