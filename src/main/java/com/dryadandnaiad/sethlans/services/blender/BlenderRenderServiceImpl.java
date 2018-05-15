@@ -324,6 +324,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
             BufferedReader errorIn = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(errorStream.toByteArray())));
 
+            //TODO verify that created file actually exists otherwise fail.
 
             LOG.debug("Error Output:");
             while ((error = errorIn.readLine()) != null) {
