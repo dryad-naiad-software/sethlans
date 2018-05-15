@@ -149,7 +149,9 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
     private void saveOnSuccess(RenderTask renderTask, String script) {
         Long renderTime = executeRenderTask(renderTask, script);
-        if (renderTime != -1L) {
+        String renderedFileName = String.format("%04d", renderTask.getBlenderFramePart().getFrameNumber());
+        File result = new File(renderTask.getRenderDir() + File.separator + renderedFileName + "." + renderTask.getBlenderFramePart().getFileExtension());
+        if (renderTime != -1L && result.exists()) {
             LOG.debug("Render Successful! Updating task status.");
             renderTask.setInProgress(false);
             renderTask.setComplete(true);
@@ -180,6 +182,9 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             }
 
 
+        } else {
+            LOG.debug("Failed render");
+            //TODO notify server of failed render
         }
     }
 
@@ -323,8 +328,6 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             in.close();
 
             BufferedReader errorIn = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(errorStream.toByteArray())));
-
-            //TODO verify that created file actually exists otherwise fail.
 
             LOG.debug("Error Output:");
             while ((error = errorIn.readLine()) != null) {

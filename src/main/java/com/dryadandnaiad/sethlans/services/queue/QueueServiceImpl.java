@@ -125,7 +125,6 @@ public class QueueServiceImpl implements QueueService {
         if (!modifyingQueue) {
             modifyingQueue = true;
             if (incomingQueueItemList.size() > 0) {
-                LOG.debug("Entering incomingCompleteItems");
                 List<ProcessQueueItem> itemsReviewed = new ArrayList<>();
                 for (ProcessQueueItem processQueueItem : new ArrayList<>(incomingQueueItemList)) {
                     processQueueDatabaseService.saveOrUpdate(processQueueItem);
@@ -168,7 +167,6 @@ public class QueueServiceImpl implements QueueService {
         if (!modifyingQueue) {
             modifyingQueue = true;
             if (queueActionItemList.size() > 0) {
-                LOG.debug("Entering projectActions");
                 List<QueueActionItem> processedAction = new ArrayList<>();
                 for (QueueActionItem queueActionItem : new ArrayList<>(queueActionItemList)) {
                     queueProjectActions(queueActionItem, renderQueueDatabaseService,
@@ -185,7 +183,6 @@ public class QueueServiceImpl implements QueueService {
         if (!modifyingQueue) {
             modifyingQueue = true;
             if (idleNodes.size() > 0) {
-                LOG.debug("Entering freeIdleNode");
                 List<ProcessIdleNode> processedNodes = new ArrayList<>();
                 for (ProcessIdleNode idleNode : new ArrayList<>(idleNodes)) {
                     processIdleNodes(sethlansNodeDatabaseService, idleNode,
@@ -201,7 +198,6 @@ public class QueueServiceImpl implements QueueService {
         if (!modifyingQueue) {
             modifyingQueue = true;
             if (nodeStatuses.size() > 0) {
-                LOG.debug("Entering processNodeAcknowledgements");
                 List<ProcessNodeStatus> itemsProcessed = new ArrayList<>();
                 for (ProcessNodeStatus processNodeStatus : nodeStatuses) {
                     processAcknowledgements(processNodeStatus, renderQueueDatabaseService,
@@ -258,7 +254,6 @@ public class QueueServiceImpl implements QueueService {
             modifyingQueue = true;
             List<ProcessQueueItem> processQueueItemList = processQueueDatabaseService.listAll();
             if (!processQueueItemList.isEmpty()) {
-                LOG.debug("Entering processReceivedFiles");
                 for (ProcessQueueItem processQueueItem : new ArrayList<>(processQueueItemList)) {
                     processReceivedFile(processQueueItem, renderQueueDatabaseService,
                             blenderProjectDatabaseService, sethlansNodeDatabaseService,
@@ -273,7 +268,6 @@ public class QueueServiceImpl implements QueueService {
         if (!modifyingQueue) {
             modifyingQueue = true;
             if (processFrameDatabaseService.listAll().size() > 0) {
-                LOG.debug("Entering processImages");
                 for (ProcessFrameItem processFrameItem : processFrameDatabaseService.listAll()) {
                     BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(processFrameItem.getProjectUUID());
                     processImageAndAnimationService.combineParts(blenderProject, processFrameItem.getFrameNumber());
@@ -290,7 +284,6 @@ public class QueueServiceImpl implements QueueService {
             for (BlenderProject blenderProject : blenderProjectDatabaseService.listAll()) {
                 if (blenderProject.getProjectStatus().equals(ProjectStatus.Rendering) || blenderProject.getProjectStatus().equals(ProjectStatus.Started)) {
                     if (renderQueueDatabaseService.listRemainingQueueItemsByProjectUUID(blenderProject.getProject_uuid()).size() == 0) {
-                        LOG.debug("Entering finishProject");
                         if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
                             blenderProject.setProjectStatus(ProjectStatus.Processing);
                             blenderProject.setCurrentPercentage(100);
@@ -320,7 +313,6 @@ public class QueueServiceImpl implements QueueService {
     private void assignQueueItemToNode() {
         if (!modifyingQueue) {
             modifyingQueue = true;
-            LOG.debug("Entering assignQueueItemToNode");
             assignToNode(renderQueueDatabaseService, sethlansNodeDatabaseService);
             modifyingQueue = false;
         }
@@ -329,7 +321,6 @@ public class QueueServiceImpl implements QueueService {
     private void sendQueueItemsToAssignedNode() {
         if (!modifyingQueue) {
             modifyingQueue = true;
-            LOG.debug("Entering sendQueueItemsToAssignedNode");
             sendQueueItemsToNodes(renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNodeDatabaseService, sethlansAPIConnectionService);
             modifyingQueue = false;
         }
