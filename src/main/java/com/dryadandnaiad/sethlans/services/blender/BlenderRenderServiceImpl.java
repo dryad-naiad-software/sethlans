@@ -183,8 +183,11 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
 
         } else {
-            LOG.debug("Failed render");
-            //TODO notify server of failed render
+            LOG.debug("Failed render, sending reject item");
+            SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(renderTask.getConnection_uuid());
+            String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_reject_item/";
+            String params = "queue_item_uuid=" + renderTask.getServer_queue_uuid();
+            sethlansAPIConnectionService.sendToRemoteGET(connectionURL, params);
         }
     }
 
