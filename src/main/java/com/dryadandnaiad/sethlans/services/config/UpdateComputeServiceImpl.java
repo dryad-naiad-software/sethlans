@@ -18,10 +18,13 @@
  */
 package com.dryadandnaiad.sethlans.services.config;
 
+import com.dryadandnaiad.sethlans.domains.database.queue.RenderTask;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
+import com.dryadandnaiad.sethlans.services.database.RenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
+import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +42,8 @@ import static com.dryadandnaiad.sethlans.utils.SethlansUtils.writeProperty;
 @Service
 public class UpdateComputeServiceImpl implements UpdateComputeService {
     private SethlansServerDatabaseService sethlansServerDatabaseService;
+    private RenderTaskDatabaseService renderTaskDatabaseService;
+    private SethlansAPIConnectionService sethlansAPIConnectionService;
 
     @Override
     public boolean saveComputeSettings(SetupNode setupNode) {
@@ -76,11 +81,29 @@ public class UpdateComputeServiceImpl implements UpdateComputeService {
             sethlansServer.setNodeUpdated(true);
             sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
         }
+        List<RenderTask> renderTaskList = renderTaskDatabaseService.listAll();
+        for (RenderTask renderTask : renderTaskList) {
+            SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(renderTask.getConnection_uuid());
+            String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_reject_item/";
+            String params = "queue_item_uuid=" + renderTask.getServer_queue_uuid();
+            sethlansAPIConnectionService.sendToRemoteGET(connectionURL, params);
+            renderTaskDatabaseService.delete(renderTask);
+        }
         return true;
     }
 
     @Autowired
     public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
         this.sethlansServerDatabaseService = sethlansServerDatabaseService;
+    }
+
+    @Autowired
+    public void setRenderTaskDatabaseService(RenderTaskDatabaseService renderTaskDatabaseService) {
+        this.renderTaskDatabaseService = renderTaskDatabaseService;
+    }
+
+    @Autowired
+    public void setSethlansAPIConnectionService(SethlansAPIConnectionService sethlansAPIConnectionService) {
+        this.sethlansAPIConnectionService = sethlansAPIConnectionService;
     }
 }
