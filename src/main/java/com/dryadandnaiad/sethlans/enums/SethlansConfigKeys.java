@@ -42,6 +42,7 @@ public enum SethlansConfigKeys {
     FFMPEG_BIN("sethlans.ffmpeg.binary"),
     CACHED_BLENDER_BINARIES("sethlans.cachedBlenderBinaries"),
     GPU_DEVICE("sethlans.gpu_id"),
+    COMBINE_GPU("sethlans.render.combined"),
     CPU_CORES("sethlans.cores"),
     PYTHON_BIN("sethlans.python.binary"),
     SCRIPTS_DIR("sethlans.scriptsDir"),

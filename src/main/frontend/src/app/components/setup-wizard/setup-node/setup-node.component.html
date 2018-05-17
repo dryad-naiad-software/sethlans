@@ -1,3 +1,22 @@
+<!--
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
 <form #nodeForm="ngForm" class="editForm">
   <div class="form-group" ngbTooltip="Render with either a CPU/GPU or ability to use either one." placement="left">
     <label for="computeMethod">Compute Method Selection</label>
@@ -29,7 +48,7 @@
     </div>
     <div class="form-group" *ngIf="node.computeMethod !== computeMethodEnum.GPU"
          ngbTooltip="Tile size used for CPU rendering." placement="left">
-      <label for="tileSizeCPU">CPU Render Tile Size:</label>
+      <label for="tileSizeCPU">CPU Tile Size</label>
       <input type="number"
              class="form-control form-control-sm"
              name="tileSizeCPU"
@@ -41,11 +60,8 @@
   <div *ngIf="node.computeMethod !== computeMethodEnum.CPU">
     <hr/>
     <h6>GPU Settings:</h6>
-    <br/>
-    <div class="form-group" *ngIf="node.computeMethod !== computeMethodEnum.CPU"
-         ngbTooltip="GPU devices to be used for rendering." placement="left">
-      <label>GPU Devices:</label>
-      <div *ngFor="let gpu of availableGPUs">
+    <div class="form-group" *ngIf="node.computeMethod !== computeMethodEnum.CPU">
+      <div *ngFor="let gpu of availableGPUs" ngbTooltip="GPU devices to be used for rendering." placement="left">
         <input type="checkbox"
                class="form-control-sm"
                name="{{gpu.model}}"
@@ -56,15 +72,29 @@
         <label class="form-check-label form-control-sm">{{gpu.model}}</label>
       </div>
     </div>
+
     <div class="form-group" *ngIf="node.computeMethod !== computeMethodEnum.CPU"
-         ngbTooltip="Tile size used for CPU rendering." placement="left">
-      <label for="tileSizeGPU">GPU Render Tile Size:</label>
+         ngbTooltip="Tile size used for GPU rendering." placement="left">
+      <label for="tileSizeGPU">GPU Tile Size</label>
       <input type="number"
              class="form-control form-control-sm"
              name="tileSizeGPU"
              id="tileSizeGPU"
              #tileSizeCPU="ngModel"
              [(ngModel)]="setupFormData.node.tileSizeGPU">
+    </div>
+
+    <label *ngIf="node.selectedGPUs.length > 1">Options:</label>
+    <div *ngIf="node.selectedGPUs.length > 1"
+         ngbTooltip="Enabled: Selected GPUs used as one render slot.  Disabled: Each GPU equals one render slot."
+         placement="left">
+      <input type="checkbox"
+             class="form-control-sm"
+             name="{{node.combined}}"
+             value="{{node.combined}}"
+             [(ngModel)]="node.combined"/>
+      <label class="form-check-label form-control-sm">Combine GPUs</label>
+      <br/><br/>
     </div>
   </div>
 </form>

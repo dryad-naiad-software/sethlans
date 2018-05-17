@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
 import {Component, Input, OnInit} from '@angular/core';
 import {Node} from "../../../models/node.model";
 import {SetupFormDataService} from "../../../services/setupformdata.service";
@@ -73,6 +92,8 @@ export class SetupNodeComponent implements OnInit {
 
   methodSelection() {
     if (this.node.getComputeMethod() !== this.computeMethodEnum.CPU) {
+      this.node.setCores(this.totalCores);
+      this.node.setSelectedGPUs(null);
       if (this.node.getSelectedGPUs().length == 0) {
         this.node.setGpuEmpty(true);
         console.log(this.node.isGpuEmpty());
@@ -85,6 +106,7 @@ export class SetupNodeComponent implements OnInit {
       // gpuEmpty is used to control the toggling of the Save button. False means that the node settings can be saved.
       // CPU mode this is always set to false.
       this.node.setGpuEmpty(false);
+      this.node.setSelectedGPUs(null);
     }
     if (this.node.getComputeMethod() === this.computeMethodEnum.GPU) {
       this.node.setCores(null);

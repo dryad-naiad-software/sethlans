@@ -67,6 +67,7 @@ public class SethlansNode extends AbstractEntityClass {
     private int availableRenderingSlots;
     private boolean cpuSlotInUse;
     private boolean gpuSlotInUse;
+    private boolean combined;
 
     public Integer getCombinedGPURating() {
         List<Integer> gpuRatings = new ArrayList<>();
