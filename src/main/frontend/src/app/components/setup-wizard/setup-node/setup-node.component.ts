@@ -93,7 +93,6 @@ export class SetupNodeComponent implements OnInit {
   methodSelection() {
     if (this.node.getComputeMethod() !== this.computeMethodEnum.CPU) {
       this.node.setCores(this.totalCores);
-      this.node.setSelectedGPUs(null);
       if (this.node.getSelectedGPUs().length == 0) {
         this.node.setGpuEmpty(true);
         console.log(this.node.isGpuEmpty());
