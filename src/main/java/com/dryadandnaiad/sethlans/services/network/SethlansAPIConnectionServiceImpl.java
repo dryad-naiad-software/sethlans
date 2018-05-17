@@ -141,7 +141,7 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
                 LOG.error(e.getMessage());
             }
         } else {
-            LOG.debug("The file " + toUpload.toString() + "does not exist.");
+            LOG.debug("The file " + toUpload.toString() + " does not exist.");
         }
 
         return false;

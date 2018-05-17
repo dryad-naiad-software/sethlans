@@ -149,7 +149,9 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
     private void saveOnSuccess(RenderTask renderTask, String script) {
         Long renderTime = executeRenderTask(renderTask, script);
-        if (renderTime != -1L) {
+        String renderedFileName = String.format("%04d", renderTask.getBlenderFramePart().getFrameNumber());
+        File result = new File(renderTask.getRenderDir() + File.separator + renderedFileName + "." + renderTask.getBlenderFramePart().getFileExtension());
+        if (renderTime != -1L && result.exists()) {
             LOG.debug("Render Successful! Updating task status.");
             renderTask.setInProgress(false);
             renderTask.setComplete(true);
@@ -180,6 +182,13 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             }
 
 
+        } else {
+            LOG.debug("Failed render, sending reject notice");
+            SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(renderTask.getConnection_uuid());
+            String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_reject_item/";
+            String params = "queue_item_uuid=" + renderTask.getServer_queue_uuid();
+            sethlansAPIConnectionService.sendToRemoteGET(connectionURL, params);
+            renderTaskDatabaseService.delete(renderTask);
         }
     }
 
@@ -323,7 +332,6 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             in.close();
 
             BufferedReader errorIn = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(errorStream.toByteArray())));
-
 
             LOG.debug("Error Output:");
             while ((error = errorIn.readLine()) != null) {

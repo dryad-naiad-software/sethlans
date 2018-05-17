@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
+
 import {Component, Input, OnInit} from '@angular/core';
 import {Node} from "../../../models/node.model";
 import {SetupFormDataService} from "../../../services/setupformdata.service";
@@ -40,7 +59,7 @@ export class SetupNodeComponent implements OnInit {
         this.node.setCores(cores);
         console.log(this.totalCores);
       }, (error) => console.log(error));
-    if (this.availableComputeMethods.indexOf(this.computeMethodEnum.CPU)) {
+    if (this.availableComputeMethods.length > 1) {
       this.node.setSelectedGPUs([]);
       this.http.get('/api/info/available_gpus')
         .subscribe((gpus: any[]) => {
@@ -50,18 +69,20 @@ export class SetupNodeComponent implements OnInit {
     }
   }
 
-  selected(event, gpu: GPU) {
+  selected(event, string) {
     let checked = event.currentTarget.checked;
-    console.log(event.currentTarget.checked);
-    console.log(gpu);
     if (checked) {
-      gpu.selected = true;
-      this.node.getSelectedGPUs().push(gpu);
+      let currentNode = this.node;
+      this.availableGPUs.forEach(function (value) {
+        if (value.deviceID == string) {
+          currentNode.selectedGPUs.push(value);
+        }
+      });
       this.node.setGpuEmpty(false);
     } else if (!checked) {
       let selectedGPUs = this.node.getSelectedGPUs();
       for (let i = 0; i < selectedGPUs.length; i++) {
-        if (selectedGPUs[i].deviceID == gpu.deviceID) {
+        if (selectedGPUs[i].deviceID == string) {
           this.node.getSelectedGPUs().splice(i, 1);
         }
       }
@@ -73,6 +94,7 @@ export class SetupNodeComponent implements OnInit {
 
   methodSelection() {
     if (this.node.getComputeMethod() !== this.computeMethodEnum.CPU) {
+      this.node.setCores(this.totalCores);
       if (this.node.getSelectedGPUs().length == 0) {
         this.node.setGpuEmpty(true);
         console.log(this.node.isGpuEmpty());
@@ -84,7 +106,11 @@ export class SetupNodeComponent implements OnInit {
     if (this.node.getComputeMethod() === this.computeMethodEnum.CPU) {
       // gpuEmpty is used to control the toggling of the Save button. False means that the node settings can be saved.
       // CPU mode this is always set to false.
+      this.node.setCores(this.totalCores);
+      this.node.setSelectedGPUs([]);
+      this.node.combined = true;
       this.node.setGpuEmpty(false);
+
     }
     if (this.node.getComputeMethod() === this.computeMethodEnum.GPU) {
       this.node.setCores(null);

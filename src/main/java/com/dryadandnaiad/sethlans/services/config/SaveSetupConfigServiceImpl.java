@@ -139,6 +139,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
             writeProperty(SethlansConfigKeys.COMPUTE_METHOD, setupForm.getNode().getComputeMethod().toString());
             writeProperty(SethlansConfigKeys.TILE_SIZE_GPU, Integer.toString(setupForm.getNode().getTileSizeGPU()));
             writeProperty(SethlansConfigKeys.TILE_SIZE_CPU, Integer.toString(setupForm.getNode().getTileSizeCPU()));
+            writeProperty(SethlansConfigKeys.COMBINE_GPU, Boolean.toString(setupForm.getNode().isCombined()));
 
             if (!setupForm.getNode().getComputeMethod().equals(ComputeType.CPU)) {
                 writeProperty(SethlansConfigKeys.GPU_DEVICE, getGPUDeviceString(setupForm.getNode()));

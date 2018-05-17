@@ -199,7 +199,7 @@ public class QueueServiceImpl implements QueueService {
             modifyingQueue = true;
             if (nodeStatuses.size() > 0) {
                 List<ProcessNodeStatus> itemsProcessed = new ArrayList<>();
-                for (ProcessNodeStatus processNodeStatus : nodeStatuses) {
+                for (ProcessNodeStatus processNodeStatus : new ArrayList<>(nodeStatuses)) {
                     processAcknowledgements(processNodeStatus, renderQueueDatabaseService,
                             blenderProjectDatabaseService, sethlansNodeDatabaseService, itemsProcessed);
                 }
