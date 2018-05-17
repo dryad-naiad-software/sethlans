@@ -69,18 +69,20 @@ export class SetupNodeComponent implements OnInit {
     }
   }
 
-  selected(event, gpu: GPU) {
+  selected(event, string) {
     let checked = event.currentTarget.checked;
-    console.log(event.currentTarget.checked);
-    console.log(gpu);
     if (checked) {
-      gpu.selected = true;
-      this.node.getSelectedGPUs().push(gpu);
+      let currentNode = this.node;
+      this.availableGPUs.forEach(function (value) {
+        if (value.deviceID == string) {
+          currentNode.selectedGPUs.push(value);
+        }
+      });
       this.node.setGpuEmpty(false);
     } else if (!checked) {
       let selectedGPUs = this.node.getSelectedGPUs();
       for (let i = 0; i < selectedGPUs.length; i++) {
-        if (selectedGPUs[i].deviceID == gpu.deviceID) {
+        if (selectedGPUs[i].deviceID == string) {
           this.node.getSelectedGPUs().splice(i, 1);
         }
       }
@@ -104,8 +106,11 @@ export class SetupNodeComponent implements OnInit {
     if (this.node.getComputeMethod() === this.computeMethodEnum.CPU) {
       // gpuEmpty is used to control the toggling of the Save button. False means that the node settings can be saved.
       // CPU mode this is always set to false.
+      this.node.setCores(this.totalCores);
+      this.node.setSelectedGPUs([]);
+      this.node.combined = true;
       this.node.setGpuEmpty(false);
-      this.node.setSelectedGPUs(null);
+
     }
     if (this.node.getComputeMethod() === this.computeMethodEnum.GPU) {
       this.node.setCores(null);

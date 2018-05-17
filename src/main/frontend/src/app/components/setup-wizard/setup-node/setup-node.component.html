@@ -68,7 +68,7 @@
                value="{{gpu.model}}"
                #gpuSelection
                required
-               (change)="selected($event, gpu)"/>
+               (change)="selected($event, gpu.deviceID)"/>
         <label class="form-check-label form-control-sm">{{gpu.model}}</label>
       </div>
     </div>
