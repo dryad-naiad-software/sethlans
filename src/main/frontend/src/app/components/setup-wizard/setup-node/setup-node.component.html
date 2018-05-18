@@ -30,10 +30,10 @@
     </select>
 
   </div>
-  <div *ngIf="node.computeMethod !== computeMethodEnum.GPU">
+  <div *ngIf="node.computeMethod.toString() !== 'GPU' ">
     <hr/>
     <h6>CPU Settings:</h6>
-    <div class="form-group" *ngIf="node.computeMethod !== computeMethodEnum.GPU"
+    <div class="form-group"
          ngbTooltip="Number of CPU cores to be used for rendering." placement="left">
       <label for="cores">Rendering Cores:</label>
       <mat-slider
@@ -46,7 +46,7 @@
         name="cores"
         [(ngModel)]="node.cores"></mat-slider>
     </div>
-    <div class="form-group" *ngIf="node.computeMethod !== computeMethodEnum.GPU"
+    <div class="form-group"
          ngbTooltip="Tile size used for CPU rendering." placement="left">
       <label for="tileSizeCPU">CPU Tile Size</label>
       <input type="number"
@@ -57,10 +57,10 @@
              [(ngModel)]="setupFormData.node.tileSizeCPU">
     </div>
   </div>
-  <div *ngIf="node.computeMethod !== computeMethodEnum.CPU">
+  <div *ngIf="node.computeMethod.toString() !== 'CPU'">
     <hr/>
     <h6>GPU Settings:</h6>
-    <div class="form-group" *ngIf="node.computeMethod !== computeMethodEnum.CPU">
+    <div class="form-group">
       <div *ngFor="let gpu of availableGPUs" ngbTooltip="GPU devices to be used for rendering." placement="left">
         <input type="checkbox"
                class="form-control-sm"
@@ -73,7 +73,7 @@
       </div>
     </div>
 
-    <div class="form-group" *ngIf="node.computeMethod !== computeMethodEnum.CPU"
+    <div class="form-group"
          ngbTooltip="Tile size used for GPU rendering." placement="left">
       <label for="tileSizeGPU">GPU Tile Size</label>
       <input type="number"
@@ -84,8 +84,8 @@
              [(ngModel)]="setupFormData.node.tileSizeGPU">
     </div>
 
-    <label *ngIf="node.selectedGPUs.length > 1">Options:</label>
-    <div *ngIf="node.selectedGPUs.length > 1"
+    <label *ngIf="node.selectedGPUs?.length > 1">Options:</label>
+    <div *ngIf="node.selectedGPUs?.length > 1"
          ngbTooltip="Enabled: Selected GPUs used as one render slot.  Disabled: Each GPU equals one render slot."
          placement="left">
       <input type="checkbox"
