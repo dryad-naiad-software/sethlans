@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -107,18 +108,19 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
                             if (slots == 1) {
                                 sendIdleUpdate(computeType);
                             }
-                            if (slots == 2) {
+                            if (slots > 1) {
                                 if (renderTaskDatabaseService.listAll().size() == 0) {
                                     sendIdleUpdate(computeType);
                                 } else {
+                                    List<ComputeType> computeTypeList = new ArrayList<>();
                                     for (RenderTask renderTask : renderTaskDatabaseService.listAll()) {
-                                        if (renderTask.getComputeType().equals(ComputeType.CPU)) {
-                                            sendIdleUpdate(ComputeType.GPU);
+                                        computeTypeList.add(renderTask.getComputeType());
+                                    }
+                                    if (computeTypeList.contains(ComputeType.CPU)) {
+                                        sendIdleUpdate(ComputeType.GPU);
+                                    } else {
+                                        sendIdleUpdate(ComputeType.CPU);
 
-                                        } else {
-                                            sendIdleUpdate(ComputeType.CPU);
-
-                                        }
                                     }
                                 }
                             }
