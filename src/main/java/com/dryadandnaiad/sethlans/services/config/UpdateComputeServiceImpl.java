@@ -62,6 +62,7 @@ public class UpdateComputeServiceImpl implements UpdateComputeService {
                 writeProperty(SethlansConfigKeys.TILE_SIZE_GPU, setupNode.getTileSizeGPU().toString());
                 writeProperty(SethlansConfigKeys.GPU_DEVICE, getGPUDeviceString(setupNode));
                 writeProperty(SethlansConfigKeys.CPU_CORES, "");
+                writeProperty(SethlansConfigKeys.COMBINE_GPU, Boolean.toString(setupNode.isCombined()));
                 return setNodeUpdated();
 
             case CPU_GPU:
@@ -69,6 +70,7 @@ public class UpdateComputeServiceImpl implements UpdateComputeService {
                 writeProperty(SethlansConfigKeys.TILE_SIZE_CPU, setupNode.getTileSizeCPU().toString());
                 writeProperty(SethlansConfigKeys.TILE_SIZE_GPU, setupNode.getTileSizeGPU().toString());
                 writeProperty(SethlansConfigKeys.GPU_DEVICE, getGPUDeviceString(setupNode));
+                writeProperty(SethlansConfigKeys.COMBINE_GPU, Boolean.toString(setupNode.isCombined()));
                 return setNodeUpdated();
 
         }

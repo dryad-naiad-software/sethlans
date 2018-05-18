@@ -32,7 +32,8 @@
           <li *ngFor="let gpu of selectedGPUModels"><i>{{gpu}}</i></li>
         </ul>
       </li>
-      <li>Combined GPU Rendering: <i>{{gpuCombined}}</i></li>
+      <li *ngIf="computeType?.valueOf().toString() != 'CPU'.valueOf()">Combined GPU Rendering: <i>{{gpuCombined}}</i>
+      </li>
     </ul>
   </div>
 

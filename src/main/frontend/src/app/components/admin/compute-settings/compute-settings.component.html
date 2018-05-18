@@ -215,7 +215,7 @@
         <td>Tile Size: GPU</td>
         <td>{{newNode.tileSizeGPU}}</td>
       </tr>
-      <tr *ngIf="currentNode.computeMethod.toString().valueOf() != 'CPU'.valueOf()">
+      <tr *ngIf="newNode.computeMethod.toString().valueOf() != 'CPU'.valueOf()">
         <td>Combined GPU Rendering:</td>
         <td>{{newNode.combined}}</td>
       </tr>
