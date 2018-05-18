@@ -103,7 +103,15 @@ class QueueNodeActions {
             switch (idleNode.getComputeType()) {
                 case GPU:
                     sethlansNode.setAllGPUSlotInUse(false);
-                    sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                    if (sethlansNode.isCombined()) {
+                        sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                    } else {
+                        if (sethlansNode.getAvailableRenderingSlots() == 1) {
+                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                        } else {
+                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+                        }
+                    }
                     sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                     break;
                 case CPU:
@@ -162,6 +170,7 @@ class QueueNodeActions {
                             sortedSethlansNodeList = getSortedNodeList(ComputeType.CPU_GPU, sethlansNodeDatabaseService);
                             if (sortedSethlansNodeList != null) {
                                 sethlansNode = sortedSethlansNodeList.get(0);
+                                sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
                                 renderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
                                 renderQueueItem = setQueueItemComputeType(sethlansNode, renderQueueItem);
                                 if (renderQueueItem != null) {
@@ -170,13 +179,21 @@ class QueueNodeActions {
                                             sethlansNode.setCpuSlotInUse(true);
                                             break;
                                         case GPU:
-                                            sethlansNode.setAllGPUSlotInUse(true);
+                                            if (sethlansNode.isCombined()) {
+                                                sethlansNode.setAllGPUSlotInUse(true);
+                                            } else {
+                                                if (sethlansNode.getAvailableRenderingSlots() == 0) {
+                                                    sethlansNode.setAllGPUSlotInUse(true);
+                                                }
+                                                if (sethlansNode.getAvailableRenderingSlots() == 1 && !sethlansNode.isCpuSlotInUse()) {
+                                                    sethlansNode.setAllGPUSlotInUse(true);
+                                                }
+                                            }
                                             break;
                                         case CPU_GPU:
                                             LOG.error("Failure in logic this message should not be displayed.");
                                             break;
                                     }
-                                    sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
                                     sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                                 }
                             }
@@ -197,7 +214,13 @@ class QueueNodeActions {
                                 sethlansNode = sortedSethlansNodeList.get(0);
                                 renderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
                                 sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
-                                sethlansNode.setAllGPUSlotInUse(true);
+                                if (sethlansNode.isCombined()) {
+                                    sethlansNode.setAllGPUSlotInUse(true);
+                                } else {
+                                    if (sethlansNode.getAvailableRenderingSlots() == 0) {
+                                        sethlansNode.setAllGPUSlotInUse(true);
+                                    }
+                                }
                                 sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                             }
                             break;
@@ -293,7 +316,7 @@ class QueueNodeActions {
                         ": Available Slots(" + sethlansNode.getAvailableRenderingSlots() +
                         "). Compute Type(" + sethlansNode.getComputeType().getName() +
                         "). CPU in use(" + sethlansNode.isCpuSlotInUse() +
-                        "). GPU in use (" + sethlansNode.isAllGPUSlotInUse() + ")");
+                        "). (All) GPU(s) in use (" + sethlansNode.isAllGPUSlotInUse() + ")");
             }
         }
         return sortedSethlansNodeList;
