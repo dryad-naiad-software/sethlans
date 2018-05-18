@@ -73,8 +73,7 @@ public class NodeInfoController {
     }
 
     @RequestMapping(value = "/nodeinfo", method = RequestMethod.GET)
-    public NodeInfo nodeInfo() {
-        LOG.debug("Node info requested.");
+    public NodeInfo getNodeInfo() {
         NodeInfo nodeInfo = new NodeInfo();
         nodeInfo.populateNodeInfo();
 
@@ -91,9 +90,35 @@ public class NodeInfoController {
             nodeInfo.setCpuinfo();
             nodeInfo.setSelectedDeviceID(deviceList);
             nodeInfo.setSelectedGPUs();
+            nodeInfo.setCombined(Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.COMBINE_GPU.toString())));
 
         }
         return nodeInfo;
+    }
+
+    @GetMapping(value = {"/is_gpu_combined"})
+    public Boolean isGpuCombined() {
+        return Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.COMBINE_GPU.toString()));
+    }
+
+    @GetMapping(value = {"/total_slots"})
+    public Integer getTotalSlots() {
+        boolean combined = Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.COMBINE_GPU.toString()));
+        if (computeType != ComputeType.CPU) {
+            if (combined) {
+                return 2;
+            } else {
+                NodeInfo nodeInfo = getNodeInfo();
+                if (computeType != ComputeType.GPU) {
+                    return nodeInfo.getSelectedGPUs().size() + 1; // This logic leads to CPU GPU mode so the CPU is added as another slot
+                } else {
+                    return nodeInfo.getSelectedGPUs().size();
+                }
+
+            }
+        } else {
+            return 1;
+        }
     }
 
     @GetMapping(value = {"/available_methods"})

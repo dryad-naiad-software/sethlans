@@ -50,6 +50,7 @@ public class NodeInfo {
     private String selectedCores;
     private List<GPUDevice> selectedGPUs = new ArrayList<>();
     private List<String> selectedDeviceID;
+    private boolean combined;
 
     private static final Logger LOG = LoggerFactory.getLogger(NodeInfo.class);
 
