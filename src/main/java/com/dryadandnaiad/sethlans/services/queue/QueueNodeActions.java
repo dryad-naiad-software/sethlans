@@ -270,6 +270,7 @@ class QueueNodeActions {
 
     private static RenderQueueItem setQueueItemComputeType(SethlansNode sethlansNode, RenderQueueItem renderQueueItem) {
         // Before sending to a node the compute type must be either GPU or CPU,  CPU&GPU is only used for sorting at the server level.
+        // Todo Factor in individual gpu rating
         switch (sethlansNode.getComputeType()) {
             case CPU_GPU:
                 if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating() && !sethlansNode.isAllGPUSlotInUse()) {
