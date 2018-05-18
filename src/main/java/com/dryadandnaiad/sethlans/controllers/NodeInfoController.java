@@ -74,26 +74,7 @@ public class NodeInfoController {
 
     @RequestMapping(value = "/nodeinfo", method = RequestMethod.GET)
     public NodeInfo getNodeInfo() {
-        NodeInfo nodeInfo = new NodeInfo();
-        nodeInfo.populateNodeInfo();
-
-        nodeInfo.setNetworkPort(sethlansPort);
-        nodeInfo.setComputeType(computeType);
-
-        if (computeType == ComputeType.CPU_GPU || computeType == ComputeType.CPU) {
-            nodeInfo.setCpuinfo();
-            nodeInfo.setSelectedCores(cores);
-        }
-
-        if (computeType == ComputeType.GPU || computeType == ComputeType.CPU_GPU) {
-            List<String> deviceList = Arrays.asList(deviceID.split(","));
-            nodeInfo.setCpuinfo();
-            nodeInfo.setSelectedDeviceID(deviceList);
-            nodeInfo.setSelectedGPUs();
-            nodeInfo.setCombined(Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.COMBINE_GPU.toString())));
-
-        }
-        return nodeInfo;
+        return SethlansUtils.getNodeInfo();
     }
 
     @GetMapping(value = {"/is_gpu_combined"})
@@ -187,7 +168,7 @@ public class NodeInfoController {
 
     @GetMapping(value = {"/selected_cores"})
     public String selectedCores() {
-        return SethlansUtils.getCores();
+        return SethlansUtils.getSelectedCores();
     }
 
 

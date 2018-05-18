@@ -65,7 +65,7 @@ class QueueNodeActions {
                     sethlansNode.setCpuSlotInUse(true);
                     break;
                 case GPU:
-                    sethlansNode.setGpuSlotInUse(true);
+                    sethlansNode.setAllGPUSlotInUse(true);
                     break;
                 default:
                     LOG.error("Invalid compute type, this message should not occur.");
@@ -102,7 +102,7 @@ class QueueNodeActions {
             LOG.debug("Received idle notification from  " + sethlansNode.getHostname());
             switch (idleNode.getComputeType()) {
                 case GPU:
-                    sethlansNode.setGpuSlotInUse(false);
+                    sethlansNode.setAllGPUSlotInUse(false);
                     sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
                     sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                     break;
@@ -113,7 +113,7 @@ class QueueNodeActions {
                     break;
                 case CPU_GPU:
                     sethlansNode.setCpuSlotInUse(false);
-                    sethlansNode.setGpuSlotInUse(false);
+                    sethlansNode.setAllGPUSlotInUse(false);
                     sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
                     sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                     break;
@@ -170,7 +170,7 @@ class QueueNodeActions {
                                             sethlansNode.setCpuSlotInUse(true);
                                             break;
                                         case GPU:
-                                            sethlansNode.setGpuSlotInUse(true);
+                                            sethlansNode.setAllGPUSlotInUse(true);
                                             break;
                                         case CPU_GPU:
                                             LOG.error("Failure in logic this message should not be displayed.");
@@ -197,7 +197,7 @@ class QueueNodeActions {
                                 sethlansNode = sortedSethlansNodeList.get(0);
                                 renderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
                                 sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
-                                sethlansNode.setGpuSlotInUse(true);
+                                sethlansNode.setAllGPUSlotInUse(true);
                                 sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                             }
                             break;
@@ -249,7 +249,7 @@ class QueueNodeActions {
         // Before sending to a node the compute type must be either GPU or CPU,  CPU&GPU is only used for sorting at the server level.
         switch (sethlansNode.getComputeType()) {
             case CPU_GPU:
-                if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating() && !sethlansNode.isGpuSlotInUse()) {
+                if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating() && !sethlansNode.isAllGPUSlotInUse()) {
                     renderQueueItem.setRenderComputeType(ComputeType.GPU);
                     return renderQueueItem;
                 } else if (sethlansNode.getCombinedGPURating() > sethlansNode.getCpuRating() && !sethlansNode.isCpuSlotInUse()) {
@@ -263,7 +263,7 @@ class QueueNodeActions {
                     renderQueueItem.setRenderComputeType(ComputeType.GPU);
                     return renderQueueItem;
 
-                } else if (sethlansNode.isGpuSlotInUse()) {
+                } else if (sethlansNode.isAllGPUSlotInUse()) {
                     renderQueueItem.setRenderComputeType(ComputeType.CPU);
                     return renderQueueItem;
                 }
@@ -293,7 +293,7 @@ class QueueNodeActions {
                         ": Available Slots(" + sethlansNode.getAvailableRenderingSlots() +
                         "). Compute Type(" + sethlansNode.getComputeType().getName() +
                         "). CPU in use(" + sethlansNode.isCpuSlotInUse() +
-                        "). GPU in use (" + sethlansNode.isGpuSlotInUse() + ")");
+                        "). GPU in use (" + sethlansNode.isAllGPUSlotInUse() + ")");
             }
         }
         return sortedSethlansNodeList;

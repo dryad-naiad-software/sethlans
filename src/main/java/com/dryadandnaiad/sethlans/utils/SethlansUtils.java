@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderTask;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
+import com.dryadandnaiad.sethlans.domains.info.NodeInfo;
 import com.dryadandnaiad.sethlans.domains.info.SethlansSettingsInfo;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
@@ -324,6 +325,30 @@ public class SethlansUtils {
         return null;
     }
 
+    public static NodeInfo getNodeInfo() {
+        NodeInfo nodeInfo = new NodeInfo();
+        nodeInfo.populateNodeInfo();
+        ComputeType computeType = ComputeType.valueOf(getProperty(SethlansConfigKeys.COMPUTE_METHOD.toString()));
+
+        nodeInfo.setNetworkPort(getPort());
+        nodeInfo.setComputeType(computeType);
+
+        if (computeType == ComputeType.CPU_GPU || computeType == ComputeType.CPU) {
+            nodeInfo.setCpuinfo();
+            nodeInfo.setSelectedCores(getSelectedCores());
+        }
+
+        if (computeType == ComputeType.GPU || computeType == ComputeType.CPU_GPU) {
+            List<String> deviceList = Arrays.asList(getProperty(SethlansConfigKeys.GPU_DEVICE.toString()).split(","));
+            nodeInfo.setCpuinfo();
+            nodeInfo.setSelectedDeviceID(deviceList);
+            nodeInfo.setSelectedGPUs();
+            nodeInfo.setCombined(Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.COMBINE_GPU.toString())));
+
+        }
+        return nodeInfo;
+    }
+
     public static String getIP() {
         String ip = null;
         final Properties properties = new Properties();
@@ -354,7 +379,7 @@ public class SethlansUtils {
         return ip;
     }
 
-    public static String getCores() {
+    public static String getSelectedCores() {
         return getProperty(SethlansConfigKeys.CPU_CORES.toString());
     }
 

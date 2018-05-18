@@ -99,7 +99,7 @@ class QueueProjectActions {
                                 }
                                 break;
                             case GPU:
-                                sethlansNode.setGpuSlotInUse(false);
+                                sethlansNode.setAllGPUSlotInUse(false);
                                 if (sethlansNode.getAvailableRenderingSlots() <= 0) {
                                     sethlansNode.setAvailableRenderingSlots(1);
                                 } else {

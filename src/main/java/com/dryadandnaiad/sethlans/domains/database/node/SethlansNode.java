@@ -66,7 +66,7 @@ public class SethlansNode extends AbstractEntityClass {
     private int totalRenderingSlots;
     private int availableRenderingSlots;
     private boolean cpuSlotInUse;
-    private boolean gpuSlotInUse;
+    private boolean allGPUSlotInUse;
     private boolean combined;
 
     public Integer getCombinedGPURating() {
@@ -112,7 +112,7 @@ public class SethlansNode extends AbstractEntityClass {
                 ", connection_uuid='" + connection_uuid + '\'' +
                 ", cpuRating=" + cpuRating +
                 ", benchmarkComplete=" + benchmarkComplete +
-                ", gpuInUse=" + gpuSlotInUse +
+                ", gpuInUse=" + allGPUSlotInUse +
                 ", cpuInUse=" + cpuSlotInUse +
                 ", totalSlots=" + totalRenderingSlots +
                 ", availableSlots=" + availableRenderingSlots +

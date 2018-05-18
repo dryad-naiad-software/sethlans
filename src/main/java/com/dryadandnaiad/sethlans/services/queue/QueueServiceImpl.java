@@ -140,7 +140,7 @@ public class QueueServiceImpl implements QueueService {
 
                     switch (computeType) {
                         case GPU:
-                            sethlansNode.setGpuSlotInUse(false);
+                            sethlansNode.setAllGPUSlotInUse(false);
                             break;
                         case CPU:
                             sethlansNode.setCpuSlotInUse(false);
@@ -150,7 +150,7 @@ public class QueueServiceImpl implements QueueService {
                     }
                     sethlansNode.setAvailableRenderingSlots(Math.max(sethlansNode.getTotalRenderingSlots(), sethlansNode.getAvailableRenderingSlots() + 1));
                     if (sethlansNode.getAvailableRenderingSlots() == sethlansNode.getTotalRenderingSlots()) {
-                        sethlansNode.setGpuSlotInUse(false);
+                        sethlansNode.setAllGPUSlotInUse(false);
                         sethlansNode.setCpuSlotInUse(false);
                     }
                     LOG.debug(sethlansNode.getHostname() + " state: " + sethlansNode.toString());
