@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.*;
+import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.services.database.*;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
@@ -140,7 +141,15 @@ public class QueueServiceImpl implements QueueService {
 
                     switch (computeType) {
                         case GPU:
-                            sethlansNode.setAllGPUSlotInUse(false);
+                            if (sethlansNode.isCombined()) {
+                                sethlansNode.setAllGPUSlotInUse(false);
+                            } else {
+                                for (GPUDevice gpuDevice : sethlansNode.getSelectedGPUs()) {
+                                    if (gpuDevice.getDeviceID().equals(renderQueueItem.getGpu_device_id())) {
+                                        gpuDevice.setInUse(false);
+                                    }
+                                }
+                            }
                             break;
                         case CPU:
                             sethlansNode.setCpuSlotInUse(false);

@@ -57,21 +57,9 @@ class QueueNodeActions {
         if (processNodeStatus.isAccepted()) {
             RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID());
             BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
-            ComputeType computeType = renderQueueItem.getRenderComputeType();
             LOG.debug("Compute Type " + renderQueueItem.getRenderComputeType());
             SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(renderQueueItem.getConnection_uuid());
             LOG.debug("Received node acknowledgement from " + sethlansNode.getHostname() + " for queue item " + processNodeStatus.getQueueUUID());
-            sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
-            switch (computeType) {
-                case CPU:
-                    sethlansNode.setCpuSlotInUse(true);
-                    break;
-                case GPU:
-                    sethlansNode.setAllGPUSlotInUse(true);
-                    break;
-                default:
-                    LOG.error("Invalid compute type, this message should not occur.");
-            }
             if (blenderProject.getProjectStatus().equals(ProjectStatus.Pending)) {
                 blenderProject.setProjectStatus(ProjectStatus.Started);
                 blenderProject.setProjectStart(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
