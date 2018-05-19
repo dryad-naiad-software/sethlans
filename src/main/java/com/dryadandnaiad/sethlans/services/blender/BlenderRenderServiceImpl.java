@@ -63,9 +63,6 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     @Value("${sethlans.binDir}")
     private String binDir;
 
-    @Value("${sethlans.gpu_id}")
-    private String deviceID;
-
     @Value("${sethlans.tileSizeCPU}")
     private String tileSizeCPU;
 
@@ -109,6 +106,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             if (downloadRequiredFiles(renderDir, blendFileDir, renderTask)) {
                 renderTask = renderTaskDatabaseService.saveOrUpdate(renderTask);
                 if (renderTask.getComputeType().equals(ComputeType.GPU)) {
+                    String deviceID = SethlansUtils.getProperty(SethlansConfigKeys.GPU_DEVICE.toString());
                     boolean isCuda = false;
                     List<String> deviceList = Arrays.asList(deviceID.split(","));
                     List<String> deviceIDList = new ArrayList<>();

@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessIdleNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessNodeStatus;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderQueueItem;
+import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
@@ -35,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -181,7 +183,9 @@ class QueueNodeActions {
                                         case GPU:
                                             if (sethlansNode.isCombined()) {
                                                 sethlansNode.setAllGPUSlotInUse(true);
+                                                renderQueueItem.setGpu_device_id("COMBO");
                                             } else {
+                                                renderQueueItem.setGpu_device_id(getFastestGPU(sethlansNode));
                                                 if (sethlansNode.getAvailableRenderingSlots() == 0) {
                                                     sethlansNode.setAllGPUSlotInUse(true);
                                                 }
@@ -246,6 +250,7 @@ class QueueNodeActions {
             String params = "project_name=" + blenderProject.getProjectName() +
                     "&connection_uuid=" + sethlansNode.getConnection_uuid() +
                     "&project_uuid=" + blenderProject.getProject_uuid() +
+                    "&gpu_device_id=" + renderQueueItem.getGpu_device_id() +
                     "&queue_item_uuid=" + renderQueueItem.getQueueItem_uuid() +
                     "&render_output_format=" + blenderProject.getRenderOutputFormat() +
                     "&samples=" + blenderProject.getSamples() +
@@ -268,28 +273,28 @@ class QueueNodeActions {
         }
     }
 
+    private static String getFastestGPU(SethlansNode sethlansNode) {
+        sethlansNode.getSelectedGPUs().sort(Comparator.comparingInt(GPUDevice::getRating));
+        int usedGPU = 99999;
+        String deviceId = "";
+        for (int i = 0; i < sethlansNode.getSelectedGPUs().size(); i++) {
+            if (!sethlansNode.getSelectedGPUs().get(i).isInUse()) {
+                usedGPU = i;
+                deviceId = sethlansNode.getSelectedGPUs().get(i).getDeviceID();
+            }
+        }
+        if (usedGPU != 99999) {
+            sethlansNode.getSelectedGPUs().get(usedGPU).setInUse(true);
+        }
+        return deviceId;
+    }
+
     private static RenderQueueItem setQueueItemComputeType(SethlansNode sethlansNode, RenderQueueItem renderQueueItem) {
         // Before sending to a node the compute type must be either GPU or CPU,  CPU&GPU is only used for sorting at the server level.
-        // Todo Factor in individual gpu rating
         switch (sethlansNode.getComputeType()) {
             case CPU_GPU:
-                if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating() && !sethlansNode.isAllGPUSlotInUse()) {
-                    renderQueueItem.setRenderComputeType(ComputeType.GPU);
-                    return renderQueueItem;
-                } else if (sethlansNode.getCombinedGPURating() > sethlansNode.getCpuRating() && !sethlansNode.isCpuSlotInUse()) {
-                    renderQueueItem.setRenderComputeType(ComputeType.CPU);
-                    return renderQueueItem;
-                } else if (sethlansNode.getCombinedGPURating() == sethlansNode.getCpuRating() && !sethlansNode.isCpuSlotInUse()) {
-                    renderQueueItem.setRenderComputeType(ComputeType.CPU);
-                    return renderQueueItem;
-
-                } else if (sethlansNode.isCpuSlotInUse()) {
-                    renderQueueItem.setRenderComputeType(ComputeType.GPU);
-                    return renderQueueItem;
-
-                } else if (sethlansNode.isAllGPUSlotInUse()) {
-                    renderQueueItem.setRenderComputeType(ComputeType.CPU);
-                    return renderQueueItem;
+                if (sethlansNode.isCombined()) {
+                    if (getFastestFreeCompute(sethlansNode, renderQueueItem)) return renderQueueItem;
                 }
                 break;
             case GPU:
@@ -300,8 +305,28 @@ class QueueNodeActions {
                 return renderQueueItem;
         }
         return null;
-
     }
+
+    private static boolean getFastestFreeCompute(SethlansNode sethlansNode, RenderQueueItem renderQueueItem) {
+        if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating() && !sethlansNode.isAllGPUSlotInUse()) {
+            renderQueueItem.setRenderComputeType(ComputeType.GPU);
+            return true;
+        } else if (sethlansNode.getCombinedGPURating() > sethlansNode.getCpuRating() && !sethlansNode.isCpuSlotInUse()) {
+            renderQueueItem.setRenderComputeType(ComputeType.CPU);
+            return true;
+        } else if (sethlansNode.getCombinedGPURating() == sethlansNode.getCpuRating() && !sethlansNode.isCpuSlotInUse()) {
+            renderQueueItem.setRenderComputeType(ComputeType.CPU);
+            return true;
+        } else if (sethlansNode.isCpuSlotInUse()) {
+            renderQueueItem.setRenderComputeType(ComputeType.GPU);
+            return true;
+        } else if (sethlansNode.isAllGPUSlotInUse()) {
+            renderQueueItem.setRenderComputeType(ComputeType.CPU);
+            return true;
+        }
+        return false;
+    }
+
 
     private static List<SethlansNode> getSortedNodeList(ComputeType computeType, SethlansNodeDatabaseService sethlansNodeDatabaseService) {
         List<SethlansNode> sortedSethlansNodeList = new ArrayList<>();

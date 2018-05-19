@@ -41,6 +41,7 @@ public class RenderQueueItem extends AbstractEntityClass {
     private String project_uuid;
     private String projectName;
     private String queueItem_uuid;
+    private String gpu_device_id;
     private BlenderFramePart blenderFramePart;
     private ComputeType renderComputeType;
     private boolean complete;

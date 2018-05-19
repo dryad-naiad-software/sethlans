@@ -60,5 +60,6 @@ public class RenderTask extends AbstractEntityClass {
     private boolean inProgress;
     private String renderDir;
     private Long renderTime;
+    private String deviceID;
 
 }
