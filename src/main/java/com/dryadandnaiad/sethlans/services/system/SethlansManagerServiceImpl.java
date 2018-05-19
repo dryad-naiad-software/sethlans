@@ -48,7 +48,8 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
             Thread.sleep(5000);
             System.exit(0);
         } catch (InterruptedException e) {
-            LOG.info("System Restart service closed");
+            LOG.info("System Shutdown service closed");
+
         }
 
     }
@@ -60,8 +61,7 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
-            LOG.info("System Shutdown service closed");
-
+            LOG.info("System Restart service closed");
         }
         sethlansState.sethlansActive = false;
         SethlansExecutor sethlansExecutor = SethlansExecutor.getInstance();

@@ -74,7 +74,7 @@ export class NodeScreenComponent implements OnInit {
       this.selectedCores = cores;
     });
 
-    this.http.get('/api/info/total_slots').subscribe((slots: number) => {
+    this.http.get('/api/info/node_total_slots').subscribe((slots: number) => {
       this.totalSlots = slots;
     });
 

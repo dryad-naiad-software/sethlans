@@ -82,7 +82,7 @@ public class NodeInfoController {
         return Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.COMBINE_GPU.toString()));
     }
 
-    @GetMapping(value = {"/total_slots"})
+    @GetMapping(value = {"/node_total_slots"})
     public Integer getTotalSlots() {
         boolean combined = Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.COMBINE_GPU.toString()));
         if (computeType != ComputeType.CPU) {
