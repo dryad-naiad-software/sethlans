@@ -40,6 +40,8 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static com.dryadandnaiad.sethlans.services.queue.QueueNodeActions.*;
+import static com.dryadandnaiad.sethlans.services.queue.QueueNodeStatusActions.processIdleNodes;
+import static com.dryadandnaiad.sethlans.services.queue.QueueNodeStatusActions.processOfflineNodes;
 import static com.dryadandnaiad.sethlans.services.queue.QueueProcessActions.processReceivedFile;
 import static com.dryadandnaiad.sethlans.services.queue.QueueProjectActions.queueProjectActions;
 
@@ -65,6 +67,7 @@ public class QueueServiceImpl implements QueueService {
     private List<ProcessIdleNode> idleNodes = new ArrayList<>();
     private List<QueueActionItem> queueActionItemList = new ArrayList<>();
     private List<ProcessQueueItem> incomingQueueItemList = new ArrayList<>();
+    private List<NodeOnlineItem> nodeOnlineItemList = new ArrayList<>();
 
     @Async
     @Override
@@ -72,7 +75,7 @@ public class QueueServiceImpl implements QueueService {
         try {
             Thread.sleep(20000);
         } catch (InterruptedException e) {
-            LOG.debug("Stopping Blender Queue Service");
+            LOG.debug("Stopping Sethlans Queue Service");
         }
         while (true) {
             try {
@@ -96,8 +99,9 @@ public class QueueServiceImpl implements QueueService {
                 finishProject();
                 incomingCompleteItems();
                 freeIdleNode();
+                nodeOnlineStatus();
             } catch (InterruptedException e) {
-                LOG.debug("Stopping Blender Queue Service");
+                LOG.debug("Stopping Sethlans Queue Service");
                 break;
             }
         }
@@ -116,6 +120,11 @@ public class QueueServiceImpl implements QueueService {
     @Override
     public void nodeAcknowledgeQueueItem(String queue_uuid) {
         nodeStatuses.add(new ProcessNodeStatus(queue_uuid, true));
+    }
+
+    @Override
+    public void nodeStatusUpdateItem(String connection_uuid, boolean online) {
+        nodeOnlineItemList.add(new NodeOnlineItem(connection_uuid, online));
     }
 
     @Override
@@ -199,6 +208,20 @@ public class QueueServiceImpl implements QueueService {
                             renderQueueDatabaseService, blenderProjectDatabaseService, processedNodes);
                 }
                 idleNodes.removeAll(processedNodes);
+            }
+            modifyingQueue = false;
+        }
+    }
+
+    private void nodeOnlineStatus() {
+        if (!modifyingQueue) {
+            modifyingQueue = true;
+            if (nodeOnlineItemList.size() > 0) {
+                List<NodeOnlineItem> processedStatusNodes = new ArrayList<>();
+                for (NodeOnlineItem nodeOnlineItem : new ArrayList<>(nodeOnlineItemList)) {
+                    processOfflineNodes(sethlansNodeDatabaseService, nodeOnlineItem, renderQueueDatabaseService, blenderProjectDatabaseService, processedStatusNodes);
+                }
+                nodeOnlineItemList.removeAll(processedStatusNodes);
             }
             modifyingQueue = false;
         }

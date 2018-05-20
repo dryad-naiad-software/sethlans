@@ -21,7 +21,6 @@ package com.dryadandnaiad.sethlans.services.queue;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
-import com.dryadandnaiad.sethlans.domains.database.queue.ProcessIdleNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessNodeStatus;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
@@ -84,57 +83,7 @@ class QueueNodeActions {
         itemsProcessed.add(processNodeStatus);
     }
 
-    static void processIdleNodes(SethlansNodeDatabaseService sethlansNodeDatabaseService,
-                                 ProcessIdleNode idleNode, RenderQueueDatabaseService renderQueueDatabaseService,
-                                 BlenderProjectDatabaseService blenderProjectDatabaseService, List<ProcessIdleNode> processedNodes) {
-        SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(idleNode.getConnectionUUID());
-        if (sethlansNode.isBenchmarkComplete()) {
-            LOG.debug("Received idle notification from  " + sethlansNode.getHostname());
-            switch (idleNode.getComputeType()) {
-                case GPU:
-                    sethlansNode.setAllGPUSlotInUse(false);
-                    if (sethlansNode.isCombined()) {
-                        sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                    } else {
-                        if (sethlansNode.getAvailableRenderingSlots() == 1) {
-                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                        } else {
-                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
-                        }
-                    }
-                    sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                    break;
-                case CPU:
-                    sethlansNode.setCpuSlotInUse(false);
-                    sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                    sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                    break;
-                case CPU_GPU:
-                    sethlansNode.setCpuSlotInUse(false);
-                    sethlansNode.setAllGPUSlotInUse(false);
-                    sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                    sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                    break;
-            }
 
-            List<RenderQueueItem> listOfItemsWIthNode = renderQueueDatabaseService.listQueueItemsByConnectionUUID(idleNode.getConnectionUUID());
-            List<RenderQueueItem> queueItemsNotComplete = new ArrayList<>();
-            for (RenderQueueItem renderQueueItem : listOfItemsWIthNode) {
-                if (!renderQueueItem.isComplete()) {
-                    queueItemsNotComplete.add(renderQueueItem);
-                }
-            }
-            LOG.debug("Number of queue items assigned to " + sethlansNode.getHostname() + ": " + queueItemsNotComplete.size());
-            for (RenderQueueItem renderQueueItem : queueItemsNotComplete) {
-                renderQueueItem.setConnection_uuid(null);
-                renderQueueItem.setRendering(false);
-                BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
-                renderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
-                renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
-            }
-        }
-        processedNodes.add(idleNode);
-    }
 
     static void assignToNode(RenderQueueDatabaseService renderQueueDatabaseService, SethlansNodeDatabaseService sethlansNodeDatabaseService) {
         List<RenderQueueItem> renderQueueItemList = renderQueueDatabaseService.listPendingRender();
