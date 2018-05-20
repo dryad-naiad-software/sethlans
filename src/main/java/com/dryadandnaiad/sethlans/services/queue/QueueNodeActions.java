@@ -221,6 +221,11 @@ class QueueNodeActions {
                             + renderQueueItem.getBlenderFramePart().getFrameNumber() + " Part: "
                             + renderQueueItem.getBlenderFramePart().getPartNumber() + " is updated.");
                     renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
