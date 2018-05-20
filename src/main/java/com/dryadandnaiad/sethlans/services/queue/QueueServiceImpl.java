@@ -80,31 +80,29 @@ public class QueueServiceImpl implements QueueService {
         while (true) {
             try {
                 Thread.sleep(100);
-                incomingCompleteItems();
+                assignmentWorflow();
                 projectActions();
-                processNodeAcknowledgements();
-                incomingCompleteItems();
+                processingWorkflow();
                 projectActions();
-                assignQueueItemToNode();
-                projectActions();
-                sendQueueItemsToAssignedNode();
-                projectActions();
-                processNodeAcknowledgements();
-                incomingCompleteItems();
-                projectActions();
-                processReceivedFiles();
-                projectActions();
-                processImages();
-                projectActions();
-                finishProject();
-                incomingCompleteItems();
-                freeIdleNode();
-                nodeOnlineStatus();
             } catch (InterruptedException e) {
                 LOG.debug("Stopping Sethlans Queue Service");
                 break;
             }
         }
+    }
+
+    private void assignmentWorflow() {
+        freeIdleNode();
+        assignQueueItemToNode();
+        sendQueueItemsToAssignedNode();
+        processNodeAcknowledgements();
+    }
+
+    private void processingWorkflow() {
+        incomingCompleteItems();
+        processReceivedFiles();
+        processImages();
+        finishProject();
     }
 
     @Override
