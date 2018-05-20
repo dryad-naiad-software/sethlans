@@ -78,7 +78,6 @@ public class QueueServiceImpl implements QueueService {
             try {
                 Thread.sleep(100);
                 incomingCompleteItems();
-                freeIdleNode();
                 projectActions();
                 processNodeAcknowledgements();
                 incomingCompleteItems();
@@ -95,6 +94,8 @@ public class QueueServiceImpl implements QueueService {
                 processImages();
                 projectActions();
                 finishProject();
+                incomingCompleteItems();
+                freeIdleNode();
             } catch (InterruptedException e) {
                 LOG.debug("Stopping Blender Queue Service");
                 break;
