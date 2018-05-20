@@ -216,6 +216,10 @@ class QueueNodeActions {
                             }
                             break;
                     }
+                    LOG.debug(renderQueueItem.getProjectName() + " uuid: " +
+                            renderQueueItem.getProject_uuid() + " Frame: "
+                            + renderQueueItem.getBlenderFramePart().getFrameNumber() + " Part: "
+                            + renderQueueItem.getBlenderFramePart().getPartNumber() + " is updated.");
                     renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
                 }
             }
