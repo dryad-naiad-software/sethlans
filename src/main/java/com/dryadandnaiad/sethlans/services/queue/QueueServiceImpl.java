@@ -80,6 +80,7 @@ public class QueueServiceImpl implements QueueService {
         while (true) {
             try {
                 Thread.sleep(100);
+                nodeOnlineStatus();
                 assignmentWorflow();
                 projectActions();
                 processingWorkflow();
