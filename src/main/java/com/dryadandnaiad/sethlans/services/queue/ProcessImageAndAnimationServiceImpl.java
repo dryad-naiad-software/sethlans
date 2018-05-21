@@ -112,7 +112,10 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
                 count++;
             }
             ImageIO.write(concatImage, fileExtension.toUpperCase(), new File(frameFilename));
-        } catch (IOException | IndexOutOfBoundsException e) {
+        } catch (IOException e) {
+            LOG.error(Throwables.getStackTraceAsString(e));
+        } catch (IndexOutOfBoundsException e) {
+            LOG.error("Possible node idle collision");
             LOG.error(Throwables.getStackTraceAsString(e));
         }
         blenderProject.getFrameFileNames().add(frameFilename);
