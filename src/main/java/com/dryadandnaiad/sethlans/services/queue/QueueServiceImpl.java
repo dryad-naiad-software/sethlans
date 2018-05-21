@@ -204,7 +204,7 @@ public class QueueServiceImpl implements QueueService {
                 List<ProcessIdleNode> processedNodes = new ArrayList<>();
                 for (ProcessIdleNode idleNode : new ArrayList<>(idleNodes)) {
                     processIdleNodes(sethlansNodeDatabaseService, idleNode,
-                            renderQueueDatabaseService, blenderProjectDatabaseService, processedNodes);
+                            renderQueueDatabaseService, blenderProjectDatabaseService, processedNodes, incomingQueueItemList);
                 }
                 idleNodes.removeAll(processedNodes);
             }

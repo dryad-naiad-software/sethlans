@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.NodeOnlineItem;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessIdleNode;
+import com.dryadandnaiad.sethlans.domains.database.queue.ProcessQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderQueueItem;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.RenderQueueDatabaseService;
@@ -90,9 +91,16 @@ public class QueueNodeStatusActions {
 
     static void processIdleNodes(SethlansNodeDatabaseService sethlansNodeDatabaseService,
                                  ProcessIdleNode idleNode, RenderQueueDatabaseService renderQueueDatabaseService,
-                                 BlenderProjectDatabaseService blenderProjectDatabaseService, List<ProcessIdleNode> processedNodes) {
+                                 BlenderProjectDatabaseService blenderProjectDatabaseService, List<ProcessIdleNode> processedNodes, List<ProcessQueueItem> incomingQueueItemList) {
         SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(idleNode.getConnectionUUID());
-        if (sethlansNode.isBenchmarkComplete()) {
+        boolean waitingTobeProcessed = false;
+        // Verify that the current node isn't waiting to be processed.
+        for (ProcessQueueItem processQueueItem : incomingQueueItemList) {
+            if (processQueueItem.getConnection_uuid().equals(idleNode.getConnectionUUID())) {
+                waitingTobeProcessed = true;
+            }
+        }
+        if (sethlansNode.isBenchmarkComplete() && !waitingTobeProcessed) {
             LOG.debug("Received idle notification from  " + sethlansNode.getHostname());
             switch (idleNode.getComputeType()) {
                 case GPU:
