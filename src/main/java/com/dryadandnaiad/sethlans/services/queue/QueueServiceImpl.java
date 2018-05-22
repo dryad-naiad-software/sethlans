@@ -39,8 +39,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static com.dryadandnaiad.sethlans.services.queue.QueueNodeActions.*;
-import static com.dryadandnaiad.sethlans.services.queue.QueueNodeStatusActions.processIdleNodes;
-import static com.dryadandnaiad.sethlans.services.queue.QueueNodeStatusActions.processOfflineNodes;
+import static com.dryadandnaiad.sethlans.services.queue.QueueNodeStatusActions.*;
 import static com.dryadandnaiad.sethlans.services.queue.QueueProcessActions.processReceivedFile;
 import static com.dryadandnaiad.sethlans.services.queue.QueueProjectActions.queueProjectActions;
 
@@ -67,6 +66,7 @@ public class QueueServiceImpl implements QueueService {
     private List<QueueActionItem> queueActionItemList = new ArrayList<>();
     private List<ProcessQueueItem> incomingQueueItemList = new ArrayList<>();
     private Set<NodeOnlineItem> nodeOnlineItemList = new HashSet<>();
+    private List<Long> nodesToDelete = new ArrayList<>();
 
     @Async
     @Override
@@ -93,6 +93,7 @@ public class QueueServiceImpl implements QueueService {
 
     private void assignmentWorflow() {
         nodeOnlineStatus();
+        processNodeDeletion();
         freeIdleNode();
         assignQueueItemToNode();
         sendQueueItemsToAssignedNode();
@@ -101,6 +102,7 @@ public class QueueServiceImpl implements QueueService {
 
     private void processingWorkflow() {
         nodeOnlineStatus();
+        processNodeDeletion();
         incomingCompleteItems();
         processReceivedFiles();
         processImages();
@@ -110,6 +112,11 @@ public class QueueServiceImpl implements QueueService {
     @Override
     public void queueIdleNode(String connection_uuid, ComputeType computeType) {
         idleNodes.add(new ProcessIdleNode(connection_uuid, computeType));
+    }
+
+    @Override
+    public void addNodeToDeleteQueue(Long id) {
+        nodesToDelete.add(id);
     }
 
     @Override
@@ -132,16 +139,28 @@ public class QueueServiceImpl implements QueueService {
         incomingQueueItemList.add(processQueueItem);
     }
 
+    private void processNodeDeletion() {
+        if (!modifyingQueue) {
+            modifyingQueue = true;
+            if (nodesToDelete.size() > 0) {
+                List<Long> idsReviewed = new ArrayList<>();
+                for (Long id : new ArrayList<>(nodesToDelete)) {
+                    deleteNodes(id, sethlansNodeDatabaseService, renderQueueDatabaseService, blenderProjectDatabaseService);
+                    idsReviewed.add(id);
+                }
+                nodesToDelete.removeAll(idsReviewed);
+            }
+        }
+        modifyingQueue = false;
+    }
+
     private void incomingCompleteItems() {
         if (!modifyingQueue) {
             modifyingQueue = true;
-
             if (incomingQueueItemList.size() > 0) {
                 List<ProcessQueueItem> itemsReviewed = new ArrayList<>();
-
                 for (ProcessQueueItem processQueueItem : new ArrayList<>(incomingQueueItemList)) {
                     try {
-
                         processQueueDatabaseService.saveOrUpdate(processQueueItem);
                         RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processQueueItem.getQueueUUID());
                         SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(processQueueItem.getConnection_uuid());
