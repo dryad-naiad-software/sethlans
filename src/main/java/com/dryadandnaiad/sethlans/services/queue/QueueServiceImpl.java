@@ -79,7 +79,6 @@ public class QueueServiceImpl implements QueueService {
         while (true) {
             try {
                 Thread.sleep(100);
-                nodeOnlineStatus();
                 projectActions();
                 assignmentWorflow();
                 projectActions();
@@ -93,6 +92,7 @@ public class QueueServiceImpl implements QueueService {
     }
 
     private void assignmentWorflow() {
+        nodeOnlineStatus();
         freeIdleNode();
         assignQueueItemToNode();
         sendQueueItemsToAssignedNode();
@@ -100,6 +100,7 @@ public class QueueServiceImpl implements QueueService {
     }
 
     private void processingWorkflow() {
+        nodeOnlineStatus();
         incomingCompleteItems();
         processReceivedFiles();
         processImages();
