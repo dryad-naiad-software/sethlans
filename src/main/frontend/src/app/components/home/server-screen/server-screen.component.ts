@@ -115,7 +115,7 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
       this.inactiveNodes = inactiveNodes;
     });
 
-    this.http.get('/api/info/total_slots').subscribe((totalSlots: number) => {
+    this.http.get('/api/info/server_total_slots').subscribe((totalSlots: number) => {
       this.totalSlots = totalSlots;
     });
     this.projectService.getProjectListInProgress().subscribe(value => {

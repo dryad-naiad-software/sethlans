@@ -73,27 +73,33 @@ public class NodeInfoController {
     }
 
     @RequestMapping(value = "/nodeinfo", method = RequestMethod.GET)
-    public NodeInfo nodeInfo() {
-        LOG.debug("Node info requested.");
-        NodeInfo nodeInfo = new NodeInfo();
-        nodeInfo.populateNodeInfo();
+    public NodeInfo getNodeInfo() {
+        return SethlansUtils.getNodeInfo();
+    }
 
-        nodeInfo.setNetworkPort(sethlansPort);
-        nodeInfo.setComputeType(computeType);
+    @GetMapping(value = {"/is_gpu_combined"})
+    public Boolean isGpuCombined() {
+        return Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.COMBINE_GPU.toString()));
+    }
 
-        if (computeType == ComputeType.CPU_GPU || computeType == ComputeType.CPU) {
-            nodeInfo.setCpuinfo();
-            nodeInfo.setSelectedCores(cores);
+    @GetMapping(value = {"/node_total_slots"})
+    public Integer getTotalSlots() {
+        boolean combined = Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.COMBINE_GPU.toString()));
+        if (computeType != ComputeType.CPU) {
+            if (combined) {
+                return 2;
+            } else {
+                NodeInfo nodeInfo = getNodeInfo();
+                if (computeType != ComputeType.GPU) {
+                    return nodeInfo.getSelectedGPUs().size() + 1; // This logic leads to CPU GPU mode so the CPU is added as another slot
+                } else {
+                    return nodeInfo.getSelectedGPUs().size();
+                }
+
+            }
+        } else {
+            return 1;
         }
-
-        if (computeType == ComputeType.GPU || computeType == ComputeType.CPU_GPU) {
-            List<String> deviceList = Arrays.asList(deviceID.split(","));
-            nodeInfo.setCpuinfo();
-            nodeInfo.setSelectedDeviceID(deviceList);
-            nodeInfo.setSelectedGPUs();
-
-        }
-        return nodeInfo;
     }
 
     @GetMapping(value = {"/available_methods"})
@@ -162,7 +168,7 @@ public class NodeInfoController {
 
     @GetMapping(value = {"/selected_cores"})
     public String selectedCores() {
-        return SethlansUtils.getCores();
+        return SethlansUtils.getSelectedCores();
     }
 
 

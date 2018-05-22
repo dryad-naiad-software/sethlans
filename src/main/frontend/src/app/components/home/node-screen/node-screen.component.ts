@@ -38,6 +38,8 @@ export class NodeScreenComponent implements OnInit {
   usedSpace: number;
   selectedGPUModels: string[];
   availableGPUs: GPU[];
+  totalSlots: number;
+  gpuCombined: boolean;
 
 
   constructor(private http: HttpClient) {
@@ -60,12 +62,20 @@ export class NodeScreenComponent implements OnInit {
       this.totalMemory = memory;
     });
 
+    this.http.get('/api/info/is_gpu_combined').subscribe((isCombined: any) => {
+      this.gpuCombined = isCombined;
+    });
+
     this.http.get('/api/info/cpu_name', {responseType: 'text'}).subscribe((cpuName: string) => {
       this.cpuName = cpuName;
     });
 
     this.http.get('/api/info/selected_cores', {responseType: 'text'}).subscribe((cores: string) => {
       this.selectedCores = cores;
+    });
+
+    this.http.get('/api/info/node_total_slots').subscribe((slots: number) => {
+      this.totalSlots = slots;
     });
 
     this.http.get('/api/info/client_free_space').subscribe((freespace: number) => {

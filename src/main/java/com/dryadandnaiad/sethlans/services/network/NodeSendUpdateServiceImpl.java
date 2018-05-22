@@ -21,8 +21,8 @@ package com.dryadandnaiad.sethlans.services.network;
 
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderTask;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
+import com.dryadandnaiad.sethlans.domains.info.NodeInfo;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.RenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -68,48 +69,58 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
             Thread.sleep(15000);
             LOG.debug("Starting Idle Notification Service.");
             int counter = 0;
-            ComputeType computeType = ComputeType.valueOf(SethlansUtils.getProperty(SethlansConfigKeys.COMPUTE_METHOD.toString()));
-            int slots;
-            if (computeType.equals(ComputeType.CPU_GPU)) {
-                slots = 2;
-            } else {
-                slots = 1;
+            NodeInfo nodeInfo = SethlansUtils.getNodeInfo();
+            ComputeType computeType = nodeInfo.getComputeType();
+            int slots = 0;
+            switch (computeType) {
+                case CPU:
+                    slots = 1;
+                    break;
+                case GPU:
+                    if (nodeInfo.isCombined()) {
+                        slots = 1;
+                    } else {
+                        slots = nodeInfo.getSelectedGPUs().size();
+                    }
+                    break;
+                case CPU_GPU:
+                    if (nodeInfo.isCombined()) {
+                        slots = 2;
+                    } else {
+                        slots = nodeInfo.getSelectedGPUs().size() + 1;
+                    }
+
             }
             while (true) {
                 try {
                     Thread.sleep(1000);
 
                     if (sethlansServerDatabaseService.listActive().size() > 0 && blenderBenchmarkTaskDatabaseService.allBenchmarksComplete()) {
-                        if (renderTaskDatabaseService.listAll().size() == 0) {
-                            counter++;
-                        }
-                        if (slots == 2 && renderTaskDatabaseService.listAll().size() == 1) {
-                            counter++;
-                        }
-                        if (slots == 2 && renderTaskDatabaseService.listAll().size() == 2) {
+                        if (slots == renderTaskDatabaseService.listAll().size()) {
                             counter = 0;
                         }
-                        if (slots == 1 && renderTaskDatabaseService.listAll().size() == 1) {
-                            counter = 0;
+                        if (slots > renderTaskDatabaseService.listAll().size()) {
+                            counter++;
                         }
-                        if (counter > 89) {
+                        if (counter > 299) {
                             LOG.debug("Informing server of idle slot(s)");
                             counter = 0;
                             if (slots == 1) {
                                 sendIdleUpdate(computeType);
                             }
-                            if (slots == 2) {
+                            if (slots > 1) {
                                 if (renderTaskDatabaseService.listAll().size() == 0) {
                                     sendIdleUpdate(computeType);
                                 } else {
+                                    List<ComputeType> computeTypeList = new ArrayList<>();
                                     for (RenderTask renderTask : renderTaskDatabaseService.listAll()) {
-                                        if (renderTask.getComputeType().equals(ComputeType.CPU)) {
-                                            sendIdleUpdate(ComputeType.GPU);
+                                        computeTypeList.add(renderTask.getComputeType());
+                                    }
+                                    if (computeTypeList.contains(ComputeType.CPU)) {
+                                        sendIdleUpdate(ComputeType.GPU);
+                                    } else {
+                                        sendIdleUpdate(ComputeType.CPU);
 
-                                        } else {
-                                            sendIdleUpdate(ComputeType.CPU);
-
-                                        }
                                     }
                                 }
                             }

@@ -91,7 +91,7 @@ public class ServerInfoController {
         return numberOfActiveNodesArray;
     }
 
-    @GetMapping(value = {"/total_slots"})
+    @GetMapping(value = {"/server_total_slots"})
     public int getTotalSlots() {
         int totalSlotsCount = 0;
         for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {

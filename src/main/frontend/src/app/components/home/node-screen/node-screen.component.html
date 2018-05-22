@@ -32,6 +32,8 @@
           <li *ngFor="let gpu of selectedGPUModels"><i>{{gpu}}</i></li>
         </ul>
       </li>
+      <li *ngIf="computeType?.valueOf().toString() != 'CPU'.valueOf()">Combined GPU Rendering: <i>{{gpuCombined}}</i>
+      </li>
     </ul>
   </div>
 
@@ -64,8 +66,7 @@
     <h5>Render Information</h5>
     <ul>
       <li>Number of Render Slots:
-        <i *ngIf="computeType?.valueOf().toString() == 'CPU_GPU'.valueOf()">2</i>
-        <i *ngIf="computeType?.valueOf().toString() != 'CPU_GPU'.valueOf()">1</i>
+        <i>{{totalSlots}}</i>
       </li>
     </ul>
 

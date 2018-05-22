@@ -48,6 +48,15 @@ public class RenderTaskDatabaseServiceImpl implements RenderTaskDatabaseService 
     }
 
     @Override
+    public List<String> deviceList() {
+        List<String> deviceList = new ArrayList<>();
+        for (RenderTask renderTask : listAll()) {
+            deviceList.add(renderTask.getDeviceID());
+        }
+        return deviceList;
+    }
+
+    @Override
     public RenderTask getById(Long id) {
         return renderTaskRepository.findOne(id);
     }

@@ -165,7 +165,12 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
         pythonSetupService.installPython(binDirectory);
         pythonSetupService.setupScripts(scriptsDirectory);
         LOG.info("Setup complete complete. Restarting Sethlans");
-        sethlansManagerService.restart();
+        try {
+            Thread.sleep(5000);
+            sethlansManagerService.restart();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void createDirectories(File directory) {

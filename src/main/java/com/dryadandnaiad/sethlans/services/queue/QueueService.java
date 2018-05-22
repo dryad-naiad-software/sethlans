@@ -45,6 +45,8 @@ public interface QueueService {
 
     void nodeAcknowledgeQueueItem(String queue_uuid);
 
+    void nodeStatusUpdateItem(String connection_uuid, boolean online);
+
     void addItemToProcess(ProcessQueueItem processQueueItem);
 
     void queueIdleNode(String connection_uuid, ComputeType computeType);

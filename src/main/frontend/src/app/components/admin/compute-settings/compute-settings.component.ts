@@ -37,6 +37,7 @@ export class ComputeSettingsComponent implements OnInit {
   availableGPUs: GPU[] = [];
   currentNode: Node = new Node();
   newNode: Node = new Node();
+  gpuCombined: boolean;
 
   constructor(private http: HttpClient, private router: Router, private modalService: NgbModal) {
   }
@@ -92,6 +93,10 @@ export class ComputeSettingsComponent implements OnInit {
         }
         console.log(this.currentNode.getSelectedGPUs());
       });
+    this.http.get('/api/info/is_gpu_combined').subscribe((isCombined: any) => {
+      this.gpuCombined = isCombined;
+      this.newNode.combined = isCombined;
+    });
     this.http.get('/api/management/current_cores')
       .subscribe((currentCores: any) => {
         if (currentCores == 0) {
@@ -114,17 +119,20 @@ export class ComputeSettingsComponent implements OnInit {
       });
   }
 
-  selected(event, gpu: GPU) {
+  selected(event, string) {
     let checked = event.currentTarget.checked;
-    console.log(event.currentTarget.checked);
     if (checked) {
-      gpu.selected = true;
-      this.newNode.getSelectedGPUs().push(gpu);
+      let currentNode = this.newNode;
+      this.availableGPUs.forEach(function (value) {
+        if (value.deviceID == string) {
+          currentNode.selectedGPUs.push(value);
+        }
+      });
       this.newNode.setGpuEmpty(false);
     } else if (!checked) {
       let selectedGPUs = this.newNode.getSelectedGPUs();
       for (let i = 0; i < selectedGPUs.length; i++) {
-        if (selectedGPUs[i].deviceID == gpu.deviceID) {
+        if (selectedGPUs[i].deviceID == string) {
           this.newNode.getSelectedGPUs().splice(i, 1);
         }
       }

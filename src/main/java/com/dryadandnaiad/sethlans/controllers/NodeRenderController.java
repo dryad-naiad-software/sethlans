@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderTask;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
+import com.dryadandnaiad.sethlans.domains.info.NodeInfo;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
@@ -69,7 +70,7 @@ public class NodeRenderController {
 
     @RequestMapping(value = "/api/render/request", method = RequestMethod.POST)
     public void renderRequest(@RequestParam String project_name, @RequestParam String connection_uuid, @RequestParam String project_uuid,
-                              @RequestParam String queue_item_uuid,
+                              @RequestParam String queue_item_uuid, @RequestParam String gpu_device_id,
                               @RequestParam RenderOutputFormat render_output_format,
                               @RequestParam int samples, @RequestParam BlenderEngine blender_engine, @RequestParam ComputeType compute_type,
                               @RequestParam String blend_file, @RequestParam String blender_version,
@@ -81,15 +82,45 @@ public class NodeRenderController {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
             ComputeType computeType = ComputeType.valueOf(SethlansUtils.getProperty(SethlansConfigKeys.COMPUTE_METHOD.toString()));
+            NodeInfo nodeInfo = SethlansUtils.getNodeInfo();
             LOG.debug("Render Request Received, preparing render task.");
             List<RenderTask> renderTaskList = renderTaskDatabaseService.listAll();
-            if (computeType == ComputeType.CPU_GPU && renderTaskList.size() == 2 || computeType != ComputeType.CPU_GPU && renderTaskList.size() == 1) {
-                LOG.debug("All slots are currently full. Rejecting request");
-                SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connection_uuid);
-                String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_reject_item/";
-                String params = "queue_item_uuid=" + queue_item_uuid;
-                sethlansAPIConnectionService.sendToRemoteGET(connectionURL, params);
-            } else {
+            boolean rejected = false;
+            switch (computeType) {
+                case CPU_GPU:
+                    if (nodeInfo.isCombined()) {
+                        if (renderTaskList.size() == 2) {
+                            rejectRequest(connection_uuid, queue_item_uuid);
+                            rejected = true;
+                        }
+                    } else {
+                        if (renderTaskList.size() == (nodeInfo.getSelectedGPUs().size() + 1)) {
+                            rejectRequest(connection_uuid, queue_item_uuid);
+                            rejected = true;
+                        }
+                    }
+                    break;
+                case GPU:
+                    if (nodeInfo.isCombined()) {
+                        if (renderTaskList.size() == 1) {
+                            rejectRequest(connection_uuid, queue_item_uuid);
+                            rejected = true;
+                        }
+                    } else {
+                        if (renderTaskList.size() == nodeInfo.getSelectedGPUs().size()) {
+                            rejectRequest(connection_uuid, queue_item_uuid);
+                            rejected = true;
+                        }
+                    }
+                    break;
+                case CPU:
+                    if (renderTaskList.size() == (nodeInfo.getSelectedGPUs().size() + 1)) {
+                        rejectRequest(connection_uuid, queue_item_uuid);
+                        rejected = true;
+                    }
+                    break;
+            }
+            if (!rejected) {
                 LOG.debug("Adding task to render queue.");
                 SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connection_uuid);
                 String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_accept_item/";
@@ -122,11 +153,29 @@ public class NodeRenderController {
                 renderTask.setTaskResolutionY(part_resolution_y);
                 renderTask.setPartResPercentage(part_res_percentage);
                 renderTask.setComplete(false);
+
+                if (compute_type == ComputeType.GPU) {
+                    if (nodeInfo.isCombined()) {
+                        renderTask.setDeviceID("COMBO");
+                    } else {
+                        renderTask.setDeviceID(gpu_device_id);
+                    }
+                } else {
+                    renderTask.setDeviceID("CPU");
+                }
                 LOG.debug(renderTask.toString());
                 renderTaskDatabaseService.saveOrUpdate(renderTask);
                 blenderRenderService.startRender(renderTask.getServer_queue_uuid());
             }
         }
+    }
+
+    private void rejectRequest(@RequestParam String connection_uuid, @RequestParam String queue_item_uuid) {
+        LOG.debug("All slots are currently full. Rejecting request");
+        SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connection_uuid);
+        String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_reject_item/";
+        String params = "queue_item_uuid=" + queue_item_uuid;
+        sethlansAPIConnectionService.sendToRemoteGET(connectionURL, params);
     }
 
     @RequestMapping(value = "/api/benchmark/request", method = RequestMethod.POST)

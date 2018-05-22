@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderTask;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
+import com.dryadandnaiad.sethlans.domains.info.NodeInfo;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
@@ -63,9 +64,6 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     @Value("${sethlans.binDir}")
     private String binDir;
 
-    @Value("${sethlans.gpu_id}")
-    private String deviceID;
-
     @Value("${sethlans.tileSizeCPU}")
     private String tileSizeCPU;
 
@@ -100,51 +98,77 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     @Override
     @Async
     public void startRender(String queueUUID) {
-            RenderTask renderTask = renderTaskDatabaseService.getByQueueUUID(queueUUID);
-            renderTask.setInProgress(true);
-            String cacheDir = SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString());
-            File blendFileDir = new File(SethlansUtils.getProperty(SethlansConfigKeys.BLEND_FILE_CACHE_DIR.toString())
-                    + File.separator + renderTask.getProjectName().toLowerCase().replace(" ", "_") + "-" + renderTask.getProject_uuid());
-            File renderDir = new File(cacheDir + File.separator + renderTask.getBlenderFramePart().getPartFilename());
-            if (downloadRequiredFiles(renderDir, blendFileDir, renderTask)) {
-                renderTask = renderTaskDatabaseService.saveOrUpdate(renderTask);
-                if (renderTask.getComputeType().equals(ComputeType.GPU)) {
-                    boolean isCuda = false;
-                    List<String> deviceList = Arrays.asList(deviceID.split(","));
-                    List<String> deviceIDList = new ArrayList<>();
-                    LOG.debug("Running render task using " + deviceID);
-                    for (String device : deviceList) {
-                        deviceIDList.add(StringUtils.substringAfter(device, "_"));
-                        isCuda = SethlansUtils.isCuda(device);
-                    }
-                    String script = blenderPythonScriptService.writeRenderPythonScript(renderTask.getComputeType(),
-                            renderTask.getRenderDir(), deviceIDList,
-                            getUnselectedIds(deviceList), isCuda,
-                            renderTask.getRenderOutputFormat(),
-                            tileSizeGPU,
-                            renderTask.getTaskResolutionX(),
-                            renderTask.getTaskResolutionY(),
-                            renderTask.getPartResPercentage(),
-                            renderTask.getSamples(),
-                            renderTask.getBlenderFramePart().getPartPositionMaxY(),
-                            renderTask.getBlenderFramePart().getPartPositionMinY());
-                    saveOnSuccess(renderTask, script);
+        RenderTask renderTask = renderTaskDatabaseService.getByQueueUUID(queueUUID);
+        renderTask.setInProgress(true);
+        NodeInfo nodeInfo = SethlansUtils.getNodeInfo();
+        String cacheDir = SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString());
+        File blendFileDir = new File(SethlansUtils.getProperty(SethlansConfigKeys.BLEND_FILE_CACHE_DIR.toString())
+                + File.separator + renderTask.getProjectName().toLowerCase().replace(" ", "_") + "-" + renderTask.getProject_uuid());
+        File renderDir = new File(cacheDir + File.separator + renderTask.getBlenderFramePart().getPartFilename());
+        if (downloadRequiredFiles(renderDir, blendFileDir, renderTask)) {
+            renderTask = renderTaskDatabaseService.saveOrUpdate(renderTask);
+            String script;
+            if (renderTask.getComputeType().equals(ComputeType.GPU)) {
+                script = setDeviceID(renderTask, nodeInfo);
+                saveOnSuccess(renderTask, script);
 
-                } else {
-                    LOG.debug("Running render task using CPU");
-                    List<String> emptyList = new ArrayList<>();
-                    String script = blenderPythonScriptService.writeRenderPythonScript(renderTask.getComputeType(),
-                            renderTask.getRenderDir(), emptyList,
-                            emptyList, false, renderTask.getRenderOutputFormat(), tileSizeCPU,
-                            renderTask.getTaskResolutionX(),
-                            renderTask.getTaskResolutionY(),
-                            renderTask.getPartResPercentage(),
-                            renderTask.getSamples(),
-                            renderTask.getBlenderFramePart().getPartPositionMaxY(),
-                            renderTask.getBlenderFramePart().getPartPositionMinY());
-                    saveOnSuccess(renderTask, script);
-                }
+            } else {
+                LOG.debug("Running render task using CPU");
+                List<String> emptyList = new ArrayList<>();
+                script = blenderPythonScriptService.writeRenderPythonScript(renderTask.getComputeType(),
+                        renderTask.getRenderDir(), emptyList,
+                        emptyList, false, renderTask.getRenderOutputFormat(), tileSizeCPU,
+                        renderTask.getTaskResolutionX(),
+                        renderTask.getTaskResolutionY(),
+                        renderTask.getPartResPercentage(),
+                        renderTask.getSamples(),
+                        renderTask.getBlenderFramePart().getPartPositionMaxY(),
+                        renderTask.getBlenderFramePart().getPartPositionMinY());
+                saveOnSuccess(renderTask, script);
             }
+        }
+    }
+
+    private String setDeviceID(RenderTask renderTask, NodeInfo nodeInfo) {
+        String script;
+        String deviceID = SethlansUtils.getProperty(SethlansConfigKeys.GPU_DEVICE.toString());
+        List<String> deviceList = Arrays.asList(deviceID.split(","));
+        List<String> deviceIDList = new ArrayList<>();
+        if (nodeInfo.isCombined()) {
+            boolean isCuda = false;
+            LOG.debug("Running render task using " + deviceID);
+            for (String device : deviceList) {
+                deviceIDList.add(StringUtils.substringAfter(device, "_"));
+                isCuda = SethlansUtils.isCuda(device);
+            }
+            script = blenderPythonScriptService.writeRenderPythonScript(renderTask.getComputeType(),
+                    renderTask.getRenderDir(), deviceIDList,
+                    getUnselectedIds(deviceList), isCuda,
+                    renderTask.getRenderOutputFormat(),
+                    tileSizeGPU,
+                    renderTask.getTaskResolutionX(),
+                    renderTask.getTaskResolutionY(),
+                    renderTask.getPartResPercentage(),
+                    renderTask.getSamples(),
+                    renderTask.getBlenderFramePart().getPartPositionMaxY(),
+                    renderTask.getBlenderFramePart().getPartPositionMinY());
+        } else {
+            LOG.debug("Running render task using " + renderTask.getDeviceID());
+            boolean isCuda = SethlansUtils.isCuda(renderTask.getDeviceID());
+            deviceIDList.add(StringUtils.substringAfter(renderTask.getDeviceID(), "_"));
+            script = blenderPythonScriptService.writeRenderPythonScript(renderTask.getComputeType(),
+                    renderTask.getRenderDir(), deviceIDList,
+                    getUnselectedIds(deviceList), isCuda,
+                    renderTask.getRenderOutputFormat(),
+                    tileSizeGPU,
+                    renderTask.getTaskResolutionX(),
+                    renderTask.getTaskResolutionY(),
+                    renderTask.getPartResPercentage(),
+                    renderTask.getSamples(),
+                    renderTask.getBlenderFramePart().getPartPositionMaxY(),
+                    renderTask.getBlenderFramePart().getPartPositionMinY());
+        }
+        return script;
     }
 
     private void saveOnSuccess(RenderTask renderTask, String script) {

@@ -70,7 +70,12 @@ public class NodeSetupController {
         if (setupNode != null) {
             LOG.debug(setupNode.toString());
             boolean updateComplete = updateComputeService.saveComputeSettings(setupNode);
-            sethlansManagerService.restart();
+            try {
+                Thread.sleep(5000);
+                sethlansManagerService.restart();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             return updateComplete;
         } else {
             return false;

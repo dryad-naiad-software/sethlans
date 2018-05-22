@@ -61,6 +61,10 @@
             <td>Tile Size: GPU</td>
             <td>{{currentNode.tileSizeGPU}}</td>
           </tr>
+          <tr *ngIf="currentNode.computeMethod.toString().valueOf() != 'CPU'.valueOf()">
+            <td>Combined GPU Rendering:</td>
+            <td>{{gpuCombined}}</td>
+          </tr>
           </tbody>
         </table>
         <!--<div>-->
@@ -128,11 +132,8 @@
       <div *ngIf="newNode.computeMethod.toString().valueOf() != 'CPU'.valueOf() ">
         <hr/>
         <h6>GPU Settings:</h6>
-        <br/>
-        <div class="form-group" *ngIf="newNode.computeMethod.toString().valueOf() != 'CPU'.valueOf()"
-             ngbTooltip="GPU devices to be used for rendering." placement="left">
-          <label>GPU Devices:</label>
-          <div *ngFor="let gpu of availableGPUs">
+        <div class="form-group" *ngIf="newNode.computeMethod.toString().valueOf() != 'CPU'.valueOf()">
+          <div *ngFor="let gpu of availableGPUs" ngbTooltip="GPU devices to be used for rendering." placement="left">
             <input type="checkbox"
                    class="form-control-sm"
                    name="{{gpu.model}}"
@@ -140,13 +141,13 @@
                    #gpuSelection
                    required
                    [checked]="gpu.selected"
-                   (change)="selected($event, gpu)"/>
+                   (change)="selected($event, gpu.deviceID)"/>
             <label class="form-check-label form-control-sm">{{gpu.model}}</label>
           </div>
         </div>
         <div class="form-group" *ngIf="newNode.computeMethod.toString().valueOf() != 'CPU'.valueOf()"
              ngbTooltip="Tile size used for GPU rendering." placement="left">
-          <label for="tileSizeGPU">GPU Render Tile Size:</label>
+          <label for="tileSizeGPU">GPU Tile Size</label>
           <input type="number"
                  class="form-control form-control-sm"
                  name="tileSizeGPU"
@@ -154,6 +155,18 @@
                  value="{{currentNode.getTileSizeGPU()}}"
                  #tileSizeCPU="ngModel"
                  [(ngModel)]="newNode.tileSizeGPU">
+        </div>
+        <label *ngIf="newNode.selectedGPUs?.length > 1">Options:</label>
+        <div *ngIf="newNode.selectedGPUs?.length > 1"
+             ngbTooltip="Enabled: Selected GPUs used as one render slot.  Disabled: Each GPU equals one render slot."
+             placement="left">
+          <input type="checkbox"
+                 class="form-control-sm"
+                 name="{{newNode.combined}}"
+                 value="{{newNode.combined}}"
+                 [(ngModel)]="newNode.combined"/>
+          <label class="form-check-label form-control-sm">Combine GPUs</label>
+          <br/><br/>
         </div>
       </div>
     </form>
@@ -202,11 +215,16 @@
         <td>Tile Size: GPU</td>
         <td>{{newNode.tileSizeGPU}}</td>
       </tr>
+      <tr *ngIf="newNode.computeMethod.toString().valueOf() != 'CPU'.valueOf()">
+        <td>Combined GPU Rendering:</td>
+        <td>{{newNode.combined}}</td>
+      </tr>
       </tbody>
     </table>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-secondary mr-auto" (click)="c('Close click'); open(computeForm)">Back
+    <button type="button" class="btn btn-outline-secondary mr-auto"
+            (click)="c('Close click'); setCurrentNode(); open(computeForm)">Back
     </button>
     <button type="button" class="btn btn-outline-dark ml-auto"
             (click)="c('Close click'); updateAndRestart(restartModal)">Update and Restart

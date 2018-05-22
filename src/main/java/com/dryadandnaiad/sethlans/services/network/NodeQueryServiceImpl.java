@@ -20,8 +20,8 @@
 package com.dryadandnaiad.sethlans.services.network;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
-import com.dryadandnaiad.sethlans.domains.node.NodeSlotUpdate;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.services.queue.QueueService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +38,7 @@ import org.springframework.stereotype.Service;
 public class NodeQueryServiceImpl implements NodeQueryService {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
+    private QueueService queueService;
     private static final Logger LOG = LoggerFactory.getLogger(NodeQueryServiceImpl.class);
 
     @Override
@@ -54,21 +55,11 @@ public class NodeQueryServiceImpl implements NodeQueryService {
                     for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
                         if (sethlansNode.isBenchmarkComplete()) {
                             boolean response = sethlansAPIConnectionService.queryNode("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() + "/api/info/node_keep_alive");
-                            if (!response) {
+                            if (!response && sethlansNode.isActive()) {
                                 LOG.debug(sethlansNode.getHostname() + " is down.");
-                                NodeSlotUpdate nodeSlotUpdate = new NodeSlotUpdate();
-                                nodeSlotUpdate.setOffline(true);
-                                nodeSlotUpdate.setComputeType(sethlansNode.getComputeType());
-                                nodeSlotUpdate.setSethlansNode(sethlansNode);
-                                nodeSlotUpdate.setInUse(false);
-                                nodeSlotUpdate.setViaQuery(true);
-                            } else if (!sethlansNode.isDisabled() && !sethlansNode.isActive()) {
-                                NodeSlotUpdate nodeSlotUpdate = new NodeSlotUpdate();
-                                nodeSlotUpdate.setViaQuery(true);
-                                nodeSlotUpdate.setInUse(false);
-                                nodeSlotUpdate.setSethlansNode(sethlansNode);
-                                nodeSlotUpdate.setComputeType(sethlansNode.getComputeType());
-                                nodeSlotUpdate.setOffline(false);
+                                queueService.nodeStatusUpdateItem(sethlansNode.getConnection_uuid(), false);
+                            } else if (response && !sethlansNode.isDisabled() && !sethlansNode.isActive()) {
+                                queueService.nodeStatusUpdateItem(sethlansNode.getConnection_uuid(), true);
                                 LOG.debug(sethlansNode.getHostname() + " is back online.");
                             }
                         }
@@ -91,6 +82,10 @@ public class NodeQueryServiceImpl implements NodeQueryService {
 
     }
 
+    @Autowired
+    public void setQueueService(QueueService queueService) {
+        this.queueService = queueService;
+    }
 
     @Autowired
     public void setSethlansAPIConnectionService(SethlansAPIConnectionService sethlansAPIConnectionService) {

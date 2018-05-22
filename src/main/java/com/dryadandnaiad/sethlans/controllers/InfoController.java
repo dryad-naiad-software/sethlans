@@ -114,6 +114,7 @@ public class InfoController {
         }
     }
 
+
     @GetMapping(value = {"/sethlans_mode"})
     public Map getSethlansMode() {
         return Collections.singletonMap("mode", mode.toString());

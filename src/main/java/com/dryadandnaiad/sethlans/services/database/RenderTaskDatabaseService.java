@@ -21,6 +21,8 @@ package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderTask;
 
+import java.util.List;
+
 /**
  * Created Mario Estrella on 12/12/17.
  * Dryad and Naiad Software LLC
@@ -28,6 +30,8 @@ import com.dryadandnaiad.sethlans.domains.database.queue.RenderTask;
  * Project: sethlans
  */
 public interface RenderTaskDatabaseService extends CRUDService<RenderTask> {
+    List<String> deviceList();
+
     void delete(RenderTask renderTask);
 
     void deleteAll();

@@ -58,21 +58,21 @@
   </tr>
   <tr *ngIf="setupFormData.mode === mode.NODE || setupFormData.mode === mode.DUAL">
     <td>Compute Method</td>
-    <td *ngIf="setupFormData.node.computeMethod != computeMethodEnum.CPU_GPU">{{setupFormData.node.computeMethod}}</td>
-    <td *ngIf="setupFormData.node.computeMethod == computeMethodEnum.CPU_GPU">CPU & GPU</td>
+    <td *ngIf="setupFormData.node.computeMethod.toString() != 'CPU_GPU'">{{setupFormData.node.computeMethod}}</td>
+    <td *ngIf="setupFormData.node.computeMethod.toString() == 'CPU_GPU'">CPU & GPU</td>
   </tr>
   <tr
-    *ngIf="setupFormData.mode === mode.NODE && setupFormData.node.computeMethod !== computeMethodEnum.GPU || setupFormData.mode === mode.DUAL && setupFormData.node.computeMethod !== computeMethodEnum.GPU ">
+    *ngIf="setupFormData.mode === mode.NODE && setupFormData.node.computeMethod.toString() !== 'GPU' || setupFormData.mode === mode.DUAL && setupFormData.node.computeMethod.toString() !== 'GPU' ">
     <td>Rendering Cores</td>
     <td>{{setupFormData.node.cores}}</td>
   </tr>
   <tr
-    *ngIf="setupFormData.mode === mode.NODE && setupFormData.node.computeMethod !== computeMethodEnum.GPU || setupFormData.mode === mode.DUAL && setupFormData.node.computeMethod !== computeMethodEnum.GPU ">
+    *ngIf="setupFormData.mode === mode.NODE && setupFormData.node.computeMethod.toString() !== 'GPU' || setupFormData.mode === mode.DUAL && setupFormData.node.computeMethod.toString() !== 'GPU' ">
     <td>CPU Render Tile Size:</td>
     <td>{{setupFormData.node.tileSizeCPU}}</td>
   </tr>
   <tr
-    *ngIf="setupFormData.mode === mode.NODE && setupFormData.node.computeMethod !== computeMethodEnum.CPU || setupFormData.mode === mode.DUAL && setupFormData.node.computeMethod !== computeMethodEnum.CPU ">
+    *ngIf="setupFormData.mode === mode.NODE && setupFormData.node.computeMethod.toString() !== 'CPU' || setupFormData.mode === mode.DUAL && setupFormData.node.computeMethod.toString() !== 'CPU' ">
     <td>Selected GPUs</td>
     <td>
       <ul class="list-unstyled">
@@ -82,16 +82,16 @@
   </tr>
   <tr
     *ngIf="setupFormData.mode === mode.NODE
-    && setupFormData.node.computeMethod !== computeMethodEnum.CPU
+    && setupFormData.node.computeMethod.toString() !== 'CPU'
     && setupFormData.node.selectedGPUs.length > 1
     || setupFormData.mode === mode.DUAL
-    && setupFormData.node.computeMethod !== computeMethodEnum.CPU
+    && setupFormData.node.computeMethod.toString() !== 'CPU'
     && setupFormData.node.selectedGPUs.length > 1">
-    <td>Combine GPUs:</td>
+    <td>Combined GPU Rendering:</td>
     <td>{{setupFormData.node.combined}}</td>
   </tr>
   <tr
-    *ngIf="setupFormData.mode === mode.NODE && setupFormData.node.computeMethod !== computeMethodEnum.CPU || setupFormData.mode === mode.DUAL && setupFormData.node.computeMethod !== computeMethodEnum.CPU ">
+    *ngIf="setupFormData.mode === mode.NODE && setupFormData.node.computeMethod.toString() !== 'CPU' || setupFormData.mode === mode.DUAL && setupFormData.node.computeMethod.toString() !== 'CPU' ">
     <td>GPU Render Tile Size:</td>
     <td>{{setupFormData.node.tileSizeGPU}}</td>
   </tr>

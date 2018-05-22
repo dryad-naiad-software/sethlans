@@ -17,23 +17,20 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.domains.node;
+package com.dryadandnaiad.sethlans.domains.database.queue;
 
-import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
-import com.dryadandnaiad.sethlans.enums.ComputeType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Created Mario Estrella on 4/16/2018.
+ * Created Mario Estrella on 5/20/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@AllArgsConstructor
 @Data
-public class NodeSlotUpdate {
-    private SethlansNode sethlansNode;
-    private ComputeType computeType;
-    private boolean inUse;
-    private boolean offline;
-    private boolean viaQuery;
+public class NodeOnlineItem {
+    private String connection_uuid;
+    private boolean online;
 }

@@ -73,7 +73,6 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private BlenderPythonScriptService blenderPythonScriptService;
-    private int remainingBenchmarks;
 
     @Override
     public void sendBenchmarktoNode(SethlansNode sethlansNode) {
@@ -89,7 +88,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     public void benchmarkOnNodeRestart() {
         // If a node gets shutdown, this will attempt to process any pending benchmarks.
         try {
-            Thread.sleep(30000);
+            Thread.sleep(10000);
             LOG.debug("Checking to see if any benchmarks are pending.");
             List<BlenderBenchmarkTask> blenderBenchmarkTaskList = blenderBenchmarkTaskDatabaseService.listAll();
             List<BlenderBenchmarkTask> pendingBenchmarks = new ArrayList<>();
@@ -130,7 +129,6 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     @Override
     @Async
     public void processReceivedBenchmarks(List<String> benchmark_uuids) {
-            this.remainingBenchmarks = benchmark_uuids.size();
             for (String benchmark_uuid : benchmark_uuids) {
                 startBenchmarkService(benchmark_uuid);
             }
@@ -145,7 +143,6 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         if (benchmarkTask.isComplete()) {
             try {
                 FileUtils.deleteDirectory(new File(benchmarkTask.getBenchmarkDir()));
-                remainingBenchmarks--;
             } catch (IOException e) {
                 LOG.error(Throwables.getStackTraceAsString(e));
             }
@@ -172,9 +169,9 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
 
     private boolean sendResultsToServer(String connectionUUID, BlenderBenchmarkTask blenderBenchmarkTask) {
         SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connectionUUID);
-        boolean complete;
-        LOG.debug("Remaining benchmarks to process: " + remainingBenchmarks);
-        complete = remainingBenchmarks <= 0;
+        blenderBenchmarkTaskDatabaseService.delete(blenderBenchmarkTask.getId());
+        LOG.debug("Remaining benchmarks to process: " + blenderBenchmarkTaskDatabaseService.listAll().size());
+        boolean complete = blenderBenchmarkTaskDatabaseService.listAll().size() <= 0;
         String serverUrl = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/benchmark/response";
         String params;
         if (blenderBenchmarkTask.getComputeType().equals(ComputeType.CPU)) {
@@ -196,7 +193,6 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         String cachedBlenderBinaries = SethlansUtils.getProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES.toString());
 
         if (benchmarkDir.mkdirs()) {
-
             String[] cachedBinariesList;
             boolean versionCached = false;
             cachedBinariesList = cachedBlenderBinaries.split(",");
@@ -264,7 +260,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             if (benchmarkTask.getComputeType().equals(ComputeType.GPU)) {
                 LOG.debug("Creating benchmark script using " + benchmarkTask.getDeviceID());
                 String deviceID = StringUtils.substringAfter(benchmarkTask.getDeviceID(), "_");
-                String script = null;
+                String script;
                 if (SethlansUtils.isCuda(benchmarkTask.getDeviceID())) {
                     LOG.debug("CUDA Device found, using cuda parameters for script");
                     script = blenderPythonScriptService.writeBenchmarkPythonScript(benchmarkTask.getComputeType(),

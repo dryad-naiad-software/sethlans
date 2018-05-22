@@ -40,6 +40,7 @@ public class GPUDevice {
     private boolean openCL;
     private boolean cuda;
     private String deviceID;
+    private boolean inUse = false;
 
     public GPUDevice(String model, long ram, String deviceID, boolean openCL, boolean cuda) {
         this.model = model;

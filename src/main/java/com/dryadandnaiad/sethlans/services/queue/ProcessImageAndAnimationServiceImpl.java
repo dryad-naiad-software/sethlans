@@ -96,23 +96,26 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
                 }
             }
         }
-        BufferedImage concatImage = new BufferedImage(
-                images.get(0).getWidth(), images.get(0).getHeight() * blenderProject.getPartsPerFrame(),
-                BufferedImage.TYPE_INT_ARGB);
-        Graphics g = concatImage.getGraphics();
-        int count = 0;
-        for (BufferedImage image : images) {
-            if (count == 0) {
-                g.drawImage(image, 0, 0, null);
-            } else {
-                g.drawImage(image, 0, image.getHeight() * count, null);
-            }
-            count++;
-        }
-
         try {
+
+            BufferedImage concatImage = new BufferedImage(
+                    images.get(0).getWidth(), images.get(0).getHeight() * blenderProject.getPartsPerFrame(),
+                    BufferedImage.TYPE_INT_ARGB);
+            Graphics g = concatImage.getGraphics();
+            int count = 0;
+            for (BufferedImage image : images) {
+                if (count == 0) {
+                    g.drawImage(image, 0, 0, null);
+                } else {
+                    g.drawImage(image, 0, image.getHeight() * count, null);
+                }
+                count++;
+            }
             ImageIO.write(concatImage, fileExtension.toUpperCase(), new File(frameFilename));
         } catch (IOException e) {
+            LOG.error(Throwables.getStackTraceAsString(e));
+        } catch (IndexOutOfBoundsException e) {
+            LOG.error("Possible node idle collision");
             LOG.error(Throwables.getStackTraceAsString(e));
         }
         blenderProject.getFrameFileNames().add(frameFilename);

@@ -69,13 +69,32 @@ public class ServerBackgroundController {
             SethlansNode tempNode = nodeDiscoveryService.discoverUnicastNode(sethlansNodetoUpdate.getIpAddress(), sethlansNodetoUpdate.getNetworkPort());
             if (sethlansNodetoUpdate.isActive()) {
                 sethlansNodetoUpdate.setBenchmarkComplete(false);
-                if (tempNode.getComputeType().equals(ComputeType.CPU_GPU)) {
-                    sethlansNodetoUpdate.setTotalRenderingSlots(2);
-                    sethlansNodetoUpdate.setAvailableRenderingSlots(2);
-                } else {
-                    sethlansNodetoUpdate.setTotalRenderingSlots(1);
-                    sethlansNodetoUpdate.setAvailableRenderingSlots(1);
+                switch (tempNode.getComputeType()) {
+                    case CPU_GPU:
+                        if (tempNode.isCombined()) {
+                            sethlansNodetoUpdate.setTotalRenderingSlots(2);
+                            sethlansNodetoUpdate.setAvailableRenderingSlots(2);
+                        } else {
+                            sethlansNodetoUpdate.setTotalRenderingSlots(tempNode.getSelectedGPUs().size() + 1);
+                            sethlansNodetoUpdate.setAvailableRenderingSlots(tempNode.getSelectedGPUs().size() + 1);
+                        }
+                        break;
+                    case GPU:
+                        if (tempNode.isCombined()) {
+                            sethlansNodetoUpdate.setTotalRenderingSlots(1);
+                            sethlansNodetoUpdate.setAvailableRenderingSlots(1);
+                        } else {
+                            sethlansNodetoUpdate.setTotalRenderingSlots(tempNode.getSelectedGPUs().size());
+                            sethlansNodetoUpdate.setAvailableRenderingSlots(tempNode.getSelectedGPUs().size());
+                        }
+                        break;
+                    case CPU:
+                        sethlansNodetoUpdate.setTotalRenderingSlots(1);
+                        sethlansNodetoUpdate.setAvailableRenderingSlots(1);
+                        break;
+
                 }
+
                 updateNode(sethlansNodetoUpdate, tempNode);
                 try {
                     Thread.sleep(10000);
@@ -91,6 +110,7 @@ public class ServerBackgroundController {
     }
 
     private void updateNode(SethlansNode sethlansNodetoUpdate, SethlansNode tempNode) {
+        sethlansNodetoUpdate.setCombined(tempNode.isCombined());
         sethlansNodetoUpdate.setComputeType(tempNode.getComputeType());
         sethlansNodetoUpdate.setCpuinfo(tempNode.getCpuinfo());
         sethlansNodetoUpdate.setSelectedCores(tempNode.getSelectedCores());
