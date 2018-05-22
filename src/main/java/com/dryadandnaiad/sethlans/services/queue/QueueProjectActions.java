@@ -114,7 +114,7 @@ class QueueProjectActions {
 
                 }
                 renderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
-                if (!blenderProject.isAllImagesProcessed()) {
+                if (!blenderProject.isAllImagesProcessed() && blenderProjectDatabaseService.getById(blenderProject.getId()) != null) {
                     blenderProject.setProjectStatus(ProjectStatus.Added);
                     blenderProject.setTotalProjectTime(0L);
                     blenderProject.setProjectStart(0L);

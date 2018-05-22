@@ -27,6 +27,7 @@ import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.services.database.*;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
+import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,13 +39,12 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static com.dryadandnaiad.sethlans.services.queue.QueueNodeActions.*;
-import static com.dryadandnaiad.sethlans.services.queue.QueueNodeStatusActions.processIdleNodes;
-import static com.dryadandnaiad.sethlans.services.queue.QueueNodeStatusActions.processOfflineNodes;
+import static com.dryadandnaiad.sethlans.services.queue.QueueNodeStatusActions.*;
 import static com.dryadandnaiad.sethlans.services.queue.QueueProcessActions.processReceivedFile;
 import static com.dryadandnaiad.sethlans.services.queue.QueueProjectActions.queueProjectActions;
 
 /**
-/**
+ * /**
  * Created Mario Estrella on 4/21/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
@@ -66,6 +66,7 @@ public class QueueServiceImpl implements QueueService {
     private List<QueueActionItem> queueActionItemList = new ArrayList<>();
     private List<ProcessQueueItem> incomingQueueItemList = new ArrayList<>();
     private Set<NodeOnlineItem> nodeOnlineItemList = new HashSet<>();
+    private List<Long> nodesToDelete = new ArrayList<>();
 
     @Async
     @Override
@@ -78,7 +79,7 @@ public class QueueServiceImpl implements QueueService {
         while (true) {
             try {
                 Thread.sleep(100);
-                nodeOnlineStatus();
+                projectActions();
                 assignmentWorflow();
                 projectActions();
                 processingWorkflow();
@@ -91,6 +92,8 @@ public class QueueServiceImpl implements QueueService {
     }
 
     private void assignmentWorflow() {
+        nodeOnlineStatus();
+        processNodeDeletion();
         freeIdleNode();
         assignQueueItemToNode();
         sendQueueItemsToAssignedNode();
@@ -98,6 +101,8 @@ public class QueueServiceImpl implements QueueService {
     }
 
     private void processingWorkflow() {
+        nodeOnlineStatus();
+        processNodeDeletion();
         incomingCompleteItems();
         processReceivedFiles();
         processImages();
@@ -107,6 +112,11 @@ public class QueueServiceImpl implements QueueService {
     @Override
     public void queueIdleNode(String connection_uuid, ComputeType computeType) {
         idleNodes.add(new ProcessIdleNode(connection_uuid, computeType));
+    }
+
+    @Override
+    public void addNodeToDeleteQueue(Long id) {
+        nodesToDelete.add(id);
     }
 
     @Override
@@ -129,52 +139,74 @@ public class QueueServiceImpl implements QueueService {
         incomingQueueItemList.add(processQueueItem);
     }
 
+    private void processNodeDeletion() {
+        if (!modifyingQueue) {
+            modifyingQueue = true;
+            if (nodesToDelete.size() > 0) {
+                List<Long> idsReviewed = new ArrayList<>();
+                for (Long id : new ArrayList<>(nodesToDelete)) {
+                    deleteNodes(id, sethlansNodeDatabaseService, renderQueueDatabaseService, blenderProjectDatabaseService);
+                    idsReviewed.add(id);
+                }
+                nodesToDelete.removeAll(idsReviewed);
+            }
+        }
+        modifyingQueue = false;
+    }
+
     private void incomingCompleteItems() {
         if (!modifyingQueue) {
             modifyingQueue = true;
             if (incomingQueueItemList.size() > 0) {
                 List<ProcessQueueItem> itemsReviewed = new ArrayList<>();
                 for (ProcessQueueItem processQueueItem : new ArrayList<>(incomingQueueItemList)) {
-                    processQueueDatabaseService.saveOrUpdate(processQueueItem);
-                    RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processQueueItem.getQueueUUID());
-                    SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(processQueueItem.getConnection_uuid());
-                    ComputeType computeType = renderQueueItem.getRenderComputeType();
-                    BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
-                    renderQueueItem.getBlenderFramePart().setStoredDir(blenderProject.getProjectRootDir() +
-                            File.separator + "frame_" + renderQueueItem.getBlenderFramePart().getFrameNumber() + File.separator);
-                    renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
+                    try {
+                        processQueueDatabaseService.saveOrUpdate(processQueueItem);
+                        RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processQueueItem.getQueueUUID());
+                        SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(processQueueItem.getConnection_uuid());
+                        ComputeType computeType = renderQueueItem.getRenderComputeType();
+                        BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
+                        renderQueueItem.getBlenderFramePart().setStoredDir(blenderProject.getProjectRootDir() +
+                                File.separator + "frame_" + renderQueueItem.getBlenderFramePart().getFrameNumber() + File.separator);
+                        renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
 
-                    LOG.debug("Completed Render Task received from " + sethlansNode.getHostname() + ". Adding to processing queue.");
+                        LOG.debug("Completed Render Task received from " + sethlansNode.getHostname() + ". Adding to processing queue.");
 
-                    switch (computeType) {
-                        case GPU:
-                            if (sethlansNode.isCombined()) {
-                                sethlansNode.setAllGPUSlotInUse(false);
-                            } else {
-                                for (GPUDevice gpuDevice : sethlansNode.getSelectedGPUs()) {
-                                    if (gpuDevice.getDeviceID().equals(renderQueueItem.getGpu_device_id())) {
-                                        gpuDevice.setInUse(false);
+                        switch (computeType) {
+                            case GPU:
+                                if (sethlansNode.isCombined()) {
+                                    sethlansNode.setAllGPUSlotInUse(false);
+                                } else {
+                                    for (GPUDevice gpuDevice : sethlansNode.getSelectedGPUs()) {
+                                        if (gpuDevice.getDeviceID().equals(renderQueueItem.getGpu_device_id())) {
+                                            gpuDevice.setInUse(false);
+                                        }
                                     }
                                 }
-                            }
-                            break;
-                        case CPU:
+                                break;
+                            case CPU:
+                                sethlansNode.setCpuSlotInUse(false);
+                                break;
+                            default:
+                                LOG.error("Invalid compute type, this message should not occur.");
+                        }
+                        sethlansNode.setAvailableRenderingSlots(Math.max(sethlansNode.getTotalRenderingSlots(), sethlansNode.getAvailableRenderingSlots() + 1));
+                        if (sethlansNode.getAvailableRenderingSlots() == sethlansNode.getTotalRenderingSlots()) {
+                            sethlansNode.setAllGPUSlotInUse(false);
                             sethlansNode.setCpuSlotInUse(false);
-                            break;
-                        default:
-                            LOG.error("Invalid compute type, this message should not occur.");
+                        }
+                        LOG.debug(sethlansNode.getHostname() + " state: " + sethlansNode.toString());
+                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                        itemsReviewed.add(processQueueItem);
+                    } catch (NullPointerException e) {
+                        LOG.error("Received incoming items for queue after queue has been stopped");
+                        LOG.error(Throwables.getStackTraceAsString(e));
+                        itemsReviewed.add(processQueueItem);
                     }
-                    sethlansNode.setAvailableRenderingSlots(Math.max(sethlansNode.getTotalRenderingSlots(), sethlansNode.getAvailableRenderingSlots() + 1));
-                    if (sethlansNode.getAvailableRenderingSlots() == sethlansNode.getTotalRenderingSlots()) {
-                        sethlansNode.setAllGPUSlotInUse(false);
-                        sethlansNode.setCpuSlotInUse(false);
-                    }
-                    LOG.debug(sethlansNode.getHostname() + " state: " + sethlansNode.toString());
-                    sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                    itemsReviewed.add(processQueueItem);
                 }
                 incomingQueueItemList.removeAll(itemsReviewed);
             }
+
             modifyingQueue = false;
         }
     }
@@ -284,11 +316,20 @@ public class QueueServiceImpl implements QueueService {
             modifyingQueue = true;
             List<ProcessQueueItem> processQueueItemList = processQueueDatabaseService.listAll();
             if (!processQueueItemList.isEmpty()) {
+
                 for (ProcessQueueItem processQueueItem : new ArrayList<>(processQueueItemList)) {
-                    processReceivedFile(processQueueItem, renderQueueDatabaseService,
-                            blenderProjectDatabaseService, sethlansNodeDatabaseService,
-                            processFrameDatabaseService, processQueueDatabaseService);
+                    try {
+
+                        processReceivedFile(processQueueItem, renderQueueDatabaseService,
+                                blenderProjectDatabaseService, sethlansNodeDatabaseService,
+                                processFrameDatabaseService, processQueueDatabaseService);
+                    } catch (NullPointerException e) {
+                        LOG.error("Received item after project has been stopped");
+                        LOG.error(Throwables.getStackTraceAsString(e));
+                        processQueueDatabaseService.delete(processQueueItem);
+                    }
                 }
+
             }
             modifyingQueue = false;
         }

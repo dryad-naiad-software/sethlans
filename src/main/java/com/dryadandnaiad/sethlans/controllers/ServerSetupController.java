@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
+import com.dryadandnaiad.sethlans.services.queue.QueueService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -48,6 +49,7 @@ public class ServerSetupController {
     private NodeActivationService nodeActivationService;
     private NodeDiscoveryService nodeDiscoveryService;
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
+    private QueueService queueService;
     private static final Logger LOG = LoggerFactory.getLogger(ServerSetupController.class);
 
 
@@ -104,9 +106,7 @@ public class ServerSetupController {
 
     @GetMapping("/node_delete/{id}")
     public boolean deleteNode(@PathVariable Long id) {
-        //TODO delete render tasks associated with this server first.
-
-        sethlansNodeDatabaseService.delete(id);
+        queueService.addNodeToDeleteQueue(id);
         return true;
     }
 
@@ -136,4 +136,8 @@ public class ServerSetupController {
         this.sethlansNodeDatabaseService = sethlansNodeDatabaseService;
     }
 
+    @Autowired
+    public void setQueueService(QueueService queueService) {
+        this.queueService = queueService;
+    }
 }

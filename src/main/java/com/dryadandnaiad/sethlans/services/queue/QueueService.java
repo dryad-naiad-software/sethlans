@@ -41,6 +41,8 @@ public interface QueueService {
 
     void stopBlenderProjectQueue(BlenderProject blenderProject);
 
+    void addNodeToDeleteQueue(Long id);
+
     void nodeRejectQueueItem(String connection_uuid);
 
     void nodeAcknowledgeQueueItem(String queue_uuid);
