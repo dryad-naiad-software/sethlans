@@ -48,6 +48,7 @@ public class QueueNodeStatusActions {
                                     List<NodeOnlineItem> processedStatusNodes) {
         SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(nodeOnlineItem.getConnection_uuid());
         if (!nodeOnlineItem.isOnline()) {
+            LOG.debug("Marking node " + sethlansNode.getHostname() + " as inactive.");
             switch (sethlansNode.getComputeType()) {
                 case GPU:
                     sethlansNode.setAllGPUSlotInUse(false);
@@ -82,6 +83,7 @@ public class QueueNodeStatusActions {
             }
         }
         if (nodeOnlineItem.isOnline()) {
+            LOG.debug("Marking node " + sethlansNode.getHostname() + " as active.");
             sethlansNode.setActive(true);
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
         }

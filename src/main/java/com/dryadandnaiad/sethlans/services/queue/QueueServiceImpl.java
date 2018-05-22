@@ -34,9 +34,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static com.dryadandnaiad.sethlans.services.queue.QueueNodeActions.*;
@@ -67,7 +65,7 @@ public class QueueServiceImpl implements QueueService {
     private List<ProcessIdleNode> idleNodes = new ArrayList<>();
     private List<QueueActionItem> queueActionItemList = new ArrayList<>();
     private List<ProcessQueueItem> incomingQueueItemList = new ArrayList<>();
-    private List<NodeOnlineItem> nodeOnlineItemList = new ArrayList<>();
+    private Set<NodeOnlineItem> nodeOnlineItemList = new HashSet<>();
 
     @Async
     @Override

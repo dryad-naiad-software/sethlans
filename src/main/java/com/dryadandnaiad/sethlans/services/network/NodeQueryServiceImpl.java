@@ -55,10 +55,10 @@ public class NodeQueryServiceImpl implements NodeQueryService {
                     for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
                         if (sethlansNode.isBenchmarkComplete()) {
                             boolean response = sethlansAPIConnectionService.queryNode("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() + "/api/info/node_keep_alive");
-                            if (!response) {
+                            if (!response && sethlansNode.isActive()) {
                                 LOG.debug(sethlansNode.getHostname() + " is down.");
                                 queueService.nodeStatusUpdateItem(sethlansNode.getConnection_uuid(), false);
-                            } else if (!sethlansNode.isDisabled() && !sethlansNode.isActive()) {
+                            } else if (response && !sethlansNode.isDisabled() && !sethlansNode.isActive()) {
                                 queueService.nodeStatusUpdateItem(sethlansNode.getConnection_uuid(), true);
                                 LOG.debug(sethlansNode.getHostname() + " is back online.");
                             }
