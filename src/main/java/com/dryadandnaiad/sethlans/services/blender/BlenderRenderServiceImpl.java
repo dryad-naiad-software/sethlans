@@ -82,10 +82,10 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         // If a node gets shutdown, this will attempt to process any pending benchmarks.
         try {
             Thread.sleep(15000);
-            LOG.debug("Checking to see if any render tasks are pending.");
+            LOG.info("Checking to see if any render tasks are pending.");
             List<RenderTask> renderTaskList = renderTaskDatabaseService.listAll();
             if (renderTaskList.size() > 0) {
-                LOG.debug("Clearing all Render Tasks in the database");
+                LOG.info("Clearing all render tasks in the database");
                 renderTaskDatabaseService.deleteAll();
             } else {
                 LOG.debug("No render tasks are pending.");
@@ -113,7 +113,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                 saveOnSuccess(renderTask, script);
 
             } else {
-                LOG.debug("Running render task using CPU");
+                LOG.info("Running render task using CPU");
                 List<String> emptyList = new ArrayList<>();
                 script = blenderPythonScriptService.writeRenderPythonScript(renderTask.getComputeType(),
                         renderTask.getRenderDir(), emptyList,
@@ -136,7 +136,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         List<String> deviceIDList = new ArrayList<>();
         if (nodeInfo.isCombined()) {
             boolean isCuda = false;
-            LOG.debug("Running render task using " + deviceID);
+            LOG.info("Running render task using " + deviceID);
             for (String device : deviceList) {
                 deviceIDList.add(StringUtils.substringAfter(device, "_"));
                 isCuda = SethlansUtils.isCuda(device);
@@ -153,7 +153,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                     renderTask.getBlenderFramePart().getPartPositionMaxY(),
                     renderTask.getBlenderFramePart().getPartPositionMinY());
         } else {
-            LOG.debug("Running render task using " + renderTask.getDeviceID());
+            LOG.info("Running render task using " + renderTask.getDeviceID());
             boolean isCuda = SethlansUtils.isCuda(renderTask.getDeviceID());
             deviceIDList.add(StringUtils.substringAfter(renderTask.getDeviceID(), "_"));
             script = blenderPythonScriptService.writeRenderPythonScript(renderTask.getComputeType(),
@@ -176,7 +176,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         String renderedFileName = String.format("%04d", renderTask.getBlenderFramePart().getFrameNumber());
         File result = new File(renderTask.getRenderDir() + File.separator + renderedFileName + "." + renderTask.getBlenderFramePart().getFileExtension());
         if (renderTime != -1L && result.exists()) {
-            LOG.debug("Render Successful! Updating task status.");
+            LOG.info("Render Successful! Updating task status.");
             renderTask.setInProgress(false);
             renderTask.setComplete(true);
             renderTask.setRenderTime(renderTime);
@@ -194,7 +194,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                     }
                 }
                 if (count >= 10) {
-                    LOG.debug("Unable to establish a connection with the server to send results.");
+                    LOG.error("Unable to establish a connection with the server to send results.");
                     break;
                 }
                 try {
@@ -207,7 +207,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
 
         } else {
-            LOG.debug("Failed render, sending reject notice");
+            LOG.info("Failed render, sending reject notice");
             SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(renderTask.getConnection_uuid());
             String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_reject_item/";
             String params = "queue_item_uuid=" + renderTask.getServer_queue_uuid();
@@ -217,21 +217,26 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     }
 
     private boolean sendResultsToServer(String connectionUUID, RenderTask renderTask) {
-        SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connectionUUID);
-        String serverUrl = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/response";
-        Map<String, String> params = new HashMap<>();
-        params.put("connection_uuid", renderTask.getConnection_uuid());
-        params.put("queue_uuid", renderTask.getServer_queue_uuid());
-        params.put("project_uuid", renderTask.getProject_uuid());
-        params.put("render_time", Long.toString(renderTask.getRenderTime()));
-        String renderedFileName = String.format("%04d", renderTask.getBlenderFramePart().getFrameNumber());
+        try {
+            SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connectionUUID);
+            String serverUrl = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/response";
+            Map<String, String> params = new HashMap<>();
+            params.put("connection_uuid", renderTask.getConnection_uuid());
+            params.put("queue_uuid", renderTask.getServer_queue_uuid());
+            params.put("project_uuid", renderTask.getProject_uuid());
+            params.put("render_time", Long.toString(renderTask.getRenderTime()));
+            String renderedFileName = String.format("%04d", renderTask.getBlenderFramePart().getFrameNumber());
 
-        File result = new File(renderTask.getRenderDir() + File.separator + renderedFileName + "." + renderTask.getBlenderFramePart().getFileExtension());
-        return sethlansAPIConnectionService.uploadToRemotePOST(serverUrl, params, result);
+            File result = new File(renderTask.getRenderDir() + File.separator + renderedFileName + "." + renderTask.getBlenderFramePart().getFileExtension());
+            return sethlansAPIConnectionService.uploadToRemotePOST(serverUrl, params, result);
+        } catch (NullPointerException e) {
+            LOG.error("Server does not exist, most likely deleted.");
+            return true;
+        }
     }
 
     private boolean downloadRequiredFiles(File renderDir, File blendFileDir, RenderTask renderTask) {
-        LOG.debug("Downloading required files");
+        LOG.info("Downloading required files");
         SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(renderTask.getConnection_uuid());
         String serverIP = sethlansServer.getIpAddress();
         String serverPort = sethlansServer.getNetworkPort();
@@ -245,7 +250,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             for (String binary : cachedBinariesList) {
                 if (binary.equals(renderTask.getBlenderVersion())) {
                     versionCached = true;
-                    LOG.debug(binary + " renderer is already cached.  Skipping Download.");
+                    LOG.info(binary + " renderer is already cached.  Skipping Download.");
                 }
             }
 
@@ -286,9 +291,9 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             if (SethlansUtils.isDirectoryEmpty(blendFileDir)) {
                 String blendFile = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, blendFileDir.toString());
                 renderTask.setBlendFilename(blendFileDir + File.separator + blendFile);
-                LOG.debug("Required files downloaded.");
+                LOG.info("Required files downloaded.");
             } else {
-                LOG.debug("Blend file for this project exists, using cached version");
+                LOG.info("Blend file for this project exists, using cached version");
                 String[] fileList = blendFileDir.list();
                 if (fileList != null) {
                     String blendFile = blendFileDir + File.separator + fileList[0];
@@ -305,7 +310,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         String error;
         BlenderFramePart blenderFramePart = renderTask.getBlenderFramePart();
         try {
-            LOG.debug("Starting the render of " + renderTask.getProjectName() + " Frame " + blenderFramePart.getFrameNumber() + ": Part: " + blenderFramePart.getPartNumber());
+            LOG.info("Starting the render of " + renderTask.getProjectName() + " Frame " + blenderFramePart.getFrameNumber() + ": Part: " + blenderFramePart.getPartNumber());
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
             PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
@@ -370,7 +375,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                 int seconds = Integer.parseInt(timeToConvert[1]);
                 int timeInSeconds = seconds + 60 * minutes;
                 long timeInMilliseconds = TimeUnit.MILLISECONDS.convert(timeInSeconds, TimeUnit.SECONDS);
-                LOG.debug("Render time in milliseconds: " + timeInMilliseconds);
+                LOG.info("Render time in milliseconds: " + timeInMilliseconds);
                 return timeInMilliseconds;
             }
 
