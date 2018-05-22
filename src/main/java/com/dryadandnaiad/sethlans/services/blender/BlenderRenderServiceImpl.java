@@ -81,7 +81,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     public void clearQueueOnNodeRestart() {
         // If a node gets shutdown, this will attempt to process any pending benchmarks.
         try {
-            Thread.sleep(30000);
+            Thread.sleep(15000);
             LOG.debug("Checking to see if any render tasks are pending.");
             List<RenderTask> renderTaskList = renderTaskDatabaseService.listAll();
             if (renderTaskList.size() > 0) {
