@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
+import com.dryadandnaiad.sethlans.domains.info.Log;
 import com.dryadandnaiad.sethlans.domains.info.SethlansSettingsInfo;
 import com.dryadandnaiad.sethlans.domains.info.UserInfo;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
@@ -117,8 +118,8 @@ public class AdminController {
     }
 
     @GetMapping(value = {"/get_logs"})
-    public Map getSethlansLogs() {
-        return Collections.singletonMap("logs", sethlansLogRetrievalService.sethlansLogList());
+    public List<Log> getSethlansLogs() {
+        return sethlansLogRetrievalService.sethlansLogList();
     }
 
     @GetMapping(value = {"node_scan"})
