@@ -18,7 +18,6 @@
  */
 
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Log} from "../../../models/log.model";
 import {HttpClient} from "@angular/common/http";
 import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
 
@@ -38,8 +37,8 @@ export class LogsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get('/api/management/get_logs/').subscribe((logList: Log[]) => {
-      this.dataSource = new MatTableDataSource<any>(logList);
+    this.http.get('/api/management/get_logs/').subscribe((logList) => {
+      this.dataSource = new MatTableDataSource<any>(logList['logs']);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort
     });
