@@ -110,9 +110,9 @@ public class Sethlans {
         while (true) {
             try {
                 if (sethlansState.sethlansActive) {
-                    Thread.sleep(1000);
+                    Thread.sleep(5000);
                 } else {
-                    Thread.sleep(1000);
+                    Thread.sleep(5000);
                     sethlansState.sethlansActive = SpringApplication.run(Sethlans.class, springArgs).isActive();
                 }
             } catch (InterruptedException e) {
