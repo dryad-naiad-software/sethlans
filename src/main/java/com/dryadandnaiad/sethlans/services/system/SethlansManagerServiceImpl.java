@@ -19,13 +19,10 @@
 
 package com.dryadandnaiad.sethlans.services.system;
 
-import com.dryadandnaiad.sethlans.executor.SethlansExecutor;
-import com.dryadandnaiad.sethlans.utils.SethlansState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ApplicationContext;
+import org.springframework.cloud.context.restart.RestartEndpoint;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -38,8 +35,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SethlansManagerServiceImpl implements SethlansManagerService {
     private static final Logger LOG = LoggerFactory.getLogger(SethlansManagerServiceImpl.class);
-    @Autowired
-    private ApplicationContext applicationContext;
+    private RestartEndpoint restartEndpoint;
 
     @Override
     @Async
@@ -57,18 +53,18 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
     @Override
     @Async
     public void restart() {
-        SethlansState sethlansState = SethlansState.getInstance();
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
             LOG.info("System Restart service closed");
         }
-        sethlansState.sethlansActive = false;
-        SethlansExecutor sethlansExecutor = SethlansExecutor.getInstance();
-        sethlansExecutor.getExecutor().shutdown();
-        SpringApplication.exit(applicationContext, () -> 0);
-
+        Thread thread = new Thread(() -> restartEndpoint.invoke());
+        thread.setDaemon(false);
+        thread.start();
     }
 
-
+    @Autowired
+    public void setRestartEndpoint(RestartEndpoint restartEndpoint) {
+        this.restartEndpoint = restartEndpoint;
+    }
 }

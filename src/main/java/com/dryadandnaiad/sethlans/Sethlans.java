@@ -21,7 +21,6 @@ package com.dryadandnaiad.sethlans;
 
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.utils.SethlansState;
-import com.google.common.base.Throwables;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -106,19 +105,7 @@ public class Sethlans {
 
     private void startSpring(String[] springArgs) {
         SethlansState sethlansState = SethlansState.getInstance();
-        //noinspection InfiniteLoopStatement
-        while (true) {
-            try {
-                if (sethlansState.sethlansActive) {
-                    Thread.sleep(5000);
-                } else {
-                    Thread.sleep(5000);
-                    sethlansState.sethlansActive = SpringApplication.run(Sethlans.class, springArgs).isActive();
-                }
-            } catch (InterruptedException e) {
-                LOG.error(Throwables.getStackTraceAsString(e));
-            }
-        }
+        sethlansState.sethlansActive = SpringApplication.run(Sethlans.class, springArgs).isActive();
     }
 }
 
