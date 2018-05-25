@@ -48,10 +48,12 @@ import java.util.concurrent.Executor;
 public class CommonBeanConfig implements AsyncConfigurer {
     private static final Logger LOG = LoggerFactory.getLogger(CommonBeanConfig.class);
 
+
     @Bean
     public RestartEndpoint restartEndpoint() {
         return new RestartEndpoint();
     }
+
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -61,6 +63,7 @@ public class CommonBeanConfig implements AsyncConfigurer {
     @Override
     public Executor getAsyncExecutor() {
         LOG.info("Sethlans Version: " + SethlansUtils.getVersion());
+
         SethlansExecutor sethlansExecutor = SethlansExecutor.getInstance();
         sethlansExecutor.getExecutor().initialize();
         return sethlansExecutor.getExecutor();
@@ -70,4 +73,6 @@ public class CommonBeanConfig implements AsyncConfigurer {
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
         return new CustomAsyncExceptionHandler();
     }
+
+
 }

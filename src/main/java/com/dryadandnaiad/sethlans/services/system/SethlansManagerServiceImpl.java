@@ -19,12 +19,18 @@
 
 package com.dryadandnaiad.sethlans.services.system;
 
+import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
+import com.dryadandnaiad.sethlans.executor.SethlansExecutor;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.restart.RestartEndpoint;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
 
 /**
  * Created Mario Estrella on 3/22/17.
@@ -36,29 +42,35 @@ import org.springframework.stereotype.Service;
 public class SethlansManagerServiceImpl implements SethlansManagerService {
     private static final Logger LOG = LoggerFactory.getLogger(SethlansManagerServiceImpl.class);
     private RestartEndpoint restartEndpoint;
+    private ConfigurableEnvironment env;
 
-    @Override
+
     @Async
+    @Override
     public void shutdown() {
         try {
             Thread.sleep(5000);
+            SethlansExecutor sethlansExecutor = SethlansExecutor.getInstance();
+            sethlansExecutor.getExecutor().shutdown();
             System.exit(0);
         } catch (InterruptedException e) {
             LOG.info("System Shutdown service closed");
-
         }
 
     }
 
     @Override
-    @Async
     public void restart() {
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            LOG.info("System Restart service closed");
-        }
-        Thread thread = new Thread(() -> restartEndpoint.invoke());
+        SethlansExecutor sethlansExecutor = SethlansExecutor.getInstance();
+        sethlansExecutor.getExecutor().shutdown();
+        Thread thread = new Thread(() -> {
+            if (SethlansUtils.getProperty(SethlansConfigKeys.MODE.toString()) != null) {
+                if (Arrays.asList(env.getActiveProfiles()).contains("SETUP")) {
+                    env.setActiveProfiles(SethlansUtils.getProperty(SethlansConfigKeys.MODE.toString()));
+                }
+            }
+            restartEndpoint.restart();
+        });
         thread.setDaemon(false);
         thread.start();
     }
@@ -66,5 +78,10 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
     @Autowired
     public void setRestartEndpoint(RestartEndpoint restartEndpoint) {
         this.restartEndpoint = restartEndpoint;
+    }
+
+    @Autowired
+    public void setEnv(ConfigurableEnvironment env) {
+        this.env = env;
     }
 }
