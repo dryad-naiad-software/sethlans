@@ -57,9 +57,9 @@ export class UserSettingsComponent implements OnInit {
   }
 
   getUserInfo() {
-    this.http.get('/api/users/username', {responseType: 'text'})
-      .subscribe((user: string) => {
-        this.username = user;
+    this.http.get('/api/users/username')
+      .subscribe((user) => {
+        this.username = user['username'];
         this.http.get('/api/users/get_user/' + this.username + '').subscribe((userinfo: UserInfo) => {
           this.userInfo = userinfo;
           console.log(this.userInfo);
