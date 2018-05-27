@@ -40,6 +40,8 @@ export class ProjectViewComponent implements OnInit {
   thumbnailStatus: boolean;
   totalRenderTime: string;
   projectTime: string;
+  totalQueue: number;
+  remainingQueue: number;
 
 
 
@@ -55,6 +57,8 @@ export class ProjectViewComponent implements OnInit {
       this.getThumbnailStatus();
       this.getTotalRenderTime();
       this.getProjectTime();
+      this.getTotalQueueSize();
+      this.getRemainingQueueSize();
     });
     let timer = Observable.timer(5000, 5000);
     timer.subscribe(() => {
@@ -63,6 +67,8 @@ export class ProjectViewComponent implements OnInit {
       this.getThumbnailStatus();
       this.getTotalRenderTime();
       this.getProjectTime();
+      this.getTotalQueueSize();
+      this.getRemainingQueueSize();
     });
 
   }
@@ -100,11 +106,24 @@ export class ProjectViewComponent implements OnInit {
     })
   }
 
+  getTotalQueueSize() {
+    this.http.get('/api/project_ui/total_queue/' + this.id + '/').subscribe((totalQueue: number) => {
+      this.totalQueue = totalQueue;
+    })
+  }
+
+  getRemainingQueueSize() {
+    this.http.get('/api/project_ui/remaining_queue/' + this.id + '/').subscribe((remainingQueue: number) => {
+      this.remainingQueue = remainingQueue;
+    })
+  }
+
   getTotalRenderTime() {
     this.http.get('/api/project_ui/render_time/' + this.id + '/', {responseType: 'text'}).subscribe((renderTime: string) => {
       this.totalRenderTime = renderTime;
     })
   }
+
 
   getProjectTime() {
     this.http.get('/api/project_ui/project_duration/' + this.id + '/', {responseType: 'text'}).subscribe((duration: string) => {

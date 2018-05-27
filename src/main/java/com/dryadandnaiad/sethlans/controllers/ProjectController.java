@@ -28,6 +28,7 @@ import com.dryadandnaiad.sethlans.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderProjectService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.RenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
@@ -79,6 +80,8 @@ public class ProjectController {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private BlenderProjectService blenderProjectService;
+    private RenderQueueDatabaseService renderQueueDatabaseService;
+
 
 
     @GetMapping(value = "/api/project_actions/delete_all_projects")
@@ -303,6 +306,42 @@ public class ProjectController {
         return null;
     }
 
+    @GetMapping(value = "/api/project_ui/total_queue/{id}")
+    public int totalQueue(@PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        BlenderProject blenderProject;
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            blenderProject = blenderProjectDatabaseService.getById(id);
+            if (blenderProject != null) {
+                return renderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProject_uuid()).size();
+            }
+        } else {
+            blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
+            if (blenderProject != null) {
+                return renderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProject_uuid()).size();
+            }
+        }
+        return 0;
+    }
+
+    @GetMapping(value = "/api/project_ui/remaining_queue/{id}")
+    public int remainingQueue(@PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        BlenderProject blenderProject;
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            blenderProject = blenderProjectDatabaseService.getById(id);
+            if (blenderProject != null) {
+                return renderQueueDatabaseService.listRemainingQueueItemsByProjectUUID(blenderProject.getProject_uuid()).size();
+            }
+        } else {
+            blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
+            if (blenderProject != null) {
+                return renderQueueDatabaseService.listRemainingQueueItemsByProjectUUID(blenderProject.getProject_uuid()).size();
+            }
+        }
+        return 0;
+    }
+
     @GetMapping(value = "/api/project_ui/progress/{id}")
     public int currentProgress(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -501,5 +540,10 @@ public class ProjectController {
     @Autowired
     public void setBlenderProjectService(BlenderProjectService blenderProjectService) {
         this.blenderProjectService = blenderProjectService;
+    }
+
+    @Autowired
+    public void setRenderQueueDatabaseService(RenderQueueDatabaseService renderQueueDatabaseService) {
+        this.renderQueueDatabaseService = renderQueueDatabaseService;
     }
 }
