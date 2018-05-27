@@ -79,7 +79,7 @@
           </ng-container>
           <ng-container matColumnDef="progress">
             <mat-header-cell *matHeaderCellDef>Render Progress</mat-header-cell>
-            <mat-cell *matCellDef="let project">
+            <mat-cell *matCellDef="let project" class="px-2">
               <ngb-progressbar type="success"
                                [value]="project.currentPercentage" placement="right"
                                ngbTooltip="{{project.currentPercentage}}%">
@@ -90,7 +90,7 @@
 
           <ng-container matColumnDef="preview">
             <mat-header-cell *matHeaderCellDef>Preview</mat-header-cell>
-            <mat-cell *matCellDef="let project">
+            <mat-cell *matCellDef="let project" class="px-2">
               <span *ngIf="project.thumbnailPresent == false"><img [src]="placeholder"
                                                                    height="100"
                                                                    class="d-inline-block align-top"
