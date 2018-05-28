@@ -69,7 +69,6 @@ import {ServersComponent} from './components/admin/servers/servers.component';
 import {HelpComponent} from './components/help/help.component';
 import {NodeScreenComponent} from './components/home/node-screen/node-screen.component';
 import {ServerScreenComponent} from './components/home/server-screen/server-screen.component';
-import {DataTablesModule} from "angular-datatables";
 import {FileUploadModule} from 'primeng/primeng';
 import {KeysPipe} from "./pipes/keys.pipe";
 import {ProjectListService} from "./services/project_list.service";
@@ -146,7 +145,6 @@ import {UserListService} from "./services/user_list.service";
     MatFormFieldModule,
     MatInputModule,
     MatSortModule,
-    DataTablesModule,
     NgbModule.forRoot(),
     HttpClientModule,
     AppRoutingModule,
