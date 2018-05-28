@@ -20,6 +20,8 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
+import {Observable} from "rxjs/Observable";
+import {NodeInfo} from "../../../../models/node_info.model";
 
 @Component({
   selector: 'app-node-scan',
@@ -32,7 +34,7 @@ export class NodeScanComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   scanSize: number;
   dataSource = new MatTableDataSource();
-  displayedColumns = ['', 'hostname', 'ipAddress', 'port', 'os', 'computeMethods', 'cpuName', 'selectedCores', 'selectedGPUs'];
+  displayedColumns = ['selection', 'hostname', 'ipAddress', 'port', 'os', 'computeMethods', 'cpuName', 'selectedCores', 'selectedGPUs'];
   selectedNodeIP: string[] = [];
   connectionIds: string[];
 
@@ -41,7 +43,18 @@ export class NodeScanComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.loadTable();
 
+  }
+
+  loadTable() {
+    this.getScannedNodes().subscribe(data => {
+      this.dataSource = new MatTableDataSource<any>(data);
+      this.nodeScanComplete = true;
+      this.scanSize = data.length;
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    })
   }
 
 
@@ -83,6 +96,10 @@ export class NodeScanComponent implements OnInit {
       }
     }
     console.log(this.selectedNodeIP);
+  }
+
+  getScannedNodes(): Observable<NodeInfo[]> {
+    return this.http.get<NodeInfo[]>('/api/management/node_scan/');
   }
 
 }
