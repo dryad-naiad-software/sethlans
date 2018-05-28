@@ -17,9 +17,9 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
-import {NodeInfo} from "../../../../models/node_info.model";
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
 
 @Component({
   selector: 'app-node-scan',
@@ -28,9 +28,12 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 })
 export class NodeScanComponent implements OnInit {
   nodeScanComplete: boolean = false;
-  scanList: NodeInfo[];
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  scanSize: number;
+  dataSource = new MatTableDataSource();
+  displayedColumns = ['', 'hostname', 'ipAddress', 'port', 'os', 'computeMethods', 'cpuName', 'selectedCores', 'selectedGPUs'];
   selectedNodeIP: string[] = [];
-  dtOptions: DataTables.Settings = {};
   connectionIds: string[];
 
 
@@ -38,21 +41,9 @@ export class NodeScanComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.scanNode();
-    this.dtOptions = {
-      ordering: false
-    };
 
   }
 
-  scanNode() {
-    this.scanList = [];
-    this.nodeScanComplete = false;
-    this.http.get('/api/management/node_scan').subscribe((scanList: NodeInfo[]) => {
-      this.scanList = scanList;
-      this.nodeScanComplete = true;
-    })
-  }
 
   returnToNodes(): void {
     window.location.href = "/admin/nodes";
