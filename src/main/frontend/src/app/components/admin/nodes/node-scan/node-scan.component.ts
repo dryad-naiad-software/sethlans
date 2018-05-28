@@ -30,6 +30,7 @@ import {NodeInfo} from "../../../../models/node_info.model";
 })
 export class NodeScanComponent implements OnInit {
   nodeScanComplete: boolean = false;
+  isSelected: boolean = false;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   scanSize: number;
