@@ -39,6 +39,7 @@ import {SetupNodeComponent} from './components/setup-wizard/setup-node/setup-nod
 import {SetupDualComponent} from './components/setup-wizard/setup-dual/setup-dual.component';
 import {SetupSettingsComponent} from './components/setup-wizard/setup-settings/setup-settings.component';
 import {
+  MatCheckboxModule,
   MatFormFieldModule,
   MatInputModule,
   MatPaginatorModule,
@@ -143,6 +144,7 @@ import {UserListService} from "./services/user_list.service";
     MatTableModule,
     MatPaginatorModule,
     MatFormFieldModule,
+    MatCheckboxModule,
     MatInputModule,
     MatSortModule,
     NgbModule.forRoot(),

@@ -26,14 +26,19 @@
         <p class="text-center" *ngIf="nodeScanComplete == false">Scanning for Nodes on the network. &nbsp; &nbsp;<span
           class="fa fa-circle-o-notch fa-spin"></span></p>
         <div *ngIf="nodeScanComplete == true && scanSize > 0">
-          <button class="btn btn-outline-secondary mr-auto" (click)="isSelected = !isSelected">Select All</button>
           <mat-table #scanTable [dataSource]="dataSource" matSort>
             <ng-container matColumnDef="selection">
-              <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
-              <mat-cell *matCellDef="let node">
-                <input type="checkbox" name="{{node.ipAddress}},{{node.networkPort}}"
-                       value="{{node.ipAddress}},{{node.networkPort}}" (change)="selectNode($event)"
-                       [checked]="isSelected">
+              <mat-header-cell *matHeaderCellDef>
+                <mat-checkbox (change)="$event ? masterToggle() : null"
+                              [checked]="selection.hasValue() && isAllSelected()"
+                              [indeterminate]="selection.hasValue() && !isAllSelected()">
+                </mat-checkbox>
+              </mat-header-cell>
+              <mat-cell *matCellDef="let row">
+                <mat-checkbox (click)="$event.stopPropagation()"
+                              (change)="$event ? selection.toggle(row) : null"
+                              [checked]="selection.isSelected(row)">
+                </mat-checkbox>
               </mat-cell>
             </ng-container>
             <ng-container matColumnDef="hostname">
@@ -102,7 +107,7 @@
           </mat-table>
           <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[10,25,50]"></mat-paginator>
           <button type="button" class="btn btn-outline-secondary mr-auto" (click)="returnToNodes()">Cancel</button>
-          <button [disabled]="selectedNodeIP.length == 0" type="button" class="btn btn-outline-dark ml-auto float-right"
+          <button [disabled]="selection.hasValue() == 0" type="button" class="btn btn-outline-dark ml-auto float-right"
                   (click)="addSelectedNodes()"
           >Add Selected Nodes
           </button>
