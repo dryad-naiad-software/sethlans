@@ -25,45 +25,82 @@
       <div class="card-body">
         <p class="text-center" *ngIf="nodeScanComplete == false">Scanning for Nodes on the network. &nbsp; &nbsp;<span
           class="fa fa-circle-o-notch fa-spin"></span></p>
-        <div class="table-responsive" *ngIf="nodeScanComplete == true && scanList.length > 0">
-          <table datatable [dtOptions]="dtOptions" class="table">
-            <thead class="thead-light">
-            <tr>
-              <th></th>
-              <th>Hostname</th>
-              <th>IP Address</th>
-              <th>Network Port</th>
-              <th>Node OS</th>
-              <th>Compute Type</th>
-              <th>CPU Name</th>
-              <th>Cores</th>
-              <th>Selected GPU(s)</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let node of scanList">
-              <td><input type="checkbox" name="{{node.ipAddress}},{{node.networkPort}}"
-                         value="{{node.ipAddress}},{{node.networkPort}}" (change)="selectNode($event)"></td>
-              <td>{{node.hostname}}</td>
-              <td>{{node.ipAddress}}</td>
-              <td>{{node.networkPort}}</td>
-              <td>{{node.sethlansNodeOS}}</td>
-              <td *ngIf="node.computeType.toString().valueOf() == 'CPU_GPU'.valueOf()">CPU & GPU</td>
-              <td *ngIf="node.computeType.toString().valueOf() != 'CPU_GPU'.valueOf()">{{node.computeType}}</td>
-              <td *ngIf="node.computeType.toString().valueOf() != 'GPU'.valueOf()">{{node.cpuinfo.name}}</td>
-              <td *ngIf="node.computeType.toString().valueOf() == 'GPU'.valueOf()">N/A</td>
-              <td *ngIf="node.computeType.toString().valueOf() != 'GPU'.valueOf()">{{node.selectedCores}}</td>
-              <td *ngIf="node.computeType.toString().valueOf() == 'GPU'.valueOf()">N/A</td>
-              <td *ngIf="node.computeType.toString().valueOf() != 'CPU'.valueOf()">
+        <div *ngIf="nodeScanComplete == true && scanSize > 0">
+          <button class="btn btn-outline-secondary mr-auto" (click)="isSelected = !isSelected">Select All</button>
+          <mat-table #scanTable [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="selection">
+              <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
+              <mat-cell *matCellDef="let node">
+                <input type="checkbox" name="{{node.ipAddress}},{{node.networkPort}}"
+                       value="{{node.ipAddress}},{{node.networkPort}}" (change)="selectNode($event)"
+                       [checked]="isSelected">
+              </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="hostname">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Hostname</mat-header-cell>
+              <mat-cell *matCellDef="let node">{{node.hostname}}
+              </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ipAddress">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>IP Address</mat-header-cell>
+              <mat-cell *matCellDef="let node">{{node.ipAddress}}
+              </mat-cell>
+
+            </ng-container>
+
+            <ng-container matColumnDef="port">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Port</mat-header-cell>
+              <mat-cell *matCellDef="let node">{{node.networkPort}}
+              </mat-cell>
+
+            </ng-container>
+
+            <ng-container matColumnDef="os">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>OS</mat-header-cell>
+              <mat-cell *matCellDef="let node">{{node.sethlansNodeOS}}
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="computeMethods">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Compute Methods</mat-header-cell>
+              <mat-cell *matCellDef="let node">
+                <span *ngIf="node.computeType.toString().valueOf() == 'CPU_GPU'.valueOf()">CPU & GPU</span>
+                <span *ngIf="node.computeType.toString().valueOf() != 'CPU_GPU'.valueOf()">{{node.computeType}}</span>
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="cpuName">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>CPU</mat-header-cell>
+              <mat-cell *matCellDef="let node">
+                <span *ngIf="node.computeType.toString().valueOf() != 'GPU'.valueOf()">{{node.cpuinfo.name}}</span>
+                <span *ngIf="node.computeType.toString().valueOf() == 'GPU'.valueOf()">N/A</span>
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="selectedCores">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Selected Core(s)</mat-header-cell>
+              <mat-cell *matCellDef="let node">
+                <span *ngIf="node.computeType.toString().valueOf() != 'GPU'.valueOf()">{{node.selectedCores}}</span>
+                <span *ngIf="node.computeType.toString().valueOf() == 'GPU'.valueOf()">N/A</span>
+              </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="selectedGPUs">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Selected GPU(s)</mat-header-cell>
+              <mat-cell *matCellDef="let node">
+              <span *ngIf="node.computeType.toString().valueOf() != 'CPU'.valueOf()">
                 <ul class="list-unstyled">
                   <li *ngFor="let gpu of node.selectedGPUs"> {{gpu.model}}</li>
                 </ul>
-              </td>
-              <td *ngIf="node.computeType.toString().valueOf() == 'CPU'.valueOf()">N/A</td>
-            </tr>
-            </tbody>
-          </table>
-          <hr/>
+              </span>
+                <span *ngIf="node.computeType.toString().valueOf() == 'CPU'.valueOf()">N/A</span>
+              </mat-cell>
+
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+          <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[10,25,50]"></mat-paginator>
           <button type="button" class="btn btn-outline-secondary mr-auto" (click)="returnToNodes()">Cancel</button>
           <button [disabled]="selectedNodeIP.length == 0" type="button" class="btn btn-outline-dark ml-auto float-right"
                   (click)="addSelectedNodes()"
@@ -72,8 +109,6 @@
         </div>
       </div>
     </div>
-
-
   </div>
 </div>
 

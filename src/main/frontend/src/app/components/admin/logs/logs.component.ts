@@ -18,9 +18,9 @@
  */
 
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {Log} from "../../../models/log.model";
 import {HttpClient} from "@angular/common/http";
 import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
+import {Log} from "../../../models/log.model";
 
 @Component({
   selector: 'app-logs',

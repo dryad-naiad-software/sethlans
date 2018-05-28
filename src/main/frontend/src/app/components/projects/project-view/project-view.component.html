@@ -28,8 +28,8 @@
           <tbody>
           <tr>
             <td>Project Status</td>
-            <td *ngIf="projectStatus.valueOf().toString() != 'Finished'.valueOf()">{{projectStatus}}</td>
-            <td *ngIf="projectStatus.valueOf().toString() == 'Finished'.valueOf()"><a
+            <td *ngIf="projectStatus?.valueOf().toString() != 'Finished'.valueOf()">{{projectStatus}}</td>
+            <td *ngIf="projectStatus?.valueOf().toString() == 'Finished'.valueOf()"><a
               [href]="'/api/project_actions/download_project/' + projectDetails.id">{{projectStatus}}</a></td>
           </tr>
           <tr>
@@ -40,11 +40,11 @@
             <td>Output Format</td>
             <td>{{projectDetails.outputFormat}}</td>
           </tr>
-          <tr *ngIf="projectDetails.projectType.toString().valueOf() == 'STILL_IMAGE'.valueOf()">
+          <tr *ngIf="projectDetails?.projectType?.toString().valueOf() == 'STILL_IMAGE'.valueOf()">
             <td>Project Type</td>
             <td>Still Image</td>
           </tr>
-          <tr *ngIf="projectDetails.projectType.toString().valueOf() == 'ANIMATION'.valueOf()">
+          <tr *ngIf="projectDetails?.projectType?.toString().valueOf() == 'ANIMATION'.valueOf()">
             <td>Project Type</td>
             <td>Animation</td>
           </tr>
@@ -85,11 +85,15 @@
             <td>{{projectDetails.partsPerFrame}}</td>
           </tr>
           <tr>
-            <td>Current Progress</td>
+            <td>Current Percentage</td>
             <td class="pt-2 pb-2">
               <ngb-progressbar showValue="true" type="success"
                                [value]="currentProgress"></ngb-progressbar>
             </td>
+          </tr>
+          <tr *ngIf="projectStatus.valueOf().toString() != 'Finished' && projectStatus.valueOf().toString() != 'Added'">
+            <td>Queue Progress</td>
+            <td>{{remainingQueue}} of {{totalQueue}} Remaining</td>
           </tr>
           <tr>
             <td>Project Duration</td>
@@ -99,6 +103,7 @@
             <td>Total Render Time</td>
             <td>{{totalRenderTime}}</td>
           </tr>
+
           <tr>
             <td>Preview</td>
             <td *ngIf="thumbnailStatus == false || thumbnailStatus == undefined"><img [src]="placeholder"
@@ -115,7 +120,7 @@
           </tr>
           </tbody>
         </table>
-        <button class="btn btn-outline-dark ml-auto float-right" (click)="returnToProjects()">Return to Projects
+        <button class="btn btn-outline-dark ml-auto float-right" (click)="returnToProjects()">Project List View
         </button>
 
       </div>

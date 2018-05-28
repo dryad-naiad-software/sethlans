@@ -1,4 +1,4 @@
-/*!
+/*
  * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
@@ -17,23 +17,18 @@
  *
  */
 
-.mat-column-nodeStatus {
-  flex: 0 0 100px;
-}
+import {Injectable} from "@angular/core";
+import {Observable} from "rxjs/Observable";
+import {HttpClient} from "@angular/common/http";
+import {UserInfo} from "../models/userinfo.model";
 
-.mat-column-cpuName {
-  flex: 0 0 100px;
-}
+@Injectable()
+export class UserListService {
 
-.mat-column-selectedCores {
-  flex: 0 0 100px;
-  text-align: center;
-}
+  constructor(private http: HttpClient) {
+  }
 
-.mat-column-selectedGPUs {
-  flex: 0 0 150px;
-}
-
-.mat-column-benchmark {
-  flex: 0 0 150px;
+  getUserList(): Observable<UserInfo[]> {
+    return this.http.get<UserInfo[]>('/api/management/user_list/');
+  }
 }

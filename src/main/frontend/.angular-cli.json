@@ -21,14 +21,12 @@
       "styles": [
         "styles.scss",
         "styles.css",
-        "../node_modules/datatables.net-dt/css/jquery.dataTables.css",
         "../node_modules/primeng/resources/primeng.min.css",
         "../node_modules/primeng/resources/themes/bootstrap/theme.css"
       ],
       "scripts": [
         "../node_modules/chart.js/dist/Chart.bundle.js",
-        "../node_modules/jquery/dist/jquery.js",
-        "../node_modules/datatables.net/js/jquery.dataTables.js"
+        "../node_modules/jquery/dist/jquery.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

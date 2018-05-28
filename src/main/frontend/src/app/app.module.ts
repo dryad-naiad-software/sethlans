@@ -69,7 +69,6 @@ import {ServersComponent} from './components/admin/servers/servers.component';
 import {HelpComponent} from './components/help/help.component';
 import {NodeScreenComponent} from './components/home/node-screen/node-screen.component';
 import {ServerScreenComponent} from './components/home/server-screen/server-screen.component';
-import {DataTablesModule} from "angular-datatables";
 import {FileUploadModule} from 'primeng/primeng';
 import {KeysPipe} from "./pipes/keys.pipe";
 import {ProjectListService} from "./services/project_list.service";
@@ -86,6 +85,7 @@ import {GetStartedWizardComponent} from './components/get-started-wizard/get-sta
 import {RestartComponent} from "./components/admin/restart/restart.component";
 import {ShutdownComponent} from "./components/admin/shutdown/shutdown.component";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {UserListService} from "./services/user_list.service";
 
 
 @NgModule({
@@ -145,13 +145,12 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
     MatFormFieldModule,
     MatInputModule,
     MatSortModule,
-    DataTablesModule,
     NgbModule.forRoot(),
     HttpClientModule,
     AppRoutingModule,
     Ng2Webstorage
   ],
-  providers: [Title, ProjectListService, NodeListService, ServerListService, SetupFormDataService, WindowRef, AuthService, MetricsService, {
+  providers: [Title, ProjectListService, NodeListService, ServerListService, UserListService, SetupFormDataService, WindowRef, AuthService, MetricsService, {
     provide: HTTP_INTERCEPTORS,
     useClass: XhrInterceptor,
     multi: true

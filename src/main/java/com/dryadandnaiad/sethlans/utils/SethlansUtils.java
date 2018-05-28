@@ -320,7 +320,8 @@ public class SethlansUtils {
 
             return properties.getProperty(key);
         } catch (IOException e) {
-            LOG.error(Throwables.getStackTraceAsString(e));
+            LOG.error("Unable to read config file, either missing or this is a first time execution");
+
         }
         return null;
     }

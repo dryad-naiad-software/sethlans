@@ -69,7 +69,7 @@ export class ComputeSettingsComponent implements OnInit {
       if (submitted === true) {
         setTimeout(() => {
           window.location.href = "/";
-        }, 15000);
+        }, 30000);
       }
     });
     this.modalService.open(content, options);
