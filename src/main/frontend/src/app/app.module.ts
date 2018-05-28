@@ -86,6 +86,7 @@ import {GetStartedWizardComponent} from './components/get-started-wizard/get-sta
 import {RestartComponent} from "./components/admin/restart/restart.component";
 import {ShutdownComponent} from "./components/admin/shutdown/shutdown.component";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {UserListService} from "./services/user_list.service";
 
 
 @NgModule({
@@ -151,7 +152,7 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
     AppRoutingModule,
     Ng2Webstorage
   ],
-  providers: [Title, ProjectListService, NodeListService, ServerListService, SetupFormDataService, WindowRef, AuthService, MetricsService, {
+  providers: [Title, ProjectListService, NodeListService, ServerListService, UserListService, SetupFormDataService, WindowRef, AuthService, MetricsService, {
     provide: HTTP_INTERCEPTORS,
     useClass: XhrInterceptor,
     multi: true
