@@ -21,6 +21,7 @@
       "styles": [
         "styles.scss",
         "styles.css",
+        "theme.scss",
         "../node_modules/primeng/resources/primeng.min.css",
         "../node_modules/primeng/resources/themes/bootstrap/theme.css"
       ],
