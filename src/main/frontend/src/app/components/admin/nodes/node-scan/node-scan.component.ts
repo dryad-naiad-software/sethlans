@@ -38,6 +38,7 @@ export class NodeScanComponent implements OnInit {
   displayedColumns = ['selection', 'hostname', 'ipAddress', 'port', 'os', 'computeMethods', 'cpuName', 'selectedCores', 'selectedGPUs'];
   connectionIds: string[];
   selection = new SelectionModel(true, []);
+  toSend: string[];
 
   constructor(private http: HttpClient) {
   }
@@ -53,10 +54,23 @@ export class NodeScanComponent implements OnInit {
     return numSelected === numRows;
   }
 
+  updateToSend() {
+    this.toSend = [];
+    this.selection.selected.forEach(value => {
+      let node = value.hostname + "," + value.networkPort;
+      this.toSend.push(node);
+    })
+    console.log(this.toSend);
+  }
+
+
   masterToggle() {
     this.isAllSelected() ?
       this.selection.clear() :
-      this.dataSource.data.forEach(row => this.selection.select(row));
+      this.dataSource.data.forEach(row => {
+        this.selection.select(row);
+      });
+    this.updateToSend();
   }
 
   loadTable() {
@@ -80,8 +94,7 @@ export class NodeScanComponent implements OnInit {
         'Content-Type': 'application/json',
       })
     };
-
-    this.http.post('/api/setup/multi_node_add', JSON.stringify(this.selection), httpOptions).subscribe((connectionIds: string[]) => {
+    this.http.post('/api/setup/multi_node_add', JSON.stringify(this.toSend), httpOptions).subscribe((connectionIds: string[]) => {
       this.connectionIds = connectionIds;
       this.acknowledgeSelectedNodes()
     });
