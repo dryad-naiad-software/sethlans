@@ -64,7 +64,8 @@
                         (click)="acknowledgeServer(server.id)">
                   Acknowledge
                 </button>
-                <button class="btn btn-outline-danger btn-sm" type="button" (click)="deleteServer(server.id)">Delete
+                <button class="btn btn-outline-danger btn-sm" type="button"
+                        (click)="confirm(server, deleteConfirmation)">Delete
                 </button>
               </div>
             </mat-cell>
@@ -78,3 +79,22 @@
       </div>
     </div>
   </div>
+
+<!--Delete Server Confirmation-->
+<ng-template #deleteConfirmation let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Delete Server</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete <strong>{{selectedServer.hostname}}</strong>?</p>
+    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c('Close click')">No
+    </button>
+    <button type="button" class="btn btn-outline-danger ml-auto float-right"
+            (click)="c('Close click'); deleteServer(selectedServer.id)">Yes
+    </button>
+  </div>
+
+</ng-template>

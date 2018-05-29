@@ -24,6 +24,8 @@ import {Observable} from "rxjs/Observable";
 import "rxjs/add/observable/timer";
 import {ServerListService} from "../../../services/server_list.service";
 import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
+import {ServerInfo} from "../../../models/server_info.model";
+import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-servers',
@@ -37,9 +39,10 @@ export class ServersComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   dataSource = new MatTableDataSource();
   displayedColumns = ['serverStatus', 'hostname', 'ipAddress', 'port', 'actions'];
+  selectedServer: ServerInfo;
 
 
-  constructor(private http: HttpClient, private router: Router, private serverListService: ServerListService) {
+  constructor(private http: HttpClient, private router: Router, private serverListService: ServerListService, private modalService: NgbModal) {
   }
 
   ngOnInit() {
@@ -62,6 +65,14 @@ export class ServersComponent implements OnInit {
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
     this.dataSource.filter = filterValue;
+  }
+
+  confirm(server, content) {
+    this.selectedServer = server;
+    let options: NgbModalOptions = {
+      backdrop: "static"
+    };
+    this.modalService.open(content, options);
   }
 
 
