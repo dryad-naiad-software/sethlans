@@ -110,14 +110,28 @@ public class ServerSetupController {
         return true;
     }
 
-    @GetMapping("/node_edit/{id}")
-    public boolean updateNode(@PathVariable Long id, @RequestParam String ip, @RequestParam String port) {
-        SethlansNode sethlansNodeToEdit = sethlansNodeDatabaseService.getById(id);
-        SethlansNode newNode = nodeDiscoveryService.discoverUnicastNode(ip, port);
-        newNode.setId(sethlansNodeToEdit.getId());
-        newNode.setDateCreated(sethlansNodeToEdit.getDateCreated());
-        newNode.setLastUpdated(sethlansNodeToEdit.getLastUpdated());
+    @GetMapping("/node_update/{id}")
+    public boolean updateNode(@PathVariable Long id) {
+        SethlansNode sethlansNodeToReplace = sethlansNodeDatabaseService.getById(id);
+        queueService.addNodeToDeleteQueue(id);
+        SethlansNode newNode = nodeDiscoveryService.discoverUnicastNode(sethlansNodeToReplace.getIpAddress(), sethlansNodeToReplace.getNetworkPort());
         sethlansNodeDatabaseService.saveOrUpdate(newNode);
+        nodeActivationService.sendActivationRequest(newNode, SethlansUtils.getCurrentServerInfo(), true);
+        autoAcknowledgeNode(newNode.getConnection_uuid());
+        return true;
+    }
+
+    @GetMapping("/node_disable/{id}")
+    public boolean disableNode(@PathVariable Long id) {
+        queueService.addNodeToDisable(id);
+        return true;
+    }
+
+    @GetMapping("/node_enable/{id}")
+    public boolean enableNode(@PathVariable Long id) {
+        SethlansNode sethlansNode = sethlansNodeDatabaseService.getById(id);
+        sethlansNode.setDisabled(false);
+        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
         return true;
     }
 

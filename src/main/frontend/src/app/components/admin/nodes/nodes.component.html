@@ -141,7 +141,7 @@
             <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
             <mat-cell *matCellDef="let node">
               <div class="btn-group-vertical">
-                <button class="btn btn-outline-primary btn-sm" type="button">
+                <button class="btn btn-outline-primary btn-sm" type="button" (click)="updateNode(node.id)">
                   Update
                 </button>
                 <button class="btn btn-outline-danger btn-sm" type="button" (click)="deleteNode(node.id)">Delete

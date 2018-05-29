@@ -130,7 +130,7 @@ public class AdminController {
         return nodeDiscoveryService.discoverMulticastNodes();
     }
 
-    @GetMapping(value = {"/node_update_info/{id}"})
+    @GetMapping(value = {"/get_node/{id}"})
     public SethlansNode getNodeById(@PathVariable Long id) {
         return sethlansNodeDatabaseService.getById(id);
     }

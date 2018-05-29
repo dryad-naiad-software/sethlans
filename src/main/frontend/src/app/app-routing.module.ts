@@ -43,7 +43,6 @@ import {ServersComponent} from "./components/admin/servers/servers.component";
 import {NodesComponent} from "./components/admin/nodes/nodes.component";
 import {HelpComponent} from "./components/help/help.component";
 import {NodeAddComponent} from "./components/admin/nodes/node-add/node-add.component";
-import {NodeEditComponent} from "./components/admin/nodes/node-edit/node-edit.component";
 import {NodeScanComponent} from "./components/admin/nodes/node-scan/node-scan.component";
 import {ProjectAddComponent} from "./components/projects/project-add/project-add.component";
 import {ProjectEditComponent} from "./components/projects/project-edit/project-edit.component";
@@ -66,7 +65,6 @@ const routes: Routes = [
   {path: 'admin/blender_version_admin', component: BlenderVersionsComponent},
   {path: 'admin/nodes', component: NodesComponent},
   {path: 'admin/nodes/add', component: NodeAddComponent},
-  {path: 'admin/nodes/edit/:id', component: NodeEditComponent},
   {path: 'admin/nodes/scan', component: NodeScanComponent},
   {path: 'admin/logs', component: LogsComponent},
   {path: 'register', component: RegisterUserComponent},

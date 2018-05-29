@@ -34,7 +34,7 @@ export class NodeAddComponent implements OnInit {
   nodeToAdd: NodeInfo;
   summaryComplete: boolean = false;
   computeMethodEnum: any = ComputeMethod;
-  formSubmitted: boolean = false
+  formSubmitted: boolean = false;
   connectionID: string;
 
 

@@ -67,6 +67,7 @@ public class QueueServiceImpl implements QueueService {
     private List<ProcessQueueItem> incomingQueueItemList = new ArrayList<>();
     private Set<NodeOnlineItem> nodeOnlineItemList = new HashSet<>();
     private List<Long> nodesToDelete = new ArrayList<>();
+    private List<Long> nodesToDisable = new ArrayList<>();
 
     @Async
     @Override
@@ -112,6 +113,11 @@ public class QueueServiceImpl implements QueueService {
     @Override
     public void queueIdleNode(String connection_uuid, ComputeType computeType) {
         idleNodes.add(new ProcessIdleNode(connection_uuid, computeType));
+    }
+
+    @Override
+    public void addNodeToDisable(Long id) {
+
     }
 
     @Override

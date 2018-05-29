@@ -90,9 +90,14 @@ export class NodesComponent implements OnInit {
     this.dataSource.filter = filterValue;
   }
 
-
   deleteNode(id) {
-    this.http.get('/api/setup/node_delete/' + id + "/", {responseType: 'text'}).subscribe((success: any) => {
+    this.http.get('/api/setup/node_delete/' + id + "/").subscribe(() => {
+      this.loadTable();
+    });
+  }
+
+  updateNode(id) {
+    this.http.get('/api/setup/node_update/' + id + "/").subscribe(() => {
       this.loadTable();
     });
   }
