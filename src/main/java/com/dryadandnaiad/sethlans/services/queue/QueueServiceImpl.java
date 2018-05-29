@@ -95,6 +95,7 @@ public class QueueServiceImpl implements QueueService {
     private void assignmentWorflow() {
         nodeOnlineStatus();
         processNodeDeletion();
+        processDisablingNodes();
         freeIdleNode();
         assignQueueItemToNode();
         sendQueueItemsToAssignedNode();
@@ -104,6 +105,7 @@ public class QueueServiceImpl implements QueueService {
     private void processingWorkflow() {
         nodeOnlineStatus();
         processNodeDeletion();
+        processDisablingNodes();
         incomingCompleteItems();
         processReceivedFiles();
         processImages();
@@ -117,7 +119,7 @@ public class QueueServiceImpl implements QueueService {
 
     @Override
     public void addNodeToDisable(Long id) {
-
+        nodesToDisable.add(id);
     }
 
     @Override
@@ -155,6 +157,21 @@ public class QueueServiceImpl implements QueueService {
                     idsReviewed.add(id);
                 }
                 nodesToDelete.removeAll(idsReviewed);
+            }
+        }
+        modifyingQueue = false;
+    }
+
+    private void processDisablingNodes() {
+        if (!modifyingQueue) {
+            modifyingQueue = true;
+            if (nodesToDisable.size() > 0) {
+                List<Long> idsReviewed = new ArrayList<>();
+                for (Long id : new ArrayList<>(nodesToDisable)) {
+                    disableNodes(id, sethlansNodeDatabaseService, renderQueueDatabaseService, blenderProjectDatabaseService);
+                    idsReviewed.add(id);
+                }
+                nodesToDisable.removeAll(idsReviewed);
             }
         }
         modifyingQueue = false;
