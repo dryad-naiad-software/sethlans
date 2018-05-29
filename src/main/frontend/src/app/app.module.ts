@@ -85,6 +85,8 @@ import {RestartComponent} from "./components/admin/restart/restart.component";
 import {ShutdownComponent} from "./components/admin/shutdown/shutdown.component";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {UserListService} from "./services/user_list.service";
+import {UserAddComponent} from './components/admin/user-management/user-add/user-add.component';
+import {UserEditComponent} from './components/admin/user-management/user-edit/user-edit.component';
 
 
 @NgModule({
@@ -128,7 +130,9 @@ import {UserListService} from "./services/user_list.service";
     ProjectViewComponent,
     GetStartedWizardComponent,
     RestartComponent,
-    ShutdownComponent
+    ShutdownComponent,
+    UserAddComponent,
+    UserEditComponent
   ],
   imports: [
     BrowserModule,
