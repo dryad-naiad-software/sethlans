@@ -49,6 +49,8 @@ import {ProjectEditComponent} from "./components/projects/project-edit/project-e
 import {ProjectViewComponent} from "./components/projects/project-view/project-view.component";
 import {ShutdownComponent} from "./components/admin/shutdown/shutdown.component";
 import {RestartComponent} from "./components/admin/restart/restart.component";
+import {UserAddComponent} from "./components/admin/user-management/user-add/user-add.component";
+import {UserEditComponent} from "./components/admin/user-management/user-edit/user-edit.component";
 
 
 const routes: Routes = [
@@ -59,6 +61,8 @@ const routes: Routes = [
   {path: 'help', component: HelpComponent},
   {path: 'admin/metrics', component: MetricsComponent},
   {path: 'admin/user_management', component: UserManagementComponent},
+  {path: 'admin/user_management/add', component: UserAddComponent},
+  {path: 'admin/user_management/edit', component: UserEditComponent},
   {path: 'admin/sethlans_settings', component: SethlansSettingsComponent},
   {path: 'admin/servers', component: ServersComponent},
   {path: 'admin/compute_settings', component: ComputeSettingsComponent},
