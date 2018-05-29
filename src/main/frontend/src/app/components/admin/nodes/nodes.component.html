@@ -143,11 +143,12 @@
             <mat-cell *matCellDef="let node">
               <div class="btn-group-vertical">
                 <button *ngIf="node.disabled" class="btn btn-outline-success btn-sm" type="button"
-                        (click)="enableNode(node.id)">
+                        (click)="disableClicked = false; enableNode(node.id)">
                   Enable
                 </button>
-                <button *ngIf="!node.disabled" class="btn btn-outline-warning btn-sm" type="button"
-                        (click)="disableNode(node.id)">
+                <button *ngIf="!node.disabled" [disabled]="disableClicked" class="btn btn-outline-warning btn-sm"
+                        type="button"
+                        (click)="disableClicked = true; disableNode(node.id)">
                   Disable
                 </button>
                 <button class="btn btn-outline-primary btn-sm" type="button" (click)="updateNode(node.id)">
