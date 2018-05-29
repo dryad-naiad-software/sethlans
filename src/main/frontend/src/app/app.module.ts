@@ -39,6 +39,7 @@ import {SetupNodeComponent} from './components/setup-wizard/setup-node/setup-nod
 import {SetupDualComponent} from './components/setup-wizard/setup-dual/setup-dual.component';
 import {SetupSettingsComponent} from './components/setup-wizard/setup-settings/setup-settings.component';
 import {
+  MatCheckboxModule,
   MatFormFieldModule,
   MatInputModule,
   MatPaginatorModule,
@@ -76,7 +77,6 @@ import {NodeListService} from "./services/node_list.service";
 import {ServerListService} from "./services/server_list.service";
 import {NodeAddComponent} from './components/admin/nodes/node-add/node-add.component';
 import {NodeScanComponent} from './components/admin/nodes/node-scan/node-scan.component';
-import {NodeEditComponent} from './components/admin/nodes/node-edit/node-edit.component';
 import {ProjectAddComponent} from './components/projects/project-add/project-add.component';
 import {ProjectEditComponent} from './components/projects/project-edit/project-edit.component';
 import {ProjectViewComponent} from './components/projects/project-view/project-view.component';
@@ -125,7 +125,6 @@ import {UserListService} from "./services/user_list.service";
     ServerScreenComponent,
     NodeAddComponent,
     NodeScanComponent,
-    NodeEditComponent,
     ProjectAddComponent,
     ProjectEditComponent,
     ProjectViewComponent,
@@ -143,6 +142,7 @@ import {UserListService} from "./services/user_list.service";
     MatTableModule,
     MatPaginatorModule,
     MatFormFieldModule,
+    MatCheckboxModule,
     MatInputModule,
     MatSortModule,
     NgbModule.forRoot(),

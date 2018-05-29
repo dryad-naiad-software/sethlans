@@ -22,6 +22,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
 import {Observable} from "rxjs/Observable";
 import {NodeInfo} from "../../../../models/node_info.model";
+import {SelectionModel} from "@angular/cdk/collections";
 
 @Component({
   selector: 'app-node-scan',
@@ -30,15 +31,14 @@ import {NodeInfo} from "../../../../models/node_info.model";
 })
 export class NodeScanComponent implements OnInit {
   nodeScanComplete: boolean = false;
-  isSelected: boolean = false;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   scanSize: number;
   dataSource = new MatTableDataSource();
   displayedColumns = ['selection', 'hostname', 'ipAddress', 'port', 'os', 'computeMethods', 'cpuName', 'selectedCores', 'selectedGPUs'];
-  selectedNodeIP: string[] = [];
   connectionIds: string[];
-
+  selection = new SelectionModel(true, []);
+  toSend: string[];
 
   constructor(private http: HttpClient) {
   }
@@ -46,6 +46,31 @@ export class NodeScanComponent implements OnInit {
   ngOnInit() {
     this.loadTable();
 
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  updateToSend() {
+    this.toSend = [];
+    this.selection.selected.forEach(value => {
+      let node = value.hostname + "," + value.networkPort;
+      this.toSend.push(node);
+    })
+    console.log(this.toSend);
+  }
+
+
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.dataSource.data.forEach(row => {
+        this.selection.select(row);
+      });
+    this.updateToSend();
   }
 
   loadTable() {
@@ -69,7 +94,7 @@ export class NodeScanComponent implements OnInit {
         'Content-Type': 'application/json',
       })
     };
-    this.http.post('/api/setup/multi_node_add', JSON.stringify(this.selectedNodeIP), httpOptions).subscribe((connectionIds: string[]) => {
+    this.http.post('/api/setup/multi_node_add', JSON.stringify(this.toSend), httpOptions).subscribe((connectionIds: string[]) => {
       this.connectionIds = connectionIds;
       this.acknowledgeSelectedNodes()
     });
@@ -82,22 +107,12 @@ export class NodeScanComponent implements OnInit {
         'Content-Type': 'application/json',
       })
     };
+
     this.http.post('/api/setup/multi_auto_acknowledge', JSON.stringify(this.connectionIds), httpOptions).subscribe(() => {
       this.returnToNodes();
     });
   }
 
-  selectNode(event) {
-    var index = this.selectedNodeIP.indexOf(event.target.value);
-    if (event.target.checked) {
-      this.selectedNodeIP.push(event.target.value);
-    } else {
-      if (index !== -1) {
-        this.selectedNodeIP.splice(index, 1);
-      }
-    }
-    console.log(this.selectedNodeIP);
-  }
 
   getScannedNodes(): Observable<NodeInfo[]> {
     return this.http.get<NodeInfo[]>('/api/management/node_scan/');

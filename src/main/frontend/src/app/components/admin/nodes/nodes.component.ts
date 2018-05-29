@@ -37,6 +37,7 @@ export class NodesComponent implements OnInit {
   nodeListSize: number;
   inActiveList: boolean[] = [];
   pendingList: boolean[] = [];
+  disabledList: boolean[] = [];
 
 
   constructor(private http: HttpClient, private nodeListService: NodeListService) {
@@ -59,9 +60,11 @@ export class NodesComponent implements OnInit {
     this.nodeListService.getUpdatingNodeList().subscribe(value => {
       let newInActiveList: boolean[] = [];
       let newPendingList: boolean[] = [];
+      let newDisabledList: boolean[] = [];
       for (let i = 0; i < value.length; i++) {
         newInActiveList.push(value[i].active);
         newPendingList.push(value[i].benchmarkComplete);
+        newDisabledList.push(value[i].disabled);
       }
       if (!Utils.isEqual(newInActiveList, this.inActiveList)) {
         this.loadTable();
@@ -70,9 +73,13 @@ export class NodesComponent implements OnInit {
       if (!Utils.isEqual(newPendingList, this.pendingList)) {
         this.loadTable();
       }
+      if (!Utils.isEqual(newDisabledList, this.disabledList)) {
+        this.loadTable();
+      }
 
       this.inActiveList = newInActiveList;
       this.pendingList = newPendingList;
+      this.disabledList = newDisabledList;
     })
   }
 
@@ -90,9 +97,14 @@ export class NodesComponent implements OnInit {
     this.dataSource.filter = filterValue;
   }
 
-
   deleteNode(id) {
-    this.http.get('/api/setup/node_delete/' + id + "/", {responseType: 'text'}).subscribe((success: any) => {
+    this.http.get('/api/setup/node_delete/' + id + "/").subscribe(() => {
+      this.loadTable();
+    });
+  }
+
+  updateNode(id) {
+    this.http.get('/api/setup/node_update/' + id + "/").subscribe(() => {
       this.loadTable();
     });
   }
@@ -106,4 +118,18 @@ export class NodesComponent implements OnInit {
   }
 
 
+  enableNode(id) {
+    this.http.get('/api/setup/node_enable/' + id + "/").subscribe(() => {
+      this.loadTable();
+    });
+  }
+
+  disableNode(id) {
+    this.http.get('/api/setup/node_disable/' + id + "/").subscribe(() => {
+      setTimeout(() => {
+        this.loadTable();
+      }, 3000);
+
+    });
+  }
 }

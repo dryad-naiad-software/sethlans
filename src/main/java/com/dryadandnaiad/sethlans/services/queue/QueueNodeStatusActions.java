@@ -142,6 +142,13 @@ public class QueueNodeStatusActions {
         sethlansNodeDatabaseService.delete(nodeID);
     }
 
+    static void disableNodes(Long nodeID, SethlansNodeDatabaseService sethlansNodeDatabaseService, RenderQueueDatabaseService renderQueueDatabaseService, BlenderProjectDatabaseService blenderProjectDatabaseService) {
+        SethlansNode sethlansNode = sethlansNodeDatabaseService.getById(nodeID);
+        removeNodeFromQueue(sethlansNode.getConnection_uuid(), renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNode);
+        sethlansNode.setDisabled(true);
+        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+    }
+
     private static void removeNodeFromQueue(String connection_uuid, RenderQueueDatabaseService renderQueueDatabaseService, BlenderProjectDatabaseService blenderProjectDatabaseService, SethlansNode sethlansNode) {
         List<RenderQueueItem> listOfItemsWIthNode = renderQueueDatabaseService.listQueueItemsByConnectionUUID(connection_uuid);
         List<RenderQueueItem> queueItemsNotComplete = new ArrayList<>();

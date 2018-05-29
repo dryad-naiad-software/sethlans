@@ -40,7 +40,8 @@
             <mat-cell *matCellDef="let node">
               <span *ngIf="node.pendingActivation == true">Pending Activation</span>
               <span *ngIf="node.pendingActivation == false && node.benchmarkComplete == false">Pending Benchmark</span>
-              <span *ngIf="node.pendingActivation == false && node.benchmarkComplete == true && node.active == true">
+              <span
+                *ngIf="node.pendingActivation == false && node.benchmarkComplete == true && node.active == true && node.disabled == false">
                 Active
               </span>
               <span *ngIf="node.pendingActivation == false && node.benchmarkComplete == true && node.active == false">
@@ -141,10 +142,19 @@
             <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
             <mat-cell *matCellDef="let node">
               <div class="btn-group-vertical">
-                <button class="btn btn-outline-primary btn-sm" type="button">
+                <button *ngIf="node.disabled" class="btn btn-outline-success btn-sm" type="button"
+                        (click)="enableNode(node.id)">
+                  Enable
+                </button>
+                <button *ngIf="!node.disabled" class="btn btn-outline-warning btn-sm" type="button"
+                        (click)="disableNode(node.id)">
+                  Disable
+                </button>
+                <button class="btn btn-outline-primary btn-sm" type="button" (click)="updateNode(node.id)">
                   Update
                 </button>
-                <button class="btn btn-outline-danger btn-sm" type="button" (click)="deleteNode(node.id)">Delete
+                <button class="btn btn-outline-danger btn-sm" type="button" (click)="deleteNode(node.id)">
+                  Delete
                 </button>
               </div>
             </mat-cell>
