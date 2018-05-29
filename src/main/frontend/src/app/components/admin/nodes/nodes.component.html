@@ -142,19 +142,22 @@
             <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
             <mat-cell *matCellDef="let node">
               <div class="btn-group-vertical">
-                <button *ngIf="node.disabled" class="btn btn-outline-success btn-sm" type="button"
-                        (click)="disableClicked = false; enableNode(node.id)">
+                <button [attr.id]="'enable'+node.id" *ngIf="node.disabled" class="btn btn-outline-success btn-sm"
+                        type="button"
+                        (click)="enableNode(node.id)">
                   Enable
                 </button>
-                <button *ngIf="!node.disabled" [disabled]="disableClicked" class="btn btn-outline-warning btn-sm"
+                <button [attr.id]="'disable'+node.id" *ngIf="!node.disabled" class="btn btn-outline-warning btn-sm"
                         type="button"
-                        (click)="disableClicked = true; disableNode(node.id)">
+                        (click)="disableNode(node.id)">
                   Disable
                 </button>
-                <button class="btn btn-outline-primary btn-sm" type="button" (click)="updateNode(node.id)">
+                <button [attr.id]="'update'+node.id" class="btn btn-outline-primary btn-sm" type="button"
+                        (click)="updateNode(node.id)">
                   Update
                 </button>
-                <button class="btn btn-outline-danger btn-sm" type="button" (click)="deleteNode(node.id)">
+                <button [attr.id]="'delete'+node.id" class="btn btn-outline-danger btn-sm" type="button"
+                        (click)="deleteNode(node.id)">
                   Delete
                 </button>
               </div>

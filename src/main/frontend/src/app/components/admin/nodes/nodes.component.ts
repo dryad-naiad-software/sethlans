@@ -98,14 +98,20 @@ export class NodesComponent implements OnInit {
   }
 
   deleteNode(id) {
+    document.getElementById('delete' + id).setAttribute("disabled", "disabled");
+
     this.http.get('/api/setup/node_delete/' + id + "/").subscribe(() => {
       this.loadTable();
     });
   }
 
   updateNode(id) {
+    document.getElementById('update' + id).setAttribute("disabled", "disabled");
+
     this.http.get('/api/setup/node_update/' + id + "/").subscribe(() => {
       this.loadTable();
+      document.getElementById('update' + id).removeAttribute("disabled");
+
     });
   }
 
@@ -121,15 +127,17 @@ export class NodesComponent implements OnInit {
   enableNode(id) {
     this.http.get('/api/setup/node_enable/' + id + "/").subscribe(() => {
       this.loadTable();
+      document.getElementById('disable' + id).removeAttribute("disabled");
     });
   }
 
   disableNode(id) {
+    document.getElementById('disable' + id).setAttribute("disabled", "disabled");
     this.http.get('/api/setup/node_disable/' + id + "/").subscribe(() => {
       setTimeout(() => {
         this.loadTable();
       }, 3000);
-
     });
+
   }
 }
