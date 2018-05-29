@@ -23,6 +23,8 @@ import {Observable} from "rxjs/Observable";
 import {NodeListService} from "../../../services/node_list.service";
 import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
 import Utils from "../../../utils/utils";
+import {NodeInfo} from "../../../models/node_info.model";
+import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-nodes',
@@ -38,9 +40,10 @@ export class NodesComponent implements OnInit {
   inActiveList: boolean[] = [];
   pendingList: boolean[] = [];
   disabledList: boolean[] = [];
+  selectedNode: NodeInfo;
 
 
-  constructor(private http: HttpClient, private nodeListService: NodeListService) {
+  constructor(private http: HttpClient, private nodeListService: NodeListService, private modalService: NgbModal) {
   }
 
   ngOnInit() {
@@ -91,6 +94,14 @@ export class NodesComponent implements OnInit {
     })
   }
 
+  confirm(node, content) {
+    this.selectedNode = node;
+    let options: NgbModalOptions = {
+      backdrop: "static"
+    };
+    this.modalService.open(content, options);
+  }
+
   applyFilter(filterValue: string) {
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
@@ -99,7 +110,6 @@ export class NodesComponent implements OnInit {
 
   deleteNode(id) {
     document.getElementById('delete' + id).setAttribute("disabled", "disabled");
-
     this.http.get('/api/setup/node_delete/' + id + "/").subscribe(() => {
       this.loadTable();
     });
@@ -107,7 +117,6 @@ export class NodesComponent implements OnInit {
 
   updateNode(id) {
     document.getElementById('update' + id).setAttribute("disabled", "disabled");
-
     this.http.get('/api/setup/node_update/' + id + "/").subscribe(() => {
       this.loadTable();
       document.getElementById('update' + id).removeAttribute("disabled");

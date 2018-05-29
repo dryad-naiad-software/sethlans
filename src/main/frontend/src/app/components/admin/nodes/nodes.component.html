@@ -157,7 +157,7 @@
                   Update
                 </button>
                 <button [attr.id]="'delete'+node.id" class="btn btn-outline-danger btn-sm" type="button"
-                        (click)="deleteNode(node.id)">
+                        (click)="confirm(node, deleteConfirmation)">
                   Delete
                 </button>
               </div>
@@ -172,4 +172,22 @@
     </div>
   </div>
 </div>
+<!--Delete Project Confirmation-->
+<ng-template #deleteConfirmation let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Delete Node</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete <strong>{{selectedNode.hostname}}</strong>?</p>
+    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c('Close click')">No
+    </button>
+    <button type="button" class="btn btn-outline-danger ml-auto float-right"
+            (click)="c('Close click'); deleteNode(selectedNode.id)">Yes
+    </button>
+  </div>
+
+</ng-template>
 

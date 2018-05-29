@@ -106,44 +106,50 @@
             <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
             <mat-cell *matCellDef="let project">
               <div class="btn-group-vertical">
-                <button *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf()"
+                <button [attr.id]="'start'+ project.id"
+                        *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf()"
                         class="btn btn-outline-primary btn-sm btn-block" type="button"
                         (click)="startProject(project.id)">
                   Start
                 </button>
-                <button *ngIf="project.projectStatus.valueOf().toString() == 'Paused'.valueOf()"
+                <button [attr.id]="'resume'+ project.id"
+                        *ngIf="project.projectStatus.valueOf().toString() == 'Paused'.valueOf()"
                         class="btn btn-outline-primary btn-sm btn-block" type="button"
                         (click)="resumeProject(project.id)">
                   Resume
                 </button>
-                <button
-                  *ngIf="project.projectStatus.valueOf().toString() == 'Started'.valueOf() || project.projectStatus.valueOf().toString() == 'Rendering'.valueOf() "
-                  class="btn btn-outline-warning btn-sm" type="button" (click)="pauseProject(project.id)">
+                <button [attr.id]="'pause'+ project.id"
+                        *ngIf="project.projectStatus.valueOf().toString() == 'Started'.valueOf() || project.projectStatus.valueOf().toString() == 'Rendering'.valueOf() "
+                        class="btn btn-outline-warning btn-sm" type="button" (click)="pauseProject(project.id)">
                   Pause
                 </button>
-                <button *ngIf="project.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
+                <button [attr.id]="'download'+ project.id"
+                        *ngIf="project.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
                         class="btn btn-outline-success btn-sm" type="button" (click)="downloadProject(project.id)">
                   Download
                 </button>
 
-                <button class="btn btn-outline-dark btn-sm" type="button" style="width: 90px"
+                <button [attr.id]="'details'+ project.id" class="btn btn-outline-dark btn-sm" type="button"
+                        style="width: 90px"
                         (click)="viewProject(project.id)">Details
                 </button>
-                <button *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf()"
+                <button [attr.id]="'edit'+ project.id"
+                        *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf()"
                         class="btn btn-outline-dark btn-sm" type="button" (click)="editProject(project.id)">Edit
                 </button>
-                <button
-                  *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf() ||  project.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
-                  class="btn btn-outline-danger btn-sm" type="button"
-                  (click)="confirm(project, deleteConfirmation)">
+                <button [attr.id]="'delete'+ project.id"
+                        *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf() ||  project.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
+                        class="btn btn-outline-danger btn-sm" type="button"
+                        (click)="confirm(project, deleteConfirmation)">
                   Delete
                 </button>
-                <button
-                  *ngIf="project.projectStatus.valueOf().toString() == 'Started'.valueOf() ||
+                <button [attr.id]="'stop'+ project.id"
+                        *ngIf="project.projectStatus.valueOf().toString() == 'Started'.valueOf() ||
                     project.projectStatus.valueOf().toString() == 'Rendering'.valueOf() ||
                     project.projectStatus.valueOf().toString() == 'Pending'.valueOf() ||
+                    project.projectStatus.valueOf().toString() == 'Paused'.valueOf() ||
                     project.projectStatus.valueOf().toString() == 'Processing'.valueOf()"
-                  class="btn btn-outline-danger btn-sm" type="button" (click)="confirm(project, stopConfirmation)">
+                        class="btn btn-outline-danger btn-sm" type="button" (click)="confirm(project, stopConfirmation)">
                   Stop
                 </button>
               </div>
