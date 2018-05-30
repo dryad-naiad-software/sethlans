@@ -16,7 +16,92 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
+<div class="row pb-5">
+  <div class="col-md-6 m-auto">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Add Sethlans User</h4>
+      </div>
+      <div class="card-body">
+        <form class="pb-4" #registerForm="ngForm">
+          <div class="alert alert-danger text-center" *ngIf="userExists">User {{existingUserName}} already exists</div>
+          <div class="form-group"
+               ngbTooltip="Minimum of 4 characters, alpha-numeric characters only."
+               placement="left">
+            <label for="username">Username</label>
+            <input type="text"
+                   name="username"
+                   id="username"
+                   #username="ngModel"
+                   [(ngModel)]="user.username"
+                   [ngClass]="{'is-invalid':username.errors && username.touched}"
+                   class="form-control form-control-sm"
+                   required pattern="^[a-zA-Z0-9]{4,}$">
+            <div class="invalid-feedback" [hidden]="username.valid">
+              <ul>
+                <li>Username is required.</li>
+                <li>Minimum of 4 characters, alpha-numeric characters only.</li>
+              </ul>
+            </div>
 
-<p>
-  user-add works!
-</p>
+          </div>
+          <div class="form-group"
+               ngbTooltip="Password needs to be a minimum of 8 characters"
+               placement="left">
+            <label for="password">Password</label>
+            <input type="password"
+                   name="password"
+                   #password="ngModel"
+                   [(ngModel)]="user.password"
+                   id="password"
+                   [ngClass]="{'is-invalid':password.errors && password.touched}"
+                   class="form-control form-control-sm"
+                   required pattern="^.{8,35}$">
+
+            <div class="invalid-feedback" [hidden]="password.valid">
+              <ul>
+                <li>Password is required.</li>
+                <li>Password must be a minimum 8 characters.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="form-group" ngbTooltip="Re-enter password" placement="left">
+            <label for="passwordConfirm">Confirm Password</label>
+            <input type="password"
+                   id="passwordConfirm"
+                   #passwordConfirm="ngModel"
+                   [(ngModel)]="user.passwordConfirm"
+                   name="passwordConfirm"
+                   class="form-control form-control-sm"
+                   [ngClass]="{'is-invalid':passwordConfirm.errors && passwordConfirm.touched}"
+                   required [fieldMatches]="password">
+            <div class="invalid-feedback" [hidden]="passwordConfirm.valid">
+              <ul>
+                <li>Passwords must match.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="form-group" ngbTooltip="Email used for notifications." placement="left">
+            <label for="email">Email Address</label>
+            <input type="text"
+                   name="email"
+                   id="email"
+                   #email="ngModel"
+                   [(ngModel)]="user.email"
+                   class="form-control form-control-sm"
+                   [ngClass]="{'is-invalid':email.errors && email.touched}"
+                   required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$">
+            <div class="invalid-feedback" [hidden]="email.valid">
+              <ul>
+                <li>Email is required and must be valid.</li>
+              </ul>
+            </div>
+          </div>
+          <input [disabled]="!registerForm.valid" type="submit" value="Register User"
+                 class="btn btn-outline-light btn-block">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -54,4 +54,8 @@ export class UserManagementComponent implements OnInit {
     this.dataSource.filter = filterValue;
   }
 
+  addUser() {
+    window.location.href = "/admin/user_management/add";
+
+  }
 }

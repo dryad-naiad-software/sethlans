@@ -55,6 +55,7 @@ public class RoutingController {
             "/user_settings",
             "/admin/metrics",
             "/admin/user_management",
+            "/admin/user_management/**",
             "/admin/sethlans_settings",
             "/admin/nodes",
             "/admin/nodes/add",
