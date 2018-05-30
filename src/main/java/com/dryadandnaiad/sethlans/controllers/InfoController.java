@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
@@ -33,10 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created Mario Estrella on 2/11/18.
@@ -88,6 +86,11 @@ public class InfoController {
         } else {
             return Collections.singletonMap("root_dir", SethlansUtils.getProperty(SethlansConfigKeys.ROOT_DIR.toString()));
         }
+    }
+
+    @GetMapping(value = {"/available_roles"})
+    public EnumSet<Role> getRoles() {
+        return EnumSet.allOf(Role.class);
     }
 
     @GetMapping(value = {"/total_memory"})
