@@ -147,14 +147,14 @@
                         (click)="enableNode(node.id)">
                   Enable
                 </button>
-                <button [attr.id]="'disable'+node.id" *ngIf="!node.disabled" class="btn btn-outline-warning btn-sm"
+                <button [attr.id]="'disable'+node.id" *ngIf="!node.disabled" class="btn btn-outline-info btn-sm"
                         type="button"
                         (click)="disableNode(node.id)">
                   Disable
                 </button>
-                <button [attr.id]="'update'+node.id" class="btn btn-outline-primary btn-sm" type="button"
-                        (click)="updateNode(node.id)">
-                  Update
+                <button [attr.id]="'replace'+node.id" class="btn btn-outline-dark btn-sm" type="button"
+                        (click)="confirm(node, replaceConfirmation)">
+                  Replace
                 </button>
                 <button [attr.id]="'delete'+node.id" class="btn btn-outline-danger btn-sm" type="button"
                         (click)="confirm(node, deleteConfirmation)">
@@ -186,6 +186,27 @@
     </button>
     <button type="button" class="btn btn-outline-danger ml-auto float-right"
             (click)="c('Close click'); deleteNode(selectedNode.id)">Yes
+    </button>
+  </div>
+
+</ng-template>
+
+<!--Replace Node Confirmation-->
+<ng-template #replaceConfirmation let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Replace Node</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p><strong>{{selectedNode.hostname}}</strong> will be replaced with a new entry and rerun benchmarks. <strong>This
+      cannot be undone.</strong></p>
+    <p>Are you sure you want to replace <strong>{{selectedNode.hostname}}</strong>?</p>
+    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c('Close click')">No
+    </button>
+    <button type="button" class="btn btn-outline-danger ml-auto float-right"
+            (click)="c('Close click'); replaceNode(selectedNode.id)">Yes
     </button>
   </div>
 

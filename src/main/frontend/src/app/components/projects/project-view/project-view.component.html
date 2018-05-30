@@ -120,6 +120,18 @@
           </tr>
           </tbody>
         </table>
+        <button id="startButton" *ngIf="projectStatus.valueOf().toString() == 'Added'"
+                class="btn btn-outline-primary mr-auto float-left" (click)="startProject(projectDetails.id)">Start
+          Project
+        </button>
+        <button id="pauseButton"
+                *ngIf="projectStatus.valueOf().toString() != 'Finished' && projectStatus.valueOf().toString() != 'Added' && projectStatus.valueOf().toString() != 'Paused'"
+                class="btn btn-outline-info mr-auto float-left" (click)="pauseProject(projectDetails.id)">Pause Project
+        </button>
+        <button id="resumeButton" *ngIf="projectStatus.valueOf().toString() == 'Paused'"
+                class="btn btn-outline-success mr-auto float-left" (click)="resumeProject(projectDetails.id)">Resume
+          Project
+        </button>
         <button class="btn btn-outline-dark ml-auto float-right" (click)="returnToProjects()">Project List View
         </button>
 

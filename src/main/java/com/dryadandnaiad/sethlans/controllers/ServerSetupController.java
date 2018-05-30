@@ -110,7 +110,7 @@ public class ServerSetupController {
         return true;
     }
 
-    @GetMapping("/node_update/{id}")
+    @GetMapping("/node_replace/{id}")
     public boolean updateNode(@PathVariable Long id) {
         SethlansNode sethlansNodeToReplace = sethlansNodeDatabaseService.getById(id);
         queueService.addNodeToDeleteQueue(id);

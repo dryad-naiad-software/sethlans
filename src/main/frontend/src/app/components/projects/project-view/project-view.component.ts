@@ -93,6 +93,25 @@ export class ProjectViewComponent implements OnInit {
     })
   }
 
+  startProject(id) {
+    document.getElementById('startButton').setAttribute("disabled", "disabled");
+    this.http.get("/api/project_actions/start_project/" + id + "/").subscribe();
+    document.getElementById('startButton').removeAttribute("disabled");
+
+  }
+
+  pauseProject(id) {
+    document.getElementById('pauseButton').setAttribute("disabled", "disabled");
+    this.http.get('/api/project_actions/pause_project/' + id + '/').subscribe();
+    document.getElementById('resumeButton').removeAttribute("disabled");
+  }
+
+  resumeProject(id) {
+    document.getElementById('resumeButton').setAttribute("disabled", "disabled");
+    this.http.get('/api/project_actions/resume_project/' + id + '/').subscribe();
+    document.getElementById('pauseButton').removeAttribute("disabled");
+  }
+
   returnToProjects(): void {
     window.location.href = "/projects";
   }

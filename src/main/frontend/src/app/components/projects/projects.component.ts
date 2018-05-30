@@ -106,7 +106,6 @@ export class ProjectsComponent implements OnInit {
   }
 
   editProject(id) {
-    document.getElementById('edit' + id).setAttribute("disabled", "disabled");
     window.location.href = "/projects/edit/" + id;
   }
 
@@ -128,7 +127,6 @@ export class ProjectsComponent implements OnInit {
   }
 
   startProject(id) {
-    document.getElementById('start' + id).setAttribute("disabled", "disabled");
     this.http.get("/api/project_actions/start_project/" + id + "/").subscribe((success: boolean) => {
       if (success) {
         this.projectLoad();
@@ -141,20 +139,16 @@ export class ProjectsComponent implements OnInit {
   }
 
   pauseProject(id) {
-    document.getElementById('pause' + id).setAttribute("disabled", "disabled");
     this.http.get('/api/project_actions/pause_project/' + id + '/').subscribe();
     this.projectLoad();
   }
 
   resumeProject(id) {
-    document.getElementById('resume' + id).setAttribute("disabled", "disabled");
     this.http.get('/api/project_actions/resume_project/' + id + '/').subscribe();
     this.projectLoad();
   }
 
   stopProject(id) {
-    document.getElementById('stop' + id).setAttribute("disabled", "disabled");
-
     this.http.get('/api/project_actions/stop_project/' + id + '/').subscribe();
   }
 

@@ -119,8 +119,8 @@
                   Resume
                 </button>
                 <button [attr.id]="'pause'+ project.id"
-                        *ngIf="project.projectStatus.valueOf().toString() == 'Started'.valueOf() || project.projectStatus.valueOf().toString() == 'Rendering'.valueOf() "
-                        class="btn btn-outline-warning btn-sm" type="button" (click)="pauseProject(project.id)">
+                        *ngIf="project.projectStatus.valueOf().toString() != 'Finished'.valueOf() && project.projectStatus.valueOf().toString() != 'Added'.valueOf()  && project.projectStatus.valueOf().toString() != 'Paused'.valueOf()"
+                        class="btn btn-outline-info btn-sm" type="button" (click)="pauseProject(project.id)">
                   Pause
                 </button>
                 <button [attr.id]="'download'+ project.id"
@@ -135,7 +135,7 @@
                 </button>
                 <button [attr.id]="'edit'+ project.id"
                         *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf()"
-                        class="btn btn-outline-dark btn-sm" type="button" (click)="editProject(project.id)">Edit
+                        class="btn btn-outline-info btn-sm" type="button" (click)="editProject(project.id)">Edit
                 </button>
                 <button [attr.id]="'delete'+ project.id"
                         *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf() ||  project.projectStatus.valueOf().toString() == 'Finished'.valueOf()"

@@ -115,11 +115,11 @@ export class NodesComponent implements OnInit {
     });
   }
 
-  updateNode(id) {
-    document.getElementById('update' + id).setAttribute("disabled", "disabled");
-    this.http.get('/api/setup/node_update/' + id + "/").subscribe(() => {
+  replaceNode(id) {
+    document.getElementById('replace' + id).setAttribute("disabled", "disabled");
+    this.http.get('/api/setup/node_replace/' + id + "/").subscribe(() => {
       this.loadTable();
-      document.getElementById('update' + id).removeAttribute("disabled");
+      document.getElementById('replace' + id).removeAttribute("disabled");
 
     });
   }
