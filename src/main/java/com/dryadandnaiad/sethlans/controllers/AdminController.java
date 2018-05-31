@@ -255,6 +255,24 @@ public class AdminController {
         sethlansUserDatabaseService.saveOrUpdate(sethlansUser);
     }
 
+    @PostMapping("/add_user")
+    public boolean addUser(@RequestBody SethlansUser user) {
+        if (user != null) {
+            LOG.debug("Adding new user...");
+            if (sethlansUserDatabaseService.checkifExists(user.getUsername())) {
+                LOG.debug("User " + user.getUsername() + " already exists!");
+                return false;
+            }
+            user.setPasswordUpdated(true);
+            user.setActive(false);
+            sethlansUserDatabaseService.saveOrUpdate(user);
+            LOG.debug("Saving " + user.toString() + " to database.");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     @GetMapping(value = {"/current_tilesize_cpu"})
     public Integer getCurrentTileSizeCPU() {

@@ -19,7 +19,6 @@
 
 import {Component, OnInit} from '@angular/core';
 import {User} from "../../models/user.model";
-import {Role} from "../../enums/role.enum";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 
@@ -58,14 +57,12 @@ export class RegisterUserComponent implements OnInit {
   }
 
   onSubmit() {
-    this.user.setPasswordUpdated(true);
-    this.user.setRoles([Role.USER]);
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
       })
     };
-    this.http.post("/api/setup/register", JSON.stringify(this.user), httpOptions).subscribe((submitted: boolean) => {
+    this.http.post("/api/setup/self_register", JSON.stringify(this.user), httpOptions).subscribe((submitted: boolean) => {
       if (submitted === true) {
         this.login()
       } else {

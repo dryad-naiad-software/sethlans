@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
+import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.forms.setup.SetupForm;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
@@ -30,6 +31,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Collections;
 
 /**
  * Created Mario Estrella on 2/11/18.
@@ -59,15 +62,17 @@ public class SetupController {
         }
     }
 
-    @PostMapping("/register")
-    public boolean register(@RequestBody SethlansUser user) {
+    @PostMapping("/self_register")
+    public boolean selfRegister(@RequestBody SethlansUser user) {
         if (user != null) {
             LOG.debug("Registering new user...");
             if (sethlansUserDatabaseService.checkifExists(user.getUsername())) {
                 LOG.debug("User " + user.getUsername() + " already exists!");
                 return false;
             }
+            user.setPasswordUpdated(true);
             user.setActive(false);
+            user.setRoles(Collections.singletonList(Role.USER));
             sethlansUserDatabaseService.saveOrUpdate(user);
             LOG.debug("Saving " + user.toString() + " to database.");
             return true;
