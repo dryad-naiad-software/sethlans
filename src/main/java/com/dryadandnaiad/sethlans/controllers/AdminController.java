@@ -241,6 +241,21 @@ public class AdminController {
         }
     }
 
+    @GetMapping(value = {"/activate_user/{id}"})
+    public void activateUser(@PathVariable Long id) {
+        SethlansUser sethlansUser = sethlansUserDatabaseService.getById(id);
+        sethlansUser.setActive(true);
+        sethlansUserDatabaseService.saveOrUpdate(sethlansUser);
+    }
+
+    @GetMapping(value = {"/deactivate_user/{id}"})
+    public void deactivateUser(@PathVariable Long id) {
+        SethlansUser sethlansUser = sethlansUserDatabaseService.getById(id);
+        sethlansUser.setActive(false);
+        sethlansUserDatabaseService.saveOrUpdate(sethlansUser);
+    }
+
+
     @GetMapping(value = {"/current_tilesize_cpu"})
     public Integer getCurrentTileSizeCPU() {
         return Integer.parseInt(this.titleSizeCPU);

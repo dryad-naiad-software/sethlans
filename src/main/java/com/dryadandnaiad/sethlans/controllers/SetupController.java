@@ -67,6 +67,7 @@ public class SetupController {
                 LOG.debug("User " + user.getUsername() + " already exists!");
                 return false;
             }
+            user.setActive(false);
             sethlansUserDatabaseService.saveOrUpdate(user);
             LOG.debug("Saving " + user.toString() + " to database.");
             return true;
