@@ -48,13 +48,13 @@
           <ng-container matColumnDef="status">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
             <mat-cell *matCellDef="let user">
-              <span *ngIf="user.active" class="font-weight-bold text-success">Active</span>
-              <span *ngIf="!user.active" class="font-weight-bold text-danger">Inactive</span>
+              <span *ngIf="user.active" class="font-weight-bold text-success">ACTIVE</span>
+              <span *ngIf="!user.active" class="font-weight-bold text-danger">INACTIVE</span>
 
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="role">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Role</mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Roles</mat-header-cell>
             <mat-cell *matCellDef="let user">
               {{user.roles}}
             </mat-cell>

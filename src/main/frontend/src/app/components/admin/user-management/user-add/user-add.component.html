@@ -23,7 +23,7 @@
         <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Add Sethlans User</h4>
       </div>
       <div class="card-body">
-        <form class="pb-4" #registerForm="ngForm">
+        <form (submit)="onSubmit()" class="pb-4" #addUserForm="ngForm">
           <div class="alert alert-danger text-center" *ngIf="userExists">User {{existingUserName}} already exists</div>
           <div class="form-group"
                ngbTooltip="Minimum of 4 characters, alpha-numeric characters only."
@@ -91,7 +91,7 @@
                    [(ngModel)]="user.email"
                    class="form-control form-control-sm"
                    [ngClass]="{'is-invalid':email.errors && email.touched}"
-                   required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$">
+                   required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" (keydown)="submitUser($event, addUserForm)">
             <div class="invalid-feedback" [hidden]="email.valid">
               <ul>
                 <li>Email is required and must be valid.</li>
@@ -115,7 +115,7 @@
             </div>
 
           </div>
-          <input [disabled]="!registerForm.valid || user.roles.length == 0" type="submit" value="Register User"
+          <input [disabled]="!addUserForm.valid || user.roles.length == 0" type="submit" value="Register User"
                  class="btn btn-outline-dark btn-block">
         </form>
       </div>

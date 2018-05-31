@@ -20,6 +20,8 @@
 import {Component, OnInit} from '@angular/core';
 import {User} from "../../../../models/user.model";
 import {Role} from "../../../../enums/role.enum";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-user-add',
@@ -32,7 +34,7 @@ export class UserAddComponent implements OnInit {
   existingUserName: string;
   roles = Object.keys(Role);
 
-  constructor() {
+  constructor(private http: HttpClient, private router: Router) {
   }
 
   ngOnInit() {
@@ -58,6 +60,30 @@ export class UserAddComponent implements OnInit {
         }
       }
     }
+  }
+
+  submitUser(event, form) {
+    if (event.key === "Enter" && form.valid) {
+      this.onSubmit();
+    }
+
+  }
+
+  onSubmit() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    this.http.post("/api/management/add_user", JSON.stringify(this.user), httpOptions).subscribe((submitted: boolean) => {
+      if (submitted === true) {
+        window.location.href = "/admin/user_management";
+      } else {
+        this.router.navigateByUrl("/admin/user_management/add?error=true&username=" + this.user.getUserName()).then(() => {
+          location.reload();
+        });
+      }
+    });
   }
 
 }
