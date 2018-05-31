@@ -19,6 +19,7 @@
 
 import {Component, OnInit} from '@angular/core';
 import {User} from "../../../../models/user.model";
+import {Role} from "../../../../enums/role.enum";
 
 @Component({
   selector: 'app-user-add',
@@ -29,11 +30,34 @@ export class UserAddComponent implements OnInit {
   user: User;
   userExists: boolean;
   existingUserName: string;
+  roles = Object.keys(Role);
 
   constructor() {
   }
 
   ngOnInit() {
+    this.user = new User();
+    this.user.roles = [];
+
+  }
+
+  selected(event, string) {
+    let checked = event.currentTarget.checked;
+    if (checked) {
+      let newUser = this.user;
+      this.roles.forEach(function (value: Role) {
+        if (value.valueOf() == string) {
+          newUser.roles.push(value);
+        }
+      });
+    } else if (!checked) {
+      let selectedRoles = this.user.roles;
+      for (let i = 0; i < selectedRoles.length; i++) {
+        if (selectedRoles[i].valueOf() == string) {
+          this.user.roles.splice(i, 1);
+        }
+      }
+    }
   }
 
 }

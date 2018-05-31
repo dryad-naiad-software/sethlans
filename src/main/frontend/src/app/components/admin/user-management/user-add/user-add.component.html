@@ -98,10 +98,32 @@
               </ul>
             </div>
           </div>
-          <input [disabled]="!registerForm.valid" type="submit" value="Register User"
+          <h6>Roles:</h6>
+
+          <div class="form-group">
+            <div *ngFor="let role of roles">
+              <input
+                type="checkbox"
+                class="form-control-sm"
+                #roleSelection
+                required
+                name="{{role}}"
+                value="{{role}}"
+                (change)="selected($event, role)"
+              />
+              <label class="form-check-label form-control-sm">{{role}}</label>
+            </div>
+
+          </div>
+          <input [disabled]="!registerForm.valid || user.roles.length == 0" type="submit" value="Register User"
                  class="btn btn-outline-dark btn-block">
         </form>
       </div>
     </div>
   </div>
+</div>
+
+<div>
+  Debugging:
+  <pre>{{ user | json }}</pre>
 </div>
