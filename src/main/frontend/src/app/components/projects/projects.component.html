@@ -119,7 +119,8 @@
                   Resume
                 </button>
                 <button [attr.id]="'pause'+ project.id"
-                        *ngIf="project.projectStatus.valueOf().toString() != 'Finished'.valueOf() && project.projectStatus.valueOf().toString() != 'Added'.valueOf()  && project.projectStatus.valueOf().toString() != 'Paused'.valueOf()"
+                        *ngIf="project.projectStatus.valueOf().toString() != 'Finished'.valueOf() &&
+                        project.projectStatus.valueOf().toString() != 'Added'.valueOf()  && project.projectStatus.valueOf().toString() != 'Paused'.valueOf()"
                         class="btn btn-outline-info btn-sm" type="button" (click)="pauseProject(project.id)">
                   Pause
                 </button>

@@ -75,9 +75,16 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>Actions</mat-header-cell>
             <mat-cell *matCellDef="let user">
               <div class="btn-group-vertical">
-                <button class="btn btn-outline-dark btn-sm" type="button">View</button>
+                <button *ngIf="!user.active" class="btn btn-outline-success btn-sm" type="button"
+                        (click)="activateUser(user.id)">Activate
+                </button>
+                <button [disabled]="dataSource.data.length == 1" *ngIf="user.active" class="btn btn-outline-info btn-sm"
+                        type="button" (click)="deactivateUser(user.id)">Deactivate
+                </button>
                 <button class="btn btn-outline-primary btn-sm" type="button">Edit</button>
-                <button class="btn btn-outline-danger btn-sm" type="button">Delete</button>
+                <button [disabled]="dataSource.data.length == 1" style="width: 90px"
+                        class="btn btn-outline-danger btn-sm" type="button" (click)="deleteUser(user.id)">Delete
+                </button>
               </div>
             </mat-cell>
           </ng-container>

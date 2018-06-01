@@ -250,9 +250,18 @@ public class AdminController {
 
     @GetMapping(value = {"/deactivate_user/{id}"})
     public void deactivateUser(@PathVariable Long id) {
-        SethlansUser sethlansUser = sethlansUserDatabaseService.getById(id);
-        sethlansUser.setActive(false);
-        sethlansUserDatabaseService.saveOrUpdate(sethlansUser);
+        if (sethlansUserDatabaseService.listAll().size() > 1) {
+            SethlansUser sethlansUser = sethlansUserDatabaseService.getById(id);
+            sethlansUser.setActive(false);
+            sethlansUserDatabaseService.saveOrUpdate(sethlansUser);
+        }
+    }
+
+    @GetMapping("/delete_user/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        if (sethlansUserDatabaseService.listAll().size() > 1) {
+            sethlansUserDatabaseService.delete(id);
+        }
     }
 
     @PostMapping("/add_user")

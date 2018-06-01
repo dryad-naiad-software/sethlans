@@ -60,7 +60,6 @@ import {SethlansSettingsComponent} from './components/admin/sethlans-settings/se
 import {LogsComponent} from './components/admin/logs/logs.component';
 import {UserManagementComponent} from './components/admin/user-management/user-management.component';
 import {MetricsService} from "./services/metrics.service";
-import {UserViewComponent} from './components/admin/user-management/user-view/user-view.component';
 import {ComputeSettingsComponent} from './components/admin/compute-settings/compute-settings.component';
 import {BlenderVersionsComponent} from './components/admin/blender-versions/blender-versions.component';
 import {ProjectsComponent} from './components/projects/projects.component';
@@ -114,7 +113,6 @@ import {UserEditComponent} from './components/admin/user-management/user-edit/us
     SethlansSettingsComponent,
     LogsComponent,
     UserManagementComponent,
-    UserViewComponent,
     ComputeSettingsComponent,
     BlenderVersionsComponent,
     ProjectsComponent,
