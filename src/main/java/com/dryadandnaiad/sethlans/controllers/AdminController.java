@@ -293,16 +293,29 @@ public class AdminController {
     @PostMapping("/add_user")
     public boolean addUser(@RequestBody SethlansUser user) {
         if (user != null) {
-            LOG.debug("Adding new user...");
-            if (sethlansUserDatabaseService.checkifExists(user.getUsername())) {
-                LOG.debug("User " + user.getUsername() + " already exists!");
-                return false;
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            boolean authorized = false;
+            SethlansUser requestingUser = sethlansUserDatabaseService.findByUserName(auth.getName());
+            if (requestingUser.getRoles().contains(Role.SUPER_ADMINISTRATOR) || requestingUser.getRoles().contains(Role.ADMINISTRATOR)) {
+                authorized = true;
             }
-            user.setPasswordUpdated(true);
-            user.setActive(false);
-            sethlansUserDatabaseService.saveOrUpdate(user);
-            LOG.debug("Saving " + user.toString() + " to database.");
-            return true;
+            if (authorized) {
+                LOG.debug("Adding new user...");
+                if (sethlansUserDatabaseService.checkifExists(user.getUsername())) {
+                    LOG.debug("User " + user.getUsername() + " already exists!");
+                    return false;
+                }
+                if (!requestingUser.getRoles().contains(Role.SUPER_ADMINISTRATOR) && user.getRoles().contains(Role.SUPER_ADMINISTRATOR)) {
+                    user.getRoles().remove(Role.SUPER_ADMINISTRATOR);
+                }
+                user.setPasswordUpdated(true);
+                user.setActive(false);
+                sethlansUserDatabaseService.saveOrUpdate(user);
+                LOG.debug("Saving " + user.toString() + " to database.");
+                return true;
+            }
+            return false;
+
         } else {
             return false;
         }
