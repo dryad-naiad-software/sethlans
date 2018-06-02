@@ -18,6 +18,9 @@
  */
 
 import {Component, OnInit} from '@angular/core';
+import {HttpClient} from "@angular/common/http";
+import {ActivatedRoute} from "@angular/router";
+import {UserInfo} from "../../../../models/userinfo.model";
 
 @Component({
   selector: 'app-user-edit',
@@ -25,11 +28,34 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./user-edit.component.scss']
 })
 export class UserEditComponent implements OnInit {
+  id: number;
+  userInfo: UserInfo;
+  changePass: boolean = false;
+  passFields: PasswordSet;
 
-  constructor() {
+
+  constructor(private http: HttpClient, private route: ActivatedRoute) {
   }
 
   ngOnInit() {
+    this.passFields = new PasswordSet();
+    this.route.params.subscribe(params => {
+      this.id = +params['id'];
+      this.loadUser();
+    });
   }
 
+  loadUser() {
+    this.http.get('/api/management/get_user/' + this.id + '/').subscribe((userInfo: UserInfo) => {
+      this.userInfo = userInfo;
+    });
+  }
+
+}
+
+
+class PasswordSet {
+  currentPass: string;
+  newPass: string;
+  newPassConfirm: string;
 }

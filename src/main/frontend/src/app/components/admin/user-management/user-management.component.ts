@@ -58,6 +58,10 @@ export class UserManagementComponent implements OnInit {
     window.location.href = "/admin/user_management/add";
   }
 
+  editUser(id) {
+    window.location.href = "/admin/user_management/edit/" + id;
+  }
+
   activateUser(id) {
     this.http.get('/api/management/activate_user/' + id + "/").subscribe(() => {
       this.loadTable();

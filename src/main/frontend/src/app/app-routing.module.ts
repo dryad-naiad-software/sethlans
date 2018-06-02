@@ -62,7 +62,7 @@ const routes: Routes = [
   {path: 'admin/metrics', component: MetricsComponent},
   {path: 'admin/user_management', component: UserManagementComponent},
   {path: 'admin/user_management/add', component: UserAddComponent},
-  {path: 'admin/user_management/edit', component: UserEditComponent},
+  {path: 'admin/user_management/edit/:id', component: UserEditComponent},
   {path: 'admin/sethlans_settings', component: SethlansSettingsComponent},
   {path: 'admin/servers', component: ServersComponent},
   {path: 'admin/compute_settings', component: ComputeSettingsComponent},

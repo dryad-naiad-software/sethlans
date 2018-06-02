@@ -244,6 +244,20 @@ public class AdminController {
         }
     }
 
+    @GetMapping(value = {"/get_user/{id}"})
+    public UserInfo getUser(@PathVariable Long id) {
+        SethlansUser sethlansUser = sethlansUserDatabaseService.getById(id);
+        UserInfo userToSend = new UserInfo();
+        userToSend.setUsername(sethlansUser.getUsername());
+        userToSend.setActive(sethlansUser.isActive());
+        userToSend.setRoles(sethlansUser.getRoles());
+        userToSend.setEmail(sethlansUser.getEmail());
+        userToSend.setId(sethlansUser.getId());
+        userToSend.setLastUpdated(sethlansUser.getLastUpdated());
+        userToSend.setDateCreated(sethlansUser.getDateCreated());
+        return userToSend;
+    }
+
     @GetMapping(value = {"/activate_user/{id}"})
     public void activateUser(@PathVariable Long id) {
         SethlansUser sethlansUser = sethlansUserDatabaseService.getById(id);
