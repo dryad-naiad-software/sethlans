@@ -96,7 +96,7 @@
               <i class="fa fa-fw fa-user"></i>
               <span>User Management</span>
             </a>
-            <a href="/admin/sethlans_settings" class="dropdown-item">
+            <a href="/admin/sethlans_settings" class="dropdown-item" *ngIf="isSuperAdministrator">
               <i class="fa fa-fw fa-cogs"></i>
               <span>Configuration</span>
             </a>
