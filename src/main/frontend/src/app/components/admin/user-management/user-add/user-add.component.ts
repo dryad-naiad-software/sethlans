@@ -22,6 +22,7 @@ import {User} from "../../../../models/user.model";
 import {Role} from "../../../../enums/role.enum";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Router} from "@angular/router";
+import {UserInfo} from "../../../../models/userinfo.model";
 
 @Component({
   selector: 'app-user-add',
@@ -31,8 +32,13 @@ import {Router} from "@angular/router";
 export class UserAddComponent implements OnInit {
   user: User;
   userExists: boolean;
+  userInfo: UserInfo;
+  username: string;
+  isSuperAdministrator = false;
+  isAdministrator = false;
   existingUserName: string;
   roles = Object.keys(Role);
+  limitedRoles = [Role.ADMINISTRATOR, Role.USER];
 
   constructor(private http: HttpClient, private router: Router) {
   }
@@ -40,7 +46,26 @@ export class UserAddComponent implements OnInit {
   ngOnInit() {
     this.user = new User();
     this.user.roles = [];
+    this.getUserName();
 
+  }
+
+  getUserName() {
+    this.http.get('/api/users/username')
+      .subscribe((user) => {
+        this.username = user['username'];
+        this.http.get('/api/users/get_user/' + this.username + '').subscribe((userinfo: UserInfo) => {
+          this.userInfo = userinfo;
+          console.log(userinfo);
+          if (userinfo.roles.indexOf(Role.ADMINISTRATOR) !== -1 || userinfo.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
+            this.isAdministrator = true;
+          }
+          if (userinfo.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
+            this.isSuperAdministrator = true;
+          }
+          console.log(this.isAdministrator)
+        });
+      });
   }
 
   selected(event, string) {
