@@ -30,6 +30,7 @@ import com.dryadandnaiad.sethlans.domains.info.SethlansSettingsInfo;
 import com.dryadandnaiad.sethlans.domains.info.UserInfo;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
@@ -44,6 +45,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -244,23 +247,46 @@ public class AdminController {
     @GetMapping(value = {"/activate_user/{id}"})
     public void activateUser(@PathVariable Long id) {
         SethlansUser sethlansUser = sethlansUserDatabaseService.getById(id);
-        sethlansUser.setActive(true);
-        sethlansUserDatabaseService.saveOrUpdate(sethlansUser);
+        if (!sethlansUser.isActive()) {
+            sethlansUser.setActive(true);
+            sethlansUserDatabaseService.saveOrUpdate(sethlansUser);
+        }
     }
 
     @GetMapping(value = {"/deactivate_user/{id}"})
     public void deactivateUser(@PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (sethlansUserDatabaseService.listAll().size() > 1) {
+            boolean authorized = false;
             SethlansUser sethlansUser = sethlansUserDatabaseService.getById(id);
-            sethlansUser.setActive(false);
-            sethlansUserDatabaseService.saveOrUpdate(sethlansUser);
+            SethlansUser requestingUser = sethlansUserDatabaseService.findByUserName(auth.getName());
+            if (requestingUser.getRoles().contains(Role.SUPER_ADMINISTRATOR)) {
+                authorized = true;
+            } else if (requestingUser.getRoles().contains(Role.ADMINISTRATOR) && !sethlansUser.getRoles().contains(Role.SUPER_ADMINISTRATOR)) {
+                authorized = true;
+            }
+            if (sethlansUser.isActive() && !sethlansUser.getUsername().equals(auth.getName()) && authorized) {
+                sethlansUser.setActive(false);
+                sethlansUserDatabaseService.saveOrUpdate(sethlansUser);
+            }
         }
     }
 
     @GetMapping("/delete_user/{id}")
     public void deleteUser(@PathVariable Long id) {
-        if (sethlansUserDatabaseService.listAll().size() > 1) {
-            sethlansUserDatabaseService.delete(id);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        SethlansUser sethlansUser = sethlansUserDatabaseService.getById(id);
+        if (sethlansUserDatabaseService.listAll().size() > 1 && !sethlansUser.getUsername().equals(auth.getName())) {
+            SethlansUser requestingUser = sethlansUserDatabaseService.findByUserName(auth.getName());
+            boolean authorized = false;
+            if (requestingUser.getRoles().contains(Role.SUPER_ADMINISTRATOR)) {
+                authorized = true;
+            } else if (requestingUser.getRoles().contains(Role.ADMINISTRATOR) && !sethlansUser.getRoles().contains(Role.SUPER_ADMINISTRATOR)) {
+                authorized = true;
+            }
+            if (authorized) {
+                sethlansUserDatabaseService.delete(id);
+            }
         }
     }
 
