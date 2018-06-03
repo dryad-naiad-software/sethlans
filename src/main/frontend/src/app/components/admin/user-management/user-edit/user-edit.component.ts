@@ -32,12 +32,14 @@ export class UserEditComponent implements OnInit {
   userInfo: UserInfo;
   changePass: boolean = false;
   passFields: PasswordSet;
+  requestingUser: UserInfo;
 
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {
   }
 
   ngOnInit() {
+    this.getThisUser();
     this.passFields = new PasswordSet();
     this.route.params.subscribe(params => {
       this.id = +params['id'];
@@ -48,6 +50,12 @@ export class UserEditComponent implements OnInit {
   loadUser() {
     this.http.get('/api/management/get_user/' + this.id + '/').subscribe((userInfo: UserInfo) => {
       this.userInfo = userInfo;
+    });
+  }
+
+  getThisUser() {
+    this.http.get('/api/management/requesting_user/').subscribe((userInfo: UserInfo) => {
+      this.requestingUser = userInfo;
     });
   }
 

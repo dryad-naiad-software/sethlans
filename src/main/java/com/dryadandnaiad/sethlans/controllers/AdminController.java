@@ -47,6 +47,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -244,6 +246,32 @@ public class AdminController {
         }
     }
 
+    @PostMapping(value = {"/change_user_email/{id}"})
+    public boolean changeEmail(@PathVariable Long id, @RequestParam String email) {
+        SethlansUser sethlansUser = sethlansUserDatabaseService.getById(id);
+        // TODO email verification
+        sethlansUser.setEmail(email);
+        sethlansUserDatabaseService.saveOrUpdate(sethlansUser);
+        return true;
+    }
+
+    @PostMapping(value = {"/change_user_password/{id}"})
+    public boolean changePassword(@PathVariable Long id, @RequestParam String passToCheck, @RequestParam String newPassword) {
+        // TODO password verification
+
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        SethlansUser user = sethlansUserDatabaseService.getById(id);
+        if (encoder.matches(passToCheck, user.getPassword())) {
+            LOG.debug("Updating password for " + user.getUsername());
+            user.setPasswordUpdated(true);
+            user.setPassword(newPassword);
+            sethlansUserDatabaseService.saveOrUpdate(user);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @GetMapping(value = {"/get_user/{id}"})
     public UserInfo getUser(@PathVariable Long id) {
         SethlansUser sethlansUser = sethlansUserDatabaseService.getById(id);
@@ -333,6 +361,21 @@ public class AdminController {
         } else {
             return false;
         }
+    }
+
+    @GetMapping("/requesting_user")
+    public UserInfo requestingUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(auth.getName());
+        UserInfo userToSend = new UserInfo();
+        userToSend.setUsername(sethlansUser.getUsername());
+        userToSend.setActive(sethlansUser.isActive());
+        userToSend.setRoles(sethlansUser.getRoles());
+        userToSend.setEmail(sethlansUser.getEmail());
+        userToSend.setId(sethlansUser.getId());
+        userToSend.setLastUpdated(sethlansUser.getLastUpdated());
+        userToSend.setDateCreated(sethlansUser.getDateCreated());
+        return userToSend;
     }
 
 

@@ -77,11 +77,14 @@ public class UserController {
 
     @PostMapping(value = {"/email_pass_change"})
     public boolean changeEmailandPassword(@RequestParam String username, @RequestParam String passToCheck, @RequestParam String newPassword, @RequestParam String newEmail) {
+        // TODO Remove
         return changeEmail(username, newEmail) && changePassword(username, passToCheck, newPassword);
     }
 
     @PostMapping(value = {"/pass_change"})
     public boolean changePassword(@RequestParam String username, @RequestParam String passToCheck, @RequestParam String newPassword) {
+        // TODO password verification
+
         if (requestMatchesAuthUser(username)) {
             PasswordEncoder encoder = new BCryptPasswordEncoder();
             SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
@@ -100,6 +103,8 @@ public class UserController {
 
     @PostMapping(value = {"/email_change"})
     public boolean changeEmail(@RequestParam String username, @RequestParam String newEmail) {
+        // TODO email verification
+
         if (requestMatchesAuthUser(username)) {
             SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
             LOG.debug("Changing email for " + username);
