@@ -112,15 +112,16 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
                 count++;
             }
             ImageIO.write(concatImage, fileExtension.toUpperCase(), new File(frameFilename));
+            blenderProject.getFrameFileNames().add(frameFilename);
+            blenderProject.setCurrentFrameThumbnail(createThumbnail(frameFilename, storedDir, plainFilename, fileExtension));
+            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
         } catch (IOException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
         } catch (IndexOutOfBoundsException e) {
             LOG.error("Possible node idle collision");
             LOG.error(Throwables.getStackTraceAsString(e));
         }
-        blenderProject.getFrameFileNames().add(frameFilename);
-        blenderProject.setCurrentFrameThumbnail(createThumbnail(frameFilename, storedDir, plainFilename, fileExtension));
-        blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+
 
         if (errorCount == 0) {
             LOG.debug("Images combined successfully, deleting parts...");
