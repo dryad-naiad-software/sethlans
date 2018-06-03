@@ -309,7 +309,7 @@ public class SethlansUtils {
             LOG.debug(hostname + " contains a domain name. Removing it.");
             hostname = hostname.substring(0, iend);
         }
-        return hostname;
+        return hostname.toUpperCase();
     }
 
     public static String getProperty(String key) {
