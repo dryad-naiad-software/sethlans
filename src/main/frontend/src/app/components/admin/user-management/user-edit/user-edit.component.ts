@@ -34,6 +34,7 @@ export class UserEditComponent implements OnInit {
   requestingUser: UserInfo;
   newEmail: string;
   emailError: boolean;
+  passwordError: boolean;
 
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {
@@ -74,6 +75,21 @@ export class UserEditComponent implements OnInit {
       }
     });
 
+  }
+
+  changePassword() {
+    let passwordChange = new HttpParams().set('id', this.id.toString()).set('passToCheck', this.passFields.currentPass).set('newPassword', this.passFields.newPass);
+    this.http.post('/api/management/change_password/', passwordChange, {
+      headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+    }).subscribe((response: boolean) => {
+      console.log(response);
+      if (response) {
+        window.location.href = "/admin/user_management/";
+      }
+      else {
+        this.passwordError = true;
+      }
+    });
   }
 }
 

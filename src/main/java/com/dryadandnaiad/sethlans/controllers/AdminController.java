@@ -248,7 +248,6 @@ public class AdminController {
 
     @PostMapping(value = {"/change_email/"})
     public boolean changeEmail(@RequestParam String id, @RequestParam String email) {
-        LOG.debug("Requested");
         SethlansUser sethlansUser = sethlansUserDatabaseService.getById(Long.valueOf(id));
         // TODO email verification
         sethlansUser.setEmail(email);
@@ -256,12 +255,11 @@ public class AdminController {
         return true;
     }
 
-    @PostMapping(value = {"/change_user_password/"})
-    public boolean changePassword(@PathVariable Long id, @RequestParam String passToCheck, @RequestParam String newPassword) {
+    @PostMapping(value = {"/change_password/"})
+    public boolean changePassword(@RequestParam String id, @RequestParam String passToCheck, @RequestParam String newPassword) {
         // TODO password verification
-
         PasswordEncoder encoder = new BCryptPasswordEncoder();
-        SethlansUser user = sethlansUserDatabaseService.getById(id);
+        SethlansUser user = sethlansUserDatabaseService.getById(Long.valueOf(id));
         if (encoder.matches(passToCheck, user.getPassword())) {
             LOG.debug("Updating password for " + user.getUsername());
             user.setPasswordUpdated(true);
