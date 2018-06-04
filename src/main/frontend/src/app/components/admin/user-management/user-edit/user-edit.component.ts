@@ -18,7 +18,7 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {ActivatedRoute} from "@angular/router";
 import {UserInfo} from "../../../../models/userinfo.model";
 
@@ -30,9 +30,10 @@ import {UserInfo} from "../../../../models/userinfo.model";
 export class UserEditComponent implements OnInit {
   id: number;
   userInfo: UserInfo;
-  changePass: boolean = false;
   passFields: PasswordSet;
   requestingUser: UserInfo;
+  newEmail: string;
+  emailError: boolean;
 
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {
@@ -59,6 +60,21 @@ export class UserEditComponent implements OnInit {
     });
   }
 
+  changeEMail() {
+    let emailChange = new HttpParams().set('id', this.id.toString()).set('email', this.newEmail);
+    this.http.post('/api/management/change_email/', emailChange, {
+      headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+    }).subscribe((response: boolean) => {
+      console.log(response);
+      if (response) {
+        window.location.href = "/admin/user_management/";
+      }
+      else {
+        this.emailError = true;
+      }
+    });
+
+  }
 }
 
 

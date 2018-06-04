@@ -246,16 +246,17 @@ public class AdminController {
         }
     }
 
-    @PostMapping(value = {"/change_user_email/{id}"})
-    public boolean changeEmail(@PathVariable Long id, @RequestParam String email) {
-        SethlansUser sethlansUser = sethlansUserDatabaseService.getById(id);
+    @PostMapping(value = {"/change_email/"})
+    public boolean changeEmail(@RequestParam String id, @RequestParam String email) {
+        LOG.debug("Requested");
+        SethlansUser sethlansUser = sethlansUserDatabaseService.getById(Long.valueOf(id));
         // TODO email verification
         sethlansUser.setEmail(email);
         sethlansUserDatabaseService.saveOrUpdate(sethlansUser);
         return true;
     }
 
-    @PostMapping(value = {"/change_user_password/{id}"})
+    @PostMapping(value = {"/change_user_password/"})
     public boolean changePassword(@PathVariable Long id, @RequestParam String passToCheck, @RequestParam String newPassword) {
         // TODO password verification
 
