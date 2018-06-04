@@ -21,6 +21,7 @@ import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {ActivatedRoute} from "@angular/router";
 import {UserInfo} from "../../../../models/userinfo.model";
+import {Role} from "../../../../enums/role.enum";
 
 @Component({
   selector: 'app-user-edit',
@@ -35,6 +36,7 @@ export class UserEditComponent implements OnInit {
   newEmail: string;
   emailError: boolean;
   passwordError: boolean;
+  roleSelection: SelectedRole[];
 
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {
@@ -52,12 +54,33 @@ export class UserEditComponent implements OnInit {
   loadUser() {
     this.http.get('/api/management/get_user/' + this.id + '/').subscribe((userInfo: UserInfo) => {
       this.userInfo = userInfo;
+      let roles = this.roleSelection;
+      userInfo.roles.forEach(function (value: Role) {
+
+      })
     });
   }
 
   getThisUser() {
     this.http.get('/api/management/requesting_user/').subscribe((userInfo: UserInfo) => {
       this.requestingUser = userInfo;
+      if (userInfo.roles.indexOf(Role.ADMINISTRATOR) !== -1 || userInfo.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
+        let roles = [Role.ADMINISTRATOR, Role.USER];
+        let roleSelection = this.roleSelection;
+        roles.forEach(function (value: Role) {
+          let role = SelectedRole(value, false);
+          roleSelection.push(role);
+        });
+      }
+      if (userInfo.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
+        let roles = Object.keys(Role);
+        let roleSelection = this.roleSelection;
+        roles.forEach(function (value: Role) {
+          let role = SelectedRole(value, false);
+          roleSelection.push(role);
+        });
+      }
+
     });
   }
 
@@ -98,4 +121,9 @@ class PasswordSet {
   currentPass: string;
   newPass: string;
   newPassConfirm: string;
+}
+
+class SelectedRole {
+  role: Role;
+  selected: boolean;
 }

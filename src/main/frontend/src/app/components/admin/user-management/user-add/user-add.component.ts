@@ -59,9 +59,11 @@ export class UserAddComponent implements OnInit {
           console.log(userinfo);
           if (userinfo.roles.indexOf(Role.ADMINISTRATOR) !== -1 || userinfo.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
             this.isAdministrator = true;
+            this.isSuperAdministrator = false;
           }
           if (userinfo.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
             this.isSuperAdministrator = true;
+            this.isAdministrator = false;
           }
           console.log(this.isAdministrator)
         });
