@@ -68,7 +68,7 @@ export class UserEditComponent implements OnInit {
         let roles = [Role.ADMINISTRATOR, Role.USER];
         let roleSelection = this.roleSelection;
         roles.forEach(function (value: Role) {
-          let role = SelectedRole(value, false);
+          let role = new SelectedRole(value, false);
           roleSelection.push(role);
         });
       }
@@ -76,7 +76,7 @@ export class UserEditComponent implements OnInit {
         let roles = Object.keys(Role);
         let roleSelection = this.roleSelection;
         roles.forEach(function (value: Role) {
-          let role = SelectedRole(value, false);
+          let role = new SelectedRole(value, false);
           roleSelection.push(role);
         });
       }
@@ -124,6 +124,12 @@ class PasswordSet {
 }
 
 class SelectedRole {
+  constructor(value: Role, b: boolean) {
+    this.role = value;
+    this.selected = b;
+
+  }
+
   role: Role;
   selected: boolean;
 }
