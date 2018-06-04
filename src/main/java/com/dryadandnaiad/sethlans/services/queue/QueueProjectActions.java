@@ -92,19 +92,11 @@ class QueueProjectActions {
                         switch (renderQueueItem.getRenderComputeType()) {
                             case CPU:
                                 sethlansNode.setCpuSlotInUse(false);
-                                if (sethlansNode.getAvailableRenderingSlots() <= 0) {
-                                    sethlansNode.setAvailableRenderingSlots(1);
-                                } else {
-                                    sethlansNode.setAvailableRenderingSlots(Math.max(sethlansNode.getTotalRenderingSlots(), sethlansNode.getAvailableRenderingSlots() + 1));
-                                }
+                                setSlots(sethlansNode);
                                 break;
                             case GPU:
                                 sethlansNode.setAllGPUSlotInUse(false);
-                                if (sethlansNode.getAvailableRenderingSlots() <= 0) {
-                                    sethlansNode.setAvailableRenderingSlots(1);
-                                } else {
-                                    sethlansNode.setAvailableRenderingSlots(Math.max(sethlansNode.getTotalRenderingSlots(), sethlansNode.getAvailableRenderingSlots() + 1));
-                                }
+                                setSlots(sethlansNode);
                                 break;
                             default:
                                 LOG.error("Wrong compute type used, this message should not be displayed.");
@@ -128,5 +120,16 @@ class QueueProjectActions {
                 break;
         }
         processedAction.add(queueActionItem);
+    }
+
+    private static void setSlots(SethlansNode sethlansNode) {
+        if (sethlansNode.getAvailableRenderingSlots() <= 0) {
+            sethlansNode.setAvailableRenderingSlots(1);
+        } else {
+            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+            if (sethlansNode.getAvailableRenderingSlots() > sethlansNode.getTotalRenderingSlots()) {
+                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+            }
+        }
     }
 }

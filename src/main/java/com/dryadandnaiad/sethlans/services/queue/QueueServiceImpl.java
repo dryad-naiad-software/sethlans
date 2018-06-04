@@ -213,7 +213,10 @@ public class QueueServiceImpl implements QueueService {
                             default:
                                 LOG.error("Invalid compute type, this message should not occur.");
                         }
-                        sethlansNode.setAvailableRenderingSlots(Math.max(sethlansNode.getTotalRenderingSlots(), sethlansNode.getAvailableRenderingSlots() + 1));
+                        sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+                        if (sethlansNode.getAvailableRenderingSlots() > sethlansNode.getTotalRenderingSlots()) {
+                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                        }
                         if (sethlansNode.getAvailableRenderingSlots() == sethlansNode.getTotalRenderingSlots()) {
                             sethlansNode.setAllGPUSlotInUse(false);
                             sethlansNode.setCpuSlotInUse(false);
