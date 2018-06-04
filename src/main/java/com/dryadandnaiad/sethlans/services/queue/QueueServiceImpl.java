@@ -288,8 +288,13 @@ public class QueueServiceImpl implements QueueService {
             if (nodeStatuses.size() > 0) {
                 List<ProcessNodeStatus> itemsProcessed = new ArrayList<>();
                 for (ProcessNodeStatus processNodeStatus : new ArrayList<>(nodeStatuses)) {
-                    processAcknowledgements(processNodeStatus, renderQueueDatabaseService,
-                            blenderProjectDatabaseService, sethlansNodeDatabaseService, itemsProcessed);
+                    try {
+                        processAcknowledgements(processNodeStatus, renderQueueDatabaseService,
+                                blenderProjectDatabaseService, sethlansNodeDatabaseService, itemsProcessed);
+                    } catch (NullPointerException e) {
+                        LOG.error("Node acknowledgement received before node was shutdown/removed.");
+                    }
+
                 }
                 nodeStatuses.removeAll(itemsProcessed);
             }
