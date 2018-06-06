@@ -34,6 +34,10 @@ public interface BlenderProjectDatabaseService extends CRUDService<BlenderProjec
 
     List<BlenderProject> getProjectsByUser(String username);
 
+    List<BlenderProject> getPendingProjects();
+
+    List<BlenderProject> getRemainingQueueProjects();
+
     boolean deleteWithVerification(String username, Long id);
 
     List<BlenderProject> listAllReverse();

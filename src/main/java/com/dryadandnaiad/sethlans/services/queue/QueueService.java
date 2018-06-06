@@ -33,8 +33,6 @@ public interface QueueService {
 
     void startQueue();
 
-    boolean populateQueueWithProject(BlenderProject blenderProject);
-
     void pauseBlenderProjectQueue(BlenderProject blenderProject);
 
     void resumeBlenderProjectQueue(BlenderProject blenderProject);

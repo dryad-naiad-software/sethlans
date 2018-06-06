@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.converters.ProjectFormToBlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.repositories.BlenderProjectRepository;
 import com.google.common.collect.Lists;
@@ -51,15 +52,37 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
 
     @Override
     public List<BlenderProject> getProjectsByUser(String username) {
-        List<BlenderProject> allProjects = listAll();
         List<BlenderProject> listToReturn = new ArrayList<>();
-        for (BlenderProject project : allProjects) {
+        for (BlenderProject project : listAll()) {
             if (project.getSethlansUser().getUsername().equals(username)) {
                 listToReturn.add(project);
             }
 
         }
         return listToReturn;
+    }
+
+    @Override
+    public List<BlenderProject> getPendingProjects(){
+        List<BlenderProject> pendingProjects = new ArrayList<>();
+        for (BlenderProject blenderProject : listAll()) {
+            if(blenderProject.getProjectStatus().equals(ProjectStatus.Pending)) {
+                pendingProjects.add(blenderProject);
+            }
+
+        }
+        return pendingProjects;
+    }
+
+    @Override
+    public List<BlenderProject> getRemainingQueueProjects(){
+        List<BlenderProject> remainingProjects = new ArrayList<>();
+        for(BlenderProject blenderProject: listAll()) {
+            if((blenderProject.getQueueIndex() + 1) != blenderProject.getTotalQueueSize()) {
+                remainingProjects.add(blenderProject);
+            }
+        }
+        return remainingProjects;
     }
 
     @Override

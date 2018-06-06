@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.services.blender;
 import com.dryadandnaiad.sethlans.domains.blender.PartCoordinates;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.queue.QueueService;
 import org.apache.commons.io.FileUtils;
@@ -52,14 +53,6 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Async
     public void startProject(BlenderProject blenderProject) {
             configureFrameList(blenderProject);
-            while (!queueService.populateQueueWithProject(blenderProject)) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
     }
 
     @Override
@@ -194,7 +187,11 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
             }
         }
         blenderProject.setFramePartList(blenderFramePartList);
+        blenderProject.setTotalQueueSize(blenderFramePartList.size());
+        blenderProject.setQueueIndex(0);
+        blenderProject.setRemainingQueueSize(blenderFramePartList.size());
         LOG.debug("Project Frames configured.");
+        blenderProject.setProjectStatus(ProjectStatus.Pending);
         blenderProjectDatabaseService.saveOrUpdate(blenderProject);
 
     }

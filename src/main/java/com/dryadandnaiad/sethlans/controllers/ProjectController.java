@@ -176,8 +176,6 @@ public class ProjectController {
         if (blenderProject == null) {
             return false;
         }
-        blenderProject.setProjectStatus(ProjectStatus.Pending);
-        blenderProject = blenderProjectDatabaseService.saveOrUpdate(blenderProject);
         blenderProjectService.startProject(blenderProject);
         return true;
     }
