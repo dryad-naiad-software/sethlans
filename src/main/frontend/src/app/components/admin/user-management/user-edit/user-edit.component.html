@@ -22,7 +22,7 @@
     <div class="card">
       <div class="card-header">
         <h4 style="font-family: 'Fjalla One', sans-serif; ">User Edit -
-          {{userInfo.username}}</h4>
+          {{userInfo?.username}}</h4>
       </div>
       <div class="card-body">
         <p>Current Roles: <span *ngFor="let role of userInfo?.roles">{{role}}</span></p>
@@ -33,7 +33,7 @@
                    name="email"
                    id="email"
                    #email="ngModel"
-                   value="{{userInfo.email}}"
+                   value="{{userInfo?.email}}"
                    [(ngModel)]="newEmail"
                    class="form-control form-control-sm"
                    [ngClass]="{'is-invalid':email.errors && email.touched}"
@@ -118,3 +118,10 @@
     </div>
   </div>
 </div>
+
+
+<div>
+  Debugging:
+  <pre>{{ roleSelection | json }}</pre>
+</div>
+

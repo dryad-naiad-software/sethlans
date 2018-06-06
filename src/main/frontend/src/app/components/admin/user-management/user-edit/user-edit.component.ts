@@ -36,7 +36,7 @@ export class UserEditComponent implements OnInit {
   newEmail: string;
   emailError: boolean;
   passwordError: boolean;
-  roleSelection: SelectedRole[];
+  roleSelection: SelectedRole[] = [];
 
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {
@@ -54,9 +54,13 @@ export class UserEditComponent implements OnInit {
   loadUser() {
     this.http.get('/api/management/get_user/' + this.id + '/').subscribe((userInfo: UserInfo) => {
       this.userInfo = userInfo;
-      let roles = this.roleSelection;
+      let roleSelection = this.roleSelection;
       userInfo.roles.forEach(function (value: Role) {
-
+        roleSelection.forEach(function (selections: SelectedRole) {
+          if (value == selections.role) {
+            selections.selected = true;
+          }
+        });
       })
     });
   }
@@ -64,7 +68,7 @@ export class UserEditComponent implements OnInit {
   getThisUser() {
     this.http.get('/api/management/requesting_user/').subscribe((userInfo: UserInfo) => {
       this.requestingUser = userInfo;
-      if (userInfo.roles.indexOf(Role.ADMINISTRATOR) !== -1 || userInfo.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
+      if (userInfo.roles.indexOf(Role.ADMINISTRATOR) !== -1) {
         let roles = [Role.ADMINISTRATOR, Role.USER];
         let roleSelection = this.roleSelection;
         roles.forEach(function (value: Role) {
@@ -127,7 +131,6 @@ class SelectedRole {
   constructor(value: Role, b: boolean) {
     this.role = value;
     this.selected = b;
-
   }
 
   role: Role;
