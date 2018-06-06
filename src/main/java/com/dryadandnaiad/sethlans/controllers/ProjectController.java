@@ -311,12 +311,12 @@ public class ProjectController {
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
             blenderProject = blenderProjectDatabaseService.getById(id);
             if (blenderProject != null) {
-                return renderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProject_uuid()).size();
+                return blenderProject.getTotalQueueSize();
             }
         } else {
             blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
             if (blenderProject != null) {
-                return renderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProject_uuid()).size();
+                return blenderProject.getTotalQueueSize();
             }
         }
         return 0;
@@ -329,12 +329,12 @@ public class ProjectController {
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
             blenderProject = blenderProjectDatabaseService.getById(id);
             if (blenderProject != null) {
-                return renderQueueDatabaseService.listRemainingQueueItemsByProjectUUID(blenderProject.getProject_uuid()).size();
+                return blenderProject.getRemainingQueueSize();
             }
         } else {
             blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
             if (blenderProject != null) {
-                return renderQueueDatabaseService.listRemainingQueueItemsByProjectUUID(blenderProject.getProject_uuid()).size();
+                return blenderProject.getRemainingQueueSize();
             }
         }
         return 0;
