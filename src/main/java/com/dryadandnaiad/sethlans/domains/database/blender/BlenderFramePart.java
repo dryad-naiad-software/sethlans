@@ -34,6 +34,7 @@ public class BlenderFramePart {
     private String frameFileName;
     private int frameNumber;
     private int partNumber;
+    private boolean processed;
     private Double partPositionMinY;
     private Double partPositionMaxY;
     private String partFilename;

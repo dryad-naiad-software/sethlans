@@ -58,12 +58,20 @@ class QueueProcessActions {
         int frameNumber = renderQueueItem.getBlenderFramePart().getFrameNumber();
         BlenderProject blenderProject =
                 blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
+        blenderProject.setRemainingQueueSize(blenderProject.getRemainingQueueSize() - 1);
+        int remainingPartsForFrame = blenderProject.getPartsPerFrame();
 
 
         File storedDir = new File(renderQueueItem.getBlenderFramePart().getStoredDir());
         for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
             if (blenderFramePart.getFrameNumber() == frameNumber) {
                 blenderFramePart.setStoredDir(storedDir.toString() + File.separator);
+                if (blenderFramePart.getPartNumber() == partNumber) {
+                    blenderFramePart.setProcessed(true);
+                }
+                if (blenderFramePart.isProcessed()) {
+                    remainingPartsForFrame--;
+                }
             }
         }
         storedDir.mkdirs();
@@ -88,15 +96,12 @@ class QueueProcessActions {
         renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
         LOG.debug("Processing complete.");
         int projectTotalQueue =
-                renderQueueDatabaseService.listQueueItemsByProjectUUID(renderQueueItem.getProject_uuid()).size();
-        int remainingTotalQueue =
-                renderQueueDatabaseService.listRemainingQueueItemsByProjectUUID(renderQueueItem.getProject_uuid()).size();
-        int remainingPartsForFrame =
-                renderQueueDatabaseService.listRemainingPartsInProjectQueueByFrameNumber(
-                        renderQueueItem.getProject_uuid(), frameNumber).size();
+                blenderProject.getTotalQueueSize();
+        int remainingTotalQueue = blenderProject.getRemainingQueueSize();
+
         LOG.debug("Remaining parts per frame for Frame " + frameNumber + ": " + remainingPartsForFrame);
-        LOG.debug("Remaining items in project Queue " + remainingTotalQueue);
-        LOG.debug("Project total Queue " + projectTotalQueue);
+        LOG.debug("Remaining items in project Queue " + blenderProject.getRemainingQueueSize());
+        LOG.debug("Project total Queue " + blenderProject.getTotalQueueSize());
 
         double currentPercentage = ((projectTotalQueue - remainingTotalQueue) * 100.0) / projectTotalQueue;
         LOG.debug("Current Percentage " + currentPercentage);

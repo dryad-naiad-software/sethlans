@@ -78,8 +78,10 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     public List<BlenderProject> getRemainingQueueProjects(){
         List<BlenderProject> remainingProjects = new ArrayList<>();
         for(BlenderProject blenderProject: listAll()) {
-            if((blenderProject.getQueueIndex() + 1) != blenderProject.getTotalQueueSize()) {
-                remainingProjects.add(blenderProject);
+            if (blenderProject.getProjectStatus().equals(ProjectStatus.Rendering) || blenderProject.getProjectStatus().equals(ProjectStatus.Started)) {
+                if ((blenderProject.getQueueIndex() + 1) != blenderProject.getTotalQueueSize()) {
+                    remainingProjects.add(blenderProject);
+                }
             }
         }
         return remainingProjects;
