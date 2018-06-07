@@ -307,7 +307,7 @@ public class QueueServiceImpl implements QueueService {
     private void cleanQueue() {
         if (!modifyingQueue) {
             modifyingQueue = true;
-            if (renderQueueDatabaseService.listAll().size() > 1000) {
+            if (renderQueueDatabaseService.listAll().size() > 900) {
                 for (RenderQueueItem renderQueueItem : renderQueueDatabaseService.listAll()) {
                     if (renderQueueItem.isComplete()) {
                         renderQueueDatabaseService.delete(renderQueueItem);
@@ -436,7 +436,7 @@ public class QueueServiceImpl implements QueueService {
             modifyingQueue = true;
             for (BlenderProject blenderProject : blenderProjectDatabaseService.listAll()) {
                 if (blenderProject.getProjectStatus().equals(ProjectStatus.Rendering) || blenderProject.getProjectStatus().equals(ProjectStatus.Started)) {
-                    if (renderQueueDatabaseService.listRemainingQueueItemsByProjectUUID(blenderProject.getProject_uuid()).size() == 0) {
+                    if (blenderProject.getRemainingQueueSize() == 0) {
                         if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
                             blenderProject.setProjectStatus(ProjectStatus.Processing);
                             blenderProject.setCurrentPercentage(100);
