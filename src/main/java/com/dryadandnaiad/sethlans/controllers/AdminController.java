@@ -26,6 +26,7 @@ import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.domains.info.Log;
+import com.dryadandnaiad.sethlans.domains.info.RoleInfo;
 import com.dryadandnaiad.sethlans.domains.info.SethlansSettingsInfo;
 import com.dryadandnaiad.sethlans.domains.info.UserInfo;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
@@ -101,7 +102,15 @@ public class AdminController {
 
     @GetMapping(value = "/user_list")
     public List<UserInfo> sethlansUserList() {
-        List<SethlansUser> sethlansUsers = sethlansUserDatabaseService.listAll();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        SethlansUser requestingUser = sethlansUserDatabaseService.findByUserName(auth.getName());
+        List<SethlansUser> sethlansUsers;
+        if (requestingUser.getRoles().contains(Role.SUPER_ADMINISTRATOR)) {
+            sethlansUsers = sethlansUserDatabaseService.listAll();
+        } else {
+            sethlansUsers = sethlansUserDatabaseService.excludeSuperAdministrators();
+        }
+
         List<UserInfo> userInfoList = new ArrayList<>();
         for (SethlansUser sethlansUser : sethlansUsers) {
             UserInfo userToSend = new UserInfo();
@@ -273,7 +282,14 @@ public class AdminController {
 
     @GetMapping(value = {"/get_user/{id}"})
     public UserInfo getUser(@PathVariable Long id) {
-        SethlansUser sethlansUser = sethlansUserDatabaseService.getById(id);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        SethlansUser requestingUser = sethlansUserDatabaseService.findByUserName(auth.getName());
+        SethlansUser sethlansUser;
+        if (requestingUser.getRoles().contains(Role.SUPER_ADMINISTRATOR)) {
+            sethlansUser = sethlansUserDatabaseService.getById(id);
+        } else {
+            sethlansUser = sethlansUserDatabaseService.excludeSuperUsersById(id);
+        }
         UserInfo userToSend = new UserInfo();
         userToSend.setUsername(sethlansUser.getUsername());
         userToSend.setActive(sethlansUser.isActive());
@@ -283,6 +299,36 @@ public class AdminController {
         userToSend.setLastUpdated(sethlansUser.getLastUpdated());
         userToSend.setDateCreated(sethlansUser.getDateCreated());
         return userToSend;
+    }
+
+    @GetMapping(value = {"/get_roles/{id}"})
+    public List<RoleInfo> getRoles(@PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        SethlansUser requestingUser = sethlansUserDatabaseService.findByUserName(auth.getName());
+        EnumSet<Role> allRoles;
+        if (requestingUser.getRoles().contains(Role.SUPER_ADMINISTRATOR)) {
+            allRoles = EnumSet.allOf(Role.class);
+        } else {
+            allRoles = EnumSet.of(Role.ADMINISTRATOR, Role.USER);
+        }
+        SethlansUser sethlansUser = sethlansUserDatabaseService.getById(id);
+        List<RoleInfo> roleInfoList = new ArrayList<>();
+        for (Role role : allRoles) {
+            RoleInfo roleInfo = new RoleInfo();
+            for (Role userRole : sethlansUser.getRoles()) {
+                if (userRole.equals(role)) {
+                    roleInfo.setRole(role);
+                    roleInfo.setActive(true);
+                    roleInfoList.add(roleInfo);
+                } else {
+                    roleInfo.setRole(role);
+                    roleInfo.setActive(false);
+                    roleInfoList.add(roleInfo);
+
+                }
+            }
+        }
+        return roleInfoList;
     }
 
     @GetMapping(value = {"/activate_user/{id}"})

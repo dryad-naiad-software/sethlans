@@ -21,7 +21,7 @@ import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {ActivatedRoute} from "@angular/router";
 import {UserInfo} from "../../../../models/userinfo.model";
-import {Role} from "../../../../enums/role.enum";
+import {RoleInfo} from "../../../../models/role_info.model";
 
 @Component({
   selector: 'app-user-edit',
@@ -36,7 +36,8 @@ export class UserEditComponent implements OnInit {
   newEmail: string;
   emailError: boolean;
   passwordError: boolean;
-  roleSelection: SelectedRole[] = [];
+  roleSelection: any[] = [];
+  roleError: boolean;
 
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {
@@ -51,40 +52,37 @@ export class UserEditComponent implements OnInit {
     });
   }
 
+  selected(event, roleInfo) {
+    let checked = event.currentTarget.checked;
+    if (checked) {
+      this.roleSelection.forEach(function (value) {
+        if (value.role == roleInfo.role) {
+          value.active = true;
+        }
+      });
+    }
+    else if (!checked) {
+      this.roleSelection.forEach(function (value) {
+        if (value.role == roleInfo.role) {
+          value.active = false;
+        }
+      });
+    }
+    this.roleError = this.roleSelection.every(x => x.active === false)
+  }
+
   loadUser() {
     this.http.get('/api/management/get_user/' + this.id + '/').subscribe((userInfo: UserInfo) => {
       this.userInfo = userInfo;
-      let roleSelection = this.roleSelection;
-      userInfo.roles.forEach(function (value: Role) {
-        roleSelection.forEach(function (selections: SelectedRole) {
-          if (value == selections.role) {
-            selections.selected = true;
-          }
-        });
-      })
     });
+    this.http.get('/api/management/get_roles/' + this.id + '/').subscribe((roleInfo: RoleInfo[]) => {
+      this.roleSelection = roleInfo;
+    })
   }
 
   getThisUser() {
     this.http.get('/api/management/requesting_user/').subscribe((userInfo: UserInfo) => {
       this.requestingUser = userInfo;
-      if (userInfo.roles.indexOf(Role.ADMINISTRATOR) !== -1) {
-        let roles = [Role.ADMINISTRATOR, Role.USER];
-        let roleSelection = this.roleSelection;
-        roles.forEach(function (value: Role) {
-          let role = new SelectedRole(value, false);
-          roleSelection.push(role);
-        });
-      }
-      if (userInfo.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
-        let roles = Object.keys(Role);
-        let roleSelection = this.roleSelection;
-        roles.forEach(function (value: Role) {
-          let role = new SelectedRole(value, false);
-          roleSelection.push(role);
-        });
-      }
-
     });
   }
 
@@ -118,21 +116,18 @@ export class UserEditComponent implements OnInit {
       }
     });
   }
+
+  changeRole() {
+
+  }
+
 }
+
+
 
 
 class PasswordSet {
   currentPass: string;
   newPass: string;
   newPassConfirm: string;
-}
-
-class SelectedRole {
-  constructor(value: Role, b: boolean) {
-    this.role = value;
-    this.selected = b;
-  }
-
-  role: Role;
-  selected: boolean;
 }

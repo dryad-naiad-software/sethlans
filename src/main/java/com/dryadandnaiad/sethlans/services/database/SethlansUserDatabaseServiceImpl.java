@@ -55,6 +55,16 @@ public class SethlansUserDatabaseServiceImpl implements SethlansUserDatabaseServ
     }
 
     @Override
+    public SethlansUser excludeSuperUsersById(Long id) {
+        if (!sethlansUserRepository.findOne(id).getRoles().contains(Role.SUPER_ADMINISTRATOR)) {
+            return sethlansUserRepository.findOne(id);
+        } else {
+            return null;
+        }
+
+    }
+
+    @Override
     public boolean checkifExists(String username) {
         return findByUserName(username) != null;
 
@@ -90,14 +100,14 @@ public class SethlansUserDatabaseServiceImpl implements SethlansUserDatabaseServ
     }
 
     @Override
-    public List<SethlansUser> allSuperAdministrators() {
-        List<SethlansUser> superAdministrators = new ArrayList<>();
+    public List<SethlansUser> excludeSuperAdministrators() {
+        List<SethlansUser> sethlansUsers = new ArrayList<>();
         for (SethlansUser sethlansUser : listAll()) {
-            if (sethlansUser.getRoles().contains(Role.SUPER_ADMINISTRATOR)) {
-                superAdministrators.add(sethlansUser);
+            if (!sethlansUser.getRoles().contains(Role.SUPER_ADMINISTRATOR)) {
+                sethlansUsers.add(sethlansUser);
             }
         }
-        return superAdministrators;
+        return sethlansUsers;
     }
 
     @Autowired

@@ -16,27 +16,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
+import {Role} from "../enums/role.enum";
 
-package com.dryadandnaiad.sethlans.services.database;
-
-import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
-
-import java.util.List;
-
-/**
- * Created Mario Estrella on 2/23/18.
- * Dryad and Naiad Software LLC
- * mestrella@dryadandnaiad.com
- * Project: sethlans
- */
-public interface SethlansUserDatabaseService extends CRUDService<SethlansUser> {
-    SethlansUser excludeSuperUsersById(Long id);
-
-    boolean checkifExists(String username);
-
-    void delete(SethlansUser sethlansUser);
-
-    SethlansUser findByUserName(String username);
-
-    List<SethlansUser> excludeSuperAdministrators();
+export class RoleInfo {
+  role: Role;
+  active: boolean;
 }
+

@@ -25,7 +25,6 @@
           {{userInfo?.username}}</h4>
       </div>
       <div class="card-body">
-        <p>Current Roles: <span *ngFor="let role of userInfo?.roles">{{role}}</span></p>
         <form #emailForm="ngForm">
           <div class="form-group" ngbTooltip="Email used for notifications." placement="left">
             <label for="email">Email Address</label>
@@ -111,7 +110,27 @@
             <button class="btn btn-outline-dark" [disabled]="!passwordForm.valid" (click)="changePassword()">Change
               Password
             </button>
-
+          </form>
+          <br/>
+          <form #roleForm="ngForm">
+            <h6>Roles:</h6>
+            <div class="form-group">
+              <div *ngFor="let role of roleSelection">
+                <input
+                  type="checkbox"
+                  class="form-control-sm"
+                  required
+                  #roleSelection
+                  name="{{role.role}}"
+                  value="{{role.role}}"
+                  [checked]="role.active"
+                  (change)="selected($event, role, roleForm)"
+                />
+                <label class="form-check-label form-control-sm">{{role.role}}</label>
+              </div>
+            </div>
+            <button class="btn btn-outline-dark" [disabled]="roleError" (click)="changeRole()">Change Role(s)
+            </button>
           </form>
         </div>
       </div>

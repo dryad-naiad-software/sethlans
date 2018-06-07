@@ -17,26 +17,19 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.database;
+package com.dryadandnaiad.sethlans.domains.info;
 
-import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
-
-import java.util.List;
+import com.dryadandnaiad.sethlans.enums.Role;
+import lombok.Data;
 
 /**
- * Created Mario Estrella on 2/23/18.
+ * Created Mario Estrella on 6/6/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface SethlansUserDatabaseService extends CRUDService<SethlansUser> {
-    SethlansUser excludeSuperUsersById(Long id);
-
-    boolean checkifExists(String username);
-
-    void delete(SethlansUser sethlansUser);
-
-    SethlansUser findByUserName(String username);
-
-    List<SethlansUser> excludeSuperAdministrators();
+@Data
+public class RoleInfo {
+    private Role role;
+    private boolean active;
 }
