@@ -44,9 +44,6 @@ public interface RenderQueueDatabaseService extends CRUDService<RenderQueueItem>
 
     List<RenderQueueItem> listQueueItemsByProjectUUID(String project_uuid);
 
-    List<RenderQueueItem> queueItemsByFrameNumber(String project_uuid, int frameNumber);
 
-    List<RenderQueueItem> listRemainingPartsInProjectQueueByFrameNumber(String project_uuid, int frameNumber);
 
-    List<RenderQueueItem> listRemainingQueueItemsByProjectUUID(String project_uuid);
 }

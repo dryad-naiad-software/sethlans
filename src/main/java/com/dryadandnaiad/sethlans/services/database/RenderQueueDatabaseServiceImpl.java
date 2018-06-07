@@ -136,43 +136,7 @@ public class RenderQueueDatabaseServiceImpl implements RenderQueueDatabaseServic
         return sortedList;
     }
 
-    @Override
-    public List<RenderQueueItem> queueItemsByFrameNumber(String project_uuid, int frameNumber) {
-        List<RenderQueueItem> remainingQueueForProject = listQueueItemsByProjectUUID(project_uuid);
-        List<RenderQueueItem> queueItemsByFrame = new ArrayList<>();
-        for (RenderQueueItem renderQueueItem : remainingQueueForProject) {
-            if (renderQueueItem.getBlenderFramePart().getFrameNumber() == frameNumber) {
-                queueItemsByFrame.add(renderQueueItem);
-            }
-        }
-        return queueItemsByFrame;
-    }
 
-
-    @Override
-    public List<RenderQueueItem> listRemainingPartsInProjectQueueByFrameNumber(String project_uuid, int frameNumber) {
-        List<RenderQueueItem> remainingQueueForProject = listRemainingQueueItemsByProjectUUID(project_uuid);
-        List<RenderQueueItem> queueItemsByFrame = new ArrayList<>();
-        for (RenderQueueItem renderQueueItem : remainingQueueForProject) {
-            if (renderQueueItem.getBlenderFramePart().getFrameNumber() == frameNumber) {
-                queueItemsByFrame.add(renderQueueItem);
-            }
-        }
-        return queueItemsByFrame;
-    }
-
-    @Override
-    public List<RenderQueueItem> listRemainingQueueItemsByProjectUUID(String project_uuid) {
-        List<RenderQueueItem> mainProjectLIst = listQueueItemsByProjectUUID(project_uuid);
-        List<RenderQueueItem> sortedList = new ArrayList<>();
-        for (RenderQueueItem renderQueueItem : mainProjectLIst) {
-            if (!renderQueueItem.isComplete()) {
-                sortedList.add(renderQueueItem);
-            }
-        }
-
-        return sortedList;
-    }
 
     @Autowired
     public void setRenderQueueRepository(RenderQueueRepository renderQueueRepository) {
