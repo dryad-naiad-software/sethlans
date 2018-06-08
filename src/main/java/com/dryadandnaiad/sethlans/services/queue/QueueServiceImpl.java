@@ -388,6 +388,9 @@ public class QueueServiceImpl implements QueueService {
             renderQueueItem.setBlenderFramePart(blenderFramePartList.get(index));
             renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
             index++;
+            if (index >= blenderFramePartList.size()) {
+                index = blenderFramePartList.size() - 1;
+            }
         }
         blenderProject = blenderProjectDatabaseService.getById(blenderProject.getId());
         blenderProject.setQueueIndex(index);
