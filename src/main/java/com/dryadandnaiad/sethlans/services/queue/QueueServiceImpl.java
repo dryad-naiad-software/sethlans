@@ -68,6 +68,8 @@ public class QueueServiceImpl implements QueueService {
     private Set<NodeOnlineItem> nodeOnlineItemList = new HashSet<>();
     private List<Long> nodesToDelete = new ArrayList<>();
     private List<Long> nodesToDisable = new ArrayList<>();
+    private final static int QUEUE = 500;
+    private final static int CLEANUP = 350;
 
     @Async
     @Override
@@ -307,7 +309,7 @@ public class QueueServiceImpl implements QueueService {
     private void cleanQueue() {
         if (!modifyingQueue) {
             modifyingQueue = true;
-            if (renderQueueDatabaseService.listAll().size() > 350) {
+            if (renderQueueDatabaseService.listAll().size() > CLEANUP) {
                 for (RenderQueueItem renderQueueItem : renderQueueDatabaseService.listAll()) {
                     if (renderQueueItem.isComplete()) {
                         renderQueueDatabaseService.delete(renderQueueItem);
@@ -322,49 +324,59 @@ public class QueueServiceImpl implements QueueService {
         if (!modifyingQueue) {
             modifyingQueue = true;
             if (sethlansNodeDatabaseService.activeNodeList().size() > 0 && blenderProjectDatabaseService.listAll().size() > 0) {
-                if (renderQueueDatabaseService.listPendingRender().size() < 500 && blenderProjectDatabaseService.getRemainingQueueProjects().size() > 0) {
-                    for (BlenderProject blenderProject : blenderProjectDatabaseService.getRemainingQueueProjects()) {
-                        int count;
-                        List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
-                        int size = blenderFramePartList.size() - blenderProject.getQueueIndex();
-                        if (size <= 500) {
-                            count = size;
-                        } else {
-                            count = 500 - renderQueueDatabaseService.listPendingRender().size();
-                        }
-                        int queueIndex = blenderProject.getQueueIndex();
-                        if (queueIndex < (blenderProject.getTotalQueueSize() - 1)) {
-                            addRenderQueueItem(blenderProject, count, queueIndex, blenderFramePartList);
-                        }
-                    }
-                }
-                if (renderQueueDatabaseService.listPendingRender().size() < 500 && blenderProjectDatabaseService.getPendingProjects().size() > 0) {
-                    for (BlenderProject blenderProject : blenderProjectDatabaseService.getPendingProjects()) {
-                        int count;
-                        List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
-                        if (blenderFramePartList.size() <= 500) {
-                            count = blenderFramePartList.size();
-                        } else {
-                            count = 500 - renderQueueDatabaseService.listPendingRender().size();
-                        }
-                        int queueIndex = blenderProject.getQueueIndex();
-                        if (queueIndex < (blenderProject.getTotalQueueSize() - 1)) {
-                            addRenderQueueItem(blenderProject, count, queueIndex, blenderFramePartList);
-                        }
-                    }
-                }
+                populateQueueRunningProjects();
+                populateQueuePendingProjects();
             }
             modifyingQueue = false;
         }
     }
 
+    private void populateQueuePendingProjects() {
+        if (renderQueueDatabaseService.listPendingRender().size() < QUEUE && blenderProjectDatabaseService.getPendingProjects().size() > 0) {
+            for (BlenderProject blenderProject : blenderProjectDatabaseService.getPendingProjects()) {
+                int count;
+                List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
+                if (blenderFramePartList.size() <= QUEUE) {
+                    count = blenderFramePartList.size();
+                } else {
+                    count = QUEUE - renderQueueDatabaseService.listPendingRender().size();
+                }
+                int queueIndex = blenderProject.getQueueIndex();
+                if (queueIndex < (blenderProject.getTotalQueueSize())) {
+                    addRenderQueueItem(blenderProject, count, queueIndex, blenderFramePartList);
+                }
+            }
+        }
+    }
+
+    private void populateQueueRunningProjects() {
+        if (renderQueueDatabaseService.listPendingRender().size() < QUEUE && blenderProjectDatabaseService.getRemainingQueueProjects().size() > 0) {
+            for (BlenderProject blenderProject : blenderProjectDatabaseService.getRemainingQueueProjects()) {
+                if (blenderProject.getQueueIndex() != (blenderProject.getTotalQueueSize() - 1)) {
+                    int count;
+                    List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
+                    int size = blenderFramePartList.size() - (blenderProject.getQueueIndex());
+                    if (size <= QUEUE) {
+                        count = size;
+                    } else {
+                        count = QUEUE - renderQueueDatabaseService.listPendingRender().size();
+                    }
+                    int queueIndex = blenderProject.getQueueIndex();
+                    if (queueIndex < (blenderProject.getTotalQueueSize())) {
+                        addRenderQueueItem(blenderProject, count, queueIndex, blenderFramePartList);
+                    }
+                }
+            }
+        }
+    }
+
     private void addRenderQueueItem(BlenderProject blenderProject, int count, int queueIndex, List<BlenderFramePart> blenderFramePartList) {
         int index = queueIndex;
-        LOG.debug("Adding to Queue item at index: " + index);
-        for (int i = 0; i < count; i++) {
-            if (renderQueueDatabaseService.listPendingRender().size() > 500) {
+        for (int i = 0; i <= count; i++) {
+            if (renderQueueDatabaseService.listPendingRender().size() > QUEUE) {
                 break;
             }
+            LOG.debug("Adding to Queue item at index: " + index);
             RenderQueueItem renderQueueItem = new RenderQueueItem();
             renderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
             renderQueueItem.setProjectName(blenderProject.getProjectName());
@@ -373,7 +385,7 @@ public class QueueServiceImpl implements QueueService {
             renderQueueItem.setComplete(false);
             renderQueueItem.setPaused(false);
             renderQueueItem.setConnection_uuid(null);
-            renderQueueItem.setBlenderFramePart(blenderFramePartList.get(i + queueIndex));
+            renderQueueItem.setBlenderFramePart(blenderFramePartList.get(index));
             renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
             index++;
         }
