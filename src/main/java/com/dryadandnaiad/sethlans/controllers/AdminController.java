@@ -25,10 +25,7 @@ import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
-import com.dryadandnaiad.sethlans.domains.info.Log;
-import com.dryadandnaiad.sethlans.domains.info.RoleInfo;
-import com.dryadandnaiad.sethlans.domains.info.SethlansSettingsInfo;
-import com.dryadandnaiad.sethlans.domains.info.UserInfo;
+import com.dryadandnaiad.sethlans.domains.info.*;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.Role;
@@ -200,17 +197,30 @@ public class AdminController {
 
     @GetMapping(value = "/installed_blender_versions")
     public Map blenderBinaryList() {
-        List<BlenderBinary> blenderBinaries = blenderBinaryDatabaseService.listAll();
-        Set<String> listOfVersions = new HashSet<>();
-        for (BlenderBinary blenderBinary : blenderBinaries) {
-            listOfVersions.add(blenderBinary.getBlenderVersion());
-        }
+        Set<String> listOfVersions = blenderBinaryDatabaseService.installedBlenderVersions();
         return Collections.singletonMap("installedBlenderVersions", listOfVersions);
     }
 
+    @GetMapping(value = "/get_blender_list")
+    public List<BlenderBinaryInfo> getBlenderBinaryInfoList() {
+        List<BlenderBinaryInfo> blenderBinaryInfoList = new ArrayList<>();
+        Set<String> listOfVersions = blenderBinaryDatabaseService.installedBlenderVersions();
+        for (String version : listOfVersions) {
+            BlenderBinaryInfo blenderBinaryInfo = new BlenderBinaryInfo();
+            blenderBinaryInfo.setVersion(version);
+            blenderBinaryInfo.setBinaryOSList(blenderBinaryOSList(version));
+            if (SethlansUtils.getProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION.toString()).equals(version)) {
+                blenderBinaryInfo.setActive(true);
+            }
+            blenderBinaryInfoList.add(blenderBinaryInfo);
+        }
+        return blenderBinaryInfoList;
+    }
+
+
+
     @GetMapping(value = "/get_current_binary_os/{version}")
     public List<BlenderBinaryOS> blenderBinaryOSList(@PathVariable String version) {
-        LOG.debug(version);
         List<BlenderBinaryOS> blenderBinaryOS = new ArrayList<>();
         List<BlenderBinary> blenderBinaries = blenderBinaryDatabaseService.listAll();
         for (BlenderBinary blenderBinary : blenderBinaries) {
