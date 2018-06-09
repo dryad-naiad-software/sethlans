@@ -255,6 +255,26 @@ public class AdminController {
         }
     }
 
+    @PostMapping(value = {"/change_roles/{id}"})
+    public boolean changeRoles(@PathVariable Long id, @RequestBody List<RoleInfo> roles) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        SethlansUser sethlansUser = sethlansUserDatabaseService.getById(id);
+        SethlansUser requestingUser = sethlansUserDatabaseService.findByUserName(auth.getName());
+        List<Role> roleList = new ArrayList<>();
+        for (RoleInfo role : roles) {
+            if (role.isActive()) {
+                Role theRole = role.getRole();
+                if (!requestingUser.getRoles().contains(Role.SUPER_ADMINISTRATOR) && theRole.equals(Role.SUPER_ADMINISTRATOR)) {
+                    break;
+                }
+                roleList.add(theRole);
+            }
+        }
+        sethlansUser.setRoles(roleList);
+        sethlansUserDatabaseService.saveOrUpdate(sethlansUser);
+        return true;
+    }
+
     @PostMapping(value = {"/change_email/"})
     public boolean changeEmail(@RequestParam String id, @RequestParam String email) {
         SethlansUser sethlansUser = sethlansUserDatabaseService.getById(Long.valueOf(id));
@@ -315,18 +335,13 @@ public class AdminController {
         List<RoleInfo> roleInfoList = new ArrayList<>();
         for (Role role : allRoles) {
             RoleInfo roleInfo = new RoleInfo();
-            for (Role userRole : sethlansUser.getRoles()) {
-                if (userRole.equals(role)) {
-                    roleInfo.setRole(role);
-                    roleInfo.setActive(true);
-                    roleInfoList.add(roleInfo);
-                } else {
-                    roleInfo.setRole(role);
-                    roleInfo.setActive(false);
-                    roleInfoList.add(roleInfo);
-
-                }
+            roleInfo.setRole(role);
+            if (sethlansUser.getRoles().contains(role)) {
+                roleInfo.setActive(true);
+            } else {
+                roleInfo.setActive(false);
             }
+            roleInfoList.add(roleInfo);
         }
         return roleInfoList;
     }

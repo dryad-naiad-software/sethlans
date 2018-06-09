@@ -118,6 +118,13 @@ export class UserEditComponent implements OnInit {
   }
 
   changeRole() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    this.http.post('/api/management/change_roles/' + this.id, JSON.stringify(this.roleSelection), httpOptions).subscribe(() => window.location.href = "/admin/user_management/")
+
 
   }
 
