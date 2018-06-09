@@ -17,10 +17,11 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {BlenderBinaryInfo} from "../../../models/blenderbinaryinfo.model";
-import {MatTableDataSource} from "@angular/material";
+import {MatPaginator, MatTableDataSource} from "@angular/material";
+import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-blender-versions',
@@ -28,17 +29,19 @@ import {MatTableDataSource} from "@angular/material";
   styleUrls: ['./blender-versions.component.scss']
 })
 export class BlenderVersionsComponent implements OnInit {
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   availableBlenderVersions: any[];
   dataSource = new MatTableDataSource();
   displayedColumns = ['version', 'binaries', 'active', 'actions'];
 
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private modalService: NgbModal) {
   }
 
   ngOnInit() {
     this.http.get('/api/management/get_blender_list/').subscribe((blenderList: BlenderBinaryInfo[]) => {
       this.dataSource = new MatTableDataSource<any>(blenderList);
+      this.dataSource.paginator = this.paginator;
     });
     this.http.get('/api/info/blender_versions')
       .subscribe(
@@ -46,6 +49,13 @@ export class BlenderVersionsComponent implements OnInit {
           this.availableBlenderVersions = blenderVersions['blenderVersions'];
           console.log(this.availableBlenderVersions);
         }, (error) => console.log(error));
+  }
+
+  open(content) {
+    let options: NgbModalOptions = {
+      backdrop: "static"
+    };
+    this.modalService.open(content, options);
   }
 
 }

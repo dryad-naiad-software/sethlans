@@ -18,12 +18,12 @@
   -->
 
 <div class="row pb-5">
-  <div class="col-md-10 m-auto">
+  <div class="col-md-8 m-auto">
     <div class="card">
       <div class="card-header">
         <h4>
           <span style="font-family: 'Fjalla One', sans-serif; ">Blender Version Management</span>
-          <button class="btn btn-outline-dark float-right">
+          <button class="btn btn-outline-dark float-right" (click)="open(versionModal)">
             <span class="fa fa-plus"></span> <span>Add Version</span>
           </button>
         </h4>
@@ -61,18 +61,36 @@
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
           <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
         </mat-table>
+        <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[10,25,50]"></mat-paginator>
 
-        <form #blenderVersions="ngForm" class="editForm">
-          <div class="form-group" ngbTooltip="Blender version that Sethlans will use for rendering tasks."
-               placement="left">
-            <label for="blenderVersion">Add Blender Version</label>
-            <select class="form-control form-control-sm"
-                    id="blenderVersion"
-                    name="blenderVersion">
-              <option *ngFor="let version of availableBlenderVersions">{{version}}</option>
-            </select>
+
+        <ng-template #versionModal let-c="close" let-d="dismiss">
+          <div class="modal-header">
+            <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Add New Blender Version</h4>
+            <button type="button" class="close" aria-label="Close" (click)="c('Close click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
-        </form>
+          <div class="modal-body">
+            <form #blenderVersions="ngForm" class="editForm">
+              <div class="form-group" ngbTooltip="Blender version that Sethlans will use for rendering tasks."
+                   placement="left">
+                <label for="blenderVersion">Version</label>
+                <select class="form-control form-control-sm"
+                        id="blenderVersion"
+                        name="blenderVersion">
+                  <option *ngFor="let version of availableBlenderVersions">{{version}}</option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-outline-secondary mr-auto" (click)="c('Close click')">Cancel</button>
+            <button
+              class="btn btn-outline-dark ml-auto" (click)="c('Close click')">Add
+            </button>
+          </div>
+        </ng-template>
 
       </div>
     </div>
