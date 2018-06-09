@@ -21,24 +21,46 @@
   <div class="col-md-10 m-auto">
     <div class="card">
       <div class="card-header">
-        <h4 style="font-family: 'Fjalla One', sans-serif; ">Blender Version Management</h4>
+        <h4>
+          <span style="font-family: 'Fjalla One', sans-serif; ">Blender Version Management</span>
+          <button class="btn btn-outline-dark float-right">
+            <span class="fa fa-plus"></span> <span>Add Version</span>
+          </button>
+        </h4>
       </div>
-      <div class="card-body table-responsive">
-        <table class="table">
-          <thead>
-          <th>Blender Version</th>
-          <th>Blender Binary OS</th>
-          <th>Primary</th>
-          </thead>
-          <tbody>
-          <tr>
-            <td>2.79</td>
-            <td>MacOS</td>
-            <td>true</td>
-          </tr>
-          </tbody>
-
-        </table>
+      <div class="card-body">
+        <mat-table #binaryTable [dataSource]="dataSource">
+          <ng-container matColumnDef="version">
+            <mat-header-cell *matHeaderCellDef>Blender Version</mat-header-cell>
+            <mat-cell *matCellDef="let binary">
+              {{binary.version}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="binaries">
+            <mat-header-cell *matHeaderCellDef>Installed Binaries</mat-header-cell>
+            <mat-cell *matCellDef="let binary">
+              {{binary.binaryOSList}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="active">
+            <mat-header-cell *matHeaderCellDef>Primary</mat-header-cell>
+            <mat-cell *matCellDef="let binary">
+              {{binary.active}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+            <mat-cell *matCellDef="let binary">
+              <div class="btn-group-vertical">
+                <button class="btn btn-outline-success btn-sm" type="button"
+                >Primary
+                </button>
+              </div>
+            </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
 
         <form #blenderVersions="ngForm" class="editForm">
           <div class="form-group" ngbTooltip="Blender version that Sethlans will use for rendering tasks."

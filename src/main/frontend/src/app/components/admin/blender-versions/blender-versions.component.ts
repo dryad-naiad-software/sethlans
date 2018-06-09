@@ -20,6 +20,7 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {BlenderBinaryInfo} from "../../../models/blenderbinaryinfo.model";
+import {MatTableDataSource} from "@angular/material";
 
 @Component({
   selector: 'app-blender-versions',
@@ -27,16 +28,17 @@ import {BlenderBinaryInfo} from "../../../models/blenderbinaryinfo.model";
   styleUrls: ['./blender-versions.component.scss']
 })
 export class BlenderVersionsComponent implements OnInit {
-  blenderBinaryList: BlenderBinaryInfo[] = [];
   availableBlenderVersions: any[];
+  dataSource = new MatTableDataSource();
+  displayedColumns = ['version', 'binaries', 'active', 'actions'];
+
 
   constructor(private http: HttpClient) {
   }
 
   ngOnInit() {
     this.http.get('/api/management/get_blender_list/').subscribe((blenderList: BlenderBinaryInfo[]) => {
-      this.blenderBinaryList = blenderList;
-      console.log(this.blenderBinaryList)
+      this.dataSource = new MatTableDataSource<any>(blenderList);
     });
     this.http.get('/api/info/blender_versions')
       .subscribe(
