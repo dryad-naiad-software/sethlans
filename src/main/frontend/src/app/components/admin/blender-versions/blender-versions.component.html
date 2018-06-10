@@ -79,7 +79,8 @@
                 <label for="blenderVersion">Version</label>
                 <select class="form-control form-control-sm"
                         id="blenderVersion"
-                        name="blenderVersion">
+                        name="blenderVersion"
+                        [(ngModel)]="selectedVersion">
                   <option *ngFor="let version of availableBlenderVersions">{{version}}</option>
                 </select>
               </div>
@@ -88,7 +89,7 @@
           <div class="modal-footer">
             <button class="btn btn-outline-secondary mr-auto" (click)="c('Close click')">Cancel</button>
             <button
-              class="btn btn-outline-dark ml-auto" (click)="c('Close click')">Add
+              class="btn btn-outline-dark ml-auto" (click)="c('Close click'); addVersion()">Add
             </button>
           </div>
         </ng-template>
@@ -97,3 +98,8 @@
     </div>
   </div>
 </div>
+
+<!--<div>-->
+<!--Debugging:-->
+<!--<pre>{{ selectedVersion | json }}</pre>-->
+<!--</div>-->

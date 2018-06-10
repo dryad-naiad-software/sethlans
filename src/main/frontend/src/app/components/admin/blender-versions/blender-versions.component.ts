@@ -18,7 +18,7 @@
  */
 
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {BlenderBinaryInfo} from "../../../models/blenderbinaryinfo.model";
 import {MatPaginator, MatTableDataSource} from "@angular/material";
 import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
@@ -28,9 +28,11 @@ import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
   templateUrl: './blender-versions.component.html',
   styleUrls: ['./blender-versions.component.scss']
 })
+
 export class BlenderVersionsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   availableBlenderVersions: any[] = [];
+  selectedVersion: string;
   dataSource = new MatTableDataSource();
   displayedColumns = ['version', 'binaries', 'active', 'actions'];
 
@@ -47,7 +49,9 @@ export class BlenderVersionsComponent implements OnInit {
       .subscribe(
         (blenderVersions: string[]) => {
           this.availableBlenderVersions = blenderVersions;
-          console.log(this.availableBlenderVersions);
+          if (this.availableBlenderVersions.length > 0) {
+            this.selectedVersion = this.availableBlenderVersions[0];
+          }
         }, (error) => console.log(error));
   }
 
@@ -56,6 +60,18 @@ export class BlenderVersionsComponent implements OnInit {
       backdrop: "static"
     };
     this.modalService.open(content, options);
+  }
+
+  addVersion() {
+    let versionProperty = new HttpParams().set('version', this.selectedVersion.toString());
+    this.http.post('/api/management/add_blender_version', versionProperty, {
+      headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+    }).subscribe((response: boolean) => {
+      console.log(response);
+      if (response) {
+        window.location.href = "/admin/blender_version_admin/";
+      }
+    })
   }
 
 }
