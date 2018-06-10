@@ -65,6 +65,9 @@ class QueueProcessActions {
         BlenderProject blenderProject =
                 blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
         blenderProject.setRemainingQueueSize(blenderProject.getRemainingQueueSize() - 1);
+        if (blenderProject.getRemainingQueueSize() < 0) {
+            blenderProject.setRemainingQueueSize(0);
+        }
         int remainingPartsForFrame = blenderProject.getPartsPerFrame();
 
 

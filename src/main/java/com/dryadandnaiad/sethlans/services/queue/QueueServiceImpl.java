@@ -295,7 +295,8 @@ public class QueueServiceImpl implements QueueService {
                     throttle = QUEUE - renderQueueDatabaseService.listPendingRender().size();
                 }
                 int queueIndex = blenderProject.getQueueIndex();
-                if (queueIndex < (blenderProject.getTotalQueueSize())) {
+                int finalIndex = blenderProject.getTotalQueueSize() - 1;
+                if (queueIndex < finalIndex) {
                     addRenderQueueItem(blenderProject, throttle, queueIndex, blenderFramePartList);
                 }
             }
@@ -315,7 +316,9 @@ public class QueueServiceImpl implements QueueService {
                         throttle = QUEUE - renderQueueDatabaseService.listPendingRender().size();
                     }
                     int queueIndex = blenderProject.getQueueIndex();
-                    if (queueIndex < (blenderProject.getTotalQueueSize())) {
+                    int finalIndex = blenderProject.getTotalQueueSize() - 1;
+
+                    if (queueIndex <= finalIndex) {
                         addRenderQueueItem(blenderProject, throttle, queueIndex, blenderFramePartList);
                     }
                 }
@@ -325,6 +328,7 @@ public class QueueServiceImpl implements QueueService {
 
     private void addRenderQueueItem(BlenderProject blenderProject, int throttle, int queueIndex, List<BlenderFramePart> blenderFramePartList) {
         int index = queueIndex;
+        int finalIndex = blenderProject.getTotalQueueSize() - 1;
         for (int i = 0; i <= throttle; i++) {
             if (renderQueueDatabaseService.listPendingRender().size() > QUEUE) {
                 break;
@@ -340,9 +344,8 @@ public class QueueServiceImpl implements QueueService {
             renderQueueItem.setConnection_uuid(null);
             renderQueueItem.setBlenderFramePart(blenderFramePartList.get(index));
             renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
-            index++;
-            if (index >= blenderFramePartList.size()) {
-                index = blenderFramePartList.size() - 1;
+            if (index != finalIndex) {
+                index++;
             }
         }
         blenderProject = blenderProjectDatabaseService.getById(blenderProject.getId());
