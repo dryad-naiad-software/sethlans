@@ -23,7 +23,8 @@
       <div class="card-header">
         <h4>
           <span style="font-family: 'Fjalla One', sans-serif; ">Blender Version Management</span>
-          <button class="btn btn-outline-dark float-right" (click)="open(versionModal)">
+          <button [disabled]="availableBlenderVersions.length == 0" class="btn btn-outline-dark float-right"
+                  (click)="open(versionModal)">
             <span class="fa fa-plus"></span> <span>Add Version</span>
           </button>
         </h4>
@@ -52,7 +53,7 @@
             <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
             <mat-cell *matCellDef="let binary">
               <div class="btn-group-vertical">
-                <button class="btn btn-outline-success btn-sm" type="button"
+                <button *ngIf="!binary.active" class="btn btn-outline-success btn-sm" type="button"
                 >Primary
                 </button>
               </div>

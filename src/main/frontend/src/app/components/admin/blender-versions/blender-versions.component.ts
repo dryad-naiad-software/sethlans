@@ -30,7 +30,7 @@ import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 })
 export class BlenderVersionsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  availableBlenderVersions: any[];
+  availableBlenderVersions: any[] = [];
   dataSource = new MatTableDataSource();
   displayedColumns = ['version', 'binaries', 'active', 'actions'];
 
@@ -43,10 +43,10 @@ export class BlenderVersionsComponent implements OnInit {
       this.dataSource = new MatTableDataSource<any>(blenderList);
       this.dataSource.paginator = this.paginator;
     });
-    this.http.get('/api/info/blender_versions')
+    this.http.get('/api/management/remaining_blender_versions/')
       .subscribe(
-        (blenderVersions) => {
-          this.availableBlenderVersions = blenderVersions['blenderVersions'];
+        (blenderVersions: string[]) => {
+          this.availableBlenderVersions = blenderVersions;
           console.log(this.availableBlenderVersions);
         }, (error) => console.log(error));
   }

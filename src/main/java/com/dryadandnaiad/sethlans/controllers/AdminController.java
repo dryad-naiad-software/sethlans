@@ -38,6 +38,7 @@ import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
 import com.dryadandnaiad.sethlans.services.system.SethlansLogRetrievalService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
+import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -194,6 +195,36 @@ public class AdminController {
         return Collections.singletonMap("primary_blender",
                 SethlansUtils.getProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION.toString()));
     }
+
+    @GetMapping(value = "/remaining_blender_versions")
+    public List<String> getNewBlenderVersions() {
+        List<String> newBlenderVersions = new ArrayList<>();
+        List<String> allSupportedVersions = BlenderUtils.listVersions();
+        Set<String> installedVersions = blenderBinaryDatabaseService.installedBlenderVersions();
+        for (String version : allSupportedVersions) {
+            if (!installedVersions.contains(version)) {
+                newBlenderVersions.add(version);
+            }
+        }
+        return newBlenderVersions;
+    }
+
+    @PostMapping(value = "/add_blender_version")
+    public boolean addNewBlenderVersion(@RequestParam String version) {
+        List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.listAll();
+        Set<BlenderBinaryOS> blenderBinaryOSSet = new HashSet<>();
+        for (SethlansNode sethlansNode : sethlansNodeList) {
+            blenderBinaryOSSet.add(sethlansNode.getSethlansNodeOS());
+        }
+        for (BlenderBinaryOS blenderBinaryOS : blenderBinaryOSSet) {
+            BlenderBinary blenderBinary = new BlenderBinary();
+            blenderBinary.setBlenderVersion(version);
+            blenderBinary.setBlenderBinaryOS(blenderBinaryOS.toString());
+            blenderBinaryDatabaseService.saveOrUpdate(blenderBinary);
+        }
+        return true;
+    }
+
 
     @GetMapping(value = "/installed_blender_versions")
     public Map blenderBinaryList() {
