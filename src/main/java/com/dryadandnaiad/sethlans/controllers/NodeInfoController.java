@@ -85,21 +85,24 @@ public class NodeInfoController {
     @GetMapping(value = {"/node_total_slots"})
     public Integer getTotalSlots() {
         boolean combined = Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.COMBINE_GPU.toString()));
-        if (computeType != ComputeType.CPU) {
-            if (combined) {
-                return 2;
-            } else {
-                NodeInfo nodeInfo = getNodeInfo();
-                if (computeType != ComputeType.GPU) {
-                    return nodeInfo.getSelectedGPUs().size() + 1; // This logic leads to CPU GPU mode so the CPU is added as another slot
+        NodeInfo nodeInfo = getNodeInfo();
+        switch (computeType) {
+            case CPU:
+                return 1;
+            case GPU:
+                if (combined) {
+                    return 1;
                 } else {
                     return nodeInfo.getSelectedGPUs().size();
                 }
-
-            }
-        } else {
-            return 1;
+            case CPU_GPU:
+                if (combined) {
+                    return 2;
+                } else {
+                    return nodeInfo.getSelectedGPUs().size() + 1;
+                }
         }
+        return 0;
     }
 
     @GetMapping(value = {"/available_methods"})
