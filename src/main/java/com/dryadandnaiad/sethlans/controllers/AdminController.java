@@ -88,6 +88,9 @@ public class AdminController {
     @Value("${sethlans.tileSizeCPU}")
     private String titleSizeCPU;
 
+    @Value("${logging.level.com.dryadandnaiad.sethlans}")
+    private String logLevel;
+
     @GetMapping(value = "/restart")
     public void restart() {
         sethlansManagerService.restart();
@@ -272,7 +275,11 @@ public class AdminController {
 
     @GetMapping(value = "/current_settings")
     public SethlansSettingsInfo sethlansSettingsInfo() {
-        return SethlansUtils.getSettings();
+        SethlansSettingsInfo sethlansSettings = SethlansUtils.getSettings();
+        if (sethlansSettings.getLogLevel() == null) {
+            sethlansSettings.setLogLevel(logLevel);
+        }
+        return sethlansSettings;
     }
 
     @GetMapping(value = {"/selected_gpus"})

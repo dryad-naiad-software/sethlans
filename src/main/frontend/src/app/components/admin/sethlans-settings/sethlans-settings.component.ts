@@ -31,6 +31,7 @@ import {Router} from "@angular/router";
 export class SethlansSettingsComponent implements OnInit {
   sethlansConfig: SethlansConfig;
   mode: any = Mode;
+  newSettings = false;
 
   constructor(private http: HttpClient, private router: Router) {
   }
@@ -42,12 +43,5 @@ export class SethlansSettingsComponent implements OnInit {
     });
   }
 
-  goToComputeConfigure() {
-    window.location.href = "/admin/compute_settings";
-  }
-
-  goToBlenderVersions() {
-    this.router.navigateByUrl("/admin/blender_version_admin");
-  }
 
 }

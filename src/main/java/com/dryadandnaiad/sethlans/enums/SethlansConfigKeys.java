@@ -51,7 +51,8 @@ public enum SethlansConfigKeys {
     TILE_SIZE_GPU("sethlans.tileSizeGPU"),
     BENCHMARK_DIR("sethlans.benchmarkDir"),
     ROOT_DIR("sethlans.rootDir"),
-    SESSION_TIMEOUT("server.session.timeout");
+    SESSION_TIMEOUT("server.session.timeout"),
+    LOG_LEVEL("logging.level.com.dryadandnaiad.sethlans");
 
 
     private final String text;
