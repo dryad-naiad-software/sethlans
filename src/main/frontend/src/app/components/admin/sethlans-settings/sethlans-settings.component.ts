@@ -22,6 +22,7 @@ import {HttpClient} from "@angular/common/http";
 import {SethlansConfig} from "../../../models/sethlans_config.model";
 import {Mode} from "../../../enums/mode.enum";
 import {Router} from "@angular/router";
+import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-sethlans-settings',
@@ -33,7 +34,7 @@ export class SethlansSettingsComponent implements OnInit {
   mode: any = Mode;
   newSettings = false;
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient, private router: Router, private modalService: NgbModal) {
   }
 
   ngOnInit() {
@@ -41,6 +42,13 @@ export class SethlansSettingsComponent implements OnInit {
       this.sethlansConfig = sethlansConfig;
       console.log(this.sethlansConfig);
     });
+  }
+
+  open(content) {
+    let options: NgbModalOptions = {
+      backdrop: "static"
+    };
+    this.modalService.open(content, options);
   }
 
 
