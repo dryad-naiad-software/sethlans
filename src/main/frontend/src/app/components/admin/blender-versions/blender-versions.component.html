@@ -54,7 +54,7 @@
             <mat-cell *matCellDef="let binary">
               <div class="btn-group-vertical">
                 <button *ngIf="!binary.active" class="btn btn-outline-success btn-sm" type="button"
-                >Primary
+                        (click)="setActive(binary.version)">Primary
                 </button>
               </div>
             </mat-cell>

@@ -52,6 +52,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+import static com.dryadandnaiad.sethlans.utils.SethlansUtils.writeProperty;
+
 /**
  * Created Mario Estrella on 3/2/18.
  * Dryad and Naiad Software LLC
@@ -222,6 +224,12 @@ public class AdminController {
             blenderBinary.setBlenderBinaryOS(blenderBinaryOS.toString());
             blenderBinaryDatabaseService.saveOrUpdate(blenderBinary);
         }
+        return true;
+    }
+
+    @GetMapping(value = "/set_primary_blender_version")
+    public boolean setPrimaryBlenderVersion(@RequestParam String version) {
+        writeProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION, version);
         return true;
     }
 

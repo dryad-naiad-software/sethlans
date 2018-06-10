@@ -62,6 +62,14 @@ export class BlenderVersionsComponent implements OnInit {
     this.modalService.open(content, options);
   }
 
+  setActive(version) {
+    this.http.get('/api/management/set_primary_blender_version/?version=' + version).subscribe((response: boolean) => {
+      if (response) {
+        window.location.href = "/admin/blender_version_admin/";
+      }
+    })
+  }
+
   addVersion() {
     let versionProperty = new HttpParams().set('version', this.selectedVersion.toString());
     this.http.post('/api/management/add_blender_version', versionProperty, {
