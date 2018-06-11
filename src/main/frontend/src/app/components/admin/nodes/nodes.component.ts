@@ -19,12 +19,12 @@
 
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
 import {NodeListService} from "../../../services/node_list.service";
 import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
 import Utils from "../../../utils/utils";
 import {NodeInfo} from "../../../models/node_info.model";
 import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
+import {timer} from "rxjs/internal/observable/timer";
 
 @Component({
   selector: 'app-nodes',
@@ -48,8 +48,8 @@ export class NodesComponent implements OnInit {
 
   ngOnInit() {
     this.getInfo();
-    let timer = Observable.timer(5000, 5000);
-    timer.subscribe(() => this.getInfo());
+    let countDown = timer(5000, 5000);
+    countDown.subscribe(() => this.getInfo());
 
   }
 

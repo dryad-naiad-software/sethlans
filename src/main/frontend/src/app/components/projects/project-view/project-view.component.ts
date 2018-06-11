@@ -21,8 +21,8 @@ import {Component, OnInit} from '@angular/core';
 import {Project} from "../../../models/project.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
 import {ProjectStatus} from "../../../enums/project_status.enum";
+import {timer} from "rxjs/internal/observable/timer";
 
 @Component({
   selector: 'app-project-view',
@@ -60,8 +60,8 @@ export class ProjectViewComponent implements OnInit {
       this.getTotalQueueSize();
       this.getRemainingQueueSize();
     });
-    let timer = Observable.timer(5000, 5000);
-    timer.subscribe(() => {
+    let countDown = timer(5000, 5000);
+    countDown.subscribe(() => {
       this.currentProgressCheck();
       this.currentStatusCheck();
       this.getThumbnailStatus();

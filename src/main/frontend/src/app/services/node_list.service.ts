@@ -20,7 +20,7 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {NodeInfo} from "../models/node_info.model";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/internal/Observable";
 
 @Injectable()
 export class NodeListService {

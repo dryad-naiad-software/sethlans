@@ -21,7 +21,7 @@ import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {UserInfo} from "../../models/userinfo.model";
 import {Router} from "@angular/router";
-import {Observable} from "rxjs/Observable";
+import {timer} from "rxjs/internal/observable/timer";
 
 
 @Component({
@@ -50,8 +50,8 @@ export class UserSettingsComponent implements OnInit {
 
   ngOnInit() {
     this.getUserInfo();
-    let timer = Observable.timer(5000, 2000);
-    timer.subscribe(() => {
+    let countDown = timer(5000, 2000);
+    countDown.subscribe(() => {
       this.getUserInfo()
     });
   }

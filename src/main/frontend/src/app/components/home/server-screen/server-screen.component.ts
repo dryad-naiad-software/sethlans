@@ -21,10 +21,10 @@ import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {ProjectListService} from "../../../services/project_list.service";
 import {HttpClient} from "@angular/common/http";
 import {Mode} from "../../../enums/mode.enum";
-import {Observable} from "rxjs/Observable";
 import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
 import {ProjectStatus} from "../../../enums/project_status.enum";
 import Utils from "../../../utils/utils";
+import {timer} from "rxjs/internal/observable/timer";
 
 @Component({
   selector: 'app-server-screen',
@@ -62,8 +62,8 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.getInfo();
     this.projectLoad();
-    let timer = Observable.timer(5000, 5000);
-    timer.subscribe(() => {
+    let countDown = timer(5000, 5000);
+    countDown.subscribe(() => {
       this.getInfo();
     });
   }

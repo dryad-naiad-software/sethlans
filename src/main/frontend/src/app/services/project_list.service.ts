@@ -19,7 +19,7 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Project} from "../models/project.model";
-import {Observable} from "rxjs/Observable";
+import {Observable} from "rxjs/internal/Observable";
 
 @Injectable()
 export class ProjectListService {

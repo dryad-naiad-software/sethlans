@@ -18,8 +18,8 @@
  */
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
 import {ServerInfo} from "../models/server_info.model";
+import {Observable} from "rxjs/internal/Observable";
 
 @Injectable()
 export class ServerListService {
