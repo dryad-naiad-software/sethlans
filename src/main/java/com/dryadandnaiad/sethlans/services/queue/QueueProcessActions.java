@@ -64,11 +64,8 @@ class QueueProcessActions {
         int frameNumber = renderQueueItem.getBlenderFramePart().getFrameNumber();
         BlenderProject blenderProject =
                 blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
-        blenderProject.setRemainingQueueSize(blenderProject.getRemainingQueueSize() - 1);
-        if (blenderProject.getRemainingQueueSize() < 0) {
-            blenderProject.setRemainingQueueSize(0);
-        }
         int remainingPartsForFrame = blenderProject.getPartsPerFrame();
+        int remainingTotalQueue = 0;
 
 
         File storedDir = new File(renderQueueItem.getBlenderFramePart().getStoredDir());
@@ -81,6 +78,9 @@ class QueueProcessActions {
                 if (blenderFramePart.isProcessed()) {
                     remainingPartsForFrame--;
                 }
+            }
+            if (!blenderFramePart.isProcessed()) {
+                remainingTotalQueue++;
             }
         }
         storedDir.mkdirs();
@@ -106,7 +106,6 @@ class QueueProcessActions {
         LOG.debug("Processing complete.");
         int projectTotalQueue =
                 blenderProject.getTotalQueueSize();
-        int remainingTotalQueue = blenderProject.getRemainingQueueSize();
 
         LOG.debug("Remaining parts per frame for Frame " + frameNumber + ": " + remainingPartsForFrame);
         LOG.debug("Remaining items in project Queue " + blenderProject.getRemainingQueueSize());
@@ -127,6 +126,7 @@ class QueueProcessActions {
             processFrameItem.setFrameNumber(frameNumber);
             processFrameDatabaseService.saveOrUpdate(processFrameItem);
         }
+        blenderProject.setRemainingQueueSize(remainingTotalQueue);
         blenderProject.setTotalProjectTime(blenderProject.getProjectEnd() - blenderProject.getProjectStart());
         blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
         blenderProjectDatabaseService.saveOrUpdate(blenderProject);
