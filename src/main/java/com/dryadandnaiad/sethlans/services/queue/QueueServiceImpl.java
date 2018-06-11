@@ -296,7 +296,7 @@ public class QueueServiceImpl implements QueueService {
                 }
                 int queueIndex = blenderProject.getQueueIndex();
                 int finalIndex = blenderProject.getTotalQueueSize() - 1;
-                if (queueIndex < finalIndex) {
+                if (queueIndex <= finalIndex) {
                     addRenderQueueItem(blenderProject, throttle, queueIndex, blenderFramePartList);
                 }
             }
@@ -343,6 +343,8 @@ public class QueueServiceImpl implements QueueService {
             renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
             if (index != finalIndex) {
                 index++;
+            } else {
+                LOG.debug("Final index: " + finalIndex);
             }
         }
         blenderProject = blenderProjectDatabaseService.getById(blenderProject.getId());
