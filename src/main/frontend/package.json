@@ -36,6 +36,7 @@
     "jquery": "^3.3.1",
     "ngx-webstorage": "^2.0.1",
     "popper.js": "^1.14.3",
+    "primeicons": "^1.0.0-beta.6",
     "primeng": "^6.0.0-beta.1",
     "react": "^16.3.2",
     "reflect-metadata": "^0.1.12",

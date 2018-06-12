@@ -41,6 +41,7 @@ export class ProjectViewComponent implements OnInit {
   totalRenderTime: string;
   projectTime: string;
   totalQueue: number;
+  nodesReady: boolean = false;
   remainingQueue: number;
 
 
@@ -59,6 +60,7 @@ export class ProjectViewComponent implements OnInit {
       this.getProjectTime();
       this.getTotalQueueSize();
       this.getRemainingQueueSize();
+      this.checkNodeState();
     });
     let countDown = timer(5000, 5000);
     countDown.subscribe(() => {
@@ -69,6 +71,7 @@ export class ProjectViewComponent implements OnInit {
       this.getProjectTime();
       this.getTotalQueueSize();
       this.getRemainingQueueSize();
+      this.checkNodeState();
     });
 
   }
@@ -78,6 +81,14 @@ export class ProjectViewComponent implements OnInit {
       this.projectDetails = projectDetails;
       this.projectLoaded = true;
       console.log(projectDetails);
+    });
+  }
+
+  checkNodeState() {
+    this.http.get('/api/project_ui/nodes_ready').subscribe((success: boolean) => {
+      if (success == true) {
+        this.nodesReady = true;
+      }
     });
   }
 

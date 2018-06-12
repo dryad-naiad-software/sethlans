@@ -24,6 +24,7 @@
               "src/styles.scss",
               "src/styles.css",
               "src/theme.scss",
+              "node_modules/primeicons/primeicons.css",
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/primeng/resources/themes/bootstrap/theme.css"
             ],
@@ -83,9 +84,7 @@
             "styles": [
               "src/styles.scss",
               "src/styles.css",
-              "src/theme.scss",
-              "node_modules/primeng/resources/primeng.min.css",
-              "node_modules/primeng/resources/themes/bootstrap/theme.css"
+              "src/theme.scss"
             ],
             "assets": [
               "src/assets",

@@ -120,7 +120,7 @@
           </tr>
           </tbody>
         </table>
-        <button id="startButton" *ngIf="projectStatus.valueOf().toString() == 'Added'"
+        <button [disabled]="!nodesReady" id="startButton" *ngIf="projectStatus.valueOf().toString() == 'Added'"
                 class="btn btn-outline-primary mr-auto float-left" (click)="startProject(projectDetails.id)">Start
           Project
         </button>

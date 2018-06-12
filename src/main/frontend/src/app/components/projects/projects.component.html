@@ -23,7 +23,7 @@
       <div class="card-header">
         <h4>
           <span style="font-family: 'Fjalla One', sans-serif; ">Projects</span>
-          <button [disabled]="!nodesReady" class="btn btn-outline-dark float-right"
+          <button class="btn btn-outline-dark float-right"
                   (click)="addProject()">
             <span class="fa fa-plus"></span> <span>New Project</span>
           </button>
@@ -106,7 +106,7 @@
             <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
             <mat-cell *matCellDef="let project">
               <div class="btn-group-vertical">
-                <button [attr.id]="'start'+ project.id"
+                <button [disabled]="!nodesReady" [attr.id]="'start'+ project.id"
                         *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf()"
                         class="btn btn-outline-primary btn-sm btn-block" type="button"
                         (click)="startProject(project.id)">
