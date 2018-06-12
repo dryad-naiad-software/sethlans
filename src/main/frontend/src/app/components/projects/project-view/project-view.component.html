@@ -60,7 +60,7 @@
             <td>Frame Step</td>
             <td>{{projectDetails.stepFrame}}</td>
           </tr>
-          <tr>
+          <tr *ngIf="projectDetails.blenderEngine.toString().valueOf() != 'BLENDER_RENDER'">
             <td>Render On</td>
             <td>{{projectDetails.renderOn}}</td>
           </tr>
@@ -68,7 +68,7 @@
             <td>Rendering Engine</td>
             <td>{{projectDetails.blenderEngine}}</td>
           </tr>
-          <tr>
+          <tr *ngIf="projectDetails.blenderEngine.toString().valueOf() != 'BLENDER_RENDER'">
             <td>Samples</td>
             <td>{{projectDetails.samples}}</td>
           </tr>

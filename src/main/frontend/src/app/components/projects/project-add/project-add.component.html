@@ -132,7 +132,7 @@
         </div>
         <div *ngIf="projectLoaded == true && status == 1">
           <form #projectDetailsForm2="ngForm" class="editForm">
-            <div class="form-group">
+            <div *ngIf="projectDetails.blenderEngine.toString().valueOf() != 'BLENDER_RENDER'" class="form-group">
               <label for="renderOn">Render On</label>
               <select class="form-control" id="renderOn" name="renderOn" [(ngModel)]="projectDetails.renderOn">
                 <option *ngFor="let computeMethod of computeMethods | keys">{{computeMethod.value}}</option>
@@ -145,9 +145,9 @@
                 <option *ngFor="let engine of engines | keys">{{engine.value}}</option>
               </select>
             </div>
-            <div class="form-group">
+            <div *ngIf="projectDetails.blenderEngine.toString().valueOf() != 'BLENDER_RENDER'" class="form-group">
               <label for="samples">Samples</label>
-              <input [disabled]="projectDetails.blenderEngine.toString().valueOf() == 'BLENDER_RENDER'"
+              <input
                      type="number"
                      id="samples"
                      class="form-control"
@@ -256,7 +256,7 @@
               <td>Frame Rate</td>
               <td>{{projectDetails.frameRate}}</td>
             </tr>
-            <tr>
+            <tr *ngIf="projectDetails.blenderEngine.toString().valueOf() != 'BLENDER_RENDER'">
               <td>Render On</td>
               <td>{{projectDetails.renderOn}}</td>
             </tr>
@@ -264,7 +264,7 @@
               <td>Rendering Engine</td>
               <td>{{projectDetails.blenderEngine}}</td>
             </tr>
-            <tr>
+            <tr *ngIf="projectDetails.blenderEngine.toString().valueOf() != 'BLENDER_RENDER'">
               <td>Samples</td>
               <td>{{projectDetails.samples}}</td>
             </tr>

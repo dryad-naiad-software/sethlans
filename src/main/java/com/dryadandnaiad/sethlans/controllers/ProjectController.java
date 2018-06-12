@@ -21,9 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.info.ProjectInfo;
-import com.dryadandnaiad.sethlans.enums.ProjectStatus;
-import com.dryadandnaiad.sethlans.enums.ProjectType;
-import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
+import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderProjectService;
@@ -409,6 +407,10 @@ public class ProjectController {
                 projectForm.setOutputFormat(RenderOutputFormat.PNG);
                 projectForm.setEndFrame(projectForm.getStartFrame());
                 projectForm.setStepFrame(1);
+            }
+            if (projectForm.getBlenderEngine() == BlenderEngine.BLENDER_RENDER) {
+                projectForm.setRenderOn(ComputeType.CPU);
+                projectForm.setSamples(0);
             }
             projectForm.setFrameRate(checkFrameRate(projectForm.getFrameRate()));
             projectForm.setUsername(auth.getName());
