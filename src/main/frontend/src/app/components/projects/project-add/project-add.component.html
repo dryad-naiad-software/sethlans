@@ -132,16 +132,10 @@
         </div>
         <div *ngIf="projectLoaded == true && status == 1">
           <form #projectDetailsForm2="ngForm" class="editForm">
-            <div *ngIf="projectDetails.blenderEngine.toString().valueOf() == 'CYCLES'" class="form-group">
+            <div class="form-group">
               <label for="renderOn">Render On</label>
               <select class="form-control" id="renderOn" name="renderOn" [(ngModel)]="projectDetails.renderOn">
                 <option *ngFor="let computeMethod of computeMethods | keys">{{computeMethod.value}}</option>
-              </select>
-            </div>
-            <div *ngIf="projectDetails.blenderEngine.toString().valueOf() == 'BLENDER_RENDER'" class="form-group">
-              <label for="renderOn">Render On</label>
-              <select class="form-control" id="renderOnBR" name="renderOnBR" [(ngModel)]="projectDetails.renderOn">
-                <option selected>CPU</option>
               </select>
             </div>
             <div class="form-group">
@@ -186,7 +180,7 @@
                   name="resPercentage"
                   min="1"
                   step="1"
-                  thumbLabel="true"
+                  thumb-label="true"
                   max="100"
                   [(ngModel)]="projectDetails.resPercentage"></mat-slider>
               </div>
@@ -207,7 +201,7 @@
                             name="partsPerFrame"
                             min="2"
                             step="2"
-                            thumbLabel="true"
+                            thumb-label="true"
                             max="24"
                             [(ngModel)]="projectDetails.partsPerFrame"></mat-slider>
               </div>

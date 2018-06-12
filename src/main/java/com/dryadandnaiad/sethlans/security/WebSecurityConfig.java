@@ -132,11 +132,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         if (!firstTime) {
             web.ignoring()
                     .antMatchers(HttpMethod.OPTIONS, "/**")
-                    .antMatchers("/main.*.js")
-                    .antMatchers("/polyfills.*.js")
-                    .antMatchers("/runtime.*.js")
-                    .antMatchers("/scripts.*.js")
-                    .antMatchers("/styles.*.css")
+                    .antMatchers("/*.js")
+                    .antMatchers("/*.css")
                     .antMatchers("/color.*.png")
                     .antMatchers("/*.woff*")
                     .antMatchers("/*.ttf")

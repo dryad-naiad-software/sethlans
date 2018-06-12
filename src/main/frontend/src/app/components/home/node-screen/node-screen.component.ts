@@ -21,7 +21,7 @@ import {Component, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {ComputeMethod} from "../../../enums/compute.method.enum";
 import {GPU} from "../../../models/gpu.model";
-import {timer} from "rxjs/internal/observable/timer";
+import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: 'app-node-screen',
@@ -47,8 +47,8 @@ export class NodeScreenComponent implements OnInit {
 
   ngOnInit() {
     this.getInfo();
-    let countDown = timer(5000, 5000);
-    countDown.subscribe(() => {
+    let timer = Observable.timer(5000, 5000);
+    timer.subscribe(() => {
       this.getInfo()
     });
   }

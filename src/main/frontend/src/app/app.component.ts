@@ -20,6 +20,7 @@
 import {Component, Injectable, OnInit} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {AuthService} from "./services/auth.service";
+import 'rxjs/add/operator/finally';
 import {Router} from "@angular/router";
 
 @Component({
@@ -39,10 +40,10 @@ export class AppComponent implements OnInit {
   }
 
   logout() {
-    this.http.post('logout', {}).subscribe(() => {
+    this.http.post('logout', {}).finally(() => {
       this.auth.authenticated = false;
       this.router.navigateByUrl('/login');
-    });
+    }).subscribe();
   }
 
   ngOnInit() {

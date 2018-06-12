@@ -21,8 +21,8 @@ import {Component, OnInit} from '@angular/core';
 import {Project} from "../../../models/project.model";
 import {ActivatedRoute, Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
+import {Observable} from "rxjs/Observable";
 import {ProjectStatus} from "../../../enums/project_status.enum";
-import {timer} from "rxjs/internal/observable/timer";
 
 @Component({
   selector: 'app-project-view',
@@ -41,8 +41,9 @@ export class ProjectViewComponent implements OnInit {
   totalRenderTime: string;
   projectTime: string;
   totalQueue: number;
-  nodesReady: boolean = false;
   remainingQueue: number;
+  nodesReady: boolean = false;
+
 
 
 
@@ -60,10 +61,10 @@ export class ProjectViewComponent implements OnInit {
       this.getProjectTime();
       this.getTotalQueueSize();
       this.getRemainingQueueSize();
-      this.checkNodeState();
+      this.getNodeStatus();
     });
-    let countDown = timer(5000, 5000);
-    countDown.subscribe(() => {
+    let timer = Observable.timer(5000, 5000);
+    timer.subscribe(() => {
       this.currentProgressCheck();
       this.currentStatusCheck();
       this.getThumbnailStatus();
@@ -71,7 +72,7 @@ export class ProjectViewComponent implements OnInit {
       this.getProjectTime();
       this.getTotalQueueSize();
       this.getRemainingQueueSize();
-      this.checkNodeState();
+      this.getNodeStatus();
     });
 
   }
@@ -81,14 +82,6 @@ export class ProjectViewComponent implements OnInit {
       this.projectDetails = projectDetails;
       this.projectLoaded = true;
       console.log(projectDetails);
-    });
-  }
-
-  checkNodeState() {
-    this.http.get('/api/project_ui/nodes_ready').subscribe((success: boolean) => {
-      if (success == true) {
-        this.nodesReady = true;
-      }
     });
   }
 
@@ -159,6 +152,14 @@ export class ProjectViewComponent implements OnInit {
     this.http.get('/api/project_ui/project_duration/' + this.id + '/', {responseType: 'text'}).subscribe((duration: string) => {
       this.projectTime = duration;
     })
+  }
+
+  getNodeStatus() {
+    this.http.get('/api/project_ui/nodes_ready').subscribe((success: boolean) => {
+      if (success == true) {
+        this.nodesReady = true;
+      }
+    });
   }
 
 }

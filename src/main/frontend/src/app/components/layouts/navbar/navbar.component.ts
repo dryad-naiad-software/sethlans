@@ -23,7 +23,7 @@ import {Role} from "../../../enums/role.enum";
 import {UserInfo} from "../../../models/userinfo.model";
 import {Mode} from "../../../enums/mode.enum";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {timer} from "rxjs/internal/observable/timer";
+import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: 'app-navbar',
@@ -52,8 +52,8 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit() {
     this.checkNotifications();
-    let countDown = timer(5000, 2000);
-    countDown.subscribe(() => this.checkNotifications());
+    let timer = Observable.timer(5000, 2000);
+    timer.subscribe(() => this.checkNotifications());
     this.getVersion();
     this.getMode();
     this.getUserName()

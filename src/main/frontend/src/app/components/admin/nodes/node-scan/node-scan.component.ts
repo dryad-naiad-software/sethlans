@@ -20,9 +20,9 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
+import {Observable} from "rxjs/Observable";
 import {NodeInfo} from "../../../../models/node_info.model";
 import {SelectionModel} from "@angular/cdk/collections";
-import {Observable} from "rxjs/internal/Observable";
 
 @Component({
   selector: 'app-node-scan',
