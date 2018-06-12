@@ -18,11 +18,11 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {Project} from "../../../models/project.model";
-import {ActivatedRoute, Router} from "@angular/router";
-import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
-import {ProjectStatus} from "../../../enums/project_status.enum";
+import {Project} from '../../../models/project.model';
+import {ActivatedRoute, Router} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs/Observable';
+import {ProjectStatus} from '../../../enums/project_status.enum';
 
 @Component({
   selector: 'app-project-view',
@@ -42,6 +42,8 @@ export class ProjectViewComponent implements OnInit {
   projectTime: string;
   totalQueue: number;
   remainingQueue: number;
+  nodesReady: boolean = false;
+
 
 
 
@@ -59,6 +61,7 @@ export class ProjectViewComponent implements OnInit {
       this.getProjectTime();
       this.getTotalQueueSize();
       this.getRemainingQueueSize();
+      this.getNodeStatus();
     });
     let timer = Observable.timer(5000, 5000);
     timer.subscribe(() => {
@@ -69,6 +72,7 @@ export class ProjectViewComponent implements OnInit {
       this.getProjectTime();
       this.getTotalQueueSize();
       this.getRemainingQueueSize();
+      this.getNodeStatus();
     });
 
   }
@@ -78,6 +82,14 @@ export class ProjectViewComponent implements OnInit {
       this.projectDetails = projectDetails;
       this.projectLoaded = true;
       console.log(projectDetails);
+    });
+  }
+
+  getNodeStatus() {
+    this.http.get('/api/project_ui/nodes_ready').subscribe((success: boolean) => {
+      if (success == true) {
+        this.nodesReady = true;
+      }
     });
   }
 
