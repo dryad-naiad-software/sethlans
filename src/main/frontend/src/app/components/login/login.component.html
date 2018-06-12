@@ -1,0 +1,56 @@
+<!--
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
+<div class="row pb-5">
+  <div class="col-xl-4 col-lg-6 col-md-8 m-auto">
+    <div class="card">
+      <div class="card-body bg-dark">
+        <h1
+          class="text-center pb-4 pt-4"
+          style="font-family: 'Fjalla One', sans-serif;">
+          <img
+            [src]="logo"
+            height="48"
+            class="d-inline-block align-top"
+            alt="logo">
+          <span class="text-white">Sethlans</span>
+        </h1>
+        <form (submit)="loginSubmit()" class="pb-4" #loginForm="ngForm">
+          <div class="alert alert-danger text-center" *ngIf="loginError">Invalid username and/or password.</div>
+          <div class="form-group">
+            <label for="username" class="text-white">Username</label>
+            <input type="text" name="username" id="username" [(ngModel)]="login.username" class="form-control" required>
+          </div>
+          <div class="form-group pb-2">
+            <label for="password" class="text-white">Password</label>
+            <input type="password" name="password" id="password" [(ngModel)]="login.password" class="form-control"
+                   (keydown)="loginUser($event, loginForm)"
+                   required>
+          </div>
+          <input [disabled]="!loginForm.valid" type="submit" value="Login" class="btn btn-outline-light btn-block">
+          <input type="hidden"
+                 name="${_csrf.parameterName}"
+                 value="${_csrf.token}"/>
+        </form>
+        <button class="btn btn-outline-light btn-block" (click)="registerUser()">Register New User</button>
+
+      </div>
+    </div>
+  </div>
+</div>

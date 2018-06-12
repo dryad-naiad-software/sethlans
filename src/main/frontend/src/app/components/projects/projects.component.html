@@ -1,0 +1,204 @@
+<!--
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
+<div class="row pb-5">
+  <div class="col-md-12 m-auto">
+    <div class="card">
+      <div class="card-header">
+        <h4>
+          <span style="font-family: 'Fjalla One', sans-serif; ">Projects</span>
+          <button [disabled]="!nodesReady" class="btn btn-outline-dark float-right"
+                  (click)="addProject()">
+            <span class="fa fa-plus"></span> <span>New Project</span>
+          </button>
+        </h4>
+      </div>
+      <div class="card-body">
+        <mat-table #projectTable [dataSource]="dataSource" matSort>
+          <ng-container matColumnDef="projectName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Name</mat-header-cell>
+            <mat-cell *matCellDef="let project"><a [href]="'/projects/view/'+ project.id ">{{project.projectName}}</a>
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="blender">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Blender</mat-header-cell>
+            <mat-cell *matCellDef="let project">
+              {{project.selectedBlenderversion}}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="type">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Type</mat-header-cell>
+            <mat-cell *matCellDef="let project">
+              {{project.projectType}}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="renderOn">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Render On</mat-header-cell>
+            <mat-cell *matCellDef="let project">
+              {{project.renderOn}}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="resolution">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Resolution</mat-header-cell>
+            <mat-cell *matCellDef="let project">
+              {{project.resolutionX}} x {{project.resolutionY}}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="format">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Format</mat-header-cell>
+            <mat-cell *matCellDef="let project">
+              {{project.outputFormat}}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="projectStatus">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Status</mat-header-cell>
+            <mat-cell *matCellDef="let project">
+              {{project.projectStatus}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="progress">
+            <mat-header-cell *matHeaderCellDef>Render Progress</mat-header-cell>
+            <mat-cell *matCellDef="let project" class="px-2">
+              <ngb-progressbar type="success"
+                               [value]="project.currentPercentage" placement="right"
+                               ngbTooltip="{{project.currentPercentage}}%">
+                <span *ngIf="project.currentPercentage == 100">Complete</span>
+              </ngb-progressbar>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="preview">
+            <mat-header-cell *matHeaderCellDef>Preview</mat-header-cell>
+            <mat-cell *matCellDef="let project" class="px-2">
+              <span *ngIf="project.thumbnailPresent == false"><img [src]="placeholder"
+                                                                   height="100"
+                                                                   class="d-inline-block align-top"
+                                                                   alt="placeholder">
+              </span>
+              <span *ngIf="project.thumbnailPresent == true">
+                <img [src]="project.thumbnailURL" height="100" class="d-inline-block align-top" alt="thumbnail">
+              </span>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+            <mat-cell *matCellDef="let project">
+              <div class="btn-group-vertical">
+                <button [attr.id]="'start'+ project.id"
+                        *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf()"
+                        class="btn btn-outline-primary btn-sm btn-block" type="button"
+                        (click)="startProject(project.id)">
+                  Start
+                </button>
+                <button [attr.id]="'resume'+ project.id"
+                        *ngIf="project.projectStatus.valueOf().toString() == 'Paused'.valueOf()"
+                        class="btn btn-outline-primary btn-sm btn-block" type="button"
+                        (click)="resumeProject(project.id)">
+                  Resume
+                </button>
+                <button [attr.id]="'pause'+ project.id"
+                        *ngIf="project.projectStatus.valueOf().toString() != 'Finished'.valueOf() &&
+                        project.projectStatus.valueOf().toString() != 'Added'.valueOf()  && project.projectStatus.valueOf().toString() != 'Paused'.valueOf()"
+                        class="btn btn-outline-info btn-sm" type="button" (click)="pauseProject(project.id)">
+                  Pause
+                </button>
+                <button [attr.id]="'download'+ project.id"
+                        *ngIf="project.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
+                        class="btn btn-outline-success btn-sm" type="button" (click)="downloadProject(project.id)">
+                  Download
+                </button>
+
+                <button [attr.id]="'details'+ project.id" class="btn btn-outline-dark btn-sm" type="button"
+                        style="width: 90px"
+                        (click)="viewProject(project.id)">Details
+                </button>
+                <button [attr.id]="'edit'+ project.id"
+                        *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf()"
+                        class="btn btn-outline-info btn-sm" type="button" (click)="editProject(project.id)">Edit
+                </button>
+                <button [attr.id]="'delete'+ project.id"
+                        *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf() ||  project.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
+                        class="btn btn-outline-danger btn-sm" type="button"
+                        (click)="confirm(project, deleteConfirmation)">
+                  Delete
+                </button>
+                <button [attr.id]="'stop'+ project.id"
+                        *ngIf="project.projectStatus.valueOf().toString() == 'Started'.valueOf() ||
+                    project.projectStatus.valueOf().toString() == 'Rendering'.valueOf() ||
+                    project.projectStatus.valueOf().toString() == 'Pending'.valueOf() ||
+                    project.projectStatus.valueOf().toString() == 'Paused'.valueOf() ||
+                    project.projectStatus.valueOf().toString() == 'Processing'.valueOf()"
+                        class="btn btn-outline-danger btn-sm" type="button"
+                        (click)="confirm(project, stopConfirmation)">
+                  Stop
+                </button>
+              </div>
+            </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #paginator [pageSize]="5"></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Delete Project Confirmation-->
+<ng-template #deleteConfirmation let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Delete Project</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete <strong>{{selectedProject.projectName}}</strong>?</p>
+    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c('Close click')">No
+    </button>
+    <button type="button" class="btn btn-outline-danger ml-auto float-right"
+            (click)="c('Close click'); deleteProject(selectedProject.id)">Yes
+    </button>
+  </div>
+
+</ng-template>
+
+<!--Delete Project Confirmation-->
+<ng-template #stopConfirmation let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Stop Project</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to stop <strong>{{selectedProject.projectName}}</strong>?</p>
+    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c('Close click')">No
+    </button>
+    <button type="button" class="btn btn-outline-danger ml-auto float-right"
+            (click)="c('Close click'); stopProject(selectedProject.id)">Yes
+    </button>
+  </div>
+
+</ng-template>

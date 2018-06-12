@@ -1,0 +1,100 @@
+<!--
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
+<div class="row pb-5">
+  <div class="col-md-8 m-auto">
+    <div class="card">
+      <div class="card-header">
+        <h4>
+          <span style="font-family: 'Fjalla One', sans-serif; ">Servers</span>
+        </h4>
+      </div>
+
+      <div class="card-body">
+        <mat-form-field>
+          <input matInput id="table-search" (keyup)="applyFilter($event.target.value)" placeholder="Search">
+        </mat-form-field>
+        <mat-table #serverTable [dataSource]="dataSource" matSort>
+          <ng-container matColumnDef="serverStatus">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Server Status</mat-header-cell>
+            <mat-cell *matCellDef="let server"><span *ngIf="server.acknowledged == false">Pending Acknowledgement</span>
+              <span *ngIf="server.acknowledged == true && server.pendingAcknowledgementResponse == true">Pending
+                Response
+              </span>
+              <span *ngIf="server.acknowledged == true && server.pendingAcknowledgementResponse == false">Active</span>
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="hostname">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Hostname</mat-header-cell>
+            <mat-cell *matCellDef="let server">{{server.hostname}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="ipAddress">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>IP Address</mat-header-cell>
+            <mat-cell *matCellDef="let server">{{server.ipAddress}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="port">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Port</mat-header-cell>
+            <mat-cell *matCellDef="let server">{{server.networkPort}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+            <mat-cell *matCellDef="let server">
+              <div class="btn-group-vertical">
+                <button [disabled]="ackClicked" *ngIf="server.acknowledged == false"
+                        class="btn btn-outline-primary btn-sm" type="button"
+                        (click)="acknowledgeServer(server.id)">
+                  Acknowledge
+                </button>
+                <button class="btn btn-outline-danger btn-sm" type="button"
+                        (click)="confirm(server, deleteConfirmation)">Delete
+                </button>
+              </div>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[10,25,50]"></mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Delete Server Confirmation-->
+<ng-template #deleteConfirmation let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Delete Server</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete <strong>{{selectedServer.hostname}}</strong>?</p>
+    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c('Close click')">No
+    </button>
+    <button type="button" class="btn btn-outline-danger ml-auto float-right"
+            (click)="c('Close click'); deleteServer(selectedServer.id)">Yes
+    </button>
+  </div>
+
+</ng-template>

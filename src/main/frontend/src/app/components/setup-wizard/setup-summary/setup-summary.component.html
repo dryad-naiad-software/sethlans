@@ -1,0 +1,106 @@
+<!--
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+<div *ngIf="finished" class="alert alert-success">
+  <h5 class="text-center">Processing Setup &nbsp; &nbsp;<span
+    class="fa fa-circle-o-notch fa-spin"></span></h5>
+</div>
+<table class="table table-sm">
+  <thead>
+  <tr>
+    <th>Setting</th>
+    <th>Value</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td>Mode</td>
+    <td>{{setupFormData.mode}}</td>
+  </tr>
+  <tr>
+    <td>Administrative User</td>
+    <td>{{setupFormData.user.username}}</td>
+  </tr>
+  <tr>
+    <td>Administrative User Email</td>
+    <td>{{setupFormData.user.email}}</td>
+  </tr>
+  <tr>
+    <td>IP Address</td>
+    <td>{{setupFormData.ipAddress}}</td>
+  </tr>
+  <tr>
+    <td>HTTP Port</td>
+    <td>{{setupFormData.port}}</td>
+  </tr>
+  <tr>
+    <td>Sethlans Home Directory</td>
+    <td>{{setupFormData.rootDirectory}}</td>
+  </tr>
+  <tr *ngIf="setupFormData.mode === mode.SERVER || setupFormData.mode === mode.DUAL">
+    <td>Default Blender Version</td>
+    <td>{{setupFormData.server.blenderVersion}}</td>
+  </tr>
+  <tr *ngIf="setupFormData.mode === mode.NODE || setupFormData.mode === mode.DUAL">
+    <td>Compute Method</td>
+    <td *ngIf="setupFormData.node.computeMethod.toString() != 'CPU_GPU'">{{setupFormData.node.computeMethod}}</td>
+    <td *ngIf="setupFormData.node.computeMethod.toString() == 'CPU_GPU'">CPU & GPU</td>
+  </tr>
+  <tr
+    *ngIf="setupFormData.mode === mode.NODE && setupFormData.node.computeMethod.toString() !== 'GPU' || setupFormData.mode === mode.DUAL && setupFormData.node.computeMethod.toString() !== 'GPU' ">
+    <td>Rendering Cores</td>
+    <td>{{setupFormData.node.cores}}</td>
+  </tr>
+  <tr
+    *ngIf="setupFormData.mode === mode.NODE && setupFormData.node.computeMethod.toString() !== 'GPU' || setupFormData.mode === mode.DUAL && setupFormData.node.computeMethod.toString() !== 'GPU' ">
+    <td>CPU Render Tile Size:</td>
+    <td>{{setupFormData.node.tileSizeCPU}}</td>
+  </tr>
+  <tr
+    *ngIf="setupFormData.mode === mode.NODE && setupFormData.node.computeMethod.toString() !== 'CPU' || setupFormData.mode === mode.DUAL && setupFormData.node.computeMethod.toString() !== 'CPU' ">
+    <td>Selected GPUs</td>
+    <td>
+      <ul class="list-unstyled">
+        <li *ngFor="let gpu of setupFormData.node.selectedGPUs">{{gpu.model}}</li>
+      </ul>
+    </td>
+  </tr>
+  <tr
+    *ngIf="setupFormData.mode === mode.NODE
+    && setupFormData.node.computeMethod.toString() !== 'CPU'
+    && setupFormData.node.selectedGPUs.length > 1
+    || setupFormData.mode === mode.DUAL
+    && setupFormData.node.computeMethod.toString() !== 'CPU'
+    && setupFormData.node.selectedGPUs.length > 1">
+    <td>Combined GPU Rendering:</td>
+    <td>{{setupFormData.node.combined}}</td>
+  </tr>
+  <tr
+    *ngIf="setupFormData.mode === mode.NODE && setupFormData.node.computeMethod.toString() !== 'CPU' || setupFormData.mode === mode.DUAL && setupFormData.node.computeMethod.toString() !== 'CPU' ">
+    <td>GPU Render Tile Size:</td>
+    <td>{{setupFormData.node.tileSizeGPU}}</td>
+  </tr>
+
+
+  </tbody>
+</table>
+<nav>
+  <button class="btn btn-outline-secondary" (click)="previousStep()">Previous
+  </button>
+  <button [disabled]="finished" class="btn btn-outline-primary float-right" (click)="finish()">Finish</button>
+</nav>
