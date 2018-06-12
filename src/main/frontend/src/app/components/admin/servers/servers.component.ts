@@ -16,8 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
-import {Component, OnInit, ViewChild} from '@angular/core';
+port
+{
+  Component, OnInit, ViewChild
+}
+from
+'@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {Observable} from "rxjs/Observable";

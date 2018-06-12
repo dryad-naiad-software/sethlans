@@ -16,8 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-
-import {Component, OnInit} from '@angular/core';
+port
+{
+  Component, OnInit
+}
+from
+'@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {ComputeMethod} from "../../../enums/compute.method.enum";
 import {GPU} from "../../../models/gpu.model";
