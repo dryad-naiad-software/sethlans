@@ -18,14 +18,14 @@
  */
 
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Router} from '@angular/router';
-import {Observable} from 'rxjs/Observable';
-import 'rxjs/add/observable/timer';
-import {ServerListService} from '../../../services/server_list.service';
-import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
-import {ServerInfo} from '../../../models/server_info.model';
-import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
+import {HttpClient} from "@angular/common/http";
+import {Router} from "@angular/router";
+import {Observable} from "rxjs/Observable";
+import "rxjs/add/observable/timer";
+import {ServerListService} from "../../../services/server_list.service";
+import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
+import {ServerInfo} from "../../../models/server_info.model";
+import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-servers',
@@ -58,7 +58,7 @@ export class ServersComponent implements OnInit {
         this.loadTable();
       }
       this.serverSize = value;
-    });
+    })
   }
 
   applyFilter(filterValue: string) {
@@ -70,7 +70,7 @@ export class ServersComponent implements OnInit {
   confirm(server, content) {
     this.selectedServer = server;
     let options: NgbModalOptions = {
-      backdrop: 'static'
+      backdrop: "static"
     };
     this.modalService.open(content, options);
   }
@@ -85,17 +85,17 @@ export class ServersComponent implements OnInit {
   }
 
   acknowledgeServer(id) {
-    this.http.get('/api/setup/server_acknowledge/' + id + '/').subscribe(() => {
-      this.ackClicked = true;
+    this.http.get('/api/setup/server_acknowledge/' + id + "/").subscribe(() => {
+        this.ackClicked = true;
       setTimeout(() => {
-        window.location.href = '/admin/servers';
+        window.location.href = "/admin/servers";
       }, 1000);
     });
   }
 
 
   deleteServer(id) {
-    this.http.get('/api/setup/server_delete/' + id + '/').subscribe(() => {
+    this.http.get('/api/setup/server_delete/' + id + "/").subscribe(() => {
       this.loadTable();
     });
   }

@@ -18,11 +18,11 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {User} from '../../../../models/user.model';
-import {Role} from '../../../../enums/role.enum';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Router} from '@angular/router';
-import {UserInfo} from '../../../../models/userinfo.model';
+import {User} from "../../../../models/user.model";
+import {Role} from "../../../../enums/role.enum";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Router} from "@angular/router";
+import {UserInfo} from "../../../../models/userinfo.model";
 
 @Component({
   selector: 'app-user-add',
@@ -65,7 +65,7 @@ export class UserAddComponent implements OnInit {
             this.isSuperAdministrator = true;
             this.isAdministrator = false;
           }
-          console.log(this.isAdministrator);
+          console.log(this.isAdministrator)
         });
       });
   }
@@ -90,7 +90,7 @@ export class UserAddComponent implements OnInit {
   }
 
   submitUser(event, form) {
-    if (event.key === 'Enter' && form.valid) {
+    if (event.key === "Enter" && form.valid) {
       this.onSubmit();
     }
 
@@ -102,11 +102,11 @@ export class UserAddComponent implements OnInit {
         'Content-Type': 'application/json',
       })
     };
-    this.http.post('/api/management/add_user', JSON.stringify(this.user), httpOptions).subscribe((submitted: boolean) => {
+    this.http.post("/api/management/add_user", JSON.stringify(this.user), httpOptions).subscribe((submitted: boolean) => {
       if (submitted === true) {
-        window.location.href = '/admin/user_management';
+        window.location.href = "/admin/user_management";
       } else {
-        this.router.navigateByUrl('/admin/user_management/add?error=true&username=' + this.user.getUserName()).then(() => {
+        this.router.navigateByUrl("/admin/user_management/add?error=true&username=" + this.user.getUserName()).then(() => {
           location.reload();
         });
       }

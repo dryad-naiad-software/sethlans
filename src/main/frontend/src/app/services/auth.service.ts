@@ -17,8 +17,8 @@
  *
  */
 
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Injectable} from "@angular/core";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 @Injectable()
 export class AuthService {
@@ -35,10 +35,9 @@ export class AuthService {
 
     this.http.post('login', body.toString(), {
       headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'),
-      responseType: 'text'
-    }).subscribe(() => {
+      responseType: 'text'}).subscribe(() => {
       this.http.get('/api/users/username').subscribe(() => {
-        window.location.href = '/';
+        window.location.href = "/";
       });
       setTimeout(function () {
         return callback && callback();

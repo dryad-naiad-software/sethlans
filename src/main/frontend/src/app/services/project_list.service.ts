@@ -16,10 +16,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Project} from '../models/project.model';
-import {Observable} from 'rxjs/Observable';
+import {Injectable} from "@angular/core";
+import {HttpClient} from "@angular/common/http";
+import {Project} from "../models/project.model";
+import {Observable} from "rxjs/Observable";
 
 @Injectable()
 export class ProjectListService {
@@ -36,7 +36,7 @@ export class ProjectListService {
   }
 
   getProjectListSize(): Observable<number> {
-    return this.http.get<number>('/api/project_ui/num_of_projects');
+    return this.http.get<number>("/api/project_ui/num_of_projects");
   }
 
 

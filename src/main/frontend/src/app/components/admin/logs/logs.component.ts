@@ -18,9 +18,9 @@
  */
 
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
-import {Log} from '../../../models/log.model';
+import {HttpClient} from "@angular/common/http";
+import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
+import {Log} from "../../../models/log.model";
 
 @Component({
   selector: 'app-logs',
@@ -41,7 +41,7 @@ export class LogsComponent implements OnInit {
     this.http.get('/api/management/get_logs/').subscribe((logList: Log[]) => {
       this.dataSource = new MatTableDataSource<any>(logList);
       this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
+      this.dataSource.sort = this.sort
     });
 
   }
@@ -53,7 +53,7 @@ export class LogsComponent implements OnInit {
   }
 
   reloadLogs() {
-    window.location.href = '/admin/logs';
+    window.location.href = "/admin/logs";
   }
 
 }

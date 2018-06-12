@@ -16,10 +16,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-import {ComputeMethod} from '../enums/compute.method.enum';
-import {ProjectType} from '../enums/project_type.enum';
-import {BlenderEngine} from '../enums/blender_engine.enum';
-import {ProjectStatus} from '../enums/project_status.enum';
+import {ComputeMethod} from "../enums/compute.method.enum";
+import {ProjectType} from "../enums/project_type.enum";
+import {BlenderEngine} from "../enums/blender_engine.enum";
+import {ProjectStatus} from "../enums/project_status.enum";
 
 export class Project {
   id: number;

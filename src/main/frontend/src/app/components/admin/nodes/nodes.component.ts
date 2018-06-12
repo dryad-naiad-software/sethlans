@@ -18,13 +18,13 @@
  */
 
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs/Observable';
-import {NodeListService} from '../../../services/node_list.service';
-import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
-import Utils from '../../../utils/utils';
-import {NodeInfo} from '../../../models/node_info.model';
-import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
+import {HttpClient} from "@angular/common/http";
+import {Observable} from "rxjs/Observable";
+import {NodeListService} from "../../../services/node_list.service";
+import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
+import Utils from "../../../utils/utils";
+import {NodeInfo} from "../../../models/node_info.model";
+import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-nodes',
@@ -83,7 +83,7 @@ export class NodesComponent implements OnInit {
       this.inActiveList = newInActiveList;
       this.pendingList = newPendingList;
       this.disabledList = newDisabledList;
-    });
+    })
   }
 
   loadTable() {
@@ -91,13 +91,13 @@ export class NodesComponent implements OnInit {
       this.dataSource = new MatTableDataSource<any>(data);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
-    });
+    })
   }
 
   confirm(node, content) {
     this.selectedNode = node;
     let options: NgbModalOptions = {
-      backdrop: 'static'
+      backdrop: "static"
     };
     this.modalService.open(content, options);
   }
@@ -109,40 +109,40 @@ export class NodesComponent implements OnInit {
   }
 
   deleteNode(id) {
-    document.getElementById('delete' + id).setAttribute('disabled', 'disabled');
-    this.http.get('/api/setup/node_delete/' + id + '/').subscribe(() => {
+    document.getElementById('delete' + id).setAttribute("disabled", "disabled");
+    this.http.get('/api/setup/node_delete/' + id + "/").subscribe(() => {
       this.loadTable();
     });
   }
 
   replaceNode(id) {
-    document.getElementById('replace' + id).setAttribute('disabled', 'disabled');
-    this.http.get('/api/setup/node_replace/' + id + '/').subscribe(() => {
+    document.getElementById('replace' + id).setAttribute("disabled", "disabled");
+    this.http.get('/api/setup/node_replace/' + id + "/").subscribe(() => {
       this.loadTable();
-      document.getElementById('replace' + id).removeAttribute('disabled');
+      document.getElementById('replace' + id).removeAttribute("disabled");
 
     });
   }
 
   addNode() {
-    window.location.href = '/admin/nodes/add';
+    window.location.href = "/admin/nodes/add";
   }
 
   scanNode() {
-    window.location.href = '/admin/nodes/scan';
+    window.location.href = "/admin/nodes/scan";
   }
 
 
   enableNode(id) {
-    this.http.get('/api/setup/node_enable/' + id + '/').subscribe(() => {
+    this.http.get('/api/setup/node_enable/' + id + "/").subscribe(() => {
       this.loadTable();
-      document.getElementById('disable' + id).removeAttribute('disabled');
+      document.getElementById('disable' + id).removeAttribute("disabled");
     });
   }
 
   disableNode(id) {
-    document.getElementById('disable' + id).setAttribute('disabled', 'disabled');
-    this.http.get('/api/setup/node_disable/' + id + '/').subscribe(() => {
+    document.getElementById('disable' + id).setAttribute("disabled", "disabled");
+    this.http.get('/api/setup/node_disable/' + id + "/").subscribe(() => {
       setTimeout(() => {
         this.loadTable();
       }, 3000);

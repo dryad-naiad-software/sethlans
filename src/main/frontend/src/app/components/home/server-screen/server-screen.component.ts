@@ -18,13 +18,13 @@
  */
 
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {ProjectListService} from '../../../services/project_list.service';
-import {HttpClient} from '@angular/common/http';
-import {Mode} from '../../../enums/mode.enum';
-import {Observable} from 'rxjs/Observable';
-import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
-import {ProjectStatus} from '../../../enums/project_status.enum';
-import Utils from '../../../utils/utils';
+import {ProjectListService} from "../../../services/project_list.service";
+import {HttpClient} from "@angular/common/http";
+import {Mode} from "../../../enums/mode.enum";
+import {Observable} from "rxjs/Observable";
+import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
+import {ProjectStatus} from "../../../enums/project_status.enum";
+import Utils from "../../../utils/utils";
 
 @Component({
   selector: 'app-server-screen',
@@ -74,7 +74,7 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
       if (this.projectSize != value) {
         this.projectLoad();
       }
-      this.projectSize = value;
+      this.projectSize = value
     });
     this.http.get('/api/info/sethlans_mode')
       .subscribe((sethlansmode) => {
@@ -148,6 +148,7 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
   }
 
 
+
   chartLoad() {
     this.http.get('/api/info/active_nodes_value_array').subscribe((numberArray: number[]) => {
       this.chartDataArray = numberArray;
@@ -157,14 +158,14 @@ export class ServerScreenComponent implements OnInit, AfterViewInit {
           {
             data: this.chartDataArray,
             backgroundColor: [
-              '#43C519',
-              '#1943C5',
-              '#C51943'
+              "#43C519",
+              "#1943C5",
+              "#C51943"
             ],
             hoverBackgroundColor: [
-              '#43C519',
-              '#1943C5',
-              '#C51943'
+              "#43C519",
+              "#1943C5",
+              "#C51943"
             ]
           }]
       };

@@ -18,11 +18,11 @@
  */
 
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
-import {Observable} from 'rxjs/Observable';
-import {NodeInfo} from '../../../../models/node_info.model';
-import {SelectionModel} from '@angular/cdk/collections';
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
+import {Observable} from "rxjs/Observable";
+import {NodeInfo} from "../../../../models/node_info.model";
+import {SelectionModel} from "@angular/cdk/collections";
 
 @Component({
   selector: 'app-node-scan',
@@ -57,9 +57,9 @@ export class NodeScanComponent implements OnInit {
   updateToSend() {
     this.toSend = [];
     this.selection.selected.forEach(value => {
-      let node = value.hostname + ',' + value.networkPort;
+      let node = value.hostname + "," + value.networkPort;
       this.toSend.push(node);
-    });
+    })
     console.log(this.toSend);
   }
 
@@ -80,12 +80,12 @@ export class NodeScanComponent implements OnInit {
       this.scanSize = data.length;
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
-    });
+    })
   }
 
 
   returnToNodes(): void {
-    window.location.href = '/admin/nodes';
+    window.location.href = "/admin/nodes";
   }
 
   addSelectedNodes() {
@@ -96,7 +96,7 @@ export class NodeScanComponent implements OnInit {
     };
     this.http.post('/api/setup/multi_node_add', JSON.stringify(this.toSend), httpOptions).subscribe((connectionIds: string[]) => {
       this.connectionIds = connectionIds;
-      this.acknowledgeSelectedNodes();
+      this.acknowledgeSelectedNodes()
     });
 
   }

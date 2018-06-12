@@ -18,12 +18,12 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {ComputeMethod} from '../../../enums/compute.method.enum';
-import {GPU} from '../../../models/gpu.model';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Node} from '../../../models/node.model';
-import {Router} from '@angular/router';
-import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
+import {ComputeMethod} from "../../../enums/compute.method.enum";
+import {GPU} from "../../../models/gpu.model";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Node} from "../../../models/node.model";
+import {Router} from "@angular/router";
+import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-compute-settings',
@@ -51,24 +51,24 @@ export class ComputeSettingsComponent implements OnInit {
 
   open(content) {
     let options: NgbModalOptions = {
-      backdrop: 'static'
+      backdrop: "static"
     };
     this.modalService.open(content, options);
   }
 
   updateAndRestart(content) {
     let options: NgbModalOptions = {
-      backdrop: 'static'
+      backdrop: "static"
     };
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
       })
     };
-    this.http.post('/api/setup/update_compute', JSON.stringify(this.newNode), httpOptions).subscribe((submitted: boolean) => {
+    this.http.post("/api/setup/update_compute", JSON.stringify(this.newNode), httpOptions).subscribe((submitted: boolean) => {
       if (submitted === true) {
         setTimeout(() => {
-          window.location.href = '/';
+          window.location.href = "/";
         }, 30000);
       }
     });
@@ -79,7 +79,7 @@ export class ComputeSettingsComponent implements OnInit {
     this.http.get('/api/management/selected_compute_method')
       .subscribe((selectedMethod: ComputeMethod) => {
         this.currentNode.setComputeMethod(selectedMethod);
-        this.newNode.setComputeMethod(selectedMethod);
+        this.newNode.setComputeMethod(selectedMethod)
       });
     this.http.get('/api/management/selected_gpus')
       .subscribe((selectedGPUs: GPU[]) => {
@@ -110,7 +110,7 @@ export class ComputeSettingsComponent implements OnInit {
     this.http.get('/api/management/current_tilesize_cpu')
       .subscribe((tileSizeCPU: any) => {
         this.currentNode.setTileSizeCPU(tileSizeCPU);
-        this.newNode.setTileSizeCPU(tileSizeCPU);
+        this.newNode.setTileSizeCPU(tileSizeCPU)
       });
     this.http.get('/api/management/current_tilesize_gpu')
       .subscribe((tileSizeGPU: any) => {
@@ -143,7 +143,7 @@ export class ComputeSettingsComponent implements OnInit {
   }
 
   cancel() {
-    window.location.href = '/admin/compute_settings';
+    window.location.href = "/admin/compute_settings";
   }
 
   methodSelection() {
@@ -190,7 +190,7 @@ export class ComputeSettingsComponent implements OnInit {
           console.log(this.availableGPUs);
           this.http.get('/api/management/selected_gpus')
             .subscribe((selectedGPUs: GPU[]) => {
-              console.log('Test');
+              console.log("Test");
               for (let selectedGPU of selectedGPUs) {
                 for (let availGPU of this.availableGPUs) {
                   if (selectedGPU.model == availGPU.model) {

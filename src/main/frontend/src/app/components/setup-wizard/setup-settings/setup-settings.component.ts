@@ -18,9 +18,9 @@
  */
 
 import {Component, Input, OnInit} from '@angular/core';
-import {SetupFormDataService} from '../../../services/setupformdata.service';
-import {HttpClient} from '@angular/common/http';
-import {Mode} from '../../../enums/mode.enum';
+import {SetupFormDataService} from "../../../services/setupformdata.service";
+import {HttpClient} from "@angular/common/http";
+import {Mode} from "../../../enums/mode.enum";
 
 @Component({
   selector: 'app-setup-settings',
@@ -70,7 +70,7 @@ export class SetupSettingsComponent implements OnInit {
   }
 
   private nextStep() {
-    this.setupFormData.setProgress(6);
+    this.setupFormData.setProgress(6)
 
   }
 }

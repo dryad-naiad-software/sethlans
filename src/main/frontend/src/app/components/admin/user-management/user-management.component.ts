@@ -18,9 +18,9 @@
  */
 
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
-import {UserListService} from '../../../services/user_list.service';
+import {HttpClient} from "@angular/common/http";
+import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
+import {UserListService} from "../../../services/user_list.service";
 
 @Component({
   selector: 'app-user-management',
@@ -55,27 +55,27 @@ export class UserManagementComponent implements OnInit {
   }
 
   addUser() {
-    window.location.href = '/admin/user_management/add';
+    window.location.href = "/admin/user_management/add";
   }
 
   editUser(id) {
-    window.location.href = '/admin/user_management/edit/' + id;
+    window.location.href = "/admin/user_management/edit/" + id;
   }
 
   activateUser(id) {
-    this.http.get('/api/management/activate_user/' + id + '/').subscribe(() => {
+    this.http.get('/api/management/activate_user/' + id + "/").subscribe(() => {
       this.loadTable();
     });
   }
 
   deleteUser(id) {
-    this.http.get('/api/management/delete_user/' + id + '/').subscribe(() => {
+    this.http.get('/api/management/delete_user/' + id + "/").subscribe(() => {
       this.loadTable();
     });
   }
 
   deactivateUser(id) {
-    this.http.get('/api/management/deactivate_user/' + id + '/').subscribe(() => {
+    this.http.get('/api/management/deactivate_user/' + id + "/").subscribe(() => {
       this.loadTable();
     });
   }

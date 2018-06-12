@@ -17,15 +17,15 @@
  *
  */
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs/Observable';
-import {Project} from '../../models/project.model';
-import {ProjectListService} from '../../services/project_list.service';
-import {Router} from '@angular/router';
-import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
-import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
-import {ProjectStatus} from '../../enums/project_status.enum';
-import Utils from '../../utils/utils';
+import {HttpClient} from "@angular/common/http";
+import {Observable} from "rxjs/Observable";
+import {Project} from "../../models/project.model";
+import {ProjectListService} from "../../services/project_list.service";
+import {Router} from "@angular/router";
+import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
+import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
+import {ProjectStatus} from "../../enums/project_status.enum";
+import Utils from "../../utils/utils";
 
 
 @Component({
@@ -38,7 +38,7 @@ export class ProjectsComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   dataSource = new MatTableDataSource();
   displayedColumns = ['projectName', 'blender', 'type', 'renderOn', 'resolution', 'format', 'projectStatus', 'progress', 'preview', 'actions'];
-  placeholder: any = 'assets/images/placeholder.svg';
+  placeholder: any = "assets/images/placeholder.svg";
   nodesReady: boolean = false;
   projectSize: number;
   selectedProject: Project;
@@ -69,7 +69,7 @@ export class ProjectsComponent implements OnInit {
       if (this.projectSize != value) {
         this.projectLoad();
       }
-      this.projectSize = value;
+      this.projectSize = value
     });
 
     this.projectService.getProjectListInProgress().subscribe(value => {
@@ -102,32 +102,32 @@ export class ProjectsComponent implements OnInit {
   }
 
   addProject() {
-    window.location.href = '/projects/add';
+    window.location.href = "/projects/add";
   }
 
   editProject(id) {
-    window.location.href = '/projects/edit/' + id;
+    window.location.href = "/projects/edit/" + id;
   }
 
   viewProject(id) {
-    window.location.href = '/projects/view/' + id;
+    window.location.href = "/projects/view/" + id;
   }
 
   downloadProject(id) {
-    window.location.href = '/api/project_actions/download_project/' + id;
+    window.location.href = "/api/project_actions/download_project/" + id;
   }
 
 
   confirm(project, content) {
     this.selectedProject = project;
     let options: NgbModalOptions = {
-      backdrop: 'static'
+      backdrop: "static"
     };
     this.modalService.open(content, options);
   }
 
   startProject(id) {
-    this.http.get('/api/project_actions/start_project/' + id + '/').subscribe((success: boolean) => {
+    this.http.get("/api/project_actions/start_project/" + id + "/").subscribe((success: boolean) => {
       if (success) {
         this.projectLoad();
       }

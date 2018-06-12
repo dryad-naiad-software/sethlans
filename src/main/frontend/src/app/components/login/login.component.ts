@@ -18,10 +18,10 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Login} from '../../models/login.model';
-import {AuthService} from '../../services/auth.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import {HttpClient} from "@angular/common/http";
+import {Login} from "../../models/login.model";
+import {AuthService} from "../../services/auth.service";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -29,7 +29,7 @@ import {ActivatedRoute, Router} from '@angular/router';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  logo: any = 'assets/images/logo.png';
+  logo: any = "assets/images/logo.png";
   login: Login;
   loginError: boolean;
 
@@ -51,11 +51,11 @@ export class LoginComponent implements OnInit {
 
 
   registerUser() {
-    this.router.navigateByUrl('/register');
+    this.router.navigateByUrl("/register");
   }
 
   loginUser(event, form) {
-    if (event.key === 'Enter' && form.valid) {
+    if (event.key === "Enter" && form.valid) {
       this.loginSubmit();
     }
 

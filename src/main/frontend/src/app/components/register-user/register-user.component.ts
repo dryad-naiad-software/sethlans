@@ -18,9 +18,9 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {User} from '../../models/user.model';
-import {ActivatedRoute, Router} from '@angular/router';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {User} from "../../models/user.model";
+import {ActivatedRoute, Router} from "@angular/router";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 @Component({
   selector: 'app-register-user',
@@ -28,7 +28,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
   styleUrls: ['./register-user.component.scss']
 })
 export class RegisterUserComponent implements OnInit {
-  logo: any = 'assets/images/logo.png';
+  logo: any = "assets/images/logo.png";
   user: User;
   userExists: boolean;
   existingUserName: string;
@@ -46,11 +46,11 @@ export class RegisterUserComponent implements OnInit {
   }
 
   login() {
-    this.router.navigateByUrl('/login');
+    this.router.navigateByUrl("/login");
   }
 
   submitUser(event, form) {
-    if (event.key === 'Enter' && form.valid) {
+    if (event.key === "Enter" && form.valid) {
       this.onSubmit();
     }
 
@@ -62,11 +62,11 @@ export class RegisterUserComponent implements OnInit {
         'Content-Type': 'application/json',
       })
     };
-    this.http.post('/api/setup/self_register', JSON.stringify(this.user), httpOptions).subscribe((submitted: boolean) => {
+    this.http.post("/api/setup/self_register", JSON.stringify(this.user), httpOptions).subscribe((submitted: boolean) => {
       if (submitted === true) {
-        this.login();
+        this.login()
       } else {
-        this.router.navigateByUrl('/register?error=true&username=' + this.user.getUserName()).then(() => {
+        this.router.navigateByUrl("/register?error=true&username=" + this.user.getUserName()).then(() => {
           location.reload();
         });
       }

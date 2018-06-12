@@ -18,12 +18,12 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Role} from '../../../enums/role.enum';
-import {UserInfo} from '../../../models/userinfo.model';
-import {Mode} from '../../../enums/mode.enum';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {Observable} from 'rxjs/Observable';
+import {HttpClient} from "@angular/common/http";
+import {Role} from "../../../enums/role.enum";
+import {UserInfo} from "../../../models/userinfo.model";
+import {Mode} from "../../../enums/mode.enum";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: 'app-navbar',
@@ -31,8 +31,8 @@ import {Observable} from 'rxjs/Observable';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
-  logo: any = 'assets/images/logo.png';
-  logoDark: any = 'assets/images/logo-dark.png';
+  logo: any = "assets/images/logo.png";
+  logoDark: any = "assets/images/logo-dark.png";
   username: string;
   authenticated: boolean;
   isCollapsed = true;
@@ -56,13 +56,13 @@ export class NavbarComponent implements OnInit {
     timer.subscribe(() => this.checkNotifications());
     this.getVersion();
     this.getMode();
-    this.getUserName();
+    this.getUserName()
   }
 
   getNotifications() {
     this.http.get('/api/notifications/get_notifications').subscribe((notifications: string[]) => {
       this.notificationList = notifications;
-    });
+    })
   }
 
   open(content) {
@@ -75,7 +75,7 @@ export class NavbarComponent implements OnInit {
       if (present == true) {
         this.getNotifications();
       }
-    });
+    })
   }
 
   getMode() {

@@ -18,10 +18,10 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {ActivatedRoute} from '@angular/router';
-import {UserInfo} from '../../../../models/userinfo.model';
-import {RoleInfo} from '../../../../models/role_info.model';
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {ActivatedRoute} from "@angular/router";
+import {UserInfo} from "../../../../models/userinfo.model";
+import {RoleInfo} from "../../../../models/role_info.model";
 
 @Component({
   selector: 'app-user-edit',
@@ -68,7 +68,7 @@ export class UserEditComponent implements OnInit {
         }
       });
     }
-    this.roleError = this.roleSelection.every(x => x.active === false);
+    this.roleError = this.roleSelection.every(x => x.active === false)
   }
 
   loadUser() {
@@ -77,7 +77,7 @@ export class UserEditComponent implements OnInit {
     });
     this.http.get('/api/management/get_roles/' + this.id + '/').subscribe((roleInfo: RoleInfo[]) => {
       this.roleSelection = roleInfo;
-    });
+    })
   }
 
   getThisUser() {
@@ -93,7 +93,7 @@ export class UserEditComponent implements OnInit {
     }).subscribe((response: boolean) => {
       console.log(response);
       if (response) {
-        window.location.href = '/admin/user_management/';
+        window.location.href = "/admin/user_management/";
       }
       else {
         this.emailError = true;
@@ -109,7 +109,7 @@ export class UserEditComponent implements OnInit {
     }).subscribe((response: boolean) => {
       console.log(response);
       if (response) {
-        window.location.href = '/admin/user_management/';
+        window.location.href = "/admin/user_management/";
       }
       else {
         this.passwordError = true;
@@ -123,12 +123,14 @@ export class UserEditComponent implements OnInit {
         'Content-Type': 'application/json',
       })
     };
-    this.http.post('/api/management/change_roles/' + this.id, JSON.stringify(this.roleSelection), httpOptions).subscribe(() => window.location.href = '/admin/user_management/');
+    this.http.post('/api/management/change_roles/' + this.id, JSON.stringify(this.roleSelection), httpOptions).subscribe(() => window.location.href = "/admin/user_management/")
 
 
   }
 
 }
+
+
 
 
 class PasswordSet {

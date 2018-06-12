@@ -18,7 +18,7 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-restart',
@@ -31,9 +31,9 @@ export class RestartComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get('/api/management/restart').subscribe(() => {
+    this.http.get("/api/management/restart").subscribe(() => {
       setTimeout(() => {
-        window.location.href = '/';
+        window.location.href = "/";
       }, 30000);
     });
 

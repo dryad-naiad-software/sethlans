@@ -18,10 +18,10 @@
  */
 
 import {Component, Input, OnInit} from '@angular/core';
-import {Server} from '../../../models/server.model';
-import {SetupFormDataService} from '../../../services/setupformdata.service';
-import {HttpClient} from '@angular/common/http';
-import {Mode} from '../../../enums/mode.enum';
+import {Server} from "../../../models/server.model";
+import {SetupFormDataService} from "../../../services/setupformdata.service";
+import {HttpClient} from "@angular/common/http";
+import {Mode} from "../../../enums/mode.enum";
 
 @Component({
   selector: 'app-setup-server',

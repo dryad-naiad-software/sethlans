@@ -105,16 +105,16 @@
              ngbTooltip="Number of CPU cores to be used for rendering." placement="left">
           <label for="cores">Rendering Cores:</label> {{newNode.cores}}
           <div class="form-inline">
-            <mat-slider
-              id="cores"
-              min="1"
-              step="1"
-              thumb-label="true"
-              [max]="totalCores"
-              #cores="ngModel"
-              value="{{currentNode.getCores()}}"
-              name="cores"
-              [(ngModel)]="newNode.cores"></mat-slider>
+          <mat-slider
+            id="cores"
+            min="1"
+            step="1"
+            thumb-label="true"
+            [max]="totalCores"
+            #cores="ngModel"
+            value="{{currentNode.getCores()}}"
+            name="cores"
+            [(ngModel)]="newNode.cores"></mat-slider>
           </div>
         </div>
         <div class="form-group" *ngIf="newNode.computeMethod.toString().valueOf() != 'GPU'.valueOf() "

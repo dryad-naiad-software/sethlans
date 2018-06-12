@@ -18,8 +18,8 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {Mode} from '../../enums/mode.enum';
-import {HttpClient} from '@angular/common/http';
+import {Mode} from "../../enums/mode.enum";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-home',

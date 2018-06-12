@@ -17,10 +17,10 @@
  *
  */
 
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {NodeInfo} from '../models/node_info.model';
-import {Observable} from 'rxjs/Observable';
+import {Injectable} from "@angular/core";
+import {HttpClient} from "@angular/common/http";
+import {NodeInfo} from "../models/node_info.model";
+import {Observable} from "rxjs/Observable";
 
 @Injectable()
 export class NodeListService {
@@ -37,7 +37,7 @@ export class NodeListService {
   }
 
   getNodeListSize(): Observable<number> {
-    return this.http.get<number>('/api/management/node_list_size');
+    return this.http.get<number>("/api/management/node_list_size");
   }
 
 

@@ -18,13 +18,13 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {ActivatedRoute, Router} from '@angular/router';
-import {ComputeMethod} from '../../../enums/compute.method.enum';
-import {RenderOutputFormat} from '../../../enums/render_output_format.enum';
-import {Project} from '../../../models/project.model';
-import {BlenderEngine} from '../../../enums/blender_engine.enum';
-import {ProjectType} from '../../../enums/project_type.enum';
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {ActivatedRoute, Router} from "@angular/router";
+import {ComputeMethod} from "../../../enums/compute.method.enum";
+import {RenderOutputFormat} from "../../../enums/render_output_format.enum";
+import {Project} from "../../../models/project.model";
+import {BlenderEngine} from "../../../enums/blender_engine.enum";
+import {ProjectType} from "../../../enums/project_type.enum";
 
 @Component({
   selector: 'app-project-edit',
@@ -42,7 +42,7 @@ export class ProjectEditComponent implements OnInit {
   engines = BlenderEngine;
   status: number = 0;
   id: number;
-  frameRates: string[] = ['23.98', '24', '25', '29.97', '30', '50', '59.94', '60'];
+  frameRates: string[] = ["23.98", "24", "25", "29.97", "30", "50", "59.94", "60"];
 
 
   constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute) {
@@ -53,7 +53,7 @@ export class ProjectEditComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.id = +params['id'];
       this.loadProjectDetails();
-    });
+    })
   }
 
   setParts() {
@@ -82,10 +82,10 @@ export class ProjectEditComponent implements OnInit {
       this.projectDetails.partsPerFrame = 1;
     }
     this.http.post('/api/project_form/edit_project/' + this.id + '/', JSON.stringify(this.projectDetails), httpOptions).subscribe((success: boolean) => {
-      this.router.navigateByUrl('/projects').then(() => {
+      this.router.navigateByUrl("/projects").then(() => {
         location.reload();
       });
-    });
+    })
   }
 
 
@@ -106,15 +106,15 @@ export class ProjectEditComponent implements OnInit {
   }
 
   returnToProjects(): void {
-    this.router.navigateByUrl('/projects').then(() => location.reload());
+    this.router.navigateByUrl("/projects").then(() => location.reload());
   }
 
   setDefaultFormat() {
-    this.projectDetails.outputFormat = 'PNG';
+    this.projectDetails.outputFormat = "PNG";
   }
 
   setDefaultFrameRate() {
-    this.projectDetails.frameRate = '23.98';
+    this.projectDetails.frameRate = "23.98";
   }
 
 

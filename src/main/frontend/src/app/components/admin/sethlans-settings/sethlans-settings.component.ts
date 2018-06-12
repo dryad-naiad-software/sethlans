@@ -18,11 +18,11 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {SethlansConfig} from '../../../models/sethlans_config.model';
-import {Mode} from '../../../enums/mode.enum';
-import {Router} from '@angular/router';
-import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
+import {HttpClient} from "@angular/common/http";
+import {SethlansConfig} from "../../../models/sethlans_config.model";
+import {Mode} from "../../../enums/mode.enum";
+import {Router} from "@angular/router";
+import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-sethlans-settings',
@@ -46,7 +46,7 @@ export class SethlansSettingsComponent implements OnInit {
 
   open(content) {
     let options: NgbModalOptions = {
-      backdrop: 'static'
+      backdrop: "static"
     };
     this.modalService.open(content, options);
   }

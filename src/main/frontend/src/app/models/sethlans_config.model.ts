@@ -17,7 +17,7 @@
  *
  */
 
-import {Mode} from '../enums/mode.enum';
+import {Mode} from "../enums/mode.enum";
 
 export class SethlansConfig {
   httpsPort: string;

@@ -18,12 +18,12 @@
  */
 
 import {Component, Input, OnInit} from '@angular/core';
-import {Node} from '../../../models/node.model';
-import {SetupFormDataService} from '../../../services/setupformdata.service';
-import {HttpClient} from '@angular/common/http';
-import {GPU} from '../../../models/gpu.model';
-import {Mode} from '../../../enums/mode.enum';
-import {ComputeMethod} from '../../../enums/compute.method.enum';
+import {Node} from "../../../models/node.model";
+import {SetupFormDataService} from "../../../services/setupformdata.service";
+import {HttpClient} from "@angular/common/http";
+import {GPU} from "../../../models/gpu.model";
+import {Mode} from "../../../enums/mode.enum";
+import {ComputeMethod} from "../../../enums/compute.method.enum";
 
 
 @Component({

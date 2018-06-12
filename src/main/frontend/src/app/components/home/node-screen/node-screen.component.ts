@@ -18,10 +18,10 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {ComputeMethod} from '../../../enums/compute.method.enum';
-import {GPU} from '../../../models/gpu.model';
-import {Observable} from 'rxjs/Observable';
+import {HttpClient} from "@angular/common/http";
+import {ComputeMethod} from "../../../enums/compute.method.enum";
+import {GPU} from "../../../models/gpu.model";
+import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: 'app-node-screen',
@@ -49,7 +49,7 @@ export class NodeScreenComponent implements OnInit {
     this.getInfo();
     let timer = Observable.timer(5000, 5000);
     timer.subscribe(() => {
-      this.getInfo();
+      this.getInfo()
     });
   }
 

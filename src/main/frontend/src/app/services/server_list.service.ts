@@ -16,10 +16,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs/Observable';
-import {ServerInfo} from '../models/server_info.model';
+import {Injectable} from "@angular/core";
+import {HttpClient} from "@angular/common/http";
+import {Observable} from "rxjs/Observable";
+import {ServerInfo} from "../models/server_info.model";
 
 @Injectable()
 export class ServerListService {
@@ -32,6 +32,6 @@ export class ServerListService {
   }
 
   getServerListSize(): Observable<number> {
-    return this.http.get<number>('/api/management/server_list_size');
+    return this.http.get<number>("/api/management/server_list_size");
   }
 }

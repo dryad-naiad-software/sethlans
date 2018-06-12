@@ -18,9 +18,9 @@
  */
 
 import {Component, Input, OnInit} from '@angular/core';
-import {SetupFormDataService} from '../../../services/setupformdata.service';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Mode} from '../../../enums/mode.enum';
+import {SetupFormDataService} from "../../../services/setupformdata.service";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Mode} from "../../../enums/mode.enum";
 
 @Component({
   selector: 'app-setup-summary',
@@ -40,14 +40,14 @@ export class SetupSummaryComponent implements OnInit {
   }
 
   finish() {
-    console.log('finished');
+    console.log("finished");
     this.finished = true;
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
       })
     };
-    this.http.post('/api/setup/submit', JSON.stringify(this.setupFormData), httpOptions).subscribe((submitted: boolean) => {
+    this.http.post("/api/setup/submit", JSON.stringify(this.setupFormData), httpOptions).subscribe((submitted: boolean) => {
       if (submitted === true) {
         this.setupFormData.setProgress(7);
       }

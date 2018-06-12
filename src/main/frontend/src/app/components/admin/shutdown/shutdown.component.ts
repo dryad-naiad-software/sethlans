@@ -18,7 +18,7 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-shutdown',
@@ -31,7 +31,7 @@ export class ShutdownComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get('/api/management/shutdown').subscribe();
+    this.http.get("/api/management/shutdown").subscribe();
   }
 
 }

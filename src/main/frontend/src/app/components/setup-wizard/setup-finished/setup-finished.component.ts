@@ -18,10 +18,10 @@
  */
 
 import {Component, Inject, Input, OnInit} from '@angular/core';
-import {SetupFormDataService} from '../../../services/setupformdata.service';
-import {HttpClient} from '@angular/common/http';
-import {WindowRef} from '../../../services/windowref.service';
-import {DOCUMENT} from '@angular/common';
+import {SetupFormDataService} from "../../../services/setupformdata.service";
+import {HttpClient} from "@angular/common/http";
+import {WindowRef} from "../../../services/windowref.service";
+import {DOCUMENT} from "@angular/common";
 
 @Component({
   selector: 'app-setup-finished',

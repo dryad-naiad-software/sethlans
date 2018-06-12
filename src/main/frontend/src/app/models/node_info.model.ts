@@ -17,10 +17,10 @@
  *
  */
 
-import {ComputeMethod} from '../enums/compute.method.enum';
-import {BlenderBinaryOS} from '../enums/blenderbinaryos.enum';
-import {CPUInfo} from './cpu_info.model';
-import {GPU} from './gpu.model';
+import {ComputeMethod} from "../enums/compute.method.enum";
+import {BlenderBinaryOS} from "../enums/blenderbinaryos.enum";
+import {CPUInfo} from "./cpu_info.model";
+import {GPU} from "./gpu.model";
 
 export class NodeInfo {
   id: number;

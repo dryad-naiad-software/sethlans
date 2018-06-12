@@ -18,10 +18,10 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {UserInfo} from '../../models/userinfo.model';
-import {Router} from '@angular/router';
-import {Observable} from 'rxjs/Observable';
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {UserInfo} from "../../models/userinfo.model";
+import {Router} from "@angular/router";
+import {Observable} from "rxjs/Observable";
 
 
 @Component({
@@ -42,7 +42,7 @@ export class UserSettingsComponent implements OnInit {
   }
 
   submitSettingChanges(event, form) {
-    if (event.key === 'Enter' && form.valid) {
+    if (event.key === "Enter" && form.valid) {
       this.saveChanges(form);
     }
 
@@ -52,7 +52,7 @@ export class UserSettingsComponent implements OnInit {
     this.getUserInfo();
     let timer = Observable.timer(5000, 2000);
     timer.subscribe(() => {
-      this.getUserInfo();
+      this.getUserInfo()
     });
   }
 
@@ -68,19 +68,19 @@ export class UserSettingsComponent implements OnInit {
   }
 
   cancel() {
-    window.location.href = '/';
+    window.location.href = "/";
   }
 
   saveChanges(form) {
     if (form.valid) {
       if (!this.changePass) {
-        console.log('Change pass false');
+        console.log("Change pass false");
         this.changeEmail();
       }
 
 
       if (this.changePass) {
-        console.log('Change pass true');
+        console.log("Change pass true");
         this.changeEmailAndPassword();
       }
     }

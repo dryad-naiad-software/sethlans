@@ -18,13 +18,13 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {Project} from '../../../models/project.model';
-import {ProjectType} from '../../../enums/project_type.enum';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {Router} from '@angular/router';
-import {ComputeMethod} from '../../../enums/compute.method.enum';
-import {RenderOutputFormat} from '../../../enums/render_output_format.enum';
-import {BlenderEngine} from '../../../enums/blender_engine.enum';
+import {Project} from "../../../models/project.model";
+import {ProjectType} from "../../../enums/project_type.enum";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Router} from "@angular/router";
+import {ComputeMethod} from "../../../enums/compute.method.enum";
+import {RenderOutputFormat} from "../../../enums/render_output_format.enum";
+import {BlenderEngine} from "../../../enums/blender_engine.enum";
 
 @Component({
   selector: 'app-project-add',
@@ -41,7 +41,7 @@ export class ProjectAddComponent implements OnInit {
   engines = BlenderEngine;
   status: number = 0;
   uploading: boolean = false;
-  frameRates: string[] = ['23.98', '24', '25', '29.97', '30', '50', '59.94', '60'];
+  frameRates: string[] = ["23.98", "24", "25", "29.97", "30", "50", "59.94", "60"];
 
 
   constructor(private http: HttpClient, private router: Router) {
@@ -77,7 +77,7 @@ export class ProjectAddComponent implements OnInit {
 
   beforeSend(event: any) {
     this.uploading = true;
-    event.xhr.setRequestHeader('X-XSRF-TOKEN', document.cookie.slice(document.cookie.indexOf('TOKEN=') + 'TOKEN='.length));
+    event.xhr.setRequestHeader('X-XSRF-TOKEN', document.cookie.slice(document.cookie.indexOf("TOKEN=") + "TOKEN=".length));
   }
 
   submitProject() {
@@ -90,10 +90,10 @@ export class ProjectAddComponent implements OnInit {
       this.projectDetails.partsPerFrame = 1;
     }
     this.http.post('/api/project_form/submit_project', JSON.stringify(this.projectDetails), httpOptions).subscribe(() => {
-      this.router.navigateByUrl('/projects').then(() => {
+      this.router.navigateByUrl("/projects").then(() => {
         location.reload();
       });
-    });
+    })
   }
 
   projectConfigNext() {
@@ -105,7 +105,7 @@ export class ProjectAddComponent implements OnInit {
   }
 
   returnToProjects(): void {
-    this.router.navigateByUrl('/projects').then(() => location.reload());
+    this.router.navigateByUrl("/projects").then(() => location.reload());
   }
 
   setParts() {
@@ -117,11 +117,11 @@ export class ProjectAddComponent implements OnInit {
   }
 
   setDefaultFormat() {
-    this.projectDetails.outputFormat = 'PNG';
+    this.projectDetails.outputFormat = "PNG";
   }
 
   setDefaultFrameRate() {
-    this.projectDetails.frameRate = '23.98';
+    this.projectDetails.frameRate = "23.98";
     this.projectDetails.endFrame = 50;
   }
 

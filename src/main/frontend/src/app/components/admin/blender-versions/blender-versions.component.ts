@@ -18,10 +18,10 @@
  */
 
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {BlenderBinaryInfo} from '../../../models/blenderbinaryinfo.model';
-import {MatPaginator, MatTableDataSource} from '@angular/material';
-import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {BlenderBinaryInfo} from "../../../models/blenderbinaryinfo.model";
+import {MatPaginator, MatTableDataSource} from "@angular/material";
+import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-blender-versions',
@@ -57,7 +57,7 @@ export class BlenderVersionsComponent implements OnInit {
 
   open(content) {
     let options: NgbModalOptions = {
-      backdrop: 'static'
+      backdrop: "static"
     };
     this.modalService.open(content, options);
   }
@@ -65,9 +65,9 @@ export class BlenderVersionsComponent implements OnInit {
   setActive(version) {
     this.http.get('/api/management/set_primary_blender_version/?version=' + version).subscribe((response: boolean) => {
       if (response) {
-        window.location.href = '/admin/blender_version_admin/';
+        window.location.href = "/admin/blender_version_admin/";
       }
-    });
+    })
   }
 
   addVersion() {
@@ -77,9 +77,9 @@ export class BlenderVersionsComponent implements OnInit {
     }).subscribe((response: boolean) => {
       console.log(response);
       if (response) {
-        window.location.href = '/admin/blender_version_admin/';
+        window.location.href = "/admin/blender_version_admin/";
       }
-    });
+    })
   }
 
 }

@@ -17,8 +17,8 @@
  *
  */
 
-import {ComputeMethod} from '../enums/compute.method.enum';
-import {GPU} from './gpu.model';
+import {ComputeMethod} from "../enums/compute.method.enum";
+import {GPU} from "./gpu.model";
 
 export class Node {
   computeMethod: ComputeMethod;

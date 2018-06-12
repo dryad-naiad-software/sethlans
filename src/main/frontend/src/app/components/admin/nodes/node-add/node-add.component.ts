@@ -18,10 +18,10 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {NodeInfo} from '../../../../models/node_info.model';
-import {ComputeMethod} from '../../../../enums/compute.method.enum';
-import {HttpClient} from '@angular/common/http';
-import {Router} from '@angular/router';
+import {NodeInfo} from "../../../../models/node_info.model";
+import {ComputeMethod} from "../../../../enums/compute.method.enum";
+import {HttpClient} from "@angular/common/http";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-node-add',
@@ -46,28 +46,28 @@ export class NodeAddComponent implements OnInit {
 
   verifyNode() {
     this.formSubmitted = true;
-    this.http.get('/api/management/node_check?ip=' + this.ipAddress + '&port=' + this.port).subscribe((node: NodeInfo) => {
+    this.http.get('/api/management/node_check?ip=' + this.ipAddress + "&port=" + this.port).subscribe((node: NodeInfo) => {
       this.nodeToAdd = node;
       this.summaryComplete = true;
     });
   }
 
   addNode() {
-    this.http.get('/api/setup/node_add?ip=' + this.ipAddress + '&port=' + this.port, {responseType: 'text'}).subscribe((connectionID: string) => {
+    this.http.get('/api/setup/node_add?ip=' + this.ipAddress + "&port=" + this.port, {responseType: 'text'}).subscribe((connectionID: string) => {
       this.connectionID = connectionID;
       this.activateNode();
     });
   }
 
   activateNode() {
-    this.http.get('/api/setup/auto_acknowledge/' + this.connectionID + '/').subscribe(() => {
+    this.http.get('/api/setup/auto_acknowledge/' + this.connectionID + "/").subscribe(() => {
       this.returnToNodes();
     });
 
   }
 
   returnToNodes(): void {
-    window.location.href = '/admin/nodes';
+    window.location.href = "/admin/nodes";
   }
 
 }
