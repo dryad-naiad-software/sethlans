@@ -366,16 +366,33 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             LOG.debug("Render Output:");
             while ((output = in.readLine()) != null) {
                 LOG.debug(output);
-                if (output.contains("Finished")) {
-                    String[] finished = output.split("\\|");
-                    for (String item : finished) {
-                        LOG.debug(item);
-                        if (item.contains("Time:")) {
-                            time = StringUtils.substringAfter(item, ":");
-                            time = StringUtils.substringBefore(time, ".");
+                switch (renderTask.getBlenderEngine()) {
+                    case CYCLES:
+                        if (output.contains("Finished")) {
+                            String[] finished = output.split("\\|");
+                            for (String item : finished) {
+                                LOG.debug(item);
+                                if (item.contains("Time:")) {
+                                    time = StringUtils.substringAfter(item, ":");
+                                    time = StringUtils.substringBefore(time, ".");
+                                }
+                            }
                         }
-                    }
+                        break;
+                    case BLENDER_RENDER:
+                        if (output.contains("Saving:")) {
+                            String[] finished = output.split("\\|");
+                            for (String item : finished) {
+                                LOG.debug(item);
+                                if (item.contains(" Time:")) {
+                                    time = StringUtils.substringAfter(item, ":");
+                                    time = StringUtils.substringBefore(time, ".");
+                                    time = time.replaceAll("\\s", "");
+                                }
+                            }
+                        }
                 }
+
             }
             in.close();
 
