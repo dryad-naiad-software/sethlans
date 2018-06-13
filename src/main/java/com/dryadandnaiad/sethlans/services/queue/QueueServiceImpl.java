@@ -250,6 +250,7 @@ public class QueueServiceImpl implements QueueService {
                                 blenderProjectDatabaseService, sethlansNodeDatabaseService, itemsProcessed);
                     } catch (NullPointerException e) {
                         LOG.error("Node acknowledgement received before node was shutdown/removed.");
+                        LOG.error(Throwables.getStackTraceAsString(e));
                     }
 
                 }
