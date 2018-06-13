@@ -39,7 +39,7 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
     private SethlansUserDatabaseService sethlansUserDatabaseService;
 
     @Value("${sethlans.projectDir}")
-    private String projectDir;
+    private String projectHomeDir;
 
     private static final Logger LOG = LoggerFactory.getLogger(ProjectFormToBlenderProject.class);
 
@@ -71,7 +71,7 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
         RandomString randomString = new RandomString(6);
         String truncatedProjectName = StringUtils.left(projectForm.getProjectName(), 10);
         String projectDir = truncatedProjectName.replaceAll(" ", "_").toLowerCase() + "_" + randomString.nextString();
-        File blenderProjectDirectory = new File(projectDir + File.separator + projectDir.replaceAll("[^a-zA-Z0-9_-]", "").toLowerCase());
+        File blenderProjectDirectory = new File(projectHomeDir + File.separator + projectDir.replaceAll("[^a-zA-Z0-9_-]", "").toLowerCase());
         try {
             if (!blenderProjectDirectory.mkdirs()) {
                 throw new Exception("Unable to create directory " + blenderProjectDirectory.toString());
