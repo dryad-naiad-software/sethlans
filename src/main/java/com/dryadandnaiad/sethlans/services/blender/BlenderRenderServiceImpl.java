@@ -108,23 +108,34 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         if (downloadRequiredFiles(renderDir, blendFileDir, renderTask)) {
             renderTask = renderTaskDatabaseService.saveOrUpdate(renderTask);
             String script;
-            if (renderTask.getComputeType().equals(ComputeType.GPU)) {
-                script = setDeviceID(renderTask, nodeInfo);
-                saveOnSuccess(renderTask, script);
+            switch (renderTask.getBlenderEngine()) {
+                case BLENDER_RENDER:
+                    script = blenderPythonScriptService.writeBlenderRenderPythonScript(renderTask.getRenderDir(), renderTask.getRenderOutputFormat(), tileSizeCPU,
+                            renderTask.getTaskResolutionX(), renderTask.getTaskResolutionY(), renderTask.getPartResPercentage(), renderTask.getBlenderFramePart().getPartPositionMaxY(),
+                            renderTask.getBlenderFramePart().getPartPositionMinY());
+                    saveOnSuccess(renderTask, script);
+                    break;
+                case CYCLES:
+                    if (renderTask.getComputeType().equals(ComputeType.GPU)) {
+                        script = setDeviceID(renderTask, nodeInfo);
+                        saveOnSuccess(renderTask, script);
+                        break;
 
-            } else {
-                LOG.info("Running render task using CPU");
-                List<String> emptyList = new ArrayList<>();
-                script = blenderPythonScriptService.writeRenderPythonScript(renderTask.getComputeType(),
-                        renderTask.getRenderDir(), emptyList,
-                        emptyList, false, renderTask.getRenderOutputFormat(), tileSizeCPU,
-                        renderTask.getTaskResolutionX(),
-                        renderTask.getTaskResolutionY(),
-                        renderTask.getPartResPercentage(),
-                        renderTask.getSamples(),
-                        renderTask.getBlenderFramePart().getPartPositionMaxY(),
-                        renderTask.getBlenderFramePart().getPartPositionMinY());
-                saveOnSuccess(renderTask, script);
+                    } else {
+                        LOG.info("Running render task using CPU");
+                        List<String> emptyList = new ArrayList<>();
+                        script = blenderPythonScriptService.writeCyclesRenderPythonScript(renderTask.getComputeType(),
+                                renderTask.getRenderDir(), emptyList,
+                                emptyList, false, renderTask.getRenderOutputFormat(), tileSizeCPU,
+                                renderTask.getTaskResolutionX(),
+                                renderTask.getTaskResolutionY(),
+                                renderTask.getPartResPercentage(),
+                                renderTask.getSamples(),
+                                renderTask.getBlenderFramePart().getPartPositionMaxY(),
+                                renderTask.getBlenderFramePart().getPartPositionMinY());
+                        saveOnSuccess(renderTask, script);
+                        break;
+                    }
             }
         }
     }
@@ -141,7 +152,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                 deviceIDList.add(StringUtils.substringAfter(device, "_"));
                 isCuda = SethlansUtils.isCuda(device);
             }
-            script = blenderPythonScriptService.writeRenderPythonScript(renderTask.getComputeType(),
+            script = blenderPythonScriptService.writeCyclesRenderPythonScript(renderTask.getComputeType(),
                     renderTask.getRenderDir(), deviceIDList,
                     getUnselectedIds(deviceList), isCuda,
                     renderTask.getRenderOutputFormat(),
@@ -156,7 +167,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             LOG.info("Running render task using " + renderTask.getDeviceID());
             boolean isCuda = SethlansUtils.isCuda(renderTask.getDeviceID());
             deviceIDList.add(StringUtils.substringAfter(renderTask.getDeviceID(), "_"));
-            script = blenderPythonScriptService.writeRenderPythonScript(renderTask.getComputeType(),
+            script = blenderPythonScriptService.writeCyclesRenderPythonScript(renderTask.getComputeType(),
                     renderTask.getRenderDir(), deviceIDList,
                     getUnselectedIds(deviceList), isCuda,
                     renderTask.getRenderOutputFormat(),
@@ -321,7 +332,15 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             commandLine.addArgument("-P");
             commandLine.addArgument(blenderScript);
             commandLine.addArgument("-E");
-            commandLine.addArgument("CYCLES");
+            switch (renderTask.getBlenderEngine()) {
+                case CYCLES:
+                    commandLine.addArgument("CYCLES");
+                    break;
+                case BLENDER_RENDER:
+                    commandLine.addArgument("BLENDER_RENDER");
+                    break;
+            }
+
             commandLine.addArgument("-o");
             commandLine.addArgument(renderTask.getRenderDir() + File.separator);
             commandLine.addArgument("-f");

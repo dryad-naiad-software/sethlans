@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -118,18 +119,72 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.close();
 
             return script.toString();
-        } catch (java.io.IOException e) {
+        } catch (IOException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
         }
         return null;
     }
 
     @Override
-    public String writeRenderPythonScript(ComputeType computeType, String renderLocation, List<String> selectedDeviceIds, List<String> unselectedIds,
-                                          boolean cuda,
-                                          RenderOutputFormat renderOutputFormat,
-                                          String tileSize, int resolutionX, int resolutionY, int resPercentage, int samples,
-                                          double partMaxY, double partMinY) {
+    public String writeBlenderRenderPythonScript(String renderLocation, RenderOutputFormat renderOutputFormat,
+                                                 String tileSize, int resolutionX, int resolutionY, int resPercentage, double partMaxY, double partMinY) {
+        try {
+            File script = new File(renderLocation + File.separator + "script-blenderRender.py");
+
+            FileWriter scriptWriter = new FileWriter(script);
+
+            // Write Imports
+            scriptWriter.write(PythonImports.BPY.toString() + "\n\n");
+
+            //Temp Directory
+            //noinspection ConstantConditions
+            if (SethlansUtils.getOS().contains("Windows")) {
+                scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "r\"" + renderLocation + "\"" + "\n");
+            } else {
+                scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "\"" + renderLocation + "\"" + "\n");
+            }
+
+            // Set Resolution
+            scriptWriter.write("\n");
+            scriptWriter.write("for scene in bpy.data.scenes:" + "\n");
+            scriptWriter.write("\tscene.render.resolution_x = " + resolutionX + "\n");
+            scriptWriter.write("\tscene.render.resolution_y = " + resolutionY + "\n");
+            scriptWriter.write("\tscene.render.resolution_percentage = " + resPercentage + "\n");
+
+            // Set Part
+            // X is the width of the image, parts are then slices from top to bottom along Y axis.
+            scriptWriter.write("\n");
+            scriptWriter.write("\tscene.render.use_border = True" + "\n");
+            scriptWriter.write("\tscene.render.use_crop_to_border = True" + "\n");
+            scriptWriter.write("\tscene.render.border_min_x = 0" + "\n");
+            scriptWriter.write("\tscene.render.border_max_x = 1.0" + "\n");
+            scriptWriter.write("\tscene.render.border_max_y = " + partMaxY + "\n");
+            scriptWriter.write("\tscene.render.border_min_y = " + partMinY + "\n");
+
+            // Tile Sizes
+            scriptWriter.write("\n");
+            scriptWriter.write("bpy.context.scene.render.tile_x = " + tileSize + "\n");
+            scriptWriter.write("bpy.context.scene.render.tile_y = " + tileSize + "\n");
+            scriptWriter.write("bpy.context.scene.render.image_settings.file_format = 'PNG'" + "\n");
+
+
+            scriptWriter.flush();
+            scriptWriter.close();
+
+            return script.toString();
+
+        } catch (IOException e) {
+            LOG.error(Throwables.getStackTraceAsString(e));
+        }
+        return null;
+    }
+
+    @Override
+    public String writeCyclesRenderPythonScript(ComputeType computeType, String renderLocation, List<String> selectedDeviceIds, List<String> unselectedIds,
+                                                boolean cuda,
+                                                RenderOutputFormat renderOutputFormat,
+                                                String tileSize, int resolutionX, int resolutionY, int resPercentage, int samples,
+                                                double partMaxY, double partMinY) {
         try {
             File script;
             if (selectedDeviceIds.size() == 1) {
@@ -255,7 +310,7 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.close();
 
             return script.toString();
-        } catch (java.io.IOException e) {
+        } catch (IOException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
         }
         return null;
