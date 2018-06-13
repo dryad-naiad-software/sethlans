@@ -295,10 +295,8 @@ public class QueueServiceImpl implements QueueService {
                     throttle = QUEUE - renderQueueDatabaseService.listPendingRender().size();
                 }
                 int queueIndex = blenderProject.getQueueIndex();
-                int finalIndex = blenderProject.getTotalQueueSize() - 1;
-                if (queueIndex <= finalIndex) {
-                    addRenderQueueItem(blenderProject, throttle, queueIndex, blenderFramePartList);
-                }
+                addRenderQueueItem(blenderProject, throttle, queueIndex, blenderFramePartList);
+
             }
         }
     }
