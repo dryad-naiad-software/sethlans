@@ -331,16 +331,22 @@ public class QueueServiceImpl implements QueueService {
                 break;
             }
             LOG.debug("Adding to Queue item at index: " + index);
-            RenderQueueItem renderQueueItem = new RenderQueueItem();
-            renderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
-            renderQueueItem.setProjectName(blenderProject.getProjectName());
-            renderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
-            renderQueueItem.setQueueItem_uuid(UUID.randomUUID().toString());
-            renderQueueItem.setComplete(false);
-            renderQueueItem.setPaused(false);
-            renderQueueItem.setConnection_uuid(null);
-            renderQueueItem.setBlenderFramePart(blenderFramePartList.get(index));
-            renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
+            if (!renderQueueDatabaseService.checkExistingProjectIndex(blenderProject.getProject_uuid(), index)) {
+                RenderQueueItem renderQueueItem = new RenderQueueItem();
+                renderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
+                renderQueueItem.setProjectIndex(index);
+                renderQueueItem.setProjectName(blenderProject.getProjectName());
+                renderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
+                renderQueueItem.setQueueItem_uuid(UUID.randomUUID().toString());
+                renderQueueItem.setComplete(false);
+                renderQueueItem.setPaused(false);
+                renderQueueItem.setConnection_uuid(null);
+                renderQueueItem.setBlenderFramePart(blenderFramePartList.get(index));
+                renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
+            } else {
+                LOG.debug("Queue already contains item with index for project");
+            }
+
             if (index != finalIndex) {
                 index++;
             } else {

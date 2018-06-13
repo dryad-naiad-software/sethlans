@@ -32,6 +32,8 @@ import java.util.List;
 public interface RenderQueueDatabaseService extends CRUDService<RenderQueueItem> {
     List<RenderQueueItem> listPendingRender();
 
+    boolean checkExistingProjectIndex(String projectUUID, int index);
+
     List<RenderQueueItem> listPendingRenderWithNodeAssigned();
 
     RenderQueueItem getByQueueUUID(String queueUUID);

@@ -39,6 +39,7 @@ import javax.persistence.Entity;
 public class RenderQueueItem extends AbstractEntityClass {
     private String connection_uuid;
     private String project_uuid;
+    private int projectIndex;
     private String projectName;
     private String queueItem_uuid;
     private String gpu_device_id;

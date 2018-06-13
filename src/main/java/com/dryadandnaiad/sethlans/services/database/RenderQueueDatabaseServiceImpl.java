@@ -57,6 +57,16 @@ public class RenderQueueDatabaseServiceImpl implements RenderQueueDatabaseServic
     }
 
     @Override
+    public boolean checkExistingProjectIndex(String projectUUID, int index) {
+        for (RenderQueueItem renderQueueItem : listAll()) {
+            if (renderQueueItem.getProject_uuid().contains(projectUUID) && renderQueueItem.getProjectIndex() == index) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public List<RenderQueueItem> listPendingRenderWithNodeAssigned() {
         List<RenderQueueItem> renderQueueItemsPending = new ArrayList<>();
         for (RenderQueueItem renderQueueItem : listAll()) {
