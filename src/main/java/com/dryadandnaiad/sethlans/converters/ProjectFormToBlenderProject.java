@@ -68,7 +68,8 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
 
 
         RandomString randomString = new RandomString(6);
-        File blenderProjectDirectory = new File(projectDir + File.separator + projectForm.getProjectName().replaceAll(" ", "_").toLowerCase() + "_" + randomString.nextString());
+        String projectDir = projectForm.getProjectName().replaceAll(" ", "_").toLowerCase() + "_" + randomString.nextString();
+        File blenderProjectDirectory = new File(projectDir + File.separator + projectDir.replaceAll("[^a-zA-Z0-9_-]", ""));
         try {
             if (!blenderProjectDirectory.mkdirs()) {
                 throw new Exception("Unable to create directory " + blenderProjectDirectory.toString());
