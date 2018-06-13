@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
 import com.dryadandnaiad.sethlans.utils.RandomString;
 import com.google.common.base.Throwables;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,8 +69,9 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
 
 
         RandomString randomString = new RandomString(6);
-        String projectDir = projectForm.getProjectName().replaceAll(" ", "_").toLowerCase() + "_" + randomString.nextString();
-        File blenderProjectDirectory = new File(projectDir + File.separator + projectDir.replaceAll("[^a-zA-Z0-9_-]", ""));
+        String truncatedProjectName = StringUtils.left(projectForm.getProjectName(), 10);
+        String projectDir = truncatedProjectName.replaceAll(" ", "_").toLowerCase() + "_" + randomString.nextString();
+        File blenderProjectDirectory = new File(projectDir + File.separator + projectDir.replaceAll("[^a-zA-Z0-9_-]", "").toLowerCase());
         try {
             if (!blenderProjectDirectory.mkdirs()) {
                 throw new Exception("Unable to create directory " + blenderProjectDirectory.toString());
