@@ -52,7 +52,7 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
     @Override
     public void createMP4(BlenderProject blenderProject) {
         String movieFileDirectory = blenderProject.getProjectRootDir() + File.separator + "MP4" + File.separator;
-        String movieFile = blenderProject.getProjectName().toLowerCase().replaceAll(" ", "_") + ".mp4";
+        String movieFile = blenderProject.getProjectName().toLowerCase().replaceAll(" ", "_").replaceAll("[^a-zA-Z0-9_-]", "") + ".mp4";
         blenderProject.setMovieFileLocation(movieFileDirectory + movieFile);
         new File(movieFileDirectory).mkdir();
         fFmpegEncodeService.encodeImagesToVideo(blenderProject);
@@ -62,7 +62,7 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
     @Override
     public void createAVI(BlenderProject blenderProject) {
         String movieFileDirectory = blenderProject.getProjectRootDir() + File.separator + "AVI" + File.separator;
-        String movieFile = blenderProject.getProjectName().toLowerCase().replaceAll(" ", "_") + ".avi";
+        String movieFile = blenderProject.getProjectName().toLowerCase().replaceAll(" ", "_").replaceAll("[^a-zA-Z0-9_-]", "") + ".avi";
         blenderProject.setMovieFileLocation(movieFileDirectory + movieFile);
         new File(movieFileDirectory).mkdir();
         fFmpegEncodeService.encodeImagesToVideo(blenderProject);
