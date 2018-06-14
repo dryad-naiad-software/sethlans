@@ -323,6 +323,9 @@ public class QueueServiceImpl implements QueueService {
             int index = blenderProject.getQueueIndex();
             int finalIndex = blenderProject.getTotalQueueSize() - 1;
             for (int i = 0; i <= throttle; i++) {
+                if (renderQueueDatabaseService.listPendingRender().size() > QUEUE) {
+                    break;
+                }
                 if (index <= finalIndex) {
                     if (!renderQueueDatabaseService.checkExistingProjectIndex(blenderProject.getProject_uuid(), index)) {
                         LOG.debug("Adding to Queue item at index: " + index);
