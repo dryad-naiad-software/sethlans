@@ -304,19 +304,16 @@ public class QueueServiceImpl implements QueueService {
     private void populateQueueRunningProjects() {
         if (renderQueueDatabaseService.listPendingRender().size() < QUEUE && blenderProjectDatabaseService.getRemainingQueueProjects().size() > 0) {
             for (BlenderProject blenderProject : blenderProjectDatabaseService.getRemainingQueueProjects()) {
-                if (blenderProject.getQueueIndex() != (blenderProject.getTotalQueueSize() - 1)) {
-                    int throttle;
-                    List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
-                    int size = blenderFramePartList.size() - (blenderProject.getQueueIndex());
-                    if (size <= QUEUE) {
-                        throttle = size;
-                    } else {
-                        throttle = QUEUE - renderQueueDatabaseService.listPendingRender().size();
-                    }
-                    int queueIndex = blenderProject.getQueueIndex();
-                    addRenderQueueItem(blenderProject, throttle, queueIndex, blenderFramePartList);
-
+                int throttle;
+                List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
+                int size = blenderFramePartList.size() - (blenderProject.getQueueIndex());
+                if (size <= QUEUE) {
+                    throttle = size;
+                } else {
+                    throttle = QUEUE - renderQueueDatabaseService.listPendingRender().size();
                 }
+                int queueIndex = blenderProject.getQueueIndex();
+                addRenderQueueItem(blenderProject, throttle, queueIndex, blenderFramePartList);
             }
         }
     }
