@@ -319,45 +319,47 @@ public class QueueServiceImpl implements QueueService {
     }
 
     private void addRenderQueueItem(BlenderProject blenderProject, int throttle, int queueIndex, List<BlenderFramePart> blenderFramePartList) {
-        int index = queueIndex;
-        int finalIndex = blenderProject.getTotalQueueSize() - 1;
-        for (int i = 0; i <= throttle; i++) {
-            if (renderQueueDatabaseService.listPendingRender().size() > QUEUE) {
-                break;
-            }
-            if (!renderQueueDatabaseService.checkExistingProjectIndex(blenderProject.getProject_uuid(), index)) {
-                LOG.debug("Adding to Queue item at index: " + index);
-                RenderQueueItem renderQueueItem = new RenderQueueItem();
-                renderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
-                renderQueueItem.setProjectIndex(index);
-                renderQueueItem.setProjectName(blenderProject.getProjectName());
-                renderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
-                renderQueueItem.setQueueItem_uuid(UUID.randomUUID().toString());
-                renderQueueItem.setComplete(false);
-                renderQueueItem.setPaused(false);
-                renderQueueItem.setConnection_uuid(null);
-                renderQueueItem.setBlenderFramePart(blenderFramePartList.get(index));
-                renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
-            } else {
-                if (blenderProject.getTotalQueueSize() > 1) {
-                    LOG.debug("Queue already contains item with index for project");
+        blenderProject = blenderProjectDatabaseService.getById(blenderProject.getId());
+        if (!blenderProject.isQueueFillComplete()) {
+            int index = queueIndex;
+            int finalIndex = blenderProject.getTotalQueueSize() - 1;
+            for (int i = 0; i <= throttle; i++) {
+                if (renderQueueDatabaseService.listPendingRender().size() > QUEUE) {
+                    break;
                 }
-            }
+                if (!renderQueueDatabaseService.checkExistingProjectIndex(blenderProject.getProject_uuid(), index)) {
+                    LOG.debug("Adding to Queue item at index: " + index);
+                    RenderQueueItem renderQueueItem = new RenderQueueItem();
+                    renderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
+                    renderQueueItem.setProjectIndex(index);
+                    renderQueueItem.setProjectName(blenderProject.getProjectName());
+                    renderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
+                    renderQueueItem.setQueueItem_uuid(UUID.randomUUID().toString());
+                    renderQueueItem.setComplete(false);
+                    renderQueueItem.setPaused(false);
+                    renderQueueItem.setConnection_uuid(null);
+                    renderQueueItem.setBlenderFramePart(blenderFramePartList.get(index));
+                    renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
+                } else {
+                    if (blenderProject.getTotalQueueSize() > 1) {
+                        LOG.debug("Queue already contains item with index for project");
+                    }
+                }
 
-            if (index != finalIndex) {
-                index++;
-            } else {
-                if (blenderProject.getTotalQueueSize() > 1) {
-                    LOG.debug("Final index: " + finalIndex);
+                if (index != finalIndex) {
+                    index++;
+                } else {
+                    if (blenderProject.getTotalQueueSize() > 1) {
+                        LOG.debug("Final index: " + finalIndex);
+                    }
                 }
             }
-        }
-        if (blenderProject.getQueueIndex() != index) {
-            blenderProject = blenderProjectDatabaseService.getById(blenderProject.getId());
             blenderProject.setQueueIndex(index);
+            if (index == finalIndex) {
+                blenderProject.setQueueFillComplete(true);
+            }
             blenderProjectDatabaseService.saveOrUpdate(blenderProject);
         }
-
     }
 
     @Override
