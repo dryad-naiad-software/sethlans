@@ -352,9 +352,12 @@ public class QueueServiceImpl implements QueueService {
                 }
             }
         }
-        blenderProject = blenderProjectDatabaseService.getById(blenderProject.getId());
-        blenderProject.setQueueIndex(index);
-        blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+        if (blenderProject.getQueueIndex() != index) {
+            blenderProject = blenderProjectDatabaseService.getById(blenderProject.getId());
+            blenderProject.setQueueIndex(index);
+            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+        }
+
     }
 
     @Override
