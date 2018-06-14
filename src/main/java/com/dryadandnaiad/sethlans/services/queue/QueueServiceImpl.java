@@ -324,18 +324,20 @@ public class QueueServiceImpl implements QueueService {
             int finalIndex = blenderProject.getTotalQueueSize() - 1;
             for (int i = 0; i <= throttle; i++) {
                 if (index <= finalIndex) {
-                    LOG.debug("Adding to Queue item at index: " + index);
-                    RenderQueueItem renderQueueItem = new RenderQueueItem();
-                    renderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
-                    renderQueueItem.setProjectIndex(index);
-                    renderQueueItem.setProjectName(blenderProject.getProjectName());
-                    renderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
-                    renderQueueItem.setQueueItem_uuid(UUID.randomUUID().toString());
-                    renderQueueItem.setComplete(false);
-                    renderQueueItem.setPaused(false);
-                    renderQueueItem.setConnection_uuid(null);
-                    renderQueueItem.setBlenderFramePart(blenderFramePartList.get(index));
-                    renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
+                    if (!renderQueueDatabaseService.checkExistingProjectIndex(blenderProject.getProject_uuid(), index)) {
+                        LOG.debug("Adding to Queue item at index: " + index);
+                        RenderQueueItem renderQueueItem = new RenderQueueItem();
+                        renderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
+                        renderQueueItem.setProjectIndex(index);
+                        renderQueueItem.setProjectName(blenderProject.getProjectName());
+                        renderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
+                        renderQueueItem.setQueueItem_uuid(UUID.randomUUID().toString());
+                        renderQueueItem.setComplete(false);
+                        renderQueueItem.setPaused(false);
+                        renderQueueItem.setConnection_uuid(null);
+                        renderQueueItem.setBlenderFramePart(blenderFramePartList.get(index));
+                        renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
+                    }
                 }
                 index++;
             }
