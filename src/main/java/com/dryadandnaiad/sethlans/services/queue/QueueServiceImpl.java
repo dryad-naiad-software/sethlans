@@ -294,8 +294,7 @@ public class QueueServiceImpl implements QueueService {
                 } else {
                     throttle = QUEUE - renderQueueDatabaseService.listPendingRender().size();
                 }
-                int queueIndex = blenderProject.getQueueIndex();
-                addRenderQueueItem(blenderProject, throttle, queueIndex, blenderFramePartList);
+                addRenderQueueItem(blenderProject, throttle, blenderFramePartList);
 
             }
         }
@@ -312,16 +311,16 @@ public class QueueServiceImpl implements QueueService {
                 } else {
                     throttle = QUEUE - renderQueueDatabaseService.listPendingRender().size();
                 }
-                int queueIndex = blenderProject.getQueueIndex();
-                addRenderQueueItem(blenderProject, throttle, queueIndex, blenderFramePartList);
+
+                addRenderQueueItem(blenderProject, throttle, blenderFramePartList);
             }
         }
     }
 
-    private void addRenderQueueItem(BlenderProject blenderProject, int throttle, int queueIndex, List<BlenderFramePart> blenderFramePartList) {
+    private void addRenderQueueItem(BlenderProject blenderProject, int throttle, List<BlenderFramePart> blenderFramePartList) {
         blenderProject = blenderProjectDatabaseService.getById(blenderProject.getId());
         if (!blenderProject.isQueueFillComplete()) {
-            int index = queueIndex;
+            int index = blenderProject.getQueueIndex();
             int finalIndex = blenderProject.getTotalQueueSize() - 1;
             for (int i = 0; i <= throttle; i++) {
                 if (renderQueueDatabaseService.listPendingRender().size() > QUEUE) {
@@ -340,25 +339,23 @@ public class QueueServiceImpl implements QueueService {
                     renderQueueItem.setConnection_uuid(null);
                     renderQueueItem.setBlenderFramePart(blenderFramePartList.get(index));
                     renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
+                    index++;
                 } else {
                     if (blenderProject.getTotalQueueSize() > 1) {
                         LOG.debug("Queue already contains item with index for project");
                     }
                 }
-
-                if (index != finalIndex) {
-                    index++;
-                } else {
-                    if (blenderProject.getTotalQueueSize() > 1) {
-                        LOG.debug("Final index: " + finalIndex);
-                    }
-                }
             }
-            blenderProject.setQueueIndex(index);
-            if (index == finalIndex) {
+            if (index > finalIndex) {
                 blenderProject.setQueueFillComplete(true);
+                blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+            } else {
+                blenderProject.setQueueIndex(index);
+                blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             }
-            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+
+
+
         }
     }
 
