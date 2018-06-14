@@ -323,10 +323,7 @@ public class QueueServiceImpl implements QueueService {
             int index = blenderProject.getQueueIndex();
             int finalIndex = blenderProject.getTotalQueueSize() - 1;
             for (int i = 0; i <= throttle; i++) {
-                if (renderQueueDatabaseService.listPendingRender().size() > QUEUE) {
-                    break;
-                }
-                if (!renderQueueDatabaseService.checkExistingProjectIndex(blenderProject.getProject_uuid(), index)) {
+                if (index <= finalIndex) {
                     LOG.debug("Adding to Queue item at index: " + index);
                     RenderQueueItem renderQueueItem = new RenderQueueItem();
                     renderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
@@ -339,23 +336,17 @@ public class QueueServiceImpl implements QueueService {
                     renderQueueItem.setConnection_uuid(null);
                     renderQueueItem.setBlenderFramePart(blenderFramePartList.get(index));
                     renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
-                    index++;
-                } else {
-                    if (blenderProject.getTotalQueueSize() > 1) {
-                        LOG.debug("Queue already contains item with index for project");
-                    }
                 }
+                index++;
             }
             if (index > finalIndex) {
                 blenderProject.setQueueFillComplete(true);
                 blenderProjectDatabaseService.saveOrUpdate(blenderProject);
-            } else {
+            }
+            if (index <= finalIndex) {
                 blenderProject.setQueueIndex(index);
                 blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             }
-
-
-
         }
     }
 
