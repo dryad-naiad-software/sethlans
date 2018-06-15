@@ -66,7 +66,7 @@ public class QueueServiceImpl implements QueueService {
     private List<Long> nodesToDelete = new ArrayList<>();
     private List<Long> nodesToDisable = new ArrayList<>();
     private final static int QUEUE = 500;
-    private final static int CLEANUP = 350;
+    private final static int CLEANUP = QUEUE / 4;
 
     @Async
     @Override
@@ -78,7 +78,7 @@ public class QueueServiceImpl implements QueueService {
         }
         while (true) {
             try {
-                Thread.sleep(100);
+                Thread.sleep(50);
                 projectActions();
                 cleanQueue();
                 populateQueue();
