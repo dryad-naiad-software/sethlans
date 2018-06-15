@@ -102,7 +102,7 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
                         if (slots > renderTaskDatabaseService.listAll().size()) {
                             counter++;
                         }
-                        if (counter > 119) {
+                        if (counter > 899) {
                             LOG.debug("Informing server of idle slot(s)");
                             counter = 0;
                             if (slots == 1) {
