@@ -301,7 +301,7 @@ public class QueueServiceImpl implements QueueService {
     }
 
     private void populateQueueRunningProjects() {
-        if (renderQueueDatabaseService.listPendingRender().size() < QUEUE && blenderProjectDatabaseService.getRemainingQueueProjects().size() > 0) {
+        if (renderQueueDatabaseService.listPendingRender().size() <= CLEANUP && blenderProjectDatabaseService.getRemainingQueueProjects().size() > 0) {
             for (BlenderProject blenderProject : blenderProjectDatabaseService.getRemainingQueueProjects()) {
                 int throttle;
                 List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
