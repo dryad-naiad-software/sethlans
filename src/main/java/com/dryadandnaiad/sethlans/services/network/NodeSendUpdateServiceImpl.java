@@ -103,7 +103,7 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
                             counter++;
                         }
                         if (counter % 60 == 0) {
-                            LOG.debug("Node Idle for " + (counter / 60) + " minutes");
+                            LOG.debug("Node idle for " + (counter / 60) + " minutes");
                         }
                         if (counter > 899) {
                             LOG.debug("Informing server of idle slot(s)");
