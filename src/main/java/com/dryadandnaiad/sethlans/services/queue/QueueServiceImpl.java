@@ -81,6 +81,7 @@ public class QueueServiceImpl implements QueueService {
                 Thread.sleep(50);
                 if (!incomingQueueItemList.isEmpty()) {
                     incomingCompleteItems();
+                    assignmentWorkflow();
                 }
                 if (!processQueueDatabaseService.listAll().isEmpty()) {
                     processReceivedFiles();

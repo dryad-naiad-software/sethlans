@@ -62,9 +62,9 @@ class QueueNodeActions {
             if (blenderProject.getProjectStatus().equals(ProjectStatus.Pending)) {
                 blenderProject.setProjectStatus(ProjectStatus.Started);
                 blenderProject.setProjectStart(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
+                blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
+                blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             }
-            blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
-            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             renderQueueItem.setRendering(true);
             renderQueueItem.setVersion(renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID()).getVersion());
             renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
