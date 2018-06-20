@@ -79,6 +79,9 @@ public class QueueServiceImpl implements QueueService {
         while (true) {
             try {
                 Thread.sleep(50);
+                if (!nodeStatuses.isEmpty()) {
+                    processNodeAcknowledgements();
+                }
                 if (!incomingQueueItemList.isEmpty()) {
                     incomingCompleteItems();
                     assignmentWorkflow();
