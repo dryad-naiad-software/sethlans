@@ -118,7 +118,7 @@ class QueueNodeActions {
     }
 
     private static RenderQueueItem setQueueItemToNode(SethlansNodeDatabaseService sethlansNodeDatabaseService, int i, List<SethlansNode> nodesToUpdate, RenderQueueItem renderQueueItem) {
-        List<SethlansNode> sortedSethlansNodeList;
+        List<SethlansNode> sortedSethlansNodeList = new ArrayList<>();
         SethlansNode sethlansNode;
         switch (renderQueueItem.getRenderComputeType()) {
             case CPU_GPU:
@@ -180,6 +180,16 @@ class QueueNodeActions {
                     nodesToUpdate.add(sethlansNode);
                 }
                 break;
+        }
+        if (i == 0 && sortedSethlansNodeList != null) {
+            LOG.debug("Current Node Status:");
+            for (SethlansNode node : sortedSethlansNodeList) {
+                LOG.debug(node.getHostname() +
+                        ": Available Slots(" + node.getAvailableRenderingSlots() +
+                        "). Compute Type(" + node.getComputeType().getName() +
+                        "). CPU in use(" + node.isCpuSlotInUse() +
+                        "). (All) GPU(s) in use (" + node.isAllGPUSlotInUse() + ")");
+            }
         }
         return renderQueueItem;
     }
