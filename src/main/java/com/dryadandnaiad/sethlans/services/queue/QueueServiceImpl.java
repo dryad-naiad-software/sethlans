@@ -79,11 +79,27 @@ public class QueueServiceImpl implements QueueService {
         while (true) {
             try {
                 Thread.sleep(50);
-                projectActions();
+                if (!incomingQueueItemList.isEmpty()) {
+                    incomingCompleteItems();
+                }
+                if (!processQueueDatabaseService.listAll().isEmpty()) {
+                    processReceivedFiles();
+                }
+                if (!nodeOnlineItemList.isEmpty()) {
+                    nodeOnlineStatus();
+                }
+                if (!nodesToDelete.isEmpty()) {
+                    processNodeDeletion();
+                }
+                if (!nodesToDisable.isEmpty()) {
+                    processDisablingNodes();
+                }
+                if (!idleNodes.isEmpty()) {
+                    freeIdleNode();
+                }
                 cleanQueue();
                 populateQueue();
                 assignmentWorkflow();
-                projectActions();
                 processingWorkflow();
                 projectActions();
             } catch (InterruptedException e) {
@@ -94,21 +110,12 @@ public class QueueServiceImpl implements QueueService {
     }
 
     private void assignmentWorkflow() {
-        nodeOnlineStatus();
-        processNodeDeletion();
-        processDisablingNodes();
-        freeIdleNode();
         assignQueueItemToNode();
         sendQueueItemsToAssignedNode();
         processNodeAcknowledgements();
     }
 
     private void processingWorkflow() {
-        nodeOnlineStatus();
-        processNodeDeletion();
-        processDisablingNodes();
-        incomingCompleteItems();
-        processReceivedFiles();
         processImages();
         finishProject();
     }
@@ -181,14 +188,11 @@ public class QueueServiceImpl implements QueueService {
     private void incomingCompleteItems() {
         if (!modifyingQueue) {
             modifyingQueue = true;
-            if (incomingQueueItemList.size() > 0) {
                 List<ProcessQueueItem> itemsReviewed = new ArrayList<>();
                 for (ProcessQueueItem processQueueItem : new ArrayList<>(incomingQueueItemList)) {
                     processIncoming(itemsReviewed, processQueueItem, processQueueDatabaseService, renderQueueDatabaseService, sethlansNodeDatabaseService, blenderProjectDatabaseService);
                 }
                 incomingQueueItemList.removeAll(itemsReviewed);
-            }
-
             modifyingQueue = false;
         }
     }
@@ -375,10 +379,8 @@ public class QueueServiceImpl implements QueueService {
             modifyingQueue = true;
             List<ProcessQueueItem> processQueueItemList = processQueueDatabaseService.listAll();
             if (!processQueueItemList.isEmpty()) {
-
                 for (ProcessQueueItem processQueueItem : new ArrayList<>(processQueueItemList)) {
                     try {
-
                         processReceivedFile(processQueueItem, renderQueueDatabaseService,
                                 blenderProjectDatabaseService, sethlansNodeDatabaseService,
                                 processFrameDatabaseService, processQueueDatabaseService);
@@ -388,7 +390,6 @@ public class QueueServiceImpl implements QueueService {
                         processQueueDatabaseService.delete(processQueueItem);
                     }
                 }
-
             }
             modifyingQueue = false;
         }
