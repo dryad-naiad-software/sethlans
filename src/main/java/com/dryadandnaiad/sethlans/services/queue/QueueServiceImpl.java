@@ -5,12 +5,12 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- *
+ *  
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ *  
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -58,6 +58,7 @@ public class QueueServiceImpl implements QueueService {
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private ProcessQueueDatabaseService processQueueDatabaseService;
     private ProcessFrameDatabaseService processFrameDatabaseService;
+    private FrameFileUpdateDatabaseService frameFileUpdateDatabaseService;
     private List<ProcessNodeStatus> nodeStatuses = new ArrayList<>();
     private List<ProcessIdleNode> idleNodes = new ArrayList<>();
     private List<QueueActionItem> queueActionItemList = new ArrayList<>();
@@ -121,6 +122,7 @@ public class QueueServiceImpl implements QueueService {
     }
 
     private void processingWorkflow() {
+        updateFrames();
         finishProject();
     }
 
@@ -413,6 +415,22 @@ public class QueueServiceImpl implements QueueService {
         }
     }
 
+    private void updateFrames() {
+        if (!modifyingQueue) {
+            modifyingQueue = true;
+            if (frameFileUpdateDatabaseService.listAll().size() > 0) {
+                LOG.debug("Updating Projects with frame file names");
+                for (FrameFileUpdateItem frameFileUpdateItem : frameFileUpdateDatabaseService.listAll()) {
+                    BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(frameFileUpdateItem.getProjectUUID());
+                    blenderProject.getFrameFileNames().add(frameFileUpdateItem.getFrameFileName());
+                    blenderProject.setCurrentFrameThumbnail(frameFileUpdateItem.getCurrentFrameThumbnail());
+                    frameFileUpdateDatabaseService.delete(frameFileUpdateItem);
+                }
+            }
+            modifyingQueue = false;
+        }
+    }
+
     private void finishProject() {
         if (!modifyingQueue) {
             modifyingQueue = true;
@@ -471,5 +489,10 @@ public class QueueServiceImpl implements QueueService {
     @Autowired
     public void setProcessFrameDatabaseService(ProcessFrameDatabaseService processFrameDatabaseService) {
         this.processFrameDatabaseService = processFrameDatabaseService;
+    }
+
+    @Autowired
+    public void setFrameFileUpdateDatabaseService(FrameFileUpdateDatabaseService frameFileUpdateDatabaseService) {
+        this.frameFileUpdateDatabaseService = frameFileUpdateDatabaseService;
     }
 }

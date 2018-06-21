@@ -22,7 +22,7 @@ package com.dryadandnaiad.sethlans.services.queue;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.queue.FrameFileUpdateItem;
-import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.FrameFileUpdateDatabaseService;
 import com.dryadandnaiad.sethlans.services.ffmpeg.FFmpegEncodeService;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
@@ -47,8 +47,8 @@ import java.util.List;
 @Service
 public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnimationService {
     private static final Logger LOG = LoggerFactory.getLogger(ProcessImageAndAnimationServiceImpl.class);
-    private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private FFmpegEncodeService fFmpegEncodeService;
+    private FrameFileUpdateDatabaseService frameFileUpdateDatabaseService;
 
     @Override
     public void createMP4(BlenderProject blenderProject) {
@@ -117,6 +117,8 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
             newFrameUpdate.setProjectUUID(blenderProject.getProject_uuid());
             newFrameUpdate.setFrameFileName(frameFilename);
             newFrameUpdate.setCurrentFrameThumbnail(createThumbnail(frameFilename, storedDir, plainFilename, fileExtension));
+            frameFileUpdateDatabaseService.saveOrUpdate(newFrameUpdate);
+
         } catch (IOException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
         } catch (IndexOutOfBoundsException e) {
@@ -166,7 +168,7 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
     }
 
     @Autowired
-    public void setBlenderProjectDatabaseService(BlenderProjectDatabaseService blenderProjectDatabaseService) {
-        this.blenderProjectDatabaseService = blenderProjectDatabaseService;
+    public void setFrameFileUpdateDatabaseService(FrameFileUpdateDatabaseService frameFileUpdateDatabaseService) {
+        this.frameFileUpdateDatabaseService = frameFileUpdateDatabaseService;
     }
 }
