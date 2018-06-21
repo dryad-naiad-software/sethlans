@@ -52,6 +52,17 @@ public class FrameFileUpdateDatabaseServiceImpl implements FrameFileUpdateDataba
     }
 
     @Override
+    public List<FrameFileUpdateItem> listByProjectUUID(String projectUUID) {
+        List<FrameFileUpdateItem> projectList = new ArrayList<>();
+        for (FrameFileUpdateItem frameFileUpdateItem : listAll()) {
+            if (frameFileUpdateItem.getProjectUUID().equals(projectUUID)) {
+                projectList.add(frameFileUpdateItem);
+            }
+        }
+        return projectList;
+    }
+
+    @Override
     public void delete(Long id) {
         frameFileUpdateRepository.delete(id);
     }

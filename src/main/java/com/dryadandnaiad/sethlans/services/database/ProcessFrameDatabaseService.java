@@ -21,6 +21,8 @@ package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessFrameItem;
 
+import java.util.List;
+
 /**
  * Created Mario Estrella on 5/10/2018.
  * Dryad and Naiad Software LLC
@@ -28,5 +30,7 @@ import com.dryadandnaiad.sethlans.domains.database.queue.ProcessFrameItem;
  * Project: sethlans
  */
 public interface ProcessFrameDatabaseService extends CRUDService<ProcessFrameItem> {
+    List<ProcessFrameItem> listbyProjectUUID(String projectUUID);
+
     void delete(ProcessFrameItem processFrameItem);
 }

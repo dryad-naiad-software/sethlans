@@ -455,7 +455,8 @@ public class QueueServiceImpl implements QueueService {
     private void finishProject() {
         if (!modifyingQueue) {
             modifyingQueue = true;
-            completeProcessing(blenderProjectDatabaseService, processImageAndAnimationService, renderQueueDatabaseService);
+            completeProcessing(blenderProjectDatabaseService, processImageAndAnimationService, renderQueueDatabaseService,
+                    frameFileUpdateDatabaseService, processFrameDatabaseService);
             modifyingQueue = false;
         }
     }

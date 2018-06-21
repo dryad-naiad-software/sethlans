@@ -21,6 +21,8 @@ package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.database.queue.FrameFileUpdateItem;
 
+import java.util.List;
+
 /**
  * Created Mario Estrella on 6/20/2018.
  * Dryad and Naiad Software LLC
@@ -28,5 +30,7 @@ import com.dryadandnaiad.sethlans.domains.database.queue.FrameFileUpdateItem;
  * Project: sethlans
  */
 public interface FrameFileUpdateDatabaseService extends CRUDService<FrameFileUpdateItem> {
+    List<FrameFileUpdateItem> listByProjectUUID(String projectUUID);
+
     void delete(FrameFileUpdateItem frameFileUpdateItem);
 }

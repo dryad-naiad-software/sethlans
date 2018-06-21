@@ -182,29 +182,37 @@ class QueueProcessActions {
         }
     }
 
-    static void completeProcessing(BlenderProjectDatabaseService blenderProjectDatabaseService, ProcessImageAndAnimationService processImageAndAnimationService, RenderQueueDatabaseService renderQueueDatabaseService) {
+    static void completeProcessing(BlenderProjectDatabaseService blenderProjectDatabaseService,
+                                   ProcessImageAndAnimationService processImageAndAnimationService,
+                                   RenderQueueDatabaseService renderQueueDatabaseService,
+                                   FrameFileUpdateDatabaseService frameFileUpdateDatabaseService,
+                                   ProcessFrameDatabaseService processFrameDatabaseService) {
         for (BlenderProject blenderProject : blenderProjectDatabaseService.listAll()) {
+
             if (blenderProject.getProjectStatus().equals(ProjectStatus.Rendering) || blenderProject.getProjectStatus().equals(ProjectStatus.Started)) {
-                if (blenderProject.getRemainingQueueSize() == 0) {
-                    if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
-                        blenderProject.setProjectStatus(ProjectStatus.Processing);
-                        blenderProject.setCurrentPercentage(100);
-                        processImageAndAnimationService.createAVI(blenderProject);
+                if (frameFileUpdateDatabaseService.listByProjectUUID(blenderProject.getProject_uuid()).size() == 0
+                        && processFrameDatabaseService.listbyProjectUUID(blenderProject.getProject_uuid()).size() == 0) {
+                    if (blenderProject.getRemainingQueueSize() == 0) {
+                        if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
+                            blenderProject.setProjectStatus(ProjectStatus.Processing);
+                            blenderProject.setCurrentPercentage(100);
+                            processImageAndAnimationService.createAVI(blenderProject);
+                        }
+                        if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
+                            blenderProject.setProjectStatus(ProjectStatus.Processing);
+                            blenderProject.setCurrentPercentage(100);
+                            processImageAndAnimationService.createMP4(blenderProject);
+                        } else {
+                            blenderProject.setProjectStatus(ProjectStatus.Finished);
+                            blenderProject.setCurrentPercentage(100);
+                            blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
+                        }
+                        blenderProject.setAllImagesProcessed(true);
+                        blenderProject.setTotalProjectTime(blenderProject.getProjectEnd() - blenderProject.getProjectStart());
+                        blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
+                        blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+                        renderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
                     }
-                    if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
-                        blenderProject.setProjectStatus(ProjectStatus.Processing);
-                        blenderProject.setCurrentPercentage(100);
-                        processImageAndAnimationService.createMP4(blenderProject);
-                    } else {
-                        blenderProject.setProjectStatus(ProjectStatus.Finished);
-                        blenderProject.setCurrentPercentage(100);
-                        blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
-                    }
-                    blenderProject.setAllImagesProcessed(true);
-                    blenderProject.setTotalProjectTime(blenderProject.getProjectEnd() - blenderProject.getProjectStart());
-                    blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
-                    blenderProjectDatabaseService.saveOrUpdate(blenderProject);
-                    renderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
                 }
             }
         }
