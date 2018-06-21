@@ -425,7 +425,9 @@ public class QueueServiceImpl implements QueueService {
                     blenderProject.getFrameFileNames().add(frameFileUpdateItem.getFrameFileName());
                     blenderProject.setCurrentFrameThumbnail(frameFileUpdateItem.getCurrentFrameThumbnail());
                     frameFileUpdateDatabaseService.delete(frameFileUpdateItem);
+                    blenderProjectDatabaseService.saveOrUpdate(blenderProject);
                 }
+                LOG.debug("Completed File name update");
             }
             modifyingQueue = false;
         }
