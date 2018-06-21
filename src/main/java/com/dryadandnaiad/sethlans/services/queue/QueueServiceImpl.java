@@ -414,8 +414,16 @@ public class QueueServiceImpl implements QueueService {
                 if (processFrameDatabaseService.listAll().size() > 0) {
                     for (ProcessFrameItem processFrameItem : processFrameDatabaseService.listAll()) {
                         BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(processFrameItem.getProjectUUID());
-                        processImageAndAnimationService.combineParts(blenderProject, processFrameItem.getFrameNumber());
-                        processFrameDatabaseService.delete(processFrameItem);
+                        for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
+                            if (processFrameItem.getFrameNumber() == blenderFramePart.getFrameNumber()) {
+                                if (blenderFramePart.getStoredDir() != null) {
+                                    processImageAndAnimationService.combineParts(blenderProject, processFrameItem.getFrameNumber());
+                                    processFrameDatabaseService.delete(processFrameItem);
+                                }
+                            }
+                        }
+
+
                     }
                 }
             } catch (InterruptedException e) {
