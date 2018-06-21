@@ -28,4 +28,5 @@ import com.dryadandnaiad.sethlans.domains.database.queue.FrameFileUpdateItem;
  * Project: sethlans
  */
 public interface FrameFileUpdateDatabaseService extends CRUDService<FrameFileUpdateItem> {
+    void delete(FrameFileUpdateItem frameFileUpdateItem);
 }

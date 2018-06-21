@@ -25,8 +25,6 @@ import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.repositories.BlenderProjectRepository;
 import com.google.common.collect.Lists;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +41,6 @@ import java.util.List;
 public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabaseService {
     private BlenderProjectRepository blenderProjectRepository;
     private ProjectFormToBlenderProject projectFormToBlenderProject;
-    private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectDatabaseServiceImpl.class);
 
     @Override
     public List<BlenderProject> listAll() {

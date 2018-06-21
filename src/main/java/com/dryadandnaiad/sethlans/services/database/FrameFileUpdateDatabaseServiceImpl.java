@@ -20,7 +20,11 @@
 package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.database.queue.FrameFileUpdateItem;
+import com.dryadandnaiad.sethlans.repositories.FrameFileUpdateRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,24 +33,36 @@ import java.util.List;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Service
 public class FrameFileUpdateDatabaseServiceImpl implements FrameFileUpdateDatabaseService {
+    private FrameFileUpdateRepository frameFileUpdateRepository;
     @Override
     public List<FrameFileUpdateItem> listAll() {
-        return null;
+        return new ArrayList<>(frameFileUpdateRepository.findAll());
     }
 
     @Override
     public FrameFileUpdateItem getById(Long id) {
-        return null;
+        return frameFileUpdateRepository.findOne(id);
     }
 
     @Override
     public FrameFileUpdateItem saveOrUpdate(FrameFileUpdateItem domainObject) {
-        return null;
+        return frameFileUpdateRepository.save(domainObject);
     }
 
     @Override
     public void delete(Long id) {
+        frameFileUpdateRepository.delete(id);
+    }
 
+    @Override
+    public void delete(FrameFileUpdateItem frameFileUpdateItem) {
+        frameFileUpdateRepository.delete(frameFileUpdateItem);
+    }
+
+    @Autowired
+    public void setFrameFileUpdateRepository(FrameFileUpdateRepository frameFileUpdateRepository) {
+        this.frameFileUpdateRepository = frameFileUpdateRepository;
     }
 }
