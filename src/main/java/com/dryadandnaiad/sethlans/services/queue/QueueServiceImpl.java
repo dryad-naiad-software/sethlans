@@ -74,7 +74,6 @@ public class QueueServiceImpl implements QueueService {
     public void startQueue() {
         try {
             Thread.sleep(20000);
-            processImages();
         } catch (InterruptedException e) {
             LOG.debug("Stopping Sethlans Queue Service");
         }
@@ -401,17 +400,29 @@ public class QueueServiceImpl implements QueueService {
         }
     }
 
+    @Override
     @Async
-    public void processImages() throws InterruptedException {
+    public void processImages() {
+        try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            LOG.debug("Stopping Sethlans Queue Service");
+        }
         while (true) {
-            Thread.sleep(5000);
-            if (processFrameDatabaseService.listAll().size() > 0) {
-                for (ProcessFrameItem processFrameItem : processFrameDatabaseService.listAll()) {
-                    BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(processFrameItem.getProjectUUID());
-                    processImageAndAnimationService.combineParts(blenderProject, processFrameItem.getFrameNumber());
-                    processFrameDatabaseService.delete(processFrameItem);
+            try {
+                Thread.sleep(5000);
+                if (processFrameDatabaseService.listAll().size() > 0) {
+                    for (ProcessFrameItem processFrameItem : processFrameDatabaseService.listAll()) {
+                        BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(processFrameItem.getProjectUUID());
+                        processImageAndAnimationService.combineParts(blenderProject, processFrameItem.getFrameNumber());
+                        processFrameDatabaseService.delete(processFrameItem);
+                    }
                 }
+            } catch (InterruptedException e) {
+                LOG.debug("Stopping Sethlans Queue Service");
+                break;
             }
+
         }
     }
 
