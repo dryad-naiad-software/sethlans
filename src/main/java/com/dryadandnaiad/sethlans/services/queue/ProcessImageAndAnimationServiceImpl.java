@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.queue;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.queue.FrameFileUpdateItem;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.ffmpeg.FFmpegEncodeService;
 import com.google.common.base.Throwables;
@@ -112,9 +113,10 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
                 count++;
             }
             ImageIO.write(concatImage, fileExtension.toUpperCase(), new File(frameFilename));
-            blenderProject.getFrameFileNames().add(frameFilename);
-            blenderProject.setCurrentFrameThumbnail(createThumbnail(frameFilename, storedDir, plainFilename, fileExtension));
-            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+            FrameFileUpdateItem newFrameUpdate = new FrameFileUpdateItem();
+            newFrameUpdate.setProjectUUID(blenderProject.getProject_uuid());
+            newFrameUpdate.setFrameFileName(frameFilename);
+            newFrameUpdate.setCurrentFrameThumbnail(createThumbnail(frameFilename, storedDir, plainFilename, fileExtension));
         } catch (IOException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
         } catch (IndexOutOfBoundsException e) {

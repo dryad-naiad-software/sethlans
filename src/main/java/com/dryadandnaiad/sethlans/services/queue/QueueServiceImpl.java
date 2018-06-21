@@ -73,6 +73,7 @@ public class QueueServiceImpl implements QueueService {
     public void startQueue() {
         try {
             Thread.sleep(20000);
+            processImages();
         } catch (InterruptedException e) {
             LOG.debug("Stopping Sethlans Queue Service");
         }
@@ -120,7 +121,6 @@ public class QueueServiceImpl implements QueueService {
     }
 
     private void processingWorkflow() {
-        processImages();
         finishProject();
     }
 
@@ -192,11 +192,11 @@ public class QueueServiceImpl implements QueueService {
     private void incomingCompleteItems() {
         if (!modifyingQueue) {
             modifyingQueue = true;
-                List<ProcessQueueItem> itemsReviewed = new ArrayList<>();
-                for (ProcessQueueItem processQueueItem : new ArrayList<>(incomingQueueItemList)) {
-                    processIncoming(itemsReviewed, processQueueItem, processQueueDatabaseService, renderQueueDatabaseService, sethlansNodeDatabaseService, blenderProjectDatabaseService);
-                }
-                incomingQueueItemList.removeAll(itemsReviewed);
+            List<ProcessQueueItem> itemsReviewed = new ArrayList<>();
+            for (ProcessQueueItem processQueueItem : new ArrayList<>(incomingQueueItemList)) {
+                processIncoming(itemsReviewed, processQueueItem, processQueueDatabaseService, renderQueueDatabaseService, sethlansNodeDatabaseService, blenderProjectDatabaseService);
+            }
+            incomingQueueItemList.removeAll(itemsReviewed);
             modifyingQueue = false;
         }
     }
@@ -399,9 +399,10 @@ public class QueueServiceImpl implements QueueService {
         }
     }
 
-    private void processImages() {
-        if (!modifyingQueue) {
-            modifyingQueue = true;
+    @Async
+    public void processImages() throws InterruptedException {
+        while (true) {
+            Thread.sleep(5000);
             if (processFrameDatabaseService.listAll().size() > 0) {
                 for (ProcessFrameItem processFrameItem : processFrameDatabaseService.listAll()) {
                     BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(processFrameItem.getProjectUUID());
@@ -409,7 +410,6 @@ public class QueueServiceImpl implements QueueService {
                     processFrameDatabaseService.delete(processFrameItem);
                 }
             }
-            modifyingQueue = false;
         }
     }
 
