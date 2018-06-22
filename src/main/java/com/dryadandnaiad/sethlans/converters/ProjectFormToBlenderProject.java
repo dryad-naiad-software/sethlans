@@ -68,7 +68,7 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
 
 
         String truncatedProjectName = StringUtils.left(projectForm.getProjectName(), 10);
-        String truncatedUUID = StringUtils.left(projectForm.getUuid(), 4);
+        String truncatedUUID = StringUtils.left(projectForm.getUuid(), 8);
         String projectDir = truncatedProjectName.replaceAll(" ", "").toLowerCase() + "_" + truncatedUUID.toLowerCase();
         File blenderProjectDirectory = new File(projectHomeDir + File.separator + projectDir.replaceAll("[^a-zA-Z0-9_-]", "").toLowerCase());
         try {
