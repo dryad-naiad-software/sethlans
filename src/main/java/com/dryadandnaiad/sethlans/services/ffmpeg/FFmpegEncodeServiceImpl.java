@@ -30,6 +30,7 @@ import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,10 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
     @Async
     @Override
     public void encodeImagesToVideo(BlenderProject blenderProject) {
+        String truncatedProjectName = StringUtils.left(blenderProject.getProjectName(), 10);
+        String truncatedUUID = StringUtils.left(blenderProject.getProject_uuid(), 4);
+        String cleanedProjectName = truncatedProjectName.replaceAll(" ", "").replaceAll("[^a-zA-Z0-9_-]", "").toLowerCase();
+
         String error;
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
@@ -66,7 +71,7 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
                 e.printStackTrace();
             }
         }
-        ffmpeg.addArgument(blenderProject.getProjectRootDir() + File.separator + "temp" + File.separator + blenderProject.getProject_uuid() + "-" + "%d.png");
+        ffmpeg.addArgument(blenderProject.getProjectRootDir() + File.separator + "temp" + File.separator + cleanedProjectName + "-" + truncatedUUID + "-" + "%d.png");
         ffmpeg.addArgument("-c:v");
         if (blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
             ffmpeg.addArgument("utvideo");
