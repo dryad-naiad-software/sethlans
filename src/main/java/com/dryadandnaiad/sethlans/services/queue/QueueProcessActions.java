@@ -94,11 +94,8 @@ class QueueProcessActions {
                     renderQueueItem.getBlenderFramePart().getPartFilename() + "." +
                     renderQueueItem.getBlenderFramePart().getFileExtension());
             Files.write(path, bytes);
-            Thread.sleep(5000);
         } catch (IOException | SQLException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
-        } catch (InterruptedException e) {
-            LOG.debug("Queue Process service shutting down");
         }
         renderQueueItem = renderQueueDatabaseService.getById(renderQueueItem.getId());
         renderQueueItem.setComplete(true);
