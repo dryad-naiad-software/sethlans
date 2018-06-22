@@ -26,6 +26,7 @@ import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.queue.QueueService;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -170,9 +171,12 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     private void configureFrameList(BlenderProject blenderProject) {
         List<BlenderFramePart> blenderFramePartList = new ArrayList<>();
         List<String> frameFileNames = new ArrayList<>();
+        String truncatedProjectName = StringUtils.left(blenderProject.getProjectName(), 10);
+        String truncatedUUID = StringUtils.left(blenderProject.getProject_uuid(), 4);
+        String cleanedProjectName = truncatedProjectName.replaceAll(" ", "").replaceAll("[^a-zA-Z0-9_-]", "").toLowerCase();
         List<PartCoordinates> partCoordinatesList = configurePartCoordinates(blenderProject.getPartsPerFrame());
         for (int i = 0; i < blenderProject.getTotalNumOfFrames(); i++) {
-            frameFileNames.add(blenderProject.getProject_uuid() + "-" + (i + 1));
+            frameFileNames.add(cleanedProjectName + "-" + truncatedUUID + "-" + (i + 1));
             for (int j = 0; j < blenderProject.getPartsPerFrame(); j++) {
                 BlenderFramePart blenderFramePart = new BlenderFramePart();
                 blenderFramePart.setFrameFileName(frameFileNames.get(i));

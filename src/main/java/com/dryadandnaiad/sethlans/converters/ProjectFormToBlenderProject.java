@@ -22,7 +22,6 @@ package com.dryadandnaiad.sethlans.converters;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
-import com.dryadandnaiad.sethlans.utils.RandomString;
 import com.google.common.base.Throwables;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -68,9 +67,9 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
         blenderProject.setFrameRate(projectForm.getFrameRate());
 
 
-        RandomString randomString = new RandomString(6);
         String truncatedProjectName = StringUtils.left(projectForm.getProjectName(), 10);
-        String projectDir = truncatedProjectName.replaceAll(" ", "_").toLowerCase() + "_" + randomString.nextString();
+        String truncatedUUID = StringUtils.left(projectForm.getUuid(), 4);
+        String projectDir = truncatedProjectName.replaceAll(" ", "").toLowerCase() + "_" + truncatedUUID.toLowerCase();
         File blenderProjectDirectory = new File(projectHomeDir + File.separator + projectDir.replaceAll("[^a-zA-Z0-9_-]", "").toLowerCase());
         try {
             if (!blenderProjectDirectory.mkdirs()) {

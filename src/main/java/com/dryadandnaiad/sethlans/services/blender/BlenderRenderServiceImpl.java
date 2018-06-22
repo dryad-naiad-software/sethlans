@@ -103,7 +103,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         NodeInfo nodeInfo = SethlansUtils.getNodeInfo();
         String cacheDir = SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString());
         String truncatedProjectName = StringUtils.left(renderTask.getProjectName(), 10);
-        String cleanedProjectName = truncatedProjectName.replaceAll(" ", "_").replaceAll("[^a-zA-Z0-9_-]", "");
+        String cleanedProjectName = truncatedProjectName.replaceAll(" ", "").replaceAll("[^a-zA-Z0-9_-]", "");
         File blendFileDir = new File(SethlansUtils.getProperty(SethlansConfigKeys.BLEND_FILE_CACHE_DIR.toString())
                 + File.separator + cleanedProjectName.toLowerCase() + "-" + renderTask.getProject_uuid());
         File renderDir = new File(cacheDir + File.separator + renderTask.getBlenderFramePart().getPartFilename());
