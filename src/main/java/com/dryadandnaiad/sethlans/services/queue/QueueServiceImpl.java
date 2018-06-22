@@ -391,7 +391,7 @@ public class QueueServiceImpl implements QueueService {
                                 processFrameDatabaseService, processQueueDatabaseService);
                     } catch (NullPointerException e) {
                         LOG.error("Received item after project has been stopped");
-                        LOG.error(Throwables.getStackTraceAsString(e));
+                        LOG.debug(Throwables.getStackTraceAsString(e));
                         processQueueDatabaseService.delete(processQueueItem);
                     }
                 }

@@ -174,7 +174,7 @@ class QueueProcessActions {
             itemsReviewed.add(processQueueItem);
         } catch (NullPointerException e) {
             LOG.error("Received incoming items for queue after queue has been stopped");
-            LOG.error(Throwables.getStackTraceAsString(e));
+            LOG.debug(Throwables.getStackTraceAsString(e));
             itemsReviewed.add(processQueueItem);
         }
     }
