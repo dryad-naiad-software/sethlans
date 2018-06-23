@@ -129,6 +129,11 @@
                         class="btn btn-outline-success btn-sm" type="button" (click)="downloadProject(project.id)">
                   Download
                 </button>
+                <button [attr.id]="'video'+ project.id"
+                        *ngIf="project.projectStatus.valueOf().toString() == 'Finished'.valueOf() && project.outputFormat.valueOf().toString() != 'PNG'"
+                        class="btn btn-outline-success btn-sm" type="button" (click)="downloadVideo(project.id)">
+                  Video
+                </button>
 
                 <button [attr.id]="'details'+ project.id" class="btn btn-outline-dark btn-sm" type="button"
                         style="width: 90px"

@@ -26,7 +26,6 @@ import com.dryadandnaiad.sethlans.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderProjectService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
-import com.dryadandnaiad.sethlans.services.database.RenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
@@ -78,7 +77,6 @@ public class ProjectController {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private BlenderProjectService blenderProjectService;
-    private RenderQueueDatabaseService renderQueueDatabaseService;
 
 
 
@@ -147,19 +145,31 @@ public class ProjectController {
             File image = new File(project.getFrameFileNames().get(0));
             SethlansUtils.serveFile(image, response);
         }
-        if (project.getProjectType().equals(ProjectType.ANIMATION) && project.getRenderOutputFormat().equals(RenderOutputFormat.PNG)) {
+        if (project.getProjectType().equals(ProjectType.ANIMATION)) {
             File zipFile = SethlansUtils.createArchive(project.getFrameFileNames(), project.getProjectRootDir(), project.getProjectName().toLowerCase());
             if (zipFile != null) {
                 SethlansUtils.serveFile(zipFile, response);
             }
 
         }
+
+
+    }
+
+    @RequestMapping(value = "/api/project_actions/download_project_video/{id}")
+    public void downloadVideo(@PathVariable Long id, HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        BlenderProject project;
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            project = blenderProjectDatabaseService.getById(id);
+        } else {
+            project = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
+        }
         if (project.getProjectType().equals(ProjectType.ANIMATION) && project.getRenderOutputFormat().equals(RenderOutputFormat.MP4)
                 || project.getRenderOutputFormat().equals(RenderOutputFormat.AVI)) {
             File video = new File(project.getMovieFileLocation());
             SethlansUtils.serveFile(video, response);
         }
-
     }
 
     @GetMapping(value = "/api/project_actions/start_project/{id}")
@@ -542,8 +552,4 @@ public class ProjectController {
         this.blenderProjectService = blenderProjectService;
     }
 
-    @Autowired
-    public void setRenderQueueDatabaseService(RenderQueueDatabaseService renderQueueDatabaseService) {
-        this.renderQueueDatabaseService = renderQueueDatabaseService;
-    }
 }

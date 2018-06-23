@@ -17,15 +17,15 @@
  *
  */
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
-import {Project} from "../../models/project.model";
-import {ProjectListService} from "../../services/project_list.service";
-import {Router} from "@angular/router";
-import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
-import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
-import {ProjectStatus} from "../../enums/project_status.enum";
-import Utils from "../../utils/utils";
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs/Observable';
+import {Project} from '../../models/project.model';
+import {ProjectListService} from '../../services/project_list.service';
+import {Router} from '@angular/router';
+import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
+import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {ProjectStatus} from '../../enums/project_status.enum';
+import Utils from '../../utils/utils';
 
 
 @Component({
@@ -115,6 +115,10 @@ export class ProjectsComponent implements OnInit {
 
   downloadProject(id) {
     window.location.href = "/api/project_actions/download_project/" + id;
+  }
+
+  downloadVideo(id) {
+    window.location.href = '/api/project_actions/download_project_video/' + id;
   }
 
 

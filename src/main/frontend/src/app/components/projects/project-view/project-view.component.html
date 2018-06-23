@@ -31,6 +31,15 @@
             <td *ngIf="projectStatus?.valueOf().toString() != 'Finished'.valueOf()">{{projectStatus}}</td>
             <td *ngIf="projectStatus?.valueOf().toString() == 'Finished'.valueOf()"><a
               [href]="'/api/project_actions/download_project/' + projectDetails.id">{{projectStatus}}</a></td>
+
+          </tr>
+          <tr
+            *ngIf="projectStatus?.valueOf().toString() == 'Finished'.valueOf() && projectDetails.outputFormat.valueOf().toString() != 'PNG'">
+            <td>Download Video</td>
+            <td *ngIf="projectStatus?.valueOf().toString() == 'Finished'.valueOf()"><a
+              [href]="'/api/project_actions/download_project_video/' + projectDetails.id">{{projectDetails.projectName}}</a>
+            </td>
+
           </tr>
           <tr>
             <td>Selected Blender Version</td>
@@ -120,6 +129,10 @@
           </tr>
           </tbody>
         </table>
+        <button id="videoPropertiesButton"
+                *ngIf="projectStatus.valueOf().toString() == 'Finished' && projectDetails.outputFormat.valueOf().toString() != 'PNG'"
+                class="btn btn-outline-dark mr-auto float-left">Video Settings
+        </button>
         <button [disabled]="!nodesReady" id="startButton" *ngIf="projectStatus.valueOf().toString() == 'Added'"
                 class="btn btn-outline-primary mr-auto float-left" (click)="startProject(projectDetails.id)">Start
           Project
