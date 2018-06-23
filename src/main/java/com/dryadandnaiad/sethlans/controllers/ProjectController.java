@@ -27,6 +27,7 @@ import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderProjectService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.services.queue.ProcessImageAndAnimationService;
 import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.apache.commons.io.IOUtils;
@@ -77,8 +78,7 @@ public class ProjectController {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private BlenderProjectService blenderProjectService;
-
-
+    private ProcessImageAndAnimationService processImageAndAnimationService;
 
     @GetMapping(value = "/api/project_actions/delete_all_projects")
     public void deleteAllProjects() {
@@ -150,9 +150,28 @@ public class ProjectController {
             if (zipFile != null) {
                 SethlansUtils.serveFile(zipFile, response);
             }
-
         }
+    }
 
+    @RequestMapping(value = "/api/project_actions/encode_project_video/{id}")
+    public void encodeVideo(@PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        BlenderProject project;
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            project = blenderProjectDatabaseService.getById(id);
+        } else {
+            project = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
+        }
+        switch (project.getRenderOutputFormat()) {
+            case AVI:
+                processImageAndAnimationService.createAVI(project);
+                break;
+            case MP4:
+                processImageAndAnimationService.createMP4(project);
+                break;
+            case PNG:
+                break;
+        }
 
     }
 
@@ -573,4 +592,8 @@ public class ProjectController {
         this.blenderProjectService = blenderProjectService;
     }
 
+    @Autowired
+    public void setProcessImageAndAnimationService(ProcessImageAndAnimationService processImageAndAnimationService) {
+        this.processImageAndAnimationService = processImageAndAnimationService;
+    }
 }
