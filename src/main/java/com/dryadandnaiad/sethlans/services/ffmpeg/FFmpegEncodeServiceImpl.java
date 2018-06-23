@@ -88,7 +88,7 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
             ffmpeg.addArgument("-pix_fmt");
             ffmpeg.addArgument("yuv420p");
         }
-        ffmpeg.addArgument("-r");
+        ffmpeg.addArgument("-framerate");
         ffmpeg.addArgument(blenderProject.getFrameRate());
         ffmpeg.addArgument(blenderProject.getMovieFileLocation());
         LOG.debug("Running following ffmpeg command " + ffmpeg.toString());

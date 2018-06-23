@@ -28,15 +28,15 @@
           <tbody>
           <tr>
             <td>Project Status</td>
-            <td *ngIf="projectStatus?.valueOf().toString() != 'Finished'.valueOf()">{{projectStatus}}</td>
-            <td *ngIf="projectStatus?.valueOf().toString() == 'Finished'.valueOf()"><a
+            <td *ngIf="projectStatus.valueOf().toString() != 'Finished'.valueOf()">{{projectStatus}}</td>
+            <td *ngIf="projectStatus.valueOf().toString() == 'Finished'.valueOf()"><a
               [href]="'/api/project_actions/download_project/' + projectDetails.id">{{projectStatus}}</a></td>
 
           </tr>
           <tr
-            *ngIf="projectStatus?.valueOf().toString() == 'Finished'.valueOf() && projectDetails.outputFormat.valueOf().toString() != 'PNG'">
+            *ngIf="projectStatus.valueOf().toString() == 'Finished'.valueOf() && projectDetails.outputFormat.valueOf().toString() != 'PNG'">
             <td>Download Video</td>
-            <td *ngIf="projectStatus?.valueOf().toString() == 'Finished'.valueOf()"><a
+            <td *ngIf="projectStatus.valueOf().toString() == 'Finished'.valueOf()"><a
               [href]="'/api/project_actions/download_project_video/' + projectDetails.id">{{projectDetails.projectName}}</a>
             </td>
 
@@ -49,11 +49,11 @@
             <td>Output Format</td>
             <td>{{projectDetails.outputFormat}}</td>
           </tr>
-          <tr *ngIf="projectDetails?.projectType?.toString().valueOf() == 'STILL_IMAGE'.valueOf()">
+          <tr *ngIf="projectDetails.projectType.toString().valueOf() == 'STILL_IMAGE'.valueOf()">
             <td>Project Type</td>
             <td>Still Image</td>
           </tr>
-          <tr *ngIf="projectDetails?.projectType?.toString().valueOf() == 'ANIMATION'.valueOf()">
+          <tr *ngIf="projectDetails.projectType.toString().valueOf() == 'ANIMATION'.valueOf()">
             <td>Project Type</td>
             <td>Animation</td>
           </tr>
@@ -131,7 +131,7 @@
         </table>
         <button id="videoPropertiesButton"
                 *ngIf="projectStatus.valueOf().toString() == 'Finished' && projectDetails.outputFormat.valueOf().toString() != 'PNG'"
-                class="btn btn-outline-dark mr-auto float-left">Video Settings
+                class="btn btn-outline-dark mr-auto float-left" (click)="open(videoSettings)">Video Settings
         </button>
         <button [disabled]="!nodesReady" id="startButton" *ngIf="projectStatus.valueOf().toString() == 'Added'"
                 class="btn btn-outline-primary mr-auto float-left" (click)="startProject(projectDetails.id)">Start
@@ -152,3 +152,41 @@
     </div>
   </div>
 </div>
+<ng-template #videoSettings let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Video Settings</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #videoSettingsForm="ngForm" class="editForm">
+      <div class="form-group">
+        <label for="outputFormat">Output Format</label>
+        <select class="form-control" id="outputFormat" name="outputFormat"
+                [(ngModel)]="projectDetails.outputFormat">
+          <option *ngFor="let format of formats" [selected]="projectDetails.outputFormat">
+            {{format}}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="frameRate">Frame Rate</label>
+        <select class="form-control" id="frameRate" name="frameRate"
+                [(ngModel)]="projectDetails.frameRate">
+          <option *ngFor="let frameRate of frameRates">{{frameRate}}
+          </option>
+        </select>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c('Close click')">Cancel
+    </button>
+    <button
+      [disabled]=""
+      class="btn btn-outline-dark ml-auto" (click)="c('Close click')">Confirm Changes
+    </button>
+
+  </div>
+</ng-template>

@@ -23,6 +23,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {ProjectStatus} from '../../../enums/project_status.enum';
+import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-project-view',
@@ -33,7 +34,7 @@ export class ProjectViewComponent implements OnInit {
   projectDetails: Project;
   id: number;
   projectLoaded: boolean = false;
-  placeholder: any = "assets/images/placeholder.svg";
+  placeholder: any = 'assets/images/placeholder.svg';
   currentProgress: number;
   projectStatus: ProjectStatus;
   currentThumbnail: any;
@@ -43,26 +44,26 @@ export class ProjectViewComponent implements OnInit {
   totalQueue: number;
   remainingQueue: number;
   nodesReady: boolean = false;
+  frameRates: string[] = ['23.98', '24', '25', '29.97', '30', '50', '59.94', '60'];
+  formats: string[] = ['AVI', 'MP4'];
 
 
-
-
-  constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute) {
+  constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute, private modalService: NgbModal) {
+    this.route.params.subscribe(params => {
+      this.id = +params['id'];
+    });
   }
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
-      this.id = +params['id'];
-      this.loadProjectDetails();
-      this.currentProgressCheck();
-      this.currentStatusCheck();
-      this.getThumbnailStatus();
-      this.getTotalRenderTime();
-      this.getProjectTime();
-      this.getTotalQueueSize();
-      this.getRemainingQueueSize();
-      this.getNodeStatus();
-    });
+    this.loadProjectDetails();
+    this.currentProgressCheck();
+    this.currentStatusCheck();
+    this.getThumbnailStatus();
+    this.getTotalRenderTime();
+    this.getProjectTime();
+    this.getTotalQueueSize();
+    this.getRemainingQueueSize();
+    this.getNodeStatus();
     let timer = Observable.timer(5000, 5000);
     timer.subscribe(() => {
       this.currentProgressCheck();
@@ -75,6 +76,13 @@ export class ProjectViewComponent implements OnInit {
       this.getNodeStatus();
     });
 
+  }
+
+  open(content) {
+    let options: NgbModalOptions = {
+      backdrop: 'static'
+    };
+    this.modalService.open(content, options);
   }
 
   loadProjectDetails() {
@@ -96,36 +104,36 @@ export class ProjectViewComponent implements OnInit {
   currentProgressCheck() {
     this.http.get('/api/project_ui/progress/' + this.id + '/').subscribe((currentProgress: number) => {
       this.currentProgress = currentProgress;
-    })
+    });
   }
 
   currentStatusCheck() {
     this.http.get('/api/project_ui/status/' + this.id + '/').subscribe((currentStatus: ProjectStatus) => {
       this.projectStatus = currentStatus;
-    })
+    });
   }
 
   startProject(id) {
-    document.getElementById('startButton').setAttribute("disabled", "disabled");
-    this.http.get("/api/project_actions/start_project/" + id + "/").subscribe();
-    document.getElementById('startButton').removeAttribute("disabled");
+    document.getElementById('startButton').setAttribute('disabled', 'disabled');
+    this.http.get('/api/project_actions/start_project/' + id + '/').subscribe();
+    document.getElementById('startButton').removeAttribute('disabled');
 
   }
 
   pauseProject(id) {
-    document.getElementById('pauseButton').setAttribute("disabled", "disabled");
+    document.getElementById('pauseButton').setAttribute('disabled', 'disabled');
     this.http.get('/api/project_actions/pause_project/' + id + '/').subscribe();
-    document.getElementById('resumeButton').removeAttribute("disabled");
+    document.getElementById('resumeButton').removeAttribute('disabled');
   }
 
   resumeProject(id) {
-    document.getElementById('resumeButton').setAttribute("disabled", "disabled");
+    document.getElementById('resumeButton').setAttribute('disabled', 'disabled');
     this.http.get('/api/project_actions/resume_project/' + id + '/').subscribe();
-    document.getElementById('pauseButton').removeAttribute("disabled");
+    document.getElementById('pauseButton').removeAttribute('disabled');
   }
 
   returnToProjects(): void {
-    window.location.href = "/projects";
+    window.location.href = '/projects';
   }
 
   getThumbnailStatus() {
@@ -134,32 +142,32 @@ export class ProjectViewComponent implements OnInit {
       if (thumbnailStatus == true) {
         this.currentThumbnail = '/api/project_ui/thumbnail/' + this.id + '/';
       }
-    })
+    });
   }
 
   getTotalQueueSize() {
     this.http.get('/api/project_ui/total_queue/' + this.id + '/').subscribe((totalQueue: number) => {
       this.totalQueue = totalQueue;
-    })
+    });
   }
 
   getRemainingQueueSize() {
     this.http.get('/api/project_ui/remaining_queue/' + this.id + '/').subscribe((remainingQueue: number) => {
       this.remainingQueue = remainingQueue;
-    })
+    });
   }
 
   getTotalRenderTime() {
     this.http.get('/api/project_ui/render_time/' + this.id + '/', {responseType: 'text'}).subscribe((renderTime: string) => {
       this.totalRenderTime = renderTime;
-    })
+    });
   }
 
 
   getProjectTime() {
     this.http.get('/api/project_ui/project_duration/' + this.id + '/', {responseType: 'text'}).subscribe((duration: string) => {
       this.projectTime = duration;
-    })
+    });
   }
 
 

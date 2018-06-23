@@ -18,13 +18,13 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {ActivatedRoute, Router} from "@angular/router";
-import {ComputeMethod} from "../../../enums/compute.method.enum";
-import {RenderOutputFormat} from "../../../enums/render_output_format.enum";
-import {Project} from "../../../models/project.model";
-import {BlenderEngine} from "../../../enums/blender_engine.enum";
-import {ProjectType} from "../../../enums/project_type.enum";
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ComputeMethod} from '../../../enums/compute.method.enum';
+import {RenderOutputFormat} from '../../../enums/render_output_format.enum';
+import {Project} from '../../../models/project.model';
+import {BlenderEngine} from '../../../enums/blender_engine.enum';
+import {ProjectType} from '../../../enums/project_type.enum';
 
 @Component({
   selector: 'app-project-edit',
@@ -114,7 +114,7 @@ export class ProjectEditComponent implements OnInit {
   }
 
   setDefaultFrameRate() {
-    this.projectDetails.frameRate = "23.98";
+    this.projectDetails.frameRate = '30';
   }
 
 

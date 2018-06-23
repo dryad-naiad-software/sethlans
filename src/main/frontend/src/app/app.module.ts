@@ -86,7 +86,6 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UserListService} from './services/user_list.service';
 import {UserAddComponent} from './components/admin/user-management/user-add/user-add.component';
 import {UserEditComponent} from './components/admin/user-management/user-edit/user-edit.component';
-import {ProjectVideoComponent} from './components/projects/project-video/project-video.component';
 
 
 @NgModule({
@@ -131,8 +130,7 @@ import {ProjectVideoComponent} from './components/projects/project-video/project
     RestartComponent,
     ShutdownComponent,
     UserAddComponent,
-    UserEditComponent,
-    ProjectVideoComponent
+    UserEditComponent
   ],
   imports: [
     BrowserModule,
