@@ -463,6 +463,27 @@ public class ProjectController {
         return false;
     }
 
+    @PostMapping(value = "/api/project_form/video_settings/{id}")
+    public boolean editVideoSettings(@RequestBody ProjectForm projectForm, @PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        BlenderProject blenderProject;
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            blenderProject = blenderProjectDatabaseService.getById(id);
+        } else {
+            blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
+        }
+        if (projectForm != null && blenderProject != null) {
+            LOG.debug("Video Settings changed" + projectForm);
+            if (!projectForm.getOutputFormat().equals(RenderOutputFormat.PNG)) {
+                blenderProject.setRenderOutputFormat(projectForm.getOutputFormat());
+            }
+            blenderProject.setFrameRate(projectForm.getFrameRate());
+            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+            return true;
+        }
+        return false;
+    }
+
     private List<ProjectInfo> convertBlenderProjectsToProjectInfo(List<BlenderProject> projectsToConvert) {
         List<ProjectInfo> projectsToReturn = new ArrayList<>();
         for (BlenderProject blenderProject : projectsToConvert) {
