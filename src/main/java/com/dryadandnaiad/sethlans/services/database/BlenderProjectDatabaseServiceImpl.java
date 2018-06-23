@@ -22,7 +22,7 @@ package com.dryadandnaiad.sethlans.services.database;
 import com.dryadandnaiad.sethlans.converters.ProjectFormToBlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
-import com.dryadandnaiad.sethlans.forms.ProjectForm;
+import com.dryadandnaiad.sethlans.forms.project.ProjectForm;
 import com.dryadandnaiad.sethlans.repositories.BlenderProjectRepository;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;

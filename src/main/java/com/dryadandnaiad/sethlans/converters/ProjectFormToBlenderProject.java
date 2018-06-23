@@ -20,7 +20,7 @@
 package com.dryadandnaiad.sethlans.converters;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
-import com.dryadandnaiad.sethlans.forms.ProjectForm;
+import com.dryadandnaiad.sethlans.forms.project.ProjectForm;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
 import com.google.common.base.Throwables;
 import org.apache.commons.lang3.StringUtils;

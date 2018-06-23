@@ -17,36 +17,21 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.database;
+package com.dryadandnaiad.sethlans.forms.project;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
-import com.dryadandnaiad.sethlans.forms.project.ProjectForm;
-
-import java.util.List;
+import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
+import lombok.Data;
 
 /**
- * Created Mario Estrella on 4/2/17.
+ * Created Mario Estrella on 6/23/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderProjectDatabaseService extends CRUDService<BlenderProject> {
+@Data
+public class VideoChangeForm {
+    private RenderOutputFormat outputFormat;
+    private String frameRate;
 
-    List<BlenderProject> getProjectsByUser(String username);
 
-    List<BlenderProject> getPendingProjects();
-
-    List<BlenderProject> getRemainingQueueProjects();
-
-    boolean deleteWithVerification(String username, Long id);
-
-    List<BlenderProject> listAllReverse();
-
-    BlenderProject getProjectByUser(String username, Long id);
-
-    BlenderProject getByProjectUUID(String projectUUID);
-
-    BlenderProject saveOrUpdateProjectForm(ProjectForm projectForm);
-
-    void delete(BlenderProject blenderProject);
 }

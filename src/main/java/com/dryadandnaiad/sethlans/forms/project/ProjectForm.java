@@ -17,7 +17,7 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.forms;
+package com.dryadandnaiad.sethlans.forms.project;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlendFile;
 import com.dryadandnaiad.sethlans.enums.*;

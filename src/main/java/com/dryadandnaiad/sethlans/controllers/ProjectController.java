@@ -22,7 +22,8 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.info.ProjectInfo;
 import com.dryadandnaiad.sethlans.enums.*;
-import com.dryadandnaiad.sethlans.forms.ProjectForm;
+import com.dryadandnaiad.sethlans.forms.project.ProjectForm;
+import com.dryadandnaiad.sethlans.forms.project.VideoChangeForm;
 import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderProjectService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
@@ -483,7 +484,7 @@ public class ProjectController {
     }
 
     @PostMapping(value = "/api/project_form/video_settings/{id}")
-    public boolean editVideoSettings(@RequestBody ProjectForm projectForm, @PathVariable Long id) {
+    public boolean editVideoSettings(@RequestBody VideoChangeForm videoChangeForm, @PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BlenderProject blenderProject;
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
@@ -491,12 +492,12 @@ public class ProjectController {
         } else {
             blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
         }
-        if (projectForm != null && blenderProject != null) {
-            LOG.debug("Video Settings changed" + projectForm);
-            if (!projectForm.getOutputFormat().equals(RenderOutputFormat.PNG)) {
-                blenderProject.setRenderOutputFormat(projectForm.getOutputFormat());
+        if (videoChangeForm != null && blenderProject != null) {
+            LOG.debug("Video Settings changed" + videoChangeForm);
+            if (!videoChangeForm.getOutputFormat().equals(RenderOutputFormat.PNG)) {
+                blenderProject.setRenderOutputFormat(videoChangeForm.getOutputFormat());
             }
-            blenderProject.setFrameRate(projectForm.getFrameRate());
+            blenderProject.setFrameRate(videoChangeForm.getFrameRate());
             blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             return true;
         }
