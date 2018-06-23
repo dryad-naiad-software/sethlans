@@ -493,7 +493,7 @@ public class ProjectController {
             blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
         }
         if (videoChangeForm != null && blenderProject != null) {
-            LOG.debug("Video Settings changed" + videoChangeForm);
+            LOG.debug("Video Settings changed " + videoChangeForm);
             if (!videoChangeForm.getOutputFormat().equals(RenderOutputFormat.PNG)) {
                 blenderProject.setRenderOutputFormat(videoChangeForm.getOutputFormat());
             }
