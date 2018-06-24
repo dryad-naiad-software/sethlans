@@ -397,6 +397,10 @@ public class QueueServiceImpl implements QueueService {
             List<ProcessQueueItem> processQueueItemList = processQueueDatabaseService.listAll();
             if (!processQueueItemList.isEmpty()) {
                 for (ProcessQueueItem processQueueItem : new ArrayList<>(processQueueItemList)) {
+                    if (!incomingQueueItemList.isEmpty()) {
+                        LOG.debug("Received incoming items, stopping processing of files for now.");
+                        break;
+                    }
                     try {
                         processReceivedFile(processQueueItem, renderQueueDatabaseService,
                                 blenderProjectDatabaseService, sethlansNodeDatabaseService,
