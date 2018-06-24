@@ -84,8 +84,6 @@ public class QueueServiceImpl implements QueueService {
                     projectActions();
                     continue;
                 }
-                assignmentWorkflow();
-                processingWorkflow();
                 if (!nodeStatuses.isEmpty()) {
                     processNodeAcknowledgements();
                     continue;
@@ -97,7 +95,6 @@ public class QueueServiceImpl implements QueueService {
                 }
                 if (!processQueueDatabaseService.listAll().isEmpty()) {
                     processReceivedFiles();
-                    assignmentWorkflow();
                     continue;
                 }
                 if (!nodeOnlineItemList.isEmpty()) {
@@ -123,6 +120,8 @@ public class QueueServiceImpl implements QueueService {
                 if (sethlansNodeDatabaseService.activeNodeList().size() > 0 && blenderProjectDatabaseService.listAll().size() > 0) {
                     populateQueue();
                 }
+                assignmentWorkflow();
+                processingWorkflow();
             } catch (InterruptedException e) {
                 LOG.debug("Stopping Sethlans Queue Service");
                 break;
