@@ -24,6 +24,7 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {ProjectStatus} from '../../../enums/project_status.enum';
 import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
+import {VideoForm} from '../../../models/videoform.model';
 
 @Component({
   selector: 'app-project-view',
@@ -37,6 +38,7 @@ export class ProjectViewComponent implements OnInit {
   placeholder: any = 'assets/images/placeholder.svg';
   currentProgress: number;
   projectStatus: ProjectStatus;
+  videoForm: VideoForm;
   currentThumbnail: any;
   thumbnailStatus: boolean;
   totalRenderTime: string;
@@ -88,6 +90,8 @@ export class ProjectViewComponent implements OnInit {
   loadProjectDetails() {
     this.http.get('/api/project_ui/project_details/' + this.id + '/').subscribe((projectDetails: Project) => {
       this.projectDetails = projectDetails;
+      this.videoForm.outputFormat = this.projectDetails.outputFormat;
+      this.videoForm.frameRate = this.projectDetails.frameRate;
       this.projectLoaded = true;
       console.log(projectDetails);
     });
