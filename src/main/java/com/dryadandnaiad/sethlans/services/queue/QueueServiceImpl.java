@@ -97,7 +97,6 @@ public class QueueServiceImpl implements QueueService {
                 }
                 if (!processQueueDatabaseService.listAll().isEmpty()) {
                     processReceivedFiles();
-                    assignmentWorkflow();
                     continue;
                 }
                 if (!nodeOnlineItemList.isEmpty()) {
@@ -399,9 +398,11 @@ public class QueueServiceImpl implements QueueService {
             if (!processQueueItemList.isEmpty()) {
                 if (processQueueItemList.size() < 5) {
                     for (ProcessQueueItem processQueueItem : new ArrayList<>(processQueueItemList)) {
+                        LOG.debug("Process Queue Less than 5");
                         startProcessingFiles(processQueueItem);
                     }
                 } else {
+                    LOG.debug("Process Queue Greater than 5");
                     for (int i = 0; i < 5; i++) {
                         startProcessingFiles(processQueueItemList.get(i));
 
