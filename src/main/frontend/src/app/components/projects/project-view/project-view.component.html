@@ -164,8 +164,8 @@
       <div class="form-group">
         <label for="outputFormat">Output Format</label>
         <select class="form-control" id="outputFormat" name="outputFormat"
-                [(ngModel)]="projectDetails.outputFormat">
-          <option *ngFor="let format of formats" [selected]="projectDetails.outputFormat">
+                [(ngModel)]="videoForm.outputFormat">
+          <option *ngFor="let format of formats" [selected]="videoForm.outputFormat">
             {{format}}
           </option>
         </select>
@@ -173,7 +173,7 @@
       <div class="form-group">
         <label for="frameRate">Frame Rate</label>
         <select class="form-control" id="frameRate" name="frameRate"
-                [(ngModel)]="projectDetails.frameRate">
+                [(ngModel)]="videoForm.frameRate">
           <option *ngFor="let frameRate of frameRates">{{frameRate}}
           </option>
         </select>
