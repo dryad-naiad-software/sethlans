@@ -397,17 +397,33 @@ public class QueueServiceImpl implements QueueService {
             modifyingQueue = true;
             List<ProcessQueueItem> processQueueItemList = processQueueDatabaseService.listAll();
             if (!processQueueItemList.isEmpty()) {
-                for (ProcessQueueItem processQueueItem : new ArrayList<>(processQueueItemList)) {
-                    try {
-                        processReceivedFile(processQueueItem, renderQueueDatabaseService,
-                                blenderProjectDatabaseService, sethlansNodeDatabaseService,
-                                processFrameDatabaseService, processQueueDatabaseService);
-                    } catch (NullPointerException e) {
-                        LOG.error("Received item after project has been stopped");
-                        LOG.debug(Throwables.getStackTraceAsString(e));
-                        processQueueDatabaseService.delete(processQueueItem);
+                if (processQueueItemList.size() < 5) {
+                    for (ProcessQueueItem processQueueItem : new ArrayList<>(processQueueItemList)) {
+                        try {
+                            processReceivedFile(processQueueItem, renderQueueDatabaseService,
+                                    blenderProjectDatabaseService, sethlansNodeDatabaseService,
+                                    processFrameDatabaseService, processQueueDatabaseService);
+                        } catch (NullPointerException e) {
+                            LOG.error("Received item after project has been stopped");
+                            LOG.debug(Throwables.getStackTraceAsString(e));
+                            processQueueDatabaseService.delete(processQueueItem);
+                        }
+                    }
+                } else {
+                    for (int i = 0; i < 5; i++) {
+                        try {
+                            processReceivedFile(processQueueItemList.get(i), renderQueueDatabaseService,
+                                    blenderProjectDatabaseService, sethlansNodeDatabaseService,
+                                    processFrameDatabaseService, processQueueDatabaseService);
+                        } catch (NullPointerException e) {
+                            LOG.error("Received item after project has been stopped");
+                            LOG.debug(Throwables.getStackTraceAsString(e));
+                            processQueueDatabaseService.delete(processQueueItemList.get(i));
+                        }
+
                     }
                 }
+                
             }
             modifyingQueue = false;
         }
