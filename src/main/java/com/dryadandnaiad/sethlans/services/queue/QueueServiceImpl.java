@@ -5,12 +5,12 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- *  
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *  
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -120,10 +120,8 @@ public class QueueServiceImpl implements QueueService {
                     populateQueue();
                     continue;
                 }
-                if (incomingQueueItemList.isEmpty()) {
-                    assignmentWorkflow();
-                    processingWorkflow();
-                }
+                assignmentWorkflow();
+                processingWorkflow();
 
             } catch (InterruptedException e) {
                 LOG.debug("Stopping Sethlans Queue Service");
@@ -289,11 +287,11 @@ public class QueueServiceImpl implements QueueService {
     private void cleanQueue() {
         if (!modifyingQueue) {
             modifyingQueue = true;
-                for (RenderQueueItem renderQueueItem : renderQueueDatabaseService.listAll()) {
-                    if (renderQueueItem.isComplete()) {
-                        renderQueueDatabaseService.delete(renderQueueItem);
-                    }
+            for (RenderQueueItem renderQueueItem : renderQueueDatabaseService.listAll()) {
+                if (renderQueueItem.isComplete()) {
+                    renderQueueDatabaseService.delete(renderQueueItem);
                 }
+            }
             modifyingQueue = false;
         }
     }
@@ -301,8 +299,8 @@ public class QueueServiceImpl implements QueueService {
     private void populateQueue() {
         if (!modifyingQueue) {
             modifyingQueue = true;
-                populateQueueRunningProjects();
-                populateQueuePendingProjects();
+            populateQueueRunningProjects();
+            populateQueuePendingProjects();
             modifyingQueue = false;
         }
     }
@@ -398,11 +396,11 @@ public class QueueServiceImpl implements QueueService {
             modifyingQueue = true;
             List<ProcessQueueItem> processQueueItemList = processQueueDatabaseService.listAll();
             if (!processQueueItemList.isEmpty()) {
-                    for (ProcessQueueItem processQueueItem : new ArrayList<>(processQueueItemList)) {
-                        if (incomingQueueItemList.isEmpty()) {
-                            startProcessingFiles(processQueueItem);
-                        }
+                for (ProcessQueueItem processQueueItem : new ArrayList<>(processQueueItemList)) {
+                    if (incomingQueueItemList.isEmpty()) {
+                        startProcessingFiles(processQueueItem);
                     }
+                }
             }
             modifyingQueue = false;
         }
