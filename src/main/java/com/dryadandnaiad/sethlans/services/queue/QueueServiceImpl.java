@@ -88,40 +88,50 @@ public class QueueServiceImpl implements QueueService {
                     processNodeAcknowledgements();
                     continue;
                 }
+
                 if (!incomingQueueItemList.isEmpty()) {
                     incomingCompleteItems();
                     continue;
                 }
+
                 if (!processQueueDatabaseService.listAll().isEmpty()) {
                     processReceivedFiles();
                     continue;
                 }
+
                 if (!nodeOnlineItemList.isEmpty()) {
                     nodeOnlineStatus();
                     continue;
                 }
+
                 if (!nodesToDelete.isEmpty()) {
                     processNodeDeletion();
                     continue;
                 }
+
                 if (!nodesToDisable.isEmpty()) {
                     processDisablingNodes();
                     continue;
                 }
+
                 if (!idleNodes.isEmpty()) {
                     freeIdleNode();
                     continue;
                 }
+
                 if (renderQueueDatabaseService.listAll().size() > CLEANUP) {
                     cleanQueue();
                     continue;
                 }
+
                 if (sethlansNodeDatabaseService.activeNodeList().size() > 0 && blenderProjectDatabaseService.listAll().size() > 0) {
                     populateQueue();
-                    continue;
                 }
-                assignmentWorkflow();
-                processingWorkflow();
+
+                if (incomingQueueItemList.isEmpty()) {
+                    assignmentWorkflow();
+                    processingWorkflow();
+                }
 
             } catch (InterruptedException e) {
                 LOG.debug("Stopping Sethlans Queue Service");
