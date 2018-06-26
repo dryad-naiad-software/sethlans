@@ -469,11 +469,22 @@ public class QueueServiceImpl implements QueueService {
             modifyingQueue = true;
             if (frameFileUpdateDatabaseService.listAll().size() > 0) {
                 LOG.debug("Updating Projects with frame file names");
+                BlenderProject blenderProject = null;
                 for (FrameFileUpdateItem frameFileUpdateItem : frameFileUpdateDatabaseService.listAll()) {
-                    BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(frameFileUpdateItem.getProjectUUID());
+                    if (blenderProject == null) {
+                        blenderProject = blenderProjectDatabaseService.getByProjectUUID(frameFileUpdateItem.getProjectUUID());
+                    } else {
+                        if (!blenderProject.getProject_uuid().equals(frameFileUpdateItem.getProjectUUID())) {
+                            // If the frame update is for another project. Save the current project then start the update of the new project
+                            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+                            blenderProject = blenderProjectDatabaseService.getByProjectUUID(frameFileUpdateItem.getProjectUUID());
+                        }
+                    }
                     blenderProject.getFrameFileNames().add(frameFileUpdateItem.getFrameFileName());
                     blenderProject.setCurrentFrameThumbnail(frameFileUpdateItem.getCurrentFrameThumbnail());
                     frameFileUpdateDatabaseService.delete(frameFileUpdateItem);
+                }
+                if (blenderProject != null) {
                     blenderProjectDatabaseService.saveOrUpdate(blenderProject);
                 }
                 LOG.debug("Completed File name update");
