@@ -84,15 +84,17 @@ public class QueueServiceImpl implements QueueService {
                     projectActions();
                     continue;
                 }
-                assignmentWorkflow();
-                processingWorkflow();
+                if (incomingQueueItemList.isEmpty()) {
+                    assignmentWorkflow();
+                    processingWorkflow();
+                    continue;
+                }
                 if (!nodeStatuses.isEmpty()) {
                     processNodeAcknowledgements();
                     continue;
                 }
                 if (!incomingQueueItemList.isEmpty()) {
                     incomingCompleteItems();
-                    assignmentWorkflow();
                     continue;
                 }
                 if (!processQueueDatabaseService.listAll().isEmpty()) {
@@ -396,19 +398,11 @@ public class QueueServiceImpl implements QueueService {
             modifyingQueue = true;
             List<ProcessQueueItem> processQueueItemList = processQueueDatabaseService.listAll();
             if (!processQueueItemList.isEmpty()) {
-                if (processQueueItemList.size() < 5) {
                     for (ProcessQueueItem processQueueItem : new ArrayList<>(processQueueItemList)) {
-                        LOG.debug("Process Queue Less than 5");
-                        startProcessingFiles(processQueueItem);
+                        if (incomingQueueItemList.isEmpty()) {
+                            startProcessingFiles(processQueueItem);
+                        }
                     }
-                } else {
-                    LOG.debug("Process Queue Greater than 5");
-                    for (int i = 0; i < 5; i++) {
-                        startProcessingFiles(processQueueItemList.get(i));
-
-                    }
-                }
-
             }
             modifyingQueue = false;
         }
