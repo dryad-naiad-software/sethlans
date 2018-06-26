@@ -84,8 +84,10 @@ public class QueueServiceImpl implements QueueService {
                     projectActions();
                     continue;
                 }
+
                 assignmentWorkflow();
                 processingWorkflow();
+
                 if (!nodeStatuses.isEmpty()) {
                     processNodeAcknowledgements();
                     continue;
@@ -93,11 +95,16 @@ public class QueueServiceImpl implements QueueService {
 
                 if (!incomingQueueItemList.isEmpty()) {
                     incomingCompleteItems();
+                    assignmentWorkflow();
+                    processingWorkflow();
                     continue;
                 }
 
                 if (!processQueueDatabaseService.listAll().isEmpty()) {
                     processReceivedFiles();
+                    incomingCompleteItems();
+                    assignmentWorkflow();
+                    processingWorkflow();
                     continue;
                 }
 
@@ -140,7 +147,6 @@ public class QueueServiceImpl implements QueueService {
     private void assignmentWorkflow() {
         assignQueueItemToNode();
         sendQueueItemsToAssignedNode();
-        processNodeAcknowledgements();
     }
 
     private void processingWorkflow() {
@@ -404,9 +410,7 @@ public class QueueServiceImpl implements QueueService {
             List<ProcessQueueItem> processQueueItemList = processQueueDatabaseService.listAll();
             if (!processQueueItemList.isEmpty()) {
                 for (ProcessQueueItem processQueueItem : new ArrayList<>(processQueueItemList)) {
-                    if (incomingQueueItemList.isEmpty()) {
                         startProcessingFiles(processQueueItem);
-                    }
                 }
             }
             modifyingQueue = false;
