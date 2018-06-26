@@ -84,6 +84,8 @@ public class QueueServiceImpl implements QueueService {
                     projectActions();
                     continue;
                 }
+                assignmentWorkflow();
+                processingWorkflow();
                 if (!nodeStatuses.isEmpty()) {
                     processNodeAcknowledgements();
                     continue;
@@ -126,11 +128,6 @@ public class QueueServiceImpl implements QueueService {
 
                 if (sethlansNodeDatabaseService.activeNodeList().size() > 0 && blenderProjectDatabaseService.listAll().size() > 0) {
                     populateQueue();
-                }
-
-                if (incomingQueueItemList.isEmpty()) {
-                    assignmentWorkflow();
-                    processingWorkflow();
                 }
 
             } catch (InterruptedException e) {
