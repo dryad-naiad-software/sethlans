@@ -85,33 +85,6 @@ public class QueueServiceImpl implements QueueService {
                     continue;
                 }
 
-                if (sethlansNodeDatabaseService.activeNodeList().size() > 0 && blenderProjectDatabaseService.listAll().size() > 0) {
-                    populateQueue();
-                }
-
-                assignmentWorkflow();
-                processingWorkflow();
-
-                if (!nodeStatuses.isEmpty()) {
-                    processNodeAcknowledgements();
-                    continue;
-                }
-
-                if (!incomingQueueItemList.isEmpty()) {
-                    incomingCompleteItems();
-                    assignmentWorkflow();
-                    processingWorkflow();
-                    continue;
-                }
-
-                if (!processQueueDatabaseService.listAll().isEmpty()) {
-                    processReceivedFiles();
-                    incomingCompleteItems();
-                    assignmentWorkflow();
-                    processingWorkflow();
-                    continue;
-                }
-
                 if (!nodeOnlineItemList.isEmpty()) {
                     nodeOnlineStatus();
                     continue;
@@ -132,9 +105,37 @@ public class QueueServiceImpl implements QueueService {
                     continue;
                 }
 
-                if (renderQueueDatabaseService.listAll().size() > CLEANUP) {
-                    cleanQueue();
+                if (incomingQueueItemList.isEmpty()) {
+                    if (renderQueueDatabaseService.listAll().size() > CLEANUP) {
+                        cleanQueue();
+                    }
+                    if (sethlansNodeDatabaseService.activeNodeList().size() > 0 && blenderProjectDatabaseService.listAll().size() > 0) {
+                        populateQueue();
+                    }
+                    if (!processQueueDatabaseService.listAll().isEmpty()) {
+                        processReceivedFiles();
+                    }
+                    assignmentWorkflow();
+                    processingWorkflow();
+                    if (!nodeStatuses.isEmpty()) {
+                        processNodeAcknowledgements();
+                    }
+                    continue;
                 }
+
+                if (!incomingQueueItemList.isEmpty()) {
+                    incomingCompleteItems();
+                    assignmentWorkflow();
+                    processingWorkflow();
+                    if (!nodeStatuses.isEmpty()) {
+                        processNodeAcknowledgements();
+                    }
+                    if (!processQueueDatabaseService.listAll().isEmpty()) {
+                        processReceivedFiles();
+                    }
+                }
+
+
 
 
             } catch (InterruptedException e) {
