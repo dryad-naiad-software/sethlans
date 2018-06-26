@@ -123,6 +123,7 @@ class QueueNodeActions {
         switch (renderQueueItem.getRenderComputeType()) {
             case CPU_GPU:
                 sortedSethlansNodeList = getSortedNodeList(ComputeType.CPU_GPU, sethlansNodeDatabaseService);
+                nodeStatusLog(i, sortedSethlansNodeList);
                 if (sortedSethlansNodeList != null) {
                     sethlansNode = sortedSethlansNodeList.get(i);
                     sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
@@ -156,6 +157,7 @@ class QueueNodeActions {
                 break;
             case CPU:
                 sortedSethlansNodeList = getSortedNodeList(ComputeType.CPU, sethlansNodeDatabaseService);
+                nodeStatusLog(i, sortedSethlansNodeList);
                 if (sortedSethlansNodeList != null) {
                     sethlansNode = sortedSethlansNodeList.get(i);
                     renderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
@@ -166,6 +168,7 @@ class QueueNodeActions {
                 break;
             case GPU:
                 sortedSethlansNodeList = getSortedNodeList(ComputeType.GPU, sethlansNodeDatabaseService);
+                nodeStatusLog(i, sortedSethlansNodeList);
                 if (sortedSethlansNodeList != null) {
                     sethlansNode = sortedSethlansNodeList.get(i);
                     renderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
@@ -181,6 +184,10 @@ class QueueNodeActions {
                 }
                 break;
         }
+        return renderQueueItem;
+    }
+
+    private static void nodeStatusLog(int i, List<SethlansNode> sortedSethlansNodeList) {
         if (i == 0 && sortedSethlansNodeList != null) {
             LOG.debug("Current Node Status:");
             for (SethlansNode node : sortedSethlansNodeList) {
@@ -191,7 +198,6 @@ class QueueNodeActions {
                         "). (All) GPU(s) in use (" + node.isAllGPUSlotInUse() + ")");
             }
         }
-        return renderQueueItem;
     }
 
     static void sendQueueItemsToNodes(RenderQueueDatabaseService renderQueueDatabaseService,
