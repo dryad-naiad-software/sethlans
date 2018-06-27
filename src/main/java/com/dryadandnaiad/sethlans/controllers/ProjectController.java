@@ -548,6 +548,7 @@ public class ProjectController {
     private ProjectInfo convertBlenderProjectToProjectInfo(BlenderProject blenderProject) {
         ProjectInfo projectInfo = new ProjectInfo();
         projectInfo.setId(blenderProject.getId());
+        projectInfo.setReEncode(blenderProject.isReEncode());
         projectInfo.setStartFrame(blenderProject.getStartFrame());
         projectInfo.setEndFrame(blenderProject.getEndFrame());
         projectInfo.setStepFrame(blenderProject.getStepFrame());

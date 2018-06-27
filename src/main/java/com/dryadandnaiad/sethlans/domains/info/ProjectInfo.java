@@ -50,6 +50,7 @@ public class ProjectInfo {
     private RenderOutputFormat outputFormat;
     private boolean useParts;
     private boolean thumbnailPresent;
+    private boolean reEncode;
     private String thumbnailURL;
     private int currentPercentage;
     private String frameRate;
