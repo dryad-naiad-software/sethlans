@@ -92,8 +92,8 @@ export class ProjectViewComponent implements OnInit {
       this.projectDetails = projectDetails;
       this.videoForm.outputFormat = this.projectDetails.outputFormat;
       this.videoForm.frameRate = this.projectDetails.frameRate;
+      console.log(this.videoForm);
       this.projectLoaded = true;
-      console.log(projectDetails);
     });
   }
 
