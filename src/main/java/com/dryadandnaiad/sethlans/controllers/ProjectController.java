@@ -31,6 +31,8 @@ import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.queue.ProcessImageAndAnimationService;
 import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.google.common.base.Throwables;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -506,19 +508,27 @@ public class ProjectController {
                 if (changed) {
                     LOG.info("Video Settings changed for " + blenderProject.getProjectName() + " : " + videoChangeForm);
                     blenderProject.setProjectStatus(ProjectStatus.Processing);
+                    blenderProject.setReEncode(true);
                     blenderProject = blenderProjectDatabaseService.saveOrUpdate(blenderProject);
-                    LOG.info("Starting encoding process");
-                    switch (blenderProject.getRenderOutputFormat()) {
-                        case MP4:
-                            processImageAndAnimationService.createMP4(blenderProject);
-                            break;
-                        case AVI:
-                            processImageAndAnimationService.createAVI(blenderProject);
-                            break;
+                    try {
+                        LOG.info("Starting encoding process");
+                        switch (blenderProject.getRenderOutputFormat()) {
+                            case MP4:
+                                FileUtils.deleteDirectory(new File(blenderProject.getProjectRootDir() + File.separator + "MP4"));
+                                processImageAndAnimationService.createMP4(blenderProject);
+                                break;
+                            case AVI:
+                                FileUtils.deleteDirectory(new File(blenderProject.getProjectRootDir() + File.separator + "AVI"));
+                                processImageAndAnimationService.createAVI(blenderProject);
+                                break;
+                        }
+
+                    } catch (Exception e) {
+                        LOG.error("Exception found during encoding " + e.getMessage());
+                        LOG.debug(Throwables.getStackTraceAsString(e));
+
                     }
-                    blenderProject.setProjectStatus(ProjectStatus.Finished);
-                    blenderProjectDatabaseService.saveOrUpdate(blenderProject);
-                    return true;
+
                 } else {
                     LOG.debug("Settings are the same, no change detected.");
                 }

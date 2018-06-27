@@ -90,6 +90,8 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
         }
         ffmpeg.addArgument("-framerate");
         ffmpeg.addArgument(blenderProject.getFrameRate());
+        ffmpeg.addArgument("-r");
+        ffmpeg.addArgument(blenderProject.getFrameRate());
         ffmpeg.addArgument(blenderProject.getMovieFileLocation());
         LOG.debug("Running following ffmpeg command " + ffmpeg.toString());
         DefaultExecutor executor = new DefaultExecutor();
@@ -113,9 +115,12 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
 
             BlenderProject projectToUpdate = blenderProjectDatabaseService.getById(blenderProject.getId());
             projectToUpdate.setProjectStatus(ProjectStatus.Finished);
-            projectToUpdate.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
+            projectToUpdate.setMovieFileLocation(blenderProject.getMovieFileLocation());
+            if (!blenderProject.isReEncode()) {
+                projectToUpdate.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
+            }
+            projectToUpdate.setReEncode(false);
             blenderProjectDatabaseService.saveOrUpdate(projectToUpdate);
-
             FileUtils.deleteDirectory(new File(blenderProject.getProjectRootDir() + File.separator + "temp"));
         } catch (IOException | InterruptedException e) {
             LOG.error(e.getMessage());

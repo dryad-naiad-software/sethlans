@@ -57,7 +57,6 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
         blenderProject.setMovieFileLocation(movieFileDirectory + movieFile);
         new File(movieFileDirectory).mkdir();
         fFmpegEncodeService.encodeImagesToVideo(blenderProject);
-
     }
 
     @Override

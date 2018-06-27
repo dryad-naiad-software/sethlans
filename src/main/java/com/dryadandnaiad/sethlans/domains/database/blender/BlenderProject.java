@@ -72,6 +72,7 @@ public class BlenderProject extends AbstractEntityClass {
     private int remainingQueueSize;
     private int queueIndex;
     private boolean queueFillComplete;
+    private boolean reEncode;
     private Long totalRenderTime;
     private Long totalProjectTime;
     private Long projectStart;
