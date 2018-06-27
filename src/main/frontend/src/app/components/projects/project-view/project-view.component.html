@@ -49,6 +49,10 @@
             <td>Output Format</td>
             <td>{{projectDetails.outputFormat}}</td>
           </tr>
+          <tr *ngIf="projectDetails.outputFormat.toString().valueOf() != 'PNG'">
+            <td>Frame Rate</td>
+            <td>{{projectDetails.frameRate}} fps</td>
+          </tr>
           <tr *ngIf="projectDetails.projectType.toString().valueOf() == 'STILL_IMAGE'.valueOf()">
             <td>Project Type</td>
             <td>Still Image</td>
@@ -57,6 +61,7 @@
             <td>Project Type</td>
             <td>Animation</td>
           </tr>
+
           <tr>
             <td>Start Frame</td>
             <td>{{projectDetails.startFrame}}</td>
@@ -185,7 +190,7 @@
     </button>
     <button
       [disabled]=""
-      class="btn btn-outline-dark ml-auto" (click)="c('Close click')">Confirm Changes
+      class="btn btn-outline-dark ml-auto" (click)="c('Close click'); submitChanges()">Change
     </button>
 
   </div>

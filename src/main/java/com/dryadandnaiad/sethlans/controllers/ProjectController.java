@@ -493,13 +493,36 @@ public class ProjectController {
             blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
         }
         if (videoChangeForm != null && blenderProject != null) {
-            LOG.debug("Video Settings changed " + videoChangeForm);
-            if (!videoChangeForm.getOutputFormat().equals(RenderOutputFormat.PNG)) {
-                blenderProject.setRenderOutputFormat(videoChangeForm.getOutputFormat());
+            if (blenderProject.getProjectStatus().equals(ProjectStatus.Finished) && !videoChangeForm.getOutputFormat().equals(RenderOutputFormat.PNG)) {
+                boolean changed = false;
+                if (!blenderProject.getRenderOutputFormat().equals(videoChangeForm.getOutputFormat())) {
+                    blenderProject.setRenderOutputFormat(videoChangeForm.getOutputFormat());
+                    changed = true;
+                }
+                if (!blenderProject.getFrameRate().equals(videoChangeForm.getFrameRate())) {
+                    blenderProject.setFrameRate(videoChangeForm.getFrameRate());
+                    changed = true;
+                }
+                if (changed) {
+                    LOG.info("Video Settings changed for " + blenderProject.getProjectName() + " : " + videoChangeForm);
+                    blenderProject.setProjectStatus(ProjectStatus.Processing);
+                    blenderProject = blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+                    LOG.info("Starting encoding process");
+                    switch (blenderProject.getRenderOutputFormat()) {
+                        case MP4:
+                            processImageAndAnimationService.createMP4(blenderProject);
+                            break;
+                        case AVI:
+                            processImageAndAnimationService.createAVI(blenderProject);
+                            break;
+                    }
+                    blenderProject.setProjectStatus(ProjectStatus.Finished);
+                    blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+                    return true;
+                } else {
+                    LOG.debug("Settings are the same, no change detected.");
+                }
             }
-            blenderProject.setFrameRate(videoChangeForm.getFrameRate());
-            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
-            return true;
         }
         return false;
     }

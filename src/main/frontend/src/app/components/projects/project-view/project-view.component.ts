@@ -20,7 +20,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Project} from '../../../models/project.model';
 import {ActivatedRoute, Router} from '@angular/router';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
 import {ProjectStatus} from '../../../enums/project_status.enum';
 import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
@@ -84,14 +84,15 @@ export class ProjectViewComponent implements OnInit {
     let options: NgbModalOptions = {
       backdrop: 'static'
     };
+    this.videoForm = new VideoForm();
+    this.videoForm.outputFormat = this.projectDetails.outputFormat;
+    this.videoForm.frameRate = this.projectDetails.frameRate;
     this.modalService.open(content, options);
   }
 
   loadProjectDetails() {
     this.http.get('/api/project_ui/project_details/' + this.id + '/').subscribe((projectDetails: Project) => {
       this.projectDetails = projectDetails;
-      this.videoForm.outputFormat = this.projectDetails.outputFormat;
-      this.videoForm.frameRate = this.projectDetails.frameRate;
       console.log(this.videoForm);
       this.projectLoaded = true;
     });
@@ -171,6 +172,17 @@ export class ProjectViewComponent implements OnInit {
   getProjectTime() {
     this.http.get('/api/project_ui/project_duration/' + this.id + '/', {responseType: 'text'}).subscribe((duration: string) => {
       this.projectTime = duration;
+    });
+  }
+
+  submitChanges() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    this.http.post('/api/project_form/video_settings/' + this.id, JSON.stringify(this.videoForm), httpOptions).subscribe(() => {
+      window.location.href = '/projects/view/' + this.id;
     });
   }
 
