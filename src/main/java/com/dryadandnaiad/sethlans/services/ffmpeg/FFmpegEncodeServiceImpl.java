@@ -63,6 +63,10 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
         ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
         PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
         CommandLine ffmpeg = new CommandLine(SethlansUtils.getProperty(SethlansConfigKeys.FFMPEG_BIN.toString()));
+
+        ffmpeg.addArgument("-framerate");
+        ffmpeg.addArgument(blenderProject.getFrameRate());
+
         ffmpeg.addArgument("-i");
         for (String frameFileName : blenderProject.getFrameFileNames()) {
             try {
@@ -71,6 +75,8 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
                 e.printStackTrace();
             }
         }
+
+
         ffmpeg.addArgument(blenderProject.getProjectRootDir() + File.separator + "temp" + File.separator + cleanedProjectName + "-" + truncatedUUID + "-" + "%d.png");
         ffmpeg.addArgument("-c:v");
         if (blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
@@ -82,16 +88,13 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
         if (blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
             ffmpeg.addArgument("libx264");
             ffmpeg.addArgument("-crf");
-            ffmpeg.addArgument("18");
+            ffmpeg.addArgument("17");
             ffmpeg.addArgument("-preset");
-            ffmpeg.addArgument("fast");
+            ffmpeg.addArgument("medium");
             ffmpeg.addArgument("-pix_fmt");
             ffmpeg.addArgument("yuv420p");
         }
-        ffmpeg.addArgument("-framerate");
-        ffmpeg.addArgument(blenderProject.getFrameRate());
-        ffmpeg.addArgument("-r");
-        ffmpeg.addArgument(blenderProject.getFrameRate());
+
         ffmpeg.addArgument(blenderProject.getMovieFileLocation());
         LOG.debug("Running following ffmpeg command " + ffmpeg.toString());
         DefaultExecutor executor = new DefaultExecutor();
