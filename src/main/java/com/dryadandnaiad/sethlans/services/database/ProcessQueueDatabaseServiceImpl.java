@@ -21,6 +21,9 @@ package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessQueueItem;
 import com.dryadandnaiad.sethlans.repositories.ProcessQueueRepository;
+import com.google.common.base.Throwables;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +39,7 @@ import java.util.List;
 @Service
 public class ProcessQueueDatabaseServiceImpl implements ProcessQueueDatabaseService {
     private ProcessQueueRepository processQueueRepository;
+    private static final Logger LOG = LoggerFactory.getLogger(ProcessQueueDatabaseServiceImpl.class);
 
     @Override
     public List<ProcessQueueItem> listAll() {
@@ -75,13 +79,23 @@ public class ProcessQueueDatabaseServiceImpl implements ProcessQueueDatabaseServ
 
     @Override
     public void delete(Long id) {
-        processQueueRepository.delete(processQueueRepository.findOne(id));
+        try {
+            processQueueRepository.delete(processQueueRepository.findOne(id));
+        } catch (Exception e) {
+            LOG.error("Exception while deleting process queue item " + e.getMessage());
+            LOG.debug(Throwables.getStackTraceAsString(e));
+        }
 
     }
 
     @Override
     public void delete(ProcessQueueItem processQueueItem) {
-        processQueueRepository.delete(processQueueItem);
+        try {
+            processQueueRepository.delete(processQueueItem);
+        } catch (Exception e) {
+            LOG.error("Exception while deleting process queue item " + e.getMessage());
+            LOG.debug(Throwables.getStackTraceAsString(e));
+        }
     }
 
     @Autowired
