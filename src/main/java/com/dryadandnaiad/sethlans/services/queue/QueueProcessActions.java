@@ -36,11 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -84,19 +79,18 @@ class QueueProcessActions {
             }
         }
         storedDir.mkdirs();
-        try {
-            LOG.debug("Processing received file from " +
-                    sethlansNodeDatabaseService.getByConnectionUUID(processQueueItem.getConnection_uuid()).getHostname() + ". Frame: " + frameNumber +
-                    " Part: " + partNumber
-            );
-            byte[] bytes = processQueueItem.getPart().getBytes(1, (int) processQueueItem.getPart().length());
-            Path path = Paths.get(storedDir.toString() + File.separator +
-                    renderQueueItem.getBlenderFramePart().getPartFilename() + "." +
-                    renderQueueItem.getBlenderFramePart().getFileExtension());
-            Files.write(path, bytes);
-        } catch (IOException | SQLException e) {
-            LOG.error(Throwables.getStackTraceAsString(e));
+        LOG.debug("Processing received file from " +
+                sethlansNodeDatabaseService.getByConnectionUUID(processQueueItem.getConnection_uuid()).getHostname() + ". Frame: " + frameNumber +
+                " Part: " + partNumber
+        );
+        File moveReceived = new File(processQueueItem.getPart());
+        boolean moved = moveReceived.renameTo(new File(storedDir.toString() + File.separator +
+                renderQueueItem.getBlenderFramePart().getPartFilename() + "." +
+                renderQueueItem.getBlenderFramePart().getFileExtension()));
+        if (!moved) {
+            LOG.error("Unable to move received file.");
         }
+
         renderQueueItem = renderQueueDatabaseService.getById(renderQueueItem.getId());
         renderQueueItem.setComplete(true);
         renderQueueDatabaseService.saveOrUpdate(renderQueueItem);

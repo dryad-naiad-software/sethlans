@@ -42,12 +42,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.rowset.serial.SerialBlob;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.sql.Blob;
-import java.sql.SQLException;
 
 /**
  * Created Mario Estrella on 12/10/17.
@@ -161,17 +158,19 @@ public class ServerRenderController {
         } else {
             if (!part.isEmpty()) {
                 SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
+                BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(project_uuid);
                 LOG.debug("Received response from " + sethlansNode.getHostname() + ", adding to processing Queue.");
                 try {
-                    Blob blob = new SerialBlob(part.getBytes());
+                    File receivedFile = new File(blenderProject.getProjectRootDir() + File.separator + "received" + File.separator + queue_uuid + ".png");
+                    part.transferTo(receivedFile);
                     ProcessQueueItem processQueueItem = new ProcessQueueItem();
                     processQueueItem.setConnection_uuid(connection_uuid);
-                    processQueueItem.setPart(blob);
+                    processQueueItem.setPart(receivedFile.toString());
                     processQueueItem.setQueueUUID(queue_uuid);
                     processQueueItem.setProjectUUID(project_uuid);
                     processQueueItem.setRenderTime(render_time);
                     queueService.addItemToProcess(processQueueItem);
-                } catch (IOException | SQLException e) {
+                } catch (IOException e) {
                     LOG.error(Throwables.getStackTraceAsString(e));
                 }
             }

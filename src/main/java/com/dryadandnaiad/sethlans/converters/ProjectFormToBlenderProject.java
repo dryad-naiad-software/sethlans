@@ -74,6 +74,9 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
         try {
             if (!blenderProjectDirectory.mkdirs()) {
                 throw new Exception("Unable to create directory " + blenderProjectDirectory.toString());
+            } else {
+                File tempDir = new File(blenderProjectDirectory.toString() + File.separator + "received");
+                tempDir.mkdir();
             }
             File projecttemp = new File(projectForm.getFileLocation());
             if (projecttemp.renameTo(new File(blenderProjectDirectory + File.separator + projectForm.getUploadedFile()))) {

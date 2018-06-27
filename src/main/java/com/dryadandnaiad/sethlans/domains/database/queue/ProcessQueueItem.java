@@ -24,8 +24,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.Entity;
-import javax.persistence.Lob;
-import java.sql.Blob;
 
 /**
  * Created Mario Estrella on 3/30/2018.
@@ -38,8 +36,7 @@ import java.sql.Blob;
 @EqualsAndHashCode(callSuper = false)
 public class ProcessQueueItem extends AbstractEntityClass {
     String connection_uuid;
-    @Lob
-    Blob part;
+    String part;
     String queueUUID;
     String projectUUID;
     long renderTime;
