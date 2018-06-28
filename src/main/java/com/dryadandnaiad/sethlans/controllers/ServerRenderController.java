@@ -162,7 +162,7 @@ public class ServerRenderController {
                 BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(project_uuid);
                 LOG.debug("Received response from " + sethlansNode.getHostname() + ", adding to processing Queue.");
                 try {
-                    File receivedFile = new File(blenderProject.getProjectRootDir() + File.separator + "received" + File.separator + StringUtils.left(queue_uuid, 6) + ".png");
+                    File receivedFile = new File(blenderProject.getProjectRootDir() + File.separator + "received" + File.separator + StringUtils.left(queue_uuid, 8) + ".png");
                     part.transferTo(receivedFile);
                     ProcessQueueItem processQueueItem = new ProcessQueueItem();
                     processQueueItem.setConnection_uuid(connection_uuid);
