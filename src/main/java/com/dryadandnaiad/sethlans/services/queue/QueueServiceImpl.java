@@ -136,8 +136,6 @@ public class QueueServiceImpl implements QueueService {
                 }
 
 
-
-
             } catch (InterruptedException e) {
                 LOG.debug("Stopping Sethlans Queue Service");
                 break;
@@ -410,13 +408,9 @@ public class QueueServiceImpl implements QueueService {
             modifyingQueue = true;
             List<ProcessQueueItem> processQueueItemList = processQueueDatabaseService.listAll();
             if (!processQueueItemList.isEmpty()) {
-                if (processQueueItemList.size() < 5) {
-                    for (ProcessQueueItem processQueueItem : new ArrayList<>(processQueueItemList)) {
+                for (ProcessQueueItem processQueueItem : new ArrayList<>(processQueueItemList)) {
+                    if (incomingQueueItemList.isEmpty()) {
                         startProcessingFiles(processQueueItem);
-                    }
-                } else {
-                    for (int i = 0; i < 5; i++) {
-                        startProcessingFiles(processQueueItemList.get(i));
                     }
                 }
             }
