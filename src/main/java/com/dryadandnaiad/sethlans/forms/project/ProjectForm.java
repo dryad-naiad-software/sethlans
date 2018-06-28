@@ -21,8 +21,9 @@ package com.dryadandnaiad.sethlans.forms.project;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlendFile;
 import com.dryadandnaiad.sethlans.enums.*;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import lombok.Data;
+
+import java.util.UUID;
 
 /**
  * Created Mario Estrella on 3/7/18.
@@ -59,7 +60,7 @@ public class ProjectForm {
         this.projectType = ProjectType.STILL_IMAGE;
         this.renderOn = ComputeType.CPU_GPU;
         this.outputFormat = RenderOutputFormat.PNG;
-        this.uuid = SethlansUtils.getShortUUID();
+        this.uuid = UUID.randomUUID().toString();
         this.partsPerFrame = 4;
     }
 

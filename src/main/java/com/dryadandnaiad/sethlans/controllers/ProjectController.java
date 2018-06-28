@@ -29,7 +29,6 @@ import com.dryadandnaiad.sethlans.services.blender.BlenderProjectService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.queue.ProcessImageAndAnimationService;
-import com.dryadandnaiad.sethlans.services.storage.WebUploadService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
@@ -76,7 +75,6 @@ public class ProjectController {
     @Value("${sethlans.tempDir}")
     private String temp;
 
-    private WebUploadService webUploadService;
     private BlenderParseBlendFileService blenderParseBlenderFileService;
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
@@ -421,7 +419,13 @@ public class ProjectController {
     public ProjectForm newProjectUpload(@RequestParam("projectFile") MultipartFile projectFile) {
         LOG.debug("Upload Attempted");
         String uploadTag = SethlansUtils.getShortUUID();
-        webUploadService.store(projectFile, uploadTag);
+        try {
+            File storeUpload = new File(temp + uploadTag + "-" + projectFile.getOriginalFilename());
+            projectFile.transferTo(storeUpload);
+        } catch (IOException e) {
+            LOG.error("Error saving upload" + e.getMessage());
+            LOG.debug(Throwables.getStackTraceAsString(e));
+        }
         ProjectForm newProject = new ProjectForm();
         newProject.setUploadedFile(projectFile.getOriginalFilename());
         newProject.setFileLocation(temp + uploadTag + "-" + projectFile.getOriginalFilename());
@@ -599,13 +603,6 @@ public class ProjectController {
         }
         return "30";
     }
-
-
-    @Autowired
-    public void setWebUploadService(WebUploadService webUploadService) {
-        this.webUploadService = webUploadService;
-    }
-
 
     @Autowired
     public void setBlenderParseBlenderFileService(BlenderParseBlendFileService blenderParseBlenderFileService) {
