@@ -116,20 +116,20 @@ public class QueueServiceImpl implements QueueService {
                         processReceivedFiles();
                     }
                     assignmentWorkflow();
-                    processingWorkflow();
                     if (!nodeStatuses.isEmpty()) {
                         processNodeAcknowledgements();
                     }
+                    processingWorkflow();
                     continue;
                 }
 
                 if (!incomingQueueItemList.isEmpty()) {
                     incomingCompleteItems();
                     assignmentWorkflow();
-                    processingWorkflow();
                     if (!nodeStatuses.isEmpty()) {
                         processNodeAcknowledgements();
                     }
+                    processingWorkflow();
                     if (!processQueueDatabaseService.listAll().isEmpty()) {
                         processReceivedFiles();
                     }
@@ -410,8 +410,14 @@ public class QueueServiceImpl implements QueueService {
             modifyingQueue = true;
             List<ProcessQueueItem> processQueueItemList = processQueueDatabaseService.listAll();
             if (!processQueueItemList.isEmpty()) {
-                for (ProcessQueueItem processQueueItem : new ArrayList<>(processQueueItemList)) {
+                if (processQueueItemList.size() < 5) {
+                    for (ProcessQueueItem processQueueItem : new ArrayList<>(processQueueItemList)) {
                         startProcessingFiles(processQueueItem);
+                    }
+                } else {
+                    for (int i = 0; i < 5; i++) {
+                        startProcessingFiles(processQueueItemList.get(i));
+                    }
                 }
             }
             modifyingQueue = false;

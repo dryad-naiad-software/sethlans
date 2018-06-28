@@ -68,7 +68,6 @@ class QueueNodeActions {
             renderQueueItem.setRendering(true);
             renderQueueItem.setVersion(renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID()).getVersion());
             renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
-            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
         }
         if (!processNodeStatus.isAccepted()) {
             RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID());
