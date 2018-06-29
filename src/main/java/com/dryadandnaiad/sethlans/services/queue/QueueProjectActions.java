@@ -112,6 +112,7 @@ class QueueProjectActions {
                     blenderProject.setProjectStart(0L);
                     blenderProject.setProjectEnd(0L);
                     blenderProject.setQueueIndex(0);
+                    blenderProject.setTotalRenderTime(0L);
                     blenderProject.setQueueFillComplete(false);
                     blenderProject.setRemainingQueueSize(blenderProject.getTotalQueueSize());
                     blenderProject.setFrameFileNames(new ArrayList<>());

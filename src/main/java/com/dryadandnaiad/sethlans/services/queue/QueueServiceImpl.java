@@ -408,20 +408,33 @@ public class QueueServiceImpl implements QueueService {
             modifyingQueue = true;
             List<ProcessQueueItem> processQueueItemList = processQueueDatabaseService.listAll();
             if (!processQueueItemList.isEmpty()) {
-                for (ProcessQueueItem processQueueItem : new ArrayList<>(processQueueItemList)) {
-                    if (incomingQueueItemList.isEmpty()) {
-                        startProcessingFiles(processQueueItem);
+                BlenderProject blenderProject = null;
+                for (int i = 0; i < processQueueItemList.size(); i++) {
+                    ProcessQueueItem processQueueItem = processQueueItemList.get(i);
+                    if (i == 0) {
+                        blenderProject = blenderProjectDatabaseService.getByProjectUUID(processQueueItem.getProjectUUID());
+                    }
+                    if (i > 0) {
+                        if (!processQueueItemList.get(i - 1).getProjectUUID().equals(processQueueItem.getProjectUUID())) {
+                            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+                            blenderProject = blenderProjectDatabaseService.getByProjectUUID(processQueueItemList.get(i).getProjectUUID());
+                        }
+                    }
+                    RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processQueueItem.getQueueUUID());
+                    startProcessingFiles(processQueueItemList.get(i), blenderProject, renderQueueItem);
+                    if (renderQueueItem != null) {
+                        renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
                     }
                 }
+                blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             }
             modifyingQueue = false;
         }
     }
 
-    private void startProcessingFiles(ProcessQueueItem processQueueItem) {
+    private void startProcessingFiles(ProcessQueueItem processQueueItem, BlenderProject blenderProject, RenderQueueItem renderQueueItem) {
         try {
-            processReceivedFile(processQueueItem, renderQueueDatabaseService,
-                    blenderProjectDatabaseService, sethlansNodeDatabaseService,
+            processReceivedFile(processQueueItem, renderQueueItem, blenderProject, sethlansNodeDatabaseService,
                     processFrameDatabaseService, processQueueDatabaseService);
         } catch (NullPointerException e) {
             LOG.error("Received item after project has been stopped");

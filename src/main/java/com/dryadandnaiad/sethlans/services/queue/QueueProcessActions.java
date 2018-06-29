@@ -48,17 +48,13 @@ import java.util.concurrent.TimeUnit;
 class QueueProcessActions {
     private static final Logger LOG = LoggerFactory.getLogger(QueueProcessActions.class);
 
-    static void processReceivedFile(ProcessQueueItem processQueueItem,
-                                    RenderQueueDatabaseService renderQueueDatabaseService,
-                                    BlenderProjectDatabaseService blenderProjectDatabaseService,
+    static void processReceivedFile(ProcessQueueItem processQueueItem, RenderQueueItem renderQueueItem,
+                                    BlenderProject blenderProject,
                                     SethlansNodeDatabaseService sethlansNodeDatabaseService,
                                     ProcessFrameDatabaseService processFrameDatabaseService,
                                     ProcessQueueDatabaseService processQueueDatabaseService) {
-        RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processQueueItem.getQueueUUID());
         int partNumber = renderQueueItem.getBlenderFramePart().getPartNumber();
         int frameNumber = renderQueueItem.getBlenderFramePart().getFrameNumber();
-        BlenderProject blenderProject =
-                blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
         int remainingPartsForFrame = blenderProject.getPartsPerFrame();
         int remainingTotalQueue = 0;
 
@@ -91,9 +87,7 @@ class QueueProcessActions {
             LOG.error("Unable to move received file.");
         }
 
-        renderQueueItem = renderQueueDatabaseService.getById(renderQueueItem.getId());
         renderQueueItem.setComplete(true);
-        renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
         LOG.debug("Processing complete.");
         int projectTotalQueue =
                 blenderProject.getTotalQueueSize();
@@ -119,8 +113,6 @@ class QueueProcessActions {
         }
         blenderProject.setRemainingQueueSize(remainingTotalQueue);
         blenderProject.setTotalProjectTime(blenderProject.getProjectEnd() - blenderProject.getProjectStart());
-        blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
-        blenderProjectDatabaseService.saveOrUpdate(blenderProject);
         processQueueDatabaseService.delete(processQueueItem);
     }
 

@@ -35,9 +35,9 @@ import javax.persistence.Entity;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class ProcessQueueItem extends AbstractEntityClass {
-    String connection_uuid;
-    String part;
-    String queueUUID;
-    String projectUUID;
-    long renderTime;
+    private String connection_uuid;
+    private String part;
+    private String queueUUID;
+    private String projectUUID;
+    private long renderTime;
 }
