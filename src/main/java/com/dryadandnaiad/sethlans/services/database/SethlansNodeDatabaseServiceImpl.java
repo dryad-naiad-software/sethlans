@@ -116,6 +116,17 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
     }
 
     @Override
+    public List<SethlansNode> activeNonComboNodes() {
+        List<SethlansNode> activeNodes = new ArrayList<>();
+        for (SethlansNode node : listAll()) {
+            if (node.isActive() && node.isBenchmarkComplete() && !node.isDisabled() && !node.isCombined()) {
+                activeNodes.add(node);
+            }
+        }
+        return activeNodes;
+    }
+
+    @Override
     public List<SethlansNode> activeNodeList() {
         List<SethlansNode> activeNodes = new ArrayList<>();
         for (SethlansNode node : listAll()) {

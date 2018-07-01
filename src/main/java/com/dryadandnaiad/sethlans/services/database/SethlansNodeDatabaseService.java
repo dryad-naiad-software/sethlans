@@ -36,6 +36,8 @@ public interface SethlansNodeDatabaseService extends CRUDService<SethlansNode> {
 
     boolean activeNodes();
 
+    List<SethlansNode> activeNonComboNodes();
+
     List<SethlansNode> activeNodeList();
 
     List<SethlansNode> activeCPUNodes();

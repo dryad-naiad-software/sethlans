@@ -144,8 +144,17 @@ public class QueueServiceImpl implements QueueService {
     }
 
     private void assignmentWorkflow() {
-        assignQueueItemToNode();
-        sendQueueItemsToAssignedNode();
+        if (sethlansNodeDatabaseService.activeCPUGPUNodes().size() > 0 || sethlansNodeDatabaseService.activeNonComboNodes().size() > 0) {
+            int count = 0;
+            while (count < 1) {
+                assignQueueItemToNode();
+                sendQueueItemsToAssignedNode();
+                count++;
+            }
+        } else {
+            assignQueueItemToNode();
+            sendQueueItemsToAssignedNode();
+        }
     }
 
     private void processingWorkflow() {
