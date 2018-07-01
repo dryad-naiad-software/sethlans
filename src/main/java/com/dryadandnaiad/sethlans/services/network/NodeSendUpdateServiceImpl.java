@@ -99,7 +99,7 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
                         if (slots == renderTaskDatabaseService.listAll().size()) {
                             counter = 0;
                         }
-                        if (slots > renderTaskDatabaseService.listAll().size()) {
+                        if (renderTaskDatabaseService.listAll().size() == 0) {
                             counter++;
                         }
                         if (counter % 60 == 0 && counter > 59) {
