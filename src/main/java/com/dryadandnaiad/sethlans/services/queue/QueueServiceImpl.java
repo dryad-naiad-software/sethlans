@@ -145,7 +145,6 @@ public class QueueServiceImpl implements QueueService {
 
     private void assignmentWorkflow() {
         if (sethlansNodeDatabaseService.activeCPUGPUNodes().size() > 0 || sethlansNodeDatabaseService.activeNonComboNodes().size() > 0) {
-
             int count = 0;
             while (count < 1) {
                 assignQueueItemToNode();
