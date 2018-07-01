@@ -98,7 +98,6 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
         for (SethlansNode node : nodes) {
             if (node.getAvailableRenderingSlots() > 0 && node.isActive() && node.isBenchmarkComplete() && !node.isDisabled()) {
                 nodesNotRendering.add(node);
-
             }
         }
         return nodesNotRendering;
