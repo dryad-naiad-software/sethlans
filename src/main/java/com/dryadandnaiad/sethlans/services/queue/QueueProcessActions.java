@@ -75,7 +75,7 @@ class QueueProcessActions {
             }
         }
         storedDir.mkdirs();
-        LOG.debug("Processing received file from " +
+        LOG.debug("Processing received file " + processQueueItem.getPart() + " from " +
                 sethlansNodeDatabaseService.getByConnectionUUID(processQueueItem.getConnection_uuid()).getHostname() + ". Frame: " + frameNumber +
                 " Part: " + partNumber
         );
