@@ -117,7 +117,7 @@ class QueueNodeActions {
     }
 
     private static RenderQueueItem setQueueItemToNode(SethlansNodeDatabaseService sethlansNodeDatabaseService, int i, List<SethlansNode> nodesToUpdate, RenderQueueItem renderQueueItem) {
-        List<SethlansNode> sortedSethlansNodeList = new ArrayList<>();
+        List<SethlansNode> sortedSethlansNodeList;
         SethlansNode sethlansNode;
         switch (renderQueueItem.getRenderComputeType()) {
             case CPU_GPU:
