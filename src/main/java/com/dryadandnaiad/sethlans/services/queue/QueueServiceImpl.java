@@ -144,13 +144,18 @@ public class QueueServiceImpl implements QueueService {
     }
 
     private void assignmentWorkflow() {
-        if (blenderProjectDatabaseService.listAll().size() > 0) {
-            LOG.debug("Active nodes with free spots " + sethlansNodeDatabaseService.activeNodeswithFreeSlots().size());
-        }
+        int count = sethlansNodeDatabaseService.activeNodeswithFreeSlots().size();
         do {
             assignQueueItemToNode();
             sendQueueItemsToAssignedNode();
-        } while (sethlansNodeDatabaseService.activeNodeswithFreeSlots().size() > 0);
+            if (count == sethlansNodeDatabaseService.activeNodeswithFreeSlots().size()) {
+                // If the free slot size doesn't change after going through the assignments, break the loop.
+                break;
+            }
+            count = sethlansNodeDatabaseService.activeNodeswithFreeSlots().size();
+            LOG.debug("Active nodes with free spots " + sethlansNodeDatabaseService.activeNodeswithFreeSlots().size());
+        }
+        while (sethlansNodeDatabaseService.activeNodeswithFreeSlots().size() > 0 && blenderProjectDatabaseService.getRemainingQueueProjects().size() > 0);
     }
 
     private void processingWorkflow() {
