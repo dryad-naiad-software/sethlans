@@ -167,6 +167,7 @@ public class ServerRenderController {
                     ProcessQueueItem processQueueItem = new ProcessQueueItem();
                     processQueueItem.setConnection_uuid(connection_uuid);
                     processQueueItem.setPart(receivedFile.toString());
+                    LOG.debug("Received file from " + sethlansNode.getHostname() + " saved as " + receivedFile.toString());
                     processQueueItem.setQueueUUID(queue_uuid);
                     processQueueItem.setProjectUUID(project_uuid);
                     processQueueItem.setRenderTime(render_time);
