@@ -30,6 +30,7 @@ import com.dryadandnaiad.sethlans.services.queue.QueueService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,7 +162,7 @@ public class ServerRenderController {
                 BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(project_uuid);
                 LOG.debug("Received response from " + sethlansNode.getHostname() + ", adding to processing Queue.");
                 try {
-                    File receivedFile = new File(blenderProject.getProjectRootDir() + File.separator + "received" + File.separator + queue_uuid + ".png");
+                    File receivedFile = new File(blenderProject.getProjectRootDir() + File.separator + "received" + File.separator + StringUtils.left(queue_uuid, 8) + "-" + System.currentTimeMillis() + ".png");
                     part.transferTo(receivedFile);
                     ProcessQueueItem processQueueItem = new ProcessQueueItem();
                     processQueueItem.setConnection_uuid(connection_uuid);
