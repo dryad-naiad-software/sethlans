@@ -146,6 +146,9 @@ public class QueueServiceImpl implements QueueService {
     private void assignmentWorkflow() {
         int count = sethlansNodeDatabaseService.activeNodeswithFreeSlots().size();
         do {
+            if (!nodeStatuses.isEmpty()) {
+                processNodeAcknowledgements();
+            }
             assignQueueItemToNode();
             sendQueueItemsToAssignedNode();
             if (count == sethlansNodeDatabaseService.activeNodeswithFreeSlots().size()) {
