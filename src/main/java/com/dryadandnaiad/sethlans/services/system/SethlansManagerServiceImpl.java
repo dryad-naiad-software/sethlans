@@ -69,7 +69,7 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
                     env.setActiveProfiles(SethlansUtils.getProperty(SethlansConfigKeys.MODE.toString()));
                 }
             }
-            restartEndpoint.restart();
+            restartEndpoint.invoke();
         });
         thread.setDaemon(false);
         thread.start();
