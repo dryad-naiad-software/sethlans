@@ -102,7 +102,6 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
         writeProperty(SethlansConfigKeys.SCRIPTS_DIR, scriptsDirectory);
         writeProperty(SethlansConfigKeys.TEMP_DIR, tempDirectory);
         writeProperty(SethlansConfigKeys.ROOT_DIR, setupForm.getRootDirectory());
-        writeProperty("spring.jpa.hibernate.ddl-auto", "validate");
         LOG.debug("Main Sethlans properties saved.");
 
         // Creating main Sethlan Directories
