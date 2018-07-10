@@ -19,18 +19,15 @@
 
 package com.dryadandnaiad.sethlans.services.system;
 
-import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.executor.SethlansExecutor;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.restart.RestartEndpoint;
-import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
-import java.util.Arrays;
 
 /**
  * Created Mario Estrella on 3/22/17.
@@ -41,8 +38,7 @@ import java.util.Arrays;
 @Service
 public class SethlansManagerServiceImpl implements SethlansManagerService {
     private static final Logger LOG = LoggerFactory.getLogger(SethlansManagerServiceImpl.class);
-    private RestartEndpoint restartEndpoint;
-    private ConfigurableEnvironment env;
+    private ApplicationContext applicationContext;
 
 
     @Async
@@ -61,27 +57,26 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
 
     @Override
     public void restart() {
+        SethlansState sethlansState = SethlansState.getInstance();
         SethlansExecutor sethlansExecutor = SethlansExecutor.getInstance();
         sethlansExecutor.getExecutor().shutdown();
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            LOG.info("System Shutdown service closed");
+
+        }
         Thread thread = new Thread(() -> {
-            if (SethlansUtils.getProperty(SethlansConfigKeys.MODE.toString()) != null) {
-                if (Arrays.asList(env.getActiveProfiles()).contains("SETUP")) {
-                    env.setActiveProfiles(SethlansUtils.getProperty(SethlansConfigKeys.MODE.toString()));
-                }
-            }
-            restartEndpoint.invoke();
+            sethlansState.sethlansActive = false;
+            SpringApplication.exit(applicationContext, () -> 0);
+
         });
         thread.setDaemon(false);
         thread.start();
     }
 
     @Autowired
-    public void setRestartEndpoint(RestartEndpoint restartEndpoint) {
-        this.restartEndpoint = restartEndpoint;
-    }
-
-    @Autowired
-    public void setEnv(ConfigurableEnvironment env) {
-        this.env = env;
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 }

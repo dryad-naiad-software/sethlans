@@ -25,7 +25,6 @@ import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
-import org.springframework.cloud.context.restart.RestartEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -47,12 +46,6 @@ import java.util.concurrent.Executor;
 @EnableJpaRepositories("com.dryadandnaiad.sethlans.repositories")
 public class CommonBeanConfig implements AsyncConfigurer {
     private static final Logger LOG = LoggerFactory.getLogger(CommonBeanConfig.class);
-
-
-    @Bean
-    public RestartEndpoint restartEndpoint() {
-        return new RestartEndpoint();
-    }
 
 
     @Bean
