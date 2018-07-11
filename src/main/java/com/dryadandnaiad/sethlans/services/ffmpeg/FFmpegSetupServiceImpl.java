@@ -26,6 +26,7 @@ import com.google.common.base.Throwables;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -44,6 +45,9 @@ import java.nio.file.Paths;
 public class FFmpegSetupServiceImpl implements FFmpegSetupService {
     private static final Logger LOG = LoggerFactory.getLogger(FFmpegSetupServiceImpl.class);
 
+    @Value("${sethlans.configDir}")
+    private String configDir;
+
     @Override
     public boolean installFFmpeg(String binaryDir) {
         String ffmpegFile = copyFFmpeg(binaryDir);
@@ -58,10 +62,10 @@ public class FFmpegSetupServiceImpl implements FFmpegSetupService {
                 }
             }
             if (SystemUtils.IS_OS_WINDOWS) {
-                SethlansUtils.writeProperty(SethlansConfigKeys.FFMPEG_BIN, binaryDir + "ffmpeg" + File.separator + "bin" + File.separator + "ffmpeg.exe");
+                SethlansUtils.writeProperty(SethlansConfigKeys.FFMPEG_BIN, binaryDir + "ffmpeg" + File.separator + "bin" + File.separator + "ffmpeg.exe", new File(configDir + SethlansUtils.CONFIG_FILENAME));
             }
             if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
-                SethlansUtils.writeProperty(SethlansConfigKeys.FFMPEG_BIN, binaryDir + "ffmpeg" + File.separator + "bin" + File.separator + "ffmpeg");
+                SethlansUtils.writeProperty(SethlansConfigKeys.FFMPEG_BIN, binaryDir + "ffmpeg" + File.separator + "bin" + File.separator + "ffmpeg", new File(configDir + SethlansUtils.CONFIG_FILENAME));
             }
 
             return true;

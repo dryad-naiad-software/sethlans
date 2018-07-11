@@ -38,6 +38,7 @@ public enum SethlansConfigKeys {
     BINARY_DIR("sethlans.binDir"),
     TEMP_DIR("sethlans.tempDir"),
     CACHE_DIR("sethlans.cacheDir"),
+    CONFIG_DIR("sethlans.configDir"),
     BLEND_FILE_CACHE_DIR("sethlans.blendFileCacheDir"),
     FFMPEG_BIN("sethlans.ffmpeg.binary"),
     CACHED_BLENDER_BINARIES("sethlans.cachedBlenderBinaries"),
@@ -52,7 +53,9 @@ public enum SethlansConfigKeys {
     BENCHMARK_DIR("sethlans.benchmarkDir"),
     ROOT_DIR("sethlans.rootDir"),
     SESSION_TIMEOUT("server.session.timeout"),
-    LOG_LEVEL("logging.level.com.dryadandnaiad.sethlans");
+    LOG_LEVEL("logging.level.com.dryadandnaiad.sethlans"),
+    DATABASE_LOC("spring.datasource.url");
+
 
 
     private final String text;

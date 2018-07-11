@@ -25,9 +25,11 @@ import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,10 +46,13 @@ import java.util.List;
 public class SethlansLogRetrievalServiceImpl implements SethlansLogRetrievalService {
     private static final Logger LOG = LoggerFactory.getLogger(SethlansLogRetrievalServiceImpl.class);
 
+    @Value("${sethlans.configDir}")
+    private String configDir;
+
     @Override
     public List<Log> sethlansLogList() {
         List<Log> logList = new ArrayList<>();
-        String sethlansLog = SethlansUtils.getProperty(SethlansConfigKeys.LOGGING_FILE.toString());
+        String sethlansLog = SethlansUtils.getProperty(SethlansConfigKeys.LOGGING_FILE.toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME));
         LOG.debug("Reading log entries from " + sethlansLog);
         populateLogList(sethlansLog, logList);
         return logList;

@@ -29,7 +29,9 @@ import lombok.Data;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +53,8 @@ public class NodeInfo {
     private List<GPUDevice> selectedGPUs = new ArrayList<>();
     private List<String> selectedDeviceID;
     private boolean combined;
+    @Value("${sethlans.configDir}")
+    private String configDir;
 
     private static final Logger LOG = LoggerFactory.getLogger(NodeInfo.class);
 
@@ -82,7 +86,7 @@ public class NodeInfo {
     public void populateNodeInfo() {
         this.hostname = SethlansUtils.getHostname();
 
-        this.ipAddress = SethlansUtils.getIP();
+        this.ipAddress = SethlansUtils.getIP(new File(configDir + SethlansUtils.CONFIG_FILENAME));
 
     }
 

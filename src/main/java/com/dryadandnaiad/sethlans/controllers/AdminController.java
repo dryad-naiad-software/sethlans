@@ -50,6 +50,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
 import java.util.*;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansUtils.writeProperty;
@@ -75,6 +76,9 @@ public class AdminController {
 
     @Value("${sethlans.gpu_id}")
     private String gpuIds;
+
+    @Value("${sethlans.configDir}")
+    private String configDir;
 
     @Value("${sethlans.cores}")
     private String selectedCores;
@@ -198,7 +202,7 @@ public class AdminController {
     @GetMapping(value = "/primary_blender_version")
     public Map primaryBlenderVersion() {
         return Collections.singletonMap("primary_blender",
-                SethlansUtils.getProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION.toString()));
+                SethlansUtils.getProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION.toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME)));
     }
 
     @GetMapping(value = "/remaining_blender_versions")
@@ -232,7 +236,7 @@ public class AdminController {
 
     @GetMapping(value = "/set_primary_blender_version")
     public boolean setPrimaryBlenderVersion(@RequestParam String version) {
-        writeProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION, version);
+        writeProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION, version, new File(configDir + SethlansUtils.CONFIG_FILENAME));
         return true;
     }
 
@@ -251,7 +255,7 @@ public class AdminController {
             BlenderBinaryInfo blenderBinaryInfo = new BlenderBinaryInfo();
             blenderBinaryInfo.setVersion(version);
             blenderBinaryInfo.setBinaryOSList(blenderBinaryOSList(version));
-            if (SethlansUtils.getProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION.toString()).equals(version)) {
+            if (SethlansUtils.getProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION.toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME)).equals(version)) {
                 blenderBinaryInfo.setActive(true);
             }
             blenderBinaryInfoList.add(blenderBinaryInfo);
@@ -275,7 +279,7 @@ public class AdminController {
 
     @GetMapping(value = "/current_settings")
     public SethlansSettingsInfo sethlansSettingsInfo() {
-        SethlansSettingsInfo sethlansSettings = SethlansUtils.getSettings();
+        SethlansSettingsInfo sethlansSettings = SethlansUtils.getSettings(new File(configDir + SethlansUtils.CONFIG_FILENAME));
         if (sethlansSettings.getLogLevel() == null) {
             sethlansSettings.setLogLevel(logLevel);
         }

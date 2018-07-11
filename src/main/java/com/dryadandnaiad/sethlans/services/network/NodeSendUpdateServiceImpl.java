@@ -31,9 +31,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanCreationNotAllowedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +52,9 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
     private RenderTaskDatabaseService renderTaskDatabaseService;
     private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
     private static final Logger LOG = LoggerFactory.getLogger(NodeSendUpdateServiceImpl.class);
+
+    @Value("${sethlans.configDir}")
+    private String configDir;
 
     @Async
     @Override
@@ -69,7 +74,7 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
             Thread.sleep(15000);
             LOG.debug("Starting Idle Notification Service.");
             int counter = 0;
-            NodeInfo nodeInfo = SethlansUtils.getNodeInfo();
+            NodeInfo nodeInfo = SethlansUtils.getNodeInfo(new File(configDir + SethlansUtils.CONFIG_FILENAME));
             ComputeType computeType = nodeInfo.getComputeType();
             int slots = 0;
             switch (computeType) {

@@ -32,6 +32,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 
 /**
  * Created Mario Estrella on 10/27/17.
@@ -52,10 +53,14 @@ public class NodeBackgroundComponent {
     @Value("${server.port}")
     private String sethlansPort;
 
+    @Value("${sethlans.configDir}")
+    private String configDir;
+
+
 
     @PostConstruct
     public void startNodeMulticast() {
-        String ip = SethlansUtils.getIP();
+        String ip = SethlansUtils.getIP(new File(configDir + SethlansUtils.CONFIG_FILENAME));
         LOG.debug("Sethlans Host IP: " + ip);
         multicastSenderService.sendSethlansIPAndPort(ip, sethlansPort);
     }

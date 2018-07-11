@@ -68,10 +68,8 @@ import java.util.List;
  */
 public class SethlansUtils {
     private static final Logger LOG = LoggerFactory.getLogger(SethlansUtils.class);
-    private static final String path = System.getProperty("user.home") + File.separator + ".sethlans";
-    private static final File configDirectory = new File(path + File.separator + "config");
-    private static final File configFile = new File(configDirectory + File.separator + "sethlans.properties");
     private static Properties sethlansProperties = new Properties();
+    public static String CONFIG_FILENAME = "sethlans.properties";
 
 
     public static Image createImage(String image, String description) {
@@ -103,26 +101,26 @@ public class SethlansUtils {
         return null;
     }
 
-    public static SethlansServer getCurrentServerInfo() {
+    public static SethlansServer getCurrentServerInfo(File configFile) {
         SethlansServer currentServer = new SethlansServer();
-        currentServer.setNetworkPort(getPort());
+        currentServer.setNetworkPort(getPort(configFile));
         currentServer.setHostname(getHostname());
-        currentServer.setIpAddress(getIP());
+        currentServer.setIpAddress(getIP(configFile));
         return currentServer;
     }
 
-    public static SethlansNode getCurrentNodeInfo() {
+    public static SethlansNode getCurrentNodeInfo(File configFile) {
         SethlansNode currentNode = new SethlansNode();
-        currentNode.setNetworkPort(getPort());
+        currentNode.setNetworkPort(getPort(configFile));
         currentNode.setHostname(getHostname());
-        currentNode.setIpAddress(getIP());
+        currentNode.setIpAddress(getIP(configFile));
         return currentNode;
     }
 
-    public static boolean writeProperty(SethlansConfigKeys configKey, String value) {
+    public static boolean writeProperty(SethlansConfigKeys configKey, String value, File configFile) {
         String comment = "";
         String key = configKey.toString();
-        comment = updateComment(comment);
+        comment = updateComment(comment, configFile);
 
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(configFile);
@@ -141,18 +139,18 @@ public class SethlansUtils {
         return false;
     }
 
-    public static SethlansSettingsInfo getSettings() {
+    public static SethlansSettingsInfo getSettings(File configFile) {
         SethlansSettingsInfo sethlansSettingsInfo = new SethlansSettingsInfo();
-        String mode = SethlansUtils.getProperty(SethlansConfigKeys.MODE.toString());
-        sethlansSettingsInfo.setHttpsPort(SethlansUtils.getPort());
-        sethlansSettingsInfo.setSethlansIP(SethlansUtils.getIP());
+        String mode = SethlansUtils.getProperty(SethlansConfigKeys.MODE.toString(), configFile);
+        sethlansSettingsInfo.setHttpsPort(SethlansUtils.getPort(configFile));
+        sethlansSettingsInfo.setSethlansIP(SethlansUtils.getIP(configFile));
         sethlansSettingsInfo.setMode(SethlansMode.valueOf(mode));
-        sethlansSettingsInfo.setRootDir(SethlansUtils.getProperty(SethlansConfigKeys.ROOT_DIR.toString()));
-        sethlansSettingsInfo.setLogLevel(SethlansUtils.getProperty(SethlansConfigKeys.LOG_LEVEL.toString()));
+        sethlansSettingsInfo.setRootDir(SethlansUtils.getProperty(SethlansConfigKeys.ROOT_DIR.toString(), configFile));
+        sethlansSettingsInfo.setLogLevel(SethlansUtils.getProperty(SethlansConfigKeys.LOG_LEVEL.toString(), configFile));
         return sethlansSettingsInfo;
     }
 
-    private static String updateComment(String comment) {
+    private static String updateComment(String comment, File configFile) {
         if (configFile.exists()) {
             try (FileInputStream fileIn = new FileInputStream(configFile)) {
                 sethlansProperties.load(fileIn);
@@ -164,9 +162,9 @@ public class SethlansUtils {
         return comment;
     }
 
-    public static boolean writeProperty(String key, String value) {
+    public static boolean writeProperty(String key, String value, File configFile) {
         String comment = "";
-        comment = updateComment(comment);
+        comment = updateComment(comment, configFile);
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(configFile);
             sethlansProperties.setProperty(key, value);
@@ -301,7 +299,7 @@ public class SethlansUtils {
         return hostname.toUpperCase();
     }
 
-    public static String getProperty(String key) {
+    public static String getProperty(String key, File configFile) {
         final Properties properties = new Properties();
         try {
             FileInputStream fileIn = new FileInputStream(configFile);
@@ -315,31 +313,31 @@ public class SethlansUtils {
         return null;
     }
 
-    public static NodeInfo getNodeInfo() {
+    public static NodeInfo getNodeInfo(File configFile) {
         NodeInfo nodeInfo = new NodeInfo();
         nodeInfo.populateNodeInfo();
-        ComputeType computeType = ComputeType.valueOf(getProperty(SethlansConfigKeys.COMPUTE_METHOD.toString()));
+        ComputeType computeType = ComputeType.valueOf(getProperty(SethlansConfigKeys.COMPUTE_METHOD.toString(), configFile));
 
-        nodeInfo.setNetworkPort(getPort());
+        nodeInfo.setNetworkPort(getPort(configFile));
         nodeInfo.setComputeType(computeType);
 
         if (computeType == ComputeType.CPU_GPU || computeType == ComputeType.CPU) {
             nodeInfo.setCpuinfo();
-            nodeInfo.setSelectedCores(getSelectedCores());
+            nodeInfo.setSelectedCores(getSelectedCores(configFile));
         }
 
         if (computeType == ComputeType.GPU || computeType == ComputeType.CPU_GPU) {
-            List<String> deviceList = Arrays.asList(getProperty(SethlansConfigKeys.GPU_DEVICE.toString()).split(","));
+            List<String> deviceList = Arrays.asList(getProperty(SethlansConfigKeys.GPU_DEVICE.toString(), configFile).split(","));
             nodeInfo.setCpuinfo();
             nodeInfo.setSelectedDeviceID(deviceList);
             nodeInfo.setSelectedGPUs();
-            nodeInfo.setCombined(Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.COMBINE_GPU.toString())));
+            nodeInfo.setCombined(Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.COMBINE_GPU.toString(), configFile)));
 
         }
         return nodeInfo;
     }
 
-    public static String getIP() {
+    public static String getIP(File configFile) {
         String ip = null;
         final Properties properties = new Properties();
         try {
@@ -369,11 +367,11 @@ public class SethlansUtils {
         return ip;
     }
 
-    public static String getSelectedCores() {
-        return getProperty(SethlansConfigKeys.CPU_CORES.toString());
+    public static String getSelectedCores(File configFile) {
+        return getProperty(SethlansConfigKeys.CPU_CORES.toString(), configFile);
     }
 
-    public static boolean getFirstTime() {
+    public static boolean getFirstTime(File configFile) {
         boolean firsttime = true;
         final Properties properties = new Properties();
         try {
@@ -390,7 +388,7 @@ public class SethlansUtils {
         return firsttime;
     }
 
-    public static String getPort() {
+    public static String getPort(File configFile) {
         String port = null;
         final Properties properties = new Properties();
         try {
@@ -450,19 +448,19 @@ public class SethlansUtils {
         return executable;
     }
 
-    public static void addCachedBlenderVersion(String blenderVersion) {
-        writeProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES, blenderVersion);
+    public static void addCachedBlenderVersion(String blenderVersion, File configFile) {
+        writeProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES, blenderVersion, configFile);
     }
 
-    public static boolean renameBlenderDir(File renderDir, File binDir, RenderTask renderTask, String cachedBlenderBinaries) {
+    public static boolean renameBlenderDir(File renderDir, File binDir, RenderTask renderTask, String cachedBlenderBinaries, File configFile) {
         if (SethlansUtils.renameBlenderDirectory(binDir, renderTask.getBlenderVersion())) {
             LOG.debug("Blender executable ready");
             renderTask.setRenderDir(renderDir.toString());
             renderTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(binDir, renderTask.getBlenderVersion()));
             if (cachedBlenderBinaries == null || cachedBlenderBinaries.isEmpty() || cachedBlenderBinaries.equals("null")) {
-                SethlansUtils.addCachedBlenderVersion(renderTask.getBlenderVersion());
+                SethlansUtils.addCachedBlenderVersion(renderTask.getBlenderVersion(), configFile);
             } else {
-                SethlansUtils.appendCachedBlenderVersion(renderTask.getBlenderVersion());
+                SethlansUtils.appendCachedBlenderVersion(renderTask.getBlenderVersion(), configFile);
             }
             return true;
         } else {
@@ -472,15 +470,15 @@ public class SethlansUtils {
 
     }
 
-    public static boolean renameBlenderDir(File benchmarkDir, File binDir, BlenderBenchmarkTask benchmarkTask, String cachedBlenderBinaries) {
+    public static boolean renameBlenderDir(File benchmarkDir, File binDir, BlenderBenchmarkTask benchmarkTask, String cachedBlenderBinaries, File configFile) {
         if (SethlansUtils.renameBlenderDirectory(binDir, benchmarkTask.getBlenderVersion())) {
             LOG.debug("Blender executable ready");
             benchmarkTask.setBenchmarkDir(benchmarkDir.toString());
             benchmarkTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(binDir, benchmarkTask.getBlenderVersion()));
             if (cachedBlenderBinaries == null || cachedBlenderBinaries.isEmpty() || cachedBlenderBinaries.equals("null")) {
-                SethlansUtils.addCachedBlenderVersion(benchmarkTask.getBlenderVersion());
+                SethlansUtils.addCachedBlenderVersion(benchmarkTask.getBlenderVersion(), configFile);
             } else {
-                SethlansUtils.appendCachedBlenderVersion(benchmarkTask.getBlenderVersion());
+                SethlansUtils.appendCachedBlenderVersion(benchmarkTask.getBlenderVersion(), configFile);
             }
             return true;
         } else {
@@ -490,9 +488,9 @@ public class SethlansUtils {
 
     }
 
-    public static void appendCachedBlenderVersion(String blenderVersion) {
-        String currentVersions = getProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES.toString());
-        writeProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES, currentVersions + ", " + blenderVersion);
+    public static void appendCachedBlenderVersion(String blenderVersion, File configFile) {
+        String currentVersions = getProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES.toString(), configFile);
+        writeProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES, currentVersions + ", " + blenderVersion, configFile);
     }
 
     public static boolean renameBlenderDirectory(File binDir, String blenderVersion) {

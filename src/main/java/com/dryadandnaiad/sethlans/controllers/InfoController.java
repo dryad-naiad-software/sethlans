@@ -49,6 +49,9 @@ public class InfoController {
     private List<String> blenderVersions = BlenderUtils.listVersions();
 
 
+    @Value("${sethlans.configDir}")
+    private String configDir;
+
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
 
@@ -84,7 +87,7 @@ public class InfoController {
         if (firstTime) {
             return Collections.singletonMap("root_dir", System.getProperty("user.home") + File.separator + ".sethlans");
         } else {
-            return Collections.singletonMap("root_dir", SethlansUtils.getProperty(SethlansConfigKeys.ROOT_DIR.toString()));
+            return Collections.singletonMap("root_dir", SethlansUtils.getProperty(SethlansConfigKeys.ROOT_DIR.toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME)));
         }
     }
 
@@ -110,7 +113,7 @@ public class InfoController {
         if (firstTime) {
             return Collections.singletonMap("port", "7443");
         } else {
-            return Collections.singletonMap("port", SethlansUtils.getPort());
+            return Collections.singletonMap("port", SethlansUtils.getPort(new File(configDir + SethlansUtils.CONFIG_FILENAME)));
         }
     }
 
@@ -122,7 +125,7 @@ public class InfoController {
 
     @GetMapping(value = {"/sethlans_ip"})
     public Map getSethlansIPAddress() {
-        return Collections.singletonMap("ip", SethlansUtils.getIP());
+        return Collections.singletonMap("ip", SethlansUtils.getIP(new File(configDir + SethlansUtils.CONFIG_FILENAME)));
     }
 
     @Autowired
