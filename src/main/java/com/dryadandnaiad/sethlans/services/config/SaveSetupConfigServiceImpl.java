@@ -33,6 +33,7 @@ import com.dryadandnaiad.sethlans.services.python.PythonSetupService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
 import com.dryadandnaiad.sethlans.utils.Resources;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,7 +87,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
         String benchmarkDirectory = setupForm.getRootDirectory() + File.separator + "benchmarks" + File.separator;
 
         // Config File
-        File configFile = new File(configDirectory + CONFIG_FILENAME);
+        File configFile = new File(configDirectory + "sethlans.properties");
         File installFile = new File(installDirectory + "sethlans_install.properties");
 
         // Set User
@@ -103,18 +104,18 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
         }
 
         //Write Properties
-        writeProperty(SethlansConfigKeys.CONFIG_DIR, configDirectory, installFile);
-        writeProperty(SethlansConfigKeys.CONFIG_DIR, configDirectory, configFile);
-        writeProperty(SethlansConfigKeys.HTTPS_PORT, setupForm.getPort(), configFile);
-        writeProperty(SethlansConfigKeys.SETHLANS_IP, setupForm.getIpAddress(), configFile);
-        writeProperty(SethlansConfigKeys.LOGGING_DIR, logDirectory, configFile);
-        writeProperty(SethlansConfigKeys.LOGGING_FILE, logDirectory + "sethlans.log", configFile);
-        writeProperty(SethlansConfigKeys.MODE, setupForm.getMode().toString(), configFile);
-        writeProperty(SethlansConfigKeys.BINARY_DIR, binDirectory, configFile);
-        writeProperty(SethlansConfigKeys.SCRIPTS_DIR, scriptsDirectory, configFile);
-        writeProperty(SethlansConfigKeys.TEMP_DIR, tempDirectory, configFile);
-        writeProperty(SethlansConfigKeys.ROOT_DIR, setupForm.getRootDirectory(), configFile);
-        writeProperty(SethlansConfigKeys.DATABASE_LOC, "jdbc:h2:" + setupForm.getRootDirectory() + File.separator + "data" + File.separator + "sethlansdb;WRITE_DELAY=50", configFile);
+        writePropertyToFile(SethlansConfigKeys.CONFIG_DIR, configDirectory, installFile);
+        writePropertyToFile(SethlansConfigKeys.CONFIG_DIR, configDirectory, configFile);
+        writeProperty(SethlansConfigKeys.HTTPS_PORT, setupForm.getPort());
+        writeProperty(SethlansConfigKeys.SETHLANS_IP, setupForm.getIpAddress());
+        writeProperty(SethlansConfigKeys.LOGGING_DIR, logDirectory);
+        writeProperty(SethlansConfigKeys.LOGGING_FILE, logDirectory + "sethlans.log");
+        writeProperty(SethlansConfigKeys.MODE, setupForm.getMode().toString());
+        writeProperty(SethlansConfigKeys.BINARY_DIR, binDirectory);
+        writeProperty(SethlansConfigKeys.SCRIPTS_DIR, scriptsDirectory);
+        writeProperty(SethlansConfigKeys.TEMP_DIR, tempDirectory);
+        writeProperty(SethlansConfigKeys.ROOT_DIR, setupForm.getRootDirectory());
+        writeProperty(SethlansConfigKeys.DATABASE_LOC, "jdbc:h2:" + setupForm.getRootDirectory() + File.separator + "data" + File.separator + "sethlansdb;WRITE_DELAY=50");
         LOG.debug("Main Sethlans properties saved.");
 
         // Creating main Sethlan Directories
@@ -129,10 +130,10 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
             blenderBinary.setBlenderBinaryOS(SethlansUtils.getOS());
             blenderBinaryDatabaseService.saveOrUpdate(blenderBinary);
 
-            writeProperty(SethlansConfigKeys.PROJECT_DIR, projectDirectory, configFile);
-            writeProperty(SethlansConfigKeys.BLENDER_DIR, blenderDirectory, configFile);
-            writeProperty(SethlansConfigKeys.BENCHMARK_DIR, benchmarkDirectory, configFile);
-            writeProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION, setupForm.getServer().getBlenderVersion(), configFile);
+            writeProperty(SethlansConfigKeys.PROJECT_DIR, projectDirectory);
+            writeProperty(SethlansConfigKeys.BLENDER_DIR, blenderDirectory);
+            writeProperty(SethlansConfigKeys.BENCHMARK_DIR, benchmarkDirectory);
+            writeProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION, setupForm.getServer().getBlenderVersion());
             fFmpegSetupService.installFFmpeg(binDirectory);
             LOG.debug("Server Settings Saved");
 
@@ -145,23 +146,23 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
         }
 
         if (setupForm.getMode() == SethlansMode.NODE || setupForm.getMode() == SethlansMode.DUAL) {
-            writeProperty(SethlansConfigKeys.CACHE_DIR, workingDirectory, configFile);
-            writeProperty(SethlansConfigKeys.BLEND_FILE_CACHE_DIR, blendfileDirectory, configFile);
-            writeProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES, "", configFile);
-            writeProperty(SethlansConfigKeys.COMPUTE_METHOD, setupForm.getNode().getComputeMethod().toString(), configFile);
-            writeProperty(SethlansConfigKeys.TILE_SIZE_GPU, Integer.toString(setupForm.getNode().getTileSizeGPU()), configFile);
-            writeProperty(SethlansConfigKeys.TILE_SIZE_CPU, Integer.toString(setupForm.getNode().getTileSizeCPU()), configFile);
-            writeProperty(SethlansConfigKeys.COMBINE_GPU, Boolean.toString(setupForm.getNode().isCombined()), configFile);
+            writeProperty(SethlansConfigKeys.CACHE_DIR, workingDirectory);
+            writeProperty(SethlansConfigKeys.BLEND_FILE_CACHE_DIR, blendfileDirectory);
+            writeProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES, "");
+            writeProperty(SethlansConfigKeys.COMPUTE_METHOD, setupForm.getNode().getComputeMethod().toString());
+            writeProperty(SethlansConfigKeys.TILE_SIZE_GPU, Integer.toString(setupForm.getNode().getTileSizeGPU()));
+            writeProperty(SethlansConfigKeys.TILE_SIZE_CPU, Integer.toString(setupForm.getNode().getTileSizeCPU()));
+            writeProperty(SethlansConfigKeys.COMBINE_GPU, Boolean.toString(setupForm.getNode().isCombined()));
 
             if (!setupForm.getNode().getComputeMethod().equals(ComputeType.CPU)) {
-                writeProperty(SethlansConfigKeys.GPU_DEVICE, getGPUDeviceString(setupForm.getNode()), configFile);
+                writeProperty(SethlansConfigKeys.GPU_DEVICE, getGPUDeviceString(setupForm.getNode()));
             }
 
             if (!setupForm.getNode().getComputeMethod().equals(ComputeType.GPU)) {
                 if (setupForm.getNode().getCores() <= 0) {
                     setupForm.getNode().setCores(1);
                 }
-                writeProperty(SethlansConfigKeys.CPU_CORES, Integer.toString(setupForm.getNode().getCores()), configFile);
+                writeProperty(SethlansConfigKeys.CPU_CORES, Integer.toString(setupForm.getNode().getCores()));
             }
 
             // Create Node Directories
@@ -171,16 +172,22 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
             LOG.debug("Node Settings Saved");
         }
         // Setup wizard complete
-        writeProperty(SethlansConfigKeys.FIRST_TIME, "false", configFile);
-        writeProperty("spring.profiles.active", setupForm.getMode().toString(), configFile);
+        writeProperty(SethlansConfigKeys.FIRST_TIME, "false");
+        writeProperty("spring.profiles.active", setupForm.getMode().toString());
         LOG.debug("Downloading and Installing Python");
         pythonSetupService.installPython(binDirectory);
         pythonSetupService.setupScripts(scriptsDirectory);
-        LOG.info("Setup complete complete. Restarting Sethlans");
+
         try {
             Thread.sleep(5000);
+            File installDB = new File(System.getProperty("user.home") + File.separator
+                    + ".sethlans_install" + File.separator + "data" + File.separator + "sethlansdb.mv.db");
+            File dataDirectory = new File(setupForm.getRootDirectory() + File.separator + "data");
+            LOG.debug("Copying database over to " + dataDirectory.toString());
+            FileUtils.copyFileToDirectory(installDB, dataDirectory);
+            LOG.info("Setup complete complete. Restarting Sethlans");
             sethlansManagerService.restart();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }
     }

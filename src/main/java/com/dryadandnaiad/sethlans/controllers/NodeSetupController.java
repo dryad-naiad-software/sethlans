@@ -29,11 +29,8 @@ import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.File;
 
 /**
  * Created Mario Estrella on 4/2/2018.
@@ -50,8 +47,7 @@ public class NodeSetupController {
     private UpdateComputeService updateComputeService;
     private SethlansManagerService sethlansManagerService;
     private static final Logger LOG = LoggerFactory.getLogger(NodeSetupController.class);
-    @Value("${sethlans.configDir}")
-    private String configDir;
+
 
 
     @GetMapping("/server_acknowledge/{id}")
@@ -60,7 +56,7 @@ public class NodeSetupController {
         sethlansServer.setPendingAcknowledgementResponse(true);
         LOG.debug(sethlansServer.toString());
         sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
-        nodeActivationService.sendActivationResponse(sethlansServer, SethlansUtils.getCurrentNodeInfo(new File(configDir + SethlansUtils.CONFIG_FILENAME)), false);
+        nodeActivationService.sendActivationResponse(sethlansServer, SethlansUtils.getCurrentNodeInfo(), false);
         return true;
     }
 

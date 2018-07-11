@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,7 +85,7 @@ public class NodeInfo {
     public void populateNodeInfo() {
         this.hostname = SethlansUtils.getHostname();
 
-        this.ipAddress = SethlansUtils.getIP(new File(configDir + SethlansUtils.CONFIG_FILENAME));
+        this.ipAddress = SethlansUtils.getIP();
 
     }
 

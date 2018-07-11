@@ -76,17 +76,17 @@ public class NodeInfoController {
 
     @RequestMapping(value = "/nodeinfo", method = RequestMethod.GET)
     public NodeInfo getNodeInfo() {
-        return SethlansUtils.getNodeInfo(new File(configDir + SethlansUtils.CONFIG_FILENAME));
+        return SethlansUtils.getNodeInfo();
     }
 
     @GetMapping(value = {"/is_gpu_combined"})
     public Boolean isGpuCombined() {
-        return Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.COMBINE_GPU.toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME)));
+        return Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.COMBINE_GPU.toString()));
     }
 
     @GetMapping(value = {"/node_total_slots"})
     public Integer getTotalSlots() {
-        boolean combined = Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.COMBINE_GPU.toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME)));
+        boolean combined = Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.COMBINE_GPU.toString()));
         NodeInfo nodeInfo = getNodeInfo();
         switch (computeType) {
             case CPU:
@@ -119,12 +119,12 @@ public class NodeInfoController {
 
     @GetMapping(value = {"/cpu_tile_size"})
     public String cpuTileSize() {
-        return SethlansUtils.getProperty(SethlansConfigKeys.TILE_SIZE_CPU.toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME));
+        return SethlansUtils.getProperty(SethlansConfigKeys.TILE_SIZE_CPU.toString());
     }
 
     @GetMapping(value = {"/gpu_tile_size"})
     public String gpuTileSize() {
-        return SethlansUtils.getProperty(SethlansConfigKeys.TILE_SIZE_GPU.toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME));
+        return SethlansUtils.getProperty(SethlansConfigKeys.TILE_SIZE_GPU.toString());
     }
 
     @GetMapping(value = {"/available_gpus"})
@@ -136,7 +136,7 @@ public class NodeInfoController {
     public List<String> getSelectedGPUModels() {
         List<String> selectedGPUs = new ArrayList<>();
         try {
-            List<String> deviceList = Arrays.asList(SethlansUtils.getProperty(SethlansConfigKeys.GPU_DEVICE.toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME)).split(","));
+            List<String> deviceList = Arrays.asList(SethlansUtils.getProperty(SethlansConfigKeys.GPU_DEVICE.toString()).split(","));
             List<GPUDevice> availableGPUs = GPU.listDevices();
             for (String deviceID : deviceList) {
                 for (GPUDevice gpu : availableGPUs) {
@@ -161,19 +161,19 @@ public class NodeInfoController {
 
     @GetMapping(value = {"/client_free_space"})
     public Long getClientFreeSpace() {
-        return new File(SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME))).getFreeSpace() / 1024 / 1024 / 1024;
+        return new File(SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString())).getFreeSpace() / 1024 / 1024 / 1024;
     }
 
     @GetMapping(value = {"/client_total_space"})
     public Long getClientTotalSpace() {
-        return new File(SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME))).getTotalSpace() / 1024 / 1024 / 1024;
+        return new File(SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString())).getTotalSpace() / 1024 / 1024 / 1024;
 
     }
 
 
     @GetMapping(value = {"/selected_cores"})
     public String selectedCores() {
-        return SethlansUtils.getSelectedCores(new File(configDir + SethlansUtils.CONFIG_FILENAME));
+        return SethlansUtils.getSelectedCores();
     }
 
 

@@ -34,7 +34,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -51,8 +50,7 @@ import java.util.concurrent.TimeUnit;
 public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
     private static final Logger LOG = LoggerFactory.getLogger(FFmpegEncodeServiceImpl.class);
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
-    @Value("${sethlans.configDir}")
-    private String configDir;
+
 
     @Async
     @Override
@@ -65,7 +63,7 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
         PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
-        CommandLine ffmpeg = new CommandLine(SethlansUtils.getProperty(SethlansConfigKeys.FFMPEG_BIN.toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME)));
+        CommandLine ffmpeg = new CommandLine(SethlansUtils.getProperty(SethlansConfigKeys.FFMPEG_BIN.toString()));
 
         ffmpeg.addArgument("-framerate");
         ffmpeg.addArgument(blenderProject.getFrameRate());

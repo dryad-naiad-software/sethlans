@@ -193,7 +193,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(benchmarkTask.getConnection_uuid());
         String serverIP = sethlansServer.getIpAddress();
         String serverPort = sethlansServer.getNetworkPort();
-        String cachedBlenderBinaries = SethlansUtils.getProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES.toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME));
+        String cachedBlenderBinaries = SethlansUtils.getProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES.toString());
 
         if (benchmarkDir.mkdirs()) {
             String[] cachedBinariesList;
@@ -224,7 +224,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                     LOG.debug("Extraction complete.");
                     LOG.debug("Attempting to rename blender directory. Will attempt 3 tries.");
                     int count = 0;
-                    while (!SethlansUtils.renameBlenderDir(benchmarkDir, new File(binDir), benchmarkTask, cachedBlenderBinaries, new File(configDir + SethlansUtils.CONFIG_FILENAME))) {
+                    while (!SethlansUtils.renameBlenderDir(benchmarkDir, new File(binDir), benchmarkTask, cachedBlenderBinaries)) {
                         count++;
                         if (count == 2) {
                             return false;

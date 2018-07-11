@@ -45,7 +45,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,8 +84,8 @@ public class NodeRenderController {
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
-            ComputeType computeType = ComputeType.valueOf(SethlansUtils.getProperty(SethlansConfigKeys.COMPUTE_METHOD.toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME)));
-            NodeInfo nodeInfo = SethlansUtils.getNodeInfo(new File(configDir + SethlansUtils.CONFIG_FILENAME));
+            ComputeType computeType = ComputeType.valueOf(SethlansUtils.getProperty(SethlansConfigKeys.COMPUTE_METHOD.toString()));
+            NodeInfo nodeInfo = SethlansUtils.getNodeInfo();
             LOG.debug("Render Request Received, preparing render task.");
             List<RenderTask> renderTaskList = renderTaskDatabaseService.listAll();
             boolean rejected = false;

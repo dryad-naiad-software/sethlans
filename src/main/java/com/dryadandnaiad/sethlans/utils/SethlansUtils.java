@@ -69,8 +69,6 @@ import java.util.List;
 public class SethlansUtils {
     private static final Logger LOG = LoggerFactory.getLogger(SethlansUtils.class);
     private static Properties sethlansProperties = new Properties();
-    public static String CONFIG_FILENAME = "sethlans.properties";
-
 
     public static Image createImage(String image, String description) {
         URL imageURL = null;
@@ -101,23 +99,23 @@ public class SethlansUtils {
         return null;
     }
 
-    public static SethlansServer getCurrentServerInfo(File configFile) {
+    public static SethlansServer getCurrentServerInfo() {
         SethlansServer currentServer = new SethlansServer();
-        currentServer.setNetworkPort(getPort(configFile));
+        currentServer.setNetworkPort(getPort());
         currentServer.setHostname(getHostname());
-        currentServer.setIpAddress(getIP(configFile));
+        currentServer.setIpAddress(getIP());
         return currentServer;
     }
 
-    public static SethlansNode getCurrentNodeInfo(File configFile) {
+    public static SethlansNode getCurrentNodeInfo() {
         SethlansNode currentNode = new SethlansNode();
-        currentNode.setNetworkPort(getPort(configFile));
+        currentNode.setNetworkPort(getPort());
         currentNode.setHostname(getHostname());
-        currentNode.setIpAddress(getIP(configFile));
+        currentNode.setIpAddress(getIP());
         return currentNode;
     }
 
-    public static boolean writeProperty(SethlansConfigKeys configKey, String value, File configFile) {
+    public static boolean writePropertyToFile(SethlansConfigKeys configKey, String value, File configFile) {
         String comment = "";
         String key = configKey.toString();
         comment = updateComment(comment, configFile);
@@ -127,7 +125,7 @@ public class SethlansUtils {
             sethlansProperties.setProperty(key, value);
             //Save Properties to File
             sethlansProperties.store(fileOutputStream, comment);
-            LOG.debug("SethlansConfigKey:" + key + " written to " + configFile);
+            LOG.debug("SethlansConfigKey:" + key + " written to " + configFile.toString());
             return true;
         } catch (FileNotFoundException e) {
             LOG.error(e.getMessage());
@@ -139,20 +137,42 @@ public class SethlansUtils {
         return false;
     }
 
-    public static SethlansSettingsInfo getSettings(File configFile) {
+    public static boolean writeProperty(SethlansConfigKeys configKey, String value) {
+        String comment = "";
+        String key = configKey.toString();
+        comment = updateComment(comment, getConfigFile());
+
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(getConfigFile());
+            sethlansProperties.setProperty(key, value);
+            //Save Properties to File
+            sethlansProperties.store(fileOutputStream, comment);
+            LOG.debug("SethlansConfigKey:" + key + " written to " + getConfigFile().toString());
+            return true;
+        } catch (FileNotFoundException e) {
+            LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+        } catch (IOException e) {
+            LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+        }
+        return false;
+    }
+
+    public static SethlansSettingsInfo getSettings() {
         SethlansSettingsInfo sethlansSettingsInfo = new SethlansSettingsInfo();
-        String mode = SethlansUtils.getProperty(SethlansConfigKeys.MODE.toString(), configFile);
-        sethlansSettingsInfo.setHttpsPort(SethlansUtils.getPort(configFile));
-        sethlansSettingsInfo.setSethlansIP(SethlansUtils.getIP(configFile));
+        String mode = SethlansUtils.getProperty(SethlansConfigKeys.MODE.toString(), getConfigFile());
+        sethlansSettingsInfo.setHttpsPort(SethlansUtils.getPort());
+        sethlansSettingsInfo.setSethlansIP(SethlansUtils.getIP());
         sethlansSettingsInfo.setMode(SethlansMode.valueOf(mode));
-        sethlansSettingsInfo.setRootDir(SethlansUtils.getProperty(SethlansConfigKeys.ROOT_DIR.toString(), configFile));
-        sethlansSettingsInfo.setLogLevel(SethlansUtils.getProperty(SethlansConfigKeys.LOG_LEVEL.toString(), configFile));
+        sethlansSettingsInfo.setRootDir(SethlansUtils.getProperty(SethlansConfigKeys.ROOT_DIR.toString(), getConfigFile()));
+        sethlansSettingsInfo.setLogLevel(SethlansUtils.getProperty(SethlansConfigKeys.LOG_LEVEL.toString(), getConfigFile()));
         return sethlansSettingsInfo;
     }
 
     private static String updateComment(String comment, File configFile) {
         if (configFile.exists()) {
-            try (FileInputStream fileIn = new FileInputStream(configFile)) {
+            try (FileInputStream fileIn = new FileInputStream(getConfigFile())) {
                 sethlansProperties.load(fileIn);
                 comment = updateTimeStamp();
             } catch (IOException e) {
@@ -162,15 +182,15 @@ public class SethlansUtils {
         return comment;
     }
 
-    public static boolean writeProperty(String key, String value, File configFile) {
+    public static boolean writeProperty(String key, String value) {
         String comment = "";
-        comment = updateComment(comment, configFile);
+        comment = updateComment(comment, getConfigFile());
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(configFile);
+            FileOutputStream fileOutputStream = new FileOutputStream(getConfigFile());
             sethlansProperties.setProperty(key, value);
             //Save Properties to File
             sethlansProperties.store(fileOutputStream, comment);
-            LOG.debug(key + " written to " + configFile);
+            LOG.debug(key + " written to " + getConfigFile());
             return true;
         } catch (FileNotFoundException e) {
             LOG.error(e.getMessage());
@@ -300,16 +320,25 @@ public class SethlansUtils {
     }
 
     public static File getConfigFile() {
-        File configDirectory = new File(System.getProperty("user.home") + File.separator + ".sethlans_install" + File.separator + "config" + File.separator);
-        File configFile = new File(configDirectory + "sethlans_install.properties");
-        configDirectory = new File(SethlansUtils.getProperty(SethlansConfigKeys.CONFIG_DIR.toString(), configFile));
-        return new File(configDirectory + "sethlans.properties");
+        try {
+            File configDirectory = new File(System.getProperty("user.home") + File.separator + ".sethlans_install" + File.separator + "config" + File.separator);
+            File installFile = new File(configDirectory + File.separator + "sethlans_install.properties");
+            configDirectory = new File(SethlansUtils.getProperty(SethlansConfigKeys.CONFIG_DIR.toString(), installFile));
+            File configFile = new File(configDirectory + File.separator + "sethlans.properties");
+            if (configFile.exists()) {
+                return configFile;
+            }
+
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+        }
+        return new File(System.getProperty("user.home") + File.separator + ".sethlans_install" + File.separator + "config" + File.separator + "sethlans_install.properties");
     }
 
-    public static String getProperty(String key, File configFile) {
+    public static String getProperty(String key) {
         final Properties properties = new Properties();
         try {
-            FileInputStream fileIn = new FileInputStream(configFile);
+            FileInputStream fileIn = new FileInputStream(getConfigFile());
             properties.load(fileIn);
 
             return properties.getProperty(key);
@@ -320,36 +349,50 @@ public class SethlansUtils {
         return null;
     }
 
-    public static NodeInfo getNodeInfo(File configFile) {
+    public static String getProperty(String key, File installFile) {
+        final Properties properties = new Properties();
+        try {
+            FileInputStream fileIn = new FileInputStream(installFile);
+            properties.load(fileIn);
+
+            return properties.getProperty(key);
+        } catch (IOException e) {
+            LOG.error("Unable to read config file, either missing or this is a first time execution");
+
+        }
+        return null;
+    }
+
+    public static NodeInfo getNodeInfo() {
         NodeInfo nodeInfo = new NodeInfo();
         nodeInfo.populateNodeInfo();
-        ComputeType computeType = ComputeType.valueOf(getProperty(SethlansConfigKeys.COMPUTE_METHOD.toString(), configFile));
+        ComputeType computeType = ComputeType.valueOf(getProperty(SethlansConfigKeys.COMPUTE_METHOD.toString(), getConfigFile()));
 
-        nodeInfo.setNetworkPort(getPort(configFile));
+        nodeInfo.setNetworkPort(getPort());
         nodeInfo.setComputeType(computeType);
 
         if (computeType == ComputeType.CPU_GPU || computeType == ComputeType.CPU) {
             nodeInfo.setCpuinfo();
-            nodeInfo.setSelectedCores(getSelectedCores(configFile));
+            nodeInfo.setSelectedCores(getSelectedCores());
         }
 
         if (computeType == ComputeType.GPU || computeType == ComputeType.CPU_GPU) {
-            List<String> deviceList = Arrays.asList(getProperty(SethlansConfigKeys.GPU_DEVICE.toString(), configFile).split(","));
+            List<String> deviceList = Arrays.asList(getProperty(SethlansConfigKeys.GPU_DEVICE.toString(), getConfigFile()).split(","));
             nodeInfo.setCpuinfo();
             nodeInfo.setSelectedDeviceID(deviceList);
             nodeInfo.setSelectedGPUs();
-            nodeInfo.setCombined(Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.COMBINE_GPU.toString(), configFile)));
+            nodeInfo.setCombined(Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.COMBINE_GPU.toString(), getConfigFile())));
 
         }
         return nodeInfo;
     }
 
-    public static String getIP(File configFile) {
+    public static String getIP() {
         String ip = null;
         final Properties properties = new Properties();
         try {
-            if (configFile.exists()) {
-                FileInputStream fileIn = new FileInputStream(configFile);
+            if (getConfigFile().exists()) {
+                FileInputStream fileIn = new FileInputStream(getConfigFile());
                 properties.load(fileIn);
             } else {
                 properties.load(new InputStreamReader(new Resources("sethlans.properties").getResource(), "UTF-8"));
@@ -374,16 +417,16 @@ public class SethlansUtils {
         return ip;
     }
 
-    public static String getSelectedCores(File configFile) {
-        return getProperty(SethlansConfigKeys.CPU_CORES.toString(), configFile);
+    public static String getSelectedCores() {
+        return getProperty(SethlansConfigKeys.CPU_CORES.toString(), getConfigFile());
     }
 
-    public static boolean getFirstTime(File configFile) {
+    public static boolean getFirstTime() {
         boolean firsttime = true;
         final Properties properties = new Properties();
         try {
-            if (configFile.exists()) {
-                FileInputStream fileIn = new FileInputStream(configFile);
+            if (getConfigFile().exists()) {
+                FileInputStream fileIn = new FileInputStream(getConfigFile());
                 properties.load(fileIn);
             } else {
                 properties.load(new InputStreamReader(new Resources("sethlans.properties").getResource(), "UTF-8"));
@@ -395,12 +438,12 @@ public class SethlansUtils {
         return firsttime;
     }
 
-    public static String getPort(File configFile) {
+    public static String getPort() {
         String port = null;
         final Properties properties = new Properties();
         try {
-            if (configFile.exists()) {
-                FileInputStream fileIn = new FileInputStream(configFile);
+            if (getConfigFile().exists()) {
+                FileInputStream fileIn = new FileInputStream(getConfigFile());
                 properties.load(fileIn);
             } else {
                 properties.load(new InputStreamReader(new Resources("sethlans.properties").getResource(), "UTF-8"));
@@ -455,19 +498,19 @@ public class SethlansUtils {
         return executable;
     }
 
-    public static void addCachedBlenderVersion(String blenderVersion, File configFile) {
-        writeProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES, blenderVersion, configFile);
+    public static void addCachedBlenderVersion(String blenderVersion) {
+        writeProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES, blenderVersion);
     }
 
-    public static boolean renameBlenderDir(File renderDir, File binDir, RenderTask renderTask, String cachedBlenderBinaries, File configFile) {
+    public static boolean renameBlenderDir(File renderDir, File binDir, RenderTask renderTask, String cachedBlenderBinaries) {
         if (SethlansUtils.renameBlenderDirectory(binDir, renderTask.getBlenderVersion())) {
             LOG.debug("Blender executable ready");
             renderTask.setRenderDir(renderDir.toString());
             renderTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(binDir, renderTask.getBlenderVersion()));
             if (cachedBlenderBinaries == null || cachedBlenderBinaries.isEmpty() || cachedBlenderBinaries.equals("null")) {
-                SethlansUtils.addCachedBlenderVersion(renderTask.getBlenderVersion(), configFile);
+                SethlansUtils.addCachedBlenderVersion(renderTask.getBlenderVersion());
             } else {
-                SethlansUtils.appendCachedBlenderVersion(renderTask.getBlenderVersion(), configFile);
+                SethlansUtils.appendCachedBlenderVersion(renderTask.getBlenderVersion());
             }
             return true;
         } else {
@@ -477,15 +520,15 @@ public class SethlansUtils {
 
     }
 
-    public static boolean renameBlenderDir(File benchmarkDir, File binDir, BlenderBenchmarkTask benchmarkTask, String cachedBlenderBinaries, File configFile) {
+    public static boolean renameBlenderDir(File benchmarkDir, File binDir, BlenderBenchmarkTask benchmarkTask, String cachedBlenderBinaries) {
         if (SethlansUtils.renameBlenderDirectory(binDir, benchmarkTask.getBlenderVersion())) {
             LOG.debug("Blender executable ready");
             benchmarkTask.setBenchmarkDir(benchmarkDir.toString());
             benchmarkTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(binDir, benchmarkTask.getBlenderVersion()));
             if (cachedBlenderBinaries == null || cachedBlenderBinaries.isEmpty() || cachedBlenderBinaries.equals("null")) {
-                SethlansUtils.addCachedBlenderVersion(benchmarkTask.getBlenderVersion(), configFile);
+                SethlansUtils.addCachedBlenderVersion(benchmarkTask.getBlenderVersion());
             } else {
-                SethlansUtils.appendCachedBlenderVersion(benchmarkTask.getBlenderVersion(), configFile);
+                SethlansUtils.appendCachedBlenderVersion(benchmarkTask.getBlenderVersion());
             }
             return true;
         } else {
@@ -495,9 +538,9 @@ public class SethlansUtils {
 
     }
 
-    public static void appendCachedBlenderVersion(String blenderVersion, File configFile) {
-        String currentVersions = getProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES.toString(), configFile);
-        writeProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES, currentVersions + ", " + blenderVersion, configFile);
+    public static void appendCachedBlenderVersion(String blenderVersion) {
+        String currentVersions = getProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES.toString(), getConfigFile());
+        writeProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES, currentVersions + ", " + blenderVersion);
     }
 
     public static boolean renameBlenderDirectory(File binDir, String blenderVersion) {

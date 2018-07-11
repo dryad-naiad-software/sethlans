@@ -74,7 +74,7 @@ public class Sethlans {
         File configFile = new File(configDirectory + "sethlans_install.properties");
         if (!new File(configDirectory + "sethlans_install.properties").exists()) {
             configDirectory.mkdirs();
-            arrayArgs.add("--spring.config.name=sethlans_install");
+            arrayArgs.add("--spring.config.name=sethlans");
             arrayArgs.add("--spring.config.location=" + configDirectory.toString() + File.separator);
         } else {
             configDirectory = new File(SethlansUtils.getProperty(SethlansConfigKeys.CONFIG_DIR.toString(), configFile));
@@ -115,6 +115,8 @@ public class Sethlans {
 
 
     private void startSpring(String[] springArgs) {
+        File configDirectory = new File(System.getProperty("user.home") + File.separator + ".sethlans_install" + File.separator + "config" + File.separator);
+        File installFile = new File(configDirectory + File.separator + "sethlans_install.properties");
         SethlansState sethlansState = SethlansState.getInstance();
         //noinspection InfiniteLoopStatement
         while (true) {
@@ -123,6 +125,15 @@ public class Sethlans {
                     Thread.sleep(1000);
                 } else {
                     Thread.sleep(1000);
+                    if (installFile.exists()) {
+                        System.out.println("Running config change");
+                        List<String> arrayArgs = new ArrayList<>();
+                        File newConfigDirectory = new File(SethlansUtils.getProperty(SethlansConfigKeys.CONFIG_DIR.toString(), installFile));
+                        arrayArgs.add("--spring.config.name=sethlans");
+                        arrayArgs.add("--spring.config.location=" + newConfigDirectory.toString() + File.separator);
+                        springArgs = new String[arrayArgs.size()];
+                        springArgs = arrayArgs.toArray(springArgs);
+                    }
                     sethlansState.sethlansActive = SpringApplication.run(Sethlans.class, springArgs).isActive();
                 }
             } catch (InterruptedException e) {

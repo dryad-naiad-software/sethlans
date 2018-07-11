@@ -32,8 +32,8 @@ import java.net.URL;
  */
 public class OpenBrowser {
     public static void start() throws MalformedURLException {
-        String ip = SethlansUtils.getIP(SethlansUtils.getConfigFile());
-        String port = SethlansUtils.getPort(SethlansUtils.getConfigFile());
+        String ip = SethlansUtils.getIP();
+        String port = SethlansUtils.getPort();
         URL url = new URL("https://" + ip + ":" + port + "/");
         SethlansUtils.openWebpage(url);
 
@@ -41,8 +41,8 @@ public class OpenBrowser {
 
 
     public static void settings() throws MalformedURLException {
-        String ip = SethlansUtils.getIP(SethlansUtils.getConfigFile());
-        String port = SethlansUtils.getPort(SethlansUtils.getConfigFile());
+        String ip = SethlansUtils.getIP();
+        String port = SethlansUtils.getPort();
         URL url = new URL("https://" + ip + ":" + port + "/" + "settings");
         SethlansUtils.openWebpage(url);
     }

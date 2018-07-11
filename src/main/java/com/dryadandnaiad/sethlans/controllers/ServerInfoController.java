@@ -114,12 +114,12 @@ public class ServerInfoController {
 
     @GetMapping(value = {"/server_free_space"})
     public Long getClientFreeSpace() {
-        return new File(SethlansUtils.getProperty(SethlansConfigKeys.PROJECT_DIR.toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME))).getFreeSpace() / 1024 / 1024 / 1024;
+        return new File(SethlansUtils.getProperty(SethlansConfigKeys.PROJECT_DIR.toString())).getFreeSpace() / 1024 / 1024 / 1024;
     }
 
     @GetMapping(value = {"/server_total_space"})
     public Long getClientTotalSpace() {
-        return new File(SethlansUtils.getProperty(SethlansConfigKeys.PROJECT_DIR.toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME))).getTotalSpace() / 1024 / 1024 / 1024;
+        return new File(SethlansUtils.getProperty(SethlansConfigKeys.PROJECT_DIR.toString())).getTotalSpace() / 1024 / 1024 / 1024;
 
     }
 
