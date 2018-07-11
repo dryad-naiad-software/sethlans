@@ -25,9 +25,12 @@ import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import com.dryadandnaiad.sethlans.services.database.RenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.List;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansUtils.getGPUDeviceString;
@@ -45,32 +48,35 @@ public class UpdateComputeServiceImpl implements UpdateComputeService {
     private RenderTaskDatabaseService renderTaskDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
 
+    @Value("${sethlans.configDir}")
+    private String configDir;
+
     @Override
     public boolean saveComputeSettings(SetupNode setupNode) {
         if (setupNode.getCores() <= 0) {
             setupNode.setCores(1);
         }
 
-        writeProperty(SethlansConfigKeys.COMPUTE_METHOD, setupNode.getComputeMethod().toString());
+        writeProperty(SethlansConfigKeys.COMPUTE_METHOD, setupNode.getComputeMethod().toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME));
         switch (setupNode.getComputeMethod()) {
             case CPU:
-                writeProperty(SethlansConfigKeys.CPU_CORES, setupNode.getCores().toString());
-                writeProperty(SethlansConfigKeys.TILE_SIZE_CPU, setupNode.getTileSizeCPU().toString());
-                writeProperty(SethlansConfigKeys.GPU_DEVICE, "");
+                writeProperty(SethlansConfigKeys.CPU_CORES, setupNode.getCores().toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME));
+                writeProperty(SethlansConfigKeys.TILE_SIZE_CPU, setupNode.getTileSizeCPU().toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME));
+                writeProperty(SethlansConfigKeys.GPU_DEVICE, "", new File(configDir + SethlansUtils.CONFIG_FILENAME));
                 return setNodeUpdated();
             case GPU:
-                writeProperty(SethlansConfigKeys.TILE_SIZE_GPU, setupNode.getTileSizeGPU().toString());
-                writeProperty(SethlansConfigKeys.GPU_DEVICE, getGPUDeviceString(setupNode));
-                writeProperty(SethlansConfigKeys.CPU_CORES, "");
-                writeProperty(SethlansConfigKeys.COMBINE_GPU, Boolean.toString(setupNode.isCombined()));
+                writeProperty(SethlansConfigKeys.TILE_SIZE_GPU, setupNode.getTileSizeGPU().toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME));
+                writeProperty(SethlansConfigKeys.GPU_DEVICE, getGPUDeviceString(setupNode), new File(configDir + SethlansUtils.CONFIG_FILENAME));
+                writeProperty(SethlansConfigKeys.CPU_CORES, "", new File(configDir + SethlansUtils.CONFIG_FILENAME));
+                writeProperty(SethlansConfigKeys.COMBINE_GPU, Boolean.toString(setupNode.isCombined()), new File(configDir + SethlansUtils.CONFIG_FILENAME));
                 return setNodeUpdated();
 
             case CPU_GPU:
-                writeProperty(SethlansConfigKeys.CPU_CORES, setupNode.getCores().toString());
-                writeProperty(SethlansConfigKeys.TILE_SIZE_CPU, setupNode.getTileSizeCPU().toString());
-                writeProperty(SethlansConfigKeys.TILE_SIZE_GPU, setupNode.getTileSizeGPU().toString());
-                writeProperty(SethlansConfigKeys.GPU_DEVICE, getGPUDeviceString(setupNode));
-                writeProperty(SethlansConfigKeys.COMBINE_GPU, Boolean.toString(setupNode.isCombined()));
+                writeProperty(SethlansConfigKeys.CPU_CORES, setupNode.getCores().toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME));
+                writeProperty(SethlansConfigKeys.TILE_SIZE_CPU, setupNode.getTileSizeCPU().toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME));
+                writeProperty(SethlansConfigKeys.TILE_SIZE_GPU, setupNode.getTileSizeGPU().toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME));
+                writeProperty(SethlansConfigKeys.GPU_DEVICE, getGPUDeviceString(setupNode), new File(configDir + SethlansUtils.CONFIG_FILENAME));
+                writeProperty(SethlansConfigKeys.COMBINE_GPU, Boolean.toString(setupNode.isCombined()), new File(configDir + SethlansUtils.CONFIG_FILENAME));
                 return setNodeUpdated();
 
         }

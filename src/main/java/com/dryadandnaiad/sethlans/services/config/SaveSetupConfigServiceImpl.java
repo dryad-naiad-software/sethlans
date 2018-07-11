@@ -72,6 +72,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
         }
 
         // Set Sethlans Directories
+        String installDirectory = System.getProperty("user.home") + File.separator + ".sethlans_install" + File.separator + "config" + File.separator;
         String configDirectory = setupForm.getRootDirectory() + File.separator + "config" + File.separator;
         createDirectories(new File(configDirectory));
         String scriptsDirectory = setupForm.getRootDirectory() + File.separator + "scripts" + File.separator;
@@ -86,6 +87,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
 
         // Config File
         File configFile = new File(configDirectory + CONFIG_FILENAME);
+        File installFile = new File(installDirectory + "sethlans_install.properties");
 
         // Set User
         SethlansUser administrator = setupForm.getUser();
@@ -101,6 +103,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
         }
 
         //Write Properties
+        writeProperty(SethlansConfigKeys.CONFIG_DIR, configDirectory, installFile);
         writeProperty(SethlansConfigKeys.CONFIG_DIR, configDirectory, configFile);
         writeProperty(SethlansConfigKeys.HTTPS_PORT, setupForm.getPort(), configFile);
         writeProperty(SethlansConfigKeys.SETHLANS_IP, setupForm.getIpAddress(), configFile);

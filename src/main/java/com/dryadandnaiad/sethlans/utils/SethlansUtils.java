@@ -299,6 +299,13 @@ public class SethlansUtils {
         return hostname.toUpperCase();
     }
 
+    public static File getConfigFile() {
+        File configDirectory = new File(System.getProperty("user.home") + File.separator + ".sethlans_install" + File.separator + "config" + File.separator);
+        File configFile = new File(configDirectory + "sethlans_install.properties");
+        configDirectory = new File(SethlansUtils.getProperty(SethlansConfigKeys.CONFIG_DIR.toString(), configFile));
+        return new File(configDirectory + "sethlans.properties");
+    }
+
     public static String getProperty(String key, File configFile) {
         final Properties properties = new Properties();
         try {

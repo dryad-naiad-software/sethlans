@@ -70,6 +70,9 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     @Value("${sethlans.tileSizeGPU}")
     private String tileSizeGPU;
 
+    @Value("${sethlans.configDir}")
+    private String configDir;
+
 
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
@@ -100,11 +103,11 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     public void startRender(String queueUUID) {
         RenderTask renderTask = renderTaskDatabaseService.getByQueueUUID(queueUUID);
         renderTask.setInProgress(true);
-        NodeInfo nodeInfo = SethlansUtils.getNodeInfo();
-        String cacheDir = SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString());
+        NodeInfo nodeInfo = SethlansUtils.getNodeInfo(new File(configDir + SethlansUtils.CONFIG_FILENAME));
+        String cacheDir = SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME));
         String truncatedProjectName = StringUtils.left(renderTask.getProjectName(), 10);
         String cleanedProjectName = truncatedProjectName.replaceAll(" ", "").replaceAll("[^a-zA-Z0-9_-]", "");
-        File blendFileDir = new File(SethlansUtils.getProperty(SethlansConfigKeys.BLEND_FILE_CACHE_DIR.toString())
+        File blendFileDir = new File(SethlansUtils.getProperty(SethlansConfigKeys.BLEND_FILE_CACHE_DIR.toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME))
                 + File.separator + cleanedProjectName.toLowerCase() + "-" + renderTask.getProject_uuid());
         File renderDir = new File(cacheDir + File.separator + renderTask.getBlenderFramePart().getPartFilename());
         if (downloadRequiredFiles(renderDir, blendFileDir, renderTask)) {
@@ -144,7 +147,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
     private String setDeviceID(RenderTask renderTask, NodeInfo nodeInfo) {
         String script;
-        String deviceID = SethlansUtils.getProperty(SethlansConfigKeys.GPU_DEVICE.toString());
+        String deviceID = SethlansUtils.getProperty(SethlansConfigKeys.GPU_DEVICE.toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME));
         List<String> deviceList = Arrays.asList(deviceID.split(","));
         List<String> deviceIDList = new ArrayList<>();
         if (nodeInfo.isCombined()) {
@@ -253,7 +256,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(renderTask.getConnection_uuid());
         String serverIP = sethlansServer.getIpAddress();
         String serverPort = sethlansServer.getNetworkPort();
-        String cachedBlenderBinaries = SethlansUtils.getProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES.toString());
+        String cachedBlenderBinaries = SethlansUtils.getProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES.toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME));
 
         if (renderDir.mkdirs()) {
             //Download Blender from server
@@ -279,7 +282,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                     LOG.debug("Extraction complete.");
                     LOG.debug("Attempting to rename blender directory. Will attempt 3 tries.");
                     int count = 0;
-                    while (!SethlansUtils.renameBlenderDir(renderDir, new File(binDir), renderTask, cachedBlenderBinaries)) {
+                    while (!SethlansUtils.renameBlenderDir(renderDir, new File(binDir), renderTask, cachedBlenderBinaries, new File(configDir + SethlansUtils.CONFIG_FILENAME))) {
                         count++;
                         if (count == 2) {
                             return false;

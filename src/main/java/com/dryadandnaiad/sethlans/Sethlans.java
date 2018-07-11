@@ -19,8 +19,10 @@
 
 package com.dryadandnaiad.sethlans;
 
+import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.utils.SethlansState;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -66,12 +68,20 @@ public class Sethlans {
         CmdLineParser cmdParser = new CmdLineParser(this);
         List<String> arrayArgs = new ArrayList<>();
 
-        // Setting up config directory
+        // Setting up initial config directory
 
-        File configDirectory = new File(System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "config" + File.separator);
-        configDirectory.mkdirs();
-        arrayArgs.add("--spring.config.name=sethlans");
-        arrayArgs.add("--spring.config.location=" + configDirectory.toString() + File.separator);
+        File configDirectory = new File(System.getProperty("user.home") + File.separator + ".sethlans_install" + File.separator + "config" + File.separator);
+        File configFile = new File(configDirectory + "sethlans_install.properties");
+        if (!new File(configDirectory + "sethlans_install.properties").exists()) {
+            configDirectory.mkdirs();
+            arrayArgs.add("--spring.config.name=sethlans_install");
+            arrayArgs.add("--spring.config.location=" + configDirectory.toString() + File.separator);
+        } else {
+            configDirectory = new File(SethlansUtils.getProperty(SethlansConfigKeys.CONFIG_DIR.toString(), configFile));
+            arrayArgs.add("--spring.config.name=sethlans");
+            arrayArgs.add("--spring.config.location=" + configDirectory.toString() + File.separator);
+        }
+
 
         try {
             cmdParser.parseArgument(args);

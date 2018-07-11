@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,6 +26,7 @@ import com.google.common.base.Throwables;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -43,6 +44,8 @@ import java.nio.file.Paths;
 public class PythonSetupServiceImpl implements PythonSetupService {
     private static final Logger LOG = LoggerFactory.getLogger(PythonSetupServiceImpl.class);
 
+    @Value("${sethlans.configDir}")
+    private String configDir;
 
     @Override
     public boolean installPython(String binaryDir) {
@@ -58,10 +61,10 @@ public class PythonSetupServiceImpl implements PythonSetupService {
                 }
             }
             if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
-                SethlansUtils.writeProperty(SethlansConfigKeys.PYTHON_BIN, binaryDir + "python" + File.separator + "bin" + File.separator + "python3.5m");
+                SethlansUtils.writeProperty(SethlansConfigKeys.PYTHON_BIN, binaryDir + "python" + File.separator + "bin" + File.separator + "python3.5m", new File(configDir + SethlansUtils.CONFIG_FILENAME));
             }
             if (SystemUtils.IS_OS_WINDOWS) {
-                SethlansUtils.writeProperty(SethlansConfigKeys.PYTHON_BIN, binaryDir + "python" + File.separator + "bin" + File.separator + "python.exe");
+                SethlansUtils.writeProperty(SethlansConfigKeys.PYTHON_BIN, binaryDir + "python" + File.separator + "bin" + File.separator + "python.exe", new File(configDir + SethlansUtils.CONFIG_FILENAME));
             }
             return true;
         }

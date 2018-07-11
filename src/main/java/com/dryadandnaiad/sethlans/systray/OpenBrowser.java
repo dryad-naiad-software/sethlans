@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -32,16 +32,17 @@ import java.net.URL;
  */
 public class OpenBrowser {
     public static void start() throws MalformedURLException {
-        String ip = SethlansUtils.getIP();
-        String port = SethlansUtils.getPort();
+        String ip = SethlansUtils.getIP(SethlansUtils.getConfigFile());
+        String port = SethlansUtils.getPort(SethlansUtils.getConfigFile());
         URL url = new URL("https://" + ip + ":" + port + "/");
         SethlansUtils.openWebpage(url);
 
     }
 
+
     public static void settings() throws MalformedURLException {
-        String ip = SethlansUtils.getIP();
-        String port = SethlansUtils.getPort();
+        String ip = SethlansUtils.getIP(SethlansUtils.getConfigFile());
+        String port = SethlansUtils.getPort(SethlansUtils.getConfigFile());
         URL url = new URL("https://" + ip + ":" + port + "/" + "settings");
         SethlansUtils.openWebpage(url);
     }

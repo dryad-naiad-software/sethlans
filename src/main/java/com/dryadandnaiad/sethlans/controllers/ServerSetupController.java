@@ -30,9 +30,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,11 +53,13 @@ public class ServerSetupController {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private QueueService queueService;
     private static final Logger LOG = LoggerFactory.getLogger(ServerSetupController.class);
+    @Value("${sethlans.configDir}")
+    private String configDir;
 
 
     @GetMapping("/auto_acknowledge/{connection_id}")
     public void autoAcknowledgeNode(@PathVariable String connection_id) {
-        SethlansServer sethlansServer = SethlansUtils.getCurrentServerInfo();
+        SethlansServer sethlansServer = SethlansUtils.getCurrentServerInfo(new File(configDir + SethlansUtils.CONFIG_FILENAME));
         sethlansServer.setConnection_uuid(connection_id);
         nodeActivationService.sendActivationResponse(sethlansServer, sethlansNodeDatabaseService.getByConnectionUUID(connection_id), true);
     }
@@ -86,7 +90,7 @@ public class ServerSetupController {
             LOG.debug("Nodes found in database, starting comparison.");
             if (sethlansNodeDatabaseService.checkForDuplicatesAndSave(sethlansNode)) {
                 if (sethlansNode.isPendingActivation()) {
-                    nodeActivationService.sendActivationRequest(sethlansNode, SethlansUtils.getCurrentServerInfo(), true);
+                    nodeActivationService.sendActivationRequest(sethlansNode, SethlansUtils.getCurrentServerInfo(new File(configDir + SethlansUtils.CONFIG_FILENAME)), true);
                     return sethlansNode.getConnection_uuid();
 
                 }
@@ -96,7 +100,7 @@ public class ServerSetupController {
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
             LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
             if (sethlansNode.isPendingActivation()) {
-                nodeActivationService.sendActivationRequest(sethlansNode, SethlansUtils.getCurrentServerInfo(), true);
+                nodeActivationService.sendActivationRequest(sethlansNode, SethlansUtils.getCurrentServerInfo(new File(configDir + SethlansUtils.CONFIG_FILENAME)), true);
                 return sethlansNode.getConnection_uuid();
             }
         }
@@ -116,7 +120,7 @@ public class ServerSetupController {
         queueService.addNodeToDeleteQueue(id);
         SethlansNode newNode = nodeDiscoveryService.discoverUnicastNode(sethlansNodeToReplace.getIpAddress(), sethlansNodeToReplace.getNetworkPort());
         sethlansNodeDatabaseService.saveOrUpdate(newNode);
-        nodeActivationService.sendActivationRequest(newNode, SethlansUtils.getCurrentServerInfo(), true);
+        nodeActivationService.sendActivationRequest(newNode, SethlansUtils.getCurrentServerInfo(new File(configDir + SethlansUtils.CONFIG_FILENAME)), true);
         autoAcknowledgeNode(newNode.getConnection_uuid());
         return true;
     }

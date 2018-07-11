@@ -45,6 +45,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,6 +69,9 @@ public class NodeRenderController {
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private static final Logger LOG = LoggerFactory.getLogger(NodeRenderController.class);
 
+    @Value("${sethlans.configDir}")
+    private String configDir;
+
     @RequestMapping(value = "/api/render/request", method = RequestMethod.POST)
     public void renderRequest(@RequestParam String project_name, @RequestParam String connection_uuid, @RequestParam String project_uuid,
                               @RequestParam String queue_item_uuid, @RequestParam String gpu_device_id,
@@ -81,8 +85,8 @@ public class NodeRenderController {
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
-            ComputeType computeType = ComputeType.valueOf(SethlansUtils.getProperty(SethlansConfigKeys.COMPUTE_METHOD.toString()));
-            NodeInfo nodeInfo = SethlansUtils.getNodeInfo();
+            ComputeType computeType = ComputeType.valueOf(SethlansUtils.getProperty(SethlansConfigKeys.COMPUTE_METHOD.toString(), new File(configDir + SethlansUtils.CONFIG_FILENAME)));
+            NodeInfo nodeInfo = SethlansUtils.getNodeInfo(new File(configDir + SethlansUtils.CONFIG_FILENAME));
             LOG.debug("Render Request Received, preparing render task.");
             List<RenderTask> renderTaskList = renderTaskDatabaseService.listAll();
             boolean rejected = false;
