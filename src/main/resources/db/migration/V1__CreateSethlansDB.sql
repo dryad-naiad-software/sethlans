@@ -1,5 +1,4 @@
-
-    create table blender_benchmark_task (id bigint generated 
+    create table if not exists blender_benchmark_task (id bigint generated
 by
     default as identity,
     date_created timestamp,
@@ -19,7 +18,7 @@ by
     gpu_rating integer not null,
     in_progress boolean not null,
     primary key (id));
-    create table blender_binary (id bigint generated 
+    create table if not exists blender_binary (id bigint generated 
 by
     default as identity,
     date_created timestamp,
@@ -31,9 +30,9 @@ by
     blender_version varchar(255),
     downloaded boolean not null,
     primary key (id));
-    create table blender_binary_download_mirrors (blender_binary_id bigint not null,
+    create table if not exists blender_binary_download_mirrors (blender_binary_id bigint not null,
     download_mirrors varchar(255));
-    create table blender_project (id bigint generated 
+    create table if not exists blender_project (id bigint generated 
 by
     default as identity,
     date_created timestamp,
@@ -74,9 +73,9 @@ by
     total_render_time bigint,
     sethlans_user_id bigint,
     primary key (id));
-    create table blender_project_frame_file_names (blender_project_id bigint not null,
+    create table if not exists blender_project_frame_file_names (blender_project_id bigint not null,
     frame_file_names varchar(255));
-    create table blender_project_frame_part_list (blender_project_id bigint not null,
+    create table if not exists blender_project_frame_part_list (blender_project_id bigint not null,
     combined boolean not null,
     file_extension varchar(255),
     frame_file_name varchar(255),
@@ -87,7 +86,7 @@ by
     part_position_miny double,
     processed boolean not null,
     stored_dir varchar(255));
-    create table frame_file_update_item (id bigint generated 
+    create table if not exists frame_file_update_item (id bigint generated 
 by
     default as identity,
     date_created timestamp,
@@ -97,7 +96,7 @@ by
     frame_file_name varchar(255),
     projectuuid varchar(255),
     primary key (id));
-    create table process_frame_item (id bigint generated 
+    create table if not exists process_frame_item (id bigint generated 
 by
     default as identity,
     date_created timestamp,
@@ -106,7 +105,7 @@ by
     frame_number integer,
     projectuuid varchar(255),
     primary key (id));
-    create table process_queue_item (id bigint generated 
+    create table if not exists process_queue_item (id bigint generated 
 by
     default as identity,
     date_created timestamp,
@@ -118,7 +117,7 @@ by
     queueuuid varchar(255),
     render_time bigint not null,
     primary key (id));
-    create table render_queue_item (id bigint generated 
+    create table if not exists render_queue_item (id bigint generated 
 by
     default as identity,
     date_created timestamp,
@@ -145,7 +144,7 @@ by
     render_compute_type integer,
     rendering boolean not null,
     primary key (id));
-    create table render_task (id bigint generated 
+    create table if not exists render_task (id bigint generated 
 by
     default as identity,
     date_created timestamp,
@@ -181,7 +180,7 @@ by
     task_resolutionx integer not null,
     task_resolutiony integer not null,
     primary key (id));
-    create table sethlans_node (id bigint generated 
+    create table if not exists sethlans_node (id bigint generated 
 by
     default as identity,
     date_created timestamp,
@@ -211,9 +210,9 @@ by
     sethlans_nodeos integer,
     total_rendering_slots integer not null,
     primary key (id));
-    create table sethlans_node_selected_deviceid (sethlans_node_id bigint not null,
+    create table if not exists sethlans_node_selected_deviceid (sethlans_node_id bigint not null,
     selected_deviceid varchar(255));
-    create table sethlans_node_selectedgpus (sethlans_node_id bigint not null,
+    create table if not exists sethlans_node_selectedgpus (sethlans_node_id bigint not null,
     cuda boolean not null,
     deviceid varchar(255),
     in_use boolean not null,
@@ -221,7 +220,7 @@ by
     model varchar(255),
     opencl boolean not null,
     rating integer not null);
-    create table sethlans_notification (id bigint generated 
+    create table if not exists sethlans_notification (id bigint generated 
 by
     default as identity,
     date_created timestamp,
@@ -230,7 +229,7 @@ by
     key varchar(255),
     message varchar(255),
     primary key (id));
-    create table sethlans_server (id bigint generated 
+    create table if not exists sethlans_server (id bigint generated 
 by
     default as identity,
     date_created timestamp,
@@ -244,7 +243,7 @@ by
     node_updated boolean not null,
     pending_acknowledgement_response boolean not null,
     primary key (id));
-    create table sethlans_user (id bigint generated 
+    create table if not exists sethlans_user (id bigint generated 
 by
     default as identity,
     date_created timestamp,
@@ -255,7 +254,7 @@ by
     password varchar(255),
     username varchar(255),
     primary key (id));
-    create table sethlans_user_roles (sethlans_user_id bigint not null,
+    create table if not exists sethlans_user_roles (sethlans_user_id bigint not null,
     roles integer);
     alter table blender_binary_download_mirrors add constraint FKoq7444qfspxba8fkwiro31wvn foreign key (blender_binary_id) references blender_binary;
     alter table blender_project add constraint FKbp8botdmr0gmen99sukox59to foreign key (sethlans_user_id) references sethlans_user;
