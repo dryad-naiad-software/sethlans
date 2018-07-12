@@ -18,10 +18,8 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {UserInfo} from "../../models/userinfo.model";
-import {Router} from "@angular/router";
-import {Observable} from "rxjs/Observable";
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {UserInfo} from '../../models/userinfo.model';
 
 
 @Component({
@@ -30,94 +28,66 @@ import {Observable} from "rxjs/Observable";
   styleUrls: ['./user-settings.component.scss']
 })
 export class UserSettingsComponent implements OnInit {
-  username: string;
+  id: number;
   userInfo: UserInfo;
-  changePass = false;
   passFields: PasswordSet;
-  formValid: boolean;
+  newEmail: string;
+  emailError: boolean;
+  passwordError: boolean;
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient) {
     this.passFields = new PasswordSet();
     this.userInfo = new UserInfo();
   }
 
-  submitSettingChanges(event, form) {
-    if (event.key === "Enter" && form.valid) {
-      this.saveChanges(form);
-    }
 
-  }
 
   ngOnInit() {
     this.getUserInfo();
-    let timer = Observable.timer(5000, 2000);
-    timer.subscribe(() => {
-      this.getUserInfo()
-    });
+    this.passFields = new PasswordSet();
   }
 
   getUserInfo() {
     this.http.get('/api/users/username')
       .subscribe((user) => {
-        this.username = user['username'];
-        this.http.get('/api/users/get_user/' + this.username + '').subscribe((userinfo: UserInfo) => {
+        let username = user['username'];
+        this.http.get('/api/users/get_user/' + username + '').subscribe((userinfo: UserInfo) => {
           this.userInfo = userinfo;
-          console.log(this.userInfo);
         });
       });
   }
 
-  cancel() {
-    window.location.href = "/";
-  }
-
-  saveChanges(form) {
-    if (form.valid) {
-      if (!this.changePass) {
-        console.log("Change pass false");
-        this.changeEmail();
-      }
-
-
-      if (this.changePass) {
-        console.log("Change pass true");
-        this.changeEmailAndPassword();
-      }
-    }
-
-  }
-
-  changeEmail() {
-    let emailChange = new HttpParams().set('username', this.username).set('newEmail', this.userInfo.email);
-    this.http.post('/api/users/email_change', emailChange, {
+  changeEMail() {
+    let emailChange = new HttpParams().set('email', this.newEmail);
+    this.http.post('/api/users/change_email/', emailChange, {
       headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
     }).subscribe((response: boolean) => {
       console.log(response);
       if (response) {
-        this.formValid = true;
-
-      } else if (!response) {
-        this.formValid = false;
-
+        window.location.href = '/user_settings/';
+      }
+      else {
+        this.emailError = true;
       }
     });
+
   }
 
-
-  changeEmailAndPassword() {
-    let emailAndPassChange = new HttpParams().set('username', this.username).set('newEmail', this.userInfo.email).set('passToCheck', this.passFields.currentPass).set('newPassword', this.passFields.newPass);
-    this.http.post('/api/users/email_pass_change', emailAndPassChange, {
+  changePassword() {
+    let passwordChange = new HttpParams().set('passToCheck', this.passFields.currentPass).set('newPassword', this.passFields.newPass);
+    this.http.post('/api/users/change_password/', passwordChange, {
       headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
-    }).subscribe((passwordResponse: boolean) => {
-      console.log(passwordResponse);
-      if (passwordResponse) {
-        this.formValid = true;
-      } else if (!passwordResponse) {
-        this.formValid = false;
-
+    }).subscribe((response: boolean) => {
+      console.log(response);
+      if (response) {
+        window.location.href = '/user_settings/';
+      }
+      else {
+        this.passwordError = true;
       }
     });
   }
+
 }
 
 class PasswordSet {

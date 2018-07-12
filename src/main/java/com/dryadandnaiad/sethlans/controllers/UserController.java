@@ -72,49 +72,36 @@ public class UserController {
         } else {
             return null;
         }
-
     }
 
-    @PostMapping(value = {"/email_pass_change"})
-    public boolean changeEmailandPassword(@RequestParam String username, @RequestParam String passToCheck, @RequestParam String newPassword, @RequestParam String newEmail) {
-        // TODO Remove
-        return changeEmail(username, newEmail) && changePassword(username, passToCheck, newPassword);
-    }
 
-    @PostMapping(value = {"/pass_change"})
-    public boolean changePassword(@RequestParam String username, @RequestParam String passToCheck, @RequestParam String newPassword) {
-        // TODO password verification
-
-        if (requestMatchesAuthUser(username)) {
-            PasswordEncoder encoder = new BCryptPasswordEncoder();
-            SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
-            if (encoder.matches(passToCheck, user.getPassword())) {
-                LOG.debug("Updating password for " + username);
-                user.setPasswordUpdated(true);
-                user.setPassword(newPassword);
-                sethlansUserDatabaseService.saveOrUpdate(user);
-                return true;
-            } else {
-                return false;
-            }
-        }
-        return false;
-    }
-
-    @PostMapping(value = {"/email_change"})
-    public boolean changeEmail(@RequestParam String username, @RequestParam String newEmail) {
+    @PostMapping(value = {"/change_email/"})
+    public boolean changeEmail(@RequestParam String email) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(username);
         // TODO email verification
+        sethlansUser.setEmail(email);
+        sethlansUserDatabaseService.saveOrUpdate(sethlansUser);
+        return true;
+    }
 
-        if (requestMatchesAuthUser(username)) {
-            SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
-            LOG.debug("Changing email for " + username);
-            user.setEmail(newEmail);
-            user.setPasswordUpdated(false);
+    @PostMapping(value = {"/change_password/"})
+    public boolean changePassword(@RequestParam String passToCheck, @RequestParam String newPassword) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        // TODO password verification
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
+        if (encoder.matches(passToCheck, user.getPassword())) {
+            LOG.debug("Updating password for " + user.getUsername());
+            user.setPasswordUpdated(true);
+            user.setPassword(newPassword);
             sethlansUserDatabaseService.saveOrUpdate(user);
             return true;
+        } else {
+            return false;
         }
-        return false;
-
     }
 
     private boolean requestMatchesAuthUser(String username) {
