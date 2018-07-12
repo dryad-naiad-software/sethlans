@@ -29,7 +29,7 @@ import lombok.Data;
  * Project: sethlans
  */
 @Data
-public class SethlansSettingsInfo {
+public class SethlansSettings {
     private String httpsPort;
     private String sethlansIP;
     private String rootDir;

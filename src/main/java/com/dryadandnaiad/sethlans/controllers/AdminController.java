@@ -282,12 +282,17 @@ public class AdminController {
     }
 
     @GetMapping(value = "/current_settings")
-    public SethlansSettingsInfo sethlansSettingsInfo() {
-        SethlansSettingsInfo sethlansSettings = SethlansUtils.getSettings();
+    public SethlansSettings sethlansSettingsInfo() {
+        SethlansSettings sethlansSettings = SethlansUtils.getSettings();
         if (sethlansSettings.getLogLevel() == null) {
             sethlansSettings.setLogLevel(logLevel);
         }
         return sethlansSettings;
+    }
+
+    @PostMapping(value = "/update_settings")
+    public boolean updateSettings(@RequestBody SethlansSettings sethlansSettingsUpdate) {
+        return false;
     }
 
     @GetMapping(value = {"/selected_gpus"})

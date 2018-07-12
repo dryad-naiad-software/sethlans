@@ -25,7 +25,7 @@ import com.dryadandnaiad.sethlans.domains.database.queue.RenderTask;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.domains.info.NodeInfo;
-import com.dryadandnaiad.sethlans.domains.info.SethlansSettingsInfo;
+import com.dryadandnaiad.sethlans.domains.info.SethlansSettings;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
@@ -159,15 +159,15 @@ public class SethlansUtils {
         return false;
     }
 
-    public static SethlansSettingsInfo getSettings() {
-        SethlansSettingsInfo sethlansSettingsInfo = new SethlansSettingsInfo();
+    public static SethlansSettings getSettings() {
+        SethlansSettings sethlansSettings = new SethlansSettings();
         String mode = SethlansUtils.getProperty(SethlansConfigKeys.MODE.toString(), getConfigFile());
-        sethlansSettingsInfo.setHttpsPort(SethlansUtils.getPort());
-        sethlansSettingsInfo.setSethlansIP(SethlansUtils.getIP());
-        sethlansSettingsInfo.setMode(SethlansMode.valueOf(mode));
-        sethlansSettingsInfo.setRootDir(SethlansUtils.getProperty(SethlansConfigKeys.ROOT_DIR.toString(), getConfigFile()));
-        sethlansSettingsInfo.setLogLevel(SethlansUtils.getProperty(SethlansConfigKeys.LOG_LEVEL.toString(), getConfigFile()));
-        return sethlansSettingsInfo;
+        sethlansSettings.setHttpsPort(SethlansUtils.getPort());
+        sethlansSettings.setSethlansIP(SethlansUtils.getIP());
+        sethlansSettings.setMode(SethlansMode.valueOf(mode));
+        sethlansSettings.setRootDir(SethlansUtils.getProperty(SethlansConfigKeys.ROOT_DIR.toString(), getConfigFile()));
+        sethlansSettings.setLogLevel(SethlansUtils.getProperty(SethlansConfigKeys.LOG_LEVEL.toString(), getConfigFile()));
+        return sethlansSettings;
     }
 
     private static String updateComment(String comment, File configFile) {
