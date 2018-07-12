@@ -221,9 +221,14 @@ public class AdminController {
     public boolean addNewBlenderVersion(@RequestParam String version) {
         List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.listAll();
         Set<BlenderBinaryOS> blenderBinaryOSSet = new HashSet<>();
-        for (SethlansNode sethlansNode : sethlansNodeList) {
-            blenderBinaryOSSet.add(sethlansNode.getSethlansNodeOS());
+        if (sethlansNodeList.size() > 0) {
+            for (SethlansNode sethlansNode : sethlansNodeList) {
+                blenderBinaryOSSet.add(sethlansNode.getSethlansNodeOS());
+            }
+        } else {
+            blenderBinaryOSSet.add(BlenderBinaryOS.valueOf(SethlansUtils.getOS()));
         }
+
         for (BlenderBinaryOS blenderBinaryOS : blenderBinaryOSSet) {
             BlenderBinary blenderBinary = new BlenderBinary();
             blenderBinary.setBlenderVersion(version);
