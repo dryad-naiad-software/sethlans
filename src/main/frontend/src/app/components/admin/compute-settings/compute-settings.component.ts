@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,12 +18,12 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {ComputeMethod} from "../../../enums/compute.method.enum";
-import {GPU} from "../../../models/gpu.model";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Node} from "../../../models/node.model";
-import {Router} from "@angular/router";
-import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
+import {ComputeMethod} from '../../../enums/compute.method.enum';
+import {GPU} from '../../../models/gpu.model';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Node} from '../../../models/node.model';
+import {Router} from '@angular/router';
+import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-compute-settings',
@@ -91,7 +91,6 @@ export class ComputeSettingsComponent implements OnInit {
         for (let gpu of this.newNode.getSelectedGPUs()) {
           gpu.selected = true;
         }
-        console.log(this.currentNode.getSelectedGPUs());
       });
     this.http.get('/api/info/is_gpu_combined').subscribe((isCombined: any) => {
       this.gpuCombined = isCombined;
@@ -152,7 +151,6 @@ export class ComputeSettingsComponent implements OnInit {
         this.newNode.setGpuEmpty(true);
       } else {
         this.newNode.setGpuEmpty(false);
-        console.log(this.newNode.isGpuEmpty());
       }
     }
     if (this.newNode.getComputeMethod() === ComputeMethod.CPU) {
@@ -176,21 +174,17 @@ export class ComputeSettingsComponent implements OnInit {
       .subscribe(
         (computeMethods: any[]) => {
           this.availableComputeMethods = computeMethods;
-          console.log(this.availableComputeMethods);
         }, (error) => console.log(error));
     this.http.get('/api/info/total_cores', {responseType: 'text'})
       .subscribe((cores: any) => {
         this.totalCores = cores;
-        console.log(this.totalCores);
       }, (error) => console.log(error));
     if (this.availableComputeMethods.indexOf(ComputeMethod.GPU)) {
       this.http.get('/api/info/available_gpus')
         .subscribe((gpus: any[]) => {
           this.availableGPUs = gpus;
-          console.log(this.availableGPUs);
           this.http.get('/api/management/selected_gpus')
             .subscribe((selectedGPUs: GPU[]) => {
-              console.log("Test");
               for (let selectedGPU of selectedGPUs) {
                 for (let availGPU of this.availableGPUs) {
                   if (selectedGPU.model == availGPU.model) {

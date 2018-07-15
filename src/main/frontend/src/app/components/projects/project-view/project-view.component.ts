@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -93,7 +93,6 @@ export class ProjectViewComponent implements OnInit {
   loadProjectDetails() {
     this.http.get('/api/project_ui/project_details/' + this.id + '/').subscribe((projectDetails: Project) => {
       this.projectDetails = projectDetails;
-      console.log(this.videoForm);
       this.projectLoaded = true;
     });
   }

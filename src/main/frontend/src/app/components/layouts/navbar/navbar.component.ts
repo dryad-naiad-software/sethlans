@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,12 +18,12 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {Role} from "../../../enums/role.enum";
-import {UserInfo} from "../../../models/userinfo.model";
-import {Mode} from "../../../enums/mode.enum";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {Observable} from "rxjs/Observable";
+import {HttpClient} from '@angular/common/http';
+import {Role} from '../../../enums/role.enum';
+import {UserInfo} from '../../../models/userinfo.model';
+import {Mode} from '../../../enums/mode.enum';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-navbar',
@@ -96,7 +96,6 @@ export class NavbarComponent implements OnInit {
           this.username = user['username'];
           this.http.get('/api/users/get_user/' + this.username + '').subscribe((userinfo: UserInfo) => {
             this.userInfo = userinfo;
-            console.log(this.userInfo);
             if (userinfo.roles.indexOf(Role.ADMINISTRATOR) !== -1 || userinfo.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
               this.isAdministrator = true;
             }

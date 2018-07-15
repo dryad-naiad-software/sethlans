@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -60,7 +60,6 @@ export class ProjectAddComponent implements OnInit {
     if (this.projectDetails.selectedBlenderversion == null) {
       this.projectDetails.selectedBlenderversion = this.availableBlenderVersions[0];
     }
-    console.log(this.projectDetails);
     this.projectDetails.useParts = true;
     this.projectDetails.partsPerFrame = 4;
     this.projectLoaded = true;

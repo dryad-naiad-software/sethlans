@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,9 +18,9 @@
  */
 
 import {Component, Input, OnInit} from '@angular/core';
-import {SetupFormDataService} from "../../../services/setupformdata.service";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Mode} from "../../../enums/mode.enum";
+import {SetupFormDataService} from '../../../services/setupformdata.service';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Mode} from '../../../enums/mode.enum';
 
 @Component({
   selector: 'app-setup-summary',
@@ -40,7 +40,6 @@ export class SetupSummaryComponent implements OnInit {
   }
 
   finish() {
-    console.log("finished");
     this.finished = true;
     const httpOptions = {
       headers: new HttpHeaders({

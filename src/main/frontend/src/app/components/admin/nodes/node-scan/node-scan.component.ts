@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,11 +18,11 @@
  */
 
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
-import {Observable} from "rxjs/Observable";
-import {NodeInfo} from "../../../../models/node_info.model";
-import {SelectionModel} from "@angular/cdk/collections";
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {Observable} from 'rxjs/Observable';
+import {NodeInfo} from '../../../../models/node_info.model';
+import {SelectionModel} from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-node-scan',
@@ -60,7 +60,6 @@ export class NodeScanComponent implements OnInit {
       let node = value.hostname + "," + value.networkPort;
       this.toSend.push(node);
     })
-    console.log(this.toSend);
   }
 
 

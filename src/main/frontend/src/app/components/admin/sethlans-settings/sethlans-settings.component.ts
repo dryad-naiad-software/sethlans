@@ -34,6 +34,8 @@ export class SethlansSettingsComponent implements OnInit {
   updateConfig: SethlansConfig = new SethlansConfig();
   mode: any = Mode;
   newSettings = false;
+  alertSuccess = false;
+  alertFailure = false;
 
 
   constructor(private http: HttpClient, private router: Router, private modalService: NgbModal) {
@@ -58,8 +60,6 @@ export class SethlansSettingsComponent implements OnInit {
     let options: NgbModalOptions = {
       backdrop: "static"
     };
-    console.log(this.updateConfig);
-    console.log(this.sethlansConfig);
     this.modalService.open(content, options);
   }
 
@@ -82,9 +82,14 @@ export class SethlansSettingsComponent implements OnInit {
         'Content-Type': 'application/json',
       })
     };
-    console.log(this.sethlansConfig);
-    this.http.post('/api/management/update_settings', JSON.stringify(this.sethlansConfig), httpOptions).subscribe(() => {
-      window.location.href = '/admin/sethlans_settings';
+    this.http.post('/api/management/update_settings', JSON.stringify(this.sethlansConfig), httpOptions).subscribe((result: boolean) => {
+      if (result) {
+        this.alertSuccess = true;
+        this.alertFailure = false;
+      } else {
+        this.alertFailure = true;
+        this.alertSuccess = false;
+      }
     });
 
   }

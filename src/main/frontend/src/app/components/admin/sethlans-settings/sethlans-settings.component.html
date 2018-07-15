@@ -26,6 +26,12 @@
         </h4>
       </div>
       <div class="card-body table-responsive">
+        <div *ngIf="alertSuccess" class="alert alert-success">
+          <h6 class="text-center"><a href="/restart">Restart Sethlans</a> for changes to take effect.</h6>
+        </div>
+        <div *ngIf="alertFailure" class="alert alert-warning">
+          <h6 class="text-center">No new changes detected.</h6>
+        </div>
         <table class="table table-striped table-sm">
           <thead>
           <h5>Main Configuration</h5>

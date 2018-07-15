@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -91,7 +91,6 @@ export class UserEditComponent implements OnInit {
     this.http.post('/api/management/change_email/', emailChange, {
       headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
     }).subscribe((response: boolean) => {
-      console.log(response);
       if (response) {
         window.location.href = "/admin/user_management/";
       }
@@ -107,7 +106,6 @@ export class UserEditComponent implements OnInit {
     this.http.post('/api/management/change_password/', passwordChange, {
       headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
     }).subscribe((response: boolean) => {
-      console.log(response);
       if (response) {
         window.location.href = "/admin/user_management/";
       }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,11 +18,11 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {User} from "../../../../models/user.model";
-import {Role} from "../../../../enums/role.enum";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Router} from "@angular/router";
-import {UserInfo} from "../../../../models/userinfo.model";
+import {User} from '../../../../models/user.model';
+import {Role} from '../../../../enums/role.enum';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Router} from '@angular/router';
+import {UserInfo} from '../../../../models/userinfo.model';
 
 @Component({
   selector: 'app-user-add',
@@ -56,7 +56,6 @@ export class UserAddComponent implements OnInit {
         this.username = user['username'];
         this.http.get('/api/users/get_user/' + this.username + '').subscribe((userinfo: UserInfo) => {
           this.userInfo = userinfo;
-          console.log(userinfo);
           if (userinfo.roles.indexOf(Role.ADMINISTRATOR) !== -1 || userinfo.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
             this.isAdministrator = true;
             this.isSuperAdministrator = false;
@@ -65,7 +64,6 @@ export class UserAddComponent implements OnInit {
             this.isSuperAdministrator = true;
             this.isAdministrator = false;
           }
-          console.log(this.isAdministrator)
         });
       });
   }

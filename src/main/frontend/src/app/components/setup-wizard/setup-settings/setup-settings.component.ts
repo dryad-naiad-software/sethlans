@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,9 +18,9 @@
  */
 
 import {Component, Input, OnInit} from '@angular/core';
-import {SetupFormDataService} from "../../../services/setupformdata.service";
-import {HttpClient} from "@angular/common/http";
-import {Mode} from "../../../enums/mode.enum";
+import {SetupFormDataService} from '../../../services/setupformdata.service';
+import {HttpClient} from '@angular/common/http';
+import {Mode} from '../../../enums/mode.enum';
 
 @Component({
   selector: 'app-setup-settings',
@@ -38,17 +38,14 @@ export class SetupSettingsComponent implements OnInit {
     this.http.get('/api/info/root_directory',)
       .subscribe((rootDirectory) => {
         this.setupFormData.setRootDirectory(rootDirectory['root_dir']);
-        console.log(this.setupFormData.getRootDirectory());
       });
     this.http.get('/api/info/sethlans_ip')
       .subscribe((sethlansIP) => {
         this.setupFormData.setIPAddress(sethlansIP['ip']);
-        console.log(this.setupFormData.getIPAddress());
       });
     this.http.get('/api/info/sethlans_port')
       .subscribe((sethlansPort) => {
         this.setupFormData.setSethlansPort(sethlansPort['port']);
-        console.log(this.setupFormData.getSethlansPort());
       });
   }
 

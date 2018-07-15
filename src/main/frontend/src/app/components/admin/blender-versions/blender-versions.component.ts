@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,10 +18,10 @@
  */
 
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {BlenderBinaryInfo} from "../../../models/blenderbinaryinfo.model";
-import {MatPaginator, MatTableDataSource} from "@angular/material";
-import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {BlenderBinaryInfo} from '../../../models/blenderbinaryinfo.model';
+import {MatPaginator, MatTableDataSource} from '@angular/material';
+import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-blender-versions',
@@ -75,7 +75,6 @@ export class BlenderVersionsComponent implements OnInit {
     this.http.post('/api/management/add_blender_version', versionProperty, {
       headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
     }).subscribe((response: boolean) => {
-      console.log(response);
       if (response) {
         window.location.href = "/admin/blender_version_admin/";
       }

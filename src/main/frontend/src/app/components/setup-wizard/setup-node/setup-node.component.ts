@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,12 +18,12 @@
  */
 
 import {Component, Input, OnInit} from '@angular/core';
-import {Node} from "../../../models/node.model";
-import {SetupFormDataService} from "../../../services/setupformdata.service";
-import {HttpClient} from "@angular/common/http";
-import {GPU} from "../../../models/gpu.model";
-import {Mode} from "../../../enums/mode.enum";
-import {ComputeMethod} from "../../../enums/compute.method.enum";
+import {Node} from '../../../models/node.model';
+import {SetupFormDataService} from '../../../services/setupformdata.service';
+import {HttpClient} from '@angular/common/http';
+import {GPU} from '../../../models/gpu.model';
+import {Mode} from '../../../enums/mode.enum';
+import {ComputeMethod} from '../../../enums/compute.method.enum';
 
 
 @Component({
@@ -65,7 +65,6 @@ export class SetupNodeComponent implements OnInit {
       .subscribe((cores: any) => {
         this.totalCores = cores;
         this.node.setCores(cores);
-        console.log(this.totalCores);
       });
 
   }
@@ -98,10 +97,8 @@ export class SetupNodeComponent implements OnInit {
       this.node.setCores(this.totalCores);
       if (this.node.getSelectedGPUs().length == 0) {
         this.node.setGpuEmpty(true);
-        console.log(this.node.isGpuEmpty());
       } else {
         this.node.setGpuEmpty(false);
-        console.log(this.node.isGpuEmpty());
       }
     }
     if (this.node.getComputeMethod().toString() === 'CPU') {
