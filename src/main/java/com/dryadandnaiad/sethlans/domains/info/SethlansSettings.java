@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.domains.info;
 
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Created Mario Estrella on 3/2/18.
@@ -29,6 +30,7 @@ import lombok.Data;
  * Project: sethlans
  */
 @Data
+@EqualsAndHashCode
 public class SethlansSettings {
     private String httpsPort;
     private String sethlansIP;

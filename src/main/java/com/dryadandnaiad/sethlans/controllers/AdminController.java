@@ -292,6 +292,11 @@ public class AdminController {
 
     @PostMapping(value = "/update_settings")
     public boolean updateSettings(@RequestBody SethlansSettings sethlansSettingsUpdate) {
+        SethlansSettings currentSettings = SethlansUtils.getSettings();
+        if (!sethlansSettingsUpdate.equals(currentSettings)) {
+            LOG.debug("Starting update");
+            return true;
+        }
         return false;
     }
 

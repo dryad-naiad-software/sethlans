@@ -18,11 +18,11 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {SethlansConfig} from "../../../models/sethlans_config.model";
-import {Mode} from "../../../enums/mode.enum";
-import {Router} from "@angular/router";
-import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {SethlansConfig} from '../../../models/sethlans_config.model';
+import {Mode} from '../../../enums/mode.enum';
+import {Router} from '@angular/router';
+import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-sethlans-settings',
@@ -31,8 +31,10 @@ import {NgbModal, NgbModalOptions} from "@ng-bootstrap/ng-bootstrap";
 })
 export class SethlansSettingsComponent implements OnInit {
   sethlansConfig: SethlansConfig;
+  updatedConfig: SethlansConfig;
   mode: any = Mode;
   newSettings = false;
+
 
   constructor(private http: HttpClient, private router: Router, private modalService: NgbModal) {
   }
@@ -41,6 +43,7 @@ export class SethlansSettingsComponent implements OnInit {
     this.http.get('/api/management/current_settings').subscribe((sethlansConfig: SethlansConfig) => {
       this.sethlansConfig = sethlansConfig;
       console.log(this.sethlansConfig);
+      this.updatedConfig = new SethlansConfig();
     });
   }
 
@@ -49,6 +52,18 @@ export class SethlansSettingsComponent implements OnInit {
       backdrop: "static"
     };
     this.modalService.open(content, options);
+  }
+
+  submit() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    this.http.post('/api/management/update_settings', JSON.stringify(this.updatedConfig), httpOptions).subscribe(() => {
+
+    });
+
   }
 
 
