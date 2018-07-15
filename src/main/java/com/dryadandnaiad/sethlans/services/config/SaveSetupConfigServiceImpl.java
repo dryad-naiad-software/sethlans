@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -106,6 +106,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
         //Write Properties
         writePropertyToFile(SethlansConfigKeys.CONFIG_DIR, configDirectory, installFile);
         writePropertyToFile(SethlansConfigKeys.CONFIG_DIR, configDirectory, configFile);
+        writeProperty(SethlansConfigKeys.LOG_LEVEL, "INFO");
         writeProperty(SethlansConfigKeys.HTTPS_PORT, setupForm.getPort());
         writeProperty(SethlansConfigKeys.SETHLANS_IP, setupForm.getIpAddress());
         writeProperty(SethlansConfigKeys.LOGGING_DIR, logDirectory);

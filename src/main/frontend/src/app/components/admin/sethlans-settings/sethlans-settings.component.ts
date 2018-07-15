@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -30,8 +30,8 @@ import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./sethlans-settings.component.scss']
 })
 export class SethlansSettingsComponent implements OnInit {
-  sethlansConfig: SethlansConfig;
-  updatedConfig: SethlansConfig;
+  sethlansConfig: SethlansConfig = new SethlansConfig();
+  updateConfig: SethlansConfig = new SethlansConfig();
   mode: any = Mode;
   newSettings = false;
 
@@ -42,16 +42,38 @@ export class SethlansSettingsComponent implements OnInit {
   ngOnInit() {
     this.http.get('/api/management/current_settings').subscribe((sethlansConfig: SethlansConfig) => {
       this.sethlansConfig = sethlansConfig;
-      console.log(this.sethlansConfig);
-      this.updatedConfig = new SethlansConfig();
+      this.setUpdateConfig();
     });
+  }
+
+  setUpdateConfig() {
+    this.updateConfig.httpsPort = this.sethlansConfig.httpsPort;
+    this.updateConfig.logLevel = this.sethlansConfig.logLevel;
+    this.updateConfig.mode = this.sethlansConfig.mode;
+    this.updateConfig.rootDir = this.sethlansConfig.rootDir;
+    this.updateConfig.sethlansIP = this.sethlansConfig.sethlansIP;
   }
 
   open(content) {
     let options: NgbModalOptions = {
       backdrop: "static"
     };
+    console.log(this.updateConfig);
+    console.log(this.sethlansConfig);
     this.modalService.open(content, options);
+  }
+
+  update() {
+    this.sethlansConfig.httpsPort = this.updateConfig.httpsPort;
+    this.sethlansConfig.logLevel = this.updateConfig.logLevel;
+    this.sethlansConfig.mode = this.updateConfig.mode;
+    this.sethlansConfig.rootDir = this.updateConfig.rootDir;
+    this.sethlansConfig.sethlansIP = this.updateConfig.sethlansIP;
+    this.newSettings = true;
+  }
+
+  cancel() {
+    this.setUpdateConfig();
   }
 
   submit() {
@@ -60,8 +82,9 @@ export class SethlansSettingsComponent implements OnInit {
         'Content-Type': 'application/json',
       })
     };
-    this.http.post('/api/management/update_settings', JSON.stringify(this.updatedConfig), httpOptions).subscribe(() => {
-
+    console.log(this.sethlansConfig);
+    this.http.post('/api/management/update_settings', JSON.stringify(this.sethlansConfig), httpOptions).subscribe(() => {
+      window.location.href = '/admin/sethlans_settings';
     });
 
   }

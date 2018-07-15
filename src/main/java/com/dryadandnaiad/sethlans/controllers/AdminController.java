@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -283,18 +283,19 @@ public class AdminController {
 
     @GetMapping(value = "/current_settings")
     public SethlansSettings sethlansSettingsInfo() {
-        SethlansSettings sethlansSettings = SethlansUtils.getSettings();
-        if (sethlansSettings.getLogLevel() == null) {
-            sethlansSettings.setLogLevel(logLevel);
-        }
-        return sethlansSettings;
+        return SethlansUtils.getSettings();
     }
 
     @PostMapping(value = "/update_settings")
     public boolean updateSettings(@RequestBody SethlansSettings sethlansSettingsUpdate) {
         SethlansSettings currentSettings = SethlansUtils.getSettings();
         if (!sethlansSettingsUpdate.equals(currentSettings)) {
-            LOG.debug("Starting update");
+            LOG.debug(sethlansSettingsUpdate.toString());
+            LOG.debug(currentSettings.toString());
+            LOG.info("Configuration Change Requested");
+            writeProperty(SethlansConfigKeys.HTTPS_PORT, sethlansSettingsUpdate.getHttpsPort());
+            writeProperty(SethlansConfigKeys.SETHLANS_IP, sethlansSettingsUpdate.getSethlansIP());
+            writeProperty(SethlansConfigKeys.LOG_LEVEL, sethlansSettingsUpdate.getLogLevel());
             return true;
         }
         return false;

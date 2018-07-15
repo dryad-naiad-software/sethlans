@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -147,7 +147,7 @@ public class SethlansUtils {
             sethlansProperties.setProperty(key, value);
             //Save Properties to File
             sethlansProperties.store(fileOutputStream, comment);
-            LOG.debug("SethlansConfigKey:" + key + " written to " + getConfigFile().toString());
+            LOG.debug("SethlansConfigKey: " + key + " written to " + getConfigFile().toString());
             return true;
         } catch (FileNotFoundException e) {
             LOG.error(e.getMessage());
@@ -190,7 +190,7 @@ public class SethlansUtils {
             sethlansProperties.setProperty(key, value);
             //Save Properties to File
             sethlansProperties.store(fileOutputStream, comment);
-            LOG.debug(key + " written to " + getConfigFile());
+            LOG.debug("SethlansConfigKey: " + key + " written to " + getConfigFile());
             return true;
         } catch (FileNotFoundException e) {
             LOG.error(e.getMessage());

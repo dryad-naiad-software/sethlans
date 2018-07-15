@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2018 Dryad and Naiad Software LLC.
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC
   ~
   ~ This program is free software; you can redistribute it and/or
   ~ modify it under the terms of the GNU General Public License
@@ -59,12 +59,13 @@
             <td>Log Level</td>
             <td>{{sethlansConfig.logLevel}}</td>
             <td>
-              <button class="btn btn-outline-primary btn-sm">Edit</button>
+              <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
             </td>
           </tr>
           </tbody>
         </table>
-        <button [disabled]="!newSettings" type="button" class="btn btn-outline-dark ml-auto float-right">Save Changes
+        <button [disabled]="!newSettings" type="button" class="btn btn-outline-dark ml-auto float-right"
+                (click)="submit()">Save Changes
         </button>
       </div>
     </div>
@@ -74,7 +75,7 @@
 <ng-template #portEditModal let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Edit HTTPS Port</h4>
-    <button type="button" class="close" aria-label="Close" (click)="c('Close click')">
+    <button type="button" class="close" aria-label="Close" (click)="c('Close click'); cancel()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -86,7 +87,7 @@
              type="number"
              name="httpsPort"
              #httpsPort="ngModel"
-             [(ngModel)]="sethlansConfig.httpsPort"
+             [(ngModel)]="updateConfig.httpsPort"
              required
              pattern="^(?:6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[1-9])$"
              [ngClass]="{'is-invalid':httpsPort.errors && httpsPort.touched}"
@@ -99,9 +100,9 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-outline-secondary mr-auto" (click)="c('Close click')">Cancel</button>
+    <button class="btn btn-outline-secondary mr-auto" (click)="c('Close click'); cancel()">Cancel</button>
     <button
-      class="btn btn-outline-dark ml-auto" (click)="c('Close click');">Update
+      class="btn btn-outline-dark ml-auto" (click)="c('Close click'); update()">Update
     </button>
   </div>
 </ng-template>
@@ -109,7 +110,7 @@
 <ng-template #ipEditModal let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Edit IP Address</h4>
-    <button type="button" class="close" aria-label="Close" (click)="c('Close click')">
+    <button type="button" class="close" aria-label="Close" (click)="c('Close click'); cancel()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -120,7 +121,7 @@
              type="text"
              name="ipAddress"
              #ipAddress="ngModel"
-             [(ngModel)]="sethlansConfig.sethlansIP"
+             [(ngModel)]="updateConfig.sethlansIP"
              required
              pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
              [ngClass]="{'is-invalid':ipAddress.errors && ipAddress.touched}"
@@ -133,36 +134,38 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-outline-secondary mr-auto" (click)="c('Close click')">Cancel</button>
+    <button class="btn btn-outline-secondary mr-auto" (click)="c('Close click'); cancel()">Cancel</button>
     <button
-      class="btn btn-outline-dark ml-auto" (click)="c('Close click');">Update
+      class="btn btn-outline-dark ml-auto" (click)="c('Close click'); update()">Update
     </button>
   </div>
 </ng-template>
 
 <ng-template #logLevelEditModal let-c="close" let-d="dismiss">
   <div class="modal-header">
-    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Edit IP Address</h4>
-    <button type="button" class="close" aria-label="Close" (click)="c('Close click')">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Change Logging Level</h4>
+    <button type="button" class="close" aria-label="Close" (click)="c('Close click'); cancel()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
     <div class="form-group">
       <label for="logLevel">Log Level:</label>
-      <input id="logLevel"
-             type="text"
-             name="logLevel"
-             #logLevel="ngModel"
-             [(ngModel)]="sethlansConfig.logLevel"
-             required
-             class="form-control form-control-sm"/>
+      <select class="form-control form-control-sm"
+              id="logLevel"
+              name="logLevel"
+              #logLevel="ngModel"
+              [(ngModel)]="updateConfig.logLevel">
+        <option value="INFO">INFO</option>
+        <option value="DEBUG">DEBUG</option>
+      </select>
+
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-outline-secondary mr-auto" (click)="c('Close click')">Cancel</button>
+    <button class="btn btn-outline-secondary mr-auto" (click)="c('Close click'); cancel()">Cancel</button>
     <button
-      class="btn btn-outline-dark ml-auto" (click)="c('Close click');">Update
+      class="btn btn-outline-dark ml-auto" (click)="c('Close click'); update()">Update
     </button>
   </div>
 </ng-template>
