@@ -1,10 +1,13 @@
 {
-  "name": "ui",
-  "version": "0.0.0",
+  "name": "sethlans",
+  "version": "0.8.1",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "start": "ng serve --proxy-config proxy-conf.json --aot",
+    "build": "ng build --prod --aot",
+    "postbuild": "npm run deploy",
+    "predeploy": "rimraf ../resources/static/ && mkdirp ../resources/static",
+    "deploy": "ncp dist ../resources/static",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
