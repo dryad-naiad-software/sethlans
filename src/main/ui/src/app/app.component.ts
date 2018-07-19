@@ -26,7 +26,7 @@ import {HttpClient} from '@angular/common/http';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  firstTime: boolean;
+  firstTime: boolean = true;
   logo: any = 'assets/images/logo.png';
 
 
@@ -34,6 +34,6 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get('/api/info/first_time').subscribe((firstTime: boolean) => this.firstTime = firstTime);
+    //this.http.get('/api/info/first_time').subscribe((firstTime: boolean) => this.firstTime = firstTime);
   }
 }
