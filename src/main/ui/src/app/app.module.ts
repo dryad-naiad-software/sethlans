@@ -21,17 +21,43 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {HttpClientModule} from '@angular/common/http';
+import {FormsModule} from '@angular/forms';
 
 
 import {AppComponent} from './app.component';
+import {NavBarComponent} from './compontents/layouts/nav-bar/nav-bar.component';
+import {FooterComponent} from './compontents/layouts/footer/footer.component';
+import {SetupWizardComponent} from './compontents/setup/setup-wizard/setup-wizard.component';
+import {GetStartedComponent} from './compontents/setup/get-started/get-started.component';
+import {ModeSetupComponent} from './compontents/setup/setup-wizard/mode-setup/mode-setup.component';
+import {DualConfigComponent} from './compontents/setup/setup-wizard/dual-config/dual-config.component';
+import {NodeConfigComponent} from './compontents/setup/setup-wizard/node-config/node-config.component';
+import {ServerConfigComponent} from './compontents/setup/setup-wizard/server-config/server-config.component';
+import {UserCreateComponent} from './compontents/setup/setup-wizard/user-create/user-create.component';
+import {SettingsConfigComponent} from './compontents/setup/setup-wizard/settings-config/settings-config.component';
+import {SetupSummaryComponent} from './compontents/setup/setup-wizard/setup-summary/setup-summary.component';
+import {SetupFinishedComponent} from './compontents/setup/setup-wizard/setup-finished/setup-finished.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    NavBarComponent,
+    FooterComponent,
+    SetupWizardComponent,
+    GetStartedComponent,
+    ModeSetupComponent,
+    DualConfigComponent,
+    NodeConfigComponent,
+    ServerConfigComponent,
+    UserCreateComponent,
+    SettingsConfigComponent,
+    SetupSummaryComponent,
+    SetupFinishedComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
+    FormsModule,
     NgbModule.forRoot()
   ],
   providers: [],

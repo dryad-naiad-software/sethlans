@@ -17,26 +17,24 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Mode} from './enums/mode.enum';
+import {Component, Input, OnInit} from '@angular/core';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  selector: 'app-nav-bar',
+  templateUrl: './nav-bar.component.html',
+  styleUrls: ['./nav-bar.component.scss'],
 })
-export class AppComponent implements OnInit {
-  firstTime: boolean;
-  mode: any = Mode;
-  sethlansVersion: string;
+export class NavBarComponent implements OnInit {
+  logo: any = 'assets/images/logo.png';
+  logoDark: any = 'assets/images/logo-dark.png';
+  authenticated: boolean;
+  @Input() firstTime: boolean;
 
-  constructor(private http: HttpClient) {
+
+  constructor() {
   }
 
   ngOnInit() {
-    this.http.get('/api/info/first_time').subscribe((firstTime: boolean) => this.firstTime = firstTime);
-    this.http.get('/api/info/version').subscribe((version) => this.sethlansVersion = version['version']);
-    this.http.get('/api/info/sethlans_mode').subscribe((sethlansmode) => this.mode = sethlansmode['mode']);
   }
+
 }

@@ -17,26 +17,20 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Mode} from './enums/mode.enum';
+import {Mode} from '../enums/mode.enum';
+import {User} from './user.model';
+import {Server} from './server.model';
+import {Node} from './node.model';
 
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
-})
-export class AppComponent implements OnInit {
-  firstTime: boolean;
-  mode: any = Mode;
-  sethlansVersion: string;
+export class SetupForm {
+  mode: Mode;
+  user: User;
+  server: Server;
+  node: Node;
+  ipAddress: string;
+  port: number;
+  rootDirectory: string;
 
-  constructor(private http: HttpClient) {
-  }
-
-  ngOnInit() {
-    this.http.get('/api/info/first_time').subscribe((firstTime: boolean) => this.firstTime = firstTime);
-    this.http.get('/api/info/version').subscribe((version) => this.sethlansVersion = version['version']);
-    this.http.get('/api/info/sethlans_mode').subscribe((sethlansmode) => this.mode = sethlansmode['mode']);
+  constructor() {
   }
 }

@@ -18,25 +18,25 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Mode} from './enums/mode.enum';
+import {SetupProgress} from '../../../enums/setupProgress.enum';
+import {SetupForm} from '../../../models/setupForm.model';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  selector: 'app-setup-wizard',
+  templateUrl: './setup-wizard.component.html',
+  styleUrls: ['./setup-wizard.component.scss']
 })
-export class AppComponent implements OnInit {
-  firstTime: boolean;
-  mode: any = Mode;
-  sethlansVersion: string;
+export class SetupWizardComponent implements OnInit {
+  progress: SetupProgress;
+  setupProgress: any = SetupProgress;
+  setupForm: SetupForm;
 
-  constructor(private http: HttpClient) {
+  constructor() {
+    this.progress = SetupProgress.START;
+    this.setupForm = new SetupForm();
   }
 
   ngOnInit() {
-    this.http.get('/api/info/first_time').subscribe((firstTime: boolean) => this.firstTime = firstTime);
-    this.http.get('/api/info/version').subscribe((version) => this.sethlansVersion = version['version']);
-    this.http.get('/api/info/sethlans_mode').subscribe((sethlansmode) => this.mode = sethlansmode['mode']);
   }
+
 }

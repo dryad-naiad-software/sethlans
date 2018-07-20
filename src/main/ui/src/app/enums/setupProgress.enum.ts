@@ -17,26 +17,13 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Mode} from './enums/mode.enum';
-
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
-})
-export class AppComponent implements OnInit {
-  firstTime: boolean;
-  mode: any = Mode;
-  sethlansVersion: string;
-
-  constructor(private http: HttpClient) {
-  }
-
-  ngOnInit() {
-    this.http.get('/api/info/first_time').subscribe((firstTime: boolean) => this.firstTime = firstTime);
-    this.http.get('/api/info/version').subscribe((version) => this.sethlansVersion = version['version']);
-    this.http.get('/api/info/sethlans_mode').subscribe((sethlansmode) => this.mode = sethlansmode['mode']);
-  }
+export enum SetupProgress {
+  START,
+  REGISTER_USER,
+  SERVER,
+  NODE,
+  DUAL,
+  SETTINGS,
+  SUMMARY,
+  FINISHED
 }

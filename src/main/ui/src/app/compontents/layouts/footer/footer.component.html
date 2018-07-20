@@ -16,10 +16,17 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
-<app-nav-bar [firstTime]="firstTime"></app-nav-bar>
-<div class="px-5 pb-5">
-  <app-setup-wizard *ngIf="firstTime"></app-setup-wizard>
-</div>
-<app-footer [mode]="mode" [sethlansVersion]="sethlansVersion" class="fixed-bottom"></app-footer>
 
-
+<footer class="bg-dark text-light">
+  <div class="row">
+    <div class="col text-center mr-auto">
+      <div class="pt-2 px-5">
+        <p><span class="font-weight-bold float-left pl-md-5">{{mode.toString()}}</span><span
+          class="font-weight-light float-right pr-5" style="font-size: small">Version {{sethlansVersion}}</span></p>
+        <p class="d-none d-sm-block font-weight-light text-center" style="font-size: small">&copy; 2018 Dryad and
+          Naiad Software
+          LLC</p>
+      </div>
+    </div>
+  </div>
+</footer>

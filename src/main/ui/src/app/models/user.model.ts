@@ -17,26 +17,14 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Mode} from './enums/mode.enum';
+import {Role} from '../enums/role.enum';
 
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
-})
-export class AppComponent implements OnInit {
-  firstTime: boolean;
-  mode: any = Mode;
-  sethlansVersion: string;
-
-  constructor(private http: HttpClient) {
-  }
-
-  ngOnInit() {
-    this.http.get('/api/info/first_time').subscribe((firstTime: boolean) => this.firstTime = firstTime);
-    this.http.get('/api/info/version').subscribe((version) => this.sethlansVersion = version['version']);
-    this.http.get('/api/info/sethlans_mode').subscribe((sethlansmode) => this.mode = sethlansmode['mode']);
-  }
+export class User {
+  username: string;
+  password: string;
+  passwordConfirm: string;
+  email: string;
+  roles: Role[];
+  active: boolean;
+  passwordUpdated: boolean;
 }

@@ -17,26 +17,28 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Mode} from './enums/mode.enum';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
-})
-export class AppComponent implements OnInit {
-  firstTime: boolean;
-  mode: any = Mode;
-  sethlansVersion: string;
+import {SettingsConfigComponent} from './settings-config.component';
 
-  constructor(private http: HttpClient) {
-  }
+describe('SettingsConfigComponent', () => {
+  let component: SettingsConfigComponent;
+  let fixture: ComponentFixture<SettingsConfigComponent>;
 
-  ngOnInit() {
-    this.http.get('/api/info/first_time').subscribe((firstTime: boolean) => this.firstTime = firstTime);
-    this.http.get('/api/info/version').subscribe((version) => this.sethlansVersion = version['version']);
-    this.http.get('/api/info/sethlans_mode').subscribe((sethlansmode) => this.mode = sethlansmode['mode']);
-  }
-}
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [SettingsConfigComponent]
+    })
+      .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(SettingsConfigComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
