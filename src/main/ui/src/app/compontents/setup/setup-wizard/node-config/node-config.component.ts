@@ -17,7 +17,8 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {SetupForm} from '../../../../models/setupForm.model';
 
 @Component({
   selector: 'app-node-config',
@@ -25,6 +26,7 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./node-config.component.scss']
 })
 export class NodeConfigComponent implements OnInit {
+  @Input() setupForm: SetupForm;
 
   constructor() {
   }

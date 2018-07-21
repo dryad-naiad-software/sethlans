@@ -27,4 +27,9 @@ export class User {
   roles: Role[];
   active: boolean;
   passwordUpdated: boolean;
+
+
+  constructor() {
+    this.active = false;
+  }
 }

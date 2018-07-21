@@ -17,7 +17,9 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {SetupForm} from '../../../../models/setupForm.model';
+import {User} from '../../../../models/user.model';
 
 @Component({
   selector: 'app-user-create',
@@ -25,11 +27,16 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./user-create.component.scss']
 })
 export class UserCreateComponent implements OnInit {
+  @Input() setupForm: SetupForm;
 
   constructor() {
+
   }
 
   ngOnInit() {
+    this.setupForm.user = new User();
   }
+
+
 
 }

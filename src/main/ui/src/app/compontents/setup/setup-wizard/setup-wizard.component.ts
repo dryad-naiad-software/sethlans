@@ -20,6 +20,7 @@
 import {Component, OnInit} from '@angular/core';
 import {SetupProgress} from '../../../enums/setupProgress.enum';
 import {SetupForm} from '../../../models/setupForm.model';
+import {Mode} from '../../../enums/mode.enum';
 
 @Component({
   selector: 'app-setup-wizard',
@@ -29,15 +30,18 @@ import {SetupForm} from '../../../models/setupForm.model';
 export class SetupWizardComponent implements OnInit {
   progress: SetupProgress;
   setupProgress: any = SetupProgress;
+  modes: any = Mode;
   setupForm: SetupForm;
+  disable: boolean;
 
   constructor() {
-    this.progress = SetupProgress.MODE_SELECT;
-    this.setupForm = new SetupForm();
     document.body.style.background = 'rgba(0, 0, 0, .6)';
   }
 
   ngOnInit() {
+    this.progress = SetupProgress.MODE_SELECT;
+    this.setupForm = new SetupForm();
+    this.disable = false;
   }
 
   next() {

@@ -38,6 +38,7 @@ import {SettingsConfigComponent} from './compontents/setup/setup-wizard/settings
 import {SetupSummaryComponent} from './compontents/setup/setup-wizard/setup-summary/setup-summary.component';
 import {SetupFinishedComponent} from './compontents/setup/setup-wizard/setup-finished/setup-finished.component';
 import {KeysPipe} from './pipes/keys.pipe';
+import {FieldmatchesvalidatorDirective} from './directives/fieldmatchesvalidator.directive';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import {KeysPipe} from './pipes/keys.pipe';
     SettingsConfigComponent,
     SetupSummaryComponent,
     SetupFinishedComponent,
-    KeysPipe
+    KeysPipe,
+    FieldmatchesvalidatorDirective
   ],
   imports: [
     BrowserModule,

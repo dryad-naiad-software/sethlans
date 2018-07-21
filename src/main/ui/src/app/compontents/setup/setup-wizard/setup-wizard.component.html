@@ -29,23 +29,27 @@
             <button type="button" class="btn btn-circle btn-lg"
                     [ngClass]="progress === setupProgress.MODE_SELECT ? 'btn-outline-primary':'btn-outline-secondary'"
                     placement="top"
-                    ngbTooltip="Mode Selection">
-              <i class="far fa-paper-plane"></i></button>
+                    ngbTooltip="Mode Selection" (click)="progress = setupProgress.MODE_SELECT">
+              <i class="fas fa-archway"></i></button>
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
+                    [disabled]="setupForm.mode == null"
                     [ngClass]="progress === setupProgress.REGISTER_USER ? 'btn-outline-primary':'btn-outline-secondary'"
                     placement="top"
-                    ngbTooltip="User Registration"><i class="fas fa-user"></i></button>
+                    ngbTooltip="User Registration" (click)="progress = setupProgress.REGISTER_USER">
+              <i class="fas fa-user"></i></button>
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
+                    [disabled]="setupForm.user == null || setupForm.user.active == false"
                     [ngClass]="progress === setupProgress.MODE_CONFIG ? 'btn-outline-primary':'btn-outline-secondary'"
                     placement="top"
                     ngbTooltip="Mode Configuration"><i class="fas fa-cog"></i></button>
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
+                    [disabled]="setupForm.ipAddress == null && setupForm.port == null && setupForm.rootDirectory == null"
                     [ngClass]="progress === setupProgress.SETTINGS ? 'btn-outline-primary':'btn-outline-secondary'"
                     placement="top"
                     ngbTooltip="Settings"><i
@@ -53,6 +57,7 @@
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
+                    [disabled]="setupForm.ipAddress == null && setupForm.port == null && setupForm.rootDirectory == null"
                     [ngClass]="progress === setupProgress.SUMMARY ? 'btn-outline-primary':'btn-outline-secondary'"
                     placement="top"
                     ngbTooltip="Summary"><i
@@ -60,6 +65,7 @@
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
+                    [disabled]="!setupForm.complete"
                     [ngClass]="progress === setupProgress.FINISHED ? 'btn-outline-success':'btn-outline-secondary'"
                     placement="top"
                     ngbTooltip="Finished"><i
@@ -68,10 +74,17 @@
         </ul>
         <div class="py-3">
           <app-mode-setup [setupForm]="setupForm" *ngIf="progress === setupProgress.MODE_SELECT"></app-mode-setup>
-          <app-user-create *ngIf="progress === setupProgress.REGISTER_USER"></app-user-create>
-          <app-settings-config *ngIf="progress === setupProgress.SETTINGS"></app-settings-config>
-          <app-setup-summary *ngIf="progress === setupProgress.SUMMARY"></app-setup-summary>
-          <app-setup-finished *ngIf="progress === setupProgress.FINISHED"></app-setup-finished>
+          <app-user-create [setupForm]="setupForm" *ngIf="progress === setupProgress.REGISTER_USER"></app-user-create>
+          <app-dual-config [setupForm]="setupForm"
+                           *ngIf="progress === setupProgress.MODE_CONFIG && setupForm.mode === modes.DUAL"></app-dual-config>
+          <app-server-config [setupForm]="setupForm"
+                             *ngIf="progress === setupProgress.MODE_CONFIG && setupForm.mode === modes.SERVER"></app-server-config>
+          <app-node-config [setupForm]="setupForm"
+                           *ngIf="progress === setupProgress.MODE_CONFIG && setupForm.mode === modes.NODE"></app-node-config>
+          <app-settings-config [setupForm]="setupForm"
+                               *ngIf="progress === setupProgress.SETTINGS"></app-settings-config>
+          <app-setup-summary [setupForm]="setupForm" *ngIf="progress === setupProgress.SUMMARY"></app-setup-summary>
+          <app-setup-finished [setupForm]="setupForm" *ngIf="progress === setupProgress.FINISHED"></app-setup-finished>
         </div>
 
       </div>
@@ -80,7 +93,9 @@
           <button [disabled]="progress === setupProgress.MODE_SELECT" class="btn btn-outline-primary float-left"
                   (click)="previous()"> Previous
           </button>
-          <button class="btn btn-outline-primary float-right" (click)="next()"> Next</button>
+          <button [disabled]="progress === setupProgress.FINISHED" class="btn btn-outline-primary float-right"
+                  (click)="next()"> Next
+          </button>
         </nav>
       </div>
     </div>

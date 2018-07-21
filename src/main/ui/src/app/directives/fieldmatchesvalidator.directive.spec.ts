@@ -17,23 +17,11 @@
  *
  */
 
-import {Mode} from '../enums/mode.enum';
-import {User} from './user.model';
-import {Server} from './server.model';
-import {Node} from './node.model';
+import {FieldmatchesvalidatorDirective} from './fieldmatchesvalidator.directive';
 
-export class SetupForm {
-  mode: Mode;
-  user: User;
-  server: Server;
-  node: Node;
-  ipAddress: string;
-  port: number;
-  rootDirectory: string;
-  complete: boolean;
-
-  constructor() {
-    this.mode = Mode.SERVER;
-    this.complete = false;
-  }
-}
+describe('FieldmatchesvalidatorDirective', () => {
+  it('should create an instance', () => {
+    const directive = new FieldmatchesvalidatorDirective();
+    expect(directive).toBeTruthy();
+  });
+});
