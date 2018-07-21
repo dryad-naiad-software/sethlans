@@ -23,37 +23,70 @@
       <div class="card-header">
         <h4 style="font-family: 'Fjalla One', sans-serif; ">Sethlans Setup Wizard</h4>
       </div>
-      <div class="card-body">
-        <ul class="nav nav-tabs justify-content-between py-2">
+      <div class="card-body px-lg-5">
+        <ul class="nav nav-tabs justify-content-between pb-3">
           <li>
-            <button type="button" class="btn btn-default btn-circle btn-lg" placement="top" ngbTooltip="Mode Selection">
+            <button type="button" class="btn btn-circle btn-lg"
+                    [ngClass]="progress === setupProgress.MODE_SELECT ? 'btn-outline-primary':'btn-outline-secondary'"
+                    placement="top"
+                    ngbTooltip="Mode Selection">
               <i class="far fa-paper-plane"></i></button>
           </li>
           <li>
-            <button type="button" class="btn btn-default btn-circle btn-lg" placement="top"
+            <button type="button" class="btn btn-circle btn-lg"
+                    [ngClass]="progress === setupProgress.REGISTER_USER ? 'btn-outline-primary':'btn-outline-secondary'"
+                    placement="top"
                     ngbTooltip="User Registration"><i class="fas fa-user"></i></button>
           </li>
           <li>
-            <button type="button" class="btn btn-default btn-circle btn-lg" placement="top"
+            <button type="button" class="btn btn-circle btn-lg"
+                    [ngClass]="progress === setupProgress.MODE_CONFIG ? 'btn-outline-primary':'btn-outline-secondary'"
+                    placement="top"
                     ngbTooltip="Mode Configuration"><i class="fas fa-cog"></i></button>
           </li>
           <li>
-            <button type="button" class="btn btn-default btn-circle btn-lg" placement="top" ngbTooltip="Settings"><i
+            <button type="button" class="btn btn-circle btn-lg"
+                    [ngClass]="progress === setupProgress.SETTINGS ? 'btn-outline-primary':'btn-outline-secondary'"
+                    placement="top"
+                    ngbTooltip="Settings"><i
               class="fas fa-sliders-h"></i></button>
           </li>
           <li>
-            <button type="button" class="btn btn-default btn-circle btn-lg" placement="top" ngbTooltip="Summary"><i
+            <button type="button" class="btn btn-circle btn-lg"
+                    [ngClass]="progress === setupProgress.SUMMARY ? 'btn-outline-primary':'btn-outline-secondary'"
+                    placement="top"
+                    ngbTooltip="Summary"><i
               class="far fa-list-alt"></i></button>
           </li>
           <li>
-            <button type="button" class="btn btn-default btn-circle btn-lg" placement="top" ngbTooltip="Finished"><i
+            <button type="button" class="btn btn-circle btn-lg"
+                    [ngClass]="progress === setupProgress.FINISHED ? 'btn-outline-success':'btn-outline-secondary'"
+                    placement="top"
+                    ngbTooltip="Finished"><i
               class="fas fa-check"></i></button>
           </li>
         </ul>
+        <div class="py-3">
+          <app-mode-setup [setupForm]="setupForm" *ngIf="progress === setupProgress.MODE_SELECT"></app-mode-setup>
+          <app-user-create *ngIf="progress === setupProgress.REGISTER_USER"></app-user-create>
+          <app-settings-config *ngIf="progress === setupProgress.SETTINGS"></app-settings-config>
+          <app-setup-summary *ngIf="progress === setupProgress.SUMMARY"></app-setup-summary>
+          <app-setup-finished *ngIf="progress === setupProgress.FINISHED"></app-setup-finished>
+        </div>
 
-        <app-mode-setup *ngIf="progress === setupProgress.START"></app-mode-setup>
-        <app-user-create *ngIf="progress === setupProgress.REGISTER_USER"></app-user-create>
+      </div>
+      <div class="card-footer">
+        <nav>
+          <button [disabled]="progress === setupProgress.MODE_SELECT" class="btn btn-outline-primary float-left"
+                  (click)="previous()"> Previous
+          </button>
+          <button class="btn btn-outline-primary float-right" (click)="next()"> Next</button>
+        </nav>
       </div>
     </div>
   </div>
+</div>
+<div>
+  Debugging:
+  <pre>{{ setupForm | json }}</pre>
 </div>

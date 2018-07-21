@@ -32,5 +32,6 @@ export class SetupForm {
   rootDirectory: string;
 
   constructor() {
+    this.mode = Mode.SERVER;
   }
 }

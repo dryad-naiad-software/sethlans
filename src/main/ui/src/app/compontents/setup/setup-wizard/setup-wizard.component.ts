@@ -32,12 +32,30 @@ export class SetupWizardComponent implements OnInit {
   setupForm: SetupForm;
 
   constructor() {
-    this.progress = SetupProgress.START;
+    this.progress = SetupProgress.MODE_SELECT;
     this.setupForm = new SetupForm();
     document.body.style.background = 'rgba(0, 0, 0, .6)';
   }
 
   ngOnInit() {
+  }
+
+  next() {
+    switch (this.progress) {
+      case SetupProgress.MODE_SELECT: {
+        this.progress = SetupProgress.REGISTER_USER;
+        break;
+      }
+    }
+  }
+
+  previous() {
+    switch (this.progress) {
+      case SetupProgress.REGISTER_USER: {
+        this.progress = SetupProgress.MODE_SELECT;
+        break;
+      }
+    }
   }
 
 }

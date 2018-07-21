@@ -18,7 +18,7 @@
  */
 
 export enum SetupProgress {
-  START,
+  MODE_SELECT,
   REGISTER_USER,
   MODE_CONFIG,
   SETTINGS,

@@ -16,7 +16,45 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
+<div class="mx-auto center-justified">
+  <h5 class="card-title">Mode Selection</h5>
+  <form #modeForm="ngForm" class="editForm">
+    <fieldset class="form-group">
+      <div class="form-check" ngbTooltip="Sethlans will be configured as a server" placement="left">
+        <label class="form-check-label">
+          <input type="radio"
+                 name="mode"
+                 class="form-check-input"
+                 #mode="ngModel"
+                 [(ngModel)]="setupForm.mode"
+                 value="SERVER"
+                 required>Server
+        </label>
+      </div>
+      <div class="form-check" ngbTooltip="Sethlans will be configured as a node only" placement="left">
+        <label class="form-check-label">
+          <input type="radio"
+                 name="mode"
+                 class="form-check-input"
+                 #mode="ngModel"
+                 [(ngModel)]="setupForm.mode"
+                 value="NODE"
+                 required>Node
+        </label>
+      </div>
+      <div class="form-check" ngbTooltip="Sethlans will act as a server and as a node" placement="left">
+        <label class="form-check-label">
+          <input type="radio"
+                 name="mode"
+                 class="form-check-input"
+                 #mode="ngModel"
+                 [(ngModel)]="setupForm.mode"
+                 value="DUAL"
+                 required>Dual
+        </label>
+      </div>
 
-<p>
-  mode-setup works!
-</p>
+    </fieldset>
+
+  </form>
+</div>
