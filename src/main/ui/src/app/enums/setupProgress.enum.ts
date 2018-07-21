@@ -20,9 +20,7 @@
 export enum SetupProgress {
   START,
   REGISTER_USER,
-  SERVER,
-  NODE,
-  DUAL,
+  MODE_CONFIG,
   SETTINGS,
   SUMMARY,
   FINISHED

@@ -34,6 +34,7 @@ export class SetupWizardComponent implements OnInit {
   constructor() {
     this.progress = SetupProgress.START;
     this.setupForm = new SetupForm();
+    document.body.style.background = 'rgba(0, 0, 0, .6)';
   }
 
   ngOnInit() {

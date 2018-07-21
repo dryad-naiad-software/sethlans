@@ -18,12 +18,39 @@
   -->
 
 <div class="row pt-md-3">
-  <div class="col-md-6 m-auto">
+  <div class="col-md-6 mx-auto">
     <div class="card">
       <div class="card-header">
         <h4 style="font-family: 'Fjalla One', sans-serif; ">Sethlans Setup Wizard</h4>
       </div>
       <div class="card-body">
+        <ul class="nav nav-tabs justify-content-between py-2">
+          <li>
+            <button type="button" class="btn btn-default btn-circle btn-lg" placement="top" ngbTooltip="Mode Selection">
+              <i class="far fa-paper-plane"></i></button>
+          </li>
+          <li>
+            <button type="button" class="btn btn-default btn-circle btn-lg" placement="top"
+                    ngbTooltip="User Registration"><i class="fas fa-user"></i></button>
+          </li>
+          <li>
+            <button type="button" class="btn btn-default btn-circle btn-lg" placement="top"
+                    ngbTooltip="Mode Configuration"><i class="fas fa-cog"></i></button>
+          </li>
+          <li>
+            <button type="button" class="btn btn-default btn-circle btn-lg" placement="top" ngbTooltip="Settings"><i
+              class="fas fa-sliders-h"></i></button>
+          </li>
+          <li>
+            <button type="button" class="btn btn-default btn-circle btn-lg" placement="top" ngbTooltip="Summary"><i
+              class="far fa-list-alt"></i></button>
+          </li>
+          <li>
+            <button type="button" class="btn btn-default btn-circle btn-lg" placement="top" ngbTooltip="Finished"><i
+              class="fas fa-check"></i></button>
+          </li>
+        </ul>
+
         <app-mode-setup *ngIf="progress === setupProgress.START"></app-mode-setup>
         <app-user-create *ngIf="progress === setupProgress.REGISTER_USER"></app-user-create>
       </div>

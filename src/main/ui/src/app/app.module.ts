@@ -37,6 +37,7 @@ import {UserCreateComponent} from './compontents/setup/setup-wizard/user-create/
 import {SettingsConfigComponent} from './compontents/setup/setup-wizard/settings-config/settings-config.component';
 import {SetupSummaryComponent} from './compontents/setup/setup-wizard/setup-summary/setup-summary.component';
 import {SetupFinishedComponent} from './compontents/setup/setup-wizard/setup-finished/setup-finished.component';
+import {KeysPipe} from './pipes/keys.pipe';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import {SetupFinishedComponent} from './compontents/setup/setup-wizard/setup-fin
     UserCreateComponent,
     SettingsConfigComponent,
     SetupSummaryComponent,
-    SetupFinishedComponent
+    SetupFinishedComponent,
+    KeysPipe
   ],
   imports: [
     BrowserModule,

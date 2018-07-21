@@ -1,4 +1,4 @@
-/*!
+/*
  * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
@@ -16,19 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-$fa-font-path: "../node_modules/@fortawesome/fontawesome-free/webfonts";
-@import "../node_modules/bootstrap/scss/bootstrap";
-@import '~typeface-fjalla-one/index.css';
-@import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
-@import "~@fortawesome/fontawesome-free/scss/solid.scss";
-@import "~@fortawesome/fontawesome-free/scss/regular.scss";
-@import "~@fortawesome/fontawesome-free/scss/brands.scss";
 
+import {KeysPipe} from './keys.pipe';
 
-
-
-body {
-  background: #EAEAEA;
-}
-
-
+describe('KeysPipe', () => {
+  it('create an instance', () => {
+    const pipe = new KeysPipe();
+    expect(pipe).toBeTruthy();
+  });
+});

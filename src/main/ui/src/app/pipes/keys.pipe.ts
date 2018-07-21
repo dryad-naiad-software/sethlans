@@ -1,4 +1,4 @@
-/*!
+/*
  * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
@@ -16,19 +16,22 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-$fa-font-path: "../node_modules/@fortawesome/fontawesome-free/webfonts";
-@import "../node_modules/bootstrap/scss/bootstrap";
-@import '~typeface-fjalla-one/index.css';
-@import '~@fortawesome/fontawesome-free/scss/fontawesome.scss';
-@import "~@fortawesome/fontawesome-free/scss/solid.scss";
-@import "~@fortawesome/fontawesome-free/scss/regular.scss";
-@import "~@fortawesome/fontawesome-free/scss/brands.scss";
 
+import {Pipe, PipeTransform} from '@angular/core';
 
-
-
-body {
-  background: #EAEAEA;
+@Pipe({
+  name: 'keys'
+})
+export class KeysPipe implements PipeTransform {
+  transform(value, args: string[]): any {
+    let keys = [];
+    for (var enumMember in value) {
+      if (!isNaN(parseInt(enumMember, 10))) {
+        keys.push({key: enumMember, value: value[enumMember]});
+        // Uncomment if you want log
+        // console.log("enum member: ", value[enumMember]);
+      }
+    }
+    return keys;
+  }
 }
-
-
