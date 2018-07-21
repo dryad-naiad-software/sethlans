@@ -29,7 +29,7 @@
            [(ngModel)]="setupForm.user.username"
            [ngClass]="{'is-invalid':username.errors && username.touched}"
            class="form-control form-control-sm"
-           required pattern="^[a-zA-Z0-9]{4,}$">
+           required pattern="^[a-zA-Z0-9]{4,}$" (keyup)="validateAndSubmit($event, userForm)">
     <div class="invalid-feedback" [hidden]="username.valid">
       <ul>
         <li>Username is required.</li>
@@ -49,7 +49,7 @@
            id="password"
            [ngClass]="{'is-invalid':password.errors && password.touched}"
            class="form-control form-control-sm"
-           required pattern="^.{8,35}$">
+           required pattern="^.{8,35}$" (keyup)="validateAndSubmit($event, userForm)">
 
     <div class="invalid-feedback" [hidden]="password.valid">
       <ul>
@@ -68,7 +68,7 @@
            name="passwordConfirm"
            class="form-control form-control-sm"
            [ngClass]="{'is-invalid':passwordConfirm.errors && passwordConfirm.touched}"
-           required [fieldMatches]="password">
+           required [fieldMatches]="password" (keyup)="validateAndSubmit($event, userForm)">
     <div class="invalid-feedback" [hidden]="passwordConfirm.valid">
       <ul>
         <li>Passwords must match.</li>
@@ -84,7 +84,7 @@
            [(ngModel)]="setupForm.user.email"
            class="form-control form-control-sm"
            [ngClass]="{'is-invalid':email.errors && email.touched}"
-           required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$">
+           required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{1,}$" (keyup)="validateAndSubmit($event, userForm)">
     <div class="invalid-feedback" [hidden]="email.valid">
       <ul>
         <li>Email is required and must be valid.</li>

@@ -17,7 +17,7 @@
  *
  */
 
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {SetupForm} from '../../../../models/setupForm.model';
 import {User} from '../../../../models/user.model';
 
@@ -28,13 +28,36 @@ import {User} from '../../../../models/user.model';
 })
 export class UserCreateComponent implements OnInit {
   @Input() setupForm: SetupForm;
+  @Output() disableNext = new EventEmitter();
+  @Output() submitUser = new EventEmitter();
+  passwordMatch: boolean = false;
 
   constructor() {
 
   }
 
   ngOnInit() {
-    this.setupForm.user = new User();
+    if (this.setupForm.user == null) {
+      this.setupForm.user = new User();
+    }
+    if (this.setupForm.user.active == false) {
+      this.disableNext.emit(true);
+    }
+  }
+
+  validateAndSubmit(event, userForm) {
+    this.passwordMatch = this.setupForm.user.password === this.setupForm.user.passwordConfirm;
+    if (userForm.valid && this.passwordMatch) {
+      this.disableNext.emit(false);
+      if (event.key === 'Enter') {
+        this.submitUser.emit();
+
+      }
+
+    } else {
+      this.disableNext.emit(true);
+    }
+
   }
 
 

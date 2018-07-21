@@ -45,7 +45,8 @@
                     [disabled]="setupForm.user == null || setupForm.user.active == false"
                     [ngClass]="progress === setupProgress.MODE_CONFIG ? 'btn-outline-primary':'btn-outline-secondary'"
                     placement="top"
-                    ngbTooltip="Mode Configuration"><i class="fas fa-cog"></i></button>
+                    ngbTooltip="Mode Configuration" (click)="progress = setupProgress.MODE_CONFIG"><i
+              class="fas fa-cog"></i></button>
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
@@ -74,7 +75,8 @@
         </ul>
         <div class="py-3">
           <app-mode-setup [setupForm]="setupForm" *ngIf="progress === setupProgress.MODE_SELECT"></app-mode-setup>
-          <app-user-create [setupForm]="setupForm" *ngIf="progress === setupProgress.REGISTER_USER"></app-user-create>
+          <app-user-create [setupForm]="setupForm" (disableNext)="disableNext($event)" (submitUser)="submitUser()"
+                           *ngIf="progress === setupProgress.REGISTER_USER"></app-user-create>
           <app-dual-config [setupForm]="setupForm"
                            *ngIf="progress === setupProgress.MODE_CONFIG && setupForm.mode === modes.DUAL"></app-dual-config>
           <app-server-config [setupForm]="setupForm"
@@ -93,7 +95,8 @@
           <button [disabled]="progress === setupProgress.MODE_SELECT" class="btn btn-outline-primary float-left"
                   (click)="previous()"> Previous
           </button>
-          <button [disabled]="progress === setupProgress.FINISHED" class="btn btn-outline-primary float-right"
+
+          <button [disabled]="nextDisabled" class="btn btn-outline-primary float-right"
                   (click)="next()"> Next
           </button>
         </nav>
