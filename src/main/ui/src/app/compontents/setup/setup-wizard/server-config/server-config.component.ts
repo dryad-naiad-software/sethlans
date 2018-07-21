@@ -19,6 +19,8 @@
 
 import {Component, Input, OnInit} from '@angular/core';
 import {SetupForm} from '../../../../models/setupForm.model';
+import {HttpClient} from '@angular/common/http';
+import {Server} from '../../../../models/server.model';
 
 @Component({
   selector: 'app-server-config',
@@ -27,11 +29,24 @@ import {SetupForm} from '../../../../models/setupForm.model';
 })
 export class ServerConfigComponent implements OnInit {
   @Input() setupForm: SetupForm;
+  availableBlenderVersions: string[];
 
-  constructor() {
+
+  constructor(private http: HttpClient) {
   }
 
   ngOnInit() {
+    if (this.setupForm.server == null) {
+      this.setupForm.server = new Server();
+    }
+    this.http.get('/api/info/blender_versions')
+      .subscribe(
+        (blenderVersions) => {
+          this.availableBlenderVersions = blenderVersions['blenderVersions'];
+          if (this.setupForm.server.blenderVersion == '') {
+            this.setupForm.server.blenderVersion = this.availableBlenderVersions[0];
+          }
+        });
   }
 
 }

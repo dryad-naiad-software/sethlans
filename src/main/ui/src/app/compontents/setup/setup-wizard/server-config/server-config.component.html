@@ -16,7 +16,15 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
-
-<p>
-  server-config works!
-</p>
+<form #serverForm="ngForm" class="editForm">
+  <div class="form-group" ngbTooltip="Blender version that Sethlans will use for rendering tasks." placement="left">
+    <label for="blenderVersion">Select Default Blender Version</label>
+    <select class="form-control form-control-sm"
+            id="blenderVersion"
+            name="blenderVersion"
+            #blenderVersion="ngModel"
+            [(ngModel)]="setupForm.server.blenderVersion">
+      <option *ngFor="let version of availableBlenderVersions" [ngValue]="version">{{version}}</option>
+    </select>
+  </div>
+</form>

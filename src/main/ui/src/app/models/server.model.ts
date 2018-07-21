@@ -18,4 +18,10 @@
  */
 
 export class Server {
+  blenderVersion: string;
+
+
+  constructor() {
+    this.blenderVersion = '';
+  }
 }
