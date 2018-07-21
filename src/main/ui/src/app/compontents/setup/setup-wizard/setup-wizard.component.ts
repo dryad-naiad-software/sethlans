@@ -60,7 +60,10 @@ export class SetupWizardComponent implements OnInit {
       case SetupProgress.REGISTER_USER: {
         this.progress = SetupProgress.MODE_CONFIG;
         this.setupForm.user.active = true;
-
+        break;
+      }
+      case SetupProgress.MODE_CONFIG: {
+        this.progress = SetupProgress.SETTINGS;
         break;
       }
     }
@@ -75,6 +78,10 @@ export class SetupWizardComponent implements OnInit {
       }
       case SetupProgress.MODE_CONFIG: {
         this.progress = SetupProgress.REGISTER_USER;
+        break;
+      }
+      case SetupProgress.SETTINGS: {
+        this.progress = SetupProgress.MODE_CONFIG;
         break;
       }
     }

@@ -31,9 +31,11 @@ export class SetupForm {
   port: number;
   rootDirectory: string;
   complete: boolean;
+  logLevel: string;
 
   constructor() {
     this.mode = Mode.SERVER;
     this.complete = false;
+    this.logLevel = 'INFO';
   }
 }

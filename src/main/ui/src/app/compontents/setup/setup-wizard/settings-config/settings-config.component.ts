@@ -17,8 +17,9 @@
  *
  */
 
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {SetupForm} from '../../../../models/setupForm.model';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-settings-config',
@@ -27,11 +28,36 @@ import {SetupForm} from '../../../../models/setupForm.model';
 })
 export class SettingsConfigComponent implements OnInit {
   @Input() setupForm: SetupForm;
+  hideAdvanced: boolean = true;
+  @Output() disableNext = new EventEmitter();
 
-  constructor() {
+  constructor(private http: HttpClient) {
   }
 
   ngOnInit() {
+    if (this.setupForm.rootDirectory == null) {
+      this.http.get('/api/info/root_directory',)
+        .subscribe((rootDirectory) => {
+          this.setupForm.rootDirectory = rootDirectory['root_dir'];
+        });
+    }
+    if (this.setupForm.ipAddress == null) {
+      this.http.get('/api/info/sethlans_ip')
+        .subscribe((sethlansIP) => {
+          this.setupForm.ipAddress = sethlansIP['ip'];
+        });
+    }
+    if (this.setupForm.port == null) {
+      this.http.get('/api/info/sethlans_port')
+        .subscribe((sethlansPort) => {
+          this.setupForm.port = sethlansPort['port'];
+        });
+    }
+
+  }
+
+  validateAndSubmit(event, settingsForm) {
+
   }
 
 }

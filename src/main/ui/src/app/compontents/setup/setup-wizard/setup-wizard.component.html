@@ -50,10 +50,10 @@
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
-                    [disabled]="setupForm.ipAddress == null && setupForm.port == null && setupForm.rootDirectory == null"
+                    [disabled]="setupForm.server == null"
                     [ngClass]="progress === setupProgress.SETTINGS ? 'btn-outline-primary':'btn-outline-secondary'"
                     placement="top"
-                    ngbTooltip="Settings"><i
+                    ngbTooltip="Settings" (click)="progress = setupProgress.SETTINGS"><i
               class="fas fa-sliders-h"></i></button>
           </li>
           <li>
@@ -83,7 +83,7 @@
                              *ngIf="progress === setupProgress.MODE_CONFIG && setupForm.mode === modes.SERVER"></app-server-config>
           <app-node-config [setupForm]="setupForm"
                            *ngIf="progress === setupProgress.MODE_CONFIG && setupForm.mode === modes.NODE"></app-node-config>
-          <app-settings-config [setupForm]="setupForm"
+          <app-settings-config [setupForm]="setupForm" (disableNext)="disableNext($event)"
                                *ngIf="progress === setupProgress.SETTINGS"></app-settings-config>
           <app-setup-summary [setupForm]="setupForm" *ngIf="progress === setupProgress.SUMMARY"></app-setup-summary>
           <app-setup-finished [setupForm]="setupForm" *ngIf="progress === setupProgress.FINISHED"></app-setup-finished>
