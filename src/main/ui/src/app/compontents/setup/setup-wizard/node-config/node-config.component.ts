@@ -92,4 +92,27 @@ export class NodeConfigComponent implements OnInit {
     }
   }
 
+  selected(event, string) {
+    let checked = event.currentTarget.checked;
+    if (checked) {
+      let currentNode = this.setupForm.node;
+      this.availableGPUs.forEach(function (value) {
+        if (value.deviceID == string) {
+          currentNode.selectedGPUDeviceIDs.push(value.deviceID);
+        }
+      });
+      this.setupForm.node.gpuEmpty = false;
+    } else if (!checked) {
+      let selectedGPUDeviceIDs = this.setupForm.node.selectedGPUDeviceIDs;
+      for (let i = 0; i < selectedGPUDeviceIDs.length; i++) {
+        if (selectedGPUDeviceIDs[i] == string) {
+          this.setupForm.node.selectedGPUDeviceIDs.splice(i, 1);
+        }
+      }
+    }
+    if (this.setupForm.node.selectedGPUDeviceIDs.length === 0) {
+      this.setupForm.node.gpuEmpty = true;
+    }
+  }
+
 }
