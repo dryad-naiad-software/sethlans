@@ -80,7 +80,7 @@
     <td>Selected GPUs</td>
     <td>
       <ul class="list-unstyled">
-        <li *ngFor="let deviceID of setupForm.node.selectedGPUDeviceIDs">MODEL</li>
+        <li *ngFor="let modelName of selectedGPUNames">{{modelName}}</li>
       </ul>
     </td>
   </tr>

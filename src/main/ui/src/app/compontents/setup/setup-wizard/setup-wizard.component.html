@@ -77,11 +77,11 @@
           <app-mode-setup [setupForm]="setupForm" *ngIf="progress === setupProgress.MODE_SELECT"></app-mode-setup>
           <app-user-create [setupForm]="setupForm" (disableNext)="disableNext($event)" (submitUser)="submitUser()"
                            *ngIf="progress === setupProgress.REGISTER_USER"></app-user-create>
-          <app-dual-config [setupForm]="setupForm"
+          <app-dual-config [setupForm]="setupForm" (disableNext)="disableNext($event)"
                            *ngIf="progress === setupProgress.MODE_CONFIG && setupForm.mode === modes.DUAL"></app-dual-config>
           <app-server-config [setupForm]="setupForm"
                              *ngIf="progress === setupProgress.MODE_CONFIG && setupForm.mode === modes.SERVER"></app-server-config>
-          <app-node-config [setupForm]="setupForm"
+          <app-node-config [setupForm]="setupForm" (disableNext)="disableNext($event)"
                            *ngIf="progress === setupProgress.MODE_CONFIG && setupForm.mode === modes.NODE"></app-node-config>
           <app-settings-config [setupForm]="setupForm" (disableNext)="disableNext($event)"
                                *ngIf="progress === setupProgress.SETTINGS"></app-settings-config>

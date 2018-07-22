@@ -32,6 +32,7 @@ export class SetupSummaryComponent implements OnInit {
   @Input() setupForm: SetupForm;
   mode: any = Mode;
   availableGPUs: GPU[];
+  selectedGPUNames: string[];
 
 
   constructor(private http: HttpClient) {
@@ -39,10 +40,22 @@ export class SetupSummaryComponent implements OnInit {
 
   ngOnInit() {
     if (this.setupForm.node != null && !this.setupForm.node.gpuEmpty) {
+      this.selectedGPUNames = [];
       this.http.get('/api/info/available_gpus')
         .subscribe((gpus: any[]) => {
           this.availableGPUs = gpus;
+          let gpuList = this.availableGPUs;
+          let gpuNames = this.selectedGPUNames;
+          this.setupForm.node.selectedGPUDeviceIDs.forEach(function (deviceID) {
+            let id;
+            for (id in gpuList) {
+              if (deviceID === gpuList[id].deviceID) {
+                gpuNames.push(gpuList[id].model);
+              }
+            }
+          });
         });
+
     }
   }
 

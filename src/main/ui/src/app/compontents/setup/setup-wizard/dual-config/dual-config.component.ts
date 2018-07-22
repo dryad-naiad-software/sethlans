@@ -17,7 +17,7 @@
  *
  */
 
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {SetupForm} from '../../../../models/setupForm.model';
 
 @Component({
@@ -27,6 +27,8 @@ import {SetupForm} from '../../../../models/setupForm.model';
 })
 export class DualConfigComponent implements OnInit {
   @Input() setupForm: SetupForm;
+  @Output() disableNext = new EventEmitter();
+
 
   constructor() {
   }

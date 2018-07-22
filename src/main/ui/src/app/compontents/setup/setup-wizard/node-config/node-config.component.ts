@@ -17,7 +17,7 @@
  *
  */
 
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {SetupForm} from '../../../../models/setupForm.model';
 import {ComputeMethod} from '../../../../enums/compute.method.enum';
 import {GPU} from '../../../../models/gpu.model';
@@ -36,6 +36,8 @@ export class NodeConfigComponent implements OnInit {
   availableComputeMethods: ComputeMethod[];
   availableGPUs: GPU[];
   method: any = ComputeMethod;
+  @Output() disableNext = new EventEmitter();
+
 
 
   constructor(private http: HttpClient) {
@@ -76,6 +78,9 @@ export class NodeConfigComponent implements OnInit {
     if (this.setupForm.node.computeMethod !== ComputeMethod.CPU) {
       this.setupForm.node.cores = this.totalCores;
       this.setupForm.node.gpuEmpty = this.setupForm.node.selectedGPUDeviceIDs.length == 0;
+      if (this.setupForm.node.gpuEmpty) {
+        this.disableNext.emit(true);
+      }
     }
     if (this.setupForm.node.computeMethod === ComputeMethod.CPU) {
       // gpuEmpty is used to control the toggling of the Save button. False means that the node settings can be saved.
@@ -84,6 +89,8 @@ export class NodeConfigComponent implements OnInit {
       this.setupForm.node.selectedGPUDeviceIDs = [];
       this.setupForm.node.combined = true;
       this.setupForm.node.gpuEmpty = false;
+      this.disableNext.emit(false);
+
 
     }
     if (this.setupForm.node.computeMethod === ComputeMethod.GPU) {
@@ -101,6 +108,8 @@ export class NodeConfigComponent implements OnInit {
         }
       });
       this.setupForm.node.gpuEmpty = false;
+      this.disableNext.emit(false);
+
     } else if (!checked) {
       let selectedGPUDeviceIDs = this.setupForm.node.selectedGPUDeviceIDs;
       for (let i = 0; i < selectedGPUDeviceIDs.length; i++) {
@@ -111,6 +120,7 @@ export class NodeConfigComponent implements OnInit {
     }
     if (this.setupForm.node.selectedGPUDeviceIDs.length === 0) {
       this.setupForm.node.gpuEmpty = true;
+      this.disableNext.emit(true);
     }
   }
 
