@@ -32,10 +32,12 @@ export class SetupForm {
   rootDirectory: string;
   complete: boolean;
   logLevel: string;
+  isModeDone: boolean;
 
   constructor() {
     this.mode = Mode.SERVER;
     this.complete = false;
     this.logLevel = 'INFO';
+    this.isModeDone = false;
   }
 }

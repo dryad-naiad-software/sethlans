@@ -50,7 +50,7 @@
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
-                    [disabled]="setupForm.server == null"
+                    [disabled]="!setupForm.isModeDone"
                     [ngClass]="progress === setupProgress.SETTINGS ? 'btn-outline-primary':'btn-outline-secondary'"
                     placement="top"
                     ngbTooltip="Settings" (click)="progress = setupProgress.SETTINGS"><i

@@ -63,6 +63,7 @@ export class SetupWizardComponent implements OnInit {
         break;
       }
       case SetupProgress.MODE_CONFIG: {
+        this.setupForm.isModeDone = true;
         this.progress = SetupProgress.SETTINGS;
         break;
       }

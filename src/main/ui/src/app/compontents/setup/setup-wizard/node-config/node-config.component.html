@@ -39,7 +39,7 @@
         id="cores"
         min="1"
         step="1"
-        thumb-label="true"
+        thumbLabel
         [max]="totalCores"
         #cores="ngModel"
         name="cores"
@@ -65,6 +65,7 @@
                class="form-control-sm"
                name="{{gpu.deviceID}}"
                value="{{gpu.deviceID}}"
+               [checked]="setupForm.node.selectedGPUDeviceIDs.includes(gpu.deviceID)"
                #gpuSelection
                required
                (change)="selected($event, gpu.deviceID)"/>
