@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,7 +19,6 @@
 
 package com.dryadandnaiad.sethlans.forms.setup.subclasses;
 
-import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import lombok.Data;
 
@@ -38,6 +37,6 @@ public class SetupNode {
     private Integer tileSizeGPU;
     private Integer tileSizeCPU;
     private boolean gpuEmpty;
-    private List<GPUDevice> selectedGPUs;
+    private List<String> selectedGPUDeviceIDs;
     private boolean combined;
 }

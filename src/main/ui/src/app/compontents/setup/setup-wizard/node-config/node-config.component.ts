@@ -19,6 +19,11 @@
 
 import {Component, Input, OnInit} from '@angular/core';
 import {SetupForm} from '../../../../models/setupForm.model';
+import {ComputeMethod} from '../../../../enums/compute.method.enum';
+import {GPU} from '../../../../models/gpu.model';
+import {HttpClient} from '@angular/common/http';
+import {Node} from '../../../../models/node.model';
+
 
 @Component({
   selector: 'app-node-config',
@@ -27,11 +32,64 @@ import {SetupForm} from '../../../../models/setupForm.model';
 })
 export class NodeConfigComponent implements OnInit {
   @Input() setupForm: SetupForm;
+  totalCores: number;
+  availableComputeMethods: ComputeMethod[];
+  availableGPUs: GPU[];
 
-  constructor() {
+
+  constructor(private http: HttpClient) {
   }
 
   ngOnInit() {
+    if (this.setupForm.node == null) {
+      this.setupForm.node = new Node();
+      this.setupForm.node.computeMethod = ComputeMethod.CPU;
+    }
+    this.http.get('/api/info/total_cores', {responseType: 'text'})
+      .subscribe((cores: any) => {
+        this.totalCores = cores;
+        if (this.setupForm.node.cores == null) {
+          this.setupForm.node.cores = cores;
+        }
+      });
+
+    this.http.get('/api/info/available_methods')
+      .subscribe(
+        (computeMethods: any[]) => {
+          this.availableComputeMethods = computeMethods;
+          if (this.availableComputeMethods.length > 1) {
+            this.setupForm.node.gpuEmpty = true;
+            this.setupForm.node.selectedGPUDeviceIDs = [];
+            this.http.get('/api/info/available_gpus')
+              .subscribe((gpus: any[]) => {
+                this.availableGPUs = gpus;
+              });
+          }
+        });
+
+  }
+
+  methodSelection() {
+    if (this.setupForm.node.computeMethod !== ComputeMethod.CPU) {
+      this.setupForm.node.cores = this.totalCores;
+      if (this.setupForm.node.selectedGPUDeviceIDs.length == 0) {
+        this.setupForm.node.gpuEmpty = true;
+      } else {
+        this.setupForm.node.gpuEmpty = false;
+      }
+    }
+    if (this.setupForm.node.computeMethod === ComputeMethod.CPU) {
+      // gpuEmpty is used to control the toggling of the Save button. False means that the node settings can be saved.
+      // CPU mode this is always set to false.
+      this.setupForm.node.cores = this.totalCores;
+      this.setupForm.node.selectedGPUDeviceIDs = [];
+      this.setupForm.node.combined = true;
+      this.setupForm.node.gpuEmpty = false;
+
+    }
+    if (this.setupForm.node.computeMethod === ComputeMethod.GPU) {
+      this.setupForm.node.cores = null;
+    }
   }
 
 }

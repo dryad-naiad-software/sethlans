@@ -23,7 +23,6 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderTask;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
-import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.domains.info.NodeInfo;
 import com.dryadandnaiad.sethlans.domains.info.SethlansSettings;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
@@ -86,13 +85,13 @@ public class SethlansUtils {
     }
 
     public static String getGPUDeviceString(SetupNode setupNode) {
-        if (!setupNode.getSelectedGPUs().isEmpty()) {
+        if (!setupNode.getSelectedGPUDeviceIDs().isEmpty()) {
             StringBuilder result = new StringBuilder();
-            for (GPUDevice gpuDevice : setupNode.getSelectedGPUs()) {
+            for (String deviceID : setupNode.getSelectedGPUDeviceIDs()) {
                 if (result.length() != 0) {
                     result.append(",");
                 }
-                result.append(gpuDevice.getDeviceID());
+                result.append(deviceID);
             }
             return result.toString();
         }

@@ -52,6 +52,10 @@
     <td>Sethlans Home Directory</td>
     <td>{{setupForm.rootDirectory}}</td>
   </tr>
+  <tr>
+    <td>Logging Level</td>
+    <td>{{setupForm.logLevel}}</td>
+  </tr>
   <tr *ngIf="setupForm.mode === mode.SERVER || setupForm.mode === mode.DUAL">
     <td>Default Blender Version</td>
     <td>{{setupForm.server.blenderVersion}}</td>

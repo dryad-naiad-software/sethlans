@@ -22,7 +22,15 @@ import {NgModule} from '@angular/core';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {HttpClientModule} from '@angular/common/http';
 import {FormsModule} from '@angular/forms';
-
+import {
+  MatCheckboxModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatPaginatorModule,
+  MatSliderModule,
+  MatSortModule,
+  MatTableModule
+} from '@angular/material';
 
 import {AppComponent} from './app.component';
 import {NavBarComponent} from './compontents/layouts/nav-bar/nav-bar.component';
@@ -39,6 +47,7 @@ import {SetupSummaryComponent} from './compontents/setup/setup-wizard/setup-summ
 import {SetupFinishedComponent} from './compontents/setup/setup-wizard/setup-finished/setup-finished.component';
 import {KeysPipe} from './pipes/keys.pipe';
 import {FieldmatchesvalidatorDirective} from './directives/fieldmatchesvalidator.directive';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -60,6 +69,14 @@ import {FieldmatchesvalidatorDirective} from './directives/fieldmatchesvalidator
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
+    MatSliderModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatFormFieldModule,
+    MatCheckboxModule,
+    MatInputModule,
+    MatSortModule,
     HttpClientModule,
     FormsModule,
     NgbModule.forRoot()
