@@ -20,7 +20,7 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {FormsModule} from '@angular/forms';
 import {
   MatCheckboxModule,
@@ -33,22 +33,27 @@ import {
 } from '@angular/material';
 
 import {AppComponent} from './app.component';
-import {NavBarComponent} from './compontents/layouts/nav-bar/nav-bar.component';
-import {FooterComponent} from './compontents/layouts/footer/footer.component';
-import {SetupWizardComponent} from './compontents/setup/setup-wizard/setup-wizard.component';
-import {GetStartedComponent} from './compontents/setup/get-started/get-started.component';
-import {ModeSetupComponent} from './compontents/setup/setup-wizard/mode-setup/mode-setup.component';
-import {DualConfigComponent} from './compontents/setup/setup-wizard/dual-config/dual-config.component';
-import {NodeConfigComponent} from './compontents/setup/setup-wizard/node-config/node-config.component';
-import {ServerConfigComponent} from './compontents/setup/setup-wizard/server-config/server-config.component';
-import {UserCreateComponent} from './compontents/setup/setup-wizard/user-create/user-create.component';
-import {SettingsConfigComponent} from './compontents/setup/setup-wizard/settings-config/settings-config.component';
-import {SetupSummaryComponent} from './compontents/setup/setup-wizard/setup-summary/setup-summary.component';
-import {SetupFinishedComponent} from './compontents/setup/setup-wizard/setup-finished/setup-finished.component';
+import {NavBarComponent} from './components/layouts/nav-bar/nav-bar.component';
+import {FooterComponent} from './components/layouts/footer/footer.component';
+import {SetupWizardComponent} from './components/setup/setup-wizard/setup-wizard.component';
+import {GetStartedComponent} from './components/setup/get-started/get-started.component';
+import {ModeSetupComponent} from './components/setup/setup-wizard/mode-setup/mode-setup.component';
+import {DualConfigComponent} from './components/setup/setup-wizard/dual-config/dual-config.component';
+import {NodeConfigComponent} from './components/setup/setup-wizard/node-config/node-config.component';
+import {ServerConfigComponent} from './components/setup/setup-wizard/server-config/server-config.component';
+import {UserCreateComponent} from './components/setup/setup-wizard/user-create/user-create.component';
+import {SettingsConfigComponent} from './components/setup/setup-wizard/settings-config/settings-config.component';
+import {SetupSummaryComponent} from './components/setup/setup-wizard/setup-summary/setup-summary.component';
+import {SetupFinishedComponent} from './components/setup/setup-wizard/setup-finished/setup-finished.component';
 import {KeysPipe} from './pipes/keys.pipe';
 import {FieldmatchesvalidatorDirective} from './directives/fieldmatchesvalidator.directive';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {WindowRef} from './services/windowref.service';
+import {AuthService} from './services/auth.service';
+import {XhrInterceptor} from './services/xhrinterceptor';
+import {HomeComponent} from './components/home/home.component';
+import {LoginComponent} from './components/login/login.component';
+import {AppRoutingModule} from './/app-routing.module';
 
 @NgModule({
   declarations: [
@@ -66,7 +71,9 @@ import {WindowRef} from './services/windowref.service';
     SetupSummaryComponent,
     SetupFinishedComponent,
     KeysPipe,
-    FieldmatchesvalidatorDirective
+    FieldmatchesvalidatorDirective,
+    HomeComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -80,9 +87,14 @@ import {WindowRef} from './services/windowref.service';
     MatSortModule,
     HttpClientModule,
     FormsModule,
-    NgbModule.forRoot()
+    NgbModule.forRoot(),
+    AppRoutingModule
   ],
-  providers: [WindowRef],
+  providers: [WindowRef, AuthService, {
+    provide: HTTP_INTERCEPTORS,
+    useClass: XhrInterceptor,
+    multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule {
