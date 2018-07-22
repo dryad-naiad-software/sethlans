@@ -48,6 +48,7 @@ import {SetupFinishedComponent} from './compontents/setup/setup-wizard/setup-fin
 import {KeysPipe} from './pipes/keys.pipe';
 import {FieldmatchesvalidatorDirective} from './directives/fieldmatchesvalidator.directive';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {WindowRef} from './services/windowref.service';
 
 @NgModule({
   declarations: [
@@ -81,7 +82,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     FormsModule,
     NgbModule.forRoot()
   ],
-  providers: [],
+  providers: [WindowRef],
   bootstrap: [AppComponent]
 })
 export class AppModule {

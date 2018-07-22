@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -54,7 +54,8 @@ public enum SethlansConfigKeys {
     ROOT_DIR("sethlans.rootDir"),
     SESSION_TIMEOUT("server.session.timeout"),
     LOG_LEVEL("logging.level.com.dryadandnaiad.sethlans"),
-    DATABASE_LOC("spring.datasource.url");
+    DATABASE_LOC("spring.datasource.url"),
+    GETTING_STARTED("sethlans.getStartedWiz");
 
 
 

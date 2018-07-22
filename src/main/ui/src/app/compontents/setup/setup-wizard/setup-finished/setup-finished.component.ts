@@ -17,8 +17,12 @@
  *
  */
 
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Inject, Input, OnInit} from '@angular/core';
 import {SetupForm} from '../../../../models/setupForm.model';
+import {HttpClient} from '@angular/common/http';
+import {WindowRef} from '../../../../services/windowref.service';
+import {DOCUMENT} from '@angular/common';
+
 
 @Component({
   selector: 'app-setup-finished',
@@ -27,11 +31,18 @@ import {SetupForm} from '../../../../models/setupForm.model';
 })
 export class SetupFinishedComponent implements OnInit {
   @Input() setupForm: SetupForm;
+  sethlansURL: string;
 
-  constructor() {
+
+  constructor(private http: HttpClient, private winRef: WindowRef, @Inject(DOCUMENT) private document: any) {
   }
 
   ngOnInit() {
+    this.sethlansURL = 'https://' + this.winRef.nativeWindow.location.hostname + ':' + this.setupForm.port.toString() + '/';
+    setTimeout(() => {
+        this.document.location.href = this.sethlansURL;
+      }
+      , 30000);
   }
 
 }

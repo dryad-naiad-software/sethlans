@@ -21,6 +21,7 @@ import {Component, OnInit} from '@angular/core';
 import {SetupProgress} from '../../../enums/setupProgress.enum';
 import {SetupForm} from '../../../models/setupForm.model';
 import {Mode} from '../../../enums/mode.enum';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 @Component({
   selector: 'app-setup-wizard',
@@ -35,8 +36,9 @@ export class SetupWizardComponent implements OnInit {
   nextDisabled: any;
   modeSelected: boolean;
   settingsComplete: boolean;
+  finishedActive: boolean;
 
-  constructor() {
+  constructor(private http: HttpClient) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
   }
 
@@ -45,6 +47,7 @@ export class SetupWizardComponent implements OnInit {
     this.setupForm = new SetupForm();
     this.modeSelected = false;
     this.settingsComplete = false;
+    this.finishedActive = false;
   }
 
   disableNext(value: boolean) {
@@ -100,6 +103,21 @@ export class SetupWizardComponent implements OnInit {
         break;
       }
     }
+  }
+
+  finish() {
+    this.setupForm.complete = true;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    this.http.post('/api/setup/submit', JSON.stringify(this.setupForm), httpOptions).subscribe((submitted: boolean) => {
+      if (submitted === true) {
+        this.progress = SetupProgress.FINISHED;
+        this.finishedActive = true;
+      }
+    });
   }
 
 }

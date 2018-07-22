@@ -134,6 +134,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
             writeProperty(SethlansConfigKeys.PROJECT_DIR, projectDirectory);
             writeProperty(SethlansConfigKeys.BLENDER_DIR, blenderDirectory);
             writeProperty(SethlansConfigKeys.BENCHMARK_DIR, benchmarkDirectory);
+            writeProperty(SethlansConfigKeys.GETTING_STARTED, "true");
             writeProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION, setupForm.getServer().getBlenderVersion());
             fFmpegSetupService.installFFmpeg(binDirectory);
             LOG.debug("Server Settings Saved");
