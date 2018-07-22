@@ -66,6 +66,10 @@ export class SetupWizardComponent implements OnInit {
         this.progress = SetupProgress.SETTINGS;
         break;
       }
+      case SetupProgress.SETTINGS: {
+        this.progress = SetupProgress.SUMMARY;
+        break;
+      }
     }
   }
 
@@ -82,6 +86,10 @@ export class SetupWizardComponent implements OnInit {
       }
       case SetupProgress.SETTINGS: {
         this.progress = SetupProgress.MODE_CONFIG;
+        break;
+      }
+      case SetupProgress.SUMMARY: {
+        this.progress = SetupProgress.SETTINGS;
         break;
       }
     }

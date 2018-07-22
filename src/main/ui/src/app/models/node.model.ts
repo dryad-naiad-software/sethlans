@@ -17,6 +17,23 @@
  *
  */
 
-export class Node {
+import {ComputeMethod} from '../enums/compute.method.enum';
 
+export class Node {
+  computeMethod: ComputeMethod;
+  cores: number;
+  selectedGPUDeviceIDs: string[];
+  gpuEmpty: boolean;
+  combined: boolean;
+  tileSizeCPU: number;
+  tileSizeGPU: number;
+
+
+  constructor() {
+    this.selectedGPUDeviceIDs = [];
+    this.tileSizeCPU = 32;
+    this.tileSizeGPU = 256;
+    this.gpuEmpty = false;
+    this.combined = false;
+  }
 }

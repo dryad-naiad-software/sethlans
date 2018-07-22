@@ -61,7 +61,7 @@
                     [disabled]="setupForm.ipAddress == null && setupForm.port == null && setupForm.rootDirectory == null"
                     [ngClass]="progress === setupProgress.SUMMARY ? 'btn-outline-primary':'btn-outline-secondary'"
                     placement="top"
-                    ngbTooltip="Summary"><i
+                    ngbTooltip="Summary" (click)="progress = setupProgress.SUMMARY"><i
               class="far fa-list-alt"></i></button>
           </li>
           <li>
@@ -96,8 +96,11 @@
                   (click)="previous()"> Previous
           </button>
 
-          <button [disabled]="nextDisabled" class="btn btn-outline-primary float-right"
+          <button *ngIf="progress !== setupProgress.SUMMARY && progress !== setupProgress.FINISHED  "
+                  [disabled]="nextDisabled" class="btn btn-outline-primary float-right"
                   (click)="next()"> Next
+          </button>
+          <button *ngIf="progress === setupProgress.SUMMARY" class="btn btn-outline-primary float-right"> Finish
           </button>
         </nav>
       </div>

@@ -57,6 +57,11 @@ export class SettingsConfigComponent implements OnInit {
   }
 
   validateAndSubmit(event, settingsForm) {
+    if (settingsForm.valid) {
+      this.disableNext.emit(false);
+    } else {
+      this.disableNext.emit(true);
+    }
 
   }
 

@@ -19,6 +19,7 @@
 
 import {Component, Input, OnInit} from '@angular/core';
 import {SetupForm} from '../../../../models/setupForm.model';
+import {Mode} from '../../../../enums/mode.enum';
 
 @Component({
   selector: 'app-setup-summary',
@@ -27,6 +28,7 @@ import {SetupForm} from '../../../../models/setupForm.model';
 })
 export class SetupSummaryComponent implements OnInit {
   @Input() setupForm: SetupForm;
+  mode: any = Mode;
 
   constructor() {
   }

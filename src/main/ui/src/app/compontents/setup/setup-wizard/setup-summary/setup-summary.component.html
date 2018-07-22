@@ -16,7 +16,86 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
+<div *ngIf="setupForm.complete" class="alert alert-success">
+  <h5 class="text-center">Processing Setup &nbsp; &nbsp;<span
+    class="fa fa-circle-o-notch fa-spin"></span></h5>
+</div>
+<table class="table table-sm">
+  <thead>
+  <tr>
+    <th>Setting</th>
+    <th>Value</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td>Mode</td>
+    <td>{{setupForm.mode}}</td>
+  </tr>
+  <tr>
+    <td>Administrative User</td>
+    <td>{{setupForm.user.username}}</td>
+  </tr>
+  <tr>
+    <td>Administrative User Email</td>
+    <td>{{setupForm.user.email}}</td>
+  </tr>
+  <tr>
+    <td>IP Address</td>
+    <td>{{setupForm.ipAddress}}</td>
+  </tr>
+  <tr>
+    <td>HTTP Port</td>
+    <td>{{setupForm.port}}</td>
+  </tr>
+  <tr>
+    <td>Sethlans Home Directory</td>
+    <td>{{setupForm.rootDirectory}}</td>
+  </tr>
+  <tr *ngIf="setupForm.mode === mode.SERVER || setupForm.mode === mode.DUAL">
+    <td>Default Blender Version</td>
+    <td>{{setupForm.server.blenderVersion}}</td>
+  </tr>
+  <tr *ngIf="setupForm.mode === mode.NODE || setupForm.mode === mode.DUAL">
+    <td>Compute Method</td>
+    <td *ngIf="setupForm.node.computeMethod.toString() != 'CPU_GPU'">{{setupForm.node.computeMethod}}</td>
+    <td *ngIf="setupForm.node.computeMethod.toString() == 'CPU_GPU'">CPU & GPU</td>
+  </tr>
+  <tr
+    *ngIf="setupForm.mode === mode.NODE && setupForm.node.computeMethod.toString() !== 'GPU' || setupForm.mode === mode.DUAL && setupForm.node.computeMethod.toString() !== 'GPU' ">
+    <td>Rendering Cores</td>
+    <td>{{setupForm.node.cores}}</td>
+  </tr>
+  <tr
+    *ngIf="setupForm.mode === mode.NODE && setupForm.node.computeMethod.toString() !== 'GPU' || setupForm.mode === mode.DUAL && setupForm.node.computeMethod.toString() !== 'GPU' ">
+    <td>CPU Render Tile Size:</td>
+    <td>{{setupForm.node.tileSizeCPU}}</td>
+  </tr>
+  <tr
+    *ngIf="setupForm.mode === mode.NODE && setupForm.node.computeMethod.toString() !== 'CPU' || setupForm.mode === mode.DUAL && setupForm.node.computeMethod.toString() !== 'CPU' ">
+    <td>Selected GPUs</td>
+    <td>
+      <ul class="list-unstyled">
+        <li *ngFor="let deviceID of setupForm.node.selectedGPUDeviceIDs">MODEL</li>
+      </ul>
+    </td>
+  </tr>
+  <tr
+    *ngIf="setupForm.mode === mode.NODE
+    && setupForm.node.computeMethod.toString() !== 'CPU'
+    && setupForm.node.selectedGPUDeviceIDs.length > 1
+    || setupForm.mode === mode.DUAL
+    && setupForm.node.computeMethod.toString() !== 'CPU'
+    && setupForm.node.selectedGPUDeviceIDs.length > 1">
+    <td>Combined GPU Rendering:</td>
+    <td>{{setupForm.node.combined}}</td>
+  </tr>
+  <tr
+    *ngIf="setupForm.mode === mode.NODE && setupForm.node.computeMethod.toString() !== 'CPU' || setupForm.mode === mode.DUAL && setupForm.node.computeMethod.toString() !== 'CPU' ">
+    <td>GPU Render Tile Size:</td>
+    <td>{{setupForm.node.tileSizeGPU}}</td>
+  </tr>
 
-<p>
-  setup-summary works!
-</p>
+
+  </tbody>
+</table>
