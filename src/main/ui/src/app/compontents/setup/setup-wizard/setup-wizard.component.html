@@ -27,15 +27,15 @@
         <ul class="nav nav-tabs justify-content-between pb-3">
           <li>
             <button type="button" class="btn btn-circle btn-lg"
-                    [ngClass]="progress === setupProgress.MODE_SELECT ? 'btn-outline-primary':'btn-outline-secondary'"
+                    [ngClass]="progress === setupProgress.MODE_SELECT ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
                     ngbTooltip="Mode Selection" (click)="progress = setupProgress.MODE_SELECT">
               <i class="fas fa-archway"></i></button>
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
-                    [disabled]="setupForm.mode == null"
-                    [ngClass]="progress === setupProgress.REGISTER_USER ? 'btn-outline-primary':'btn-outline-secondary'"
+                    [disabled]="!modeSelected"
+                    [ngClass]="progress === setupProgress.REGISTER_USER ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
                     ngbTooltip="User Registration" (click)="progress = setupProgress.REGISTER_USER">
               <i class="fas fa-user"></i></button>
@@ -43,7 +43,7 @@
           <li>
             <button type="button" class="btn btn-circle btn-lg"
                     [disabled]="setupForm.user == null || setupForm.user.active == false"
-                    [ngClass]="progress === setupProgress.MODE_CONFIG ? 'btn-outline-primary':'btn-outline-secondary'"
+                    [ngClass]="progress === setupProgress.MODE_CONFIG ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
                     ngbTooltip="Mode Configuration" (click)="progress = setupProgress.MODE_CONFIG"><i
               class="fas fa-cog"></i></button>
@@ -51,15 +51,15 @@
           <li>
             <button type="button" class="btn btn-circle btn-lg"
                     [disabled]="!setupForm.isModeDone"
-                    [ngClass]="progress === setupProgress.SETTINGS ? 'btn-outline-primary':'btn-outline-secondary'"
+                    [ngClass]="progress === setupProgress.SETTINGS ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
                     ngbTooltip="Settings" (click)="progress = setupProgress.SETTINGS"><i
               class="fas fa-sliders-h"></i></button>
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
-                    [disabled]="setupForm.ipAddress == null && setupForm.port == null && setupForm.rootDirectory == null"
-                    [ngClass]="progress === setupProgress.SUMMARY ? 'btn-outline-primary':'btn-outline-secondary'"
+                    [disabled]="setupForm.ipAddress == null && setupForm.port == null && setupForm.rootDirectory == null && !settingsComplete"
+                    [ngClass]="progress === setupProgress.SUMMARY ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
                     ngbTooltip="Summary" (click)="progress = setupProgress.SUMMARY"><i
               class="far fa-list-alt"></i></button>
@@ -67,7 +67,7 @@
           <li>
             <button type="button" class="btn btn-circle btn-lg"
                     [disabled]="!setupForm.complete"
-                    [ngClass]="progress === setupProgress.FINISHED ? 'btn-outline-success':'btn-outline-secondary'"
+                    [ngClass]="progress === setupProgress.FINISHED ? 'btn-outline-success':'btn-outline-dark'"
                     placement="top"
                     ngbTooltip="Finished"><i
               class="fas fa-check"></i></button>

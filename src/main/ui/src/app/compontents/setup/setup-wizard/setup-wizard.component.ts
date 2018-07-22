@@ -33,6 +33,8 @@ export class SetupWizardComponent implements OnInit {
   modes: any = Mode;
   setupForm: SetupForm;
   nextDisabled: any;
+  modeSelected: boolean;
+  settingsComplete: boolean;
 
   constructor() {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
@@ -41,6 +43,8 @@ export class SetupWizardComponent implements OnInit {
   ngOnInit() {
     this.progress = SetupProgress.MODE_SELECT;
     this.setupForm = new SetupForm();
+    this.modeSelected = false;
+    this.settingsComplete = false;
   }
 
   disableNext(value: boolean) {
@@ -55,6 +59,7 @@ export class SetupWizardComponent implements OnInit {
     switch (this.progress) {
       case SetupProgress.MODE_SELECT: {
         this.progress = SetupProgress.REGISTER_USER;
+        this.modeSelected = true;
         break;
       }
       case SetupProgress.REGISTER_USER: {
@@ -69,6 +74,7 @@ export class SetupWizardComponent implements OnInit {
       }
       case SetupProgress.SETTINGS: {
         this.progress = SetupProgress.SUMMARY;
+        this.settingsComplete = true;
         break;
       }
     }
