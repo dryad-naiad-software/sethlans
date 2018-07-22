@@ -20,6 +20,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {SetupForm} from '../../../../models/setupForm.model';
 import {Mode} from '../../../../enums/mode.enum';
+import {GPU} from '../../../../models/gpu.model';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-setup-summary',
@@ -29,11 +31,19 @@ import {Mode} from '../../../../enums/mode.enum';
 export class SetupSummaryComponent implements OnInit {
   @Input() setupForm: SetupForm;
   mode: any = Mode;
+  availableGPUs: GPU[];
 
-  constructor() {
+
+  constructor(private http: HttpClient) {
   }
 
   ngOnInit() {
+    if (this.setupForm.node != null && !this.setupForm.node.gpuEmpty) {
+      this.http.get('/api/info/available_gpus')
+        .subscribe((gpus: any[]) => {
+          this.availableGPUs = gpus;
+        });
+    }
   }
 
 }

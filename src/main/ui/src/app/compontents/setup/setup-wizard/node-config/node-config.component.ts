@@ -35,6 +35,7 @@ export class NodeConfigComponent implements OnInit {
   totalCores: number;
   availableComputeMethods: ComputeMethod[];
   availableGPUs: GPU[];
+  method: any = ComputeMethod;
 
 
   constructor(private http: HttpClient) {
@@ -58,12 +59,14 @@ export class NodeConfigComponent implements OnInit {
         (computeMethods: any[]) => {
           this.availableComputeMethods = computeMethods;
           if (this.availableComputeMethods.length > 1) {
-            this.setupForm.node.gpuEmpty = true;
-            this.setupForm.node.selectedGPUDeviceIDs = [];
             this.http.get('/api/info/available_gpus')
               .subscribe((gpus: any[]) => {
                 this.availableGPUs = gpus;
               });
+            if (this.setupForm.node.selectedGPUDeviceIDs.length == 0) {
+              this.setupForm.node.gpuEmpty = true;
+              this.setupForm.node.selectedGPUDeviceIDs = [];
+            }
           }
         });
 
@@ -72,11 +75,7 @@ export class NodeConfigComponent implements OnInit {
   methodSelection() {
     if (this.setupForm.node.computeMethod !== ComputeMethod.CPU) {
       this.setupForm.node.cores = this.totalCores;
-      if (this.setupForm.node.selectedGPUDeviceIDs.length == 0) {
-        this.setupForm.node.gpuEmpty = true;
-      } else {
-        this.setupForm.node.gpuEmpty = false;
-      }
+      this.setupForm.node.gpuEmpty = this.setupForm.node.selectedGPUDeviceIDs.length == 0;
     }
     if (this.setupForm.node.computeMethod === ComputeMethod.CPU) {
       // gpuEmpty is used to control the toggling of the Save button. False means that the node settings can be saved.

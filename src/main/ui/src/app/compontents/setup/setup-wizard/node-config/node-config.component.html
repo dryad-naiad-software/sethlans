@@ -25,11 +25,11 @@
             #computeMethod="ngModel"
             (change)="methodSelection()"
             [(ngModel)]="setupForm.node.computeMethod">
-      <option *ngFor="let method of availableComputeMethods">{{method}}</option>
+      <option *ngFor="let method of availableComputeMethods" [ngValue]="method">{{method}}</option>
     </select>
 
   </div>
-  <div *ngIf="setupForm.node.computeMethod.toString() !== 'GPU' ">
+  <div *ngIf="setupForm.node.computeMethod !== method.GPU">
     <hr/>
     <h6>CPU Settings:</h6>
     <div class="form-group"
@@ -56,15 +56,15 @@
              [(ngModel)]="setupForm.node.tileSizeCPU">
     </div>
   </div>
-  <div *ngIf="setupForm.node.computeMethod.toString() !== 'CPU'">
+  <div *ngIf="setupForm.node.computeMethod !== method.CPU">
     <hr/>
     <h6>GPU Settings:</h6>
     <div class="form-group">
       <div *ngFor="let gpu of availableGPUs" ngbTooltip="GPU devices to be used for rendering." placement="left">
         <input type="checkbox"
                class="form-control-sm"
-               name="{{gpu.model}}"
-               value="{{gpu.model}}"
+               name="{{gpu.deviceID}}"
+               value="{{gpu.deviceID}}"
                #gpuSelection
                required
                (change)="selected($event, gpu.deviceID)"/>

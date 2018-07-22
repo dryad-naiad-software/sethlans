@@ -18,7 +18,7 @@
  */
 
 export enum ComputeMethod {
-  CPU,
-  GPU,
-  CPU_GPU
+  CPU = 'CPU',
+  GPU = 'GPU',
+  CPU_GPU = 'CPU_GPU'
 }
