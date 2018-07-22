@@ -36,4 +36,7 @@ export class DualConfigComponent implements OnInit {
   ngOnInit() {
   }
 
+  passDisable(value: boolean) {
+    this.disableNext.emit(value);
+  }
 }

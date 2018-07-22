@@ -16,7 +16,5 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
-
-<p>
-  dual-config works!
-</p>
+<app-server-config [setupForm]="setupForm"></app-server-config>
+<app-node-config [setupForm]="setupForm" (disableNext)="passDisable($event)"></app-node-config>
