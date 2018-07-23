@@ -23,6 +23,7 @@ import {Mode} from '../../../enums/mode.enum';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {UserInfo} from '../../../models/userinfo.model';
 import {Role} from '../../../enums/role.enum';
+import {timer} from "rxjs/internal/observable/timer";
 
 @Component({
   selector: 'app-nav-bar',
@@ -49,14 +50,17 @@ export class NavBarComponent implements OnInit {
 
   constructor(private http: HttpClient, private modalService: NgbModal) {
     this.authenticated = false;
+    this.username = "";
   }
 
   ngOnInit() {
-    this.http.get('/api/users/is_authenticated', {responseType: 'text'}).subscribe((response: any) => {
+    this.http.get('/api/users/is_authenticated').subscribe((response: boolean) => {
       if (response) {
         this.authenticated = response;
-        this.checkNotifications();
         this.getUserName();
+        this.checkNotifications();
+        let scheduler = timer(5000, 2000);
+        scheduler.subscribe(() => this.checkNotifications());
       }
     });
 

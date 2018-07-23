@@ -59,6 +59,9 @@ public class UserController {
     @GetMapping(value = {"/is_authenticated"})
     public boolean isAuthenticated() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return false;
+        }
         return auth.isAuthenticated();
     }
 

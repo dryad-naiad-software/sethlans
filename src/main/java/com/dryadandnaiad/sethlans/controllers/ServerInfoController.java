@@ -20,6 +20,8 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.domains.hardware.CPU;
+import com.dryadandnaiad.sethlans.domains.info.ServerDashBoardInfo;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
@@ -121,6 +123,24 @@ public class ServerInfoController {
     public Long getClientTotalSpace() {
         return new File(SethlansUtils.getProperty(SethlansConfigKeys.PROJECT_DIR.toString())).getTotalSpace() / 1024 / 1024 / 1024;
 
+    }
+
+    @GetMapping(value = {"/server_dashboard"})
+    public ServerDashBoardInfo getDashBoard() {
+        ServerDashBoardInfo serverDashBoardInfo = new ServerDashBoardInfo();
+        CPU cpu = new CPU();
+        serverDashBoardInfo.setActiveNodes(getActiveNodes());
+        serverDashBoardInfo.setCpuName(cpu.getName());
+        serverDashBoardInfo.setDisabledNodes(getDisabledNodes());
+        serverDashBoardInfo.setFreeSpace(getClientFreeSpace());
+        serverDashBoardInfo.setInactiveNodes(getInactiveNodes());
+        serverDashBoardInfo.setNumberOfActiveNodesArray(getNumberOfActiveNodesArray());
+        serverDashBoardInfo.setTotalMemory(cpu.getTotalMemory());
+        serverDashBoardInfo.setTotalNodes(getTotalNodes());
+        serverDashBoardInfo.setTotalSlots(getTotalSlots());
+        serverDashBoardInfo.setUsedSpace(getClientUsedSpace());
+        serverDashBoardInfo.setTotalSpace(getClientTotalSpace());
+        return serverDashBoardInfo;
     }
 
 

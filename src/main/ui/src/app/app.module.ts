@@ -53,9 +53,13 @@ import {LoginService} from './services/login.service';
 import {XhrInterceptor} from './services/xhrinterceptor';
 import {HomeComponent} from './components/home/home.component';
 import {LoginComponent} from './components/login/login.component';
-import {AppRoutingModule} from './/app-routing.module';
+import {AppRoutingModule} from './app-routing.module';
 import {ProjectsComponent} from './components/projects/projects.component';
 import {RegisterUserComponent} from './components/register-user/register-user.component';
+import {NodeScreenComponent} from './components/home/node-screen/node-screen.component';
+import {ServerScreenComponent} from './components/home/server-screen/server-screen.component';
+import {ProjectListService} from "./services/projectlist.service";
+import {ChartModule} from "primeng/chart";
 
 @NgModule({
   declarations: [
@@ -77,11 +81,14 @@ import {RegisterUserComponent} from './components/register-user/register-user.co
     HomeComponent,
     LoginComponent,
     ProjectsComponent,
-    RegisterUserComponent
+    RegisterUserComponent,
+    NodeScreenComponent,
+    ServerScreenComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    ChartModule,
     MatSliderModule,
     MatTableModule,
     MatPaginatorModule,
@@ -94,7 +101,7 @@ import {RegisterUserComponent} from './components/register-user/register-user.co
     NgbModule.forRoot(),
     AppRoutingModule
   ],
-  providers: [WindowRef, LoginService, {
+  providers: [WindowRef, LoginService, ProjectListService, {
     provide: HTTP_INTERCEPTORS,
     useClass: XhrInterceptor,
     multi: true

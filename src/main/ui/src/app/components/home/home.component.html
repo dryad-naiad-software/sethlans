@@ -16,7 +16,20 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
-
-<p>
-  home works!
-</p>
+<div class="row pb-5">
+  <div class="col-md-10 m-auto">
+    <div class="card">
+      <div class="card-header">
+        <h4>
+          <span style="font-family: 'Fjalla One', sans-serif; ">Dashboard</span>
+        </h4>
+      </div>
+      <div class="card-body">
+        <app-server-screen [currentMode]="currentMode"
+                           *ngIf="currentMode == mode.SERVER || currentMode == mode.DUAL"></app-server-screen>
+        <hr *ngIf="currentMode == mode.DUAL"/>
+        <app-node-screen *ngIf="currentMode == mode.NODE || currentMode == mode.DUAL"></app-node-screen>
+      </div>
+    </div>
+  </div>
+</div>

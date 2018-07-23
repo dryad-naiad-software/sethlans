@@ -32,7 +32,8 @@
           data-target="#navbarSupportedContent" (click)="isCollapsed = !isCollapsed">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <div class="collapse navbar-collapse float-right" id="navbarSupportedContent" [ngbCollapse]="isCollapsed">
+  <div *ngIf="authenticated" class="collapse navbar-collapse float-right" id="navbarSupportedContent"
+       [ngbCollapse]="isCollapsed">
     <!--Right Menu-->
     <ul class="text-white nav ml-auto pr-5" *ngIf="authenticated">
       <!--Notifications-->

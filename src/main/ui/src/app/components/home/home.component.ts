@@ -19,6 +19,7 @@
 
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import {Mode} from "../../enums/mode.enum";
 
 @Component({
   selector: 'app-home',
@@ -27,13 +28,19 @@ import {HttpClient} from '@angular/common/http';
 })
 export class HomeComponent implements OnInit {
   getStarted: boolean;
+  mode: any = Mode;
+  currentMode: Mode;
 
   constructor(private http: HttpClient) {
     this.getStarted = false;
   }
 
   ngOnInit() {
-    this.http.get('/api/info/get_started', {responseType: 'text'}).subscribe((response: any) => {
+    this.http.get('/api/info/sethlans_mode')
+      .subscribe((sethlansmode) => {
+        this.currentMode = sethlansmode['mode'];
+      });
+    this.http.get('/api/info/get_started').subscribe((response: boolean) => {
       this.getStarted = response;
       if (this.getStarted) {
         window.location.href = '/get_started';

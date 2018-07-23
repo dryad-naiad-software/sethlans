@@ -1,0 +1,73 @@
+<div class="row">
+  <div class="col-4">
+    <h5>Project Status</h5>
+    <mat-table #projectTable [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="projectName">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Name</mat-header-cell>
+        <mat-cell *matCellDef="let project"><a [href]="'/projects/view/'+ project.id ">{{project.projectName}}</a>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="projectStatus">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Status</mat-header-cell>
+        <mat-cell *matCellDef="let project">
+            <span
+              *ngIf="project.projectStatus != projectStatus.Finished">{{project.projectStatus}}</span>
+          <a *ngIf="project.projectStatus == projectStatus.Finished"
+             [href]="'/api/project_actions/download_project/' + project.id"> {{project.projectStatus}}</a>
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="progress">
+        <mat-header-cell *matHeaderCellDef>Render Progress</mat-header-cell>
+        <mat-cell *matCellDef="let project">
+          <ngb-progressbar type="success"
+                           [value]="project.currentPercentage" placement="right"
+                           ngbTooltip="{{project.currentPercentage}}%">
+            <span *ngIf="project.currentPercentage == 100">Complete</span>
+          </ngb-progressbar>
+        </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <mat-paginator #paginator [pageSize]="5"></mat-paginator>
+
+  </div>
+  <div class="col-5">
+    <h5>Active Node Distribution</h5>
+    <p-chart type="doughnut" [data]="chartData"></p-chart>
+  </div>
+  <div class="col-3">
+    <h5>Connected Node Stats</h5>
+    <ul>
+      <li>Total Number of Nodes: <i>{{serverDash.totalNodes}}</i></li>
+      <li>Active Nodes: <i>{{serverDash.activeNodes}}</i></li>
+      <li>Inactive Nodes: <i>{{serverDash.inactiveNodes}}</i></li>
+      <li>Disabled Nodes: <i>{{serverDash.disabledNodes}}</i></li>
+      <li>Nodes Rendering: 0</li>
+      <li>Idle Nodes: 0</li>
+      <li>Total Rendering Slots: <i>{{serverDash.totalSlots}}</i></li>
+    </ul>
+  </div>
+</div>
+<div class="row" *ngIf="currentMode == mode.SERVER">
+  <div class="col-4">
+    <h5>System Information</h5>
+    <ul>
+      <li>Processor: <i>{{serverDash.cpuName}}</i></li>
+      <li>Memory: <i>{{serverDash.totalMemory}}</i></li>
+      <li>Disk Space:
+        <ngb-progressbar
+          type="info"
+          [value]="serverDash.usedSpace"
+          [max]="serverDash.totalSpace">
+        </ngb-progressbar>
+        <span class="float-left">
+          <i class="fa fa-square" style="color: #17a2b8; font-size: 0.75rem"></i>&nbsp;Used - {{serverDash.usedSpace}} GiB</span>
+        <span class="float-right">
+          <i class="fa fa-square" style="color: #e9ecef; font-size: 0.75rem;"></i>&nbsp;Free - {{serverDash.freeSpace}} GiB</span>
+      </li>
+
+    </ul>
+
+  </div>
+</div>
