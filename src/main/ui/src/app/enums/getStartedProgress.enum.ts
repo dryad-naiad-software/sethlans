@@ -17,24 +17,6 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
-import {GetStartedProgress} from '../../../enums/getStartedProgress.enum';
-
-@Component({
-  selector: 'app-get-started',
-  templateUrl: './get-started.component.html',
-  styleUrls: ['./get-started.component.scss']
-})
-export class GetStartedComponent implements OnInit {
-  progress: GetStartedProgress;
-  wizardProgress: any = GetStartedProgress;
-
-  constructor() {
-    document.body.style.background = 'rgba(0, 0, 0, .6)';
-  }
-
-  ngOnInit() {
-    this.progress = GetStartedProgress.START;
-  }
-
+export enum GetStartedProgress {
+  START
 }

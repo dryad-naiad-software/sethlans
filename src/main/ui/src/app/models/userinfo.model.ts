@@ -17,24 +17,16 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
-import {GetStartedProgress} from '../../../enums/getStartedProgress.enum';
+import {Role} from '../enums/role.enum';
 
-@Component({
-  selector: 'app-get-started',
-  templateUrl: './get-started.component.html',
-  styleUrls: ['./get-started.component.scss']
-})
-export class GetStartedComponent implements OnInit {
-  progress: GetStartedProgress;
-  wizardProgress: any = GetStartedProgress;
-
-  constructor() {
-    document.body.style.background = 'rgba(0, 0, 0, .6)';
-  }
-
-  ngOnInit() {
-    this.progress = GetStartedProgress.START;
-  }
+export class UserInfo {
+  id: number;
+  username: string;
+  email: string;
+  roles: Role[];
+  active: boolean;
+  password: string;
+  dateCreated: any;
+  lastUpdated: any;
 
 }

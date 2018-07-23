@@ -16,7 +16,50 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
+<div class="row pt-md-3">
+  <div class="col-md-6 m-auto ">
+    <div class="card">
+      <div class="card-header">
+        <h4 style="font-family: 'Fjalla One', sans-serif; ">Get Started Wizard</h4>
+      </div>
+      <div class="card-body px-lg-5">
+        <ul class="nav nav-tabs justify-content-between pb-3">
+          <li>
+            A
+          </li>
+          <li>
+            B
+          </li>
+          <li>
+            C
+          </li>
+          <li>
+            D
+          </li>
+          <li>
+            E
+          </li>
+          <li>
+            F
+          </li>
+        </ul>
+        <div class="py-3">
+          <div *ngIf="progress === wizardProgress.START">
+            Start
+          </div>
+        </div>
 
-<p>
-  get-started works!
-</p>
+      </div>
+      <div class="card-footer">
+        <nav>
+          <button class="btn btn-outline-primary float-left"> Previous
+          </button>
+
+          <button class="btn btn-outline-primary float-right"> Next
+          </button>
+
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>

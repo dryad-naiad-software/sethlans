@@ -32,4 +32,156 @@
           data-target="#navbarSupportedContent" (click)="isCollapsed = !isCollapsed">
     <span class="navbar-toggler-icon"></span>
   </button>
+  <div class="collapse navbar-collapse float-right" id="navbarSupportedContent" [ngbCollapse]="isCollapsed">
+    <!--Right Menu-->
+    <ul class="text-white nav ml-auto pr-5" *ngIf="authenticated">
+      <!--Notifications-->
+      <li class="nav-item" id="notificationsDropDown" ngbDropdown>
+        <a href="javascript:void(0);" class="text-white nav-link" ngbDropdownToggle>
+          <i class="fas fa-fw fa-bell"></i>
+          <span *ngIf="notifications == true" class="badge badge-notify">!</span>
+        </a>
+        <div ngbDropdownMenu>
+          <a *ngIf="notifications == false" href="javascript:void(0);" class="dropdown-item">
+            <i class="fas fa-fw fa-info-circle"></i>&nbsp;&nbsp;No new notifications</a>
+          <span *ngIf="notifications == true">
+            <a href="javascript:void(0);" class="dropdown-item" *ngFor="let notification of notificationList"><i
+              class="fas fa-fw fa-info-circle"></i>&nbsp;&nbsp;{{notification}}</a>
+          </span>
+        </div>
+      </li>
+      <!--Home Button -->
+      <li class="nav-item">
+        <a href="/" class="text-white nav-link">
+          <i class="fas fa-fw fa-home fa-lg"></i>
+        </a>
+      </li>
+
+      <!--Projects Menu-->
+      <li class="nav-item" *ngIf="currentMode == mode.SERVER || currentMode == mode.DUAL">
+        <a href="/projects" class="text-white nav-link">
+          <i class="fas fa-fw fa-puzzle-piece"></i>
+          <span>&nbsp;Projects</span>
+        </a>
+      </li>
+
+      <!--Admin Menu-->
+      <li class="nav-item" id="adminDropDown" ngbDropdown *ngIf="isAdministrator">
+        <a class="text-white nav-link dropdown-toggle" href="javascript:void(0);" ngbDropdownToggle>
+          <i class="fas fa-fw fa-user-ninja"></i>
+          <span>&nbsp;Admin</span>
+        </a>
+        <div ngbDropdownMenu>
+          <div *ngIf="currentMode == mode.NODE || currentMode == mode.DUAL">
+            <h6 class="dropdown-header">Node Management</h6>
+            <a href="/admin/servers" class="dropdown-item">
+              <i class="fas fa-fw fa-server"></i>
+              <span>&nbsp;Servers</span>
+            </a>
+            <a href="/admin/compute_settings" class="dropdown-item">
+              <i class="fas fa-fw fa-microchip"></i>
+              <span>&nbsp;Compute Settings</span>
+            </a>
+          </div>
+          <div *ngIf="currentMode == mode.SERVER || currentMode == mode.DUAL">
+            <div class="dropdown-divider" *ngIf="currentMode == mode.DUAL"></div>
+            <h6 class="dropdown-header">Server Management</h6>
+            <a href="/admin/nodes" class="dropdown-item">
+              <i class="fas fa-fw fa-desktop"></i>
+              <span>&nbsp;Nodes</span>
+            </a>
+            <a href="/admin/blender_version_admin" class="dropdown-item">
+              <i class="fas fa-fw fa-archive"></i>
+              <span>&nbsp;Blender Version Management</span>
+            </a>
+          </div>
+          <div>
+            <div class="dropdown-divider"></div>
+            <h6 class="dropdown-header">System Management</h6>
+            <a href="/admin/user_management" class="dropdown-item">
+              <i class="fas fa-fw fa-user"></i>
+              <span>&nbsp;User Management</span>
+            </a>
+            <a href="/admin/sethlans_settings" class="dropdown-item" *ngIf="isSuperAdministrator">
+              <i class="fas fa-fw fa-cogs"></i>
+              <span>&nbsp;Configuration</span>
+            </a>
+            <a href="/admin/logs" class="dropdown-item">
+              <i class="fas fa-fw fa-book"></i>
+              <span>&nbsp;Logs</span>
+            </a>
+            <a href="/admin/metrics" class="dropdown-item" *ngIf="isSuperAdministrator">
+              <i class="fas fa-fw fa-tachometer-alt"></i>
+              <span>&nbsp;Metrics</span>
+            </a>
+            <a href="/restart" class="dropdown-item" *ngIf="isSuperAdministrator">
+              <i class="fas fa-fw fa-sync"></i>
+              <span>&nbsp;Restart Sethlans</span>
+            </a>
+            <a href="/shutdown" class="dropdown-item" *ngIf="isSuperAdministrator">
+              <i class="fas fa-fw fa-power-off"></i>
+              <span>&nbsp;Shutdown Sethlans</span>
+            </a>
+          </div>
+        </div>
+      </li>
+      <!--User Menu-->
+      <li class="nav-item" id="userDropDown" ngbDropdown>
+        <a class="text-white nav-link dropdown-toggle" href="javascript:void(0);" ngbDropdownToggle>
+          <span class="fas fa-fw fa-user"></span>&nbsp;{{username}}</a>
+        <div ngbDropdownMenu>
+          <a href="/user_settings" class="dropdown-item">
+            <i class="fas fa-fw fa-wrench"></i>
+            <span>&nbsp;User Settings</span></a>
+
+          <a href="/logout" class="dropdown-item">
+            <i class="fas fa-fw fa-sign-out-alt"></i>
+            <span>&nbsp;Logout</span></a>
+        </div>
+      </li>
+
+      <!--Help Menu-->
+      <li class="nav-item" ngbDropdown>
+        <a href="javascript:void(0);" class="text-white nav-link" ngbDropdownToggle>
+          <i class="fas fa-fw fa-info-circle"></i>
+          <span>&nbsp;Help</span>
+        </a>
+        <div ngbDropdownMenu>
+          <a href="/help" class="dropdown-item">
+            <i class="fas fa-fw fa-question-circle"></i>
+            <span>&nbsp;Help</span></a>
+
+          <button class="dropdown-item" (click)="open(about)">
+            <i class="fas fa-fw fa-star"></i>
+            <span>&nbsp;About</span></button>
+        </div>
+      </li>
+    </ul>
+  </div>
 </nav>
+<ng-template #about let-c="close" let-d="dismiss()">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; font-size: 200%">
+      <img [src]="logoDark"
+           height="48"
+           class="d-inline-block align-top"
+           alt="logo">
+      &nbsp;Sethlans
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Sethlans Version {{sethlansVersion}}</p>
+    <p>A local distributed render farm for Blender.</p>
+    <p>Copyright 2018 Dryad and
+      Naiad Software
+      LLC.</p>
+
+  </div>
+  <div class="modal-footer">
+    <a href="https://github.com/dryad-naiad-software/sethlans/blob/master/LICENSE" class="mr-auto">Licensing
+      Information</a>
+  </div>
+</ng-template>

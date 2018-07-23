@@ -18,7 +18,7 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {AuthService} from '../../services/auth.service';
+import {LoginService} from '../../services/login.service';
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Login} from '../../models/login.model';
@@ -33,9 +33,8 @@ export class LoginComponent implements OnInit {
   logo: any = 'assets/images/logo.png';
   login: Login;
   loginError: boolean;
-  returnUrl: string;
 
-  constructor(private http: HttpClient, private auth: AuthService, private route: ActivatedRoute, private router: Router) {
+  constructor(private http: HttpClient, private auth: LoginService, private route: ActivatedRoute, private router: Router) {
   }
 
   ngOnInit() {

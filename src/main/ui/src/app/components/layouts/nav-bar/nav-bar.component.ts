@@ -18,6 +18,11 @@
  */
 
 import {Component, Input, OnInit} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Mode} from '../../../enums/mode.enum';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {UserInfo} from '../../../models/userinfo.model';
+import {Role} from '../../../enums/role.enum';
 
 @Component({
   selector: 'app-nav-bar',
@@ -28,13 +33,73 @@ export class NavBarComponent implements OnInit {
   logo: any = 'assets/images/logo.png';
   logoDark: any = 'assets/images/logo-dark.png';
   authenticated: boolean;
+  isAdministrator = false;
+  isSuperAdministrator = false;
   @Input() firstTime: boolean;
+  @Input() currentMode: Mode;
+  @Input() sethlansVersion: string;
+  mode: any = Mode;
+  notificationList: string[];
+  notifications: boolean;
+  userInfo: UserInfo;
+  role: any = Role;
+  username: string;
+  isCollapsed = true;
 
 
-  constructor() {
+  constructor(private http: HttpClient, private modalService: NgbModal) {
+    this.authenticated = false;
   }
 
   ngOnInit() {
+    this.http.get('/api/users/is_authenticated', {responseType: 'text'}).subscribe((response: any) => {
+      if (response) {
+        this.authenticated = response;
+        this.checkNotifications();
+        this.getUserName();
+      }
+    });
+
   }
+
+  getNotifications() {
+    this.http.get('/api/notifications/get_notifications').subscribe((notifications: string[]) => {
+      this.notificationList = notifications;
+    });
+  }
+
+  open(content) {
+    this.modalService.open(content);
+  }
+
+  checkNotifications() {
+    this.http.get('/api/notifications/notificiations_present').subscribe((present: boolean) => {
+      this.notifications = present;
+      if (present == true) {
+        this.getNotifications();
+      }
+    });
+  }
+
+
+  getUserName() {
+    this.http.get('/api/users/username')
+      .subscribe((user) => {
+        this.authenticated = true;
+        this.username = user['username'];
+        this.http.get('/api/users/get_user/' + this.username + '').subscribe((userinfo: UserInfo) => {
+          this.userInfo = userinfo;
+          if (userinfo.roles.indexOf(Role.ADMINISTRATOR) !== -1 || userinfo.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
+            this.isAdministrator = true;
+          }
+          if (userinfo.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
+            this.isSuperAdministrator = true;
+          }
+        });
+
+
+      });
+  }
+
 
 }

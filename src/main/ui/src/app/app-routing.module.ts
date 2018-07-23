@@ -22,11 +22,13 @@ import {RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from './components/login/login.component';
 import {HomeComponent} from './components/home/home.component';
 import {ProjectsComponent} from './components/projects/projects.component';
+import {GetStartedComponent} from './components/setup/get-started/get-started.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'login', component: LoginComponent},
-  {path: 'projects', component: ProjectsComponent}
+  {path: 'projects', component: ProjectsComponent},
+  {path: 'get_started', component: GetStartedComponent}
 ];
 
 @NgModule({

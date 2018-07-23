@@ -49,7 +49,7 @@ import {KeysPipe} from './pipes/keys.pipe';
 import {FieldmatchesvalidatorDirective} from './directives/fieldmatchesvalidator.directive';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {WindowRef} from './services/windowref.service';
-import {AuthService} from './services/auth.service';
+import {LoginService} from './services/login.service';
 import {XhrInterceptor} from './services/xhrinterceptor';
 import {HomeComponent} from './components/home/home.component';
 import {LoginComponent} from './components/login/login.component';
@@ -94,7 +94,7 @@ import {RegisterUserComponent} from './components/register-user/register-user.co
     NgbModule.forRoot(),
     AppRoutingModule
   ],
-  providers: [WindowRef, AuthService, {
+  providers: [WindowRef, LoginService, {
     provide: HTTP_INTERCEPTORS,
     useClass: XhrInterceptor,
     multi: true

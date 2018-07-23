@@ -21,8 +21,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 @Injectable()
-export class AuthService {
-  authenticated = false;
+export class LoginService {
 
   constructor(private http: HttpClient) {
   }
@@ -38,10 +37,10 @@ export class AuthService {
       responseType: 'text', observe: 'response'
     }).subscribe((loginresponse) => {
       let url = loginresponse.url;
-      console.log(url);
-      this.http.get('/api/users/username').subscribe(response => {
-        this.authenticated = !!response['username'];
-        window.location.href = url;
+      this.http.get('/api/users/is_authenticated', {responseType: 'text'}).subscribe((response: any) => {
+        if (response) {
+          window.location.href = url;
+        }
       });
       setTimeout(function () {
         return callback && callback();

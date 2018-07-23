@@ -17,24 +17,28 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
-import {GetStartedProgress} from '../../../enums/getStartedProgress.enum';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-@Component({
-  selector: 'app-get-started',
-  templateUrl: './get-started.component.html',
-  styleUrls: ['./get-started.component.scss']
-})
-export class GetStartedComponent implements OnInit {
-  progress: GetStartedProgress;
-  wizardProgress: any = GetStartedProgress;
+import {RegisterUserComponent} from './register-user.component';
 
-  constructor() {
-    document.body.style.background = 'rgba(0, 0, 0, .6)';
-  }
+describe('RegisterUserComponent', () => {
+  let component: RegisterUserComponent;
+  let fixture: ComponentFixture<RegisterUserComponent>;
 
-  ngOnInit() {
-    this.progress = GetStartedProgress.START;
-  }
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [RegisterUserComponent]
+    })
+      .compileComponents();
+  }));
 
-}
+  beforeEach(() => {
+    fixture = TestBed.createComponent(RegisterUserComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

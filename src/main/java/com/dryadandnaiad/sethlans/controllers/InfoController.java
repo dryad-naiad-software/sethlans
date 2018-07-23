@@ -64,6 +64,7 @@ public class InfoController {
     @Value("${sethlans.computeMethod}")
     private ComputeType computeType;
 
+
     @GetMapping(value = {"/first_time"})
     public boolean isFirstTime() {
         return firstTime;
@@ -92,6 +93,14 @@ public class InfoController {
         } else {
             return Collections.singletonMap("root_dir", SethlansUtils.getProperty(SethlansConfigKeys.ROOT_DIR.toString()));
         }
+    }
+
+    @GetMapping(value = {"/get_started"})
+    public boolean runGetStarted() {
+        if (firstTime) {
+            return false;
+        }
+        return Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.GETTING_STARTED.toString()));
     }
 
 

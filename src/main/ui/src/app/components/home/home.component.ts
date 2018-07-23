@@ -18,6 +18,7 @@
  */
 
 import {Component, OnInit} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-home',
@@ -25,11 +26,19 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+  getStarted: boolean;
 
-  constructor() {
+  constructor(private http: HttpClient) {
+    this.getStarted = false;
   }
 
   ngOnInit() {
+    this.http.get('/api/info/get_started', {responseType: 'text'}).subscribe((response: any) => {
+      this.getStarted = response;
+      if (this.getStarted) {
+        window.location.href = '/get_started';
+      }
+    });
   }
 
 }
