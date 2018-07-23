@@ -13,7 +13,7 @@
           <li *ngFor="let gpu of nodeDash.selectedGPUModels"><i>{{gpu}}</i></li>
         </ul>
       </li>
-      <li *ngIf="nodeDash.computeType != 'CPU'.valueOf() && nodeDash.selectedGPUModels.length > 1">Combined GPU
+      <li *ngIf="nodeDash.computeType !== method.CPU && nodeDash.selectedGPUModels.length > 1">Combined GPU
         Rendering: <i>{{nodeDash.gpuCombined}}</i>
       </li>
     </ul>
@@ -53,3 +53,4 @@
     </ul>
 
   </div>
+</div>
