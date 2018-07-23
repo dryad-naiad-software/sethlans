@@ -15,6 +15,7 @@ export class NodeScreenComponent implements OnInit {
 
 
   constructor(private http: HttpClient) {
+    this.nodeDash = new NodeDashboard();
   }
 
   ngOnInit() {
