@@ -72,6 +72,7 @@ import {SethlansSettingsComponent} from './components/admin/sethlans-settings/se
 import {ComputeSettingsComponent} from './components/admin/compute-settings/compute-settings.component';
 import {BlenderVersionsComponent} from './components/admin/blender-versions/blender-versions.component';
 import {LogsComponent} from './components/admin/logs/logs.component';
+import {UserListService} from "./services/userlist.service";
 
 @NgModule({
   declarations: [
@@ -125,7 +126,7 @@ import {LogsComponent} from './components/admin/logs/logs.component';
     NgbModule.forRoot(),
     AppRoutingModule
   ],
-  providers: [WindowRef, LoginService, ProjectListService, {
+  providers: [WindowRef, LoginService, ProjectListService, UserListService, {
     provide: HTTP_INTERCEPTORS,
     useClass: XhrInterceptor,
     multi: true

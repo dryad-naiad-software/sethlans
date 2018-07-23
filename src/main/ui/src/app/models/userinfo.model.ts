@@ -29,4 +29,15 @@ export class UserInfo {
   dateCreated: any;
   lastUpdated: any;
 
+
+  constructor() {
+    this.id = 0;
+    this.username = "";
+    this.email = "";
+    this.roles = [];
+    this.active = false;
+    this.password = "";
+    this.dateCreated = 0;
+    this.lastUpdated = 0;
+  }
 }
