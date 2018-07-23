@@ -60,6 +60,18 @@ import {NodeScreenComponent} from './components/home/node-screen/node-screen.com
 import {ServerScreenComponent} from './components/home/server-screen/server-screen.component';
 import {ProjectListService} from "./services/projectlist.service";
 import {ChartModule} from "primeng/chart";
+import {ShutdownComponent} from './components/admin/shutdown/shutdown.component';
+import {RestartComponent} from './components/admin/restart/restart.component';
+import {UserManagementComponent} from './components/admin/user-management/user-management.component';
+import {UserEditComponent} from './components/admin/user-management/user-edit/user-edit.component';
+import {UserAddComponent} from './components/admin/user-management/user-add/user-add.component';
+import {ServersComponent} from './components/admin/servers/servers.component';
+import {NodesComponent} from './components/admin/nodes/nodes.component';
+import {UserSettingsComponent} from './components/user-settings/user-settings.component';
+import {SethlansSettingsComponent} from './components/admin/sethlans-settings/sethlans-settings.component';
+import {ComputeSettingsComponent} from './components/admin/compute-settings/compute-settings.component';
+import {BlenderVersionsComponent} from './components/admin/blender-versions/blender-versions.component';
+import {LogsComponent} from './components/admin/logs/logs.component';
 
 @NgModule({
   declarations: [
@@ -83,7 +95,19 @@ import {ChartModule} from "primeng/chart";
     ProjectsComponent,
     RegisterUserComponent,
     NodeScreenComponent,
-    ServerScreenComponent
+    ServerScreenComponent,
+    ShutdownComponent,
+    RestartComponent,
+    UserManagementComponent,
+    UserEditComponent,
+    UserAddComponent,
+    ServersComponent,
+    NodesComponent,
+    UserSettingsComponent,
+    SethlansSettingsComponent,
+    ComputeSettingsComponent,
+    BlenderVersionsComponent,
+    LogsComponent
   ],
   imports: [
     BrowserModule,
