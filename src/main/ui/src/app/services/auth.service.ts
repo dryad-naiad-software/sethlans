@@ -27,7 +27,7 @@ export class AuthService {
   constructor(private http: HttpClient) {
   }
 
-  authenticate(credentials, callback, returnURL) {
+  authenticate(credentials, callback) {
 
     let body = new URLSearchParams();
     body.set('username', credentials.username);
@@ -37,9 +37,7 @@ export class AuthService {
       headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'),
       responseType: 'text'
     }).subscribe(() => {
-      this.http.get('/api/users/username').subscribe(() => {
-        window.location.href = returnURL;
-      });
+      this.http.get('/api/users/username').subscribe();
       setTimeout(function () {
         return callback && callback();
       }, 1000);

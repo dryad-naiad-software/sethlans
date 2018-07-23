@@ -40,14 +40,13 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.login = new Login();
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   loginSubmit() {
     this.auth.authenticate(this.login, () => {
       this.router.navigateByUrl('/login').then(() => this.loginError = true
       );
-    }, this.returnUrl);
+    });
 
   }
 

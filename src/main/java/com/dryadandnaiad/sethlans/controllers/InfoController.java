@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -27,6 +27,8 @@ import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +49,7 @@ import java.util.*;
 public class InfoController {
     private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
     private List<String> blenderVersions = BlenderUtils.listVersions();
+    private static final Logger LOG = LoggerFactory.getLogger(InfoController.class);
 
 
     @Value("${sethlans.configDir}")
@@ -90,6 +93,7 @@ public class InfoController {
             return Collections.singletonMap("root_dir", SethlansUtils.getProperty(SethlansConfigKeys.ROOT_DIR.toString()));
         }
     }
+
 
     @GetMapping(value = {"/available_roles"})
     public EnumSet<Role> getRoles() {

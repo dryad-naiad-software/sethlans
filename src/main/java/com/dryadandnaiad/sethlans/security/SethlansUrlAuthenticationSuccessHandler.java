@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,10 +19,13 @@
 
 package com.dryadandnaiad.sethlans.security;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
-import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -35,19 +38,27 @@ import java.io.IOException;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class SethlansUrlAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public class SethlansUrlAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+    private static final Logger LOG = LoggerFactory.getLogger(SethlansUrlAuthenticationSuccessHandler.class);
 
-    private RequestCache requestCache = new HttpSessionRequestCache();
+    public SethlansUrlAuthenticationSuccessHandler() {
+        super();
+        setUseReferer(true);
+    }
 
     @Override
-    public void onAuthenticationSuccess(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            Authentication authentication)
-            throws ServletException, IOException {
+    public void onAuthenticationSuccess(HttpServletRequest request,
+                                        HttpServletResponse response, Authentication authentication)
+            throws IOException, ServletException {
 
-        response.sendError(HttpServletResponse.SC_OK);
-
+        SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
+        if (savedRequest != null) {
+            LOG.debug(savedRequest.getRedirectUrl());
+            response.sendRedirect(savedRequest.getRedirectUrl());
+        } else {
+            response.sendRedirect("/");
+        }
     }
+
 
 }

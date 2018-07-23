@@ -54,6 +54,8 @@ import {XhrInterceptor} from './services/xhrinterceptor';
 import {HomeComponent} from './components/home/home.component';
 import {LoginComponent} from './components/login/login.component';
 import {AppRoutingModule} from './/app-routing.module';
+import {ProjectsComponent} from './components/projects/projects.component';
+import {RegisterUserComponent} from './components/register-user/register-user.component';
 
 @NgModule({
   declarations: [
@@ -73,7 +75,9 @@ import {AppRoutingModule} from './/app-routing.module';
     KeysPipe,
     FieldmatchesvalidatorDirective,
     HomeComponent,
-    LoginComponent
+    LoginComponent,
+    ProjectsComponent,
+    RegisterUserComponent
   ],
   imports: [
     BrowserModule,
