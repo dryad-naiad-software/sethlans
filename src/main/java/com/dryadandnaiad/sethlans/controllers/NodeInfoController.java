@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
+import com.dryadandnaiad.sethlans.domains.info.NodeDashBoardInfo;
 import com.dryadandnaiad.sethlans.domains.info.NodeInfo;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
@@ -132,6 +133,15 @@ public class NodeInfoController {
         return gpuDevices;
     }
 
+    @GetMapping(value = {"/client_available_gpu_models"})
+    public List<String> getAvailableGPUModels() {
+        List<String> models = new ArrayList<>();
+        for (GPUDevice gpuDevice : gpuDevices) {
+            models.add(gpuDevice.getModel());
+        }
+        return models;
+    }
+
     @GetMapping(value = {"/client_selected_gpu_models"})
     public List<String> getSelectedGPUModels() {
         List<String> selectedGPUs = new ArrayList<>();
@@ -170,9 +180,27 @@ public class NodeInfoController {
 
     }
 
+    @GetMapping(value = {"/node_dashboard"})
+    public NodeDashBoardInfo getNodeDashBoard() {
+        NodeDashBoardInfo nodeDashBoardInfo = new NodeDashBoardInfo();
+        NodeInfo nodeInfo = getNodeInfo();
+        nodeDashBoardInfo.setComputeType(getCurrentComputeType());
+        nodeDashBoardInfo.setCpuName(nodeInfo.getCpuinfo().getName());
+        nodeDashBoardInfo.setFreeSpace(getClientFreeSpace());
+        nodeDashBoardInfo.setSelectedCores(getSelectedCores());
+        nodeDashBoardInfo.setTotalMemory(nodeInfo.getCpuinfo().getTotalMemory());
+        nodeDashBoardInfo.setTotalSlots(getTotalSlots());
+        nodeDashBoardInfo.setUsedSpace(getClientUsedSpace());
+        nodeDashBoardInfo.setGpuCombined(isGpuCombined());
+        nodeDashBoardInfo.setTotalSpace(getClientTotalSpace());
+        nodeDashBoardInfo.setSelectedGPUModels(getSelectedGPUModels());
+        nodeDashBoardInfo.setAvailableGPUModels(getAvailableGPUModels());
+        return nodeDashBoardInfo;
+    }
+
 
     @GetMapping(value = {"/selected_cores"})
-    public String selectedCores() {
+    public String getSelectedCores() {
         return SethlansUtils.getSelectedCores();
     }
 
