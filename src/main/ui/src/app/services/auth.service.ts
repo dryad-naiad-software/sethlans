@@ -35,9 +35,14 @@ export class AuthService {
 
     this.http.post('login', body.toString(), {
       headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded'),
-      responseType: 'text'
-    }).subscribe(() => {
-      this.http.get('/api/users/username').subscribe();
+      responseType: 'text', observe: 'response'
+    }).subscribe((loginresponse) => {
+      let url = loginresponse.url;
+      console.log(url);
+      this.http.get('/api/users/username').subscribe(response => {
+        this.authenticated = !!response['username'];
+        window.location.href = url;
+      });
       setTimeout(function () {
         return callback && callback();
       }, 1000);
