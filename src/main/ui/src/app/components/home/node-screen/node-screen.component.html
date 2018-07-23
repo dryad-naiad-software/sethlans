@@ -1,3 +1,55 @@
-<p>
-  node-screen works!
-</p>
+<div class="row">
+  <div class="col-4">
+    <h5>Node Information</h5>
+    <ul>
+      <li *ngIf="nodeDash.computeType === method.CPU_GPU">Current Compute Type: <i>CPU & GPU</i></li>
+      <li *ngIf="nodeDash.computeType !== method.CPU_GPU">Current Compute Type: <i>{{nodeDash.computeType}}</i>
+      </li>
+
+      <li *ngIf="nodeDash.computeType !== method.GPU">Selected Cores: <i>{{nodeDash.selectedCores}}</i>
+      </li>
+      <li *ngIf="nodeDash.computeType !== method.CPU">Selected GPU(s):
+        <ul>
+          <li *ngFor="let gpu of nodeDash.selectedGPUModels"><i>{{gpu}}</i></li>
+        </ul>
+      </li>
+      <li *ngIf="nodeDash.computeType != 'CPU'.valueOf() && nodeDash.selectedGPUModels.length > 1">Combined GPU
+        Rendering: <i>{{nodeDash.gpuCombined}}</i>
+      </li>
+    </ul>
+  </div>
+
+  <div class="col-5">
+    <h5>System Information</h5>
+    <ul>
+      <li>Processor: <i>{{nodeDash.cpuName}}</i></li>
+      <li>Memory: <i>{{nodeDash.totalMemory}}</i></li>
+      <li *ngIf="nodeDash.availableGPUModels.length > 0">Installed Graphics Card(s):
+        <ul>
+          <li *ngFor="let gpu of nodeDash.availableGPUModels"><i>{{gpu}}</i></li>
+        </ul>
+      </li>
+      <li>Disk Space:
+        <ngb-progressbar
+          type="info"
+          [value]="nodeDash.usedSpace"
+          [max]="nodeDash.totalSpace">
+        </ngb-progressbar>
+        <span class="float-left">
+          <i class="fa fa-square" style="color: #17a2b8; font-size: 0.75rem"></i>&nbsp;Used - {{nodeDash.usedSpace}} GiB</span>
+        <span class="float-right">
+          <i class="fa fa-square" style="color: #e9ecef; font-size: 0.75rem;"></i>&nbsp;Free - {{nodeDash.freeSpace}} GiB</span>
+      </li>
+
+    </ul>
+
+  </div>
+  <div class="col-3">
+    <h5>Render Information</h5>
+    <ul>
+      <li>Number of Render Slots:
+        <i>{{nodeDash.totalSlots}}</i>
+      </li>
+    </ul>
+
+  </div>
