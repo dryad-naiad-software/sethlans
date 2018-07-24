@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,7 +29,6 @@ import lombok.Data;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,9 +51,8 @@ public class NodeInfo {
     private List<GPUDevice> selectedGPUs = new ArrayList<>();
     private List<String> selectedDeviceID;
     private boolean combined;
-    @Value("${sethlans.configDir}")
-    private String configDir;
-
+    private List<Integer> selectedGPURatings = new ArrayList<>();
+    private List<String> selectedGPUModels = new ArrayList<>();
     private static final Logger LOG = LoggerFactory.getLogger(NodeInfo.class);
 
 
@@ -96,15 +94,15 @@ public class NodeInfo {
             for (GPUDevice gpu : availableGPUs) {
                 if (gpu.getDeviceID().equals(deviceID)) {
                     selectedGPUs.add(gpu);
+                    selectedGPUModels.add(gpu.getModel());
+                    selectedGPURatings.add(gpu.getRating());
                 }
             }
         }
     }
 
     public void setCpuinfo() {
-        CPU cpu = new CPU();
-
-        this.cpuinfo = cpu;
+        this.cpuinfo = new CPU();
     }
 
 }
