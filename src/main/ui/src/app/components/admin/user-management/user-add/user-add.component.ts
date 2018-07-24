@@ -22,7 +22,7 @@ import {User} from '../../../../models/user.model';
 import {Role} from '../../../../enums/role.enum';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Router} from '@angular/router';
-import {UserInfo} from '../../../../models/userinfo.model';
+import {UserInfo} from '../../../../models/user_info.model';
 
 @Component({
   selector: 'app-user-add',

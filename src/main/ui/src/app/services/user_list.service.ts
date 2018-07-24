@@ -17,26 +17,18 @@
  *
  */
 
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {SetupForm} from '../../../../models/setup_form.model';
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs/internal/Observable';
+import {HttpClient} from '@angular/common/http';
+import {UserInfo} from '../models/user_info.model';
 
-@Component({
-  selector: 'app-dual-config',
-  templateUrl: './dual-config.component.html',
-  styleUrls: ['./dual-config.component.scss']
-})
-export class DualConfigComponent implements OnInit {
-  @Input() setupForm: SetupForm;
-  @Output() disableNext = new EventEmitter();
+@Injectable()
+export class UserListService {
 
-
-  constructor() {
+  constructor(private http: HttpClient) {
   }
 
-  ngOnInit() {
-  }
-
-  passDisable(value: boolean) {
-    this.disableNext.emit(value);
+  getUserList(): Observable<UserInfo[]> {
+    return this.http.get<UserInfo[]>('/api/management/user_list/');
   }
 }

@@ -17,26 +17,28 @@
  *
  */
 
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {SetupForm} from '../../../../models/setup_form.model';
+import {Observable} from 'rxjs/internal/Observable';
+import {HttpClient} from '@angular/common/http';
+import {Project} from '../models/project.model';
+import {Injectable} from '@angular/core';
 
-@Component({
-  selector: 'app-dual-config',
-  templateUrl: './dual-config.component.html',
-  styleUrls: ['./dual-config.component.scss']
-})
-export class DualConfigComponent implements OnInit {
-  @Input() setupForm: SetupForm;
-  @Output() disableNext = new EventEmitter();
+@Injectable()
+export class ProjectListService {
 
-
-  constructor() {
+  constructor(private http: HttpClient) {
   }
 
-  ngOnInit() {
+  getProjectList(): Observable<Project[]> {
+    return this.http.get<Project[]>('/api/project_ui/project_list');
   }
 
-  passDisable(value: boolean) {
-    this.disableNext.emit(value);
+  getProjectListInProgress(): Observable<Project[]> {
+    return this.http.get<Project[]>('/api/project_ui/project_list_in_progress');
   }
+
+  getProjectListSize(): Observable<number> {
+    return this.http.get<number>("/api/project_ui/num_of_projects");
+  }
+
+
 }

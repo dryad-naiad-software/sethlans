@@ -21,9 +21,9 @@ import {Component, Input, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Mode} from '../../../enums/mode.enum';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {UserInfo} from '../../../models/userinfo.model';
+import {UserInfo} from '../../../models/user_info.model';
 import {Role} from '../../../enums/role.enum';
-import {timer} from "rxjs/internal/observable/timer";
+import {timer} from 'rxjs/internal/observable/timer';
 
 @Component({
   selector: 'app-nav-bar',

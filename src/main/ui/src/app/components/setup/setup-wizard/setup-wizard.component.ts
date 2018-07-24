@@ -18,8 +18,8 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {SetupProgress} from '../../../enums/setupProgress.enum';
-import {SetupForm} from '../../../models/setupForm.model';
+import {SetupProgress} from '../../../enums/setup_progress.enum';
+import {SetupForm} from '../../../models/setup_form.model';
 import {Mode} from '../../../enums/mode.enum';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 

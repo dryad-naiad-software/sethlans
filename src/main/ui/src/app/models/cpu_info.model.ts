@@ -17,26 +17,21 @@
  *
  */
 
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {SetupForm} from '../../../../models/setup_form.model';
-
-@Component({
-  selector: 'app-dual-config',
-  templateUrl: './dual-config.component.html',
-  styleUrls: ['./dual-config.component.scss']
-})
-export class DualConfigComponent implements OnInit {
-  @Input() setupForm: SetupForm;
-  @Output() disableNext = new EventEmitter();
+export class CPUInfo {
+  name: string;
+  model: string;
+  family: string;
+  arch: string;
+  cores: number;
+  totalMemory: string;
 
 
   constructor() {
-  }
-
-  ngOnInit() {
-  }
-
-  passDisable(value: boolean) {
-    this.disableNext.emit(value);
+    this.name = '';
+    this.model = '';
+    this.family = '';
+    this.arch = '';
+    this.cores = 0;
+    this.totalMemory = '';
   }
 }

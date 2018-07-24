@@ -17,26 +17,10 @@
  *
  */
 
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {SetupForm} from '../../../../models/setup_form.model';
-
-@Component({
-  selector: 'app-dual-config',
-  templateUrl: './dual-config.component.html',
-  styleUrls: ['./dual-config.component.scss']
-})
-export class DualConfigComponent implements OnInit {
-  @Input() setupForm: SetupForm;
-  @Output() disableNext = new EventEmitter();
-
-
-  constructor() {
-  }
-
-  ngOnInit() {
-  }
-
-  passDisable(value: boolean) {
-    this.disableNext.emit(value);
-  }
+export enum BlenderBinaryOS {
+  Windows32,
+  Windows64,
+  MacOS,
+  Linux32,
+  Linux64
 }

@@ -18,7 +18,7 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {GetStartedProgress} from '../../../enums/getStartedProgress.enum';
+import {GetStartedProgress} from '../../../enums/get_started_progress.enum';
 
 @Component({
   selector: 'app-get-started',

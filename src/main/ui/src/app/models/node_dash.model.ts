@@ -17,26 +17,32 @@
  *
  */
 
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {SetupForm} from '../../../../models/setup_form.model';
+import {ComputeMethod} from '../enums/compute.method.enum';
 
-@Component({
-  selector: 'app-dual-config',
-  templateUrl: './dual-config.component.html',
-  styleUrls: ['./dual-config.component.scss']
-})
-export class DualConfigComponent implements OnInit {
-  @Input() setupForm: SetupForm;
-  @Output() disableNext = new EventEmitter();
-
+export class NodeDashboard {
+  computeType: ComputeMethod;
+  cpuName: string;
+  totalMemory: string;
+  selectedCores: string;
+  freeSpace: number;
+  totalSpace: number;
+  usedSpace: number;
+  selectedGPUModels: string[];
+  availableGPUModels: string[];
+  totalSlots: number;
+  gpuCombined: boolean;
 
   constructor() {
-  }
-
-  ngOnInit() {
-  }
-
-  passDisable(value: boolean) {
-    this.disableNext.emit(value);
+    this.computeType = ComputeMethod.CPU;
+    this.cpuName = "";
+    this.totalMemory = "";
+    this.selectedCores = "";
+    this.freeSpace = 0;
+    this.totalSpace = 0;
+    this.usedSpace = 0;
+    this.selectedGPUModels = [];
+    this.availableGPUModels = [];
+    this.totalSlots = 0;
+    this.gpuCombined = false;
   }
 }

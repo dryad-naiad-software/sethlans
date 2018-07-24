@@ -18,7 +18,7 @@
  */
 
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {SetupForm} from '../../../../models/setupForm.model';
+import {SetupForm} from '../../../../models/setup_form.model';
 import {ComputeMethod} from '../../../../enums/compute.method.enum';
 import {GPU} from '../../../../models/gpu.model';
 import {HttpClient} from '@angular/common/http';

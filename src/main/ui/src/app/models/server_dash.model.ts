@@ -17,26 +17,31 @@
  *
  */
 
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {SetupForm} from '../../../../models/setup_form.model';
-
-@Component({
-  selector: 'app-dual-config',
-  templateUrl: './dual-config.component.html',
-  styleUrls: ['./dual-config.component.scss']
-})
-export class DualConfigComponent implements OnInit {
-  @Input() setupForm: SetupForm;
-  @Output() disableNext = new EventEmitter();
+export class ServerDashboard {
+  totalNodes: number;
+  activeNodes: number;
+  inactiveNodes: number;
+  disabledNodes: number;
+  totalSlots: number;
+  cpuName: string;
+  totalMemory: string;
+  freeSpace: number;
+  totalSpace: number;
+  usedSpace: number;
+  numberOfActiveNodesArray: number[];
 
 
   constructor() {
-  }
-
-  ngOnInit() {
-  }
-
-  passDisable(value: boolean) {
-    this.disableNext.emit(value);
+    this.activeNodes = 0;
+    this.cpuName = "";
+    this.disabledNodes = 0;
+    this.totalMemory = "";
+    this.freeSpace = 0;
+    this.usedSpace = 0;
+    this.numberOfActiveNodesArray = [];
+    this.totalSlots = 0;
+    this.totalSpace = 0;
+    this.inactiveNodes = 0;
+    this.totalNodes = 0;
   }
 }

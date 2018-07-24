@@ -20,8 +20,8 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {ActivatedRoute} from '@angular/router';
-import {UserInfo} from '../../../../models/userinfo.model';
-import {RoleInfo} from '../../../../models/roleinfo.model';
+import {UserInfo} from '../../../../models/user_info.model';
+import {RoleInfo} from '../../../../models/role_info.model';
 
 @Component({
   selector: 'app-user-edit',

@@ -18,7 +18,7 @@
  */
 
 import {Component, Inject, Input, OnInit} from '@angular/core';
-import {SetupForm} from '../../../../models/setupForm.model';
+import {SetupForm} from '../../../../models/setup_form.model';
 import {HttpClient} from '@angular/common/http';
 import {WindowRef} from '../../../../services/windowref.service';
 import {DOCUMENT} from '@angular/common';

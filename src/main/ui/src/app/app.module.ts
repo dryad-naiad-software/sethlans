@@ -58,8 +58,8 @@ import {ProjectsComponent} from './components/projects/projects.component';
 import {RegisterUserComponent} from './components/register-user/register-user.component';
 import {NodeScreenComponent} from './components/home/node-screen/node-screen.component';
 import {ServerScreenComponent} from './components/home/server-screen/server-screen.component';
-import {ProjectListService} from "./services/projectlist.service";
-import {ChartModule} from "primeng/chart";
+import {ProjectListService} from './services/project_list.service';
+import {ChartModule} from 'primeng/chart';
 import {ShutdownComponent} from './components/admin/shutdown/shutdown.component';
 import {RestartComponent} from './components/admin/restart/restart.component';
 import {UserManagementComponent} from './components/admin/user-management/user-management.component';
@@ -72,7 +72,7 @@ import {SethlansSettingsComponent} from './components/admin/sethlans-settings/se
 import {ComputeSettingsComponent} from './components/admin/compute-settings/compute-settings.component';
 import {BlenderVersionsComponent} from './components/admin/blender-versions/blender-versions.component';
 import {LogsComponent} from './components/admin/logs/logs.component';
-import {UserListService} from "./services/userlist.service";
+import {UserListService} from './services/user_list.service';
 
 @NgModule({
   declarations: [

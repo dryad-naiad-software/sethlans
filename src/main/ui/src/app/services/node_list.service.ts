@@ -17,26 +17,28 @@
  *
  */
 
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {SetupForm} from '../../../../models/setup_form.model';
+import {Observable} from 'rxjs/internal/Observable';
+import {NodeInfo} from '../models/node_info.model';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 
-@Component({
-  selector: 'app-dual-config',
-  templateUrl: './dual-config.component.html',
-  styleUrls: ['./dual-config.component.scss']
-})
-export class DualConfigComponent implements OnInit {
-  @Input() setupForm: SetupForm;
-  @Output() disableNext = new EventEmitter();
+@Injectable()
+export class NodeListService {
 
-
-  constructor() {
+  constructor(private http: HttpClient) {
   }
 
-  ngOnInit() {
+  getNodeList(): Observable<NodeInfo[]> {
+    return this.http.get<NodeInfo[]>('/api/management/node_list');
   }
 
-  passDisable(value: boolean) {
-    this.disableNext.emit(value);
+  getUpdatingNodeList(): Observable<NodeInfo[]> {
+    return this.http.get<NodeInfo[]>('/api/management/nodes_updating_list');
   }
+
+  getNodeListSize(): Observable<number> {
+    return this.http.get<number>('/api/management/node_list_size');
+  }
+
+
 }

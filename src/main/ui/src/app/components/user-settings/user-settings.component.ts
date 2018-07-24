@@ -19,7 +19,7 @@
 
 import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {UserInfo} from '../../models/userinfo.model';
+import {UserInfo} from '../../models/user_info.model';
 
 @Component({
   selector: 'app-user-settings',
