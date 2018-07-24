@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -57,6 +57,10 @@ public class SethlansNode extends AbstractEntityClass {
     private List<GPUDevice> selectedGPUs = new ArrayList<>();
     @ElementCollection
     private List<String> selectedDeviceID;
+    @ElementCollection
+    private List<Integer> selectedGPURatings = new ArrayList<>();
+    @ElementCollection
+    private List<String> selectedGPUModels = new ArrayList<>();
     private boolean active;
     private boolean disabled;
     private boolean pendingActivation;

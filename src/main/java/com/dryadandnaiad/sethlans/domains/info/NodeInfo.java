@@ -49,7 +49,7 @@ public class NodeInfo {
     private CPU cpuinfo;
     private String selectedCores;
     private List<GPUDevice> selectedGPUs = new ArrayList<>();
-    private List<String> selectedDeviceID;
+    private List<String> selectedDeviceID = new ArrayList<>();
     private boolean combined;
     private List<Integer> selectedGPURatings = new ArrayList<>();
     private List<String> selectedGPUModels = new ArrayList<>();
