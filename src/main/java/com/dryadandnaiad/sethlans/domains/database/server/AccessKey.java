@@ -17,19 +17,23 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.database;
+package com.dryadandnaiad.sethlans.domains.database.server;
 
-import com.dryadandnaiad.sethlans.domains.database.server.ServerAccessKey;
+import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import javax.persistence.Entity;
 
 /**
- * Created Mario Estrella on 12/4/17.
+ * Created Mario Estrella on 7/24/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface ServerAccessKeyDatabaseService extends CRUDService<ServerAccessKey> {
-
-    ServerAccessKey getByUUID(String uuid);
-
-    void delete(String uuid);
+@Entity
+@Data
+@EqualsAndHashCode(callSuper = false)
+public class AccessKey extends AbstractEntityClass {
+    private String accessKey;
 }

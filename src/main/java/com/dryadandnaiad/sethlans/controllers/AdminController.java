@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.domains.database.server.AccessKey;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.domains.hardware.CPU;
@@ -31,10 +32,7 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
-import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
-import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
-import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
-import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.*;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
 import com.dryadandnaiad.sethlans.services.system.SethlansLogRetrievalService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
@@ -72,6 +70,8 @@ public class AdminController {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private SethlansManagerService sethlansManagerService;
+    private AccessKeyDatabaseService accessKeyDatabaseService;
+
 
     @Value("${sethlans.gpu_id}")
     private String gpuIds;
@@ -238,6 +238,7 @@ public class AdminController {
         return true;
     }
 
+
     @GetMapping(value = "/set_primary_blender_version")
     public boolean setPrimaryBlenderVersion(@RequestParam String version) {
         writeProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION, version);
@@ -265,6 +266,11 @@ public class AdminController {
             blenderBinaryInfoList.add(blenderBinaryInfo);
         }
         return blenderBinaryInfoList;
+    }
+
+    @GetMapping(value = "/get_access_key_list")
+    public List<AccessKey> getAccessKeyList() {
+        return accessKeyDatabaseService.listAll();
     }
 
 
@@ -557,5 +563,10 @@ public class AdminController {
     @Autowired
     public void setSethlansLogRetrievalService(SethlansLogRetrievalService sethlansLogRetrievalService) {
         this.sethlansLogRetrievalService = sethlansLogRetrievalService;
+    }
+
+    @Autowired
+    public void setAccessKeyDatabaseService(AccessKeyDatabaseService accessKeyDatabaseService) {
+        this.accessKeyDatabaseService = accessKeyDatabaseService;
     }
 }

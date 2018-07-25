@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,9 +19,11 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.domains.database.server.AccessKey;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import com.dryadandnaiad.sethlans.services.config.UpdateComputeService;
+import com.dryadandnaiad.sethlans.services.database.AccessKeyDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
@@ -46,6 +48,7 @@ public class NodeSetupController {
     private NodeActivationService nodeActivationService;
     private UpdateComputeService updateComputeService;
     private SethlansManagerService sethlansManagerService;
+    private AccessKeyDatabaseService accessKeyDatabaseService;
     private static final Logger LOG = LoggerFactory.getLogger(NodeSetupController.class);
 
 
@@ -56,9 +59,18 @@ public class NodeSetupController {
         sethlansServer.setPendingAcknowledgementResponse(true);
         LOG.debug(sethlansServer.toString());
         sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
-        nodeActivationService.sendActivationResponse(sethlansServer, SethlansUtils.getCurrentNodeInfo(), false);
+        nodeActivationService.sendActivationResponseToServer(sethlansServer, SethlansUtils.getCurrentNodeInfo());
         return true;
     }
+
+    @PostMapping(value = "/add_access_key")
+    public boolean addAccessKey(@RequestParam String accessKey) {
+        AccessKey serverAccessKey = new AccessKey();
+        serverAccessKey.setAccessKey(accessKey);
+        accessKeyDatabaseService.saveOrUpdate(serverAccessKey);
+        return true;
+    }
+
 
     @GetMapping("/server_delete/{id}")
     public void deleteServer(@PathVariable Long id) {
@@ -105,4 +117,8 @@ public class NodeSetupController {
         this.sethlansManagerService = sethlansManagerService;
     }
 
+    @Autowired
+    public void setAccessKeyDatabaseService(AccessKeyDatabaseService accessKeyDatabaseService) {
+        this.accessKeyDatabaseService = accessKeyDatabaseService;
+    }
 }

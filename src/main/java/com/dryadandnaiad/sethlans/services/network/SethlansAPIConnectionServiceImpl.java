@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -60,10 +60,19 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
             wr.flush();
             wr.close();
 
-            int response = connection.getResponseCode();
-            LOG.debug("HTTP Response code " + response);
-            if (response == 200) {
-                return true;
+            int responseCode = connection.getResponseCode();
+            LOG.debug("HTTP Response code " + responseCode);
+            if (responseCode == 200) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder stringBuilder = new StringBuilder();
+                String output;
+                while ((output = br.readLine()) != null) {
+                    stringBuilder.append(output);
+                }
+                if (stringBuilder.toString().contains("true")) {
+                    return true;
+                }
+                return !stringBuilder.toString().contains("false");
             }
 
 

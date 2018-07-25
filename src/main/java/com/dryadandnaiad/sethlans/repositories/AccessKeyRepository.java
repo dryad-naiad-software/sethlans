@@ -17,23 +17,16 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.domains.database.server;
+package com.dryadandnaiad.sethlans.repositories;
 
-import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-import javax.persistence.Entity;
+import com.dryadandnaiad.sethlans.domains.database.server.AccessKey;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * Created Mario Estrella on 7/24/2018.
+ * Created Mario Estrella on 12/4/17.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Entity
-@Data
-@EqualsAndHashCode(callSuper = false)
-public class ServerAccessKey extends AbstractEntityClass {
-    private String accessKey;
+public interface AccessKeyRepository extends JpaRepository<AccessKey, Long> {
 }

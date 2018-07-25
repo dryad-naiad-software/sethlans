@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,14 +20,11 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
-import com.dryadandnaiad.sethlans.enums.NotificationOrigin;
-import com.dryadandnaiad.sethlans.events.SethlansEvent;
+import com.dryadandnaiad.sethlans.services.database.AccessKeyDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,20 +40,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Profile({"NODE", "DUAL"})
 @RequestMapping("/api/nodeactivate/")
-public class ActivationRequestController implements ApplicationEventPublisherAware {
+public class ActivationRequestController {
     /**
      * This is the Rest Controller on the Node that receives the requests for node activations
      */
     private static final Logger LOG = LoggerFactory.getLogger(ActivationRequestController.class);
     private SethlansServerDatabaseService sethlansServerDatabaseService;
-    private ApplicationEventPublisher applicationEventPublisher;
+    private AccessKeyDatabaseService accessKeyDatabaseService;
 
     @RequestMapping(value = "/request", method = RequestMethod.POST)
-    public void nodeActivationRequest(@RequestParam String serverhostname, @RequestParam String ipAddress,
-                                      @RequestParam String port, @RequestParam String connection_uuid, @RequestParam boolean auto) {
+    public boolean nodeActivationRequest(@RequestParam String serverhostname, @RequestParam String ipAddress,
+                                         @RequestParam String port, @RequestParam String connection_uuid, @RequestParam String access_key) {
         LOG.debug("Received node activation request");
+        if (accessKeyDatabaseService.getByUUID(access_key) == null) {
+            LOG.info("Access key provided is not authorized on this node.");
+            return false;
+        }
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) != null) {
             LOG.debug("Server UUID is already present on node. Skipping Activation");
+            return false;
         } else {
             SethlansServer sethlansServer = new SethlansServer();
             sethlansServer.setHostname(serverhostname);
@@ -67,10 +69,7 @@ public class ActivationRequestController implements ApplicationEventPublisherAwa
             sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
             LOG.debug(sethlansServer.toString());
             LOG.debug("Processed node activation request");
-            String notification = "New Server Request: " + serverhostname;
-            if (!auto) {
-                this.applicationEventPublisher.publishEvent(new SethlansEvent(this, connection_uuid + "-" + NotificationOrigin.ACTIVATION_REQUEST.toString(), notification, true));
-            }
+            return true;
         }
     }
 
@@ -102,12 +101,13 @@ public class ActivationRequestController implements ApplicationEventPublisherAwa
     }
 
     @Autowired
+    public void setAccessKeyDatabaseService(AccessKeyDatabaseService accessKeyDatabaseService) {
+        this.accessKeyDatabaseService = accessKeyDatabaseService;
+    }
+
+    @Autowired
     public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
         this.sethlansServerDatabaseService = sethlansServerDatabaseService;
     }
 
-    @Override
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        this.applicationEventPublisher = applicationEventPublisher;
-    }
 }

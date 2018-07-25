@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -32,11 +32,11 @@ import org.springframework.scheduling.annotation.Async;
 public interface NodeActivationService {
 
     @Async
-    void sendActivationRequest(SethlansNode sethlansNode, SethlansServer sethlansServer, boolean auto);
+    void sendActivationRequestToNode(SethlansNode sethlansNode, SethlansServer sethlansServer, String accessKey);
 
     @Async
-    void sendActivationResponse(SethlansServer sethlansServer, SethlansNode sethlansNode, boolean auto);
+    void sendActivationResponseToServer(SethlansServer sethlansServer, SethlansNode sethlansNode);
 
     @Async
-    void sendResponseAcknowledgement(SethlansNode sethlansNode, String connection_uuid);
+    void sendResponseAcknowledgementToNode(SethlansNode sethlansNode, String connection_uuid);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
+import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
@@ -60,7 +61,7 @@ public class ServerSetupController {
     public void autoAcknowledgeNode(@PathVariable String connection_id) {
         SethlansServer sethlansServer = SethlansUtils.getCurrentServerInfo();
         sethlansServer.setConnection_uuid(connection_id);
-        nodeActivationService.sendActivationResponse(sethlansServer, sethlansNodeDatabaseService.getByConnectionUUID(connection_id), true);
+        nodeActivationService.sendActivationResponseToServer(sethlansServer, sethlansNodeDatabaseService.getByConnectionUUID(connection_id));
     }
 
     @PostMapping("/multi_auto_acknowledge")
@@ -83,13 +84,14 @@ public class ServerSetupController {
 
     @GetMapping("/node_add")
     public String addNode(@RequestParam String ip, @RequestParam String port) {
+        String accessKey = SethlansUtils.getProperty(SethlansConfigKeys.ACCESS_KEY.toString());
         SethlansNode sethlansNode = nodeDiscoveryService.discoverUnicastNode(ip, port);
         List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.listAll();
         if (!sethlansNodeList.isEmpty()) {
             LOG.debug("Nodes found in database, starting comparison.");
             if (sethlansNodeDatabaseService.checkForDuplicatesAndSave(sethlansNode)) {
                 if (sethlansNode.isPendingActivation()) {
-                    nodeActivationService.sendActivationRequest(sethlansNode, SethlansUtils.getCurrentServerInfo(), true);
+                    nodeActivationService.sendActivationRequestToNode(sethlansNode, SethlansUtils.getCurrentServerInfo(), accessKey);
                     return sethlansNode.getConnection_uuid();
 
                 }
@@ -99,7 +101,7 @@ public class ServerSetupController {
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
             LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
             if (sethlansNode.isPendingActivation()) {
-                nodeActivationService.sendActivationRequest(sethlansNode, SethlansUtils.getCurrentServerInfo(), true);
+                nodeActivationService.sendActivationRequestToNode(sethlansNode, SethlansUtils.getCurrentServerInfo(), accessKey);
                 return sethlansNode.getConnection_uuid();
             }
         }
@@ -115,11 +117,12 @@ public class ServerSetupController {
 
     @GetMapping("/node_replace/{id}")
     public boolean updateNode(@PathVariable Long id) {
+        String accessKey = SethlansUtils.getProperty(SethlansConfigKeys.ACCESS_KEY.toString());
         SethlansNode sethlansNodeToReplace = sethlansNodeDatabaseService.getById(id);
         queueService.addNodeToDeleteQueue(id);
         SethlansNode newNode = nodeDiscoveryService.discoverUnicastNode(sethlansNodeToReplace.getIpAddress(), sethlansNodeToReplace.getNetworkPort());
         sethlansNodeDatabaseService.saveOrUpdate(newNode);
-        nodeActivationService.sendActivationRequest(newNode, SethlansUtils.getCurrentServerInfo(), true);
+        nodeActivationService.sendActivationRequestToNode(newNode, SethlansUtils.getCurrentServerInfo(), accessKey);
         autoAcknowledgeNode(newNode.getConnection_uuid());
         return true;
     }

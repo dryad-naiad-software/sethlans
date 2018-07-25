@@ -17,10 +17,9 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.repositories;
+package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.domains.database.server.ServerAccessKey;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.dryadandnaiad.sethlans.domains.database.server.AccessKey;
 
 /**
  * Created Mario Estrella on 12/4/17.
@@ -28,5 +27,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface ServerAccessKeyRepository extends JpaRepository<ServerAccessKey, Long> {
+public interface AccessKeyDatabaseService extends CRUDService<AccessKey> {
+
+    AccessKey getByUUID(String uuid);
+
+    void delete(String uuid);
 }

@@ -19,8 +19,8 @@
 
 package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.domains.database.server.ServerAccessKey;
-import com.dryadandnaiad.sethlans.repositories.ServerAccessKeyRepository;
+import com.dryadandnaiad.sethlans.domains.database.server.AccessKey;
+import com.dryadandnaiad.sethlans.repositories.AccessKeyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,53 +34,53 @@ import java.util.List;
  * Project: sethlans
  */
 @Service
-public class ServerAccessKeyDatabaseServiceImpl implements ServerAccessKeyDatabaseService {
-    private ServerAccessKeyRepository serverAccessKeyRepository;
+public class AccessKeyDatabaseServiceImpl implements AccessKeyDatabaseService {
+    private AccessKeyRepository accessKeyRepository;
 
 
     @Override
-    public List<ServerAccessKey> listAll() {
-        return new ArrayList<>(serverAccessKeyRepository.findAll());
+    public List<AccessKey> listAll() {
+        return new ArrayList<>(accessKeyRepository.findAll());
     }
 
     @Override
-    public ServerAccessKey getById(Long id) {
-        return serverAccessKeyRepository.findOne(id);
+    public AccessKey getById(Long id) {
+        return accessKeyRepository.findOne(id);
     }
 
     @Override
-    public ServerAccessKey getByUUID(String uuid) {
-        List<ServerAccessKey> accessKeyList = listAll();
-        for (ServerAccessKey serverAccessKey : accessKeyList) {
-            if (serverAccessKey.getAccessKey().equals(uuid)) {
-                return serverAccessKey;
+    public AccessKey getByUUID(String uuid) {
+        List<AccessKey> accessKeyList = listAll();
+        for (AccessKey accessKey : accessKeyList) {
+            if (accessKey.getAccessKey().equals(uuid)) {
+                return accessKey;
             }
         }
         return null;
     }
 
     @Override
-    public ServerAccessKey saveOrUpdate(ServerAccessKey domainObject) {
-        return serverAccessKeyRepository.save(domainObject);
+    public AccessKey saveOrUpdate(AccessKey domainObject) {
+        return accessKeyRepository.save(domainObject);
     }
 
     @Override
     public void delete(Long id) {
-        serverAccessKeyRepository.delete(id);
+        accessKeyRepository.delete(id);
     }
 
     @Override
     public void delete(String uuid) {
-        List<ServerAccessKey> serverAccessKeyList = listAll();
-        for (ServerAccessKey serverAccessKey : serverAccessKeyList) {
-            if (serverAccessKey.getAccessKey().equals(uuid)) {
-                serverAccessKeyRepository.delete(serverAccessKey);
+        List<AccessKey> accessKeyList = listAll();
+        for (AccessKey accessKey : accessKeyList) {
+            if (accessKey.getAccessKey().equals(uuid)) {
+                accessKeyRepository.delete(accessKey);
             }
         }
     }
 
     @Autowired
-    public void setServerAccessKeyRepository(ServerAccessKeyRepository serverAccessKeyRepository) {
-        this.serverAccessKeyRepository = serverAccessKeyRepository;
+    public void setAccessKeyRepository(AccessKeyRepository accessKeyRepository) {
+        this.accessKeyRepository = accessKeyRepository;
     }
 }
