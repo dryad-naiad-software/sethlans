@@ -46,6 +46,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.UUID;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansUtils.*;
 
@@ -103,6 +104,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
             LOG.debug(e.getMessage());
         }
 
+
         //Write Properties
         writePropertyToFile(SethlansConfigKeys.CONFIG_DIR, configDirectory, installFile);
         writePropertyToFile(SethlansConfigKeys.CONFIG_DIR, configDirectory, configFile);
@@ -132,6 +134,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
             blenderBinaryDatabaseService.saveOrUpdate(blenderBinary);
 
             writeProperty(SethlansConfigKeys.PROJECT_DIR, projectDirectory);
+            writeProperty(SethlansConfigKeys.ACCESS_KEY, UUID.randomUUID().toString());
             writeProperty(SethlansConfigKeys.BLENDER_DIR, blenderDirectory);
             writeProperty(SethlansConfigKeys.BENCHMARK_DIR, benchmarkDirectory);
             writeProperty(SethlansConfigKeys.GETTING_STARTED, "true");

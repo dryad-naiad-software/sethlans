@@ -26,6 +26,7 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum SethlansConfigKeys {
+    ACCESS_KEY("sethlans.accessKey"),
     HTTPS_PORT("server.port"),
     FIRST_TIME("sethlans.firsttime"),
     LOGGING_FILE("logging.file"),
