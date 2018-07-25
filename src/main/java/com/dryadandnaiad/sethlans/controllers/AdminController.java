@@ -273,7 +273,10 @@ public class AdminController {
         return accessKeyDatabaseService.listAll();
     }
 
-
+    @GetMapping(value = "/get_key_from_server")
+    public String getAccessKeyFromServer() {
+        return SethlansUtils.getProperty(SethlansConfigKeys.ACCESS_KEY.toString());
+    }
 
     @GetMapping(value = "/get_current_binary_os/{version}")
     public List<BlenderBinaryOS> blenderBinaryOSList(@PathVariable String version) {
