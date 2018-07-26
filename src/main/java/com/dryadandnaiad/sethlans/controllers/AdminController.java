@@ -19,24 +19,16 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
-import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
-import com.dryadandnaiad.sethlans.domains.database.server.AccessKey;
-import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
-import com.dryadandnaiad.sethlans.domains.hardware.CPU;
-import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
-import com.dryadandnaiad.sethlans.domains.info.*;
-import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
-import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.domains.info.Log;
+import com.dryadandnaiad.sethlans.domains.info.RoleInfo;
+import com.dryadandnaiad.sethlans.domains.info.SethlansSettings;
+import com.dryadandnaiad.sethlans.domains.info.UserInfo;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
-import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
-import com.dryadandnaiad.sethlans.services.database.*;
-import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
+import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
 import com.dryadandnaiad.sethlans.services.system.SethlansLogRetrievalService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
-import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +40,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansUtils.writeProperty;
 
@@ -62,34 +56,12 @@ import static com.dryadandnaiad.sethlans.utils.SethlansUtils.writeProperty;
 @RequestMapping("/api/management")
 public class AdminController {
     private SethlansUserDatabaseService sethlansUserDatabaseService;
-    private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
     private SethlansLogRetrievalService sethlansLogRetrievalService;
-    private static final Logger LOG = LoggerFactory.getLogger(AdminController.class);
-
-    private NodeDiscoveryService nodeDiscoveryService;
-    private SethlansNodeDatabaseService sethlansNodeDatabaseService;
-    private SethlansServerDatabaseService sethlansServerDatabaseService;
     private SethlansManagerService sethlansManagerService;
-    private AccessKeyDatabaseService accessKeyDatabaseService;
-
-
-    @Value("${sethlans.gpu_id}")
-    private String gpuIds;
+    private static final Logger LOG = LoggerFactory.getLogger(AdminController.class);
 
     @Value("${sethlans.configDir}")
     private String configDir;
-
-    @Value("${sethlans.cores}")
-    private String selectedCores;
-
-    @Value("${sethlans.computeMethod}")
-    private ComputeType selectedComputeMethod;
-
-    @Value("${sethlans.tileSizeGPU}")
-    private String tileSizeGPU;
-
-    @Value("${sethlans.tileSizeCPU}")
-    private String titleSizeCPU;
 
     @Value("${logging.level.com.dryadandnaiad.sethlans}")
     private String logLevel;
@@ -132,162 +104,10 @@ public class AdminController {
         return userInfoList;
     }
 
-    @GetMapping(value = {"/node_check"})
-    public SethlansNode checkNode(@RequestParam String ip, @RequestParam String port) {
-        return nodeDiscoveryService.discoverUnicastNode(ip, port);
-    }
 
     @GetMapping(value = {"/get_logs"})
     public List<Log> getSethlansLogs() {
         return sethlansLogRetrievalService.sethlansLogList();
-    }
-
-    @GetMapping(value = {"node_scan"})
-    public List<SethlansNode> nodeScan() throws InterruptedException {
-        nodeDiscoveryService.resetNodeList();
-        nodeDiscoveryService.multicastDiscovery();
-        Thread.sleep(20000);
-        return nodeDiscoveryService.discoverMulticastNodes();
-    }
-
-    @GetMapping(value = {"/get_node/{id}"})
-    public SethlansNode getNodeById(@PathVariable Long id) {
-        return sethlansNodeDatabaseService.getById(id);
-    }
-
-    @GetMapping(value = {"/node_list"})
-    public List<SethlansNode> getNodes() {
-        return sethlansNodeDatabaseService.listAll();
-    }
-
-    @GetMapping(value = {"/nodes_updating_list"})
-    public List<SethlansNode> getNodesUpdating() {
-        List<SethlansNode> listToSend = new ArrayList<>();
-        for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
-            if (!sethlansNode.isActive() || !sethlansNode.isBenchmarkComplete()) {
-                listToSend.add(sethlansNode);
-            }
-        }
-        return listToSend;
-    }
-
-    @GetMapping(value = {"/node_info_by_uuid"})
-    public SethlansNode getNodeByUUID(@RequestParam String connection_uuid) {
-        return sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
-    }
-
-    @GetMapping(value = {"/is_benchmark_complete"})
-    public boolean isBenchmarkComplete(@RequestParam String connection_uuid) {
-        SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
-        return sethlansNode.isBenchmarkComplete();
-    }
-
-    @GetMapping(value = {"/node_list_size"})
-    public Integer getNodeListSize() {
-        return sethlansNodeDatabaseService.listAll().size();
-    }
-
-    @GetMapping(value = {"/server_list"})
-    public List<SethlansServer> getServers() {
-        return sethlansServerDatabaseService.listAll();
-    }
-
-    @GetMapping(value = {"/server_list_size"})
-    public Integer getServerListSize() {
-        return sethlansServerDatabaseService.listAll().size();
-    }
-
-
-    @GetMapping(value = "/primary_blender_version")
-    public Map primaryBlenderVersion() {
-        return Collections.singletonMap("primary_blender",
-                SethlansUtils.getProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION.toString()));
-    }
-
-    @GetMapping(value = "/remaining_blender_versions")
-    public List<String> getNewBlenderVersions() {
-        List<String> newBlenderVersions = new ArrayList<>();
-        List<String> allSupportedVersions = BlenderUtils.listVersions();
-        Set<String> installedVersions = blenderBinaryDatabaseService.installedBlenderVersions();
-        for (String version : allSupportedVersions) {
-            if (!installedVersions.contains(version)) {
-                newBlenderVersions.add(version);
-            }
-        }
-        return newBlenderVersions;
-    }
-
-    @PostMapping(value = "/add_blender_version")
-    public boolean addNewBlenderVersion(@RequestParam String version) {
-        List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.listAll();
-        Set<BlenderBinaryOS> blenderBinaryOSSet = new HashSet<>();
-        if (sethlansNodeList.size() > 0) {
-            for (SethlansNode sethlansNode : sethlansNodeList) {
-                blenderBinaryOSSet.add(sethlansNode.getSethlansNodeOS());
-            }
-        } else {
-            blenderBinaryOSSet.add(BlenderBinaryOS.valueOf(SethlansUtils.getOS()));
-        }
-
-        for (BlenderBinaryOS blenderBinaryOS : blenderBinaryOSSet) {
-            BlenderBinary blenderBinary = new BlenderBinary();
-            blenderBinary.setBlenderVersion(version);
-            blenderBinary.setBlenderBinaryOS(blenderBinaryOS.toString());
-            blenderBinaryDatabaseService.saveOrUpdate(blenderBinary);
-        }
-        return true;
-    }
-
-
-    @GetMapping(value = "/set_primary_blender_version")
-    public boolean setPrimaryBlenderVersion(@RequestParam String version) {
-        writeProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION, version);
-        return true;
-    }
-
-
-    @GetMapping(value = "/installed_blender_versions")
-    public Map blenderBinaryList() {
-        Set<String> listOfVersions = blenderBinaryDatabaseService.installedBlenderVersions();
-        return Collections.singletonMap("installedBlenderVersions", listOfVersions);
-    }
-
-    @GetMapping(value = "/get_blender_list")
-    public List<BlenderBinaryInfo> getBlenderBinaryInfoList() {
-        List<BlenderBinaryInfo> blenderBinaryInfoList = new ArrayList<>();
-        Set<String> listOfVersions = blenderBinaryDatabaseService.installedBlenderVersions();
-        for (String version : listOfVersions) {
-            BlenderBinaryInfo blenderBinaryInfo = new BlenderBinaryInfo();
-            blenderBinaryInfo.setVersion(version);
-            blenderBinaryInfo.setBinaryOSList(blenderBinaryOSList(version));
-            if (SethlansUtils.getProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION.toString()).equals(version)) {
-                blenderBinaryInfo.setActive(true);
-            }
-            blenderBinaryInfoList.add(blenderBinaryInfo);
-        }
-        return blenderBinaryInfoList;
-    }
-
-    @GetMapping(value = "/get_access_key_list")
-    public List<AccessKey> getAccessKeyList() {
-        return accessKeyDatabaseService.listAll();
-    }
-
-    @GetMapping(value = "/get_key_from_server")
-    public String getAccessKeyFromServer() {
-        return SethlansUtils.getProperty(SethlansConfigKeys.ACCESS_KEY.toString());
-    }
-
-    @GetMapping(value = "/get_current_binary_os/{version}")
-    public List<BlenderBinaryOS> blenderBinaryOSList(@PathVariable String version) {
-        List<BlenderBinaryOS> blenderBinaryOS = new ArrayList<>();
-        List<BlenderBinary> blenderBinaries = blenderBinaryDatabaseService.listAll();
-        for (BlenderBinary blenderBinary : blenderBinaries) {
-            if (blenderBinary.getBlenderVersion().equals(version)) {
-                blenderBinaryOS.add(BlenderBinaryOS.valueOf(blenderBinary.getBlenderBinaryOS()));
-            }
-        }
-        return blenderBinaryOS;
     }
 
     @GetMapping(value = "/current_settings")
@@ -308,35 +128,6 @@ public class AdminController {
             return true;
         }
         return false;
-    }
-
-    @GetMapping(value = {"/selected_gpus"})
-    public List<GPUDevice> getSelectedGPU() {
-        List<String> gpuIdsList = Arrays.asList(gpuIds.split(","));
-        List<GPUDevice> gpuDeviceList = GPU.listDevices();
-        List<GPUDevice> selectedGPUs = new ArrayList<>();
-        for (String gpuID : gpuIdsList) {
-            for (GPUDevice aGpuDeviceList : gpuDeviceList) {
-                if (aGpuDeviceList.getDeviceID().equals(gpuID)) {
-                    selectedGPUs.add(aGpuDeviceList);
-                }
-            }
-        }
-        return selectedGPUs;
-    }
-
-    @GetMapping(value = {"/current_tilesize_gpu"})
-    public Integer getCurrentTileSizeGPU() {
-        return Integer.parseInt(this.tileSizeGPU);
-    }
-
-    @GetMapping(value = {"/current_cores"})
-    public Integer getCurrentCores() {
-        if (this.selectedCores == null || this.selectedCores.isEmpty()) {
-            return new CPU().getCores();
-        } else {
-            return Integer.parseInt(this.selectedCores);
-        }
     }
 
     @PostMapping(value = {"/change_roles/{id}"})
@@ -522,40 +313,9 @@ public class AdminController {
         return userToSend;
     }
 
-
-    @GetMapping(value = {"/current_tilesize_cpu"})
-    public Integer getCurrentTileSizeCPU() {
-        return Integer.parseInt(this.titleSizeCPU);
-    }
-
-    @GetMapping(value = {"/selected_compute_method"})
-    public ComputeType getSelectedComputeMethod() {
-        return this.selectedComputeMethod;
-    }
-
     @Autowired
     public void setSethlansUserDatabaseService(SethlansUserDatabaseService sethlansUserDatabaseService) {
         this.sethlansUserDatabaseService = sethlansUserDatabaseService;
-    }
-
-    @Autowired
-    public void setBlenderBinaryDatabaseService(BlenderBinaryDatabaseService blenderBinaryDatabaseService) {
-        this.blenderBinaryDatabaseService = blenderBinaryDatabaseService;
-    }
-
-    @Autowired
-    public void setNodeDiscoveryService(NodeDiscoveryService nodeDiscoveryService) {
-        this.nodeDiscoveryService = nodeDiscoveryService;
-    }
-
-    @Autowired
-    public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {
-        this.sethlansNodeDatabaseService = sethlansNodeDatabaseService;
-    }
-
-    @Autowired
-    public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
-        this.sethlansServerDatabaseService = sethlansServerDatabaseService;
     }
 
     @Autowired
@@ -568,8 +328,5 @@ public class AdminController {
         this.sethlansLogRetrievalService = sethlansLogRetrievalService;
     }
 
-    @Autowired
-    public void setAccessKeyDatabaseService(AccessKeyDatabaseService accessKeyDatabaseService) {
-        this.accessKeyDatabaseService = accessKeyDatabaseService;
-    }
+
 }
