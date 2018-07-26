@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -46,15 +46,13 @@ public class NodeQueryServiceImpl implements NodeQueryService {
     public void start() {
         try {
             Thread.sleep(15000);
-
-
             int count = 0;
             while (true) {
                 try {
                     Thread.sleep(5000);
                     for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
                         if (sethlansNode.isBenchmarkComplete()) {
-                            boolean response = sethlansAPIConnectionService.queryNode("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() + "/api/info/node_keep_alive");
+                            boolean response = sethlansAPIConnectionService.queryNode("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() + "/api/info/node_keep_alive", sethlansNode.getConnection_uuid());
                             if (!response && sethlansNode.isActive()) {
                                 LOG.debug(sethlansNode.getHostname() + " is down.");
                                 queueService.nodeStatusUpdateItem(sethlansNode.getConnection_uuid(), false);
@@ -63,7 +61,6 @@ public class NodeQueryServiceImpl implements NodeQueryService {
                                 LOG.debug(sethlansNode.getHostname() + " is back online.");
                             }
                         }
-
                     }
                     count++;
                     if (count == 10) {

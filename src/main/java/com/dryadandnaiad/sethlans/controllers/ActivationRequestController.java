@@ -71,6 +71,7 @@ public class ActivationRequestController {
             sethlansServer.setNetworkPort(port);
             sethlansServer.setConnection_uuid(connection_uuid);
             sethlansServer.setNodeUpdated(false);
+            sethlansServer.setPendingAcknowledgementResponse(true);
             sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
             LOG.debug(sethlansServer.toString());
             LOG.debug("Processed node activation request");
@@ -79,7 +80,7 @@ public class ActivationRequestController {
         }
     }
 
-    public void sendActivationResponseToServer(SethlansServer sethlansServer, SethlansNode sethlansNode) {
+    private void sendActivationResponseToServer(SethlansServer sethlansServer, SethlansNode sethlansNode) {
         LOG.debug("Sending Activation Response to Server");
         String ip = sethlansServer.getIpAddress();
         String port = sethlansServer.getNetworkPort();

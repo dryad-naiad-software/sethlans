@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -36,7 +36,7 @@ public interface SethlansAPIConnectionService {
 
     String downloadFromRemoteGET(String connectionURL, String params, String location);
 
-    boolean queryNode(String connectionURL);
+    boolean queryNode(String connectionURL, String params);
 
     boolean sendToRemoteGET(String connectionURL, String params);
 }

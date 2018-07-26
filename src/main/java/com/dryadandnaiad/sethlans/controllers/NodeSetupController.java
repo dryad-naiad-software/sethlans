@@ -20,14 +20,11 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.server.AccessKey;
-import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import com.dryadandnaiad.sethlans.services.config.UpdateComputeService;
 import com.dryadandnaiad.sethlans.services.database.AccessKeyDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
-import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,23 +42,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/setup")
 public class NodeSetupController {
     private SethlansServerDatabaseService sethlansServerDatabaseService;
-    private NodeActivationService nodeActivationService;
     private UpdateComputeService updateComputeService;
     private SethlansManagerService sethlansManagerService;
     private AccessKeyDatabaseService accessKeyDatabaseService;
     private static final Logger LOG = LoggerFactory.getLogger(NodeSetupController.class);
-
-
-
-    @GetMapping("/server_acknowledge/{id}")
-    public boolean acknowledgeNode(@PathVariable Long id) {
-        SethlansServer sethlansServer = sethlansServerDatabaseService.getById(id);
-        sethlansServer.setPendingAcknowledgementResponse(true);
-        LOG.debug(sethlansServer.toString());
-        sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
-        nodeActivationService.sendActivationResponseToServer(sethlansServer, SethlansUtils.getCurrentNodeInfo());
-        return true;
-    }
 
     @PostMapping(value = "/add_access_key")
     public boolean addAccessKey(@RequestParam String accessKey) {
@@ -70,7 +54,6 @@ public class NodeSetupController {
         accessKeyDatabaseService.saveOrUpdate(serverAccessKey);
         return true;
     }
-
 
     @GetMapping("/server_delete/{id}")
     public void deleteServer(@PathVariable Long id) {
@@ -99,12 +82,6 @@ public class NodeSetupController {
     @Autowired
     public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
         this.sethlansServerDatabaseService = sethlansServerDatabaseService;
-    }
-
-
-    @Autowired
-    public void setNodeActivationService(NodeActivationService nodeActivationService) {
-        this.nodeActivationService = nodeActivationService;
     }
 
     @Autowired

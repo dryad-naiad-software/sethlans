@@ -63,16 +63,7 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
             int responseCode = connection.getResponseCode();
             LOG.debug("HTTP Response code " + responseCode);
             if (responseCode == 200) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuilder stringBuilder = new StringBuilder();
-                String output;
-                while ((output = br.readLine()) != null) {
-                    stringBuilder.append(output);
-                }
-                if (stringBuilder.toString().contains("true")) {
-                    return true;
-                }
-                return !stringBuilder.toString().contains("false");
+                return checkBooleanResponse(connection);
             }
 
 
@@ -82,6 +73,19 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
             LOG.error(e.getMessage());
         }
         return false;
+    }
+
+    private boolean checkBooleanResponse(HttpsURLConnection connection) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        StringBuilder stringBuilder = new StringBuilder();
+        String output;
+        while ((output = br.readLine()) != null) {
+            stringBuilder.append(output);
+        }
+        if (stringBuilder.toString().contains("true")) {
+            return true;
+        }
+        return !stringBuilder.toString().contains("false");
     }
 
 
@@ -203,10 +207,10 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
     }
 
     @Override
-    public boolean queryNode(String connectionURL) {
+    public boolean queryNode(String connectionURL, String params) {
         HttpsURLConnection connection;
         try {
-            URL url = new URL(connectionURL);
+            URL url = new URL(connectionURL + "?" + params);
             SSLUtilities.trustAllHostnames();
             SSLUtilities.trustAllHttpsCertificates();
             connection = (HttpsURLConnection) url.openConnection();
@@ -215,7 +219,7 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
 
             int response = connection.getResponseCode();
             if (response == 200) {
-                return true;
+                return checkBooleanResponse(connection);
             }
         } catch (UnsupportedEncodingException e) {
             LOG.error("Unsupported Encoding Exception " + e.getMessage());

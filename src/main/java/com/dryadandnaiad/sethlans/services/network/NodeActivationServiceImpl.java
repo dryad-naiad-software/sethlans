@@ -82,10 +82,8 @@ public class NodeActivationServiceImpl implements NodeActivationService {
                         } catch (InterruptedException e) {
                             LOG.error(Throwables.getStackTraceAsString(e));
                         }
-
                     }
                 }
-
             }
             try {
                 Thread.sleep(5000);
