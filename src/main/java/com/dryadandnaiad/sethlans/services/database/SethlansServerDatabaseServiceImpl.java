@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,13 +20,9 @@
 package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
-import com.dryadandnaiad.sethlans.enums.NotificationOrigin;
-import com.dryadandnaiad.sethlans.events.SethlansEvent;
 import com.dryadandnaiad.sethlans.repositories.ServerRepository;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -39,10 +35,9 @@ import java.util.List;
  * Project: sethlans
  */
 @Service
-public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabaseService, ApplicationEventPublisherAware {
+public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabaseService {
 
     private ServerRepository serverRepository;
-    private ApplicationEventPublisher applicationEventPublisher;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
 
 
@@ -78,14 +73,12 @@ public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabase
         String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/nodeactivate/server_removal";
         String params = "connection_uuid=" + sethlansServer.getConnection_uuid();
         sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params);
-        this.applicationEventPublisher.publishEvent(new SethlansEvent(this, sethlansServer.getConnection_uuid() + "-" + NotificationOrigin.ACTIVATION_REQUEST, false));
         serverRepository.delete(sethlansServer);
     }
 
     @Override
     public void deleteByConnectionUUID(String uuid) {
         SethlansServer sethlansServer = getByConnectionUUID(uuid);
-        this.applicationEventPublisher.publishEvent(new SethlansEvent(this, sethlansServer.getConnection_uuid() + "-" + NotificationOrigin.ACTIVATION_REQUEST, false));
         serverRepository.delete(sethlansServer);
 
     }
@@ -111,9 +104,4 @@ public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabase
         this.serverRepository = serverRepository;
     }
 
-
-    @Override
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        this.applicationEventPublisher = applicationEventPublisher;
-    }
 }
