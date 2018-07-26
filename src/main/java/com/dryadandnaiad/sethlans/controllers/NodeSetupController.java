@@ -48,10 +48,10 @@ public class NodeSetupController {
     private static final Logger LOG = LoggerFactory.getLogger(NodeSetupController.class);
 
     @PostMapping(value = "/add_access_key")
-    public boolean addAccessKey(@RequestParam String accessKey) {
-        AccessKey serverAccessKey = new AccessKey();
-        serverAccessKey.setAccessKey(accessKey);
-        accessKeyDatabaseService.saveOrUpdate(serverAccessKey);
+    public boolean addAccessKey(@RequestParam String access_key) {
+        AccessKey accessKey = new AccessKey();
+        accessKey.setAccessKey(access_key);
+        accessKeyDatabaseService.saveOrUpdate(accessKey);
         return true;
     }
 
