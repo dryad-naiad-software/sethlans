@@ -118,6 +118,11 @@ public class ActivationRequestController {
     }
 
     @Autowired
+    public void setSethlansAPIConnectionService(SethlansAPIConnectionService sethlansAPIConnectionService) {
+        this.sethlansAPIConnectionService = sethlansAPIConnectionService;
+    }
+
+    @Autowired
     public void setAccessKeyDatabaseService(AccessKeyDatabaseService accessKeyDatabaseService) {
         this.accessKeyDatabaseService = accessKeyDatabaseService;
     }
