@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.domains.info.ServerDashBoardInfo;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
+import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created Mario Estrella on 4/2/2018.
@@ -47,6 +49,8 @@ import java.util.List;
 @Profile({"SERVER", "DUAL", "SETUP"})
 @RequestMapping("/api/info")
 public class ServerInfoController {
+    private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
+
     @Value("${sethlans.configDir}")
     private String configDir;
 
@@ -97,6 +101,11 @@ public class ServerInfoController {
         return numberOfActiveNodesArray;
     }
 
+    @GetMapping(value = {"/installed_blender_versions"})
+    public Set<String> getInstalledBlenderVersions() {
+        return blenderBinaryDatabaseService.installedBlenderVersions();
+    }
+
     @GetMapping(value = {"/server_total_slots"})
     public int getTotalSlots() {
         int totalSlotsCount = 0;
@@ -143,6 +152,11 @@ public class ServerInfoController {
         return serverDashBoardInfo;
     }
 
+
+    @Autowired
+    public void setBlenderBinaryDatabaseService(BlenderBinaryDatabaseService blenderBinaryDatabaseService) {
+        this.blenderBinaryDatabaseService = blenderBinaryDatabaseService;
+    }
 
     @Autowired
     public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {

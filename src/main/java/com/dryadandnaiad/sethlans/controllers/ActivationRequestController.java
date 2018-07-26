@@ -19,9 +19,12 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.services.database.AccessKeyDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
+import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +50,8 @@ public class ActivationRequestController {
     private static final Logger LOG = LoggerFactory.getLogger(ActivationRequestController.class);
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private AccessKeyDatabaseService accessKeyDatabaseService;
+    private SethlansAPIConnectionService sethlansAPIConnectionService;
+
 
     @RequestMapping(value = "/request", method = RequestMethod.POST)
     public boolean nodeActivationRequest(@RequestParam String serverhostname, @RequestParam String ipAddress,
@@ -69,8 +74,19 @@ public class ActivationRequestController {
             sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
             LOG.debug(sethlansServer.toString());
             LOG.debug("Processed node activation request");
+            sendActivationResponseToServer(sethlansServer, SethlansUtils.getCurrentNodeInfo());
             return true;
         }
+    }
+
+    public void sendActivationResponseToServer(SethlansServer sethlansServer, SethlansNode sethlansNode) {
+        LOG.debug("Sending Activation Response to Server");
+        String ip = sethlansServer.getIpAddress();
+        String port = sethlansServer.getNetworkPort();
+        String responseURL = "https://" + ip + ":" + port + "/api/nodeactivate/response";
+        String params = "nodehostname=" + sethlansNode.getHostname() + "&ipAddress=" + sethlansNode.getIpAddress()
+                + "&port=" + sethlansNode.getNetworkPort() + "&connection_uuid=" + sethlansServer.getConnection_uuid();
+        sethlansAPIConnectionService.sendToRemotePOST(responseURL, params);
     }
 
     @RequestMapping(value = "/removal", method = RequestMethod.POST)

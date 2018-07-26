@@ -24,19 +24,20 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
-import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
-import java.util.*;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created Mario Estrella on 2/11/18.
@@ -47,10 +48,8 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/info")
 public class InfoController {
-    private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
     private List<String> blenderVersions = BlenderUtils.listVersions();
     private static final Logger LOG = LoggerFactory.getLogger(InfoController.class);
-
 
     @Value("${sethlans.configDir}")
     private String configDir;
@@ -64,17 +63,10 @@ public class InfoController {
     @Value("${sethlans.computeMethod}")
     private ComputeType computeType;
 
-
     @GetMapping(value = {"/first_time"})
     public boolean isFirstTime() {
         return firstTime;
     }
-
-    @GetMapping(value = {"/installed_blender_versions"})
-    public Set<String> getInstalledBlenderVersions() {
-        return blenderBinaryDatabaseService.installedBlenderVersions();
-    }
-
 
     @GetMapping(value = {"/version"})
     public Map getVersion() {
@@ -103,7 +95,6 @@ public class InfoController {
         return Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.GETTING_STARTED.toString()));
     }
 
-
     @GetMapping(value = {"/available_roles"})
     public EnumSet<Role> getRoles() {
         return EnumSet.allOf(Role.class);
@@ -130,7 +121,6 @@ public class InfoController {
         }
     }
 
-
     @GetMapping(value = {"/sethlans_mode"})
     public Map getSethlansMode() {
         return Collections.singletonMap("mode", mode.toString());
@@ -141,10 +131,6 @@ public class InfoController {
         return Collections.singletonMap("ip", SethlansUtils.getIP());
     }
 
-    @Autowired
-    public void setBlenderBinaryDatabaseService(BlenderBinaryDatabaseService blenderBinaryDatabaseService) {
-        this.blenderBinaryDatabaseService = blenderBinaryDatabaseService;
-    }
 
 
 }

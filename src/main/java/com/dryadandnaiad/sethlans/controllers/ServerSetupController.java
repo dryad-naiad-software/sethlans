@@ -20,7 +20,6 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
-import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
@@ -55,21 +54,6 @@ public class ServerSetupController {
     private static final Logger LOG = LoggerFactory.getLogger(ServerSetupController.class);
     @Value("${sethlans.configDir}")
     private String configDir;
-
-
-    @GetMapping("/auto_acknowledge/{connection_id}")
-    public void autoAcknowledgeNode(@PathVariable String connection_id) {
-        SethlansServer sethlansServer = SethlansUtils.getCurrentServerInfo();
-        sethlansServer.setConnection_uuid(connection_id);
-        nodeActivationService.sendActivationResponseToServer(sethlansServer, sethlansNodeDatabaseService.getByConnectionUUID(connection_id));
-    }
-
-    @PostMapping("/multi_auto_acknowledge")
-    public void multiAutoAcknowledge(@RequestBody String[] connectionIdArray) {
-        for (String connectionId : connectionIdArray) {
-            autoAcknowledgeNode(connectionId);
-        }
-    }
 
 
     @PostMapping("/multi_node_add")
@@ -123,7 +107,6 @@ public class ServerSetupController {
         SethlansNode newNode = nodeDiscoveryService.discoverUnicastNode(sethlansNodeToReplace.getIpAddress(), sethlansNodeToReplace.getNetworkPort());
         sethlansNodeDatabaseService.saveOrUpdate(newNode);
         nodeActivationService.sendActivationRequestToNode(newNode, SethlansUtils.getCurrentServerInfo(), accessKey);
-        autoAcknowledgeNode(newNode.getConnection_uuid());
         return true;
     }
 

@@ -46,7 +46,6 @@ public class NodeActivationServiceImpl implements NodeActivationService {
     private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
     private BlenderBenchmarkService blenderBenchmarkService;
 
-
     @Override
     @Async
     public void sendActivationRequestToNode(SethlansNode sethlansNode, SethlansServer sethlansServer, String accessKey) {
@@ -59,20 +58,6 @@ public class NodeActivationServiceImpl implements NodeActivationService {
         if (sethlansAPIConnectionService.sendToRemotePOST(activateURL, params)) {
             addBlenderBinary(sethlansNode.getSethlansNodeOS().toString());
         }
-
-
-    }
-
-    @Override
-    @Async
-    public void sendActivationResponseToServer(SethlansServer sethlansServer, SethlansNode sethlansNode) {
-        LOG.debug("Sending Activation Response to Server");
-        String ip = sethlansServer.getIpAddress();
-        String port = sethlansServer.getNetworkPort();
-        String responseURL = "https://" + ip + ":" + port + "/api/nodeactivate/response";
-        String params = "nodehostname=" + sethlansNode.getHostname() + "&ipAddress=" + sethlansNode.getIpAddress()
-                + "&port=" + sethlansNode.getNetworkPort() + "&connection_uuid=" + sethlansServer.getConnection_uuid();
-        sethlansAPIConnectionService.sendToRemotePOST(responseURL, params);
     }
 
     @Override
@@ -133,7 +118,6 @@ public class NodeActivationServiceImpl implements NodeActivationService {
             newBlenderBinary.setBlenderVersion(blenderVersion);
             blenderBinaryDatabaseService.saveOrUpdate(newBlenderBinary);
         }
-
     }
 
     @Autowired
