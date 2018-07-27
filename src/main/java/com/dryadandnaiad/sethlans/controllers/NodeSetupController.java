@@ -49,6 +49,7 @@ public class NodeSetupController {
 
     @PostMapping(value = "/add_access_key")
     public boolean addAccessKey(@RequestParam String access_key) {
+        LOG.debug("Adding server Access Key to database");
         AccessKey accessKey = new AccessKey();
         accessKey.setAccessKey(access_key);
         accessKeyDatabaseService.saveOrUpdate(accessKey);

@@ -30,6 +30,7 @@ import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseServic
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
@@ -208,5 +209,10 @@ public class NodeInfoController {
     @GetMapping(value = {"/compute_type"})
     public ComputeType getCurrentComputeType() {
         return computeType;
+    }
+
+    @Autowired
+    public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
+        this.sethlansServerDatabaseService = sethlansServerDatabaseService;
     }
 }
