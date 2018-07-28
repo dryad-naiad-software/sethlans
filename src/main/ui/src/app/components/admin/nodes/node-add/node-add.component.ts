@@ -18,6 +18,9 @@
  */
 
 import {Component, OnInit} from '@angular/core';
+import {ComputeMethod} from '../../../../enums/compute.method.enum';
+import {NodeInfo} from '../../../../models/node_info.model';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-node-add',
@@ -25,12 +28,57 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./node-add.component.scss']
 })
 export class NodeAddComponent implements OnInit {
+  ipAddress: string;
+  port: string;
+  nodeToAdd: NodeInfo;
+  summaryComplete: boolean = false;
+  computeMethod: any = ComputeMethod;
+  connectionID: string;
+  accessKey: string;
+  wizardModes: any = NodeWizardMode;
+  selectedMode: NodeWizardMode;
+  currentMode: NodeWizardMode;
+  keyPresent: boolean;
 
-  constructor() {
+  constructor(private http: HttpClient) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
+    this.nodeToAdd = new NodeInfo();
+    this.currentMode = NodeWizardMode.Start;
   }
 
   ngOnInit() {
+    this.http.get('/api/management/get_key_from_server', {responseType: 'text'}).subscribe((key: string) => this.accessKey = key);
   }
 
+  setWizardMode() {
+    this.currentMode = this.selectedMode;
+  }
+
+  verifyNode() {
+    this.http.get('/api/management/is_key_present?ip=' + this.ipAddress + '&port=' + this.port).subscribe((value: boolean) => {
+      this.keyPresent = value;
+      console.log(value);
+      if (value) {
+        this.http.get('/api/management/node_check?ip=' + this.ipAddress + '&port=' + this.port).subscribe((node: NodeInfo) => {
+          if (node != null) {
+            this.nodeToAdd = node;
+          }
+        });
+      }
+    });
+
+  }
+
+  addNode() {
+    this.http.get('/api/setup/node_add?ip=' + this.ipAddress + '&port=' + this.port, {responseType: 'text'}).subscribe((connectionID: string) => {
+      this.connectionID = connectionID;
+    });
+  }
+
+}
+
+enum NodeWizardMode {
+  Start,
+  Manual,
+  Scan
 }

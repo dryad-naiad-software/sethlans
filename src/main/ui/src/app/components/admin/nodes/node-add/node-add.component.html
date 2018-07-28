@@ -16,7 +16,82 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
-
-<p>
-  node-add works!
-</p>
+<div class="row pb-5">
+  <div class="col-md-6 m-auto">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Add Sethlans Node Wizard</h4>
+      </div>
+      <div class="card-body">
+        <!--Start Screen-->
+        <div *ngIf="currentMode === wizardModes.Start">
+          <div class="text-center">The following access key must be present on the node(s) before starting this wizard.
+            <br/>
+            <br/>
+            <strong>Server Access Key: <span class="text-info">{{accessKey}}</span></strong>
+          </div>
+          <hr/>
+          <div class="row">
+            <div class="col-md-6 m-auto">
+              <p>Which action would you like to perform?</p>
+              <form #wizardSelection="ngForm" class="editForm">
+                <fieldset class="form-group">
+                  <div class="form-check" ngbTooltip="Manually add node(s)" placement="left">
+                    <label class="form-check-label">
+                      <input type="radio"
+                             name="mode"
+                             class="form-check-input"
+                             #mode="ngModel"
+                             [(ngModel)]="selectedMode"
+                             value="{{wizardModes.Manual}}"
+                             required>Add Node
+                    </label>
+                  </div>
+                  <div class="form-check" ngbTooltip="Scan and add node(s)" placement="left">
+                    <label class="form-check-label">
+                      <input type="radio"
+                             name="mode"
+                             class="form-check-input"
+                             #mode="ngModel"
+                             [(ngModel)]="selectedMode"
+                             value="{{wizardModes.Scan}}"
+                             required>Scan for Nodes
+                    </label>
+                  </div>
+                </fieldset>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!--Manual Add-->
+        <div *ngIf="currentMode == wizardModes.Manual">
+          <form #addNodeForm="ngForm" class="editForm">
+            <div class="form-group">
+              <label for="ipAddress">IP Address or Hostname</label>
+              <input type="text" class="form-control" id="ipAddress" name="ipAddress" [(ngModel)]="ipAddress"
+                     (keydown.enter)="verifyNode()" required>
+            </div>
+            <div class="form-group">
+              <label for="port">Port</label>
+              <input type="number" class="form-control" id="port" name="port" [(ngModel)]="port"
+                     (keydown.enter)="verifyNode()" required>
+            </div>
+          </form>
+        </div>
+        <!--Scan for Nodes on Network-->
+        <div *ngIf="currentMode === wizardModes.Scan">
+        </div>
+      </div>
+      <div class="card-footer">
+        <nav>
+          <button *ngIf="currentMode == wizardModes.Start" [disabled]="selectedMode == null"
+                  class="btn btn-outline-primary float-right" (click)="setWizardMode()"> Next
+          </button>
+          <button *ngIf="currentMode == wizardModes.Manual" class="btn btn-outline-primary float-right"
+                  (click)="verifyNode()"> Next
+          </button>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>

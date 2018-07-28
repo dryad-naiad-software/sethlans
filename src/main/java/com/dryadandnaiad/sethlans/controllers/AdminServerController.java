@@ -27,6 +27,7 @@ import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
+import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,8 @@ public class AdminServerController {
     private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
     private NodeDiscoveryService nodeDiscoveryService;
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
+    private SethlansAPIConnectionService sethlansAPIConnectionService;
+
 
     @GetMapping(value = "/get_current_binary_os/{version}")
     public List<BlenderBinaryOS> blenderBinaryOSList(@PathVariable String version) {
@@ -182,6 +185,14 @@ public class AdminServerController {
         return nodeDiscoveryService.discoverUnicastNode(ip, port);
     }
 
+    @GetMapping(value = "/is_key_present")
+    public boolean isKeyPresentOnNode(@RequestParam String ip, @RequestParam String port) {
+        String connection = "https://" + ip + ":" + port + "/api/info/check_key";
+        String params = "check_key=" + SethlansUtils.getProperty(SethlansConfigKeys.ACCESS_KEY.toString());
+        return sethlansAPIConnectionService.queryNode(connection, params);
+
+    }
+
     @GetMapping(value = "/set_primary_blender_version")
     public boolean setPrimaryBlenderVersion(@RequestParam String version) {
         writeProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION, version);
@@ -203,4 +214,8 @@ public class AdminServerController {
         this.blenderBinaryDatabaseService = blenderBinaryDatabaseService;
     }
 
+    @Autowired
+    public void setSethlansAPIConnectionService(SethlansAPIConnectionService sethlansAPIConnectionService) {
+        this.sethlansAPIConnectionService = sethlansAPIConnectionService;
+    }
 }

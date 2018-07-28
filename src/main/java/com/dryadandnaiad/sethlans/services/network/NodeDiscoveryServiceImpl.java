@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,6 +20,8 @@
 package com.dryadandnaiad.sethlans.services.network;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
@@ -100,10 +102,11 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
     @Override
     public SethlansNode discoverUnicastNode(String ip, String port) {
         LOG.debug("Searching for Sethlans Node at " + ip + ":" + port);
+        String accessKey = SethlansUtils.getProperty(SethlansConfigKeys.ACCESS_KEY.toString());
         Gson gson = new Gson();
         SethlansNode sethlansNode = null;
         try {
-            sethlansNode = gson.fromJson(getRawDataService.getNodeResult("https://" + ip + ":" + port + "/api/info/nodeinfo"), SethlansNode.class);
+            sethlansNode = gson.fromJson(getRawDataService.getNodeResult("https://" + ip + ":" + port + "/api/info/nodeinfo" + "/?access_key=" + accessKey), SethlansNode.class);
             sethlansNode.setPendingActivation(true);
             sethlansNode.setDisabled(false);
             sethlansNode.setActive(false);

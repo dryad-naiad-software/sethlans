@@ -26,6 +26,7 @@ import com.dryadandnaiad.sethlans.domains.info.NodeInfo;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
+import com.dryadandnaiad.sethlans.services.database.AccessKeyDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
@@ -33,7 +34,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,7 +56,7 @@ import java.util.List;
 public class NodeInfoController {
     private static final Logger LOG = LoggerFactory.getLogger(NodeInfoController.class);
     private SethlansServerDatabaseService sethlansServerDatabaseService;
-
+    private AccessKeyDatabaseService accessKeyDatabaseService;
     private List<ComputeType> availableMethods = SethlansUtils.getAvailableMethods();
     private Integer totalCores = new CPU().getCores();
     private List<GPUDevice> gpuDevices = GPU.listDevices();
@@ -77,9 +81,20 @@ public class NodeInfoController {
         return sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) != null;
     }
 
-    @RequestMapping(value = "/nodeinfo", method = RequestMethod.GET)
-    public NodeInfo getNodeInfo() {
-        return SethlansUtils.getNodeInfo();
+    @GetMapping(value = "/nodeinfo")
+    public NodeInfo getNodeInfo(@RequestParam String access_key) {
+        if (accessKeyDatabaseService.getByUUID(access_key) != null) {
+            return SethlansUtils.getNodeInfo();
+        }
+        return null;
+    }
+
+    @GetMapping(value = "/check_key")
+    public boolean isKeyValid(@RequestParam String access_key) {
+        if (accessKeyDatabaseService.getByUUID(access_key) != null) {
+            return true;
+        }
+        return false;
     }
 
     @GetMapping(value = {"/is_gpu_combined"})
@@ -90,7 +105,7 @@ public class NodeInfoController {
     @GetMapping(value = {"/node_total_slots"})
     public Integer getTotalSlots() {
         boolean combined = Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.COMBINE_GPU.toString()));
-        NodeInfo nodeInfo = getNodeInfo();
+        NodeInfo nodeInfo = SethlansUtils.getNodeInfo();
         switch (computeType) {
             case CPU:
                 return 1;
@@ -185,7 +200,7 @@ public class NodeInfoController {
     @GetMapping(value = {"/node_dashboard"})
     public NodeDashBoardInfo getNodeDashBoard() {
         NodeDashBoardInfo nodeDashBoardInfo = new NodeDashBoardInfo();
-        NodeInfo nodeInfo = getNodeInfo();
+        NodeInfo nodeInfo = SethlansUtils.getNodeInfo();
         nodeDashBoardInfo.setComputeType(getCurrentComputeType());
         nodeDashBoardInfo.setCpuName(nodeInfo.getCpuinfo().getName());
         nodeDashBoardInfo.setFreeSpace(getClientFreeSpace());
@@ -199,7 +214,6 @@ public class NodeInfoController {
         nodeDashBoardInfo.setAvailableGPUModels(getAvailableGPUModels());
         return nodeDashBoardInfo;
     }
-
 
     @GetMapping(value = {"/selected_cores"})
     public String getSelectedCores() {
@@ -215,5 +229,10 @@ public class NodeInfoController {
     @Autowired
     public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
         this.sethlansServerDatabaseService = sethlansServerDatabaseService;
+    }
+
+    @Autowired
+    public void setAccessKeyDatabaseService(AccessKeyDatabaseService accessKeyDatabaseService) {
+        this.accessKeyDatabaseService = accessKeyDatabaseService;
     }
 }
