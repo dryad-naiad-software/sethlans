@@ -27,7 +27,8 @@
             <span *ngIf="serverListToggle" class="fas fa-key">&nbsp;</span> <span *ngIf="serverListToggle">Access Key List</span>
             <span *ngIf="!serverListToggle" class="fas fa-server">&nbsp;</span> <span *ngIf="!serverListToggle">Server List</span>
           </button>
-          <button *ngIf="!serverListToggle" class="ml-2 btn btn-outline-dark float-right" (click)="addAccessKey()">
+          <button *ngIf="!serverListToggle" class="ml-2 btn btn-outline-dark float-right"
+                  (click)="addAccessKeyModal(addAccessKey)">
             <span class="fas fa-plus">&nbsp;</span> <span>Add Access Key</span>
           </button>
         </h4>
@@ -108,19 +109,19 @@
 </div>
 
 <!--Delete Server Confirmation-->
-<ng-template #deleteServerConfirmation let-c="close" let-d="dismiss">
+<ng-template #deleteServerConfirmation let-c="close('Close click')" let-d="dismiss('Cross click')">
   <div class="modal-header">
     <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Delete Server</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+    <button type="button" class="close" aria-label="Close" (click)="d">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
     <p>Are you sure you want to delete <strong>{{selectedServer.hostname}}</strong>?</p>
-    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c('Close click')">No
+    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c">No
     </button>
     <button type="button" class="btn btn-outline-danger ml-auto float-right"
-            (click)="c('Close click'); deleteServer(selectedServer.id)">Yes
+            (click)="c; deleteServer(selectedServer.id)">Yes
     </button>
   </div>
 
@@ -128,39 +129,39 @@
 
 
 <!--Delete Server Confirmation-->
-<ng-template #deleteAccessKeyConfirmation let-c="close" let-d="dismiss">
+<ng-template #deleteAccessKeyConfirmation let-c="close('Close click')" let-d="dismiss('Cross click')">
   <div class="modal-header">
     <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Delete Server</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+    <button type="button" class="close" aria-label="Close" (click)="d">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
     <p>Are you sure you want to delete <strong>{{selectedKey.accessKey}}</strong>?</p>
-    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c('Close click')">No
+    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c">No
     </button>
     <button type="button" class="btn btn-outline-danger ml-auto float-right"
-            (click)="c('Close click'); deleteKey(selectedKey.id)">Yes
+            (click)="c; deleteKey(selectedKey.id)">Yes
     </button>
   </div>
 
 </ng-template>
 
 <!--Add Access Key Modal -->
-<ng-template #addAccessKey let-c="close" let-d="dismiss">
+<ng-template #addAccessKey let-c="close('Close click')" let-d="dismiss('Cross click')">
   <div class="modal-header">
-    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Add Access Ky</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Add Access Key</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
-    <p>Are you sure you want to delete <strong>{{selectedKey.accessKey}}</strong>?</p>
-    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c('Close click')">No
+    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c">No
     </button>
-    <button type="button" class="btn btn-outline-danger ml-auto float-right"
-            (click)="c('Close click'); deleteKey(selectedKey.id)">Yes
-    </button>
+
+  </div>
+  <div class="modal-footer">
+
   </div>
 
 </ng-template>

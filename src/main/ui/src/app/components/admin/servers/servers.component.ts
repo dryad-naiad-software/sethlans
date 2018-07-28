@@ -44,6 +44,7 @@ export class ServersComponent implements OnInit {
   selectedServer: ServerInfo;
   selectedKey: AccessKey;
   serverListToggle: boolean = true;
+  keyToAdd: string;
 
   constructor(private http: HttpClient, private serverListService: ServerListService, private modalService: NgbModal, private accessKeyListService: AccessKeyListService) {
   }
@@ -54,8 +55,12 @@ export class ServersComponent implements OnInit {
     scheduler.subscribe(() => this.getInfo());
   }
 
-  addAccessKey() {
-
+  addAccessKeyModal(content) {
+    this.keyToAdd = '';
+    let options: NgbModalOptions = {
+      backdrop: 'static'
+    };
+    this.modalService.open(content, options);
   }
 
   getInfo() {
