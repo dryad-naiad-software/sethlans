@@ -75,6 +75,8 @@ import {LogsComponent} from './components/admin/logs/logs.component';
 import {UserListService} from './services/user_list.service';
 import {NodeListService} from './services/node_list.service';
 import {NodeAddComponent} from './components/admin/nodes/node-add/node-add.component';
+import {ServerListService} from './services/server_list.service';
+import {AccessKeyListService} from './services/access_key_list.service';
 
 @NgModule({
   declarations: [
@@ -129,7 +131,7 @@ import {NodeAddComponent} from './components/admin/nodes/node-add/node-add.compo
     NgbModule.forRoot(),
     AppRoutingModule
   ],
-  providers: [WindowRef, LoginService, ProjectListService, UserListService, NodeListService, {
+  providers: [WindowRef, LoginService, ProjectListService, UserListService, NodeListService, ServerListService, AccessKeyListService, {
     provide: HTTP_INTERCEPTORS,
     useClass: XhrInterceptor,
     multi: true

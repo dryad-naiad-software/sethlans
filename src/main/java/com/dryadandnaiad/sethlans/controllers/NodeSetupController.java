@@ -56,6 +56,11 @@ public class NodeSetupController {
         return true;
     }
 
+    @GetMapping("/access_key_delete/{id}")
+    public void deleteKey(@PathVariable Long id) {
+        accessKeyDatabaseService.delete(id);
+    }
+
     @GetMapping("/server_delete/{id}")
     public void deleteServer(@PathVariable Long id) {
         sethlansServerDatabaseService.delete(id);
