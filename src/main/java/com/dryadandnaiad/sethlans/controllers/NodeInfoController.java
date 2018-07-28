@@ -73,6 +73,7 @@ public class NodeInfoController {
 
     @GetMapping(value = "/node_keep_alive")
     public boolean nodeKeepAlive(@RequestParam String connection_uuid) {
+        LOG.debug("Keep alive received");
         return sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) != null;
     }
 

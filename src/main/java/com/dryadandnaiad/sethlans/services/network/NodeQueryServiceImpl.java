@@ -52,7 +52,7 @@ public class NodeQueryServiceImpl implements NodeQueryService {
                     Thread.sleep(5000);
                     for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
                         if (sethlansNode.isBenchmarkComplete()) {
-                            boolean response = sethlansAPIConnectionService.queryNode("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() + "/api/info/node_keep_alive", sethlansNode.getConnection_uuid());
+                            boolean response = sethlansAPIConnectionService.queryNode("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() + "/api/info/node_keep_alive", "connection_uuid=" + sethlansNode.getConnection_uuid());
                             if (!response && sethlansNode.isActive()) {
                                 LOG.debug(sethlansNode.getHostname() + " is down.");
                                 queueService.nodeStatusUpdateItem(sethlansNode.getConnection_uuid(), false);
