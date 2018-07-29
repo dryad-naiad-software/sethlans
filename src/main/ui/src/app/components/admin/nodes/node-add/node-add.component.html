@@ -27,8 +27,7 @@
           <li>
             <button type="button" class="btn btn-circle btn-lg"
                     [ngClass]="currentMode === wizardModes.Start ? 'btn-outline-primary':'btn-outline-dark'"
-                    placement="top"
-                    ngbTooltip="Mode Selection" (click)="currentMode = wizardModes.Start">
+                    (click)="currentMode = wizardModes.Start">
               <i class="fas fa-flag-checkered"></i></button>
           </li>
           <li>
@@ -36,7 +35,7 @@
                     [disabled]="addType == null"
                     [ngClass]="currentMode === wizardModes.Add ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
-                    ngbTooltip="Mode Selection" (click)="currentMode = wizardModes.Add">
+                    ngbTooltip="Node Form" (click)="currentMode = wizardModes.Add">
               <i class="fas fa-plus"></i></button>
           </li>
           <li>
@@ -44,7 +43,7 @@
                     [disabled]="!summaryComplete"
                     [ngClass]="currentMode === wizardModes.Summary ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
-                    ngbTooltip="Mode Selection" (click)="currentMode = wizardModes.Summary">
+                    ngbTooltip="Summary" (click)="currentMode = wizardModes.Summary">
               <i class="fas fa-list-alt"></i></button>
           </li>
           <li>
@@ -94,12 +93,14 @@
         <!--Manual Add-->
         <div *ngIf="currentMode == wizardModes.Add && addType == wizardTypes.Manual">
           <ul class="nav nav-tabs p-2">
-            <li class="nav-item"><a [ngClass]="toggleMultiple ? '' : 'active'" class="nav-link"
-                                    (click)="toggleMultiple = false;" href="javascript:void(0)">Single Node</a></li>
-            <li class="nav-item"><a [ngClass]="toggleMultiple ? 'active' : ''" class="nav-link"
-                                    (click)="toggleMultiple = true;" href="javascript:void(0)">Multiple Nodes</a></li>
+            <li class="nav-item"><a [ngClass]="multipleNodeAdd ? '' : 'active'" class="nav-link"
+                                    (click)="multipleNodeAdd = false; clearNode()" href="javascript:void(0)">Single
+              Node</a></li>
+            <li class="nav-item"><a [ngClass]="multipleNodeAdd ? 'active' : ''" class="nav-link"
+                                    (click)="multipleNodeAdd = true; clearNode()" href="javascript:void(0)">Multiple
+              Nodes</a></li>
           </ul>
-          <form #addNodeForm="ngForm" class="editForm p-2" *ngIf="!toggleMultiple">
+          <form #addNodeForm="ngForm" class="editForm p-2" *ngIf="!multipleNodeAdd">
             <div class="form-group">
               <label for="ipAddress">IP Address or Hostname</label>
               <input type="text" class="form-control" id="ipAddress" name="ipAddress" [(ngModel)]="nodeItem.ipAddress"
@@ -111,16 +112,16 @@
                      required>
             </div>
           </form>
-          <form #addMultiNodeForm="ngForm" class="editForm p-2" *ngIf="toggleMultiple">
+          <form #addMultiNodeForm="ngForm" class="editForm p-2" *ngIf="multipleNodeAdd">
             <div class="form-group">
-              <label for="ipAddress">IP Address or Hostname</label>
-              <input type="text" class="form-control" id="ipAddress1" name="ipAddress"
+              <label for="nodeAddIPAddress">IP Address or Hostname</label>
+              <input type="text" class="form-control" id="nodeAddIPAddress" name="ipAddress"
                      [(ngModel)]="nodeItem.ipAddress"
                      required>
             </div>
             <div class="form-group">
-              <label for="port">Port</label>
-              <input type="number" class="form-control" id="port1" name="port" [(ngModel)]="nodeItem.port"
+              <label for="nodeAddPort">Port</label>
+              <input type="number" class="form-control" id="nodeAddPort" name="port" [(ngModel)]="nodeItem.port"
                      required>
             </div>
             <div class="btn-group">
@@ -143,63 +144,65 @@
               </mat-table>
               <mat-paginator #nodeListPaginator [pageSize]="5" [pageSizeOptions]="[10,25,50]"></mat-paginator>
 
-
             </div>
           </form>
         </div>
-        <div *ngIf="currentMode == wizardModes.Summary && addType == wizardTypes.Manual">
+        <div class="pt-3" *ngIf="currentMode == wizardModes.Summary && addType == wizardTypes.Manual">
           <div *ngIf="summaryComplete == false">
-            <p>Querying {{nodeItem.ipAddress}}:{{nodeItem.port}} &nbsp;&nbsp; <span
-              class="fa fa-circle-o-notch fa-spin"></span></p>
+            <p class="text-center">Querying {{nodeItem.ipAddress}}:{{nodeItem.port}} &nbsp;&nbsp; <span
+              class="fas fa-circle-notch fa-spin"></span></p>
           </div>
-          <div *ngIf="!keyPresent">
-            <p class="text-center">{{nodeItem.ipAddress}}:{{nodeItem.port}} is either offline or access key is not
-              present on node.</p>
+          <div *ngIf="summaryComplete == true">
+            <div *ngIf="!keyPresent">
+              <p class="text-center">{{nodeItem.ipAddress}}:{{nodeItem.port}} is either offline or access key is not
+                present on node.</p>
+            </div>
+            <div *ngIf="keyPresent && downloadComplete">
+              <table class="table table-striped">
+                <tr>
+                  <td>Hostname</td>
+                  <td>{{nodeToAdd.hostname}}</td>
+                </tr>
+                <tr>
+                  <td>IP Address</td>
+                  <td>{{nodeToAdd.ipAddress}}</td>
+                </tr>
+                <tr>
+                  <td>Network Port</td>
+                  <td>{{nodeToAdd.networkPort}}</td>
+                </tr>
+                <tr>
+                  <td>Node OS</td>
+                  <td>{{nodeToAdd.sethlansNodeOS}}</td>
+                </tr>
+                <tr>
+                  <td>Compute Type</td>
+                  <td *ngIf="nodeToAdd.computeType.toString().valueOf() == 'CPU_GPU'.valueOf()">CPU & GPU</td>
+                  <td *ngIf="nodeToAdd.computeType.toString().valueOf() != 'CPU_GPU'.valueOf()">
+                    {{nodeToAdd.computeType}}
+                  </td>
+                </tr>
+                <tr *ngIf="nodeToAdd.computeType.toString().valueOf() != 'GPU'.valueOf() ">
+                  <td>CPU Name</td>
+                  <td>{{nodeToAdd.cpuinfo.name}}</td>
+                </tr>
+                <tr *ngIf="nodeToAdd.computeType.toString().valueOf() != 'GPU'.valueOf()">
+                  <td>Cores</td>
+                  <td>{{nodeToAdd.selectedCores}}</td>
+                </tr>
+                <tr *ngIf="nodeToAdd.computeType.toString().valueOf() != 'CPU'.valueOf()">
+                  <td>Selected GPU(s)</td>
+                  <td>
+                    <ul class="list-unstyled">
+                      <li *ngFor="let gpu of nodeToAdd.selectedGPUModels"> {{gpu}}</li>
+                    </ul>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
 
-          </div>
-          <div *ngIf="keyPresent && downloadComplete">
-            <table class="table table-striped">
-              <tr>
-                <td>Hostname</td>
-                <td>{{nodeToAdd.hostname}}</td>
-              </tr>
-              <tr>
-                <td>IP Address</td>
-                <td>{{nodeToAdd.ipAddress}}</td>
-              </tr>
-              <tr>
-                <td>Network Port</td>
-                <td>{{nodeToAdd.networkPort}}</td>
-              </tr>
-              <tr>
-                <td>Node OS</td>
-                <td>{{nodeToAdd.sethlansNodeOS}}</td>
-              </tr>
-              <tr>
-                <td>Compute Type</td>
-                <td *ngIf="nodeToAdd.computeType.toString().valueOf() == 'CPU_GPU'.valueOf()">CPU & GPU</td>
-                <td *ngIf="nodeToAdd.computeType.toString().valueOf() != 'CPU_GPU'.valueOf()">
-                  {{nodeToAdd.computeType}}
-                </td>
-              </tr>
-              <tr *ngIf="nodeToAdd.computeType.toString().valueOf() != 'GPU'.valueOf() ">
-                <td>CPU Name</td>
-                <td>{{nodeToAdd.cpuinfo.name}}</td>
-              </tr>
-              <tr *ngIf="nodeToAdd.computeType.toString().valueOf() != 'GPU'.valueOf()">
-                <td>Cores</td>
-                <td>{{nodeToAdd.selectedCores}}</td>
-              </tr>
-              <tr *ngIf="nodeToAdd.computeType.toString().valueOf() != 'CPU'.valueOf()">
-                <td>Selected GPU(s)</td>
-                <td>
-                  <ul class="list-unstyled">
-                    <li *ngFor="let gpu of nodeToAdd.selectedGPUModels"> {{gpu}}</li>
-                  </ul>
-                </td>
-              </tr>
-            </table>
-          </div>
+
         </div>
         <!--Scan for Nodes on Network-->
         <div *ngIf="currentMode == wizardModes.Add && addType == wizardTypes.Scan">
@@ -218,7 +221,7 @@
                   class="btn btn-outline-primary float-right" (click)="currentMode = wizardModes.Add"> Next
           </button>
           <button *ngIf="currentMode == wizardModes.Add" class="btn btn-outline-primary float-right"
-                  (click)="verifySingleNode()"> Next
+                  (click)="queryNode()"> Next
           </button>
         </nav>
       </div>

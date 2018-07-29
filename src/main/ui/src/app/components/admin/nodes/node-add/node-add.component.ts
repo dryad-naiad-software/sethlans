@@ -45,7 +45,7 @@ export class NodeAddComponent implements OnInit {
   currentMode: NodeWizardMode;
   keyPresent: boolean;
   downloadComplete: boolean;
-  toggleMultiple: boolean = false;
+  multipleNodeAdd: boolean = false;
 
   constructor(private http: HttpClient) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
@@ -76,6 +76,11 @@ export class NodeAddComponent implements OnInit {
     window.location.href = '/admin/nodes';
   }
 
+  clearNode() {
+    this.nodeItem = new NodeItem();
+    this.summaryComplete = false;
+  }
+
 
   previous() {
     switch (this.currentMode) {
@@ -90,13 +95,26 @@ export class NodeAddComponent implements OnInit {
 
   addNodeToList() {
     this.multipleNodes.push(this.nodeItem);
-    this.nodeItem = new NodeItem();
+    this.clearNode();
     this.nodeListDataSource = new MatTableDataSource<any>(this.multipleNodes);
     this.nodeListDataSource.paginator = this.nodeListPaginator;
   }
 
+  queryNode() {
+    if (this.multipleNodeAdd) {
+      this.multiNodeQuery();
+    } else {
+      this.singleNodeQuery();
+    }
+  }
 
-  verifySingleNode() {
+  multiNodeQuery() {
+
+  }
+
+  singleNodeQuery() {
+    this.currentMode = NodeWizardMode.Summary;
+    this.summaryComplete = false;
     this.http.get('/api/management/is_key_present?ip=' + this.nodeItem.ipAddress + '&port=' + this.nodeItem.port).subscribe((value: boolean) => {
       this.keyPresent = value;
       console.log(value);
@@ -104,17 +122,14 @@ export class NodeAddComponent implements OnInit {
         this.http.get('/api/management/node_check?ip=' + this.nodeItem.ipAddress + '&port=' + this.nodeItem.port).subscribe((node: NodeInfo) => {
           if (node != null) {
             this.nodeToAdd = node;
-            this.currentMode = NodeWizardMode.Summary;
             this.summaryComplete = true;
             this.downloadComplete = true;
           } else {
-            this.currentMode = NodeWizardMode.Summary;
             this.summaryComplete = true;
             this.downloadComplete = false;
           }
         });
       } else {
-        this.currentMode = NodeWizardMode.Summary;
         this.summaryComplete = true;
       }
     });
