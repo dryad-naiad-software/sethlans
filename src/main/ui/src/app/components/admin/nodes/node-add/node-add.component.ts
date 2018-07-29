@@ -28,8 +28,8 @@ import {HttpClient} from '@angular/common/http';
   styleUrls: ['./node-add.component.scss']
 })
 export class NodeAddComponent implements OnInit {
-  ipAddress: string;
-  port: string;
+  multipleNodes: NodeItem[] = [];
+  nodeItem: NodeItem;
   nodeToAdd: NodeInfo;
   summaryComplete: boolean = false;
   computeMethod: any = ComputeMethod;
@@ -41,11 +41,13 @@ export class NodeAddComponent implements OnInit {
   currentMode: NodeWizardMode;
   keyPresent: boolean;
   downloadComplete: boolean;
+  toggleMultiple: boolean = false;
 
   constructor(private http: HttpClient) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
     this.nodeToAdd = new NodeInfo();
     this.currentMode = NodeWizardMode.Start;
+    this.nodeItem = new NodeItem();
   }
 
   ngOnInit() {
@@ -70,12 +72,26 @@ export class NodeAddComponent implements OnInit {
     this.currentMode = this.selectedMode;
   }
 
-  verifyNode() {
-    this.http.get('/api/management/is_key_present?ip=' + this.ipAddress + '&port=' + this.port).subscribe((value: boolean) => {
+  returnToNodes() {
+    window.location.href = '/admin/nodes';
+  }
+
+  returnToStart() {
+    this.currentMode = NodeWizardMode.Start;
+  }
+
+  addNodeToList() {
+    this.multipleNodes.push(this.nodeItem);
+    this.nodeItem = new NodeItem();
+  }
+
+
+  verifySingleNode() {
+    this.http.get('/api/management/is_key_present?ip=' + this.nodeItem.ipAddress + '&port=' + this.nodeItem.port).subscribe((value: boolean) => {
       this.keyPresent = value;
       console.log(value);
       if (value) {
-        this.http.get('/api/management/node_check?ip=' + this.ipAddress + '&port=' + this.port).subscribe((node: NodeInfo) => {
+        this.http.get('/api/management/node_check?ip=' + this.nodeItem.ipAddress + '&port=' + this.nodeItem.port).subscribe((node: NodeInfo) => {
           if (node != null) {
             this.nodeToAdd = node;
             this.showSummary = true;
@@ -96,11 +112,21 @@ export class NodeAddComponent implements OnInit {
   }
 
   addNode() {
-    this.http.get('/api/setup/node_add?ip=' + this.ipAddress + '&port=' + this.port, {responseType: 'text'}).subscribe((connectionID: string) => {
+    this.http.get('/api/setup/node_add?ip=' + this.nodeItem.ipAddress + '&port=' + this.nodeItem.port, {responseType: 'text'}).subscribe((connectionID: string) => {
       this.connectionID = connectionID;
     });
   }
 
+}
+
+class NodeItem {
+  ipAddress: string;
+  port: string;
+
+  constructor() {
+    this.ipAddress = '';
+    this.port = '';
+  }
 }
 
 enum NodeWizardMode {

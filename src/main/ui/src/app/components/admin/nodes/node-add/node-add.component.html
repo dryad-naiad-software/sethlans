@@ -67,16 +67,51 @@
         </div>
         <!--Manual Add-->
         <div *ngIf="currentMode == wizardModes.Manual && showSummary == false">
-          <form #addNodeForm="ngForm" class="editForm">
+          <ul class="nav nav-tabs">
+            <li class="nav-item"><a [ngClass]="toggleMultiple ? '' : 'active'" class="nav-link"
+                                    (click)="toggleMultiple = false;" href="javascript:void(0)">Single Node</a></li>
+            <li class="nav-item"><a [ngClass]="toggleMultiple ? 'active' : ''" class="nav-link"
+                                    (click)="toggleMultiple = true;" href="javascript:void(0)">Multiple Nodes</a></li>
+          </ul>
+          <br/>
+          <form #addNodeForm="ngForm" class="editForm" *ngIf="!toggleMultiple">
             <div class="form-group">
               <label for="ipAddress">IP Address or Hostname</label>
-              <input type="text" class="form-control" id="ipAddress" name="ipAddress" [(ngModel)]="ipAddress"
-                     (keydown.enter)="verifyNode()" required>
+              <input type="text" class="form-control" id="ipAddress" name="ipAddress" [(ngModel)]="nodeItem.ipAddress"
+                     (keydown.enter)="verifySingleNode()" required>
             </div>
             <div class="form-group">
               <label for="port">Port</label>
-              <input type="number" class="form-control" id="port" name="port" [(ngModel)]="port"
-                     (keydown.enter)="verifyNode()" required>
+              <input type="number" class="form-control" id="port" name="port" [(ngModel)]="nodeItem.port"
+                     (keydown.enter)="verifySingleNode()" required>
+            </div>
+          </form>
+          <form #addMultiNodeForm="ngForm" class="editForm" *ngIf="toggleMultiple">
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <label for="ipAddress">IP Address or Hostname</label>
+                  <input type="text" class="form-control" id="ipAddress1" name="ipAddress"
+                         [(ngModel)]="nodeItem.ipAddress"
+                         required>
+                </div>
+                <div class="form-group">
+                  <label for="port">Port</label>
+                  <input type="number" class="form-control" id="port1" name="port" [(ngModel)]="nodeItem.port"
+                         required>
+                </div>
+                <button class="btn btn-outline-dark float-right" (click)="addNodeToList()">Add Node</button>
+              </div>
+              <div class="col-6">
+                <h6>Node List:</h6>
+                <div class="list-group list-group-flush">
+                  <a *ngFor="let node of multipleNodes " href="javascript:void(0)"
+                     class="list-group-item list-group-item-action">
+                    {{node.ipAddress}} : {{node.port}}
+                  </a>
+                </div>
+
+              </div>
             </div>
           </form>
         </div>
@@ -139,6 +174,12 @@
 
       <div class="card-footer">
         <nav>
+          <button *ngIf="currentMode == wizardModes.Start" class="btn btn-outline-secondary float-left"
+                  (click)="returnToNodes()">Cancel
+          </button>
+          <button *ngIf="currentMode == wizardModes.Manual || currentMode == wizardModes.Scan"
+                  class="btn btn-outline-secondary float-left" (click)="returnToStart()">Back
+          </button>
           <button *ngIf="currentMode == wizardModes.Start" [disabled]="selectedMode == null"
                   class="btn btn-outline-primary float-right" (click)="setWizardMode()"> Next
           </button>
