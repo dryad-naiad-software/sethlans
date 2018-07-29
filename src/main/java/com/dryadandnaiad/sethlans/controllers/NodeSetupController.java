@@ -31,6 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.regex.Pattern;
+
 /**
  * Created Mario Estrella on 4/2/2018.
  * Dryad and Naiad Software LLC
@@ -48,11 +50,14 @@ public class NodeSetupController {
     private static final Logger LOG = LoggerFactory.getLogger(NodeSetupController.class);
 
     @PostMapping(value = "/add_access_key")
-    public boolean addAccessKey(@RequestParam String access_key) {
-        LOG.debug("Adding server Access Key to database");
-        AccessKey accessKey = new AccessKey();
-        accessKey.setAccessKey(access_key);
-        accessKeyDatabaseService.saveOrUpdate(accessKey);
+    public boolean addAccessKey(@RequestBody AccessKey access_key) {
+        Pattern uuid = Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
+        if (!uuid.matcher(access_key.getAccessKey()).matches()) {
+            LOG.debug("Key submitted in an invalid format. " + access_key.getAccessKey());
+            return false;
+        }
+        LOG.debug("Adding server access key to database:" + access_key.getAccessKey());
+        accessKeyDatabaseService.saveOrUpdate(access_key);
         return true;
     }
 

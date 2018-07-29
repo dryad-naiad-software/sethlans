@@ -20,7 +20,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {ServerInfo} from '../../../models/server_info.model';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {ServerListService} from '../../../services/server_list.service';
 import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
 import {timer} from 'rxjs';
@@ -45,6 +45,7 @@ export class ServersComponent implements OnInit {
   selectedKey: AccessKey;
   serverListToggle: boolean = true;
   keyToAdd: string;
+  keyRejected: boolean = false;
 
   constructor(private http: HttpClient, private serverListService: ServerListService, private modalService: NgbModal, private accessKeyListService: AccessKeyListService) {
   }
@@ -53,6 +54,32 @@ export class ServersComponent implements OnInit {
     this.getInfo();
     let scheduler = timer(5000, 5000);
     scheduler.subscribe(() => this.getInfo());
+  }
+
+  addAccessKeyToNode() {
+    let accessKeyObject = new AccessKey();
+    accessKeyObject.accessKey = this.keyToAdd;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    this.http.post('/api/setup/add_access_key', JSON.stringify(accessKeyObject), httpOptions).subscribe((submitted: boolean) => {
+      if (submitted === true) {
+        this.keyRejected = false;
+        this.loadAccessKeyTable();
+        this.resetKey();
+      }
+      if (submitted === false) {
+        this.keyRejected = true;
+        this.loadAccessKeyTable();
+        this.resetKey();
+      }
+    });
+  }
+
+  resetKey() {
+    this.keyToAdd = '';
   }
 
   addAccessKeyModal(content) {

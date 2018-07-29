@@ -36,6 +36,7 @@
 
       <div class="card-body">
         <div *ngIf="!serverListToggle">
+          <div *ngIf="keyRejected" class="alert-danger text-center"><h6>Submitted key was invalid.</h6></div>
           <mat-table #accessKeyTable [dataSource]="accessKeyListDataSource">
             <ng-container matColumnDef="accessKey">
               <mat-header-cell *matHeaderCellDef>Access Key</mat-header-cell>
@@ -156,11 +157,24 @@
     </button>
   </div>
   <div class="modal-body">
-    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c">No
-    </button>
+    <div class="form-group" ngbTooltip="Access Key from server in order to manage node." placement="left">
+      <label for="keyToAddForm">Server Access Key:</label>
+      <input id="keyToAddForm"
+             type="text"
+             name="keyToAdd"
+             #keyToAddForm="ngModel"
+             [(ngModel)]="keyToAdd"
+             required
+             class="form-control form-control-sm"/>
+    </div>
 
   </div>
   <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c; resetKey()">Cancel
+    </button>
+    <button [disabled]="keyToAdd == ''" type="button" class="btn btn-outline-dark ml-auto float-right"
+            (click)="c; addAccessKeyToNode()">Add Key
+    </button>
 
   </div>
 
