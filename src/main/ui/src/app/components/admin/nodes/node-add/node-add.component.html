@@ -23,104 +23,138 @@
         <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Add Sethlans Node Wizard</h4>
       </div>
       <div class="card-body">
+        <ul class="nav nav-tabs justify-content-between pb-3">
+          <li>
+            <button type="button" class="btn btn-circle btn-lg"
+                    [ngClass]="currentMode === wizardModes.Start ? 'btn-outline-primary':'btn-outline-dark'"
+                    placement="top"
+                    ngbTooltip="Mode Selection" (click)="currentMode = wizardModes.Start">
+              <i class="fas fa-flag-checkered"></i></button>
+          </li>
+          <li>
+            <button type="button" class="btn btn-circle btn-lg"
+                    [disabled]="addType == null"
+                    [ngClass]="currentMode === wizardModes.Add ? 'btn-outline-primary':'btn-outline-dark'"
+                    placement="top"
+                    ngbTooltip="Mode Selection" (click)="currentMode = wizardModes.Add">
+              <i class="fas fa-plus"></i></button>
+          </li>
+          <li>
+            <button type="button" class="btn btn-circle btn-lg"
+                    [disabled]="!summaryComplete"
+                    [ngClass]="currentMode === wizardModes.Summary ? 'btn-outline-primary':'btn-outline-dark'"
+                    placement="top"
+                    ngbTooltip="Mode Selection" (click)="currentMode = wizardModes.Summary">
+              <i class="fas fa-list-alt"></i></button>
+          </li>
+          <li>
+            D
+          </li>
+        </ul>
         <!--Start Screen-->
         <div *ngIf="currentMode === wizardModes.Start">
-          <div class="text-center">The following access key must be present on the node(s) before starting this wizard.
-            <br/>
-            <br/>
-            <strong><span class="text-danger">{{accessKey}}</span></strong>
-            &nbsp;
-            <button class="btn btn-outline-info btn-sm" (click)="copyKey()">Copy to Clipboard</button>
+          <div class=" pt-2">
+            <p> Server Access Key:
+              <strong><span class="text-danger">&nbsp;{{accessKey}}</span></strong>
+              &nbsp;
+              <button class="btn btn-outline-info btn-sm" (click)="copyKey()">Copy to Clipboard</button>
+            </p>
           </div>
-          <hr/>
-          <div class="row">
-            <div class="col-md-6 m-auto">
-              <p>Which action would you like to perform?</p>
-              <form #wizardSelection="ngForm" class="editForm">
-                <fieldset class="form-group">
-                  <div class="form-check" ngbTooltip="Manually add node(s)" placement="left">
-                    <label class="form-check-label">
-                      <input type="radio"
-                             name="mode"
-                             class="form-check-input"
-                             #mode="ngModel"
-                             [(ngModel)]="selectedMode"
-                             value="{{wizardModes.Manual}}"
-                             required>Add Node(s)
-                    </label>
-                  </div>
-                  <div class="form-check" ngbTooltip="Scan and add node(s)" placement="left">
-                    <label class="form-check-label">
-                      <input type="radio"
-                             name="mode"
-                             class="form-check-input"
-                             #mode="ngModel"
-                             [(ngModel)]="selectedMode"
-                             value="{{wizardModes.Scan}}"
-                             required>Scan for Node(s)
-                    </label>
-                  </div>
-                </fieldset>
-              </form>
-            </div>
-          </div>
+
+          <p>Which action would you like to perform?</p>
+
+          <form #wizardSelection="ngForm" class="editForm">
+            <fieldset class="form-group">
+              <div class="form-check" ngbTooltip="Manually add node(s)" placement="left">
+                <label class="form-check-label">
+                  <input type="radio"
+                         name="mode"
+                         class="form-check-input"
+                         #mode="ngModel"
+                         [(ngModel)]="addType"
+                         value="{{wizardTypes.Manual}}"
+                         required>Add Node(s)
+                </label>
+              </div>
+              <div class="form-check" ngbTooltip="Scan and add node(s)" placement="left">
+                <label class="form-check-label">
+                  <input type="radio"
+                         name="mode"
+                         class="form-check-input"
+                         #mode="ngModel"
+                         [(ngModel)]="addType"
+                         value="{{wizardTypes.Scan}}"
+                         required>Scan for Node(s)
+                </label>
+              </div>
+            </fieldset>
+          </form>
+
         </div>
         <!--Manual Add-->
-        <div *ngIf="currentMode == wizardModes.Manual && showSummary == false">
-          <ul class="nav nav-tabs">
+        <div *ngIf="currentMode == wizardModes.Add && addType == wizardTypes.Manual">
+          <ul class="nav nav-tabs p-2">
             <li class="nav-item"><a [ngClass]="toggleMultiple ? '' : 'active'" class="nav-link"
                                     (click)="toggleMultiple = false;" href="javascript:void(0)">Single Node</a></li>
             <li class="nav-item"><a [ngClass]="toggleMultiple ? 'active' : ''" class="nav-link"
                                     (click)="toggleMultiple = true;" href="javascript:void(0)">Multiple Nodes</a></li>
           </ul>
-          <br/>
-          <form #addNodeForm="ngForm" class="editForm" *ngIf="!toggleMultiple">
+          <form #addNodeForm="ngForm" class="editForm p-2" *ngIf="!toggleMultiple">
             <div class="form-group">
               <label for="ipAddress">IP Address or Hostname</label>
               <input type="text" class="form-control" id="ipAddress" name="ipAddress" [(ngModel)]="nodeItem.ipAddress"
-                     (keydown.enter)="verifySingleNode()" required>
+                     required>
             </div>
             <div class="form-group">
               <label for="port">Port</label>
               <input type="number" class="form-control" id="port" name="port" [(ngModel)]="nodeItem.port"
-                     (keydown.enter)="verifySingleNode()" required>
+                     required>
             </div>
           </form>
-          <form #addMultiNodeForm="ngForm" class="editForm" *ngIf="toggleMultiple">
-            <div class="row">
-              <div class="col-6">
-                <div class="form-group">
-                  <label for="ipAddress">IP Address or Hostname</label>
-                  <input type="text" class="form-control" id="ipAddress1" name="ipAddress"
-                         [(ngModel)]="nodeItem.ipAddress"
-                         required>
-                </div>
-                <div class="form-group">
-                  <label for="port">Port</label>
-                  <input type="number" class="form-control" id="port1" name="port" [(ngModel)]="nodeItem.port"
-                         required>
-                </div>
-                <button class="btn btn-outline-dark float-right" (click)="addNodeToList()">Add Node</button>
-              </div>
-              <div class="col-6">
-                <h6>Node List:</h6>
-                <div class="list-group list-group-flush">
-                  <a *ngFor="let node of multipleNodes " href="javascript:void(0)"
-                     class="list-group-item list-group-item-action">
-                    {{node.ipAddress}} : {{node.port}}
-                  </a>
-                </div>
+          <form #addMultiNodeForm="ngForm" class="editForm p-2" *ngIf="toggleMultiple">
+            <div class="form-group">
+              <label for="ipAddress">IP Address or Hostname</label>
+              <input type="text" class="form-control" id="ipAddress1" name="ipAddress"
+                     [(ngModel)]="nodeItem.ipAddress"
+                     required>
+            </div>
+            <div class="form-group">
+              <label for="port">Port</label>
+              <input type="number" class="form-control" id="port1" name="port" [(ngModel)]="nodeItem.port"
+                     required>
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-outline-dark" (click)="addNodeToList()">Add To List</button>
+            </div>
 
-              </div>
+            <div class="form-group">
+              <hr/>
+              <mat-table #nodeListTable [dataSource]="nodeListDataSource">
+                <ng-container matColumnDef="ipAddress">
+                  <mat-header-cell *matHeaderCellDef>IP Address/HostName</mat-header-cell>
+                  <mat-cell *matCellDef="let node">{{node.ipAddress}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="port">
+                  <mat-header-cell *matHeaderCellDef>Port</mat-header-cell>
+                  <mat-cell *matCellDef="let node">{{node.port}}</mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="nodeListDisplayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: nodeListDisplayedColumns;"></mat-row>
+              </mat-table>
+              <mat-paginator #nodeListPaginator [pageSize]="5" [pageSizeOptions]="[10,25,50]"></mat-paginator>
+
+
             </div>
           </form>
         </div>
-        <div *ngIf="currentMode == wizardModes.Manual && showSummary == true">
+        <div *ngIf="currentMode == wizardModes.Summary && addType == wizardTypes.Manual">
           <div *ngIf="summaryComplete == false">
-            <p>Querying {{ipAddress}}:{{port}} &nbsp;&nbsp; <span class="fa fa-circle-o-notch fa-spin"></span></p>
+            <p>Querying {{nodeItem.ipAddress}}:{{nodeItem.port}} &nbsp;&nbsp; <span
+              class="fa fa-circle-o-notch fa-spin"></span></p>
           </div>
           <div *ngIf="!keyPresent">
-            <p class="text-center">{{ipAddress}}:{{port}} is either offline or access key is not present on node.</p>
+            <p class="text-center">{{nodeItem.ipAddress}}:{{nodeItem.port}} is either offline or access key is not
+              present on node.</p>
 
           </div>
           <div *ngIf="keyPresent && downloadComplete">
@@ -168,7 +202,7 @@
           </div>
         </div>
         <!--Scan for Nodes on Network-->
-        <div *ngIf="currentMode === wizardModes.Scan">
+        <div *ngIf="currentMode == wizardModes.Add && addType == wizardTypes.Scan">
         </div>
       </div>
 
@@ -177,14 +211,14 @@
           <button *ngIf="currentMode == wizardModes.Start" class="btn btn-outline-secondary float-left"
                   (click)="returnToNodes()">Cancel
           </button>
-          <button *ngIf="currentMode == wizardModes.Manual || currentMode == wizardModes.Scan"
-                  class="btn btn-outline-secondary float-left" (click)="returnToStart()">Back
+          <button *ngIf="currentMode != wizardModes.Start"
+                  class="btn btn-outline-secondary float-left" (click)="previous()">Previous
           </button>
-          <button *ngIf="currentMode == wizardModes.Start" [disabled]="selectedMode == null"
-                  class="btn btn-outline-primary float-right" (click)="setWizardMode()"> Next
+          <button *ngIf="currentMode == wizardModes.Start" [disabled]="addType == null"
+                  class="btn btn-outline-primary float-right" (click)="currentMode = wizardModes.Add"> Next
           </button>
-          <button *ngIf="currentMode == wizardModes.Manual" class="btn btn-outline-primary float-right"
-                  (click)="verifyNode()"> Next
+          <button *ngIf="currentMode == wizardModes.Add" class="btn btn-outline-primary float-right"
+                  (click)="verifySingleNode()"> Next
           </button>
         </nav>
       </div>

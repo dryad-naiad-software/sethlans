@@ -17,10 +17,11 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ComputeMethod} from '../../../../enums/compute.method.enum';
 import {NodeInfo} from '../../../../models/node_info.model';
 import {HttpClient} from '@angular/common/http';
+import {MatPaginator, MatTableDataSource} from '@angular/material';
 
 @Component({
   selector: 'app-node-add',
@@ -28,6 +29,9 @@ import {HttpClient} from '@angular/common/http';
   styleUrls: ['./node-add.component.scss']
 })
 export class NodeAddComponent implements OnInit {
+  @ViewChild(MatPaginator) nodeListPaginator: MatPaginator;
+  nodeListDataSource = new MatTableDataSource();
+  nodeListDisplayedColumns = ['ipAddress', 'port'];
   multipleNodes: NodeItem[] = [];
   nodeItem: NodeItem;
   nodeToAdd: NodeInfo;
@@ -35,9 +39,9 @@ export class NodeAddComponent implements OnInit {
   computeMethod: any = ComputeMethod;
   connectionID: string;
   accessKey: string;
-  showSummary: boolean = false;
   wizardModes: any = NodeWizardMode;
-  selectedMode: NodeWizardMode;
+  wizardTypes: any = NodeAddType;
+  addType: NodeAddType;
   currentMode: NodeWizardMode;
   keyPresent: boolean;
   downloadComplete: boolean;
@@ -68,21 +72,27 @@ export class NodeAddComponent implements OnInit {
     document.body.removeChild(selBox);
   }
 
-  setWizardMode() {
-    this.currentMode = this.selectedMode;
-  }
-
   returnToNodes() {
     window.location.href = '/admin/nodes';
   }
 
-  returnToStart() {
-    this.currentMode = NodeWizardMode.Start;
+
+  previous() {
+    switch (this.currentMode) {
+      case NodeWizardMode.Add:
+        this.currentMode = NodeWizardMode.Start;
+        break;
+      case NodeWizardMode.Summary:
+        this.currentMode = NodeWizardMode.Add;
+
+    }
   }
 
   addNodeToList() {
     this.multipleNodes.push(this.nodeItem);
     this.nodeItem = new NodeItem();
+    this.nodeListDataSource = new MatTableDataSource<any>(this.multipleNodes);
+    this.nodeListDataSource.paginator = this.nodeListPaginator;
   }
 
 
@@ -94,17 +104,17 @@ export class NodeAddComponent implements OnInit {
         this.http.get('/api/management/node_check?ip=' + this.nodeItem.ipAddress + '&port=' + this.nodeItem.port).subscribe((node: NodeInfo) => {
           if (node != null) {
             this.nodeToAdd = node;
-            this.showSummary = true;
+            this.currentMode = NodeWizardMode.Summary;
             this.summaryComplete = true;
             this.downloadComplete = true;
           } else {
+            this.currentMode = NodeWizardMode.Summary;
             this.summaryComplete = true;
-            this.showSummary = true;
             this.downloadComplete = false;
           }
         });
       } else {
-        this.showSummary = true;
+        this.currentMode = NodeWizardMode.Summary;
         this.summaryComplete = true;
       }
     });
@@ -129,8 +139,14 @@ class NodeItem {
   }
 }
 
+enum NodeAddType {
+  Manual,
+  Scan,
+}
+
 enum NodeWizardMode {
   Start,
-  Manual,
-  Scan
+  Add,
+  Summary,
+  Finished
 }
