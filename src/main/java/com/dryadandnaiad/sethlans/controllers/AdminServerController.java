@@ -30,6 +30,8 @@ import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +50,7 @@ import static com.dryadandnaiad.sethlans.utils.SethlansUtils.writeProperty;
 @RequestMapping("/api/management")
 @Profile({"SERVER", "DUAL"})
 public class AdminServerController {
+    private static final Logger LOG = LoggerFactory.getLogger(AdminServerController.class);
     private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
     private NodeDiscoveryService nodeDiscoveryService;
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
@@ -187,8 +190,9 @@ public class AdminServerController {
 
     @GetMapping(value = "/is_key_present")
     public boolean isKeyPresentOnNode(@RequestParam String ip, @RequestParam String port) {
-        String connection = "https://" + ip + ":" + port + "/api/info/check_key";
-        String params = "check_key=" + SethlansUtils.getProperty(SethlansConfigKeys.ACCESS_KEY.toString());
+        LOG.debug("Checking key");
+        String connection = "https://" + ip + ":" + port + "/api/info/check_key/";
+        String params = "access_key=" + SethlansUtils.getProperty(SethlansConfigKeys.ACCESS_KEY.toString());
         return sethlansAPIConnectionService.queryNode(connection, params);
 
     }

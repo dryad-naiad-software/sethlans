@@ -35,10 +35,12 @@ export class NodeAddComponent implements OnInit {
   computeMethod: any = ComputeMethod;
   connectionID: string;
   accessKey: string;
+  showSummary: boolean = false;
   wizardModes: any = NodeWizardMode;
   selectedMode: NodeWizardMode;
   currentMode: NodeWizardMode;
   keyPresent: boolean;
+  downloadComplete: boolean;
 
   constructor(private http: HttpClient) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
@@ -48,6 +50,20 @@ export class NodeAddComponent implements OnInit {
 
   ngOnInit() {
     this.http.get('/api/management/get_key_from_server', {responseType: 'text'}).subscribe((key: string) => this.accessKey = key);
+  }
+
+  copyKey() {
+    let selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = this.accessKey;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
   }
 
   setWizardMode() {
@@ -62,8 +78,18 @@ export class NodeAddComponent implements OnInit {
         this.http.get('/api/management/node_check?ip=' + this.ipAddress + '&port=' + this.port).subscribe((node: NodeInfo) => {
           if (node != null) {
             this.nodeToAdd = node;
+            this.showSummary = true;
+            this.summaryComplete = true;
+            this.downloadComplete = true;
+          } else {
+            this.summaryComplete = true;
+            this.showSummary = true;
+            this.downloadComplete = false;
           }
         });
+      } else {
+        this.showSummary = true;
+        this.summaryComplete = true;
       }
     });
 
