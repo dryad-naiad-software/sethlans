@@ -152,6 +152,14 @@ class NodeItem {
     this.ipAddress = '';
     this.port = '';
   }
+
+  nodeItemNotReady(): boolean {
+    if (this.ipAddress === '' || this.port === '') {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
 
 enum NodeAddType {

@@ -220,7 +220,8 @@
           <button *ngIf="currentMode == wizardModes.Start" [disabled]="addType == null"
                   class="btn btn-outline-primary float-right" (click)="currentMode = wizardModes.Add"> Next
           </button>
-          <button *ngIf="currentMode == wizardModes.Add" class="btn btn-outline-primary float-right"
+          <button [disabled]="nodeItem.nodeItemNotReady()" *ngIf="currentMode == wizardModes.Add"
+                  class="btn btn-outline-primary float-right"
                   (click)="queryNode()"> Next
           </button>
         </nav>
