@@ -95,7 +95,8 @@
         <div *ngIf="currentMode == wizardModes.Add && addType == wizardTypes.Manual">
           <ul class="nav nav-tabs p-2">
             <li class="nav-item"><a [ngClass]="multipleNodeAdd ? '' : 'active'" class="nav-link"
-                                    (click)="multipleNodeAdd = false; clearNode()" href="javascript:void(0)">Single
+                                    (click)="multipleNodeAdd = false; clearNode(); clearList()"
+                                    href="javascript:void(0)">Single
               Node</a></li>
             <li class="nav-item"><a [ngClass]="multipleNodeAdd ? 'active' : ''" class="nav-link"
                                     (click)="multipleNodeAdd = true; clearNode()" href="javascript:void(0)">Multiple
@@ -149,16 +150,44 @@
           </form>
         </div>
         <div class="pt-3" *ngIf="currentMode == wizardModes.Summary && addType == wizardTypes.Manual">
-          <div *ngIf="summaryComplete == false">
-            <p class="text-center">Querying {{nodeItem.ipAddress}}:{{nodeItem.port}} &nbsp;&nbsp; <span
-              class="fas fa-circle-notch fa-spin"></span></p>
+          <div *ngIf="summaryComplete == false && !multipleNodeAdd">
+            <h5>Checking Connection to Node:</h5>
+            <ul>
+              <li>Querying {{nodeItem.ipAddress}}:{{nodeItem.port}} &nbsp;&nbsp; <span
+                class="fas fa-circle-notch fa-spin"></span></li>
+            </ul>
+          </div>
+          <div *ngIf="summaryComplete == false && multipleNodeAdd">
+            <h5>Checking Connection to Nodes:</h5>
+            <ul>
+              <li *ngFor="let node of multipleNodes">Querying {{node.ipAddress}}:{{node.port}} &nbsp;&nbsp;<span
+                class="fas fa-circle-notch fa-spin"></span></li>
+            </ul>
           </div>
           <div *ngIf="summaryComplete == true">
-            <div *ngIf="!keyPresent">
-              <p class="text-center">{{nodeItem.ipAddress}}:{{nodeItem.port}} is either offline or access key is not
-                present on node.</p>
+            <!--Multiple Node Summary-->
+            <div *ngIf="multipleNodeAdd">
+              <h5>Connection Results:</h5>
+              <ul>
+                <li *ngFor="let node of multipleNodes">
+                  <span *ngIf="!node.active"> {{node.ipAddress}} : {{node.port}} is either offline or access key is not
+                present on node.</span>
+                  <span *ngIf="node.active"> {{node.ipAddress}} : {{node.port}} was found and is listed in the table on the next page.</span>
+                </li>
+              </ul>
+              <p class="text-center" *ngIf="nodesToAdd.length > 0">Display List</p>
             </div>
-            <div *ngIf="keyPresent && downloadComplete">
+            <!--Single Node Summary-->
+            <div *ngIf="!keyPresent && !multipleNodeAdd">
+              <h5>Connection Results:</h5>
+              <ul>
+                <li>{{nodeItem.ipAddress}}:{{nodeItem.port}} is either offline or access key is not
+                  present on node
+                </li>
+              </ul>
+            </div>
+            <div *ngIf="keyPresent && downloadComplete && !multipleNodeAdd">
+              <h5>Connection Results:</h5>
               <table class="table table-striped">
                 <tr>
                   <td>Hostname</td>

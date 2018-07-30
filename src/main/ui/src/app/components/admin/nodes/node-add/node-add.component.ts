@@ -35,6 +35,7 @@ export class NodeAddComponent implements OnInit {
   multipleNodes: NodeItem[] = [];
   nodeItem: NodeItem;
   nodeToAdd: NodeInfo;
+  nodesToAdd: NodeInfo[] = [];
   summaryComplete: boolean = false;
   computeMethod: any = ComputeMethod;
   connectionID: string;
@@ -81,6 +82,12 @@ export class NodeAddComponent implements OnInit {
     this.summaryComplete = false;
   }
 
+  clearList() {
+    this.multipleNodes = [];
+    this.nodeListDataSource = new MatTableDataSource<any>(this.multipleNodes);
+    this.nodeListDataSource.paginator = this.nodeListPaginator;
+  }
+
 
   previous() {
     switch (this.currentMode) {
@@ -109,12 +116,40 @@ export class NodeAddComponent implements OnInit {
   }
 
   multiNodeQuery() {
+    this.currentMode = NodeWizardMode.Summary;
+    this.summaryComplete = false;
+    this.downloadComplete = false;
+    this.multipleNodes.forEach((value, idx, array) => {
+      this.http.get('/api/management/is_key_present?ip=' + value.ipAddress + '&port=' + value.port).subscribe((result: boolean) => {
+        if (result) {
+          this.http.get('/api/management/node_check?ip=' + value.ipAddress + '&port=' + value.port).subscribe((node: NodeInfo) => {
+            if (node != null) {
+              this.nodesToAdd.push(node);
+              value.active = true;
+
+            } else {
+              value.active = false;
+            }
+            if (idx === array.length - 1) {
+              this.summaryComplete = true;
+            }
+          });
+        } else {
+          value.active = false;
+          if (idx === array.length - 1) {
+            this.summaryComplete = true;
+          }
+        }
+      });
+    });
+
 
   }
 
   singleNodeQuery() {
     this.currentMode = NodeWizardMode.Summary;
     this.summaryComplete = false;
+    this.downloadComplete = false;
     this.http.get('/api/management/is_key_present?ip=' + this.nodeItem.ipAddress + '&port=' + this.nodeItem.port).subscribe((value: boolean) => {
       this.keyPresent = value;
       console.log(value);
@@ -147,10 +182,13 @@ export class NodeAddComponent implements OnInit {
 class NodeItem {
   ipAddress: string;
   port: string;
+  active: boolean;
 
   constructor() {
     this.ipAddress = '';
     this.port = '';
+    this.active = false;
+
   }
 
   nodeItemNotReady(): boolean {
