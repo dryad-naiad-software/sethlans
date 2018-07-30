@@ -166,7 +166,7 @@
           </div>
           <div *ngIf="summaryComplete == true">
             <!--Multiple Node Summary-->
-            <div *ngIf="multipleNodeAdd">
+            <div *ngIf="multipleNodeAdd && !tableList">
               <h5>Connection Results:</h5>
               <ul>
                 <li *ngFor="let node of multipleNodes">

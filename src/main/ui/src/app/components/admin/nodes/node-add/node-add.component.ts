@@ -47,6 +47,7 @@ export class NodeAddComponent implements OnInit {
   keyPresent: boolean;
   downloadComplete: boolean;
   multipleNodeAdd: boolean = false;
+  tableList: boolean = false;
 
   constructor(private http: HttpClient) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
