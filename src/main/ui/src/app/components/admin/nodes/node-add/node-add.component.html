@@ -53,10 +53,11 @@
         <!--Start Screen-->
         <div *ngIf="currentMode === wizardModes.Start">
           <div class=" pt-2">
-            <p> Server Access Key:
-              <strong><span class="text-danger">&nbsp;{{accessKey}}</span></strong>
-              &nbsp;
-              <button class="btn btn-outline-info btn-sm" (click)="copyKey()">Copy to Clipboard</button>
+            <p class="text-center"> Server Access Key:
+              <br/>
+              <strong><span class="text-danger">{{accessKey}} &nbsp;</span></strong>
+              <button class="btn btn-outline-secondary btn-xs" (click)="copyKey()" ngbTooltip="Copy to Clipboard"
+                      placement="top"><i class="far fa-clipboard"></i></button>
             </p>
           </div>
 
@@ -75,7 +76,7 @@
                          required>Add Node(s)
                 </label>
               </div>
-              <div class="form-check" ngbTooltip="Scan and add node(s)" placement="left">
+              <div class="form-check" ngbTooltip="Scan network for Sethlans nodes" placement="left">
                 <label class="form-check-label">
                   <input type="radio"
                          name="mode"
@@ -220,9 +221,11 @@
           <button *ngIf="currentMode == wizardModes.Start" [disabled]="addType == null"
                   class="btn btn-outline-primary float-right" (click)="currentMode = wizardModes.Add"> Next
           </button>
-          <button [disabled]="nodeItem.nodeItemNotReady()" *ngIf="currentMode == wizardModes.Add"
-                  class="btn btn-outline-primary float-right"
-                  (click)="queryNode()"> Next
+          <button
+            [disabled]="!multipleNodeAdd && nodeItem.nodeItemNotReady() || multipleNodeAdd && multipleNodes.length == 0"
+            *ngIf="currentMode == wizardModes.Add"
+            class="btn btn-outline-primary float-right"
+            (click)="queryNode()"> Next
           </button>
         </nav>
       </div>

@@ -65,4 +65,11 @@ body {
   background: #EAEAEA;
 }
 
+$btn-padding-x-xs: .20rem !default;
+$btn-padding-y-xs: .12rem !default;
+$input-btn-line-height-xs: 1.0 !default;
 
+.btn.btn-xs {
+  // line-height: ensure proper height of button next to small input
+  @include button-size($btn-padding-y-xs, $btn-padding-x-xs, $font-size-sm, $input-btn-line-height-xs, $btn-border-radius-sm);
+}
