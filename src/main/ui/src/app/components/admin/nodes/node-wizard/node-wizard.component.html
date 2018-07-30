@@ -1,0 +1,57 @@
+<!--
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
+<div class="row pb-5">
+  <div class="col-md-6 m-auto">
+    <div class="card">
+      <div class="card-header">
+        <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Add Sethlans Node Wizard</h4>
+      </div>
+      <div class="card-body">
+        <ul class="nav nav-tabs justify-content-between pb-3">
+          <li>
+            <button type="button" class="btn btn-circle btn-lg"
+                    [ngClass]="currentMode === wizardModes.Start ? 'btn-outline-primary':'btn-outline-dark'"
+                    (click)="currentMode = wizardModes.Start">
+              <i class="fas fa-flag-checkered"></i></button>
+          </li>
+          <li>
+            <button type="button" class="btn btn-circle btn-lg"
+                    [disabled]="addType == null"
+                    [ngClass]="currentMode === wizardModes.Add ? 'btn-outline-primary':'btn-outline-dark'"
+                    placement="top"
+                    ngbTooltip="Node Form" (click)="currentMode = wizardModes.Add">
+              <i class="fas fa-plus"></i></button>
+          </li>
+          <li>
+            <button type="button" class="btn btn-circle btn-lg"
+                    [disabled]="!summaryComplete"
+                    [ngClass]="currentMode === wizardModes.Summary ? 'btn-outline-primary':'btn-outline-dark'"
+                    placement="top"
+                    ngbTooltip="Summary" (click)="currentMode = wizardModes.Summary">
+              <i class="fas fa-list-alt"></i></button>
+          </li>
+          <li>
+            D
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
