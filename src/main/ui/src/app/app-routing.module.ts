@@ -36,7 +36,7 @@ import {NodesComponent} from './components/admin/nodes/nodes.component';
 import {LogsComponent} from './components/admin/logs/logs.component';
 import {RegisterUserComponent} from './components/register-user/register-user.component';
 import {UserSettingsComponent} from './components/user-settings/user-settings.component';
-import {NodeAddComponent} from './components/admin/nodes/node-add/node-add.component';
+import {NodeWizardComponent} from './components/admin/nodes/node-wizard/node-wizard.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -53,7 +53,7 @@ const routes: Routes = [
   {path: 'admin/compute_settings', component: ComputeSettingsComponent},
   {path: 'admin/blender_version_admin', component: BlenderVersionsComponent},
   {path: 'admin/nodes', component: NodesComponent},
-  {path: 'admin/nodes/add', component: NodeAddComponent},
+  {path: 'admin/nodes/add', component: NodeWizardComponent},
   {path: 'admin/logs', component: LogsComponent},
   {path: 'register', component: RegisterUserComponent},
   {path: 'user_settings', component: UserSettingsComponent},

@@ -18,6 +18,8 @@
  */
 
 import {Component, OnInit} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {NodeItem} from '../../../../models/node_item.model';
 
 @Component({
   selector: 'app-node-wizard',
@@ -27,15 +29,75 @@ import {Component, OnInit} from '@angular/core';
 export class NodeWizardComponent implements OnInit {
   currentMode: NodeWizardMode;
   wizardModes: any = NodeWizardMode;
+  wizardTypes: any = NodeAddType;
+  addType: NodeAddType;
+  accessKey: string;
+  summaryComplete: boolean;
+  finished: boolean = false;
+  multipleNodes: NodeItem[];
+  singleNode: NodeItem;
+  nextDisabled: boolean;
+  multipleNodeAdd: boolean;
 
 
-  constructor() {
+  constructor(private http: HttpClient) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
     this.currentMode = NodeWizardMode.Start;
+    this.nextDisabled = true;
+    this.summaryComplete = false;
 
   }
 
   ngOnInit() {
+    this.http.get('/api/management/get_key_from_server', {responseType: 'text'}).subscribe((key: string) => this.accessKey = key);
+  }
+
+  disableNext(value: boolean) {
+    this.nextDisabled = value;
+  }
+
+  copyKey() {
+    let selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = this.accessKey;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+  }
+
+  onSelection() {
+    if (this.addType != null) {
+      this.nextDisabled = false;
+    }
+  }
+
+  returnToNodes() {
+    window.location.href = '/admin/nodes';
+  }
+
+  next() {
+    switch (this.currentMode) {
+      case NodeWizardMode.Start:
+        this.currentMode = NodeWizardMode.Add;
+        break;
+    }
+  }
+
+  previous() {
+    switch (this.currentMode) {
+      case NodeWizardMode.Add:
+        this.currentMode = NodeWizardMode.Start;
+        break;
+      case NodeWizardMode.Summary:
+        this.currentMode = NodeWizardMode.Add;
+        break;
+
+    }
   }
 
 }

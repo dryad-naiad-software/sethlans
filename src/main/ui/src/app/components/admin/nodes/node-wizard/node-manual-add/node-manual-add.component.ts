@@ -17,7 +17,9 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {MatPaginator, MatTableDataSource} from '@angular/material';
+import {NodeItem} from '../../../../../models/node_item.model';
 
 @Component({
   selector: 'app-node-manual-add',
@@ -25,32 +27,44 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./node-manual-add.component.scss']
 })
 export class NodeManualAddComponent implements OnInit {
+  @Input() multipleNodes: NodeItem[];
+  @Input() singleNode: NodeItem;
+  nodeItem: NodeItem;
+  @Input() multipleNodeAdd: boolean;
+  @ViewChild(MatPaginator) nodeListPaginator: MatPaginator;
+  nodeListDataSource = new MatTableDataSource();
+  nodeListDisplayedColumns = ['ipAddress', 'port'];
+  @Output() disableNext = new EventEmitter();
 
   constructor() {
+    this.nodeItem = new NodeItem();
+    this.multipleNodeAdd = false;
   }
 
   ngOnInit() {
+    this.disableNext.emit(true);
+    this.singleNode = new NodeItem();
+
   }
 
+  clearNode() {
+    this.singleNode = new NodeItem();
+    this.disableNext.emit(true);
+  }
+
+  clearList() {
+    this.multipleNodes = [];
+    this.nodeListDataSource = new MatTableDataSource<any>(this.multipleNodes);
+    this.nodeListDataSource.paginator = this.nodeListPaginator;
+    this.disableNext.emit(true);
+  }
+
+  addNodeToList() {
+    this.multipleNodes.push(this.nodeItem);
+    this.clearNode();
+    this.nodeListDataSource = new MatTableDataSource<any>(this.multipleNodes);
+    this.nodeListDataSource.paginator = this.nodeListPaginator;
+  }
 }
 
-class NodeItem {
-  ipAddress: string;
-  port: string;
-  active: boolean;
 
-  constructor() {
-    this.ipAddress = '';
-    this.port = '';
-    this.active = false;
-
-  }
-
-  nodeItemNotReady(): boolean {
-    if (this.ipAddress === '' || this.port === '') {
-      return true;
-    } else {
-      return false;
-    }
-  }
-}

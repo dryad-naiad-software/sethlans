@@ -80,6 +80,7 @@ import {AccessKeyListService} from './services/access_key_list.service';
 import {NodeWizardComponent} from './components/admin/nodes/node-wizard/node-wizard.component';
 import {NodeManualAddComponent} from './components/admin/nodes/node-wizard/node-manual-add/node-manual-add.component';
 import {NodeScanAddComponent} from './components/admin/nodes/node-wizard/node-scan-add/node-scan-add.component';
+import {NodeSummaryComponent} from './components/admin/nodes/node-wizard/node-summary/node-summary.component';
 
 @NgModule({
   declarations: [
@@ -119,7 +120,8 @@ import {NodeScanAddComponent} from './components/admin/nodes/node-wizard/node-sc
     NodeAddComponent,
     NodeWizardComponent,
     NodeManualAddComponent,
-    NodeScanAddComponent
+    NodeScanAddComponent,
+    NodeSummaryComponent
   ],
   imports: [
     BrowserModule,

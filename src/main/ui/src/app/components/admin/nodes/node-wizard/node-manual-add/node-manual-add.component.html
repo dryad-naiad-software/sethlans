@@ -16,7 +16,58 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
+<ul class="nav nav-tabs p-2">
+  <li class="nav-item"><a [ngClass]="multipleNodeAdd ? '' : 'active'" class="nav-link"
+                          (click)="multipleNodeAdd = false; clearNode(); clearList()"
+                          href="javascript:void(0)">Single
+    Node</a></li>
+  <li class="nav-item"><a [ngClass]="multipleNodeAdd ? 'active' : ''" class="nav-link"
+                          (click)="multipleNodeAdd = true; clearNode(); clearList()" href="javascript:void(0)">Multiple
+    Nodes</a></li>
+</ul>
+<form #addNodeForm="ngForm" class="editForm p-2" *ngIf="!multipleNodeAdd">
+  <div class="form-group">
+    <label for="ipAddress">IP Address or Hostname</label>
+    <input type="text" class="form-control" id="ipAddress" name="ipAddress" [(ngModel)]="singleNode.ipAddress"
+           required>
+  </div>
+  <div class="form-group">
+    <label for="port">Port</label>
+    <input type="number" class="form-control" id="port" name="port" [(ngModel)]="singleNode.port"
+           required>
+  </div>
+</form>
+<form #addMultiNodeForm="ngForm" class="editForm p-2" *ngIf="multipleNodeAdd">
+  <div class="form-group">
+    <label for="nodeAddIPAddress">IP Address or Hostname</label>
+    <input type="text" class="form-control" id="nodeAddIPAddress" name="ipAddress"
+           [(ngModel)]="nodeItem.ipAddress"
+           required>
+  </div>
+  <div class="form-group">
+    <label for="nodeAddPort">Port</label>
+    <input type="number" class="form-control" id="nodeAddPort" name="port" [(ngModel)]="nodeItem.port"
+           required>
+  </div>
+  <div class="btn-group">
+    <button class="btn btn-outline-dark" (click)="addNodeToList()">Add To List</button>
+  </div>
 
-<p>
-  node-manual-add works!
-</p>
+  <div class="form-group">
+    <hr/>
+    <mat-table #nodeListTable [dataSource]="nodeListDataSource">
+      <ng-container matColumnDef="ipAddress">
+        <mat-header-cell *matHeaderCellDef>IP Address/HostName</mat-header-cell>
+        <mat-cell *matCellDef="let node">{{node.ipAddress}}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="port">
+        <mat-header-cell *matHeaderCellDef>Port</mat-header-cell>
+        <mat-cell *matCellDef="let node">{{node.port}}</mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="nodeListDisplayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: nodeListDisplayedColumns;"></mat-row>
+    </mat-table>
+    <mat-paginator #nodeListPaginator [pageSize]="5" [pageSizeOptions]="[10,25,50]"></mat-paginator>
+
+  </div>
+</form>

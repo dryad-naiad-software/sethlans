@@ -48,9 +48,81 @@
               <i class="fas fa-list-alt"></i></button>
           </li>
           <li>
-            D
+            <button type="button" class="btn btn-circle btn-lg"
+                    [disabled]="!finished"
+                    [ngClass]="currentMode === wizardModes.Finished ? 'btn-outline-success':'btn-outline-dark'"
+                    placement="top"
+                    ngbTooltip="Finished"><i
+              class="fas fa-check"></i></button>
           </li>
         </ul>
+        <div *ngIf="currentMode === wizardModes.Start">
+          <div class=" pt-2">
+            <p class="text-center"> Server Access Key:
+              <br/>
+              <strong><span class="text-danger">{{accessKey}} &nbsp;</span></strong>
+              <button class="btn btn-outline-secondary btn-xs" (click)="copyKey()" ngbTooltip="Copy to Clipboard"
+                      placement="top"><i class="far fa-clipboard"></i></button>
+            </p>
+          </div>
+
+          <p>Which action would you like to perform?</p>
+
+          <form #wizardSelection="ngForm" class="editForm">
+            <fieldset class="form-group">
+              <div class="form-check" ngbTooltip="Manually add node(s)" placement="left">
+                <label class="form-check-label">
+                  <input type="radio"
+                         name="mode"
+                         class="form-check-input"
+                         #mode="ngModel"
+                         [(ngModel)]="addType"
+                         (change)="onSelection()"
+                         value="{{wizardTypes.Manual}}"
+                         required>Add Node(s)
+                </label>
+              </div>
+              <div class="form-check" ngbTooltip="Scan network for Sethlans nodes" placement="left">
+                <label class="form-check-label">
+                  <input type="radio"
+                         name="mode"
+                         class="form-check-input"
+                         #mode="ngModel"
+                         [(ngModel)]="addType"
+                         (change)="onSelection()"
+                         value="{{wizardTypes.Scan}}"
+                         required>Scan for Node(s)
+                </label>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+        <app-node-manual-add [multipleNodeAdd]="multipleNodeAdd"
+                             [multipleNodes]="multipleNodes"
+                             [singleNode]="singleNode"
+                             (disableNext)="disableNext($event)"
+                             *ngIf="currentMode == wizardModes.Add && addType == wizardTypes.Manual"></app-node-manual-add>
+        <app-node-scan-add
+          *ngIf="currentMode == wizardModes.Add && addType == wizardTypes.Scan"></app-node-scan-add>
+        <app-node-summary [multipleNodeAdd]="multipleNodeAdd"
+                          [multipleNodes]="multipleNodes"
+                          [singleNode]="singleNode"
+                          [summaryComplete]="summaryComplete"
+                          *ngIf="currentMode == wizardModes.Summary"></app-node-summary>
+      </div>
+
+      <div class="card-footer">
+        <nav>
+          <button *ngIf="currentMode == wizardModes.Start" class="btn btn-outline-secondary float-left"
+                  (click)="returnToNodes()">Cancel
+          </button>
+          <button *ngIf="currentMode != wizardModes.Start"
+                  class="btn btn-outline-secondary float-left" (click)="previous()">Previous
+          </button>
+          <button [disabled]="nextDisabled"
+                  class="btn btn-outline-primary float-right" (click)="next()"> Next
+          </button>
+        </nav>
       </div>
     </div>
   </div>
