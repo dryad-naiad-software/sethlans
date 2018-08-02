@@ -50,6 +50,14 @@ export class NodeManualAddComponent implements OnInit {
     this.disableNext.emit(true);
   }
 
+  enableNext() {
+    if (!this.nodeWizardForm.singleNode.nodeItemNotReady()) {
+      this.disableNext.emit(false);
+    } else {
+      this.disableNext.emit(true);
+    }
+  }
+
   clearList() {
     this.nodeWizardForm.multipleNodes = [];
     this.nodeListDataSource = new MatTableDataSource<any>(this.nodeWizardForm.multipleNodes);

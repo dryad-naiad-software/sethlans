@@ -30,7 +30,7 @@ export class NodeItem {
   }
 
   nodeItemNotReady(): boolean {
-    if (this.ipAddress === '' || this.port === '') {
+    if (this.ipAddress == null || this.port == null || this.ipAddress.length === 0 || this.port.length === 0) {
       return true;
     } else {
       return false;

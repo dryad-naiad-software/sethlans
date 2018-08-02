@@ -30,12 +30,13 @@
   <div class="form-group">
     <label for="ipAddress">IP Address or Hostname</label>
     <input type="text" class="form-control" id="ipAddress" name="ipAddress"
-           [(ngModel)]="nodeWizardForm.singleNode.ipAddress"
+           [(ngModel)]="nodeWizardForm.singleNode.ipAddress" (keyup)="enableNext()"
            required>
   </div>
   <div class="form-group">
     <label for="port">Port</label>
     <input type="number" class="form-control" id="port" name="port" [(ngModel)]="nodeWizardForm.singleNode.port"
+           (keyup)="enableNext()"
            required>
   </div>
 </form>
