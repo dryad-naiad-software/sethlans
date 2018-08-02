@@ -17,7 +17,8 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {NodeWizardForm} from '../../../../../models/forms/node_wizard_form.model';
 
 @Component({
   selector: 'app-node-scan-add',
@@ -25,6 +26,8 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./node-scan-add.component.scss']
 })
 export class NodeScanAddComponent implements OnInit {
+  @Input() nodeWizardForm: NodeWizardForm;
+
 
   constructor() {
   }

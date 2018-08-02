@@ -18,7 +18,7 @@
  */
 
 import {Component, Input, OnInit} from '@angular/core';
-import {NodeItem} from '../../../../../models/node_item.model';
+import {NodeWizardForm} from '../../../../../models/forms/node_wizard_form.model';
 
 @Component({
   selector: 'app-node-summary',
@@ -26,10 +26,7 @@ import {NodeItem} from '../../../../../models/node_item.model';
   styleUrls: ['./node-summary.component.scss']
 })
 export class NodeSummaryComponent implements OnInit {
-  @Input() summaryComplete: boolean;
-  @Input() multipleNodes: NodeItem[];
-  @Input() singleNode: NodeItem;
-  @Input() multipleNodeAdd: boolean;
+  @Input() nodeWizardForm: NodeWizardForm;
 
 
   constructor() {

@@ -19,9 +19,9 @@
 
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {NodeItem} from '../../../../models/node_item.model';
 import {NodeWizardMode} from '../../../../enums/node_wizard_mode.enum';
 import {NodeAddType} from '../../../../enums/node_wizard_add_type.enum';
+import {NodeWizardForm} from '../../../../models/forms/node_wizard_form.model';
 
 @Component({
   selector: 'app-node-wizard',
@@ -29,24 +29,17 @@ import {NodeAddType} from '../../../../enums/node_wizard_add_type.enum';
   styleUrls: ['./node-wizard.component.scss']
 })
 export class NodeWizardComponent implements OnInit {
-  currentMode: NodeWizardMode;
   wizardModes: any = NodeWizardMode;
   wizardTypes: any = NodeAddType;
-  addType: NodeAddType;
   accessKey: string;
-  summaryComplete: boolean;
-  finished: boolean = false;
-  multipleNodes: NodeItem[];
-  singleNode: NodeItem;
+  nodeWizardForm: NodeWizardForm;
   nextDisabled: boolean;
-  multipleNodeAdd: boolean;
 
 
   constructor(private http: HttpClient) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
-    this.currentMode = NodeWizardMode.Start;
+    this.nodeWizardForm = new NodeWizardForm();
     this.nextDisabled = true;
-    this.summaryComplete = false;
 
   }
 
@@ -59,7 +52,7 @@ export class NodeWizardComponent implements OnInit {
   }
 
   copyKey() {
-    let selBox = document.createElement('textarea');
+    const selBox = document.createElement('textarea');
     selBox.style.position = 'fixed';
     selBox.style.left = '0';
     selBox.style.top = '0';
@@ -73,7 +66,7 @@ export class NodeWizardComponent implements OnInit {
   }
 
   onSelection() {
-    if (this.addType != null) {
+    if (this.nodeWizardForm.addType != null) {
       this.nextDisabled = false;
     }
   }
@@ -83,20 +76,20 @@ export class NodeWizardComponent implements OnInit {
   }
 
   next() {
-    switch (this.currentMode) {
+    switch (this.nodeWizardForm.currentMode) {
       case NodeWizardMode.Start:
-        this.currentMode = NodeWizardMode.Add;
+        this.nodeWizardForm.currentMode = NodeWizardMode.Add;
         break;
     }
   }
 
   previous() {
-    switch (this.currentMode) {
+    switch (this.nodeWizardForm.currentMode) {
       case NodeWizardMode.Add:
-        this.currentMode = NodeWizardMode.Start;
+        this.nodeWizardForm.currentMode = NodeWizardMode.Start;
         break;
       case NodeWizardMode.Summary:
-        this.currentMode = NodeWizardMode.Add;
+        this.nodeWizardForm.currentMode = NodeWizardMode.Add;
         break;
 
     }

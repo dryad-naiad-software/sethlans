@@ -97,26 +97,21 @@
             </fieldset>
           </form>
         </div>
-        <app-node-manual-add [multipleNodeAdd]="multipleNodeAdd"
-                             [multipleNodes]="multipleNodes"
-                             [singleNode]="singleNode"
+        <app-node-manual-add [nodeWizardForm]="nodeWizardForm"
                              (disableNext)="disableNext($event)"
-                             *ngIf="currentMode == wizardModes.Add && addType == wizardTypes.Manual"></app-node-manual-add>
-        <app-node-scan-add
-          *ngIf="currentMode == wizardModes.Add && addType == wizardTypes.Scan"></app-node-scan-add>
-        <app-node-summary [multipleNodeAdd]="multipleNodeAdd"
-                          [multipleNodes]="multipleNodes"
-                          [singleNode]="singleNode"
-                          [summaryComplete]="summaryComplete"
-                          *ngIf="currentMode == wizardModes.Summary"></app-node-summary>
+                             *ngIf="nodeWizardForm.currentMode == wizardModes.Add && nodeWizardForm.addType == wizardTypes.Manual"></app-node-manual-add>
+        <app-node-scan-add [nodeWizardForm]="nodeWizardForm"
+                           *ngIf="nodeWizardForm.currentMode == wizardModes.Add && nodeWizardForm.addType == wizardTypes.Scan"></app-node-scan-add>
+        <app-node-summary [nodeWizardForm]="nodeWizardForm"
+                          *ngIf="nodeWizardForm.currentMode == wizardModes.Summary"></app-node-summary>
       </div>
 
       <div class="card-footer">
         <nav>
-          <button *ngIf="currentMode == wizardModes.Start" class="btn btn-outline-secondary float-left"
+          <button *ngIf="nodeWizardForm.currentMode == wizardModes.Start" class="btn btn-outline-secondary float-left"
                   (click)="returnToNodes()">Cancel
           </button>
-          <button *ngIf="currentMode != wizardModes.Start"
+          <button *ngIf="nodeWizardForm.currentMode != wizardModes.Start"
                   class="btn btn-outline-secondary float-left" (click)="previous()">Previous
           </button>
           <button [disabled]="nextDisabled"

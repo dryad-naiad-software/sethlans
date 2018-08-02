@@ -17,27 +17,29 @@
   ~
   -->
 <ul class="nav nav-tabs p-2">
-  <li class="nav-item"><a [ngClass]="multipleNodeAdd ? '' : 'active'" class="nav-link"
-                          (click)="multipleNodeAdd = false; clearNode(); clearList()"
+  <li class="nav-item"><a [ngClass]="nodeWizardForm.multipleNodeAdd ? '' : 'active'" class="nav-link"
+                          (click)="nodeWizardForm.multipleNodeAdd = false; clearNode(); clearList()"
                           href="javascript:void(0)">Single
     Node</a></li>
-  <li class="nav-item"><a [ngClass]="multipleNodeAdd ? 'active' : ''" class="nav-link"
-                          (click)="multipleNodeAdd = true; clearNode(); clearList()" href="javascript:void(0)">Multiple
+  <li class="nav-item"><a [ngClass]="nodeWizardForm.multipleNodeAdd ? 'active' : ''" class="nav-link"
+                          (click)="nodeWizardForm.multipleNodeAdd = true; clearNode(); clearList()"
+                          href="javascript:void(0)">Multiple
     Nodes</a></li>
 </ul>
-<form #addNodeForm="ngForm" class="editForm p-2" *ngIf="!multipleNodeAdd">
+<form #addNodeForm="ngForm" class="editForm p-2" *ngIf="!nodeWizardForm.multipleNodeAdd">
   <div class="form-group">
     <label for="ipAddress">IP Address or Hostname</label>
-    <input type="text" class="form-control" id="ipAddress" name="ipAddress" [(ngModel)]="singleNode.ipAddress"
+    <input type="text" class="form-control" id="ipAddress" name="ipAddress"
+           [(ngModel)]="nodeWizardForm.singleNode.ipAddress"
            required>
   </div>
   <div class="form-group">
     <label for="port">Port</label>
-    <input type="number" class="form-control" id="port" name="port" [(ngModel)]="singleNode.port"
+    <input type="number" class="form-control" id="port" name="port" [(ngModel)]="nodeWizardForm.singleNode.port"
            required>
   </div>
 </form>
-<form #addMultiNodeForm="ngForm" class="editForm p-2" *ngIf="multipleNodeAdd">
+<form #addMultiNodeForm="ngForm" class="editForm p-2" *ngIf="nodeWizardForm.multipleNodeAdd">
   <div class="form-group">
     <label for="nodeAddIPAddress">IP Address or Hostname</label>
     <input type="text" class="form-control" id="nodeAddIPAddress" name="ipAddress"

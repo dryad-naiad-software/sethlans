@@ -17,17 +17,17 @@
   ~
   -->
 
-<div *ngIf="summaryComplete == false && !multipleNodeAdd">
+<div *ngIf="nodeWizardForm.summaryComplete == false && !nodeWizardForm.multipleNodeAdd">
   <h5>Checking Connection to Node:</h5>
   <ul>
-    <li>Querying {{singleNode.ipAddress}}:{{singleNode.port}} &nbsp;&nbsp; <span
+    <li>Querying {{nodeWizardForm.singleNode.ipAddress}}:{{nodeWizardForm.singleNode.port}} &nbsp;&nbsp; <span
       class="fas fa-circle-notch fa-spin"></span></li>
   </ul>
 </div>
-<div *ngIf="summaryComplete == false && multipleNodeAdd">
+<div *ngIf="nodeWizardForm.summaryComplete == false && nodeWizardForm.multipleNodeAdd">
   <h5>Checking Connection to Nodes:</h5>
   <ul>
-    <li *ngFor="let node of multipleNodes">Querying {{node.ipAddress}}:{{node.port}} &nbsp;&nbsp;<span
+    <li *ngFor="let node of nodeWizardForm.multipleNodes">Querying {{node.ipAddress}}:{{node.port}} &nbsp;&nbsp;<span
       class="fas fa-circle-notch fa-spin"></span></li>
   </ul>
 </div>

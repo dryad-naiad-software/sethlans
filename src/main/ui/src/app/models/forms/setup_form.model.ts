@@ -17,10 +17,10 @@
  *
  */
 
-import {Mode} from '../enums/mode.enum';
-import {User} from './user.model';
-import {Server} from './server.model';
-import {Node} from './node.model';
+import {Mode} from '../../enums/mode.enum';
+import {User} from '../user.model';
+import {Server} from '../server.model';
+import {Node} from '../node.model';
 
 export class SetupForm {
   mode: Mode;

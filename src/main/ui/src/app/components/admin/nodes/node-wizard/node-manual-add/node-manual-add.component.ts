@@ -20,6 +20,7 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {MatPaginator, MatTableDataSource} from '@angular/material';
 import {NodeItem} from '../../../../../models/node_item.model';
+import {NodeWizardForm} from '../../../../../models/forms/node_wizard_form.model';
 
 @Component({
   selector: 'app-node-manual-add',
@@ -27,10 +28,8 @@ import {NodeItem} from '../../../../../models/node_item.model';
   styleUrls: ['./node-manual-add.component.scss']
 })
 export class NodeManualAddComponent implements OnInit {
-  @Input() multipleNodes: NodeItem[];
-  @Input() singleNode: NodeItem;
+  @Input() nodeWizardForm: NodeWizardForm;
   nodeItem: NodeItem;
-  @Input() multipleNodeAdd: boolean;
   @ViewChild(MatPaginator) nodeListPaginator: MatPaginator;
   nodeListDataSource = new MatTableDataSource();
   nodeListDisplayedColumns = ['ipAddress', 'port'];
@@ -38,31 +37,31 @@ export class NodeManualAddComponent implements OnInit {
 
   constructor() {
     this.nodeItem = new NodeItem();
-    this.multipleNodeAdd = false;
+    this.nodeWizardForm.multipleNodeAdd = false;
   }
 
   ngOnInit() {
     this.disableNext.emit(true);
-    this.singleNode = new NodeItem();
+    this.nodeWizardForm.singleNode = new NodeItem();
 
   }
 
   clearNode() {
-    this.singleNode = new NodeItem();
+    this.nodeWizardForm.singleNode = new NodeItem();
     this.disableNext.emit(true);
   }
 
   clearList() {
-    this.multipleNodes = [];
-    this.nodeListDataSource = new MatTableDataSource<any>(this.multipleNodes);
+    this.nodeWizardForm.multipleNodes = [];
+    this.nodeListDataSource = new MatTableDataSource<any>(this.nodeWizardForm.multipleNodes);
     this.nodeListDataSource.paginator = this.nodeListPaginator;
     this.disableNext.emit(true);
   }
 
   addNodeToList() {
-    this.multipleNodes.push(this.nodeItem);
+    this.nodeWizardForm.multipleNodes.push(this.nodeItem);
     this.clearNode();
-    this.nodeListDataSource = new MatTableDataSource<any>(this.multipleNodes);
+    this.nodeListDataSource = new MatTableDataSource<any>(this.nodeWizardForm.multipleNodes);
     this.nodeListDataSource.paginator = this.nodeListPaginator;
   }
 }
