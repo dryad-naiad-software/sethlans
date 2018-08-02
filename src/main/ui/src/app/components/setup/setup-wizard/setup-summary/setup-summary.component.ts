@@ -18,7 +18,7 @@
  */
 
 import {Component, Input, OnInit} from '@angular/core';
-import {SetupForm} from '../../../../models/setup_form.model';
+import {SetupForm} from '../../../../models/forms/setup_form.model';
 import {Mode} from '../../../../enums/mode.enum';
 import {GPU} from '../../../../models/gpu.model';
 import {HttpClient} from '@angular/common/http';

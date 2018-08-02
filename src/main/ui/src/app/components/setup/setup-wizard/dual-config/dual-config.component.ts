@@ -18,7 +18,7 @@
  */
 
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {SetupForm} from '../../../../models/setup_form.model';
+import {SetupForm} from '../../../../models/forms/setup_form.model';
 
 @Component({
   selector: 'app-dual-config',
