@@ -27,36 +27,36 @@
         <ul class="nav nav-tabs justify-content-between pb-3">
           <li>
             <button type="button" class="btn btn-circle btn-lg"
-                    [ngClass]="currentMode === wizardModes.Start ? 'btn-outline-primary':'btn-outline-dark'"
-                    (click)="currentMode = wizardModes.Start">
+                    [ngClass]="nodeWizardForm.currentMode === wizardModes.Start ? 'btn-outline-primary':'btn-outline-dark'"
+                    (click)="nodeWizardForm.currentMode = wizardModes.Start">
               <i class="fas fa-flag-checkered"></i></button>
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
-                    [disabled]="addType == null"
-                    [ngClass]="currentMode === wizardModes.Add ? 'btn-outline-primary':'btn-outline-dark'"
+                    [disabled]="nodeWizardForm.addType == null"
+                    [ngClass]="nodeWizardForm.currentMode === wizardModes.Add ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
-                    ngbTooltip="Node Form" (click)="currentMode = wizardModes.Add">
+                    ngbTooltip="Node Form" (click)="nodeWizardForm.currentMode = wizardModes.Add">
               <i class="fas fa-plus"></i></button>
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
-                    [disabled]="!summaryComplete"
-                    [ngClass]="currentMode === wizardModes.Summary ? 'btn-outline-primary':'btn-outline-dark'"
+                    [disabled]="!nodeWizardForm.summaryComplete"
+                    [ngClass]="nodeWizardForm.currentMode === wizardModes.Summary ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
-                    ngbTooltip="Summary" (click)="currentMode = wizardModes.Summary">
+                    ngbTooltip="Summary" (click)="nodeWizardForm.currentMode = wizardModes.Summary">
               <i class="fas fa-list-alt"></i></button>
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
-                    [disabled]="!finished"
-                    [ngClass]="currentMode === wizardModes.Finished ? 'btn-outline-success':'btn-outline-dark'"
+                    [disabled]="!nodeWizardForm.finished"
+                    [ngClass]="nodeWizardForm.currentMode === wizardModes.Finished ? 'btn-outline-success':'btn-outline-dark'"
                     placement="top"
                     ngbTooltip="Finished"><i
               class="fas fa-check"></i></button>
           </li>
         </ul>
-        <div *ngIf="currentMode === wizardModes.Start">
+        <div *ngIf="nodeWizardForm.currentMode === wizardModes.Start">
           <div class=" pt-2">
             <p class="text-center"> Server Access Key:
               <br/>
@@ -76,7 +76,7 @@
                          name="mode"
                          class="form-check-input"
                          #mode="ngModel"
-                         [(ngModel)]="addType"
+                         [(ngModel)]="nodeWizardForm.addType"
                          (change)="onSelection()"
                          value="{{wizardTypes.Manual}}"
                          required>Add Node(s)
@@ -88,7 +88,7 @@
                          name="mode"
                          class="form-check-input"
                          #mode="ngModel"
-                         [(ngModel)]="addType"
+                         [(ngModel)]="nodeWizardForm.addType"
                          (change)="onSelection()"
                          value="{{wizardTypes.Scan}}"
                          required>Scan for Node(s)

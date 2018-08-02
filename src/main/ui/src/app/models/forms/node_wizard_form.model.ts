@@ -16,5 +16,7 @@ export class NodeWizardForm {
     this.currentMode = NodeWizardMode.Start;
     this.finished = false;
     this.summaryComplete = false;
+    this.multipleNodeAdd = false;
+
   }
 }

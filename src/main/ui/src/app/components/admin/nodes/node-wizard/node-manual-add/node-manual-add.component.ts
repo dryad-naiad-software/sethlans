@@ -37,7 +37,6 @@ export class NodeManualAddComponent implements OnInit {
 
   constructor() {
     this.nodeItem = new NodeItem();
-    this.nodeWizardForm.multipleNodeAdd = false;
   }
 
   ngOnInit() {
