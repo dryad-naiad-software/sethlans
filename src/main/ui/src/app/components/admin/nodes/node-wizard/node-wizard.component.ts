@@ -20,6 +20,8 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {NodeItem} from '../../../../models/node_item.model';
+import {NodeWizardMode} from '../../../../enums/node_wizard_mode.enum';
+import {NodeAddType} from '../../../../enums/node_wizard_add_type.enum';
 
 @Component({
   selector: 'app-node-wizard',

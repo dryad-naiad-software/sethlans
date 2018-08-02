@@ -17,7 +17,7 @@
  *
  */
 
-enum NodeAddType {
+export enum NodeAddType {
   Manual,
   Scan,
 }

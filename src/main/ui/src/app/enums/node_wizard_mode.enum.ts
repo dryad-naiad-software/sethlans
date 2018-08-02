@@ -17,7 +17,7 @@
  *
  */
 
-enum NodeWizardMode {
+export enum NodeWizardMode {
   Start,
   Add,
   Summary,
