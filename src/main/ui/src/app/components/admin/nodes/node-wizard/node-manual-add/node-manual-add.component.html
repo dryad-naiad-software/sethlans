@@ -44,16 +44,17 @@
   <div class="form-group">
     <label for="nodeAddIPAddress">IP Address or Hostname</label>
     <input type="text" class="form-control" id="nodeAddIPAddress" name="ipAddress"
-           [(ngModel)]="nodeItem.ipAddress"
+           [(ngModel)]="nodeItem.ipAddress" (keyup)="enableAdd()"
            required>
   </div>
   <div class="form-group">
     <label for="nodeAddPort">Port</label>
     <input type="number" class="form-control" id="nodeAddPort" name="port" [(ngModel)]="nodeItem.port"
+           (keyup)="enableAdd()"
            required>
   </div>
   <div class="btn-group">
-    <button class="btn btn-outline-dark" (click)="addNodeToList()">Add To List</button>
+    <button [disabled]="addDisabled" class="btn btn-outline-dark" (click)="addNodeToList()">Add To List</button>
   </div>
 
   <div class="form-group">

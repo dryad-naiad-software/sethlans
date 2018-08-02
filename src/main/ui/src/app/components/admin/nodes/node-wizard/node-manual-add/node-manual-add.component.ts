@@ -34,9 +34,11 @@ export class NodeManualAddComponent implements OnInit {
   nodeListDataSource = new MatTableDataSource();
   nodeListDisplayedColumns = ['ipAddress', 'port'];
   @Output() disableNext = new EventEmitter();
+  addDisabled: boolean;
 
   constructor() {
     this.nodeItem = new NodeItem();
+    this.addDisabled = true;
   }
 
   ngOnInit() {
@@ -51,11 +53,17 @@ export class NodeManualAddComponent implements OnInit {
   }
 
   enableNext() {
-    if (!this.nodeWizardForm.singleNode.nodeItemNotReady()) {
+    if (!this.nodeWizardForm.multipleNodeAdd && !this.nodeWizardForm.singleNode.nodeItemNotReady()) {
+      this.disableNext.emit(false);
+    } else if (this.nodeWizardForm.multipleNodeAdd && this.nodeWizardForm.multipleNodes.length > 0) {
       this.disableNext.emit(false);
     } else {
       this.disableNext.emit(true);
     }
+  }
+
+  enableAdd() {
+    this.addDisabled = this.nodeItem.nodeItemNotReady();
   }
 
   clearList() {
@@ -70,6 +78,7 @@ export class NodeManualAddComponent implements OnInit {
     this.clearNode();
     this.nodeListDataSource = new MatTableDataSource<any>(this.nodeWizardForm.multipleNodes);
     this.nodeListDataSource.paginator = this.nodeListPaginator;
+    this.enableNext();
   }
 }
 
