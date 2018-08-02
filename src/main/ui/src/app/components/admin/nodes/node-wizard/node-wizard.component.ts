@@ -102,14 +102,6 @@ export class NodeWizardComponent implements OnInit {
 
 }
 
-enum NodeAddType {
-  Manual,
-  Scan,
-}
 
-enum NodeWizardMode {
-  Start,
-  Add,
-  Summary,
-  Finished
-}
+
+
