@@ -32,7 +32,7 @@ export class NodeManualAddComponent implements OnInit {
   nodeItem: NodeItem;
   @ViewChild(MatPaginator) nodeListPaginator: MatPaginator;
   nodeListDataSource = new MatTableDataSource();
-  nodeListDisplayedColumns = ['ipAddress', 'port'];
+  nodeListDisplayedColumns = ['ipAddress', 'port', 'action'];
   @Output() disableNext = new EventEmitter();
   addDisabled: boolean;
 
@@ -68,17 +68,29 @@ export class NodeManualAddComponent implements OnInit {
 
   clearList() {
     this.nodeWizardForm.multipleNodes = [];
-    this.nodeListDataSource = new MatTableDataSource<any>(this.nodeWizardForm.multipleNodes);
-    this.nodeListDataSource.paginator = this.nodeListPaginator;
+    this.refreshList();
     this.disableNext.emit(true);
   }
 
   addNodeToList() {
     this.nodeWizardForm.multipleNodes.push(this.nodeItem);
-    this.clearNode();
+    this.nodeItem = new NodeItem();
+    this.addDisabled = true;
+    this.refreshList();
+  }
+
+  refreshList() {
     this.nodeListDataSource = new MatTableDataSource<any>(this.nodeWizardForm.multipleNodes);
     this.nodeListDataSource.paginator = this.nodeListPaginator;
     this.enableNext();
+  }
+
+  deleteNodeFromList(node: NodeItem) {
+    let index = this.nodeWizardForm.multipleNodes.indexOf(node);
+    if (index > -1) {
+      this.nodeWizardForm.multipleNodes.splice(index, 1);
+      this.refreshList();
+    }
   }
 }
 

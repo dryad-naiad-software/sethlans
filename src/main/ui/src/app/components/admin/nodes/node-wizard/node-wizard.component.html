@@ -57,13 +57,14 @@
           </li>
         </ul>
         <div *ngIf="nodeWizardForm.currentMode === wizardModes.Start">
-          <div class=" pt-2">
-            <p class="text-center"> Server Access Key:
-              <br/>
-              <strong><span class="text-danger">{{accessKey}} &nbsp;</span></strong>
-              <button class="btn btn-outline-secondary btn-xs" (click)="copyKey()" ngbTooltip="Copy to Clipboard"
-                      placement="top"><i class="far fa-clipboard"></i></button>
-            </p>
+          <div class="pt-2">
+            <div class="alert alert-primary">
+              <p class="mb-0 text-center"> Server Access Key:&nbsp; <strong>{{accessKey}} &nbsp;</strong>
+                <button class="btn btn-outline-secondary btn-xs" (click)="copyKey()" ngbTooltip="Copy to Clipboard"
+                        placement="top"><i class="far fa-clipboard"></i></button>
+              </p>
+            </div>
+
           </div>
 
           <p>Which action would you like to perform?</p>

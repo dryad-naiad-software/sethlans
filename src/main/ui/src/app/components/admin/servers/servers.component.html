@@ -36,7 +36,7 @@
 
       <div class="card-body">
         <div *ngIf="!serverListToggle">
-          <div *ngIf="keyRejected" class="alert-danger text-center"><h6>Submitted key was invalid.</h6></div>
+          <div *ngIf="keyRejected" class="alert alert-danger text-center"><h6>Submitted key was invalid.</h6></div>
           <mat-table #accessKeyTable [dataSource]="accessKeyListDataSource">
             <ng-container matColumnDef="accessKey">
               <mat-header-cell *matHeaderCellDef>Access Key</mat-header-cell>
