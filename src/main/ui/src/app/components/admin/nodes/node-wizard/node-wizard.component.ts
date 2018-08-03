@@ -80,6 +80,9 @@ export class NodeWizardComponent implements OnInit {
       case NodeWizardMode.Start:
         this.nodeWizardForm.currentMode = NodeWizardMode.Add;
         break;
+      case NodeWizardMode.Add:
+        this.nodeWizardForm.currentMode = NodeWizardMode.Summary;
+        break;
     }
   }
 

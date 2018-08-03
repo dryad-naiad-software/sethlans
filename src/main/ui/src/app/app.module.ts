@@ -74,7 +74,6 @@ import {BlenderVersionsComponent} from './components/admin/blender-versions/blen
 import {LogsComponent} from './components/admin/logs/logs.component';
 import {UserListService} from './services/user_list.service';
 import {NodeListService} from './services/node_list.service';
-import {NodeAddComponent} from './components/admin/nodes/node-add/node-add.component';
 import {ServerListService} from './services/server_list.service';
 import {AccessKeyListService} from './services/access_key_list.service';
 import {NodeWizardComponent} from './components/admin/nodes/node-wizard/node-wizard.component';
@@ -117,7 +116,6 @@ import {NodeSummaryComponent} from './components/admin/nodes/node-wizard/node-su
     ComputeSettingsComponent,
     BlenderVersionsComponent,
     LogsComponent,
-    NodeAddComponent,
     NodeWizardComponent,
     NodeManualAddComponent,
     NodeScanAddComponent,

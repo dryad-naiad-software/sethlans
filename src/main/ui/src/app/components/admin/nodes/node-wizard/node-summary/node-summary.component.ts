@@ -19,6 +19,8 @@
 
 import {Component, Input, OnInit} from '@angular/core';
 import {NodeWizardForm} from '../../../../../models/forms/node_wizard_form.model';
+import {NodeInfo} from '../../../../../models/node_info.model';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-node-summary',
@@ -27,12 +29,73 @@ import {NodeWizardForm} from '../../../../../models/forms/node_wizard_form.model
 })
 export class NodeSummaryComponent implements OnInit {
   @Input() nodeWizardForm: NodeWizardForm;
+  @Input() accessKey: string;
+  nodeToAdd: NodeInfo;
+  nodesToAdd: NodeInfo[] = [];
+  keyPresent: boolean;
+  downloadComplete: boolean;
 
 
-  constructor() {
+  constructor(private http: HttpClient) {
   }
 
   ngOnInit() {
+    if (this.nodeWizardForm.multipleNodeAdd) {
+      this.multiNodeQuery();
+    } else {
+      this.singleNodeQuery();
+    }
+  }
+
+  singleNodeQuery() {
+    this.nodeWizardForm.summaryComplete = false;
+    this.downloadComplete = false;
+    this.http.get('/api/management/is_key_present?ip=' + this.nodeWizardForm.singleNode.ipAddress + '&port=' + this.nodeWizardForm.singleNode.port).subscribe((value: boolean) => {
+      this.keyPresent = value;
+      console.log(value);
+      if (value) {
+        this.http.get('/api/management/node_check?ip=' + this.nodeWizardForm.singleNode.ipAddress + '&port=' + this.nodeWizardForm.singleNode.port).subscribe((node: NodeInfo) => {
+          if (node != null) {
+            this.nodeToAdd = node;
+            this.nodeWizardForm.summaryComplete = true;
+            this.downloadComplete = true;
+          } else {
+            this.nodeWizardForm.summaryComplete = true;
+            this.downloadComplete = false;
+          }
+        });
+      } else {
+        this.nodeWizardForm.summaryComplete = true;
+      }
+    });
+  }
+
+  multiNodeQuery() {
+    this.nodeWizardForm.summaryComplete = false;
+    this.downloadComplete = false;
+    this.nodeWizardForm.multipleNodes.forEach((value, idx, array) => {
+      this.http.get('/api/management/is_key_present?ip=' + value.ipAddress + '&port=' + value.port).subscribe((result: boolean) => {
+        if (result) {
+          this.http.get('/api/management/node_check?ip=' + value.ipAddress + '&port=' + value.port).subscribe((node: NodeInfo) => {
+            if (node != null) {
+              this.nodesToAdd.push(node);
+              value.active = true;
+
+            } else {
+              value.active = false;
+            }
+            if (idx === array.length - 1) {
+              this.nodeWizardForm.summaryComplete = true;
+            }
+          });
+        } else {
+          value.active = false;
+          if (idx === array.length - 1) {
+            this.nodeWizardForm.summaryComplete = true;
+          }
+        }
+      });
+    });
   }
 
 }
