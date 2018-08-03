@@ -76,7 +76,7 @@
         </ul>
         <div class="py-3">
           <app-mode-setup [setupForm]="setupForm" *ngIf="progress === setupProgress.MODE_SELECT"></app-mode-setup>
-          <app-user-create [setupForm]="setupForm" (disableNext)="disableNext($event)" (submitUser)="submitUser()"
+          <app-user-create [setupForm]="setupForm" (disableNext)="disableNext($event)" (submitUser)="next()"
                            *ngIf="progress === setupProgress.REGISTER_USER"></app-user-create>
           <app-dual-config [setupForm]="setupForm" (disableNext)="disableNext($event)"
                            *ngIf="progress === setupProgress.MODE_CONFIG && setupForm.mode === modes.DUAL"></app-dual-config>

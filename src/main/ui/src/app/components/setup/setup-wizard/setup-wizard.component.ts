@@ -54,10 +54,6 @@ export class SetupWizardComponent implements OnInit {
     this.nextDisabled = value;
   }
 
-  submitUser() {
-    this.next();
-  }
-
   next() {
     switch (this.progress) {
       case SetupProgress.MODE_SELECT: {

@@ -100,11 +100,13 @@
         </div>
         <app-node-manual-add [nodeWizardForm]="nodeWizardForm"
                              (disableNext)="disableNext($event)"
+                             (clickNext)="next()"
                              *ngIf="nodeWizardForm.currentMode == wizardModes.Add && nodeWizardForm.addType == wizardTypes.Manual"></app-node-manual-add>
         <app-node-scan-add [nodeWizardForm]="nodeWizardForm"
                            *ngIf="nodeWizardForm.currentMode == wizardModes.Add && nodeWizardForm.addType == wizardTypes.Scan"></app-node-scan-add>
         <app-node-summary [nodeWizardForm]="nodeWizardForm"
                           *ngIf="nodeWizardForm.currentMode == wizardModes.Summary"></app-node-summary>
+        <app-node-add-finish *ngIf="nodeWizardForm.currentMode == wizardModes.Finished"></app-node-add-finish>
       </div>
 
       <div class="card-footer">
@@ -112,11 +114,17 @@
           <button *ngIf="nodeWizardForm.currentMode == wizardModes.Start" class="btn btn-outline-secondary float-left"
                   (click)="returnToNodes()">Cancel
           </button>
-          <button *ngIf="nodeWizardForm.currentMode != wizardModes.Start"
+          <button [disabled]="previousDisabled"
+                  *ngIf="nodeWizardForm.currentMode != wizardModes.Start"
                   class="btn btn-outline-secondary float-left" (click)="previous()">Previous
           </button>
           <button [disabled]="nextDisabled"
+                  *ngIf="nodeWizardForm.currentMode != wizardModes.Summary"
                   class="btn btn-outline-primary float-right" (click)="next()"> Next
+          </button>
+          <button [disabled]="nextDisabled"
+                  *ngIf="nodeWizardForm.currentMode == wizardModes.Summary"
+                  class="btn btn-outline-primary float-right" (click)="finish()"> Finish
           </button>
         </nav>
       </div>

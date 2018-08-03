@@ -34,6 +34,7 @@ export class NodeWizardComponent implements OnInit {
   accessKey: string;
   nodeWizardForm: NodeWizardForm;
   nextDisabled: boolean;
+  previousDisabled: boolean;
 
 
   constructor(private http: HttpClient) {
@@ -71,14 +72,27 @@ export class NodeWizardComponent implements OnInit {
     }
   }
 
+
   returnToNodes() {
     window.location.href = '/admin/nodes';
+  }
+
+  finish() {
+    if (!this.nodeWizardForm.multipleNodeAdd) {
+      this.http.get('/api/setup/node_add?ip=' + this.nodeWizardForm.singleNode.ipAddress + '&port=' + this.nodeWizardForm.singleNode.port, {responseType: 'text'}).subscribe(() => {
+        this.nodeWizardForm.currentMode = NodeWizardMode.Finished;
+        this.previousDisabled = true;
+      });
+    }
+
+
   }
 
   next() {
     switch (this.nodeWizardForm.currentMode) {
       case NodeWizardMode.Start:
         this.nodeWizardForm.currentMode = NodeWizardMode.Add;
+        this.previousDisabled = false;
         break;
       case NodeWizardMode.Add:
         this.nodeWizardForm.currentMode = NodeWizardMode.Summary;
@@ -93,6 +107,7 @@ export class NodeWizardComponent implements OnInit {
         break;
       case NodeWizardMode.Summary:
         this.nodeWizardForm.currentMode = NodeWizardMode.Add;
+        this.nodeWizardForm.summaryComplete = false;
         break;
 
     }

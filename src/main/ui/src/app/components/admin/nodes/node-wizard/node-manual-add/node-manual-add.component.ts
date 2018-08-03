@@ -34,6 +34,7 @@ export class NodeManualAddComponent implements OnInit {
   nodeListDataSource = new MatTableDataSource();
   nodeListDisplayedColumns = ['ipAddress', 'port', 'action'];
   @Output() disableNext = new EventEmitter();
+  @Output() clickNext = new EventEmitter();
   addDisabled: boolean;
 
   constructor() {
@@ -44,12 +45,21 @@ export class NodeManualAddComponent implements OnInit {
   ngOnInit() {
     this.disableNext.emit(true);
     this.nodeWizardForm.singleNode = new NodeItem();
+    this.nodeWizardForm.summaryComplete = false;
 
   }
 
   clearNode() {
     this.nodeWizardForm.singleNode = new NodeItem();
     this.disableNext.emit(true);
+  }
+
+  enterPress(event) {
+    if (!this.nodeWizardForm.multipleNodeAdd && !this.nodeWizardForm.singleNode.nodeItemNotReady()) {
+      if (event.key === 'Enter') {
+        this.clickNext.emit();
+      }
+    }
   }
 
   enableNext() {
