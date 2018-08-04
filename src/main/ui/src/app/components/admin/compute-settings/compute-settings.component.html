@@ -1,3 +1,78 @@
-<p>
-  compute-settings works!
-</p>
+<!--
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
+<div class="row pb-5">
+  <div class="col-md-8 m-auto">
+    <div class="card">
+      <div class="card-header">
+        <h4>
+          <span style="font-family: 'Fjalla One', sans-serif; ">Compute Settings</span>
+          <button class="ml-2 btn btn-outline-dark float-right">
+            <span class="fa fa-cog"></span> <span>&nbsp;Change Settings</span>
+          </button>
+        </h4>
+      </div>
+      <div class="card-body table-responsive">
+        <table class="table table-striped">
+          <thead>
+          <h5>Active Compute Settings</h5>
+          </thead>
+          <tbody>
+          <tr>
+            <td>Compute Method</td>
+            <td *ngIf="currentNode.computeMethod !== computeMethods.CPU_GPU">
+              {{currentNode.computeMethod}}
+            </td>
+            <td *ngIf="currentNode.computeMethod == computeMethods.CPU_GPU">CPU & GPU</td>
+          </tr>
+          <tr *ngIf="currentNode.computeMethod !== computeMethods.GPU ">
+            <td>Rendering Cores</td>
+            <td>{{currentNode.cores}}</td>
+          </tr>
+          <tr *ngIf="currentNode.computeMethod !== computeMethods.GPU">
+            <td>Tile Size: CPU</td>
+            <td>{{currentNode.tileSizeCPU}}</td>
+          </tr>
+          <tr *ngIf="currentNode.computeMethod !== computeMethods.CPU">
+            <td>Selected GPU(s)</td>
+            <td>
+              <ul class="list-unstyled">
+                <li *ngFor="let gpu of currentNode.selectedGPUs"> {{gpu.model}}</li>
+              </ul>
+            </td>
+          </tr>
+          <tr *ngIf="currentNode.computeMethod !== computeMethods.CPU">
+            <td>Tile Size: GPU</td>
+            <td>{{currentNode.tileSizeGPU}}</td>
+          </tr>
+          <tr *ngIf="currentNode.computeMethod !== computeMethods.CPU">
+            <td>Combined GPU Rendering:</td>
+            <td>{{gpuCombined}}</td>
+          </tr>
+          </tbody>
+        </table>
+        <!--<div>-->
+        <!--Debugging:-->
+        <!--<pre>{{ newNode | json }}</pre>-->
+        <!--</div>-->
+      </div>
+    </div>
+  </div>
+</div>
+
