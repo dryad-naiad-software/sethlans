@@ -79,9 +79,11 @@ export class NodeWizardComponent implements OnInit {
 
   finish() {
     if (!this.nodeWizardForm.multipleNodeAdd) {
-      this.http.get('/api/setup/node_add?ip=' + this.nodeWizardForm.singleNode.ipAddress + '&port=' + this.nodeWizardForm.singleNode.port, {responseType: 'text'}).subscribe(() => {
+      this.http.get('/api/setup/node_add?ip=' + this.nodeWizardForm.singleNode.ipAddress + '&port=' +
+        this.nodeWizardForm.singleNode.port, {responseType: 'text'}).subscribe(() => {
         this.nodeWizardForm.currentMode = NodeWizardMode.Finished;
         this.previousDisabled = true;
+        this.nextDisabled = true;
       });
     }
 
@@ -96,6 +98,7 @@ export class NodeWizardComponent implements OnInit {
         break;
       case NodeWizardMode.Add:
         this.nodeWizardForm.currentMode = NodeWizardMode.Summary;
+        this.nextDisabled = true;
         break;
     }
   }
@@ -108,6 +111,7 @@ export class NodeWizardComponent implements OnInit {
       case NodeWizardMode.Summary:
         this.nodeWizardForm.currentMode = NodeWizardMode.Add;
         this.nodeWizardForm.summaryComplete = false;
+        this.nodeWizardForm.multipleNodes = [];
         break;
 
     }

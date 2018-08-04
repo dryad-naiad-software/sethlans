@@ -17,10 +17,12 @@
  *
  */
 
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {NodeWizardForm} from '../../../../../models/forms/node_wizard_form.model';
 import {NodeInfo} from '../../../../../models/node_info.model';
 import {HttpClient} from '@angular/common/http';
+import {MatPaginator, MatTableDataSource} from '@angular/material';
+import {NodeWizardMode} from '../../../../../enums/node_wizard_mode.enum';
 
 @Component({
   selector: 'app-node-summary',
@@ -30,35 +32,53 @@ import {HttpClient} from '@angular/common/http';
 export class NodeSummaryComponent implements OnInit {
   @Input() nodeWizardForm: NodeWizardForm;
   @Input() accessKey: string;
-  nodeToAdd: NodeInfo;
-  nodesToAdd: NodeInfo[] = [];
+  wizardModes: any = NodeWizardMode;
   keyPresent: boolean;
   downloadComplete: boolean;
+  @Output() disableNext = new EventEmitter();
+  @ViewChild(MatPaginator) obtainedNodePaginator: MatPaginator;
+  obtainedNodeDataSource = new MatTableDataSource();
+  obtainedNodeDisplayedColumns = ['hostname', 'ipAddress', 'port', 'os', 'computeMethods', 'cpuName', 'selectedCores', 'selectedGPUs'];
 
 
   constructor(private http: HttpClient) {
+    this.downloadComplete = false;
   }
 
   ngOnInit() {
     if (this.nodeWizardForm.multipleNodeAdd) {
+      this.nodeWizardForm.nodesToAdd = [];
       this.multiNodeQuery();
     } else {
+      this.nodeWizardForm.nodeToAdd = new NodeInfo();
       this.singleNodeQuery();
     }
   }
 
+  refreshList() {
+    if (!this.nodeWizardForm.multipleNodeAdd) {
+      let tempTable: NodeInfo[] = [];
+      tempTable.push(this.nodeWizardForm.nodeToAdd);
+      this.obtainedNodeDataSource = new MatTableDataSource<any>(tempTable);
+      this.obtainedNodeDataSource.paginator = this.obtainedNodePaginator;
+    } else {
+      this.obtainedNodeDataSource = new MatTableDataSource<any>(this.nodeWizardForm.nodesToAdd);
+      this.obtainedNodeDataSource.paginator = this.obtainedNodePaginator;
+    }
+  }
+
   singleNodeQuery() {
-    this.nodeWizardForm.summaryComplete = false;
-    this.downloadComplete = false;
     this.http.get('/api/management/is_key_present?ip=' + this.nodeWizardForm.singleNode.ipAddress + '&port=' + this.nodeWizardForm.singleNode.port).subscribe((value: boolean) => {
       this.keyPresent = value;
       console.log(value);
       if (value) {
         this.http.get('/api/management/node_check?ip=' + this.nodeWizardForm.singleNode.ipAddress + '&port=' + this.nodeWizardForm.singleNode.port).subscribe((node: NodeInfo) => {
           if (node != null) {
-            this.nodeToAdd = node;
+            this.nodeWizardForm.nodeToAdd = node;
             this.nodeWizardForm.summaryComplete = true;
             this.downloadComplete = true;
+            this.disableNext.emit(false);
+            this.refreshList();
           } else {
             this.nodeWizardForm.summaryComplete = true;
             this.downloadComplete = false;
@@ -71,27 +91,32 @@ export class NodeSummaryComponent implements OnInit {
   }
 
   multiNodeQuery() {
-    this.nodeWizardForm.summaryComplete = false;
-    this.downloadComplete = false;
     this.nodeWizardForm.multipleNodes.forEach((value, idx, array) => {
       this.http.get('/api/management/is_key_present?ip=' + value.ipAddress + '&port=' + value.port).subscribe((result: boolean) => {
         if (result) {
           this.http.get('/api/management/node_check?ip=' + value.ipAddress + '&port=' + value.port).subscribe((node: NodeInfo) => {
             if (node != null) {
-              this.nodesToAdd.push(node);
+              this.nodeWizardForm.nodesToAdd.push(node);
               value.active = true;
-
+              this.keyPresent = true;
+              this.disableNext.emit(false);
             } else {
               value.active = false;
             }
             if (idx === array.length - 1) {
               this.nodeWizardForm.summaryComplete = true;
+              this.downloadComplete = true;
+              this.refreshList();
             }
           });
         } else {
           value.active = false;
           if (idx === array.length - 1) {
             this.nodeWizardForm.summaryComplete = true;
+            this.downloadComplete = true;
+            this.refreshList();
+            this.disableNext.emit(true);
+
           }
         }
       });
