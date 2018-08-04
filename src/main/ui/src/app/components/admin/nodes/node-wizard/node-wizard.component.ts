@@ -18,7 +18,7 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {NodeWizardMode} from '../../../../enums/node_wizard_mode.enum';
 import {NodeAddType} from '../../../../enums/node_wizard_add_type.enum';
 import {NodeWizardForm} from '../../../../models/forms/node_wizard_form.model';
@@ -78,16 +78,37 @@ export class NodeWizardComponent implements OnInit {
   }
 
   finish() {
-    if (!this.nodeWizardForm.multipleNodeAdd) {
-      this.http.get('/api/setup/node_add?ip=' + this.nodeWizardForm.singleNode.ipAddress + '&port=' +
-        this.nodeWizardForm.singleNode.port, {responseType: 'text'}).subscribe(() => {
-        this.nodeWizardForm.currentMode = NodeWizardMode.Finished;
-        this.previousDisabled = true;
-        this.nextDisabled = true;
-      });
+    if (this.nodeWizardForm.addType == NodeAddType.Manual) {
+      if (!this.nodeWizardForm.multipleNodeAdd) {
+        this.http.get('/api/setup/node_add?ip=' + this.nodeWizardForm.singleNode.ipAddress + '&port=' +
+          this.nodeWizardForm.singleNode.port, {responseType: 'text'}).subscribe(() => {
+          this.nodeWizardForm.currentMode = NodeWizardMode.Finished;
+          this.previousDisabled = true;
+        });
+      } else {
+        this.sendMultiple();
+      }
+    } else {
+      this.sendMultiple();
+
     }
+  }
 
-
+  sendMultiple() {
+    let toSend: string[] = [];
+    this.nodeWizardForm.nodesToAdd.forEach(value => {
+      let node = value.hostname + ',' + value.networkPort;
+      toSend.push(node);
+    });
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    this.http.post('/api/setup/multi_node_add', JSON.stringify(toSend), httpOptions).subscribe(() => {
+      this.nodeWizardForm.currentMode = NodeWizardMode.Finished;
+      this.previousDisabled = true;
+    });
   }
 
   next() {

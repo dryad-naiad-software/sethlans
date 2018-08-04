@@ -21,8 +21,9 @@ import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angula
 import {NodeWizardForm} from '../../../../../models/forms/node_wizard_form.model';
 import {NodeInfo} from '../../../../../models/node_info.model';
 import {HttpClient} from '@angular/common/http';
-import {MatPaginator, MatTableDataSource} from '@angular/material';
+import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {NodeWizardMode} from '../../../../../enums/node_wizard_mode.enum';
+import {NodeAddType} from '../../../../../enums/node_wizard_add_type.enum';
 
 @Component({
   selector: 'app-node-summary',
@@ -37,8 +38,11 @@ export class NodeSummaryComponent implements OnInit {
   downloadComplete: boolean;
   @Output() disableNext = new EventEmitter();
   @ViewChild(MatPaginator) obtainedNodePaginator: MatPaginator;
+  @ViewChild(MatSort) obtainedNodeSort: MatSort;
   obtainedNodeDataSource = new MatTableDataSource();
   obtainedNodeDisplayedColumns = ['hostname', 'ipAddress', 'port', 'os', 'computeMethods', 'cpuName', 'selectedCores', 'selectedGPUs'];
+  wizardTypes: any = NodeAddType;
+
 
 
   constructor(private http: HttpClient) {
@@ -46,13 +50,26 @@ export class NodeSummaryComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.nodeWizardForm.multipleNodeAdd) {
-      this.nodeWizardForm.nodesToAdd = [];
-      this.multiNodeQuery();
+
+    if (this.nodeWizardForm.addType == NodeAddType.Manual) {
+      if (this.nodeWizardForm.multipleNodeAdd) {
+        this.nodeWizardForm.nodesToAdd = [];
+        this.multiNodeQuery();
+      } else {
+        this.nodeWizardForm.nodeToAdd = new NodeInfo();
+        this.singleNodeQuery();
+      }
     } else {
-      this.nodeWizardForm.nodeToAdd = new NodeInfo();
-      this.singleNodeQuery();
+      this.scannedSummary();
     }
+
+  }
+
+  scannedSummary() {
+    this.obtainedNodeDataSource = new MatTableDataSource<any>(this.nodeWizardForm.nodesToAdd);
+    this.obtainedNodeDataSource.paginator = this.obtainedNodePaginator;
+    this.obtainedNodeDataSource.sort = this.obtainedNodeSort;
+    this.disableNext.emit(false);
   }
 
   refreshList() {
@@ -64,6 +81,7 @@ export class NodeSummaryComponent implements OnInit {
     } else {
       this.obtainedNodeDataSource = new MatTableDataSource<any>(this.nodeWizardForm.nodesToAdd);
       this.obtainedNodeDataSource.paginator = this.obtainedNodePaginator;
+      this.obtainedNodeDataSource.sort = this.obtainedNodeSort;
     }
   }
 

@@ -17,8 +17,13 @@
  *
  */
 
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {NodeWizardForm} from '../../../../../models/forms/node_wizard_form.model';
+import {NodeInfo} from '../../../../../models/node_info.model';
+import {Observable} from 'rxjs';
+import {HttpClient} from '@angular/common/http';
+import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {SelectionModel} from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-node-scan-add',
@@ -26,13 +31,65 @@ import {NodeWizardForm} from '../../../../../models/forms/node_wizard_form.model
   styleUrls: ['./node-scan-add.component.scss']
 })
 export class NodeScanAddComponent implements OnInit {
+  nodeScanComplete: boolean = false;
+  scanSize: number;
   @Input() nodeWizardForm: NodeWizardForm;
+  @Output() disableNext = new EventEmitter();
+  scanTableDataSource = new MatTableDataSource();
+  @ViewChild(MatPaginator) scanTablePaginator: MatPaginator;
+  @ViewChild(MatSort) scanTableSort: MatSort;
+  selection = new SelectionModel(true, []);
+  scanTableDisplayedColumns = ['selection', 'hostname', 'ipAddress', 'port', 'os', 'computeMethods', 'cpuName', 'selectedCores', 'selectedGPUs'];
 
-
-  constructor() {
+  constructor(private http: HttpClient) {
   }
 
   ngOnInit() {
+    this.nodeWizardForm.nodesToAdd = [];
+    this.loadTable();
+    this.disableNext.emit(true);
   }
+
+  loadTable() {
+    this.getScannedNodes().subscribe(data => {
+      this.scanTableDataSource = new MatTableDataSource<any>(data);
+      this.nodeScanComplete = true;
+      this.scanSize = data.length;
+      this.scanTableDataSource.paginator = this.scanTablePaginator;
+      this.scanTableDataSource.sort = this.scanTableSort;
+    });
+  }
+
+  getScannedNodes(): Observable<NodeInfo[]> {
+    return this.http.get<NodeInfo[]>('/api/management/node_scan/');
+  }
+
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.scanTableDataSource.data.forEach(row => {
+        this.selection.select(row);
+      });
+    this.updateToSend();
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.scanTableDataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  updateToSend() {
+    this.nodeWizardForm.nodesToAdd = [];
+    this.selection.selected.forEach((value: NodeInfo) => {
+      this.nodeWizardForm.nodesToAdd.push(value);
+    });
+    if (this.nodeWizardForm.nodesToAdd.length < 1) {
+      this.disableNext.emit(true);
+    } else {
+      this.disableNext.emit(false);
+    }
+  }
+
 
 }

@@ -103,6 +103,7 @@
                              (clickNext)="next()"
                              *ngIf="nodeWizardForm.currentMode == wizardModes.Add && nodeWizardForm.addType == wizardTypes.Manual"></app-node-manual-add>
         <app-node-scan-add [nodeWizardForm]="nodeWizardForm"
+                           (disableNext)="disableNext($event)"
                            *ngIf="nodeWizardForm.currentMode == wizardModes.Add && nodeWizardForm.addType == wizardTypes.Scan"></app-node-scan-add>
         <app-node-summary [nodeWizardForm]="nodeWizardForm"
                           (disableNext)="disableNext($event)"
