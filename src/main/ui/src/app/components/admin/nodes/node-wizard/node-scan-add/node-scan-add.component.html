@@ -26,6 +26,16 @@
       </li>
     </ul>
   </div>
+  <div *ngIf="nodeScanComplete && scanSize <= 0">
+    <h5>Node Scan:</h5>
+
+    <ul>
+      <li>
+        No nodes found on the local network. Verify that nodes are online and server access key is present on all nodes
+        to be scanned.
+      </li>
+    </ul>
+  </div>
 
   <div *ngIf="nodeScanComplete && scanSize > 0">
     <mat-table #scanTable [dataSource]="scanTableDataSource" matSort>
