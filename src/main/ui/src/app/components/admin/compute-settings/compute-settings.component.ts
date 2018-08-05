@@ -30,6 +30,7 @@ import {SethlansNode} from '../../../models/node.model';
 })
 export class ComputeSettingsComponent implements OnInit {
   computeMethods: any = ComputeMethod;
+  editSettings: boolean = false;
   availableComputeMethods: ComputeMethod[] = [];
   totalCores: number;
   availableGPUs: GPU[] = [];
@@ -39,6 +40,16 @@ export class ComputeSettingsComponent implements OnInit {
 
 
   constructor(private http: HttpClient) {
+  }
+
+  switchToEdit() {
+    document.body.style.background = 'rgba(0, 0, 0, .6)';
+    this.editSettings = true;
+  }
+
+  switchToNormal() {
+    document.body.style.background = '#EAEAEA';
+    this.editSettings = false;
   }
 
   ngOnInit() {

@@ -22,55 +22,68 @@
     <div class="card">
       <div class="card-header">
         <h4>
-          <span style="font-family: 'Fjalla One', sans-serif; ">Compute Settings</span>
-          <button class="ml-2 btn btn-outline-dark float-right">
+          <span style="font-family: 'Fjalla One', sans-serif;">Compute Settings</span>
+          <button class="ml-2 btn btn-outline-dark float-right" *ngIf="!editSettings" (click)="switchToEdit()">
             <span class="fa fa-cog"></span> <span>&nbsp;Change Settings</span>
           </button>
         </h4>
       </div>
-      <div class="card-body table-responsive">
-        <table class="table table-striped">
-          <thead>
-          <h5>Active Compute Settings</h5>
-          </thead>
-          <tbody>
-          <tr>
-            <td>Compute Method</td>
-            <td *ngIf="currentNode.computeMethod !== computeMethods.CPU_GPU">
-              {{currentNode.computeMethod}}
-            </td>
-            <td *ngIf="currentNode.computeMethod == computeMethods.CPU_GPU">CPU & GPU</td>
-          </tr>
-          <tr *ngIf="currentNode.computeMethod !== computeMethods.GPU ">
-            <td>Rendering Cores</td>
-            <td>{{currentNode.cores}}</td>
-          </tr>
-          <tr *ngIf="currentNode.computeMethod !== computeMethods.GPU">
-            <td>Tile Size: CPU</td>
-            <td>{{currentNode.tileSizeCPU}}</td>
-          </tr>
-          <tr *ngIf="currentNode.computeMethod !== computeMethods.CPU">
-            <td>Selected GPU(s)</td>
-            <td>
-              <ul class="list-unstyled">
-                <li *ngFor="let model of selectedGPUNames"> {{model}}</li>
-              </ul>
-            </td>
-          </tr>
-          <tr *ngIf="currentNode.computeMethod !== computeMethods.CPU">
-            <td>Tile Size: GPU</td>
-            <td>{{currentNode.tileSizeGPU}}</td>
-          </tr>
-          <tr *ngIf="currentNode.computeMethod !== computeMethods.CPU">
-            <td>Combined GPU Rendering:</td>
-            <td>{{gpuCombined}}</td>
-          </tr>
-          </tbody>
-        </table>
-        <!--<div>-->
-        <!--Debugging:-->
-        <!--<pre>{{ newNode | json }}</pre>-->
-        <!--</div>-->
+      <div class="card-body">
+        <div *ngIf="editSettings">
+          <form #nodeForm="ngForm" class="editForm">
+          </form>
+
+        </div>
+        <div class="table-responsive" *ngIf="!editSettings">
+          <table class="table table-striped">
+            <thead>
+            <h5>Current Compute Settings</h5>
+            </thead>
+            <tbody>
+            <tr>
+              <td>Compute Method</td>
+              <td *ngIf="currentNode.computeMethod !== computeMethods.CPU_GPU">
+                {{currentNode.computeMethod}}
+              </td>
+              <td *ngIf="currentNode.computeMethod == computeMethods.CPU_GPU">CPU & GPU</td>
+            </tr>
+            <tr *ngIf="currentNode.computeMethod !== computeMethods.GPU ">
+              <td>Rendering Cores</td>
+              <td>{{currentNode.cores}}</td>
+            </tr>
+            <tr *ngIf="currentNode.computeMethod !== computeMethods.GPU">
+              <td>Tile Size: CPU</td>
+              <td>{{currentNode.tileSizeCPU}}</td>
+            </tr>
+            <tr *ngIf="currentNode.computeMethod !== computeMethods.CPU">
+              <td>Selected GPU(s)</td>
+              <td>
+                <ul class="list-unstyled">
+                  <li *ngFor="let model of selectedGPUNames"> {{model}}</li>
+                </ul>
+              </td>
+            </tr>
+            <tr *ngIf="currentNode.computeMethod !== computeMethods.CPU">
+              <td>Tile Size: GPU</td>
+              <td>{{currentNode.tileSizeGPU}}</td>
+            </tr>
+            <tr *ngIf="currentNode.computeMethod !== computeMethods.CPU">
+              <td>Combined GPU Rendering:</td>
+              <td>{{gpuCombined}}</td>
+            </tr>
+            </tbody>
+          </table>
+          <!--<div>-->
+          <!--Debugging:-->
+          <!--<pre>{{ newNode | json }}</pre>-->
+          <!--</div>-->
+        </div>
+      </div>
+      <div class="card-footer" *ngIf="editSettings">
+        <nav>
+          <button class="btn btn-outline-secondary float-left" (click)="switchToNormal()">Cancel
+          </button>
+        </nav>
       </div>
     </div>
   </div>
