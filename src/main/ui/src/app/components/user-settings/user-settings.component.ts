@@ -44,7 +44,6 @@ export class UserSettingsComponent implements OnInit {
   ngOnInit() {
     this.getUserInfo();
     this.passFields = new PasswordSet();
-    document.body.style.background = 'rgba(0, 0, 0, .6)';
   }
 
   getUserInfo() {

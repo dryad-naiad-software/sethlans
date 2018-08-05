@@ -1,3 +1,180 @@
-<p>
-  sethlans-settings works!
-</p>
+<!--
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
+<div class="row pb-5">
+  <div class="col-md-6 m-auto">
+    <div class="card">
+      <div class="card-header">
+        <h4>
+          <span style="font-family: 'Fjalla One', sans-serif; ">Sethlans Configuration</span>
+        </h4>
+      </div>
+      <div class="card-body table-responsive">
+        <div *ngIf="alertSuccess" class="alert alert-success">
+          <h6 class="text-center"><a href="/restart">Restart Sethlans</a> for changes to take effect.</h6>
+        </div>
+        <div *ngIf="alertFailure" class="alert alert-warning">
+          <h6 class="text-center">No new changes detected.</h6>
+        </div>
+        <table class="table table-striped table-sm">
+          <thead>
+          <h5>Main Configuration</h5>
+          </thead>
+          <tbody>
+          <tr>
+            <td style="width: 40%">HTTPS Port</td>
+            <td style="width: 75%">{{sethlansConfig.httpsPort}}</td>
+            <td style="width: 33%">
+              <button class="btn btn-outline-primary btn-sm" (click)="open(portEditModal)">Edit</button>
+            </td>
+          </tr>
+          <tr>
+            <td>IP</td>
+            <td>{{sethlansConfig.sethlansIP}}</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm" (click)="open(ipEditModal)">Edit</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Mode</td>
+            <td>{{sethlansConfig.mode}}</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Sethlans Root Directory</td>
+            <td>{{sethlansConfig.rootDir}}</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Log Level</td>
+            <td>{{sethlansConfig.logLevel}}</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <button [disabled]="!newSettings" type="button" class="btn btn-outline-secondary mr-auto float-left"
+                (click)="undo()">Undo Changes
+        </button>
+        <button [disabled]="!newSettings" type="button" class="btn btn-outline-primary ml-auto float-right"
+                (click)="submit()">Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #portEditModal let-c="close('Close click')" let-d="dismiss('Cross click')">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Edit HTTPS Port</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d; cancel()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group" ngbTooltip="Default HTTPS port is 7443. Sethlans will communicate on this port."
+         placement="left">
+      <label for="httpsPort">Sethlans HTTPS Port: </label>
+      <input id="httpsPort"
+             type="number"
+             name="httpsPort"
+             #httpsPort="ngModel"
+             [(ngModel)]="updateConfig.httpsPort"
+             required
+             pattern="^(?:6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[1-9])$"
+             [ngClass]="{'is-invalid':httpsPort.errors && httpsPort.touched}"
+             class="form-control form-control-sm"/>
+      <div class="invalid-feedback" [hidden]="httpsPort.valid">
+        <ul>
+          <li>A valid port is required. Range 1-65535</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-outline-secondary mr-auto" (click)="c; cancel()">Cancel</button>
+    <button
+      class="btn btn-outline-dark ml-auto" (click)="c; update()">Update
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #ipEditModal let-c="close('Close click')" let-d="dismiss('Cross click')">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Edit IP Address</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d; cancel()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group" ngbTooltip="IP Address used for communication between server and nodes." placement="left">
+      <label for="ipAddress">IP Address:</label>
+      <input id="ipAddress"
+             type="text"
+             name="ipAddress"
+             #ipAddress="ngModel"
+             [(ngModel)]="updateConfig.sethlansIP"
+             required
+             pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+             [ngClass]="{'is-invalid':ipAddress.errors && ipAddress.touched}"
+             class="form-control form-control-sm"/>
+      <div class="invalid-feedback" [hidden]="ipAddress.valid">
+        <ul>
+          <li>A valid IPv4 address is required.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-outline-secondary mr-auto" (click)="c; cancel()">Cancel</button>
+    <button
+      class="btn btn-outline-dark ml-auto" (click)="c; update()">Update
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #logLevelEditModal let-c="close('Close click')" let-d="dismiss('Cross click')">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Change Logging Level</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d; cancel()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label for="logLevel">Log Level:</label>
+      <select class="form-control form-control-sm"
+              id="logLevel"
+              name="logLevel"
+              #logLevel="ngModel"
+              [(ngModel)]="updateConfig.logLevel">
+        <option value="INFO">INFO</option>
+        <option value="DEBUG">DEBUG</option>
+      </select>
+
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-outline-secondary mr-auto" (click)="c; cancel()">Cancel</button>
+    <button
+      class="btn btn-outline-dark ml-auto" (click)="c; update()">Update
+    </button>
+  </div>
+</ng-template>

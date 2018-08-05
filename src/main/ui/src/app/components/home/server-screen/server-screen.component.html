@@ -23,13 +23,17 @@
     <mat-table #projectTable [dataSource]="dataSource" matSort>
       <ng-container matColumnDef="projectName">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Name</mat-header-cell>
-        <mat-cell *matCellDef="let project"><a [href]="'/projects/view/'+ project.id ">{{project.projectName}}</a>
+        <mat-cell *matCellDef="let project">
+          <span class="mobile-label">Name:</span>
+          <a [href]="'/projects/view/'+ project.id ">{{project.projectName}}</a>
         </mat-cell>
       </ng-container>
       <ng-container matColumnDef="projectStatus">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Status</mat-header-cell>
         <mat-cell *matCellDef="let project">
-            <span
+          <span class="mobile-label">Status:</span>
+
+          <span
               *ngIf="project.projectStatus != projectStatus.Finished">{{project.projectStatus}}</span>
           <a *ngIf="project.projectStatus == projectStatus.Finished"
              [href]="'/api/project_actions/download_project/' + project.id"> {{project.projectStatus}}</a>
@@ -38,6 +42,8 @@
       <ng-container matColumnDef="progress">
         <mat-header-cell *matHeaderCellDef>Render Progress</mat-header-cell>
         <mat-cell *matCellDef="let project">
+          <span class="mobile-label">Render Progress:</span>
+
           <ngb-progressbar type="success"
                            [value]="project.currentPercentage" placement="right"
                            ngbTooltip="{{project.currentPercentage}}%">

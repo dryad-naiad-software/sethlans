@@ -40,11 +40,16 @@
           <mat-table #accessKeyTable [dataSource]="accessKeyListDataSource">
             <ng-container matColumnDef="accessKey">
               <mat-header-cell *matHeaderCellDef>Access Key</mat-header-cell>
-              <mat-cell *matCellDef="let accessKey">{{accessKey.accessKey}}</mat-cell>
+              <mat-cell *matCellDef="let accessKey">
+                <span class="mobile-label">Access Key:</span>
+                {{accessKey.accessKey}}
+              </mat-cell>
             </ng-container>
             <ng-container matColumnDef="actions">
               <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
               <mat-cell *matCellDef="let accessKey">
+                <span class="mobile-label">Actions:</span>
+
                 <div class="btn-group-vertical">
                   <button class="btn btn-outline-danger btn-sm" type="button"
                           (click)="confirmAccessKeyDelete(accessKey, deleteAccessKeyConfirmation)">Delete
@@ -64,7 +69,9 @@
           <mat-table #serverTable [dataSource]="serverListDataSource" matSort>
             <ng-container matColumnDef="serverStatus">
               <mat-header-cell *matHeaderCellDef mat-sort-header>Server Status</mat-header-cell>
-              <mat-cell *matCellDef="let server"><span
+              <mat-cell *matCellDef="let server">
+                <span class="mobile-label">Server Status:</span>
+                <span
                 *ngIf="server.acknowledged == false">Pending Acknowledgement</span>
                 <span *ngIf="server.acknowledged == true && server.pendingAcknowledgementResponse == true">Pending
                 Response
@@ -75,22 +82,30 @@
             </ng-container>
             <ng-container matColumnDef="hostname">
               <mat-header-cell *matHeaderCellDef mat-sort-header>Hostname</mat-header-cell>
-              <mat-cell *matCellDef="let server">{{server.hostname}}
+              <mat-cell *matCellDef="let server">
+                <span class="mobile-label">Hostname:</span>
+                {{server.hostname}}
               </mat-cell>
             </ng-container>
             <ng-container matColumnDef="ipAddress">
               <mat-header-cell *matHeaderCellDef mat-sort-header>IP Address</mat-header-cell>
-              <mat-cell *matCellDef="let server">{{server.ipAddress}}
+              <mat-cell *matCellDef="let server">
+                <span class="mobile-label">IP Address:</span>
+                {{server.ipAddress}}
               </mat-cell>
             </ng-container>
             <ng-container matColumnDef="port">
               <mat-header-cell *matHeaderCellDef mat-sort-header>Port</mat-header-cell>
-              <mat-cell *matCellDef="let server">{{server.networkPort}}
+              <mat-cell *matCellDef="let server">
+                <span class="mobile-label">Port:</span>
+                {{server.networkPort}}
               </mat-cell>
             </ng-container>
             <ng-container matColumnDef="actions">
               <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
               <mat-cell *matCellDef="let server">
+                <span class="mobile-label">Actions:</span>
+
                 <div class="btn-group-vertical">
                   <button class="btn btn-outline-danger btn-sm" type="button"
                           (click)="confirmServerDelete(server, deleteServerConfirmation)">Delete
@@ -172,7 +187,7 @@
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c; resetKey()">Cancel
     </button>
-    <button [disabled]="keyToAdd == ''" type="button" class="btn btn-outline-dark ml-auto float-right"
+    <button [disabled]="keyToAdd == ''" type="button" class="btn btn-outline-primary ml-auto float-right"
             (click)="c; addAccessKeyToNode()">Add Key
     </button>
 
