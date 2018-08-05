@@ -17,7 +17,7 @@
  *
  */
 
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {NodeWizardForm} from '../../../../../models/forms/node_wizard_form.model';
 import {NodeInfo} from '../../../../../models/node_info.model';
 import {HttpClient} from '@angular/common/http';
@@ -30,7 +30,7 @@ import {NodeAddType} from '../../../../../enums/node_wizard_add_type.enum';
   templateUrl: './node-summary.component.html',
   styleUrls: ['./node-summary.component.scss']
 })
-export class NodeSummaryComponent implements OnInit {
+export class NodeSummaryComponent implements OnInit, AfterViewInit {
   @Input() nodeWizardForm: NodeWizardForm;
   @Input() accessKey: string;
   wizardModes: any = NodeWizardMode;
@@ -67,7 +67,6 @@ export class NodeSummaryComponent implements OnInit {
 
   scannedSummary() {
     this.obtainedNodeDataSource = new MatTableDataSource<any>(this.nodeWizardForm.nodesToAdd);
-    this.obtainedNodeDataSource.paginator = this.obtainedNodePaginator;
     this.obtainedNodeDataSource.sort = this.obtainedNodeSort;
     this.disableNext.emit(false);
   }
@@ -139,6 +138,10 @@ export class NodeSummaryComponent implements OnInit {
         }
       });
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.obtainedNodeDataSource.paginator = this.obtainedNodePaginator;
   }
 
 }

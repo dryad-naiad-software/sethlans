@@ -17,7 +17,7 @@
  *
  */
 
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {NodeWizardForm} from '../../../../../models/forms/node_wizard_form.model';
 import {NodeInfo} from '../../../../../models/node_info.model';
 import {Observable} from 'rxjs';
@@ -30,7 +30,7 @@ import {SelectionModel} from '@angular/cdk/collections';
   templateUrl: './node-scan-add.component.html',
   styleUrls: ['./node-scan-add.component.scss']
 })
-export class NodeScanAddComponent implements OnInit {
+export class NodeScanAddComponent implements OnInit, AfterViewInit {
   nodeScanComplete: boolean = false;
   scanSize: number;
   @Input() nodeWizardForm: NodeWizardForm;
@@ -55,8 +55,9 @@ export class NodeScanAddComponent implements OnInit {
       this.scanTableDataSource = new MatTableDataSource<any>(data);
       this.nodeScanComplete = true;
       this.scanSize = data.length;
-      this.scanTableDataSource.paginator = this.scanTablePaginator;
       this.scanTableDataSource.sort = this.scanTableSort;
+      setTimeout(() => this.scanTableDataSource.paginator = this.scanTablePaginator);
+
     });
   }
 
@@ -89,6 +90,9 @@ export class NodeScanAddComponent implements OnInit {
     } else {
       this.disableNext.emit(false);
     }
+  }
+
+  ngAfterViewInit(): void {
   }
 
 

@@ -59,33 +59,43 @@
     <mat-table #resultsTable [dataSource]="obtainedNodeDataSource" matSort>
       <ng-container matColumnDef="hostname">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Hostname</mat-header-cell>
-        <mat-cell *matCellDef="let node">{{node.hostname}}
+        <mat-cell *matCellDef="let node">
+          <span class="mobile-label">Hostname:</span>
+          {{node.hostname}}
         </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="ipAddress">
         <mat-header-cell *matHeaderCellDef mat-sort-header>IP Address</mat-header-cell>
-        <mat-cell *matCellDef="let node">{{node.ipAddress}}
+        <mat-cell *matCellDef="let node">
+          <span class="mobile-label">IP Address:</span>
+          {{node.ipAddress}}
         </mat-cell>
 
       </ng-container>
 
       <ng-container matColumnDef="port">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Port</mat-header-cell>
-        <mat-cell *matCellDef="let node">{{node.networkPort}}
+        <mat-cell *matCellDef="let node">
+          <span class="mobile-label">Port:</span>
+
+          {{node.networkPort}}
         </mat-cell>
 
       </ng-container>
 
       <ng-container matColumnDef="os">
         <mat-header-cell *matHeaderCellDef mat-sort-header>OS</mat-header-cell>
-        <mat-cell *matCellDef="let node">{{node.sethlansNodeOS}}
+        <mat-cell *matCellDef="let node">
+          <span class="mobile-label">OS:</span>
+          {{node.sethlansNodeOS}}
         </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="computeMethods">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Compute Methods</mat-header-cell>
         <mat-cell *matCellDef="let node">
+          <span class="mobile-label">Compute Methods:</span>
           <span *ngIf="node.computeType.toString().valueOf() == 'CPU_GPU'.valueOf()">CPU & GPU</span>
           <span *ngIf="node.computeType.toString().valueOf() != 'CPU_GPU'.valueOf()">{{node.computeType}}</span>
         </mat-cell>
@@ -94,6 +104,7 @@
       <ng-container matColumnDef="cpuName">
         <mat-header-cell *matHeaderCellDef mat-sort-header>CPU</mat-header-cell>
         <mat-cell *matCellDef="let node">
+          <span class="mobile-label">CPU:</span>
           <span *ngIf="node.computeType.toString().valueOf() != 'GPU'.valueOf()">{{node.cpuinfo.name}}</span>
           <span *ngIf="node.computeType.toString().valueOf() == 'GPU'.valueOf()">N/A</span>
         </mat-cell>
@@ -102,6 +113,7 @@
       <ng-container matColumnDef="selectedCores">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Selected Core(s)</mat-header-cell>
         <mat-cell *matCellDef="let node">
+          <span class="mobile-label">Selected Core(s):</span>
           <span *ngIf="node.computeType.toString().valueOf() != 'GPU'.valueOf()">{{node.selectedCores}}</span>
           <span *ngIf="node.computeType.toString().valueOf() == 'GPU'.valueOf()">N/A</span>
         </mat-cell>
@@ -110,7 +122,9 @@
       <ng-container matColumnDef="selectedGPUs">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Selected GPU(s)</mat-header-cell>
         <mat-cell *matCellDef="let node">
-              <span *ngIf="node.computeType.toString().valueOf() != 'CPU'.valueOf()">
+          <span class="mobile-label">Selected GPU(s)</span>
+
+          <span *ngIf="node.computeType.toString().valueOf() != 'CPU'.valueOf()">
                 <ul class="list-unstyled">
                   <li *ngFor="let gpu of node.selectedGPUModels"> {{gpu}}</li>
                 </ul>
@@ -122,6 +136,6 @@
       <mat-header-row *matHeaderRowDef="obtainedNodeDisplayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: obtainedNodeDisplayedColumns;"></mat-row>
     </mat-table>
-    <mat-paginator #obtainedNodePaginator [pageSize]="5" [pageSizeOptions]="[10,25,50]"></mat-paginator>
+    <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[10,25,50]"></mat-paginator>
   </div>
 </div>

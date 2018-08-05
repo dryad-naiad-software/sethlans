@@ -1,5 +1,24 @@
+<!--
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
 <div class="row">
-  <div class="col-4">
+  <div class="col-lg-4">
     <h5>Project Status</h5>
     <mat-table #projectTable [dataSource]="dataSource" matSort>
       <ng-container matColumnDef="projectName">
@@ -32,11 +51,11 @@
     <mat-paginator #paginator [pageSize]="5"></mat-paginator>
 
   </div>
-  <div class="col-5">
+  <div class="col-lg-5">
     <h5>Active Node Distribution</h5>
     <p-chart type="doughnut" [data]="chartData"></p-chart>
   </div>
-  <div class="col-3">
+  <div class="col-lg-3">
     <h5>Connected Node Stats</h5>
     <ul>
       <li>Total Number of Nodes: <i>{{serverDash.totalNodes}}</i></li>
@@ -50,7 +69,7 @@
   </div>
 </div>
 <div class="row" *ngIf="currentMode == mode.SERVER">
-  <div class="col-4">
+  <div class="col-md-4">
     <h5>System Information</h5>
     <ul>
       <li>Processor: <i>{{serverDash.cpuName}}</i></li>
