@@ -21,9 +21,7 @@ import {Component, OnInit} from '@angular/core';
 import {ComputeMethod} from '../../../enums/compute.method.enum';
 import {GPU} from '../../../models/gpu.model';
 import {HttpClient} from '@angular/common/http';
-import {Router} from '@angular/router';
-import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {Node} from '../../../models/node.model';
+import {SethlansNode} from '../../../models/node.model';
 
 @Component({
   selector: 'app-compute-settings',
@@ -35,10 +33,12 @@ export class ComputeSettingsComponent implements OnInit {
   availableComputeMethods: ComputeMethod[] = [];
   totalCores: number;
   availableGPUs: GPU[] = [];
-  currentNode: Node = new Node();
+  currentNode: SethlansNode = new SethlansNode();
   gpuCombined: boolean;
+  selectedGPUNames: string[] = [];
 
-  constructor(private http: HttpClient, private router: Router, private modalService: NgbModal) {
+
+  constructor(private http: HttpClient) {
   }
 
   ngOnInit() {
@@ -58,6 +58,7 @@ export class ComputeSettingsComponent implements OnInit {
         this.currentNode.selectedGPUDeviceIDs = [];
         for (let gpu of selectedGPUs) {
           this.currentNode.selectedGPUDeviceIDs.push(gpu.deviceID);
+          this.selectedGPUNames.push(gpu.model);
         }
       });
     this.http.get('/api/info/is_gpu_combined').subscribe((isCombined: any) => {
@@ -96,18 +97,7 @@ export class ComputeSettingsComponent implements OnInit {
       this.http.get('/api/info/available_gpus')
         .subscribe((gpus: any[]) => {
           this.availableGPUs = gpus;
-          this.http.get('/api/management/selected_gpus')
-            .subscribe((selectedGPUs: GPU[]) => {
-              for (let selectedGPU of selectedGPUs) {
-                for (let availGPU of this.availableGPUs) {
-                  if (selectedGPU.model == availGPU.model) {
-                    availGPU.selected = true;
-                  }
-                }
-              }
-
-            });
-        }, (error) => console.log(error));
+        });
     }
   }
 

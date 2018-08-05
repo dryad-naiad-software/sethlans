@@ -25,6 +25,41 @@ $fa-font-path: "../node_modules/@fortawesome/fontawesome-free/webfonts";
 @import "~@fortawesome/fontawesome-free/scss/brands.scss";
 @import "theme";
 
+// By default, the mobile label shouldn't show
+.mobile-label {
+  display: none;
+}
+
+@media(max-width: 750px) {
+  // Custom header label that shows in each column, with a set width and bold font
+  .mobile-label {
+    width: 100px;
+    display: inline-block;
+    font-weight: bold;
+  }
+
+  // Remove the header row altogether
+  .mat-header-row {
+    display: none;
+  }
+
+  .mat-form-field {
+    display: none;
+  }
+
+  .mat-cell:first-child {
+    padding-left: 0;
+  }
+
+  // The row cells should display as a column, justified left, with a bit of extra padding
+  .mat-row {
+    flex-direction: column;
+    align-items: start;
+    padding: 8px 24px;
+
+  }
+}
+
 .btn-circle {
   width: 30px;
   height: 30px;

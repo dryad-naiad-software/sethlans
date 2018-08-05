@@ -20,13 +20,13 @@
 import {Mode} from '../../enums/mode.enum';
 import {User} from '../user.model';
 import {Server} from '../server.model';
-import {Node} from '../node.model';
+import {SethlansNode} from '../node.model';
 
 export class SetupForm {
   mode: Mode;
   user: User;
   server: Server;
-  node: Node;
+  node: SethlansNode;
   ipAddress: string;
   port: number;
   rootDirectory: string;

@@ -22,7 +22,7 @@ import {SetupForm} from '../../../../models/forms/setup_form.model';
 import {ComputeMethod} from '../../../../enums/compute.method.enum';
 import {GPU} from '../../../../models/gpu.model';
 import {HttpClient} from '@angular/common/http';
-import {Node} from '../../../../models/node.model';
+import {SethlansNode} from '../../../../models/node.model';
 
 
 @Component({
@@ -45,7 +45,7 @@ export class NodeConfigComponent implements OnInit {
 
   ngOnInit() {
     if (this.setupForm.node == null) {
-      this.setupForm.node = new Node();
+      this.setupForm.node = new SethlansNode();
       this.setupForm.node.computeMethod = ComputeMethod.CPU;
     }
     this.http.get('/api/info/total_cores', {responseType: 'text'})

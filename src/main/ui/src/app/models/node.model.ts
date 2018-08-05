@@ -19,7 +19,7 @@
 
 import {ComputeMethod} from '../enums/compute.method.enum';
 
-export class Node {
+export class SethlansNode {
   computeMethod: ComputeMethod;
   cores: number;
   selectedGPUDeviceIDs: string[];
