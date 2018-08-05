@@ -31,14 +31,95 @@
       <div class="card-body">
         <div *ngIf="editSettings">
           <form #nodeForm="ngForm" class="editForm">
+            <div class="form-group" ngbTooltip="Render with either a CPU/GPU or ability to use either one."
+                 placement="left">
+              <label for="computeMethod">Compute Method Selection</label>
+              <select class="form-control form-control-sm"
+                      id="computeMethod"
+                      name="computeMethod"
+                      #computeMethod="ngModel"
+                      (change)="methodSelection()"
+                      [(ngModel)]="changedNode.computeMethod">
+                <option *ngFor="let availableMethod of availableComputeMethods" [ngValue]="availableMethod">
+                  {{availableMethod}}
+                </option>
+              </select>
+            </div>
+            <div *ngIf="changedNode.computeMethod !== method.GPU">
+              <hr/>
+              <h6>CPU Settings:</h6>
+              <div class="form-group"
+                   ngbTooltip="Number of CPU cores to be used for rendering." placement="left">
+                <label for="cores">Rendering Cores:</label>
+                <mat-slider
+                  id="cores"
+                  min="1"
+                  step="1"
+                  thumbLabel
+                  [max]="totalCores"
+                  #cores="ngModel"
+                  name="cores"
+                  [(ngModel)]="changedNode.cores"></mat-slider>
+              </div>
+              <div class="form-group"
+                   ngbTooltip="Tile size used for CPU rendering." placement="left">
+                <label for="tileSizeCPU">CPU Tile Size</label>
+                <input type="number"
+                       class="form-control form-control-sm"
+                       name="tileSizeCPU"
+                       id="tileSizeCPU"
+                       #tileSizeCPU="ngModel"
+                       [(ngModel)]="changedNode.tileSizeCPU">
+              </div>
+            </div>
+            <div *ngIf="changedNode.computeMethod !== method.CPU">
+              <hr/>
+              <h6>GPU Settings:</h6>
+              <div class="form-group">
+                <div *ngFor="let gpu of availableGPUs" ngbTooltip="GPU devices to be used for rendering."
+                     placement="left">
+                  <input type="checkbox"
+                         class="form-control-sm"
+                         name="{{gpu.deviceID}}"
+                         value="{{gpu.deviceID}}"
+                         [checked]="changedNode.selectedGPUDeviceIDs.includes(gpu.deviceID)"
+                         #gpuSelection
+                         required
+                         (change)="selected($event, gpu.deviceID)"/>
+                  <label class="form-check-label form-control-sm">{{gpu.model}}</label>
+                </div>
+              </div>
+
+              <div class="form-group"
+                   ngbTooltip="Tile size used for GPU rendering." placement="left">
+                <label for="tileSizeGPU">GPU Tile Size</label>
+                <input type="number"
+                       class="form-control form-control-sm"
+                       name="tileSizeGPU"
+                       id="tileSizeGPU"
+                       #tileSizeCPU="ngModel"
+                       [(ngModel)]="changedNode.tileSizeGPU">
+              </div>
+
+              <label *ngIf="changedNode.selectedGPUDeviceIDs.length > 1">Options:</label>
+              <div *ngIf="changedNode.selectedGPUDeviceIDs.length > 1"
+                   ngbTooltip="Enabled: Selected GPUs used as one render slot.  Disabled: Each GPU equals one render slot."
+                   placement="left">
+                <input type="checkbox"
+                       class="form-control-sm"
+                       name="{{changedNode.combined}}"
+                       value="{{changedNode.combined}}"
+                       [(ngModel)]="changedNode.combined"/>
+                <label class="form-check-label form-control-sm">Combine GPUs</label>
+                <br/><br/>
+              </div>
+            </div>
           </form>
 
         </div>
         <div class="table-responsive" *ngIf="!editSettings">
+          <h5>Current Compute Settings</h5>
           <table class="table table-striped">
-            <thead>
-            <h5>Current Compute Settings</h5>
-            </thead>
             <tbody>
             <tr>
               <td>Compute Method</td>
@@ -69,7 +150,7 @@
             </tr>
             <tr *ngIf="currentNode.computeMethod !== computeMethods.CPU">
               <td>Combined GPU Rendering:</td>
-              <td>{{gpuCombined}}</td>
+              <td>{{currentNode.combined}}</td>
             </tr>
             </tbody>
           </table>
@@ -83,9 +164,22 @@
         <nav>
           <button class="btn btn-outline-secondary float-left" (click)="switchToNormal()">Cancel
           </button>
+          <button class="btn btn-outline-primary float-right" (click)="updateAndRestart(restartModal)">Submit
+          </button>
         </nav>
       </div>
     </div>
   </div>
 </div>
+
+<ng-template #restartModal>
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Changes Complete</h4>
+  </div>
+  <div class="modal-body">
+    <p class="text-center"> Sethans is restarting.</p>
+    <p class="text-center">This page will automatically redirect in 30 seconds &nbsp; &nbsp;<span
+      class="fa fa-circle-o-notch fa-spin"></span></p>
+  </div>
+</ng-template>
 

@@ -20,8 +20,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ComputeMethod} from '../../../enums/compute.method.enum';
 import {GPU} from '../../../models/gpu.model';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {SethlansNode} from '../../../models/node.model';
+import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-compute-settings',
@@ -35,11 +36,13 @@ export class ComputeSettingsComponent implements OnInit {
   totalCores: number;
   availableGPUs: GPU[] = [];
   currentNode: SethlansNode = new SethlansNode();
-  gpuCombined: boolean;
-  selectedGPUNames: string[] = [];
+  changedNode: SethlansNode = new SethlansNode();
+  selectedGPUNames: string[];
+  disableNext: boolean;
+  method: any = ComputeMethod;
 
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private modalService: NgbModal) {
   }
 
   switchToEdit() {
@@ -50,46 +53,71 @@ export class ComputeSettingsComponent implements OnInit {
   switchToNormal() {
     document.body.style.background = '#EAEAEA';
     this.editSettings = false;
+    this.changedNode = Object.assign({}, this.currentNode);
   }
 
   ngOnInit() {
     // Pre-pop max and available values
     this.prePopValues();
     // Populate Current Node
-    this.setCurrentNode();
+    this.retrieveCurrentSettings();
   }
 
-  setCurrentNode() {
-    this.http.get('/api/management/selected_compute_method')
-      .subscribe((selectedMethod: ComputeMethod) => {
-        this.currentNode.computeMethod = selectedMethod;
-      });
-    this.http.get('/api/management/selected_gpus')
-      .subscribe((selectedGPUs: GPU[]) => {
-        this.currentNode.selectedGPUDeviceIDs = [];
-        for (let gpu of selectedGPUs) {
-          this.currentNode.selectedGPUDeviceIDs.push(gpu.deviceID);
-          this.selectedGPUNames.push(gpu.model);
-        }
-      });
-    this.http.get('/api/info/is_gpu_combined').subscribe((isCombined: any) => {
-      this.gpuCombined = isCombined;
+  updateAndRestart(content) {
+    let options: NgbModalOptions = {
+      backdrop: 'static'
+    };
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    this.http.post('/api/setup/update_compute', JSON.stringify(this.changedNode), httpOptions).subscribe((submitted: boolean) => {
+      if (submitted === true) {
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 30000);
+      }
     });
-    this.http.get('/api/management/current_cores')
-      .subscribe((currentCores: any) => {
-        if (currentCores == 0) {
-          this.currentNode.cores = this.totalCores;
-        } else {
-          this.currentNode.cores = currentCores;
+    this.modalService.open(content, options);
+  }
+
+  methodSelection() {
+    if (this.changedNode.computeMethod !== ComputeMethod.CPU) {
+      this.changedNode.cores = this.totalCores;
+      this.changedNode.gpuEmpty = this.changedNode.selectedGPUDeviceIDs.length == 0;
+      if (this.changedNode.gpuEmpty) {
+        this.disableNext = true;
+      }
+    }
+    if (this.changedNode.computeMethod === ComputeMethod.CPU) {
+      // gpuEmpty is used to control the toggling of the Save button. False means that the node settings can be saved.
+      // CPU mode this is always set to false.
+      this.changedNode.cores = this.totalCores;
+      this.changedNode.selectedGPUDeviceIDs = [];
+      this.changedNode.combined = true;
+      this.changedNode.gpuEmpty = false;
+      this.disableNext = false;
+    }
+    if (this.changedNode.computeMethod === ComputeMethod.GPU) {
+      this.changedNode.cores = 1;
+    }
+  }
+
+  retrieveCurrentSettings() {
+    this.selectedGPUNames = [];
+    this.http.get('/api/management/current_node')
+      .subscribe((currentNode: SethlansNode) => {
+        this.currentNode = Object.assign({}, currentNode);
+        this.changedNode = Object.assign({}, currentNode);
+        if (currentNode.computeMethod != ComputeMethod.CPU) {
+          this.http.get('/api/management/selected_gpus')
+            .subscribe((selectedGPUs: GPU[]) => {
+              for (let gpu of selectedGPUs) {
+                this.selectedGPUNames.push(gpu.model);
+              }
+            });
         }
-      });
-    this.http.get('/api/management/current_tilesize_cpu')
-      .subscribe((tileSizeCPU: any) => {
-        this.currentNode.tileSizeCPU = tileSizeCPU;
-      });
-    this.http.get('/api/management/current_tilesize_gpu')
-      .subscribe((tileSizeGPU: any) => {
-        this.currentNode.tileSizeGPU = tileSizeGPU;
       });
   }
 
@@ -109,6 +137,32 @@ export class ComputeSettingsComponent implements OnInit {
         .subscribe((gpus: any[]) => {
           this.availableGPUs = gpus;
         });
+    }
+  }
+
+  selected(event, string) {
+    let checked = event.currentTarget.checked;
+    if (checked) {
+      let currentNode = this.changedNode;
+      this.availableGPUs.forEach(function (value) {
+        if (value.deviceID == string) {
+          currentNode.selectedGPUDeviceIDs.push(value.deviceID);
+        }
+      });
+      this.changedNode.gpuEmpty = false;
+      this.disableNext = false;
+
+    } else if (!checked) {
+      let selectedGPUDeviceIDs = this.changedNode.selectedGPUDeviceIDs;
+      for (let i = 0; i < selectedGPUDeviceIDs.length; i++) {
+        if (selectedGPUDeviceIDs[i] == string) {
+          this.changedNode.selectedGPUDeviceIDs.splice(i, 1);
+        }
+      }
+    }
+    if (this.changedNode.selectedGPUDeviceIDs.length === 0) {
+      this.changedNode.gpuEmpty = true;
+      this.disableNext = true;
     }
   }
 

@@ -25,7 +25,8 @@
             #computeMethod="ngModel"
             (change)="methodSelection()"
             [(ngModel)]="setupForm.node.computeMethod">
-      <option *ngFor="let method of availableComputeMethods" [ngValue]="method">{{method}}</option>
+      <option *ngFor="let availableMethod of availableComputeMethods" [ngValue]="availableMethod">{{availableMethod}}
+      </option>
     </select>
 
   </div>

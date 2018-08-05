@@ -24,9 +24,12 @@ import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
+import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.services.database.AccessKeyDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
+import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -80,6 +83,22 @@ public class AdminNodeController {
         } else {
             return Integer.parseInt(this.selectedCores);
         }
+    }
+
+    @GetMapping(value = {"/current_node"})
+    public SetupNode getCurrentNode() {
+        SetupNode setupNode = new SetupNode();
+        if (!getSelectedComputeMethod().equals(ComputeType.CPU)) {
+            List<String> gpuIdsList = Arrays.asList(gpuIds.split(","));
+            setupNode.setSelectedGPUDeviceIDs(gpuIdsList);
+            setupNode.setGpuEmpty(false);
+            setupNode.setCombined(Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.COMBINE_GPU.toString())));
+        }
+        setupNode.setComputeMethod(getSelectedComputeMethod());
+        setupNode.setCores(getCurrentCores());
+        setupNode.setTileSizeCPU(getCurrentTileSizeCPU());
+        setupNode.setTileSizeGPU(getCurrentTileSizeGPU());
+        return setupNode;
     }
 
     @GetMapping(value = "/get_access_key_list")
