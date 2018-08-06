@@ -81,6 +81,10 @@ import {NodeManualAddComponent} from './components/admin/nodes/node-wizard/node-
 import {NodeScanAddComponent} from './components/admin/nodes/node-wizard/node-scan-add/node-scan-add.component';
 import {NodeSummaryComponent} from './components/admin/nodes/node-wizard/node-summary/node-summary.component';
 import {ProjectWizardComponent} from './components/projects/project-wizard/project-wizard.component';
+import {ProjectUploadComponent} from './components/projects/project-wizard/project-upload/project-upload.component';
+import {ProjectDetailsComponent} from './components/projects/project-wizard/project-details/project-details.component';
+import {ProjectRenderSettingsComponent} from './components/projects/project-wizard/project-render-settings/project-render-settings.component';
+import {ProjectSummaryComponent} from './components/projects/project-wizard/project-summary/project-summary.component';
 
 @NgModule({
   declarations: [
@@ -122,6 +126,10 @@ import {ProjectWizardComponent} from './components/projects/project-wizard/proje
     NodeScanAddComponent,
     NodeSummaryComponent,
     ProjectWizardComponent,
+    ProjectUploadComponent,
+    ProjectDetailsComponent,
+    ProjectRenderSettingsComponent,
+    ProjectSummaryComponent,
   ],
   imports: [
     BrowserModule,
