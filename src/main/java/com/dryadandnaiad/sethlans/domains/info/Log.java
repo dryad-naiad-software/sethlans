@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.domains.info;
 
 import lombok.Data;
+import org.apache.commons.text.WordUtils;
 
 /**
  * Created Mario Estrella on 4/17/2018.
@@ -34,4 +35,8 @@ public class Log {
     private String thread;
     private String loggingClass;
     private String message;
+
+    public void setMessage(String message) {
+        this.message = WordUtils.wrap(message, 40);
+    }
 }
