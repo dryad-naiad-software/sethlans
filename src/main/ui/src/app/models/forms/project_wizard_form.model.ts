@@ -24,6 +24,12 @@ import {ProjectWizardProgress} from '../../enums/project_wizard_progress';
 export class ProjectWizardForm {
   project: Project;
   currentProgress: ProjectWizardProgress;
+  finished: boolean;
 
 
+  constructor() {
+    this.project = new Project();
+    this.currentProgress = ProjectWizardProgress.UPLOAD;
+    this.finished = false;
+  }
 }

@@ -27,25 +27,35 @@
         <ul class="nav nav-tabs justify-content-between pb-3">
           <li>
             <button type="button" class="btn btn-circle btn-lg"
-            >
-              <i class="fas fa-flag-checkered"></i></button>
-          </li>
-          <li>
-            <button type="button" class="btn btn-circle btn-lg"
-
+                    [ngClass]="projectWizard.currentProgress === wizardProgress.UPLOAD ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
-                    ngbTooltip="Node Form">
-              <i class="fas fa-plus"></i></button>
+                    ngbTooltip="Upload">
+              <i class="fas fa-upload"></i></button>
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
-
+                    [ngClass]="projectWizard.currentProgress === wizardProgress.PROJECT_DETAILS ? 'btn-outline-primary':'btn-outline-dark'"
+                    placement="top"
+                    ngbTooltip="Project Details">
+              <i class="fas fa-list-ol"></i></button>
+          </li>
+          <li>
+            <button type="button" class="btn btn-circle btn-lg"
+                    [ngClass]="projectWizard.currentProgress === wizardProgress.RENDER_SETTINGS ? 'btn-outline-primary':'btn-outline-dark'"
+                    placement="top"
+                    ngbTooltip="Render Settings">
+              <i class="fas fa-sliders-h"></i></button>
+          </li>
+          <li>
+            <button type="button" class="btn btn-circle btn-lg"
+                    [ngClass]="projectWizard.currentProgress === wizardProgress.SUMMARY ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
                     ngbTooltip="Summary">
               <i class="fas fa-list-alt"></i></button>
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
+                    [ngClass]="projectWizard.currentProgress === wizardProgress.FINISHED ? 'btn-outline-success':'btn-outline-dark'"
                     placement="top"
                     ngbTooltip="Finished"><i
               class="fas fa-check"></i></button>
