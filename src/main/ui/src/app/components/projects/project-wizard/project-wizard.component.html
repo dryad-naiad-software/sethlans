@@ -65,6 +65,10 @@
                             *ngIf="projectWizard.currentProgress === wizardProgress.UPLOAD">
 
         </app-project-upload>
+        <app-project-details [projectWizard[="projectWizard"
+                             *ngIf="projectWizard.currentProgress === wizardProgress.PROJECT_DETAILS">
+
+        </app-project-details>
       </div>
 
       <div class="card-footer">

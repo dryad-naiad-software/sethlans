@@ -17,7 +17,8 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {ProjectWizardForm} from '../../../../models/forms/project_wizard_form.model';
 
 @Component({
   selector: 'app-project-details',
@@ -25,6 +26,8 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./project-details.component.scss']
 })
 export class ProjectDetailsComponent implements OnInit {
+  @Input() projectWizard: ProjectWizardForm;
+
 
   constructor() {
   }

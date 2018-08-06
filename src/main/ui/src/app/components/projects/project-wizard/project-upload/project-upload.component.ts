@@ -21,6 +21,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {ProjectWizardForm} from '../../../../models/forms/project_wizard_form.model';
 import {Project} from '../../../../models/project.model';
 import {ProjectType} from '../../../../enums/project_type.enum';
+import {ProjectWizardProgress} from '../../../../enums/project_wizard_progress';
 
 @Component({
   selector: 'app-project-upload',
@@ -52,7 +53,7 @@ export class ProjectUploadComponent implements OnInit {
     this.projectWizard.project.useParts = true;
     this.projectWizard.project.partsPerFrame = 4;
     this.projectWizard.projectLoaded = true;
-
+    this.projectWizard.currentProgress = ProjectWizardProgress.PROJECT_DETAILS;
   }
 
   beforeSend(event: any) {
