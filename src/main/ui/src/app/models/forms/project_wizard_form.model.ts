@@ -17,27 +17,11 @@
  *
  */
 
-import {NodeWizardProgress} from '../../enums/node_wizard_progress.enum';
-import {NodeAddType} from '../../enums/node_wizard_add_type.enum';
-import {NodeItem} from '../node_item.model';
-import {NodeInfo} from '../node_info.model';
 
-export class NodeWizardForm {
-  currentProgress: NodeWizardProgress;
-  addType: NodeAddType;
-  multipleNodeAdd: boolean;
-  multipleNodes: NodeItem[];
-  singleNode: NodeItem;
-  finished: boolean;
-  summaryComplete: boolean;
-  nodeToAdd: NodeInfo;
-  nodesToAdd: NodeInfo[];
+import {Project} from '../project.model';
+
+export class ProjectWizardForm {
+  project: Project;
 
 
-  constructor() {
-    this.currentProgress = NodeWizardProgress.Start;
-    this.finished = false;
-    this.summaryComplete = false;
-    this.multipleNodeAdd = false;
-  }
 }

@@ -18,7 +18,7 @@
  */
 
 import {Component, Inject, Input, OnInit} from '@angular/core';
-import {SetupForm} from '../../../../models/forms/setup_form.model';
+import {SetupWizardForm} from '../../../../models/forms/setup_wizard_form.model';
 import {HttpClient} from '@angular/common/http';
 import {WindowRef} from '../../../../services/windowref.service';
 import {DOCUMENT} from '@angular/common';
@@ -30,7 +30,7 @@ import {DOCUMENT} from '@angular/common';
   styleUrls: ['./setup-finished.component.scss']
 })
 export class SetupFinishedComponent implements OnInit {
-  @Input() setupForm: SetupForm;
+  @Input() setupForm: SetupWizardForm;
   sethlansURL: string;
 
 

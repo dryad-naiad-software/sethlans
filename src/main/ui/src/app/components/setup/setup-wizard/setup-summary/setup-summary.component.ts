@@ -18,7 +18,7 @@
  */
 
 import {Component, Input, OnInit} from '@angular/core';
-import {SetupForm} from '../../../../models/forms/setup_form.model';
+import {SetupWizardForm} from '../../../../models/forms/setup_wizard_form.model';
 import {Mode} from '../../../../enums/mode.enum';
 import {GPU} from '../../../../models/gpu.model';
 import {HttpClient} from '@angular/common/http';
@@ -29,7 +29,7 @@ import {HttpClient} from '@angular/common/http';
   styleUrls: ['./setup-summary.component.scss']
 })
 export class SetupSummaryComponent implements OnInit {
-  @Input() setupForm: SetupForm;
+  @Input() setupForm: SetupWizardForm;
   mode: any = Mode;
   availableGPUs: GPU[];
   selectedGPUNames: string[];

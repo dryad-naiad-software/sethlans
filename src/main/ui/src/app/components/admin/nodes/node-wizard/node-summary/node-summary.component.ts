@@ -22,7 +22,7 @@ import {NodeWizardForm} from '../../../../../models/forms/node_wizard_form.model
 import {NodeInfo} from '../../../../../models/node_info.model';
 import {HttpClient} from '@angular/common/http';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
-import {NodeWizardMode} from '../../../../../enums/node_wizard_mode.enum';
+import {NodeWizardProgress} from '../../../../../enums/node_wizard_progress.enum';
 import {NodeAddType} from '../../../../../enums/node_wizard_add_type.enum';
 
 @Component({
@@ -33,7 +33,7 @@ import {NodeAddType} from '../../../../../enums/node_wizard_add_type.enum';
 export class NodeSummaryComponent implements OnInit, AfterViewInit {
   @Input() nodeWizardForm: NodeWizardForm;
   @Input() accessKey: string;
-  wizardModes: any = NodeWizardMode;
+  wizardModes: any = NodeWizardProgress;
   keyPresent: boolean;
   downloadComplete: boolean;
   @Output() disableNext = new EventEmitter();

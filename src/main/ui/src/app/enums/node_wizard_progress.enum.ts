@@ -17,11 +17,9 @@
  *
  */
 
-export enum SetupProgress {
-  MODE_SELECT,
-  REGISTER_USER,
-  MODE_CONFIG,
-  SETTINGS,
-  SUMMARY,
-  FINISHED
+export enum NodeWizardProgress {
+  Start,
+  Add,
+  Summary,
+  Finished
 }

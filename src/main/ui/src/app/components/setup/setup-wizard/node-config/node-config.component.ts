@@ -18,7 +18,7 @@
  */
 
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {SetupForm} from '../../../../models/forms/setup_form.model';
+import {SetupWizardForm} from '../../../../models/forms/setup_wizard_form.model';
 import {ComputeMethod} from '../../../../enums/compute.method.enum';
 import {GPU} from '../../../../models/gpu.model';
 import {HttpClient} from '@angular/common/http';
@@ -31,7 +31,7 @@ import {SethlansNode} from '../../../../models/node.model';
   styleUrls: ['./node-config.component.scss']
 })
 export class NodeConfigComponent implements OnInit {
-  @Input() setupForm: SetupForm;
+  @Input() setupForm: SetupWizardForm;
   totalCores: number;
   availableComputeMethods: ComputeMethod[];
   availableGPUs: GPU[];

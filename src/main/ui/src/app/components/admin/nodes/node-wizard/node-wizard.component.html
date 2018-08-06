@@ -27,36 +27,36 @@
         <ul class="nav nav-tabs justify-content-between pb-3">
           <li>
             <button type="button" class="btn btn-circle btn-lg"
-                    [ngClass]="nodeWizardForm.currentMode === wizardModes.Start ? 'btn-outline-primary':'btn-outline-dark'"
-                    (click)="nodeWizardForm.currentMode = wizardModes.Start">
+                    [ngClass]="nodeWizardForm.currentProgress === wizardProgress.Start ? 'btn-outline-primary':'btn-outline-dark'"
+                    (click)="nodeWizardForm.currentProgress = wizardProgress.Start">
               <i class="fas fa-flag-checkered"></i></button>
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
                     [disabled]="nodeWizardForm.addType == null"
-                    [ngClass]="nodeWizardForm.currentMode === wizardModes.Add ? 'btn-outline-primary':'btn-outline-dark'"
+                    [ngClass]="nodeWizardForm.currentProgress === wizardProgress.Add ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
-                    ngbTooltip="Node Form" (click)="nodeWizardForm.currentMode = wizardModes.Add">
+                    ngbTooltip="Node Form" (click)="nodeWizardForm.currentProgress = wizardProgress.Add">
               <i class="fas fa-plus"></i></button>
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
                     [disabled]="!nodeWizardForm.summaryComplete"
-                    [ngClass]="nodeWizardForm.currentMode === wizardModes.Summary ? 'btn-outline-primary':'btn-outline-dark'"
+                    [ngClass]="nodeWizardForm.currentProgress === wizardProgress.Summary ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
-                    ngbTooltip="Summary" (click)="nodeWizardForm.currentMode = wizardModes.Summary">
+                    ngbTooltip="Summary" (click)="nodeWizardForm.currentProgress = wizardProgress.Summary">
               <i class="fas fa-list-alt"></i></button>
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
                     [disabled]="!nodeWizardForm.finished"
-                    [ngClass]="nodeWizardForm.currentMode === wizardModes.Finished ? 'btn-outline-success':'btn-outline-dark'"
+                    [ngClass]="nodeWizardForm.currentProgress === wizardProgress.Finished ? 'btn-outline-success':'btn-outline-dark'"
                     placement="top"
                     ngbTooltip="Finished"><i
               class="fas fa-check"></i></button>
           </li>
         </ul>
-        <div *ngIf="nodeWizardForm.currentMode === wizardModes.Start">
+        <div *ngIf="nodeWizardForm.currentProgress === wizardProgress.Start">
           <div class="pt-2">
             <div class="alert alert-primary">
               <p class="mb-0 text-center"> Server Access Key:&nbsp; <strong>{{accessKey}} &nbsp;</strong>
@@ -101,34 +101,35 @@
         <app-node-manual-add [nodeWizardForm]="nodeWizardForm"
                              (disableNext)="disableNext($event)"
                              (clickNext)="next()"
-                             *ngIf="nodeWizardForm.currentMode == wizardModes.Add && nodeWizardForm.addType == wizardTypes.Manual"></app-node-manual-add>
+                             *ngIf="nodeWizardForm.currentProgress == wizardProgress.Add && nodeWizardForm.addType == wizardTypes.Manual"></app-node-manual-add>
         <app-node-scan-add [nodeWizardForm]="nodeWizardForm"
                            (disableNext)="disableNext($event)"
-                           *ngIf="nodeWizardForm.currentMode == wizardModes.Add && nodeWizardForm.addType == wizardTypes.Scan"></app-node-scan-add>
+                           *ngIf="nodeWizardForm.currentProgress == wizardProgress.Add && nodeWizardForm.addType == wizardTypes.Scan"></app-node-scan-add>
         <app-node-summary [nodeWizardForm]="nodeWizardForm"
                           (disableNext)="disableNext($event)"
-                          *ngIf="nodeWizardForm.currentMode == wizardModes.Summary || nodeWizardForm.currentMode == wizardModes.Finished"></app-node-summary>
+                          *ngIf="nodeWizardForm.currentProgress == wizardProgress.Summary || nodeWizardForm.currentProgress == wizardProgress.Finished"></app-node-summary>
       </div>
 
       <div class="card-footer">
         <nav>
-          <button *ngIf="nodeWizardForm.currentMode == wizardModes.Start" class="btn btn-outline-secondary float-left"
+          <button *ngIf="nodeWizardForm.currentProgress == wizardProgress.Start"
+                  class="btn btn-outline-secondary float-left"
                   (click)="returnToNodes()">Cancel
           </button>
           <button [disabled]="previousDisabled"
-                  *ngIf="nodeWizardForm.currentMode != wizardModes.Start"
+                  *ngIf="nodeWizardForm.currentProgress != wizardProgress.Start"
                   class="btn btn-outline-secondary float-left" (click)="previous()">Previous
           </button>
           <button [disabled]="nextDisabled"
-                  *ngIf="nodeWizardForm.currentMode != wizardModes.Summary && nodeWizardForm.currentMode != wizardModes.Finished"
+                  *ngIf="nodeWizardForm.currentProgress != wizardProgress.Summary && nodeWizardForm.currentProgress != wizardProgress.Finished"
                   class="btn btn-outline-primary float-right" (click)="next()"> Next
           </button>
           <button [disabled]="nextDisabled"
-                  *ngIf="nodeWizardForm.currentMode == wizardModes.Summary"
+                  *ngIf="nodeWizardForm.currentProgress == wizardProgress.Summary"
                   class="btn btn-outline-primary float-right" (click)="finish()">Submit Nodes To Server
           </button>
           <button
-            *ngIf="nodeWizardForm.currentMode == wizardModes.Finished"
+            *ngIf="nodeWizardForm.currentProgress == wizardProgress.Finished"
             class="btn btn-outline-primary float-right" (click)="returnToNodes()">Return to Node List
           </button>
         </nav>

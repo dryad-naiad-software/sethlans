@@ -18,7 +18,7 @@
  */
 
 import {Component, Input, OnInit} from '@angular/core';
-import {SetupForm} from '../../../../models/forms/setup_form.model';
+import {SetupWizardForm} from '../../../../models/forms/setup_wizard_form.model';
 
 @Component({
   selector: 'app-mode-setup',
@@ -26,7 +26,7 @@ import {SetupForm} from '../../../../models/forms/setup_form.model';
   styleUrls: ['./mode-setup.component.scss']
 })
 export class ModeSetupComponent implements OnInit {
-  @Input() setupForm: SetupForm;
+  @Input() setupForm: SetupWizardForm;
 
   constructor() {
   }

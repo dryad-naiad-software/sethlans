@@ -18,7 +18,7 @@
  */
 
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {SetupForm} from '../../../../models/forms/setup_form.model';
+import {SetupWizardForm} from '../../../../models/forms/setup_wizard_form.model';
 import {User} from '../../../../models/user.model';
 
 @Component({
@@ -27,7 +27,7 @@ import {User} from '../../../../models/user.model';
   styleUrls: ['./user-create.component.scss']
 })
 export class UserCreateComponent implements OnInit {
-  @Input() setupForm: SetupForm;
+  @Input() setupForm: SetupWizardForm;
   @Output() disableNext = new EventEmitter();
   @Output() submitUser = new EventEmitter();
   passwordMatch: boolean = false;

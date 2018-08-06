@@ -18,7 +18,7 @@
  */
 
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {SetupForm} from '../../../../models/forms/setup_form.model';
+import {SetupWizardForm} from '../../../../models/forms/setup_wizard_form.model';
 import {HttpClient} from '@angular/common/http';
 
 @Component({
@@ -27,7 +27,7 @@ import {HttpClient} from '@angular/common/http';
   styleUrls: ['./settings-config.component.scss']
 })
 export class SettingsConfigComponent implements OnInit {
-  @Input() setupForm: SetupForm;
+  @Input() setupForm: SetupWizardForm;
   hideAdvanced: boolean = true;
   @Output() disableNext = new EventEmitter();
 

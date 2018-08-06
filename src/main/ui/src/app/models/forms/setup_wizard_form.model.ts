@@ -17,9 +17,27 @@
  *
  */
 
-export enum NodeWizardMode {
-  Start,
-  Add,
-  Summary,
-  Finished
+import {Mode} from '../../enums/mode.enum';
+import {User} from '../user.model';
+import {Server} from '../server.model';
+import {SethlansNode} from '../node.model';
+
+export class SetupWizardForm {
+  mode: Mode;
+  user: User;
+  server: Server;
+  node: SethlansNode;
+  ipAddress: string;
+  port: number;
+  rootDirectory: string;
+  complete: boolean;
+  logLevel: string;
+  isModeDone: boolean;
+
+  constructor() {
+    this.mode = Mode.SERVER;
+    this.complete = false;
+    this.logLevel = 'INFO';
+    this.isModeDone = false;
+  }
 }

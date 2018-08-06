@@ -19,7 +19,7 @@
 
 import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {NodeWizardMode} from '../../../../enums/node_wizard_mode.enum';
+import {NodeWizardProgress} from '../../../../enums/node_wizard_progress.enum';
 import {NodeAddType} from '../../../../enums/node_wizard_add_type.enum';
 import {NodeWizardForm} from '../../../../models/forms/node_wizard_form.model';
 
@@ -29,7 +29,7 @@ import {NodeWizardForm} from '../../../../models/forms/node_wizard_form.model';
   styleUrls: ['./node-wizard.component.scss']
 })
 export class NodeWizardComponent implements OnInit {
-  wizardModes: any = NodeWizardMode;
+  wizardProgress: any = NodeWizardProgress;
   wizardTypes: any = NodeAddType;
   accessKey: string;
   nodeWizardForm: NodeWizardForm;
@@ -82,7 +82,7 @@ export class NodeWizardComponent implements OnInit {
       if (!this.nodeWizardForm.multipleNodeAdd) {
         this.http.get('/api/setup/node_add?ip=' + this.nodeWizardForm.singleNode.ipAddress + '&port=' +
           this.nodeWizardForm.singleNode.port, {responseType: 'text'}).subscribe(() => {
-          this.nodeWizardForm.currentMode = NodeWizardMode.Finished;
+          this.nodeWizardForm.currentProgress = NodeWizardProgress.Finished;
           this.previousDisabled = true;
         });
       } else {
@@ -106,31 +106,31 @@ export class NodeWizardComponent implements OnInit {
       })
     };
     this.http.post('/api/setup/multi_node_add', JSON.stringify(toSend), httpOptions).subscribe(() => {
-      this.nodeWizardForm.currentMode = NodeWizardMode.Finished;
+      this.nodeWizardForm.currentProgress = NodeWizardProgress.Finished;
       this.previousDisabled = true;
     });
   }
 
   next() {
-    switch (this.nodeWizardForm.currentMode) {
-      case NodeWizardMode.Start:
-        this.nodeWizardForm.currentMode = NodeWizardMode.Add;
+    switch (this.nodeWizardForm.currentProgress) {
+      case NodeWizardProgress.Start:
+        this.nodeWizardForm.currentProgress = NodeWizardProgress.Add;
         this.previousDisabled = false;
         break;
-      case NodeWizardMode.Add:
-        this.nodeWizardForm.currentMode = NodeWizardMode.Summary;
+      case NodeWizardProgress.Add:
+        this.nodeWizardForm.currentProgress = NodeWizardProgress.Summary;
         this.nextDisabled = true;
         break;
     }
   }
 
   previous() {
-    switch (this.nodeWizardForm.currentMode) {
-      case NodeWizardMode.Add:
-        this.nodeWizardForm.currentMode = NodeWizardMode.Start;
+    switch (this.nodeWizardForm.currentProgress) {
+      case NodeWizardProgress.Add:
+        this.nodeWizardForm.currentProgress = NodeWizardProgress.Start;
         break;
-      case NodeWizardMode.Summary:
-        this.nodeWizardForm.currentMode = NodeWizardMode.Add;
+      case NodeWizardProgress.Summary:
+        this.nodeWizardForm.currentProgress = NodeWizardProgress.Add;
         this.nodeWizardForm.summaryComplete = false;
         this.nodeWizardForm.multipleNodes = [];
         break;

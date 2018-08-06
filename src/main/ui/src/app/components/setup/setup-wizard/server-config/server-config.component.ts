@@ -18,7 +18,7 @@
  */
 
 import {Component, Input, OnInit} from '@angular/core';
-import {SetupForm} from '../../../../models/forms/setup_form.model';
+import {SetupWizardForm} from '../../../../models/forms/setup_wizard_form.model';
 import {HttpClient} from '@angular/common/http';
 import {Server} from '../../../../models/server.model';
 
@@ -28,7 +28,7 @@ import {Server} from '../../../../models/server.model';
   styleUrls: ['./server-config.component.scss']
 })
 export class ServerConfigComponent implements OnInit {
-  @Input() setupForm: SetupForm;
+  @Input() setupForm: SetupWizardForm;
   availableBlenderVersions: string[];
 
 

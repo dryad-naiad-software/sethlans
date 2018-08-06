@@ -53,8 +53,8 @@
 
   <div
     *ngIf="keyPresent && downloadComplete && nodeWizardForm.summaryComplete || nodeWizardForm.addType == wizardTypes.Scan">
-    <h5 *ngIf="nodeWizardForm.currentMode == wizardModes.Summary">Selected Nodes:</h5>
-    <div class="alert alert-success" *ngIf="nodeWizardForm.currentMode == wizardModes.Finished"><p
+    <h5 *ngIf="nodeWizardForm.currentProgress == wizardModes.Summary">Selected Nodes:</h5>
+    <div class="alert alert-success" *ngIf="nodeWizardForm.currentProgress == wizardModes.Finished"><p
       class="text-center mb-0">The nodes have been submitted to the server.</p></div>
     <mat-table #resultsTable [dataSource]="obtainedNodeDataSource" matSort>
       <ng-container matColumnDef="hostname">

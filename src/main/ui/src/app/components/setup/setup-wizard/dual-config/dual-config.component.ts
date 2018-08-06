@@ -18,7 +18,7 @@
  */
 
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {SetupForm} from '../../../../models/forms/setup_form.model';
+import {SetupWizardForm} from '../../../../models/forms/setup_wizard_form.model';
 
 @Component({
   selector: 'app-dual-config',
@@ -26,7 +26,7 @@ import {SetupForm} from '../../../../models/forms/setup_form.model';
   styleUrls: ['./dual-config.component.scss']
 })
 export class DualConfigComponent implements OnInit {
-  @Input() setupForm: SetupForm;
+  @Input() setupForm: SetupWizardForm;
   @Output() disableNext = new EventEmitter();
 
 

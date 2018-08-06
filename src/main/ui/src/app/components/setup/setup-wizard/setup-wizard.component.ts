@@ -18,8 +18,8 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {SetupProgress} from '../../../enums/setup_progress.enum';
-import {SetupForm} from '../../../models/forms/setup_form.model';
+import {SetupWizardProgress} from '../../../enums/setup_wizard_progress.enum';
+import {SetupWizardForm} from '../../../models/forms/setup_wizard_form.model';
 import {Mode} from '../../../enums/mode.enum';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 
@@ -29,10 +29,10 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
   styleUrls: ['./setup-wizard.component.scss']
 })
 export class SetupWizardComponent implements OnInit {
-  progress: SetupProgress;
-  setupProgress: any = SetupProgress;
+  progress: SetupWizardProgress;
+  setupProgress: any = SetupWizardProgress;
   modes: any = Mode;
-  setupForm: SetupForm;
+  setupForm: SetupWizardForm;
   nextDisabled: any;
   modeSelected: boolean;
   settingsComplete: boolean;
@@ -43,8 +43,8 @@ export class SetupWizardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.progress = SetupProgress.MODE_SELECT;
-    this.setupForm = new SetupForm();
+    this.progress = SetupWizardProgress.MODE_SELECT;
+    this.setupForm = new SetupWizardForm();
     this.modeSelected = false;
     this.settingsComplete = false;
     this.finishedActive = false;
@@ -56,23 +56,23 @@ export class SetupWizardComponent implements OnInit {
 
   next() {
     switch (this.progress) {
-      case SetupProgress.MODE_SELECT: {
-        this.progress = SetupProgress.REGISTER_USER;
+      case SetupWizardProgress.MODE_SELECT: {
+        this.progress = SetupWizardProgress.REGISTER_USER;
         this.modeSelected = true;
         break;
       }
-      case SetupProgress.REGISTER_USER: {
-        this.progress = SetupProgress.MODE_CONFIG;
+      case SetupWizardProgress.REGISTER_USER: {
+        this.progress = SetupWizardProgress.MODE_CONFIG;
         this.setupForm.user.active = true;
         break;
       }
-      case SetupProgress.MODE_CONFIG: {
+      case SetupWizardProgress.MODE_CONFIG: {
         this.setupForm.isModeDone = true;
-        this.progress = SetupProgress.SETTINGS;
+        this.progress = SetupWizardProgress.SETTINGS;
         break;
       }
-      case SetupProgress.SETTINGS: {
-        this.progress = SetupProgress.SUMMARY;
+      case SetupWizardProgress.SETTINGS: {
+        this.progress = SetupWizardProgress.SUMMARY;
         this.settingsComplete = true;
         break;
       }
@@ -81,21 +81,21 @@ export class SetupWizardComponent implements OnInit {
 
   previous() {
     switch (this.progress) {
-      case SetupProgress.REGISTER_USER: {
-        this.progress = SetupProgress.MODE_SELECT;
+      case SetupWizardProgress.REGISTER_USER: {
+        this.progress = SetupWizardProgress.MODE_SELECT;
         this.nextDisabled = false;
         break;
       }
-      case SetupProgress.MODE_CONFIG: {
-        this.progress = SetupProgress.REGISTER_USER;
+      case SetupWizardProgress.MODE_CONFIG: {
+        this.progress = SetupWizardProgress.REGISTER_USER;
         break;
       }
-      case SetupProgress.SETTINGS: {
-        this.progress = SetupProgress.MODE_CONFIG;
+      case SetupWizardProgress.SETTINGS: {
+        this.progress = SetupWizardProgress.MODE_CONFIG;
         break;
       }
-      case SetupProgress.SUMMARY: {
-        this.progress = SetupProgress.SETTINGS;
+      case SetupWizardProgress.SUMMARY: {
+        this.progress = SetupWizardProgress.SETTINGS;
         break;
       }
     }
@@ -110,7 +110,7 @@ export class SetupWizardComponent implements OnInit {
     };
     this.http.post('/api/setup/submit', JSON.stringify(this.setupForm), httpOptions).subscribe((submitted: boolean) => {
       if (submitted === true) {
-        this.progress = SetupProgress.FINISHED;
+        this.progress = SetupWizardProgress.FINISHED;
         this.finishedActive = true;
       }
     });
