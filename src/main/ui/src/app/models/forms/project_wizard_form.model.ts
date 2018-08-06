@@ -25,11 +25,14 @@ export class ProjectWizardForm {
   project: Project;
   currentProgress: ProjectWizardProgress;
   finished: boolean;
+  projectLoaded: boolean;
+  availableBlenderVersions: string[];
 
 
   constructor() {
     this.project = new Project();
     this.currentProgress = ProjectWizardProgress.UPLOAD;
     this.finished = false;
+    this.projectLoaded = false;
   }
 }

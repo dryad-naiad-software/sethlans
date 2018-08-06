@@ -20,6 +20,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ProjectWizardForm} from '../../../models/forms/project_wizard_form.model';
 import {ProjectWizardProgress} from '../../../enums/project_wizard_progress';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-project-wizard',
@@ -30,12 +31,21 @@ export class ProjectWizardComponent implements OnInit {
   projectWizard: ProjectWizardForm;
   wizardProgress: any = ProjectWizardProgress;
 
-  constructor() {
+  constructor(private http: HttpClient) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
     this.projectWizard = new ProjectWizardForm();
   }
 
   ngOnInit() {
+    this.getAvailableBlenderVersions();
+  }
+
+  getAvailableBlenderVersions() {
+    this.http.get('/api/info/installed_blender_versions')
+      .subscribe(
+        (blenderVersions: string[]) => {
+          this.projectWizard.availableBlenderVersions = blenderVersions;
+        });
   }
 
 }

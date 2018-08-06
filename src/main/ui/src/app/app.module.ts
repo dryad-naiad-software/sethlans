@@ -85,6 +85,8 @@ import {ProjectUploadComponent} from './components/projects/project-wizard/proje
 import {ProjectDetailsComponent} from './components/projects/project-wizard/project-details/project-details.component';
 import {ProjectRenderSettingsComponent} from './components/projects/project-wizard/project-render-settings/project-render-settings.component';
 import {ProjectSummaryComponent} from './components/projects/project-wizard/project-summary/project-summary.component';
+import {FileUploadModule} from 'primeng/fileupload';
+
 
 @NgModule({
   declarations: [
@@ -144,6 +146,7 @@ import {ProjectSummaryComponent} from './components/projects/project-wizard/proj
     MatSortModule,
     HttpClientModule,
     FormsModule,
+    FileUploadModule,
     NgbModule.forRoot(),
     AppRoutingModule
   ],

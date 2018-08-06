@@ -17,7 +17,10 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {ProjectWizardForm} from '../../../../models/forms/project_wizard_form.model';
+import {Project} from '../../../../models/project.model';
+import {ProjectType} from '../../../../enums/project_type.enum';
 
 @Component({
   selector: 'app-project-upload',
@@ -25,11 +28,36 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./project-upload.component.scss']
 })
 export class ProjectUploadComponent implements OnInit {
+  @Input() projectWizard: ProjectWizardForm;
+  uploading = false;
 
   constructor() {
   }
 
+
   ngOnInit() {
+
+  }
+
+  loadProjectDetails(event) {
+    let response: any = JSON.parse(event.xhr.response);
+    this.projectWizard.project = <Project>response;
+    if (this.projectWizard.project.projectType == ProjectType.STILL_IMAGE) {
+      this.projectWizard.project.endFrame = 1;
+      this.projectWizard.project.stepFrame = 1;
+    }
+    if (this.projectWizard.project.selectedBlenderversion == null) {
+      this.projectWizard.project.selectedBlenderversion = this.projectWizard.availableBlenderVersions[0];
+    }
+    this.projectWizard.project.useParts = true;
+    this.projectWizard.project.partsPerFrame = 4;
+    this.projectWizard.projectLoaded = true;
+
+  }
+
+  beforeSend(event: any) {
+    this.uploading = true;
+    event.xhr.setRequestHeader('X-XSRF-TOKEN', document.cookie.slice(document.cookie.indexOf('TOKEN=') + 'TOKEN='.length));
   }
 
 }

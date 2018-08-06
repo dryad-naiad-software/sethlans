@@ -24,6 +24,9 @@ $fa-font-path: "../node_modules/@fortawesome/fontawesome-free/webfonts";
 @import "~@fortawesome/fontawesome-free/scss/regular.scss";
 @import "~@fortawesome/fontawesome-free/scss/brands.scss";
 @import "theme";
+@import "../node_modules/primeicons/primeicons.css";
+@import "../node_modules/primeng/resources/themes/omega/theme.css";
+@import "../node_modules/primeng/resources/primeng.min.css";
 
 // By default, the mobile label shouldn't show
 .mobile-label {
@@ -64,9 +67,9 @@ $fa-font-path: "../node_modules/@fortawesome/fontawesome-free/webfonts";
   width: 30px;
   height: 30px;
   text-align: center;
-  padding: 6px 0;
+  padding: 5px 5px;
   font-size: 12px;
-  line-height: 1.428571429;
+  line-height: 1.33px;
   border-radius: 15px;
 }
 
@@ -75,7 +78,7 @@ $fa-font-path: "../node_modules/@fortawesome/fontawesome-free/webfonts";
   height: 55px;
   padding: 10px 10px;
   font-size: 22px;
-  line-height: 1.33;
+  line-height: 1.33px;
   border-radius: 35px;
 }
 
@@ -84,7 +87,7 @@ $fa-font-path: "../node_modules/@fortawesome/fontawesome-free/webfonts";
   height: 70px;
   padding: 10px 16px;
   font-size: 28px;
-  line-height: 1.33;
+  line-height: 1.33px;
   border-radius: 35px;
 }
 

@@ -61,7 +61,10 @@
               class="fas fa-check"></i></button>
           </li>
         </ul>
+        <app-project-upload [projectWizard]="projectWizard"
+                            *ngIf="projectWizard.currentProgress === wizardProgress.UPLOAD">
 
+        </app-project-upload>
       </div>
 
       <div class="card-footer">
@@ -73,4 +76,9 @@
       </div>
     </div>
   </div>
+</div>
+
+<div>
+  Debugging:
+  <pre>{{ projectWizard | json }}</pre>
 </div>
