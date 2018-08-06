@@ -80,6 +80,7 @@ import {NodeWizardComponent} from './components/admin/nodes/node-wizard/node-wiz
 import {NodeManualAddComponent} from './components/admin/nodes/node-wizard/node-manual-add/node-manual-add.component';
 import {NodeScanAddComponent} from './components/admin/nodes/node-wizard/node-scan-add/node-scan-add.component';
 import {NodeSummaryComponent} from './components/admin/nodes/node-wizard/node-summary/node-summary.component';
+import {ProjectWizardComponent} from './components/projects/project-wizard/project-wizard.component';
 
 @NgModule({
   declarations: [
@@ -120,6 +121,7 @@ import {NodeSummaryComponent} from './components/admin/nodes/node-wizard/node-su
     NodeManualAddComponent,
     NodeScanAddComponent,
     NodeSummaryComponent,
+    ProjectWizardComponent,
   ],
   imports: [
     BrowserModule,

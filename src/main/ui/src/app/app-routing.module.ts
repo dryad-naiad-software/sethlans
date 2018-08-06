@@ -37,11 +37,13 @@ import {LogsComponent} from './components/admin/logs/logs.component';
 import {RegisterUserComponent} from './components/register-user/register-user.component';
 import {UserSettingsComponent} from './components/user-settings/user-settings.component';
 import {NodeWizardComponent} from './components/admin/nodes/node-wizard/node-wizard.component';
+import {ProjectWizardComponent} from './components/projects/project-wizard/project-wizard.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'login', component: LoginComponent},
   {path: 'projects', component: ProjectsComponent},
+  {path: 'projects/add', component: ProjectWizardComponent},
   {path: 'get_started', component: GetStartedComponent},
   {path: 'shutdown', component: ShutdownComponent},
   {path: 'restart', component: RestartComponent},
