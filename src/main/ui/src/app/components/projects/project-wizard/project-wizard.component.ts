@@ -18,6 +18,7 @@
  */
 
 import {Component, OnInit} from '@angular/core';
+import {ProjectWizardForm} from '../../../models/forms/project_wizard_form.model';
 
 @Component({
   selector: 'app-project-wizard',
@@ -25,6 +26,7 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./project-wizard.component.scss']
 })
 export class ProjectWizardComponent implements OnInit {
+  projectWizard: ProjectWizardForm;
 
   constructor() {
     document.body.style.background = 'rgba(0, 0, 0, .6)';

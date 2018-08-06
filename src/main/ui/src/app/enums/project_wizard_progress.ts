@@ -18,5 +18,9 @@
  */
 
 export enum ProjectWizardProgress {
-
+  UPLOAD,
+  PROJECT_DETAILS,
+  RENDER_SETTINGS,
+  SUMMARY,
+  FINISHED
 }

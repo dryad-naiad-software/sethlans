@@ -19,9 +19,11 @@
 
 
 import {Project} from '../project.model';
+import {ProjectWizardProgress} from '../../enums/project_wizard_progress';
 
 export class ProjectWizardForm {
   project: Project;
+  currentProgress: ProjectWizardProgress;
 
 
 }
