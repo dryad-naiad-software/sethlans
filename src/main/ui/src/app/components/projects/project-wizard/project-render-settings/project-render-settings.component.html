@@ -21,7 +21,7 @@
 
     <div class="form-group">
       <label for="blenderEngine">Rendering Engine</label>
-      <select class="form-control" id="blenderEngine" name="blenderEngine"
+      <select class="form-control form-control-sm" id="blenderEngine" name="blenderEngine"
               [(ngModel)]="projectWizard.project.blenderEngine">
         <option value="{{engines.CYCLES}}">CYCLES</option>
         <option value="{{engines.BLENDER_RENDER}}">BLENDER RENDER</option>
@@ -29,7 +29,8 @@
     </div>
     <div *ngIf="projectWizard.project.blenderEngine != engines.BLENDER_RENDER" class="form-group">
       <label for="renderOn">Render On</label>
-      <select class="form-control" id="renderOn" name="renderOn" [(ngModel)]="projectWizard.project.renderOn">
+      <select class="form-control form-control-sm" id="renderOn" name="renderOn"
+              [(ngModel)]="projectWizard.project.renderOn">
         <option value="{{computeMethods.CPU}}">CPU</option>
         <option value="{{computeMethods.GPU}}">GPU</option>
         <option value="{{computeMethods.CPU_GPU}}">CPU & GPU</option>
@@ -40,7 +41,7 @@
       <input
         type="number"
         id="samples"
-        class="form-control"
+        class="form-control form-control-sm"
         #samples="ngModel"
         name="samples"
         [ngClass]="{'is-invalid':samples.errors && samples.touched}"

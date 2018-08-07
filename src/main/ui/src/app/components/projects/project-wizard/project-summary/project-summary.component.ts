@@ -17,7 +17,11 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ProjectWizardForm} from '../../../../models/forms/project_wizard_form.model';
+import {ProjectType} from '../../../../enums/project_type.enum';
+import {RenderOutputFormat} from '../../../../enums/render_output_format.enum';
+import {BlenderEngine} from '../../../../enums/blender_engine.enum';
 
 @Component({
   selector: 'app-project-summary',
@@ -25,6 +29,11 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./project-summary.component.scss']
 })
 export class ProjectSummaryComponent implements OnInit {
+  @Output() disableNext = new EventEmitter();
+  @Input() projectWizard: ProjectWizardForm;
+  projectTypes: any = ProjectType;
+  outputFormat: any = RenderOutputFormat;
+  engines: any = BlenderEngine;
 
   constructor() {
   }

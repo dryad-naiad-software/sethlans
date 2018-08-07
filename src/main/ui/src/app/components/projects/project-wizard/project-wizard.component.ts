@@ -54,6 +54,10 @@ export class ProjectWizardComponent implements OnInit {
     switch (this.projectWizard.currentProgress) {
       case ProjectWizardProgress.PROJECT_DETAILS:
         this.projectWizard.currentProgress = ProjectWizardProgress.RENDER_SETTINGS;
+        break;
+      case ProjectWizardProgress.RENDER_SETTINGS:
+        this.projectWizard.currentProgress = ProjectWizardProgress.SUMMARY;
+        break;
     }
   }
 
@@ -61,6 +65,10 @@ export class ProjectWizardComponent implements OnInit {
     switch (this.projectWizard.currentProgress) {
       case ProjectWizardProgress.RENDER_SETTINGS:
         this.projectWizard.currentProgress = ProjectWizardProgress.PROJECT_DETAILS;
+        break;
+      case ProjectWizardProgress.SUMMARY:
+        this.projectWizard.currentProgress = ProjectWizardProgress.RENDER_SETTINGS;
+        break;
     }
   }
 

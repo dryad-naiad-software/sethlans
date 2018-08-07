@@ -20,7 +20,7 @@
   <form #projectDetailsForm="ngForm" class="editForm">
     <div class="form-group">
       <label for="projectName">Project Name</label>
-      <input class="form-control"
+      <input class="form-control form-control-sm"
              type="text"
              name="projectName"
              id="projectName"
@@ -37,14 +37,14 @@
     </div>
     <div class="form-group">
       <label for="selectedBlenderVersion">Blender Version for Rendering</label>
-      <select class="form-control" id="selectedBlenderVersion" name="selectedBlenderVersion"
+      <select class="form-control form-control-sm" id="selectedBlenderVersion" name="selectedBlenderVersion"
               [(ngModel)]="projectWizard.project.selectedBlenderversion">
         <option *ngFor="let version of projectWizard.availableBlenderVersions">{{version}}</option>
       </select>
     </div>
     <div class="form-group" *ngIf="projectWizard.project.projectType == projectTypes.ANIMATION">
       <label for="outputFormat">Output Format</label>
-      <select class="form-control" id="outputFormat" name="outputFormat"
+      <select class="form-control form-control-sm" id="outputFormat" name="outputFormat"
               [(ngModel)]="projectWizard.project.outputFormat">
         <option value="{{formats.MP4}}">MP4</option>
         <option value="{{formats.AVI}}">AVI</option>
@@ -54,7 +54,7 @@
     <div class="form-group"
          *ngIf="projectWizard.project.projectType == projectTypes.ANIMATION && projectWizard.project.outputFormat == 'AVI' || projectWizard.project.outputFormat == 'MP4'">
       <label for="frameRate">Frame Rate</label>
-      <select class="form-control" id="frameRate" name="frameRate"
+      <select class="form-control form-control-sm" id="frameRate" name="frameRate"
               [(ngModel)]="projectWizard.project.frameRate">
         <option *ngFor="let frameRate of frameRates">{{frameRate}}
         </option>
@@ -62,7 +62,7 @@
     </div>
     <div class="form-group" *ngIf="projectWizard.project.projectType == projectTypes.STILL_IMAGE">
       <label for="outputFormat2">Output Format</label>
-      <select class="form-control" id="outputFormat2" name="outputFormat"
+      <select class="form-control form-control-sm" id="outputFormat2" name="outputFormat"
               [(ngModel)]="projectWizard.project.outputFormat" (mousemove)="validateForm()">
         <option [selected]="formats.PNG">PNG</option>
       </select>
@@ -86,15 +86,15 @@
     </fieldset>
     <div class="form-group">
       <label for="startFrame">Start Frame</label>
-      <input type="number" class="form-control" id="startFrame" name="startFrame"
+      <input type="number" class="form-control form-control-sm" id="startFrame" name="startFrame"
              [(ngModel)]="projectWizard.project.startFrame" pattern="^[1-9][0-9]*$" (mousemove)="validateForm()">
       <label for="endFrame">End Frame</label>
       <input [disabled]="projectWizard.project.projectType == projectTypes.STILL_IMAGE" type="number"
-             class="form-control"
+             class="form-control form-control-sm"
              id="endFrame" name="endFrame" [(ngModel)]="projectWizard.project.endFrame">
       <label for="stepFrame">Frame Step</label>
       <input [disabled]="projectWizard.project.projectType == projectTypes.STILL_IMAGE" type="number"
-             class="form-control"
+             class="form-control form-control-sm"
              id="stepFrame" name="stepFrame" [(ngModel)]="projectWizard.project.stepFrame">
     </div>
   </form>

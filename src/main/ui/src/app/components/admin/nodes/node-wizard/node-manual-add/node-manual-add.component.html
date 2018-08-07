@@ -29,13 +29,14 @@
 <form #addNodeForm="ngForm" class="editForm p-2" *ngIf="!nodeWizardForm.multipleNodeAdd">
   <div class="form-group">
     <label for="ipAddress">IP Address or Hostname</label>
-    <input type="text" class="form-control" id="ipAddress" name="ipAddress"
+    <input type="text" class="form-control form-control-sm" id="ipAddress" name="ipAddress"
            [(ngModel)]="nodeWizardForm.singleNode.ipAddress" (keyup)="enableNext(); enterPress($event)"
            required>
   </div>
   <div class="form-group">
     <label for="port">Port</label>
-    <input type="number" class="form-control" id="port" name="port" [(ngModel)]="nodeWizardForm.singleNode.port"
+    <input type="number" class="form-control form-control-sm" id="port" name="port"
+           [(ngModel)]="nodeWizardForm.singleNode.port"
            (keyup)="enableNext(); enterPress($event)"
            required>
   </div>
@@ -43,13 +44,13 @@
 <form #addMultiNodeForm="ngForm" class="editForm p-2" *ngIf="nodeWizardForm.multipleNodeAdd">
   <div class="form-group">
     <label for="nodeAddIPAddress">IP Address or Hostname</label>
-    <input type="text" class="form-control" id="nodeAddIPAddress" name="ipAddress"
+    <input type="text" class="form-control form-control-sm" id="nodeAddIPAddress" name="ipAddress"
            [(ngModel)]="nodeItem.ipAddress" (keyup)="enableAdd()"
            required>
   </div>
   <div class="form-group">
     <label for="nodeAddPort">Port</label>
-    <input type="number" class="form-control" id="nodeAddPort" name="port" [(ngModel)]="nodeItem.port"
+    <input type="number" class="form-control form-control-sm" id="nodeAddPort" name="port" [(ngModel)]="nodeItem.port"
            (keyup)="enableAdd()"
            required>
   </div>

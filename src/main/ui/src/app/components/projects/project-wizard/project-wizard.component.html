@@ -44,7 +44,6 @@
           <li>
             <button type="button" class="btn btn-circle btn-lg"
                     [disabled]="!projectWizard.projectLoaded"
-
                     [ngClass]="projectWizard.currentProgress === wizardProgress.RENDER_SETTINGS ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
                     ngbTooltip="Render Settings">
@@ -53,7 +52,6 @@
           <li>
             <button type="button" class="btn btn-circle btn-lg"
                     [disabled]="!projectWizard.projectLoaded"
-
                     [ngClass]="projectWizard.currentProgress === wizardProgress.SUMMARY ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
                     ngbTooltip="Summary">
@@ -79,6 +77,11 @@
                                      (disableNext)="disableNext($event)"
                                      *ngIf="projectWizard.currentProgress === wizardProgress.RENDER_SETTINGS">
         </app-project-render-settings>
+        <app-project-summary [projectWizard]="projectWizard"
+                             (disableNext)="disableNext($event)"
+                             *ngIf="projectWizard.currentProgress === wizardProgress.SUMMARY">
+
+        </app-project-summary>
       </div>
 
       <div class="card-footer">
@@ -96,8 +99,16 @@
           <button class="btn btn-outline-primary float-right"
                   [disabled]="nextDisabled"
                   (click)="next()"
-                  *ngIf="projectWizard.currentProgress !== wizardProgress.UPLOAD && projectWizard.currentProgress !== wizardProgress.FINISHED">
+                  *ngIf="projectWizard.currentProgress !== wizardProgress.UPLOAD &&
+                  projectWizard.currentProgress !== wizardProgress.SUMMARY &&
+                  projectWizard.currentProgress !== wizardProgress.FINISHED">
             Next
+          </button>
+          <button class="btn btn-outline-primary float-right"
+                  [disabled]="nextDisabled"
+                  (click)="next()"
+                  *ngIf="projectWizard.currentProgress === wizardProgress.SUMMARY">
+            Submit
           </button>
         </nav>
       </div>
