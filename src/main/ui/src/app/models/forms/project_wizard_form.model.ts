@@ -24,6 +24,8 @@ import {ProjectWizardProgress} from '../../enums/project_wizard_progress';
 export class ProjectWizardForm {
   project: Project;
   currentProgress: ProjectWizardProgress;
+  detailsValid: boolean;
+  formComplete: boolean;
   finished: boolean;
   projectLoaded: boolean;
   availableBlenderVersions: string[];
@@ -34,5 +36,7 @@ export class ProjectWizardForm {
     this.currentProgress = ProjectWizardProgress.UPLOAD;
     this.finished = false;
     this.projectLoaded = false;
+    this.detailsValid = false;
+    this.formComplete = false;
   }
 }

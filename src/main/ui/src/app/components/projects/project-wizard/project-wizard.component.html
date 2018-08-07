@@ -38,28 +38,30 @@
                     [disabled]="!projectWizard.projectLoaded"
                     [ngClass]="projectWizard.currentProgress === wizardProgress.PROJECT_DETAILS ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
-                    ngbTooltip="Project Details">
+                    ngbTooltip="Project Details"
+                    (click)="projectWizard.currentProgress = wizardProgress.PROJECT_DETAILS">
               <i class="fas fa-list-ol"></i></button>
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
-                    [disabled]="!projectWizard.projectLoaded"
+                    [disabled]="!projectWizard.detailsValid"
                     [ngClass]="projectWizard.currentProgress === wizardProgress.RENDER_SETTINGS ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
-                    ngbTooltip="Render Settings">
+                    ngbTooltip="Render Settings"
+                    (click)="projectWizard.currentProgress = wizardProgress.RENDER_SETTINGS">
               <i class="fas fa-sliders-h"></i></button>
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
-                    [disabled]="!projectWizard.projectLoaded"
+                    [disabled]="!projectWizard.formComplete"
                     [ngClass]="projectWizard.currentProgress === wizardProgress.SUMMARY ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
-                    ngbTooltip="Summary">
+                    ngbTooltip="Summary" (click)="projectWizard.currentProgress = wizardProgress.SUMMARY">
               <i class="fas fa-list-alt"></i></button>
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
-                    [disabled]="!projectWizard.projectLoaded"
+                    [disabled]="!projectWizard.finished"
                     [ngClass]="projectWizard.currentProgress === wizardProgress.FINISHED ? 'btn-outline-success':'btn-outline-dark'"
                     placement="top"
                     ngbTooltip="Finished"><i
@@ -79,7 +81,7 @@
         </app-project-render-settings>
         <app-project-summary [projectWizard]="projectWizard"
                              (disableNext)="disableNext($event)"
-                             *ngIf="projectWizard.currentProgress === wizardProgress.SUMMARY">
+                             *ngIf="projectWizard.currentProgress === wizardProgress.SUMMARY || projectWizard.currentProgress === wizardProgress.FINISHED">
 
         </app-project-summary>
       </div>
@@ -93,7 +95,8 @@
           </button>
           <button class="btn btn-outline-secondary float-left"
                   (click)="previous()"
-                  *ngIf="projectWizard.currentProgress !== wizardProgress.UPLOAD && projectWizard.currentProgress !== wizardProgress.PROJECT_DETAILS">
+                  *ngIf="projectWizard.currentProgress !== wizardProgress.UPLOAD && projectWizard.currentProgress !== wizardProgress.PROJECT_DETAILS
+                  && projectWizard.currentProgress !== wizardProgress.FINISHED">
             Previous
           </button>
           <button class="btn btn-outline-primary float-right"
@@ -106,9 +109,15 @@
           </button>
           <button class="btn btn-outline-primary float-right"
                   [disabled]="nextDisabled"
-                  (click)="next()"
+                  (click)="submit()"
                   *ngIf="projectWizard.currentProgress === wizardProgress.SUMMARY">
             Submit
+          </button>
+          <button class="btn btn-outline-primary float-right"
+                  [disabled]="nextDisabled"
+                  (click)="returnToProjects()"
+                  *ngIf="projectWizard.currentProgress === wizardProgress.FINISHED">
+            Return to Projects
           </button>
         </nav>
       </div>

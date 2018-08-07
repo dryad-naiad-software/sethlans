@@ -33,9 +33,6 @@ export class ProjectRenderSettingsComponent implements OnInit {
   computeMethods: any = ComputeMethod;
   engines: any = BlenderEngine;
 
-
-
-
   constructor() {
   }
 

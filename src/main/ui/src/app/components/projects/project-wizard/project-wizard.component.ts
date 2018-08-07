@@ -20,7 +20,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ProjectWizardForm} from '../../../models/forms/project_wizard_form.model';
 import {ProjectWizardProgress} from '../../../enums/project_wizard_progress';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 @Component({
   selector: 'app-project-wizard',
@@ -50,12 +50,28 @@ export class ProjectWizardComponent implements OnInit {
     window.location.href = '/projects/';
   }
 
+  submit() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    if (this.projectWizard.project.useParts == false) {
+      this.projectWizard.project.partsPerFrame = 1;
+    }
+    this.http.post('/api/project_form/submit_project', JSON.stringify(this.projectWizard.project), httpOptions).subscribe(() => {
+      this.projectWizard.currentProgress = ProjectWizardProgress.FINISHED;
+    });
+  }
+
   next() {
     switch (this.projectWizard.currentProgress) {
       case ProjectWizardProgress.PROJECT_DETAILS:
+        this.projectWizard.detailsValid = true;
         this.projectWizard.currentProgress = ProjectWizardProgress.RENDER_SETTINGS;
         break;
       case ProjectWizardProgress.RENDER_SETTINGS:
+        this.projectWizard.formComplete = true;
         this.projectWizard.currentProgress = ProjectWizardProgress.SUMMARY;
         break;
     }
