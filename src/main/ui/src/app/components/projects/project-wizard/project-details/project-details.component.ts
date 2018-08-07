@@ -17,8 +17,10 @@
  *
  */
 
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {ProjectWizardForm} from '../../../../models/forms/project_wizard_form.model';
+import {ProjectType} from '../../../../enums/project_type.enum';
+import {RenderOutputFormat} from '../../../../enums/render_output_format.enum';
 
 @Component({
   selector: 'app-project-details',
@@ -27,12 +29,40 @@ import {ProjectWizardForm} from '../../../../models/forms/project_wizard_form.mo
 })
 export class ProjectDetailsComponent implements OnInit {
   @Input() projectWizard: ProjectWizardForm;
+  projectTypes: any = ProjectType;
+  frameRates: string[] = ['23.98', '24', '25', '29.97', '30', '50', '59.94', '60'];
+  formats: any = RenderOutputFormat;
+  @ViewChild('projectDetailsForm') form: any;
+  @Output() disableNext = new EventEmitter();
 
 
   constructor() {
   }
 
   ngOnInit() {
+    if (this.projectWizard.project.projectName.length > 0) {
+      this.validateForm();
+    } else {
+      this.disableNext.emit(true);
+    }
+  }
+
+  validateForm() {
+    if (this.form.valid) {
+      this.disableNext.emit(false);
+    } else {
+      this.disableNext.emit(true);
+    }
+    console.log(this.form.valid);
+  }
+
+  setDefaultFormat() {
+    this.projectWizard.project.outputFormat = RenderOutputFormat.PNG;
+  }
+
+  setDefaultFrameRate() {
+    this.projectWizard.project.frameRate = '23.98';
+    this.projectWizard.project.endFrame = 50;
   }
 
 }

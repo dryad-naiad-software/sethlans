@@ -73,7 +73,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/login*")
                     .permitAll()
                     .and()
-                    .formLogin().loginPage("/login").successHandler(new SethlansUrlAuthenticationSuccessHandler())
+                    .formLogin().loginPage("/login").successHandler(new SethlansUrlAuthenticationSuccessHandler()).failureUrl("/login?error=true")
                     .and()
                     .logout()
                     .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))

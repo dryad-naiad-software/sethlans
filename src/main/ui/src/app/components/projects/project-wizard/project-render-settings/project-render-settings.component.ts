@@ -17,7 +17,10 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ProjectWizardForm} from '../../../../models/forms/project_wizard_form.model';
+import {ComputeMethod} from '../../../../enums/compute.method.enum';
+import {BlenderEngine} from '../../../../enums/blender_engine.enum';
 
 @Component({
   selector: 'app-project-render-settings',
@@ -25,11 +28,26 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./project-render-settings.component.scss']
 })
 export class ProjectRenderSettingsComponent implements OnInit {
+  @Output() disableNext = new EventEmitter();
+  @Input() projectWizard: ProjectWizardForm;
+  computeMethods: any = ComputeMethod;
+  engines: any = BlenderEngine;
+
+
+
 
   constructor() {
   }
 
   ngOnInit() {
+  }
+
+  setParts() {
+    if (this.projectWizard.project.useParts == true) {
+      this.projectWizard.project.partsPerFrame = 4;
+    } else {
+      this.projectWizard.project.partsPerFrame = 1;
+    }
   }
 
 }

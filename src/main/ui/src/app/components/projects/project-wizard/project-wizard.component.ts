@@ -30,6 +30,7 @@ import {HttpClient} from '@angular/common/http';
 export class ProjectWizardComponent implements OnInit {
   projectWizard: ProjectWizardForm;
   wizardProgress: any = ProjectWizardProgress;
+  nextDisabled: boolean;
 
   constructor(private http: HttpClient) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
@@ -38,6 +39,29 @@ export class ProjectWizardComponent implements OnInit {
 
   ngOnInit() {
     this.getAvailableBlenderVersions();
+    this.nextDisabled = true;
+  }
+
+  disableNext(value: boolean) {
+    this.nextDisabled = value;
+  }
+
+  returnToProjects(): void {
+    window.location.href = '/projects/';
+  }
+
+  next() {
+    switch (this.projectWizard.currentProgress) {
+      case ProjectWizardProgress.PROJECT_DETAILS:
+        this.projectWizard.currentProgress = ProjectWizardProgress.RENDER_SETTINGS;
+    }
+  }
+
+  previous() {
+    switch (this.projectWizard.currentProgress) {
+      case ProjectWizardProgress.RENDER_SETTINGS:
+        this.projectWizard.currentProgress = ProjectWizardProgress.PROJECT_DETAILS;
+    }
   }
 
   getAvailableBlenderVersions() {

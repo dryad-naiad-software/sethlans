@@ -34,7 +34,11 @@ export class LoginComponent implements OnInit {
   login: Login;
   loginError: boolean;
 
-  constructor(private http: HttpClient, private auth: LoginService, private route: ActivatedRoute, private router: Router) {
+  constructor(private http: HttpClient, private auth: LoginService, private activatedRoute: ActivatedRoute, private router: Router) {
+    this.activatedRoute.queryParams.subscribe(params => {
+      let loginError = params['error'];
+      this.loginError = loginError != undefined;
+    });
   }
 
   ngOnInit() {
@@ -43,8 +47,7 @@ export class LoginComponent implements OnInit {
 
   loginSubmit() {
     this.auth.authenticate(this.login, () => {
-      this.router.navigateByUrl('/login').then(() => this.loginError = true
-      );
+      this.router.navigateByUrl('/login');
     });
 
   }

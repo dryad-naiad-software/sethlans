@@ -16,7 +16,86 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
+<div class="pt-3">
+  <form #projectDetailsForm="ngForm" class="editForm">
+    <div class="form-group">
+      <label for="projectName">Project Name</label>
+      <input class="form-control"
+             type="text"
+             name="projectName"
+             id="projectName"
+             #projectName="ngModel"
+             [ngClass]="{'is-invalid':projectName.errors && projectName.touched}"
+             [(ngModel)]="projectWizard.project.projectName" (keydown)="validateForm()" (mousemove)="validateForm()"
+             required pattern=".{4,}">
+      <div class="invalid-feedback" [hidden]="projectName.valid">
+        <ul>
+          <li>Project Name is required.</li>
+          <li>Minimum of 4 characters, alpha-numeric characters only.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="selectedBlenderVersion">Blender Version for Rendering</label>
+      <select class="form-control" id="selectedBlenderVersion" name="selectedBlenderVersion"
+              [(ngModel)]="projectWizard.project.selectedBlenderversion">
+        <option *ngFor="let version of projectWizard.availableBlenderVersions">{{version}}</option>
+      </select>
+    </div>
+    <div class="form-group" *ngIf="projectWizard.project.projectType == projectTypes.ANIMATION">
+      <label for="outputFormat">Output Format</label>
+      <select class="form-control" id="outputFormat" name="outputFormat"
+              [(ngModel)]="projectWizard.project.outputFormat">
+        <option value="{{formats.MP4}}">MP4</option>
+        <option value="{{formats.AVI}}">AVI</option>
+        <option value="{{formats.PNG}}">PNG</option>
+      </select>
+    </div>
+    <div class="form-group"
+         *ngIf="projectWizard.project.projectType == projectTypes.ANIMATION && projectWizard.project.outputFormat == 'AVI' || projectWizard.project.outputFormat == 'MP4'">
+      <label for="frameRate">Frame Rate</label>
+      <select class="form-control" id="frameRate" name="frameRate"
+              [(ngModel)]="projectWizard.project.frameRate">
+        <option *ngFor="let frameRate of frameRates">{{frameRate}}
+        </option>
+      </select>
+    </div>
+    <div class="form-group" *ngIf="projectWizard.project.projectType == projectTypes.STILL_IMAGE">
+      <label for="outputFormat2">Output Format</label>
+      <select class="form-control" id="outputFormat2" name="outputFormat"
+              [(ngModel)]="projectWizard.project.outputFormat" (mousemove)="validateForm()">
+        <option [selected]="formats.PNG">PNG</option>
+      </select>
+    </div>
 
-<p>
-  project-details works!
-</p>
+
+    <fieldset class="form-group">
+      <label>Project Type</label>
+      <div class="form-check">
+        <label class="form-check-label"><input type="radio" name="projectType" class="form-check-input"
+                                               [(ngModel)]="projectWizard.project.projectType"
+                                               value="{{projectTypes.STILL_IMAGE}}"
+                                               (click)="setDefaultFormat()">Still Image</label>
+      </div>
+      <div class="form-check">
+        <label class="form-check-label"><input type="radio" name="projectType" class="form-check-input"
+                                               [(ngModel)]="projectWizard.project.projectType"
+                                               value="{{projectTypes.ANIMATION}}"
+                                               (click)="setDefaultFrameRate()">Animation</label>
+      </div>
+    </fieldset>
+    <div class="form-group">
+      <label for="startFrame">Start Frame</label>
+      <input type="number" class="form-control" id="startFrame" name="startFrame"
+             [(ngModel)]="projectWizard.project.startFrame" pattern="^[1-9][0-9]*$" (mousemove)="validateForm()">
+      <label for="endFrame">End Frame</label>
+      <input [disabled]="projectWizard.project.projectType == projectTypes.STILL_IMAGE" type="number"
+             class="form-control"
+             id="endFrame" name="endFrame" [(ngModel)]="projectWizard.project.endFrame">
+      <label for="stepFrame">Frame Step</label>
+      <input [disabled]="projectWizard.project.projectType == projectTypes.STILL_IMAGE" type="number"
+             class="form-control"
+             id="stepFrame" name="stepFrame" [(ngModel)]="projectWizard.project.stepFrame">
+    </div>
+  </form>
+</div>

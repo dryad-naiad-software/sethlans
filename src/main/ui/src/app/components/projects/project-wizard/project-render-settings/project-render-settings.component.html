@@ -16,7 +16,85 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
+<div class="pt-3">
+  <form #projectDetailsForm2="ngForm" class="editForm">
 
-<p>
-  project-render-settings works!
-</p>
+    <div class="form-group">
+      <label for="blenderEngine">Rendering Engine</label>
+      <select class="form-control" id="blenderEngine" name="blenderEngine"
+              [(ngModel)]="projectWizard.project.blenderEngine">
+        <option value="{{engines.CYCLES}}">CYCLES</option>
+        <option value="{{engines.BLENDER_RENDER}}">BLENDER RENDER</option>
+      </select>
+    </div>
+    <div *ngIf="projectWizard.project.blenderEngine != engines.BLENDER_RENDER" class="form-group">
+      <label for="renderOn">Render On</label>
+      <select class="form-control" id="renderOn" name="renderOn" [(ngModel)]="projectWizard.project.renderOn">
+        <option value="{{computeMethods.CPU}}">CPU</option>
+        <option value="{{computeMethods.GPU}}">GPU</option>
+        <option value="{{computeMethods.CPU_GPU}}">CPU & GPU</option>
+      </select>
+    </div>
+    <div *ngIf="projectWizard.project.blenderEngine != engines.BLENDER_RENDER" class="form-group">
+      <label for="samples">Samples</label>
+      <input
+        type="number"
+        id="samples"
+        class="form-control"
+        #samples="ngModel"
+        name="samples"
+        [ngClass]="{'is-invalid':samples.errors && samples.touched}"
+        [(ngModel)]="projectWizard.project.samples" pattern="^[1-9][0-9]*$">
+      <div class="invalid-feedback" [hidden]="samples.valid">
+        <ul>
+          <li>Value of Samples must be greater than 0.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Render Resolution
+        <div class="form-inline">
+          <input type="number" class="form-control form-inline" id="resolutionX" name="resolutionX"
+                 [(ngModel)]="projectWizard.project.resolutionX">
+          &times;
+          <input type="number" class="form-control form-inline" id="resolutionY" name="resolutionY"
+                 [(ngModel)]="projectWizard.project.resolutionY">
+        </div>
+      </label>
+    </div>
+    <div class="form-group">
+      <label for="resPercentage">Render Image Scaling Percentage:</label> <strong>{{projectWizard.project.resPercentage}}&#37;</strong>
+      <div class="form-inline">
+        <mat-slider
+          id="resPercentage"
+          name="resPercentage"
+          min="1"
+          step="1"
+          thumb-label="true"
+          max="100"
+          [(ngModel)]="projectWizard.project.resPercentage"></mat-slider>
+      </div>
+    </div>
+    <div class="form-group">
+      <input type="checkbox" id="useParts" name="useParts" [(ngModel)]="projectWizard.project.useParts"
+             (change)="setParts()">
+      <label for="useParts">Split frame into parts for rendering</label>
+    </div>
+
+    <div class="form-group">
+      <label for="partsPerFrame">Number of Rendering Parts Per Frame:</label> <span
+      *ngIf="projectWizard.project.useParts">{{projectWizard.project.partsPerFrame}}</span>
+      <span *ngIf="!projectWizard.project.useParts" class="text-danger">Disabled</span>
+      <div class="form-inline">
+        <mat-slider [disabled]="!projectWizard.project.useParts"
+                    id="partsPerFrame"
+                    name="partsPerFrame"
+                    min="2"
+                    step="2"
+                    thumb-label="true"
+                    max="24"
+                    [(ngModel)]="projectWizard.project.partsPerFrame"></mat-slider>
+      </div>
+    </div>
+  </form>
+</div>

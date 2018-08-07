@@ -27,6 +27,7 @@
         <ul class="nav nav-tabs justify-content-between pb-3">
           <li>
             <button type="button" class="btn btn-circle btn-lg"
+                    [disabled]="projectWizard.projectLoaded"
                     [ngClass]="projectWizard.currentProgress === wizardProgress.UPLOAD ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
                     ngbTooltip="Upload">
@@ -34,6 +35,7 @@
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
+                    [disabled]="!projectWizard.projectLoaded"
                     [ngClass]="projectWizard.currentProgress === wizardProgress.PROJECT_DETAILS ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
                     ngbTooltip="Project Details">
@@ -41,6 +43,8 @@
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
+                    [disabled]="!projectWizard.projectLoaded"
+
                     [ngClass]="projectWizard.currentProgress === wizardProgress.RENDER_SETTINGS ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
                     ngbTooltip="Render Settings">
@@ -48,6 +52,8 @@
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
+                    [disabled]="!projectWizard.projectLoaded"
+
                     [ngClass]="projectWizard.currentProgress === wizardProgress.SUMMARY ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
                     ngbTooltip="Summary">
@@ -55,6 +61,7 @@
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
+                    [disabled]="!projectWizard.projectLoaded"
                     [ngClass]="projectWizard.currentProgress === wizardProgress.FINISHED ? 'btn-outline-success':'btn-outline-dark'"
                     placement="top"
                     ngbTooltip="Finished"><i
@@ -63,18 +70,34 @@
         </ul>
         <app-project-upload [projectWizard]="projectWizard"
                             *ngIf="projectWizard.currentProgress === wizardProgress.UPLOAD">
-
         </app-project-upload>
-        <app-project-details [projectWizard[="projectWizard"
+        <app-project-details [projectWizard]="projectWizard"
+                             (disableNext)="disableNext($event)"
                              *ngIf="projectWizard.currentProgress === wizardProgress.PROJECT_DETAILS">
-
         </app-project-details>
+        <app-project-render-settings [projectWizard]="projectWizard"
+                                     (disableNext)="disableNext($event)"
+                                     *ngIf="projectWizard.currentProgress === wizardProgress.RENDER_SETTINGS">
+        </app-project-render-settings>
       </div>
 
       <div class="card-footer">
         <nav>
           <button class="btn btn-outline-secondary float-left"
-          >Cancel
+                  (click)="returnToProjects()"
+                  *ngIf="projectWizard.currentProgress === wizardProgress.UPLOAD || projectWizard.currentProgress === wizardProgress.PROJECT_DETAILS">
+            Cancel
+          </button>
+          <button class="btn btn-outline-secondary float-left"
+                  (click)="previous()"
+                  *ngIf="projectWizard.currentProgress !== wizardProgress.UPLOAD && projectWizard.currentProgress !== wizardProgress.PROJECT_DETAILS">
+            Previous
+          </button>
+          <button class="btn btn-outline-primary float-right"
+                  [disabled]="nextDisabled"
+                  (click)="next()"
+                  *ngIf="projectWizard.currentProgress !== wizardProgress.UPLOAD && projectWizard.currentProgress !== wizardProgress.FINISHED">
+            Next
           </button>
         </nav>
       </div>
