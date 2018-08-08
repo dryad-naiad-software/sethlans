@@ -141,24 +141,25 @@
         </div>
       </div>
       <div class="card-footer">
+        <button class="btn btn-outline-dark mr-auto float-left" (click)="returnToProjects()">Project List View
+        </button>
         <button id="videoPropertiesButton"
                 *ngIf="currentProject.projectStatus === statuses.Finished && currentProject.outputFormat !== formats.PNG"
-                class="btn btn-outline-dark mr-auto float-left">Video Settings
+                class="btn btn-outline-dark ml-auto float-right">Video Settings
         </button>
         <button [disabled]="!nodesReady" id="startButton" *ngIf="currentProject.projectStatus === statuses.Added"
-                class="btn btn-outline-primary mr-auto float-left">Start
+                class="btn btn-outline-primary ml-auto float-right">Start
           Project
         </button>
         <button id="pauseButton"
                 *ngIf="currentProject.projectStatus !== statuses.Finished && currentProject.projectStatus !== statuses.Added && currentProject.projectStatus !== statuses.Paused"
-                class="btn btn-outline-info mr-auto float-left">Pause Project
+                class="btn btn-outline-info ml-auto float-right">Pause Project
         </button>
         <button id="resumeButton" *ngIf="currentProject.projectStatus === statuses.Paused"
-                class="btn btn-outline-success mr-auto float-left">Resume
+                class="btn btn-outline-success ml-auto float-right">Resume
           Project
         </button>
-        <button class="btn btn-outline-dark ml-auto float-right" (click)="returnToProjects()">Project List View
-        </button>
+
       </div>
     </div>
   </div>
