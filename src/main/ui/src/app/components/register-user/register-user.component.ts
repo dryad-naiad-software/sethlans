@@ -18,6 +18,9 @@
  */
 
 import {Component, OnInit} from '@angular/core';
+import {User} from '../../models/user.model';
+import {ActivatedRoute, Router} from '@angular/router';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 @Component({
   selector: 'app-register-user',
@@ -26,10 +29,49 @@ import {Component, OnInit} from '@angular/core';
 })
 export class RegisterUserComponent implements OnInit {
 
-  constructor() {
+  logo: any = 'assets/images/logo.png';
+  user: User;
+  userExists: boolean;
+  existingUserName: string;
+
+  constructor(private router: Router, private http: HttpClient, private route: ActivatedRoute) {
+    this.route.queryParams.subscribe(params => {
+      this.userExists = params['error'];
+      this.existingUserName = params['username'];
+    });
   }
 
   ngOnInit() {
+    this.user = new User();
   }
+
+  login() {
+    this.router.navigateByUrl('/login');
+  }
+
+  submitUser(event, form) {
+    if (event.key === 'Enter' && form.valid) {
+      this.onSubmit();
+    }
+
+  }
+
+  onSubmit() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    this.http.post('/api/setup/self_register', JSON.stringify(this.user), httpOptions).subscribe((submitted: boolean) => {
+      if (submitted === true) {
+        this.login();
+      } else {
+        this.router.navigateByUrl('/register?error=true&username=' + this.user.username).then(() => {
+          location.reload();
+        });
+      }
+    });
+  }
+
 
 }
