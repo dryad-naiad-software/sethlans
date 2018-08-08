@@ -1,0 +1,166 @@
+<!--
+  ~ Copyright (c) 2018 Dryad and Naiad Software LLC
+  ~
+  ~ This program is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU General Public License
+  ~ as published by the Free Software Foundation; either version 2
+  ~ of the License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program; if not, write to the Free Software
+  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+  ~
+  -->
+
+<div class="row pb-5">
+  <div class="col-md-6 m-auto">
+    <div class="card">
+      <div class="card-header">
+        <h4 style="font-family: 'Fjalla One', sans-serif; ">Project Details - {{currentProject.projectName}}</h4>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="mx-auto table-responsive col-md-10">
+            <table class="table table-sm">
+              <tbody>
+              <tr>
+                <td>Project Status</td>
+                <td *ngIf="currentProject.projectStatus !== statuses.Finished">{{currentProject.projectStatus}}</td>
+                <td *ngIf="currentProject.projectStatus === statuses.Finished"><a
+                  [href]="'/api/project_actions/download_project/' + currentProject.id">{{currentProject.projectStatus}}</a>
+                </td>
+              </tr>
+              <tr
+                *ngIf="currentProject.projectStatus === statuses.Finished && currentProject.outputFormat !== formats.PNG">
+                <td>Download Video</td>
+                <td *ngIf="currentProject.projectStatus === statuses.Finished"><a
+                  [href]="'/api/project_actions/download_project_video/' + currentProject.id">{{currentProject.projectName}}</a>
+                </td>
+              </tr>
+              <tr>
+                <td>Selected Blender Version</td>
+                <td>{{currentProject.selectedBlenderversion}}</td>
+              </tr>
+              <tr>
+                <td>Output Format</td>
+                <td>{{currentProject.outputFormat}}</td>
+              </tr>
+              <tr *ngIf="currentProject.outputFormat !== formats.PNG">
+                <td>Frame Rate</td>
+                <td>{{currentProject.frameRate}} fps</td>
+              </tr>
+              <tr>
+                <td>Project Type</td>
+                <td *ngIf="currentProject.projectType === projectTypes.STILL_IMAGE">Still Image</td>
+                <td *ngIf="currentProject.projectType === projectTypes.ANIMATION">Animation</td>
+              </tr>
+              <tr>
+                <td>Start Frame</td>
+                <td>{{currentProject.startFrame}}</td>
+              </tr>
+              <tr *ngIf="currentProject.projectType === projectTypes.ANIMATION">
+                <td>End Frame</td>
+                <td>{{currentProject.endFrame}}</td>
+              </tr>
+              <tr *ngIf="currentProject.projectType === projectTypes.ANIMATION">
+                <td>Frame Step</td>
+                <td>{{currentProject.stepFrame}}</td>
+              </tr>
+              <tr *ngIf="currentProject.blenderEngine !== engines.BLENDER_RENDER">
+                <td>Render On</td>
+                <td>
+                  <span *ngIf="currentProject.renderOn === computeMethods.CPU_GPU">CPU & GPU</span>
+                  <span *ngIf="currentProject.renderOn !== computeMethods.CPU_GPU">{{currentProject.renderOn}}</span>
+
+                </td>
+              </tr>
+              <tr>
+                <td>Rendering Engine</td>
+                <td>{{currentProject.blenderEngine}}</td>
+              </tr>
+              <tr *ngIf="currentProject.blenderEngine !== engines.BLENDER_RENDER">
+                <td>Samples</td>
+                <td>{{currentProject.samples}}</td>
+              </tr>
+              <tr>
+                <td>Render Resolution</td>
+                <td>{{currentProject.resolutionX}} &times; {{currentProject.resolutionY}}</td>
+              </tr>
+              <tr>
+                <td>Image Scaling Percentage</td>
+                <td>{{currentProject.resPercentage}}&#37;</td>
+              </tr>
+              <tr *ngIf="currentProject.useParts">
+                <td>Parts Per Frame</td>
+                <td>{{currentProject.partsPerFrame}}</td>
+              </tr>
+              <tr>
+                <td>Current Percentage</td>
+                <td class="pt-2 pb-2">
+                  <ngb-progressbar showValue="true" type="success"
+                                   [value]="currentProject.currentPercentage"></ngb-progressbar>
+                </td>
+              </tr>
+              <tr
+                *ngIf="currentProject.projectStatus !== statuses.Finished && currentProject.projectStatus !== statuses.Added">
+                <td>Queue Progress</td>
+                <td>{{remainingQueue}} of {{totalQueue}} Remaining</td>
+              </tr>
+              <tr>
+                <td>Project Duration</td>
+                <td>{{projectTime}}</td>
+              </tr>
+              <tr>
+                <td>Total Render Time</td>
+                <td>{{totalRenderTime}}</td>
+              </tr>
+
+              <tr>
+                <td>Preview</td>
+                <td *ngIf="!thumbnailStatus || thumbnailStatus == undefined">
+                  <img [src]="placeholder"
+                       height="100"
+                       class="d-inline-block align-top"
+                       alt="placeholder">
+                </td>
+                <td *ngIf="thumbnailStatus">
+                  <img [src]="currentThumbnail"
+                       height="100"
+                       class="d-inline-block align-top"
+                       alt="thumbnail">
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button id="videoPropertiesButton"
+                *ngIf="currentProject.projectStatus === statuses.Finished && currentProject.outputFormat !== formats.PNG"
+                class="btn btn-outline-dark mr-auto float-left">Video Settings
+        </button>
+        <button [disabled]="!nodesReady" id="startButton" *ngIf="currentProject.projectStatus === statuses.Added"
+                class="btn btn-outline-primary mr-auto float-left">Start
+          Project
+        </button>
+        <button id="pauseButton"
+                *ngIf="currentProject.projectStatus !== statuses.Finished && currentProject.projectStatus !== statuses.Added && currentProject.projectStatus !== statuses.Paused"
+                class="btn btn-outline-info mr-auto float-left">Pause Project
+        </button>
+        <button id="resumeButton" *ngIf="currentProject.projectStatus === statuses.Paused"
+                class="btn btn-outline-success mr-auto float-left">Resume
+          Project
+        </button>
+        <button class="btn btn-outline-dark ml-auto float-right" (click)="returnToProjects()">Project List View
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+

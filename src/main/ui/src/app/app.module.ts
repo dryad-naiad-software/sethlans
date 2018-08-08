@@ -87,6 +87,7 @@ import {ProjectDetailsComponent} from './components/projects/project-wizard/proj
 import {ProjectRenderSettingsComponent} from './components/projects/project-wizard/project-render-settings/project-render-settings.component';
 import {ProjectSummaryComponent} from './components/projects/project-wizard/project-summary/project-summary.component';
 import {FileUploadModule} from 'primeng/fileupload';
+import {ProjectViewComponent} from './components/projects/project-view/project-view.component';
 
 
 @NgModule({
@@ -133,6 +134,7 @@ import {FileUploadModule} from 'primeng/fileupload';
     ProjectDetailsComponent,
     ProjectRenderSettingsComponent,
     ProjectSummaryComponent,
+    ProjectViewComponent,
   ],
   imports: [
     BrowserModule,

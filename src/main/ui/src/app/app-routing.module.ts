@@ -38,6 +38,7 @@ import {RegisterUserComponent} from './components/register-user/register-user.co
 import {UserSettingsComponent} from './components/user-settings/user-settings.component';
 import {NodeWizardComponent} from './components/admin/nodes/node-wizard/node-wizard.component';
 import {ProjectWizardComponent} from './components/projects/project-wizard/project-wizard.component';
+import {ProjectViewComponent} from './components/projects/project-view/project-view.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -59,6 +60,8 @@ const routes: Routes = [
   {path: 'admin/logs', component: LogsComponent},
   {path: 'register', component: RegisterUserComponent},
   {path: 'user_settings', component: UserSettingsComponent},
+  {path: 'projects/view/:id', component: ProjectViewComponent},
+
 ];
 
 @NgModule({
