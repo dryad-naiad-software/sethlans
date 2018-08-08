@@ -22,6 +22,7 @@ import {ProjectWizardForm} from '../../../../models/forms/project_wizard_form.mo
 import {ProjectType} from '../../../../enums/project_type.enum';
 import {RenderOutputFormat} from '../../../../enums/render_output_format.enum';
 import {BlenderEngine} from '../../../../enums/blender_engine.enum';
+import {ProjectWizardProgress} from '../../../../enums/project_wizard_progress';
 
 @Component({
   selector: 'app-project-summary',
@@ -34,6 +35,7 @@ export class ProjectSummaryComponent implements OnInit {
   projectTypes: any = ProjectType;
   outputFormat: any = RenderOutputFormat;
   engines: any = BlenderEngine;
+  wizardProgress: any = ProjectWizardProgress;
 
   constructor() {
   }

@@ -27,6 +27,7 @@ import {
   MatFormFieldModule,
   MatInputModule,
   MatPaginatorModule,
+  MatProgressBarModule,
   MatSliderModule,
   MatSortModule,
   MatTableModule
@@ -145,6 +146,7 @@ import {FileUploadModule} from 'primeng/fileupload';
     MatInputModule,
     MatSortModule,
     HttpClientModule,
+    MatProgressBarModule,
     FormsModule,
     FileUploadModule,
     NgbModule.forRoot(),

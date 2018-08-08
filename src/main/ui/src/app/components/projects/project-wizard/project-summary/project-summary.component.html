@@ -17,6 +17,9 @@
   ~
   -->
 <div class="pt-3">
+  <div class="alert alert-success" *ngIf="projectWizard.currentProgress == wizardProgress.FINISHED"><p
+    class="text-center mb-0">The project has been added to the server.</p></div>
+  <h4 class="text-center pb-3">Project Summary</h4>
   <table class="table table-striped table-sm">
     <tbody>
     <tr>

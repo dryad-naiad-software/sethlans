@@ -27,6 +27,8 @@ import {HttpClient} from '@angular/common/http';
 import {ProjectListService} from '../../services/project_list.service';
 import {Project} from '../../models/project.model';
 import {Router} from '@angular/router';
+import {ProjectType} from '../../enums/project_type.enum';
+import {ComputeMethod} from '../../enums/compute.method.enum';
 
 @Component({
   selector: 'app-projects',
@@ -37,13 +39,15 @@ export class ProjectsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   dataSource = new MatTableDataSource();
-  displayedColumns = ['projectName', 'blender', 'type', 'renderOn', 'resolution', 'format', 'projectStatus', 'progress', 'preview', 'actions'];
+  displayedColumns = ['projectName', 'type', 'renderOn', 'resolution', 'format', 'projectStatus', 'progress', 'preview', 'actions'];
   placeholder: any = 'assets/images/placeholder.svg';
   nodesReady: boolean = false;
   projectSize: number;
   selectedProject: Project;
   currentPercentageArray: number[] = [];
   currentStatusArray: ProjectStatus[] = [];
+  projectTypes: any = ProjectType;
+  computeTypes: any = ComputeMethod;
 
   constructor(private http: HttpClient, private projectService: ProjectListService, private router: Router, private modalService: NgbModal) {
   }
@@ -154,6 +158,12 @@ export class ProjectsComponent implements OnInit {
 
   stopProject(id) {
     this.http.get('/api/project_actions/stop_project/' + id + '/').subscribe();
+  }
+
+  applyFilter(filterValue: string) {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
   }
 
 }
