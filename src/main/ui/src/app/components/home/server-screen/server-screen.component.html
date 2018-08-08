@@ -43,12 +43,7 @@
         <mat-header-cell *matHeaderCellDef>Render Progress</mat-header-cell>
         <mat-cell *matCellDef="let project">
           <span class="mobile-label">Render Progress:</span>
-
-          <ngb-progressbar type="success"
-                           [value]="project.currentPercentage" placement="right"
-                           ngbTooltip="{{project.currentPercentage}}%">
-            <span *ngIf="project.currentPercentage == 100">Complete</span>
-          </ngb-progressbar>
+          <span>{{project.currentPercentage}}&#37; Complete</span>
         </mat-cell>
       </ng-container>
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
