@@ -81,13 +81,14 @@ import {NodeWizardComponent} from './components/admin/nodes/node-wizard/node-wiz
 import {NodeManualAddComponent} from './components/admin/nodes/node-wizard/node-manual-add/node-manual-add.component';
 import {NodeScanAddComponent} from './components/admin/nodes/node-wizard/node-scan-add/node-scan-add.component';
 import {NodeSummaryComponent} from './components/admin/nodes/node-wizard/node-summary/node-summary.component';
-import {ProjectWizardComponent} from './components/projects/project-wizard/project-wizard.component';
-import {ProjectUploadComponent} from './components/projects/project-wizard/project-upload/project-upload.component';
-import {ProjectDetailsComponent} from './components/projects/project-wizard/project-details/project-details.component';
-import {ProjectRenderSettingsComponent} from './components/projects/project-wizard/project-render-settings/project-render-settings.component';
-import {ProjectSummaryComponent} from './components/projects/project-wizard/project-summary/project-summary.component';
+import {ProjectWizardComponent} from './components/projects/project-create-wizard/project-wizard.component';
+import {ProjectUploadComponent} from './components/projects/project-create-wizard/project-upload/project-upload.component';
+import {ProjectDetailsComponent} from './components/projects/project-create-wizard/project-details/project-details.component';
+import {ProjectRenderSettingsComponent} from './components/projects/project-create-wizard/project-render-settings/project-render-settings.component';
+import {ProjectSummaryComponent} from './components/projects/project-create-wizard/project-summary/project-summary.component';
 import {FileUploadModule} from 'primeng/fileupload';
 import {ProjectViewComponent} from './components/projects/project-view/project-view.component';
+import {ProjectEditWizardComponent} from './components/projects/project-edit-wizard/project-edit-wizard.component';
 
 
 @NgModule({
@@ -135,6 +136,7 @@ import {ProjectViewComponent} from './components/projects/project-view/project-v
     ProjectRenderSettingsComponent,
     ProjectSummaryComponent,
     ProjectViewComponent,
+    ProjectEditWizardComponent,
   ],
   imports: [
     BrowserModule,

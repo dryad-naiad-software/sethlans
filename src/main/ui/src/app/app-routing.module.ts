@@ -37,8 +37,9 @@ import {LogsComponent} from './components/admin/logs/logs.component';
 import {RegisterUserComponent} from './components/register-user/register-user.component';
 import {UserSettingsComponent} from './components/user-settings/user-settings.component';
 import {NodeWizardComponent} from './components/admin/nodes/node-wizard/node-wizard.component';
-import {ProjectWizardComponent} from './components/projects/project-wizard/project-wizard.component';
+import {ProjectWizardComponent} from './components/projects/project-create-wizard/project-wizard.component';
 import {ProjectViewComponent} from './components/projects/project-view/project-view.component';
+import {ProjectEditWizardComponent} from './components/projects/project-edit-wizard/project-edit-wizard.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -61,6 +62,7 @@ const routes: Routes = [
   {path: 'register', component: RegisterUserComponent},
   {path: 'user_settings', component: UserSettingsComponent},
   {path: 'projects/view/:id', component: ProjectViewComponent},
+  {path: 'projects/edit/:id', component: ProjectEditWizardComponent},
 
 ];
 

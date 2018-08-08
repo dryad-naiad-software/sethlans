@@ -17,7 +17,7 @@
   ~
   -->
 <div class="row pb-5">
-  <div class="col-md-6 m-auto">
+  <div class="col-xl-4 col-lg-6 col-md-8 m-auto">
     <div class="card">
       <div class="card-body bg-dark">
         <h1
@@ -42,7 +42,7 @@
                    #username="ngModel"
                    [(ngModel)]="user.username"
                    [ngClass]="{'is-invalid':username.errors && username.touched}"
-                   class="form-control form-control-sm"
+                   class="form-control"
                    required pattern="^[a-zA-Z0-9]{4,}$">
             <div class="invalid-feedback" [hidden]="username.valid">
               <ul>
@@ -62,7 +62,7 @@
                    [(ngModel)]="user.password"
                    id="password"
                    [ngClass]="{'is-invalid':password.errors && password.touched}"
-                   class="form-control form-control-sm"
+                   class="form-control"
                    required pattern="^.{8,35}$">
 
             <div class="invalid-feedback" [hidden]="password.valid">
@@ -80,7 +80,7 @@
                    #passwordConfirm="ngModel"
                    [(ngModel)]="user.passwordConfirm"
                    name="passwordConfirm"
-                   class="form-control form-control-sm"
+                   class="form-control"
                    [ngClass]="{'is-invalid':passwordConfirm.errors && passwordConfirm.touched}"
                    required [fieldMatches]="password">
             <div class="invalid-feedback" [hidden]="passwordConfirm.valid">
@@ -96,7 +96,7 @@
                    id="email"
                    #email="ngModel"
                    [(ngModel)]="user.email"
-                   class="form-control form-control-sm"
+                   class="form-control"
                    [ngClass]="{'is-invalid':email.errors && email.touched}"
                    required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" (keydown)="submitUser($event, registerForm)">
             <div class="invalid-feedback" [hidden]="email.valid">

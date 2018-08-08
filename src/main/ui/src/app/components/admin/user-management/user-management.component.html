@@ -17,18 +17,22 @@
           <ng-container matColumnDef="username">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Username</mat-header-cell>
             <mat-cell *matCellDef="let user">
+              <span class="mobile-label">Username:</span>
               {{user.username}}
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="email">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
             <mat-cell *matCellDef="let user">
+              <span class="mobile-label">Email:</span>
+
               {{user.email}}
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="status">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
             <mat-cell *matCellDef="let user">
+              <span class="mobile-label">Status:</span>
               <span *ngIf="user.active" class="font-weight-bold text-success">ACTIVE</span>
               <span *ngIf="!user.active" class="font-weight-bold text-danger">INACTIVE</span>
 
@@ -37,24 +41,29 @@
           <ng-container matColumnDef="role">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Roles</mat-header-cell>
             <mat-cell *matCellDef="let user">
+              <span class="mobile-label">Roles:</span>
+
               {{user.roles}}
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="created">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Created</mat-header-cell>
             <mat-cell *matCellDef="let user">
+              <span class="mobile-label">Created:</span>
               {{user.dateCreated | date:'MM/dd/yy HH:mm'}}
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="lastUpdated">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Last Updated</mat-header-cell>
             <mat-cell *matCellDef="let user">
+              <span class="mobile-label">Last Updated:</span>
               {{user.lastUpdated | date:'MM/dd/yy HH:mm'}}
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="actions">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Actions</mat-header-cell>
             <mat-cell *matCellDef="let user">
+              <span class="mobile-label">Actions:</span>
               <div class="btn-group-vertical">
                 <button *ngIf="!user.active" class="btn btn-outline-success btn-sm" type="button"
                         (click)="activateUser(user.id)">Activate
