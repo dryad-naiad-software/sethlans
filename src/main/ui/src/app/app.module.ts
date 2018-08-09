@@ -89,6 +89,7 @@ import {ProjectSummaryComponent} from './components/projects/project-create-wiza
 import {FileUploadModule} from 'primeng/fileupload';
 import {ProjectViewComponent} from './components/projects/project-view/project-view.component';
 import {ProjectEditWizardComponent} from './components/projects/project-edit-wizard/project-edit-wizard.component';
+import {ProjectVideoSettingsComponent} from './components/projects/project-video-settings/project-video-settings.component';
 
 
 @NgModule({
@@ -137,6 +138,7 @@ import {ProjectEditWizardComponent} from './components/projects/project-edit-wiz
     ProjectSummaryComponent,
     ProjectViewComponent,
     ProjectEditWizardComponent,
+    ProjectVideoSettingsComponent,
   ],
   imports: [
     BrowserModule,
