@@ -49,6 +49,7 @@ export class ProjectViewComponent implements OnInit {
   currentThumbnail: any;
   placeholder: any = 'assets/images/placeholder.svg';
   nodesReady: boolean = false;
+  disableButton: boolean;
 
 
   constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute) {
@@ -73,6 +74,7 @@ export class ProjectViewComponent implements OnInit {
       this.getRemainingQueueSize();
       this.getThumbnailStatus();
       this.getNodeStatus();
+      this.disableButton = false;
     });
   }
 
@@ -117,6 +119,23 @@ export class ProjectViewComponent implements OnInit {
       }
     });
   }
+
+  startProject(id) {
+    this.disableButton = true;
+    this.http.get('/api/project_actions/start_project/' + id + '/').subscribe();
+
+  }
+
+  pauseProject(id) {
+    this.disableButton = true;
+    this.http.get('/api/project_actions/pause_project/' + id + '/').subscribe();
+  }
+
+  resumeProject(id) {
+    this.disableButton = true;
+    this.http.get('/api/project_actions/resume_project/' + id + '/').subscribe();
+  }
+
 
   returnToProjects(): void {
     window.location.href = '/projects';

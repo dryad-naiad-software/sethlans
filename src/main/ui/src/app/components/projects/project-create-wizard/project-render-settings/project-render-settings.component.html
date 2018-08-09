@@ -85,7 +85,7 @@
     <div class="form-group">
       <label for="partsPerFrame">Number of Rendering Parts Per Frame:</label> <span
       *ngIf="projectWizard.project.useParts">{{projectWizard.project.partsPerFrame}}</span>
-      <span *ngIf="!projectWizard.project.useParts" class="text-danger">Disabled</span>
+      <span *ngIf="!projectWizard.project.useParts" class="text-danger">&nbsp;Disabled</span>
       <div class="form-inline">
         <mat-slider [disabled]="!projectWizard.project.useParts"
                     id="partsPerFrame"

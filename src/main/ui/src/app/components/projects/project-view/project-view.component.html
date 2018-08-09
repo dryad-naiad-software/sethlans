@@ -147,16 +147,19 @@
                 *ngIf="currentProject.projectStatus === statuses.Finished && currentProject.outputFormat !== formats.PNG"
                 class="btn btn-outline-dark ml-auto float-right">Video Settings
         </button>
-        <button [disabled]="!nodesReady" id="startButton" *ngIf="currentProject.projectStatus === statuses.Added"
-                class="btn btn-outline-primary ml-auto float-right">Start
+        <button [disabled]="!nodesReady || disableButton" id="startButton"
+                *ngIf="currentProject.projectStatus === statuses.Added"
+                class="btn btn-outline-primary ml-auto float-right" (click)="startProject(currentProject.id)">Start
           Project
         </button>
         <button id="pauseButton"
+                [disabled]="disableButton"
                 *ngIf="currentProject.projectStatus !== statuses.Finished && currentProject.projectStatus !== statuses.Added && currentProject.projectStatus !== statuses.Paused"
-                class="btn btn-outline-info ml-auto float-right">Pause Project
+                class="btn btn-outline-info ml-auto float-right" (click)="pauseProject(currentProject.id)">Pause Project
         </button>
-        <button id="resumeButton" *ngIf="currentProject.projectStatus === statuses.Paused"
-                class="btn btn-outline-success ml-auto float-right">Resume
+        <button [disabled]="disableButton"
+                id="resumeButton" *ngIf="currentProject.projectStatus === statuses.Paused"
+                class="btn btn-outline-success ml-auto float-right" (click)="resumeProject(currentProject.id)">Resume
           Project
         </button>
 
