@@ -31,6 +31,7 @@ export class ProjectWizardComponent implements OnInit {
   projectWizard: ProjectWizardForm;
   wizardProgress: any = ProjectWizardProgress;
   nextDisabled: boolean;
+  isEdit: boolean = false;
 
   constructor(private http: HttpClient) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';

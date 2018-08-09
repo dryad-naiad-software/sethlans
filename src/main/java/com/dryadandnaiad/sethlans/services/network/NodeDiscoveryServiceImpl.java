@@ -115,6 +115,7 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
                     sethlansNode.setTotalRenderingSlots(1);
                     break;
                 case GPU:
+                    sethlansNode.setSelectedGPURatings(new ArrayList<>());
                     if (sethlansNode.isCombined()) {
                         sethlansNode.setTotalRenderingSlots(1);
                     } else {
@@ -122,6 +123,7 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
                     }
                     break;
                 case CPU_GPU:
+                    sethlansNode.setSelectedGPURatings(new ArrayList<>());
                     if (sethlansNode.isCombined()) {
                         sethlansNode.setTotalRenderingSlots(2);
                     } else {

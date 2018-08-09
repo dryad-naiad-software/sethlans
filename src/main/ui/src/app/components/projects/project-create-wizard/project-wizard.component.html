@@ -81,6 +81,7 @@
         </app-project-render-settings>
         <app-project-summary [projectWizard]="projectWizard"
                              (disableNext)="disableNext($event)"
+                             [isEdit]="isEdit"
                              *ngIf="projectWizard.currentProgress === wizardProgress.SUMMARY || projectWizard.currentProgress === wizardProgress.FINISHED">
 
         </app-project-summary>

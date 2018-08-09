@@ -58,7 +58,7 @@ public class SethlansNode extends AbstractEntityClass {
     @ElementCollection
     private List<String> selectedDeviceID;
     @ElementCollection
-    private List<Integer> selectedGPURatings = new ArrayList<>();
+    private List<Integer> selectedGPURatings;
     @ElementCollection
     private List<String> selectedGPUModels = new ArrayList<>();
     private boolean active;
@@ -109,17 +109,47 @@ public class SethlansNode extends AbstractEntityClass {
                 ", cpuinfo=" + cpuinfo +
                 ", selectedCores='" + selectedCores + '\'' +
                 ", selectedGPUs=" + selectedGPUs +
-                ", combinedGPURating=" + getCombinedGPURating() +
-                ", combinedCPUGPURating=" + getCombinedCPUGPURating() +
+                ", selectedDeviceID=" + selectedDeviceID +
+                ", selectedGPURatings=" + selectedGPURatings +
+                ", selectedGPUModels=" + selectedGPUModels +
                 ", active=" + active +
+                ", disabled=" + disabled +
                 ", pendingActivation=" + pendingActivation +
                 ", connection_uuid='" + connection_uuid + '\'' +
                 ", cpuRating=" + cpuRating +
                 ", benchmarkComplete=" + benchmarkComplete +
-                ", gpuInUse=" + allGPUSlotInUse +
-                ", cpuInUse=" + cpuSlotInUse +
-                ", totalSlots=" + totalRenderingSlots +
-                ", availableSlots=" + availableRenderingSlots +
+                ", totalRenderingSlots=" + totalRenderingSlots +
+                ", availableRenderingSlots=" + availableRenderingSlots +
+                ", cpuSlotInUse=" + cpuSlotInUse +
+                ", allGPUSlotInUse=" + allGPUSlotInUse +
+                ", combined=" + combined +
+                ", combinedGPURating=" + getCombinedGPURating() +
+                ", combinedCPUGPURating=" + getCombinedCPUGPURating() +
                 '}';
     }
+
+    //    @Override
+//    public String toString() {
+//        return "SethlansNode{" +
+//                "hostname='" + hostname + '\'' +
+//                ", ipAddress='" + ipAddress + '\'' +
+//                ", networkPort='" + networkPort + '\'' +
+//                ", sethlansNodeOS=" + sethlansNodeOS +
+//                ", computeType=" + computeType +
+//                ", cpuinfo=" + cpuinfo +
+//                ", selectedCores='" + selectedCores + '\'' +
+//                ", selectedGPUs=" + selectedGPUs +
+//                ", combinedGPURating=" + getCombinedGPURating() +
+//                ", combinedCPUGPURating=" + getCombinedCPUGPURating() +
+//                ", active=" + active +
+//                ", pendingActivation=" + pendingActivation +
+//                ", connection_uuid='" + connection_uuid + '\'' +
+//                ", cpuRating=" + cpuRating +
+//                ", benchmarkComplete=" + benchmarkComplete +
+//                ", gpuInUse=" + allGPUSlotInUse +
+//                ", cpuInUse=" + cpuSlotInUse +
+//                ", totalSlots=" + totalRenderingSlots +
+//                ", availableSlots=" + availableRenderingSlots +
+//                '}';
+//    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -116,6 +116,7 @@ public class ServerBackgroundController {
         sethlansNodetoUpdate.setSelectedCores(tempNode.getSelectedCores());
         sethlansNodetoUpdate.setSelectedDeviceID(tempNode.getSelectedDeviceID());
         sethlansNodetoUpdate.setSelectedGPUs(tempNode.getSelectedGPUs());
+        sethlansNodetoUpdate.setSelectedGPUModels(tempNode.getSelectedGPUModels());
         LOG.debug("Saving changes to database.");
         sethlansNodeDatabaseService.saveOrUpdate(sethlansNodetoUpdate);
     }

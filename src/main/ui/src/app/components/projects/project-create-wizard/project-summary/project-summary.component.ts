@@ -32,6 +32,7 @@ import {ProjectWizardProgress} from '../../../../enums/project_wizard_progress';
 export class ProjectSummaryComponent implements OnInit {
   @Output() disableNext = new EventEmitter();
   @Input() projectWizard: ProjectWizardForm;
+  @Input() isEdit: boolean;
   projectTypes: any = ProjectType;
   outputFormat: any = RenderOutputFormat;
   engines: any = BlenderEngine;

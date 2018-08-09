@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -148,6 +148,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     private String setDeviceID(RenderTask renderTask, NodeInfo nodeInfo) {
         String script;
         String deviceID = SethlansUtils.getProperty(SethlansConfigKeys.GPU_DEVICE.toString());
+        LOG.debug(deviceID);
         List<String> deviceList = Arrays.asList(deviceID.split(","));
         List<String> deviceIDList = new ArrayList<>();
         if (nodeInfo.isCombined()) {

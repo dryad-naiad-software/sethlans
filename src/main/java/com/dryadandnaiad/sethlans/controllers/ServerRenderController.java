@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -119,6 +119,7 @@ public class ServerRenderController {
                 for (GPUDevice gpuDevice : sethlansNode.getSelectedGPUs()) {
                     if (gpuDevice.getDeviceID().equals(cuda_name)) {
                         gpuDevice.setRating(rating);
+                        sethlansNode.getSelectedGPURatings().add(rating);
                         LOG.debug(sethlansNode.toString());
                     }
                 }

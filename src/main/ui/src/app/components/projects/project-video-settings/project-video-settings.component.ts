@@ -17,7 +17,10 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {VideoForm} from '../../../models/forms/video_form.model';
+import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-project-video-settings',
@@ -25,11 +28,37 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./project-video-settings.component.scss']
 })
 export class ProjectVideoSettingsComponent implements OnInit {
+  @ViewChild('videoSettings') modal: any;
+  @Input() projectID: number;
+  @Input() outputFormat;
+  @Input() frameRate;
+  videoForm: VideoForm;
+  frameRates: string[] = ['23.98', '24', '25', '29.97', '30', '50', '59.94', '60'];
+  formats: string[] = ['AVI', 'MP4'];
 
-  constructor() {
+  constructor(private http: HttpClient, private modalService: NgbModal) {
+  }
+
+  open() {
+    let options: NgbModalOptions = {
+      backdrop: 'static'
+    };
+    this.videoForm = new VideoForm();
+    this.videoForm.outputFormat = this.outputFormat;
+    this.videoForm.frameRate = this.frameRate;
+    this.modalService.open(this.modal, options);
   }
 
   ngOnInit() {
+  }
+
+  submitChanges() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    this.http.post('/api/project_form/video_settings/' + this.projectID, JSON.stringify(this.videoForm), httpOptions).subscribe();
   }
 
 }
