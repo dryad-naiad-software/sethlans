@@ -17,7 +17,7 @@
   ~
   -->
 
-<div class="row pb-5">
+<div class="row pb-1">
   <div class="col-md-8 m-auto">
     <div class="card">
       <div class="card-header">
@@ -68,7 +68,7 @@
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
           <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
         </mat-table>
-        <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[10,25,50]"></mat-paginator>
+        <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[10,25,50]"></mat-paginator>
 
 
         <ng-template #versionModal let-c="close('Close click')" let-d="dismiss('Cross click')">
