@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -61,8 +61,6 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
     @Override
     public SethlansNode saveOrUpdate(SethlansNode domainObject) {
         try {
-            LOG.debug("Saving node update");
-            LOG.debug(domainObject.toString());
             return nodeRepository.save(domainObject);
         } catch (ObjectOptimisticLockingFailureException | OptimisticEntityLockException | StaleStateException e) {
             LOG.error("Was unable to save node update.");

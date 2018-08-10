@@ -56,9 +56,9 @@ public class SethlansNode extends AbstractEntityClass {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<GPUDevice> selectedGPUs = new ArrayList<>();
     @ElementCollection
-    private List<String> selectedDeviceID;
+    private List<String> selectedDeviceID = new ArrayList<>();
     @ElementCollection
-    private List<Integer> selectedGPURatings;
+    private List<Integer> selectedGPURatings = new ArrayList<>();
     @ElementCollection
     private List<String> selectedGPUModels = new ArrayList<>();
     private boolean active;

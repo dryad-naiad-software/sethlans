@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -174,7 +174,9 @@ class QueueNodeActions {
                     sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
                     if (sethlansNode.isCombined()) {
                         sethlansNode.setAllGPUSlotInUse(true);
+                        renderQueueItem.setGpu_device_id("COMBO");
                     } else {
+                        renderQueueItem.setGpu_device_id(getFastestGPU(sethlansNode));
                         if (sethlansNode.getAvailableRenderingSlots() == 0) {
                             sethlansNode.setAllGPUSlotInUse(true);
                         }
@@ -247,6 +249,7 @@ class QueueNodeActions {
         if (usedGPU != 99999) {
             sethlansNode.getSelectedGPUs().get(usedGPU).setInUse(true);
         }
+        LOG.debug("GPU device ID selected: " + deviceId);
         return deviceId;
     }
 

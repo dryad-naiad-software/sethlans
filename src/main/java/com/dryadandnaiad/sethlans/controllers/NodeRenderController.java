@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -91,6 +91,10 @@ public class NodeRenderController {
             boolean rejected = false;
             switch (computeType) {
                 case CPU_GPU:
+                    if (gpu_device_id == null || gpu_device_id.equals("null")) {
+                        rejectRequest(connection_uuid, queue_item_uuid);
+                        rejected = true;
+                    }
                     if (nodeInfo.isCombined()) {
                         if (renderTaskList.size() == 2) {
                             rejectRequest(connection_uuid, queue_item_uuid);
@@ -104,6 +108,10 @@ public class NodeRenderController {
                     }
                     break;
                 case GPU:
+                    if (gpu_device_id == null || gpu_device_id.equals("null")) {
+                        rejectRequest(connection_uuid, queue_item_uuid);
+                        rejected = true;
+                    }
                     if (nodeInfo.isCombined()) {
                         if (renderTaskList.size() == 1) {
                             rejectRequest(connection_uuid, queue_item_uuid);

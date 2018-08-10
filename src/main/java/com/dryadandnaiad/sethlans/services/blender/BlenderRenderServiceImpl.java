@@ -148,7 +148,6 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     private String setDeviceID(RenderTask renderTask, NodeInfo nodeInfo) {
         String script;
         String deviceID = SethlansUtils.getProperty(SethlansConfigKeys.GPU_DEVICE.toString());
-        LOG.debug(deviceID);
         List<String> deviceList = Arrays.asList(deviceID.split(","));
         List<String> deviceIDList = new ArrayList<>();
         if (nodeInfo.isCombined()) {
