@@ -26,6 +26,8 @@ import {ProjectStatus} from '../../../enums/project_status.enum';
 import {Mode} from '../../../enums/mode.enum';
 import {timer} from 'rxjs/internal/observable/timer';
 import Utils from '../../../utils/utils';
+import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
+import {Project} from '../../../models/project.model';
 
 @Component({
   selector: 'app-server-screen',
@@ -37,7 +39,7 @@ export class ServerScreenComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   dataSource = new MatTableDataSource();
-  displayedColumns = ['projectName', 'projectStatus', 'progress'];
+  displayedColumns = ['projectName', 'projectStatus', 'progress', 'actions'];
   projectStatus: any = ProjectStatus;
   mode: any = Mode;
   projectSize: number;
@@ -46,9 +48,10 @@ export class ServerScreenComponent implements OnInit {
   chartData: { labels: string[]; datasets: { data: any; backgroundColor: string[]; hoverBackgroundColor: string[] }[] };
   currentPercentageArray: number[];
   currentStatusArray: ProjectStatus[];
+  selectedProject: Project;
 
 
-  constructor(private http: HttpClient, private projectService: ProjectListService) {
+  constructor(private http: HttpClient, private projectService: ProjectListService, private modalService: NgbModal) {
     this.currentPercentageArray = [];
     this.currentStatusArray = [];
     this.serverDash = new ServerDashboard();
@@ -104,6 +107,18 @@ export class ServerScreenComponent implements OnInit {
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
     });
+  }
+
+  confirm(project, content) {
+    this.selectedProject = project;
+    let options: NgbModalOptions = {
+      backdrop: 'static'
+    };
+    this.modalService.open(content, options);
+  }
+
+  deleteProject(id) {
+    this.http.get('/api/project_actions/delete_project/' + id + '/').subscribe();
   }
 
   chartLoad() {
