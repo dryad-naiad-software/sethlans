@@ -26,6 +26,8 @@ import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.OptimisticLockType;
 import org.hibernate.annotations.OptimisticLocking;
 
@@ -54,12 +56,16 @@ public class SethlansNode extends AbstractEntityClass {
     private CPU cpuinfo;
     private String selectedCores;
     @ElementCollection(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     private List<GPUDevice> selectedGPUs = new ArrayList<>();
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     private List<String> selectedDeviceID = new ArrayList<>();
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     private List<Integer> selectedGPURatings = new ArrayList<>();
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     private List<String> selectedGPUModels = new ArrayList<>();
     private boolean active;
     private boolean disabled;
@@ -128,28 +134,4 @@ public class SethlansNode extends AbstractEntityClass {
                 '}';
     }
 
-    //    @Override
-//    public String toString() {
-//        return "SethlansNode{" +
-//                "hostname='" + hostname + '\'' +
-//                ", ipAddress='" + ipAddress + '\'' +
-//                ", networkPort='" + networkPort + '\'' +
-//                ", sethlansNodeOS=" + sethlansNodeOS +
-//                ", computeType=" + computeType +
-//                ", cpuinfo=" + cpuinfo +
-//                ", selectedCores='" + selectedCores + '\'' +
-//                ", selectedGPUs=" + selectedGPUs +
-//                ", combinedGPURating=" + getCombinedGPURating() +
-//                ", combinedCPUGPURating=" + getCombinedCPUGPURating() +
-//                ", active=" + active +
-//                ", pendingActivation=" + pendingActivation +
-//                ", connection_uuid='" + connection_uuid + '\'' +
-//                ", cpuRating=" + cpuRating +
-//                ", benchmarkComplete=" + benchmarkComplete +
-//                ", gpuInUse=" + allGPUSlotInUse +
-//                ", cpuInUse=" + cpuSlotInUse +
-//                ", totalSlots=" + totalRenderingSlots +
-//                ", availableSlots=" + availableRenderingSlots +
-//                '}';
-//    }
 }
