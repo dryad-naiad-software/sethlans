@@ -17,7 +17,7 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Project} from '../../../models/project.model';
@@ -27,6 +27,7 @@ import {timer} from 'rxjs';
 import {ProjectType} from '../../../enums/project_type.enum';
 import {BlenderEngine} from '../../../enums/blender_engine.enum';
 import {ComputeMethod} from '../../../enums/compute.method.enum';
+import {ProjectVideoSettingsComponent} from '../project-video-settings/project-video-settings.component';
 
 @Component({
   selector: 'app-project-view',
@@ -50,6 +51,7 @@ export class ProjectViewComponent implements OnInit {
   placeholder: any = 'assets/images/placeholder.svg';
   nodesReady: boolean = false;
   disableButton: boolean;
+  @ViewChild(ProjectVideoSettingsComponent) videoSettings: ProjectVideoSettingsComponent;
 
 
   constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute) {

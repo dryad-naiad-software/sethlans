@@ -17,12 +17,12 @@
   ~
   -->
 <div class="pt-3">
-  <div class="alert alert-success" *ngIf="projectWizard.currentProgress == wizardProgress.FINISHED">
+  <div class="alert alert-success" *ngIf="projectWizard.currentProgress === wizardProgress.FINISHED">
     <p class="text-center mb-0">
       <span *ngIf="!isEdit">The project has been added to the server.</span>
       <span *ngIf="isEdit">The project has been updated.</span>
     </p></div>
-  <h4 class="text-center pb-3">Project Summary</h4>
+  <h4 class="text-center pb-3" *ngIf="projectWizard.currentProgress !== wizardProgress.FINISHED">Project Summary</h4>
   <table class="table table-striped table-sm">
     <tbody>
     <tr>

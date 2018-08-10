@@ -145,7 +145,8 @@
         </button>
         <button id="videoPropertiesButton"
                 *ngIf="currentProject.projectStatus === statuses.Finished && currentProject.outputFormat !== formats.PNG"
-                class="btn btn-outline-dark ml-auto float-right">Video Settings
+                class="btn btn-outline-dark ml-auto float-right" (click)="videoSettings.open(currentProject)">Video
+          Settings
         </button>
         <button [disabled]="!nodesReady || disableButton" id="startButton"
                 *ngIf="currentProject.projectStatus === statuses.Added"
@@ -167,4 +168,4 @@
     </div>
   </div>
 </div>
-
+<app-project-video-settings></app-project-video-settings>

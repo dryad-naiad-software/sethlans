@@ -39,7 +39,7 @@ export class ProjectsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   dataSource = new MatTableDataSource();
-  displayedColumns = ['projectName', 'type', 'renderOn', 'resolution', 'format', 'projectStatus', 'progress', 'preview', 'actions'];
+  displayedColumns = ['projectName', 'type', 'renderOn', 'format', 'projectStatus', 'progress', 'preview', 'actions'];
   placeholder: any = 'assets/images/placeholder.svg';
   nodesReady: boolean = false;
   projectSize: number;
@@ -55,6 +55,7 @@ export class ProjectsComponent implements OnInit {
 
   ngOnInit() {
     this.getInfo();
+    this.selectedProject = new Project();
     let scheduler = timer(1000, 1000);
     scheduler.subscribe(() => {
       this.getInfo();
@@ -165,5 +166,6 @@ export class ProjectsComponent implements OnInit {
     filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
     this.dataSource.filter = filterValue;
   }
+
 
 }
