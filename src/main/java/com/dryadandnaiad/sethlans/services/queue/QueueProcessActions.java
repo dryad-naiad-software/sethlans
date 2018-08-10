@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -112,7 +112,9 @@ class QueueProcessActions {
             processFrameDatabaseService.saveOrUpdate(processFrameItem);
         }
         blenderProject.setRemainingQueueSize(remainingTotalQueue);
-        blenderProject.setTotalProjectTime(blenderProject.getProjectEnd() - blenderProject.getProjectStart());
+        if (blenderProject.getProjectEnd() != null) {
+            blenderProject.setTotalProjectTime(blenderProject.getProjectEnd() - blenderProject.getProjectStart());
+        }
         processQueueDatabaseService.delete(processQueueItem);
     }
 
