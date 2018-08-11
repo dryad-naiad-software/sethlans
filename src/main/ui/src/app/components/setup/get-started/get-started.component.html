@@ -50,23 +50,23 @@
           <h4 class="text-center">Welcome to the Sethlans Get Started Wizard!</h4>
           <br/>
           <p>This wizard will walk you through setting up a Sethlans Distributed Rendering Environment.</p>
-          <p>The following actions can be performed:</p>
+          <p>We will walk through the following:</p>
           <ul>
-            <li>Node Initial Setup</li>
-            <li>Configure Nodes</li>
+            <li>Remote Node Setup (CPU based configuration only)</li>
+            <li>Setting up Server to Node Authorization</li>
             <li>Add Nodes to this Server</li>
           </ul>
           <div class="form-group float-right">
             <input type="checkbox" id="onStartCheckBox" name="onStartCheckBox" [(ngModel)]="onStartCheckBox"
                    (change)="setOnStart()">
-            <label for="onStartCheckBox">&nbsp; Wizard on startup</label>
+            <label for="onStartCheckBox">&nbsp;Show this wizard instead of Dashboard</label>
           </div>
         </div>
 
       </div>
       <div class="card-footer">
         <nav>
-          <button class="btn btn-outline-secondary float-left"> Previous
+          <button class="btn btn-outline-secondary float-left">Previous
           </button>
 
           <button class="btn btn-outline-primary float-right"> Next
