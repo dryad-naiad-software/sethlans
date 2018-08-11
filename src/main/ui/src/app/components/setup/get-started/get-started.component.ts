@@ -19,6 +19,8 @@
 
 import {Component, OnInit} from '@angular/core';
 import {GetStartedProgress} from '../../../enums/get_started_progress.enum';
+import {GetStartedWizardForm} from '../../../models/forms/get_started_wizard_form.model';
+import {HttpClient} from '../../../../../node_modules/@angular/common/http';
 
 @Component({
   selector: 'app-get-started',
@@ -26,15 +28,25 @@ import {GetStartedProgress} from '../../../enums/get_started_progress.enum';
   styleUrls: ['./get-started.component.scss']
 })
 export class GetStartedComponent implements OnInit {
-  progress: GetStartedProgress;
+  getWizardForm: GetStartedWizardForm;
   wizardProgress: any = GetStartedProgress;
+  onStartCheckBox: boolean;
 
-  constructor() {
+  constructor(private http: HttpClient) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
   }
 
   ngOnInit() {
-    this.progress = GetStartedProgress.START;
+    this.getWizardForm = new GetStartedWizardForm();
+    this.http.get('/api/info/get_started').subscribe((response: boolean) => {
+      this.onStartCheckBox = response;
+    });
+  }
+
+  setOnStart() {
+    console.log(this.onStartCheckBox);
+    this.http.get('/api/management/change_get_started_wizard/?value=' + this.onStartCheckBox).subscribe();
+
   }
 
 }

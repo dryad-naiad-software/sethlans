@@ -159,6 +159,11 @@ public class AdminController {
         return true;
     }
 
+    @GetMapping(value = {"/change_get_started_wizard"})
+    public void changeGetStartedOnStart(@RequestParam boolean value) {
+        SethlansUtils.writeProperty(SethlansConfigKeys.GETTING_STARTED, Boolean.toString(value));
+    }
+
     @PostMapping(value = {"/change_password/"})
     public boolean changePassword(@RequestParam String id, @RequestParam String passToCheck, @RequestParam String newPassword) {
         // TODO password verification

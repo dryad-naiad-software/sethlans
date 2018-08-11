@@ -25,7 +25,10 @@
       <div class="card-body px-lg-5">
         <ul class="nav nav-tabs justify-content-between pb-3">
           <li>
-            A
+            <button type="button" class="btn btn-circle btn-lg"
+                    [ngClass]="getWizardForm.currentProgress === wizardProgress.START ? 'btn-outline-primary':'btn-outline-dark'"
+                    (click)="getWizardForm.currentProgress === wizardProgress.START">
+              <i class="fas fa-flag-checkered"></i></button>
           </li>
           <li>
             B
@@ -43,9 +46,11 @@
             F
           </li>
         </ul>
-        <div class="py-3">
-          <div *ngIf="progress === wizardProgress.START">
-            Start
+        <div class="py-3" *ngIf="getWizardForm.currentProgress === wizardProgress.START">
+          <div class="form-group">
+            <input type="checkbox" id="onStartCheckBox" name="onStartCheckBox" [(ngModel)]="onStartCheckBox"
+                   (change)="setOnStart()">
+            <label for="onStartCheckBox">&nbsp; Display wizard on start</label>
           </div>
         </div>
 
