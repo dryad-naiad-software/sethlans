@@ -19,21 +19,21 @@
 
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {GetStartedComponent} from './get-started.component';
+import {WizardAddNodesComponent} from './wizard-add-nodes.component';
 
-describe('GetStartedComponent', () => {
-  let component: GetStartedComponent;
-  let fixture: ComponentFixture<GetStartedComponent>;
+describe('WizardAddNodesComponent', () => {
+  let component: WizardAddNodesComponent;
+  let fixture: ComponentFixture<WizardAddNodesComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [GetStartedComponent]
+      declarations: [WizardAddNodesComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GetStartedComponent);
+    fixture = TestBed.createComponent(WizardAddNodesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

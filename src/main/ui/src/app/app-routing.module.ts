@@ -22,7 +22,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from './components/login/login.component';
 import {HomeComponent} from './components/home/home.component';
 import {ProjectsComponent} from './components/projects/projects.component';
-import {GetStartedComponent} from './components/setup/get-started/get-started.component';
+import {GetStartedWizardComponent} from './components/setup/get-started-wizard/get-started-wizard.component';
 import {ShutdownComponent} from './components/admin/shutdown/shutdown.component';
 import {RestartComponent} from './components/admin/restart/restart.component';
 import {UserManagementComponent} from './components/admin/user-management/user-management.component';
@@ -46,7 +46,7 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'projects', component: ProjectsComponent},
   {path: 'projects/add', component: ProjectWizardComponent},
-  {path: 'get_started', component: GetStartedComponent},
+  {path: 'get_started', component: GetStartedWizardComponent},
   {path: 'shutdown', component: ShutdownComponent},
   {path: 'restart', component: RestartComponent},
   {path: 'admin/user_management', component: UserManagementComponent},

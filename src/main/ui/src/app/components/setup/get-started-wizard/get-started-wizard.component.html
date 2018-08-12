@@ -53,9 +53,9 @@
           <h4 class="text-center">Welcome to the Sethlans Get Started Wizard!</h4>
           <br/>
           <p>This wizard will walk you through setting up a Sethlans Distributed Rendering Environment.</p>
-          <p>We will walk through the following:</p>
+          <p>The following will be covered:</p>
           <ul>
-            <li>Remote Node Setup (CPU based configuration only)</li>
+            <li>Remote Node Initial Setup (CPU based configuration only)</li>
             <li>Setting up Server to Node Authorization</li>
             <li>Add Nodes to this Server</li>
           </ul>
@@ -65,7 +65,12 @@
             <label for="onStartCheckBox">&nbsp;Show this wizard instead of Dashboard</label>
           </div>
         </div>
-
+        <app-wizard-node-setup
+          *ngIf="getStartedWizardForm.currentProgress === wizardProgress.NODE_SETUP"></app-wizard-node-setup>
+        <app-wizard-node-auth
+          *ngIf="getStartedWizardForm.currentProgress === wizardProgress.NODE_AUTH"></app-wizard-node-auth>
+        <app-wizard-add-nodes
+          *ngIf="getStartedWizardForm.currentProgress === wizardProgress.ADD_NODES"></app-wizard-add-nodes>
       </div>
       <div class="card-footer">
         <nav>

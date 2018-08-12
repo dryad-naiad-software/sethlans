@@ -24,10 +24,10 @@ import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-get-started',
-  templateUrl: './get-started.component.html',
-  styleUrls: ['./get-started.component.scss']
+  templateUrl: './get-started-wizard.component.html',
+  styleUrls: ['./get-started-wizard.component.scss']
 })
-export class GetStartedComponent implements OnInit {
+export class GetStartedWizardComponent implements OnInit {
   getStartedWizardForm: GetStartedWizardForm;
   wizardProgress: any = GetStartedProgress;
   onStartCheckBox: boolean;
@@ -55,6 +55,7 @@ export class GetStartedComponent implements OnInit {
     switch (this.getStartedWizardForm.currentProgress) {
       case GetStartedProgress.START:
         this.getStartedWizardForm.currentProgress = GetStartedProgress.NODE_SETUP;
+        this.disablePrevious = false;
         break;
     }
 

@@ -37,7 +37,7 @@ import {AppComponent} from './app.component';
 import {NavBarComponent} from './components/layouts/nav-bar/nav-bar.component';
 import {FooterComponent} from './components/layouts/footer/footer.component';
 import {SetupWizardComponent} from './components/setup/setup-wizard/setup-wizard.component';
-import {GetStartedComponent} from './components/setup/get-started/get-started.component';
+import {GetStartedWizardComponent} from './components/setup/get-started-wizard/get-started-wizard.component';
 import {ModeSetupComponent} from './components/setup/setup-wizard/mode-setup/mode-setup.component';
 import {DualConfigComponent} from './components/setup/setup-wizard/dual-config/dual-config.component';
 import {NodeConfigComponent} from './components/setup/setup-wizard/node-config/node-config.component';
@@ -90,6 +90,9 @@ import {FileUploadModule} from 'primeng/fileupload';
 import {ProjectViewComponent} from './components/projects/project-view/project-view.component';
 import {ProjectEditWizardComponent} from './components/projects/project-edit-wizard/project-edit-wizard.component';
 import {ProjectVideoSettingsComponent} from './components/projects/project-video-settings/project-video-settings.component';
+import {WizardNodeSetupComponent} from './components/setup/get-started-wizard/wizard-node-setup/wizard-node-setup.component';
+import {WizardNodeAuthComponent} from './components/setup/get-started-wizard/wizard-node-auth/wizard-node-auth.component';
+import {WizardAddNodesComponent} from './components/setup/get-started-wizard/wizard-add-nodes/wizard-add-nodes.component';
 
 
 @NgModule({
@@ -98,7 +101,7 @@ import {ProjectVideoSettingsComponent} from './components/projects/project-video
     NavBarComponent,
     FooterComponent,
     SetupWizardComponent,
-    GetStartedComponent,
+    GetStartedWizardComponent,
     ModeSetupComponent,
     DualConfigComponent,
     NodeConfigComponent,
@@ -139,6 +142,9 @@ import {ProjectVideoSettingsComponent} from './components/projects/project-video
     ProjectViewComponent,
     ProjectEditWizardComponent,
     ProjectVideoSettingsComponent,
+    WizardNodeSetupComponent,
+    WizardNodeAuthComponent,
+    WizardAddNodesComponent,
   ],
   imports: [
     BrowserModule,
