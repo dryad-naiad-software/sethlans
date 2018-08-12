@@ -26,27 +26,30 @@
         <ul class="nav nav-tabs justify-content-between pb-3">
           <li>
             <button type="button" class="btn btn-circle btn-lg"
-                    [ngClass]="getWizardForm.currentProgress === wizardProgress.START ? 'btn-outline-primary':'btn-outline-dark'"
-                    (click)="getWizardForm.currentProgress === wizardProgress.START">
+                    [ngClass]="getStartedWizardForm.currentProgress === wizardProgress.START ? 'btn-outline-primary':'btn-outline-dark'"
+                    (click)="getStartedWizardForm.currentProgress = wizardProgress.START">
               <i class="fas fa-flag-checkered"></i></button>
           </li>
           <li>
-            B
+            <button type="button" class="btn btn-circle btn-lg"
+                    [ngClass]="getStartedWizardForm.currentProgress === wizardProgress.NODE_SETUP ? 'btn-outline-primary':'btn-outline-dark'"
+                    (click)="getStartedWizardForm.currentProgress = wizardProgress.NODE_SETUP">
+              <i class="fas fa-sitemap"></i></button>
           </li>
           <li>
-            C
+            <button type="button" class="btn btn-circle btn-lg"
+                    [ngClass]="getStartedWizardForm.currentProgress === wizardProgress.NODE_AUTH ? 'btn-outline-primary':'btn-outline-dark'"
+                    (click)="getStartedWizardForm.currentProgress = wizardProgress.NODE_AUTH">
+              <i class="fas fa-key"></i></button>
           </li>
           <li>
-            D
-          </li>
-          <li>
-            E
-          </li>
-          <li>
-            F
+            <button type="button" class="btn btn-circle btn-lg"
+                    [ngClass]="getStartedWizardForm.currentProgress === wizardProgress.ADD_NODES ? 'btn-outline-primary':'btn-outline-dark'"
+                    (click)="getStartedWizardForm.currentProgress = wizardProgress.ADD_NODES">
+              <i class="fas fa-plus"></i></button>
           </li>
         </ul>
-        <div class="py-3" *ngIf="getWizardForm.currentProgress === wizardProgress.START">
+        <div class="py-3" *ngIf="getStartedWizardForm.currentProgress === wizardProgress.START">
           <h4 class="text-center">Welcome to the Sethlans Get Started Wizard!</h4>
           <br/>
           <p>This wizard will walk you through setting up a Sethlans Distributed Rendering Environment.</p>
@@ -66,10 +69,14 @@
       </div>
       <div class="card-footer">
         <nav>
-          <button class="btn btn-outline-secondary float-left">Previous
+          <button
+            [disabled]="disablePrevious"
+            class="btn btn-outline-secondary float-left"
+            (click)="previous()">Previous
           </button>
 
-          <button class="btn btn-outline-primary float-right"> Next
+          <button class="btn btn-outline-primary float-right"
+                  (click)="next()">Next
           </button>
 
         </nav>

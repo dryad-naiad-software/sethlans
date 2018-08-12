@@ -18,5 +18,8 @@
  */
 
 export enum GetStartedProgress {
-  START
+  START,
+  NODE_SETUP,
+  NODE_AUTH,
+  ADD_NODES
 }

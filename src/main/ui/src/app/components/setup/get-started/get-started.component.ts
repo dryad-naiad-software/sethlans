@@ -20,7 +20,7 @@
 import {Component, OnInit} from '@angular/core';
 import {GetStartedProgress} from '../../../enums/get_started_progress.enum';
 import {GetStartedWizardForm} from '../../../models/forms/get_started_wizard_form.model';
-import {HttpClient} from '../../../../../node_modules/@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-get-started',
@@ -28,16 +28,18 @@ import {HttpClient} from '../../../../../node_modules/@angular/common/http';
   styleUrls: ['./get-started.component.scss']
 })
 export class GetStartedComponent implements OnInit {
-  getWizardForm: GetStartedWizardForm;
+  getStartedWizardForm: GetStartedWizardForm;
   wizardProgress: any = GetStartedProgress;
   onStartCheckBox: boolean;
+  disablePrevious: boolean;
 
   constructor(private http: HttpClient) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
+    this.disablePrevious = true;
   }
 
   ngOnInit() {
-    this.getWizardForm = new GetStartedWizardForm();
+    this.getStartedWizardForm = new GetStartedWizardForm();
     this.http.get('/api/info/get_started').subscribe((response: boolean) => {
       this.onStartCheckBox = response;
     });
@@ -46,6 +48,24 @@ export class GetStartedComponent implements OnInit {
   setOnStart() {
     console.log(this.onStartCheckBox);
     this.http.get('/api/management/change_get_started_wizard/?value=' + this.onStartCheckBox).subscribe();
+
+  }
+
+  next() {
+    switch (this.getStartedWizardForm.currentProgress) {
+      case GetStartedProgress.START:
+        this.getStartedWizardForm.currentProgress = GetStartedProgress.NODE_SETUP;
+        break;
+    }
+
+  }
+
+  previous() {
+    switch (this.getStartedWizardForm.currentProgress) {
+      case GetStartedProgress.NODE_SETUP:
+        this.getStartedWizardForm.currentProgress = GetStartedProgress.START;
+        break;
+    }
 
   }
 
