@@ -18,12 +18,17 @@
  */
 
 import {GetStartedProgress} from '../../enums/get_started_progress.enum';
+import {User} from '../user.model';
 
 export class GetStartedWizardForm {
   currentProgress: GetStartedProgress;
+  doRemoteNodeSetup: boolean;
+  listOfIPs: string[];
+  adminUser: User;
+
 
   constructor() {
     this.currentProgress = GetStartedProgress.START;
-
   }
+
 }

@@ -21,7 +21,7 @@ import {Component, OnInit} from '@angular/core';
 import {ComputeMethod} from '../../../enums/compute.method.enum';
 import {GPU} from '../../../models/gpu.model';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {SethlansNode} from '../../../models/node.model';
+import {SethlansNode} from '../../../models/sethlan_node.model';
 import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({

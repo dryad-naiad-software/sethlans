@@ -22,7 +22,7 @@ import {SetupWizardForm} from '../../../../models/forms/setup_wizard_form.model'
 import {ComputeMethod} from '../../../../enums/compute.method.enum';
 import {GPU} from '../../../../models/gpu.model';
 import {HttpClient} from '@angular/common/http';
-import {SethlansNode} from '../../../../models/node.model';
+import {SethlansNode} from '../../../../models/sethlan_node.model';
 
 
 @Component({

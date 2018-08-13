@@ -17,7 +17,8 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {GetStartedWizardForm} from '../../../../models/forms/get_started_wizard_form.model';
 
 @Component({
   selector: 'app-wizard-node-setup',
@@ -25,6 +26,8 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./wizard-node-setup.component.scss']
 })
 export class WizardNodeSetupComponent implements OnInit {
+  @Input() getStartedWizardForm: GetStartedWizardForm;
+
 
   constructor() {
   }
