@@ -30,12 +30,7 @@
                     (click)="getStartedWizardForm.currentProgress = wizardProgress.START">
               <i class="fas fa-flag-checkered"></i></button>
           </li>
-          <li>
-            <button type="button" class="btn btn-circle btn-lg"
-                    [ngClass]="getStartedWizardForm.currentProgress === wizardProgress.NODE_SETUP ? 'btn-outline-primary':'btn-outline-dark'"
-                    (click)="getStartedWizardForm.currentProgress = wizardProgress.NODE_SETUP">
-              <i class="fas fa-sitemap"></i></button>
-          </li>
+
           <li>
             <button type="button" class="btn btn-circle btn-lg"
                     [ngClass]="getStartedWizardForm.currentProgress === wizardProgress.NODE_AUTH ? 'btn-outline-primary':'btn-outline-dark'"
@@ -48,6 +43,13 @@
                     (click)="getStartedWizardForm.currentProgress = wizardProgress.ADD_NODES">
               <i class="fas fa-plus"></i></button>
           </li>
+
+          <li>
+            <button type="button" class="btn btn-circle btn-lg"
+                    [ngClass]="getStartedWizardForm.currentProgress === wizardProgress.FINISHED ? 'btn-outline-success':'btn-outline-dark'"
+                    (click)="getStartedWizardForm.currentProgress = wizardProgress.FINISHED">
+              <i class="fas fa-check"></i></button>
+          </li>
         </ul>
         <div class="py-3" *ngIf="getStartedWizardForm.currentProgress === wizardProgress.START">
           <h4 class="text-center">Welcome to the Sethlans Get Started Wizard!</h4>
@@ -55,7 +57,6 @@
           <p>This wizard will walk you through setting up a Sethlans Distributed Rendering Environment.</p>
           <p>The following will be covered:</p>
           <ul>
-            <li>Remote Node Initial Setup (CPU based configuration only)</li>
             <li>Setting up Server to Node Authorization</li>
             <li>Add Nodes to this Server</li>
           </ul>
@@ -65,8 +66,6 @@
             <label for="onStartCheckBox">&nbsp;Show this wizard instead of Dashboard</label>
           </div>
         </div>
-        <app-wizard-node-setup
-          *ngIf="getStartedWizardForm.currentProgress === wizardProgress.NODE_SETUP"></app-wizard-node-setup>
         <app-wizard-node-auth
           *ngIf="getStartedWizardForm.currentProgress === wizardProgress.NODE_AUTH"></app-wizard-node-auth>
         <app-wizard-add-nodes

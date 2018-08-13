@@ -54,7 +54,7 @@ export class GetStartedWizardComponent implements OnInit {
   next() {
     switch (this.getStartedWizardForm.currentProgress) {
       case GetStartedProgress.START:
-        this.getStartedWizardForm.currentProgress = GetStartedProgress.NODE_SETUP;
+        this.getStartedWizardForm.currentProgress = GetStartedProgress.NODE_AUTH;
         this.disablePrevious = false;
         break;
     }
@@ -63,7 +63,7 @@ export class GetStartedWizardComponent implements OnInit {
 
   previous() {
     switch (this.getStartedWizardForm.currentProgress) {
-      case GetStartedProgress.NODE_SETUP:
+      case GetStartedProgress.NODE_AUTH:
         this.getStartedWizardForm.currentProgress = GetStartedProgress.START;
         break;
     }

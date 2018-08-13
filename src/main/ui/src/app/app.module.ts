@@ -90,7 +90,6 @@ import {FileUploadModule} from 'primeng/fileupload';
 import {ProjectViewComponent} from './components/projects/project-view/project-view.component';
 import {ProjectEditWizardComponent} from './components/projects/project-edit-wizard/project-edit-wizard.component';
 import {ProjectVideoSettingsComponent} from './components/projects/project-video-settings/project-video-settings.component';
-import {WizardNodeSetupComponent} from './components/setup/get-started-wizard/wizard-node-setup/wizard-node-setup.component';
 import {WizardNodeAuthComponent} from './components/setup/get-started-wizard/wizard-node-auth/wizard-node-auth.component';
 import {WizardAddNodesComponent} from './components/setup/get-started-wizard/wizard-add-nodes/wizard-add-nodes.component';
 
@@ -142,7 +141,6 @@ import {WizardAddNodesComponent} from './components/setup/get-started-wizard/wiz
     ProjectViewComponent,
     ProjectEditWizardComponent,
     ProjectVideoSettingsComponent,
-    WizardNodeSetupComponent,
     WizardNodeAuthComponent,
     WizardAddNodesComponent,
   ],
