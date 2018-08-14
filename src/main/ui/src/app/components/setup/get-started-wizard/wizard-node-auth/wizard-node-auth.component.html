@@ -18,8 +18,9 @@
   -->
 <div class="py-2">
   <h5 class="text-center">Server to Node Authorization</h5>
-  <p>All nodes to be contacted must be setup with the same user a role of ADMINISTRATOR or greater. Each node on this
-    form will be accessed and this server's access key will be added to each node.</p>
+  <p>All nodes to be contacted must be setup with the same user a role of at least <strong>ADMINISTRATOR</strong>.
+    <br/>Each node on this
+    form will have this server's access key will be added it.</p>
 
   <form>
     <h6><u>Credentials</u></h6>
@@ -40,14 +41,17 @@
     <div class="form-row">
       <div class="col">
         <input type="text" class="form-control form-control-sm" [(ngModel)]="nodeItem.ipAddress" name="ipAddress"
+               (keyup)="enableAdd()"
                placeholder="IP Address or Hostname">
       </div>
       <div class="col">
         <input type="number" class="form-control form-control-sm" [(ngModel)]="nodeItem.port" name="port"
+               (keyup)="enableAdd()"
                placeholder="Port">
       </div>
       <div class="col">
-        <button class="btn btn-sm btn-outline-dark" (click)="addNodeToList()">Add To List</button>
+        <button [disabled]="addDisabled" class="btn btn-sm btn-outline-dark" (click)="addNodeToList()">Add To List
+        </button>
       </div>
     </div>
     <div class="form-group">

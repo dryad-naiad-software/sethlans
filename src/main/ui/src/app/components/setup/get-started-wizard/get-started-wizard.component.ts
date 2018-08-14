@@ -32,10 +32,14 @@ export class GetStartedWizardComponent implements OnInit {
   wizardProgress: any = GetStartedProgress;
   onStartCheckBox: boolean;
   disablePrevious: boolean;
+  nextDisabled: boolean;
+
+
 
   constructor(private http: HttpClient) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
     this.disablePrevious = true;
+    this.nextDisabled = false;
   }
 
   ngOnInit() {
@@ -56,6 +60,7 @@ export class GetStartedWizardComponent implements OnInit {
       case GetStartedProgress.START:
         this.getStartedWizardForm.currentProgress = GetStartedProgress.NODE_AUTH;
         this.disablePrevious = false;
+        this.nextDisabled = true;
         break;
     }
 
@@ -65,6 +70,8 @@ export class GetStartedWizardComponent implements OnInit {
     switch (this.getStartedWizardForm.currentProgress) {
       case GetStartedProgress.NODE_AUTH:
         this.getStartedWizardForm.currentProgress = GetStartedProgress.START;
+        this.nextDisabled = false;
+        this.disablePrevious = true;
         break;
     }
 

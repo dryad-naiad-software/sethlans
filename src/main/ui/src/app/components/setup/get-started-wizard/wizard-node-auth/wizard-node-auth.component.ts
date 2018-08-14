@@ -31,7 +31,7 @@ import {GetStartedWizardForm} from '../../../../models/forms/get_started_wizard_
 export class WizardNodeAuthComponent implements OnInit {
   @Input() getStartedWizardForm: GetStartedWizardForm;
   nodeItem: NodeItem;
-
+  addDisabled: boolean;
   nodeLogin: Login;
   @ViewChild(MatPaginator) nodeListPaginator: MatPaginator;
   nodeListDataSource = new MatTableDataSource();
@@ -41,6 +41,7 @@ export class WizardNodeAuthComponent implements OnInit {
   constructor() {
     this.nodeLogin = new Login();
     this.nodeItem = new NodeItem();
+    this.addDisabled = true;
 
   }
 
@@ -58,4 +59,7 @@ export class WizardNodeAuthComponent implements OnInit {
     this.nodeListDataSource.paginator = this.nodeListPaginator;
   }
 
+  enableAdd() {
+    this.addDisabled = this.nodeItem.nodeItemNotReady();
+  }
 }
