@@ -27,7 +27,7 @@
              #projectName="ngModel"
              [ngClass]="{'is-invalid':projectName.errors && projectName.touched}"
              [(ngModel)]="projectWizard.project.projectName" (keydown)="validateForm()" (mousemove)="validateForm()"
-             required pattern=".{4,}">
+             required pattern=".{4,}" placeholder="Project Name">
       <div class="invalid-feedback" [hidden]="projectName.valid">
         <ul>
           <li>Project Name is required.</li>
@@ -84,18 +84,26 @@
                                                (click)="setDefaultFrameRate()">Animation</label>
       </div>
     </fieldset>
-    <div class="form-group">
-      <label for="startFrame">Start Frame</label>
-      <input type="number" class="form-control form-control-sm" id="startFrame" name="startFrame"
-             [(ngModel)]="projectWizard.project.startFrame" pattern="^[1-9][0-9]*$" (mousemove)="validateForm()">
-      <label for="endFrame">End Frame</label>
-      <input [disabled]="projectWizard.project.projectType == projectTypes.STILL_IMAGE" type="number"
-             class="form-control form-control-sm"
-             id="endFrame" name="endFrame" [(ngModel)]="projectWizard.project.endFrame">
-      <label for="stepFrame">Frame Step</label>
-      <input [disabled]="projectWizard.project.projectType == projectTypes.STILL_IMAGE" type="number"
-             class="form-control form-control-sm"
-             id="stepFrame" name="stepFrame" [(ngModel)]="projectWizard.project.stepFrame">
+    <div class="form-row">
+      <div class="col">
+        <label for="startFrame">Start Frame</label>
+        <input type="number" class="form-control form-control-sm" id="startFrame" name="startFrame"
+               [(ngModel)]="projectWizard.project.startFrame" pattern="^[1-9][0-9]*$" (mousemove)="validateForm()">
+      </div>
+      <div class="col">
+        <label for="endFrame">End Frame</label>
+        <input [disabled]="projectWizard.project.projectType == projectTypes.STILL_IMAGE" type="number"
+               class="form-control form-control-sm"
+               id="endFrame" name="endFrame" [(ngModel)]="projectWizard.project.endFrame">
+      </div>
+      <div class="col">
+        <label for="stepFrame">Frame Step</label>
+
+        <input [disabled]="projectWizard.project.projectType == projectTypes.STILL_IMAGE" type="number"
+               class="form-control form-control-sm"
+               id="stepFrame" name="stepFrame" [(ngModel)]="projectWizard.project.stepFrame">
+      </div>
+
     </div>
   </form>
 </div>

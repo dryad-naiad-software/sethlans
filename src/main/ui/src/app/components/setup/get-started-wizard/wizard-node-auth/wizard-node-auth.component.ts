@@ -17,7 +17,11 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Login} from '../../../../models/login.model';
+import {NodeItem} from '../../../../models/node_item.model';
+import {MatPaginator, MatTableDataSource} from '@angular/material';
+import {GetStartedWizardForm} from '../../../../models/forms/get_started_wizard_form.model';
 
 @Component({
   selector: 'app-wizard-node-auth',
@@ -25,11 +29,33 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./wizard-node-auth.component.scss']
 })
 export class WizardNodeAuthComponent implements OnInit {
+  @Input() getStartedWizardForm: GetStartedWizardForm;
+  nodeItem: NodeItem;
+
+  nodeLogin: Login;
+  @ViewChild(MatPaginator) nodeListPaginator: MatPaginator;
+  nodeListDataSource = new MatTableDataSource();
+  nodeListDisplayedColumns = ['ipAddress', 'port', 'action'];
+
 
   constructor() {
+    this.nodeLogin = new Login();
+    this.nodeItem = new NodeItem();
+
   }
 
   ngOnInit() {
+  }
+
+  addNodeToList() {
+    this.getStartedWizardForm.listOfNodes.push(this.nodeItem);
+    this.nodeItem = new NodeItem();
+    this.refreshList();
+  }
+
+  refreshList() {
+    this.nodeListDataSource = new MatTableDataSource<any>(this.getStartedWizardForm.listOfNodes);
+    this.nodeListDataSource.paginator = this.nodeListPaginator;
   }
 
 }

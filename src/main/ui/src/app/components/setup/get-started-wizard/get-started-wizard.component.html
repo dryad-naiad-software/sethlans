@@ -52,7 +52,7 @@
           </li>
         </ul>
         <div class="py-3" *ngIf="getStartedWizardForm.currentProgress === wizardProgress.START">
-          <h4 class="text-center">Welcome to the Sethlans Get Started Wizard!</h4>
+          <h5 class="text-center">Welcome to the Sethlans Get Started Wizard!</h5>
           <br/>
           <p>This wizard will walk you through setting up a Sethlans Distributed Rendering Environment.</p>
           <p>The following will be covered:</p>
@@ -66,8 +66,8 @@
             <label for="onStartCheckBox">&nbsp;Show this wizard instead of Dashboard</label>
           </div>
         </div>
-        <app-wizard-node-auth
-          *ngIf="getStartedWizardForm.currentProgress === wizardProgress.NODE_AUTH"></app-wizard-node-auth>
+        <app-wizard-node-auth [getStartedWizardForm]="getStartedWizardForm"
+                              *ngIf="getStartedWizardForm.currentProgress === wizardProgress.NODE_AUTH"></app-wizard-node-auth>
         <app-wizard-add-nodes
           *ngIf="getStartedWizardForm.currentProgress === wizardProgress.ADD_NODES"></app-wizard-add-nodes>
       </div>

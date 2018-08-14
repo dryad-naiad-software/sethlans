@@ -27,42 +27,43 @@
     Nodes</a></li>
 </ul>
 <form #addNodeForm="ngForm" class="editForm p-2" *ngIf="!nodeWizardForm.multipleNodeAdd">
+  <br/>
   <div class="form-group">
-    <label for="ipAddress">IP Address or Hostname</label>
-    <input type="text" class="form-control form-control-sm" id="ipAddress" name="ipAddress"
+    <input type="text" class="form-control" id="ipAddress" name="ipAddress"
            [(ngModel)]="nodeWizardForm.singleNode.ipAddress" (keyup)="enableNext(); enterPress($event)"
-           required>
+           required placeholder="IP Address or Hostname">
   </div>
   <div class="form-group">
-    <label for="port">Port</label>
-    <input type="number" class="form-control form-control-sm" id="port" name="port"
+    <input type="number" class="form-control" id="port" name="port"
            [(ngModel)]="nodeWizardForm.singleNode.port"
            (keyup)="enableNext(); enterPress($event)"
-           required>
+           required placeholder="Port">
   </div>
 </form>
 <form #addMultiNodeForm="ngForm" class="editForm p-2" *ngIf="nodeWizardForm.multipleNodeAdd">
-  <div class="form-group">
-    <label for="nodeAddIPAddress">IP Address or Hostname</label>
-    <input type="text" class="form-control form-control-sm" id="nodeAddIPAddress" name="ipAddress"
-           [(ngModel)]="nodeItem.ipAddress" (keyup)="enableAdd()"
-           required>
+  <div class="form-row">
+    <div class="col">
+      <input type="text" class="form-control form-control-sm" id="nodeAddIPAddress" name="ipAddress"
+             [(ngModel)]="nodeItem.ipAddress" (keyup)="enableAdd()"
+             required placeholder="IP Address or Hostname">
+    </div>
+    <div class="col">
+      <input type="number" class="form-control form-control-sm" id="nodeAddPort" name="port" [(ngModel)]="nodeItem.port"
+             (keyup)="enableAdd()"
+             required placeholder="Port">
+    </div>
+    <div class="col">
+      <button [disabled]="addDisabled" class="btn btn-sm btn-outline-dark" (click)="addNodeToList()">Add To List
+      </button>
+    </div>
   </div>
-  <div class="form-group">
-    <label for="nodeAddPort">Port</label>
-    <input type="number" class="form-control form-control-sm" id="nodeAddPort" name="port" [(ngModel)]="nodeItem.port"
-           (keyup)="enableAdd()"
-           required>
-  </div>
-  <div class="btn-group">
-    <button [disabled]="addDisabled" class="btn btn-outline-dark" (click)="addNodeToList()">Add To List</button>
-  </div>
+
 
   <div class="form-group">
     <hr/>
     <mat-table #nodeListTable [dataSource]="nodeListDataSource">
       <ng-container matColumnDef="ipAddress">
-        <mat-header-cell *matHeaderCellDef>IP Address/HostName</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>IP Address/Hostname</mat-header-cell>
         <mat-cell *matCellDef="let node">{{node.ipAddress}}</mat-cell>
       </ng-container>
       <ng-container matColumnDef="port">
