@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.info.BlenderBinaryInfo;
+import com.dryadandnaiad.sethlans.domains.info.GettingStartedInfo;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
@@ -30,10 +31,12 @@ import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -162,6 +165,16 @@ public class AdminServerController {
         return newBlenderVersions;
     }
 
+    @PostMapping(value = "/get_started_auth")
+    public boolean getStartedAuth(HttpEntity<String> httpEntity) {
+        String json = httpEntity.getBody();
+        Gson gson = new Gson();
+        GettingStartedInfo gettingStartedInfo = gson.fromJson(json, GettingStartedInfo.class);
+        LOG.debug(gettingStartedInfo.toString());
+
+        return false;
+    }
+
     @PostMapping(value = "/add_blender_version")
     public boolean addNewBlenderVersion(@RequestParam String version) {
         List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.listAll();
@@ -222,4 +235,5 @@ public class AdminServerController {
     public void setSethlansAPIConnectionService(SethlansAPIConnectionService sethlansAPIConnectionService) {
         this.sethlansAPIConnectionService = sethlansAPIConnectionService;
     }
+
 }

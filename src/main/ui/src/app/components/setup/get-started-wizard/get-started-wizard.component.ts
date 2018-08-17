@@ -21,6 +21,9 @@ import {Component, OnInit} from '@angular/core';
 import {GetStartedProgress} from '../../../enums/get_started_progress.enum';
 import {GetStartedWizardForm} from '../../../models/forms/get_started_wizard_form.model';
 import {HttpClient} from '@angular/common/http';
+import {HttpHeaders} from '../../../../../node_modules/@angular/common/http';
+import {NodeItem} from '../../../models/node_item.model';
+import {Login} from '../../../models/login.model';
 
 @Component({
   selector: 'app-get-started',
@@ -55,12 +58,34 @@ export class GetStartedWizardComponent implements OnInit {
 
   }
 
+  disableNext(value: boolean) {
+    this.nextDisabled = value;
+  }
+
+  submitAuth() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+
+    const jsonToSend = new JsonToSend();
+    jsonToSend.listOfNodes = this.getStartedWizardForm.listOfNodes;
+    jsonToSend.login = this.getStartedWizardForm.nodeLogin;
+    this.http.post('/api/management/get_started_auth', JSON.stringify(jsonToSend), httpOptions).subscribe();
+    this.getStartedWizardForm.currentProgress = GetStartedProgress.ADD_NODES;
+
+  }
+
   next() {
     switch (this.getStartedWizardForm.currentProgress) {
       case GetStartedProgress.START:
         this.getStartedWizardForm.currentProgress = GetStartedProgress.NODE_AUTH;
         this.disablePrevious = false;
         this.nextDisabled = true;
+        break;
+      case GetStartedProgress.NODE_AUTH:
+        this.submitAuth();
         break;
     }
 
@@ -76,5 +101,11 @@ export class GetStartedWizardComponent implements OnInit {
     }
 
   }
+
+}
+
+class JsonToSend {
+  listOfNodes: NodeItem[];
+  login: Login;
 
 }

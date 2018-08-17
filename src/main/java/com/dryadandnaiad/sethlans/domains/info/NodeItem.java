@@ -17,19 +17,19 @@
  *
  */
 
-export class NodeItem {
-  ipAddress: string;
-  port: string;
-  active: boolean;
+package com.dryadandnaiad.sethlans.domains.info;
 
-  constructor() {
-    this.ipAddress = '';
-    this.port = '';
-    this.active = false;
+import lombok.Data;
 
-  }
-
-  nodeItemNotReady(): boolean {
-    return this.ipAddress == null || this.port == null || this.ipAddress.length === 0 || this.port.length === 0;
-  }
+/**
+ * Created Mario Estrella on 8/16/2018.
+ * Dryad and Naiad Software LLC
+ * mestrella@dryadandnaiad.com
+ * Project: sethlans
+ */
+@Data
+public class NodeItem {
+    private String ipAddress;
+    private Integer port;
+    private Boolean active;
 }

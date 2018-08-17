@@ -17,8 +17,7 @@
  *
  */
 
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {Login} from '../../../../models/login.model';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {NodeItem} from '../../../../models/node_item.model';
 import {MatPaginator, MatTableDataSource} from '@angular/material';
 import {GetStartedWizardForm} from '../../../../models/forms/get_started_wizard_form.model';
@@ -32,14 +31,13 @@ export class WizardNodeAuthComponent implements OnInit {
   @Input() getStartedWizardForm: GetStartedWizardForm;
   nodeItem: NodeItem;
   addDisabled: boolean;
-  nodeLogin: Login;
   @ViewChild(MatPaginator) nodeListPaginator: MatPaginator;
   nodeListDataSource = new MatTableDataSource();
+  @Output() disableNext = new EventEmitter();
   nodeListDisplayedColumns = ['ipAddress', 'port', 'action'];
 
 
   constructor() {
-    this.nodeLogin = new Login();
     this.nodeItem = new NodeItem();
     this.addDisabled = true;
 
@@ -52,6 +50,7 @@ export class WizardNodeAuthComponent implements OnInit {
     this.getStartedWizardForm.listOfNodes.push(this.nodeItem);
     this.nodeItem = new NodeItem();
     this.refreshList();
+    this.enableNext();
   }
 
   refreshList() {
@@ -61,5 +60,9 @@ export class WizardNodeAuthComponent implements OnInit {
 
   enableAdd() {
     this.addDisabled = this.nodeItem.nodeItemNotReady();
+  }
+
+  enableNext() {
+    this.disableNext.emit(!(this.getStartedWizardForm.listOfNodes.length > 0 && !this.getStartedWizardForm.nodeLogin.loginNotReady()));
   }
 }

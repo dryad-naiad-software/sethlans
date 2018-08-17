@@ -67,6 +67,7 @@
           </div>
         </div>
         <app-wizard-node-auth [getStartedWizardForm]="getStartedWizardForm"
+                              (disableNext)="disableNext($event)"
                               *ngIf="getStartedWizardForm.currentProgress === wizardProgress.NODE_AUTH"></app-wizard-node-auth>
         <app-wizard-add-nodes
           *ngIf="getStartedWizardForm.currentProgress === wizardProgress.ADD_NODES"></app-wizard-add-nodes>

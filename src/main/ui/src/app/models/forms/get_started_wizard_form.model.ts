@@ -19,15 +19,18 @@
 
 import {GetStartedProgress} from '../../enums/get_started_progress.enum';
 import {NodeItem} from '../node_item.model';
+import {Login} from '../login.model';
 
 export class GetStartedWizardForm {
   currentProgress: GetStartedProgress;
   listOfNodes: NodeItem[];
+  nodeLogin: Login;
 
 
   constructor() {
     this.currentProgress = GetStartedProgress.START;
     this.listOfNodes = [];
+    this.nodeLogin = new Login();
   }
 
 }

@@ -20,4 +20,13 @@
 export class Login {
   username: string;
   password: string;
+
+  constructor() {
+    this.username = '';
+    this.password = '';
+  }
+
+  loginNotReady(): boolean {
+    return this.username == null || this.password == null || this.username.length === 0 || this.password.length === 0;
+  }
 }

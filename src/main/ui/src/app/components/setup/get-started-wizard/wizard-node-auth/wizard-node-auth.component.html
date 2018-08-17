@@ -26,12 +26,14 @@
     <h6><u>Credentials</u></h6>
     <div class="form-row">
       <div class="col">
-        <input type="text" class="form-control form-control-sm" [(ngModel)]="nodeLogin.username" name="username"
-               placeholder="Username">
+        <input type="text" class="form-control form-control-sm" [(ngModel)]="getStartedWizardForm.nodeLogin.username"
+               name="username"
+               placeholder="Username" (keyup)="enableNext()">
       </div>
       <div class="col">
-        <input type="password" class="form-control form-control-sm" [(ngModel)]="nodeLogin.password" name="password"
-               placeholder="Password">
+        <input type="password" class="form-control form-control-sm"
+               [(ngModel)]="getStartedWizardForm.nodeLogin.password" name="password"
+               placeholder="Password" (keyup)="enableNext()">
       </div>
     </div>
   </form>
