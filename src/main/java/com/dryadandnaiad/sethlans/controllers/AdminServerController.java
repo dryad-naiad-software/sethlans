@@ -169,11 +169,12 @@ public class AdminServerController {
     public boolean getStartedAuth(HttpEntity<String> httpEntity) {
         String json = httpEntity.getBody();
         Gson gson = new Gson();
+        String accessKey = getAccessKeyFromServer();
         GettingStartedInfo gettingStartedInfo = gson.fromJson(json, GettingStartedInfo.class);
-        LOG.debug(gettingStartedInfo.toString());
 
         return false;
     }
+
 
     @PostMapping(value = "/add_blender_version")
     public boolean addNewBlenderVersion(@RequestParam String version) {
