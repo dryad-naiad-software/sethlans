@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.domains.database.blender;
 
+import com.dryadandnaiad.sethlans.domains.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.enums.*;
@@ -30,6 +31,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import java.util.List;
 
 /**
@@ -80,8 +82,7 @@ public class BlenderProject extends AbstractEntityClass {
     @ElementCollection
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<String> frameFileNames;
-    @ElementCollection
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @Transient
     private List<BlenderFramePart> framePartList;
 
 

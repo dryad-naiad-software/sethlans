@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.queue;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderFramePart;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessFrameItem;

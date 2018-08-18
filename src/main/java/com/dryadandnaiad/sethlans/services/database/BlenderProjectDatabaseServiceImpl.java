@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.converters.ProjectFormToBlenderProject;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.forms.project.ProjectForm;
@@ -28,6 +29,7 @@ import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +46,11 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
 
     @Override
     public List<BlenderProject> listAll() {
-        return new ArrayList<>(blenderProjectRepository.findAll());
+        List<BlenderProject> all = new ArrayList<>(blenderProjectRepository.findAll());
+        for (BlenderProject blenderProject : all) {
+            blenderProject.setFramePartList(loadBlenderPartList(blenderProject));
+        }
+        return all;
     }
 
     @Override
@@ -60,10 +66,10 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     }
 
     @Override
-    public List<BlenderProject> getPendingProjects(){
+    public List<BlenderProject> getPendingProjects() {
         List<BlenderProject> pendingProjects = new ArrayList<>();
         for (BlenderProject blenderProject : listAll()) {
-            if(blenderProject.getProjectStatus().equals(ProjectStatus.Pending)) {
+            if (blenderProject.getProjectStatus().equals(ProjectStatus.Pending)) {
                 pendingProjects.add(blenderProject);
             }
 
@@ -72,9 +78,9 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     }
 
     @Override
-    public List<BlenderProject> getRemainingQueueProjects(){
+    public List<BlenderProject> getRemainingQueueProjects() {
         List<BlenderProject> remainingProjects = new ArrayList<>();
-        for(BlenderProject blenderProject: listAll()) {
+        for (BlenderProject blenderProject : listAll()) {
             if (blenderProject.getProjectStatus().equals(ProjectStatus.Rendering) || blenderProject.getProjectStatus().equals(ProjectStatus.Started)) {
                 if (!blenderProject.isQueueFillComplete()) {
                     remainingProjects.add(blenderProject);
@@ -103,7 +109,9 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
 
     @Override
     public BlenderProject getById(Long id) {
-        return blenderProjectRepository.findOne(id);
+        BlenderProject blenderProject = blenderProjectRepository.findOne(id);
+        blenderProject.setFramePartList(loadBlenderPartList(blenderProject));
+        return blenderProject;
     }
 
     @Override
@@ -130,7 +138,37 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
 
     @Override
     public BlenderProject saveOrUpdate(BlenderProject domainObject) {
+        saveBlenderPartList(domainObject);
         return blenderProjectRepository.save(domainObject);
+    }
+
+    private void saveBlenderPartList(BlenderProject blenderProject) {
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(blenderProject.getProjectRootDir() + File.separator + blenderProject.getProject_uuid() + ".partlist");
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(blenderProject.getFramePartList());
+            objectOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings(value = "unchecked")
+    private List<BlenderFramePart> loadBlenderPartList(BlenderProject blenderProject) {
+        try {
+            FileInputStream fileInputStream = new FileInputStream(blenderProject.getProjectRootDir() + File.separator + blenderProject.getProject_uuid() + ".partlist");
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            List<BlenderFramePart> blenderFramePartList = (List<BlenderFramePart>) objectInputStream.readObject();
+            objectInputStream.close();
+            return blenderFramePartList;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
