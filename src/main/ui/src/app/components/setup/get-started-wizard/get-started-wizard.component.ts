@@ -36,7 +36,7 @@ export class GetStartedWizardComponent implements OnInit {
   onStartCheckBox: boolean;
   disablePrevious: boolean;
   nextDisabled: boolean;
-
+  showAuthAlert: boolean;
 
 
   constructor(private http: HttpClient) {
@@ -63,18 +63,36 @@ export class GetStartedWizardComponent implements OnInit {
   }
 
   submitAuth() {
+    this.showAuthAlert = true;
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
       })
     };
-
     const jsonToSend = new JsonToSend();
     jsonToSend.listOfNodes = this.getStartedWizardForm.listOfNodes;
     jsonToSend.login = this.getStartedWizardForm.nodeLogin;
-    this.http.post('/api/management/get_started_auth', JSON.stringify(jsonToSend), httpOptions).subscribe();
-    this.getStartedWizardForm.currentProgress = GetStartedProgress.ADD_NODES;
+    this.http.post('/api/management/server_to_node_auth', JSON.stringify(jsonToSend), httpOptions).subscribe(() => {
+      this.showAuthAlert = false;
+      this.getStartedWizardForm.currentProgress = GetStartedProgress.ADD_NODES;
+    });
+  }
 
+  submitNodes() {
+    let toSend: string[] = [];
+    this.getStartedWizardForm.nodesToAdd.forEach(value => {
+      let node = value.hostname + ',' + value.networkPort;
+      toSend.push(node);
+    });
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    this.http.post('/api/setup/multi_node_add', JSON.stringify(toSend), httpOptions).subscribe(() => {
+      this.getStartedWizardForm.currentProgress = GetStartedProgress.FINISHED;
+      this.disablePrevious = true;
+    });
   }
 
   next() {
@@ -87,6 +105,17 @@ export class GetStartedWizardComponent implements OnInit {
       case GetStartedProgress.NODE_AUTH:
         this.submitAuth();
         break;
+      case GetStartedProgress.ADD_NODES:
+        this.submitNodes();
+        break;
+      case GetStartedProgress.FINISHED:
+        if (this.onStartCheckBox) {
+          this.onStartCheckBox = false;
+          this.setOnStart();
+        }
+        window.location.href = '/';
+        break;
+
     }
 
   }

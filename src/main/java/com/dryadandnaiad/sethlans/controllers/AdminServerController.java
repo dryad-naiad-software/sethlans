@@ -171,9 +171,8 @@ public class AdminServerController {
         return newBlenderVersions;
     }
 
-    @PostMapping(value = "/get_started_auth")
-    public boolean getStartedAuth(HttpEntity<String> httpEntity) {
-
+    @PostMapping(value = "/server_to_node_auth")
+    public boolean serverToNodeAuth(HttpEntity<String> httpEntity) {
         String json = httpEntity.getBody();
         Gson gson = new Gson();
         AccessKey accessKey = new AccessKey();
@@ -202,9 +201,10 @@ public class AdminServerController {
                     .cookie("XSRF-TOKEN", token).body(gson.toJson(accessKey))
                     .when().post("/api/setup/add_access_key");
 
+
         }
 
-        return false;
+        return true;
     }
 
 
