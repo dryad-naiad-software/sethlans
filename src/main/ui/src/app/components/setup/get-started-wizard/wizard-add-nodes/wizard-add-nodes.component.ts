@@ -17,7 +17,13 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {GetStartedWizardForm} from '../../../../models/forms/get_started_wizard_form.model';
+import {NodeInfo} from '../../../../models/node_info.model';
+import {HttpClient} from '@angular/common/http';
+import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {GetStartedProgress} from '../../../../enums/get_started_progress.enum';
+import {ComputeMethod} from '../../../../enums/compute.method.enum';
 
 @Component({
   selector: 'app-wizard-add-nodes',
@@ -25,11 +31,45 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./wizard-add-nodes.component.scss']
 })
 export class WizardAddNodesComponent implements OnInit {
+  @Input() getStartedWizardForm: GetStartedWizardForm;
+  @Output() disableNext = new EventEmitter();
+  @ViewChild(MatPaginator) obtainedNodePaginator: MatPaginator;
+  @ViewChild(MatSort) obtainedNodeSort: MatSort;
+  wizardProgress: any = GetStartedProgress;
+  computeTypes: any = ComputeMethod;
+  obtainedNodeDataSource = new MatTableDataSource();
+  obtainedNodeDisplayedColumns = ['hostname', 'ipAddress', 'port', 'os', 'computeMethods', 'cpuName', 'selectedCores', 'selectedGPUs'];
 
-  constructor() {
+
+  constructor(private http: HttpClient) {
   }
 
   ngOnInit() {
+    this.multiNodeQuery();
   }
+
+  multiNodeQuery() {
+    this.getStartedWizardForm.listOfNodes.forEach((value, idx, array) => {
+      this.http.get('/api/management/node_check?ip=' + value.ipAddress + '&port=' + value.port).subscribe((node: NodeInfo) => {
+        if (node != null) {
+          this.getStartedWizardForm.nodesToAdd.push(node);
+          value.active = true;
+        } else {
+          value.active = false;
+        }
+        if (idx === array.length - 1) {
+          this.getStartedWizardForm.scanComplete = true;
+          this.refreshList();
+        }
+      });
+    });
+  }
+
+  refreshList() {
+    this.obtainedNodeDataSource = new MatTableDataSource<any>(this.getStartedWizardForm.nodesToAdd);
+    this.obtainedNodeDataSource.paginator = this.obtainedNodePaginator;
+    this.obtainedNodeDataSource.sort = this.obtainedNodeSort;
+  }
+
 
 }

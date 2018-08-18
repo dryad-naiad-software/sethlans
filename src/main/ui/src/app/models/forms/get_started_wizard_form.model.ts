@@ -20,17 +20,22 @@
 import {GetStartedProgress} from '../../enums/get_started_progress.enum';
 import {NodeItem} from '../node_item.model';
 import {Login} from '../login.model';
+import {NodeInfo} from '../node_info.model';
 
 export class GetStartedWizardForm {
   currentProgress: GetStartedProgress;
   listOfNodes: NodeItem[];
   nodeLogin: Login;
+  nodesToAdd: NodeInfo[];
+  scanComplete: boolean;
 
 
   constructor() {
     this.currentProgress = GetStartedProgress.START;
     this.listOfNodes = [];
+    this.nodesToAdd = [];
     this.nodeLogin = new Login();
+    this.scanComplete = false;
   }
 
 }
