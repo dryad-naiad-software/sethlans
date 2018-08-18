@@ -70,7 +70,7 @@
         <ng-container matColumnDef="action">
           <mat-header-cell *matHeaderCellDef></mat-header-cell>
           <mat-cell *matCellDef="let node">
-            <button class="btn btn-outline-danger btn-sm">Delete</button>
+            <button class="btn btn-outline-danger btn-sm" (click)="deleteNodeFromList(node)">Delete</button>
 
           </mat-cell>
         </ng-container>

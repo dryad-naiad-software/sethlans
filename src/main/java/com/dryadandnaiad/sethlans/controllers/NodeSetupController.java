@@ -56,9 +56,12 @@ public class NodeSetupController {
             LOG.debug("Key submitted in an invalid format. " + access_key.getAccessKey());
             return false;
         }
-        LOG.debug("Adding server access key to database:" + access_key.getAccessKey());
-        accessKeyDatabaseService.saveOrUpdate(access_key);
-        return true;
+        if (accessKeyDatabaseService.getByUUID(access_key.getAccessKey()) == null) {
+            LOG.debug("Adding server access key to database:" + access_key.getAccessKey());
+            accessKeyDatabaseService.saveOrUpdate(access_key);
+            return true;
+        }
+        return false;
     }
 
     @GetMapping("/access_key_delete/{id}")

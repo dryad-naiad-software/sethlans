@@ -21,8 +21,10 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.domains.database.server.AccessKey;
 import com.dryadandnaiad.sethlans.domains.info.BlenderBinaryInfo;
 import com.dryadandnaiad.sethlans.domains.info.GettingStartedInfo;
+import com.dryadandnaiad.sethlans.domains.info.NodeItem;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
@@ -32,6 +34,9 @@ import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.gson.Gson;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +47,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansUtils.writeProperty;
+import static io.restassured.RestAssured.given;
 
 /**
  * Created Mario Estrella on 7/25/2018.
@@ -167,10 +173,36 @@ public class AdminServerController {
 
     @PostMapping(value = "/get_started_auth")
     public boolean getStartedAuth(HttpEntity<String> httpEntity) {
+
         String json = httpEntity.getBody();
         Gson gson = new Gson();
-        String accessKey = getAccessKeyFromServer();
+        AccessKey accessKey = new AccessKey();
+        accessKey.setAccessKey(getAccessKeyFromServer());
         GettingStartedInfo gettingStartedInfo = gson.fromJson(json, GettingStartedInfo.class);
+        for (NodeItem node : gettingStartedInfo.getListOfNodes()) {
+            RestAssured.useRelaxedHTTPSValidation();
+            RestAssured.baseURI = "https://" + node.getIpAddress();
+            RestAssured.port = node.getPort();
+            RestAssured.basePath = "/";
+            Response response =
+                    given().
+                            when().get("/login").
+                            then().extract().response();
+            String token = response.cookie("XSRF-TOKEN");
+
+            response = given().log().ifValidationFails()
+                    .header("X-XSRF-TOKEN", token)
+                    .cookie("XSRF-TOKEN", token).param("username", gettingStartedInfo.getLogin().getUsername().toLowerCase()).param("password", gettingStartedInfo.getLogin().getPassword())
+                    .when().post("/login").then().statusCode(302).extract().response();
+
+            RestAssured.sessionId = response.cookie("JSESSIONID");
+
+            given().log().ifValidationFails().accept(ContentType.JSON).contentType(ContentType.JSON)
+                    .header("X-XSRF-TOKEN", token)
+                    .cookie("XSRF-TOKEN", token).body(gson.toJson(accessKey))
+                    .when().post("/api/setup/add_access_key");
+
+        }
 
         return false;
     }

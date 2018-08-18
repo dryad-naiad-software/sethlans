@@ -98,6 +98,9 @@ export class GetStartedWizardComponent implements OnInit {
         this.nextDisabled = false;
         this.disablePrevious = true;
         break;
+      case GetStartedProgress.ADD_NODES:
+        this.getStartedWizardForm.currentProgress = GetStartedProgress.NODE_AUTH;
+        this.disablePrevious = false;
     }
 
   }

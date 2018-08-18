@@ -44,6 +44,7 @@ export class WizardNodeAuthComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.refreshList();
   }
 
   addNodeToList() {
@@ -64,5 +65,13 @@ export class WizardNodeAuthComponent implements OnInit {
 
   enableNext() {
     this.disableNext.emit(!(this.getStartedWizardForm.listOfNodes.length > 0 && !this.getStartedWizardForm.nodeLogin.loginNotReady()));
+  }
+
+  deleteNodeFromList(node: NodeItem) {
+    let index = this.getStartedWizardForm.listOfNodes.indexOf(node);
+    if (index > -1) {
+      this.getStartedWizardForm.listOfNodes.splice(index, 1);
+      this.refreshList();
+    }
   }
 }
