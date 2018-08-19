@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.domains.blender;
 import lombok.Data;
 
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 
 /**
  * Created Mario Estrella on 12/28/17.
@@ -30,7 +31,7 @@ import javax.persistence.Embeddable;
  */
 @Embeddable
 @Data
-public class BlenderFramePart {
+public class BlenderFramePart implements Serializable {
     private String frameFileName;
     private int frameNumber;
     private int partNumber;

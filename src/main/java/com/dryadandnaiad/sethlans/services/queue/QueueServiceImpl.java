@@ -109,7 +109,7 @@ public class QueueServiceImpl implements QueueService {
                     if (renderQueueDatabaseService.listAll().size() > CLEANUP) {
                         cleanQueue();
                     }
-                    if (sethlansNodeDatabaseService.activeNodeList().size() > 0 && blenderProjectDatabaseService.listAll().size() > 0) {
+                    if (sethlansNodeDatabaseService.activeNodeList().size() > 0 && blenderProjectDatabaseService.listSize() > 0) {
                         populateQueue();
                     }
                     if (!processQueueDatabaseService.listAll().isEmpty()) {
@@ -158,7 +158,7 @@ public class QueueServiceImpl implements QueueService {
             count = sethlansNodeDatabaseService.activeNodeswithFreeSlots().size();
             LOG.debug("Active nodes with free spots " + sethlansNodeDatabaseService.activeNodeswithFreeSlots().size());
         }
-        while (sethlansNodeDatabaseService.activeNodeswithFreeSlots().size() > 0 && blenderProjectDatabaseService.getRemainingQueueProjects().size() > 0);
+        while (sethlansNodeDatabaseService.activeNodeswithFreeSlots().size() > 0 && blenderProjectDatabaseService.remainingQueueProjectsSize() > 0);
     }
 
     private void processingWorkflow() {
@@ -331,7 +331,7 @@ public class QueueServiceImpl implements QueueService {
     }
 
     private void populateQueuePendingProjects() {
-        if (renderQueueDatabaseService.listPendingRender().size() < QUEUE && blenderProjectDatabaseService.getPendingProjects().size() > 0) {
+        if (renderQueueDatabaseService.listPendingRender().size() < QUEUE && blenderProjectDatabaseService.pendingProjectsSize() > 0) {
             for (BlenderProject blenderProject : blenderProjectDatabaseService.getPendingProjects()) {
                 int throttle;
                 List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();
@@ -347,7 +347,7 @@ public class QueueServiceImpl implements QueueService {
     }
 
     private void populateQueueRunningProjects() {
-        if (renderQueueDatabaseService.listPendingRender().size() <= CLEANUP && blenderProjectDatabaseService.getRemainingQueueProjects().size() > 0) {
+        if (renderQueueDatabaseService.listPendingRender().size() <= CLEANUP && blenderProjectDatabaseService.remainingQueueProjectsSize() > 0) {
             for (BlenderProject blenderProject : blenderProjectDatabaseService.getRemainingQueueProjects()) {
                 int throttle;
                 List<BlenderFramePart> blenderFramePartList = blenderProject.getFramePartList();

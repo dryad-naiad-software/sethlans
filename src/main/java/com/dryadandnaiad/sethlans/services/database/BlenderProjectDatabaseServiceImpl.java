@@ -25,7 +25,10 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.forms.project.ProjectForm;
 import com.dryadandnaiad.sethlans.repositories.BlenderProjectRepository;
+import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +46,7 @@ import java.util.List;
 public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabaseService {
     private BlenderProjectRepository blenderProjectRepository;
     private ProjectFormToBlenderProject projectFormToBlenderProject;
+    private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectDatabaseServiceImpl.class);
 
     @Override
     public List<BlenderProject> listAll() {
@@ -51,6 +55,23 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
             blenderProject.setFramePartList(loadBlenderPartList(blenderProject));
         }
         return all;
+    }
+
+    @Override
+    public int listSize() {
+        return blenderProjectRepository.findAll().size();
+    }
+
+    @Override
+    public int listSizeByUser(String username) {
+        List<BlenderProject> listToReturn = new ArrayList<>();
+        for (BlenderProject project : blenderProjectRepository.findAll()) {
+            if (project.getSethlansUser().getUsername().equals(username)) {
+                listToReturn.add(project);
+            }
+
+        }
+        return listToReturn.size();
     }
 
     @Override
@@ -78,6 +99,19 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     }
 
     @Override
+    public int pendingProjectsSize() {
+        List<BlenderProject> pendingProjects = new ArrayList<>();
+        for (BlenderProject blenderProject : blenderProjectRepository.findAll()) {
+            if (blenderProject.getProjectStatus().equals(ProjectStatus.Pending)) {
+                pendingProjects.add(blenderProject);
+            }
+
+        }
+        return pendingProjects.size();
+
+    }
+
+    @Override
     public List<BlenderProject> getRemainingQueueProjects() {
         List<BlenderProject> remainingProjects = new ArrayList<>();
         for (BlenderProject blenderProject : listAll()) {
@@ -88,6 +122,19 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
             }
         }
         return remainingProjects;
+    }
+
+    @Override
+    public int remainingQueueProjectsSize() {
+        List<BlenderProject> remainingProjects = new ArrayList<>();
+        for (BlenderProject blenderProject : blenderProjectRepository.findAll()) {
+            if (blenderProject.getProjectStatus().equals(ProjectStatus.Rendering) || blenderProject.getProjectStatus().equals(ProjectStatus.Started)) {
+                if (!blenderProject.isQueueFillComplete()) {
+                    remainingProjects.add(blenderProject);
+                }
+            }
+        }
+        return remainingProjects.size();
     }
 
     @Override
@@ -149,7 +196,7 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
             objectOutputStream.writeObject(blenderProject.getFramePartList());
             objectOutputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error(Throwables.getStackTraceAsString(e));
         }
     }
 
@@ -161,12 +208,10 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
             List<BlenderFramePart> blenderFramePartList = (List<BlenderFramePart>) objectInputStream.readObject();
             objectInputStream.close();
             return blenderFramePartList;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (EOFException e) {
+            LOG.debug("End of file reached");
+        } catch (IOException | ClassNotFoundException e) {
+            LOG.error(Throwables.getStackTraceAsString(e));
         }
         return null;
     }

@@ -229,17 +229,23 @@ public class SethlansUtils {
     }
 
     public static File createArchive(List<String> frameFileNames, String projectRootDir, String projectName) {
+        LOG.debug("Creating Archive for " + projectName);
         File createdArchive = null;
         try {
-            ZipFile zipFile = new ZipFile(projectRootDir + File.separator + projectName + ".zip");
-            ZipParameters parameters = new ZipParameters();
-            parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
-            parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_MAXIMUM);
-            for (String frameFileName : frameFileNames) {
-                File frame = new File(frameFileName);
-                zipFile.addFile(frame, parameters);
+            if (!new File(projectRootDir + File.separator + projectName + ".zip").exists()) {
+                ZipFile zipFile = new ZipFile(projectRootDir + File.separator + projectName + ".zip");
+                ZipParameters parameters = new ZipParameters();
+                parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+                parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_MAXIMUM);
+                for (String frameFileName : frameFileNames) {
+                    File frame = new File(frameFileName);
+                    zipFile.addFile(frame, parameters);
+                }
+                createdArchive = new File(projectRootDir + File.separator + projectName + ".zip");
+            } else {
+                createdArchive = new File(projectRootDir + File.separator + projectName + ".zip");
             }
-            createdArchive = new File(projectRootDir + File.separator + projectName + ".zip");
+
         } catch (ZipException e) {
             LOG.error(e.getMessage());
             LOG.error(Throwables.getStackTraceAsString(e));

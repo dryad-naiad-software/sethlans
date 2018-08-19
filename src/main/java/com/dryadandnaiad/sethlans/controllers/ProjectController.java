@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -212,9 +212,9 @@ public class ProjectController {
     public Integer numberOfProjects() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-            return blenderProjectDatabaseService.listAllReverse().size();
+            return blenderProjectDatabaseService.listSize();
         } else {
-            return blenderProjectDatabaseService.getProjectsByUser(auth.getName()).size();
+            return blenderProjectDatabaseService.listSizeByUser(auth.getName());
         }
     }
 

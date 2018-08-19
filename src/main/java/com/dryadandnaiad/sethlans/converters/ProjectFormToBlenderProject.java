@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -32,6 +32,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.ArrayList;
 
 @Component
 public class ProjectFormToBlenderProject implements Converter<ProjectForm, BlenderProject> {
@@ -65,6 +66,7 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
         blenderProject.setBlendFilename(projectForm.getUploadedFile());
         blenderProject.setPartsPerFrame(projectForm.getPartsPerFrame());
         blenderProject.setFrameRate(projectForm.getFrameRate());
+        blenderProject.setFramePartList(new ArrayList<>());
 
 
         String truncatedProjectName = StringUtils.left(projectForm.getProjectName(), 10);
