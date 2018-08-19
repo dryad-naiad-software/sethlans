@@ -46,6 +46,7 @@ export class ProjectsComponent implements OnInit {
   selectedProject: Project;
   currentPercentageArray: number[] = [];
   currentStatusArray: ProjectStatus[] = [];
+  thumbnailArray: string[] = [];
   projectTypes: any = ProjectType;
   computeTypes: any = ComputeMethod;
 
@@ -56,7 +57,7 @@ export class ProjectsComponent implements OnInit {
   ngOnInit() {
     this.getInfo();
     this.selectedProject = new Project();
-    let scheduler = timer(1000, 1000);
+    let scheduler = timer(5000, 5000);
     scheduler.subscribe(() => {
       this.getInfo();
     });
@@ -77,12 +78,14 @@ export class ProjectsComponent implements OnInit {
       this.projectSize = value;
     });
 
-    this.projectService.getProjectListInProgress().subscribe(value => {
+    this.projectService.getProjectListInProgress().subscribe((value: Project[]) => {
       let newPercentageArray: number[] = [];
       let newStatusArray: ProjectStatus[] = [];
+      let newThumbNailArray: string[] = [];
       for (let i = 0; i < value.length; i++) {
         newPercentageArray.push(value[i].currentPercentage);
         newStatusArray.push(value[i].projectStatus);
+        newThumbNailArray.push(value[i].thumbnailURL);
       }
       if (!Utils.isEqual(newPercentageArray, this.currentPercentageArray)) {
         this.projectLoad();
@@ -92,8 +95,13 @@ export class ProjectsComponent implements OnInit {
         this.projectLoad();
       }
 
+      if (!Utils.isEqual(newThumbNailArray, this.thumbnailArray)) {
+        this.projectLoad();
+      }
+
       this.currentPercentageArray = newPercentageArray;
       this.currentStatusArray = newStatusArray;
+      this.thumbnailArray = newThumbNailArray;
     });
   }
 

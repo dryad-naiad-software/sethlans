@@ -164,6 +164,7 @@ public class QueueServiceImpl implements QueueService {
     private void processingWorkflow() {
         updateFrames();
         finishProject();
+        processImages();
     }
 
     @Override
@@ -456,37 +457,25 @@ public class QueueServiceImpl implements QueueService {
         }
     }
 
-    @Override
-    @Async
-    public void processImages() {
-        try {
-            Thread.sleep(20000);
-        } catch (InterruptedException e) {
-            LOG.debug("Stopping Sethlans Queue Service");
-        }
-        while (true) {
-            try {
-                Thread.sleep(5000);
-                if (processFrameDatabaseService.listAll().size() > 0) {
-                    for (ProcessFrameItem processFrameItem : processFrameDatabaseService.listAll()) {
-                        BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(processFrameItem.getProjectUUID());
-                        List<Boolean> allPartsProcessed = new ArrayList<>();
-                        for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
-                            if (processFrameItem.getFrameNumber() == blenderFramePart.getFrameNumber()) {
-                                allPartsProcessed.add(blenderFramePart.isProcessed());
-                            }
-                        }
-                        if (!allPartsProcessed.contains(false)) {
-                            processImageAndAnimationService.combineParts(blenderProject, processFrameItem.getFrameNumber());
-                            processFrameDatabaseService.delete(processFrameItem);
+    private void processImages() {
+        if (!modifyingQueue) {
+            modifyingQueue = true;
+            if (processFrameDatabaseService.listAll().size() > 0) {
+                for (ProcessFrameItem processFrameItem : processFrameDatabaseService.listAll()) {
+                    BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(processFrameItem.getProjectUUID());
+                    List<Boolean> allPartsProcessed = new ArrayList<>();
+                    for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
+                        if (processFrameItem.getFrameNumber() == blenderFramePart.getFrameNumber()) {
+                            allPartsProcessed.add(blenderFramePart.isProcessed());
                         }
                     }
+                    if (!allPartsProcessed.contains(false)) {
+                        processImageAndAnimationService.combineParts(blenderProject, processFrameItem.getFrameNumber());
+                        processFrameDatabaseService.delete(processFrameItem);
+                    }
                 }
-            } catch (InterruptedException e) {
-                LOG.debug("Stopping Sethlans Queue Service");
-                break;
             }
-
+            modifyingQueue = false;
         }
     }
 
@@ -510,7 +499,7 @@ public class QueueServiceImpl implements QueueService {
                     blenderProject.setCurrentFrameThumbnail(frameFileUpdateItem.getCurrentFrameThumbnail());
                     frameFileUpdateDatabaseService.delete(frameFileUpdateItem);
                 }
-                if (blenderProject != null) {
+                if (blenderProject != null && !blenderProject.isUserStopped()) {
                     blenderProjectDatabaseService.saveOrUpdate(blenderProject);
                 }
                 LOG.debug("Completed File name update");

@@ -32,11 +32,15 @@ import java.util.List;
  */
 public interface BlenderProjectDatabaseService extends CRUDService<BlenderProject> {
 
+    List<BlenderProject> listWithoutFramePart();
+
     int listSize();
 
     int listSizeByUser(String username);
 
     List<BlenderProject> getProjectsByUser(String username);
+
+    List<BlenderProject> getProjectsByUserWithoutFrameParts(String username);
 
     List<BlenderProject> getPendingProjects();
 
@@ -50,9 +54,15 @@ public interface BlenderProjectDatabaseService extends CRUDService<BlenderProjec
 
     List<BlenderProject> listAllReverse();
 
+    BlenderProject getByIdWithoutFrameParts(Long id);
+
     BlenderProject getProjectByUser(String username, Long id);
 
+    BlenderProject getProjectByUserWithoutFrameParts(String username, Long id);
+
     BlenderProject getByProjectUUID(String projectUUID);
+
+    BlenderProject getByProjectUUIDWithoutFrameParts(String projectUUID);
 
     BlenderProject saveOrUpdateProjectForm(ProjectForm projectForm);
 

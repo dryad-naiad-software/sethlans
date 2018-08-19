@@ -227,9 +227,9 @@ public class ProjectController {
     public List<ProjectInfo> getProjects() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-            return convertBlenderProjectsToProjectInfo(blenderProjectDatabaseService.listAll());
+            return convertBlenderProjectsToProjectInfo(blenderProjectDatabaseService.listWithoutFramePart());
         } else {
-            return convertBlenderProjectsToProjectInfo(blenderProjectDatabaseService.getProjectsByUser(auth.getName()));
+            return convertBlenderProjectsToProjectInfo(blenderProjectDatabaseService.getProjectsByUserWithoutFrameParts(auth.getName()));
         }
 
     }
@@ -239,7 +239,7 @@ public class ProjectController {
     public List<ProjectInfo> getUnFinishedProjects() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-            List<BlenderProject> blenderProjectList = blenderProjectDatabaseService.listAll();
+            List<BlenderProject> blenderProjectList = blenderProjectDatabaseService.listWithoutFramePart();
             List<BlenderProject> unfinishedProjects = new ArrayList<>();
             for (BlenderProject blenderProject : blenderProjectList) {
                 if (!blenderProject.getProjectStatus().equals(ProjectStatus.Finished)) {
@@ -248,7 +248,7 @@ public class ProjectController {
             }
             return convertBlenderProjectsToProjectInfo(unfinishedProjects);
         } else {
-            List<BlenderProject> blenderProjectList = blenderProjectDatabaseService.getProjectsByUser(auth.getName());
+            List<BlenderProject> blenderProjectList = blenderProjectDatabaseService.getProjectsByUserWithoutFrameParts(auth.getName());
             List<BlenderProject> unfinishedProjects = new ArrayList<>();
             for (BlenderProject blenderProject : blenderProjectList) {
                 if (!blenderProject.getProjectStatus().equals(ProjectStatus.Finished)) {
@@ -262,7 +262,7 @@ public class ProjectController {
 
     @GetMapping("/api/project_ui/thumbnail_status/{id}")
     public boolean thumbnailPresent(@PathVariable Long id) {
-        BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
+        BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
         if (blenderProject == null) {
             return false;
         } else {
@@ -276,7 +276,7 @@ public class ProjectController {
 
     @GetMapping("/api/project_ui/thumbnail/{id}")
     public ResponseEntity<byte[]> getThumbnailImage(@PathVariable Long id) {
-        BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
+        BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
         if (blenderProject == null) {
             return null;
         }
@@ -301,12 +301,12 @@ public class ProjectController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BlenderProject blenderProject;
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-            blenderProject = blenderProjectDatabaseService.getById(id);
+            blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
             if (blenderProject != null) {
                 return convertBlenderProjectToProjectInfo(blenderProject).getTotalRenderTime();
             }
         } else {
-            blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
+            blenderProject = blenderProjectDatabaseService.getProjectByUserWithoutFrameParts(auth.getName(), id);
             if (blenderProject != null) {
                 return convertBlenderProjectToProjectInfo(blenderProject).getTotalRenderTime();
             }
@@ -319,12 +319,12 @@ public class ProjectController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BlenderProject blenderProject;
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-            blenderProject = blenderProjectDatabaseService.getById(id);
+            blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
             if (blenderProject != null) {
                 return convertBlenderProjectToProjectInfo(blenderProject).getProjectTime();
             }
         } else {
-            blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
+            blenderProject = blenderProjectDatabaseService.getProjectByUserWithoutFrameParts(auth.getName(), id);
             if (blenderProject != null) {
                 return convertBlenderProjectToProjectInfo(blenderProject).getProjectTime();
             }
@@ -337,12 +337,12 @@ public class ProjectController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BlenderProject blenderProject;
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-            blenderProject = blenderProjectDatabaseService.getById(id);
+            blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
             if (blenderProject != null) {
                 return blenderProject.getTotalQueueSize();
             }
         } else {
-            blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
+            blenderProject = blenderProjectDatabaseService.getProjectByUserWithoutFrameParts(auth.getName(), id);
             if (blenderProject != null) {
                 return blenderProject.getTotalQueueSize();
             }
@@ -355,12 +355,12 @@ public class ProjectController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BlenderProject blenderProject;
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-            blenderProject = blenderProjectDatabaseService.getById(id);
+            blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
             if (blenderProject != null) {
                 return blenderProject.getRemainingQueueSize();
             }
         } else {
-            blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
+            blenderProject = blenderProjectDatabaseService.getProjectByUserWithoutFrameParts(auth.getName(), id);
             if (blenderProject != null) {
                 return blenderProject.getRemainingQueueSize();
             }
@@ -373,12 +373,12 @@ public class ProjectController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BlenderProject blenderProject;
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-            blenderProject = blenderProjectDatabaseService.getById(id);
+            blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
             if (blenderProject != null) {
                 return blenderProject.getCurrentPercentage();
             }
         } else {
-            blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
+            blenderProject = blenderProjectDatabaseService.getProjectByUserWithoutFrameParts(auth.getName(), id);
             if (blenderProject != null) {
                 return blenderProject.getCurrentPercentage();
             }
@@ -392,12 +392,12 @@ public class ProjectController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BlenderProject blenderProject;
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-            blenderProject = blenderProjectDatabaseService.getById(id);
+            blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
             if (blenderProject != null) {
                 return blenderProject.getProjectStatus();
             }
         } else {
-            blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
+            blenderProject = blenderProjectDatabaseService.getProjectByUserWithoutFrameParts(auth.getName(), id);
             if (blenderProject != null) {
                 return blenderProject.getProjectStatus();
             }
@@ -409,9 +409,9 @@ public class ProjectController {
     public ProjectInfo getProject(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-            return convertBlenderProjectToProjectInfo(blenderProjectDatabaseService.getById(id));
+            return convertBlenderProjectToProjectInfo(blenderProjectDatabaseService.getByIdWithoutFrameParts(id));
         } else {
-            return convertBlenderProjectToProjectInfo(blenderProjectDatabaseService.getProjectByUser(auth.getName(), id));
+            return convertBlenderProjectToProjectInfo(blenderProjectDatabaseService.getProjectByUserWithoutFrameParts(auth.getName(), id));
         }
     }
 

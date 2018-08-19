@@ -27,6 +27,9 @@ import com.dryadandnaiad.sethlans.forms.project.ProjectForm;
 import com.dryadandnaiad.sethlans.repositories.BlenderProjectRepository;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +61,11 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     }
 
     @Override
+    public List<BlenderProject> listWithoutFramePart() {
+        return new ArrayList<>(blenderProjectRepository.findAll());
+    }
+
+    @Override
     public int listSize() {
         return blenderProjectRepository.findAll().size();
     }
@@ -78,6 +86,18 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     public List<BlenderProject> getProjectsByUser(String username) {
         List<BlenderProject> listToReturn = new ArrayList<>();
         for (BlenderProject project : listAll()) {
+            if (project.getSethlansUser().getUsername().equals(username)) {
+                listToReturn.add(project);
+            }
+
+        }
+        return listToReturn;
+    }
+
+    @Override
+    public List<BlenderProject> getProjectsByUserWithoutFrameParts(String username) {
+        List<BlenderProject> listToReturn = new ArrayList<>();
+        for (BlenderProject project : listWithoutFramePart()) {
             if (project.getSethlansUser().getUsername().equals(username)) {
                 listToReturn.add(project);
             }
@@ -162,18 +182,47 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     }
 
     @Override
+    public BlenderProject getByIdWithoutFrameParts(Long id) {
+        return blenderProjectRepository.findOne(id);
+    }
+
+    @Override
     public BlenderProject getProjectByUser(String username, Long id) {
         BlenderProject blenderProject = blenderProjectRepository.findOne(id);
         if (blenderProject.getSethlansUser().getUsername().equals(username)) {
+            blenderProject.setFramePartList(loadBlenderPartList(blenderProject));
             return blenderProject;
         } else {
             return null;
         }
     }
 
+    @Override
+    public BlenderProject getProjectByUserWithoutFrameParts(String username, Long id) {
+        BlenderProject blenderProject = blenderProjectRepository.findOne(id);
+        if (blenderProject.getSethlansUser().getUsername().equals(username)) {
+            return blenderProject;
+        } else {
+            return null;
+        }
+
+    }
+
 
     @Override
     public BlenderProject getByProjectUUID(String projectUUID) {
+        List<BlenderProject> blenderProjectList = listAll();
+        for (BlenderProject blenderProject : blenderProjectList) {
+            if (blenderProject.getProject_uuid().equals(projectUUID)) {
+                blenderProject.setFramePartList(loadBlenderPartList(blenderProject));
+                return blenderProject;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public BlenderProject getByProjectUUIDWithoutFrameParts(String projectUUID) {
         List<BlenderProject> blenderProjectList = listAll();
         for (BlenderProject blenderProject : blenderProjectList) {
             if (blenderProject.getProject_uuid().equals(projectUUID)) {
@@ -191,26 +240,26 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
 
     private void saveBlenderPartList(BlenderProject blenderProject) {
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(blenderProject.getProjectRootDir() + File.separator + blenderProject.getProject_uuid() + ".partlist");
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(blenderProject.getFramePartList());
-            objectOutputStream.close();
+            Writer writer = new FileWriter(blenderProject.getProjectRootDir() + File.separator + blenderProject.getProject_uuid() + ".json");
+            Gson gson = new GsonBuilder().create();
+            gson.toJson(blenderProject.getFramePartList(), writer);
+            writer.close();
         } catch (IOException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
         }
     }
 
-    @SuppressWarnings(value = "unchecked")
     private List<BlenderFramePart> loadBlenderPartList(BlenderProject blenderProject) {
         try {
-            FileInputStream fileInputStream = new FileInputStream(blenderProject.getProjectRootDir() + File.separator + blenderProject.getProject_uuid() + ".partlist");
-            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-            List<BlenderFramePart> blenderFramePartList = (List<BlenderFramePart>) objectInputStream.readObject();
-            objectInputStream.close();
+            BufferedReader reader = new BufferedReader(new FileReader(blenderProject.getProjectRootDir() + File.separator + blenderProject.getProject_uuid() + ".json"));
+            Gson gson = new Gson();
+            List<BlenderFramePart> blenderFramePartList = gson.fromJson(reader, new TypeToken<List<BlenderFramePart>>() {
+            }.getType());
+            reader.close();
             return blenderFramePartList;
         } catch (EOFException e) {
             LOG.debug("End of file reached");
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
         }
         return null;
