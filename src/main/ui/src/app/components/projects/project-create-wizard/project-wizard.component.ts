@@ -61,7 +61,7 @@ export class ProjectWizardComponent implements OnInit {
       this.projectWizard.project.partsPerFrame = 1;
     }
     this.http.post('/api/project_form/submit_project', JSON.stringify(this.projectWizard.project), httpOptions).subscribe(() => {
-      this.projectWizard.currentProgress = ProjectWizardProgress.FINISHED;
+      this.returnToProjects();
     });
   }
 

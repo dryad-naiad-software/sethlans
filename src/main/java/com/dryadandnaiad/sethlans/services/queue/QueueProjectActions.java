@@ -23,14 +23,19 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.QueueActionItem;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderQueueItem;
+import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.ProcessQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.RenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.google.common.base.Throwables;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -96,6 +101,9 @@ class QueueProjectActions {
                                 break;
                             case GPU:
                                 sethlansNode.setAllGPUSlotInUse(false);
+                                for (GPUDevice gpu : sethlansNode.getSelectedGPUs()) {
+                                    gpu.setInUse(false);
+                                }
                                 setSlots(sethlansNode);
                                 break;
                             default:
@@ -112,6 +120,7 @@ class QueueProjectActions {
                     blenderProject.setProjectStart(0L);
                     blenderProject.setProjectEnd(0L);
                     blenderProject.setQueueIndex(0);
+                    blenderProject.setUserStopped(true);
                     blenderProject.setTotalRenderTime(0L);
                     blenderProject.setQueueFillComplete(false);
                     blenderProject.setRemainingQueueSize(blenderProject.getTotalQueueSize());
@@ -120,6 +129,11 @@ class QueueProjectActions {
                     blenderProject.setCurrentPercentage(0);
                     blenderProject.setFramePartList(new ArrayList<>());
                     blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
+                    try {
+                        FileUtils.cleanDirectory(new File(blenderProject.getProjectRootDir() + File.separator + "received"));
+                    } catch (IOException e) {
+                        LOG.error(Throwables.getStackTraceAsString(e));
+                    }
                     blenderProjectDatabaseService.saveOrUpdate(blenderProject);
                 }
                 break;

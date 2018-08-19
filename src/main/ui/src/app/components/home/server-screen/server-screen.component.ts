@@ -121,6 +121,10 @@ export class ServerScreenComponent implements OnInit {
     this.http.get('/api/project_actions/delete_project/' + id + '/').subscribe();
   }
 
+  stopProject(id) {
+    this.http.get('/api/project_actions/stop_project/' + id + '/').subscribe();
+  }
+
   chartLoad() {
     this.chartData = {
       labels: ['CPU', 'GPU', 'CPU_GPU'],

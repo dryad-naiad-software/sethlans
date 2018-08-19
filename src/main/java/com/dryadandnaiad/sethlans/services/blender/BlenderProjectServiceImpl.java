@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.queue.QueueService;
+import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -53,7 +54,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Override
     @Async
     public void startProject(BlenderProject blenderProject) {
-            configureFrameList(blenderProject);
+        configureFrameList(blenderProject);
     }
 
     @Override
@@ -115,10 +116,22 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Override
     public void deleteProject(Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
-        queueService.stopBlenderProjectQueue(blenderProject);
-        String directory = blenderProject.getProjectRootDir();
-        blenderProjectDatabaseService.delete(id);
-        deleteDirectory(directory);
+        if (blenderProject.getProjectStatus().equals(ProjectStatus.Finished) || blenderProject.getProjectStatus().equals(ProjectStatus.Added)) {
+            String directory = blenderProject.getProjectRootDir();
+            blenderProjectDatabaseService.delete(id);
+            deleteDirectory(directory);
+        }
+
+    }
+
+    @Override
+    public void deleteProject(String username, Long id) {
+        BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(username, id);
+        if (blenderProject.getProjectStatus().equals(ProjectStatus.Finished) || blenderProject.getProjectStatus().equals(ProjectStatus.Added)) {
+            String directory = blenderProject.getProjectRootDir();
+            blenderProjectDatabaseService.deleteWithVerification(username, id);
+            deleteDirectory(directory);
+        }
     }
 
     @Override
@@ -138,14 +151,6 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     }
 
-    @Override
-    public void deleteProject(String username, Long id) {
-        BlenderProject blenderProject = blenderProjectDatabaseService.getProjectByUser(username, id);
-        queueService.stopBlenderProjectQueue(blenderProject);
-        String directory = blenderProject.getProjectRootDir();
-        blenderProjectDatabaseService.deleteWithVerification(username, id);
-        deleteDirectory(directory);
-    }
 
     private void deleteDirectory(String directory) {
         try {
@@ -158,12 +163,12 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
 
     private void deleteProjectFrames(BlenderProject blenderProject, int count) {
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i <= count; i++) {
             int frame = i + 1;
             try {
                 FileUtils.deleteDirectory(new File(blenderProject.getProjectRootDir() + File.separator + "frame_" + frame));
             } catch (IOException e) {
-                e.printStackTrace();
+                LOG.error(Throwables.getStackTraceAsString(e));
             }
         }
     }
@@ -196,6 +201,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         blenderProject.setRemainingQueueSize(blenderFramePartList.size());
         LOG.debug("Project Frames configured.");
         blenderProject.setProjectStatus(ProjectStatus.Pending);
+        blenderProject.setUserStopped(false);
         blenderProjectDatabaseService.saveOrUpdate(blenderProject);
 
     }

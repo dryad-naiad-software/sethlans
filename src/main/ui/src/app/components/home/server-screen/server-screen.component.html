@@ -56,6 +56,11 @@
                     ||  project.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
                     (click)="confirm(project, deleteConfirmation)">Delete
             </button>
+            <button class="btn btn-outline-danger btn-sm" type="button"
+                    *ngIf="project.projectStatus.valueOf().toString() != 'Added'.valueOf()
+                    &&  project.projectStatus.valueOf().toString() != 'Finished'.valueOf()"
+                    (click)="confirm(project, stopConfirmation)">Stop
+            </button>
           </div>
         </mat-cell>
       </ng-container>
@@ -119,6 +124,24 @@
     </button>
     <button type="button" class="btn btn-outline-danger ml-auto float-right"
             (click)="c; deleteProject(selectedProject.id)">Yes
+    </button>
+  </div>
+
+</ng-template>
+<!--Stop Project Confirmation-->
+<ng-template #stopConfirmation let-c="close('Close click')" let-d="dismiss('Cross click')">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Stop Project</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to stop <strong>{{selectedProject.projectName}}</strong>?</p>
+    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c">No
+    </button>
+    <button type="button" class="btn btn-outline-danger ml-auto float-right"
+            (click)="c; stopProject(selectedProject.id)">Yes
     </button>
   </div>
 

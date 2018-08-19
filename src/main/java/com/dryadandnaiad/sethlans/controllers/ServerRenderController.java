@@ -161,21 +161,26 @@ public class ServerRenderController {
             if (!part.isEmpty()) {
                 SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
                 BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(project_uuid);
-                LOG.debug("Received response from " + sethlansNode.getHostname() + ", adding to processing Queue.");
-                try {
-                    File receivedFile = new File(blenderProject.getProjectRootDir() + File.separator + "received" + File.separator + StringUtils.left(queue_uuid, 8) + "-" + System.currentTimeMillis() + ".png");
-                    part.transferTo(receivedFile);
-                    ProcessQueueItem processQueueItem = new ProcessQueueItem();
-                    processQueueItem.setConnection_uuid(connection_uuid);
-                    processQueueItem.setPart(receivedFile.toString());
-                    LOG.debug("Received file from " + sethlansNode.getHostname() + " saved as " + receivedFile.toString());
-                    processQueueItem.setQueueUUID(queue_uuid);
-                    processQueueItem.setProjectUUID(project_uuid);
-                    processQueueItem.setRenderTime(render_time);
-                    queueService.addItemToProcess(processQueueItem);
-                } catch (IOException e) {
-                    LOG.error(Throwables.getStackTraceAsString(e));
+                if (!blenderProject.isUserStopped()) {
+                    LOG.debug("Received response from " + sethlansNode.getHostname() + ", adding to processing Queue.");
+                    try {
+                        File receivedFile = new File(blenderProject.getProjectRootDir() + File.separator + "received" + File.separator + StringUtils.left(queue_uuid, 8) + "-" + System.currentTimeMillis() + ".png");
+                        part.transferTo(receivedFile);
+                        ProcessQueueItem processQueueItem = new ProcessQueueItem();
+                        processQueueItem.setConnection_uuid(connection_uuid);
+                        processQueueItem.setPart(receivedFile.toString());
+                        LOG.debug("Received file from " + sethlansNode.getHostname() + " saved as " + receivedFile.toString());
+                        processQueueItem.setQueueUUID(queue_uuid);
+                        processQueueItem.setProjectUUID(project_uuid);
+                        processQueueItem.setRenderTime(render_time);
+                        queueService.addItemToProcess(processQueueItem);
+                    } catch (IOException e) {
+                        LOG.error(Throwables.getStackTraceAsString(e));
+                    }
+                } else {
+                    LOG.debug("Project stopped, discarding response");
                 }
+                
             }
         }
     }

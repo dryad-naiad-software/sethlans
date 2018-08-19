@@ -60,6 +60,7 @@ public class BlenderProject extends AbstractEntityClass {
     private int currentPercentage;
     private int partsPerFrame;
     private boolean allImagesProcessed;
+    private boolean userStopped;
     private ProjectStatus projectStatus;
     private String frameRate;
     private String projectName;
@@ -107,6 +108,7 @@ public class BlenderProject extends AbstractEntityClass {
                 ", endFrame=" + endFrame +
                 ", stepFrame=" + stepFrame +
                 ", samples=" + samples +
+                ", userStopped=" + userStopped +
                 ", blenderEngine=" + blenderEngine +
                 ", resolutionX=" + resolutionX +
                 ", resolutionY=" + resolutionY +

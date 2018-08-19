@@ -59,14 +59,7 @@
                     ngbTooltip="Summary" (click)="projectWizard.currentProgress = wizardProgress.SUMMARY">
               <i class="fas fa-list-alt"></i></button>
           </li>
-          <li>
-            <button type="button" class="btn btn-circle btn-lg"
-                    [disabled]="!projectWizard.finished"
-                    [ngClass]="projectWizard.currentProgress === wizardProgress.FINISHED ? 'btn-outline-success':'btn-outline-dark'"
-                    placement="top"
-                    ngbTooltip="Finished"><i
-              class="fas fa-check"></i></button>
-          </li>
+
         </ul>
         <app-project-upload [projectWizard]="projectWizard"
                             *ngIf="projectWizard.currentProgress === wizardProgress.UPLOAD">
@@ -113,12 +106,6 @@
                   (click)="submit()"
                   *ngIf="projectWizard.currentProgress === wizardProgress.SUMMARY">
             Submit
-          </button>
-          <button class="btn btn-outline-primary float-right"
-                  [disabled]="nextDisabled"
-                  (click)="returnToProjects()"
-                  *ngIf="projectWizard.currentProgress === wizardProgress.FINISHED">
-            Return to Projects
           </button>
         </nav>
       </div>

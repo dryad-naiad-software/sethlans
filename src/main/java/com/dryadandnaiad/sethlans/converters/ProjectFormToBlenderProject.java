@@ -67,6 +67,7 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
         blenderProject.setPartsPerFrame(projectForm.getPartsPerFrame());
         blenderProject.setFrameRate(projectForm.getFrameRate());
         blenderProject.setFramePartList(new ArrayList<>());
+        blenderProject.setUserStopped(false);
 
 
         String truncatedProjectName = StringUtils.left(projectForm.getProjectName(), 10);
