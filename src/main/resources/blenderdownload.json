@@ -2,22 +2,22 @@
   {
     "blenderVersion": "2.79b",
     "macOS": [
-      "http://download.blender.org/release/Blender2.79/blender-2.79b-macOS-10.6.zip",
       "http://mirror.cs.umn.edu/blender.org/release/Blender2.79/blender-2.79b-macOS-10.6.zip",
+      "https://mirror.clarkson.edu/blender/release/Blender2.79/blender-2.79b-macOS-10.6.zip",
       "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.79/blender-2.79b-macOS-10.6.zip",
       "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.79/blender-2.79b-macOS-10.6.zip",
       "https://www.blend4web.com/blender/release/Blender2.79/blender-2.79b-macOS-10.6.zip"
     ],
     "windows64": [
-      "http://download.blender.org/release/Blender2.79/blender-2.79b-windows64.zip",
       "http://mirror.cs.umn.edu/blender.org/release/Blender2.79/blender-2.79b-windows64.zip",
+      "https://mirror.clarkson.edu/blender/release/Blender2.79/blender-2.79b-windows64.zip",
       "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.79/blender-2.79b-windows64.zip",
       "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.79/blender-2.79b-windows64.zip",
       "https://www.blend4web.com/blender/release/Blender2.79/blender-2.79b-windows64.zip"
     ],
     "linux64": [
-      "http://download.blender.org/release/Blender2.79/blender-2.79b-linux-glibc219-x86_64.tar.bz2",
       "http://mirror.cs.umn.edu/blender.org/release/Blender2.79/blender-2.79b-linux-glibc219-x86_64.tar.bz2",
+      "https://mirror.clarkson.edu/blender/release/Blender2.79/blender-2.79b-linux-glibc219-x86_64.tar.bz2",
       "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.79/blender-2.79b-linux-glibc219-x86_64.tar.bz2",
       "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.79/blender-2.79b-linux-glibc219-x86_64.tar.bz2",
       "https://www.blend4web.com/blender/release/Blender2.79/blender-2.79b-linux-glibc219-x86_64.tar.bz2"
@@ -29,21 +29,18 @@
   {
     "blenderVersion": "2.78c",
     "macOS": [
-      "http://download.blender.org/release/Blender2.78/blender-2.78c-OSX_10.6-x86_64.zip",
       "http://mirror.cs.umn.edu/blender.org/release/Blender2.78/blender-2.78c-OSX_10.6-x86_64.zip",
       "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.78/blender-2.78c-OSX_10.6-x86_64.zip",
       "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.78/blender-2.78c-OSX_10.6-x86_64.zip",
       "https://www.blend4web.com/blender/release/Blender2.78/blender-2.78c-OSX_10.6-x86_64.zip"
     ],
     "windows64": [
-      "http://download.blender.org/release/Blender2.78/blender-2.78c-windows64.zip",
       "http://mirror.cs.umn.edu/blender.org/release/Blender2.78/blender-2.78c-windows64.zip",
       "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.78/blender-2.78c-windows64.zip",
       "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.78/blender-2.78c-windows64.zip",
       "https://www.blend4web.com/blender/release/Blender2.78/blender-2.78c-windows64.zip"
     ],
     "linux64": [
-      "http://download.blender.org/release/Blender2.78/blender-2.78c-linux-glibc219-x86_64.tar.bz2",
       "http://mirror.cs.umn.edu/blender.org/release/Blender2.78/blender-2.78c-linux-glibc219-x86_64.tar.bz2",
       "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.78/blender-2.78c-linux-glibc219-x86_64.tar.bz2",
       "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.78/blender-2.78c-linux-glibc219-x86_64.tar.bz2",
