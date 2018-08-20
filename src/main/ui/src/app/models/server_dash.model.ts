@@ -22,6 +22,8 @@ export class ServerDashboard {
   activeNodes: number;
   inactiveNodes: number;
   disabledNodes: number;
+  renderingSlots: number;
+  idleSlots: number;
   totalSlots: number;
   cpuName: string;
   totalMemory: string;

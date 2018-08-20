@@ -106,6 +106,23 @@ public class ServerInfoController {
         return blenderBinaryDatabaseService.installedBlenderVersions();
     }
 
+    @GetMapping(value = {"/server_rendering_slots"})
+    public int getRenderingSlots() {
+        return getTotalSlots() - getIdleSlots();
+    }
+
+    @GetMapping(value = {"/server_idle_slots"})
+    public int getIdleSlots() {
+        int availableSlotsCount = 0;
+        for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
+            if (sethlansNode.isActive() && !sethlansNode.isDisabled() && sethlansNode.isBenchmarkComplete()) {
+                availableSlotsCount = availableSlotsCount + sethlansNode.getAvailableRenderingSlots();
+            }
+        }
+        return availableSlotsCount;
+
+    }
+
     @GetMapping(value = {"/server_total_slots"})
     public int getTotalSlots() {
         int totalSlotsCount = 0;
@@ -149,6 +166,8 @@ public class ServerInfoController {
         serverDashBoardInfo.setTotalSlots(getTotalSlots());
         serverDashBoardInfo.setUsedSpace(getClientUsedSpace());
         serverDashBoardInfo.setTotalSpace(getClientTotalSpace());
+        serverDashBoardInfo.setIdleSlots(getIdleSlots());
+        serverDashBoardInfo.setRenderingSlots(getRenderingSlots());
         return serverDashBoardInfo;
     }
 
