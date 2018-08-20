@@ -260,8 +260,6 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
         } catch (EOFException e) {
             LOG.debug("End of file reached");
         } catch (IOException e) {
-            StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-            LOG.error(stackTraceElements[2].getClassName());
             LOG.error(e.getMessage());
             LOG.error(Throwables.getStackTraceAsString(e));
 
