@@ -200,7 +200,7 @@ public class ServerRenderController {
         if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
-            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(project_uuid);
+            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUIDWithoutFrameParts(project_uuid);
             File blend_file = new File(blenderProject.getBlendFileLocation());
             SethlansUtils.serveFile(blend_file, response);
         }

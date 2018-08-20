@@ -49,6 +49,7 @@ import java.util.List;
 public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabaseService {
     private BlenderProjectRepository blenderProjectRepository;
     private ProjectFormToBlenderProject projectFormToBlenderProject;
+    private Gson gson = new GsonBuilder().setLenient().create();
     private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectDatabaseServiceImpl.class);
 
     @Override
@@ -241,7 +242,6 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     private void saveBlenderPartList(BlenderProject blenderProject) {
         try {
             Writer writer = new FileWriter(blenderProject.getProjectRootDir() + File.separator + blenderProject.getProject_uuid() + ".json");
-            Gson gson = new GsonBuilder().create();
             gson.toJson(blenderProject.getFramePartList(), writer);
             writer.close();
         } catch (IOException e) {
@@ -252,7 +252,6 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     private List<BlenderFramePart> loadBlenderPartList(BlenderProject blenderProject) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(blenderProject.getProjectRootDir() + File.separator + blenderProject.getProject_uuid() + ".json"));
-            Gson gson = new Gson();
             List<BlenderFramePart> blenderFramePartList = gson.fromJson(reader, new TypeToken<List<BlenderFramePart>>() {
             }.getType());
             reader.close();
