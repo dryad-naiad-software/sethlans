@@ -224,7 +224,7 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
 
     @Override
     public BlenderProject getByProjectUUIDWithoutFrameParts(String projectUUID) {
-        List<BlenderProject> blenderProjectList = listAll();
+        List<BlenderProject> blenderProjectList = listWithoutFramePart();
         for (BlenderProject blenderProject : blenderProjectList) {
             if (blenderProject.getProject_uuid().equals(projectUUID)) {
                 return blenderProject;
