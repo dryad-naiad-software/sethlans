@@ -160,7 +160,7 @@ public class ServerRenderController {
         } else {
             if (!part.isEmpty()) {
                 SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
-                BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(project_uuid);
+                BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUIDWithoutFrameParts(project_uuid);
                 if (!blenderProject.isUserStopped()) {
                     LOG.debug("Received response from " + sethlansNode.getHostname() + ", adding to processing Queue.");
                     try {

@@ -163,8 +163,8 @@ public class QueueServiceImpl implements QueueService {
 
     private void processingWorkflow() {
         updateFrames();
-        finishProject();
         processImages();
+        finishProject();
     }
 
     @Override

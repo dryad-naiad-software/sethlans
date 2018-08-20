@@ -229,10 +229,10 @@ public class SethlansUtils {
     }
 
     public static File createArchive(List<String> frameFileNames, String projectRootDir, String projectName) {
-        LOG.debug("Creating Archive for " + projectName);
         File createdArchive = null;
         try {
             if (!new File(projectRootDir + File.separator + projectName + ".zip").exists()) {
+                LOG.debug("Creating Archive for " + projectName);
                 ZipFile zipFile = new ZipFile(projectRootDir + File.separator + projectName + ".zip");
                 ZipParameters parameters = new ZipParameters();
                 parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
