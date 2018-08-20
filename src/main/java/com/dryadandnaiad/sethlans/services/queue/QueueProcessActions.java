@@ -195,7 +195,7 @@ class QueueProcessActions {
                             }
                             blenderProject.setAllImagesProcessed(true);
                             blenderProject.setTotalProjectTime(blenderProject.getProjectEnd() - blenderProject.getProjectStart());
-                            blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
+                            blenderProject.setVersion(blenderProjectDatabaseService.getByIdWithoutFrameParts(blenderProject.getId()).getVersion());
                             blenderProjectDatabaseService.saveOrUpdate(blenderProject);
                             renderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
                         }

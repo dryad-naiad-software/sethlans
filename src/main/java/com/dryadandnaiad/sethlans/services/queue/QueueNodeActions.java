@@ -62,7 +62,7 @@ class QueueNodeActions {
             if (blenderProject.getProjectStatus().equals(ProjectStatus.Pending)) {
                 blenderProject.setProjectStatus(ProjectStatus.Started);
                 blenderProject.setProjectStart(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
-                blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
+                blenderProject.setVersion(blenderProjectDatabaseService.getByIdWithoutFrameParts(blenderProject.getId()).getVersion());
                 blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             }
             renderQueueItem.setRendering(true);
@@ -71,7 +71,7 @@ class QueueNodeActions {
         }
         if (!processNodeStatus.isAccepted()) {
             RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID());
-            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
+            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUIDWithoutFrameParts(renderQueueItem.getProject_uuid());
             LOG.debug("Received rejection for queue item " + processNodeStatus.getQueueUUID() + " adding back to pending queue.");
             renderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
             renderQueueItem.setConnection_uuid(null);

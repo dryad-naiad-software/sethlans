@@ -67,7 +67,7 @@ class QueueProjectActions {
                 }
                 blenderProject.setProjectStatus(ProjectStatus.Paused);
                 blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
-                blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
+                blenderProject.setVersion(blenderProjectDatabaseService.getByIdWithoutFrameParts(blenderProject.getId()).getVersion());
                 blenderProjectDatabaseService.saveOrUpdate(blenderProject);
                 break;
             case RESUME:
@@ -81,7 +81,7 @@ class QueueProjectActions {
                     }
                 }
                 blenderProject.setProjectStatus(ProjectStatus.Pending);
-                blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
+                blenderProject.setVersion(blenderProjectDatabaseService.getByIdWithoutFrameParts(blenderProject.getId()).getVersion());
                 blenderProjectDatabaseService.saveOrUpdate(blenderProject);
                 break;
             case STOP:
@@ -114,7 +114,7 @@ class QueueProjectActions {
 
                 }
                 renderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
-                if (!blenderProject.isAllImagesProcessed() && blenderProjectDatabaseService.getById(blenderProject.getId()) != null) {
+                if (!blenderProject.isAllImagesProcessed() && blenderProjectDatabaseService.getByIdWithoutFrameParts(blenderProject.getId()) != null) {
                     blenderProject.setProjectStatus(ProjectStatus.Added);
                     blenderProject.setTotalProjectTime(0L);
                     blenderProject.setProjectStart(0L);
@@ -128,7 +128,7 @@ class QueueProjectActions {
                     blenderProject.setCurrentFrameThumbnail(null);
                     blenderProject.setCurrentPercentage(0);
                     blenderProject.setFramePartList(new ArrayList<>());
-                    blenderProject.setVersion(blenderProjectDatabaseService.getById(blenderProject.getId()).getVersion());
+                    blenderProject.setVersion(blenderProjectDatabaseService.getByIdWithoutFrameParts(blenderProject.getId()).getVersion());
                     try {
                         FileUtils.cleanDirectory(new File(blenderProject.getProjectRootDir() + File.separator + "received"));
                     } catch (IOException e) {
