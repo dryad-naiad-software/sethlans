@@ -251,7 +251,8 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
 
     private List<BlenderFramePart> loadBlenderPartList(BlenderProject blenderProject) {
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(blenderProject.getProjectRootDir() + File.separator + blenderProject.getProject_uuid() + ".json"));
+            BufferedReader reader = new BufferedReader(new FileReader(blenderProject.getProjectRootDir() +
+                    File.separator + blenderProject.getProject_uuid() + ".json"));
             List<BlenderFramePart> blenderFramePartList = gson.fromJson(reader, new TypeToken<List<BlenderFramePart>>() {
             }.getType());
             reader.close();
@@ -259,7 +260,11 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
         } catch (EOFException e) {
             LOG.debug("End of file reached");
         } catch (IOException e) {
+            StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+            LOG.error(stackTraceElements[2].getClassName());
+            LOG.error(e.getMessage());
             LOG.error(Throwables.getStackTraceAsString(e));
+
         }
         return null;
     }
