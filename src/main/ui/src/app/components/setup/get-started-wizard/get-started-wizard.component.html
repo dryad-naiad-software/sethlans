@@ -26,6 +26,7 @@
         <ul class="nav nav-tabs justify-content-between pb-3">
           <li>
             <button type="button" class="btn btn-circle btn-lg"
+                    [disabled]="getStartedWizardForm.currentProgress === wizardProgress.FINISHED"
                     [ngClass]="getStartedWizardForm.currentProgress === wizardProgress.START ? 'btn-outline-primary':'btn-outline-dark'"
                     (click)="getStartedWizardForm.currentProgress = wizardProgress.START">
               <i class="fas fa-flag-checkered"></i></button>
@@ -33,12 +34,14 @@
 
           <li>
             <button type="button" class="btn btn-circle btn-lg"
+                    [disabled]="getStartedWizardForm.currentProgress === wizardProgress.FINISHED"
                     [ngClass]="getStartedWizardForm.currentProgress === wizardProgress.NODE_AUTH ? 'btn-outline-primary':'btn-outline-dark'"
                     (click)="getStartedWizardForm.currentProgress = wizardProgress.NODE_AUTH">
               <i class="fas fa-key"></i></button>
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
+                    [disabled]="!authComplete || getStartedWizardForm.currentProgress === wizardProgress.FINISHED "
                     [ngClass]="getStartedWizardForm.currentProgress === wizardProgress.ADD_NODES ? 'btn-outline-primary':'btn-outline-dark'"
                     (click)="getStartedWizardForm.currentProgress = wizardProgress.ADD_NODES">
               <i class="fas fa-plus"></i></button>
@@ -46,6 +49,7 @@
 
           <li>
             <button type="button" class="btn btn-circle btn-lg"
+                    [disabled]="getStartedWizardForm.currentProgress !== wizardProgress.FINISHED"
                     [ngClass]="getStartedWizardForm.currentProgress === wizardProgress.FINISHED ? 'btn-outline-success':'btn-outline-dark'"
                     (click)="getStartedWizardForm.currentProgress = wizardProgress.FINISHED">
               <i class="fas fa-check"></i></button>

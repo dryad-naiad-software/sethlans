@@ -37,12 +37,14 @@ export class GetStartedWizardComponent implements OnInit {
   disablePrevious: boolean;
   nextDisabled: boolean;
   showAuthAlert: boolean;
+  authComplete: boolean;
 
 
   constructor(private http: HttpClient) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
     this.disablePrevious = true;
     this.nextDisabled = false;
+    this.authComplete = false;
   }
 
   ngOnInit() {
@@ -75,6 +77,7 @@ export class GetStartedWizardComponent implements OnInit {
     this.http.post('/api/management/server_to_node_auth', JSON.stringify(jsonToSend), httpOptions).subscribe(() => {
       this.showAuthAlert = false;
       this.getStartedWizardForm.currentProgress = GetStartedProgress.ADD_NODES;
+      this.authComplete = true;
     });
   }
 
