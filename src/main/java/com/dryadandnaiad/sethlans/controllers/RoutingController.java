@@ -20,8 +20,8 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 /**
  * Created Mario Estrella on 2/24/18.
@@ -32,17 +32,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class RoutingController {
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @GetMapping(value = "/login")
     public String redirectLogin() {
         return "forward:/";
     }
 
-    @RequestMapping(value = "/")
+    @GetMapping(value = "/")
     public String getRoot() {
         return "index.html";
     }
 
-    @RequestMapping(value = {
+    @GetMapping(value = {
             "/settings",
             "/get_started",
             "/register",
@@ -68,7 +68,7 @@ public class RoutingController {
         return "forward:/";
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @PostMapping(value = "/login")
     public String loginPost() {
         return "forward:/";
     }

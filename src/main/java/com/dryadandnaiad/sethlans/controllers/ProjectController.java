@@ -132,7 +132,7 @@ public class ProjectController {
         }
     }
 
-    @RequestMapping(value = "/api/project_actions/download_project/{id}")
+    @GetMapping(value = "/api/project_actions/download_project/{id}")
     public void downloadProject(@PathVariable Long id, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BlenderProject project;
@@ -154,7 +154,7 @@ public class ProjectController {
         }
     }
 
-    @RequestMapping(value = "/api/project_actions/encode_project_video/{id}")
+    @GetMapping(value = "/api/project_actions/encode_project_video/{id}")
     public void encodeVideo(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BlenderProject project;
@@ -176,7 +176,7 @@ public class ProjectController {
 
     }
 
-    @RequestMapping(value = "/api/project_actions/download_project_video/{id}")
+    @GetMapping(value = "/api/project_actions/download_project_video/{id}")
     public void downloadVideo(@PathVariable Long id, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BlenderProject project;

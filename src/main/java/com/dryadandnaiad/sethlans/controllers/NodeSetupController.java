@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.services.config.UpdateComputeService;
 import com.dryadandnaiad.sethlans.services.database.AccessKeyDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,7 @@ public class NodeSetupController {
     private static final Logger LOG = LoggerFactory.getLogger(NodeSetupController.class);
 
     @PostMapping(value = "/add_access_key")
-    public boolean addAccessKey(@RequestBody AccessKey access_key) {
+    public boolean addAccessKey(@RequestBody Key access_key) {
         Pattern uuid = Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
         if (!uuid.matcher(access_key.getAccessKey()).matches()) {
             LOG.debug("Key submitted in an invalid format. " + access_key.getAccessKey());
@@ -58,7 +59,9 @@ public class NodeSetupController {
         }
         if (accessKeyDatabaseService.getByUUID(access_key.getAccessKey()) == null) {
             LOG.debug("Adding server access key to database:" + access_key.getAccessKey());
-            accessKeyDatabaseService.saveOrUpdate(access_key);
+            AccessKey accessKey = new AccessKey();
+            accessKey.setAccessKey(access_key.getAccessKey());
+            accessKeyDatabaseService.saveOrUpdate(accessKey);
             return true;
         }
         return false;
@@ -92,6 +95,11 @@ public class NodeSetupController {
         }
     }
 
+    // Wrapper class so swagger displays options properly
+    @Data
+    private static class Key {
+        private String accessKey;
+    }
 
     @Autowired
     public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
