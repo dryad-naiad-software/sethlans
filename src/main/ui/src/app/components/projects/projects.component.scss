@@ -17,3 +17,30 @@
  *
  */
 
+.btn-group-adjust {
+}
+
+.mat-column-projectName {
+  padding-right: 30px;
+}
+
+@media(min-width: 766px) {
+  .mat-column-actions {
+    padding-left: 20px;
+  }
+}
+
+@media(max-width: 766px) {
+
+  .mat-column-preview {
+    padding-top: 20px;
+  }
+
+  .mat-column-actions {
+    padding-top: 20px;
+  }
+  .btn-group-adjust {
+    padding-top: 50px;
+  }
+
+}

@@ -16,15 +16,15 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
-<div class="py-5">
+<div class="pb-5">
   <app-nav-bar class="fixed-top" [firstTime]="firstTime" [sethlansVersion]="sethlansVersion"
                [currentMode]="mode"></app-nav-bar>
 </div>
-<div class="px-5 m-auto">
+<div class="px-5 m-auto pt-2">
   <app-setup-wizard *ngIf="firstTime"></app-setup-wizard>
   <router-outlet *ngIf="!firstTime"></router-outlet>
 </div>
-<div class="py-5">
+<div class="pt-5">
   <app-footer [mode]="mode" [sethlansVersion]="sethlansVersion" class="fixed-bottom"></app-footer>
 </div>
 

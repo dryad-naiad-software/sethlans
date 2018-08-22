@@ -17,40 +17,20 @@
   ~
   -->
 
-<nav *ngIf="firstTime" class="navbar navbar-expand-md navbar-dark bg-dark mb-4 py-1">
-  <a href="/" class="pl-5 navbar-brand justify-content-around"
-     style="font-family: 'Fjalla One', sans-serif; font-size: 150%">
-    <img [src]="logo" height="32" class="d-inline-block align-top" alt="logo">
-    Sethlans</a>
-</nav>
-<nav *ngIf="!firstTime" class="navbar navbar-expand-md navbar-dark bg-dark mb-4 py-1">
+<nav class="navbar navbar-expand-md navbar-dark bg-dark py-1">
   <a href="/" class="navbar-brand pl-5"
-     style="font-family: 'Fjalla One', sans-serif; font-size: 150%">
+     style="font-family: 'Fjalla One', sans-serif; font-size: 130%">
     <img [src]="logo" height="32" class="d-inline-block align-top" alt="logo">
     Sethlans</a>
-  <button *ngIf="authenticated" class="navbar-toggler" type="button" data-toggle="collapse"
+  <button *ngIf="authenticated && !firstTime" class="navbar-toggler" type="button" data-toggle="collapse"
           data-target="#navbarSupportedContent" (click)="isCollapsed = !isCollapsed">
     <span class="navbar-toggler-icon"></span>
   </button>
-  <div *ngIf="authenticated" class="collapse navbar-collapse float-right" id="navbarSupportedContent"
+  <div *ngIf="authenticated && !firstTime" class="collapse navbar-collapse float-right" id="navbarSupportedContent"
        [ngbCollapse]="isCollapsed">
     <!--Right Menu-->
     <ul class="text-white nav ml-auto pr-5" *ngIf="authenticated">
-      <!--Notifications-->
-      <li class="nav-item" id="notificationsDropDown" ngbDropdown>
-        <a href="javascript:void(0);" class="text-white nav-link" ngbDropdownToggle>
-          <i class="fas fa-fw fa-bell"></i>
-          <span *ngIf="notifications == true" class="badge badge-notify">!</span>
-        </a>
-        <div ngbDropdownMenu>
-          <a *ngIf="notifications == false" href="javascript:void(0);" class="dropdown-item">
-            <i class="fas fa-fw fa-info-circle"></i>&nbsp;&nbsp;No new notifications</a>
-          <span *ngIf="notifications == true">
-            <a href="javascript:void(0);" class="dropdown-item" *ngFor="let notification of notificationList"><i
-              class="fas fa-fw fa-info-circle"></i>&nbsp;&nbsp;{{notification}}</a>
-          </span>
-        </div>
-      </li>
+
       <!--Home Button -->
       <li class="nav-item">
         <a href="/" class="text-white nav-link">
@@ -61,15 +41,15 @@
       <!--Projects Menu-->
       <li class="nav-item" *ngIf="currentMode == mode.SERVER || currentMode == mode.DUAL">
         <a href="/projects" class="text-white nav-link">
-          <i class="fas fa-fw fa-puzzle-piece"></i>
+          <i class="fas fa-fw fa-puzzle-piece fa-sm"></i>
           <span>&nbsp;Projects</span>
         </a>
       </li>
 
       <!--Admin Menu-->
-      <li class="nav-item" id="adminDropDown" ngbDropdown *ngIf="isAdministrator">
+      <li class="nav-item" id="adminDropDown" ngbDropdown *ngIf="isAdministrator" placement="bottom-right">
         <a class="text-white nav-link dropdown-toggle" href="javascript:void(0);" ngbDropdownToggle>
-          <i class="fas fa-fw fa-user-ninja"></i>
+          <i class="fas fa-fw fa-user-ninja fa-sm"></i>
           <span>&nbsp;Admin</span>
         </a>
         <div ngbDropdownMenu>
@@ -123,9 +103,9 @@
         </div>
       </li>
       <!--User Menu-->
-      <li class="nav-item" id="userDropDown" ngbDropdown>
+      <li class="nav-item" id="userDropDown" ngbDropdown placement="bottom-right">
         <a class="text-white nav-link dropdown-toggle" href="javascript:void(0);" ngbDropdownToggle>
-          <span class="fas fa-fw fa-user"></span>&nbsp;{{username}}</a>
+          <span class="fas fa-fw fa-user fa-sm"></span>&nbsp;{{username}}</a>
         <div ngbDropdownMenu>
           <a href="/user_settings" class="dropdown-item">
             <i class="fas fa-fw fa-wrench"></i>
@@ -138,9 +118,9 @@
       </li>
 
       <!--Help Menu-->
-      <li class="nav-item" ngbDropdown>
+      <li class="nav-item" ngbDropdown placement="bottom-right">
         <a href="javascript:void(0);" class="text-white nav-link" ngbDropdownToggle>
-          <i class="fas fa-fw fa-info-circle"></i>
+          <i class="fas fa-fw fa-info-circle fa-sm"></i>
           <span>&nbsp;Help</span>
         </a>
         <div ngbDropdownMenu>
@@ -148,9 +128,29 @@
             <i class="fas fa-fw fa-question-circle"></i>
             <span>&nbsp;Help</span></a>
 
+          <a *ngIf="isAdministrator" href="/get_started" class="dropdown-item">
+            <i class="fas fa-fw fa-hourglass-start"></i>
+            <span>&nbsp;Get Started</span></a>
+
           <button class="dropdown-item" (click)="open(about)">
             <i class="fas fa-fw fa-star"></i>
             <span>&nbsp;About</span></button>
+        </div>
+      </li>
+
+      <!--Notifications-->
+      <li class="nav-item" id="notificationsDropDown" ngbDropdown placement="bottom-right">
+        <a href="javascript:void(0);" class="text-white nav-link" ngbDropdownToggle>
+          <i class="fas fa-fw fa-bell fa-sm"></i>
+          <span *ngIf="notifications == true" class="badge badge-notify">!</span>
+        </a>
+        <div ngbDropdownMenu>
+          <a *ngIf="notifications == false" href="javascript:void(0);" class="dropdown-item">
+            <i class="fas fa-fw fa-info-circle"></i>&nbsp;&nbsp;No new notifications</a>
+          <span *ngIf="notifications == true">
+            <a href="javascript:void(0);" class="dropdown-item" *ngFor="let notification of notificationList"><i
+              class="fas fa-fw fa-info-circle"></i>&nbsp;&nbsp;{{notification}}</a>
+          </span>
         </div>
       </li>
     </ul>
