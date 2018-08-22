@@ -21,7 +21,6 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
-import com.dryadandnaiad.sethlans.domains.database.server.AccessKey;
 import com.dryadandnaiad.sethlans.domains.info.BlenderBinaryInfo;
 import com.dryadandnaiad.sethlans.domains.info.GettingStartedInfo;
 import com.dryadandnaiad.sethlans.domains.info.NodeItem;
@@ -35,7 +34,6 @@ import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.gson.Gson;
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -175,8 +173,7 @@ public class AdminServerController {
     public boolean serverToNodeAuth(HttpEntity<String> httpEntity) {
         String json = httpEntity.getBody();
         Gson gson = new Gson();
-        AccessKey accessKey = new AccessKey();
-        accessKey.setAccessKey(getAccessKeyFromServer());
+        String accessKey = getAccessKeyFromServer();
         GettingStartedInfo gettingStartedInfo = gson.fromJson(json, GettingStartedInfo.class);
         for (NodeItem node : gettingStartedInfo.getListOfNodes()) {
             RestAssured.useRelaxedHTTPSValidation();
@@ -196,38 +193,17 @@ public class AdminServerController {
 
             RestAssured.sessionId = response.cookie("JSESSIONID");
 
-            given().log().ifValidationFails().accept(ContentType.JSON).contentType(ContentType.JSON)
+            given().log().ifValidationFails()
                     .header("X-XSRF-TOKEN", token)
-                    .cookie("XSRF-TOKEN", token).body(gson.toJson(accessKey))
+                    .cookie("XSRF-TOKEN", token).param("access_key", accessKey)
                     .when().post("/api/setup/add_access_key");
-
-
         }
 
         return true;
     }
 
 
-    @PostMapping(value = "/add_blender_version")
-    public boolean addNewBlenderVersion(@RequestParam String version) {
-        List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.listAll();
-        Set<BlenderBinaryOS> blenderBinaryOSSet = new HashSet<>();
-        if (sethlansNodeList.size() > 0) {
-            for (SethlansNode sethlansNode : sethlansNodeList) {
-                blenderBinaryOSSet.add(sethlansNode.getSethlansNodeOS());
-            }
-        } else {
-            blenderBinaryOSSet.add(BlenderBinaryOS.valueOf(SethlansUtils.getOS()));
-        }
 
-        for (BlenderBinaryOS blenderBinaryOS : blenderBinaryOSSet) {
-            BlenderBinary blenderBinary = new BlenderBinary();
-            blenderBinary.setBlenderVersion(version);
-            blenderBinary.setBlenderBinaryOS(blenderBinaryOS.toString());
-            blenderBinaryDatabaseService.saveOrUpdate(blenderBinary);
-        }
-        return true;
-    }
 
     @GetMapping(value = {"/node_check"})
     public SethlansNode checkNode(@RequestParam String ip, @RequestParam String port) {

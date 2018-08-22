@@ -26,6 +26,7 @@ import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
 import {timer} from 'rxjs';
 import {AccessKeyListService} from '../../../services/access_key_list.service';
 import {AccessKey} from '../../../models/access_key.model';
+import {HttpParams} from '../../../../../node_modules/@angular/common/http';
 
 @Component({
   selector: 'app-servers',
@@ -57,14 +58,12 @@ export class ServersComponent implements OnInit {
   }
 
   addAccessKeyToNode() {
-    let accessKeyObject = new AccessKey();
-    accessKeyObject.accessKey = this.keyToAdd;
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      })
-    };
-    this.http.post('/api/setup/add_access_key', JSON.stringify(accessKeyObject), httpOptions).subscribe((submitted: boolean) => {
+
+    let accessKeyObject = new HttpParams().set('access_key', this.keyToAdd);
+
+    this.http.post('/api/setup/add_access_key', accessKeyObject, {
+      headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+    }).subscribe((submitted: boolean) => {
       if (submitted === true) {
         this.keyRejected = false;
         this.loadAccessKeyTable();

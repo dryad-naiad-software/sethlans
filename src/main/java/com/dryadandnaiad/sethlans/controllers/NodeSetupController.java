@@ -51,16 +51,16 @@ public class NodeSetupController {
     private static final Logger LOG = LoggerFactory.getLogger(NodeSetupController.class);
 
     @PostMapping(value = "/add_access_key")
-    public boolean addAccessKey(@RequestBody Key access_key) {
+    public boolean addAccessKey(@RequestParam String access_key) {
         Pattern uuid = Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
-        if (!uuid.matcher(access_key.getAccessKey()).matches()) {
-            LOG.debug("Key submitted in an invalid format. " + access_key.getAccessKey());
+        if (!uuid.matcher(access_key).matches()) {
+            LOG.debug("Key submitted in an invalid format. " + access_key);
             return false;
         }
-        if (accessKeyDatabaseService.getByUUID(access_key.getAccessKey()) == null) {
-            LOG.debug("Adding server access key to database:" + access_key.getAccessKey());
+        if (accessKeyDatabaseService.getByUUID(access_key) == null) {
+            LOG.debug("Adding server access key to database:" + access_key);
             AccessKey accessKey = new AccessKey();
-            accessKey.setAccessKey(access_key.getAccessKey());
+            accessKey.setAccessKey(access_key);
             accessKeyDatabaseService.saveOrUpdate(accessKey);
             return true;
         }

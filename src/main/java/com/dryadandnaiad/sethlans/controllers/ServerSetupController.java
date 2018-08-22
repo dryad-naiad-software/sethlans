@@ -19,8 +19,11 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
+import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
@@ -35,7 +38,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created Mario Estrella on 4/2/2018.
@@ -49,6 +54,7 @@ import java.util.List;
 public class ServerSetupController {
     private NodeActivationService nodeActivationService;
     private NodeDiscoveryService nodeDiscoveryService;
+    private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private QueueService queueService;
     private static final Logger LOG = LoggerFactory.getLogger(ServerSetupController.class);
@@ -99,6 +105,27 @@ public class ServerSetupController {
         return true;
     }
 
+    @PostMapping(value = "/add_blender_version")
+    public boolean addNewBlenderVersion(@RequestParam String version) {
+        List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.listAll();
+        Set<BlenderBinaryOS> blenderBinaryOSSet = new HashSet<>();
+        if (sethlansNodeList.size() > 0) {
+            for (SethlansNode sethlansNode : sethlansNodeList) {
+                blenderBinaryOSSet.add(sethlansNode.getSethlansNodeOS());
+            }
+        } else {
+            blenderBinaryOSSet.add(BlenderBinaryOS.valueOf(SethlansUtils.getOS()));
+        }
+
+        for (BlenderBinaryOS blenderBinaryOS : blenderBinaryOSSet) {
+            BlenderBinary blenderBinary = new BlenderBinary();
+            blenderBinary.setBlenderVersion(version);
+            blenderBinary.setBlenderBinaryOS(blenderBinaryOS.toString());
+            blenderBinaryDatabaseService.saveOrUpdate(blenderBinary);
+        }
+        return true;
+    }
+
     @GetMapping("/node_replace/{id}")
     public boolean updateNode(@PathVariable Long id) {
         String accessKey = SethlansUtils.getProperty(SethlansConfigKeys.ACCESS_KEY.toString());
@@ -142,5 +169,10 @@ public class ServerSetupController {
     @Autowired
     public void setQueueService(QueueService queueService) {
         this.queueService = queueService;
+    }
+
+    @Autowired
+    public void setBlenderBinaryDatabaseService(BlenderBinaryDatabaseService blenderBinaryDatabaseService) {
+        this.blenderBinaryDatabaseService = blenderBinaryDatabaseService;
     }
 }

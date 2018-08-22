@@ -71,7 +71,7 @@ export class BlenderVersionsComponent implements OnInit {
 
   addVersion() {
     let versionProperty = new HttpParams().set('version', this.selectedVersion.toString());
-    this.http.post('/api/management/add_blender_version', versionProperty, {
+    this.http.post('/api/setup/add_blender_version', versionProperty, {
       headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
     }).subscribe((response: boolean) => {
       if (response) {

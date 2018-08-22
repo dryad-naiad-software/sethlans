@@ -33,7 +33,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.13.RELEASE</version>
+        <version>1.5.15.RELEASE</version>
     </parent>
 
     <organization>
@@ -55,8 +55,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <binLocation>binaries</binLocation>
-        <node.version>v10.2.1</node.version>
-        <npm.version>6.0.1</npm.version>
+        <node.version>v10.9.0</node.version>
+        <npm.version>6.2.0</npm.version>
         <izpack.staging>${project.build.directory}/staging</izpack.staging>
 
 
@@ -166,21 +166,21 @@
         <dependency>
             <groupId>org.tukaani</groupId>
             <artifactId>xz</artifactId>
-            <version>1.6</version>
+            <version>1.8</version>
         </dependency>
 
 
         <dependency>
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>
-            <version>3.4.4</version>
+            <version>3.8.0</version>
         </dependency>
 
 
         <dependency>
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-json</artifactId>
-            <version>3.4.4</version>
+            <version>3.8.0</version>
         </dependency>
 
         <dependency>
@@ -205,31 +205,25 @@
         <dependency>
             <groupId>org.jcuda</groupId>
             <artifactId>jcuda</artifactId>
-            <version>0.8.0</version>
+            <version>0.9.2</version>
         </dependency>
 
         <dependency>
             <groupId>org.jocl</groupId>
             <artifactId>jocl</artifactId>
-            <version>2.0.0</version>
+            <version>2.0.1</version>
         </dependency>
 
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna-platform</artifactId>
-            <version>4.4.0</version>
+            <version>4.5.2</version>
         </dependency>
 
         <dependency>
             <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
-            <version>4.4.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sourceforge.nekohtml</groupId>
-            <artifactId>nekohtml</artifactId>
-            <version>1.9.21</version>
+            <version>4.5.2</version>
         </dependency>
 
         <dependency>
@@ -241,26 +235,26 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>21.0</version>
+            <version>26.0-jre</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.13</version>
+            <version>1.18</version>
         </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.5</version>
+            <version>2.6</version>
         </dependency>
 
 
         <dependency>
             <groupId>org.rauschig</groupId>
             <artifactId>jarchivelib</artifactId>
-            <version>0.7.1</version>
+            <version>0.8.0</version>
         </dependency>
 
 
@@ -348,7 +342,7 @@
             <plugin>
                 <groupId>pl.project13.maven</groupId>
                 <artifactId>git-commit-id-plugin</artifactId>
-                <version>2.2.3</version>
+                <version>2.2.4</version>
                 <executions>
                     <execution>
                         <phase>validate</phase>
@@ -508,7 +502,7 @@
             <plugin>
                 <groupId>com.akathist.maven.plugins.launch4j</groupId>
                 <artifactId>launch4j-maven-plugin</artifactId>
-                <version>1.7.21</version>
+                <version>1.7.22</version>
                 <executions>
                     <execution>
                         <id>sethlans-main</id>
