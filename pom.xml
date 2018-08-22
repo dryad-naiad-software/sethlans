@@ -446,7 +446,7 @@
                                 </copy>
                                 <copy file="${basedir}/src/main/resources/sethlans.manifest"
                                       tofile="${izpack.staging}/${fileName}.manifest"/>
-                                <unzip src="${basedir}/src/main/jre/macOS/jre1.8.0_162.jre.zip"
+                                <unzip src="${basedir}/src/main/jre/macOS/jre1.8.0_181.jre.zip"
                                        dest="${project.build.directory}"/>
                             </target>
                         </configuration>
@@ -486,7 +486,7 @@
                     <iconFile>icon/sethlans.icns</iconFile>
                     <generateDiskImageFile>true</generateDiskImageFile>
                     <diskImageFile>${project.build.directory}/${binLocation}/${fileName}.dmg</diskImageFile>
-                    <jrePath>${project.build.directory}/jre1.8.0_162.jre</jrePath>
+                    <jrePath>${project.build.directory}/jre1.8.0_181.jre</jrePath>
                 </configuration>
                 <executions>
                     <execution>
@@ -525,7 +525,7 @@
                             </classPath>
                             <icon>${project.basedir}/src/main/resources/icon/sethlans.ico</icon>
                             <jre>
-                                <path>../lib/jre1.8.0_162</path>
+                                <path>../lib/jre1.8.0_181</path>
                                 <minVersion>1.8.0</minVersion>
                                 <jdkPreference>preferJre</jdkPreference>
                                 <bundledJre64Bit>true</bundledJre64Bit>
