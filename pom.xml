@@ -133,6 +133,12 @@
 
         <!-- Other Dependencies - Non Spring Specific-->
 
+        <dependency>
+            <groupId>com.threewks.spring</groupId>
+            <artifactId>spring-gae-gmail</artifactId>
+            <version>1.0.0-beta-2</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 -->
         <dependency>
             <groupId>io.springfox</groupId>
