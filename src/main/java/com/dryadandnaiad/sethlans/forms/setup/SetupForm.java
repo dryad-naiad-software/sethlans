@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.forms.setup;
 
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.forms.setup.subclasses.MailSettings;
 import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupServer;
 import lombok.Data;
@@ -40,6 +41,7 @@ public class SetupForm {
     private String appURL;
     private String rootDirectory;
     private SetupServer server;
+    private MailSettings mailSettings;
     private SetupNode node;
     private String logLevel;
 

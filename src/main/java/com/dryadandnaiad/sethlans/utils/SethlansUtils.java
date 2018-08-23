@@ -48,6 +48,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.FileCopyUtils;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.*;
 import java.awt.*;
@@ -56,6 +61,9 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.List;
 
@@ -68,6 +76,7 @@ import java.util.List;
 public class SethlansUtils {
     private static final Logger LOG = LoggerFactory.getLogger(SethlansUtils.class);
     private static Properties sethlansProperties = new Properties();
+    private static String key = "gQ5Q5Nxk0qjjxdwTQ$8UVExzO%nOehiF";
 
     public static Image createImage(String image, String description) {
         URL imageURL = null;
@@ -112,6 +121,35 @@ public class SethlansUtils {
         currentNode.setHostname(getHostname());
         currentNode.setIpAddress(getIP());
         return currentNode;
+    }
+
+    public static String encryptPropertyValue(String value) {
+        Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
+        Cipher cipher = null;
+        try {
+            cipher = Cipher.getInstance("AES");
+            // encrypt the text
+            cipher.init(Cipher.ENCRYPT_MODE, aesKey);
+            byte[] encrypted = cipher.doFinal(value.getBytes());
+            return new String(encrypted);
+        } catch (NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchPaddingException e) {
+            LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+        }
+        return null;
+    }
+
+    public static String decryptPropretyValue(String value) {
+        try {
+            Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.DECRYPT_MODE, aesKey);
+            return new String(cipher.doFinal(value.getBytes()));
+        } catch (BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | IllegalBlockSizeException e) {
+            LOG.error(e.getMessage());
+            LOG.error(Throwables.getStackTraceAsString(e));
+        }
+        return null;
     }
 
     public static boolean writePropertyToFile(SethlansConfigKeys configKey, String value, File configFile) {

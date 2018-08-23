@@ -57,7 +57,7 @@ public enum SethlansConfigKeys {
     LOG_LEVEL("logging.level.com.dryadandnaiad.sethlans"),
     DATABASE_LOC("spring.datasource.url"),
     GETTING_STARTED("sethlans.getStartedWiz"),
-    APP_URL("app.home");
+    SETHLANS_URL("sethlans.url");
 
 
 
