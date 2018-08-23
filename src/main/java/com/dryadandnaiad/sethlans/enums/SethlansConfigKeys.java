@@ -27,6 +27,7 @@ package com.dryadandnaiad.sethlans.enums;
  */
 public enum SethlansConfigKeys {
     ACCESS_KEY("sethlans.accessKey"),
+    SETHLANS_IP("server.ipaddress"),
     HTTPS_PORT("server.port"),
     FIRST_TIME("sethlans.firsttime"),
     LOGGING_FILE("logging.file"),
@@ -48,7 +49,6 @@ public enum SethlansConfigKeys {
     CPU_CORES("sethlans.cores"),
     PYTHON_BIN("sethlans.python.binary"),
     SCRIPTS_DIR("sethlans.scriptsDir"),
-    SETHLANS_IP("server.ipaddress"),
     TILE_SIZE_CPU("sethlans.tileSizeCPU"),
     TILE_SIZE_GPU("sethlans.tileSizeGPU"),
     BENCHMARK_DIR("sethlans.benchmarkDir"),
@@ -56,7 +56,8 @@ public enum SethlansConfigKeys {
     SESSION_TIMEOUT("server.session.timeout"),
     LOG_LEVEL("logging.level.com.dryadandnaiad.sethlans"),
     DATABASE_LOC("spring.datasource.url"),
-    GETTING_STARTED("sethlans.getStartedWiz");
+    GETTING_STARTED("sethlans.getStartedWiz"),
+    APP_URL("app.home");
 
 
 

@@ -29,6 +29,7 @@ export class SetupWizardForm {
   node: SethlansNode;
   ipAddress: string;
   port: number;
+  appURL: string;
   rootDirectory: string;
   complete: boolean;
   logLevel: string;

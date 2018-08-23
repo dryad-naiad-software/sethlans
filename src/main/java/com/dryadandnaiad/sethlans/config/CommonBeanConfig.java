@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -43,10 +43,10 @@ import java.util.concurrent.Executor;
  */
 @Configuration
 @EnableAsync
+
 @EnableJpaRepositories("com.dryadandnaiad.sethlans.repositories")
 public class CommonBeanConfig implements AsyncConfigurer {
     private static final Logger LOG = LoggerFactory.getLogger(CommonBeanConfig.class);
-
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {

@@ -53,6 +53,11 @@ export class SettingsConfigComponent implements OnInit {
           this.setupForm.port = sethlansPort['port'];
         });
     }
+    if (this.setupForm.appURL == null) {
+      this.http.get('/api/info/app_url').subscribe((appURL) => {
+        this.setupForm.appURL = appURL['app_url'];
+      });
+    }
 
   }
 
