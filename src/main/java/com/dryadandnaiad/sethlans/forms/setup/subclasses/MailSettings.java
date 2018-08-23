@@ -14,6 +14,7 @@ public class MailSettings {
     private String mailPort;
     private String username;
     private String password;
+    private String replyToAddress;
     private boolean smtpAuth;
     private boolean startTLSEnable;
     private boolean startTLSRequired;

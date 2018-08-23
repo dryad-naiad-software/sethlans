@@ -53,8 +53,52 @@
       </ul>
     </div>
   </div>
+  <div class="form-group">
+    <label for="sethlansURL">Sethlans URL:</label>
+    <input id="sethlansURL"
+           type="text"
+           name="appURL"
+           #appURL="ngModel"
+           [(ngModel)]="setupForm.appURL"
+           required
+           class="form-control form-control-sm" (keyup)="validateAndSubmit($event, settingsForm)"/>
+  </div>
   <hr/>
   <h6>Mail Settings</h6>
+  <div class="form-group">
+    <label for="mailHost">SMTP Server</label>
+    <input id="mailHost"
+           type="text"
+           name="mailHost"
+           #mailHost="ngModel"
+           [(ngModel)]="setupForm.mailSettings.mailHost"
+           required
+           class="form-control form-control-sm" (keyup)="validateAndSubmit($event, settingsForm)"/>
+  </div>
+  <div class="form-group">
+    <label for="mailPort">SMTP Port</label>
+    <input id="mailPort"
+           type="number"
+           name="mailPort"
+           #mailHost="ngModel"
+           [(ngModel)]="setupForm.mailSettings.mailPort"
+           required
+           class="form-control form-control-sm" (keyup)="validateAndSubmit($event, settingsForm)"/>
+  </div>
+  <div class="form-group">
+    <label for="replyToAddress">Reply To Address:</label>
+    <input id="replyToAddress"
+           type="text"
+           name="replyToAddress"
+           #replyToAddress="ngModel"
+           [(ngModel)]="setupForm.mailSettings.replyToAddress"
+           required
+           class="form-control form-control-sm" (keyup)="validateAndSubmit($event, settingsForm)"/>
+  </div>
+  <div class="form-group">
+    <span class="fas" [ngClass]="setupForm.mailSettings.smtpAuth == true ? 'fa-toggle-on': 'fa-toggle-off'"
+          (click)="!setupForm.mailSettings.smtpAuth"></span>
+  </div>
   <hr/>
 
   <a href="javascript:void(0);" (click)="hideAdvanced = !hideAdvanced"><h6>Advanced</h6></a>
