@@ -21,11 +21,13 @@ import {Mode} from '../../enums/mode.enum';
 import {User} from '../user.model';
 import {Server} from '../server.model';
 import {SethlansNode} from '../sethlan_node.model';
+import {MailSettings} from '../mail_settings_model';
 
 export class SetupWizardForm {
   mode: Mode;
   user: User;
   server: Server;
+  mailSettings: MailSettings;
   node: SethlansNode;
   ipAddress: string;
   port: number;
@@ -40,5 +42,6 @@ export class SetupWizardForm {
     this.complete = false;
     this.logLevel = 'INFO';
     this.isModeDone = false;
+    this.mailSettings = new MailSettings();
   }
 }
