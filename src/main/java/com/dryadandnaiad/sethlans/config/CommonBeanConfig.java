@@ -43,7 +43,6 @@ import java.util.concurrent.Executor;
  */
 @Configuration
 @EnableAsync
-
 @EnableJpaRepositories("com.dryadandnaiad.sethlans.repositories")
 public class CommonBeanConfig implements AsyncConfigurer {
     private static final Logger LOG = LoggerFactory.getLogger(CommonBeanConfig.class);
