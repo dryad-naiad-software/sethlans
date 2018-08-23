@@ -56,6 +56,13 @@ public enum SethlansConfigKeys {
     SESSION_TIMEOUT("server.session.timeout"),
     LOG_LEVEL("logging.level.com.dryadandnaiad.sethlans"),
     DATABASE_LOC("spring.datasource.url"),
+    MAIL_HOST("spring.mail.host"),
+    MAIL_PORT("spring.mail.port"),
+    MAIL_USER("spring.mail.username"),
+    MAIL_PASS("spring.mail.password"),
+    MAIL_TLS_ENABLE("spring.mail.properties.mail.smtp.starttls.enable"),
+    MAIL_TLS_REQUIRED("spring.mail.properties.mail.smtp.starttls.required"),
+    MAIL_USE_AUTH("spring.mail.properties.mail.smtp.auth"),
     GETTING_STARTED("sethlans.getStartedWiz"),
     SETHLANS_URL("sethlans.url");
 
