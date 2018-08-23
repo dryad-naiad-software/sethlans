@@ -96,7 +96,7 @@
            class="form-control form-control-sm" (keyup)="validateAndSubmit($event, settingsForm)"/>
   </div>
   <div class="form-group">
-    <span class="fas" [ngClass]="setupForm.mailSettings.smtpAuth == true ? 'fa-toggle-on': 'fa-toggle-off'"
+    <span class="fas" [ngClass]="setupForm.mailSettings.smtpAuth ? 'fa-toggle-on': 'fa-toggle-off'"
           (click)="!setupForm.mailSettings.smtpAuth"></span>
   </div>
   <hr/>
