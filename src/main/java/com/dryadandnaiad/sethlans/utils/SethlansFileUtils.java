@@ -20,13 +20,12 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.google.common.base.Throwables;
-import com.google.common.hash.HashCode;
-import com.google.common.hash.Hashing;
-import com.google.common.io.Files;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.util.Zip4jConstants;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.IOUtils;
 import org.rauschig.jarchivelib.ArchiveFormat;
 import org.rauschig.jarchivelib.Archiver;
 import org.rauschig.jarchivelib.ArchiverFactory;
@@ -75,9 +74,10 @@ public class SethlansFileUtils {
     }
 
     public static boolean fileCheckMD5(File file, String md5) throws IOException {
-        HashCode hash = Files.hash(file, Hashing.md5());
-        LOG.debug("Hash md5: " + hash.toString() + " JSON md5: " + md5);
-        return hash.toString().equals(md5);
+        FileInputStream fileInputStream = new FileInputStream(file);
+        String hashValue = DigestUtils.md5Hex(IOUtils.toByteArray(fileInputStream));
+        LOG.debug("Hash md5: " + hashValue + " JSON md5: " + md5);
+        return hashValue.equals(md5);
     }
 
     public static Image createImage(String image, String description) {
