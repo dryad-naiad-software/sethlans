@@ -62,6 +62,7 @@ export class SettingsConfigComponent implements OnInit {
   }
 
   validateAndSubmit(event, settingsForm) {
+    console.log(this.setupForm.mailSettings);
     if (settingsForm.valid) {
       this.disableNext.emit(false);
       if (this.setupForm.showMailSettings) {

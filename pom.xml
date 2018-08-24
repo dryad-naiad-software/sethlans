@@ -47,7 +47,9 @@
         <info.company.email>support@dryadandnaiad.com</info.company.email>
         <info.version>${project.version}</info.version>
         <sLauncherClass>org.springframework.boot.loader.JarLauncher</sLauncherClass>
+        <!--suppress UnresolvedMavenProperty -->
         <fileName>${project.artifactId}-${project.version}.${git.closest.tag.commit.count}</fileName>
+        <!--suppress UnresolvedMavenProperty -->
         <buildNumber>${git.closest.tag.commit.count}</buildNumber>
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>

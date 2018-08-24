@@ -181,7 +181,7 @@
              [(ngModel)]="setupForm.mailSettings.username"
              required
              class="form-control form-control-sm" (keyup)="validateAndSubmit($event, settingsForm)"
-             placeholder="username" pattern="^[a-zA-Z0-9]{2,}$"/>
+             placeholder="username" minlength="2"/>
     </div>
     <div *ngIf="setupForm.mailSettings.smtpAuth" class="form-group">
       <label for="mailPassword">SMTP Password:</label>
@@ -193,7 +193,7 @@
              [(ngModel)]="setupForm.mailSettings.password"
              required
              class="form-control form-control-sm" (keyup)="validateAndSubmit($event, settingsForm)"
-             placeholder="password" pattern="^[a-zA-Z0-9]{2,}$"/>
+             placeholder="password" minlength="2"/>
     </div>
 
   </div>
