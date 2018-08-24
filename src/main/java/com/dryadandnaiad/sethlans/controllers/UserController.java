@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created Mario Estrella on 2/26/18.
@@ -44,6 +45,8 @@ import java.util.Map;
 @RequestMapping("/api/users")
 public class UserController {
     private SethlansUserDatabaseService sethlansUserDatabaseService;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping(value = {"/username"})
@@ -95,6 +98,32 @@ public class UserController {
         return true;
     }
 
+    @GetMapping(value = {"/challenge_question"})
+    public Map getChallengeQuestion(@RequestParam String username) {
+        SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
+        if (user != null) {
+            Random random = new Random();
+            int key = random.nextInt(user.getChallengeList().size());
+            return Collections.singletonMap(key, user.getChallengeList().get(key).getChallenge());
+        }
+        return null;
+    }
+
+    @PostMapping(value = {"/challenge_response"})
+    public void verifyResponse(@RequestParam String username, @RequestParam int key, @RequestParam String submittedResponse) {
+        SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
+        if (user != null) {
+            String storedResponse = user.getChallengeList().get(key).getResponse();
+            String encryptedSubmission = bCryptPasswordEncoder.encode(submittedResponse);
+            if (storedResponse.equals(encryptedSubmission)) {
+                LOG.debug("Valid response.");
+            } else {
+                LOG.debug("Invalid response.");
+            }
+        }
+
+    }
+
     @PostMapping(value = {"/change_password/"})
     public boolean changePassword(@RequestParam String passToCheck, @RequestParam String newPassword) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -121,5 +150,10 @@ public class UserController {
     @Autowired
     public void setSethlansUserDatabaseService(SethlansUserDatabaseService sethlansUserDatabaseService) {
         this.sethlansUserDatabaseService = sethlansUserDatabaseService;
+    }
+
+    @Autowired
+    public void setbCryptPasswordEncoder(BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 }

@@ -241,6 +241,17 @@ public class SethlansQueryUtils {
         return version;
     }
 
+    public static List<String> getChallengeQuestionList() {
+        List<String> questionList = new ArrayList<>();
+        questionList.add("What is the color you hate the most?");
+        questionList.add("What is the name of the movie you hate the most?");
+        questionList.add("What is the name of the food you hate the most?");
+        questionList.add("What was the make of your first car?");
+        questionList.add("In what city or town does your nearest sibling live?");
+        questionList.add("What was your childhood nickname?");
+        return questionList;
+    }
+
     public static boolean isCuda(String deviceID) {
         return deviceID.contains("CUDA");
     }
