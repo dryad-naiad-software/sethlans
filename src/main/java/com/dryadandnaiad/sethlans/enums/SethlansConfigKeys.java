@@ -64,6 +64,7 @@ public enum SethlansConfigKeys {
     MAIL_TLS_ENABLE("spring.mail.properties.mail.smtp.starttls.enable"),
     MAIL_TLS_REQUIRED("spring.mail.properties.mail.smtp.starttls.required"),
     MAIL_USE_AUTH("spring.mail.properties.mail.smtp.auth"),
+    MAIL_SERVER_CONFIGURED("sethlans.mailConfigured"),
     MAIL_REPLYTO("sethlans.mail.replyto"),
     GETTING_STARTED("sethlans.getStartedWiz"),
     SETHLANS_URL("sethlans.url");

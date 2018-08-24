@@ -43,6 +43,8 @@ public class SethlansUser extends AbstractEntityClass {
     private String username;
     @ElementCollection(fetch = FetchType.EAGER)
     private List<Role> roles;
+    @ElementCollection
+    private List<SethlansUserChallenge> challengeList;
     private String password;
     private boolean active;
     private String email;
@@ -53,10 +55,11 @@ public class SethlansUser extends AbstractEntityClass {
     @Override
     public String toString() {
         return "SethlansUser{" +
-                "username='" + username + '\'' +
+                "username=" + username +
                 ", roles=" + roles +
                 ", active=" + active +
                 ", email=" + email +
+                ", challengeList=" + challengeList +
                 ", welcomeEmailSent=" + welcomeEmailSent +
                 ", passwordUpdated=" + passwordUpdated +
                 '}';

@@ -123,19 +123,24 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
         writeProperty(SethlansConfigKeys.TEMP_DIR, tempDirectory);
         writeProperty(SethlansConfigKeys.ROOT_DIR, setupForm.getRootDirectory());
         writeProperty(SethlansConfigKeys.DATABASE_LOC, "jdbc:h2:" + setupForm.getRootDirectory() + File.separator + "data" + File.separator + "sethlansdb;WRITE_DELAY=50");
-        writeProperty(SethlansConfigKeys.MAIL_HOST, setupForm.getMailSettings().getMailHost());
-        writeProperty(SethlansConfigKeys.MAIL_PORT, setupForm.getMailSettings().getMailPort());
-        writeProperty(SethlansConfigKeys.MAIL_REPLYTO, setupForm.getMailSettings().getReplyToAddress());
-        writeProperty(SethlansConfigKeys.MAIL_USE_AUTH, Boolean.toString(setupForm.getMailSettings().isSmtpAuth()));
-        if (setupForm.getMailSettings().isSmtpAuth()) {
-            writeProperty(SethlansConfigKeys.MAIL_USER, setupForm.getMailSettings().getUsername());
-            writeProperty(SethlansConfigKeys.MAIL_PASS, setupForm.getMailSettings().getPassword());
+        writeProperty(SethlansConfigKeys.MAIL_SERVER_CONFIGURED, Boolean.toString(setupForm.isMailConfigured()));
+        if (setupForm.isMailConfigured()) {
+            writeProperty(SethlansConfigKeys.MAIL_HOST, setupForm.getMailSettings().getMailHost());
+            writeProperty(SethlansConfigKeys.MAIL_PORT, setupForm.getMailSettings().getMailPort());
+            writeProperty(SethlansConfigKeys.MAIL_REPLYTO, setupForm.getMailSettings().getReplyToAddress());
+            writeProperty(SethlansConfigKeys.MAIL_USE_AUTH, Boolean.toString(setupForm.getMailSettings().isSmtpAuth()));
+            if (setupForm.getMailSettings().isSmtpAuth()) {
+                writeProperty(SethlansConfigKeys.MAIL_USER, setupForm.getMailSettings().getUsername());
+                writeProperty(SethlansConfigKeys.MAIL_PASS, setupForm.getMailSettings().getPassword());
+            }
+            writeProperty(SethlansConfigKeys.MAIL_SSL_ENABLE, Boolean.toString(setupForm.getMailSettings().isSslEnabled()));
+            writeProperty(SethlansConfigKeys.MAIL_TLS_ENABLE, Boolean.toString(setupForm.getMailSettings().isStartTLSEnabled()));
+            if (setupForm.getMailSettings().isStartTLSEnabled()) {
+                writeProperty(SethlansConfigKeys.MAIL_TLS_REQUIRED, Boolean.toString(setupForm.getMailSettings().isStartTLSRequired()));
+            }
         }
-        writeProperty(SethlansConfigKeys.MAIL_SSL_ENABLE, Boolean.toString(setupForm.getMailSettings().isSslEnabled()));
-        writeProperty(SethlansConfigKeys.MAIL_TLS_ENABLE, Boolean.toString(setupForm.getMailSettings().isStartTLSEnabled()));
-        if (setupForm.getMailSettings().isStartTLSEnabled()) {
-            writeProperty(SethlansConfigKeys.MAIL_TLS_REQUIRED, Boolean.toString(setupForm.getMailSettings().isStartTLSRequired()));
-        }
+
+
         LOG.debug("Main Sethlans properties saved.");
 
         // Creating main Sethlan Directories

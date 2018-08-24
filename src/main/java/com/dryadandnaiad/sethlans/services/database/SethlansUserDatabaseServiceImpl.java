@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
+import com.dryadandnaiad.sethlans.domains.database.user.SethlansUserChallenge;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.repositories.SethlansUserRepository;
 import org.slf4j.Logger;
@@ -73,6 +74,12 @@ public class SethlansUserDatabaseServiceImpl implements SethlansUserDatabaseServ
     @Override
     public SethlansUser saveOrUpdate(SethlansUser domainObject) {
         LOG.debug("Saving/Updating user");
+        for (SethlansUserChallenge sethlansUserChallenge : domainObject.getChallengeList()) {
+            if (sethlansUserChallenge.isResponseUpdated()) {
+                sethlansUserChallenge.setResponse(bCryptPasswordEncoder.encode(sethlansUserChallenge.getResponse()));
+                sethlansUserChallenge.setResponseUpdated(false);
+            }
+        }
 
         if (domainObject.isPasswordUpdated()) {
             LOG.debug("Encrypting password");
