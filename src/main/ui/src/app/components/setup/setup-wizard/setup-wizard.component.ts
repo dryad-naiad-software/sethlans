@@ -118,6 +118,9 @@ export class SetupWizardComponent implements OnInit {
 
   finish() {
     this.setupForm.complete = true;
+    if (!this.setupForm.mailSettings.startTLSEnabled) {
+      this.setupForm.mailSettings.startTLSRequired = false;
+    }
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',

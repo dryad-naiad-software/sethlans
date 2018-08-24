@@ -45,7 +45,7 @@
     <td>{{setupForm.ipAddress}}</td>
   </tr>
   <tr>
-    <td>HTTP Port</td>
+    <td>HTTPS Port</td>
     <td>{{setupForm.port}}</td>
   </tr>
   <tr>
@@ -56,6 +56,39 @@
     <td>Logging Level</td>
     <td>{{setupForm.logLevel}}</td>
   </tr>
+  <tr>
+    <td>Sethlans URL</td>
+    <td>{{setupForm.appURL}}</td>
+  </tr>
+  <tr>
+    <td>SMTP Server</td>
+    <td>{{setupForm.mailSettings.mailHost}}: {{setupForm.mailSettings.mailPort}}</td>
+  </tr>
+  <tr>
+    <td>Reply To Address</td>
+    <td>{{setupForm.mailSettings.replyToAddress}}</td>
+  </tr>
+  <tr>
+    <td>Use SMTP Auth</td>
+    <td>{{setupForm.mailSettings.smtpAuth}}</td>
+  </tr>
+  <tr *ngIf="setupForm.mailSettings.smtpAuth">
+    <td>SMTP Username</td>
+    <td>{{setupForm.mailSettings.username}}</td>
+  </tr>
+  <tr>
+    <td>SMTP: Enable SSL</td>
+    <td>{{setupForm.mailSettings.sslEnabled}}</td>
+  </tr>
+  <tr>
+    <td>SMTP: Enable STARTTLS</td>
+    <td>{{setupForm.mailSettings.startTLSEnabled}}</td>
+  </tr>
+  <tr *ngIf="setupForm.mailSettings.startTLSEnabled">
+    <td>SMTP: Require STARTTLS</td>
+    <td>{{setupForm.mailSettings.startTLSRequired}}</td>
+  </tr>
+
   <tr *ngIf="setupForm.mode === mode.SERVER || setupForm.mode === mode.DUAL">
     <td>Default Blender Version</td>
     <td>{{setupForm.server.blenderVersion}}</td>

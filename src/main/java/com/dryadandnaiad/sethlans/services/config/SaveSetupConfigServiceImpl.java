@@ -131,7 +131,9 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
         }
         writeProperty(SethlansConfigKeys.MAIL_SSL_ENABLE, Boolean.toString(setupForm.getMailSettings().isSslEnabled()));
         writeProperty(SethlansConfigKeys.MAIL_TLS_ENABLE, Boolean.toString(setupForm.getMailSettings().isStartTLSEnabled()));
-        writeProperty(SethlansConfigKeys.MAIL_TLS_REQUIRED, Boolean.toString(setupForm.getMailSettings().isStartTLSRequired()));
+        if (setupForm.getMailSettings().isStartTLSEnabled()) {
+            writeProperty(SethlansConfigKeys.MAIL_TLS_REQUIRED, Boolean.toString(setupForm.getMailSettings().isStartTLSRequired()));
+        }
         LOG.debug("Main Sethlans properties saved.");
 
         // Creating main Sethlan Directories

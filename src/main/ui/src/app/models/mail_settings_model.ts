@@ -32,6 +32,7 @@ export class MailSettings {
     this.mailHost = '';
     this.mailPort = 25;
     this.username = '';
+    this.password = '';
     this.replyToAddress = '';
     this.smtpAuth = false;
     this.sslEnabled = false;

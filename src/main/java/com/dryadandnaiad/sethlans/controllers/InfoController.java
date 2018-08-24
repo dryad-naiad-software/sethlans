@@ -133,7 +133,7 @@ public class InfoController {
 
     @GetMapping(value = {"/app_url"})
     public Map getAppURL() {
-        return Collections.singletonMap("app_url", "https://" + SethlansUtils.getIP() + ":" + SethlansUtils.getPort());
+        return Collections.singletonMap("app_url", "https://" + SethlansUtils.getHostname().toLowerCase() + ":" + SethlansUtils.getPort());
     }
 
 

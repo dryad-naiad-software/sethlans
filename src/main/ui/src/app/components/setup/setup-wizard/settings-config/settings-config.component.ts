@@ -64,10 +64,26 @@ export class SettingsConfigComponent implements OnInit {
   validateAndSubmit(event, settingsForm) {
     if (settingsForm.valid) {
       this.disableNext.emit(false);
+      if (this.setupForm.showMailSettings) {
+        this.setupForm.mailSettingsComplete = true;
+      }
     } else {
       this.disableNext.emit(true);
+      if (this.setupForm.showMailSettings) {
+        this.setupForm.mailSettingsComplete = false;
+      }
     }
+  }
 
+  smtpAuthValid() {
+    if (this.setupForm.mailSettings.smtpAuth) {
+      if (this.setupForm.mailSettings.username.length != 0 || this.setupForm.mailSettings.password.length != 0) {
+        console.log('true');
+        this.disableNext.emit(false);
+      } else {
+        this.disableNext.emit(true);
+      }
+    }
   }
 
 }

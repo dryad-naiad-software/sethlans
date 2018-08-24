@@ -54,7 +54,9 @@
         </ul>
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group"
+         ngbTooltip="HTTPS address of Sethlans. Sethlans will use this value when generating links in email notifications."
+         placement="left">
       <label for="sethlansURL">Sethlans URL:</label>
       <input id="sethlansURL"
              type="text"
@@ -106,17 +108,22 @@
              #mailHost="ngModel"
              [(ngModel)]="setupForm.mailSettings.mailHost"
              required
-             class="form-control form-control-sm" (keyup)="validateAndSubmit($event, settingsForm)"/>
+             [ngClass]="{'is-invalid':mailHost.errors && mailHost.touched}"
+             class="form-control form-control-sm" (keyup)="validateAndSubmit($event, settingsForm)"
+             placeholder="smtp.example.com"
+             pattern="([a-z])([a-z0-9]+\.)*[a-z0-9]+\.[a-z.]+"/>
     </div>
     <div class="form-group">
       <label for="mailPort">SMTP Port</label>
       <input id="mailPort"
              type="number"
              name="mailPort"
-             #mailHost="ngModel"
+             #mailPort="ngModel"
              [(ngModel)]="setupForm.mailSettings.mailPort"
              required
-             class="form-control form-control-sm" (keyup)="validateAndSubmit($event, settingsForm)"/>
+             [ngClass]="{'is-invalid':mailPort.errors && mailPort.touched}"
+             class="form-control form-control-sm" (keyup)="validateAndSubmit($event, settingsForm)"
+             pattern="^(?:6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[1-9])$"/>
     </div>
     <div class="form-group">
       <label for="replyToAddress">Reply To Address:</label>
@@ -126,7 +133,9 @@
              #replyToAddress="ngModel"
              [(ngModel)]="setupForm.mailSettings.replyToAddress"
              required
-             class="form-control form-control-sm" (keyup)="validateAndSubmit($event, settingsForm)"/>
+             [ngClass]="{'is-invalid':replyToAddress.errors && replyToAddress.touched}"
+             class="form-control form-control-sm" (keyup)="validateAndSubmit($event, settingsForm)"
+             placeholder="noreply@example.com" pattern="^[^\s@]+@[^\s@]+\.[^\s@]{1,}$"/>
     </div>
     <div class="form-row">
       <div class="col">
@@ -158,7 +167,7 @@
     <div class="form-group">
       Use SMTP Authentication&nbsp;
       <span class="fas" [ngClass]="setupForm.mailSettings.smtpAuth ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
-            (click)="setupForm.mailSettings.smtpAuth = !setupForm.mailSettings.smtpAuth"></span>
+            (click)="setupForm.mailSettings.smtpAuth = !setupForm.mailSettings.smtpAuth;smtpAuthValid()"></span>
 
     </div>
 
@@ -168,19 +177,23 @@
              type="text"
              name="username"
              #username="ngModel"
+             [ngClass]="{'is-invalid':username.errors && username.touched}"
              [(ngModel)]="setupForm.mailSettings.username"
              required
-             class="form-control form-control-sm" (keyup)="validateAndSubmit($event, settingsForm)"/>
+             class="form-control form-control-sm" (keyup)="validateAndSubmit($event, settingsForm)"
+             placeholder="username" pattern="^[a-zA-Z0-9]{2,}$"/>
     </div>
     <div *ngIf="setupForm.mailSettings.smtpAuth" class="form-group">
-      <label for="mailUsername">SMTP Password:</label>
+      <label for="mailPassword">SMTP Password:</label>
       <input [disabled]="!setupForm.mailSettings.smtpAuth" id="mailPassword"
              type="text"
              name="password"
              #password="ngModel"
+             [ngClass]="{'is-invalid':password.errors && password.touched}"
              [(ngModel)]="setupForm.mailSettings.password"
              required
-             class="form-control form-control-sm" (keyup)="validateAndSubmit($event, settingsForm)"/>
+             class="form-control form-control-sm" (keyup)="validateAndSubmit($event, settingsForm)"
+             placeholder="password" pattern="^[a-zA-Z0-9]{2,}$"/>
     </div>
 
   </div>
