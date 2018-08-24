@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
+import com.dryadandnaiad.sethlans.domains.database.user.SethlansUserChallenge;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.forms.setup.SetupForm;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
@@ -53,8 +54,20 @@ public class SetupController {
         LOG.debug("Submitting Setup Form...");
         if (setupForm != null) {
             LOG.debug(setupForm.toString());
-            if (setupForm.getUser().getPassword().isEmpty() || setupForm.getUser().getUsername().isEmpty()) {
+            if (setupForm.getUser().getPassword().isEmpty()
+                    || setupForm.getUser().getUsername().isEmpty()
+                    || setupForm.getUser().getEmail().isEmpty()
+                    || setupForm.getUser().getChallengeList().size() == 0) {
                 return false;
+            }
+            for (SethlansUserChallenge sethlansUserChallenge : setupForm.getUser().getChallengeList()) {
+                if (sethlansUserChallenge.getChallenge().isEmpty() || sethlansUserChallenge.getResponse().isEmpty()) {
+                    return false;
+                }
+                if (!sethlansUserChallenge.isResponseUpdated()) {
+                    sethlansUserChallenge.setResponseUpdated(true);
+                }
+
             }
             saveSetupConfigService.saveSetupSettings(setupForm);
             return true;
@@ -71,6 +84,23 @@ public class SetupController {
                 LOG.debug("User " + user.getUsername() + " already exists!");
                 return false;
             }
+            if (user.getPassword().isEmpty()
+                    || user.getUsername().isEmpty()
+                    || user.getEmail().isEmpty()
+                    || user.getChallengeList().size() == 0) {
+                return false;
+            }
+
+            for (SethlansUserChallenge sethlansUserChallenge : user.getChallengeList()) {
+                if (sethlansUserChallenge.getChallenge().isEmpty() || sethlansUserChallenge.getResponse().isEmpty()) {
+                    return false;
+                }
+                if (!sethlansUserChallenge.isResponseUpdated()) {
+                    sethlansUserChallenge.setResponseUpdated(true);
+                }
+
+            }
+
             user.setPasswordUpdated(true);
             user.setActive(false);
             user.setRoles(Collections.singletonList(Role.USER));
