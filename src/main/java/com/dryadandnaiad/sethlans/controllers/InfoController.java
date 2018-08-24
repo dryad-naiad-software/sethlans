@@ -53,6 +53,7 @@ public class InfoController {
     private List<String> blenderVersions = BlenderUtils.listVersions();
     private static final Logger LOG = LoggerFactory.getLogger(InfoController.class);
 
+
     @Value("${sethlans.configDir}")
     private String configDir;
 
@@ -64,6 +65,7 @@ public class InfoController {
 
     @Value("${sethlans.computeMethod}")
     private ComputeType computeType;
+
 
     @GetMapping(value = {"/first_time"})
     public boolean isFirstTime() {
@@ -137,7 +139,6 @@ public class InfoController {
     public Map getAppURL() {
         return Collections.singletonMap("app_url", "https://" + SethlansQueryUtils.getHostname().toLowerCase() + ":" + SethlansQueryUtils.getPort());
     }
-
 
 
 }

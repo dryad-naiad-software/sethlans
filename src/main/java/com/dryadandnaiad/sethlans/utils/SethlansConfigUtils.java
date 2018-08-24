@@ -21,20 +21,13 @@ package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.google.common.base.Throwables;
-import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Properties;
@@ -47,9 +40,10 @@ import java.util.Properties;
  */
 public class SethlansConfigUtils {
     private static final Logger LOG = LoggerFactory.getLogger(SethlansConfigUtils.class);
-    private static String key = "gQ5Q5Nxk0qjjxdwTQ$8UVExzO%nOehiF";
+    private static Properties sethlansProperties = new Properties();
 
-    public static File getConfigFile() {
+
+    static File getConfigFile() {
         try {
             File configDirectory = new File(System.getProperty("user.home") + File.separator + ".sethlans_install" + File.separator + "config" + File.separator);
             File installFile = new File(configDirectory + File.separator + "sethlans_install.properties");
@@ -65,7 +59,7 @@ public class SethlansConfigUtils {
         return new File(System.getProperty("user.home") + File.separator + ".sethlans_install" + File.separator + "config" + File.separator + "sethlans_install.properties");
     }
 
-    private static String updateComment(String comment, File configFile, Properties sethlansProperties) {
+    private static String updateComment(String comment, File configFile) {
         if (configFile.exists()) {
             try (FileInputStream fileIn = new FileInputStream(getConfigFile())) {
                 sethlansProperties.load(fileIn);
@@ -78,47 +72,16 @@ public class SethlansConfigUtils {
     }
 
 
-    public static String updateTimeStamp() {
+    private static String updateTimeStamp() {
         Date currentDate = GregorianCalendar.getInstance().getTime();
         return String.format("Updated: %1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS", currentDate);
     }
 
-    public static String encryptPropertyValue(String value) {
-        try {
-            Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
-            Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.ENCRYPT_MODE, aesKey);
-            byte[] toEncode = cipher.doFinal(value.getBytes());
-            byte[] encryptedValue = new Base64().encode(toEncode);
-            return new String(encryptedValue, StandardCharsets.UTF_8);
-        } catch (NoSuchAlgorithmException | BadPaddingException | IllegalBlockSizeException | InvalidKeyException | NoSuchPaddingException e) {
-            LOG.error(e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
-        }
-        return null;
-    }
-
-    public static String decryptPropertyValue(String value) {
-        try {
-            Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
-            Cipher cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.DECRYPT_MODE, aesKey);
-            byte[] decoded = new Base64().decode(value.getBytes(StandardCharsets.UTF_8));
-            byte[] decrypted = cipher.doFinal(decoded);
-            return new String(decrypted);
-        } catch (BadPaddingException | NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | IllegalBlockSizeException e) {
-            LOG.error(e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
-        }
-        return null;
-    }
 
     public static boolean writePropertyToFile(SethlansConfigKeys configKey, String value, File configFile) {
-        Properties sethlansProperties = new Properties();
-
         String comment = "";
         String key = configKey.toString();
-        comment = updateComment(comment, configFile, sethlansProperties);
+        comment = updateComment(comment, configFile);
 
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(configFile);
@@ -127,9 +90,6 @@ public class SethlansConfigUtils {
             sethlansProperties.store(fileOutputStream, comment);
             LOG.debug("SethlansConfigKey:" + key + " written to " + configFile.toString());
             return true;
-        } catch (FileNotFoundException e) {
-            LOG.error(e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
         } catch (IOException e) {
             LOG.error(e.getMessage());
             LOG.error(Throwables.getStackTraceAsString(e));
@@ -138,10 +98,8 @@ public class SethlansConfigUtils {
     }
 
     public static boolean writeProperty(String key, String value) {
-        Properties sethlansProperties = new Properties();
-
         String comment = "";
-        comment = updateComment(comment, getConfigFile(), sethlansProperties);
+        comment = updateComment(comment, getConfigFile());
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(getConfigFile());
             sethlansProperties.setProperty(key, value);
@@ -149,9 +107,6 @@ public class SethlansConfigUtils {
             sethlansProperties.store(fileOutputStream, comment);
             LOG.debug("SethlansConfigKey: " + key + " written to " + getConfigFile());
             return true;
-        } catch (FileNotFoundException e) {
-            LOG.error(e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
         } catch (IOException e) {
             LOG.error(e.getMessage());
             LOG.error(Throwables.getStackTraceAsString(e));
@@ -160,11 +115,9 @@ public class SethlansConfigUtils {
     }
 
     public static boolean writeProperty(SethlansConfigKeys configKey, String value) {
-        Properties sethlansProperties = new Properties();
-
         String comment = "";
         String key = configKey.toString();
-        comment = updateComment(comment, getConfigFile(), sethlansProperties);
+        comment = updateComment(comment, getConfigFile());
 
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(getConfigFile());
@@ -173,9 +126,6 @@ public class SethlansConfigUtils {
             sethlansProperties.store(fileOutputStream, comment);
             LOG.debug("SethlansConfigKey: " + key + " written to " + getConfigFile().toString());
             return true;
-        } catch (FileNotFoundException e) {
-            LOG.error(e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
         } catch (IOException e) {
             LOG.error(e.getMessage());
             LOG.error(Throwables.getStackTraceAsString(e));

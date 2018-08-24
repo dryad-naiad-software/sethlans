@@ -35,8 +35,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.internet.MimeMessage;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -63,7 +66,24 @@ public class ServerSetupController {
     @Value("${sethlans.configDir}")
     private String configDir;
 
+    private JavaMailSender sender;
 
+    @GetMapping(value = {"/test_email"})
+    public boolean sendEmail() {
+        try {
+            MimeMessage message = sender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message);
+
+            helper.setTo("");
+            helper.setText("Welcome to Sethlans");
+            helper.setSubject("Sethlans Intro");
+            sender.send(message);
+            return true;
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+        }
+        return false;
+    }
     @PostMapping("/multi_node_add")
     public List<String> addMultiNodes(@RequestBody String[] nodeIPArray) {
         List<String> connectionIds = new ArrayList<>();
@@ -176,5 +196,11 @@ public class ServerSetupController {
     @Autowired
     public void setBlenderBinaryDatabaseService(BlenderBinaryDatabaseService blenderBinaryDatabaseService) {
         this.blenderBinaryDatabaseService = blenderBinaryDatabaseService;
+    }
+
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    @Autowired
+    public void setSender(JavaMailSender sender) {
+        this.sender = sender;
     }
 }

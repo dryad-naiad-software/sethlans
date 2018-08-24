@@ -48,7 +48,8 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.UUID;
 
-import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.*;
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.writeProperty;
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.writePropertyToFile;
 import static com.dryadandnaiad.sethlans.utils.SethlansFileUtils.archiveExtract;
 import static com.dryadandnaiad.sethlans.utils.SethlansQueryUtils.getGPUDeviceString;
 
@@ -128,8 +129,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
         writeProperty(SethlansConfigKeys.MAIL_USE_AUTH, Boolean.toString(setupForm.getMailSettings().isSmtpAuth()));
         if (setupForm.getMailSettings().isSmtpAuth()) {
             writeProperty(SethlansConfigKeys.MAIL_USER, setupForm.getMailSettings().getUsername());
-            //Encrypt Mail Password for long term storage.
-            writeProperty(SethlansConfigKeys.MAIL_PASS, encryptPropertyValue(setupForm.getMailSettings().getPassword()));
+            writeProperty(SethlansConfigKeys.MAIL_PASS, setupForm.getMailSettings().getPassword());
         }
         writeProperty(SethlansConfigKeys.MAIL_SSL_ENABLE, Boolean.toString(setupForm.getMailSettings().isSslEnabled()));
         writeProperty(SethlansConfigKeys.MAIL_TLS_ENABLE, Boolean.toString(setupForm.getMailSettings().isStartTLSEnabled()));
