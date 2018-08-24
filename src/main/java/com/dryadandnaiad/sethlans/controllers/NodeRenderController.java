@@ -34,7 +34,8 @@ import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabase
 import com.dryadandnaiad.sethlans.services.database.RenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 
 /**
  * Created Mario Estrella on 12/9/17.
@@ -84,8 +87,8 @@ public class NodeRenderController {
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
-            ComputeType computeType = ComputeType.valueOf(SethlansUtils.getProperty(SethlansConfigKeys.COMPUTE_METHOD.toString()));
-            NodeInfo nodeInfo = SethlansUtils.getNodeInfo();
+            ComputeType computeType = ComputeType.valueOf(getProperty(SethlansConfigKeys.COMPUTE_METHOD.toString()));
+            NodeInfo nodeInfo = SethlansNodeUtils.getNodeInfo();
             LOG.debug("Render Request Received, preparing render task.");
             List<RenderTask> renderTaskList = renderTaskDatabaseService.listAll();
             boolean rejected = false;
@@ -206,7 +209,7 @@ public class NodeRenderController {
             cpuBenchmarkTask.setComputeType(ComputeType.CPU);
             cpuBenchmarkTask.setComplete(false);
             cpuBenchmarkTask.setConnection_uuid(connection_uuid);
-            cpuBenchmarkTask.setBenchmark_uuid(SethlansUtils.getShortUUID());
+            cpuBenchmarkTask.setBenchmark_uuid(SethlansQueryUtils.getShortUUID());
 
             List<BlenderBenchmarkTask> gpuTasks = new ArrayList<>();
 
@@ -219,7 +222,7 @@ public class NodeRenderController {
                 gpuBenchmarkTask.setBenchmarkURL("bmw_gpu");
                 gpuBenchmarkTask.setComputeType(ComputeType.GPU);
                 gpuBenchmarkTask.setConnection_uuid(connection_uuid);
-                gpuBenchmarkTask.setBenchmark_uuid(SethlansUtils.getShortUUID());
+                gpuBenchmarkTask.setBenchmark_uuid(SethlansQueryUtils.getShortUUID());
                 gpuTasks.add(gpuBenchmarkTask);
             }
 

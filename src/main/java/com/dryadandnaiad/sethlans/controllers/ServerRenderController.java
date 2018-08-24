@@ -27,7 +27,6 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.queue.QueueService;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang3.StringUtils;
@@ -46,6 +45,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+
+import static com.dryadandnaiad.sethlans.utils.SethlansFileUtils.serveFile;
 
 /**
  * Created Mario Estrella on 12/10/17.
@@ -91,7 +92,7 @@ public class ServerRenderController {
                 } else {
                     try {
                         File blenderBinary = files[0];
-                        SethlansUtils.serveFile(blenderBinary, response);
+                        serveFile(blenderBinary, response);
                     } catch (ArrayIndexOutOfBoundsException e) {
                         LOG.error(e.getMessage());
                         LOG.error(dir.toString() + " directory size is equal to " + files.length);
@@ -135,7 +136,7 @@ public class ServerRenderController {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
             File bmw27_cpu = new File(benchmarkDir + File.separator + "bmw27_cpu.blend");
-            SethlansUtils.serveFile(bmw27_cpu, response);
+            serveFile(bmw27_cpu, response);
 
         }
 
@@ -147,7 +148,7 @@ public class ServerRenderController {
             LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
             File bmw27_gpu = new File(benchmarkDir + File.separator + "bmw27_gpu.blend");
-            SethlansUtils.serveFile(bmw27_gpu, response);
+            serveFile(bmw27_gpu, response);
         }
     }
 
@@ -202,7 +203,7 @@ public class ServerRenderController {
         } else {
             BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUIDWithoutFrameParts(project_uuid);
             File blend_file = new File(blenderProject.getBlendFileLocation());
-            SethlansUtils.serveFile(blend_file, response);
+            serveFile(blend_file, response);
         }
 
     }

@@ -29,7 +29,7 @@ import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
 import com.dryadandnaiad.sethlans.services.system.SethlansLogRetrievalService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +44,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import static com.dryadandnaiad.sethlans.utils.SethlansUtils.writeProperty;
-
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.writeProperty;
 /**
  * Created Mario Estrella on 3/2/18.
  * Dryad and Naiad Software LLC
@@ -112,12 +111,12 @@ public class AdminController {
 
     @GetMapping(value = "/current_settings")
     public SethlansSettings sethlansSettingsInfo() {
-        return SethlansUtils.getSettings();
+        return SethlansQueryUtils.getSettings();
     }
 
     @PostMapping(value = "/update_settings")
     public boolean updateSettings(@RequestBody SethlansSettings sethlansSettingsUpdate) {
-        SethlansSettings currentSettings = SethlansUtils.getSettings();
+        SethlansSettings currentSettings = SethlansQueryUtils.getSettings();
         if (!sethlansSettingsUpdate.equals(currentSettings)) {
             LOG.debug(sethlansSettingsUpdate.toString());
             LOG.debug(currentSettings.toString());
@@ -161,7 +160,7 @@ public class AdminController {
 
     @GetMapping(value = {"/change_get_started_wizard"})
     public void changeGetStartedOnStart(@RequestParam boolean value) {
-        SethlansUtils.writeProperty(SethlansConfigKeys.GETTING_STARTED, Boolean.toString(value));
+        writeProperty(SethlansConfigKeys.GETTING_STARTED, Boolean.toString(value));
     }
 
     @PostMapping(value = {"/change_password/"})
@@ -287,7 +286,7 @@ public class AdminController {
                     LOG.debug("User " + user.getUsername() + " already exists!");
                     return false;
                 }
-                if (!requestingUser.getRoles().contains(Role.SUPER_ADMINISTRATOR) && user.getRoles().contains(Role.SUPER_ADMINISTRATOR)) {
+                if (!requestingUser.getRoles().contains(Role.SUPER_ADMINISTRATOR)) {
                     user.getRoles().remove(Role.SUPER_ADMINISTRATOR);
                 }
                 user.setPasswordUpdated(true);

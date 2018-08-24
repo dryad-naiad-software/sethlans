@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,7 +22,7 @@ package com.dryadandnaiad.sethlans.services.blender;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.PythonImports;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +55,7 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.write(PythonImports.BPY.toString() + "\n\n");
 
             //noinspection ConstantConditions
-            if (SethlansUtils.getOS().contains("Windows")) {
+            if (SethlansQueryUtils.getOS().contains("Windows")) {
                 scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "r\"" + renderLocation + "\"" + "\n");
             } else {
                 scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "\"" + renderLocation + "\"" + "\n");
@@ -138,7 +138,7 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
 
             //Temp Directory
             //noinspection ConstantConditions
-            if (SethlansUtils.getOS().contains("Windows")) {
+            if (SethlansQueryUtils.getOS().contains("Windows")) {
                 scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "r\"" + renderLocation + "\"" + "\n");
             } else {
                 scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "\"" + renderLocation + "\"" + "\n");
@@ -202,7 +202,7 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
 
             //Temp Directory
             //noinspection ConstantConditions
-            if (SethlansUtils.getOS().contains("Windows")) {
+            if (SethlansQueryUtils.getOS().contains("Windows")) {
                 scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "r\"" + renderLocation + "\"" + "\n");
             } else {
                 scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "\"" + renderLocation + "\"" + "\n");

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -27,7 +27,7 @@ import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
@@ -46,6 +46,11 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static com.dryadandnaiad.sethlans.utils.BlenderUtils.assignBlenderExecutable;
+import static com.dryadandnaiad.sethlans.utils.BlenderUtils.renameBlenderDir;
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
+import static com.dryadandnaiad.sethlans.utils.SethlansFileUtils.archiveExtract;
 
 /**
  * Created Mario Estrella on 12/10/17.
@@ -193,7 +198,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(benchmarkTask.getConnection_uuid());
         String serverIP = sethlansServer.getIpAddress();
         String serverPort = sethlansServer.getNetworkPort();
-        String cachedBlenderBinaries = SethlansUtils.getProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES.toString());
+        String cachedBlenderBinaries = getProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES);
 
         if (benchmarkDir.mkdirs()) {
             String[] cachedBinariesList;
@@ -209,7 +214,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             if (!versionCached) {
                 //Download Blender from server
                 String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blender_binary/";
-                String params = "connection_uuid=" + benchmarkTask.getConnection_uuid() + "&version=" + benchmarkTask.getBlenderVersion() + "&os=" + SethlansUtils.getOS();
+                String params = "connection_uuid=" + benchmarkTask.getConnection_uuid() + "&version=" + benchmarkTask.getBlenderVersion() + "&os=" + SethlansQueryUtils.getOS();
                 String filename = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, binDir);
                 while (filename.isEmpty()) {
                     try {
@@ -220,11 +225,11 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                         e.printStackTrace();
                     }
                 }
-                if (SethlansUtils.archiveExtract(filename, new File(binDir))) {
+                if (archiveExtract(filename, new File(binDir))) {
                     LOG.debug("Extraction complete.");
                     LOG.debug("Attempting to rename blender directory. Will attempt 3 tries.");
                     int count = 0;
-                    while (!SethlansUtils.renameBlenderDir(benchmarkDir, new File(binDir), benchmarkTask, cachedBlenderBinaries)) {
+                    while (!renameBlenderDir(benchmarkDir, new File(binDir), benchmarkTask, cachedBlenderBinaries)) {
                         count++;
                         if (count == 2) {
                             return false;
@@ -238,7 +243,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                 }
             } else {
                 benchmarkTask.setBenchmarkDir(benchmarkDir.toString());
-                benchmarkTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(new File(binDir), benchmarkTask.getBlenderVersion()));
+                benchmarkTask.setBlenderExecutable(assignBlenderExecutable(new File(binDir), benchmarkTask.getBlenderVersion()));
             }
 
 
@@ -264,7 +269,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                 LOG.debug("Creating benchmark script using " + benchmarkTask.getDeviceID());
                 String deviceID = StringUtils.substringAfter(benchmarkTask.getDeviceID(), "_");
                 String script;
-                if (SethlansUtils.isCuda(benchmarkTask.getDeviceID())) {
+                if (SethlansQueryUtils.isCuda(benchmarkTask.getDeviceID())) {
                     LOG.debug("CUDA Device found, using cuda parameters for script");
                     script = blenderPythonScriptService.writeBenchmarkPythonScript(benchmarkTask.getComputeType(),
                             benchmarkTask.getBenchmarkDir(), deviceID, true, "128", 800, 600, 50);

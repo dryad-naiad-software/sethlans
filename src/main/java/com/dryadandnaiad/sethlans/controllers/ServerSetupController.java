@@ -28,7 +28,7 @@ import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
 import com.dryadandnaiad.sethlans.services.queue.QueueService;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +41,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 
 /**
  * Created Mario Estrella on 4/2/2018.
@@ -74,14 +76,14 @@ public class ServerSetupController {
 
     @GetMapping("/node_add")
     public String addNode(@RequestParam String ip, @RequestParam String port) {
-        String accessKey = SethlansUtils.getProperty(SethlansConfigKeys.ACCESS_KEY.toString());
+        String accessKey = getProperty(SethlansConfigKeys.ACCESS_KEY);
         SethlansNode sethlansNode = nodeDiscoveryService.discoverUnicastNode(ip, port);
         List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.listAll();
         if (!sethlansNodeList.isEmpty()) {
             LOG.debug("Nodes found in database, starting comparison.");
             if (sethlansNodeDatabaseService.checkForDuplicatesAndSave(sethlansNode)) {
                 if (sethlansNode.isPendingActivation()) {
-                    nodeActivationService.sendActivationRequestToNode(sethlansNode, SethlansUtils.getCurrentServerInfo(), accessKey);
+                    nodeActivationService.sendActivationRequestToNode(sethlansNode, SethlansQueryUtils.getCurrentServerInfo(), accessKey);
                     return sethlansNode.getConnection_uuid();
 
                 }
@@ -91,7 +93,7 @@ public class ServerSetupController {
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
             LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
             if (sethlansNode.isPendingActivation()) {
-                nodeActivationService.sendActivationRequestToNode(sethlansNode, SethlansUtils.getCurrentServerInfo(), accessKey);
+                nodeActivationService.sendActivationRequestToNode(sethlansNode, SethlansQueryUtils.getCurrentServerInfo(), accessKey);
                 return sethlansNode.getConnection_uuid();
             }
         }
@@ -114,7 +116,7 @@ public class ServerSetupController {
                 blenderBinaryOSSet.add(sethlansNode.getSethlansNodeOS());
             }
         } else {
-            blenderBinaryOSSet.add(BlenderBinaryOS.valueOf(SethlansUtils.getOS()));
+            blenderBinaryOSSet.add(BlenderBinaryOS.valueOf(SethlansQueryUtils.getOS()));
         }
 
         for (BlenderBinaryOS blenderBinaryOS : blenderBinaryOSSet) {
@@ -128,12 +130,12 @@ public class ServerSetupController {
 
     @GetMapping("/node_replace/{id}")
     public boolean updateNode(@PathVariable Long id) {
-        String accessKey = SethlansUtils.getProperty(SethlansConfigKeys.ACCESS_KEY.toString());
+        String accessKey = getProperty(SethlansConfigKeys.ACCESS_KEY);
         SethlansNode sethlansNodeToReplace = sethlansNodeDatabaseService.getById(id);
         queueService.addNodeToDeleteQueue(id);
         SethlansNode newNode = nodeDiscoveryService.discoverUnicastNode(sethlansNodeToReplace.getIpAddress(), sethlansNodeToReplace.getNetworkPort());
         sethlansNodeDatabaseService.saveOrUpdate(newNode);
-        nodeActivationService.sendActivationRequestToNode(newNode, SethlansUtils.getCurrentServerInfo(), accessKey);
+        nodeActivationService.sendActivationRequestToNode(newNode, SethlansQueryUtils.getCurrentServerInfo(), accessKey);
         return true;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -30,8 +30,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.dryadandnaiad.sethlans.utils.SethlansUtils.getGPUDeviceString;
-import static com.dryadandnaiad.sethlans.utils.SethlansUtils.writeProperty;
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.writeProperty;
+import static com.dryadandnaiad.sethlans.utils.SethlansQueryUtils.getGPUDeviceString;
 
 /**
  * Created Mario Estrella on 3/5/18.

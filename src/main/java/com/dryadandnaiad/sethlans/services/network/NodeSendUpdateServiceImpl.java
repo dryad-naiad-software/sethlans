@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,7 +26,7 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.RenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanCreationNotAllowedException;
@@ -69,7 +69,7 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
             Thread.sleep(15000);
             LOG.debug("Starting Idle Notification Service.");
             int counter = 0;
-            NodeInfo nodeInfo = SethlansUtils.getNodeInfo();
+            NodeInfo nodeInfo = SethlansNodeUtils.getNodeInfo();
             ComputeType computeType = nodeInfo.getComputeType();
             int slots = 0;
             switch (computeType) {

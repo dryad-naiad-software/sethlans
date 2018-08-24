@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,7 +25,6 @@ import com.dryadandnaiad.sethlans.enums.NotificationOrigin;
 import com.dryadandnaiad.sethlans.events.SethlansEvent;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -46,6 +45,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+
+import static com.dryadandnaiad.sethlans.utils.SethlansFileUtils.fileCheckMD5;
 
 /**
  * Created Mario Estrella on 3/24/17.
@@ -156,7 +157,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
 
                         // Check MD5 sum
                         LOG.debug("Starting MD5sum check");
-                        if (SethlansUtils.fileCheckMD5(toDownload, blenderBinary.getBlenderFileMd5())) {
+                        if (fileCheckMD5(toDownload, blenderBinary.getBlenderFileMd5())) {
                             blenderBinary.setBlenderFile(toDownload.toString());
                             LOG.info(filename + " downloaded successfully.");
                             blenderBinary.setDownloaded(true);

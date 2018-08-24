@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,7 +24,6 @@ import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
@@ -39,6 +38,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.concurrent.TimeUnit;
+
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 
 /**
  * Created Mario Estrella on 4/6/2018.
@@ -63,7 +64,7 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
         PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
-        CommandLine ffmpeg = new CommandLine(SethlansUtils.getProperty(SethlansConfigKeys.FFMPEG_BIN.toString()));
+        CommandLine ffmpeg = new CommandLine(getProperty(SethlansConfigKeys.FFMPEG_BIN.toString()));
 
         ffmpeg.addArgument("-framerate");
         ffmpeg.addArgument(blenderProject.getFrameRate());

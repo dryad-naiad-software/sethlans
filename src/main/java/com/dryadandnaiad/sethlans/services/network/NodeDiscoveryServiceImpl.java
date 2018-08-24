@@ -21,7 +21,6 @@ package com.dryadandnaiad.sethlans.services.network;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
@@ -34,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 
 /**
  * Created Mario Estrella on 11/1/17.
@@ -102,7 +103,7 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
     @Override
     public SethlansNode discoverUnicastNode(String ip, String port) {
         LOG.debug("Searching for Sethlans Node at " + ip + ":" + port);
-        String accessKey = SethlansUtils.getProperty(SethlansConfigKeys.ACCESS_KEY.toString());
+        String accessKey = getProperty(SethlansConfigKeys.ACCESS_KEY);
         Gson gson = new Gson();
         SethlansNode sethlansNode = null;
         try {

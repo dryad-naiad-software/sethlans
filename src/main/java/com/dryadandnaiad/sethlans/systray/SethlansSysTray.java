@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,13 +19,14 @@
 
 package com.dryadandnaiad.sethlans.systray;
 
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.net.MalformedURLException;
+
+import static com.dryadandnaiad.sethlans.utils.SethlansFileUtils.createImage;
 
 /**
  * Created Mario Estrella on 11/12/17.
@@ -41,7 +42,7 @@ public class SethlansSysTray extends TrayIcon implements Runnable {
     private SystemTray tray;
 
     public SethlansSysTray() {
-        super(SethlansUtils.createImage(IMAGE, TOOLTIP), TOOLTIP);
+        super(createImage(IMAGE, TOOLTIP), TOOLTIP);
     }
 
     private void setup() {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,7 +21,6 @@ package com.dryadandnaiad.sethlans.services.system;
 
 import com.dryadandnaiad.sethlans.domains.info.Log;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +32,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 
 /**
  * Created Mario Estrella on 4/17/2018.
@@ -47,7 +48,7 @@ public class SethlansLogRetrievalServiceImpl implements SethlansLogRetrievalServ
     @Override
     public List<Log> sethlansLogList() {
         List<Log> logList = new ArrayList<>();
-        String sethlansLog = SethlansUtils.getProperty(SethlansConfigKeys.LOGGING_FILE.toString());
+        String sethlansLog = getProperty(SethlansConfigKeys.LOGGING_FILE.toString());
         LOG.debug("Reading log entries from " + sethlansLog);
         populateLogList(sethlansLog, logList);
         return logList;

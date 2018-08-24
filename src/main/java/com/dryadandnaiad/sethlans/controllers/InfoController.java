@@ -25,7 +25,7 @@ import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +38,8 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 
 /**
  * Created Mario Estrella on 2/11/18.
@@ -70,7 +72,7 @@ public class InfoController {
 
     @GetMapping(value = {"/version"})
     public Map getVersion() {
-        return Collections.singletonMap("version", SethlansUtils.getVersion());
+        return Collections.singletonMap("version", SethlansQueryUtils.getVersion());
     }
 
     @GetMapping(value = {"/blender_versions"})
@@ -83,7 +85,7 @@ public class InfoController {
         if (firstTime) {
             return Collections.singletonMap("root_dir", System.getProperty("user.home") + File.separator + ".sethlans");
         } else {
-            return Collections.singletonMap("root_dir", SethlansUtils.getProperty(SethlansConfigKeys.ROOT_DIR.toString()));
+            return Collections.singletonMap("root_dir", getProperty(SethlansConfigKeys.ROOT_DIR));
         }
     }
 
@@ -92,7 +94,7 @@ public class InfoController {
         if (firstTime) {
             return false;
         }
-        return Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.GETTING_STARTED.toString()));
+        return Boolean.parseBoolean(getProperty(SethlansConfigKeys.GETTING_STARTED));
     }
 
     @GetMapping(value = {"/available_roles"})
@@ -117,7 +119,7 @@ public class InfoController {
         if (firstTime) {
             return Collections.singletonMap("port", "7443");
         } else {
-            return Collections.singletonMap("port", SethlansUtils.getPort());
+            return Collections.singletonMap("port", SethlansQueryUtils.getPort());
         }
     }
 
@@ -128,12 +130,12 @@ public class InfoController {
 
     @GetMapping(value = {"/sethlans_ip"})
     public Map getSethlansIPAddress() {
-        return Collections.singletonMap("ip", SethlansUtils.getIP());
+        return Collections.singletonMap("ip", SethlansQueryUtils.getIP());
     }
 
     @GetMapping(value = {"/app_url"})
     public Map getAppURL() {
-        return Collections.singletonMap("app_url", "https://" + SethlansUtils.getHostname().toLowerCase() + ":" + SethlansUtils.getPort());
+        return Collections.singletonMap("app_url", "https://" + SethlansQueryUtils.getHostname().toLowerCase() + ":" + SethlansQueryUtils.getPort());
     }
 
 

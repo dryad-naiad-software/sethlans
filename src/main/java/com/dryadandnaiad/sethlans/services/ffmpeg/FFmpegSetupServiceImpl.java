@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,7 +21,6 @@ package com.dryadandnaiad.sethlans.services.ffmpeg;
 
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.utils.Resources;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
@@ -33,6 +32,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.writeProperty;
+import static com.dryadandnaiad.sethlans.utils.SethlansFileUtils.archiveExtract;
 
 /**
  * Created Mario Estrella on 4/6/2018.
@@ -48,7 +50,7 @@ public class FFmpegSetupServiceImpl implements FFmpegSetupService {
     @Override
     public boolean installFFmpeg(String binaryDir) {
         String ffmpegFile = copyFFmpeg(binaryDir);
-        if (SethlansUtils.archiveExtract(ffmpegFile, new File(binaryDir))) {
+        if (archiveExtract(ffmpegFile, new File(binaryDir))) {
             if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
                 try {
                     ProcessBuilder pb = new ProcessBuilder("chmod", "-R", "+x", binaryDir + "ffmpeg" + File.separator + "bin");
@@ -59,10 +61,10 @@ public class FFmpegSetupServiceImpl implements FFmpegSetupService {
                 }
             }
             if (SystemUtils.IS_OS_WINDOWS) {
-                SethlansUtils.writeProperty(SethlansConfigKeys.FFMPEG_BIN, binaryDir + "ffmpeg" + File.separator + "bin" + File.separator + "ffmpeg.exe");
+                writeProperty(SethlansConfigKeys.FFMPEG_BIN, binaryDir + "ffmpeg" + File.separator + "bin" + File.separator + "ffmpeg.exe");
             }
             if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
-                SethlansUtils.writeProperty(SethlansConfigKeys.FFMPEG_BIN, binaryDir + "ffmpeg" + File.separator + "bin" + File.separator + "ffmpeg");
+                writeProperty(SethlansConfigKeys.FFMPEG_BIN, binaryDir + "ffmpeg" + File.separator + "bin" + File.separator + "ffmpeg");
             }
 
             return true;

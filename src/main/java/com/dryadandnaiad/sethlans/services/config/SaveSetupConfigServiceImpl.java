@@ -32,7 +32,7 @@ import com.dryadandnaiad.sethlans.services.ffmpeg.FFmpegSetupService;
 import com.dryadandnaiad.sethlans.services.python.PythonSetupService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
 import com.dryadandnaiad.sethlans.utils.Resources;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,9 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.UUID;
 
-import static com.dryadandnaiad.sethlans.utils.SethlansUtils.*;
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.*;
+import static com.dryadandnaiad.sethlans.utils.SethlansFileUtils.archiveExtract;
+import static com.dryadandnaiad.sethlans.utils.SethlansQueryUtils.getGPUDeviceString;
 
 /**
  * Created Mario Estrella on 2/23/18.
@@ -145,7 +147,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
         if (setupForm.getMode() == SethlansMode.SERVER || setupForm.getMode() == SethlansMode.DUAL) {
             BlenderBinary blenderBinary = new BlenderBinary();
             blenderBinary.setBlenderVersion(setupForm.getServer().getBlenderVersion());
-            blenderBinary.setBlenderBinaryOS(SethlansUtils.getOS());
+            blenderBinary.setBlenderBinaryOS(SethlansQueryUtils.getOS());
             blenderBinaryDatabaseService.saveOrUpdate(blenderBinary);
 
             writeProperty(SethlansConfigKeys.PROJECT_DIR, projectDirectory);
@@ -232,7 +234,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
         } catch (IOException e) {
             LOG.error(e.getMessage());
         }
-        SethlansUtils.archiveExtract("bmw27.txz", new File(benchmarkDirectory));
+        archiveExtract("bmw27.txz", new File(benchmarkDirectory));
     }
 
     @Autowired

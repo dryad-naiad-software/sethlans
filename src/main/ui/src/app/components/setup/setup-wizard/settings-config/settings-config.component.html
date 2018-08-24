@@ -186,7 +186,7 @@
     <div *ngIf="setupForm.mailSettings.smtpAuth" class="form-group">
       <label for="mailPassword">SMTP Password:</label>
       <input [disabled]="!setupForm.mailSettings.smtpAuth" id="mailPassword"
-             type="text"
+             type="password"
              name="password"
              #password="ngModel"
              [ngClass]="{'is-invalid':password.errors && password.touched}"

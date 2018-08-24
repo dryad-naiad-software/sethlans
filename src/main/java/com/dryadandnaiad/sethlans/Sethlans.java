@@ -22,7 +22,6 @@ package com.dryadandnaiad.sethlans;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.utils.SethlansState;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
@@ -37,6 +36,8 @@ import org.springframework.boot.logging.LogLevel;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 
 
 /**
@@ -78,7 +79,7 @@ public class Sethlans {
             arrayArgs.add("--spring.config.name=sethlans");
             arrayArgs.add("--spring.config.location=" + configDirectory.toString() + File.separator);
         } else {
-            configDirectory = new File(SethlansUtils.getProperty(SethlansConfigKeys.CONFIG_DIR.toString(), configFile));
+            configDirectory = new File(getProperty(SethlansConfigKeys.CONFIG_DIR, configFile));
             arrayArgs.add("--spring.config.name=sethlans");
             arrayArgs.add("--spring.config.location=" + configDirectory.toString() + File.separator);
         }
@@ -129,7 +130,7 @@ public class Sethlans {
                     if (installFile.exists()) {
                         System.out.println("Running config change");
                         List<String> arrayArgs = new ArrayList<>();
-                        File newConfigDirectory = new File(SethlansUtils.getProperty(SethlansConfigKeys.CONFIG_DIR.toString(), installFile));
+                        File newConfigDirectory = new File(getProperty(SethlansConfigKeys.CONFIG_DIR, installFile));
                         arrayArgs.add("--spring.config.name=sethlans");
                         arrayArgs.add("--spring.config.location=" + newConfigDirectory.toString() + File.separator);
                         springArgs = new String[arrayArgs.size()];

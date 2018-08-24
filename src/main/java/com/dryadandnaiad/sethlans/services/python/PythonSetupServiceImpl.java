@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,7 +21,6 @@ package com.dryadandnaiad.sethlans.services.python;
 
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.utils.Resources;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
@@ -29,9 +28,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
+
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.writeProperty;
+import static com.dryadandnaiad.sethlans.utils.SethlansFileUtils.archiveExtract;
 
 /**
  * Created Mario Estrella on 3/27/17.
@@ -46,7 +49,7 @@ public class PythonSetupServiceImpl implements PythonSetupService {
     @Override
     public boolean installPython(String binaryDir) {
         String pythonFile = copyPython(binaryDir);
-        if (SethlansUtils.archiveExtract(pythonFile, new File(binaryDir))) {
+        if (archiveExtract(pythonFile, new File(binaryDir))) {
             if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
                 try {
                     ProcessBuilder pb = new ProcessBuilder("chmod", "-R", "+x", binaryDir + "python" + File.separator + "bin");
@@ -57,10 +60,10 @@ public class PythonSetupServiceImpl implements PythonSetupService {
                 }
             }
             if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
-                SethlansUtils.writeProperty(SethlansConfigKeys.PYTHON_BIN, binaryDir + "python" + File.separator + "bin" + File.separator + "python3.5m");
+                writeProperty(SethlansConfigKeys.PYTHON_BIN, binaryDir + "python" + File.separator + "bin" + File.separator + "python3.5m");
             }
             if (SystemUtils.IS_OS_WINDOWS) {
-                SethlansUtils.writeProperty(SethlansConfigKeys.PYTHON_BIN, binaryDir + "python" + File.separator + "bin" + File.separator + "python.exe");
+                writeProperty(SethlansConfigKeys.PYTHON_BIN, binaryDir + "python" + File.separator + "bin" + File.separator + "python.exe");
             }
             return true;
         }
@@ -73,7 +76,7 @@ public class PythonSetupServiceImpl implements PythonSetupService {
         File blendFile = new File(scriptsDir + File.separator + "blendfile.py");
         try {
             BufferedWriter writer;
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new Resources("scripts/blendfile.py").getResource(), "UTF-8"))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new Resources("scripts/blendfile.py").getResource(), StandardCharsets.UTF_8))) {
                 writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(blendFile)));
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -81,7 +84,7 @@ public class PythonSetupServiceImpl implements PythonSetupService {
                 }
             }
             writer.close();
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new Resources("scripts/blend_info.py").getResource(), "UTF-8"))) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new Resources("scripts/blend_info.py").getResource(), StandardCharsets.UTF_8))) {
                 writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(blendInfo)));
                 String line;
                 while ((line = reader.readLine()) != null) {

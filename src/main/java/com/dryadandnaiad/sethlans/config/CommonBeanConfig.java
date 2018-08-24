@@ -21,7 +21,7 @@ package com.dryadandnaiad.sethlans.config;
 
 import com.dryadandnaiad.sethlans.exceptions.CustomAsyncExceptionHandler;
 import com.dryadandnaiad.sethlans.executor.SethlansExecutor;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
@@ -54,7 +54,7 @@ public class CommonBeanConfig implements AsyncConfigurer {
 
     @Override
     public Executor getAsyncExecutor() {
-        LOG.info("Sethlans Version: " + SethlansUtils.getVersion());
+        LOG.info("Sethlans Version: " + SethlansQueryUtils.getVersion());
 
         SethlansExecutor sethlansExecutor = SethlansExecutor.getInstance();
         sethlansExecutor.getExecutor().initialize();

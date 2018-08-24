@@ -30,7 +30,6 @@ import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseServic
 import com.dryadandnaiad.sethlans.services.database.RenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +37,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static com.dryadandnaiad.sethlans.utils.SethlansNodeUtils.listofNodes;
+import static com.dryadandnaiad.sethlans.utils.SethlansNodeUtils.sortedNodeList;
 
 /**
  * Created Mario Estrella on 5/11/2018.
@@ -289,10 +291,10 @@ class QueueNodeActions {
         List<SethlansNode> sortedSethlansNodeList = new ArrayList<>();
         for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
             if (sethlansNode.getAvailableRenderingSlots() > 0 && sethlansNode.isBenchmarkComplete() && sethlansNode.isActive()) {
-                SethlansUtils.listofNodes(computeType, sortedSethlansNodeList, sethlansNode);
+                listofNodes(computeType, sortedSethlansNodeList, sethlansNode);
             }
         }
-        if (SethlansUtils.sortedNodeList(computeType, sortedSethlansNodeList)) {
+        if (sortedNodeList(computeType, sortedSethlansNodeList)) {
             return sortedSethlansNodeList;
         }
         return null;

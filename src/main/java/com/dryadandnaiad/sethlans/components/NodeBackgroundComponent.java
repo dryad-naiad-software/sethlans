@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,7 +23,7 @@ import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderRenderService;
 import com.dryadandnaiad.sethlans.services.network.MulticastSenderService;
 import com.dryadandnaiad.sethlans.services.network.NodeSendUpdateService;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +59,7 @@ public class NodeBackgroundComponent {
 
     @PostConstruct
     public void startNodeMulticast() {
-        String ip = SethlansUtils.getIP();
+        String ip = SethlansQueryUtils.getIP();
         LOG.debug("Sethlans Host IP: " + ip);
         multicastSenderService.sendSethlansIPAndPort(ip, sethlansPort);
     }

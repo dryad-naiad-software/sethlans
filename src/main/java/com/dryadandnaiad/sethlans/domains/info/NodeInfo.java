@@ -24,7 +24,7 @@ import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import lombok.Data;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
@@ -81,9 +81,9 @@ public class NodeInfo {
 
 
     public void populateNodeInfo() {
-        this.hostname = SethlansUtils.getHostname();
+        this.hostname = SethlansQueryUtils.getHostname();
 
-        this.ipAddress = SethlansUtils.getIP();
+        this.ipAddress = SethlansQueryUtils.getIP();
 
     }
 

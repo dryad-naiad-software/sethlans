@@ -31,7 +31,6 @@ import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import com.google.gson.Gson;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -44,7 +43,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-import static com.dryadandnaiad.sethlans.utils.SethlansUtils.writeProperty;
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.writeProperty;
 import static io.restassured.RestAssured.given;
 
 /**
@@ -90,7 +90,7 @@ public class AdminServerController {
             BlenderBinaryInfo blenderBinaryInfo = new BlenderBinaryInfo();
             blenderBinaryInfo.setVersion(version);
             blenderBinaryInfo.setBinaryOSList(blenderBinaryOSList(version));
-            if (SethlansUtils.getProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION.toString()).equals(version)) {
+            if (getProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION).equals(version)) {
                 blenderBinaryInfo.setActive(true);
             }
             blenderBinaryInfoList.add(blenderBinaryInfo);
@@ -101,7 +101,7 @@ public class AdminServerController {
 
     @GetMapping(value = "/get_key_from_server")
     public String getAccessKeyFromServer() {
-        return SethlansUtils.getProperty(SethlansConfigKeys.ACCESS_KEY.toString());
+        return getProperty(SethlansConfigKeys.ACCESS_KEY);
     }
 
     @GetMapping(value = {"node_scan"})
@@ -153,7 +153,7 @@ public class AdminServerController {
     @GetMapping(value = "/primary_blender_version")
     public Map primaryBlenderVersion() {
         return Collections.singletonMap("primary_blender",
-                SethlansUtils.getProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION.toString()));
+                getProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION));
     }
 
     @GetMapping(value = "/remaining_blender_versions")
@@ -214,7 +214,7 @@ public class AdminServerController {
     public boolean isKeyPresentOnNode(@RequestParam String ip, @RequestParam String port) {
         LOG.debug("Checking key");
         String connection = "https://" + ip + ":" + port + "/api/info/check_key/";
-        String params = "access_key=" + SethlansUtils.getProperty(SethlansConfigKeys.ACCESS_KEY.toString());
+        String params = "access_key=" + getProperty(SethlansConfigKeys.ACCESS_KEY);
         return sethlansAPIConnectionService.queryNode(connection, params);
 
     }

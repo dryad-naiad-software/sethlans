@@ -30,7 +30,8 @@ import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.services.database.RenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
@@ -48,6 +49,12 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+
+import static com.dryadandnaiad.sethlans.utils.BlenderUtils.assignBlenderExecutable;
+import static com.dryadandnaiad.sethlans.utils.BlenderUtils.renameBlenderDir;
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
+import static com.dryadandnaiad.sethlans.utils.SethlansFileUtils.archiveExtract;
+import static com.dryadandnaiad.sethlans.utils.SethlansFileUtils.isDirectoryEmpty;
 
 /**
  * Created Mario Estrella on 12/18/17.
@@ -103,11 +110,11 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     public void startRender(String queueUUID) {
         RenderTask renderTask = renderTaskDatabaseService.getByQueueUUID(queueUUID);
         renderTask.setInProgress(true);
-        NodeInfo nodeInfo = SethlansUtils.getNodeInfo();
-        String cacheDir = SethlansUtils.getProperty(SethlansConfigKeys.CACHE_DIR.toString());
+        NodeInfo nodeInfo = SethlansNodeUtils.getNodeInfo();
+        String cacheDir = getProperty(SethlansConfigKeys.CACHE_DIR);
         String truncatedProjectName = StringUtils.left(renderTask.getProjectName(), 10);
         String cleanedProjectName = truncatedProjectName.replaceAll(" ", "").replaceAll("[^a-zA-Z0-9_-]", "");
-        File blendFileDir = new File(SethlansUtils.getProperty(SethlansConfigKeys.BLEND_FILE_CACHE_DIR.toString())
+        File blendFileDir = new File(getProperty(SethlansConfigKeys.BLEND_FILE_CACHE_DIR)
                 + File.separator + cleanedProjectName.toLowerCase() + "-" + renderTask.getProject_uuid());
         File renderDir = new File(cacheDir + File.separator + renderTask.getBlenderFramePart().getPartFilename());
         if (downloadRequiredFiles(renderDir, blendFileDir, renderTask)) {
@@ -147,7 +154,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
     private String setDeviceID(RenderTask renderTask, NodeInfo nodeInfo) {
         String script;
-        String deviceID = SethlansUtils.getProperty(SethlansConfigKeys.GPU_DEVICE.toString());
+        String deviceID = getProperty(SethlansConfigKeys.GPU_DEVICE);
         List<String> deviceList = Arrays.asList(deviceID.split(","));
         List<String> deviceIDList = new ArrayList<>();
         if (nodeInfo.isCombined()) {
@@ -155,7 +162,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             LOG.info("Running render task using " + deviceID);
             for (String device : deviceList) {
                 deviceIDList.add(StringUtils.substringAfter(device, "_"));
-                isCuda = SethlansUtils.isCuda(device);
+                isCuda = SethlansQueryUtils.isCuda(device);
             }
             script = blenderPythonScriptService.writeCyclesRenderPythonScript(renderTask.getComputeType(),
                     renderTask.getRenderDir(), deviceIDList,
@@ -170,7 +177,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                     renderTask.getBlenderFramePart().getPartPositionMinY());
         } else {
             LOG.info("Running render task using " + renderTask.getDeviceID());
-            boolean isCuda = SethlansUtils.isCuda(renderTask.getDeviceID());
+            boolean isCuda = SethlansQueryUtils.isCuda(renderTask.getDeviceID());
             deviceIDList.add(StringUtils.substringAfter(renderTask.getDeviceID(), "_"));
             script = blenderPythonScriptService.writeCyclesRenderPythonScript(renderTask.getComputeType(),
                     renderTask.getRenderDir(), deviceIDList,
@@ -256,7 +263,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(renderTask.getConnection_uuid());
         String serverIP = sethlansServer.getIpAddress();
         String serverPort = sethlansServer.getNetworkPort();
-        String cachedBlenderBinaries = SethlansUtils.getProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES.toString());
+        String cachedBlenderBinaries = getProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES);
 
         if (renderDir.mkdirs()) {
             //Download Blender from server
@@ -274,15 +281,15 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             if (!versionCached) {
                 String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blender_binary/";
                 String params = "connection_uuid=" + renderTask.getConnection_uuid() + "&version=" +
-                        renderTask.getBlenderVersion() + "&os=" + SethlansUtils.getOS();
+                        renderTask.getBlenderVersion() + "&os=" + SethlansQueryUtils.getOS();
                 String filename = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, binDir);
 
 
-                if (SethlansUtils.archiveExtract(filename, new File(binDir))) {
+                if (archiveExtract(filename, new File(binDir))) {
                     LOG.debug("Extraction complete.");
                     LOG.debug("Attempting to rename blender directory. Will attempt 3 tries.");
                     int count = 0;
-                    while (!SethlansUtils.renameBlenderDir(renderDir, new File(binDir), renderTask, cachedBlenderBinaries)) {
+                    while (!renameBlenderDir(renderDir, new File(binDir), renderTask, cachedBlenderBinaries)) {
                         count++;
                         if (count == 2) {
                             return false;
@@ -297,14 +304,14 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
             } else {
                 renderTask.setRenderDir(renderDir.toString());
-                renderTask.setBlenderExecutable(SethlansUtils.assignBlenderExecutable(new File(binDir), renderTask.getBlenderVersion()));
+                renderTask.setBlenderExecutable(assignBlenderExecutable(new File(binDir), renderTask.getBlenderVersion()));
             }
 
             // Download Blend File from server
             blendFileDir.mkdirs();
             String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blend_file/";
             String params = "connection_uuid=" + renderTask.getConnection_uuid() + "&project_uuid=" + renderTask.getProject_uuid();
-            if (SethlansUtils.isDirectoryEmpty(blendFileDir)) {
+            if (isDirectoryEmpty(blendFileDir)) {
                 String blendFile = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, blendFileDir.toString());
                 renderTask.setBlendFilename(blendFileDir + File.separator + blendFile);
                 LOG.info("Required files downloaded.");

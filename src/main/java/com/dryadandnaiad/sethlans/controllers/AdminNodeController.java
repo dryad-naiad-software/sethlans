@@ -29,7 +29,6 @@ import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.services.database.AccessKeyDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -40,6 +39,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 
 /**
  * Created Mario Estrella on 7/25/2018.
@@ -92,7 +93,7 @@ public class AdminNodeController {
             List<String> gpuIdsList = Arrays.asList(gpuIds.split(","));
             setupNode.setSelectedGPUDeviceIDs(gpuIdsList);
             setupNode.setGpuEmpty(false);
-            setupNode.setCombined(Boolean.parseBoolean(SethlansUtils.getProperty(SethlansConfigKeys.COMBINE_GPU.toString())));
+            setupNode.setCombined(Boolean.parseBoolean(getProperty(SethlansConfigKeys.COMBINE_GPU)));
         }
         setupNode.setComputeMethod(getSelectedComputeMethod());
         setupNode.setCores(getCurrentCores());
@@ -108,7 +109,7 @@ public class AdminNodeController {
 
     @GetMapping(value = {"/selected_gpus"})
     public List<GPUDevice> getSelectedGPU() {
-        List<String> gpuIdsList = Arrays.asList(gpuIds.split(","));
+        String[] gpuIdsList = gpuIds.split(",");
         List<GPUDevice> gpuDeviceList = GPU.listDevices();
         List<GPUDevice> selectedGPUs = new ArrayList<>();
         for (String gpuID : gpuIdsList) {

@@ -29,7 +29,8 @@ import com.dryadandnaiad.sethlans.services.blender.BlenderProjectService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.queue.ProcessImageAndAnimationService;
-import com.dryadandnaiad.sethlans.utils.SethlansUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansFileUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -50,6 +51,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.dryadandnaiad.sethlans.utils.SethlansFileUtils.serveFile;
 
 /**
  * Created Mario Estrella on 3/27/2018.
@@ -144,12 +147,12 @@ public class ProjectController {
         if (project.getProjectType().equals(ProjectType.STILL_IMAGE)) {
             LOG.debug(project.getFrameFileNames().size() + " " + project.toString());
             File image = new File(project.getFrameFileNames().get(0));
-            SethlansUtils.serveFile(image, response);
+            serveFile(image, response);
         }
         if (project.getProjectType().equals(ProjectType.ANIMATION)) {
-            File zipFile = SethlansUtils.createArchive(project.getFrameFileNames(), project.getProjectRootDir(), project.getProjectName().toLowerCase());
+            File zipFile = SethlansFileUtils.createArchive(project.getFrameFileNames(), project.getProjectRootDir(), project.getProjectName().toLowerCase());
             if (zipFile != null) {
-                SethlansUtils.serveFile(zipFile, response);
+                serveFile(zipFile, response);
             }
         }
     }
@@ -188,7 +191,7 @@ public class ProjectController {
         if (project.getProjectType().equals(ProjectType.ANIMATION) && project.getRenderOutputFormat().equals(RenderOutputFormat.MP4)
                 || project.getRenderOutputFormat().equals(RenderOutputFormat.AVI)) {
             File video = new File(project.getMovieFileLocation());
-            SethlansUtils.serveFile(video, response);
+            serveFile(video, response);
         }
     }
 
@@ -266,12 +269,9 @@ public class ProjectController {
         if (blenderProject == null) {
             return false;
         } else {
-            if (blenderProject.getCurrentFrameThumbnail() == null) {
-                return false;
-            }
+            return blenderProject.getCurrentFrameThumbnail() != null;
         }
 
-        return true;
     }
 
     @GetMapping("/api/project_ui/thumbnail/{id}")
@@ -418,7 +418,7 @@ public class ProjectController {
     @PostMapping(value = "/api/project_form/upload_project")
     public ProjectForm newProjectUpload(@RequestParam("projectFile") MultipartFile projectFile) {
         LOG.debug("Upload Attempted");
-        String uploadTag = SethlansUtils.getShortUUID();
+        String uploadTag = SethlansQueryUtils.getShortUUID();
         try {
             File storeUpload = new File(temp + uploadTag + "-" + projectFile.getOriginalFilename());
             projectFile.transferTo(storeUpload);
