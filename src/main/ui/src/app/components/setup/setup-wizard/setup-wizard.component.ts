@@ -72,9 +72,17 @@ export class SetupWizardComponent implements OnInit {
         break;
       }
       case SetupWizardProgress.SETTINGS: {
-        this.progress = SetupWizardProgress.SUMMARY;
-        this.settingsComplete = true;
-        break;
+        if (this.setupForm.mailSettingsComplete) {
+          this.progress = SetupWizardProgress.SUMMARY;
+          this.settingsComplete = true;
+          break;
+        } else {
+          this.setupForm.showMailSettings = true;
+          this.nextDisabled = true;
+          break;
+        }
+
+
       }
     }
   }
@@ -91,8 +99,15 @@ export class SetupWizardComponent implements OnInit {
         break;
       }
       case SetupWizardProgress.SETTINGS: {
-        this.progress = SetupWizardProgress.MODE_CONFIG;
-        break;
+        if (this.setupForm.showMailSettings) {
+          this.setupForm.showMailSettings = false;
+          this.nextDisabled = false;
+          break;
+        } else {
+          this.progress = SetupWizardProgress.MODE_CONFIG;
+          break;
+        }
+
       }
       case SetupWizardProgress.SUMMARY: {
         this.progress = SetupWizardProgress.SETTINGS;

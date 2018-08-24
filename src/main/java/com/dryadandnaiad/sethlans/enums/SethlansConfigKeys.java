@@ -60,6 +60,7 @@ public enum SethlansConfigKeys {
     MAIL_PORT("spring.mail.port"),
     MAIL_USER("spring.mail.username"),
     MAIL_PASS("spring.mail.password"),
+    MAIL_SSL_ENABLE("spring.mail.properties.mail.smtp.ssl.enable"),
     MAIL_TLS_ENABLE("spring.mail.properties.mail.smtp.starttls.enable"),
     MAIL_TLS_REQUIRED("spring.mail.properties.mail.smtp.starttls.required"),
     MAIL_USE_AUTH("spring.mail.properties.mail.smtp.auth"),

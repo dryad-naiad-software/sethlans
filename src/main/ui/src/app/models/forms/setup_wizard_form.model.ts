@@ -36,6 +36,9 @@ export class SetupWizardForm {
   complete: boolean;
   logLevel: string;
   isModeDone: boolean;
+  mailSettingsComplete: boolean;
+  showMailSettings: boolean = false;
+
 
   constructor() {
     this.mode = Mode.SERVER;
@@ -43,5 +46,6 @@ export class SetupWizardForm {
     this.logLevel = 'INFO';
     this.isModeDone = false;
     this.mailSettings = new MailSettings();
+    this.mailSettingsComplete = false;
   }
 }

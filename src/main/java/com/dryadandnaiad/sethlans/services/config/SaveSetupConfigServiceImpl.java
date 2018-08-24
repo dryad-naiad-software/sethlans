@@ -129,7 +129,8 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
             //Encrypt Mail Password for long term storage.
             writeProperty(SethlansConfigKeys.MAIL_PASS, encryptPropertyValue(setupForm.getMailSettings().getPassword()));
         }
-        writeProperty(SethlansConfigKeys.MAIL_TLS_ENABLE, Boolean.toString(setupForm.getMailSettings().isStartTLSEnable()));
+        writeProperty(SethlansConfigKeys.MAIL_SSL_ENABLE, Boolean.toString(setupForm.getMailSettings().isSslEnabled()));
+        writeProperty(SethlansConfigKeys.MAIL_TLS_ENABLE, Boolean.toString(setupForm.getMailSettings().isStartTLSEnabled()));
         writeProperty(SethlansConfigKeys.MAIL_TLS_REQUIRED, Boolean.toString(setupForm.getMailSettings().isStartTLSRequired()));
         LOG.debug("Main Sethlans properties saved.");
 
