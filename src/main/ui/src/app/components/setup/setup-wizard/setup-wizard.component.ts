@@ -37,12 +37,16 @@ export class SetupWizardComponent implements OnInit {
   modeSelected: boolean;
   settingsComplete: boolean;
   finishedActive: boolean;
+  challengeQuestions: string[];
 
   constructor(private http: HttpClient) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
   }
 
   ngOnInit() {
+    this.http.get('/api/users/challenge_question_list').subscribe((challengeQuestions: string[]) => {
+      this.challengeQuestions = challengeQuestions;
+    });
     this.progress = SetupWizardProgress.MODE_SELECT;
     this.setupForm = new SetupWizardForm();
     this.modeSelected = false;

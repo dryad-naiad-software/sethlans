@@ -16,78 +16,126 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
+<h6 ngbTooltip="Super Administrator for Sethlans." placement="left">Admin Registration</h6>
 <form #userForm="ngForm" class="editForm">
-  <div class="form-group"
-       ngbTooltip="Initial Administrator for Sethlans. Minimum of 4 characters, alpha-numeric characters only."
-       placement="left">
-    <label for="username">Username</label>
-    <input type="text"
-           name="username"
-           id="username"
-           #username="ngModel"
-           [(ngModel)]="setupForm.user.username"
-           [ngClass]="{'is-invalid':username.errors && username.touched}"
-           class="form-control form-control-sm"
-           required pattern="^[a-zA-Z0-9]{4,}$" (keyup)="validateAndSubmit($event, userForm)">
-    <div class="invalid-feedback" [hidden]="username.valid">
-      <ul>
-        <li>Username is required.</li>
-        <li>Minimum of 4 characters, alpha-numeric characters only.</li>
-      </ul>
+  <div class="form-row">
+    <div class="col-md"
+         ngbTooltip="Minimum of 4 characters, alpha-numeric characters only."
+         placement="left">
+      <input type="text"
+             name="username"
+             id="username"
+             #username="ngModel"
+             [(ngModel)]="setupForm.user.username"
+             [ngClass]="{'is-invalid':username.errors && username.touched}"
+             class="form-control form-control-sm" placeholder="Username"
+             required pattern="^[a-zA-Z0-9]{4,}$" (keyup)="validateAndSubmit($event, userForm)">
+      <div class="invalid-feedback" [hidden]="username.valid">
+        <ul>
+          <li>Username is required.</li>
+          <li>Minimum of 4 characters, alpha-numeric characters only.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md" ngbTooltip="Email used for notifications." placement="left">
+      <input type="text"
+             name="email"
+             id="email"
+             #email="ngModel"
+             [(ngModel)]="setupForm.user.email"
+             class="form-control form-control-sm"
+             [ngClass]="{'is-invalid':email.errors && email.touched}"
+             placeholder="Email Address"
+             required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{1,}$" (keyup)="validateAndSubmit($event, userForm)">
+      <div class="invalid-feedback" [hidden]="email.valid">
+        <ul>
+          <li>Email is required and must be valid.</li>
+        </ul>
+      </div>
+    </div>
+
+
+  </div>
+  <div class="form-row pt-3">
+    <div class="col-md"
+         ngbTooltip="Password needs to be a minimum of 8 characters."
+         placement="left">
+      <input type="password"
+             name="password"
+             #password="ngModel"
+             [(ngModel)]="setupForm.user.password"
+             id="password"
+             [ngClass]="{'is-invalid':password.errors && password.touched}"
+             class="form-control form-control-sm"
+             placeholder="Password"
+             required pattern="^.{8,35}$" (keyup)="validateAndSubmit($event, userForm)">
+
+      <div class="invalid-feedback" [hidden]="password.valid">
+        <ul>
+          <li>Password is required.</li>
+          <li>Password must be a minimum 8 characters.
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md" ngbTooltip="Re-enter password" placement="left">
+      <input type="password"
+             id="passwordConfirm"
+             #passwordConfirm="ngModel"
+             [(ngModel)]="setupForm.user.passwordConfirm"
+             name="passwordConfirm"
+             class="form-control form-control-sm"
+             placeholder="Confirm Password"
+             [ngClass]="{'is-invalid':passwordConfirm.errors && passwordConfirm.touched}"
+             required [fieldMatches]="password" (keyup)="validateAndSubmit($event, userForm)">
+      <div class="invalid-feedback" [hidden]="passwordConfirm.valid">
+        <ul>
+          <li>Passwords must match.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <h6 class="pt-3"
+      ngbTooltip="In case you lose your password, this will allow password reset. Each answer must be unique. Remember your answers."
+      placement="left">Security Questions</h6>
+
+  <div class="form-row">
+    <div class="col-md">
+      <select
+        class="form-control form-control-sm">
+        <option *ngFor="let challengeQuestion of challengeQuestions">{{challengeQuestion}}</option>
+      </select>
+    </div>
+    <div class="col-md">
+      <input type="text" placeholder="Response" ngbTooltip="Case sensitive." placement="right"
+             class="form-control form-control-sm"/>
     </div>
 
   </div>
-  <div class="form-group"
-       ngbTooltip="Password needs to be a minimum of 8 characters."
-       placement="left">
-    <label for="password">Password</label>
-    <input type="password"
-           name="password"
-           #password="ngModel"
-           [(ngModel)]="setupForm.user.password"
-           id="password"
-           [ngClass]="{'is-invalid':password.errors && password.touched}"
-           class="form-control form-control-sm"
-           required pattern="^.{8,35}$" (keyup)="validateAndSubmit($event, userForm)">
+  <div class="form-row pt-3">
+    <div class="col-md">
+      <select
+        class="form-control form-control-sm">
+        <option *ngFor="let challengeQuestion of challengeQuestions">{{challengeQuestion}}</option>
+      </select>
+    </div>
+    <div class="col-md">
+      <input type="text" placeholder="Response" ngbTooltip="Case sensitive." placement="right"
+             class="form-control form-control-sm"/>
+    </div>
 
-    <div class="invalid-feedback" [hidden]="password.valid">
-      <ul>
-        <li>Password is required.</li>
-        <li>Password must be a minimum 8 characters.
-        </li>
-      </ul>
-    </div>
   </div>
-  <div class="form-group" ngbTooltip="Re-enter password" placement="left">
-    <label for="passwordConfirm">Confirm Password</label>
-    <input type="password"
-           id="passwordConfirm"
-           #passwordConfirm="ngModel"
-           [(ngModel)]="setupForm.user.passwordConfirm"
-           name="passwordConfirm"
-           class="form-control form-control-sm"
-           [ngClass]="{'is-invalid':passwordConfirm.errors && passwordConfirm.touched}"
-           required [fieldMatches]="password" (keyup)="validateAndSubmit($event, userForm)">
-    <div class="invalid-feedback" [hidden]="passwordConfirm.valid">
-      <ul>
-        <li>Passwords must match.</li>
-      </ul>
+  <div class="form-row pt-3">
+    <div class="col-md">
+      <select
+        class="form-control form-control-sm">
+        <option *ngFor="let challengeQuestion of challengeQuestions">{{challengeQuestion}}</option>
+      </select>
     </div>
-  </div>
-  <div class="form-group" ngbTooltip="Email used for notifications." placement="left">
-    <label for="email">Email Address</label>
-    <input type="text"
-           name="email"
-           id="email"
-           #email="ngModel"
-           [(ngModel)]="setupForm.user.email"
-           class="form-control form-control-sm"
-           [ngClass]="{'is-invalid':email.errors && email.touched}"
-           required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{1,}$" (keyup)="validateAndSubmit($event, userForm)">
-    <div class="invalid-feedback" [hidden]="email.valid">
-      <ul>
-        <li>Email is required and must be valid.</li>
-      </ul>
+    <div class="col-md">
+      <input type="text" placeholder="Response" ngbTooltip="Case sensitive." placement="right"
+             class="form-control form-control-sm"/>
     </div>
+
   </div>
 </form>

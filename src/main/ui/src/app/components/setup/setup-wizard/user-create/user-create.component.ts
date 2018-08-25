@@ -31,12 +31,14 @@ export class UserCreateComponent implements OnInit {
   @Output() disableNext = new EventEmitter();
   @Output() submitUser = new EventEmitter();
   passwordMatch: boolean = false;
+  @Input() challengeQuestions: string[];
 
   constructor() {
 
   }
 
   ngOnInit() {
+
     if (this.setupForm.user == null) {
       this.setupForm.user = new User();
     }

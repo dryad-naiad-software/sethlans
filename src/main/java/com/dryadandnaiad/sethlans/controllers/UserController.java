@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUserChallenge;
 import com.dryadandnaiad.sethlans.domains.info.UserInfo;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
+import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +66,11 @@ public class UserController {
             return false;
         }
         return auth.isAuthenticated();
+    }
+
+    @GetMapping(value = {"/challenge_question_list"})
+    public List<String> getChallengeList() {
+        return SethlansQueryUtils.getChallengeQuestionList();
     }
 
     @GetMapping(value = {"/get_user/{username}"})
