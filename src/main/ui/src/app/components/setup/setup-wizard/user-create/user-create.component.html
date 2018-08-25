@@ -37,7 +37,8 @@
         </ul>
       </div>
     </div>
-    <div class="col-md" ngbTooltip="Email used for notifications." placement="left">
+    <div *ngIf="setupForm.mode !== modes.NODE" class="col-md" ngbTooltip="Email used for notifications."
+         placement="left">
       <input type="text"
              name="email"
              id="email"

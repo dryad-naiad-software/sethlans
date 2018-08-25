@@ -21,6 +21,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {SetupWizardForm} from '../../../../models/forms/setup_wizard_form.model';
 import {User} from '../../../../models/user.model';
 import {UserChallenge} from '../../../../models/user_challenge.model';
+import {Mode} from '../../../../enums/mode.enum';
 
 @Component({
   selector: 'app-user-create',
@@ -36,6 +37,8 @@ export class UserCreateComponent implements OnInit {
   challenge1: UserChallenge;
   challenge2: UserChallenge;
   challenge3: UserChallenge;
+  modes: any = Mode;
+
 
   constructor() {
     this.challenge1 = new UserChallenge();
@@ -74,7 +77,6 @@ export class UserCreateComponent implements OnInit {
     this.setupForm.user.challengeList.push(this.challenge1);
     this.setupForm.user.challengeList.push(this.challenge2);
     this.setupForm.user.challengeList.push(this.challenge3);
-    console.log(this.setupForm.user);
   }
 
 

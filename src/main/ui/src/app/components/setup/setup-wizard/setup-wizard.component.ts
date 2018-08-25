@@ -76,10 +76,15 @@ export class SetupWizardComponent implements OnInit {
         break;
       }
       case SetupWizardProgress.SETTINGS: {
+        if (this.setupForm.mode === Mode.NODE) {
+          this.progress = SetupWizardProgress.SUMMARY;
+          this.settingsComplete = true;
+          break;
+        }
         if (this.setupForm.showMailSettings && !this.setupForm.configureMail) {
           this.progress = SetupWizardProgress.SUMMARY;
           this.settingsComplete = true;
-
+          break;
         }
         if (this.setupForm.mailSettingsComplete && this.setupForm.configureMail) {
           this.progress = SetupWizardProgress.SUMMARY;
@@ -89,9 +94,6 @@ export class SetupWizardComponent implements OnInit {
           this.setupForm.showMailSettings = true;
           break;
         }
-
-
-
       }
     }
   }
@@ -108,6 +110,10 @@ export class SetupWizardComponent implements OnInit {
         break;
       }
       case SetupWizardProgress.SETTINGS: {
+        if (this.setupForm.mode === Mode.NODE) {
+          this.progress = SetupWizardProgress.MODE_CONFIG;
+          break;
+        }
         if (this.setupForm.showMailSettings) {
           this.setupForm.showMailSettings = false;
           this.setupForm.mailSettingsComplete = false;

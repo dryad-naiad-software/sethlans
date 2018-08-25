@@ -20,6 +20,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {SetupWizardForm} from '../../../../models/forms/setup_wizard_form.model';
 import {HttpClient} from '@angular/common/http';
+import {Mode} from '../../../../enums/mode.enum';
 
 @Component({
   selector: 'app-settings-config',
@@ -31,9 +32,13 @@ export class SettingsConfigComponent implements OnInit {
   @Output() disableNext = new EventEmitter();
 
   constructor(private http: HttpClient) {
+
   }
 
   ngOnInit() {
+    if (this.setupForm.mode === Mode.NODE) {
+      this.setupForm.configureMail = false;
+    }
     if (this.setupForm.rootDirectory == null) {
       this.http.get('/api/info/root_directory',)
         .subscribe((rootDirectory) => {
@@ -61,7 +66,6 @@ export class SettingsConfigComponent implements OnInit {
   }
 
   validateAndSubmit(event, settingsForm) {
-    console.log(this.setupForm.mailSettings);
     if (settingsForm.valid) {
       this.disableNext.emit(false);
       if (this.setupForm.showMailSettings) {
