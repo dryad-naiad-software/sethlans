@@ -17,22 +17,15 @@
  *
  */
 
-import {Role} from '../enums/role.enum';
-import {UserChallenge} from './user_challenge.model';
-
-export class User {
-  username: string;
-  password: string;
-  passwordConfirm: string;
-  email: string;
-  roles: Role[];
-  active: boolean;
-  passwordUpdated: boolean;
-  challengeList: UserChallenge[];
+export class UserChallenge {
+  challenge: string;
+  response: string;
+  responseUpdated: boolean;
 
 
   constructor() {
-    this.active = false;
-    this.challengeList = [];
+    this.challenge = '';
+    this.response = '';
+    this.responseUpdated = true;
   }
 }

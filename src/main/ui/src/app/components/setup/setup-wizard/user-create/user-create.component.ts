@@ -20,6 +20,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {SetupWizardForm} from '../../../../models/forms/setup_wizard_form.model';
 import {User} from '../../../../models/user.model';
+import {UserChallenge} from '../../../../models/user_challenge.model';
 
 @Component({
   selector: 'app-user-create',
@@ -32,13 +33,21 @@ export class UserCreateComponent implements OnInit {
   @Output() submitUser = new EventEmitter();
   passwordMatch: boolean = false;
   @Input() challengeQuestions: string[];
+  challenge1: UserChallenge;
+  challenge2: UserChallenge;
+  challenge3: UserChallenge;
 
   constructor() {
+    this.challenge1 = new UserChallenge();
+    this.challenge2 = new UserChallenge();
+    this.challenge3 = new UserChallenge();
 
   }
 
   ngOnInit() {
-
+    this.challenge1.challenge = this.challengeQuestions[0];
+    this.challenge2.challenge = this.challengeQuestions[1];
+    this.challenge3.challenge = this.challengeQuestions[2];
     if (this.setupForm.user == null) {
       this.setupForm.user = new User();
     }
@@ -48,18 +57,24 @@ export class UserCreateComponent implements OnInit {
   }
 
   validateAndSubmit(event, userForm) {
+    this.populateUserSecurityQuestions();
     this.passwordMatch = this.setupForm.user.password === this.setupForm.user.passwordConfirm;
     if (userForm.valid && this.passwordMatch) {
       this.disableNext.emit(false);
       if (event.key === 'Enter') {
         this.submitUser.emit();
-
       }
-
     } else {
       this.disableNext.emit(true);
     }
+  }
 
+  populateUserSecurityQuestions() {
+    this.setupForm.user.challengeList = [];
+    this.setupForm.user.challengeList.push(this.challenge1);
+    this.setupForm.user.challengeList.push(this.challenge2);
+    this.setupForm.user.challengeList.push(this.challenge3);
+    console.log(this.setupForm.user);
   }
 
 
