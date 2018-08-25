@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
+import com.dryadandnaiad.sethlans.domains.database.user.SethlansUserChallenge;
 import com.dryadandnaiad.sethlans.domains.info.UserInfo;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
 import org.slf4j.Logger;
@@ -31,9 +32,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created Mario Estrella on 2/26/18.
@@ -72,12 +71,20 @@ public class UserController {
     public UserInfo getUserInfo(@PathVariable String username) {
         if (requestMatchesAuthUser(username)) {
             SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(username);
+
             UserInfo userToSend = new UserInfo();
             userToSend.setUsername(sethlansUser.getUsername());
             userToSend.setActive(sethlansUser.isActive());
             userToSend.setRoles(sethlansUser.getRoles());
             userToSend.setEmail(sethlansUser.getEmail());
             userToSend.setId(sethlansUser.getId());
+            List<SethlansUserChallenge> filteredList = new ArrayList<>();
+            for (SethlansUserChallenge sethlansUserChallenge : sethlansUser.getChallengeList()) {
+                SethlansUserChallenge toSend = new SethlansUserChallenge();
+                toSend.setChallenge(sethlansUserChallenge.getChallenge());
+                filteredList.add(toSend);
+            }
+            userToSend.setUserChallengeList(filteredList);
             userToSend.setLastUpdated(sethlansUser.getLastUpdated());
             userToSend.setDateCreated(sethlansUser.getDateCreated());
             return userToSend;

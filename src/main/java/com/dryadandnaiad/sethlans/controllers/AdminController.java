@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
+import com.dryadandnaiad.sethlans.domains.database.user.SethlansUserChallenge;
 import com.dryadandnaiad.sethlans.domains.info.Log;
 import com.dryadandnaiad.sethlans.domains.info.RoleInfo;
 import com.dryadandnaiad.sethlans.domains.info.SethlansSettings;
@@ -194,6 +195,13 @@ public class AdminController {
         userToSend.setActive(sethlansUser.isActive());
         userToSend.setRoles(sethlansUser.getRoles());
         userToSend.setEmail(sethlansUser.getEmail());
+        List<SethlansUserChallenge> filteredList = new ArrayList<>();
+        for (SethlansUserChallenge sethlansUserChallenge : sethlansUser.getChallengeList()) {
+            SethlansUserChallenge toSend = new SethlansUserChallenge();
+            toSend.setChallenge(sethlansUserChallenge.getChallenge());
+            filteredList.add(toSend);
+        }
+        userToSend.setUserChallengeList(filteredList);
         userToSend.setId(sethlansUser.getId());
         userToSend.setLastUpdated(sethlansUser.getLastUpdated());
         userToSend.setDateCreated(sethlansUser.getDateCreated());
