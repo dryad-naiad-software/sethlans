@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -46,6 +46,7 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
     public void shutdown() {
         try {
             Thread.sleep(5000);
+            LOG.info("Shutting down Sethlans...");
             SethlansExecutor sethlansExecutor = SethlansExecutor.getInstance();
             sethlansExecutor.getExecutor().shutdown();
             System.exit(0);
@@ -59,6 +60,7 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
     public void restart() {
         SethlansState sethlansState = SethlansState.getInstance();
         SethlansExecutor sethlansExecutor = SethlansExecutor.getInstance();
+        LOG.info("Restarting Sethlans...");
         sethlansExecutor.getExecutor().shutdown();
         try {
             Thread.sleep(10000);

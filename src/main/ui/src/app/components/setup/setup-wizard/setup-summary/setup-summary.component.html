@@ -60,15 +60,15 @@
     <td>Sethlans URL</td>
     <td>{{setupForm.appURL}}</td>
   </tr>
-  <tr>
+  <tr *ngIf="setupForm.configureMail">
     <td>SMTP Server</td>
     <td>{{setupForm.mailSettings.mailHost}}: {{setupForm.mailSettings.mailPort}}</td>
   </tr>
-  <tr>
+  <tr *ngIf="setupForm.configureMail">
     <td>Reply To Address</td>
     <td>{{setupForm.mailSettings.replyToAddress}}</td>
   </tr>
-  <tr>
+  <tr *ngIf="setupForm.configureMail">
     <td>Use SMTP Auth</td>
     <td>{{setupForm.mailSettings.smtpAuth}}</td>
   </tr>
@@ -76,11 +76,11 @@
     <td>SMTP Username</td>
     <td>{{setupForm.mailSettings.username}}</td>
   </tr>
-  <tr>
+  <tr *ngIf="setupForm.configureMail">
     <td>SMTP: Enable SSL</td>
     <td>{{setupForm.mailSettings.sslEnabled}}</td>
   </tr>
-  <tr>
+  <tr *ngIf="setupForm.configureMail">
     <td>SMTP: Enable STARTTLS</td>
     <td>{{setupForm.mailSettings.startTLSEnabled}}</td>
   </tr>

@@ -42,7 +42,7 @@ public class SetupForm {
     private String rootDirectory;
     private SetupServer server;
     private MailSettings mailSettings;
-    private boolean mailConfigured;
+    private boolean configureMail;
     private SetupNode node;
     private String logLevel;
 

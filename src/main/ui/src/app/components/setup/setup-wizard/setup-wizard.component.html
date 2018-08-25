@@ -38,8 +38,8 @@
                     [disabled]="!modeSelected || setupForm.complete"
                     [ngClass]="progress === setupProgress.REGISTER_USER ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
-                    ngbTooltip="User Registration" (click)="progress = setupProgress.REGISTER_USER">
-              <i class="fas fa-user"></i></button>
+                    ngbTooltip="Administrator Setup" (click)="progress = setupProgress.REGISTER_USER">
+              <i class="fas fa-user-ninja"></i></button>
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
@@ -75,6 +75,7 @@
           </li>
         </ul>
         <div class="py-3">
+
           <app-mode-setup [setupForm]="setupForm" *ngIf="progress === setupProgress.MODE_SELECT"></app-mode-setup>
           <app-user-create [setupForm]="setupForm" (disableNext)="disableNext($event)" (submitUser)="next()"
                            *ngIf="progress === setupProgress.REGISTER_USER"></app-user-create>

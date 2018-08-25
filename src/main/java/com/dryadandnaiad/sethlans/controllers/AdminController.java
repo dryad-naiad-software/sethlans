@@ -69,13 +69,11 @@ public class AdminController {
     @GetMapping(value = "/restart")
     public void restart() {
         sethlansManagerService.restart();
-        LOG.debug("Restarting Sethlans...");
     }
 
     @GetMapping(value = "/shutdown")
     public void shutdown() {
         sethlansManagerService.shutdown();
-        LOG.debug("Shutting down Sethlans...");
     }
 
     @GetMapping(value = "/user_list")

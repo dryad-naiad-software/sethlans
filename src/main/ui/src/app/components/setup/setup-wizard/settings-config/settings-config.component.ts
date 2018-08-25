@@ -28,7 +28,6 @@ import {HttpClient} from '@angular/common/http';
 })
 export class SettingsConfigComponent implements OnInit {
   @Input() setupForm: SetupWizardForm;
-  hideAdvanced: boolean = true;
   @Output() disableNext = new EventEmitter();
 
   constructor(private http: HttpClient) {
@@ -73,6 +72,16 @@ export class SettingsConfigComponent implements OnInit {
       if (this.setupForm.showMailSettings) {
         this.setupForm.mailSettingsComplete = false;
       }
+    }
+  }
+
+  skipMail() {
+    if (!this.setupForm.configureMail) {
+      this.setupForm.mailSettingsComplete = true;
+      this.disableNext.emit(false);
+    } else {
+      this.setupForm.mailSettingsComplete = false;
+      this.disableNext.emit(true);
     }
   }
 

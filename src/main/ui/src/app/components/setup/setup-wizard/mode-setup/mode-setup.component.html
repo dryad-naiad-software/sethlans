@@ -16,8 +16,9 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
-<div class="mx-auto center-justified">
-  <h5 class="card-title">Mode Selection</h5>
+<div class="row">
+  <div class="col-md-4 ml-5">
+    <h5>Sethlans Modes</h5>
   <form #modeForm="ngForm" class="editForm">
     <fieldset class="form-group">
       <div class="form-check" ngbTooltip="Sethlans will be configured as a server" placement="left">
@@ -57,4 +58,23 @@
     </fieldset>
 
   </form>
+  </div>
+  <div class="col-md-6">
+    <ul>
+      <li>
+        <p><strong>Server:</strong> Creation of render projects, management of render queues, provides notifications for
+          projects, manages nodes. </p>
+      </li>
+      <li>
+        <p><strong>Node:</strong> Receives rendering tasks from the server, returns finished products back to the
+          server.</p>
+      </li>
+      <li>
+        <p><strong>Dual:</strong> Combination of a server and a node. Allows both the creation and management of render
+          queues and the rendering of tasks.</p>
+
+      </li>
+    </ul>
+
+  </div>
 </div>

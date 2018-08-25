@@ -30,7 +30,6 @@ export class MailSettings {
 
   constructor() {
     this.mailHost = '';
-    this.mailPort = 25;
     this.username = '';
     this.password = '';
     this.replyToAddress = '';

@@ -123,8 +123,8 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
         writeProperty(SethlansConfigKeys.TEMP_DIR, tempDirectory);
         writeProperty(SethlansConfigKeys.ROOT_DIR, setupForm.getRootDirectory());
         writeProperty(SethlansConfigKeys.DATABASE_LOC, "jdbc:h2:" + setupForm.getRootDirectory() + File.separator + "data" + File.separator + "sethlansdb;WRITE_DELAY=50");
-        writeProperty(SethlansConfigKeys.MAIL_SERVER_CONFIGURED, Boolean.toString(setupForm.isMailConfigured()));
-        if (setupForm.isMailConfigured()) {
+        writeProperty(SethlansConfigKeys.MAIL_SERVER_CONFIGURED, Boolean.toString(setupForm.isConfigureMail()));
+        if (setupForm.isConfigureMail()) {
             writeProperty(SethlansConfigKeys.MAIL_HOST, setupForm.getMailSettings().getMailHost());
             writeProperty(SethlansConfigKeys.MAIL_PORT, setupForm.getMailSettings().getMailPort());
             writeProperty(SethlansConfigKeys.MAIL_REPLYTO, setupForm.getMailSettings().getReplyToAddress());

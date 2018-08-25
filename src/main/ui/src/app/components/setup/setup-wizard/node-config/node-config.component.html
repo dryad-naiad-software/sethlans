@@ -84,18 +84,12 @@
              #tileSizeCPU="ngModel"
              [(ngModel)]="setupForm.node.tileSizeGPU">
     </div>
-
-    <label *ngIf="setupForm.node.selectedGPUDeviceIDs.length > 1">Options:</label>
     <div *ngIf="setupForm.node.selectedGPUDeviceIDs.length > 1"
          ngbTooltip="Enabled: Selected GPUs used as one render slot.  Disabled: Each GPU equals one render slot."
          placement="left">
-      <input type="checkbox"
-             class="form-control-sm"
-             name="{{setupForm.node.combined}}"
-             value="{{setupForm.node.combined}}"
-             [(ngModel)]="setupForm.node.combined"/>
-      <label class="form-check-label form-control-sm">Combine GPUs</label>
-      <br/><br/>
+      Combine GPUs&nbsp;
+      <span class="fas" [ngClass]="setupForm.node.combined ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
+            (click)="setupForm.node.combined = !setupForm.node.combined"></span>
     </div>
   </div>
 </form>
