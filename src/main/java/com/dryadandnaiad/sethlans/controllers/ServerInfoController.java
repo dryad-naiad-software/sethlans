@@ -50,6 +50,9 @@ import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 @Profile({"SERVER", "DUAL", "SETUP"})
 @RequestMapping("/api/info")
 public class ServerInfoController {
+    @Value("${sethlans.firsttime}")
+    private boolean firstTime;
+
     private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
 
     @Value("${sethlans.configDir}")
@@ -154,6 +157,9 @@ public class ServerInfoController {
 
     @GetMapping(value = {"/server_dashboard"})
     public ServerDashBoardInfo getDashBoard() {
+        if (firstTime) {
+            return null;
+        }
         ServerDashBoardInfo serverDashBoardInfo = new ServerDashBoardInfo();
         CPU cpu = new CPU();
         serverDashBoardInfo.setActiveNodes(getActiveNodes());

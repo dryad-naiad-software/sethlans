@@ -90,11 +90,11 @@
               <span class="mobile-label">Preview:</span>
               <span *ngIf="project.thumbnailPresent == false"><img [src]="placeholder"
                                                                    height="85"
-                                                                   class="align-top img-fluid py-1"
+                                                                   class="align-top  py-1"
                                                                    alt="placeholder">
               </span>
               <span *ngIf="project.thumbnailPresent == true">
-                <img [src]="project.thumbnailURL" height="85" class="align-top img-fluid img-thumbnail py-1"
+                <img [src]="project.thumbnailURL" height="85" class="align-top py-1"
                      alt="thumbnail">
               </span>
             </mat-cell>

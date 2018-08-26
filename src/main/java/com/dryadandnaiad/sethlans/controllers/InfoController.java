@@ -122,7 +122,11 @@ public class InfoController {
 
     @GetMapping(value = {"/sethlans_mode"})
     public Map getSethlansMode() {
+        if (firstTime) {
+            return Collections.singletonMap("mode", "SETUP");
+        }
         return Collections.singletonMap("mode", SethlansQueryUtils.getMode().toString());
+
     }
 
     @GetMapping(value = {"/sethlans_ip"})
