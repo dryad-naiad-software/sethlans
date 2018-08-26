@@ -45,13 +45,13 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
     @Override
     public void shutdown() {
         try {
-            Thread.sleep(5000);
             LOG.info("Shutting down Sethlans...");
             SethlansExecutor sethlansExecutor = SethlansExecutor.getInstance();
             sethlansExecutor.getExecutor().shutdown();
-            System.exit(0);
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
             LOG.info("System Shutdown service closed");
+            System.exit(0);
         }
 
     }
@@ -65,7 +65,7 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
-            LOG.info("System Shutdown service closed");
+            LOG.info("Executor service closed");
 
         }
         Thread thread = new Thread(() -> {

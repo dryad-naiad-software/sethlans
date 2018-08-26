@@ -291,9 +291,9 @@ public class ProjectController {
             return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(imageToSend);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("No Image file found");
+            return null;
         }
-        return null;
     }
 
     @GetMapping(value = "/api/project_ui/render_time/{id}")

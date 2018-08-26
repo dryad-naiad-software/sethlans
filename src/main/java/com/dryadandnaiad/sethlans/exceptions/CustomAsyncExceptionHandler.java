@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,6 +23,7 @@ import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
+import org.springframework.beans.factory.BeanCreationException;
 
 import java.lang.reflect.Method;
 
@@ -39,15 +40,20 @@ public class CustomAsyncExceptionHandler
     @Override
     public void handleUncaughtException(
             Throwable throwable, Method method, Object... obj) {
+        if (throwable instanceof BeanCreationException) {
+            LOG.error("Bean creation failure. Likely during shutdown and DB is being accessed after it was closed. This can be ignored.");
+        } else {
+            LOG.error("Exception message - " + throwable.getMessage());
 
-        LOG.error("Exception message - " + throwable.getMessage());
+            LOG.error("Method name - " + method.getName());
+            for (Object param : obj) {
+                LOG.error("Parameter value - " + param);
+            }
 
-        LOG.error("Method name - " + method.getName());
-        for (Object param : obj) {
-            LOG.error("Parameter value - " + param);
+            LOG.error("Stacktrace: " + Throwables.getStackTraceAsString(throwable));
         }
 
-        LOG.error("Stacktrace: " + Throwables.getStackTraceAsString(throwable));
+
     }
 
 }

@@ -29,7 +29,6 @@ import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseServic
 import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.BeanCreationNotAllowedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -134,7 +133,7 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
                         }
                     }
 
-                } catch (InterruptedException | BeanCreationNotAllowedException e) {
+                } catch (InterruptedException e) {
                     LOG.debug("Shutting Down Node Idle Notification Service");
                     break;
                 }

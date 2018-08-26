@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.repositories.NotificationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +44,12 @@ public class NotificationDatabaseServiceImpl implements NotificationDatabaseServ
 
     @Override
     public List<SethlansNotification> listAll() {
-        return new ArrayList<>(notificationRepository.findAll());
+        try {
+            return new ArrayList<>(notificationRepository.findAll());
+        } catch (BeanCreationException e) {
+            LOG.error("Bean creation failure. Likely during shutdown and DB is being accessed after it was closed. This can be ignored.");
+            return new ArrayList<>();
+        }
     }
 
     @Override

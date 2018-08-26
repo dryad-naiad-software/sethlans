@@ -77,7 +77,7 @@ export class NavBarComponent implements OnInit {
   }
 
   checkNotifications() {
-    this.http.get('/api/notifications/notificiations_present').subscribe((present: boolean) => {
+    this.http.get('/api/notifications/notifications_present').subscribe((present: boolean) => {
       this.notifications = present;
       if (present == true) {
         this.getNotifications();

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -67,7 +67,7 @@ public class NotificationController implements ApplicationListener<SethlansEvent
         this.notificationDatabaseService = notificationDatabaseService;
     }
 
-    @GetMapping(value = "/notificiations_present")
+    @GetMapping(value = "/notifications_present")
     public boolean notificationsPresent() {
         if (notificationMessage.size() == 0) {
             restoreNotifications();
@@ -83,12 +83,17 @@ public class NotificationController implements ApplicationListener<SethlansEvent
 
 
     private void restoreNotifications() {
-        List<SethlansNotification> sethlansNotifications = notificationDatabaseService.listAll();
-        if (sethlansNotifications.size() != 0) {
-            for (SethlansNotification sethlansNotification : sethlansNotifications) {
-                notificationMessage.put(sethlansNotification.getKey(), sethlansNotification.getMessage());
+        try {
+            List<SethlansNotification> sethlansNotifications = notificationDatabaseService.listAll();
+            if (sethlansNotifications.size() != 0) {
+                for (SethlansNotification sethlansNotification : sethlansNotifications) {
+                    notificationMessage.put(sethlansNotification.getKey(), sethlansNotification.getMessage());
+                }
             }
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
         }
+
 
 
     }
