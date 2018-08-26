@@ -44,7 +44,7 @@ export class SetupWizardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get('/api/users/challenge_question_list').subscribe((challengeQuestions: string[]) => {
+    this.http.get('/api/info/challenge_question_list').subscribe((challengeQuestions: string[]) => {
       this.challengeQuestions = challengeQuestions;
     });
     this.progress = SetupWizardProgress.MODE_SELECT;

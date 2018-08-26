@@ -30,20 +30,19 @@ import {Login} from '../../models/login.model';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  logo: any = 'assets/images/logo-text-dark.png';
+  logo: any = 'assets/images/logo-text-white.png';
   login: Login;
   loginError: boolean;
 
   constructor(private http: HttpClient, private auth: LoginService, private activatedRoute: ActivatedRoute, private router: Router) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
+  }
 
+  ngOnInit() {
     this.activatedRoute.queryParams.subscribe(params => {
       let loginError = params['error'];
       this.loginError = loginError != undefined;
     });
-  }
-
-  ngOnInit() {
     this.login = new Login();
   }
 
@@ -51,11 +50,10 @@ export class LoginComponent implements OnInit {
     this.auth.authenticate(this.login, () => {
       this.router.navigateByUrl('/login');
     });
-
   }
 
   registerUser() {
-    this.router.navigateByUrl('/register');
+    window.location.href = '/register';
   }
 
   loginUser(event, form) {
@@ -63,5 +61,4 @@ export class LoginComponent implements OnInit {
       this.loginSubmit();
     }
   }
-
 }

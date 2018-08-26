@@ -69,10 +69,6 @@ public class UserController {
         return auth.isAuthenticated();
     }
 
-    @GetMapping(value = {"/challenge_question_list"})
-    public List<String> getChallengeList() {
-        return SethlansQueryUtils.getChallengeQuestionList();
-    }
 
     @GetMapping(value = {"/get_user/{username}"})
     public UserInfo getUserInfo(@PathVariable String username) {

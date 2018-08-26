@@ -126,7 +126,7 @@
             <i class="fas fa-fw fa-question-circle"></i>
             <span>&nbsp;Help</span></a>
 
-          <a *ngIf="isAdministrator" href="/get_started" class="dropdown-item">
+          <a *ngIf="isAdministrator && currentMode !== mode.NODE" href="/get_started" class="dropdown-item">
             <i class="fas fa-fw fa-hourglass-start"></i>
             <span>&nbsp;Get Started</span></a>
 

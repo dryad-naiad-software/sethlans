@@ -55,7 +55,7 @@ export class RegisterUserComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get('/api/users/challenge_question_list').subscribe((challengeQuestions: string[]) => {
+    this.http.get('/api/info/challenge_question_list').subscribe((challengeQuestions: string[]) => {
       this.challengeQuestions = challengeQuestions;
       this.challenge1.challenge = this.challengeQuestions[0];
       this.challenge2.challenge = this.challengeQuestions[1];

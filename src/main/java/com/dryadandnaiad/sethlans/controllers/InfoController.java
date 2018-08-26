@@ -135,5 +135,10 @@ public class InfoController {
         return Collections.singletonMap("app_url", "https://" + SethlansQueryUtils.getHostname().toLowerCase() + ":" + SethlansQueryUtils.getPort());
     }
 
+    @GetMapping(value = {"/challenge_question_list"})
+    public List<String> getChallengeList() {
+        return SethlansQueryUtils.getChallengeQuestionList();
+    }
+
 
 }

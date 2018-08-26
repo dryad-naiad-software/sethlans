@@ -24,6 +24,7 @@ import {HttpClient} from '@angular/common/http';
 import {HttpHeaders} from '../../../../../node_modules/@angular/common/http';
 import {NodeItem} from '../../../models/node_item.model';
 import {Login} from '../../../models/login.model';
+import {Mode} from '../../../enums/mode.enum';
 
 @Component({
   selector: 'app-get-started',
@@ -48,6 +49,12 @@ export class GetStartedWizardComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.http.get('/api/info/sethlans_mode').subscribe((sethlansmode) => {
+      let currentMode: Mode = sethlansmode['mode'];
+      if (currentMode == Mode.NODE) {
+        window.location.href = '/';
+      }
+    });
     this.getStartedWizardForm = new GetStartedWizardForm();
     this.http.get('/api/info/get_started').subscribe((response: boolean) => {
       this.onStartCheckBox = response;

@@ -17,17 +17,17 @@
   ~
   -->
 
-<div class="row pt-5 pb-1">
+<div class="row pb-1">
   <div class="col-xl-5 col-lg-8 m-auto">
     <div class="card">
-      <div class="card-header">
+      <div class="card-header  bg-secondary">
         <h4
           style="font-family: 'Fjalla One', sans-serif;">
           <span>Login</span>
         </h4>
       </div>
-      <div class="card-body">
-        <div class="row">
+      <div class="card-body bg-dark">
+        <div class="row pt-2">
           <div class="col-md-6 m-auto">
             <img class="align-top img-fluid"
                  [src]="logo"
@@ -56,11 +56,11 @@
         </div>
 
       </div>
-      <div class="card-footer">
-        <button [disabled]="!loginForm.valid" class="btn btn-outline-dark btn-block" (click)="loginSubmit()">Login
+      <div class="card-footer bg-dark">
+        <button [disabled]="!loginForm.valid" class="btn btn-outline-light btn-block" (click)="loginSubmit()">Login
         </button>
-        <button class="btn btn-outline-secondary btn-block">Forgot Password</button>
-        <button class="btn btn-outline-secondary btn-block" (click)="registerUser()">Register New User</button>
+        <button class="btn btn-outline-light btn-block">Forgot Password</button>
+        <button class="btn btn-outline-light btn-block" (click)="registerUser()">Register New User</button>
       </div>
     </div>
   </div>
