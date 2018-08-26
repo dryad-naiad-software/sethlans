@@ -21,6 +21,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {UserListService} from '../../../services/user_list.service';
+import {Mode} from '../../../enums/mode.enum';
 
 @Component({
   selector: 'app-user-management',
@@ -31,13 +32,26 @@ export class UserManagementComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   dataSource = new MatTableDataSource();
-  displayedColumns = ['username', 'email', 'status', 'role', 'created', 'lastUpdated', 'actions'];
+  modes: any = Mode;
+  currentMode: Mode;
+  displayedColumns = [];
 
   constructor(private http: HttpClient, private userListService: UserListService) {
   }
 
   ngOnInit() {
-    this.loadTable();
+    this.http.get('/api/info/sethlans_mode').subscribe((sethlansmode) => {
+      this.currentMode = sethlansmode['mode'];
+      if (this.currentMode === Mode.NODE) {
+        this.displayedColumns = ['username', 'status', 'role', 'created', 'lastUpdated', 'actions'];
+      } else {
+        this.displayedColumns = ['username', 'email', 'status', 'role', 'created', 'lastUpdated', 'actions'];
+
+      }
+      this.loadTable();
+    });
+
+
   }
 
   loadTable() {

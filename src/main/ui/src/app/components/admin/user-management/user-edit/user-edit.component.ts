@@ -22,6 +22,7 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {ActivatedRoute} from '@angular/router';
 import {UserInfo} from '../../../../models/user_info.model';
 import {RoleInfo} from '../../../../models/role_info.model';
+import {Mode} from '../../../../enums/mode.enum';
 
 @Component({
   selector: 'app-user-edit',
@@ -38,6 +39,8 @@ export class UserEditComponent implements OnInit {
   passwordError: boolean;
   roleSelection: any[] = [];
   roleError: boolean;
+  modes: any = Mode;
+  currentMode: Mode;
 
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {
@@ -47,6 +50,8 @@ export class UserEditComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.http.get('/api/info/sethlans_mode').subscribe((sethlansmode) => this.currentMode = sethlansmode['mode']);
+
     this.getThisUser();
     this.passFields = new PasswordSet();
     this.route.params.subscribe(params => {

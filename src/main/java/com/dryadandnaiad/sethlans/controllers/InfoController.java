@@ -23,7 +23,6 @@ import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
-import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.slf4j.Logger;
@@ -53,15 +52,11 @@ public class InfoController {
     private List<String> blenderVersions = BlenderUtils.listVersions();
     private static final Logger LOG = LoggerFactory.getLogger(InfoController.class);
 
-
     @Value("${sethlans.configDir}")
     private String configDir;
 
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
-
-    @Value("${sethlans.mode}")
-    private SethlansMode mode;
 
     @Value("${sethlans.computeMethod}")
     private ComputeType computeType;
@@ -127,7 +122,7 @@ public class InfoController {
 
     @GetMapping(value = {"/sethlans_mode"})
     public Map getSethlansMode() {
-        return Collections.singletonMap("mode", mode.toString());
+        return Collections.singletonMap("mode", SethlansQueryUtils.getMode().toString());
     }
 
     @GetMapping(value = {"/sethlans_ip"})

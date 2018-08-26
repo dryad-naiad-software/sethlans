@@ -25,7 +25,7 @@
           {{userInfo?.username}}</h4>
       </div>
       <div class="card-body">
-        <form #emailForm="ngForm">
+        <form *ngIf="currentMode !== modes.NODE" #emailForm="ngForm">
           <div class="form-group" ngbTooltip="Email used for notifications." placement="left">
             <label for="email">Email Address</label>
             <input type="text"
@@ -48,7 +48,7 @@
           </button>
         </form>
         <div>
-          <br/>
+          <br *ngIf="currentMode !== modes.NODE"/>
           <form #passwordForm="ngForm">
             <div class="form-group">
               <label for="currentPass">Current Password</label>

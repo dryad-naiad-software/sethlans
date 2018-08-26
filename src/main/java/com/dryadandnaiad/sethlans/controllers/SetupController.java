@@ -22,9 +22,11 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUserChallenge;
 import com.dryadandnaiad.sethlans.enums.Role;
+import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.forms.setup.SetupForm;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
+import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,8 +58,10 @@ public class SetupController {
             LOG.debug(setupForm.toString());
             if (setupForm.getUser().getPassword().isEmpty()
                     || setupForm.getUser().getUsername().isEmpty()
-                    || setupForm.getUser().getEmail().isEmpty()
                     || setupForm.getUser().getChallengeList().size() == 0) {
+                return false;
+            }
+            if (setupForm.getMode() != SethlansMode.NODE && setupForm.getUser().getEmail().isEmpty()) {
                 return false;
             }
             for (SethlansUserChallenge sethlansUserChallenge : setupForm.getUser().getChallengeList()) {
@@ -84,9 +88,11 @@ public class SetupController {
                 LOG.debug("User " + user.getUsername() + " already exists!");
                 return false;
             }
+            if (SethlansQueryUtils.getMode() != SethlansMode.NODE && user.getEmail().isEmpty()) {
+                return false;
+            }
             if (user.getPassword().isEmpty()
                     || user.getUsername().isEmpty()
-                    || user.getEmail().isEmpty()
                     || user.getChallengeList().size() == 0) {
                 return false;
             }

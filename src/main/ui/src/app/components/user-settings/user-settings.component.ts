@@ -20,6 +20,7 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {UserInfo} from '../../models/user_info.model';
+import {Mode} from '../../enums/mode.enum';
 
 @Component({
   selector: 'app-user-settings',
@@ -33,6 +34,8 @@ export class UserSettingsComponent implements OnInit {
   newEmail: string;
   emailError: boolean;
   passwordError: boolean;
+  modes: any = Mode;
+  currentMode: Mode;
 
   constructor(private http: HttpClient) {
     this.passFields = new PasswordSet();
@@ -42,6 +45,8 @@ export class UserSettingsComponent implements OnInit {
 
 
   ngOnInit() {
+    this.http.get('/api/info/sethlans_mode').subscribe((sethlansmode) => this.currentMode = sethlansmode['mode']);
+
     this.getUserInfo();
     this.passFields = new PasswordSet();
   }

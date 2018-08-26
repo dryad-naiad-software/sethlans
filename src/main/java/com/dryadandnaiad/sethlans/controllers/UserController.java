@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUserChallenge;
 import com.dryadandnaiad.sethlans.domains.info.UserInfo;
+import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.slf4j.Logger;
@@ -102,13 +103,17 @@ public class UserController {
 
     @PostMapping(value = {"/change_email/"})
     public boolean changeEmail(@RequestParam String email) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(username);
-        // TODO email verification
-        sethlansUser.setEmail(email);
-        sethlansUserDatabaseService.saveOrUpdate(sethlansUser);
-        return true;
+        if (SethlansQueryUtils.getMode() != SethlansMode.NODE) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String username = auth.getName();
+            SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(username);
+            // TODO email verification
+            sethlansUser.setEmail(email);
+            sethlansUserDatabaseService.saveOrUpdate(sethlansUser);
+            return true;
+        }
+        return false;
+
     }
 
     @GetMapping(value = {"/challenge_question"})

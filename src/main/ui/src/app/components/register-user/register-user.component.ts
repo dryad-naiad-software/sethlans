@@ -21,6 +21,7 @@ import {Component, OnInit} from '@angular/core';
 import {User} from '../../models/user.model';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Mode} from '../../enums/mode.enum';
 
 @Component({
   selector: 'app-register-user',
@@ -33,6 +34,8 @@ export class RegisterUserComponent implements OnInit {
   user: User;
   userExists: boolean;
   existingUserName: string;
+  modes: any = Mode;
+  currentMode: Mode;
 
   constructor(private router: Router, private http: HttpClient, private route: ActivatedRoute) {
     this.route.queryParams.subscribe(params => {
@@ -43,6 +46,8 @@ export class RegisterUserComponent implements OnInit {
 
   ngOnInit() {
     this.user = new User();
+    this.http.get('/api/info/sethlans_mode').subscribe((sethlansmode) => this.currentMode = sethlansmode['mode']);
+
   }
 
   login() {

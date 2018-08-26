@@ -96,6 +96,10 @@ public class SethlansQueryUtils {
         return sethlansSettings;
     }
 
+    public static SethlansMode getMode() {
+        return SethlansMode.valueOf(SethlansConfigUtils.getProperty(SethlansConfigKeys.MODE, SethlansConfigUtils.getConfigFile()));
+    }
+
     public static List<ComputeType> getAvailableMethods() {
         List<ComputeType> availableMethods = new ArrayList<>();
         if (GPU.listDevices().size() != 0) {
