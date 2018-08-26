@@ -78,7 +78,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                     } else {
                         LOG.debug("Blender Download Service failed");
                     }
-                    Thread.sleep(30000);
+                    Thread.sleep(120000);
                 } catch (InterruptedException e) {
                     LOG.debug("Stopping Blender Binary Download Service");
                     break;
