@@ -79,7 +79,12 @@ public class QueueServiceImpl implements QueueService {
         }
         while (true) {
             try {
-                Thread.sleep(50);
+                // When server is idle no need to pool the queue often.
+                if (renderQueueDatabaseService.listPendingRender().size() > 0) {
+                    Thread.sleep(250);
+                } else {
+                    Thread.sleep(1000);
+                }
                 if (!queueActionItemList.isEmpty()) {
                     projectActions();
                     continue;
@@ -120,10 +125,7 @@ public class QueueServiceImpl implements QueueService {
                         processNodeAcknowledgements();
                     }
                     processingWorkflow();
-                    continue;
-                }
-
-                if (!incomingQueueItemList.isEmpty()) {
+                } else {
                     incomingCompleteItems();
                     assignmentWorkflow();
                     if (!nodeStatuses.isEmpty()) {
@@ -134,6 +136,7 @@ public class QueueServiceImpl implements QueueService {
                         processReceivedFiles();
                     }
                 }
+
 
 
             } catch (InterruptedException e) {

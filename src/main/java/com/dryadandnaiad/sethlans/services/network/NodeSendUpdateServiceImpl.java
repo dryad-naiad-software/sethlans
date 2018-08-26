@@ -93,8 +93,11 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
             }
             while (true) {
                 try {
-                    Thread.sleep(1000);
-
+                    if (sethlansServerDatabaseService.listAll().size() == 0) {
+                        Thread.sleep(5000);
+                    } else {
+                        Thread.sleep(1000);
+                    }
                     if (sethlansServerDatabaseService.listActive().size() > 0 && blenderBenchmarkTaskDatabaseService.allBenchmarksComplete()) {
                         if (renderTaskDatabaseService.listAll().size() > 0) {
                             counter = 0;

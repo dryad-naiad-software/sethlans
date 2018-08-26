@@ -123,7 +123,7 @@ export class GetStartedWizardComponent implements OnInit {
           this.onStartCheckBox = false;
           this.setOnStart();
         }
-        window.location.href = '/';
+        window.location.href = '/admin/nodes';
         break;
 
     }
