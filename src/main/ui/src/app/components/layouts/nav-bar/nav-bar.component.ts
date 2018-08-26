@@ -31,8 +31,8 @@ import {timer} from 'rxjs/internal/observable/timer';
   styleUrls: ['./nav-bar.component.scss'],
 })
 export class NavBarComponent implements OnInit {
-  logo: any = 'assets/images/logo.png';
-  logoDark: any = 'assets/images/logo-dark.png';
+  logo: any = 'assets/images/logo-text-white.png';
+  logoDark: any = 'assets/images/logo-text-dark.png';
   authenticated: boolean;
   isAdministrator = false;
   isSuperAdministrator = false;

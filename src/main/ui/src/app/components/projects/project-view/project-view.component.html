@@ -125,13 +125,13 @@
                 <td *ngIf="!thumbnailStatus || thumbnailStatus == undefined">
                   <img [src]="placeholder"
                        height="100"
-                       class="d-inline-block align-top"
+                       class="align-top img-fluid img-thumbnail"
                        alt="placeholder">
                 </td>
                 <td *ngIf="thumbnailStatus">
                   <img [src]="currentThumbnail"
                        height="100"
-                       class="d-inline-block align-top"
+                       class="align-top img-fluid img-thumbnail"
                        alt="thumbnail">
                 </td>
               </tr>

@@ -47,8 +47,8 @@
           <button class="btn btn-outline-primary" [disabled]="!emailForm.valid" (click)="changeEMail()">Change Email
           </button>
         </form>
+        <br *ngIf="currentMode !== modes.NODE"/>
         <div>
-          <br *ngIf="currentMode !== modes.NODE"/>
           <form #passwordForm="ngForm">
             <div class="form-group">
               <label for="currentPass">Current Password</label>

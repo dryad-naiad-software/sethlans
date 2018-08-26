@@ -18,10 +18,8 @@
   -->
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark py-1">
-  <a href="/" class="navbar-brand pl-5"
-     style="font-family: 'Fjalla One', sans-serif; font-size: 130%">
-    <img [src]="logo" height="32" class="d-inline-block align-top" alt="logo">
-    Sethlans</a>
+  <a href="/" class="navbar-brand pl-5">
+    <img [src]="logo" height="32" class="d-inline-block align-top" alt="logo"></a>
   <button *ngIf="authenticated && !firstTime" class="navbar-toggler" type="button" data-toggle="collapse"
           data-target="#navbarSupportedContent" (click)="isCollapsed = !isCollapsed">
     <span class="navbar-toggler-icon"></span>
@@ -158,23 +156,28 @@
 </nav>
 <ng-template #about let-c="close('Close click')" let-d="dismiss('Cross click')">
   <div class="modal-header">
-    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; font-size: 200%">
-      <img [src]="logoDark"
-           height="48"
-           class="d-inline-block align-top"
-           alt="logo">
-      &nbsp;Sethlans
-    </h4>
+    <h4 style="font-family: 'Fjalla One', sans-serif;">About</h4>
     <button type="button" class="close" aria-label="Close" (click)="d">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
-    <p>Sethlans Version {{sethlansVersion}}</p>
-    <p>A local distributed render farm for Blender.</p>
-    <p>Copyright 2018 Dryad and
-      Naiad Software
-      LLC.</p>
+    <div class="row">
+      <div class="col-5">
+        <img [src]="logoDark"
+             height="64"
+             class="align-top"
+             alt="logo">
+      </div>
+      <div class="col-7">
+        <p>Sethlans Version {{sethlansVersion}}</p>
+        <p>A local distributed render farm for Blender.</p>
+        <p>Copyright 2018 Dryad and
+          Naiad Software
+          LLC.</p>
+      </div>
+    </div>
+
 
   </div>
   <div class="modal-footer">

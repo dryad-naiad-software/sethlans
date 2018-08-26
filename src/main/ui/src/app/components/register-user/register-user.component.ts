@@ -22,6 +22,7 @@ import {User} from '../../models/user.model';
 import {ActivatedRoute, Router} from '@angular/router';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Mode} from '../../enums/mode.enum';
+import {UserChallenge} from '../../models/user_challenge.model';
 
 @Component({
   selector: 'app-register-user',
@@ -30,14 +31,23 @@ import {Mode} from '../../enums/mode.enum';
 })
 export class RegisterUserComponent implements OnInit {
 
-  logo: any = 'assets/images/logo.png';
+  logo: any = 'assets/images/logo-dark.png';
   user: User;
   userExists: boolean;
   existingUserName: string;
   modes: any = Mode;
   currentMode: Mode;
+  challengeQuestions: string[];
+  challenge1: UserChallenge;
+  challenge2: UserChallenge;
+  challenge3: UserChallenge;
 
   constructor(private router: Router, private http: HttpClient, private route: ActivatedRoute) {
+    document.body.style.background = 'rgba(0, 0, 0, .6)';
+
+    this.challenge1 = new UserChallenge();
+    this.challenge2 = new UserChallenge();
+    this.challenge3 = new UserChallenge();
     this.route.queryParams.subscribe(params => {
       this.userExists = params['error'];
       this.existingUserName = params['username'];
@@ -45,13 +55,26 @@ export class RegisterUserComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.http.get('/api/users/challenge_question_list').subscribe((challengeQuestions: string[]) => {
+      this.challengeQuestions = challengeQuestions;
+      this.challenge1.challenge = this.challengeQuestions[0];
+      this.challenge2.challenge = this.challengeQuestions[1];
+      this.challenge3.challenge = this.challengeQuestions[2];
+    });
     this.user = new User();
     this.http.get('/api/info/sethlans_mode').subscribe((sethlansmode) => this.currentMode = sethlansmode['mode']);
 
   }
 
+  populateUserSecurityQuestions() {
+    this.user.challengeList = [];
+    this.user.challengeList.push(this.challenge1);
+    this.user.challengeList.push(this.challenge2);
+    this.user.challengeList.push(this.challenge3);
+  }
+
   login() {
-    this.router.navigateByUrl('/login');
+    window.location.href = '/login';
   }
 
   submitUser(event, form) {

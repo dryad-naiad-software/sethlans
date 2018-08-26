@@ -116,7 +116,7 @@ public class UserController {
 
     }
 
-    @GetMapping(value = {"/challenge_question"})
+    @GetMapping(value = {"/random_challenge_question"})
     public Map getChallengeQuestion(@RequestParam String username) {
         SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
         if (user != null) {
