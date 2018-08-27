@@ -34,7 +34,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created Mario Estrella on 2/26/18.
@@ -112,13 +115,11 @@ public class UserController {
 
     }
 
-    @GetMapping(value = {"/random_challenge_question"})
-    public Map getChallengeQuestion(@RequestParam String username) {
+    @GetMapping(value = {"/challenge_question_list"})
+    public List<SethlansUserChallenge> getChallengeQuestion(@RequestParam String username) {
         SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
         if (user != null) {
-            Random random = new Random();
-            int key = random.nextInt(user.getChallengeList().size());
-            return Collections.singletonMap(key, user.getChallengeList().get(key).getChallenge());
+            return user.getChallengeList();
         }
         return null;
     }
