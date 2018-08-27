@@ -21,6 +21,7 @@ import {Component, OnInit} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {UserInfo} from '../../models/user_info.model';
 import {Mode} from '../../enums/mode.enum';
+import {UserChallenge} from '../../models/user_challenge.model';
 
 @Component({
   selector: 'app-user-settings',
@@ -36,17 +37,31 @@ export class UserSettingsComponent implements OnInit {
   passwordError: boolean;
   modes: any = Mode;
   currentMode: Mode;
+  challenge1: UserChallenge;
+  challenge2: UserChallenge;
+  challenge3: UserChallenge;
+  challengeQuestions: string[];
+  userChallengeToSubmit: UserChallenge[];
+
 
   constructor(private http: HttpClient) {
     this.passFields = new PasswordSet();
     this.userInfo = new UserInfo();
+    this.challenge1 = new UserChallenge();
+    this.challenge2 = new UserChallenge();
+    this.challenge3 = new UserChallenge();
   }
 
 
 
   ngOnInit() {
     this.http.get('/api/info/sethlans_mode').subscribe((sethlansmode) => this.currentMode = sethlansmode['mode']);
-
+    this.http.get('/api/info/challenge_question_list').subscribe((challengeQuestions: string[]) => {
+      this.challengeQuestions = challengeQuestions;
+      this.challenge1.challenge = this.challengeQuestions[0];
+      this.challenge2.challenge = this.challengeQuestions[1];
+      this.challenge3.challenge = this.challengeQuestions[2];
+    });
     this.getUserInfo();
     this.passFields = new PasswordSet();
   }
@@ -73,6 +88,17 @@ export class UserSettingsComponent implements OnInit {
         this.emailError = true;
       }
     });
+
+  }
+
+  populateUserSecurityQuestions() {
+    this.userChallengeToSubmit = [];
+    this.userChallengeToSubmit.push(this.challenge1);
+    this.userChallengeToSubmit.push(this.challenge2);
+    this.userChallengeToSubmit.push(this.challenge3);
+  }
+
+  changeSecurityQuestions() {
 
   }
 

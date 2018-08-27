@@ -29,13 +29,13 @@
           <div class="col">
             <form *ngIf="currentMode !== modes.NODE" #emailForm="ngForm">
               <div class="form-group" ngbTooltip="Email used for notifications." placement="left">
-                <label for="email">Email Address</label>
                 <input type="text"
                        name="email"
                        id="email"
                        #email="ngModel"
                        value="{{userInfo.email}}"
                        [(ngModel)]="newEmail"
+                       placeholder="Email Address"
                        class="form-control form-control-sm"
                        [ngClass]="{'is-invalid':email.errors && email.touched}"
                        required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$">
@@ -54,11 +54,11 @@
             <div>
               <form #passwordForm="ngForm">
                 <div class="form-group">
-                  <label for="currentPass">Current Password</label>
                   <input
                     type="password"
                     id="currentPass"
                     name="currentPass"
+                    placeholder="Current Password"
                     #currentPass="ngModel"
                     [(ngModel)]="passFields.currentPass"
                     [ngClass]="{'is-invalid':currentPass.errors && currentPass.touched}"
@@ -74,12 +74,12 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="newPass">New Password</label>
                   <input
                     type="password"
                     id="newPass"
                     name="newPass"
                     #newPass="ngModel"
+                    placeholder="New Password"
                     [(ngModel)]="passFields.newPass"
                     [ngClass]="{'is-invalid':newPass.errors && newPass.touched}"
                     required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
@@ -94,7 +94,6 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label for="newPassConfirm">Confirm New Password</label>
                   <input
                     type="password"
                     name="newPassConfirm"
@@ -103,6 +102,7 @@
                     [(ngModel)]="passFields.newPassConfirm"
                     [ngClass]="{'is-invalid':newPassConfirm.errors && newPassConfirm.touched}"
                     class="form-control form-control-sm"
+                    placeholder="Confirm Password"
                     required [fieldMatches]="newPass"/>
                   <div class="invalid-feedback" [hidden]="newPassConfirm.valid">
                     <ul>
@@ -115,9 +115,105 @@
                 </button>
               </form>
             </div>
+          </div>
         </div>
-
-
-        </div>
+        <form #securityForm="ngForm">
+          <div class="form-row pt-3">
+            <div class="col-md">
+              <select
+                id="question1"
+                name="question1"
+                [(ngModel)]="challenge1.challenge"
+                (change)="populateUserSecurityQuestions()"
+                class="form-control form-control-sm">
+                <option *ngFor="let challengeQuestion of challengeQuestions">{{challengeQuestion}}</option>
+              </select>
+            </div>
+            <div class="col-md">
+              <input type="text"
+                     id="response1"
+                     name="response1"
+                     #response1="ngModel"
+                     [(ngModel)]="challenge1.response"
+                     placeholder="Response"
+                     ngbTooltip="Minimum of 4 characters. Case sensitive."
+                     placement="right"
+                     minlength="4"
+                     required
+                     [ngClass]="{'is-invalid':response1.errors && response1.touched}"
+                     class="form-control form-control-sm"/>
+              <div class="invalid-feedback" [hidden]="response1.valid">
+                <ul>
+                  <li>Security response is required and must be 4 characters or greater.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="form-row pt-3">
+            <div class="col-md">
+              <select
+                id="question2"
+                name="question2"
+                [(ngModel)]="challenge2.challenge"
+                (change)="populateUserSecurityQuestions()"
+                class="form-control form-control-sm">
+                <option *ngFor="let challengeQuestion of challengeQuestions">{{challengeQuestion}}</option>
+              </select>
+            </div>
+            <div class="col-md">
+              <input type="text"
+                     id="response2"
+                     name="response2"
+                     #response2="ngModel"
+                     [(ngModel)]="challenge2.response"
+                     placeholder="Response"
+                     ngbTooltip="Minimum of 4 characters. Case sensitive."
+                     placement="right"
+                     minlength="4"
+                     required
+                     [ngClass]="{'is-invalid':response2.errors && response2.touched}"
+                     class="form-control form-control-sm"/>
+              <div class="invalid-feedback" [hidden]="response2.valid">
+                <ul>
+                  <li>Security response is required and must be 4 characters or greater.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="form-row py-3">
+            <div class="col-md">
+              <select
+                id="question3"
+                name="question3"
+                [(ngModel)]="challenge3.challenge"
+                (change)="populateUserSecurityQuestions()"
+                class="form-control form-control-sm">
+                <option *ngFor="let challengeQuestion of challengeQuestions">{{challengeQuestion}}</option>
+              </select>
+            </div>
+            <div class="col-md">
+              <input type="text"
+                     id="response3"
+                     name="response3"
+                     #response3="ngModel"
+                     [(ngModel)]="challenge3.response"
+                     placeholder="Response"
+                     ngbTooltip="Minimum of 4 characters. Case sensitive."
+                     placement="right"
+                     minlength="4"
+                     required
+                     [ngClass]="{'is-invalid':response3.errors && response3.touched}"
+                     class="form-control form-control-sm"/>
+              <div class="invalid-feedback" [hidden]="response3.valid">
+                <ul>
+                  <li>Security response is required and must be 4 characters or greater.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </form>
+        <button class="btn btn-outline-dark" (click)="changeSecurityQuestions()">Submit Security Questions</button>
+      </div>
     </div>
   </div>
+</div>
