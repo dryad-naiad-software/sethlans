@@ -49,25 +49,30 @@ public class NodeQueryServiceImpl implements NodeQueryService {
             int count = 0;
             while (true) {
                 try {
-                    Thread.sleep(5000);
-                    for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
-                        if (sethlansNode.isBenchmarkComplete()) {
-                            boolean response = sethlansAPIConnectionService.queryNode("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort()
-                                    + "/api/info/node_keep_alive", "connection_uuid=" + sethlansNode.getConnection_uuid());
-                            if (!response && sethlansNode.isActive()) {
-                                LOG.debug(sethlansNode.getHostname() + " is down.");
-                                queueService.nodeStatusUpdateItem(sethlansNode.getConnection_uuid(), false);
-                            } else if (response && !sethlansNode.isDisabled() && !sethlansNode.isActive()) {
-                                queueService.nodeStatusUpdateItem(sethlansNode.getConnection_uuid(), true);
-                                LOG.debug(sethlansNode.getHostname() + " is back online.");
+                    if (sethlansNodeDatabaseService.listAll().size() > 0) {
+                        Thread.sleep(2500);
+                        for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
+                            if (sethlansNode.isBenchmarkComplete()) {
+                                boolean response = sethlansAPIConnectionService.queryNode("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort()
+                                        + "/api/info/node_keep_alive", "connection_uuid=" + sethlansNode.getConnection_uuid());
+                                if (!response && sethlansNode.isActive()) {
+                                    LOG.debug(sethlansNode.getHostname() + " is down.");
+                                    queueService.nodeStatusUpdateItem(sethlansNode.getConnection_uuid(), false);
+                                } else if (response && !sethlansNode.isDisabled() && !sethlansNode.isActive()) {
+                                    queueService.nodeStatusUpdateItem(sethlansNode.getConnection_uuid(), true);
+                                    LOG.debug(sethlansNode.getHostname() + " is back online.");
+                                }
                             }
                         }
+                        count++;
+                        if (count == 10) {
+                            LOG.debug("One node heartbeat sent every 2.5 seconds.  Sent 10 heartbeat requests.");
+                            count = 0;
+                        }
+                    } else {
+                        Thread.sleep(30000);
                     }
-                    count++;
-                    if (count == 10) {
-                        LOG.debug("One node heartbeat sent every 5 seconds.  Sent 10 heartbeat requests.");
-                        count = 0;
-                    }
+
                 } catch (InterruptedException e) {
                     LOG.debug("Stopping Node Query Service");
                     break;
