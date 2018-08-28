@@ -51,7 +51,7 @@ export class HomeComponent implements OnInit {
           }
         });
         this.http.get('/api/users/is_security_questions_set').subscribe((response: boolean) => {
-          if (response) {
+          if (!response) {
             window.location.href = '/user_settings?needs_questions=true';
           }
         });
