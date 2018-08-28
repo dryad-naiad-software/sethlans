@@ -214,6 +214,7 @@ public class UserController {
             LOG.debug("Updating password for " + user.getUsername());
             user.setPasswordUpdated(true);
             user.setPassword(newPassword);
+            user.setPromptPasswordChange(false);
             sethlansUserDatabaseService.saveOrUpdate(user);
             return true;
         } else {
