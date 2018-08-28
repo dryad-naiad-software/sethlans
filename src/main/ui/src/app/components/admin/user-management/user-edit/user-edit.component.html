@@ -25,6 +25,13 @@
           {{userInfo?.username}}</h4>
       </div>
       <div class="card-body">
+        <div class="alert alert-danger py-1" *ngIf="emailError"><h6 class="text-center">Unable to save changes to email
+          address. Invalid text or option.</h6></div>
+        <div class="alert alert-danger py-1" *ngIf="passwordError"><h6 class="text-center">Unable to save new password.
+          Check the password and verify that it meets the requirements.</h6></div>
+        <div class="alert alert-danger py-1" *ngIf="roleSubmitError"><h6 class="text-center">Unable to make changes to
+          roles.<br/> Certain changes are prohibited. Such as attempting to demote a Super Administrator if only one
+          exists.</h6></div>
         <form *ngIf="currentMode !== modes.NODE" #emailForm="ngForm">
           <div class="form-group" ngbTooltip="Email used for notifications." placement="left">
             <label for="email">Email Address</label>

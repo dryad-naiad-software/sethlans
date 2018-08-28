@@ -130,22 +130,28 @@ public class AdminController {
 
     @PostMapping(value = {"/change_roles/{id}"})
     public boolean changeRoles(@PathVariable Long id, @RequestBody List<RoleInfo> roles) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        SethlansUser sethlansUser = sethlansUserDatabaseService.getById(id);
-        SethlansUser requestingUser = sethlansUserDatabaseService.findByUserName(auth.getName());
-        List<Role> roleList = new ArrayList<>();
-        for (RoleInfo role : roles) {
-            if (role.isActive()) {
-                Role theRole = role.getRole();
-                if (!requestingUser.getRoles().contains(Role.SUPER_ADMINISTRATOR) && theRole.equals(Role.SUPER_ADMINISTRATOR)) {
-                    break;
-                }
-                roleList.add(theRole);
+        if (sethlansUserDatabaseService.listAll().size() > 1) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            SethlansUser sethlansUser = sethlansUserDatabaseService.getById(id);
+            SethlansUser requestingUser = sethlansUserDatabaseService.findByUserName(auth.getName());
+            if (requestingUser.equals(sethlansUser) && sethlansUser.getRoles().contains(Role.SUPER_ADMINISTRATOR) && sethlansUserDatabaseService.numberOfSuperAdministrators() == 1) {
+                return false;
             }
+            List<Role> roleList = new ArrayList<>();
+            for (RoleInfo role : roles) {
+                if (role.isActive()) {
+                    Role theRole = role.getRole();
+                    if (!requestingUser.getRoles().contains(Role.SUPER_ADMINISTRATOR) && theRole.equals(Role.SUPER_ADMINISTRATOR)) {
+                        break;
+                    }
+                    roleList.add(theRole);
+                }
+            }
+            sethlansUser.setRoles(roleList);
+            sethlansUserDatabaseService.saveOrUpdate(sethlansUser);
+            return true;
         }
-        sethlansUser.setRoles(roleList);
-        sethlansUserDatabaseService.saveOrUpdate(sethlansUser);
-        return true;
+        return false;
     }
 
     @PostMapping(value = {"/change_email/"})
@@ -296,6 +302,7 @@ public class AdminController {
                     user.getRoles().remove(Role.SUPER_ADMINISTRATOR);
                 }
                 user.setPasswordUpdated(true);
+                user.setSecurityQuestionsSet(false);
                 user.setActive(false);
                 sethlansUserDatabaseService.saveOrUpdate(user);
                 LOG.debug("Saving " + user.toString() + " to database.");

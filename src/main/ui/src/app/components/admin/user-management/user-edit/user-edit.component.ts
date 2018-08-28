@@ -37,8 +37,9 @@ export class UserEditComponent implements OnInit {
   newEmail: string;
   emailError: boolean;
   passwordError: boolean;
-  roleSelection: any[] = [];
+  roleSubmitError: boolean;
   roleError: boolean;
+  roleSelection: any[] = [];
   modes: any = Mode;
   currentMode: Mode;
 
@@ -129,7 +130,14 @@ export class UserEditComponent implements OnInit {
         'Content-Type': 'application/json',
       })
     };
-    this.http.post('/api/management/change_roles/' + this.id, JSON.stringify(this.roleSelection), httpOptions).subscribe(() => window.location.href = '/admin/user_management/');
+    this.http.post('/api/management/change_roles/' + this.id, JSON.stringify(this.roleSelection), httpOptions).subscribe((response: boolean) => {
+      if (response) {
+        window.location.href = '/admin/user_management/';
+      } else {
+        this.roleSubmitError = true;
+
+      }
+    });
 
 
   }

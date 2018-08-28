@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -115,6 +115,17 @@ public class SethlansUserDatabaseServiceImpl implements SethlansUserDatabaseServ
             }
         }
         return sethlansUsers;
+    }
+
+    @Override
+    public int numberOfSuperAdministrators() {
+        List<SethlansUser> sethlansUsers = new ArrayList<>();
+        for (SethlansUser sethlansUser : listAll()) {
+            if (sethlansUser.getRoles().contains(Role.SUPER_ADMINISTRATOR) && sethlansUser.isActive()) {
+                sethlansUsers.add(sethlansUser);
+            }
+        }
+        return sethlansUsers.size();
     }
 
     @Autowired

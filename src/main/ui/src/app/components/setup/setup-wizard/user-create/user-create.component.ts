@@ -77,6 +77,7 @@ export class UserCreateComponent implements OnInit {
     this.setupForm.user.challengeList.push(this.challenge1);
     this.setupForm.user.challengeList.push(this.challenge2);
     this.setupForm.user.challengeList.push(this.challenge3);
+    this.setupForm.user.securityQuestionsSet = true;
   }
 
 

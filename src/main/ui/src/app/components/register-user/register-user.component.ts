@@ -71,6 +71,7 @@ export class RegisterUserComponent implements OnInit {
     this.user.challengeList.push(this.challenge1);
     this.user.challengeList.push(this.challenge2);
     this.user.challengeList.push(this.challenge3);
+    this.user.securityQuestionsSet = true;
   }
 
   login() {

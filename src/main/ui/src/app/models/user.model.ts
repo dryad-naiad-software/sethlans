@@ -28,6 +28,7 @@ export class User {
   roles: Role[];
   active: boolean;
   passwordUpdated: boolean;
+  securityQuestionsSet: boolean;
   challengeList: UserChallenge[];
 
 

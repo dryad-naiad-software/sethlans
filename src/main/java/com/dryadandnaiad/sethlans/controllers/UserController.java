@@ -149,6 +149,7 @@ public class UserController {
         }
         SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
         user.setChallengeList(challengeList);
+        user.setSecurityQuestionsSet(true);
         sethlansUserDatabaseService.saveOrUpdate(user);
         return true;
     }
