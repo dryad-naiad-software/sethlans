@@ -32,7 +32,7 @@ import {Login} from '../../models/login.model';
 export class LoginComponent implements OnInit {
   logo: any = 'assets/images/logo-text-white.png';
   login: Login;
-  loginError: boolean;
+  loginError: any;
 
   constructor(private http: HttpClient, private auth: LoginService, private activatedRoute: ActivatedRoute, private router: Router) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';

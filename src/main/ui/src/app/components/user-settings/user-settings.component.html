@@ -24,6 +24,11 @@
         <h4 style="font-family: 'Fjalla One', sans-serif; ">User Settings - {{userInfo.username}}</h4>
       </div>
       <div class="card-body">
+        <div class="alert alert-info py-1" *ngIf="status === true"><h6 class="text-center">Setting Change
+          Successful</h6></div>
+        <div class="alert alert-danger py-1" *ngIf="status === false"><h6 class="text-center">Setting Change Failed</h6>
+        </div>
+
         <p>Current Roles: <span *ngFor="let role of userInfo.roles">{{role}}</span></p>
         <div class="row">
           <div class="col">

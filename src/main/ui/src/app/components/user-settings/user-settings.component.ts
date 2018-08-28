@@ -22,6 +22,7 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {UserInfo} from '../../models/user_info.model';
 import {Mode} from '../../enums/mode.enum';
 import {UserChallenge} from '../../models/user_challenge.model';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-user-settings',
@@ -33,9 +34,7 @@ export class UserSettingsComponent implements OnInit {
   userInfo: UserInfo;
   passFields: PasswordSet;
   newEmail: string;
-  emailError: boolean;
-  securityQuestionError: boolean;
-  passwordError: boolean;
+  status: boolean;
   modes: any = Mode;
   currentMode: Mode;
   challenge1: UserChallenge;
@@ -45,10 +44,14 @@ export class UserSettingsComponent implements OnInit {
   userChallengeToSubmit: UserChallenge[];
 
 
-  constructor(private http: HttpClient) {
-    this.emailError = false;
-    this.passwordError = false;
-    this.securityQuestionError = false;
+  constructor(private http: HttpClient, private activatedRoute: ActivatedRoute) {
+    this.activatedRoute.queryParams.subscribe(params => {
+      let result = params['status'];
+      if (result != undefined) {
+        this.status = JSON.parse(result);
+
+      }
+    });
     this.passFields = new PasswordSet();
     this.userInfo = new UserInfo();
     this.challenge1 = new UserChallenge();
@@ -86,10 +89,10 @@ export class UserSettingsComponent implements OnInit {
       headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
     }).subscribe((response: boolean) => {
       if (response) {
-        window.location.href = '/user_settings/';
+        window.location.href = '/user_settings?status=true';
       }
       else {
-        this.emailError = true;
+        window.location.href = '/user_settings?status=false';
       }
     });
 
@@ -111,9 +114,9 @@ export class UserSettingsComponent implements OnInit {
     };
     this.http.post('/api/users/change_security_questions', JSON.stringify(this.userChallengeToSubmit), httpOptions).subscribe((response: boolean) => {
       if (response) {
-        window.location.href = '/user_settings';
+        window.location.href = '/user_settings?status=true';
       } else {
-        this.securityQuestionError = true;
+        window.location.href = '/user_settings?status=false';
       }
     });
   }
@@ -124,10 +127,10 @@ export class UserSettingsComponent implements OnInit {
       headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
     }).subscribe((response: boolean) => {
       if (response) {
-        window.location.href = '/user_settings/';
+        window.location.href = '/user_settings?status=true';
       }
       else {
-        this.passwordError = true;
+        window.location.href = '/user_settings?status=false';
       }
     });
   }
