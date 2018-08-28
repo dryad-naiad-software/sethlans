@@ -49,6 +49,7 @@ public class RoutingController {
             "/projects",
             "/restart",
             "/shutdown",
+            "/forgot_pass",
             "/projects/**",
             "/help",
             "/user_settings",

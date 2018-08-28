@@ -40,6 +40,7 @@ import {NodeWizardComponent} from './components/admin/nodes/node-wizard/node-wiz
 import {ProjectWizardComponent} from './components/projects/project-create-wizard/project-wizard.component';
 import {ProjectViewComponent} from './components/projects/project-view/project-view.component';
 import {ProjectEditWizardComponent} from './components/projects/project-edit-wizard/project-edit-wizard.component';
+import {ForgotPassComponent} from './components/forgot-pass/forgot-pass.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -59,6 +60,7 @@ const routes: Routes = [
   {path: 'admin/nodes', component: NodesComponent},
   {path: 'admin/nodes/add', component: NodeWizardComponent},
   {path: 'admin/logs', component: LogsComponent},
+  {path: 'forgot_pass', component: ForgotPassComponent},
   {path: 'register', component: RegisterUserComponent},
   {path: 'user_settings', component: UserSettingsComponent},
   {path: 'projects/view/:id', component: ProjectViewComponent},

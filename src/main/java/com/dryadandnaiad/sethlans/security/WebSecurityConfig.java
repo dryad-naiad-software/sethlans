@@ -87,7 +87,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .and()
                     .authorizeRequests()
                     .antMatchers("/api/info/**", "/api/setup/self_register").permitAll()
-                    .antMatchers("/register").permitAll()
+                    .antMatchers("/register", "/forgot_pass").permitAll()
                     .anyRequest().authenticated();
         } else {
             http.authorizeRequests()
@@ -121,7 +121,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         if (!firstTime) {
             web.ignoring()
                     .antMatchers(HttpMethod.OPTIONS, "/**")

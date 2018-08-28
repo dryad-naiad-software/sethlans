@@ -92,6 +92,7 @@ import {ProjectEditWizardComponent} from './components/projects/project-edit-wiz
 import {ProjectVideoSettingsComponent} from './components/projects/project-video-settings/project-video-settings.component';
 import {WizardNodeAuthComponent} from './components/setup/get-started-wizard/wizard-node-auth/wizard-node-auth.component';
 import {WizardAddNodesComponent} from './components/setup/get-started-wizard/wizard-add-nodes/wizard-add-nodes.component';
+import {ForgotPassComponent} from './components/forgot-pass/forgot-pass.component';
 
 
 @NgModule({
@@ -143,6 +144,7 @@ import {WizardAddNodesComponent} from './components/setup/get-started-wizard/wiz
     ProjectVideoSettingsComponent,
     WizardNodeAuthComponent,
     WizardAddNodesComponent,
+    ForgotPassComponent,
   ],
   imports: [
     BrowserModule,
