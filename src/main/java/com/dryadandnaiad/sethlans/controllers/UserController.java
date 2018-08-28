@@ -69,6 +69,17 @@ public class UserController {
         return auth.isAuthenticated();
     }
 
+    @GetMapping(value = {"/prompt_pass_change"})
+    public boolean promptPasswordChange() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return sethlansUserDatabaseService.findByUserName(auth.getName()).isPromptPasswordChange();
+    }
+
+    @GetMapping(value = {"/is_security_questions_set"})
+    public boolean isSecurityQuestionsSet() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return sethlansUserDatabaseService.findByUserName(auth.getName()).isSecurityQuestionsSet();
+    }
 
     @GetMapping(value = {"/get_user/{username}"})
     public UserInfo getUserInfo(@PathVariable String username) {

@@ -73,6 +73,7 @@ public class SetupController {
                 }
 
             }
+            setupForm.getUser().setPromptPasswordChange(false);
             saveSetupConfigService.saveSetupSettings(setupForm);
             return true;
         } else {
@@ -109,6 +110,7 @@ public class SetupController {
 
             user.setPasswordUpdated(true);
             user.setActive(false);
+            user.setPromptPasswordChange(false);
             user.setRoles(Collections.singletonList(Role.USER));
             sethlansUserDatabaseService.saveOrUpdate(user);
             LOG.debug("Saving " + user.toString() + " to database.");

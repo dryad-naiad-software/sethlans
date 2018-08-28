@@ -50,6 +50,7 @@ public class SethlansUser extends AbstractEntityClass {
     private String email;
     private boolean welcomeEmailSent;
     private boolean securityQuestionsSet;
+    private boolean promptPasswordChange;
     @Transient
     private boolean passwordUpdated;
 
