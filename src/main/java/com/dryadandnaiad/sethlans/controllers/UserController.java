@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUserChallenge;
 import com.dryadandnaiad.sethlans.domains.info.UserInfo;
+import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
@@ -69,15 +70,46 @@ public class UserController {
         return auth.isAuthenticated();
     }
 
+    @GetMapping(value = {"/is_administrator"})
+    public boolean isAdministrator() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return false;
+        }
+        SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(auth.getName());
+        return sethlansUser.getRoles().contains(Role.ADMINISTRATOR) || sethlansUser.getRoles().contains(Role.SUPER_ADMINISTRATOR);
+    }
+
+    @GetMapping(value = {"/is_super_administrator"})
+    public boolean isSuperAdministrator() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return false;
+        }
+        SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(auth.getName());
+        return sethlansUser.getRoles().contains(Role.SUPER_ADMINISTRATOR);
+    }
+
     @GetMapping(value = {"/prompt_pass_change"})
     public boolean promptPasswordChange() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return false;
+        }
         return sethlansUserDatabaseService.findByUserName(auth.getName()).isPromptPasswordChange();
+    }
+
+    @GetMapping(value = {"/admin_added_user"})
+    public boolean isUserAddedByAdmin() {
+        return promptPasswordChange() && !isSecurityQuestionsSet();
     }
 
     @GetMapping(value = {"/is_security_questions_set"})
     public boolean isSecurityQuestionsSet() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return false;
+        }
         return sethlansUserDatabaseService.findByUserName(auth.getName()).isSecurityQuestionsSet();
     }
 
@@ -150,6 +182,9 @@ public class UserController {
     @PostMapping(value = {"/change_security_questions"})
     public boolean changeSecurityQuestions(@RequestBody SethlansUserChallenge[] userChallenges) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return false;
+        }
         String username = auth.getName();
         List<SethlansUserChallenge> challengeList = new ArrayList<>(Arrays.asList(userChallenges));
         for (SethlansUserChallenge sethlansUserChallenge : challengeList) {
@@ -168,6 +203,9 @@ public class UserController {
     @PostMapping(value = {"/change_password/"})
     public boolean changePassword(@RequestParam String passToCheck, @RequestParam String newPassword) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return false;
+        }
         String username = auth.getName();
         // TODO password verification
         PasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -185,6 +223,9 @@ public class UserController {
 
     private boolean requestMatchesAuthUser(String username) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return false;
+        }
         return auth.getName().equals(username);
     }
 

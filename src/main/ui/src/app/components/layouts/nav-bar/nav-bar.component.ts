@@ -21,7 +21,6 @@ import {Component, Input, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Mode} from '../../../enums/mode.enum';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {UserInfo} from '../../../models/user_info.model';
 import {Role} from '../../../enums/role.enum';
 import {timer} from 'rxjs/internal/observable/timer';
 
@@ -42,7 +41,6 @@ export class NavBarComponent implements OnInit {
   mode: any = Mode;
   notificationList: string[];
   notifications: boolean;
-  userInfo: UserInfo;
   role: any = Role;
   username: string;
   isCollapsed = true;
@@ -57,10 +55,13 @@ export class NavBarComponent implements OnInit {
     this.http.get('/api/users/is_authenticated').subscribe((response: boolean) => {
       if (response) {
         this.authenticated = response;
-        this.getUserName();
-        this.checkNotifications();
-        let scheduler = timer(5000, 2000);
-        scheduler.subscribe(() => this.checkNotifications());
+        if (response) {
+          this.getUserName();
+          this.getAdminStatus();
+          this.checkNotifications();
+          let scheduler = timer(5000, 2000);
+          scheduler.subscribe(() => this.checkNotifications());
+        }
       }
     });
 
@@ -85,23 +86,21 @@ export class NavBarComponent implements OnInit {
     });
   }
 
+  getAdminStatus() {
+    this.http.get('/api/users/is_administrator').subscribe((admin: boolean) => {
+      this.isAdministrator = admin;
+    });
+    this.http.get('/api/users/is_super_administrator').subscribe((superAdmin: boolean) => {
+      this.isSuperAdministrator = superAdmin;
+    });
+  }
+
 
   getUserName() {
     this.http.get('/api/users/username')
       .subscribe((user) => {
         this.authenticated = true;
         this.username = user['username'];
-        this.http.get('/api/users/get_user/' + this.username + '').subscribe((userinfo: UserInfo) => {
-          this.userInfo = userinfo;
-          if (userinfo.roles.indexOf(Role.ADMINISTRATOR) !== -1 || userinfo.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
-            this.isAdministrator = true;
-          }
-          if (userinfo.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
-            this.isSuperAdministrator = true;
-          }
-        });
-
-
       });
   }
 

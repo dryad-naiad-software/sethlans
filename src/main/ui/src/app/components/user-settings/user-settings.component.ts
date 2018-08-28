@@ -35,6 +35,9 @@ export class UserSettingsComponent implements OnInit {
   passFields: PasswordSet;
   newEmail: string;
   status: boolean;
+  isNewUser: boolean;
+  setPassword: boolean;
+  setRecovery: boolean;
   modes: any = Mode;
   currentMode: Mode;
   challenge1: UserChallenge;
@@ -46,10 +49,21 @@ export class UserSettingsComponent implements OnInit {
 
   constructor(private http: HttpClient, private activatedRoute: ActivatedRoute) {
     this.activatedRoute.queryParams.subscribe(params => {
-      let result = params['status'];
-      if (result != undefined) {
-        this.status = JSON.parse(result);
-
+      let newUser = params['is_new_user'];
+      if (newUser != undefined) {
+        this.isNewUser = JSON.parse(newUser);
+      }
+      let status = params['status'];
+      if (status != undefined) {
+        this.status = JSON.parse(status);
+      }
+      let needsPassword = params['needs_password_change'];
+      if (needsPassword != undefined) {
+        this.setPassword = JSON.parse(needsPassword);
+      }
+      let needsQuestions = params['needs_questions'];
+      if (needsQuestions != undefined) {
+        this.setRecovery = JSON.parse(needsQuestions);
       }
     });
     this.passFields = new PasswordSet();

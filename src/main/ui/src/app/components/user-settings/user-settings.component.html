@@ -24,7 +24,14 @@
         <h4 style="font-family: 'Fjalla One', sans-serif; ">User Settings - {{userInfo.username}}</h4>
       </div>
       <div class="card-body">
-        <div class="alert alert-info py-1" *ngIf="status === true"><h6 class="text-center">Setting Change
+        <div class="alert alert-info py-1" *ngIf="isNewUser"><h6 class="text-center">Welcome!<br/> Please change your
+          password and set your password recovery questions below.</h6></div>
+        <div class="alert alert-info py-1" *ngIf="setPassword"><h6 class="text-center">Please change your password.</h6>
+        </div>
+        <div class="alert alert-info py-1" *ngIf="setRecovery"><h6 class="text-center">Please set your password recovery
+          questions below.</h6></div>
+
+        <div class="alert alert-success py-1" *ngIf="status === true"><h6 class="text-center">Setting Change
           Successful</h6></div>
         <div class="alert alert-danger py-1" *ngIf="status === false"><h6 class="text-center">Setting Change Failed</h6>
         </div>
@@ -32,7 +39,7 @@
         <p>Current Roles: <span *ngFor="let role of userInfo.roles">{{role}}</span></p>
         <div class="row">
           <div class="col">
-            <h6>Email Settings:</h6>
+            <h6>Email Settings</h6>
             <form *ngIf="currentMode !== modes.NODE" #emailForm="ngForm">
               <div class="form-group" ngbTooltip="Email used for notifications." placement="left">
                 <input type="text"
@@ -57,7 +64,7 @@
             </form>
           </div>
           <div class="col">
-            <h6>Password Settings:</h6>
+            <h6>Password Settings</h6>
             <div>
               <form #passwordForm="ngForm">
                 <div class="form-group">
@@ -125,7 +132,7 @@
           </div>
         </div>
         <form class="pt-3" #securityForm="ngForm">
-          <h6>Security Question Settings:</h6>
+          <h6>Password Recovery Questions</h6>
           <div class="form-row">
             <div class="col-md">
               <select
