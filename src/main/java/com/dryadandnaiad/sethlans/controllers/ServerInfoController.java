@@ -28,6 +28,8 @@ import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -158,6 +160,10 @@ public class ServerInfoController {
     @GetMapping(value = {"/server_dashboard"})
     public ServerDashBoardInfo getDashBoard() {
         if (firstTime) {
+            return null;
+        }
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
             return null;
         }
         ServerDashBoardInfo serverDashBoardInfo = new ServerDashBoardInfo();

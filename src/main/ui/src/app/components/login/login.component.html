@@ -51,6 +51,10 @@
                      name="${_csrf.parameterName}"
                      value="${_csrf.token}"/>
             </form>
+            <div class="d-flex justify-content-center">
+              <a href="/forgot_pass" class="text-white">Forgot Password?</a>
+            </div>
+
           </div>
 
         </div>
@@ -59,7 +63,6 @@
       <div class="card-footer bg-dark">
         <button [disabled]="!loginForm.valid" class="btn btn-outline-light btn-block" (click)="loginSubmit()">Login
         </button>
-        <button class="btn btn-outline-light btn-block">Forgot Password</button>
         <button class="btn btn-outline-light btn-block" (click)="registerUser()">Register New User</button>
       </div>
     </div>

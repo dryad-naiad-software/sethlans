@@ -35,6 +35,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -207,6 +209,10 @@ public class NodeInfoController {
     @GetMapping(value = {"/node_dashboard"})
     public NodeDashBoardInfo getNodeDashBoard() {
         if (firstTime) {
+            return null;
+        }
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
             return null;
         }
         NodeDashBoardInfo nodeDashBoardInfo = new NodeDashBoardInfo();
