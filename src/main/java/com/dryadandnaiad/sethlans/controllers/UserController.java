@@ -34,10 +34,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created Mario Estrella on 2/26/18.
@@ -137,6 +134,23 @@ public class UserController {
             }
         }
 
+    }
+
+    @PostMapping(value = {"/change_security_questions"})
+    public boolean changeSecurityQuestions(@RequestBody SethlansUserChallenge[] userChallenges) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        List<SethlansUserChallenge> challengeList = new ArrayList<>(Arrays.asList(userChallenges));
+        for (SethlansUserChallenge sethlansUserChallenge : challengeList) {
+            if (sethlansUserChallenge.getChallenge().isEmpty() || sethlansUserChallenge.getResponse().isEmpty()) {
+                return false;
+            }
+            sethlansUserChallenge.setResponseUpdated(true);
+        }
+        SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
+        user.setChallengeList(challengeList);
+        sethlansUserDatabaseService.saveOrUpdate(user);
+        return true;
     }
 
     @PostMapping(value = {"/change_password/"})

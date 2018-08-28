@@ -215,7 +215,9 @@
             </div>
           </div>
         </form>
-        <button class="btn btn-outline-dark" (click)="changeSecurityQuestions()">Submit Security Questions</button>
+        <button [disabled]="!securityForm.valid" class="btn btn-outline-dark" (click)="changeSecurityQuestions()">Submit
+          Security Questions
+        </button>
       </div>
     </div>
   </div>

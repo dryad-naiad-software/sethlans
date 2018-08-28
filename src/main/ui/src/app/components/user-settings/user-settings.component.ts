@@ -34,6 +34,7 @@ export class UserSettingsComponent implements OnInit {
   passFields: PasswordSet;
   newEmail: string;
   emailError: boolean;
+  securityQuestionError: boolean;
   passwordError: boolean;
   modes: any = Mode;
   currentMode: Mode;
@@ -45,6 +46,9 @@ export class UserSettingsComponent implements OnInit {
 
 
   constructor(private http: HttpClient) {
+    this.emailError = false;
+    this.passwordError = false;
+    this.securityQuestionError = false;
     this.passFields = new PasswordSet();
     this.userInfo = new UserInfo();
     this.challenge1 = new UserChallenge();
@@ -99,7 +103,19 @@ export class UserSettingsComponent implements OnInit {
   }
 
   changeSecurityQuestions() {
-
+    this.populateUserSecurityQuestions();
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    this.http.post('/api/users/change_security_questions', JSON.stringify(this.userChallengeToSubmit), httpOptions).subscribe((response: boolean) => {
+      if (response) {
+        window.location.href = '/user_settings';
+      } else {
+        this.securityQuestionError = true;
+      }
+    });
   }
 
   changePassword() {
