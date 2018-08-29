@@ -33,11 +33,17 @@ export class ForgotPassComponent implements OnInit {
   currentProgress: PassResetProgress;
   progress: any = PassResetProgress;
   tokens: string[];
+  invalidResponse: boolean;
+  password: string;
+  passwordConfirm: string;
 
 
   constructor(private http: HttpClient) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
     this.currentProgress = PassResetProgress.START;
+    this.invalidResponse = false;
+    this.password = '';
+    this.passwordConfirm = '';
   }
 
   ngOnInit() {
@@ -61,9 +67,9 @@ export class ForgotPassComponent implements OnInit {
       headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
       , responseType: 'text'
     }).subscribe((token: string) => {
-      console.log(token);
-      if (token != null) {
+      if (token !== 'invalid') {
         this.tokens.push(token);
+        this.invalidResponse = false;
         switch (this.currentProgress) {
           case PassResetProgress.QUESTION1:
             this.currentProgress = PassResetProgress.QUESTION2;
@@ -74,12 +80,26 @@ export class ForgotPassComponent implements OnInit {
             this.response = '';
             break;
           case PassResetProgress.QUESTION3:
+            this.response = '';
+            console.log(this.tokens);
             this.currentProgress = PassResetProgress.CHANGE_PASS;
             break;
         }
+      } else {
+        this.invalidResponse = true;
       }
     });
 
+  }
+
+  submitPassChange() {
+    console.log('Submitting new password');
+    let passwordChange = new HttpParams().set('username', this.username).set('tokens[0]', this.tokens[0]).set('tokens[1]', this.tokens[1]).set('tokens[2]', this.tokens[2]).set('newPassword', this.password);
+    this.http.post('/api/users/reset_password', passwordChange, {
+      headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+    }).subscribe((sentResponse: boolean) => {
+      console.log(sentResponse);
+    });
   }
 
   login() {
@@ -97,6 +117,24 @@ export class ForgotPassComponent implements OnInit {
   }
 
   next() {
+    switch (this.currentProgress) {
+      case PassResetProgress.START:
+        this.retrieveQuestions();
+        break;
+      case PassResetProgress.QUESTION1:
+        this.submitResponse();
+        break;
+      case PassResetProgress.QUESTION2:
+        this.submitResponse();
+        break;
+      case PassResetProgress.QUESTION3:
+        this.submitResponse();
+        break;
+      case PassResetProgress.CHANGE_PASS:
+        this.submitPassChange();
+        break;
+
+    }
 
   }
 

@@ -82,11 +82,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                     .and()
                     .authorizeRequests()
-                    .antMatchers("/api/management/metrics/**", "/admin/metrics", "/admin/sethlans_settings").hasAuthority(Role.SUPER_ADMINISTRATOR.toString())
-                    .antMatchers("/api/management/**", "/admin/**", "/api/setup/update_compute", "/api/setup/node_add").hasAnyAuthority(Role.SUPER_ADMINISTRATOR.toString(), Role.ADMINISTRATOR.toString())
+                    .antMatchers("/api/management/metrics/**",
+                            "/admin/metrics", "/admin/sethlans_settings").hasAuthority(Role.SUPER_ADMINISTRATOR.toString())
+                    .antMatchers("/api/management/**",
+                            "/admin/**",
+                            "/api/setup/update_compute",
+                            "/api/setup/node_add").hasAnyAuthority(Role.SUPER_ADMINISTRATOR.toString(), Role.ADMINISTRATOR.toString())
                     .and()
                     .authorizeRequests()
-                    .antMatchers("/api/info/**", "/api/setup/self_register", "/api/users/user_challenge_list", "/api/users/submit_challenge_response").permitAll()
+                    .antMatchers("/api/info/**",
+                            "/api/setup/self_register",
+                            "/api/users/user_challenge_list",
+                            "/api/users/submit_challenge_response",
+                            "/api/users/reset_password/").permitAll()
                     .antMatchers("/register", "/forgot_pass").permitAll()
                     .anyRequest().authenticated();
         } else {

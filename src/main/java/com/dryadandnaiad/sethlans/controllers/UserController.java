@@ -178,6 +178,7 @@ public class UserController {
         return true;
     }
 
+
     @PostMapping(value = {"/change_password/"})
     public boolean changePassword(@RequestParam String passToCheck, @RequestParam String newPassword) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -226,7 +227,6 @@ public class UserController {
 
     @PostMapping(value = {"/submit_challenge_response"})
     public String verifyResponse(@RequestParam String username, @RequestParam int key, @RequestParam String submittedResponse) {
-        LOG.debug(" " + key + " " + submittedResponse);
         SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
         if (user != null) {
             String storedResponse = user.getChallengeList().get(key).getResponse();
@@ -238,10 +238,25 @@ public class UserController {
                 return token;
             } else {
                 LOG.debug("Invalid response.");
-                return null;
+                return "invalid";
             }
         }
         return null;
+    }
+
+    @PostMapping(value = {"/reset_password/"})
+    public boolean resetPassword(@RequestParam String username, @RequestParam(value = "tokens[]") String[] tokens, @RequestParam String newPassword) {
+        SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
+        if (user != null) {
+            List<String> tokensToCompare = Arrays.asList(tokens);
+            if (user.getTokenList().containsAll(tokensToCompare)) {
+                LOG.debug("Tokens Valid");
+            } else {
+                LOG.debug("Invalid Tokens presented");
+                return false;
+            }
+        }
+        return false;
     }
 
     @Autowired
