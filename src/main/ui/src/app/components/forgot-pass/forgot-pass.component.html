@@ -36,21 +36,21 @@
           <div class="form-group" *ngIf="currentProgress === progress.QUESTION1">
             <p class="text-white text-center">Q1. {{retrievedList[0].challenge}}</p>
             <br/>
-            <input id="response1" name="response1" [(ngModel)]="response" class="form-control" type="text"
+            <input id="response1" name="response1" [(ngModel)]="response" class="form-control" type="password"
                    (keyup.enter)="submitResponse()"
                    placeholder="Response" required/>
           </div>
           <div class="form-group" *ngIf="currentProgress === progress.QUESTION2">
             <p class="text-white text-center">Q2. {{retrievedList[1].challenge}}</p>
             <br/>
-            <input id="response2" name="response2" [(ngModel)]="response" class="form-control" type="text"
+            <input id="response2" name="response2" [(ngModel)]="response" class="form-control" type="password"
                    (keyup.enter)="submitResponse()"
                    placeholder="Response" required/>
           </div>
           <div class="form-group" *ngIf="currentProgress === progress.QUESTION3">
             <p class="text-white text-center">Q3. {{retrievedList[2].challenge}}</p>
             <br/>
-            <input id="response3" name="response3" [(ngModel)]="response" class="form-control" type="text"
+            <input id="response3" name="response3" [(ngModel)]="response" class="form-control" type="password"
                    (keyup.enter)="submitResponse()"
                    placeholder="Response" required/>
           </div>

@@ -44,31 +44,34 @@ export class ForgotPassComponent implements OnInit {
   }
 
   submitResponse() {
-    let response;
+    let answer;
     switch (this.currentProgress) {
       case PassResetProgress.QUESTION1:
-        response = new HttpParams().set('username', this.username).set('key', this.retrievedList[0].response).set('submittedResponse', this.response);
+        answer = new HttpParams().set('username', this.username).set('key', this.retrievedList[0].response).set('submittedResponse', this.response);
         break;
       case PassResetProgress.QUESTION2:
-        response = new HttpParams().set('username', this.username).set('key', this.retrievedList[1].response).set('submittedResponse', this.response);
+        answer = new HttpParams().set('username', this.username).set('key', this.retrievedList[1].response).set('submittedResponse', this.response);
         break;
       case PassResetProgress.QUESTION3:
-        response = new HttpParams().set('username', this.username).set('key', this.retrievedList[2].response).set('submittedResponse', this.response);
+        answer = new HttpParams().set('username', this.username).set('key', this.retrievedList[2].response).set('submittedResponse', this.response);
         break;
     }
 
-    this.http.post('/api/users/submit_challenge_response', response, {
+    this.http.post('/api/users/submit_challenge_response', answer, {
       headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
-    }).subscribe((token: any) => {
+      , responseType: 'text'
+    }).subscribe((token: string) => {
       console.log(token);
       if (token != null) {
         this.tokens.push(token);
         switch (this.currentProgress) {
           case PassResetProgress.QUESTION1:
             this.currentProgress = PassResetProgress.QUESTION2;
+            this.response = '';
             break;
           case PassResetProgress.QUESTION2:
             this.currentProgress = PassResetProgress.QUESTION3;
+            this.response = '';
             break;
           case PassResetProgress.QUESTION3:
             this.currentProgress = PassResetProgress.CHANGE_PASS;
@@ -86,6 +89,7 @@ export class ForgotPassComponent implements OnInit {
   retrieveQuestions() {
     this.http.get('/api/users/user_challenge_list' + '?username=' + this.username).subscribe((userQuestions: UserChallenge[]) => {
       this.retrievedList = userQuestions;
+      this.tokens = [];
       this.currentProgress = PassResetProgress.QUESTION1;
 
     });
