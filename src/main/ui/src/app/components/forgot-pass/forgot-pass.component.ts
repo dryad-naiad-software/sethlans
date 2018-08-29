@@ -25,6 +25,7 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./forgot-pass.component.scss']
 })
 export class ForgotPassComponent implements OnInit {
+  username: string;
 
   constructor() {
     document.body.style.background = 'rgba(0, 0, 0, .6)';

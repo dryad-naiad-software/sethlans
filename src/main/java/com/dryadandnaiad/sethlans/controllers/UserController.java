@@ -155,29 +155,7 @@ public class UserController {
 
     }
 
-    @GetMapping(value = {"/challenge_question_list"})
-    public List<SethlansUserChallenge> getChallengeQuestion(@RequestParam String username) {
-        SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
-        if (user != null) {
-            return user.getChallengeList();
-        }
-        return null;
-    }
 
-    @PostMapping(value = {"/challenge_response"})
-    public void verifyResponse(@RequestParam String username, @RequestParam int key, @RequestParam String submittedResponse) {
-        SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
-        if (user != null) {
-            String storedResponse = user.getChallengeList().get(key).getResponse();
-            String encryptedSubmission = bCryptPasswordEncoder.encode(submittedResponse);
-            if (storedResponse.equals(encryptedSubmission)) {
-                LOG.debug("Valid response.");
-            } else {
-                LOG.debug("Invalid response.");
-            }
-        }
-
-    }
 
     @PostMapping(value = {"/change_security_questions"})
     public boolean changeSecurityQuestions(@RequestBody SethlansUserChallenge[] userChallenges) {
@@ -228,6 +206,33 @@ public class UserController {
             return false;
         }
         return auth.getName().equals(username);
+    }
+
+    @GetMapping(value = {"/challenge_question_list"})
+    public List<SethlansUserChallenge> getChallengeQuestion(@RequestParam String username) {
+        SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
+        if (user != null) {
+            for (int i = 0; i < user.getChallengeList().size(); i++) {
+                user.getChallengeList().get(i).setResponse(Integer.toString(i));
+            }
+            return user.getChallengeList();
+        }
+        return null;
+    }
+
+    @PostMapping(value = {"/challenge_response"})
+    public void verifyResponse(@RequestParam String username, @RequestParam int key, @RequestParam String submittedResponse) {
+        SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
+        if (user != null) {
+            String storedResponse = user.getChallengeList().get(key).getResponse();
+            String encryptedSubmission = bCryptPasswordEncoder.encode(submittedResponse);
+            if (storedResponse.equals(encryptedSubmission)) {
+                LOG.debug("Valid response.");
+            } else {
+                LOG.debug("Invalid response.");
+            }
+        }
+
     }
 
     @Autowired

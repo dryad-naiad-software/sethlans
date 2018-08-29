@@ -86,7 +86,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/api/management/**", "/admin/**", "/api/setup/update_compute", "/api/setup/node_add").hasAnyAuthority(Role.SUPER_ADMINISTRATOR.toString(), Role.ADMINISTRATOR.toString())
                     .and()
                     .authorizeRequests()
-                    .antMatchers("/api/info/**", "/api/setup/self_register").permitAll()
+                    .antMatchers("/api/info/**", "/api/setup/self_register", "/api/users/challenge_question_list", "/api/users/challenge_response").permitAll()
                     .antMatchers("/register", "/forgot_pass").permitAll()
                     .anyRequest().authenticated();
         } else {

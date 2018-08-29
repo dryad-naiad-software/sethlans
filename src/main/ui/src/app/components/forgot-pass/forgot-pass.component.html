@@ -24,9 +24,20 @@
         <h4 class="text-white" style="font-family: 'Fjalla One', sans-serif; ">Password Reset</h4>
       </div>
       <div class="card-body bg-dark">
+        <form #recoveryForm="ngForm">
+          <div class="form-group">
+            <p class="text-white text-center">Enter your <strong>username</strong> so we can retrieve your password
+              recovery questions.</p>
+            <br/>
+            <input id="username" name="username" [(ngModel)]="username" class="form-control" type="text"
+                   placeholder="Username" required/>
+          </div>
+
+        </form>
 
       </div>
       <div class="card-footer bg-dark">
+        <button [disabled]="!recoveryForm.valid" class="btn btn-outline-light btn-block" (click)="login()">Next</button>
         <button class="btn btn-outline-light btn-block" (click)="login()">Return to Login</button>
 
       </div>

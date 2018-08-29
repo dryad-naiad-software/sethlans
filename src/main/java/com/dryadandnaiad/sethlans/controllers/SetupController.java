@@ -120,6 +120,7 @@ public class SetupController {
         }
     }
 
+
     @Autowired
     public void setSaveSetupConfigService(SaveSetupConfigService saveSetupConfigService) {
         this.saveSetupConfigService = saveSetupConfigService;
@@ -129,10 +130,6 @@ public class SetupController {
     public void setSethlansUserDatabaseService(SethlansUserDatabaseService sethlansUserDatabaseService) {
         this.sethlansUserDatabaseService = sethlansUserDatabaseService;
     }
-
-
-
-
 
 
 }
