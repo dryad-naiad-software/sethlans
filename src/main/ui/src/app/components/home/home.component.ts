@@ -31,46 +31,54 @@ export class HomeComponent implements OnInit {
   mode: any = Mode;
   currentMode: Mode;
   isAdministrator = false;
+  firstTime: boolean = true;
 
   constructor(private http: HttpClient) {
     this.getStarted = false;
   }
 
   ngOnInit() {
-    this.http.get('/api/info/sethlans_mode')
-      .subscribe((sethlansmode) => {
-        this.currentMode = sethlansmode['mode'];
-      });
-    this.http.get('/api/users/admin_added_user').subscribe((response: boolean) => {
-      if (response) {
-        window.location.href = '/user_settings?is_new_user=true';
-      } else {
-        this.http.get('/api/users/prompt_pass_change').subscribe((response: boolean) => {
+    this.http.get('/api/info/first_time').subscribe((firstTime: boolean) => {
+      this.firstTime = firstTime;
+      if (!this.firstTime) {
+        this.http.get('/api/info/sethlans_mode')
+          .subscribe((sethlansmode) => {
+            this.currentMode = sethlansmode['mode'];
+          });
+        this.http.get('/api/users/admin_added_user').subscribe((response: boolean) => {
           if (response) {
-            window.location.href = '/user_settings?needs_password_change=true';
+            window.location.href = '/user_settings?is_new_user=true';
+          } else {
+            this.http.get('/api/users/prompt_pass_change').subscribe((response: boolean) => {
+              if (response) {
+                window.location.href = '/user_settings?needs_password_change=true';
+              }
+            });
+            this.http.get('/api/users/is_security_questions_set').subscribe((response: boolean) => {
+              if (!response) {
+                window.location.href = '/user_settings?needs_questions=true';
+              }
+            });
           }
         });
-        this.http.get('/api/users/is_security_questions_set').subscribe((response: boolean) => {
-          if (!response) {
-            window.location.href = '/user_settings?needs_questions=true';
+
+
+        this.http.get('/api/users/is_administrator').subscribe((admin: boolean) => {
+          this.isAdministrator = admin;
+          if (admin) {
+            this.http.get('/api/info/get_started').subscribe((response: boolean) => {
+              this.getStarted = response;
+              if (this.getStarted) {
+                window.location.href = '/get_started';
+              }
+            });
           }
+
         });
       }
     });
 
 
-    this.http.get('/api/users/is_administrator').subscribe((admin: boolean) => {
-      this.isAdministrator = admin;
-      if (admin) {
-        this.http.get('/api/info/get_started').subscribe((response: boolean) => {
-          this.getStarted = response;
-          if (this.getStarted) {
-            window.location.href = '/get_started';
-          }
-        });
-      }
-
-    });
   }
 
 }

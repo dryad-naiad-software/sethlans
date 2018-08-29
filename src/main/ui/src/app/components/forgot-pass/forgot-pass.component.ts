@@ -18,6 +18,8 @@
  */
 
 import {Component, OnInit} from '@angular/core';
+import {UserChallenge} from '../../models/user_challenge.model';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 
 @Component({
   selector: 'app-forgot-pass',
@@ -26,17 +28,80 @@ import {Component, OnInit} from '@angular/core';
 })
 export class ForgotPassComponent implements OnInit {
   username: string;
+  retrievedList: UserChallenge[];
+  response: string;
+  currentProgress: PassResetProgress;
+  progress: any = PassResetProgress;
+  tokens: string[];
 
-  constructor() {
+
+  constructor(private http: HttpClient) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
-
+    this.currentProgress = PassResetProgress.START;
   }
 
   ngOnInit() {
+  }
+
+  submitResponse() {
+    let response;
+    switch (this.currentProgress) {
+      case PassResetProgress.QUESTION1:
+        response = new HttpParams().set('username', this.username).set('key', this.retrievedList[0].response).set('submittedResponse', this.response);
+        break;
+      case PassResetProgress.QUESTION2:
+        response = new HttpParams().set('username', this.username).set('key', this.retrievedList[1].response).set('submittedResponse', this.response);
+        break;
+      case PassResetProgress.QUESTION3:
+        response = new HttpParams().set('username', this.username).set('key', this.retrievedList[2].response).set('submittedResponse', this.response);
+        break;
+    }
+
+    this.http.post('/api/users/submit_challenge_response', response, {
+      headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+    }).subscribe((token: any) => {
+      console.log(token);
+      if (token != null) {
+        this.tokens.push(token);
+        switch (this.currentProgress) {
+          case PassResetProgress.QUESTION1:
+            this.currentProgress = PassResetProgress.QUESTION2;
+            break;
+          case PassResetProgress.QUESTION2:
+            this.currentProgress = PassResetProgress.QUESTION3;
+            break;
+          case PassResetProgress.QUESTION3:
+            this.currentProgress = PassResetProgress.CHANGE_PASS;
+            break;
+        }
+      }
+    });
+
   }
 
   login() {
     window.location.href = '/login';
   }
 
+  retrieveQuestions() {
+    this.http.get('/api/users/user_challenge_list' + '?username=' + this.username).subscribe((userQuestions: UserChallenge[]) => {
+      this.retrievedList = userQuestions;
+      this.currentProgress = PassResetProgress.QUESTION1;
+
+    });
+
+  }
+
+  next() {
+
+  }
+
+}
+
+enum PassResetProgress {
+  START,
+  QUESTION1,
+  QUESTION2,
+  QUESTION3,
+  CHANGE_PASS
 }

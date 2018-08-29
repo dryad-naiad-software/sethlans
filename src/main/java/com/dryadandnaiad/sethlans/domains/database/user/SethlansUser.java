@@ -45,6 +45,8 @@ public class SethlansUser extends AbstractEntityClass {
     private List<Role> roles;
     @ElementCollection
     private List<SethlansUserChallenge> challengeList;
+    @ElementCollection
+    private List<String> tokenList;
     private String password;
     private boolean active;
     private String email;

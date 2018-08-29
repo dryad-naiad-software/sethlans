@@ -208,31 +208,40 @@ public class UserController {
         return auth.getName().equals(username);
     }
 
-    @GetMapping(value = {"/challenge_question_list"})
+    @GetMapping(value = {"/user_challenge_list"})
     public List<SethlansUserChallenge> getChallengeQuestion(@RequestParam String username) {
         SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
         if (user != null) {
-            for (int i = 0; i < user.getChallengeList().size(); i++) {
-                user.getChallengeList().get(i).setResponse(Integer.toString(i));
+            user.setTokenList(new ArrayList<>());
+            sethlansUserDatabaseService.saveOrUpdate(user);
+            List<SethlansUserChallenge> listToSend = new ArrayList<>(user.getChallengeList());
+            for (int i = 0; i < listToSend.size(); i++) {
+                listToSend.get(i).setResponse(Integer.toString(i));
             }
-            return user.getChallengeList();
+            Collections.shuffle(listToSend);
+            return listToSend;
         }
         return null;
     }
 
-    @PostMapping(value = {"/challenge_response"})
-    public void verifyResponse(@RequestParam String username, @RequestParam int key, @RequestParam String submittedResponse) {
+    @PostMapping(value = {"/submit_challenge_response"})
+    public String verifyResponse(@RequestParam String username, @RequestParam int key, @RequestParam String submittedResponse) {
+        LOG.debug(" " + key + " " + submittedResponse);
         SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
         if (user != null) {
             String storedResponse = user.getChallengeList().get(key).getResponse();
-            String encryptedSubmission = bCryptPasswordEncoder.encode(submittedResponse);
-            if (storedResponse.equals(encryptedSubmission)) {
+            if (bCryptPasswordEncoder.matches(submittedResponse, storedResponse)) {
                 LOG.debug("Valid response.");
+                String token = UUID.randomUUID().toString();
+                user.getTokenList().add(token);
+                sethlansUserDatabaseService.saveOrUpdate(user);
+                return token;
             } else {
                 LOG.debug("Invalid response.");
+                return null;
             }
         }
-
+        return null;
     }
 
     @Autowired

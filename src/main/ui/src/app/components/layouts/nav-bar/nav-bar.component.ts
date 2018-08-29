@@ -29,6 +29,7 @@ import {timer} from 'rxjs/internal/observable/timer';
   templateUrl: './nav-bar.component.html',
   styleUrls: ['./nav-bar.component.scss'],
 })
+
 export class NavBarComponent implements OnInit {
   logo: any = 'assets/images/logo-text-white.png';
   logoDark: any = 'assets/images/logo-text-dark.png';
@@ -52,19 +53,20 @@ export class NavBarComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.http.get('/api/users/is_authenticated').subscribe((response: boolean) => {
-      if (response) {
-        this.authenticated = response;
+    if (!this.firstTime) {
+      this.http.get('/api/users/is_authenticated').subscribe((response: boolean) => {
         if (response) {
-          this.getUserName();
-          this.getAdminStatus();
-          this.checkNotifications();
-          let scheduler = timer(5000, 2000);
-          scheduler.subscribe(() => this.checkNotifications());
+          this.authenticated = response;
+          if (response) {
+            this.getUserName();
+            this.getAdminStatus();
+            this.checkNotifications();
+            let scheduler = timer(5000, 2000);
+            scheduler.subscribe(() => this.checkNotifications());
+          }
         }
-      }
-    });
-
+      });
+    }
   }
 
   getNotifications() {
