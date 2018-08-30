@@ -36,6 +36,7 @@ export class ForgotPassComponent implements OnInit {
   invalidResponse: boolean;
   password: string;
   passwordConfirm: string;
+  invalidUsername: boolean;
 
 
   constructor(private http: HttpClient) {
@@ -43,6 +44,7 @@ export class ForgotPassComponent implements OnInit {
     this.currentProgress = PassResetProgress.START;
     this.username = '';
     this.invalidResponse = false;
+    this.invalidUsername = false;
     this.password = '';
     this.response = '';
     this.passwordConfirm = '';
@@ -51,60 +53,64 @@ export class ForgotPassComponent implements OnInit {
   ngOnInit() {
   }
 
-  submitResponse() {
-    let answer;
-    switch (this.currentProgress) {
-      case PassResetProgress.QUESTION1:
-        answer = new HttpParams().set('username', this.username).set('key', this.retrievedList[0].response).set('submittedResponse', this.response);
-        break;
-      case PassResetProgress.QUESTION2:
-        answer = new HttpParams().set('username', this.username).set('key', this.retrievedList[1].response).set('submittedResponse', this.response);
-        break;
-      case PassResetProgress.QUESTION3:
-        answer = new HttpParams().set('username', this.username).set('key', this.retrievedList[2].response).set('submittedResponse', this.response);
-        break;
-    }
-
-    this.http.post('/api/users/submit_challenge_response', answer, {
-      headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
-      , responseType: 'text'
-    }).subscribe((token: string) => {
-      if (token !== 'invalid') {
-        this.tokens.push(token);
-        this.invalidResponse = false;
-        switch (this.currentProgress) {
-          case PassResetProgress.QUESTION1:
-            this.currentProgress = PassResetProgress.QUESTION2;
-            this.response = '';
-            break;
-          case PassResetProgress.QUESTION2:
-            this.currentProgress = PassResetProgress.QUESTION3;
-            this.response = '';
-            break;
-          case PassResetProgress.QUESTION3:
-            this.response = '';
-            console.log(this.tokens);
-            this.currentProgress = PassResetProgress.CHANGE_PASS;
-            break;
-        }
-      } else {
-        this.invalidResponse = true;
+  submitResponse(valid: boolean) {
+    if (valid) {
+      let answer;
+      switch (this.currentProgress) {
+        case PassResetProgress.QUESTION1:
+          answer = new HttpParams().set('username', this.username).set('key', this.retrievedList[0].response).set('submittedResponse', this.response);
+          break;
+        case PassResetProgress.QUESTION2:
+          answer = new HttpParams().set('username', this.username).set('key', this.retrievedList[1].response).set('submittedResponse', this.response);
+          break;
+        case PassResetProgress.QUESTION3:
+          answer = new HttpParams().set('username', this.username).set('key', this.retrievedList[2].response).set('submittedResponse', this.response);
+          break;
       }
-    });
+
+      this.http.post('/api/users/submit_challenge_response', answer, {
+        headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+        , responseType: 'text'
+      }).subscribe((token: string) => {
+        if (token !== 'invalid') {
+          this.tokens.push(token);
+          this.invalidResponse = false;
+          switch (this.currentProgress) {
+            case PassResetProgress.QUESTION1:
+              this.currentProgress = PassResetProgress.QUESTION2;
+              this.response = '';
+              break;
+            case PassResetProgress.QUESTION2:
+              this.currentProgress = PassResetProgress.QUESTION3;
+              this.response = '';
+              break;
+            case PassResetProgress.QUESTION3:
+              this.response = '';
+              console.log(this.tokens);
+              this.currentProgress = PassResetProgress.CHANGE_PASS;
+              break;
+          }
+        } else {
+          this.invalidResponse = true;
+        }
+      });
+    }
 
   }
 
-  submitPassChange() {
-    console.log('Submitting new password');
-    let tokensToSend = this.tokens.join(', ');
-    let passwordChange = new HttpParams().set('username', this.username).set('tokens', tokensToSend).set('newPassword', this.password);
-    this.http.post('/api/users/reset_password', passwordChange, {
-      headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
-    }).subscribe((sentResponse: boolean) => {
-      if (sentResponse) {
-        this.currentProgress = PassResetProgress.SUCCESS;
-      }
-    });
+  submitPassChange(valid: boolean) {
+    if (valid) {
+      console.log('Submitting new password');
+      let tokensToSend = this.tokens.join(', ');
+      let passwordChange = new HttpParams().set('username', this.username).set('tokens', tokensToSend).set('newPassword', this.password);
+      this.http.post('/api/users/reset_password', passwordChange, {
+        headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+      }).subscribe((sentResponse: boolean) => {
+        if (sentResponse) {
+          this.currentProgress = PassResetProgress.SUCCESS;
+        }
+      });
+    }
   }
 
   login() {
@@ -112,32 +118,40 @@ export class ForgotPassComponent implements OnInit {
   }
 
 
-  retrieveQuestions() {
-    this.http.get('/api/users/user_challenge_list' + '?username=' + this.username).subscribe((userQuestions: UserChallenge[]) => {
-      this.retrievedList = userQuestions;
-      this.tokens = [];
-      this.currentProgress = PassResetProgress.QUESTION1;
+  retrieveQuestions(valid: boolean) {
+    if (valid) {
+      this.http.get('/api/users/user_challenge_list' + '?username=' + this.username).subscribe((userQuestions: UserChallenge[]) => {
+        if (userQuestions != null) {
+          this.invalidUsername = false;
+          this.retrievedList = userQuestions;
+          this.tokens = [];
+          this.currentProgress = PassResetProgress.QUESTION1;
+        } else {
+          this.invalidUsername = true;
+        }
 
-    });
+      });
+    }
+
 
   }
 
   next() {
     switch (this.currentProgress) {
       case PassResetProgress.START:
-        this.retrieveQuestions();
+        this.retrieveQuestions(true);
         break;
       case PassResetProgress.QUESTION1:
-        this.submitResponse();
+        this.submitResponse(true);
         break;
       case PassResetProgress.QUESTION2:
-        this.submitResponse();
+        this.submitResponse(true);
         break;
       case PassResetProgress.QUESTION3:
-        this.submitResponse();
+        this.submitResponse(true);
         break;
       case PassResetProgress.CHANGE_PASS:
-        this.submitPassChange();
+        this.submitPassChange(true);
         break;
     }
 
