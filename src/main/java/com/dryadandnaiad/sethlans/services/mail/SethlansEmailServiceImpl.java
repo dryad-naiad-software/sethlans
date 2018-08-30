@@ -19,15 +19,26 @@
 
 package com.dryadandnaiad.sethlans.services.mail;
 
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Service;
+
 /**
- * Created Mario Estrella on 8/24/2018.
+ * Created Mario Estrella on 8/30/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface SethlansEmailService {
+@Service
+@Profile({"SERVER", "DUAL"})
+public class SethlansEmailServiceImpl implements SethlansEmailService {
 
-    boolean sendWelcomeEmail();
+    @Override
+    public boolean sendWelcomeEmail() {
+        return false;
+    }
 
-    boolean sendNotificationEmail();
+    @Override
+    public boolean sendNotificationEmail() {
+        return false;
+    }
 }
