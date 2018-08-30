@@ -44,6 +44,7 @@ export class ForgotPassComponent implements OnInit {
     this.username = '';
     this.invalidResponse = false;
     this.password = '';
+    this.response = '';
     this.passwordConfirm = '';
   }
 
@@ -100,13 +101,16 @@ export class ForgotPassComponent implements OnInit {
     this.http.post('/api/users/reset_password', passwordChange, {
       headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
     }).subscribe((sentResponse: boolean) => {
-      console.log(sentResponse);
+      if (sentResponse) {
+        this.currentProgress = PassResetProgress.SUCCESS;
+      }
     });
   }
 
   login() {
     window.location.href = '/login';
   }
+
 
   retrieveQuestions() {
     this.http.get('/api/users/user_challenge_list' + '?username=' + this.username).subscribe((userQuestions: UserChallenge[]) => {
@@ -135,7 +139,6 @@ export class ForgotPassComponent implements OnInit {
       case PassResetProgress.CHANGE_PASS:
         this.submitPassChange();
         break;
-
     }
 
   }
@@ -147,5 +150,6 @@ enum PassResetProgress {
   QUESTION1,
   QUESTION2,
   QUESTION3,
-  CHANGE_PASS
+  CHANGE_PASS,
+  SUCCESS
 }

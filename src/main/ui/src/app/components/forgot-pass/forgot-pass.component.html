@@ -56,7 +56,8 @@
                    (keyup.enter)="submitResponse()"
                    placeholder="Response" required/>
           </div>
-          <div class="form-group" *ngIf="currentProgress === progress.CHANGE_PASS">
+          <div *ngIf="currentProgress === progress.CHANGE_PASS">
+            <div class="form-group">
             <p class="text-center text-white">Enter your new password below</p>
             <input
               type="password"
@@ -77,7 +78,7 @@
               </ul>
             </div>
           </div>
-          <div class="form-group" *ngIf="currentProgress === progress.CHANGE_PASS">
+            <div class="form-group">
             <input
               type="password"
               name="newPassConfirm"
@@ -87,12 +88,14 @@
               [ngClass]="{'is-invalid':newPassConfirm.errors && newPassConfirm.touched}"
               class="form-control"
               placeholder="Confirm Password"
+              (keyup.enter)="submitPassChange()"
               required [fieldMatches]="newPass"/>
             <div class="invalid-feedback" [hidden]="newPassConfirm.valid">
               <ul>
                 <li>Passwords must match.</li>
               </ul>
             </div>
+          </div>
           </div>
         </form>
 

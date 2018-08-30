@@ -251,6 +251,13 @@ public class UserController {
             List<String> tokensToCompare = Arrays.asList(tokens);
             if (user.getTokenList().containsAll(tokensToCompare)) {
                 LOG.debug("Tokens Valid");
+                user.setPassword(newPassword);
+                user.setPasswordUpdated(true);
+                user.setPromptPasswordChange(false);
+                user.setSecurityQuestionsSet(true);
+                user.setTokenList(new ArrayList<>());
+                sethlansUserDatabaseService.saveOrUpdate(user);
+                return true;
             } else {
                 LOG.debug("Invalid Tokens presented");
                 return false;
