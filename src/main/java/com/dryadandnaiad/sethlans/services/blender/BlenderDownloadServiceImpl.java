@@ -21,8 +21,6 @@ package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlenderZip;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
-import com.dryadandnaiad.sethlans.enums.NotificationOrigin;
-import com.dryadandnaiad.sethlans.events.SethlansEvent;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.google.common.base.Throwables;
@@ -102,9 +100,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                 if (atBoot && saveLocation.exists()) {
                     try {
                         FileUtils.deleteDirectory(saveLocation);
-                        this.applicationEventPublisher.publishEvent(new SethlansEvent
-                                (this, blenderVersion + "-" + NotificationOrigin.BLENDER_DOWNLOAD_SERVICE.toString(), false));
-                        atBoot = false;
+
                     } catch (IOException e) {
                         LOG.error(e.getMessage());
                     }
@@ -149,8 +145,6 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                         // Send notification of pending download.
                         LOG.info("Downloading " + filename + "...");
                         String blenderFileInfo = "Downloading Blender " + blenderVersion + " for " + blenderBinary.getBlenderBinaryOS();
-                        this.applicationEventPublisher.publishEvent(new SethlansEvent(this, blenderVersion + "-" + NotificationOrigin.BLENDER_DOWNLOAD_SERVICE.toString(),
-                                blenderFileInfo, true));  // Sets the download notification
 
                         LOG.debug("Saving file to " + toDownload.toString());
                         Files.copy(stream, Paths.get(toDownload.toString()));
@@ -191,8 +185,6 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                         LOG.debug("Ending connection, removing notification.");
                         if (connection != null) {
                             connection.disconnect();
-                            this.applicationEventPublisher.publishEvent(new SethlansEvent
-                                    (this, blenderVersion + "-" + NotificationOrigin.BLENDER_DOWNLOAD_SERVICE.toString(), false)); // Removes the download notification
                         }
                     }
 
