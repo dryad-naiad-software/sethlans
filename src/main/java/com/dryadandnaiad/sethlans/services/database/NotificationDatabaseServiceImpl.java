@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.database;
 
+import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.repositories.NotificationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,24 +58,7 @@ public class NotificationDatabaseServiceImpl implements NotificationDatabaseServ
     }
 
     @Override
-    public SethlansNotification getByKey(String key) {
-        List<SethlansNotification> sethlansNotificationList = listAll();
-        for (SethlansNotification sethlansNotification : sethlansNotificationList) {
-            if (sethlansNotification.getKey().equals(key)) {
-                return sethlansNotification;
-            }
-
-        }
-        return null;
-    }
-
-    @Override
     public SethlansNotification saveOrUpdate(SethlansNotification domainObject) {
-        if (domainObject.getKey().isEmpty() || domainObject.getMessage().isEmpty()) {
-            LOG.debug("null objects are not allowed");
-        } else {
-            return notificationRepository.save(domainObject);
-        }
         return null;
     }
 
@@ -86,14 +70,6 @@ public class NotificationDatabaseServiceImpl implements NotificationDatabaseServ
 
     @Override
     public void delete(SethlansNotification notification) {
-        List<SethlansNotification> sethlansNotifications = listAll();
-        for (SethlansNotification sethlansNotification : sethlansNotifications) {
-            if (sethlansNotification.getKey().equals(notification.getKey())) {
-                notificationRepository.delete(sethlansNotification);
-                LOG.debug("Deleted: " + sethlansNotification);
-            }
-        }
-
     }
 
     @Autowired

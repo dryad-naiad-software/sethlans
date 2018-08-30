@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.repositories;
 
+import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

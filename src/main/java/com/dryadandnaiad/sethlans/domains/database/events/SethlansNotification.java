@@ -17,17 +17,25 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.database;
+package com.dryadandnaiad.sethlans.domains.database.events;
 
-import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
+import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import javax.persistence.Entity;
 
 /**
- * Created Mario Estrella on 12/11/17.
+ * Created Mario Estrella on 8/30/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface NotificationDatabaseService extends CRUDService<SethlansNotification> {
-
-    void delete(SethlansNotification notification);
+@Entity
+@Data
+@EqualsAndHashCode(callSuper = false)
+public class SethlansNotification extends AbstractEntityClass {
+    private String message;
+    private Long messageDate;
+    private String messageLink;
 }
