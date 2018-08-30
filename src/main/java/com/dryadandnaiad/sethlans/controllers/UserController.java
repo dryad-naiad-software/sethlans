@@ -244,8 +244,8 @@ public class UserController {
         return null;
     }
 
-    @PostMapping(value = {"/reset_password/"})
-    public boolean resetPassword(@RequestParam String username, @RequestParam(value = "tokens[]") String[] tokens, @RequestParam String newPassword) {
+    @PostMapping(value = {"/reset_password"})
+    public boolean resetPassword(@RequestParam String username, @RequestParam(value = "tokens") String[] tokens, @RequestParam String newPassword) {
         SethlansUser user = sethlansUserDatabaseService.findByUserName(username);
         if (user != null) {
             List<String> tokensToCompare = Arrays.asList(tokens);

@@ -28,11 +28,11 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 })
 export class ForgotPassComponent implements OnInit {
   username: string;
-  retrievedList: UserChallenge[];
+  retrievedList: UserChallenge[] = [];
   response: string;
   currentProgress: PassResetProgress;
   progress: any = PassResetProgress;
-  tokens: string[];
+  tokens: string[] = [];
   invalidResponse: boolean;
   password: string;
   passwordConfirm: string;
@@ -41,6 +41,7 @@ export class ForgotPassComponent implements OnInit {
   constructor(private http: HttpClient) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
     this.currentProgress = PassResetProgress.START;
+    this.username = '';
     this.invalidResponse = false;
     this.password = '';
     this.passwordConfirm = '';
@@ -94,7 +95,8 @@ export class ForgotPassComponent implements OnInit {
 
   submitPassChange() {
     console.log('Submitting new password');
-    let passwordChange = new HttpParams().set('username', this.username).set('tokens[0]', this.tokens[0]).set('tokens[1]', this.tokens[1]).set('tokens[2]', this.tokens[2]).set('newPassword', this.password);
+    let tokensToSend = this.tokens.join(', ');
+    let passwordChange = new HttpParams().set('username', this.username).set('tokens', tokensToSend).set('newPassword', this.password);
     this.http.post('/api/users/reset_password', passwordChange, {
       headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
     }).subscribe((sentResponse: boolean) => {

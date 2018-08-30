@@ -94,7 +94,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                             "/api/setup/self_register",
                             "/api/users/user_challenge_list",
                             "/api/users/submit_challenge_response",
-                            "/api/users/reset_password/").permitAll()
+                            "/api/users/reset_password").permitAll()
                     .antMatchers("/register", "/forgot_pass").permitAll()
                     .anyRequest().authenticated();
         } else {
