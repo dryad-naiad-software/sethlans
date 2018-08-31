@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -134,6 +134,7 @@ public class GPU {
             String model;
             long memory;
             String deviceID;
+            String platformName = null;
             // Obtain the platform IDs
             cl_platform_id platforms[] = new cl_platform_id[numPlatforms[0]];
             clGetPlatformIDs(platforms.length, platforms, null);
@@ -142,7 +143,6 @@ public class GPU {
             List<cl_device_id> openCLdevices = new ArrayList<>();
             for (cl_platform_id platform : platforms) {
 
-                String platformName = JOCLSupport.getString(platform, CL_PLATFORM_NAME);
                 // Obtain the number of devices for the current platform
                 int numDevices[] = new int[1];
                 clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, null, numDevices);
@@ -154,10 +154,17 @@ public class GPU {
 
             for (int i = 0; i < openCLdevices.size(); i++) {
                 cl_device_id device = openCLdevices.get(i);
-                // CL_DEVICE_NAME
-                String openCLDeviceId = JOCLSupport.getString(device, CL_DEVICE_NAME);
+
                 // CL_DEVICE_VENDOR
                 String deviceVendor = JOCLSupport.getString(device, CL_DEVICE_VENDOR);
+
+                // CL_DEVICE_NAME
+                String openCLDeviceId = null;
+                if (deviceVendor.contains("AMD")) {
+                    openCLDeviceId = JOCLSupport.getString(device, 4038);
+                } else {
+                    openCLDeviceId = JOCLSupport.getString(device, CL_DEVICE_NAME);
+                }
                 // CL_DEVICE_GLOBAL_MEM_SIZE
                 memory = JOCLSupport.getLong(device, CL_DEVICE_GLOBAL_MEM_SIZE);
                 String openCLVersionString = JOCLSupport.getString(device, CL_DEVICE_OPENCL_C_VERSION);
