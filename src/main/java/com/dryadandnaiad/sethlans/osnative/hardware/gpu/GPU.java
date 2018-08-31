@@ -134,7 +134,6 @@ public class GPU {
             String model;
             long memory;
             String deviceID;
-            String platformName = null;
             // Obtain the platform IDs
             cl_platform_id platforms[] = new cl_platform_id[numPlatforms[0]];
             clGetPlatformIDs(platforms.length, platforms, null);
@@ -159,12 +158,8 @@ public class GPU {
                 String deviceVendor = JOCLSupport.getString(device, CL_DEVICE_VENDOR);
 
                 // CL_DEVICE_NAME
-                String openCLDeviceId = null;
-                if (deviceVendor.contains("AMD") || deviceVendor.contains("Advanced Micro Devices")) {
-                    openCLDeviceId = JOCLSupport.getString(device, 4038);
-                } else {
-                    openCLDeviceId = JOCLSupport.getString(device, CL_DEVICE_NAME);
-                }
+                String openCLDeviceId = JOCLSupport.getString(device, CL_DEVICE_NAME);
+
                 // CL_DEVICE_GLOBAL_MEM_SIZE
                 memory = JOCLSupport.getLong(device, CL_DEVICE_GLOBAL_MEM_SIZE);
                 String openCLVersionString = JOCLSupport.getString(device, CL_DEVICE_OPENCL_C_VERSION);
