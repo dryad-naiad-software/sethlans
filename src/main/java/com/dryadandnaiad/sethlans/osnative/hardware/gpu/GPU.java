@@ -160,7 +160,7 @@ public class GPU {
 
                 // CL_DEVICE_NAME
                 String openCLDeviceId = null;
-                if (deviceVendor.contains("AMD")) {
+                if (deviceVendor.contains("AMD") || deviceVendor.contains("Advanced Micro Devices")) {
                     openCLDeviceId = JOCLSupport.getString(device, 4038);
                 } else {
                     openCLDeviceId = JOCLSupport.getString(device, CL_DEVICE_NAME);
