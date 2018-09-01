@@ -24,6 +24,8 @@ import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.NotificationDatabaseService;
 import com.dryadandnaiad.sethlans.services.mail.SethlansEmailService;
 import com.dryadandnaiad.sethlans.utils.SethlansConfigUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,9 +41,11 @@ import java.util.List;
 public class SethlansNotificationServiceImpl implements SethlansNotificationService {
     private NotificationDatabaseService notificationDatabaseService;
     private SethlansEmailService sethlansEmailService;
+    private static final Logger LOG = LoggerFactory.getLogger(SethlansNotificationServiceImpl.class);
 
     @Override
     public void sendNotification(SethlansNotification notification) {
+        LOG.debug("Received notification, saving to database");
         notificationDatabaseService.saveOrUpdate(notification);
         boolean mailServerOn = Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_SERVER_CONFIGURED));
         if (mailServerOn) {

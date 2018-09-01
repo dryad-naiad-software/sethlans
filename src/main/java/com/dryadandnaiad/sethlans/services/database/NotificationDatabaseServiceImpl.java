@@ -59,7 +59,7 @@ public class NotificationDatabaseServiceImpl implements NotificationDatabaseServ
 
     @Override
     public SethlansNotification saveOrUpdate(SethlansNotification domainObject) {
-        return null;
+        return notificationRepository.save(domainObject);
     }
 
     @Override
@@ -70,6 +70,7 @@ public class NotificationDatabaseServiceImpl implements NotificationDatabaseServ
 
     @Override
     public void delete(SethlansNotification notification) {
+        notificationRepository.delete(notification);
     }
 
     @Autowired
