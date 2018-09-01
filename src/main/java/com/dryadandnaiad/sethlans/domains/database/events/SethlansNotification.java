@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.domains.database.events;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+import com.dryadandnaiad.sethlans.enums.NotificationType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -35,7 +36,10 @@ import javax.persistence.Entity;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class SethlansNotification extends AbstractEntityClass {
+    private NotificationType notificationType;
     private String message;
     private Long messageDate;
     private String messageLink;
+    private boolean linkPresent;
+    private boolean acknowledged;
 }

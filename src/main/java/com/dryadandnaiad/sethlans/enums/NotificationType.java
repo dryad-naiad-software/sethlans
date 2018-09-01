@@ -19,6 +19,15 @@
 
 package com.dryadandnaiad.sethlans.enums;
 
-public enum NotificationOrigin {
-    BLENDER_DOWNLOAD_SERVICE
+/**
+ * Created Mario Estrella on 8/31/2018.
+ * Dryad and Naiad Software LLC
+ * mestrella@dryadandnaiad.com
+ * Project: sethlans
+ */
+public enum NotificationType {
+    BLENDER_DOWNLOAD,
+    PROJECT,
+    VIDEO,
+    NODE
 }
