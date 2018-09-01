@@ -70,7 +70,7 @@
               <span>&nbsp;Nodes</span>
             </a>
             <a href="/admin/blender_version_admin" class="dropdown-item">
-              <i class="fas fa-fw fa-archive"></i>
+              <i class="icon-blender"></i>
               <span>&nbsp;Blender Version Management</span>
             </a>
           </div>
@@ -149,11 +149,11 @@
             <span *ngFor="let notification of notificationList">
             <a href="javascript:void(0);" class="dropdown-item">
               {{notification.message}} <br/>
-              <i class="fas fa-fw fa-info-circle" [ngClass]="{
-              'fa-info-circle': notification.notificationType !== notificationTypes.BLENDER_DOWNLOAD}">
-
-              </i>
-              <small>{{notification.messageDate | date:'medium'}}</small>
+              <i class="fas fa-fw fa-desktop" *ngIf="notification.notificationType === notificationTypes.NODE"></i>
+              <i class="fas fa-fw fa-server" *ngIf="notification.notificationType === notificationTypes.SERVER"></i>
+              <i class="fas fa-fw fa-file-download"
+                 *ngIf="notification.notificationType === notificationTypes.BLENDER_DOWNLOAD"></i>
+              <small>&nbsp;&nbsp;{{notification.messageDate | date:'medium'}}</small>
             </a>
             </span>
           </span>

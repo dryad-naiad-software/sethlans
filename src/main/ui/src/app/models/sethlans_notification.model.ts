@@ -29,4 +29,5 @@ export class SethlansNotification {
   messageLink: string;
   scope: SethlansScope;
   username: string;
+
 }

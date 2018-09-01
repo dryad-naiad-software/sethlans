@@ -18,7 +18,7 @@
  */
 
 export enum SethlansScope {
-  ADMIN,
-  USER,
-  GLOBAL
+  ADMIN = 'ADMIN',
+  USER = 'USER',
+  GLOBAL = 'GLOBAL'
 }

@@ -18,9 +18,9 @@
  */
 
 export enum NotificationType {
-  BLENDER_DOWNLOAD,
-  PROJECT,
-  VIDEO,
-  NODE,
-  SERVER
+  BLENDER_DOWNLOAD = 'BLENDER_DOWNLOAD',
+  PROJECT = 'PROJECT',
+  VIDEO = 'VIDEO',
+  NODE = 'NODE',
+  SERVER = 'SERVER'
 }
