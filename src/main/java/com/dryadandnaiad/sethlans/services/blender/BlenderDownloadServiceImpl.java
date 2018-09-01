@@ -21,7 +21,10 @@ package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlenderZip;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
+import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
+import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
+import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
@@ -29,8 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -53,14 +54,14 @@ import static com.dryadandnaiad.sethlans.utils.SethlansFileUtils.fileCheckMD5;
  * Project: sethlans
  */
 @Service
-public class BlenderDownloadServiceImpl implements BlenderDownloadService, ApplicationEventPublisherAware {
+public class BlenderDownloadServiceImpl implements BlenderDownloadService {
     private static final Logger LOG = LoggerFactory.getLogger(BlenderDownloadServiceImpl.class);
     private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
     @Value("${sethlans.blenderDir}")
     private String downloadLocation;
     private int downloadMirror = 0;
-    private boolean atBoot = true;
-    private ApplicationEventPublisher applicationEventPublisher = null;
+    private boolean atBoot;
+    private SethlansNotificationService sethlansNotificationService;
 
     @Override
     @Async
@@ -68,6 +69,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
         //noinspection InfiniteLoopStatement
         try {
             Thread.sleep(10000);
+            atBoot = true;
 
             while (true) {
                 try {
@@ -76,6 +78,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                     } else {
                         LOG.debug("Blender Download Service failed");
                     }
+                    atBoot = false;
                     Thread.sleep(120000);
                 } catch (InterruptedException e) {
                     LOG.debug("Stopping Blender Binary Download Service");
@@ -145,6 +148,12 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                         // Send notification of pending download.
                         LOG.info("Downloading " + filename + "...");
                         String blenderFileInfo = "Downloading Blender " + blenderVersion + " for " + blenderBinary.getBlenderBinaryOS();
+                        SethlansNotification notification = new SethlansNotification();
+                        notification.setMessage(blenderFileInfo);
+                        notification.setNotificationType(NotificationType.BLENDER_DOWNLOAD);
+                        notification.setLinkPresent(false);
+                        notification.setMessageDate(System.currentTimeMillis());
+                        sethlansNotificationService.sendNotification(notification);
 
                         LOG.debug("Saving file to " + toDownload.toString());
                         Files.copy(stream, Paths.get(toDownload.toString()));
@@ -182,9 +191,15 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
                             return false;
                         }
                     } finally {
-                        LOG.debug("Ending connection, removing notification.");
+                        LOG.debug("Ending connection.");
                         if (connection != null) {
                             connection.disconnect();
+                            SethlansNotification notification = new SethlansNotification();
+                            notification.setMessage("Blender " + blenderVersion + " download for " + blenderBinary.getBlenderBinaryOS() + " has completed.");
+                            notification.setNotificationType(NotificationType.BLENDER_DOWNLOAD);
+                            notification.setLinkPresent(false);
+                            notification.setMessageDate(System.currentTimeMillis());
+                            sethlansNotificationService.sendNotification(notification);
                         }
                     }
 
@@ -247,9 +262,8 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService, Appli
         this.blenderBinaryDatabaseService = blenderBinaryDatabaseService;
     }
 
-    @Override
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        this.applicationEventPublisher = applicationEventPublisher;
-
+    @Autowired
+    public void setSethlansNotificationService(SethlansNotificationService sethlansNotificationService) {
+        this.sethlansNotificationService = sethlansNotificationService;
     }
 }

@@ -17,26 +17,22 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.mail;
+package com.dryadandnaiad.sethlans.services.notification;
 
-import org.springframework.stereotype.Service;
+import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
+
+import java.util.List;
 
 /**
- * Created Mario Estrella on 8/30/2018.
+ * Created Mario Estrella on 8/31/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Service
-public class SethlansEmailServiceImpl implements SethlansEmailService {
+public interface SethlansNotificationService {
+    boolean sendNotification(SethlansNotification notification);
 
-    @Override
-    public boolean sendWelcomeEmail() {
-        return false;
-    }
+    List<SethlansNotification> getNotifications();
 
-    @Override
-    public boolean sendNotificationEmail() {
-        return false;
-    }
+    boolean notificationsPresent();
 }

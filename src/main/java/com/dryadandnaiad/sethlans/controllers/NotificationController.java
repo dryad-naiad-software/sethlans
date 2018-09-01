@@ -20,7 +20,7 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
-import com.dryadandnaiad.sethlans.services.database.NotificationDatabaseService;
+import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,20 +40,20 @@ import java.util.List;
 @RequestMapping("/api/notifications")
 public class NotificationController {
     private static final Logger LOG = LoggerFactory.getLogger(NotificationController.class);
-    private NotificationDatabaseService notificationDatabaseService;
+    private SethlansNotificationService sethlansNotificationService;
 
     @GetMapping(value = "/notifications_present")
     public boolean notificationsPresent() {
-        return notificationDatabaseService.listAll().size() > 0;
+        return sethlansNotificationService.notificationsPresent();
     }
 
     @GetMapping(value = "/get_notifications")
     public List<SethlansNotification> getNotificationMessages() {
-        return notificationDatabaseService.listAll();
+        return sethlansNotificationService.getNotifications();
     }
 
     @Autowired
-    public void setNotificationDatabaseService(NotificationDatabaseService notificationDatabaseService) {
-        this.notificationDatabaseService = notificationDatabaseService;
+    public void setSethlansNotificationService(SethlansNotificationService sethlansNotificationService) {
+        this.sethlansNotificationService = sethlansNotificationService;
     }
 }
