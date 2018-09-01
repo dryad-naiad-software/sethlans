@@ -20,8 +20,12 @@
 package com.dryadandnaiad.sethlans.services.notification;
 
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
+import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
+import com.dryadandnaiad.sethlans.enums.NotificationScope;
+import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.NotificationDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
 import com.dryadandnaiad.sethlans.services.mail.SethlansEmailService;
 import com.dryadandnaiad.sethlans.utils.SethlansConfigUtils;
 import org.slf4j.Logger;
@@ -29,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,6 +46,8 @@ import java.util.List;
 public class SethlansNotificationServiceImpl implements SethlansNotificationService {
     private NotificationDatabaseService notificationDatabaseService;
     private SethlansEmailService sethlansEmailService;
+    private SethlansUserDatabaseService sethlansUserDatabaseService;
+
     private static final Logger LOG = LoggerFactory.getLogger(SethlansNotificationServiceImpl.class);
 
     @Override
@@ -54,8 +61,8 @@ public class SethlansNotificationServiceImpl implements SethlansNotificationServ
     }
 
     @Override
-    public boolean newNotificationsPresent() {
-        for (SethlansNotification sethlansNotification : notificationDatabaseService.listAll()) {
+    public boolean newNotificationsPresent(String username) {
+        for (SethlansNotification sethlansNotification : getNotifications(username)) {
             if (!sethlansNotification.isAcknowledged()) {
                 return true;
             }
@@ -64,13 +71,30 @@ public class SethlansNotificationServiceImpl implements SethlansNotificationServ
     }
 
     @Override
-    public List<SethlansNotification> getNotifications() {
-        return notificationDatabaseService.listAll();
+    public List<SethlansNotification> getNotifications(String username) {
+        List<SethlansNotification> listToSend = new ArrayList<>();
+        SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(username);
+        boolean isAdministrator = sethlansUser.getRoles().contains(Role.ADMINISTRATOR) || sethlansUser.getRoles().contains(Role.SUPER_ADMINISTRATOR);
+        for (SethlansNotification sethlansNotification : notificationDatabaseService.listAll()) {
+            if (sethlansNotification.getScope().equals(NotificationScope.GLOBAL)) {
+                listToSend.add(sethlansNotification);
+                continue;
+            }
+            if (isAdministrator && sethlansNotification.getScope().equals(NotificationScope.ADMIN)) {
+                listToSend.add(sethlansNotification);
+                continue;
+            }
+            if (sethlansNotification.getScope().equals(NotificationScope.USER) && sethlansNotification.getUsername().equals(sethlansUser.getUsername())) {
+                listToSend.add(sethlansNotification);
+            }
+        }
+
+        return listToSend;
     }
 
     @Override
-    public boolean notificationsPresent() {
-        return notificationDatabaseService.listAll().size() > 0;
+    public boolean notificationsPresent(String username) {
+        return getNotifications(username).size() > 0;
     }
 
     @Autowired
@@ -81,5 +105,10 @@ public class SethlansNotificationServiceImpl implements SethlansNotificationServ
     @Autowired
     public void setSethlansEmailService(SethlansEmailService sethlansEmailService) {
         this.sethlansEmailService = sethlansEmailService;
+    }
+
+    @Autowired
+    public void setSethlansUserDatabaseService(SethlansUserDatabaseService sethlansUserDatabaseService) {
+        this.sethlansUserDatabaseService = sethlansUserDatabaseService;
     }
 }

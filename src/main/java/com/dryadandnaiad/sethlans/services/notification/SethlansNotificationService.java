@@ -32,9 +32,9 @@ import java.util.List;
 public interface SethlansNotificationService {
     void sendNotification(SethlansNotification notification);
 
-    boolean newNotificationsPresent();
+    boolean newNotificationsPresent(String username);
 
-    List<SethlansNotification> getNotifications();
+    List<SethlansNotification> getNotifications(String username);
 
-    boolean notificationsPresent();
+    boolean notificationsPresent(String username);
 }

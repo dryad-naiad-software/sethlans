@@ -24,6 +24,8 @@ import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationServ
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,17 +46,29 @@ public class NotificationController {
 
     @GetMapping(value = "/new_notifications_present")
     public boolean newNotificationsPresent() {
-        return sethlansNotificationService.newNotificationsPresent();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return false;
+        }
+        return sethlansNotificationService.newNotificationsPresent(auth.getName());
     }
 
     @GetMapping(value = "/notifications_present")
     public boolean notificationsPresent() {
-        return sethlansNotificationService.notificationsPresent();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return false;
+        }
+        return sethlansNotificationService.notificationsPresent(auth.getName());
     }
 
     @GetMapping(value = "/get_notifications")
     public List<SethlansNotification> getNotificationMessages() {
-        return sethlansNotificationService.getNotifications();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return null;
+        }
+        return sethlansNotificationService.getNotifications(auth.getName());
     }
 
     @Autowired
