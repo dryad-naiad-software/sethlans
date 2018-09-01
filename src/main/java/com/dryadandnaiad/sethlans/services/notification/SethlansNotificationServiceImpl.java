@@ -20,8 +20,10 @@
 package com.dryadandnaiad.sethlans.services.notification;
 
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
+import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.NotificationDatabaseService;
 import com.dryadandnaiad.sethlans.services.mail.SethlansEmailService;
+import com.dryadandnaiad.sethlans.utils.SethlansConfigUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,10 +41,12 @@ public class SethlansNotificationServiceImpl implements SethlansNotificationServ
     private SethlansEmailService sethlansEmailService;
 
     @Override
-    public boolean sendNotification(SethlansNotification notification) {
+    public void sendNotification(SethlansNotification notification) {
         notificationDatabaseService.saveOrUpdate(notification);
-        //TODO send email as well if email is enabled.
-        return false;
+        boolean mailServerOn = Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_SERVER_CONFIGURED));
+        if (mailServerOn) {
+            sethlansEmailService.sendNotificationEmail();
+        }
     }
 
     @Override

@@ -30,7 +30,7 @@ import java.util.List;
  * Project: sethlans
  */
 public interface SethlansNotificationService {
-    boolean sendNotification(SethlansNotification notification);
+    void sendNotification(SethlansNotification notification);
 
     List<SethlansNotification> getNotifications();
 
