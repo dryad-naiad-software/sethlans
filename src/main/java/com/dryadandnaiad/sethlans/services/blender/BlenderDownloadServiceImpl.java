@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.services.blender;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderZip;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
+import com.dryadandnaiad.sethlans.enums.NotificationScope;
 import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
@@ -148,11 +149,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                         // Send notification of pending download.
                         LOG.info("Downloading " + filename + "...");
                         String blenderFileInfo = "Downloading Blender " + blenderVersion + " for " + blenderBinary.getBlenderBinaryOS();
-                        SethlansNotification notification = new SethlansNotification();
-                        notification.setMessage(blenderFileInfo);
-                        notification.setNotificationType(NotificationType.BLENDER_DOWNLOAD);
-                        notification.setLinkPresent(false);
-                        notification.setMessageDate(System.currentTimeMillis());
+                        SethlansNotification notification = new SethlansNotification(NotificationType.BLENDER_DOWNLOAD, blenderFileInfo, NotificationScope.ADMIN);
                         sethlansNotificationService.sendNotification(notification);
 
                         LOG.debug("Saving file to " + toDownload.toString());
@@ -194,11 +191,8 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                         LOG.debug("Ending connection.");
                         if (connection != null) {
                             connection.disconnect();
-                            SethlansNotification notification = new SethlansNotification();
-                            notification.setMessage("Blender " + blenderVersion + " download for " + blenderBinary.getBlenderBinaryOS() + " has completed.");
-                            notification.setNotificationType(NotificationType.BLENDER_DOWNLOAD);
-                            notification.setLinkPresent(false);
-                            notification.setMessageDate(System.currentTimeMillis());
+                            String message = "Blender " + blenderVersion + " download for " + blenderBinary.getBlenderBinaryOS() + " has completed.";
+                            SethlansNotification notification = new SethlansNotification(NotificationType.BLENDER_DOWNLOAD, message, NotificationScope.ADMIN);
                             sethlansNotificationService.sendNotification(notification);
                         }
                     }

@@ -22,7 +22,7 @@ package com.dryadandnaiad.sethlans.services.network;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
-import com.dryadandnaiad.sethlans.services.blender.BlenderBenchmarkService;
+import com.dryadandnaiad.sethlans.services.blender.benchmark.BlenderBenchmarkService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;

@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.domains.database.events;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
+import com.dryadandnaiad.sethlans.enums.NotificationScope;
 import com.dryadandnaiad.sethlans.enums.NotificationType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -42,4 +43,35 @@ public class SethlansNotification extends AbstractEntityClass {
     private String messageLink;
     private boolean linkPresent;
     private boolean acknowledged;
+    private NotificationScope scope;
+    private String username;
+
+
+    public SethlansNotification(NotificationType notificationType, String message, String username) {
+        this.notificationType = notificationType;
+        this.message = message;
+        this.messageDate = System.currentTimeMillis();
+        this.acknowledged = false;
+        this.linkPresent = false;
+        this.scope = NotificationScope.USER;
+        this.username = username;
+    }
+
+    public SethlansNotification(NotificationType notificationType, String message) {
+        this.notificationType = notificationType;
+        this.message = message;
+        this.messageDate = System.currentTimeMillis();
+        this.acknowledged = false;
+        this.linkPresent = false;
+        this.scope = NotificationScope.GLOBAL;
+    }
+
+    public SethlansNotification(NotificationType notificationType, String message, NotificationScope scope) {
+        this.notificationType = notificationType;
+        this.message = message;
+        this.scope = scope;
+        this.messageDate = System.currentTimeMillis();
+        this.acknowledged = false;
+        this.linkPresent = false;
+    }
 }
