@@ -20,9 +20,12 @@
 package com.dryadandnaiad.sethlans.services.blender.benchmark;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
+import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.NotificationScope;
+import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.services.blender.BlenderPythonScriptService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
@@ -70,11 +73,13 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
 
     @Override
     public void sendBenchmarktoNode(SethlansNode sethlansNode) {
+        String message = "Sending benchmark request to " + sethlansNode.getHostname();
+        SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.NODE, message, NotificationScope.ADMIN);
+        sethlansNotificationService.sendNotification(sethlansNotification);
         String nodeURL = "https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() + "/api/benchmark/request";
         String params = "connection_uuid=" + sethlansNode.getConnection_uuid() + "&compute_type=" + sethlansNode.getComputeType() +
                 "&blender_version=" + primaryBlenderVersion;
         sethlansAPIConnectionService.sendToRemotePOST(nodeURL, params);
-
     }
 
     @Async
@@ -161,6 +166,9 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
 
     private boolean sendResultsToServer(String connectionUUID, BlenderBenchmarkTask blenderBenchmarkTask) {
         SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connectionUUID);
+        String message = "Sending " + blenderBenchmarkTask.getComputeType() + " benchmark results to " + sethlansServer.getHostname();
+        SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SERVER, message, NotificationScope.ADMIN);
+        sethlansNotificationService.sendNotification(sethlansNotification);
         blenderBenchmarkTaskDatabaseService.delete(blenderBenchmarkTask.getId());
         LOG.debug("Remaining benchmarks to process: " + blenderBenchmarkTaskDatabaseService.listAll().size());
         boolean complete = blenderBenchmarkTaskDatabaseService.listAll().size() <= 0;

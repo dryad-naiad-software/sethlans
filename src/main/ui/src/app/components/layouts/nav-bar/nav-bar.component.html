@@ -140,14 +140,22 @@
       <li class="nav-item" id="notificationsDropDown" ngbDropdown placement="bottom-right">
         <a href="javascript:void(0);" class="text-white nav-link" ngbDropdownToggle>
           <i class="fas fa-fw fa-bell fa-sm"></i>
-          <span *ngIf="notifications == true" class="badge badge-notify">!</span>
+          <span *ngIf="newNotifications == true" class="badge badge-notify">!</span>
         </a>
         <div ngbDropdownMenu>
           <a *ngIf="notifications == false" href="javascript:void(0);" class="dropdown-item">
             <i class="fas fa-fw fa-info-circle"></i>&nbsp;&nbsp;No new notifications</a>
           <span *ngIf="notifications == true">
-            <a href="javascript:void(0);" class="dropdown-item" *ngFor="let notification of notificationList"><i
-              class="fas fa-fw fa-info-circle"></i>&nbsp;&nbsp;{{notification}}</a>
+            <span *ngFor="let notification of notificationList">
+            <a href="javascript:void(0);" class="dropdown-item">
+              {{notification.message}} <br/>
+              <i class="fas fa-fw fa-info-circle" [ngClass]="{
+              'fa-info-circle': notification.notificationType !== notificationTypes.BLENDER_DOWNLOAD}">
+
+              </i>
+              <small>{{notification.messageDate | date:'medium'}}</small>
+            </a>
+            </span>
           </span>
         </div>
       </li>

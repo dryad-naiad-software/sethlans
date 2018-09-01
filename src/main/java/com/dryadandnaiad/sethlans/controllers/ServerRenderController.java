@@ -20,12 +20,16 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessQueueItem;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.NotificationScope;
+import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
 import com.dryadandnaiad.sethlans.services.queue.QueueService;
 import com.google.common.base.Throwables;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -75,7 +79,7 @@ public class ServerRenderController {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private QueueService queueService;
-
+    private SethlansNotificationService sethlansNotificationService;
 
     @GetMapping(value = "/api/project/blender_binary")
     public void downloadBlenderBinary(HttpServletResponse response, @RequestParam String connection_uuid,
@@ -126,6 +130,14 @@ public class ServerRenderController {
                 }
             }
             sethlansNode.setBenchmarkComplete(complete);
+            String message = "Received " + compute_type + " benchmark result from " + sethlansNode.getHostname();
+            SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.NODE, message, NotificationScope.ADMIN);
+            sethlansNotificationService.sendNotification(sethlansNotification);
+            if (complete) {
+                message = "All benchmarks complete for " + sethlansNode.getHostname() + ", marking node Active";
+                sethlansNotification = new SethlansNotification(NotificationType.NODE, message, NotificationScope.ADMIN);
+                sethlansNotificationService.sendNotification(sethlansNotification);
+            }
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
         }
     }
@@ -206,6 +218,11 @@ public class ServerRenderController {
             serveFile(blend_file, response);
         }
 
+    }
+
+    @Autowired
+    public void setSethlansNotificationService(SethlansNotificationService sethlansNotificationService) {
+        this.sethlansNotificationService = sethlansNotificationService;
     }
 
     @Autowired

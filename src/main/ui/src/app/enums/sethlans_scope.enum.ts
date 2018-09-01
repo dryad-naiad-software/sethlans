@@ -17,16 +17,8 @@
  *
  */
 
-import {NotificationType} from '../enums/notification_type.enum';
-import {SethlansScope} from '../enums/sethlans_scope.enum';
-
-export class SethlansNotification {
-  notificationType: NotificationType;
-  message: string;
-  messageDate: Date;
-  linkPresent: boolean;
-  acknowledged: boolean;
-  messageLink: string;
-  scope: SethlansScope;
-  username: string;
+export enum SethlansScope {
+  ADMIN,
+  USER,
+  GLOBAL
 }

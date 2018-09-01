@@ -191,7 +191,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                         LOG.debug("Ending connection.");
                         if (connection != null) {
                             connection.disconnect();
-                            String message = "Blender " + blenderVersion + " download for " + blenderBinary.getBlenderBinaryOS() + " has completed.";
+                            String message = "Blender " + blenderVersion + " download for " + blenderBinary.getBlenderBinaryOS() + " has completed";
                             SethlansNotification notification = new SethlansNotification(NotificationType.BLENDER_DOWNLOAD, message, NotificationScope.ADMIN);
                             sethlansNotificationService.sendNotification(notification);
                         }

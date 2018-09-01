@@ -23,6 +23,8 @@ import {Mode} from '../../../enums/mode.enum';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {Role} from '../../../enums/role.enum';
 import {timer} from 'rxjs/internal/observable/timer';
+import {SethlansNotification} from '../../../models/sethlans_notification.model';
+import {NotificationType} from '../../../enums/notification_type.enum';
 
 @Component({
   selector: 'app-nav-bar',
@@ -40,16 +42,19 @@ export class NavBarComponent implements OnInit {
   @Input() currentMode: Mode;
   @Input() sethlansVersion: string;
   mode: any = Mode;
-  notificationList: string[];
+  notificationList: SethlansNotification[];
   notifications: boolean;
   role: any = Role;
   username: string;
   isCollapsed = true;
+  newNotifications: boolean;
+  notificationTypes: any = NotificationType;
 
 
   constructor(private http: HttpClient, private modalService: NgbModal) {
     this.authenticated = false;
     this.username = "";
+    this.newNotifications = false;
   }
 
   ngOnInit() {
@@ -70,8 +75,8 @@ export class NavBarComponent implements OnInit {
   }
 
   getNotifications() {
-    this.http.get('/api/notifications/get_notifications').subscribe((notifications: string[]) => {
-      this.notificationList = notifications;
+    this.http.get('/api/notifications/get_notifications').subscribe((notifications: SethlansNotification[]) => {
+      this.notificationList = notifications.reverse();
     });
   }
 
@@ -80,6 +85,9 @@ export class NavBarComponent implements OnInit {
   }
 
   checkNotifications() {
+    this.http.get('/api/notifications/new_notifications_present').subscribe((newNotification: boolean) => {
+      this.newNotifications = newNotification;
+    });
     this.http.get('/api/notifications/notifications_present').subscribe((present: boolean) => {
       this.notifications = present;
       if (present == true) {

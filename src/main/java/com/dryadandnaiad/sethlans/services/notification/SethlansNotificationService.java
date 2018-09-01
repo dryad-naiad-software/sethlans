@@ -32,6 +32,8 @@ import java.util.List;
 public interface SethlansNotificationService {
     void sendNotification(SethlansNotification notification);
 
+    boolean newNotificationsPresent();
+
     List<SethlansNotification> getNotifications();
 
     boolean notificationsPresent();

@@ -54,6 +54,16 @@ public class SethlansNotificationServiceImpl implements SethlansNotificationServ
     }
 
     @Override
+    public boolean newNotificationsPresent() {
+        for (SethlansNotification sethlansNotification : notificationDatabaseService.listAll()) {
+            if (!sethlansNotification.isAcknowledged()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public List<SethlansNotification> getNotifications() {
         return notificationDatabaseService.listAll();
     }

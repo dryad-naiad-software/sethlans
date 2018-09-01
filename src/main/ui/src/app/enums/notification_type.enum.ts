@@ -21,5 +21,6 @@ export enum NotificationType {
   BLENDER_DOWNLOAD,
   PROJECT,
   VIDEO,
-  NODE
+  NODE,
+  SERVER
 }

@@ -49,7 +49,7 @@ public class SethlansNotification extends AbstractEntityClass {
 
     public SethlansNotification(NotificationType notificationType, String message, String username) {
         this.notificationType = notificationType;
-        this.message = message;
+        this.message = message + ".";
         this.messageDate = System.currentTimeMillis();
         this.acknowledged = false;
         this.linkPresent = false;
@@ -59,7 +59,7 @@ public class SethlansNotification extends AbstractEntityClass {
 
     public SethlansNotification(NotificationType notificationType, String message) {
         this.notificationType = notificationType;
-        this.message = message;
+        this.message = message + ".";
         this.messageDate = System.currentTimeMillis();
         this.acknowledged = false;
         this.linkPresent = false;
@@ -68,7 +68,7 @@ public class SethlansNotification extends AbstractEntityClass {
 
     public SethlansNotification(NotificationType notificationType, String message, NotificationScope scope) {
         this.notificationType = notificationType;
-        this.message = message;
+        this.message = message + ".";
         this.scope = scope;
         this.messageDate = System.currentTimeMillis();
         this.acknowledged = false;

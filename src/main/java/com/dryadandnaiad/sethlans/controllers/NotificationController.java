@@ -42,6 +42,11 @@ public class NotificationController {
     private static final Logger LOG = LoggerFactory.getLogger(NotificationController.class);
     private SethlansNotificationService sethlansNotificationService;
 
+    @GetMapping(value = "/new_notifications_present")
+    public boolean newNotificationsPresent() {
+        return sethlansNotificationService.newNotificationsPresent();
+    }
+
     @GetMapping(value = "/notifications_present")
     public boolean notificationsPresent() {
         return sethlansNotificationService.notificationsPresent();
