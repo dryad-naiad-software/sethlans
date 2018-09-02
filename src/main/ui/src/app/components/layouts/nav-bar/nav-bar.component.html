@@ -143,7 +143,11 @@
           <span *ngIf="newNotifications == true" class="badge badge-notify">!</span>
         </a>
         <div ngbDropdownMenu>
-          <h6 class="dropdown-header">Notifications ({{notificationList.length}})</h6>
+          <h6 class="dropdown-header py-1">Notifications
+            <span *ngIf="notifications == true"> ({{notificationList.length}})</span>
+            <span *ngIf="notifications == false">(0)</span>
+          </h6>
+          <div class="dropdown-divider"></div>
           <a *ngIf="notifications == false" href="javascript:void(0);" class="dropdown-item">
             <i class="fas fa-fw fa-info-circle"></i>&nbsp;&nbsp;No new notifications</a>
           <div *ngIf="notifications == true" class="scrollable">
@@ -176,7 +180,7 @@
             </div>
           </div>
           <div *ngIf="notifications == true" class="dropdown-divider"></div>
-          <div *ngIf="notifications == true" class="dropdown-item-text">
+          <div *ngIf="notifications == true" class="dropdown-item-text py-0">
             <button class="btn btn-link btn-sm float-left text-dark" (click)="acknowledgeAllNotifications()"><strong>Acknowledge
               All</strong>
             </button>

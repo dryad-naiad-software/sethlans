@@ -42,7 +42,7 @@ export class NavBarComponent implements OnInit {
   @Input() currentMode: Mode;
   @Input() sethlansVersion: string;
   mode: any = Mode;
-  notificationList: SethlansNotification[];
+  notificationList: SethlansNotification[] = [];
   notifications: boolean;
   role: any = Role;
   username: string;
@@ -76,7 +76,11 @@ export class NavBarComponent implements OnInit {
 
   getNotifications() {
     this.http.get('/api/notifications/get_notifications').subscribe((notifications: SethlansNotification[]) => {
-      this.notificationList = notifications.reverse();
+      this.notificationList = [];
+      if (notifications != null) {
+        this.notificationList = notifications.reverse();
+      }
+
     });
   }
 
@@ -87,7 +91,6 @@ export class NavBarComponent implements OnInit {
   checkNotifications() {
     this.http.get('/api/notifications/new_notifications_present').subscribe((newNotification: boolean) => {
       this.newNotifications = newNotification;
-      console.log(newNotification);
     });
     this.http.get('/api/notifications/notifications_present').subscribe((present: boolean) => {
       this.notifications = present;
