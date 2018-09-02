@@ -33,7 +33,7 @@ export class BlenderVersionsComponent implements OnInit {
   availableBlenderVersions: any[] = [];
   selectedVersion: string;
   dataSource = new MatTableDataSource();
-  displayedColumns = ['version', 'binaries', 'active', 'actions'];
+  displayedColumns = ['version', 'binaries'];
 
 
   constructor(private http: HttpClient, private modalService: NgbModal) {
@@ -61,13 +61,6 @@ export class BlenderVersionsComponent implements OnInit {
     this.modalService.open(content, options);
   }
 
-  setActive(version) {
-    this.http.get('/api/management/set_primary_blender_version/?version=' + version).subscribe((response: boolean) => {
-      if (response) {
-        window.location.href = '/admin/blender_version_admin/';
-      }
-    });
-  }
 
   addVersion() {
     let versionProperty = new HttpParams().set('version', this.selectedVersion.toString());

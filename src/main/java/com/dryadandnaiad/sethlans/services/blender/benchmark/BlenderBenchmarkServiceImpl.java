@@ -28,6 +28,7 @@ import com.dryadandnaiad.sethlans.enums.NotificationScope;
 import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.services.blender.BlenderPythonScriptService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
@@ -56,9 +57,6 @@ import static com.dryadandnaiad.sethlans.services.blender.benchmark.PrepareScrip
 @Service
 public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
 
-    @Value("${sethlans.primaryBlenderVersion}")
-    private String primaryBlenderVersion;
-
     @Value("${sethlans.configDir}")
     private String configDir;
 
@@ -69,10 +67,12 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private BlenderPythonScriptService blenderPythonScriptService;
     private SethlansNotificationService sethlansNotificationService;
+    private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
 
 
     @Override
     public void sendBenchmarktoNode(SethlansNode sethlansNode) {
+        String primaryBlenderVersion = blenderBinaryDatabaseService.getHighestVersion();
         String message = "Sending benchmark request to " + sethlansNode.getHostname();
         SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.NODE, message, NotificationScope.ADMIN);
         sethlansNotificationService.sendNotification(sethlansNotification);
@@ -208,5 +208,10 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     @Autowired
     public void setSethlansNotificationService(SethlansNotificationService sethlansNotificationService) {
         this.sethlansNotificationService = sethlansNotificationService;
+    }
+
+    @Autowired
+    public void setBlenderBinaryDatabaseService(BlenderBinaryDatabaseService blenderBinaryDatabaseService) {
+        this.blenderBinaryDatabaseService = blenderBinaryDatabaseService;
     }
 }

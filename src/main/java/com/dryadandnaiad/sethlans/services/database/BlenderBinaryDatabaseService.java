@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,7 +21,7 @@ package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created Mario Estrella on 3/23/17.
@@ -30,5 +30,7 @@ import java.util.Set;
  * Project: sethlans
  */
 public interface BlenderBinaryDatabaseService extends CRUDService<BlenderBinary> {
-    Set<String> installedBlenderVersions();
+    List<String> installedBlenderVersions();
+
+    String getHighestVersion();
 }

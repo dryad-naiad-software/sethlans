@@ -41,10 +41,12 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
-import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.writeProperty;
 import static io.restassured.RestAssured.given;
 
 /**
@@ -78,21 +80,18 @@ public class AdminServerController {
 
     @GetMapping(value = "/installed_blender_versions")
     public Map blenderBinaryList() {
-        Set<String> listOfVersions = blenderBinaryDatabaseService.installedBlenderVersions();
+        List<String> listOfVersions = blenderBinaryDatabaseService.installedBlenderVersions();
         return Collections.singletonMap("installedBlenderVersions", listOfVersions);
     }
 
     @GetMapping(value = "/get_blender_list")
     public List<BlenderBinaryInfo> getBlenderBinaryInfoList() {
         List<BlenderBinaryInfo> blenderBinaryInfoList = new ArrayList<>();
-        Set<String> listOfVersions = blenderBinaryDatabaseService.installedBlenderVersions();
+        List<String> listOfVersions = blenderBinaryDatabaseService.installedBlenderVersions();
         for (String version : listOfVersions) {
             BlenderBinaryInfo blenderBinaryInfo = new BlenderBinaryInfo();
             blenderBinaryInfo.setVersion(version);
             blenderBinaryInfo.setBinaryOSList(blenderBinaryOSList(version));
-            if (getProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION).equals(version)) {
-                blenderBinaryInfo.setActive(true);
-            }
             blenderBinaryInfoList.add(blenderBinaryInfo);
         }
         return blenderBinaryInfoList;
@@ -150,17 +149,11 @@ public class AdminServerController {
     }
 
 
-    @GetMapping(value = "/primary_blender_version")
-    public Map primaryBlenderVersion() {
-        return Collections.singletonMap("primary_blender",
-                getProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION));
-    }
-
     @GetMapping(value = "/remaining_blender_versions")
     public List<String> getNewBlenderVersions() {
         List<String> newBlenderVersions = new ArrayList<>();
         List<String> allSupportedVersions = BlenderUtils.listVersions();
-        Set<String> installedVersions = blenderBinaryDatabaseService.installedBlenderVersions();
+        List<String> installedVersions = blenderBinaryDatabaseService.installedBlenderVersions();
         for (String version : allSupportedVersions) {
             if (!installedVersions.contains(version)) {
                 newBlenderVersions.add(version);
@@ -219,11 +212,6 @@ public class AdminServerController {
 
     }
 
-    @GetMapping(value = "/set_primary_blender_version")
-    public boolean setPrimaryBlenderVersion(@RequestParam String version) {
-        writeProperty(SethlansConfigKeys.PRIMARY_BLENDER_VERSION, version);
-        return true;
-    }
 
     @Autowired
     public void setNodeDiscoveryService(NodeDiscoveryService nodeDiscoveryService) {

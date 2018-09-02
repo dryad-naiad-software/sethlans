@@ -37,7 +37,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 
@@ -108,7 +107,7 @@ public class ServerInfoController {
     }
 
     @GetMapping(value = {"/installed_blender_versions"})
-    public Set<String> getInstalledBlenderVersions() {
+    public List<String> getInstalledBlenderVersions() {
         return blenderBinaryDatabaseService.installedBlenderVersions();
     }
 

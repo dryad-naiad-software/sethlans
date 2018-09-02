@@ -46,25 +46,7 @@
               {{binary.binaryOSList}}
             </mat-cell>
           </ng-container>
-          <ng-container matColumnDef="active">
-            <mat-header-cell *matHeaderCellDef>Primary</mat-header-cell>
-            <mat-cell *matCellDef="let binary">
-              <span class="mobile-label">Primary:</span>
-              {{binary.active}}
-            </mat-cell>
-          </ng-container>
-          <ng-container matColumnDef="actions">
-            <mat-header-cell *matHeaderCellDef></mat-header-cell>
-            <mat-cell *matCellDef="let binary">
-              <span class="mobile-label">Actions:</span>
 
-              <div class="btn-group-vertical">
-                <button *ngIf="!binary.active" class="btn btn-outline-success btn-sm" type="button"
-                        (click)="setActive(binary.version)">Primary
-                </button>
-              </div>
-            </mat-cell>
-          </ng-container>
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
           <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
         </mat-table>

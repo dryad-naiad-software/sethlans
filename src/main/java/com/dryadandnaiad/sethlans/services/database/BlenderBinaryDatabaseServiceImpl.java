@@ -21,13 +21,11 @@ package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.repositories.BlenderBinaryRepository;
+import com.dryadandnaiad.sethlans.utils.AlphanumComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created Mario Estrella on 3/23/17.
@@ -51,14 +49,25 @@ public class BlenderBinaryDatabaseServiceImpl implements BlenderBinaryDatabaseSe
     }
 
     @Override
-    public Set<String> installedBlenderVersions() {
+    public List<String> installedBlenderVersions() {
         Set<String> installedBlenderVersions = new HashSet<>();
         List<BlenderBinary> binaries = listAll();
         for (BlenderBinary binary : binaries) {
             installedBlenderVersions.add(binary.getBlenderVersion());
         }
-        return installedBlenderVersions;
+        List<String> sortedList = new ArrayList<>(installedBlenderVersions);
+        sortedList.sort(new AlphanumComparator());
+        Collections.reverse(sortedList);
+        return sortedList;
     }
+
+    @Override
+    public String getHighestVersion() {
+        List<String> versions = new ArrayList<>(installedBlenderVersions());
+        versions.sort(new AlphanumComparator());
+        return versions.get(0);
+    }
+
 
     @Override
     public BlenderBinary getById(Long id) {
