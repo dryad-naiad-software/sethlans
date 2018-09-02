@@ -113,6 +113,8 @@ public class ServerSetupController {
     private void nodeAddNotification(SethlansNode sethlansNode) {
         String message = "Added node " + sethlansNode.getHostname();
         SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.NODE, message, NotificationScope.ADMIN);
+        sethlansNotification.setMessageLink("/admin/nodes");
+        sethlansNotification.setLinkPresent(true);
         sethlansNotificationService.sendNotification(sethlansNotification);
     }
 

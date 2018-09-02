@@ -19,11 +19,15 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
+import com.dryadandnaiad.sethlans.enums.NotificationScope;
+import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.services.database.AccessKeyDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
+import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +55,8 @@ public class ActivationRequestController {
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private AccessKeyDatabaseService accessKeyDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
+    private SethlansNotificationService sethlansNotificationService;
+
 
 
     @RequestMapping(value = "/request", method = RequestMethod.POST)
@@ -73,6 +79,11 @@ public class ActivationRequestController {
             sethlansServer.setNodeUpdated(false);
             sethlansServer.setPendingAcknowledgementResponse(true);
             sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
+            String message = "Added " + serverhostname + "as a server";
+            SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SERVER, message, NotificationScope.ADMIN);
+            sethlansNotification.setLinkPresent(true);
+            sethlansNotification.setMessageLink("/admin/servers");
+            sethlansNotificationService.sendNotification(sethlansNotification);
             LOG.debug(sethlansServer.toString());
             LOG.debug("Processed node activation request");
             sendActivationResponseToServer(sethlansServer, SethlansQueryUtils.getCurrentNodeInfo());
@@ -132,4 +143,8 @@ public class ActivationRequestController {
         this.sethlansServerDatabaseService = sethlansServerDatabaseService;
     }
 
+    @Autowired
+    public void setSethlansNotificationService(SethlansNotificationService sethlansNotificationService) {
+        this.sethlansNotificationService = sethlansNotificationService;
+    }
 }

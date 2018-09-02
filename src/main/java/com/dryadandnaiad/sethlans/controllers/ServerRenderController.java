@@ -136,6 +136,8 @@ public class ServerRenderController {
             if (complete) {
                 message = "All benchmarks complete for " + sethlansNode.getHostname() + ", marking node Active";
                 sethlansNotification = new SethlansNotification(NotificationType.NODE, message, NotificationScope.ADMIN);
+                sethlansNotification.setLinkPresent(true);
+                sethlansNotification.setMessageLink("/admin/nodes");
                 sethlansNotificationService.sendNotification(sethlansNotification);
             }
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
