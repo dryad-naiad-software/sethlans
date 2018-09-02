@@ -105,16 +105,14 @@ public class SethlansNotificationServiceImpl implements SethlansNotificationServ
         SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(username);
         boolean isAdministrator = sethlansUser.getRoles().contains(Role.ADMINISTRATOR) || sethlansUser.getRoles().contains(Role.SUPER_ADMINISTRATOR);
         for (SethlansNotification sethlansNotification : notificationDatabaseService.listAll()) {
-            if (sethlansNotification.getScope().equals(NotificationScope.GLOBAL)) {
-                listToSend.add(sethlansNotification);
-                continue;
-            }
             if (isAdministrator && sethlansNotification.getScope().equals(NotificationScope.ADMIN)) {
                 listToSend.add(sethlansNotification);
                 continue;
             }
-            if (sethlansNotification.getScope().equals(NotificationScope.USER) && sethlansNotification.getUsername().equals(sethlansUser.getUsername())) {
-                listToSend.add(sethlansNotification);
+            if (sethlansNotification.getUsername() != null) {
+                if (sethlansNotification.getScope().equals(NotificationScope.USER) && sethlansNotification.getUsername().equals(sethlansUser.getUsername())) {
+                    listToSend.add(sethlansNotification);
+                }
             }
         }
 

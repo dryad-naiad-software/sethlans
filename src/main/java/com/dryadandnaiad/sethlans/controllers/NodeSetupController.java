@@ -19,13 +19,16 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.server.AccessKey;
+import com.dryadandnaiad.sethlans.enums.NotificationScope;
+import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import com.dryadandnaiad.sethlans.services.config.UpdateComputeService;
 import com.dryadandnaiad.sethlans.services.database.AccessKeyDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
+import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
-import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +51,8 @@ public class NodeSetupController {
     private UpdateComputeService updateComputeService;
     private SethlansManagerService sethlansManagerService;
     private AccessKeyDatabaseService accessKeyDatabaseService;
+    private SethlansNotificationService sethlansNotificationService;
+
     private static final Logger LOG = LoggerFactory.getLogger(NodeSetupController.class);
 
     @PostMapping(value = "/add_access_key")
@@ -59,6 +64,9 @@ public class NodeSetupController {
         }
         if (accessKeyDatabaseService.getByUUID(access_key) == null) {
             LOG.debug("Adding server access key to database:" + access_key);
+            String message = "New server access key added";
+            SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SERVER, message, NotificationScope.ADMIN);
+            sethlansNotificationService.sendNotification(sethlansNotification);
             AccessKey accessKey = new AccessKey();
             accessKey.setAccessKey(access_key);
             accessKeyDatabaseService.saveOrUpdate(accessKey);
@@ -95,12 +103,6 @@ public class NodeSetupController {
         }
     }
 
-    // Wrapper class so swagger displays options properly
-    @Data
-    private static class Key {
-        private String accessKey;
-    }
-
     @Autowired
     public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
         this.sethlansServerDatabaseService = sethlansServerDatabaseService;
@@ -119,5 +121,10 @@ public class NodeSetupController {
     @Autowired
     public void setAccessKeyDatabaseService(AccessKeyDatabaseService accessKeyDatabaseService) {
         this.accessKeyDatabaseService = accessKeyDatabaseService;
+    }
+
+    @Autowired
+    public void setSethlansNotificationService(SethlansNotificationService sethlansNotificationService) {
+        this.sethlansNotificationService = sethlansNotificationService;
     }
 }

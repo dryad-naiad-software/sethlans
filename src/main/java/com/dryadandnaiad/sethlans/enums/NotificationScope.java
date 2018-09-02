@@ -26,7 +26,6 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum NotificationScope {
-    GLOBAL,
     ADMIN,
     USER
 }

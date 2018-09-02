@@ -57,14 +57,6 @@ public class SethlansNotification extends AbstractEntityClass {
         this.username = username;
     }
 
-    public SethlansNotification(NotificationType notificationType, String message) {
-        this.notificationType = notificationType;
-        this.message = message + ".";
-        this.messageDate = System.currentTimeMillis();
-        this.acknowledged = false;
-        this.linkPresent = false;
-        this.scope = NotificationScope.GLOBAL;
-    }
 
     public SethlansNotification(NotificationType notificationType, String message, NotificationScope scope) {
         this.notificationType = notificationType;

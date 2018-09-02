@@ -166,7 +166,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
 
     private boolean sendResultsToServer(String connectionUUID, BlenderBenchmarkTask blenderBenchmarkTask) {
         SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connectionUUID);
-        String message = "Sending " + blenderBenchmarkTask.getComputeType() + " benchmark results to " + sethlansServer.getHostname();
+        String message = "Sending " + blenderBenchmarkTask.getComputeType() + " benchmark result to " + sethlansServer.getHostname();
         SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SERVER, message, NotificationScope.ADMIN);
         sethlansNotificationService.sendNotification(sethlansNotification);
         blenderBenchmarkTaskDatabaseService.delete(blenderBenchmarkTask.getId());

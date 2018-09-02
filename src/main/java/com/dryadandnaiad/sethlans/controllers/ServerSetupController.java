@@ -20,13 +20,17 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
+import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
+import com.dryadandnaiad.sethlans.enums.NotificationScope;
+import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeActivationService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
+import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
 import com.dryadandnaiad.sethlans.services.queue.QueueService;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -58,7 +62,9 @@ public class ServerSetupController {
     private NodeDiscoveryService nodeDiscoveryService;
     private BlenderBinaryDatabaseService blenderBinaryDatabaseService;
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
+    private SethlansNotificationService sethlansNotificationService;
     private QueueService queueService;
+
     private static final Logger LOG = LoggerFactory.getLogger(ServerSetupController.class);
     @Value("${sethlans.configDir}")
     private String configDir;
@@ -82,6 +88,8 @@ public class ServerSetupController {
         if (!sethlansNodeList.isEmpty()) {
             LOG.debug("Nodes found in database, starting comparison.");
             if (sethlansNodeDatabaseService.checkForDuplicatesAndSave(sethlansNode)) {
+                LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
+                nodeAddNotification(sethlansNode);
                 if (sethlansNode.isPendingActivation()) {
                     nodeActivationService.sendActivationRequestToNode(sethlansNode, SethlansQueryUtils.getCurrentServerInfo(), accessKey);
                     return sethlansNode.getConnection_uuid();
@@ -92,6 +100,7 @@ public class ServerSetupController {
             LOG.debug("No nodes present in database.");
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
             LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
+            nodeAddNotification(sethlansNode);
             if (sethlansNode.isPendingActivation()) {
                 nodeActivationService.sendActivationRequestToNode(sethlansNode, SethlansQueryUtils.getCurrentServerInfo(), accessKey);
                 return sethlansNode.getConnection_uuid();
@@ -99,6 +108,12 @@ public class ServerSetupController {
         }
 
         return null;
+    }
+
+    private void nodeAddNotification(SethlansNode sethlansNode) {
+        String message = "Added node " + sethlansNode.getHostname();
+        SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.NODE, message, NotificationScope.ADMIN);
+        sethlansNotificationService.sendNotification(sethlansNotification);
     }
 
     @GetMapping("/node_delete/{id}")
@@ -178,4 +193,8 @@ public class ServerSetupController {
         this.blenderBinaryDatabaseService = blenderBinaryDatabaseService;
     }
 
+    @Autowired
+    public void setSethlansNotificationService(SethlansNotificationService sethlansNotificationService) {
+        this.sethlansNotificationService = sethlansNotificationService;
+    }
 }
