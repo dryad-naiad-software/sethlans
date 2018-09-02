@@ -145,8 +145,8 @@ public class AdminServerController {
     }
 
     @GetMapping(value = {"/node_list_size"})
-    public Integer getNodeListSize() {
-        return sethlansNodeDatabaseService.listAll().size();
+    public long getNodeListSize() {
+        return sethlansNodeDatabaseService.tableSize();
     }
 
 

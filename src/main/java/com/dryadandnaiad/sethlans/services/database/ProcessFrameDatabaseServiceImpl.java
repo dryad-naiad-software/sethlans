@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -36,6 +36,11 @@ import java.util.List;
 @Service
 public class ProcessFrameDatabaseServiceImpl implements ProcessFrameDatabaseService {
     private ProcessFrameRepository processFrameRepository;
+
+    @Override
+    public long tableSize() {
+        return processFrameRepository.count();
+    }
 
     @Override
     public List<ProcessFrameItem> listAll() {

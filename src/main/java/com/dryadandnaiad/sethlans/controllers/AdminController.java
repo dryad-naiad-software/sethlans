@@ -130,7 +130,7 @@ public class AdminController {
 
     @PostMapping(value = {"/change_roles/{id}"})
     public boolean changeRoles(@PathVariable Long id, @RequestBody List<RoleInfo> roles) {
-        if (sethlansUserDatabaseService.listAll().size() > 1) {
+        if (sethlansUserDatabaseService.tableSize() > 1) {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             SethlansUser sethlansUser = sethlansUserDatabaseService.getById(id);
             SethlansUser requestingUser = sethlansUserDatabaseService.findByUserName(auth.getName());
@@ -249,7 +249,7 @@ public class AdminController {
     @GetMapping(value = {"/deactivate_user/{id}"})
     public void deactivateUser(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (sethlansUserDatabaseService.listAll().size() > 1) {
+        if (sethlansUserDatabaseService.tableSize() > 1) {
             boolean authorized = false;
             SethlansUser sethlansUser = sethlansUserDatabaseService.getById(id);
             SethlansUser requestingUser = sethlansUserDatabaseService.findByUserName(auth.getName());
@@ -269,7 +269,7 @@ public class AdminController {
     public void deleteUser(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         SethlansUser sethlansUser = sethlansUserDatabaseService.getById(id);
-        if (sethlansUserDatabaseService.listAll().size() > 1 && !sethlansUser.getUsername().equals(auth.getName())) {
+        if (sethlansUserDatabaseService.tableSize() > 1 && !sethlansUser.getUsername().equals(auth.getName())) {
             SethlansUser requestingUser = sethlansUserDatabaseService.findByUserName(auth.getName());
             boolean authorized = false;
             if (requestingUser.getRoles().contains(Role.SUPER_ADMINISTRATOR)) {

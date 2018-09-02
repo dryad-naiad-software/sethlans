@@ -49,7 +49,7 @@ public class NodeQueryServiceImpl implements NodeQueryService {
             int count = 0;
             while (true) {
                 try {
-                    if (sethlansNodeDatabaseService.listAll().size() > 0) {
+                    if (sethlansNodeDatabaseService.tableSize() > 0) {
                         Thread.sleep(2500);
                         for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
                             if (sethlansNode.isBenchmarkComplete()) {

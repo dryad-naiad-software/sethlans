@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -78,7 +78,7 @@ public class QueueNodeStatusActions {
                     sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                     break;
             }
-            if (renderQueueDatabaseService.listAll().size() > 0) {
+            if (renderQueueDatabaseService.tableSize() > 0) {
                 removeNodeFromQueue(sethlansNode.getConnection_uuid(), renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNode);
             }
         }

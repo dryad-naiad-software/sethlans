@@ -51,6 +51,11 @@ public class SethlansUserDatabaseServiceImpl implements SethlansUserDatabaseServ
     }
 
     @Override
+    public long tableSize() {
+        return sethlansUserRepository.count();
+    }
+
+    @Override
     public SethlansUser getById(Long id) {
         return sethlansUserRepository.findOne(id);
     }

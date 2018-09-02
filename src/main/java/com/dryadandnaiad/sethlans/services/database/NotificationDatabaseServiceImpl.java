@@ -43,6 +43,11 @@ public class NotificationDatabaseServiceImpl implements NotificationDatabaseServ
     private static final Logger LOG = LoggerFactory.getLogger(NotificationDatabaseServiceImpl.class);
 
     @Override
+    public long tableSize() {
+        return notificationRepository.count();
+    }
+
+    @Override
     public List<SethlansNotification> listAll() {
         try {
             return new ArrayList<>(notificationRepository.findAll());

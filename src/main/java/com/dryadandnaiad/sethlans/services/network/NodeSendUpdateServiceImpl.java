@@ -92,16 +92,16 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
             }
             while (true) {
                 try {
-                    if (sethlansServerDatabaseService.listAll().size() == 0) {
+                    if (sethlansServerDatabaseService.tableSize() == 0) {
                         Thread.sleep(5000);
                     } else {
                         Thread.sleep(1000);
                     }
                     if (sethlansServerDatabaseService.listActive().size() > 0 && blenderBenchmarkTaskDatabaseService.allBenchmarksComplete()) {
-                        if (renderTaskDatabaseService.listAll().size() > 0) {
+                        if (renderTaskDatabaseService.tableSize() > 0) {
                             counter = 0;
                         }
-                        if (renderTaskDatabaseService.listAll().size() == 0) {
+                        if (renderTaskDatabaseService.tableSize() == 0) {
                             counter++;
                         }
                         if (counter % 60 == 0 && counter > 59) {
@@ -114,7 +114,7 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
                                 sendIdleUpdate(computeType);
                             }
                             if (slots > 1) {
-                                if (renderTaskDatabaseService.listAll().size() == 0) {
+                                if (renderTaskDatabaseService.tableSize() == 0) {
                                     sendIdleUpdate(computeType);
                                 } else {
                                     List<ComputeType> computeTypeList = new ArrayList<>();

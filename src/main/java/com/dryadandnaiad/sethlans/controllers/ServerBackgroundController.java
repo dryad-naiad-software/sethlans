@@ -52,7 +52,7 @@ public class ServerBackgroundController {
 
     @PostMapping(value = "/api/update/node_idle_notification")
     public void nodeIdleNotification(@RequestParam String connection_uuid, ComputeType compute_type) {
-        if (renderQueueDatabaseService.listAll().size() > 0) {
+        if (renderQueueDatabaseService.tableSize() > 0) {
             queueService.queueIdleNode(connection_uuid, compute_type);
         }
     }

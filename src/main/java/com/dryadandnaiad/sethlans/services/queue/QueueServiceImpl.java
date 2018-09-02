@@ -111,7 +111,7 @@ public class QueueServiceImpl implements QueueService {
                 }
 
                 if (incomingQueueItemList.isEmpty()) {
-                    if (renderQueueDatabaseService.listAll().size() > CLEANUP) {
+                    if (renderQueueDatabaseService.tableSize() > CLEANUP) {
                         cleanQueue();
                     }
                     if (sethlansNodeDatabaseService.activeNodeList().size() > 0 && blenderProjectDatabaseService.listSize() > 0) {
@@ -463,7 +463,7 @@ public class QueueServiceImpl implements QueueService {
     private void processImages() {
         if (!modifyingQueue) {
             modifyingQueue = true;
-            if (processFrameDatabaseService.listAll().size() > 0) {
+            if (processFrameDatabaseService.tableSize() > 0) {
                 for (ProcessFrameItem processFrameItem : processFrameDatabaseService.listAll()) {
                     BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(processFrameItem.getProjectUUID());
                     List<Boolean> allPartsProcessed = new ArrayList<>();
@@ -485,7 +485,7 @@ public class QueueServiceImpl implements QueueService {
     private void updateFrames() {
         if (!modifyingQueue) {
             modifyingQueue = true;
-            if (frameFileUpdateDatabaseService.listAll().size() > 0) {
+            if (frameFileUpdateDatabaseService.tableSize() > 0) {
                 LOG.debug("Updating Projects with frame file names");
                 BlenderProject blenderProject = null;
                 for (FrameFileUpdateItem frameFileUpdateItem : frameFileUpdateDatabaseService.listAll()) {

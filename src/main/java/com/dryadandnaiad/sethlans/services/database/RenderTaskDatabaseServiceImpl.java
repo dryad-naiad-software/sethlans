@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -41,6 +41,11 @@ public class RenderTaskDatabaseServiceImpl implements RenderTaskDatabaseService 
     private RenderTaskRepository renderTaskRepository;
     private static final Logger LOG = LoggerFactory.getLogger(RenderTaskDatabaseServiceImpl.class);
 
+
+    @Override
+    public long tableSize() {
+        return renderTaskRepository.count();
+    }
 
     @Override
     public List<RenderTask> listAll() {

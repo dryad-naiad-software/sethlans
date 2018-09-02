@@ -170,8 +170,8 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SERVER, message, NotificationScope.ADMIN);
         sethlansNotificationService.sendNotification(sethlansNotification);
         blenderBenchmarkTaskDatabaseService.delete(blenderBenchmarkTask.getId());
-        LOG.debug("Remaining benchmarks to process: " + blenderBenchmarkTaskDatabaseService.listAll().size());
-        boolean complete = blenderBenchmarkTaskDatabaseService.listAll().size() <= 0;
+        LOG.debug("Remaining benchmarks to process: " + blenderBenchmarkTaskDatabaseService.tableSize());
+        boolean complete = blenderBenchmarkTaskDatabaseService.tableSize() <= 0;
         String serverUrl = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/benchmark/response";
         String params;
         if (blenderBenchmarkTask.getComputeType().equals(ComputeType.CPU)) {

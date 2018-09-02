@@ -64,8 +64,8 @@ public class ServerInfoController {
 
 
     @GetMapping(value = {"/total_nodes"})
-    public int getTotalNodes() {
-        return sethlansNodeDatabaseService.listAll().size();
+    public long getTotalNodes() {
+        return sethlansNodeDatabaseService.tableSize();
     }
 
     @GetMapping(value = {"/inactive_nodes"})

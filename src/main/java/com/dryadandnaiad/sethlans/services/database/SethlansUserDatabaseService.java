@@ -30,6 +30,7 @@ import java.util.List;
  * Project: sethlans
  */
 public interface SethlansUserDatabaseService extends CRUDService<SethlansUser> {
+
     SethlansUser excludeSuperUsersById(Long id);
 
     boolean checkifExists(String username);

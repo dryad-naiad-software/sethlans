@@ -53,6 +53,11 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectDatabaseServiceImpl.class);
 
     @Override
+    public long tableSize() {
+        return blenderProjectRepository.count();
+    }
+
+    @Override
     public List<BlenderProject> listAll() {
         List<BlenderProject> all = new ArrayList<>(blenderProjectRepository.findAll());
         for (BlenderProject blenderProject : all) {

@@ -31,7 +31,7 @@ import java.util.List;
  */
 @Data
 public class ServerDashBoardInfo {
-    private int totalNodes;
+    private long totalNodes;
     private int activeNodes;
     private int inactiveNodes;
     private int disabledNodes;

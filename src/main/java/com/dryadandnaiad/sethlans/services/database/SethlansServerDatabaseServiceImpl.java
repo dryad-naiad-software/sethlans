@@ -47,6 +47,11 @@ public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabase
     }
 
     @Override
+    public long tableSize() {
+        return serverRepository.count();
+    }
+
+    @Override
     public List<SethlansServer> listActive() {
         List<SethlansServer> listToReturn = new ArrayList<>();
         for (SethlansServer sethlansServer : listAll()) {

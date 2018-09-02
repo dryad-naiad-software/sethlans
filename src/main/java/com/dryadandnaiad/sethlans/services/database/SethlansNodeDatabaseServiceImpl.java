@@ -54,6 +54,11 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
     }
 
     @Override
+    public long tableSize() {
+        return nodeRepository.count();
+    }
+
+    @Override
     public SethlansNode getById(Long id) {
         return nodeRepository.findOne(id);
     }

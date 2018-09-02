@@ -39,6 +39,11 @@ public class AccessKeyDatabaseServiceImpl implements AccessKeyDatabaseService {
 
 
     @Override
+    public long tableSize() {
+        return accessKeyRepository.count();
+    }
+
+    @Override
     public List<AccessKey> listAll() {
         return new ArrayList<>(accessKeyRepository.findAll());
     }

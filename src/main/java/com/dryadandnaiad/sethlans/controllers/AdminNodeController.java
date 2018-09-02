@@ -128,8 +128,8 @@ public class AdminNodeController {
     }
 
     @GetMapping(value = {"/server_list_size"})
-    public Integer getServerListSize() {
-        return sethlansServerDatabaseService.listAll().size();
+    public long getServerListSize() {
+        return sethlansServerDatabaseService.tableSize();
     }
 
     @GetMapping(value = {"/current_tilesize_cpu"})
