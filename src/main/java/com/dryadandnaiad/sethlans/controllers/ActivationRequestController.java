@@ -79,7 +79,7 @@ public class ActivationRequestController {
             sethlansServer.setNodeUpdated(false);
             sethlansServer.setPendingAcknowledgementResponse(true);
             sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
-            String message = "Added " + serverhostname + "as a server";
+            String message = "Added " + serverhostname + " as a server";
             SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SERVER, message, NotificationScope.ADMIN);
             sethlansNotification.setLinkPresent(true);
             sethlansNotification.setMessageLink("/admin/servers");

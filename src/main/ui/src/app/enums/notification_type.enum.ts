@@ -22,5 +22,6 @@ export enum NotificationType {
   PROJECT = 'PROJECT',
   VIDEO = 'VIDEO',
   NODE = 'NODE',
-  SERVER = 'SERVER'
+  SERVER = 'SERVER',
+  SYSTEM = 'SYSTEM'
 }

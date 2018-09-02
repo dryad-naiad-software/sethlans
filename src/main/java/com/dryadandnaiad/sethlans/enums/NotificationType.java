@@ -30,5 +30,6 @@ public enum NotificationType {
     SERVER,
     PROJECT,
     VIDEO,
-    NODE
+    NODE,
+    SYSTEM
 }

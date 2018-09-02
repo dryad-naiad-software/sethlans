@@ -19,15 +19,19 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUserChallenge;
 import com.dryadandnaiad.sethlans.domains.info.Log;
 import com.dryadandnaiad.sethlans.domains.info.RoleInfo;
 import com.dryadandnaiad.sethlans.domains.info.SethlansSettings;
 import com.dryadandnaiad.sethlans.domains.info.UserInfo;
+import com.dryadandnaiad.sethlans.enums.NotificationScope;
+import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
+import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
 import com.dryadandnaiad.sethlans.services.system.SethlansLogRetrievalService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
@@ -58,6 +62,8 @@ public class AdminController {
     private SethlansUserDatabaseService sethlansUserDatabaseService;
     private SethlansLogRetrievalService sethlansLogRetrievalService;
     private SethlansManagerService sethlansManagerService;
+    private SethlansNotificationService sethlansNotificationService;
+
     private static final Logger LOG = LoggerFactory.getLogger(AdminController.class);
 
     @Value("${sethlans.configDir}")
@@ -68,11 +74,27 @@ public class AdminController {
 
     @GetMapping(value = "/restart")
     public void restart() {
+        String message = "Restarting Sethlans";
+        SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SYSTEM, message, NotificationScope.ADMIN);
+        sethlansNotificationService.sendNotification(sethlansNotification);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         sethlansManagerService.restart();
     }
 
     @GetMapping(value = "/shutdown")
     public void shutdown() {
+        String message = "Shutting down Sethlans";
+        SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SYSTEM, message, NotificationScope.ADMIN);
+        sethlansNotificationService.sendNotification(sethlansNotification);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         sethlansManagerService.shutdown();
     }
 
@@ -346,5 +368,8 @@ public class AdminController {
         this.sethlansLogRetrievalService = sethlansLogRetrievalService;
     }
 
-
+    @Autowired
+    public void setSethlansNotificationService(SethlansNotificationService sethlansNotificationService) {
+        this.sethlansNotificationService = sethlansNotificationService;
+    }
 }

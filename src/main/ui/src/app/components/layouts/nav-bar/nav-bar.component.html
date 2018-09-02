@@ -167,6 +167,10 @@
               <div class="dropdown-item-text">
                 <i class="fas fa-fw fa-desktop" *ngIf="notification.notificationType === notificationTypes.NODE"></i>
                 <i class="fas fa-fw fa-server" *ngIf="notification.notificationType === notificationTypes.SERVER"></i>
+                <i class="fas fa-fw fa-cogs" *ngIf="notification.notificationType === notificationTypes.SYSTEM"></i>
+                <i class="fas fa-fw fa-puzzle-piece"
+                   *ngIf="notification.notificationType === notificationTypes.PROJECT"></i>
+                <i class="fas fa-fw fa-video" *ngIf="notification.notificationType === notificationTypes.VIDEO"></i>
                 <i class="fas fa-fw fa-file-download"
                    *ngIf="notification.notificationType === notificationTypes.BLENDER_DOWNLOAD"></i>
                 <small>&nbsp;&nbsp;{{notification.messageDate | date:'medium'}}</small>
