@@ -25,6 +25,9 @@
   font-size: 0.6em;
 }
 
-.unselected-notification {
-  background-color: cornflowerblue;
+.scrollable {
+  overflow-y: auto;
+  height: 375px;
 }
+
+

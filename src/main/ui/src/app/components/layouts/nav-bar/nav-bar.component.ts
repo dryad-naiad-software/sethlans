@@ -97,12 +97,21 @@ export class NavBarComponent implements OnInit {
     });
   }
 
-  acknowledgeNotification(id) {
+  acknowledgeNotification(id: number) {
     this.http.get('/api/notifications/acknowledge_notification/' + id).subscribe((acknowledged: boolean) => {
       if (acknowledged) {
         this.checkNotifications();
       }
     });
+  }
+
+  followLink(notification: SethlansNotification) {
+    this.http.get('/api/notifications/acknowledge_notification/' + notification.id).subscribe((acknowledged: boolean) => {
+      if (acknowledged) {
+        window.location.href = notification.messageLink;
+      }
+    });
+
   }
 
   clearAllNotifications() {
