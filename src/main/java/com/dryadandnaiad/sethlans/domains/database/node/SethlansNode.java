@@ -20,8 +20,8 @@
 package com.dryadandnaiad.sethlans.domains.database.node;
 
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
-import com.dryadandnaiad.sethlans.domains.hardware.CPU;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
+import com.dryadandnaiad.sethlans.domains.info.CPUInfo;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import lombok.Data;
@@ -53,7 +53,7 @@ public class SethlansNode extends AbstractEntityClass {
     private String networkPort;
     private BlenderBinaryOS sethlansNodeOS;
     private ComputeType computeType;
-    private CPU cpuinfo;
+    private CPUInfo cpuinfo;
     private String selectedCores;
     @ElementCollection(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)

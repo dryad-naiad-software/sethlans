@@ -161,6 +161,7 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
         return directory + frameFilename + "-thumbnail" + "." + fileExtension;
     }
 
+
     @Autowired
     public void setfFmpegEncodeService(FFmpegEncodeService fFmpegEncodeService) {
         this.fFmpegEncodeService = fFmpegEncodeService;

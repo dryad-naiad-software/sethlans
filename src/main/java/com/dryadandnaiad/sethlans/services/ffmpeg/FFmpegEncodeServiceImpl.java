@@ -20,10 +20,13 @@
 package com.dryadandnaiad.sethlans.services.ffmpeg;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
+import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
+import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
@@ -51,6 +54,7 @@ import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
     private static final Logger LOG = LoggerFactory.getLogger(FFmpegEncodeServiceImpl.class);
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
+    private SethlansNotificationService sethlansNotificationService;
 
 
     @Async
@@ -125,10 +129,16 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
                 projectToUpdate.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
             }
             projectToUpdate.setReEncode(false);
+            String message = blenderProject.getProjectName() + " video processing has completed";
+            SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.VIDEO, message, blenderProject.getSethlansUser().getUsername());
+            sethlansNotificationService.sendNotification(sethlansNotification);
             blenderProjectDatabaseService.saveOrUpdate(projectToUpdate);
             FileUtils.deleteDirectory(new File(blenderProject.getProjectRootDir() + File.separator + "temp"));
         } catch (IOException | InterruptedException e) {
             LOG.error(e.getMessage());
+            String message = blenderProject.getProjectName() + " video processing has failed";
+            SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.VIDEO, message, blenderProject.getSethlansUser().getUsername());
+            sethlansNotificationService.sendNotification(sethlansNotification);
         }
     }
 
@@ -137,4 +147,8 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
         this.blenderProjectDatabaseService = blenderProjectDatabaseService;
     }
 
+    @Autowired
+    public void setSethlansNotificationService(SethlansNotificationService sethlansNotificationService) {
+        this.sethlansNotificationService = sethlansNotificationService;
+    }
 }

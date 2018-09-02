@@ -22,8 +22,11 @@ package com.dryadandnaiad.sethlans.services.blender;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.blender.PartCoordinates;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
+import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
+import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
 import com.dryadandnaiad.sethlans.services.queue.QueueService;
 import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
@@ -49,6 +52,7 @@ import java.util.List;
 public class BlenderProjectServiceImpl implements BlenderProjectService {
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
     private QueueService queueService;
+    private SethlansNotificationService sethlansNotificationService;
     private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectServiceImpl.class);
 
     @Override
@@ -81,6 +85,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     public void pauseProject(Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getById(id);
         sendPauseToQueueService(blenderProject);
+
     }
 
     @Override
@@ -101,6 +106,9 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         queueService.stopBlenderProjectQueue(blenderProject);
         int count = blenderProject.getFrameFileNames().size();
         deleteProjectFrames(blenderProject, count);
+        String message = blenderProject.getProjectName() + " has been stopped";
+        SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
+        sethlansNotificationService.sendNotification(sethlansNotification);
     }
 
     @Override
@@ -109,6 +117,9 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         queueService.stopBlenderProjectQueue(blenderProject);
         int count = blenderProject.getFrameFileNames().size();
         deleteProjectFrames(blenderProject, count);
+        String message = blenderProject.getProjectName() + " has been stopped";
+        SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
+        sethlansNotificationService.sendNotification(sethlansNotification);
 
     }
 
@@ -120,6 +131,9 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
             String directory = blenderProject.getProjectRootDir();
             blenderProjectDatabaseService.delete(id);
             deleteDirectory(directory);
+            String message = blenderProject.getProjectName() + " deleted successfully";
+            SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
+            sethlansNotificationService.sendNotification(sethlansNotification);
         }
 
     }
@@ -131,6 +145,9 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
             String directory = blenderProject.getProjectRootDir();
             blenderProjectDatabaseService.deleteWithVerification(username, id);
             deleteDirectory(directory);
+            String message = blenderProject.getProjectName() + " deleted successfully";
+            SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
+            sethlansNotificationService.sendNotification(sethlansNotification);
         }
     }
 
@@ -231,6 +248,11 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         LOG.debug("Part Coordinate List generated " + partCoordinatesList);
 
         return partCoordinatesList;
+    }
+
+    @Autowired
+    public void setSethlansNotificationService(SethlansNotificationService sethlansNotificationService) {
+        this.sethlansNotificationService = sethlansNotificationService;
     }
 
     @Autowired

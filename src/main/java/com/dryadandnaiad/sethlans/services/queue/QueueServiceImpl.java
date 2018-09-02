@@ -26,6 +26,7 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.QueueAction;
 import com.dryadandnaiad.sethlans.services.database.*;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
+import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +60,7 @@ public class QueueServiceImpl implements QueueService {
     private ProcessQueueDatabaseService processQueueDatabaseService;
     private ProcessFrameDatabaseService processFrameDatabaseService;
     private FrameFileUpdateDatabaseService frameFileUpdateDatabaseService;
+    private SethlansNotificationService sethlansNotificationService;
     private List<ProcessNodeStatus> nodeStatuses = new ArrayList<>();
     private List<ProcessIdleNode> idleNodes = new ArrayList<>();
     private List<QueueActionItem> queueActionItemList = new ArrayList<>();
@@ -515,7 +517,7 @@ public class QueueServiceImpl implements QueueService {
         if (!modifyingQueue) {
             modifyingQueue = true;
             completeProcessing(blenderProjectDatabaseService, processImageAndAnimationService, renderQueueDatabaseService,
-                    frameFileUpdateDatabaseService, processFrameDatabaseService);
+                    frameFileUpdateDatabaseService, sethlansNotificationService, processFrameDatabaseService);
             modifyingQueue = false;
         }
     }
@@ -575,5 +577,10 @@ public class QueueServiceImpl implements QueueService {
     @Autowired
     public void setFrameFileUpdateDatabaseService(FrameFileUpdateDatabaseService frameFileUpdateDatabaseService) {
         this.frameFileUpdateDatabaseService = frameFileUpdateDatabaseService;
+    }
+
+    @Autowired
+    public void setSethlansNotificationService(SethlansNotificationService sethlansNotificationService) {
+        this.sethlansNotificationService = sethlansNotificationService;
     }
 }

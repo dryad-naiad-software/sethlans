@@ -21,16 +21,15 @@ package com.dryadandnaiad.sethlans.services.queue;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessFrameItem;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
-import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.enums.ProjectStatus;
-import com.dryadandnaiad.sethlans.enums.ProjectType;
-import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
+import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.services.database.*;
+import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,6 +170,7 @@ class QueueProcessActions {
                                    ProcessImageAndAnimationService processImageAndAnimationService,
                                    RenderQueueDatabaseService renderQueueDatabaseService,
                                    FrameFileUpdateDatabaseService frameFileUpdateDatabaseService,
+                                   SethlansNotificationService sethlansNotificationService,
                                    ProcessFrameDatabaseService processFrameDatabaseService) {
         if (blenderProjectDatabaseService.pendingProjectsSize() <= 0 || blenderProjectDatabaseService.remainingQueueProjectsSize() <= 0) {
             for (BlenderProject blenderProject : blenderProjectDatabaseService.listAll()) {
@@ -182,15 +182,24 @@ class QueueProcessActions {
                             if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
                                 blenderProject.setProjectStatus(ProjectStatus.Processing);
                                 blenderProject.setCurrentPercentage(100);
+                                String message = blenderProject.getProjectName() + " has completed rendering, starting video processing";
+                                SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
+                                sethlansNotificationService.sendNotification(sethlansNotification);
                                 processImageAndAnimationService.createAVI(blenderProject);
                             }
                             if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
                                 blenderProject.setProjectStatus(ProjectStatus.Processing);
                                 blenderProject.setCurrentPercentage(100);
+                                String message = blenderProject.getProjectName() + " has completed rendering, starting video processing";
+                                SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
+                                sethlansNotificationService.sendNotification(sethlansNotification);
                                 processImageAndAnimationService.createMP4(blenderProject);
                             } else {
                                 blenderProject.setProjectStatus(ProjectStatus.Finished);
                                 blenderProject.setCurrentPercentage(100);
+                                String message = blenderProject.getProjectName() + " has completed";
+                                SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
+                                sethlansNotificationService.sendNotification(sethlansNotification);
                                 blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
                             }
                             blenderProject.setAllImagesProcessed(true);
