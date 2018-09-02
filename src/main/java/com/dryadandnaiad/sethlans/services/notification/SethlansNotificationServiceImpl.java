@@ -92,6 +92,17 @@ public class SethlansNotificationServiceImpl implements SethlansNotificationServ
     }
 
     @Override
+    public boolean clearNotification(String username, Long id) {
+        for (SethlansNotification sethlansNotification : getNotifications(username)) {
+            if (sethlansNotification.getId().equals(id)) {
+                notificationDatabaseService.delete(sethlansNotification);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public boolean clearAllNotifications(String username) {
         for (SethlansNotification sethlansNotification : getNotifications(username)) {
             notificationDatabaseService.delete(sethlansNotification);

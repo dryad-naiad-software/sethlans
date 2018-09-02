@@ -72,6 +72,15 @@ public class NotificationController {
         return sethlansNotificationService.clearAllNotifications(auth.getName());
     }
 
+    @GetMapping(value = "/clear_notification/{id}")
+    public boolean clearNotification(@PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return false;
+        }
+        return sethlansNotificationService.clearNotification(auth.getName(), id);
+    }
+
     @GetMapping(value = "/acknowledge_notification/{id}")
     public boolean acknowledgeNotification(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

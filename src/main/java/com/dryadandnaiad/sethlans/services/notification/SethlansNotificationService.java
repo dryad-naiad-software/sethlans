@@ -38,6 +38,8 @@ public interface SethlansNotificationService {
 
     boolean acknowledgeAllNotifications(String username);
 
+    boolean clearNotification(String username, Long id);
+
     boolean clearAllNotifications(String username);
 
     List<SethlansNotification> getNotifications(String username);

@@ -113,6 +113,14 @@ export class NavBarComponent implements OnInit {
     });
   }
 
+  clearNotification(id) {
+    this.http.get('/api/notifications/clear_notification/' + id).subscribe((cleared: boolean) => {
+      if (cleared) {
+        this.checkNotifications();
+      }
+    });
+  }
+
   acknowledgeAllNotifications() {
     this.http.get('/api/notifications/acknowledge_all_notifications/').subscribe((acknowledged: boolean) => {
       if (acknowledged) {

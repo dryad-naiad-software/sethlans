@@ -151,20 +151,29 @@
             <a href="javascript:void(0);" class="dropdown-item" (click)="acknowledgeNotification(notification.id)">
               <span *ngIf="!notification.acknowledged">{{notification.message}}</span>
               <span *ngIf="notification.acknowledged"><i>{{notification.message}}</i></span>
-              <br/>
-              <i class="fas fa-fw fa-desktop" *ngIf="notification.notificationType === notificationTypes.NODE"></i>
-              <i class="fas fa-fw fa-server" *ngIf="notification.notificationType === notificationTypes.SERVER"></i>
-              <i class="fas fa-fw fa-file-download"
-                 *ngIf="notification.notificationType === notificationTypes.BLENDER_DOWNLOAD"></i>
-              <small>&nbsp;&nbsp;{{notification.messageDate | date:'medium'}}</small>
             </a>
+              <div class="dropdown-item-text">
+                <i class="fas fa-fw fa-desktop" *ngIf="notification.notificationType === notificationTypes.NODE"></i>
+                <i class="fas fa-fw fa-server" *ngIf="notification.notificationType === notificationTypes.SERVER"></i>
+                <i class="fas fa-fw fa-file-download"
+                   *ngIf="notification.notificationType === notificationTypes.BLENDER_DOWNLOAD"></i>
+              <small>&nbsp;&nbsp;{{notification.messageDate | date:'medium'}}</small>
+                 <button class="btn btn-link text-dark float-right"
+                         ngbTooltip="Clear Notification"
+                         placement="left"
+                         style="text-decoration: none !important"
+                         (click)="clearNotification(notification.id)">&times;</button>
+              </div>
             </span>
           </span>
+          <br/>
           <div *ngIf="notifications == true" class="dropdown-divider"></div>
           <div *ngIf="notifications == true" class="dropdown-item-text">
-            <button class="btn btn-link btn-sm float-right" (click)="acknowledgeAllNotifications()">Acknowledge All
+            <button class="btn btn-link btn-sm float-left text-dark" (click)="acknowledgeAllNotifications()"><strong>Acknowledge
+              All</strong>
             </button>
-            <button class="btn btn-link btn-sm float-left" (click)="clearAllNotifications()">Clear All</button>
+            <button class="btn btn-link btn-sm float-right text-dark" (click)="clearAllNotifications()"><strong>Clear
+              All</strong></button>
           </div>
         </div>
       </li>
