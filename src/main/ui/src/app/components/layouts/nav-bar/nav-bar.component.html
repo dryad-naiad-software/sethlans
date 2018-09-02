@@ -143,12 +143,15 @@
           <span *ngIf="newNotifications == true" class="badge badge-notify">!</span>
         </a>
         <div ngbDropdownMenu>
+          <h6 class="dropdown-header">Notifications</h6>
           <a *ngIf="notifications == false" href="javascript:void(0);" class="dropdown-item">
             <i class="fas fa-fw fa-info-circle"></i>&nbsp;&nbsp;No new notifications</a>
           <span *ngIf="notifications == true">
             <span *ngFor="let notification of notificationList">
-            <a href="javascript:void(0);" class="dropdown-item">
-              {{notification.message}} <br/>
+            <a href="javascript:void(0);" class="dropdown-item" (click)="acknowledgeNotification(notification.id)">
+              <span *ngIf="!notification.acknowledged">{{notification.message}}</span>
+              <span *ngIf="notification.acknowledged"><i>{{notification.message}}</i></span>
+              <br/>
               <i class="fas fa-fw fa-desktop" *ngIf="notification.notificationType === notificationTypes.NODE"></i>
               <i class="fas fa-fw fa-server" *ngIf="notification.notificationType === notificationTypes.SERVER"></i>
               <i class="fas fa-fw fa-file-download"
@@ -157,6 +160,12 @@
             </a>
             </span>
           </span>
+          <div *ngIf="notifications == true" class="dropdown-divider"></div>
+          <div *ngIf="notifications == true" class="dropdown-item-text">
+            <button class="btn btn-link btn-sm float-right" (click)="acknowledgeAllNotifications()">Acknowledge All
+            </button>
+            <button class="btn btn-link btn-sm float-left" (click)="clearAllNotifications()">Clear All</button>
+          </div>
         </div>
       </li>
     </ul>

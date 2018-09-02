@@ -71,6 +71,35 @@ public class SethlansNotificationServiceImpl implements SethlansNotificationServ
     }
 
     @Override
+    public boolean acknowledgeNotification(String username, Long id) {
+        for (SethlansNotification sethlansNotification : getNotifications(username)) {
+            if (sethlansNotification.getId().equals(id)) {
+                sethlansNotification.setAcknowledged(true);
+                notificationDatabaseService.saveOrUpdate(sethlansNotification);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean acknowledgeAllNotifications(String username) {
+        for (SethlansNotification sethlansNotification : getNotifications(username)) {
+            sethlansNotification.setAcknowledged(true);
+            notificationDatabaseService.saveOrUpdate(sethlansNotification);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean clearAllNotifications(String username) {
+        for (SethlansNotification sethlansNotification : getNotifications(username)) {
+            notificationDatabaseService.delete(sethlansNotification);
+        }
+        return true;
+    }
+
+    @Override
     public List<SethlansNotification> getNotifications(String username) {
         List<SethlansNotification> listToSend = new ArrayList<>();
         SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(username);

@@ -66,7 +66,7 @@ export class NavBarComponent implements OnInit {
             this.getUserName();
             this.getAdminStatus();
             this.checkNotifications();
-            let scheduler = timer(5000, 2000);
+            let scheduler = timer(5000, 5000);
             scheduler.subscribe(() => this.checkNotifications());
           }
         }
@@ -87,6 +87,7 @@ export class NavBarComponent implements OnInit {
   checkNotifications() {
     this.http.get('/api/notifications/new_notifications_present').subscribe((newNotification: boolean) => {
       this.newNotifications = newNotification;
+      console.log(newNotification);
     });
     this.http.get('/api/notifications/notifications_present').subscribe((present: boolean) => {
       this.notifications = present;
@@ -94,6 +95,31 @@ export class NavBarComponent implements OnInit {
         this.getNotifications();
       }
     });
+  }
+
+  acknowledgeNotification(id) {
+    this.http.get('/api/notifications/acknowledge_notification/' + id).subscribe((acknowledged: boolean) => {
+      if (acknowledged) {
+        this.checkNotifications();
+      }
+    });
+  }
+
+  clearAllNotifications() {
+    this.http.get('/api/notifications/clear_all_notifications/').subscribe((acknowledged: boolean) => {
+      if (acknowledged) {
+        this.checkNotifications();
+      }
+    });
+  }
+
+  acknowledgeAllNotifications() {
+    this.http.get('/api/notifications/acknowledge_all_notifications/').subscribe((acknowledged: boolean) => {
+      if (acknowledged) {
+        this.checkNotifications();
+      }
+    });
+
   }
 
   getAdminStatus() {

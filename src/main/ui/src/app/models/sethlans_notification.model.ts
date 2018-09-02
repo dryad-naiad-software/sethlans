@@ -21,6 +21,7 @@ import {NotificationType} from '../enums/notification_type.enum';
 import {SethlansScope} from '../enums/sethlans_scope.enum';
 
 export class SethlansNotification {
+  id: number;
   notificationType: NotificationType;
   message: string;
   messageDate: Date;

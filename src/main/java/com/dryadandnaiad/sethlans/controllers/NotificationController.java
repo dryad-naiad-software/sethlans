@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -51,6 +52,33 @@ public class NotificationController {
             return false;
         }
         return sethlansNotificationService.newNotificationsPresent(auth.getName());
+    }
+
+    @GetMapping(value = "/acknowledge_all_notifications")
+    public boolean acknowledgeAllNotifications() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return false;
+        }
+        return sethlansNotificationService.acknowledgeAllNotifications(auth.getName());
+    }
+
+    @GetMapping(value = "/clear_all_notifications")
+    public boolean clearAllNotifications() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return false;
+        }
+        return sethlansNotificationService.clearAllNotifications(auth.getName());
+    }
+
+    @GetMapping(value = "/acknowledge_notification/{id}")
+    public boolean acknowledgeNotification(@PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return false;
+        }
+        return sethlansNotificationService.acknowledgeNotification(auth.getName(), id);
     }
 
     @GetMapping(value = "/notifications_present")
