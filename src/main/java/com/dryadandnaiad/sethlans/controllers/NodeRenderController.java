@@ -92,6 +92,8 @@ public class NodeRenderController {
             LOG.debug("Render Request Received, preparing render task.");
             List<RenderTask> renderTaskList = renderTaskDatabaseService.listAll();
             boolean rejected = false;
+            // TODO logic in this area seems off... will need to review this with fresh eyes but looks like we're not checking the request compute type with the node compute
+            // TODO type
             switch (computeType) {
                 case CPU_GPU:
                     if (gpu_device_id == null || gpu_device_id.equals("null")) {
