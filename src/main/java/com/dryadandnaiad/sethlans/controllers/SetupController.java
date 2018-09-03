@@ -85,7 +85,7 @@ public class SetupController {
     public boolean selfRegister(@RequestBody SethlansUser user) {
         if (user != null) {
             LOG.debug("Registering new user...");
-            if (sethlansUserDatabaseService.checkifExists(user.getUsername())) {
+            if (sethlansUserDatabaseService.checkIfExists(user.getUsername())) {
                 LOG.debug("User " + user.getUsername() + " already exists!");
                 return false;
             }

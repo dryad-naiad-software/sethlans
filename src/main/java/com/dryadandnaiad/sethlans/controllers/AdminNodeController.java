@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.domains.database.render.RenderTaskHistory;
 import com.dryadandnaiad.sethlans.domains.database.server.AccessKey;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.hardware.CPU;
@@ -28,6 +29,7 @@ import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.services.database.AccessKeyDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.RenderTaskHistoryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,6 +58,7 @@ import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 public class AdminNodeController {
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private AccessKeyDatabaseService accessKeyDatabaseService;
+    private RenderTaskHistoryDatabaseService renderTaskHistoryDatabaseService;
 
     @Value("${sethlans.computeMethod}")
     private ComputeType selectedComputeMethod;
@@ -122,6 +125,11 @@ public class AdminNodeController {
         return selectedGPUs;
     }
 
+    @GetMapping(value = {"/render_history_list"})
+    public List<RenderTaskHistory> renderTaskHistoryList() {
+        return renderTaskHistoryDatabaseService.listAll();
+    }
+
     @GetMapping(value = {"/server_list"})
     public List<SethlansServer> getServers() {
         return sethlansServerDatabaseService.listAll();
@@ -151,5 +159,10 @@ public class AdminNodeController {
     @Autowired
     public void setAccessKeyDatabaseService(AccessKeyDatabaseService accessKeyDatabaseService) {
         this.accessKeyDatabaseService = accessKeyDatabaseService;
+    }
+
+    @Autowired
+    public void setRenderTaskHistoryDatabaseService(RenderTaskHistoryDatabaseService renderTaskHistoryDatabaseService) {
+        this.renderTaskHistoryDatabaseService = renderTaskHistoryDatabaseService;
     }
 }

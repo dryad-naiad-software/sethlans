@@ -196,7 +196,7 @@ public class NodeRenderController {
                 renderTaskHistory.setCompleted(false);
                 renderTaskHistory.setFailed(false);
                 renderTaskHistoryDatabaseService.saveOrUpdate(renderTaskHistory);
-                LOG.info("Received a " + compute_type + "render task from " + sethlansServer.getHostname() + " for project " + project_name);
+                LOG.info("Received a " + compute_type + " render task from " + sethlansServer.getHostname() + " for project " + project_name);
                 LOG.info("Part " + part_number + " of Frame " + frame_number);
                 renderTaskDatabaseService.saveOrUpdate(renderTask);
                 blenderRenderService.startRender(renderTask.getServer_queue_uuid());

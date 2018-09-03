@@ -71,8 +71,8 @@ public class SethlansUserDatabaseServiceImpl implements SethlansUserDatabaseServ
     }
 
     @Override
-    public boolean checkifExists(String username) {
-        return findByUserName(username) != null;
+    public boolean checkIfExists(String username) {
+        return sethlansUserRepository.existsSethlansUserByUsername(username);
 
     }
 
@@ -108,29 +108,16 @@ public class SethlansUserDatabaseServiceImpl implements SethlansUserDatabaseServ
     @Override
     public SethlansUser findByUserName(String username) {
         return sethlansUserRepository.findByUsername(username);
-
     }
 
     @Override
     public List<SethlansUser> excludeSuperAdministrators() {
-        List<SethlansUser> sethlansUsers = new ArrayList<>();
-        for (SethlansUser sethlansUser : listAll()) {
-            if (!sethlansUser.getRoles().contains(Role.SUPER_ADMINISTRATOR)) {
-                sethlansUsers.add(sethlansUser);
-            }
-        }
-        return sethlansUsers;
+        return sethlansUserRepository.findSethlansUsersByRolesIsNot(Role.SUPER_ADMINISTRATOR);
     }
 
     @Override
     public int numberOfSuperAdministrators() {
-        List<SethlansUser> sethlansUsers = new ArrayList<>();
-        for (SethlansUser sethlansUser : listAll()) {
-            if (sethlansUser.getRoles().contains(Role.SUPER_ADMINISTRATOR) && sethlansUser.isActive()) {
-                sethlansUsers.add(sethlansUser);
-            }
-        }
-        return sethlansUsers.size();
+        return sethlansUserRepository.countSethlansUsersByRolesEquals(Role.SUPER_ADMINISTRATOR);
     }
 
     @Autowired

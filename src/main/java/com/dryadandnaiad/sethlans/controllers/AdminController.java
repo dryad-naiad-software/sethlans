@@ -316,7 +316,7 @@ public class AdminController {
             }
             if (authorized) {
                 LOG.debug("Adding new user...");
-                if (sethlansUserDatabaseService.checkifExists(user.getUsername())) {
+                if (sethlansUserDatabaseService.checkIfExists(user.getUsername())) {
                     LOG.debug("User " + user.getUsername() + " already exists!");
                     return false;
                 }

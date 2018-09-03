@@ -33,7 +33,7 @@ public interface SethlansUserDatabaseService extends CRUDService<SethlansUser> {
 
     SethlansUser excludeSuperUsersById(Long id);
 
-    boolean checkifExists(String username);
+    boolean checkIfExists(String username);
 
     void delete(SethlansUser sethlansUser);
 
