@@ -92,13 +92,14 @@ public class NodeRenderController {
             LOG.debug("Render Request Received, preparing render task.");
             List<RenderTask> renderTaskList = renderTaskDatabaseService.listAll();
             boolean rejected = false;
-            // TODO logic in this area seems off... will need to review this with fresh eyes but looks like we're not checking the request compute type with the node compute
-            // TODO type
+
             switch (computeType) {
                 case CPU_GPU:
-                    if (gpu_device_id == null || gpu_device_id.equals("null")) {
-                        rejectRequest(connection_uuid, queue_item_uuid);
-                        rejected = true;
+                    if (compute_type.equals(ComputeType.GPU)) {
+                        if (gpu_device_id == null || gpu_device_id.equals("null")) {
+                            rejectRequest(connection_uuid, queue_item_uuid);
+                            rejected = true;
+                        }
                     }
                     if (nodeInfo.isCombined()) {
                         if (renderTaskList.size() == 2) {
@@ -130,7 +131,7 @@ public class NodeRenderController {
                     }
                     break;
                 case CPU:
-                    if (renderTaskList.size() == (nodeInfo.getSelectedGPUs().size() + 1)) {
+                    if (renderTaskList.size() == 1) {
                         rejectRequest(connection_uuid, queue_item_uuid);
                         rejected = true;
                     }
@@ -180,6 +181,8 @@ public class NodeRenderController {
                     renderTask.setDeviceID("CPU");
                 }
                 LOG.debug(renderTask.toString());
+                LOG.info("Received a " + compute_type + "render task from " + sethlansServer.getHostname() + " for project " + project_name);
+                LOG.info("Part " + part_number + " of Frame " + frame_number);
                 renderTaskDatabaseService.saveOrUpdate(renderTask);
                 blenderRenderService.startRender(renderTask.getServer_queue_uuid());
             }
