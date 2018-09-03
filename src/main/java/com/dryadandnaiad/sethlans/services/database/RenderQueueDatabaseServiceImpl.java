@@ -94,7 +94,8 @@ public class RenderQueueDatabaseServiceImpl implements RenderQueueDatabaseServic
 
     @Override
     public void deleteAllByProject(String project_uuid) {
-        renderQueueRepository.deleteRenderQueueItemsByProjectUUID(project_uuid);
+        List<RenderQueueItem> renderQueueItemList = listQueueItemsByProjectUUID(project_uuid);
+        renderQueueRepository.delete(renderQueueItemList);
     }
 
     @Override

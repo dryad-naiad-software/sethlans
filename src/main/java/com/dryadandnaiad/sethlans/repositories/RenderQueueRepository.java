@@ -39,7 +39,5 @@ public interface RenderQueueRepository extends JpaRepository<RenderQueueItem, Lo
 
     List<RenderQueueItem> findRenderQueueItemsByCompleteIsFalseAndRenderingIsFalseAndPausedIsFalseAndConnectionUUIDIsNotNull();
 
-    void deleteRenderQueueItemsByProjectUUID(String uuid);
-
     RenderQueueItem findRenderQueueItemByQueueItemUUID(String uuid);
 }
