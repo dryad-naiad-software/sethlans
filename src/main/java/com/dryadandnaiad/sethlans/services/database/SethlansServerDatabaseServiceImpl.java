@@ -36,10 +36,8 @@ import java.util.List;
  */
 @Service
 public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabaseService {
-
     private ServerRepository serverRepository;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
-
 
     @Override
     public List<SethlansServer> listAll() {
@@ -53,13 +51,7 @@ public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabase
 
     @Override
     public List<SethlansServer> listActive() {
-        List<SethlansServer> listToReturn = new ArrayList<>();
-        for (SethlansServer sethlansServer : listAll()) {
-            if (sethlansServer.isAcknowledged()) {
-                listToReturn.add(sethlansServer);
-            }
-        }
-        return listToReturn;
+        return serverRepository.findSethlansServersByAcknowledgedTrue();
     }
 
     @Override
@@ -76,7 +68,7 @@ public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabase
     public void delete(Long id) {
         SethlansServer sethlansServer = serverRepository.findOne(id);
         String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/nodeactivate/server_removal";
-        String params = "connection_uuid=" + sethlansServer.getConnection_uuid();
+        String params = "connection_uuid=" + sethlansServer.getConnectionUUID();
         sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params);
         serverRepository.delete(sethlansServer);
     }
@@ -85,18 +77,11 @@ public class SethlansServerDatabaseServiceImpl implements SethlansServerDatabase
     public void deleteByConnectionUUID(String uuid) {
         SethlansServer sethlansServer = getByConnectionUUID(uuid);
         serverRepository.delete(sethlansServer);
-
     }
 
     @Override
     public SethlansServer getByConnectionUUID(String uuid) {
-        List<SethlansServer> sethlansServers = listAll();
-        for (SethlansServer sethlansServer : sethlansServers) {
-            if (sethlansServer.getConnection_uuid().equals(uuid)) {
-                return sethlansServer;
-            }
-        }
-        return null;
+        return serverRepository.findSethlansServerByConnectionUUID(uuid);
     }
 
     @Autowired

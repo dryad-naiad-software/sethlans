@@ -64,7 +64,7 @@ public class RenderQueueDatabaseServiceImpl implements RenderQueueDatabaseServic
     @Override
     public boolean checkExistingProjectIndex(String projectUUID, int index) {
         for (RenderQueueItem renderQueueItem : listAll()) {
-            if (renderQueueItem.getProject_uuid().contains(projectUUID) && renderQueueItem.getProjectIndex() == index) {
+            if (renderQueueItem.getProjectUUID().contains(projectUUID) && renderQueueItem.getProjectIndex() == index) {
                 return true;
             }
         }
@@ -76,7 +76,7 @@ public class RenderQueueDatabaseServiceImpl implements RenderQueueDatabaseServic
         List<RenderQueueItem> renderQueueItemsPending = new ArrayList<>();
         for (RenderQueueItem renderQueueItem : listAll()) {
             if (!renderQueueItem.isComplete() && !renderQueueItem.isRendering()
-                    && !renderQueueItem.isPaused() && renderQueueItem.getConnection_uuid() != null) {
+                    && !renderQueueItem.isPaused() && renderQueueItem.getConnectionUUID() != null) {
                 renderQueueItemsPending.add(renderQueueItem);
             }
         }
@@ -92,7 +92,7 @@ public class RenderQueueDatabaseServiceImpl implements RenderQueueDatabaseServic
     @Override
     public RenderQueueItem getByQueueUUID(String queueUUID) {
         for (RenderQueueItem renderQueueItem : listAll()) {
-            if (renderQueueItem.getQueueItem_uuid().equals(queueUUID)) {
+            if (renderQueueItem.getQueueItemUUID().equals(queueUUID)) {
                 return renderQueueItem;
             }
 
@@ -115,7 +115,7 @@ public class RenderQueueDatabaseServiceImpl implements RenderQueueDatabaseServic
     public void deleteAllByProject(String project_uuid) {
         List<RenderQueueItem> renderQueueItemList = listAll();
         for (RenderQueueItem renderQueueItem : renderQueueItemList) {
-            if (renderQueueItem.getProject_uuid().equals(project_uuid)) {
+            if (renderQueueItem.getProjectUUID().equals(project_uuid)) {
                 renderQueueRepository.delete(renderQueueItem);
             }
         }
@@ -132,7 +132,7 @@ public class RenderQueueDatabaseServiceImpl implements RenderQueueDatabaseServic
         List<RenderQueueItem> sortedList = new ArrayList<>();
         for (RenderQueueItem renderQueueItem :
                 renderQueueItemList) {
-            if (renderQueueItem.getConnection_uuid() != null && renderQueueItem.getConnection_uuid().equals(connection_uuid)) {
+            if (renderQueueItem.getConnectionUUID() != null && renderQueueItem.getConnectionUUID().equals(connection_uuid)) {
                 sortedList.add(renderQueueItem);
             }
         }
@@ -144,7 +144,7 @@ public class RenderQueueDatabaseServiceImpl implements RenderQueueDatabaseServic
         List<RenderQueueItem> renderQueueItemList = listAll();
         List<RenderQueueItem> sortedList = new ArrayList<>();
         for (RenderQueueItem renderQueueItem : renderQueueItemList) {
-            if (renderQueueItem.getProject_uuid().equals(project_uuid)) {
+            if (renderQueueItem.getProjectUUID().equals(project_uuid)) {
                 sortedList.add(renderQueueItem);
             }
         }

@@ -37,12 +37,12 @@ import javax.persistence.Entity;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class RenderQueueItem extends AbstractEntityClass {
-    private String connection_uuid;
-    private String project_uuid;
+    private String connectionUUID;
+    private String projectUUID;
     private int projectIndex;
     private String projectName;
-    private String queueItem_uuid;
-    private String gpu_device_id;
+    private String queueItemUUID;
+    private String gpuDeviceId;
     private BlenderFramePart blenderFramePart;
     private ComputeType renderComputeType;
     private boolean complete;

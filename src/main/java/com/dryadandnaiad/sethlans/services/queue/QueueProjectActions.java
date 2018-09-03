@@ -58,7 +58,7 @@ class QueueProjectActions {
             case PAUSE:
                 LOG.debug("Pausing queue for " + blenderProject.getProjectName());
                 renderQueueItemList =
-                        renderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProject_uuid());
+                        renderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProjectUUID());
                 for (RenderQueueItem renderQueueItem : renderQueueItemList) {
                     if (!renderQueueItem.isComplete()) {
                         renderQueueItem.setPaused(true);
@@ -73,7 +73,7 @@ class QueueProjectActions {
             case RESUME:
                 LOG.debug("Resuming queue for " + blenderProject.getProjectName());
                 renderQueueItemList =
-                        renderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProject_uuid());
+                        renderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProjectUUID());
                 for (RenderQueueItem renderQueueItem : renderQueueItemList) {
                     if (!renderQueueItem.isComplete()) {
                         renderQueueItem.setPaused(false);
@@ -86,14 +86,14 @@ class QueueProjectActions {
                 break;
             case STOP:
                 LOG.debug("Stopping queue for " + blenderProject.getProjectName());
-                for (RenderQueueItem renderQueueItem : renderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProject_uuid())) {
-                    if (processQueueDatabaseService.getListOfProcessByProject(blenderProject.getProject_uuid()).size() > 0) {
-                        if (processQueueDatabaseService.getProcessByQueueItem(renderQueueItem.getQueueItem_uuid()) != null) {
-                            processQueueDatabaseService.delete(processQueueDatabaseService.getProcessByQueueItem(renderQueueItem.getQueueItem_uuid()));
+                for (RenderQueueItem renderQueueItem : renderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProjectUUID())) {
+                    if (processQueueDatabaseService.getListOfProcessByProject(blenderProject.getProjectUUID()).size() > 0) {
+                        if (processQueueDatabaseService.getProcessByQueueItem(renderQueueItem.getQueueItemUUID()) != null) {
+                            processQueueDatabaseService.delete(processQueueDatabaseService.getProcessByQueueItem(renderQueueItem.getQueueItemUUID()));
                         }
                     }
-                    if (renderQueueItem.getConnection_uuid() != null) {
-                        SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(renderQueueItem.getConnection_uuid());
+                    if (renderQueueItem.getConnectionUUID() != null) {
+                        SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(renderQueueItem.getConnectionUUID());
                         switch (renderQueueItem.getRenderComputeType()) {
                             case CPU:
                                 sethlansNode.setCpuSlotInUse(false);
@@ -113,7 +113,7 @@ class QueueProjectActions {
                     }
 
                 }
-                renderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
+                renderQueueDatabaseService.deleteAllByProject(blenderProject.getProjectUUID());
                 if (!blenderProject.isAllImagesProcessed() && blenderProjectDatabaseService.getByIdWithoutFrameParts(blenderProject.getId()) != null) {
                     blenderProject.setProjectStatus(ProjectStatus.Added);
                     blenderProject.setTotalProjectTime(0L);

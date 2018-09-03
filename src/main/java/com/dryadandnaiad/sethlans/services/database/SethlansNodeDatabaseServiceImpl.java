@@ -78,7 +78,7 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
     public void delete(Long id) {
         SethlansNode sethlansNode = nodeRepository.findOne(id);
         String connectionURL = "https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() + "/api/nodeactivate/removal";
-        String params = "connection_uuid=" + sethlansNode.getConnection_uuid();
+        String params = "connection_uuid=" + sethlansNode.getConnectionUUID();
         sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params);
         nodeRepository.delete(sethlansNode);
     }
@@ -87,7 +87,7 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
     public SethlansNode getByConnectionUUID(String uuid) {
         List<SethlansNode> sethlansNodes = listAll();
         for (SethlansNode sethlansNode : sethlansNodes) {
-            if (sethlansNode.getConnection_uuid().equals(uuid)) {
+            if (sethlansNode.getConnectionUUID().equals(uuid)) {
                 return sethlansNode;
             }
         }

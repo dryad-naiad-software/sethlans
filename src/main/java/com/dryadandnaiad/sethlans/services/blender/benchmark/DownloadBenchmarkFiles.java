@@ -50,7 +50,7 @@ class DownloadBenchmarkFiles {
                                          SethlansServerDatabaseService sethlansServerDatabaseService) {
         String binDir = SethlansConfigUtils.getProperty(SethlansConfigKeys.BINARY_DIR);
         LOG.debug("Downloading required files");
-        SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(benchmarkTask.getConnection_uuid());
+        SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(benchmarkTask.getConnectionUUID());
         String serverIP = sethlansServer.getIpAddress();
         String serverPort = sethlansServer.getNetworkPort();
         String cachedBlenderBinaries = getProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES);
@@ -69,7 +69,7 @@ class DownloadBenchmarkFiles {
             if (!versionCached) {
                 //Download Blender from server
                 String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blender_binary/";
-                String params = "connection_uuid=" + benchmarkTask.getConnection_uuid() + "&version=" + benchmarkTask.getBlenderVersion() + "&os=" + SethlansQueryUtils.getOS();
+                String params = "connection_uuid=" + benchmarkTask.getConnectionUUID() + "&version=" + benchmarkTask.getBlenderVersion() + "&os=" + SethlansQueryUtils.getOS();
                 String filename = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, binDir);
                 while (filename.isEmpty()) {
                     try {
@@ -104,7 +104,7 @@ class DownloadBenchmarkFiles {
 
             // Download benchmark from server
             String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/benchmark_files/" + benchmarkTask.getBenchmarkURL() + "/";
-            String params = "connection_uuid=" + benchmarkTask.getConnection_uuid();
+            String params = "connection_uuid=" + benchmarkTask.getConnectionUUID();
             String benchmarkFile = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, benchmarkDir.toString());
             benchmarkTask.setBenchmarkFile(benchmarkFile);
             LOG.debug("Required files downloaded.");

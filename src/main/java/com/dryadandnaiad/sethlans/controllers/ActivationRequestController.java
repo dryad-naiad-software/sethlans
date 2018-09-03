@@ -75,7 +75,7 @@ public class ActivationRequestController {
             sethlansServer.setHostname(serverhostname);
             sethlansServer.setIpAddress(ipAddress);
             sethlansServer.setNetworkPort(port);
-            sethlansServer.setConnection_uuid(connection_uuid);
+            sethlansServer.setConnectionUUID(connection_uuid);
             sethlansServer.setNodeUpdated(false);
             sethlansServer.setPendingAcknowledgementResponse(true);
             sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
@@ -97,7 +97,7 @@ public class ActivationRequestController {
         String port = sethlansServer.getNetworkPort();
         String responseURL = "https://" + ip + ":" + port + "/api/nodeactivate/response";
         String params = "nodehostname=" + sethlansNode.getHostname() + "&ipAddress=" + sethlansNode.getIpAddress()
-                + "&port=" + sethlansNode.getNetworkPort() + "&connection_uuid=" + sethlansServer.getConnection_uuid();
+                + "&port=" + sethlansNode.getNetworkPort() + "&connection_uuid=" + sethlansServer.getConnectionUUID();
         sethlansAPIConnectionService.sendToRemotePOST(responseURL, params);
     }
 

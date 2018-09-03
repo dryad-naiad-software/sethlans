@@ -57,9 +57,9 @@ class QueueNodeActions {
                                         SethlansNodeDatabaseService sethlansNodeDatabaseService, List<ProcessNodeStatus> itemsProcessed) {
         if (processNodeStatus.isAccepted()) {
             RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID());
-            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
+            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProjectUUID());
             LOG.debug("Compute Type " + renderQueueItem.getRenderComputeType());
-            SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(renderQueueItem.getConnection_uuid());
+            SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(renderQueueItem.getConnectionUUID());
             LOG.debug("Received node acknowledgement from " + sethlansNode.getHostname() + " for queue item " + processNodeStatus.getQueueUUID());
             if (blenderProject.getProjectStatus().equals(ProjectStatus.Pending)) {
                 blenderProject.setProjectStatus(ProjectStatus.Started);
@@ -73,10 +73,10 @@ class QueueNodeActions {
         }
         if (!processNodeStatus.isAccepted()) {
             RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID());
-            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUIDWithoutFrameParts(renderQueueItem.getProject_uuid());
+            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUIDWithoutFrameParts(renderQueueItem.getProjectUUID());
             LOG.debug("Received rejection for queue item " + processNodeStatus.getQueueUUID() + " adding back to pending queue.");
             renderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
-            renderQueueItem.setConnection_uuid(null);
+            renderQueueItem.setConnectionUUID(null);
             renderQueueItem.setRendering(false);
             renderQueueItem.setVersion(renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID()).getVersion());
             renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
@@ -101,12 +101,12 @@ class QueueNodeActions {
                 RenderQueueItem renderQueueItem = renderQueueItemList.get(i);
                 if (!renderQueueItem.isRendering()) {
                     LOG.debug(renderQueueItem.getProjectName() + " uuid: " +
-                            renderQueueItem.getProject_uuid() + " Frame: "
+                            renderQueueItem.getProjectUUID() + " Frame: "
                             + renderQueueItem.getBlenderFramePart().getFrameNumber() + " Part: "
                             + renderQueueItem.getBlenderFramePart().getPartNumber() + " is waiting to be rendered.");
                     renderQueueItem = setQueueItemToNode(sethlansNodeDatabaseService, i, nodesToUpdate, renderQueueItem);
                     LOG.debug(renderQueueItem.getProjectName() + " uuid: " +
-                            renderQueueItem.getProject_uuid() + " Frame: "
+                            renderQueueItem.getProjectUUID() + " Frame: "
                             + renderQueueItem.getBlenderFramePart().getFrameNumber() + " Part: "
                             + renderQueueItem.getBlenderFramePart().getPartNumber() + " is updated.");
                     renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
@@ -128,7 +128,7 @@ class QueueNodeActions {
                 if (sortedSethlansNodeList != null) {
                     sethlansNode = sortedSethlansNodeList.get(i);
                     sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
-                    renderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
+                    renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
                     renderQueueItem = setQueueItemComputeType(sethlansNode, renderQueueItem);
                     LOG.debug(renderQueueItem.toString());
                     switch (renderQueueItem.getRenderComputeType()) {
@@ -138,9 +138,9 @@ class QueueNodeActions {
                         case GPU:
                             if (sethlansNode.isCombined()) {
                                 sethlansNode.setAllGPUSlotInUse(true);
-                                renderQueueItem.setGpu_device_id("COMBO");
+                                renderQueueItem.setGpuDeviceId("COMBO");
                             } else {
-                                renderQueueItem.setGpu_device_id(getFastestGPU(sethlansNode));
+                                renderQueueItem.setGpuDeviceId(getFastestGPU(sethlansNode));
                                 if (sethlansNode.getAvailableRenderingSlots() == 0) {
                                     sethlansNode.setAllGPUSlotInUse(true);
                                 }
@@ -161,7 +161,7 @@ class QueueNodeActions {
                 nodeStatusLog(i, sortedSethlansNodeList);
                 if (sortedSethlansNodeList != null) {
                     sethlansNode = sortedSethlansNodeList.get(i);
-                    renderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
+                    renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
                     sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
                     sethlansNode.setCpuSlotInUse(true);
                     nodesToUpdate.add(sethlansNode);
@@ -172,13 +172,13 @@ class QueueNodeActions {
                 nodeStatusLog(i, sortedSethlansNodeList);
                 if (sortedSethlansNodeList != null) {
                     sethlansNode = sortedSethlansNodeList.get(i);
-                    renderQueueItem.setConnection_uuid(sethlansNode.getConnection_uuid());
+                    renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
                     sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
                     if (sethlansNode.isCombined()) {
                         sethlansNode.setAllGPUSlotInUse(true);
-                        renderQueueItem.setGpu_device_id("COMBO");
+                        renderQueueItem.setGpuDeviceId("COMBO");
                     } else {
-                        renderQueueItem.setGpu_device_id(getFastestGPU(sethlansNode));
+                        renderQueueItem.setGpuDeviceId(getFastestGPU(sethlansNode));
                         if (sethlansNode.getAvailableRenderingSlots() == 0) {
                             sethlansNode.setAllGPUSlotInUse(true);
                         }
@@ -208,15 +208,15 @@ class QueueNodeActions {
                                       SethlansNodeDatabaseService sethlansNodeDatabaseService, SethlansAPIConnectionService sethlansAPIConnectionService) {
         List<RenderQueueItem> renderQueueItemList = renderQueueDatabaseService.listPendingRenderWithNodeAssigned();
         for (RenderQueueItem renderQueueItem : renderQueueItemList) {
-            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
-            SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(renderQueueItem.getConnection_uuid());
+            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProjectUUID());
+            SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(renderQueueItem.getConnectionUUID());
             String connectionURL = "https://" + sethlansNode.getIpAddress() + ":" +
                     sethlansNode.getNetworkPort() + "/api/render/request";
             String params = "project_name=" + blenderProject.getProjectName() +
-                    "&connection_uuid=" + sethlansNode.getConnection_uuid() +
-                    "&project_uuid=" + blenderProject.getProject_uuid() +
-                    "&gpu_device_id=" + renderQueueItem.getGpu_device_id() +
-                    "&queue_item_uuid=" + renderQueueItem.getQueueItem_uuid() +
+                    "&connection_uuid=" + sethlansNode.getConnectionUUID() +
+                    "&project_uuid=" + blenderProject.getProjectUUID() +
+                    "&gpu_device_id=" + renderQueueItem.getGpuDeviceId() +
+                    "&queue_item_uuid=" + renderQueueItem.getQueueItemUUID() +
                     "&render_output_format=" + blenderProject.getRenderOutputFormat() +
                     "&samples=" + blenderProject.getSamples() +
                     "&blender_engine=" + blenderProject.getBlenderEngine() +

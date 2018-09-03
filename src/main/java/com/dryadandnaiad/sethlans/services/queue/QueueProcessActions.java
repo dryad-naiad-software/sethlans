@@ -75,7 +75,7 @@ class QueueProcessActions {
         }
         storedDir.mkdirs();
         LOG.debug("Processing received file " + processQueueItem.getPart() + " from " +
-                sethlansNodeDatabaseService.getByConnectionUUID(processQueueItem.getConnection_uuid()).getHostname() + ". Frame: " + frameNumber +
+                sethlansNodeDatabaseService.getByConnectionUUID(processQueueItem.getConnectionUUID()).getHostname() + ". Frame: " + frameNumber +
                 " Part: " + partNumber
         );
         File moveReceived = new File(processQueueItem.getPart());
@@ -106,7 +106,7 @@ class QueueProcessActions {
         }
         if (remainingPartsForFrame == 0) {
             ProcessFrameItem processFrameItem = new ProcessFrameItem();
-            processFrameItem.setProjectUUID(blenderProject.getProject_uuid());
+            processFrameItem.setProjectUUID(blenderProject.getProjectUUID());
             processFrameItem.setFrameNumber(frameNumber);
             processFrameDatabaseService.saveOrUpdate(processFrameItem);
         }
@@ -121,9 +121,9 @@ class QueueProcessActions {
         try {
             processQueueDatabaseService.saveOrUpdate(processQueueItem);
             RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processQueueItem.getQueueUUID());
-            SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(processQueueItem.getConnection_uuid());
+            SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(processQueueItem.getConnectionUUID());
             ComputeType computeType = renderQueueItem.getRenderComputeType();
-            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
+            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProjectUUID());
             renderQueueItem.getBlenderFramePart().setStoredDir(blenderProject.getProjectRootDir() +
                     File.separator + "frame_" + renderQueueItem.getBlenderFramePart().getFrameNumber() + File.separator);
             renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
@@ -136,7 +136,7 @@ class QueueProcessActions {
                         sethlansNode.setAllGPUSlotInUse(false);
                     } else {
                         for (GPUDevice gpuDevice : sethlansNode.getSelectedGPUs()) {
-                            if (gpuDevice.getDeviceID().equals(renderQueueItem.getGpu_device_id())) {
+                            if (gpuDevice.getDeviceID().equals(renderQueueItem.getGpuDeviceId())) {
                                 gpuDevice.setInUse(false);
                             }
                         }
@@ -176,8 +176,8 @@ class QueueProcessActions {
             for (BlenderProject blenderProject : blenderProjectDatabaseService.listAll()) {
 
                 if (blenderProject.getProjectStatus().equals(ProjectStatus.Rendering) || blenderProject.getProjectStatus().equals(ProjectStatus.Started)) {
-                    if (frameFileUpdateDatabaseService.listByProjectUUID(blenderProject.getProject_uuid()).size() == 0
-                            && processFrameDatabaseService.listbyProjectUUID(blenderProject.getProject_uuid()).size() == 0) {
+                    if (frameFileUpdateDatabaseService.listByProjectUUID(blenderProject.getProjectUUID()).size() == 0
+                            && processFrameDatabaseService.listbyProjectUUID(blenderProject.getProjectUUID()).size() == 0) {
                         if (blenderProject.getRemainingQueueSize() == 0) {
                             if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
                                 blenderProject.setProjectStatus(ProjectStatus.Processing);
@@ -206,7 +206,7 @@ class QueueProcessActions {
                             blenderProject.setTotalProjectTime(blenderProject.getProjectEnd() - blenderProject.getProjectStart());
                             blenderProject.setVersion(blenderProjectDatabaseService.getByIdWithoutFrameParts(blenderProject.getId()).getVersion());
                             blenderProjectDatabaseService.saveOrUpdate(blenderProject);
-                            renderQueueDatabaseService.deleteAllByProject(blenderProject.getProject_uuid());
+                            renderQueueDatabaseService.deleteAllByProject(blenderProject.getProjectUUID());
                         }
                     }
                 }

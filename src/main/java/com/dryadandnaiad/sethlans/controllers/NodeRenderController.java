@@ -158,10 +158,10 @@ public class NodeRenderController {
 
                 // Create a new task
                 renderTask = new RenderTask();
-                renderTask.setProject_uuid(project_uuid);
+                renderTask.setProjectUUID(project_uuid);
                 renderTask.setProjectName(project_name);
-                renderTask.setServer_queue_uuid(queue_item_uuid);
-                renderTask.setConnection_uuid(connection_uuid);
+                renderTask.setServerQueueUUID(queue_item_uuid);
+                renderTask.setConnectionUUID(connection_uuid);
                 renderTask.setRenderOutputFormat(render_output_format);
                 renderTask.setSamples(samples);
                 renderTask.setBlenderEngine(blender_engine);
@@ -199,7 +199,7 @@ public class NodeRenderController {
                 LOG.info("Received a " + compute_type + " render task from " + sethlansServer.getHostname() + " for project " + project_name);
                 LOG.info("Part " + part_number + " of Frame " + frame_number);
                 renderTaskDatabaseService.saveOrUpdate(renderTask);
-                blenderRenderService.startRender(renderTask.getServer_queue_uuid());
+                blenderRenderService.startRender(renderTask.getServerQueueUUID());
             }
         }
     }
@@ -228,8 +228,8 @@ public class NodeRenderController {
             cpuBenchmarkTask.setBenchmarkURL("bmw_cpu");
             cpuBenchmarkTask.setComputeType(ComputeType.CPU);
             cpuBenchmarkTask.setComplete(false);
-            cpuBenchmarkTask.setConnection_uuid(connection_uuid);
-            cpuBenchmarkTask.setBenchmark_uuid(SethlansQueryUtils.getShortUUID());
+            cpuBenchmarkTask.setConnectionUUID(connection_uuid);
+            cpuBenchmarkTask.setBenchmarkUUID(SethlansQueryUtils.getShortUUID());
 
             List<BlenderBenchmarkTask> gpuTasks = new ArrayList<>();
 
@@ -241,8 +241,8 @@ public class NodeRenderController {
                 gpuBenchmarkTask.setDeviceID(cuda);
                 gpuBenchmarkTask.setBenchmarkURL("bmw_gpu");
                 gpuBenchmarkTask.setComputeType(ComputeType.GPU);
-                gpuBenchmarkTask.setConnection_uuid(connection_uuid);
-                gpuBenchmarkTask.setBenchmark_uuid(SethlansQueryUtils.getShortUUID());
+                gpuBenchmarkTask.setConnectionUUID(connection_uuid);
+                gpuBenchmarkTask.setBenchmarkUUID(SethlansQueryUtils.getShortUUID());
                 gpuTasks.add(gpuBenchmarkTask);
             }
 
@@ -250,21 +250,21 @@ public class NodeRenderController {
             switch (compute_type) {
                 case CPU:
                     blenderBenchmarkTaskDatabaseService.saveOrUpdate(cpuBenchmarkTask);
-                    blenderBenchmarkService.processReceivedBenchmark(cpuBenchmarkTask.getBenchmark_uuid());
+                    blenderBenchmarkService.processReceivedBenchmark(cpuBenchmarkTask.getBenchmarkUUID());
                     break;
                 case CPU_GPU:
                     blenderBenchmarkTaskDatabaseService.saveOrUpdate(cpuBenchmarkTask);
                     for (BlenderBenchmarkTask gpuTask : gpuTasks) {
                         blenderBenchmarkTaskDatabaseService.saveOrUpdate(gpuTask);
-                        benchmarks.add(gpuTask.getBenchmark_uuid());
+                        benchmarks.add(gpuTask.getBenchmarkUUID());
                     }
-                    benchmarks.add(cpuBenchmarkTask.getBenchmark_uuid());
+                    benchmarks.add(cpuBenchmarkTask.getBenchmarkUUID());
                     blenderBenchmarkService.processReceivedBenchmarks(benchmarks);
                     break;
                 case GPU:
                     for (BlenderBenchmarkTask gpuTask : gpuTasks) {
                         blenderBenchmarkTaskDatabaseService.saveOrUpdate(gpuTask);
-                        benchmarks.add(gpuTask.getBenchmark_uuid());
+                        benchmarks.add(gpuTask.getBenchmarkUUID());
                     }
                     blenderBenchmarkService.processReceivedBenchmarks(benchmarks);
                     break;

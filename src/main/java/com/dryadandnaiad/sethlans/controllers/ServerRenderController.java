@@ -182,7 +182,7 @@ public class ServerRenderController {
                         File receivedFile = new File(blenderProject.getProjectRootDir() + File.separator + "received" + File.separator + StringUtils.left(queue_uuid, 8) + "-" + System.currentTimeMillis() + ".png");
                         part.transferTo(receivedFile);
                         ProcessQueueItem processQueueItem = new ProcessQueueItem();
-                        processQueueItem.setConnection_uuid(connection_uuid);
+                        processQueueItem.setConnectionUUID(connection_uuid);
                         processQueueItem.setPart(receivedFile.toString());
                         LOG.debug("Received file from " + sethlansNode.getHostname() + " saved as " + receivedFile.toString());
                         processQueueItem.setQueueUUID(queue_uuid);

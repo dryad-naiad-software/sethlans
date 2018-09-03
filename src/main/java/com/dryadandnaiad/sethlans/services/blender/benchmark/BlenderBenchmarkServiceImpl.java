@@ -77,7 +77,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.NODE, message, NotificationScope.ADMIN);
         sethlansNotificationService.sendNotification(sethlansNotification);
         String nodeURL = "https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() + "/api/benchmark/request";
-        String params = "connection_uuid=" + sethlansNode.getConnection_uuid() + "&compute_type=" + sethlansNode.getComputeType() +
+        String params = "connection_uuid=" + sethlansNode.getConnectionUUID() + "&compute_type=" + sethlansNode.getComputeType() +
                 "&blender_version=" + primaryBlenderVersion;
         sethlansAPIConnectionService.sendToRemotePOST(nodeURL, params);
     }
@@ -92,24 +92,24 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             List<BlenderBenchmarkTask> blenderBenchmarkTaskList = blenderBenchmarkTaskDatabaseService.listAll();
             List<BlenderBenchmarkTask> pendingBenchmarks = new ArrayList<>();
             for (BlenderBenchmarkTask benchmarkTask : blenderBenchmarkTaskList) {
-                if (!benchmarkTask.isComplete() && sethlansServerDatabaseService.getByConnectionUUID(benchmarkTask.getConnection_uuid()) != null) {
+                if (!benchmarkTask.isComplete() && sethlansServerDatabaseService.getByConnectionUUID(benchmarkTask.getConnectionUUID()) != null) {
                     pendingBenchmarks.add(benchmarkTask);
                 }
-                if (!benchmarkTask.isComplete() && sethlansServerDatabaseService.getByConnectionUUID(benchmarkTask.getConnection_uuid()) == null) {
+                if (!benchmarkTask.isComplete() && sethlansServerDatabaseService.getByConnectionUUID(benchmarkTask.getConnectionUUID()) == null) {
                     LOG.debug("Removing stale benchmarks.");
-                    blenderBenchmarkTaskDatabaseService.deleteAllByConnection(benchmarkTask.getConnection_uuid());
+                    blenderBenchmarkTaskDatabaseService.deleteAllByConnection(benchmarkTask.getConnectionUUID());
                 }
             }
             if (pendingBenchmarks.size() > 1) {
                 LOG.debug("There are " + pendingBenchmarks.size() + " benchmarks pending.");
                 List<String> benchmarkUUIDs = new ArrayList<>();
                 for (BlenderBenchmarkTask pendingBenchmark : pendingBenchmarks) {
-                    benchmarkUUIDs.add(pendingBenchmark.getBenchmark_uuid());
+                    benchmarkUUIDs.add(pendingBenchmark.getBenchmarkUUID());
                 }
                 processReceivedBenchmarks(benchmarkUUIDs);
             } else if (pendingBenchmarks.size() == 1) {
                 LOG.debug("There is one benchmark pending.");
-                processReceivedBenchmark(pendingBenchmarks.get(0).getBenchmark_uuid());
+                processReceivedBenchmark(pendingBenchmarks.get(0).getBenchmarkUUID());
             } else {
                 LOG.debug("No benchmarks are pending.");
             }
@@ -147,7 +147,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             }
             int count = 0;
             while (true) {
-                if (sendResultsToServer(benchmarkTask.getConnection_uuid(), benchmarkTask)) {
+                if (sendResultsToServer(benchmarkTask.getConnectionUUID(), benchmarkTask)) {
                     break;
                 }
                 if (count >= 10) {
@@ -175,11 +175,11 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         String serverUrl = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/benchmark/response";
         String params;
         if (blenderBenchmarkTask.getComputeType().equals(ComputeType.CPU)) {
-            params = "connection_uuid=" + sethlansServer.getConnection_uuid() + "&rating=" + blenderBenchmarkTask.getCpuRating() + "&cuda_name=" + "&compute_type=" +
+            params = "connection_uuid=" + sethlansServer.getConnectionUUID() + "&rating=" + blenderBenchmarkTask.getCpuRating() + "&cuda_name=" + "&compute_type=" +
                     blenderBenchmarkTask.getComputeType() + "&complete=" + complete;
 
         } else {
-            params = "connection_uuid=" + sethlansServer.getConnection_uuid() + "&rating=" + blenderBenchmarkTask.getGpuRating() + "&cuda_name=" + blenderBenchmarkTask.getDeviceID() + "&compute_type=" +
+            params = "connection_uuid=" + sethlansServer.getConnectionUUID() + "&rating=" + blenderBenchmarkTask.getGpuRating() + "&cuda_name=" + blenderBenchmarkTask.getDeviceID() + "&compute_type=" +
                     blenderBenchmarkTask.getComputeType() + "&complete=" + complete;
         }
         return sethlansAPIConnectionService.sendToRemotePOST(serverUrl, params);

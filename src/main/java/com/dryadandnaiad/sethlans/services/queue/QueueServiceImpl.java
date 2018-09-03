@@ -379,17 +379,17 @@ public class QueueServiceImpl implements QueueService {
                     break;
                 }
                 if (index <= finalIndex) {
-                    if (!renderQueueDatabaseService.checkExistingProjectIndex(blenderProject.getProject_uuid(), index)) {
+                    if (!renderQueueDatabaseService.checkExistingProjectIndex(blenderProject.getProjectUUID(), index)) {
                         LOG.debug("Adding to Queue item at index: " + index);
                         RenderQueueItem renderQueueItem = new RenderQueueItem();
-                        renderQueueItem.setProject_uuid(blenderProject.getProject_uuid());
+                        renderQueueItem.setProjectUUID(blenderProject.getProjectUUID());
                         renderQueueItem.setProjectIndex(index);
                         renderQueueItem.setProjectName(blenderProject.getProjectName());
                         renderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
-                        renderQueueItem.setQueueItem_uuid(UUID.randomUUID().toString());
+                        renderQueueItem.setQueueItemUUID(UUID.randomUUID().toString());
                         renderQueueItem.setComplete(false);
                         renderQueueItem.setPaused(false);
-                        renderQueueItem.setConnection_uuid(null);
+                        renderQueueItem.setConnectionUUID(null);
                         renderQueueItem.setBlenderFramePart(blenderFramePartList.get(index));
                         renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
                     }
@@ -494,7 +494,7 @@ public class QueueServiceImpl implements QueueService {
                     if (blenderProject == null) {
                         blenderProject = blenderProjectDatabaseService.getByProjectUUID(frameFileUpdateItem.getProjectUUID());
                     } else {
-                        if (!blenderProject.getProject_uuid().equals(frameFileUpdateItem.getProjectUUID())) {
+                        if (!blenderProject.getProjectUUID().equals(frameFileUpdateItem.getProjectUUID())) {
                             // If the frame update is for another project. Save the current project then start the update of the new project
                             blenderProjectDatabaseService.saveOrUpdate(blenderProject);
                             blenderProject = blenderProjectDatabaseService.getByProjectUUID(frameFileUpdateItem.getProjectUUID());

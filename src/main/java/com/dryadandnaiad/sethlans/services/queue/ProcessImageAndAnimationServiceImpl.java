@@ -113,7 +113,7 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
             }
             ImageIO.write(concatImage, fileExtension.toUpperCase(), new File(frameFilename));
             FrameFileUpdateItem newFrameUpdate = new FrameFileUpdateItem();
-            newFrameUpdate.setProjectUUID(blenderProject.getProject_uuid());
+            newFrameUpdate.setProjectUUID(blenderProject.getProjectUUID());
             newFrameUpdate.setFrameFileName(frameFilename);
             newFrameUpdate.setCurrentFrameThumbnail(createThumbnail(frameFilename, storedDir, plainFilename, fileExtension));
             frameFileUpdateDatabaseService.saveOrUpdate(newFrameUpdate);

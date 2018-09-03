@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -35,7 +35,7 @@ import javax.persistence.Entity;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class ProcessQueueItem extends AbstractEntityClass {
-    private String connection_uuid;
+    private String connectionUUID;
     private String part;
     private String queueUUID;
     private String projectUUID;

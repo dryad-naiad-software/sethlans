@@ -54,7 +54,7 @@ public class NodeActivationServiceImpl implements NodeActivationService {
         String port = sethlansNode.getNetworkPort();
         String activateURL = "https://" + ip + ":" + port + "/api/nodeactivate/request";
         String params = "serverhostname=" + sethlansServer.getHostname() + "&ipAddress=" + sethlansServer.getIpAddress()
-                + "&port=" + sethlansServer.getNetworkPort() + "&connection_uuid=" + sethlansNode.getConnection_uuid() + "&access_key=" + accessKey;
+                + "&port=" + sethlansServer.getNetworkPort() + "&connection_uuid=" + sethlansNode.getConnectionUUID() + "&access_key=" + accessKey;
         if (sethlansAPIConnectionService.sendToRemotePOST(activateURL, params)) {
             addBlenderBinary(sethlansNode.getSethlansNodeOS().toString());
         }
@@ -67,7 +67,7 @@ public class NodeActivationServiceImpl implements NodeActivationService {
         String ip = sethlansNode.getIpAddress();
         String port = sethlansNode.getNetworkPort();
         String acknowledgeURL = "https://" + ip + ":" + port + "/api/nodeactivate/acknowledge";
-        String params = "connection_uuid=" + sethlansNode.getConnection_uuid();
+        String params = "connection_uuid=" + sethlansNode.getConnectionUUID();
         boolean pendingDownloads = true;
         if (sethlansAPIConnectionService.sendToRemotePOST(acknowledgeURL, params)) {
             while (pendingDownloads) {

@@ -46,7 +46,7 @@ public class QueueNodeStatusActions {
     static void processOfflineNodes(SethlansNodeDatabaseService sethlansNodeDatabaseService,
                                     NodeOnlineItem nodeOnlineItem, RenderQueueDatabaseService renderQueueDatabaseService, BlenderProjectDatabaseService blenderProjectDatabaseService,
                                     List<NodeOnlineItem> processedStatusNodes) {
-        SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(nodeOnlineItem.getConnection_uuid());
+        SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(nodeOnlineItem.getConnectionUUID());
         if (!nodeOnlineItem.isOnline()) {
             LOG.debug("Marking node " + sethlansNode.getHostname() + " as inactive.");
             switch (sethlansNode.getComputeType()) {
@@ -79,7 +79,7 @@ public class QueueNodeStatusActions {
                     break;
             }
             if (renderQueueDatabaseService.tableSize() > 0) {
-                removeNodeFromQueue(sethlansNode.getConnection_uuid(), renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNode);
+                removeNodeFromQueue(sethlansNode.getConnectionUUID(), renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNode);
             }
         }
         if (nodeOnlineItem.isOnline()) {
@@ -98,7 +98,7 @@ public class QueueNodeStatusActions {
         boolean waitingTobeProcessed = false;
         // Verify that the current node isn't waiting to be processed.
         for (ProcessQueueItem processQueueItem : incomingQueueItemList) {
-            if (processQueueItem.getConnection_uuid().equals(idleNode.getConnectionUUID())) {
+            if (processQueueItem.getConnectionUUID().equals(idleNode.getConnectionUUID())) {
                 waitingTobeProcessed = true;
             }
         }
@@ -138,13 +138,13 @@ public class QueueNodeStatusActions {
 
     static void deleteNodes(Long nodeID, SethlansNodeDatabaseService sethlansNodeDatabaseService, RenderQueueDatabaseService renderQueueDatabaseService, BlenderProjectDatabaseService blenderProjectDatabaseService) {
         SethlansNode sethlansNode = sethlansNodeDatabaseService.getById(nodeID);
-        removeNodeFromQueue(sethlansNode.getConnection_uuid(), renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNode);
+        removeNodeFromQueue(sethlansNode.getConnectionUUID(), renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNode);
         sethlansNodeDatabaseService.delete(nodeID);
     }
 
     static void disableNodes(Long nodeID, SethlansNodeDatabaseService sethlansNodeDatabaseService, RenderQueueDatabaseService renderQueueDatabaseService, BlenderProjectDatabaseService blenderProjectDatabaseService) {
         SethlansNode sethlansNode = sethlansNodeDatabaseService.getById(nodeID);
-        removeNodeFromQueue(sethlansNode.getConnection_uuid(), renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNode);
+        removeNodeFromQueue(sethlansNode.getConnectionUUID(), renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNode);
         sethlansNode.setDisabled(true);
         sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
     }
@@ -159,9 +159,9 @@ public class QueueNodeStatusActions {
         }
         LOG.debug("Number of queue items assigned to " + sethlansNode.getHostname() + ": " + queueItemsNotComplete.size());
         for (RenderQueueItem renderQueueItem : queueItemsNotComplete) {
-            renderQueueItem.setConnection_uuid(null);
+            renderQueueItem.setConnectionUUID(null);
             renderQueueItem.setRendering(false);
-            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProject_uuid());
+            BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProjectUUID());
             renderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
             renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
         }

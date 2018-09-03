@@ -194,7 +194,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         List<BlenderFramePart> blenderFramePartList = new ArrayList<>();
         List<String> frameFileNames = new ArrayList<>();
         String truncatedProjectName = StringUtils.left(blenderProject.getProjectName(), 10);
-        String truncatedUUID = StringUtils.left(blenderProject.getProject_uuid(), 4);
+        String truncatedUUID = StringUtils.left(blenderProject.getProjectUUID(), 4);
         String cleanedProjectName = truncatedProjectName.replaceAll(" ", "").replaceAll("[^a-zA-Z0-9_-]", "").toLowerCase();
         List<PartCoordinates> partCoordinatesList = configurePartCoordinates(blenderProject.getPartsPerFrame());
         for (int i = 0; i < blenderProject.getTotalNumOfFrames(); i++) {

@@ -68,7 +68,7 @@ public class BlenderProject extends AbstractEntityClass {
     private String blendFileLocation;
     private String blenderVersion;
     private String currentFrameThumbnail;
-    private String project_uuid;
+    private String projectUUID;
     private String projectRootDir;
     private String movieFileLocation;
     private int totalQueueSize;
@@ -122,7 +122,7 @@ public class BlenderProject extends AbstractEntityClass {
                 ", currentPercentage=" + currentPercentage +
                 ", partsPerFrame=" + partsPerFrame +
                 ", frameList=" + framePartList +
-                ", project_uuid='" + project_uuid + '\'' +
+                ", project_uuid='" + projectUUID + '\'' +
                 ", frameFileNames='" + frameFileNames + '\'' +
                 ", projectRootDir='" + projectRootDir + '\'' +
                 ", allImagesProcessed='" + allImagesProcessed + '\'' +

@@ -53,7 +53,7 @@ class PrepareScripts {
                                         BlenderPythonScriptService blenderPythonScriptService) {
         String tempDir = SethlansConfigUtils.getProperty(SethlansConfigKeys.TEMP_DIR);
         LOG.debug("Processing benchmark task: " + benchmarkTask.toString());
-        File benchmarkDir = new File(tempDir + File.separator + benchmarkTask.getBenchmark_uuid() + "_" + benchmarkTask.getBenchmarkURL());
+        File benchmarkDir = new File(tempDir + File.separator + benchmarkTask.getBenchmarkUUID() + "_" + benchmarkTask.getBenchmarkURL());
         if (downloadRequiredFiles(benchmarkDir, benchmarkTask, sethlansAPIConnectionService, sethlansServerDatabaseService)) {
             benchmarkTask = blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
 

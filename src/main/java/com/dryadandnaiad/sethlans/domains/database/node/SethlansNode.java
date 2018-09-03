@@ -70,7 +70,7 @@ public class SethlansNode extends AbstractEntityClass {
     private boolean active;
     private boolean disabled;
     private boolean pendingActivation;
-    private String connection_uuid;
+    private String connectionUUID;
     private int cpuRating;
     private boolean benchmarkComplete;
     private int totalRenderingSlots;
@@ -121,7 +121,7 @@ public class SethlansNode extends AbstractEntityClass {
                 ", active=" + active +
                 ", disabled=" + disabled +
                 ", pendingActivation=" + pendingActivation +
-                ", connection_uuid='" + connection_uuid + '\'' +
+                ", connection_uuid='" + connectionUUID + '\'' +
                 ", cpuRating=" + cpuRating +
                 ", benchmarkComplete=" + benchmarkComplete +
                 ", totalRenderingSlots=" + totalRenderingSlots +

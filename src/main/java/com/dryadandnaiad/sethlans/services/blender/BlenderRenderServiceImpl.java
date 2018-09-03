@@ -119,7 +119,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         String truncatedProjectName = StringUtils.left(renderTask.getProjectName(), 10);
         String cleanedProjectName = truncatedProjectName.replaceAll(" ", "").replaceAll("[^a-zA-Z0-9_-]", "");
         File blendFileDir = new File(getProperty(SethlansConfigKeys.BLEND_FILE_CACHE_DIR)
-                + File.separator + cleanedProjectName.toLowerCase() + "-" + renderTask.getProject_uuid());
+                + File.separator + cleanedProjectName.toLowerCase() + "-" + renderTask.getProjectUUID());
         File renderDir = new File(cacheDir + File.separator + renderTask.getBlenderFramePart().getPartFilename());
         if (downloadRequiredFiles(renderDir, blendFileDir, renderTask)) {
             renderTask = renderTaskDatabaseService.saveOrUpdate(renderTask);
@@ -210,8 +210,8 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             renderTask = renderTaskDatabaseService.saveOrUpdate(renderTask);
             int count = 0;
             while (true) {
-                if (sendResultsToServer(renderTask.getConnection_uuid(), renderTask)) {
-                    RenderTaskHistory renderTaskHistory = renderTaskHistoryDatabaseService.findByQueueUUID(renderTask.getServer_queue_uuid());
+                if (sendResultsToServer(renderTask.getConnectionUUID(), renderTask)) {
+                    RenderTaskHistory renderTaskHistory = renderTaskHistoryDatabaseService.findByQueueUUID(renderTask.getServerQueueUUID());
                     renderTaskHistory.setCompleted(true);
                     renderTaskHistory.setFailed(false);
                     renderTaskHistoryDatabaseService.saveOrUpdate(renderTaskHistory);
@@ -239,13 +239,13 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
         } else {
             LOG.info("Failed render, sending reject notice");
-            RenderTaskHistory renderTaskHistory = renderTaskHistoryDatabaseService.findByQueueUUID(renderTask.getServer_queue_uuid());
+            RenderTaskHistory renderTaskHistory = renderTaskHistoryDatabaseService.findByQueueUUID(renderTask.getServerQueueUUID());
             renderTaskHistory.setCompleted(true);
             renderTaskHistory.setFailed(true);
             renderTaskHistoryDatabaseService.saveOrUpdate(renderTaskHistory);
-            SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(renderTask.getConnection_uuid());
+            SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(renderTask.getConnectionUUID());
             String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_reject_item/";
-            String params = "queue_item_uuid=" + renderTask.getServer_queue_uuid();
+            String params = "queue_item_uuid=" + renderTask.getServerQueueUUID();
             sethlansAPIConnectionService.sendToRemoteGET(connectionURL, params);
             renderTaskDatabaseService.delete(renderTask);
         }
@@ -256,9 +256,9 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connectionUUID);
             String serverUrl = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/response";
             Map<String, String> params = new HashMap<>();
-            params.put("connection_uuid", renderTask.getConnection_uuid());
-            params.put("queue_uuid", renderTask.getServer_queue_uuid());
-            params.put("project_uuid", renderTask.getProject_uuid());
+            params.put("connection_uuid", renderTask.getConnectionUUID());
+            params.put("queue_uuid", renderTask.getServerQueueUUID());
+            params.put("project_uuid", renderTask.getProjectUUID());
             params.put("render_time", Long.toString(renderTask.getRenderTime()));
             String renderedFileName = String.format("%04d", renderTask.getBlenderFramePart().getFrameNumber());
 
@@ -272,7 +272,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
     private boolean downloadRequiredFiles(File renderDir, File blendFileDir, RenderTask renderTask) {
         LOG.info("Downloading required files");
-        SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(renderTask.getConnection_uuid());
+        SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(renderTask.getConnectionUUID());
         String serverIP = sethlansServer.getIpAddress();
         String serverPort = sethlansServer.getNetworkPort();
         String cachedBlenderBinaries = getProperty(SethlansConfigKeys.CACHED_BLENDER_BINARIES);
@@ -292,7 +292,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
             if (!versionCached) {
                 String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blender_binary/";
-                String params = "connection_uuid=" + renderTask.getConnection_uuid() + "&version=" +
+                String params = "connection_uuid=" + renderTask.getConnectionUUID() + "&version=" +
                         renderTask.getBlenderVersion() + "&os=" + SethlansQueryUtils.getOS();
                 String filename = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, binDir);
 
@@ -322,7 +322,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             // Download Blend File from server
             blendFileDir.mkdirs();
             String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blend_file/";
-            String params = "connection_uuid=" + renderTask.getConnection_uuid() + "&project_uuid=" + renderTask.getProject_uuid();
+            String params = "connection_uuid=" + renderTask.getConnectionUUID() + "&project_uuid=" + renderTask.getProjectUUID();
             if (isDirectoryEmpty(blendFileDir)) {
                 String blendFile = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, blendFileDir.toString());
                 renderTask.setBlendFilename(blendFileDir + File.separator + blendFile);

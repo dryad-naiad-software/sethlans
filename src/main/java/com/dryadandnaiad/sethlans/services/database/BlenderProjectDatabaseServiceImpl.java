@@ -219,7 +219,7 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     public BlenderProject getByProjectUUID(String projectUUID) {
         List<BlenderProject> blenderProjectList = listAll();
         for (BlenderProject blenderProject : blenderProjectList) {
-            if (blenderProject.getProject_uuid().equals(projectUUID)) {
+            if (blenderProject.getProjectUUID().equals(projectUUID)) {
                 blenderProject.setFramePartList(loadBlenderPartList(blenderProject));
                 return blenderProject;
             }
@@ -231,7 +231,7 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     public BlenderProject getByProjectUUIDWithoutFrameParts(String projectUUID) {
         List<BlenderProject> blenderProjectList = listWithoutFramePart();
         for (BlenderProject blenderProject : blenderProjectList) {
-            if (blenderProject.getProject_uuid().equals(projectUUID)) {
+            if (blenderProject.getProjectUUID().equals(projectUUID)) {
                 return blenderProject;
             }
         }
@@ -246,7 +246,7 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
 
     private void saveBlenderPartList(BlenderProject blenderProject) {
         try {
-            Writer writer = new FileWriter(blenderProject.getProjectRootDir() + File.separator + blenderProject.getProject_uuid() + ".json");
+            Writer writer = new FileWriter(blenderProject.getProjectRootDir() + File.separator + blenderProject.getProjectUUID() + ".json");
             gson.toJson(blenderProject.getFramePartList(), writer);
             writer.close();
         } catch (IOException e) {
@@ -257,7 +257,7 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     private List<BlenderFramePart> loadBlenderPartList(BlenderProject blenderProject) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(blenderProject.getProjectRootDir() +
-                    File.separator + blenderProject.getProject_uuid() + ".json"));
+                    File.separator + blenderProject.getProjectUUID() + ".json"));
             List<BlenderFramePart> blenderFramePartList = gson.fromJson(reader, new TypeToken<List<BlenderFramePart>>() {
             }.getType());
             reader.close();

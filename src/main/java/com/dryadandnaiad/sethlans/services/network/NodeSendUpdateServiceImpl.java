@@ -150,7 +150,7 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
     private void sendIdleUpdate(ComputeType computeType) {
         for (SethlansServer sethlansServer : sethlansServerDatabaseService.listAll()) {
             String url = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/update/node_idle_notification";
-            String param = "connection_uuid=" + sethlansServer.getConnection_uuid() + "&compute_type=" + computeType;
+            String param = "connection_uuid=" + sethlansServer.getConnectionUUID() + "&compute_type=" + computeType;
             sethlansAPIConnectionService.sendToRemotePOST(url, param);
         }
     }
@@ -165,7 +165,7 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
                 if (sethlansServer.isNodeUpdated()) {
                     LOG.debug("Sending node status update request to " + sethlansServer.getHostname());
                     String url = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/update/node_status_update/";
-                    String param = "connection_uuid=" + sethlansServer.getConnection_uuid();
+                    String param = "connection_uuid=" + sethlansServer.getConnectionUUID();
                     if (sethlansAPIConnectionService.sendToRemoteGET(url, param)) {
                         sethlansServer.setNodeUpdated(false);
                         sethlansServerDatabaseService.saveOrUpdate(sethlansServer);

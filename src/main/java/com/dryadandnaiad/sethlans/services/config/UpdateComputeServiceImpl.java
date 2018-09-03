@@ -85,9 +85,9 @@ public class UpdateComputeServiceImpl implements UpdateComputeService {
         }
         List<RenderTask> renderTaskList = renderTaskDatabaseService.listAll();
         for (RenderTask renderTask : renderTaskList) {
-            SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(renderTask.getConnection_uuid());
+            SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(renderTask.getConnectionUUID());
             String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_reject_item/";
-            String params = "queue_item_uuid=" + renderTask.getServer_queue_uuid();
+            String params = "queue_item_uuid=" + renderTask.getServerQueueUUID();
             sethlansAPIConnectionService.sendToRemoteGET(connectionURL, params);
             renderTaskDatabaseService.delete(renderTask);
         }

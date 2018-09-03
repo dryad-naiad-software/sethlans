@@ -135,7 +135,7 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
             sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
             sethlansNode.setCpuSlotInUse(false);
             sethlansNode.setAllGPUSlotInUse(false);
-            sethlansNode.setConnection_uuid(UUID.randomUUID().toString());
+            sethlansNode.setConnectionUUID(UUID.randomUUID().toString());
 
         } catch (NullPointerException e) {
             LOG.error("Unable to read JSON data from " + ip + ":" + port);

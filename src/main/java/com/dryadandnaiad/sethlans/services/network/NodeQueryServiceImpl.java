@@ -54,12 +54,12 @@ public class NodeQueryServiceImpl implements NodeQueryService {
                         for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
                             if (sethlansNode.isBenchmarkComplete()) {
                                 boolean response = sethlansAPIConnectionService.queryNode("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort()
-                                        + "/api/info/node_keep_alive", "connection_uuid=" + sethlansNode.getConnection_uuid());
+                                        + "/api/info/node_keep_alive", "connection_uuid=" + sethlansNode.getConnectionUUID());
                                 if (!response && sethlansNode.isActive()) {
                                     LOG.debug(sethlansNode.getHostname() + " is down.");
-                                    queueService.nodeStatusUpdateItem(sethlansNode.getConnection_uuid(), false);
+                                    queueService.nodeStatusUpdateItem(sethlansNode.getConnectionUUID(), false);
                                 } else if (response && !sethlansNode.isDisabled() && !sethlansNode.isActive()) {
-                                    queueService.nodeStatusUpdateItem(sethlansNode.getConnection_uuid(), true);
+                                    queueService.nodeStatusUpdateItem(sethlansNode.getConnectionUUID(), true);
                                     LOG.debug(sethlansNode.getHostname() + " is back online.");
                                 }
                             }

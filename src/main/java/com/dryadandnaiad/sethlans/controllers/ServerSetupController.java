@@ -92,7 +92,7 @@ public class ServerSetupController {
                 nodeAddNotification(sethlansNode);
                 if (sethlansNode.isPendingActivation()) {
                     nodeActivationService.sendActivationRequestToNode(sethlansNode, SethlansQueryUtils.getCurrentServerInfo(), accessKey);
-                    return sethlansNode.getConnection_uuid();
+                    return sethlansNode.getConnectionUUID();
 
                 }
             }
@@ -103,7 +103,7 @@ public class ServerSetupController {
             nodeAddNotification(sethlansNode);
             if (sethlansNode.isPendingActivation()) {
                 nodeActivationService.sendActivationRequestToNode(sethlansNode, SethlansQueryUtils.getCurrentServerInfo(), accessKey);
-                return sethlansNode.getConnection_uuid();
+                return sethlansNode.getConnectionUUID();
             }
         }
 

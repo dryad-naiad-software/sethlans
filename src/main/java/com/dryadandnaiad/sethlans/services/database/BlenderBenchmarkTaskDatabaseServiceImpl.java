@@ -74,7 +74,7 @@ public class BlenderBenchmarkTaskDatabaseServiceImpl implements BlenderBenchmark
     public void deleteAllByConnection(String connection_uuid) {
         List<BlenderBenchmarkTask> blenderBenchmarkTasks = listAll();
         for (BlenderBenchmarkTask blenderBenchmarkTask : blenderBenchmarkTasks) {
-            if (blenderBenchmarkTask.getConnection_uuid().equals(connection_uuid)) {
+            if (blenderBenchmarkTask.getConnectionUUID().equals(connection_uuid)) {
                 blenderBenchmarkTaskRepository.delete(blenderBenchmarkTask);
             }
         }
@@ -92,7 +92,7 @@ public class BlenderBenchmarkTaskDatabaseServiceImpl implements BlenderBenchmark
     public BlenderBenchmarkTask getByBenchmarkUUID(String uuid) {
         List<BlenderBenchmarkTask> blenderBenchmarkTasks = listAll();
         for (BlenderBenchmarkTask blenderBenchmarkTask : blenderBenchmarkTasks) {
-            if (blenderBenchmarkTask.getBenchmark_uuid().equals(uuid)) {
+            if (blenderBenchmarkTask.getBenchmarkUUID().equals(uuid)) {
                 return blenderBenchmarkTask;
             }
 
