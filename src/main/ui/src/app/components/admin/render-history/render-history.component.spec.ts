@@ -17,17 +17,28 @@
  *
  */
 
-import {BlenderEngine} from '../enums/blender_engine.enum';
-import {ComputeMethod} from '../enums/compute.method.enum';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-export class RenderTaskHistory {
-  taskDate: Date;
-  serverName: string;
-  engine: BlenderEngine;
-  computeType: ComputeMethod;
-  projectName: string;
-  completed: boolean;
-  failed: boolean;
-  frameNumber: number;
-  partNumber: number;
-}
+import {RenderHistoryComponent} from './render-history.component';
+
+describe('RenderHistoryComponent', () => {
+  let component: RenderHistoryComponent;
+  let fixture: ComponentFixture<RenderHistoryComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [RenderHistoryComponent]
+    })
+      .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(RenderHistoryComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

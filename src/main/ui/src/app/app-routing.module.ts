@@ -41,6 +41,7 @@ import {ProjectWizardComponent} from './components/projects/project-create-wizar
 import {ProjectViewComponent} from './components/projects/project-view/project-view.component';
 import {ProjectEditWizardComponent} from './components/projects/project-edit-wizard/project-edit-wizard.component';
 import {ForgotPassComponent} from './components/forgot-pass/forgot-pass.component';
+import {RenderHistoryComponent} from './components/admin/render-history/render-history.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -54,6 +55,7 @@ const routes: Routes = [
   {path: 'admin/user_management/add', component: UserAddComponent},
   {path: 'admin/user_management/edit/:id', component: UserEditComponent},
   {path: 'admin/sethlans_settings', component: SethlansSettingsComponent},
+  {path: 'admin/render_history', component: RenderHistoryComponent},
   {path: 'admin/servers', component: ServersComponent},
   {path: 'admin/compute_settings', component: ComputeSettingsComponent},
   {path: 'admin/blender_version_admin', component: BlenderVersionsComponent},

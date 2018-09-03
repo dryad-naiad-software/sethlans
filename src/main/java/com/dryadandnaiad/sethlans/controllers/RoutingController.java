@@ -61,6 +61,7 @@ public class RoutingController {
             "/admin/nodes/add",
             "/admin/nodes/edit/**",
             "/admin/nodes/scan",
+            "/admin/render_history",
             "/admin/servers",
             "/admin/compute_settings",
             "/admin/blender_version_admin",

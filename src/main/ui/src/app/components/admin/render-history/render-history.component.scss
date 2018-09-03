@@ -1,4 +1,4 @@
-/*
+/*!
  * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
@@ -17,17 +17,3 @@
  *
  */
 
-import {BlenderEngine} from '../enums/blender_engine.enum';
-import {ComputeMethod} from '../enums/compute.method.enum';
-
-export class RenderTaskHistory {
-  taskDate: Date;
-  serverName: string;
-  engine: BlenderEngine;
-  computeType: ComputeMethod;
-  projectName: string;
-  completed: boolean;
-  failed: boolean;
-  frameNumber: number;
-  partNumber: number;
-}
