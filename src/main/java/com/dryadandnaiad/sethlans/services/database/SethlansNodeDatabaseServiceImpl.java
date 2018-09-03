@@ -85,21 +85,15 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
 
     @Override
     public SethlansNode getByConnectionUUID(String uuid) {
-        List<SethlansNode> sethlansNodes = listAll();
-        for (SethlansNode sethlansNode : sethlansNodes) {
-            if (sethlansNode.getConnectionUUID().equals(uuid)) {
-                return sethlansNode;
-            }
-        }
-        return null;
+        return nodeRepository.findSethlansNodeByConnectionUUID(uuid);
     }
 
     @Override
     public List<SethlansNode> activeNodeswithFreeSlots() {
-        List<SethlansNode> nodes = listAll();
+        List<SethlansNode> nodes = activeNodeList();
         List<SethlansNode> nodesNotRendering = new ArrayList<>();
         for (SethlansNode node : nodes) {
-            if (node.getAvailableRenderingSlots() > 0 && node.isActive() && node.isBenchmarkComplete() && !node.isDisabled()) {
+            if (node.getAvailableRenderingSlots() > 0) {
                 nodesNotRendering.add(node);
             }
         }
@@ -108,20 +102,14 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
 
     @Override
     public boolean activeNodes() {
-        List<SethlansNode> nodes = listAll();
-        for (SethlansNode node : nodes) {
-            if (node.isActive() && node.isBenchmarkComplete() && !node.isDisabled()) {
-                return true;
-            }
-        }
-        return false;
+        return nodeRepository.existsSethlansNodesByActiveIsTrueAndBenchmarkCompleteIsTrueAndDisabledIsFalse();
     }
 
     @Override
     public List<SethlansNode> activeNonComboNodes() {
         List<SethlansNode> activeNodes = new ArrayList<>();
-        for (SethlansNode node : listAll()) {
-            if (node.isActive() && node.isBenchmarkComplete() && !node.isDisabled() && !node.isCombined()) {
+        for (SethlansNode node : activeNodeList()) {
+            if (!node.isCombined()) {
                 activeNodes.add(node);
             }
         }
@@ -130,56 +118,31 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
 
     @Override
     public List<SethlansNode> activeNodeList() {
-        List<SethlansNode> activeNodes = new ArrayList<>();
-        for (SethlansNode node : listAll()) {
-            if (node.isActive() && node.isBenchmarkComplete() && !node.isDisabled()) {
-                activeNodes.add(node);
-            }
-        }
-        return activeNodes;
+        return nodeRepository.findSethlansNodesByActiveIsTrueAndBenchmarkCompleteIsTrueAndDisabledIsFalse();
     }
 
     @Override
     public List<SethlansNode> activeCPUNodes() {
-        List<SethlansNode> activeNodes = new ArrayList<>();
-        for (SethlansNode node : listAll()) {
-            if (node.isActive() && node.isBenchmarkComplete() && node.getComputeType() == ComputeType.CPU && !node.isDisabled()) {
-                activeNodes.add(node);
-            }
-        }
-        return activeNodes;
+        return nodeRepository.findSethlansNodesByActiveIsTrueAndBenchmarkCompleteIsTrueAndDisabledIsFalseAndComputeTypeEquals(ComputeType.CPU);
     }
 
     @Override
     public List<SethlansNode> activeGPUNodes() {
-        List<SethlansNode> activeNodes = new ArrayList<>();
-        for (SethlansNode node : listAll()) {
-            if (node.isActive() && node.isBenchmarkComplete() && node.getComputeType() == ComputeType.GPU && !node.isDisabled()) {
-                activeNodes.add(node);
-            }
-        }
-        return activeNodes;
+        return nodeRepository.findSethlansNodesByActiveIsTrueAndBenchmarkCompleteIsTrueAndDisabledIsFalseAndComputeTypeEquals(ComputeType.GPU);
     }
 
     @Override
     public List<SethlansNode> activeCPUGPUNodes() {
-        List<SethlansNode> activeNodes = new ArrayList<>();
-        for (SethlansNode node : listAll()) {
-            if (node.isActive() && node.isBenchmarkComplete() && node.getComputeType() == ComputeType.CPU_GPU && !node.isDisabled()) {
-                activeNodes.add(node);
-            }
-        }
-        return activeNodes;
+        return nodeRepository.findSethlansNodesByActiveIsTrueAndBenchmarkCompleteIsTrueAndDisabledIsFalseAndComputeTypeEquals(ComputeType.CPU_GPU);
     }
 
     @Override
     public List<SethlansNode> activeNodesWithNoFreeSlots() {
-        List<SethlansNode> nodes = listAll();
+        List<SethlansNode> nodes = activeNodeList();
         List<SethlansNode> nodesRendering = new ArrayList<>();
         for (SethlansNode node : nodes) {
-            if (node.getAvailableRenderingSlots() == 0 && node.isActive() && node.isBenchmarkComplete() && !node.isDisabled()) {
+            if (node.getAvailableRenderingSlots() == 0) {
                 nodesRendering.add(node);
-
             }
         }
         return nodesRendering;
@@ -214,25 +177,12 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
 
     @Override
     public List<SethlansNode> inactiveNodeList() {
-        List<SethlansNode> inactiveList = new ArrayList<>();
-        for (SethlansNode sethlansNode : listAll()) {
-            if (!sethlansNode.isActive() || !sethlansNode.isBenchmarkComplete()) {
-                inactiveList.add(sethlansNode);
-            }
-        }
-        return inactiveList;
+        return nodeRepository.findSethlansNodesByActiveIsFalseOrBenchmarkCompleteIsFalse();
     }
 
     @Override
     public List<SethlansNode> disabledNodeList() {
-        List<SethlansNode> disabledList = new ArrayList<>();
-        for (SethlansNode sethlansNode : listAll()) {
-            if (sethlansNode.isDisabled()) {
-                disabledList.add(sethlansNode);
-            }
-
-        }
-        return disabledList;
+        return nodeRepository.findSethlansNodesByDisabledIsTrue();
     }
 
     @Autowired

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,7 +20,10 @@
 package com.dryadandnaiad.sethlans.repositories;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 /**
  * Created Mario Estrella on 11/1/17.
@@ -29,4 +32,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Project: sethlans
  */
 public interface NodeRepository extends JpaRepository<SethlansNode, Long> {
+    SethlansNode findSethlansNodeByConnectionUUID(String uuid);
+
+    List<SethlansNode> findSethlansNodesByActiveIsTrueAndBenchmarkCompleteIsTrueAndDisabledIsFalse();
+
+    List<SethlansNode> findSethlansNodesByActiveIsTrueAndBenchmarkCompleteIsTrueAndDisabledIsFalseAndComputeTypeEquals(ComputeType computeType);
+
+    boolean existsSethlansNodesByActiveIsTrueAndBenchmarkCompleteIsTrueAndDisabledIsFalse();
+
+    List<SethlansNode> findSethlansNodesByActiveIsFalseOrBenchmarkCompleteIsFalse();
+
+    List<SethlansNode> findSethlansNodesByDisabledIsTrue();
 }
