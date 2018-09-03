@@ -30,7 +30,6 @@ import {RenderTaskHistory} from '../../../models/render_task_history.model';
 export class RenderHistoryComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  renderTaskHistory: RenderTaskHistory[] = [];
   dataSource = new MatTableDataSource();
   displayedColumns = ['date', 'computeType', 'completed', 'failed', 'engine', 'projectName', 'framePart', 'serverName'];
 
@@ -43,10 +42,8 @@ export class RenderHistoryComponent implements OnInit {
 
   loadHistory() {
     this.http.get('/api/management/render_history_list').subscribe((renderHistoryList: RenderTaskHistory[]) => {
-      this.renderTaskHistory = renderHistoryList;
-      this.dataSource = new MatTableDataSource<any>(renderHistoryList);
+      this.dataSource = new MatTableDataSource<any>(renderHistoryList.reverse());
       this.dataSource.sort = this.sort;
-      this.dataSource.sortingDataAccessor = (data, header) => data[header];
       this.dataSource.paginator = this.paginator;
 
     });
