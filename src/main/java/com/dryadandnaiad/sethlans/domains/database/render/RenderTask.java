@@ -17,7 +17,7 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.domains.database.queue;
+package com.dryadandnaiad.sethlans.domains.database.render;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;

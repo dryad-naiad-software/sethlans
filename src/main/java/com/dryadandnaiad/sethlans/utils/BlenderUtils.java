@@ -21,7 +21,7 @@ package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlenderZip;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
-import com.dryadandnaiad.sethlans.domains.database.queue.RenderTask;
+import com.dryadandnaiad.sethlans.domains.database.render.RenderTask;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.network.GetRawDataService;
 import com.dryadandnaiad.sethlans.services.network.GetRawDataServiceImpl;

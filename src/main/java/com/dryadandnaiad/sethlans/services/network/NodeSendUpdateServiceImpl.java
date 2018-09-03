@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.network;
 
-import com.dryadandnaiad.sethlans.domains.database.queue.RenderTask;
+import com.dryadandnaiad.sethlans.domains.database.render.RenderTask;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.info.NodeInfo;
 import com.dryadandnaiad.sethlans.enums.ComputeType;

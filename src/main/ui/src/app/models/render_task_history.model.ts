@@ -17,24 +17,17 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.database;
+import {BlenderEngine} from '../enums/blender_engine.enum';
+import {ComputeMethod} from '../enums/compute.method.enum';
 
-import com.dryadandnaiad.sethlans.domains.database.render.RenderTask;
-
-import java.util.List;
-
-/**
- * Created Mario Estrella on 12/12/17.
- * Dryad and Naiad Software LLC
- * mestrella@dryadandnaiad.com
- * Project: sethlans
- */
-public interface RenderTaskDatabaseService extends CRUDService<RenderTask> {
-    List<String> deviceList();
-
-    void delete(RenderTask renderTask);
-
-    void deleteAll();
-
-    RenderTask findByQueueUUID(String queue_uuid);
+export class RenderTaskHistory {
+  taskDate: number;
+  serverName: string;
+  engine: BlenderEngine;
+  computeType: ComputeMethod;
+  projectName: string;
+  completed: boolean;
+  failed: boolean;
+  frameNumber: number;
+  partNumber: number;
 }

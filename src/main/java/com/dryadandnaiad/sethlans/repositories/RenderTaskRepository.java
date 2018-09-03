@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.repositories;
 
-import com.dryadandnaiad.sethlans.domains.database.queue.RenderTask;
+import com.dryadandnaiad.sethlans.domains.database.render.RenderTask;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

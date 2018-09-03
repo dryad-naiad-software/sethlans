@@ -19,7 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.database;
 
-import com.dryadandnaiad.sethlans.domains.database.queue.RenderTask;
+import com.dryadandnaiad.sethlans.domains.database.render.RenderTask;
 import com.dryadandnaiad.sethlans.repositories.RenderTaskRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

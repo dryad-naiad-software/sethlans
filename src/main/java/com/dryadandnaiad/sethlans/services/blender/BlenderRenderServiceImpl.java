@@ -20,7 +20,7 @@
 package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlenderFramePart;
-import com.dryadandnaiad.sethlans.domains.database.queue.RenderTask;
+import com.dryadandnaiad.sethlans.domains.database.render.RenderTask;
 import com.dryadandnaiad.sethlans.domains.database.render.RenderTaskHistory;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
