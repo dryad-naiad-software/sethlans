@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderTask;
+import com.dryadandnaiad.sethlans.domains.database.render.RenderTaskHistory;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.info.NodeInfo;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
@@ -32,6 +33,7 @@ import com.dryadandnaiad.sethlans.services.blender.BlenderRenderService;
 import com.dryadandnaiad.sethlans.services.blender.benchmark.BlenderBenchmarkService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.RenderTaskDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.RenderTaskHistoryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
@@ -69,6 +71,7 @@ public class NodeRenderController {
     private BlenderBenchmarkService blenderBenchmarkService;
     private BlenderRenderService blenderRenderService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
+    private RenderTaskHistoryDatabaseService renderTaskHistoryDatabaseService;
     private static final Logger LOG = LoggerFactory.getLogger(NodeRenderController.class);
 
     @Value("${sethlans.configDir}")
@@ -181,6 +184,18 @@ public class NodeRenderController {
                     renderTask.setDeviceID("CPU");
                 }
                 LOG.debug(renderTask.toString());
+                RenderTaskHistory renderTaskHistory = new RenderTaskHistory();
+                renderTaskHistory.setComputeType(compute_type);
+                renderTaskHistory.setEngine(blender_engine);
+                renderTaskHistory.setFrameNumber(frame_number);
+                renderTaskHistory.setPartNumber(part_number);
+                renderTaskHistory.setProjectName(project_name);
+                renderTaskHistory.setServerName(sethlansServer.getHostname());
+                renderTaskHistory.setTaskDate(System.currentTimeMillis());
+                renderTaskHistory.setQueueUUID(queue_item_uuid);
+                renderTaskHistory.setCompleted(false);
+                renderTaskHistory.setFailed(false);
+                renderTaskHistoryDatabaseService.saveOrUpdate(renderTaskHistory);
                 LOG.info("Received a " + compute_type + "render task from " + sethlansServer.getHostname() + " for project " + project_name);
                 LOG.info("Part " + part_number + " of Frame " + frame_number);
                 renderTaskDatabaseService.saveOrUpdate(renderTask);
@@ -287,5 +302,10 @@ public class NodeRenderController {
     @Autowired
     public void setSethlansAPIConnectionService(SethlansAPIConnectionService sethlansAPIConnectionService) {
         this.sethlansAPIConnectionService = sethlansAPIConnectionService;
+    }
+
+    @Autowired
+    public void setRenderTaskHistoryDatabaseService(RenderTaskHistoryDatabaseService renderTaskHistoryDatabaseService) {
+        this.renderTaskHistoryDatabaseService = renderTaskHistoryDatabaseService;
     }
 }

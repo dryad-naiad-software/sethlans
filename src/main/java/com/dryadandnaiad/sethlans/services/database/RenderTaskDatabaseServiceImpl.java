@@ -37,10 +37,8 @@ import java.util.List;
  */
 @Service
 public class RenderTaskDatabaseServiceImpl implements RenderTaskDatabaseService {
-
     private RenderTaskRepository renderTaskRepository;
     private static final Logger LOG = LoggerFactory.getLogger(RenderTaskDatabaseServiceImpl.class);
-
 
     @Override
     public long tableSize() {

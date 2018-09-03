@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderTask;
+import com.dryadandnaiad.sethlans.domains.database.render.RenderTaskHistory;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.domains.info.NodeInfo;
@@ -28,6 +29,7 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.services.database.RenderTaskDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.RenderTaskHistoryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
@@ -85,6 +87,8 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private RenderTaskDatabaseService renderTaskDatabaseService;
     private BlenderPythonScriptService blenderPythonScriptService;
+    private RenderTaskHistoryDatabaseService renderTaskHistoryDatabaseService;
+
 
     @Override
     @Async
@@ -207,6 +211,10 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             int count = 0;
             while (true) {
                 if (sendResultsToServer(renderTask.getConnection_uuid(), renderTask)) {
+                    RenderTaskHistory renderTaskHistory = renderTaskHistoryDatabaseService.findByQueueUUID(renderTask.getServer_queue_uuid());
+                    renderTaskHistory.setCompleted(true);
+                    renderTaskHistory.setFailed(false);
+                    renderTaskHistoryDatabaseService.saveOrUpdate(renderTaskHistory);
                     try {
                         LOG.debug("Cleaning up " + renderTask.getRenderDir());
                         FileUtils.deleteDirectory(new File(renderTask.getRenderDir()));
@@ -231,6 +239,10 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
         } else {
             LOG.info("Failed render, sending reject notice");
+            RenderTaskHistory renderTaskHistory = renderTaskHistoryDatabaseService.findByQueueUUID(renderTask.getServer_queue_uuid());
+            renderTaskHistory.setCompleted(true);
+            renderTaskHistory.setFailed(true);
+            renderTaskHistoryDatabaseService.saveOrUpdate(renderTaskHistory);
             SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(renderTask.getConnection_uuid());
             String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_reject_item/";
             String params = "queue_item_uuid=" + renderTask.getServer_queue_uuid();
@@ -471,5 +483,10 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     @Autowired
     public void setBlenderPythonScriptService(BlenderPythonScriptService blenderPythonScriptService) {
         this.blenderPythonScriptService = blenderPythonScriptService;
+    }
+
+    @Autowired
+    public void setRenderTaskHistoryDatabaseService(RenderTaskHistoryDatabaseService renderTaskHistoryDatabaseService) {
+        this.renderTaskHistoryDatabaseService = renderTaskHistoryDatabaseService;
     }
 }
