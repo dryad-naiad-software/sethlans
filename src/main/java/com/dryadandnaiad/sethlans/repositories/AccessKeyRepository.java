@@ -29,4 +29,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Project: sethlans
  */
 public interface AccessKeyRepository extends JpaRepository<AccessKey, Long> {
+    AccessKey findAccessKeyByAccessKey(String uuid);
 }

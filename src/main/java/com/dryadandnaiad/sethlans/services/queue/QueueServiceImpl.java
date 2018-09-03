@@ -116,7 +116,7 @@ public class QueueServiceImpl implements QueueService {
                     if (renderQueueDatabaseService.tableSize() > CLEANUP) {
                         cleanQueue();
                     }
-                    if (sethlansNodeDatabaseService.activeNodeList().size() > 0 && blenderProjectDatabaseService.listSize() > 0) {
+                    if (sethlansNodeDatabaseService.activeNodeList().size() > 0 && blenderProjectDatabaseService.tableSize() > 0) {
                         populateQueue();
                     }
                     if (!processQueueDatabaseService.listAll().isEmpty()) {

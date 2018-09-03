@@ -161,7 +161,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
 
     @Override
     public void deleteAllUserProjects(String username) {
-        List<BlenderProject> allUserProjects = blenderProjectDatabaseService.getProjectsByUser(username);
+        List<BlenderProject> allUserProjects = blenderProjectDatabaseService.getProjectsByUserWithoutFrameParts(username);
         for (BlenderProject project : allUserProjects) {
             deleteProject(project.getId());
         }

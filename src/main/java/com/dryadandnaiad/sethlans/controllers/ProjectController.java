@@ -212,10 +212,10 @@ public class ProjectController {
     }
 
     @GetMapping(value = "/api/project_ui/num_of_projects")
-    public Integer numberOfProjects() {
+    public Long numberOfProjects() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-            return blenderProjectDatabaseService.listSize();
+            return blenderProjectDatabaseService.tableSize();
         } else {
             return blenderProjectDatabaseService.listSizeByUser(auth.getName());
         }

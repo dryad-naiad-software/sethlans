@@ -34,11 +34,7 @@ public interface BlenderProjectDatabaseService extends CRUDService<BlenderProjec
 
     List<BlenderProject> listWithoutFramePart();
 
-    int listSize();
-
-    int listSizeByUser(String username);
-
-    List<BlenderProject> getProjectsByUser(String username);
+    long listSizeByUser(String username);
 
     List<BlenderProject> getProjectsByUserWithoutFrameParts(String username);
 

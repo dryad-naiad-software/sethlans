@@ -55,13 +55,7 @@ public class AccessKeyDatabaseServiceImpl implements AccessKeyDatabaseService {
 
     @Override
     public AccessKey getByUUID(String uuid) {
-        List<AccessKey> accessKeyList = listAll();
-        for (AccessKey accessKey : accessKeyList) {
-            if (accessKey.getAccessKey().equals(uuid)) {
-                return accessKey;
-            }
-        }
-        return null;
+        return accessKeyRepository.findAccessKeyByAccessKey(uuid);
     }
 
     @Override
@@ -76,12 +70,7 @@ public class AccessKeyDatabaseServiceImpl implements AccessKeyDatabaseService {
 
     @Override
     public void delete(String uuid) {
-        List<AccessKey> accessKeyList = listAll();
-        for (AccessKey accessKey : accessKeyList) {
-            if (accessKey.getAccessKey().equals(uuid)) {
-                accessKeyRepository.delete(accessKey);
-            }
-        }
+        accessKeyRepository.delete(accessKeyRepository.findAccessKeyByAccessKey(uuid));
     }
 
     @Autowired

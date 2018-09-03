@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.services.database;
 import com.dryadandnaiad.sethlans.converters.ProjectFormToBlenderProject;
 import com.dryadandnaiad.sethlans.domains.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.forms.project.ProjectForm;
 import com.dryadandnaiad.sethlans.repositories.BlenderProjectRepository;
@@ -49,6 +50,7 @@ import java.util.List;
 public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabaseService {
     private BlenderProjectRepository blenderProjectRepository;
     private ProjectFormToBlenderProject projectFormToBlenderProject;
+    private SethlansUserDatabaseService sethlansUserDatabaseService;
     private Gson gson = new GsonBuilder().setLenient().create();
     private static final Logger LOG = LoggerFactory.getLogger(BlenderProjectDatabaseServiceImpl.class);
 
@@ -71,45 +73,18 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
         return new ArrayList<>(blenderProjectRepository.findAll());
     }
 
-    @Override
-    public int listSize() {
-        return blenderProjectRepository.findAll().size();
-    }
 
     @Override
-    public int listSizeByUser(String username) {
-        List<BlenderProject> listToReturn = new ArrayList<>();
-        for (BlenderProject project : blenderProjectRepository.findAll()) {
-            if (project.getSethlansUser().getUsername().equals(username)) {
-                listToReturn.add(project);
-            }
-
-        }
-        return listToReturn.size();
+    public long listSizeByUser(String username) {
+        SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(username);
+        return blenderProjectRepository.countBlenderProjectsBySethlansUser(sethlansUser);
     }
 
-    @Override
-    public List<BlenderProject> getProjectsByUser(String username) {
-        List<BlenderProject> listToReturn = new ArrayList<>();
-        for (BlenderProject project : listAll()) {
-            if (project.getSethlansUser().getUsername().equals(username)) {
-                listToReturn.add(project);
-            }
-
-        }
-        return listToReturn;
-    }
 
     @Override
     public List<BlenderProject> getProjectsByUserWithoutFrameParts(String username) {
-        List<BlenderProject> listToReturn = new ArrayList<>();
-        for (BlenderProject project : listWithoutFramePart()) {
-            if (project.getSethlansUser().getUsername().equals(username)) {
-                listToReturn.add(project);
-            }
-
-        }
-        return listToReturn;
+        SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(username);
+        return blenderProjectRepository.findBlenderProjectsBySethlansUser(sethlansUser);
     }
 
     @Override
@@ -126,25 +101,17 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
 
     @Override
     public int pendingProjectsSize() {
-        List<BlenderProject> pendingProjects = new ArrayList<>();
-        for (BlenderProject blenderProject : blenderProjectRepository.findAll()) {
-            if (blenderProject.getProjectStatus().equals(ProjectStatus.Pending)) {
-                pendingProjects.add(blenderProject);
-            }
-
-        }
-        return pendingProjects.size();
+        return blenderProjectRepository.countBlenderProjectsByProjectStatusEquals(ProjectStatus.Pending);
 
     }
 
     @Override
     public List<BlenderProject> getRemainingQueueProjects() {
         List<BlenderProject> remainingProjects = new ArrayList<>();
-        for (BlenderProject blenderProject : listAll()) {
+        for (BlenderProject blenderProject : blenderProjectRepository.findBlenderProjectsByQueueFillCompleteIsFalse()) {
             if (blenderProject.getProjectStatus().equals(ProjectStatus.Rendering) || blenderProject.getProjectStatus().equals(ProjectStatus.Started)) {
-                if (!blenderProject.isQueueFillComplete()) {
-                    remainingProjects.add(blenderProject);
-                }
+                blenderProject.setFramePartList(loadBlenderPartList(blenderProject));
+                remainingProjects.add(blenderProject);
             }
         }
         return remainingProjects;
@@ -153,11 +120,9 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     @Override
     public int remainingQueueProjectsSize() {
         List<BlenderProject> remainingProjects = new ArrayList<>();
-        for (BlenderProject blenderProject : blenderProjectRepository.findAll()) {
+        for (BlenderProject blenderProject : blenderProjectRepository.findBlenderProjectsByQueueFillCompleteIsFalse()) {
             if (blenderProject.getProjectStatus().equals(ProjectStatus.Rendering) || blenderProject.getProjectStatus().equals(ProjectStatus.Started)) {
-                if (!blenderProject.isQueueFillComplete()) {
-                    remainingProjects.add(blenderProject);
-                }
+                remainingProjects.add(blenderProject);
             }
         }
         return remainingProjects.size();
@@ -217,25 +182,17 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
 
     @Override
     public BlenderProject getByProjectUUID(String projectUUID) {
-        List<BlenderProject> blenderProjectList = listAll();
+        List<BlenderProject> blenderProjectList = blenderProjectRepository.findBlenderProjectsByProjectUUID(projectUUID);
         for (BlenderProject blenderProject : blenderProjectList) {
-            if (blenderProject.getProjectUUID().equals(projectUUID)) {
-                blenderProject.setFramePartList(loadBlenderPartList(blenderProject));
-                return blenderProject;
-            }
+            blenderProject.setFramePartList(loadBlenderPartList(blenderProject));
+            return blenderProject;
         }
         return null;
     }
 
     @Override
     public BlenderProject getByProjectUUIDWithoutFrameParts(String projectUUID) {
-        List<BlenderProject> blenderProjectList = listWithoutFramePart();
-        for (BlenderProject blenderProject : blenderProjectList) {
-            if (blenderProject.getProjectUUID().equals(projectUUID)) {
-                return blenderProject;
-            }
-        }
-        return null;
+        return blenderProjectRepository.findBlenderProjectByProjectUUID(projectUUID);
     }
 
     @Override
@@ -298,4 +255,8 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
         this.projectFormToBlenderProject = projectFormToBlenderProject;
     }
 
+    @Autowired
+    public void setSethlansUserDatabaseService(SethlansUserDatabaseService sethlansUserDatabaseService) {
+        this.sethlansUserDatabaseService = sethlansUserDatabaseService;
+    }
 }

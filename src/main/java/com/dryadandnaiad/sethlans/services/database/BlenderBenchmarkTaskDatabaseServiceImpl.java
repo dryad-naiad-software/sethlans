@@ -60,24 +60,12 @@ public class BlenderBenchmarkTaskDatabaseServiceImpl implements BlenderBenchmark
 
     @Override
     public boolean allBenchmarksComplete() {
-        List<BlenderBenchmarkTask> tasks = listAll();
-        List<BlenderBenchmarkTask> complete = new ArrayList<>();
-        for (BlenderBenchmarkTask task : tasks) {
-            if (task.isComplete()) {
-                complete.add(task);
-            }
-        }
-        return tasks.size() == complete.size();
+        return blenderBenchmarkTaskRepository.countBlenderBenchmarkTaskByCompleteIsTrue() == tableSize();
     }
 
     @Override
     public void deleteAllByConnection(String connection_uuid) {
-        List<BlenderBenchmarkTask> blenderBenchmarkTasks = listAll();
-        for (BlenderBenchmarkTask blenderBenchmarkTask : blenderBenchmarkTasks) {
-            if (blenderBenchmarkTask.getConnectionUUID().equals(connection_uuid)) {
-                blenderBenchmarkTaskRepository.delete(blenderBenchmarkTask);
-            }
-        }
+        blenderBenchmarkTaskRepository.delete(blenderBenchmarkTaskRepository.findBlenderBenchmarkTasksByConnectionUUID(connection_uuid));
     }
 
 
@@ -90,14 +78,7 @@ public class BlenderBenchmarkTaskDatabaseServiceImpl implements BlenderBenchmark
 
     @Override
     public BlenderBenchmarkTask getByBenchmarkUUID(String uuid) {
-        List<BlenderBenchmarkTask> blenderBenchmarkTasks = listAll();
-        for (BlenderBenchmarkTask blenderBenchmarkTask : blenderBenchmarkTasks) {
-            if (blenderBenchmarkTask.getBenchmarkUUID().equals(uuid)) {
-                return blenderBenchmarkTask;
-            }
-
-        }
-        return null;
+        return blenderBenchmarkTaskRepository.findBlenderBenchmarkTaskByBenchmarkUUID(uuid);
     }
 
 

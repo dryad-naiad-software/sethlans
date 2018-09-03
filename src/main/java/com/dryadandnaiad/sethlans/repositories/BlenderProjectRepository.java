@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,7 +20,11 @@
 package com.dryadandnaiad.sethlans.repositories;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
+import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 /**
  * Created Mario Estrella on 4/2/17.
@@ -29,4 +33,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Project: sethlans
  */
 public interface BlenderProjectRepository extends JpaRepository<BlenderProject, Long> {
+    long countBlenderProjectsBySethlansUser(SethlansUser user);
+
+    List<BlenderProject> findBlenderProjectsBySethlansUser(SethlansUser sethlansUser);
+
+    int countBlenderProjectsByProjectStatusEquals(ProjectStatus projectStatus);
+
+    List<BlenderProject> findBlenderProjectsByQueueFillCompleteIsFalse();
+
+    List<BlenderProject> findBlenderProjectsByProjectUUID(String projectUUID);
+
+    BlenderProject findBlenderProjectByProjectUUID(String projectUUID);
+
 }
