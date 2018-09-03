@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,6 +22,8 @@ package com.dryadandnaiad.sethlans.repositories;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessFrameItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 /**
  * Created Mario Estrella on 5/10/2018.
  * Dryad and Naiad Software LLC
@@ -29,4 +31,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Project: sethlans
  */
 public interface ProcessFrameRepository extends JpaRepository<ProcessFrameItem, Long> {
+    List<ProcessFrameItem> findProcessFrameItemsByProjectUUID(String projectUUID);
 }

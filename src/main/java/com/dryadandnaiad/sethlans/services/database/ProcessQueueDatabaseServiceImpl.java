@@ -51,24 +51,13 @@ public class ProcessQueueDatabaseServiceImpl implements ProcessQueueDatabaseServ
     }
 
     @Override
-    public ProcessQueueItem getProcessByQueueItem(String queueUUID) {
-        for (ProcessQueueItem processQueueItem : listAll()) {
-            if (processQueueItem.getQueueUUID().equals(queueUUID)) {
-                return processQueueItem;
-            }
-        }
-        return null;
+    public ProcessQueueItem getProcessByQueueUUID(String queueUUID) {
+        return processQueueRepository.findProcessQueueItemByQueueUUID(queueUUID);
     }
 
     @Override
-    public List<ProcessQueueItem> getListOfProcessByProject(String projectUUID) {
-        List<ProcessQueueItem> processByProject = new ArrayList<>();
-        for (ProcessQueueItem processQueueItem : listAll()) {
-            if (processQueueItem.getProjectUUID().equals(projectUUID)) {
-                processByProject.add(processQueueItem);
-            }
-        }
-        return processByProject;
+    public List<ProcessQueueItem> getProcessListByProjectUUID(String projectUUID) {
+        return processQueueRepository.findProcessQueueItemsByProjectUUID(projectUUID);
     }
 
     @Override

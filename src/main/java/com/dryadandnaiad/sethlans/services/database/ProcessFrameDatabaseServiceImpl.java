@@ -53,14 +53,8 @@ public class ProcessFrameDatabaseServiceImpl implements ProcessFrameDatabaseServ
     }
 
     @Override
-    public List<ProcessFrameItem> listbyProjectUUID(String projectUUID) {
-        List<ProcessFrameItem> projectList = new ArrayList<>();
-        for (ProcessFrameItem processFrameItem : listAll()) {
-            if (processFrameItem.getProjectUUID().equals(projectUUID)) {
-                projectList.add(processFrameItem);
-            }
-        }
-        return projectList;
+    public List<ProcessFrameItem> listByProjectUUID(String projectUUID) {
+        return processFrameRepository.findProcessFrameItemsByProjectUUID(projectUUID);
     }
 
     @Override

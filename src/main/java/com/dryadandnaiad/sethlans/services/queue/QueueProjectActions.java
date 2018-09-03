@@ -87,9 +87,9 @@ class QueueProjectActions {
             case STOP:
                 LOG.debug("Stopping queue for " + blenderProject.getProjectName());
                 for (RenderQueueItem renderQueueItem : renderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProjectUUID())) {
-                    if (processQueueDatabaseService.getListOfProcessByProject(blenderProject.getProjectUUID()).size() > 0) {
-                        if (processQueueDatabaseService.getProcessByQueueItem(renderQueueItem.getQueueItemUUID()) != null) {
-                            processQueueDatabaseService.delete(processQueueDatabaseService.getProcessByQueueItem(renderQueueItem.getQueueItemUUID()));
+                    if (processQueueDatabaseService.getProcessListByProjectUUID(blenderProject.getProjectUUID()).size() > 0) {
+                        if (processQueueDatabaseService.getProcessByQueueUUID(renderQueueItem.getQueueItemUUID()) != null) {
+                            processQueueDatabaseService.delete(processQueueDatabaseService.getProcessByQueueUUID(renderQueueItem.getQueueItemUUID()));
                         }
                     }
                     if (renderQueueItem.getConnectionUUID() != null) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -30,7 +30,7 @@ import java.util.List;
  * Project: sethlans
  */
 public interface ProcessFrameDatabaseService extends CRUDService<ProcessFrameItem> {
-    List<ProcessFrameItem> listbyProjectUUID(String projectUUID);
+    List<ProcessFrameItem> listByProjectUUID(String projectUUID);
 
     void delete(ProcessFrameItem processFrameItem);
 }
