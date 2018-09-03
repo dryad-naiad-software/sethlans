@@ -52,19 +52,13 @@ public class RenderQueueDatabaseServiceImpl implements RenderQueueDatabaseServic
 
     @Override
     public List<RenderQueueItem> listPendingRender() {
-        List<RenderQueueItem> renderQueueItemsPending = new ArrayList<>();
-        for (RenderQueueItem renderQueueItem : listAll()) {
-            if (!renderQueueItem.isComplete() && !renderQueueItem.isRendering() && !renderQueueItem.isPaused()) {
-                renderQueueItemsPending.add(renderQueueItem);
-            }
-        }
-        return renderQueueItemsPending;
+        return renderQueueRepository.findRenderQueueItemsByCompleteIsFalseAndRenderingIsFalseAndPausedIsFalse();
     }
 
     @Override
     public boolean checkExistingProjectIndex(String projectUUID, int index) {
-        for (RenderQueueItem renderQueueItem : listAll()) {
-            if (renderQueueItem.getProjectUUID().contains(projectUUID) && renderQueueItem.getProjectIndex() == index) {
+        for (RenderQueueItem renderQueueItem : listQueueItemsByProjectUUID(projectUUID)) {
+            if (renderQueueItem.getProjectIndex() == index) {
                 return true;
             }
         }
@@ -73,14 +67,7 @@ public class RenderQueueDatabaseServiceImpl implements RenderQueueDatabaseServic
 
     @Override
     public List<RenderQueueItem> listPendingRenderWithNodeAssigned() {
-        List<RenderQueueItem> renderQueueItemsPending = new ArrayList<>();
-        for (RenderQueueItem renderQueueItem : listAll()) {
-            if (!renderQueueItem.isComplete() && !renderQueueItem.isRendering()
-                    && !renderQueueItem.isPaused() && renderQueueItem.getConnectionUUID() != null) {
-                renderQueueItemsPending.add(renderQueueItem);
-            }
-        }
-        return renderQueueItemsPending;
+        return renderQueueRepository.findRenderQueueItemsByCompleteIsFalseAndRenderingIsFalseAndPausedIsFalseAndConnectionUUIDIsNotNull();
     }
 
 
@@ -91,13 +78,7 @@ public class RenderQueueDatabaseServiceImpl implements RenderQueueDatabaseServic
 
     @Override
     public RenderQueueItem getByQueueUUID(String queueUUID) {
-        for (RenderQueueItem renderQueueItem : listAll()) {
-            if (renderQueueItem.getQueueItemUUID().equals(queueUUID)) {
-                return renderQueueItem;
-            }
-
-        }
-        return null;
+        return renderQueueRepository.findRenderQueueItemByQueueItemUUID(queueUUID);
     }
 
     @Override
@@ -113,12 +94,7 @@ public class RenderQueueDatabaseServiceImpl implements RenderQueueDatabaseServic
 
     @Override
     public void deleteAllByProject(String project_uuid) {
-        List<RenderQueueItem> renderQueueItemList = listAll();
-        for (RenderQueueItem renderQueueItem : renderQueueItemList) {
-            if (renderQueueItem.getProjectUUID().equals(project_uuid)) {
-                renderQueueRepository.delete(renderQueueItem);
-            }
-        }
+        renderQueueRepository.deleteRenderQueueItemsByProjectUUID(project_uuid);
     }
 
     @Override
@@ -128,30 +104,13 @@ public class RenderQueueDatabaseServiceImpl implements RenderQueueDatabaseServic
 
     @Override
     public List<RenderQueueItem> listQueueItemsByConnectionUUID(String connection_uuid) {
-        List<RenderQueueItem> renderQueueItemList = listAll();
-        List<RenderQueueItem> sortedList = new ArrayList<>();
-        for (RenderQueueItem renderQueueItem :
-                renderQueueItemList) {
-            if (renderQueueItem.getConnectionUUID() != null && renderQueueItem.getConnectionUUID().equals(connection_uuid)) {
-                sortedList.add(renderQueueItem);
-            }
-        }
-        return sortedList;
+        return renderQueueRepository.findRenderQueueItemsByConnectionUUID(connection_uuid);
     }
 
     @Override
     public List<RenderQueueItem> listQueueItemsByProjectUUID(String project_uuid) {
-        List<RenderQueueItem> renderQueueItemList = listAll();
-        List<RenderQueueItem> sortedList = new ArrayList<>();
-        for (RenderQueueItem renderQueueItem : renderQueueItemList) {
-            if (renderQueueItem.getProjectUUID().equals(project_uuid)) {
-                sortedList.add(renderQueueItem);
-            }
-        }
-        return sortedList;
+        return renderQueueRepository.findRenderQueueItemsByProjectUUID(project_uuid);
     }
-
-
 
     @Autowired
     public void setRenderQueueRepository(RenderQueueRepository renderQueueRepository) {

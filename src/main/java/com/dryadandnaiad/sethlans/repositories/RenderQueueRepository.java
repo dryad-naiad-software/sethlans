@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,6 +21,8 @@ package com.dryadandnaiad.sethlans.repositories;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderQueueItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 /**
  * Created Mario Estrella on 12/28/17.
  * Dryad and Naiad Software LLC
@@ -29,4 +31,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 
 public interface RenderQueueRepository extends JpaRepository<RenderQueueItem, Long> {
+    List<RenderQueueItem> findRenderQueueItemsByCompleteIsFalseAndRenderingIsFalseAndPausedIsFalse();
+
+    List<RenderQueueItem> findRenderQueueItemsByConnectionUUID(String uuid);
+
+    List<RenderQueueItem> findRenderQueueItemsByProjectUUID(String uuid);
+
+    List<RenderQueueItem> findRenderQueueItemsByCompleteIsFalseAndRenderingIsFalseAndPausedIsFalseAndConnectionUUIDIsNotNull();
+
+    void deleteRenderQueueItemsByProjectUUID(String uuid);
+
+    RenderQueueItem findRenderQueueItemByQueueItemUUID(String uuid);
 }

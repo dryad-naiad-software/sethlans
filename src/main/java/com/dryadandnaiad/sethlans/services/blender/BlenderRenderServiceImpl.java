@@ -112,7 +112,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     @Override
     @Async
     public void startRender(String queueUUID) {
-        RenderTask renderTask = renderTaskDatabaseService.getByQueueUUID(queueUUID);
+        RenderTask renderTask = renderTaskDatabaseService.findByQueueUUID(queueUUID);
         renderTask.setInProgress(true);
         NodeInfo nodeInfo = SethlansNodeUtils.getNodeInfo();
         String cacheDir = getProperty(SethlansConfigKeys.CACHE_DIR);

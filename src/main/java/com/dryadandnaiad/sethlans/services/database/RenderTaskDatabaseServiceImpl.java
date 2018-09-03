@@ -88,17 +88,8 @@ public class RenderTaskDatabaseServiceImpl implements RenderTaskDatabaseService 
 
 
     @Override
-    public RenderTask getByQueueUUID(String queue_uuid) {
-        for (RenderTask renderTask : listAll()) {
-            if (queue_uuid.equals(renderTask.getServerQueueUUID())) {
-                return renderTask;
-            } else {
-                LOG.error("No task found for this uuid");
-            }
-
-        }
-        return null;
-
+    public RenderTask findByQueueUUID(String queue_uuid) {
+        return renderTaskRepository.findRenderTaskByServerQueueUUID(queue_uuid);
     }
 
     @Autowired
