@@ -82,6 +82,7 @@ public class ActivationRequestController {
             String message = "Added " + serverhostname + " as a server";
             SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SERVER, message, NotificationScope.ADMIN);
             sethlansNotification.setLinkPresent(true);
+            sethlansNotification.setMailable(false);
             sethlansNotification.setMessageLink("/admin/servers");
             sethlansNotificationService.sendNotification(sethlansNotification);
             LOG.debug(sethlansServer.toString());

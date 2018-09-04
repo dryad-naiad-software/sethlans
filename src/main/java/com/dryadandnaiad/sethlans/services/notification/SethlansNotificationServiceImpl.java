@@ -55,8 +55,8 @@ public class SethlansNotificationServiceImpl implements SethlansNotificationServ
         LOG.debug("Received notification, saving to database");
         notificationDatabaseService.saveOrUpdate(notification);
         boolean mailServerOn = Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_SERVER_CONFIGURED));
-        if (mailServerOn) {
-            sethlansEmailService.sendNotificationEmail();
+        if (mailServerOn && notification.isMailable()) {
+            sethlansEmailService.sendNotificationEmail(notification);
         }
     }
 

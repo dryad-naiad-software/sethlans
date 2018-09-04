@@ -38,7 +38,9 @@ import javax.persistence.Entity;
 @EqualsAndHashCode(callSuper = false)
 public class SethlansNotification extends AbstractEntityClass {
     private NotificationType notificationType;
+    private String subject;
     private String message;
+    private boolean mailable;
     private Long messageDate;
     private String messageLink;
     private boolean linkPresent;
@@ -53,6 +55,7 @@ public class SethlansNotification extends AbstractEntityClass {
         this.messageDate = System.currentTimeMillis();
         this.acknowledged = false;
         this.linkPresent = false;
+        this.mailable = false;
         this.scope = NotificationScope.USER;
         this.username = username;
     }
@@ -62,6 +65,7 @@ public class SethlansNotification extends AbstractEntityClass {
         this.notificationType = notificationType;
         this.message = message + ".";
         this.scope = scope;
+        this.mailable = false;
         this.messageDate = System.currentTimeMillis();
         this.acknowledged = false;
         this.linkPresent = false;

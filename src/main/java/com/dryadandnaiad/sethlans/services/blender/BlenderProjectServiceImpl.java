@@ -59,6 +59,12 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     @Async
     public void startProject(BlenderProject blenderProject) {
         configureFrameList(blenderProject);
+        String message = blenderProject.getProjectName() + " has been started";
+        SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
+        sethlansNotification.setMailable(true);
+        sethlansNotification.setLinkPresent(true);
+        sethlansNotification.setMessageLink("/projects/view/" + blenderProject.getId());
+        sethlansNotification.setSubject(blenderProject.getProjectName());
     }
 
     @Override
@@ -108,6 +114,10 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         deleteProjectFrames(blenderProject, count);
         String message = blenderProject.getProjectName() + " has been stopped";
         SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
+        sethlansNotification.setMailable(true);
+        sethlansNotification.setLinkPresent(true);
+        sethlansNotification.setMessageLink("/projects/view/" + blenderProject.getId());
+        sethlansNotification.setSubject(blenderProject.getProjectName());
         sethlansNotificationService.sendNotification(sethlansNotification);
     }
 
@@ -119,6 +129,9 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         deleteProjectFrames(blenderProject, count);
         String message = blenderProject.getProjectName() + " has been stopped";
         SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
+        sethlansNotification.setMailable(true);
+        sethlansNotification.setLinkPresent(true);
+        sethlansNotification.setMessageLink("/projects/view/" + blenderProject.getId());
         sethlansNotificationService.sendNotification(sethlansNotification);
 
     }

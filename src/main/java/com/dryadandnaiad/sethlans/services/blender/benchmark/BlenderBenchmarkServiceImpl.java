@@ -75,6 +75,8 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         String primaryBlenderVersion = blenderBinaryDatabaseService.getHighestVersion();
         String message = "Sending benchmark request to " + sethlansNode.getHostname();
         SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.NODE, message, NotificationScope.ADMIN);
+        sethlansNotification.setMailable(true);
+        sethlansNotification.setSubject("Benchmark Request Sent");
         sethlansNotificationService.sendNotification(sethlansNotification);
         String nodeURL = "https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() + "/api/benchmark/request";
         String params = "connection_uuid=" + sethlansNode.getConnectionUUID() + "&compute_type=" + sethlansNode.getComputeType() +

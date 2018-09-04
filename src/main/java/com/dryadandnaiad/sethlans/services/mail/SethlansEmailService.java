@@ -19,6 +19,9 @@
 
 package com.dryadandnaiad.sethlans.services.mail;
 
+import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
+import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
+
 /**
  * Created Mario Estrella on 8/24/2018.
  * Dryad and Naiad Software LLC
@@ -27,7 +30,7 @@ package com.dryadandnaiad.sethlans.services.mail;
  */
 public interface SethlansEmailService {
 
-    boolean sendWelcomeEmail();
+    boolean sendWelcomeEmail(SethlansUser sethlansUser);
 
-    boolean sendNotificationEmail();
+    void sendNotificationEmail(SethlansNotification sethlansNotification);
 }

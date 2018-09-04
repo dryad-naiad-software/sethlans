@@ -76,9 +76,10 @@ public class AdminController {
     public void restart() {
         String message = "Restarting Sethlans";
         SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SYSTEM, message, NotificationScope.ADMIN);
+        sethlansNotification.setMailable(true);
         sethlansNotificationService.sendNotification(sethlansNotification);
         try {
-            Thread.sleep(2000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -89,9 +90,10 @@ public class AdminController {
     public void shutdown() {
         String message = "Shutting down Sethlans";
         SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SYSTEM, message, NotificationScope.ADMIN);
+        sethlansNotification.setMailable(true);
         sethlansNotificationService.sendNotification(sethlansNotification);
         try {
-            Thread.sleep(2000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

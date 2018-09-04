@@ -184,6 +184,10 @@ class QueueProcessActions {
                                 blenderProject.setCurrentPercentage(100);
                                 String message = blenderProject.getProjectName() + " has completed rendering, starting video processing";
                                 SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
+                                sethlansNotification.setLinkPresent(true);
+                                sethlansNotification.setMailable(true);
+                                sethlansNotification.setSubject(blenderProject.getProjectName());
+                                sethlansNotification.setMessageLink("/projects/view/" + blenderProject.getId());
                                 sethlansNotificationService.sendNotification(sethlansNotification);
                                 processImageAndAnimationService.createAVI(blenderProject);
                             }
@@ -192,6 +196,10 @@ class QueueProcessActions {
                                 blenderProject.setCurrentPercentage(100);
                                 String message = blenderProject.getProjectName() + " has completed rendering, starting video processing";
                                 SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
+                                sethlansNotification.setLinkPresent(true);
+                                sethlansNotification.setMailable(true);
+                                sethlansNotification.setSubject(blenderProject.getProjectName());
+                                sethlansNotification.setMessageLink("/projects/view/" + blenderProject.getId());
                                 sethlansNotificationService.sendNotification(sethlansNotification);
                                 processImageAndAnimationService.createMP4(blenderProject);
                             } else {
@@ -199,6 +207,10 @@ class QueueProcessActions {
                                 blenderProject.setCurrentPercentage(100);
                                 String message = blenderProject.getProjectName() + " has completed";
                                 SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
+                                sethlansNotification.setLinkPresent(true);
+                                sethlansNotification.setMailable(true);
+                                sethlansNotification.setSubject(blenderProject.getProjectName());
+                                sethlansNotification.setMessageLink("/projects/view/" + blenderProject.getId());
                                 sethlansNotificationService.sendNotification(sethlansNotification);
                                 blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
                             }

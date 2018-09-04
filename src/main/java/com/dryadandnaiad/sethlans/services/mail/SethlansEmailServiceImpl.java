@@ -19,6 +19,12 @@
 
 package com.dryadandnaiad.sethlans.services.mail;
 
+import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
+import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
+import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 /**
@@ -29,14 +35,46 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SethlansEmailServiceImpl implements SethlansEmailService {
+    private SethlansUserDatabaseService sethlansUserDatabaseService;
+    private JavaMailSender emailSender;
 
     @Override
-    public boolean sendWelcomeEmail() {
+    public boolean sendWelcomeEmail(SethlansUser sethlansUser) {
         return false;
     }
 
     @Override
-    public boolean sendNotificationEmail() {
-        return false;
+    public void sendNotificationEmail(SethlansNotification sethlansNotification) {
+
+    }
+
+    private void sendProjectNotification() {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setSubject("Sethlans Project Notification: ");
+
+    }
+
+    private void sendVideoNotification() {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setSubject("Sethlans Video Encoding Notification: ");
+    }
+
+    private void sendAdminNotification() {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setSubject("Sethlans Admin Notification: ");
+
+
+    }
+
+
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    @Autowired
+    public void setEmailSender(JavaMailSender emailSender) {
+        this.emailSender = emailSender;
+    }
+
+    @Autowired
+    public void setSethlansUserDatabaseService(SethlansUserDatabaseService sethlansUserDatabaseService) {
+        this.sethlansUserDatabaseService = sethlansUserDatabaseService;
     }
 }
