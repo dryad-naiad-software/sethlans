@@ -134,10 +134,10 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
             projectToUpdate.setReEncode(false);
             String message = blenderProject.getProjectName() + " video processing has completed";
             SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.VIDEO, message, blenderProject.getSethlansUser().getUsername());
-            sethlansNotification.setSubject(blenderProject.getProjectName() + " " + movieType + " ready");
+            sethlansNotification.setSubject(blenderProject.getProjectName() + " " + movieType + " file is ready for download");
             sethlansNotification.setLinkPresent(true);
             sethlansNotification.setMailable(true);
-            sethlansNotification.setMessageLink("/projects/view/" + blenderProject.getId());
+            sethlansNotification.setMessageLink("/api/project_actions/download_project_video/" + blenderProject.getId());
             sethlansNotificationService.sendNotification(sethlansNotification);
             blenderProjectDatabaseService.saveOrUpdate(projectToUpdate);
             FileUtils.deleteDirectory(new File(blenderProject.getProjectRootDir() + File.separator + "temp"));
@@ -145,7 +145,7 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
             LOG.error(e.getMessage());
             String message = blenderProject.getProjectName() + " video processing has failed";
             SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.VIDEO, message, blenderProject.getSethlansUser().getUsername());
-            sethlansNotification.setSubject(blenderProject.getProjectName() + " " + movieType + " failed");
+            sethlansNotification.setSubject(blenderProject.getProjectName() + " " + movieType + " file failed to encode");
             sethlansNotification.setLinkPresent(true);
             sethlansNotification.setMailable(true);
             sethlansNotification.setMessageLink("/projects/view/" + blenderProject.getId());

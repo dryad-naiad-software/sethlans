@@ -21,7 +21,9 @@ package com.dryadandnaiad.sethlans.services.mail;
 
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
+import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
+import com.dryadandnaiad.sethlans.utils.SethlansConfigUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,17 +80,22 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
         SimpleMailMessage message = new SimpleMailMessage();
         SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(sethlansNotification.getUsername());
         message.setTo(sethlansUser.getEmail());
+        message.setFrom(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
+        message.setReplyTo(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setSubject("Sethlans Project Notification: " + sethlansNotification.getSubject());
-        message.setText(sethlansNotification.getMessage());
+        message.setText(setTextToSend(sethlansNotification));
         emailSender.send(message);
     }
+
 
     private void sendVideoNotification(SethlansNotification sethlansNotification) {
         SimpleMailMessage message = new SimpleMailMessage();
         SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(sethlansNotification.getUsername());
         message.setTo(sethlansUser.getEmail());
+        message.setFrom(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
+        message.setReplyTo(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setSubject("Sethlans Video Encoding Notification: " + sethlansNotification.getSubject());
-        message.setText(sethlansNotification.getMessage());
+        message.setText(setTextToSend(sethlansNotification));
         emailSender.send(message);
     }
 
@@ -100,8 +107,10 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
             emailAddresses.add(sethlansUser.getEmail());
         }
         message.setTo(emailAddresses.toArray(new String[0]));
+        message.setFrom(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
+        message.setReplyTo(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setSubject("Sethlans Blender Download Notification: " + sethlansNotification.getSubject());
-        message.setText(sethlansNotification.getMessage());
+        message.setText(setTextToSend(sethlansNotification));
         emailSender.send(message);
     }
 
@@ -113,8 +122,10 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
         }
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(emailAddresses.toArray(new String[0]));
+        message.setFrom(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
+        message.setReplyTo(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setSubject("Sethlans Node Notification: " + sethlansNotification.getSubject());
-        message.setText(sethlansNotification.getMessage());
+        message.setText(setTextToSend(sethlansNotification));
         emailSender.send(message);
     }
 
@@ -126,11 +137,25 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
         }
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(emailAddresses.toArray(new String[0]));
+        message.setFrom(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
+        message.setReplyTo(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setSubject("Sethlans System Notification: " + sethlansNotification.getSubject());
-        message.setText(sethlansNotification.getMessage());
+        message.setText(setTextToSend(sethlansNotification));
         emailSender.send(message);
     }
 
+    private String setTextToSend(SethlansNotification sethlansNotification) {
+        String sethlansURL = SethlansConfigUtils.getProperty(SethlansConfigKeys.SETHLANS_URL);
+        String textToSend = "Hello, " + "\n\n" + "The following notification has been sent by the Sethlans installation at: " + sethlansURL + "\n\n" +
+                "\"" + sethlansNotification.getMessage() + "\"";
+        if (sethlansNotification.isLinkPresent()) {
+            String urlToSend = "\n\nThe results can be seen at the following URL: \n\n" + sethlansURL + sethlansNotification.getMessageLink();
+            textToSend = textToSend + urlToSend;
+        }
+
+        return textToSend;
+
+    }
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Autowired
