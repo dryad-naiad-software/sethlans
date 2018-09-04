@@ -237,6 +237,11 @@ public class AdminController {
         userToSend.setId(sethlansUser.getId());
         userToSend.setLastUpdated(sethlansUser.getLastUpdated());
         userToSend.setDateCreated(sethlansUser.getDateCreated());
+        userToSend.setNodeEmailNotifications(sethlansUser.isNodeEmailNotifications());
+        userToSend.setBlenderDownloadEmailNotifications(sethlansUser.isBlenderDownloadEmailNotifications());
+        userToSend.setProjectEmailNotifications(sethlansUser.isProjectEmailNotifications());
+        userToSend.setSystemEmailNotifications(sethlansUser.isSystemEmailNotifications());
+        userToSend.setVideoEncodingEmailNotifications(sethlansUser.isVideoEncodingEmailNotifications());
         return userToSend;
     }
 

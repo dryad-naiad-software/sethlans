@@ -42,4 +42,9 @@ public class UserInfo {
     private long id;
     private Date dateCreated;
     private Date lastUpdated;
+    private boolean systemEmailNotifications;
+    private boolean blenderDownloadEmailNotifications;
+    private boolean nodeEmailNotifications;
+    private boolean projectEmailNotifications;
+    private boolean videoEncodingEmailNotifications;
 }

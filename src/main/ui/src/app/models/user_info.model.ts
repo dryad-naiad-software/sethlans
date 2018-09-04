@@ -28,6 +28,11 @@ export class UserInfo {
   password: string;
   dateCreated: any;
   lastUpdated: any;
+  systemEmailNotifications: boolean;
+  blenderDownloadEmailNotifications: boolean;
+  nodeEmailNotifications: boolean;
+  projectEmailNotifications: boolean;
+  videoEncodingEmailNotifications: boolean;
 
 
   constructor() {
@@ -39,5 +44,10 @@ export class UserInfo {
     this.password = "";
     this.dateCreated = 0;
     this.lastUpdated = 0;
+    this.systemEmailNotifications = true;
+    this.blenderDownloadEmailNotifications = true;
+    this.nodeEmailNotifications = true;
+    this.projectEmailNotifications = true;
+    this.videoEncodingEmailNotifications = true;
   }
 }
