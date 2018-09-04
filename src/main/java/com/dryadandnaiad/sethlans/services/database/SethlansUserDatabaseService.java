@@ -41,5 +41,7 @@ public interface SethlansUserDatabaseService extends CRUDService<SethlansUser> {
 
     List<SethlansUser> excludeSuperAdministrators();
 
+    List<SethlansUser> excludeUsers();
+
     int numberOfSuperAdministrators();
 }

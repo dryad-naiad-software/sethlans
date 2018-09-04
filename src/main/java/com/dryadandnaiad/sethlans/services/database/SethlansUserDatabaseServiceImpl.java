@@ -116,6 +116,11 @@ public class SethlansUserDatabaseServiceImpl implements SethlansUserDatabaseServ
     }
 
     @Override
+    public List<SethlansUser> excludeUsers() {
+        return sethlansUserRepository.findSethlansUsersByRolesIsNot(Role.USER);
+    }
+
+    @Override
     public int numberOfSuperAdministrators() {
         return sethlansUserRepository.countSethlansUsersByRolesEquals(Role.SUPER_ADMINISTRATOR);
     }

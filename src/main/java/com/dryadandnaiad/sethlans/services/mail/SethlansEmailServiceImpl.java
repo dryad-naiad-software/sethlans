@@ -22,10 +22,15 @@ package com.dryadandnaiad.sethlans.services.mail;
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created Mario Estrella on 8/30/2018.
@@ -35,6 +40,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SethlansEmailServiceImpl implements SethlansEmailService {
+    private static final Logger LOG = LoggerFactory.getLogger(SethlansEmailServiceImpl.class);
     private SethlansUserDatabaseService sethlansUserDatabaseService;
     private JavaMailSender emailSender;
 
@@ -45,25 +51,84 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
 
     @Override
     public void sendNotificationEmail(SethlansNotification sethlansNotification) {
+        switch (sethlansNotification.getNotificationType()) {
+            case NODE:
+                sendNodeNotification(sethlansNotification);
+                break;
+            case VIDEO:
+                sendVideoNotification(sethlansNotification);
+                break;
+            case SYSTEM:
+                sendSystemNotification(sethlansNotification);
+                break;
+            case PROJECT:
+                sendProjectNotification(sethlansNotification);
+                break;
+            case BLENDER_DOWNLOAD:
+                sendBlenderDownloadNotification(sethlansNotification);
+                break;
+            default:
+                LOG.error("Notification Type: " + sethlansNotification.getNotificationType() + " is not a supported mailable type");
+
+        }
 
     }
 
-    private void sendProjectNotification() {
+    private void sendProjectNotification(SethlansNotification sethlansNotification) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setSubject("Sethlans Project Notification: ");
-
+        SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(sethlansNotification.getUsername());
+        message.setTo(sethlansUser.getEmail());
+        message.setSubject("Sethlans Project Notification: " + sethlansNotification.getSubject());
+        message.setText(sethlansNotification.getMessage());
+        emailSender.send(message);
     }
 
-    private void sendVideoNotification() {
+    private void sendVideoNotification(SethlansNotification sethlansNotification) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setSubject("Sethlans Video Encoding Notification: ");
+        SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(sethlansNotification.getUsername());
+        message.setTo(sethlansUser.getEmail());
+        message.setSubject("Sethlans Video Encoding Notification: " + sethlansNotification.getSubject());
+        message.setText(sethlansNotification.getMessage());
+        emailSender.send(message);
     }
 
-    private void sendAdminNotification() {
+    private void sendBlenderDownloadNotification(SethlansNotification sethlansNotification) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setSubject("Sethlans Admin Notification: ");
+        List<SethlansUser> sethlansUsers = sethlansUserDatabaseService.excludeUsers();
+        List<String> emailAddresses = new ArrayList<>();
+        for (SethlansUser sethlansUser : sethlansUsers) {
+            emailAddresses.add(sethlansUser.getEmail());
+        }
+        message.setTo(emailAddresses.toArray(new String[0]));
+        message.setSubject("Sethlans Blender Download Notification: " + sethlansNotification.getSubject());
+        message.setText(sethlansNotification.getMessage());
+        emailSender.send(message);
+    }
 
+    private void sendNodeNotification(SethlansNotification sethlansNotification) {
+        List<SethlansUser> sethlansUsers = sethlansUserDatabaseService.excludeUsers();
+        List<String> emailAddresses = new ArrayList<>();
+        for (SethlansUser sethlansUser : sethlansUsers) {
+            emailAddresses.add(sethlansUser.getEmail());
+        }
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(emailAddresses.toArray(new String[0]));
+        message.setSubject("Sethlans Node Notification: " + sethlansNotification.getSubject());
+        message.setText(sethlansNotification.getMessage());
+        emailSender.send(message);
+    }
 
+    private void sendSystemNotification(SethlansNotification sethlansNotification) {
+        List<SethlansUser> sethlansUsers = sethlansUserDatabaseService.excludeUsers();
+        List<String> emailAddresses = new ArrayList<>();
+        for (SethlansUser sethlansUser : sethlansUsers) {
+            emailAddresses.add(sethlansUser.getEmail());
+        }
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(emailAddresses.toArray(new String[0]));
+        message.setSubject("Sethlans System Notification: " + sethlansNotification.getSubject());
+        message.setText(sethlansNotification.getMessage());
+        emailSender.send(message);
     }
 
 
