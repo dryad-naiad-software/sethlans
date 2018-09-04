@@ -86,17 +86,20 @@ public class SetupController {
     @PostMapping("/self_register")
     public boolean selfRegister(@RequestBody SethlansUser user) {
         if (user != null) {
-            LOG.debug("Registering new user...");
+            LOG.debug(user.toString());
+            LOG.info("Registering new user...");
             if (sethlansUserDatabaseService.checkIfExists(user.getUsername())) {
-                LOG.debug("User " + user.getUsername() + " already exists!");
+                LOG.info("User " + user.getUsername() + " already exists!");
                 return false;
             }
             if (SethlansQueryUtils.getMode() != SethlansMode.NODE && user.getEmail().isEmpty()) {
+                LOG.info("Email field cannot be null");
                 return false;
             }
             if (user.getPassword().isEmpty()
                     || user.getUsername().isEmpty()
                     || user.getChallengeList().size() == 0) {
+                LOG.info("Password, username and challenge list are all required fields for this form.");
                 return false;
             }
 

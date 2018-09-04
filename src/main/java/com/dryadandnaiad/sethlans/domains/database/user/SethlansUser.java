@@ -85,12 +85,19 @@ public class SethlansUser extends AbstractEntityClass {
     @Override
     public String toString() {
         return "SethlansUser{" +
-                "username=" + username +
+                "username='" + username + '\'' +
                 ", roles=" + roles +
-                ", active=" + active +
-                ", email=" + email +
                 ", challengeList=" + challengeList +
+                ", active=" + active +
+                ", email='" + email + '\'' +
                 ", welcomeEmailSent=" + welcomeEmailSent +
+                ", securityQuestionsSet=" + securityQuestionsSet +
+                ", promptPasswordChange=" + promptPasswordChange +
+                ", systemEmailNotifications=" + systemEmailNotifications +
+                ", blenderDownloadEmailNotifications=" + blenderDownloadEmailNotifications +
+                ", nodeEmailNotifications=" + nodeEmailNotifications +
+                ", projectEmailNotifications=" + projectEmailNotifications +
+                ", videoEncodingEmailNotifications=" + videoEncodingEmailNotifications +
                 ", passwordUpdated=" + passwordUpdated +
                 '}';
     }

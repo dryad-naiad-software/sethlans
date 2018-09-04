@@ -23,6 +23,7 @@
         <h4 class="text-white" style="font-family: 'Fjalla One', sans-serif; ">Self Registration</h4>
       </div>
       <div class="card-body bg-dark">
+        <div class="alert alert-danger" *ngIf="userExists">Username: {{username}} already exists.</div>
         <form #registerForm="ngForm" class="editForm">
           <h6 class="pt-1 text-white"
               ngbTooltip="In case you lose your password, this will allow password reset. Each answer must be unique. Remember your answers."

@@ -86,6 +86,7 @@ export class RegisterUserComponent implements OnInit {
   }
 
   onSubmit() {
+    this.populateUserSecurityQuestions();
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
