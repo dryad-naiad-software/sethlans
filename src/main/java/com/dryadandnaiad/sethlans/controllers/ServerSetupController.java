@@ -115,6 +115,8 @@ public class ServerSetupController {
         SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.NODE, message, NotificationScope.ADMIN);
         sethlansNotification.setMessageLink("/admin/nodes");
         sethlansNotification.setLinkPresent(true);
+        sethlansNotification.setMailable(true);
+        sethlansNotification.setSubject("Node Added: " + sethlansNode.getHostname());
         sethlansNotificationService.sendNotification(sethlansNotification);
     }
 

@@ -69,6 +69,7 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
         ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
         PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
         CommandLine ffmpeg = new CommandLine(getProperty(SethlansConfigKeys.FFMPEG_BIN.toString()));
+        String movieType = "";
 
         ffmpeg.addArgument("-framerate");
         ffmpeg.addArgument(blenderProject.getFrameRate());
@@ -86,12 +87,14 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
         ffmpeg.addArgument(blenderProject.getProjectRootDir() + File.separator + "temp" + File.separator + cleanedProjectName + "-" + truncatedUUID + "-" + "%d.png");
         ffmpeg.addArgument("-c:v");
         if (blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
+            movieType = "AVI";
             ffmpeg.addArgument("utvideo");
             ffmpeg.addArgument("-pix_fmt");
             ffmpeg.addArgument("yuv422p");
 
         }
         if (blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
+            movieType = "MP4";
             ffmpeg.addArgument("libx264");
             ffmpeg.addArgument("-crf");
             ffmpeg.addArgument("17");
@@ -131,6 +134,10 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
             projectToUpdate.setReEncode(false);
             String message = blenderProject.getProjectName() + " video processing has completed";
             SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.VIDEO, message, blenderProject.getSethlansUser().getUsername());
+            sethlansNotification.setSubject(blenderProject.getProjectName() + " " + movieType + " ready");
+            sethlansNotification.setLinkPresent(true);
+            sethlansNotification.setMailable(true);
+            sethlansNotification.setMessageLink("/projects/view/" + blenderProject.getId());
             sethlansNotificationService.sendNotification(sethlansNotification);
             blenderProjectDatabaseService.saveOrUpdate(projectToUpdate);
             FileUtils.deleteDirectory(new File(blenderProject.getProjectRootDir() + File.separator + "temp"));
@@ -138,6 +145,10 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
             LOG.error(e.getMessage());
             String message = blenderProject.getProjectName() + " video processing has failed";
             SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.VIDEO, message, blenderProject.getSethlansUser().getUsername());
+            sethlansNotification.setSubject(blenderProject.getProjectName() + " " + movieType + " failed");
+            sethlansNotification.setLinkPresent(true);
+            sethlansNotification.setMailable(true);
+            sethlansNotification.setMessageLink("/projects/view/" + blenderProject.getId());
             sethlansNotificationService.sendNotification(sethlansNotification);
         }
     }

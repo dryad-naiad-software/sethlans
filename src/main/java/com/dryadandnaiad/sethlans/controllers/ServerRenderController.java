@@ -138,6 +138,8 @@ public class ServerRenderController {
                 sethlansNotification = new SethlansNotification(NotificationType.NODE, message, NotificationScope.ADMIN);
                 sethlansNotification.setLinkPresent(true);
                 sethlansNotification.setMessageLink("/admin/nodes");
+                sethlansNotification.setMailable(true);
+                sethlansNotification.setSubject("Benchmark complete for " + sethlansNode.getHostname());
                 sethlansNotificationService.sendNotification(sethlansNotification);
             }
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
