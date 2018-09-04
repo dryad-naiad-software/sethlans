@@ -99,6 +99,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
         administrator.setUsername(administrator.getUsername().toLowerCase());
         administrator.setRoles(Arrays.asList(Role.SUPER_ADMINISTRATOR));
         administrator.setActive(true);
+        administrator.enableAllNotifications();
         administrator.setPasswordUpdated(true);
         sethlansUserDatabaseService.saveOrUpdate(administrator);
         try {

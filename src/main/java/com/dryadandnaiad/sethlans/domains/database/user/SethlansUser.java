@@ -58,8 +58,29 @@ public class SethlansUser extends AbstractEntityClass {
     private boolean welcomeEmailSent;
     private boolean securityQuestionsSet;
     private boolean promptPasswordChange;
+    private boolean systemEmailNotifications;
+    private boolean blenderDownloadEmailNotifications;
+    private boolean nodeEmailNotifications;
+    private boolean projectEmailNotifications;
+    private boolean videoEncodingEmailNotifications;
     @Transient
     private boolean passwordUpdated;
+
+    public void enableAllNotifications() {
+        this.systemEmailNotifications = true;
+        this.nodeEmailNotifications = true;
+        this.projectEmailNotifications = true;
+        this.videoEncodingEmailNotifications = true;
+        this.blenderDownloadEmailNotifications = true;
+    }
+
+    public void disableAllNotifications() {
+        this.systemEmailNotifications = false;
+        this.nodeEmailNotifications = false;
+        this.projectEmailNotifications = false;
+        this.videoEncodingEmailNotifications = false;
+        this.blenderDownloadEmailNotifications = false;
+    }
 
     @Override
     public String toString() {

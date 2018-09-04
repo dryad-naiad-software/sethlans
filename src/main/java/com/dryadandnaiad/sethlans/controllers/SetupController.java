@@ -112,6 +112,7 @@ public class SetupController {
 
             user.setPasswordUpdated(true);
             user.setActive(false);
+            user.enableAllNotifications();
             user.setWelcomeEmailSent(sethlansEmailService.sendWelcomeEmail(user));
             user.setPromptPasswordChange(false);
             user.setRoles(Collections.singletonList(Role.USER));

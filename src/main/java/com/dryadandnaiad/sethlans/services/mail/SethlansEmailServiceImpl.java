@@ -99,18 +99,23 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
 
     @Override
     public void sendNotificationEmail(SethlansNotification sethlansNotification) {
+        SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(sethlansNotification.getUsername());
         switch (sethlansNotification.getNotificationType()) {
             case NODE:
                 sendNodeNotification(sethlansNotification);
                 break;
             case VIDEO:
-                sendVideoNotification(sethlansNotification);
+                if (sethlansUser.isVideoEncodingEmailNotifications()) {
+                    sendVideoNotification(sethlansNotification, sethlansUser);
+                }
                 break;
             case SYSTEM:
                 sendSystemNotification(sethlansNotification);
                 break;
             case PROJECT:
-                sendProjectNotification(sethlansNotification);
+                if (sethlansUser.isProjectEmailNotifications()) {
+                    sendProjectNotification(sethlansNotification, sethlansUser);
+                }
                 break;
             case BLENDER_DOWNLOAD:
                 sendBlenderDownloadNotification(sethlansNotification);
@@ -122,9 +127,8 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
 
     }
 
-    private void sendProjectNotification(SethlansNotification sethlansNotification) {
+    private void sendProjectNotification(SethlansNotification sethlansNotification, SethlansUser sethlansUser) {
         SimpleMailMessage message = new SimpleMailMessage();
-        SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(sethlansNotification.getUsername());
         message.setTo(sethlansUser.getEmail());
         message.setFrom(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setReplyTo(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
@@ -134,9 +138,8 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
     }
 
 
-    private void sendVideoNotification(SethlansNotification sethlansNotification) {
+    private void sendVideoNotification(SethlansNotification sethlansNotification, SethlansUser sethlansUser) {
         SimpleMailMessage message = new SimpleMailMessage();
-        SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(sethlansNotification.getUsername());
         message.setTo(sethlansUser.getEmail());
         message.setFrom(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setReplyTo(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
@@ -150,7 +153,9 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
         List<SethlansUser> sethlansUsers = sethlansUserDatabaseService.excludeUsers();
         List<String> emailAddresses = new ArrayList<>();
         for (SethlansUser sethlansUser : sethlansUsers) {
-            emailAddresses.add(sethlansUser.getEmail());
+            if (sethlansUser.isBlenderDownloadEmailNotifications()) {
+                emailAddresses.add(sethlansUser.getEmail());
+            }
         }
         message.setTo(emailAddresses.toArray(new String[0]));
         message.setFrom(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
@@ -164,7 +169,9 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
         List<SethlansUser> sethlansUsers = sethlansUserDatabaseService.excludeUsers();
         List<String> emailAddresses = new ArrayList<>();
         for (SethlansUser sethlansUser : sethlansUsers) {
-            emailAddresses.add(sethlansUser.getEmail());
+            if (sethlansUser.isNodeEmailNotifications()) {
+                emailAddresses.add(sethlansUser.getEmail());
+            }
         }
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(emailAddresses.toArray(new String[0]));
@@ -179,7 +186,9 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
         List<SethlansUser> sethlansUsers = sethlansUserDatabaseService.excludeUsers();
         List<String> emailAddresses = new ArrayList<>();
         for (SethlansUser sethlansUser : sethlansUsers) {
-            emailAddresses.add(sethlansUser.getEmail());
+            if (sethlansUser.isSystemEmailNotifications()) {
+                emailAddresses.add(sethlansUser.getEmail());
+            }
         }
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(emailAddresses.toArray(new String[0]));

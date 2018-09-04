@@ -335,6 +335,7 @@ public class AdminController {
                 user.setPasswordUpdated(true);
                 user.setSecurityQuestionsSet(false);
                 user.setActive(false);
+                user.enableAllNotifications();
                 user.setPromptPasswordChange(true);
                 user.setWelcomeEmailSent(false);
                 sethlansUserDatabaseService.saveOrUpdate(user);
