@@ -63,7 +63,7 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
                 }
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOG.debug("Sethlans Email Service is being restarted.");
         }
 
     }
