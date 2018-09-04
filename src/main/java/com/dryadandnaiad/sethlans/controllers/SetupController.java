@@ -86,7 +86,6 @@ public class SetupController {
     @PostMapping("/self_register")
     public boolean selfRegister(@RequestBody SethlansUser user) {
         if (user != null) {
-            LOG.debug(user.toString());
             LOG.info("Registering new user...");
             if (sethlansUserDatabaseService.checkIfExists(user.getUsername())) {
                 LOG.info("User " + user.getUsername() + " already exists!");
