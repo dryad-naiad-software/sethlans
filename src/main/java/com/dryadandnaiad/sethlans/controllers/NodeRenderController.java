@@ -187,8 +187,7 @@ public class NodeRenderController {
                 RenderTaskHistory renderTaskHistory = new RenderTaskHistory();
                 renderTaskHistory.setComputeType(compute_type);
                 renderTaskHistory.setEngine(blender_engine);
-                renderTaskHistory.setFrameNumber(frame_number);
-                renderTaskHistory.setPartNumber(part_number);
+                renderTaskHistory.setFrameAndPartNumbers(frame_number + ":" + part_number);
                 renderTaskHistory.setProjectName(project_name);
                 renderTaskHistory.setServerName(sethlansServer.getHostname());
                 renderTaskHistory.setTaskDate(System.currentTimeMillis());

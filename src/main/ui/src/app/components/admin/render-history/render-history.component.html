@@ -33,7 +33,7 @@
           <input matInput id="table-search" (keyup)="applyFilter($event.target.value)" placeholder="Search">
         </mat-form-field>
         <mat-table #renderHistoryTable [dataSource]="dataSource" matSort matSortActive="date" matSortDirection="desc">
-          <ng-container matColumnDef="date">
+          <ng-container matColumnDef="taskDate">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Date</mat-header-cell>
             <mat-cell *matCellDef="let history">
               <span class="mobile-label">Date:</span>
@@ -75,11 +75,11 @@
               {{history.projectName}}
             </mat-cell>
           </ng-container>
-          <ng-container matColumnDef="framePart">
+          <ng-container matColumnDef="frameAndPartNumbers">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Frame</mat-header-cell>
             <mat-cell *matCellDef="let history">
               <span class="mobile-label">Frame Number:</span>
-              {{history.frameNumber}}:&nbsp;{{history.partNumber}}
+              {{history.frameAndPartNumbers}}
             </mat-cell>
           </ng-container>
 

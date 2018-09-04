@@ -28,6 +28,5 @@ export class RenderTaskHistory {
   projectName: string;
   completed: boolean;
   failed: boolean;
-  frameNumber: number;
-  partNumber: number;
+  frameAndPartNumbers: string;
 }

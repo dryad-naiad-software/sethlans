@@ -31,7 +31,7 @@ export class RenderHistoryComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   dataSource = new MatTableDataSource();
-  displayedColumns = ['date', 'computeType', 'completed', 'failed', 'engine', 'projectName', 'framePart', 'serverName'];
+  displayedColumns = ['taskDate', 'computeType', 'completed', 'failed', 'engine', 'projectName', 'frameAndPartNumbers', 'serverName'];
 
   constructor(private http: HttpClient) {
   }
@@ -42,6 +42,7 @@ export class RenderHistoryComponent implements OnInit {
 
   loadHistory() {
     this.http.get('/api/management/render_history_list').subscribe((renderHistoryList: RenderTaskHistory[]) => {
+      console.log(renderHistoryList);
       this.dataSource = new MatTableDataSource<any>(renderHistoryList.reverse());
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
@@ -54,5 +55,6 @@ export class RenderHistoryComponent implements OnInit {
     filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
     this.dataSource.filter = filterValue;
   }
+
 
 }

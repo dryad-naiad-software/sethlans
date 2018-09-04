@@ -164,8 +164,7 @@
               </div>
               <div *ngIf="notification.linkPresent">
                 <a href="javascript:void(0);" class="dropdown-item" (click)="followLink(notification)">
-                  <span *ngIf="!notification.acknowledged">{{notification.message}}</span>
-                  <span *ngIf="notification.acknowledged"><i>{{notification.message}}</i></span>
+                  {{notification.message}}
                 </a>
               </div>
               <div class="dropdown-item-text">

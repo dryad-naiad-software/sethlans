@@ -45,6 +45,6 @@ public class RenderTaskHistory extends AbstractEntityClass {
     String queueUUID;
     boolean completed;
     boolean failed;
-    int frameNumber;
-    int partNumber;
+    String frameAndPartNumbers;
+
 }
