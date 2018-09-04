@@ -23,6 +23,8 @@ import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
 import com.dryadandnaiad.sethlans.enums.Role;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -42,10 +44,13 @@ import java.util.List;
 public class SethlansUser extends AbstractEntityClass {
     private String username;
     @ElementCollection(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     private List<Role> roles;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     private List<SethlansUserChallenge> challengeList;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     private List<String> tokenList;
     private String password;
     private boolean active;

@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.mail;
 
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
+import org.springframework.scheduling.annotation.Async;
 
 /**
  * Created Mario Estrella on 8/24/2018.
@@ -29,6 +30,9 @@ import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
  * Project: sethlans
  */
 public interface SethlansEmailService {
+
+    @Async
+    void sendWelcomeEmailToAdmin();
 
     boolean sendWelcomeEmail(SethlansUser sethlansUser);
 

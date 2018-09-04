@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -47,8 +48,39 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
     private JavaMailSender emailSender;
 
     @Override
+    @Async
+    public void sendWelcomeEmailToAdmin() {
+        try {
+            Thread.sleep(15000);
+            if (Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_SERVER_CONFIGURED))) {
+                if (sethlansUserDatabaseService.numberOfSuperAdministrators() == 1 && sethlansUserDatabaseService.tableSize() == 1) {
+                    LOG.debug("Sending Welcome Email to Super Administrator");
+                    SethlansUser sethlansUser = sethlansUserDatabaseService.listAll().get(0);
+                    if (!sethlansUser.isWelcomeEmailSent()) {
+                        sendWelcomeEmail(sethlansUser);
+                        sethlansUser.setWelcomeEmailSent(sendWelcomeEmail(sethlansUser));
+                        sethlansUserDatabaseService.saveOrUpdate(sethlansUser);
+                    }
+                }
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
     public boolean sendWelcomeEmail(SethlansUser sethlansUser) {
-        return false;
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(sethlansUser.getEmail());
+        message.setFrom(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
+        message.setReplyTo(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
+        message.setSubject("Welcome to Sethlans, " + sethlansUser.getUsername() + "!");
+        message.setText("Hello " + sethlansUser.getUsername() + "\n\n" +
+                "You're receiving this email because you have registered with a Sethlans installation located at \n\n"
+                + SethlansConfigUtils.getProperty(SethlansConfigKeys.SETHLANS_URL));
+        emailSender.send(message);
+        return true;
     }
 
     @Override
@@ -83,7 +115,7 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
         message.setFrom(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setReplyTo(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setSubject("Sethlans Project Notification: " + sethlansNotification.getSubject());
-        message.setText(setTextToSend(sethlansNotification));
+        message.setText(notificationText(sethlansNotification));
         emailSender.send(message);
     }
 
@@ -95,7 +127,7 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
         message.setFrom(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setReplyTo(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setSubject("Sethlans Video Encoding Notification: " + sethlansNotification.getSubject());
-        message.setText(setTextToSend(sethlansNotification));
+        message.setText(notificationText(sethlansNotification));
         emailSender.send(message);
     }
 
@@ -110,7 +142,7 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
         message.setFrom(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setReplyTo(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setSubject("Sethlans Blender Download Notification: " + sethlansNotification.getSubject());
-        message.setText(setTextToSend(sethlansNotification));
+        message.setText(notificationText(sethlansNotification));
         emailSender.send(message);
     }
 
@@ -125,7 +157,7 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
         message.setFrom(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setReplyTo(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setSubject("Sethlans Node Notification: " + sethlansNotification.getSubject());
-        message.setText(setTextToSend(sethlansNotification));
+        message.setText(notificationText(sethlansNotification));
         emailSender.send(message);
     }
 
@@ -140,16 +172,18 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
         message.setFrom(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setReplyTo(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setSubject("Sethlans System Notification: " + sethlansNotification.getSubject());
-        message.setText(setTextToSend(sethlansNotification));
+        message.setText(notificationText(sethlansNotification));
         emailSender.send(message);
     }
 
-    private String setTextToSend(SethlansNotification sethlansNotification) {
+    private String notificationText(SethlansNotification sethlansNotification) {
         String sethlansURL = SethlansConfigUtils.getProperty(SethlansConfigKeys.SETHLANS_URL);
-        String textToSend = "Hello, " + "\n\n" + "The following notification has been sent by the Sethlans installation at: " + sethlansURL + "\n\n" +
+        String textToSend = "Hello, " + "\n\n" +
+                "The following notification has been sent by the Sethlans installation at: " + sethlansURL + "\n\n" +
                 "\"" + sethlansNotification.getMessage() + "\"";
         if (sethlansNotification.isLinkPresent()) {
-            String urlToSend = "\n\nThe results can be seen at the following URL: \n\n" + sethlansURL + sethlansNotification.getMessageLink();
+            String urlToSend = "\n\nThe results can be seen at the following URL: \n\n"
+                    + sethlansURL + sethlansNotification.getMessageLink();
             textToSend = textToSend + urlToSend;
         }
 

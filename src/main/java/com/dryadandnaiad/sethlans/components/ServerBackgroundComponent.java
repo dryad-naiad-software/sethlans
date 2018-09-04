@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.components;
 
 import com.dryadandnaiad.sethlans.services.blender.BlenderDownloadService;
+import com.dryadandnaiad.sethlans.services.mail.SethlansEmailService;
 import com.dryadandnaiad.sethlans.services.network.NodeQueryService;
 import com.dryadandnaiad.sethlans.services.queue.QueueService;
 import org.slf4j.Logger;
@@ -42,7 +43,13 @@ public class ServerBackgroundComponent {
     private BlenderDownloadService blenderDownloadService;
     private NodeQueryService nodeQueryService;
     private QueueService queueService;
+    private SethlansEmailService sethlansEmailService;
     private static final Logger LOG = LoggerFactory.getLogger(ServerBackgroundComponent.class);
+
+    @PostConstruct
+    public void sendEmailToSuperAdministrator() {
+        sethlansEmailService.sendWelcomeEmailToAdmin();
+    }
 
     @PostConstruct
     public void startBlenderQueue() {
@@ -77,5 +84,10 @@ public class ServerBackgroundComponent {
     @Autowired
     public void setQueueService(QueueService queueService) {
         this.queueService = queueService;
+    }
+
+    @Autowired
+    public void setSethlansEmailService(SethlansEmailService sethlansEmailService) {
+        this.sethlansEmailService = sethlansEmailService;
     }
 }
