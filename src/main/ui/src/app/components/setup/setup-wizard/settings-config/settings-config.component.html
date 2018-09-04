@@ -113,7 +113,7 @@
              [ngClass]="{'is-invalid':mailHost.errors && mailHost.touched}"
              class="form-control form-control-sm" (keyup)="validateAndSubmit($event, settingsForm)"
              placeholder="smtp.example.com"
-             pattern="([a-z])([a-z0-9]+\.)*[a-z0-9]+\.[a-z.]+"/>
+             minlength="4"/>
     </div>
     <div class="form-group">
       <label for="mailPort">SMTP Port</label>

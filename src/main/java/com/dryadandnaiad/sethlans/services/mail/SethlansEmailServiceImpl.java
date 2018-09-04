@@ -51,12 +51,11 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
     @Async
     public void sendWelcomeEmailToAdmin() {
         try {
-            Thread.sleep(15000);
+            Thread.sleep(5000);
             if (Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_SERVER_CONFIGURED))) {
                 if (sethlansUserDatabaseService.numberOfSuperAdministrators() == 1 && sethlansUserDatabaseService.tableSize() == 1) {
                     SethlansUser sethlansUser = sethlansUserDatabaseService.listAll().get(0);
                     if (!sethlansUser.isWelcomeEmailSent()) {
-                        sendWelcomeEmail(sethlansUser);
                         sethlansUser.setWelcomeEmailSent(sendWelcomeEmail(sethlansUser));
                         sethlansUserDatabaseService.saveOrUpdate(sethlansUser);
                     }
