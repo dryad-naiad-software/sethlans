@@ -54,7 +54,6 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
             Thread.sleep(15000);
             if (Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_SERVER_CONFIGURED))) {
                 if (sethlansUserDatabaseService.numberOfSuperAdministrators() == 1 && sethlansUserDatabaseService.tableSize() == 1) {
-                    LOG.debug("Sending Welcome Email to Super Administrator");
                     SethlansUser sethlansUser = sethlansUserDatabaseService.listAll().get(0);
                     if (!sethlansUser.isWelcomeEmailSent()) {
                         sendWelcomeEmail(sethlansUser);
@@ -76,9 +75,24 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
         message.setFrom(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setReplyTo(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setSubject("Welcome to Sethlans, " + sethlansUser.getUsername() + "!");
-        message.setText("Hello " + sethlansUser.getUsername() + "\n\n" +
-                "You're receiving this email because you have registered with a Sethlans installation located at \n\n"
-                + SethlansConfigUtils.getProperty(SethlansConfigKeys.SETHLANS_URL));
+        String welcomeMessage = "Hello " + sethlansUser.getUsername() + "\n\n" +
+                "You are receiving this email because you have registered with a Sethlans installation located at: \n\n"
+                + SethlansConfigUtils.getProperty(SethlansConfigKeys.SETHLANS_URL);
+
+        if (sethlansUser.isPromptPasswordChange() || !sethlansUser.isSecurityQuestionsSet()) {
+            welcomeMessage = welcomeMessage + "\n\nOnce logging in please perform the following actions:\n";
+        }
+
+        if (sethlansUser.isPromptPasswordChange()) {
+            welcomeMessage = welcomeMessage + "\n- Change your password.";
+        }
+
+        if (!sethlansUser.isSecurityQuestionsSet()) {
+            welcomeMessage = welcomeMessage + "\n- Select your password reset questions and enter your responses.";
+        }
+
+        message.setText(welcomeMessage);
+        LOG.debug("Sending welcome email to " + sethlansUser.getUsername());
         emailSender.send(message);
         return true;
     }

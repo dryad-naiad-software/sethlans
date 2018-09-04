@@ -31,6 +31,7 @@ import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
+import com.dryadandnaiad.sethlans.services.mail.SethlansEmailService;
 import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
 import com.dryadandnaiad.sethlans.services.system.SethlansLogRetrievalService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
@@ -63,6 +64,7 @@ public class AdminController {
     private SethlansLogRetrievalService sethlansLogRetrievalService;
     private SethlansManagerService sethlansManagerService;
     private SethlansNotificationService sethlansNotificationService;
+    private SethlansEmailService sethlansEmailService;
 
     private static final Logger LOG = LoggerFactory.getLogger(AdminController.class);
 
@@ -268,6 +270,9 @@ public class AdminController {
         SethlansUser sethlansUser = sethlansUserDatabaseService.getById(id);
         if (!sethlansUser.isActive()) {
             sethlansUser.setActive(true);
+            if (!sethlansUser.isWelcomeEmailSent()) {
+                sethlansUser.setWelcomeEmailSent(sethlansEmailService.sendWelcomeEmail(sethlansUser));
+            }
             sethlansUserDatabaseService.saveOrUpdate(sethlansUser);
         }
     }
@@ -331,6 +336,7 @@ public class AdminController {
                 user.setSecurityQuestionsSet(false);
                 user.setActive(false);
                 user.setPromptPasswordChange(true);
+                user.setWelcomeEmailSent(false);
                 sethlansUserDatabaseService.saveOrUpdate(user);
                 LOG.debug("Saving " + user.toString() + " to database.");
                 return true;
@@ -375,5 +381,10 @@ public class AdminController {
     @Autowired
     public void setSethlansNotificationService(SethlansNotificationService sethlansNotificationService) {
         this.sethlansNotificationService = sethlansNotificationService;
+    }
+
+    @Autowired
+    public void setSethlansEmailService(SethlansEmailService sethlansEmailService) {
+        this.sethlansEmailService = sethlansEmailService;
     }
 }
