@@ -125,6 +125,10 @@ public class AdminController {
             userToSend.setId(sethlansUser.getId());
             userToSend.setLastUpdated(sethlansUser.getLastUpdated());
             userToSend.setDateCreated(sethlansUser.getDateCreated());
+            userToSend.setNodeEmailNotifications(sethlansUser.isNodeEmailNotifications());
+            userToSend.setProjectEmailNotifications(sethlansUser.isProjectEmailNotifications());
+            userToSend.setSystemEmailNotifications(sethlansUser.isSystemEmailNotifications());
+            userToSend.setVideoEncodingEmailNotifications(sethlansUser.isVideoEncodingEmailNotifications());
             userInfoList.add(userToSend);
         }
         return userInfoList;
@@ -238,7 +242,6 @@ public class AdminController {
         userToSend.setLastUpdated(sethlansUser.getLastUpdated());
         userToSend.setDateCreated(sethlansUser.getDateCreated());
         userToSend.setNodeEmailNotifications(sethlansUser.isNodeEmailNotifications());
-        userToSend.setBlenderDownloadEmailNotifications(sethlansUser.isBlenderDownloadEmailNotifications());
         userToSend.setProjectEmailNotifications(sethlansUser.isProjectEmailNotifications());
         userToSend.setSystemEmailNotifications(sethlansUser.isSystemEmailNotifications());
         userToSend.setVideoEncodingEmailNotifications(sethlansUser.isVideoEncodingEmailNotifications());

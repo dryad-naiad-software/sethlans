@@ -116,9 +116,6 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
                     sendProjectNotification(sethlansNotification, sethlansUser);
                 }
                 break;
-            case BLENDER_DOWNLOAD:
-                sendBlenderDownloadNotification(sethlansNotification);
-                break;
             default:
                 LOG.error("Notification Type: " + sethlansNotification.getNotificationType() + " is not a supported mailable type");
 
@@ -143,23 +140,6 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
         message.setFrom(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setReplyTo(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setSubject("Sethlans Video Encoding Notification: " + sethlansNotification.getSubject());
-        message.setText(notificationText(sethlansNotification));
-        emailSender.send(message);
-    }
-
-    private void sendBlenderDownloadNotification(SethlansNotification sethlansNotification) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        List<SethlansUser> sethlansUsers = sethlansUserDatabaseService.excludeUsers();
-        List<String> emailAddresses = new ArrayList<>();
-        for (SethlansUser sethlansUser : sethlansUsers) {
-            if (sethlansUser.isBlenderDownloadEmailNotifications()) {
-                emailAddresses.add(sethlansUser.getEmail());
-            }
-        }
-        message.setTo(emailAddresses.toArray(new String[0]));
-        message.setFrom(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
-        message.setReplyTo(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
-        message.setSubject("Sethlans Blender Download Notification: " + sethlansNotification.getSubject());
         message.setText(notificationText(sethlansNotification));
         emailSender.send(message);
     }

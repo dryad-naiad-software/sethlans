@@ -29,7 +29,6 @@ export class UserInfo {
   dateCreated: any;
   lastUpdated: any;
   systemEmailNotifications: boolean;
-  blenderDownloadEmailNotifications: boolean;
   nodeEmailNotifications: boolean;
   projectEmailNotifications: boolean;
   videoEncodingEmailNotifications: boolean;
@@ -45,7 +44,6 @@ export class UserInfo {
     this.dateCreated = 0;
     this.lastUpdated = 0;
     this.systemEmailNotifications = true;
-    this.blenderDownloadEmailNotifications = true;
     this.nodeEmailNotifications = true;
     this.projectEmailNotifications = true;
     this.videoEncodingEmailNotifications = true;

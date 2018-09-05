@@ -59,7 +59,6 @@ public class SethlansUser extends AbstractEntityClass {
     private boolean securityQuestionsSet;
     private boolean promptPasswordChange;
     private boolean systemEmailNotifications;
-    private boolean blenderDownloadEmailNotifications;
     private boolean nodeEmailNotifications;
     private boolean projectEmailNotifications;
     private boolean videoEncodingEmailNotifications;
@@ -71,7 +70,6 @@ public class SethlansUser extends AbstractEntityClass {
         this.nodeEmailNotifications = true;
         this.projectEmailNotifications = true;
         this.videoEncodingEmailNotifications = true;
-        this.blenderDownloadEmailNotifications = true;
     }
 
     public void disableAllNotifications() {
@@ -79,7 +77,6 @@ public class SethlansUser extends AbstractEntityClass {
         this.nodeEmailNotifications = false;
         this.projectEmailNotifications = false;
         this.videoEncodingEmailNotifications = false;
-        this.blenderDownloadEmailNotifications = false;
     }
 
     @Override
@@ -94,7 +91,6 @@ public class SethlansUser extends AbstractEntityClass {
                 ", securityQuestionsSet=" + securityQuestionsSet +
                 ", promptPasswordChange=" + promptPasswordChange +
                 ", systemEmailNotifications=" + systemEmailNotifications +
-                ", blenderDownloadEmailNotifications=" + blenderDownloadEmailNotifications +
                 ", nodeEmailNotifications=" + nodeEmailNotifications +
                 ", projectEmailNotifications=" + projectEmailNotifications +
                 ", videoEncodingEmailNotifications=" + videoEncodingEmailNotifications +

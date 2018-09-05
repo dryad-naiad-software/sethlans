@@ -26,7 +26,6 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum NotificationType {
-    BLENDER_DOWNLOAD,
     SERVER,
     PROJECT,
     VIDEO,

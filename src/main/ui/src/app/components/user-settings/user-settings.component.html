@@ -39,7 +39,7 @@
         <p>Current Roles: <span *ngFor="let role of userInfo.roles">{{role}}</span></p>
         <div class="row">
           <div class="col">
-            <h6>Email Settings</h6>
+            <h6 *ngIf="currentMode !== modes.NODE">Email Settings</h6>
             <form *ngIf="currentMode !== modes.NODE" #emailForm="ngForm">
               <div class="form-group" ngbTooltip="Email used for notifications." placement="left">
                 <input type="text"
@@ -61,6 +61,45 @@
               </div>
               <button class="btn btn-outline-dark" [disabled]="!emailForm.valid" (click)="changeEMail()">Change Email
               </button>
+              <h6 class="pt-3">Notification Options</h6>
+              <div class="form-row pt-2" *ngIf="currentMode !== modes.NODE">
+                <div class="col">
+                  Node Notifications&nbsp;
+                  <span class="fas"
+                        [ngClass]="userInfo.nodeEmailNotifications ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"></span>
+
+                </div>
+                <div class="col">
+                  System Notifications&nbsp;
+                  <span class="fas"
+                        [ngClass]="userInfo.systemEmailNotifications? 'fa-toggle-on': 'fa-toggle-off text-secondary'"></span>
+
+
+                </div>
+                <div class="col">
+                  Blender Download Notifications&nbsp;
+                  <span class="fas"
+                        [ngClass]="userInfo.blenderDownloadEmailNotifications ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"></span>
+                </div>
+              </div>
+              <div class="form-row pt-2" *ngIf="currentMode !== modes.NODE">
+                <div class="col">
+                  Node Notifications&nbsp;
+                  <span class="fas"
+                        [ngClass]="userInfo.nodeEmailNotifications ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"></span>
+
+                </div>
+                <div class="col">
+                  System Notifications&nbsp;
+                  <span class="fas"
+                        [ngClass]="userInfo.systemEmailNotifications? 'fa-toggle-on': 'fa-toggle-off text-secondary'"></span>
+
+
+                </div>
+                <div class="col">
+
+                </div>
+              </div>
             </form>
           </div>
           <div class="col">

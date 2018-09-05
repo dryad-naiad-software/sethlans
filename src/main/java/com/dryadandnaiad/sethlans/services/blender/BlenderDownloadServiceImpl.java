@@ -149,7 +149,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                         // Send notification of pending download.
                         LOG.info("Downloading " + filename + "...");
                         String blenderFileInfo = "Downloading Blender " + blenderVersion + " for " + blenderBinary.getBlenderBinaryOS();
-                        SethlansNotification notification = new SethlansNotification(NotificationType.BLENDER_DOWNLOAD, blenderFileInfo, NotificationScope.ADMIN);
+                        SethlansNotification notification = new SethlansNotification(NotificationType.SYSTEM, blenderFileInfo, NotificationScope.ADMIN);
                         notification.setSubject("Blender Binary Download In Progress");
                         notification.setMailable(true);
                         sethlansNotificationService.sendNotification(notification);
@@ -194,7 +194,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                         if (connection != null) {
                             connection.disconnect();
                             String message = "Blender " + blenderVersion + " download for " + blenderBinary.getBlenderBinaryOS() + " has completed";
-                            SethlansNotification notification = new SethlansNotification(NotificationType.BLENDER_DOWNLOAD, message, NotificationScope.ADMIN);
+                            SethlansNotification notification = new SethlansNotification(NotificationType.SYSTEM, message, NotificationScope.ADMIN);
                             notification.setMailable(true);
                             notification.setSubject("Blender Binary Download Complete");
                             sethlansNotificationService.sendNotification(notification);
