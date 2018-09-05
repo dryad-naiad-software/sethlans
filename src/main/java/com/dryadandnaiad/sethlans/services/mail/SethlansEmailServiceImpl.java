@@ -95,7 +95,7 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
 
         message.setText(welcomeMessage);
         LOG.debug("Sending welcome email to " + sethlansUser.getUsername());
-        emailSender.send(message);
+        sendEmail(message);
         return true;
     }
 
@@ -133,7 +133,7 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
         message.setReplyTo(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setSubject("Sethlans Project Notification: " + sethlansNotification.getSubject());
         message.setText(notificationText(sethlansNotification));
-        emailSender.send(message);
+        sendEmail(message);
     }
 
 
@@ -144,7 +144,7 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
         message.setReplyTo(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setSubject("Sethlans Video Encoding Notification: " + sethlansNotification.getSubject());
         message.setText(notificationText(sethlansNotification));
-        emailSender.send(message);
+        sendEmail(message);
     }
 
     private void sendNodeNotification(SethlansNotification sethlansNotification) {
@@ -161,7 +161,7 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
         message.setReplyTo(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setSubject("Sethlans Node Notification: " + sethlansNotification.getSubject());
         message.setText(notificationText(sethlansNotification));
-        emailSender.send(message);
+        sendEmail(message);
     }
 
     private void sendSystemNotification(SethlansNotification sethlansNotification) {
@@ -178,7 +178,7 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
         message.setReplyTo(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setSubject("Sethlans System Notification: " + sethlansNotification.getSubject());
         message.setText(notificationText(sethlansNotification));
-        emailSender.send(message);
+        sendEmail(message);
     }
 
     private String notificationText(SethlansNotification sethlansNotification) {
@@ -193,6 +193,15 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
         }
 
         return textToSend;
+
+    }
+
+    private void sendEmail(SimpleMailMessage message) {
+        try {
+            emailSender.send(message);
+        } catch (Exception e) {
+            LOG.error("Error sending email. " + e.getMessage());
+        }
 
     }
 

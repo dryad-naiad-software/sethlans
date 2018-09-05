@@ -116,6 +116,11 @@ public class SethlansFileUtils {
         return createdArchive;
     }
 
+    /**
+     * @param toExtract       Filename to extract
+     * @param extractLocation Location of filename
+     * @return
+     */
     public static boolean archiveExtract(String toExtract, File extractLocation) {
         File archive = new File(extractLocation + File.separator + toExtract);
         try {

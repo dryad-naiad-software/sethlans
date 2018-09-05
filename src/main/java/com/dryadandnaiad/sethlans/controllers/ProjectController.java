@@ -419,17 +419,39 @@ public class ProjectController {
     public ProjectForm newProjectUpload(@RequestParam("projectFile") MultipartFile projectFile) {
         LOG.info(projectFile.getOriginalFilename() + " uploading");
         String uploadTag = SethlansQueryUtils.getShortUUID();
+        String filename = uploadTag + "-" + projectFile.getOriginalFilename();
+        File location = new File(temp + uploadTag + "_zip_file");
         try {
-            File storeUpload = new File(temp + uploadTag + "-" + projectFile.getOriginalFilename());
-            projectFile.transferTo(storeUpload);
+            if (projectFile.getContentType().contains("zip")) {
+                location.mkdir();
+                File storeUpload = new File(location + File.separator + uploadTag + "-" + projectFile.getOriginalFilename());
+                projectFile.transferTo(storeUpload);
+            } else {
+                File storeUpload = new File(temp + uploadTag + "-" + projectFile.getOriginalFilename());
+                projectFile.transferTo(storeUpload);
+            }
+
         } catch (IOException e) {
             LOG.error("Error saving upload" + e.getMessage());
             LOG.debug(Throwables.getStackTraceAsString(e));
         }
         ProjectForm newProject = new ProjectForm();
         newProject.setUploadedFile(projectFile.getOriginalFilename());
-        newProject.setFileLocation(temp + uploadTag + "-" + projectFile.getOriginalFilename());
-        newProject.populateForm(blenderParseBlenderFileService.parseBlendFile(newProject.getFileLocation()));
+
+        if (projectFile.getContentType().contains("zip")) {
+            newProject.setFileLocation(location + File.separator + uploadTag + "-" + projectFile.getOriginalFilename());
+            SethlansFileUtils.archiveExtract(filename, location);
+            File[] files = location.listFiles();
+            for (File file : files) {
+                if (file.toString().contains(".blend")) {
+                    newProject.populateForm(blenderParseBlenderFileService.parseBlendFile(file.toString()));
+                }
+            }
+
+        } else {
+            newProject.setFileLocation(temp + uploadTag + "-" + projectFile.getOriginalFilename());
+            newProject.populateForm(blenderParseBlenderFileService.parseBlendFile(newProject.getFileLocation()));
+        }
         LOG.debug(newProject.toString());
         LOG.info("Upload successful");
         return newProject;
