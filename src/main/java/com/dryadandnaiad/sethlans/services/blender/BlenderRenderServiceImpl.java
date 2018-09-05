@@ -297,7 +297,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                 String filename = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, binDir);
 
 
-                if (archiveExtract(filename, new File(binDir))) {
+                if (archiveExtract(filename, new File(binDir), true)) {
                     LOG.debug("Extraction complete.");
                     LOG.debug("Attempting to rename blender directory. Will attempt 3 tries.");
                     int count = 0;

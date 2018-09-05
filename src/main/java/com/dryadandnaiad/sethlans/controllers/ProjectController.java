@@ -440,7 +440,7 @@ public class ProjectController {
 
         if (projectFile.getContentType().contains("zip")) {
             newProject.setFileLocation(location + File.separator + uploadTag + "-" + projectFile.getOriginalFilename());
-            SethlansFileUtils.archiveExtract(filename, location);
+            SethlansFileUtils.archiveExtract(filename, location, false);
             File[] files = location.listFiles();
             for (File file : files) {
                 if (file.toString().contains(".blend")) {

@@ -239,7 +239,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
         } catch (IOException e) {
             LOG.error(e.getMessage());
         }
-        archiveExtract("bmw27.txz", new File(benchmarkDirectory));
+        archiveExtract("bmw27.txz", new File(benchmarkDirectory), true);
     }
 
     @Autowired

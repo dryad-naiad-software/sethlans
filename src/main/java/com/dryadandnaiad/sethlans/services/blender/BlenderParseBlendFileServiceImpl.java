@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -61,7 +61,7 @@ public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileSe
             PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
             CommandLine commandLine = new CommandLine(pythonBinary);
 
-            commandLine.addArgument(scriptsDir + File.separator + "blend_info.py");
+            commandLine.addArgument(scriptsDir + "blend_info.py");
             commandLine.addArgument(blendFile);
             LOG.debug(commandLine.toString());
 

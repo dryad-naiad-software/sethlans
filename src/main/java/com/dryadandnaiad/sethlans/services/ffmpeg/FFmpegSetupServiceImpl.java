@@ -50,7 +50,7 @@ public class FFmpegSetupServiceImpl implements FFmpegSetupService {
     @Override
     public boolean installFFmpeg(String binaryDir) {
         String ffmpegFile = copyFFmpeg(binaryDir);
-        if (archiveExtract(ffmpegFile, new File(binaryDir))) {
+        if (archiveExtract(ffmpegFile, new File(binaryDir), true)) {
             if (SystemUtils.IS_OS_MAC || SystemUtils.IS_OS_LINUX) {
                 try {
                     ProcessBuilder pb = new ProcessBuilder("chmod", "-R", "+x", binaryDir + "ffmpeg" + File.separator + "bin");
