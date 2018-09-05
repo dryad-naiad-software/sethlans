@@ -60,8 +60,6 @@
         <node.version>v10.9.0</node.version>
         <npm.version>6.2.0</npm.version>
         <izpack.staging>${project.build.directory}/staging</izpack.staging>
-
-
     </properties>
 
     <dependencies>
@@ -87,7 +85,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
-
 
         <!--Spring Database-->
         <dependency>
