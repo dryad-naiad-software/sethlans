@@ -26,7 +26,6 @@ import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.forms.setup.SetupForm;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
-import com.dryadandnaiad.sethlans.services.mail.SethlansEmailService;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +49,6 @@ public class SetupController {
     private static final Logger LOG = LoggerFactory.getLogger(SetupController.class);
     private SaveSetupConfigService saveSetupConfigService;
     private SethlansUserDatabaseService sethlansUserDatabaseService;
-    private SethlansEmailService sethlansEmailService;
 
 
     @PostMapping("/submit")
@@ -115,8 +113,8 @@ public class SetupController {
             user.setPasswordUpdated(true);
             user.setActive(false);
             user.enableAllNotifications();
-            user.setWelcomeEmailSent(sethlansEmailService.sendWelcomeEmail(user));
             user.setPromptPasswordChange(false);
+            user.setWelcomeEmailSent(false);
             user.setRoles(Collections.singletonList(Role.USER));
             sethlansUserDatabaseService.saveOrUpdate(user);
             LOG.debug("Saving " + user.toString() + " to database.");
@@ -137,8 +135,4 @@ public class SetupController {
         this.sethlansUserDatabaseService = sethlansUserDatabaseService;
     }
 
-    @Autowired
-    public void setSethlansEmailService(SethlansEmailService sethlansEmailService) {
-        this.sethlansEmailService = sethlansEmailService;
-    }
 }

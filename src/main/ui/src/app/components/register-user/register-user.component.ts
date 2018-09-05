@@ -41,6 +41,7 @@ export class RegisterUserComponent implements OnInit {
   challenge1: UserChallenge;
   challenge2: UserChallenge;
   challenge3: UserChallenge;
+  success: boolean;
 
   constructor(private router: Router, private http: HttpClient, private route: ActivatedRoute) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
@@ -51,6 +52,7 @@ export class RegisterUserComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.userExists = params['error'];
       this.existingUserName = params['username'];
+      this.success = params['success'];
     });
   }
 
@@ -94,11 +96,9 @@ export class RegisterUserComponent implements OnInit {
     };
     this.http.post('/api/setup/self_register', JSON.stringify(this.user), httpOptions).subscribe((submitted: boolean) => {
       if (submitted === true) {
-        this.login();
+        window.location.href = '/register?success=true';
       } else {
-        this.router.navigateByUrl('/register?error=true&username=' + this.user.username).then(() => {
-          location.reload();
-        });
+        window.location.href = '/register?error=true&username=' + this.user.username;
       }
     });
   }

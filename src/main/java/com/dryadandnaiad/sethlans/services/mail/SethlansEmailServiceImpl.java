@@ -70,13 +70,16 @@ public class SethlansEmailServiceImpl implements SethlansEmailService {
     @Override
     public boolean sendWelcomeEmail(SethlansUser sethlansUser) {
         SimpleMailMessage message = new SimpleMailMessage();
+        String sethlansURL = SethlansConfigUtils.getProperty(SethlansConfigKeys.SETHLANS_URL);
         message.setTo(sethlansUser.getEmail());
         message.setFrom(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setReplyTo(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
         message.setSubject("Welcome to Sethlans, " + sethlansUser.getUsername() + "!");
-        String welcomeMessage = "Hello " + sethlansUser.getUsername() + "\n\n" +
+        String welcomeMessage = "Hello " + sethlansUser.getUsername() + ",\n\n" +
                 "You are receiving this email because you have registered with a Sethlans installation located at: "
-                + SethlansConfigUtils.getProperty(SethlansConfigKeys.SETHLANS_URL);
+                + sethlansURL + "\n\n" +
+                "Your account is now active and you will be able to login via the following url: \n\n" +
+                sethlansURL + "/login";
 
         if (sethlansUser.isPromptPasswordChange() || !sethlansUser.isSecurityQuestionsSet()) {
             welcomeMessage = welcomeMessage + "\n\nOnce logging in please perform the following actions:\n";
