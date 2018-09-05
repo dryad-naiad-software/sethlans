@@ -67,7 +67,7 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
     public void multicastDiscovery() {
             if (!scanInProgress && !listComplete) {
                 scanInProgress = true;
-                LOG.debug("Starting Discovery");
+                LOG.info("Starting Discovery");
                 Set<String> nodeList = multicastReceiverService.currentSethlansClients();
                 if (nodeList != null) {
                     sethlansNodeList = new ArrayList<>();
@@ -102,7 +102,7 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
 
     @Override
     public SethlansNode discoverUnicastNode(String ip, String port) {
-        LOG.debug("Searching for Sethlans Node at " + ip + ":" + port);
+        LOG.info("Searching for Sethlans Node at " + ip + ":" + port);
         String accessKey = getProperty(SethlansConfigKeys.ACCESS_KEY);
         Gson gson = new Gson();
         SethlansNode sethlansNode = null;

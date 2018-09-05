@@ -56,11 +56,11 @@ public class NodeQueryServiceImpl implements NodeQueryService {
                                 boolean response = sethlansAPIConnectionService.queryNode("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort()
                                         + "/api/info/node_keep_alive", "connection_uuid=" + sethlansNode.getConnectionUUID());
                                 if (!response && sethlansNode.isActive()) {
-                                    LOG.debug(sethlansNode.getHostname() + " is down.");
+                                    LOG.warn(sethlansNode.getHostname() + " is down.");
                                     queueService.nodeStatusUpdateItem(sethlansNode.getConnectionUUID(), false);
                                 } else if (response && !sethlansNode.isDisabled() && !sethlansNode.isActive()) {
                                     queueService.nodeStatusUpdateItem(sethlansNode.getConnectionUUID(), true);
-                                    LOG.debug(sethlansNode.getHostname() + " is back online.");
+                                    LOG.info(sethlansNode.getHostname() + " is back online.");
                                 }
                             }
                         }

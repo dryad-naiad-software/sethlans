@@ -20,14 +20,17 @@
 package com.dryadandnaiad.sethlans.services.queue;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.NodeOnlineItem;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessIdleNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderQueueItem;
+import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.RenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,11 +47,20 @@ public class QueueNodeStatusActions {
     private static final Logger LOG = LoggerFactory.getLogger(QueueNodeStatusActions.class);
 
     static void processOfflineNodes(SethlansNodeDatabaseService sethlansNodeDatabaseService,
-                                    NodeOnlineItem nodeOnlineItem, RenderQueueDatabaseService renderQueueDatabaseService, BlenderProjectDatabaseService blenderProjectDatabaseService,
+                                    NodeOnlineItem nodeOnlineItem, RenderQueueDatabaseService renderQueueDatabaseService,
+                                    BlenderProjectDatabaseService blenderProjectDatabaseService,
+                                    SethlansNotificationService sethlansNotificationService,
                                     List<NodeOnlineItem> processedStatusNodes) {
         SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(nodeOnlineItem.getConnectionUUID());
         if (!nodeOnlineItem.isOnline()) {
-            LOG.debug("Marking node " + sethlansNode.getHostname() + " as inactive.");
+            LOG.info("Marking node " + sethlansNode.getHostname() + " as inactive.");
+            String message = sethlansNode.getHostname() + " has gone offline";
+            SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SYSTEM, message);
+            sethlansNotification.setMailable(true);
+            sethlansNotification.setSubject("Node has gone offline!");
+            sethlansNotification.setLinkPresent(true);
+            sethlansNotification.setMessageLink("/admin/nodes");
+            sethlansNotificationService.sendNotification(sethlansNotification);
             switch (sethlansNode.getComputeType()) {
                 case GPU:
                     sethlansNode.setAllGPUSlotInUse(false);
@@ -83,7 +95,14 @@ public class QueueNodeStatusActions {
             }
         }
         if (nodeOnlineItem.isOnline()) {
-            LOG.debug("Marking node " + sethlansNode.getHostname() + " as active.");
+            LOG.info("Marking node " + sethlansNode.getHostname() + " as active.");
+            String message = sethlansNode.getHostname() + " is back online";
+            SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SYSTEM, message);
+            sethlansNotification.setMailable(true);
+            sethlansNotification.setSubject("Node is back online!");
+            sethlansNotification.setLinkPresent(true);
+            sethlansNotification.setMessageLink("/admin/nodes");
+            sethlansNotificationService.sendNotification(sethlansNotification);
             sethlansNode.setActive(true);
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
         }

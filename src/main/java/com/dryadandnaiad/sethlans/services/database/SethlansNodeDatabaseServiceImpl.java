@@ -157,7 +157,7 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
                     storedNode.getNetworkPort().equals(sethlansNode.getNetworkPort()) &&
                     storedNode.getComputeType().equals(sethlansNode.getComputeType()) &&
                     storedNode.getSethlansNodeOS().equals(sethlansNode.getSethlansNodeOS())) {
-                LOG.debug(sethlansNode.getHostname() + " is already in the database.");
+                LOG.error(sethlansNode.getHostname() + " is already in the database.");
                 matchedNodes.add(storedNode);
             }
         }

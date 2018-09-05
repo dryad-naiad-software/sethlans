@@ -25,7 +25,6 @@ import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessQueueItem;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.enums.NotificationScope;
 import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
@@ -85,7 +84,7 @@ public class ServerRenderController {
     public void downloadBlenderBinary(HttpServletResponse response, @RequestParam String connection_uuid,
                                       @RequestParam String version, @RequestParam String os) {
         if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) == null) {
-            LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
+            LOG.info("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
             File dir = new File(blenderDir + File.separator + "binaries" + File.separator + version);
             FileFilter fileFilter = new WildcardFileFilter(version + "-" + os.toLowerCase() + "." + "*");
@@ -114,9 +113,9 @@ public class ServerRenderController {
                                   @RequestParam ComputeType compute_type, @RequestParam boolean complete) {
         SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
         if (sethlansNode == null) {
-            LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
+            LOG.info("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
-            LOG.debug("Receiving benchmark from Node: " + sethlansNode.getHostname());
+            LOG.info("Receiving benchmark from Node: " + sethlansNode.getHostname());
             if (compute_type.equals(ComputeType.CPU)) {
                 sethlansNode.setCpuRating(rating);
             }
@@ -131,11 +130,11 @@ public class ServerRenderController {
             }
             sethlansNode.setBenchmarkComplete(complete);
             String message = "Received " + compute_type + " benchmark result from " + sethlansNode.getHostname();
-            SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.NODE, message, NotificationScope.ADMIN);
+            SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.NODE, message);
             sethlansNotificationService.sendNotification(sethlansNotification);
             if (complete) {
                 message = "All benchmarks complete for " + sethlansNode.getHostname() + ", marking node Active";
-                sethlansNotification = new SethlansNotification(NotificationType.NODE, message, NotificationScope.ADMIN);
+                sethlansNotification = new SethlansNotification(NotificationType.NODE, message);
                 sethlansNotification.setLinkPresent(true);
                 sethlansNotification.setMessageLink("/admin/nodes");
                 sethlansNotification.setMailable(true);
@@ -149,7 +148,7 @@ public class ServerRenderController {
     @GetMapping(value = "/api/benchmark_files/bmw_cpu")
     public void downloadCPUBenchmark(HttpServletResponse response, @RequestParam String connection_uuid) {
         if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) == null) {
-            LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
+            LOG.info("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
             File bmw27_cpu = new File(benchmarkDir + File.separator + "bmw27_cpu.blend");
             serveFile(bmw27_cpu, response);
@@ -161,7 +160,7 @@ public class ServerRenderController {
     @GetMapping(value = "/api/benchmark_files/bmw_gpu")
     public void downloadGPUBenchmark(HttpServletResponse response, @RequestParam String connection_uuid) {
         if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) == null) {
-            LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
+            LOG.info("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
             File bmw27_gpu = new File(benchmarkDir + File.separator + "bmw27_gpu.blend");
             serveFile(bmw27_gpu, response);
@@ -173,20 +172,20 @@ public class ServerRenderController {
                                 @RequestParam MultipartFile part,
                                 @RequestParam String queue_uuid, @RequestParam String project_uuid, @RequestParam long render_time) {
         if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) == null) {
-            LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
+            LOG.info("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
             if (!part.isEmpty()) {
                 SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
                 BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUIDWithoutFrameParts(project_uuid);
                 if (!blenderProject.isUserStopped()) {
-                    LOG.debug("Received response from " + sethlansNode.getHostname() + ", adding to processing Queue.");
+                    LOG.info("Received response from " + sethlansNode.getHostname() + ", adding to processing Queue.");
                     try {
                         File receivedFile = new File(blenderProject.getProjectRootDir() + File.separator + "received" + File.separator + StringUtils.left(queue_uuid, 8) + "-" + System.currentTimeMillis() + ".png");
                         part.transferTo(receivedFile);
                         ProcessQueueItem processQueueItem = new ProcessQueueItem();
                         processQueueItem.setConnectionUUID(connection_uuid);
                         processQueueItem.setPart(receivedFile.toString());
-                        LOG.debug("Received file from " + sethlansNode.getHostname() + " saved as " + receivedFile.toString());
+                        LOG.info("Received file from " + sethlansNode.getHostname() + " saved as " + receivedFile.toString());
                         processQueueItem.setQueueUUID(queue_uuid);
                         processQueueItem.setProjectUUID(project_uuid);
                         processQueueItem.setRenderTime(render_time);
@@ -195,7 +194,7 @@ public class ServerRenderController {
                         LOG.error(Throwables.getStackTraceAsString(e));
                     }
                 } else {
-                    LOG.debug("Project stopped, discarding response");
+                    LOG.info("Project stopped, discarding response");
                 }
                 
             }
@@ -215,7 +214,7 @@ public class ServerRenderController {
     @GetMapping(value = "/api/project/blend_file/")
     public void downloadBlendfile(HttpServletResponse response, @RequestParam String connection_uuid, @RequestParam String project_uuid) {
         if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) == null) {
-            LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
+            LOG.info("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
             BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUIDWithoutFrameParts(project_uuid);
             File blend_file = new File(blenderProject.getBlendFileLocation());

@@ -24,7 +24,6 @@ import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.enums.NotificationScope;
 import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.services.blender.BlenderPythonScriptService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
@@ -74,7 +73,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     public void sendBenchmarktoNode(SethlansNode sethlansNode) {
         String primaryBlenderVersion = blenderBinaryDatabaseService.getHighestVersion();
         String message = "Sending benchmark request to " + sethlansNode.getHostname();
-        SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.NODE, message, NotificationScope.ADMIN);
+        SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.NODE, message);
         sethlansNotification.setMailable(true);
         sethlansNotification.setSubject("Benchmark request sent to " + sethlansNode.getHostname());
         sethlansNotificationService.sendNotification(sethlansNotification);
@@ -136,7 +135,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     }
 
     private void startBenchmarkService(String benchmark_uuid) {
-        LOG.debug("Starting Benchmark");
+        LOG.info("Starting Benchmark");
         BlenderBenchmarkTask benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark_uuid);
         benchmarkTask.setInProgress(true);
         prepareScriptandExecute(benchmarkTask, sethlansAPIConnectionService, sethlansServerDatabaseService, blenderBenchmarkTaskDatabaseService, blenderPythonScriptService);
@@ -153,7 +152,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                     break;
                 }
                 if (count >= 10) {
-                    LOG.debug("Unable to establish a connection with the server to send results.");
+                    LOG.error("Unable to establish a connection with the server to send results.");
                     break;
                 }
                 try {
@@ -169,10 +168,10 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     private boolean sendResultsToServer(String connectionUUID, BlenderBenchmarkTask blenderBenchmarkTask) {
         SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connectionUUID);
         String message = "Sending " + blenderBenchmarkTask.getComputeType() + " benchmark result to " + sethlansServer.getHostname();
-        SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SERVER, message, NotificationScope.ADMIN);
+        SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SERVER, message);
         sethlansNotificationService.sendNotification(sethlansNotification);
         blenderBenchmarkTaskDatabaseService.delete(blenderBenchmarkTask.getId());
-        LOG.debug("Remaining benchmarks to process: " + blenderBenchmarkTaskDatabaseService.tableSize());
+        LOG.info("Remaining benchmarks to process: " + blenderBenchmarkTaskDatabaseService.tableSize());
         boolean complete = blenderBenchmarkTaskDatabaseService.tableSize() <= 0;
         String serverUrl = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/benchmark/response";
         String params;

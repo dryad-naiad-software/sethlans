@@ -27,7 +27,7 @@
              #projectName="ngModel"
              [ngClass]="{'is-invalid':projectName.errors && projectName.touched}"
              [(ngModel)]="projectWizard.project.projectName" (keydown)="validateForm()" (mousemove)="validateForm()"
-             required pattern=".{4,}" placeholder="Project Name">
+             required pattern=".{4,}">
       <div class="invalid-feedback" [hidden]="projectName.valid">
         <ul>
           <li>Project Name is required.</li>

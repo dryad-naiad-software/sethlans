@@ -43,14 +43,14 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
 
     @Override
     public boolean sendToRemotePOST(String connectionURL, String params) {
-        LOG.debug("Connecting to " + connectionURL);
+        LOG.info("Connecting to " + connectionURL);
         HttpsURLConnection connection;
         try {
             LOG.debug("Sending the following parameters to API via POST: " + params);
             URL url = new URL(connectionURL);
-            SSLUtilities.trustAllHostnames();
-            SSLUtilities.trustAllHttpsCertificates();
             connection = (HttpsURLConnection) url.openConnection();
+            connection.setHostnameVerifier(SSLUtilities.allHostsValid());
+            connection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
             connection.setRequestMethod("POST");
             connection.setRequestProperty("User-Agent", "Mozilla/5.0");
@@ -91,7 +91,7 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
 
     @Override
     public boolean uploadToRemotePOST(String connectionURL, Map<String, String> params, File toUpload) {
-        LOG.debug("Connecting to " + connectionURL);
+        LOG.info("Connecting to " + connectionURL);
         HttpsURLConnection connection;
         String boundary = Long.toHexString(System.currentTimeMillis());
         String charset = "UTF-8";
@@ -100,9 +100,9 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
             try {
                 LOG.debug("Sending the following parameters to API via POST: " + params);
                 URL url = new URL(connectionURL);
-                SSLUtilities.trustAllHostnames();
-                SSLUtilities.trustAllHttpsCertificates();
                 connection = (HttpsURLConnection) url.openConnection();
+                connection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
+                connection.setHostnameVerifier(SSLUtilities.allHostsValid());
                 connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("User-Agent", "Mozilla/5.0");
@@ -154,7 +154,7 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
                 LOG.error(e.getMessage());
             }
         } else {
-            LOG.debug("The file " + toUpload.toString() + " does not exist.");
+            LOG.error("The file " + toUpload.toString() + " does not exist.");
         }
 
         return false;
@@ -162,14 +162,14 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
 
     @Override
     public String downloadFromRemoteGET(String connectionURL, String params, String location) {
-        LOG.debug("Connecting to " + connectionURL);
+        LOG.info("Connecting to " + connectionURL);
         HttpsURLConnection connection;
         try {
             LOG.debug("Sending the following parameters to API via GET: " + connectionURL + "?" + params);
             URL url = new URL(connectionURL + "?" + params);
-            SSLUtilities.trustAllHostnames();
-            SSLUtilities.trustAllHttpsCertificates();
             connection = (HttpsURLConnection) url.openConnection();
+            connection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
+            connection.setHostnameVerifier(SSLUtilities.allHostsValid());
             connection.setRequestMethod("GET");
             connection.setRequestProperty("User-Agent", "Mozilla/5.0");
             String fieldValue = connection.getHeaderField("Content-Disposition");
@@ -183,17 +183,17 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
             LOG.debug("Saving file to location: " + location);
             File download = new File(location, filename);
             if (download.exists()) {
-                LOG.debug("Previous download of  " + download.toString() + " did not complete successfully, deleting and re-downloading.");
+                LOG.warn("Previous download of  " + download.toString() + " did not complete successfully, deleting and re-downloading.");
                 if (download.delete()) {
-                    LOG.debug("Re-Downloading " + filename + "...");
+                    LOG.info("Re-Downloading " + filename + "...");
                     Files.copy(stream, Paths.get(download.toString()));
                 }
             } else {
-                LOG.debug("Downloading " + download.toString());
+                LOG.info("Downloading " + download.toString());
                 Files.copy(stream, Paths.get(download.toString()));
 
             }
-            LOG.debug("Download of " + download.toString() + " complete.");
+            LOG.info("Download of " + download.toString() + " complete.");
             connection.disconnect();
             return filename;
 
@@ -211,9 +211,9 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
         HttpsURLConnection connection;
         try {
             URL url = new URL(connectionURL + "?" + params);
-            SSLUtilities.trustAllHostnames();
-            SSLUtilities.trustAllHttpsCertificates();
             connection = (HttpsURLConnection) url.openConnection();
+            connection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
+            connection.setHostnameVerifier(SSLUtilities.allHostsValid());
             connection.setRequestMethod("GET");
             connection.setRequestProperty("User-Agent", "Mozilla/5.0");
 
@@ -230,14 +230,14 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
     }
 
     public boolean sendToRemoteGET(String connectionURL, String params) {
-        LOG.debug("Connecting to " + connectionURL);
+        LOG.info("Connecting to " + connectionURL);
         HttpsURLConnection connection;
         try {
             LOG.debug("Sending the following parameters to API via GET: " + connectionURL + "?" + params);
             URL url = new URL(connectionURL + "?" + params);
-            SSLUtilities.trustAllHostnames();
-            SSLUtilities.trustAllHttpsCertificates();
             connection = (HttpsURLConnection) url.openConnection();
+            connection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
+            connection.setHostnameVerifier(SSLUtilities.allHostsValid());
             connection.setRequestMethod("GET");
             connection.setRequestProperty("User-Agent", "Mozilla/5.0");
 

@@ -22,7 +22,6 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
-import com.dryadandnaiad.sethlans.enums.NotificationScope;
 import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.services.database.AccessKeyDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
@@ -62,13 +61,13 @@ public class ActivationRequestController {
     @RequestMapping(value = "/request", method = RequestMethod.POST)
     public boolean nodeActivationRequest(@RequestParam String serverhostname, @RequestParam String ipAddress,
                                          @RequestParam String port, @RequestParam String connection_uuid, @RequestParam String access_key) {
-        LOG.debug("Received node activation request");
+        LOG.info("Received node activation request");
         if (accessKeyDatabaseService.getByUUID(access_key) == null) {
             LOG.info("Access key provided is not authorized on this node.");
             return false;
         }
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) != null) {
-            LOG.debug("Server UUID is already present on node. Skipping Activation");
+            LOG.info("Server UUID is already present on node. Skipping Activation");
             return false;
         } else {
             SethlansServer sethlansServer = new SethlansServer();
@@ -80,20 +79,20 @@ public class ActivationRequestController {
             sethlansServer.setPendingAcknowledgementResponse(true);
             sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
             String message = "Added " + serverhostname + " as a server";
-            SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SERVER, message, NotificationScope.ADMIN);
+            SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SERVER, message);
             sethlansNotification.setLinkPresent(true);
             sethlansNotification.setMailable(false);
             sethlansNotification.setMessageLink("/admin/servers");
             sethlansNotificationService.sendNotification(sethlansNotification);
             LOG.debug(sethlansServer.toString());
-            LOG.debug("Processed node activation request");
+            LOG.info("Processed node activation request");
             sendActivationResponseToServer(sethlansServer, SethlansQueryUtils.getCurrentNodeInfo());
             return true;
         }
     }
 
     private void sendActivationResponseToServer(SethlansServer sethlansServer, SethlansNode sethlansNode) {
-        LOG.debug("Sending Activation Response to Server");
+        LOG.info("Sending Activation Response to Server");
         String ip = sethlansServer.getIpAddress();
         String port = sethlansServer.getNetworkPort();
         String responseURL = "https://" + ip + ":" + port + "/api/nodeactivate/response";
@@ -104,12 +103,12 @@ public class ActivationRequestController {
 
     @RequestMapping(value = "/removal", method = RequestMethod.POST)
     public void serverDeletionRequest(@RequestParam String connection_uuid) {
-        LOG.debug("Received server deletion request");
+        LOG.info("Received server deletion request");
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) != null) {
-            LOG.debug("Server UUID found, deleting entry.");
+            LOG.info("Server UUID found, deleting entry.");
             sethlansServerDatabaseService.deleteByConnectionUUID(connection_uuid);
         } else {
-            LOG.debug("Server not found in database.");
+            LOG.info("Server not found in database.");
         }
 
     }
@@ -118,12 +117,12 @@ public class ActivationRequestController {
     public void nodeActivationAcknowledge(@RequestParam String connection_uuid) {
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) != null) {
             SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connection_uuid);
-            LOG.debug("Received Server Acknowledgement for " + sethlansServer.getHostname());
+            LOG.info("Received Server Acknowledgement for " + sethlansServer.getHostname());
             sethlansServer.setPendingAcknowledgementResponse(false);
             sethlansServer.setAcknowledged(true);
             sethlansServerDatabaseService.saveOrUpdate(sethlansServer);
         } else {
-            LOG.debug("No such server present in database");
+            LOG.info("No such server present in database");
         }
 
 

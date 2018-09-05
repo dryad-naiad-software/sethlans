@@ -48,14 +48,14 @@ public class GPU {
     public static List<GPUDevice> devices = null;
 
     private static void generateCUDA() {
-        LOG.debug("Looking for Compatible CUDA Devices");
+        LOG.info("Looking for Compatible CUDA Devices");
         if (devices == null) {
             devices = new LinkedList<>();
         }
 
         String path = getCUDALib();
         if (path == null) {
-            LOG.debug("no CUDA lib path found");
+            LOG.info("no CUDA lib path found");
 
         }
         CUDA cudalib;
@@ -64,9 +64,9 @@ public class GPU {
             cudalib = Native.loadLibrary(path, CUDA.class);
             result = cudalib.cuInit(0);
             if (result != CUresult.CUDA_SUCCESS) {
-                LOG.info("cuInit failed (ret: " + result + ")");
+                LOG.error("cuInit failed (ret: " + result + ")");
                 if (result == CUresult.CUDA_ERROR_UNKNOWN) {
-                    LOG.info("If you are running Linux, this error is usually due to nvidia kernel module 'nvidia_uvm' not loaded. " +
+                    LOG.error("If you are running Linux, this error is usually due to nvidia kernel module 'nvidia_uvm' not loaded. " +
                             "Relaunch the application as root or load the module. " +
                             "Most of time it does fix the issue.");
                     return;
@@ -74,7 +74,7 @@ public class GPU {
             }
 
             if (result == CUresult.CUDA_ERROR_NO_DEVICE) {
-                LOG.debug("No Device Found");
+                LOG.info("No Device Found");
                 return;
             }
 
@@ -82,7 +82,7 @@ public class GPU {
             result = cudalib.cuDeviceGetCount(count);
 
             if (result != CUresult.CUDA_SUCCESS) {
-                LOG.debug("cuDeviceGetCount failed (ret: " + CUresult.stringFor(result) + ")");
+                LOG.error("cuDeviceGetCount failed (ret: " + CUresult.stringFor(result) + ")");
                 return;
             }
 
@@ -91,7 +91,7 @@ public class GPU {
 
                 result = cudalib.cuDeviceGetName(name, 256, num);
                 if (result != CUresult.CUDA_SUCCESS) {
-                    LOG.debug("cuDeviceGetName failed (ret: " + CUresult.stringFor(result) + ")");
+                    LOG.error("cuDeviceGetName failed (ret: " + CUresult.stringFor(result) + ")");
                     continue;
                 }
 
@@ -104,16 +104,16 @@ public class GPU {
                 }
 
                 if (result != CUresult.CUDA_SUCCESS) {
-                    LOG.debug("cuDeviceTotalMem failed (ret: " + CUresult.stringFor(result) + ")");
+                    LOG.error("cuDeviceTotalMem failed (ret: " + CUresult.stringFor(result) + ")");
                     return;
                 }
 
-                LOG.debug("One CUDA Device found, adding to list.");
+                LOG.info("One CUDA Device found, adding to list.");
                 devices.add(new GPUDevice(new String(name).trim(), ram.getValue(), "CUDA_" + Integer.toString(num), false, true));
             }
 
         } catch (java.lang.UnsatisfiedLinkError e) {
-            LOG.debug("Failed to load CUDA lib (path: " + path + "). CUDA is probably not installed.");
+            LOG.error("Failed to load CUDA lib (path: " + path + "). CUDA is probably not installed.");
         } catch (java.lang.ExceptionInInitializerError e) {
             LOG.error("ExceptionInInitializerError " + e.getMessage());
 
@@ -125,7 +125,7 @@ public class GPU {
 
     private static void generateOpenCL() {
         try {
-            LOG.debug("Looking for Compatible OpenCL Devices");
+            LOG.info("Looking for Compatible OpenCL Devices");
             if (devices == null) {
                 devices = new LinkedList<>();
             }
@@ -172,7 +172,7 @@ public class GPU {
                 }
 
                 if (!invalidModel && openCLVersion > 1.2) {
-                    LOG.debug("One OpenCL device found, adding to list");
+                    LOG.info("One OpenCL device found, adding to list");
                     LOG.debug("Open CL version " + openCLVersion);
                     devices.add(new GPUDevice(model, memory, deviceID, true, false));
                 }
@@ -180,7 +180,7 @@ public class GPU {
 
             }
         } catch (UnsatisfiedLinkError e) {
-            LOG.debug(e.getMessage() + " Most likely, OpenCL not present on system.");
+            LOG.error(e.getMessage() + " Most likely, OpenCL not present on system.");
         }
     }
 

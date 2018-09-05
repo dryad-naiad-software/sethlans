@@ -65,7 +65,7 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
-            LOG.info("Executor service closed");
+            LOG.debug("Executor service closed");
 
         }
         Thread thread = new Thread(() -> {

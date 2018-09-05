@@ -88,11 +88,11 @@ public class NodeRenderController {
                               @RequestParam double part_position_min_y, @RequestParam double part_position_max_y,
                               @RequestParam int part_res_percentage, @RequestParam String part_filename, @RequestParam String file_extension) {
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) == null) {
-            LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
+            LOG.error("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
             ComputeType computeType = ComputeType.valueOf(getProperty(SethlansConfigKeys.COMPUTE_METHOD.toString()));
             NodeInfo nodeInfo = SethlansNodeUtils.getNodeInfo();
-            LOG.debug("Render Request Received, preparing render task.");
+            LOG.info("Render Request Received, preparing render task.");
             List<RenderTask> renderTaskList = renderTaskDatabaseService.listAll();
             boolean rejected = false;
 
@@ -204,7 +204,7 @@ public class NodeRenderController {
     }
 
     private void rejectRequest(@RequestParam String connection_uuid, @RequestParam String queue_item_uuid) {
-        LOG.debug("All slots are currently full. Rejecting request");
+        LOG.info("All slots are currently full. Rejecting request");
         SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connection_uuid);
         String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_reject_item/";
         String params = "queue_item_uuid=" + queue_item_uuid;
@@ -214,7 +214,7 @@ public class NodeRenderController {
     @RequestMapping(value = "/api/benchmark/request", method = RequestMethod.POST)
     public void benchmarkRequest(@RequestParam String connection_uuid, @RequestParam ComputeType compute_type, @RequestParam String blender_version) {
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) == null) {
-            LOG.debug("The uuid sent: " + connection_uuid + " is not present in the database");
+            LOG.error("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
             List<BlenderBenchmarkTask> blenderBenchmarkTaskList = blenderBenchmarkTaskDatabaseService.listAll();
             if (blenderBenchmarkTaskList.size() > 0) {

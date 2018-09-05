@@ -23,7 +23,6 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
-import com.dryadandnaiad.sethlans.enums.NotificationScope;
 import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
@@ -88,7 +87,7 @@ public class ServerSetupController {
         if (!sethlansNodeList.isEmpty()) {
             LOG.debug("Nodes found in database, starting comparison.");
             if (sethlansNodeDatabaseService.checkForDuplicatesAndSave(sethlansNode)) {
-                LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
+                LOG.info("Added: " + sethlansNode.getHostname() + " to database.");
                 nodeAddNotification(sethlansNode);
                 if (sethlansNode.isPendingActivation()) {
                     nodeActivationService.sendActivationRequestToNode(sethlansNode, SethlansQueryUtils.getCurrentServerInfo(), accessKey);
@@ -99,7 +98,7 @@ public class ServerSetupController {
         } else {
             LOG.debug("No nodes present in database.");
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-            LOG.debug("Added: " + sethlansNode.getHostname() + " to database.");
+            LOG.info("Added: " + sethlansNode.getHostname() + " to database.");
             nodeAddNotification(sethlansNode);
             if (sethlansNode.isPendingActivation()) {
                 nodeActivationService.sendActivationRequestToNode(sethlansNode, SethlansQueryUtils.getCurrentServerInfo(), accessKey);
@@ -112,7 +111,7 @@ public class ServerSetupController {
 
     private void nodeAddNotification(SethlansNode sethlansNode) {
         String message = "Added node " + sethlansNode.getHostname();
-        SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.NODE, message, NotificationScope.ADMIN);
+        SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.NODE, message);
         sethlansNotification.setMessageLink("/admin/nodes");
         sethlansNotification.setLinkPresent(true);
         sethlansNotification.setMailable(true);

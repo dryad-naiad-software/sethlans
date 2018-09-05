@@ -417,7 +417,7 @@ public class ProjectController {
 
     @PostMapping(value = "/api/project_form/upload_project")
     public ProjectForm newProjectUpload(@RequestParam("projectFile") MultipartFile projectFile) {
-        LOG.debug("Upload Attempted");
+        LOG.info(projectFile.getOriginalFilename() + " uploading");
         String uploadTag = SethlansQueryUtils.getShortUUID();
         try {
             File storeUpload = new File(temp + uploadTag + "-" + projectFile.getOriginalFilename());
@@ -431,13 +431,14 @@ public class ProjectController {
         newProject.setFileLocation(temp + uploadTag + "-" + projectFile.getOriginalFilename());
         newProject.populateForm(blenderParseBlenderFileService.parseBlendFile(newProject.getFileLocation()));
         LOG.debug(newProject.toString());
+        LOG.info("Upload successful");
         return newProject;
     }
 
     @PostMapping(value = "/api/project_form/submit_project")
     public long submitProject(@RequestBody ProjectForm projectForm) {
         if (projectForm != null) {
-            LOG.debug("Project Submitted" + projectForm);
+            LOG.info("Project Submitted" + projectForm);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (projectForm.getProjectType() == ProjectType.STILL_IMAGE) {
                 projectForm.setOutputFormat(RenderOutputFormat.PNG);
@@ -467,7 +468,7 @@ public class ProjectController {
             blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
         }
         if (projectForm != null && blenderProject != null) {
-            LOG.debug("Project Edited" + projectForm);
+            LOG.info("Project Edited" + projectForm);
             blenderProject.setProjectName(projectForm.getProjectName());
             blenderProject.setBlenderVersion(projectForm.getSelectedBlenderversion());
             blenderProject.setRenderOutputFormat(projectForm.getOutputFormat());
@@ -534,7 +535,7 @@ public class ProjectController {
                     }
 
                 } else {
-                    LOG.debug("Settings are the same, no change detected.");
+                    LOG.warn("Settings are the same, no change detected.");
                 }
             }
         }

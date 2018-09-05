@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,6 +29,7 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
 
 /**
@@ -95,9 +96,9 @@ public class GetRawDataServiceImpl implements GetRawDataService {
 
         try {
             URL url = new URL(nodeURL);
-            SSLUtilities.trustAllHostnames();
-            SSLUtilities.trustAllHttpsCertificates();
             connection = (HttpsURLConnection) url.openConnection();
+            connection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
+            connection.setHostnameVerifier(SSLUtilities.allHostsValid());
             connection.setRequestMethod("GET");
             connection.connect();
 
@@ -140,7 +141,7 @@ public class GetRawDataServiceImpl implements GetRawDataService {
     public String getLocalResult(String resource) {
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(new Resources(resource).getResource(), "UTF-8"));
+            reader = new BufferedReader(new InputStreamReader(new Resources(resource).getResource(), StandardCharsets.UTF_8));
 
             StringBuilder result = new StringBuilder();
 

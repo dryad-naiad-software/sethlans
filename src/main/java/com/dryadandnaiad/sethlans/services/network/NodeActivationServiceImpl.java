@@ -49,7 +49,7 @@ public class NodeActivationServiceImpl implements NodeActivationService {
     @Override
     @Async
     public void sendActivationRequestToNode(SethlansNode sethlansNode, SethlansServer sethlansServer, String accessKey) {
-        LOG.debug("Sending Activation Request to Node");
+        LOG.info("Sending Activation Request to Node " + sethlansNode.getHostname());
         String ip = sethlansNode.getIpAddress();
         String port = sethlansNode.getNetworkPort();
         String activateURL = "https://" + ip + ":" + port + "/api/nodeactivate/request";
@@ -63,7 +63,7 @@ public class NodeActivationServiceImpl implements NodeActivationService {
     @Override
     @Async
     public void sendResponseAcknowledgementToNode(SethlansNode sethlansNode, String connection_uuid) {
-        LOG.debug("Sending Response Acknowledgement to Node");
+        LOG.info("Sending Response Acknowledgement to Node " + sethlansNode.getHostname());
         String ip = sethlansNode.getIpAddress();
         String port = sethlansNode.getNetworkPort();
         String acknowledgeURL = "https://" + ip + ":" + port + "/api/nodeactivate/acknowledge";
@@ -75,7 +75,7 @@ public class NodeActivationServiceImpl implements NodeActivationService {
                 List<BlenderBinary> blenderBinaries = blenderBinaryDatabaseService.listAll();
                 for (BlenderBinary blenderBinary : blenderBinaries) {
                     if (!blenderBinary.isDownloaded()) {
-                        LOG.debug("Blender binary download is in progress, holding off on sending benchmark request");
+                        LOG.info("Blender binary download is in progress, holding off on sending benchmark request");
                         try {
                             pendingDownloads = true;
                             Thread.sleep(120000);
@@ -109,7 +109,7 @@ public class NodeActivationServiceImpl implements NodeActivationService {
             }
         }
         if (!binaryAdded) {
-            LOG.debug("Adding Blender " + blenderVersion + " " + serverOS + " to database.");
+            LOG.info("Adding Blender " + blenderVersion + " " + serverOS + " to database.");
             BlenderBinary newBlenderBinary = new BlenderBinary();
             newBlenderBinary.setDownloaded(false);
             newBlenderBinary.setBlenderBinaryOS(serverOS);

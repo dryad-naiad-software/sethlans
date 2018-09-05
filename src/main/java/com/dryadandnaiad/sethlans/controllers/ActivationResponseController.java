@@ -51,30 +51,30 @@ public class ActivationResponseController {
     @RequestMapping(value = "/response", method = RequestMethod.POST)
     public void nodeActivationRequest(@RequestParam String nodehostname, @RequestParam String ipAddress,
                                       @RequestParam String port, @RequestParam String connection_uuid) {
-        LOG.debug("Received node activation response.");
+        LOG.info("Received node activation response.");
         SethlansNode sethlansNode;
         if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) == null) {
-            LOG.debug("The node: " + nodehostname + "/" + ipAddress + " is not present in the database");
+            LOG.info("The node: " + nodehostname + "/" + ipAddress + " is not present in the database");
         } else {
             sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
             sethlansNode.setPendingActivation(false);
             sethlansNode.setActive(true);
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
             LOG.debug(sethlansNode.toString());
-            LOG.debug("Processed node activation response.");
+            LOG.info("Processed node activation response.");
             nodeActivationService.sendResponseAcknowledgementToNode(sethlansNode, connection_uuid);
         }
     }
 
     @RequestMapping(value = "/server_removal", method = RequestMethod.POST)
     public void nodeDeletionRequest(@RequestParam String connection_uuid) {
-        LOG.debug("Received Node Deletion Request.");
+        LOG.info("Received Node Deletion Request.");
         if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) != null) {
-            LOG.debug("Node UUID found, deleting entry.");
+            LOG.info("Node UUID found, deleting entry.");
             sethlansNodeDatabaseService.deleteByConnectionUUID(connection_uuid);
 
         } else {
-            LOG.debug("Node not found in the database.");
+            LOG.info("Node not found in the database.");
         }
 
     }

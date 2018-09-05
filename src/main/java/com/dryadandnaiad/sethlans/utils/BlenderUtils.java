@@ -126,7 +126,7 @@ public class BlenderUtils {
             }
             return true;
         } else {
-            LOG.debug("Rename failed.");
+            LOG.error("Rename failed.");
             return false;
         }
 
@@ -144,7 +144,7 @@ public class BlenderUtils {
             }
             return true;
         } else {
-            LOG.debug("Rename failed.");
+            LOG.error("Rename failed.");
             return false;
         }
 

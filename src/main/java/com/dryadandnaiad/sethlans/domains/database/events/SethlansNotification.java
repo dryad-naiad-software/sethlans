@@ -49,6 +49,11 @@ public class SethlansNotification extends AbstractEntityClass {
     private String username;
 
 
+    /**
+     * @param notificationType - Enum indicating what type of Notification
+     * @param message          - Notification message string.
+     * @param username         - Username that notification message will be directed to.
+     */
     public SethlansNotification(NotificationType notificationType, String message, String username) {
         this.notificationType = notificationType;
         this.message = message + ".";
@@ -61,10 +66,16 @@ public class SethlansNotification extends AbstractEntityClass {
     }
 
 
-    public SethlansNotification(NotificationType notificationType, String message, NotificationScope scope) {
+    /**
+     * Constructor omitting username, will generate an Admin type notification by default.
+     *
+     * @param notificationType - Enum indicating what type of Notification
+     * @param message          - Notification message string.
+     */
+    public SethlansNotification(NotificationType notificationType, String message) {
         this.notificationType = notificationType;
         this.message = message + ".";
-        this.scope = scope;
+        this.scope = NotificationScope.ADMIN;
         this.mailable = false;
         this.messageDate = System.currentTimeMillis();
         this.acknowledged = false;

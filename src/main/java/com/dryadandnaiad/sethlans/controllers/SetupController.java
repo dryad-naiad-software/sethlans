@@ -71,7 +71,6 @@ public class SetupController {
                 if (!sethlansUserChallenge.isResponseUpdated()) {
                     sethlansUserChallenge.setResponseUpdated(true);
                 }
-
             }
             setupForm.getUser().setPromptPasswordChange(false);
             saveSetupConfigService.saveSetupSettings(setupForm);
@@ -107,7 +106,6 @@ public class SetupController {
                 if (!sethlansUserChallenge.isResponseUpdated()) {
                     sethlansUserChallenge.setResponseUpdated(true);
                 }
-
             }
 
             user.setPasswordUpdated(true);
@@ -123,7 +121,6 @@ public class SetupController {
             return false;
         }
     }
-
 
     @Autowired
     public void setSaveSetupConfigService(SaveSetupConfigService saveSetupConfigService) {

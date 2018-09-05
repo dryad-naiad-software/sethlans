@@ -21,7 +21,6 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.server.AccessKey;
-import com.dryadandnaiad.sethlans.enums.NotificationScope;
 import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import com.dryadandnaiad.sethlans.services.config.UpdateComputeService;
@@ -59,13 +58,13 @@ public class NodeSetupController {
     public boolean addAccessKey(@RequestParam String access_key) {
         Pattern uuid = Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
         if (!uuid.matcher(access_key).matches()) {
-            LOG.debug("Key submitted in an invalid format. " + access_key);
+            LOG.error("Key submitted in an invalid format. " + access_key);
             return false;
         }
         if (accessKeyDatabaseService.getByUUID(access_key) == null) {
-            LOG.debug("Adding server access key to database:" + access_key);
+            LOG.info("Adding server access key to database:" + access_key);
             String message = "New server access key added";
-            SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SERVER, message, NotificationScope.ADMIN);
+            SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SERVER, message);
             sethlansNotificationService.sendNotification(sethlansNotification);
             AccessKey accessKey = new AccessKey();
             accessKey.setAccessKey(access_key);
@@ -87,7 +86,7 @@ public class NodeSetupController {
 
     @PostMapping("/update_compute")
     public boolean submit(@RequestBody SetupNode setupNode) {
-        LOG.debug("Processing Compute Setting Update");
+        LOG.info("Processing Compute Setting Update");
         if (setupNode != null) {
             LOG.debug(setupNode.toString());
             boolean updateComplete = updateComputeService.saveComputeSettings(setupNode);

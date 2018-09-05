@@ -74,6 +74,7 @@ class QueueProcessActions {
             }
         }
         storedDir.mkdirs();
+        LOG.info("Processing received file for " + blenderProject.getProjectName());
         LOG.debug("Processing received file " + processQueueItem.getPart() + " from " +
                 sethlansNodeDatabaseService.getByConnectionUUID(processQueueItem.getConnectionUUID()).getHostname() + ". Frame: " + frameNumber +
                 " Part: " + partNumber
@@ -87,16 +88,16 @@ class QueueProcessActions {
         }
 
         renderQueueItem.setComplete(true);
-        LOG.debug("Processing complete.");
+        LOG.info("Processing of received file complete.");
         int projectTotalQueue =
                 blenderProject.getTotalQueueSize();
 
-        LOG.debug("Remaining parts per frame for Frame " + frameNumber + ": " + remainingPartsForFrame);
-        LOG.debug("Remaining items in project Queue " + blenderProject.getRemainingQueueSize());
-        LOG.debug("Project total Queue " + blenderProject.getTotalQueueSize());
+        LOG.info("Remaining parts per frame for Frame " + frameNumber + ": " + remainingPartsForFrame);
+        LOG.info("Remaining items in project Queue " + blenderProject.getRemainingQueueSize());
+        LOG.info("Project total Queue " + blenderProject.getTotalQueueSize());
 
         double currentPercentage = ((projectTotalQueue - remainingTotalQueue) * 100.0) / projectTotalQueue;
-        LOG.debug("Current Percentage " + currentPercentage);
+        LOG.info(blenderProject.getProjectName() + " current Percentage " + currentPercentage);
         blenderProject.setCurrentPercentage((int) currentPercentage);
 
         blenderProject.setTotalRenderTime(blenderProject.getTotalRenderTime() + processQueueItem.getRenderTime());
@@ -128,7 +129,7 @@ class QueueProcessActions {
                     File.separator + "frame_" + renderQueueItem.getBlenderFramePart().getFrameNumber() + File.separator);
             renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
 
-            LOG.debug("Completed Render Task received from " + sethlansNode.getHostname() + ". Adding to processing queue.");
+            LOG.info("Completed Render Task received from " + sethlansNode.getHostname() + ". Adding to processing queue.");
 
             switch (computeType) {
                 case GPU:
@@ -182,6 +183,7 @@ class QueueProcessActions {
                             if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
                                 blenderProject.setProjectStatus(ProjectStatus.Processing);
                                 blenderProject.setCurrentPercentage(100);
+                                LOG.info(blenderProject.getProjectName() + " has completed rendering, starting video processing");
                                 String message = blenderProject.getProjectName() + " has completed rendering, starting video processing";
                                 SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
                                 sethlansNotification.setLinkPresent(true);
@@ -194,6 +196,7 @@ class QueueProcessActions {
                             if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
                                 blenderProject.setProjectStatus(ProjectStatus.Processing);
                                 blenderProject.setCurrentPercentage(100);
+                                LOG.info(blenderProject.getProjectName() + " has completed rendering, starting video processing");
                                 String message = blenderProject.getProjectName() + " has completed rendering, starting video processing";
                                 SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
                                 sethlansNotification.setLinkPresent(true);
@@ -205,6 +208,7 @@ class QueueProcessActions {
                             } else {
                                 blenderProject.setProjectStatus(ProjectStatus.Finished);
                                 blenderProject.setCurrentPercentage(100);
+                                LOG.info(blenderProject.getProjectName() + " has completed");
                                 String message = blenderProject.getProjectName() + " has completed";
                                 SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
                                 sethlansNotification.setLinkPresent(true);

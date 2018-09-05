@@ -25,7 +25,6 @@ import com.dryadandnaiad.sethlans.domains.info.Log;
 import com.dryadandnaiad.sethlans.domains.info.RoleInfo;
 import com.dryadandnaiad.sethlans.domains.info.SethlansSettings;
 import com.dryadandnaiad.sethlans.domains.info.UserInfo;
-import com.dryadandnaiad.sethlans.enums.NotificationScope;
 import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
@@ -76,7 +75,7 @@ public class AdminController {
     @GetMapping(value = "/restart")
     public void restart() {
         String message = "Restarting Sethlans";
-        SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SYSTEM, message, NotificationScope.ADMIN);
+        SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SYSTEM, message);
         sethlansNotification.setMailable(true);
         sethlansNotification.setSubject("Restart Initiated");
         sethlansNotificationService.sendNotification(sethlansNotification);
@@ -91,7 +90,7 @@ public class AdminController {
     @GetMapping(value = "/shutdown")
     public void shutdown() {
         String message = "Shutting down Sethlans";
-        SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SYSTEM, message, NotificationScope.ADMIN);
+        SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SYSTEM, message);
         sethlansNotification.setMailable(true);
         sethlansNotification.setSubject("Shutdown Initiated");
         sethlansNotificationService.sendNotification(sethlansNotification);
@@ -304,9 +303,9 @@ public class AdminController {
                 authorized = true;
             }
             if (authorized) {
-                LOG.debug("Adding new user...");
+                LOG.info("Adding new user...");
                 if (sethlansUserDatabaseService.checkIfExists(user.getUsername())) {
-                    LOG.debug("User " + user.getUsername() + " already exists!");
+                    LOG.warn("User " + user.getUsername() + " already exists!");
                     return false;
                 }
                 if (!requestingUser.getRoles().contains(Role.SUPER_ADMINISTRATOR)) {

@@ -62,11 +62,11 @@ class PrepareScripts {
                 String deviceID = StringUtils.substringAfter(benchmarkTask.getDeviceID(), "_");
                 String script;
                 if (SethlansQueryUtils.isCuda(benchmarkTask.getDeviceID())) {
-                    LOG.debug("CUDA Device found, using cuda parameters for script");
+                    LOG.info("CUDA Device found, using cuda parameters for script");
                     script = blenderPythonScriptService.writeBenchmarkPythonScript(benchmarkTask.getComputeType(),
                             benchmarkTask.getBenchmarkDir(), deviceID, true, "128", 800, 600, 50);
                 } else {
-                    LOG.debug("OpenCL Device found, using opencl parameters for script");
+                    LOG.info("OpenCL Device found, using opencl parameters for script");
 
                     script = blenderPythonScriptService.writeBenchmarkPythonScript(benchmarkTask.getComputeType(),
                             benchmarkTask.getBenchmarkDir(), deviceID, false, "128", 800, 600, 50);
@@ -74,10 +74,10 @@ class PrepareScripts {
 
                 int rating = executeBlenderBenchmark(benchmarkTask, script);
                 if (rating == -1) {
-                    LOG.debug("Benchmark failed.");
+                    LOG.error("Benchmark failed.");
                     LOG.debug(benchmarkTask.toString());
                 } else {
-                    LOG.debug("Benchmark complete, saving to database.");
+                    LOG.info("Benchmark complete, saving to database.");
                     LOG.debug(benchmarkTask.toString());
                     benchmarkTask.setGpuRating(rating);
                     benchmarkTask.setInProgress(false);
@@ -86,15 +86,15 @@ class PrepareScripts {
                 }
 
             } else {
-                LOG.debug("Creating benchmark script using CPU");
+                LOG.info("Creating benchmark script using CPU");
                 String script = blenderPythonScriptService.writeBenchmarkPythonScript(benchmarkTask.getComputeType(),
                         benchmarkTask.getBenchmarkDir(), "0", false, "16", 800, 600, 50);
                 int rating = executeBlenderBenchmark(benchmarkTask, script);
                 if (rating == -1) {
-                    LOG.debug("Benchmark failed.");
+                    LOG.error("Benchmark failed.");
                     LOG.debug(benchmarkTask.toString());
                 } else {
-                    LOG.debug("Benchmark complete, saving to database.");
+                    LOG.info("Benchmark complete, saving to database.");
                     benchmarkTask.setCpuRating(rating);
                     benchmarkTask.setInProgress(false);
                     benchmarkTask.setComplete(true);
