@@ -19,10 +19,12 @@
 
 package com.dryadandnaiad.sethlans.domains.info;
 
+import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUserChallenge;
 import com.dryadandnaiad.sethlans.enums.Role;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -46,4 +48,25 @@ public class UserInfo {
     private boolean nodeEmailNotifications;
     private boolean projectEmailNotifications;
     private boolean videoEncodingEmailNotifications;
+
+    public void loadUserInfo(SethlansUser sethlansUser) {
+        this.setUsername(sethlansUser.getUsername());
+        this.setActive(sethlansUser.isActive());
+        this.setRoles(sethlansUser.getRoles());
+        this.setEmail(sethlansUser.getEmail());
+        List<SethlansUserChallenge> filteredList = new ArrayList<>();
+        for (SethlansUserChallenge sethlansUserChallenge : sethlansUser.getChallengeList()) {
+            SethlansUserChallenge toSend = new SethlansUserChallenge();
+            toSend.setChallenge(sethlansUserChallenge.getChallenge());
+            filteredList.add(toSend);
+        }
+        this.setUserChallengeList(filteredList);
+        this.setId(sethlansUser.getId());
+        this.setLastUpdated(sethlansUser.getLastUpdated());
+        this.setDateCreated(sethlansUser.getDateCreated());
+        this.setNodeEmailNotifications(sethlansUser.isNodeEmailNotifications());
+        this.setProjectEmailNotifications(sethlansUser.isProjectEmailNotifications());
+        this.setSystemEmailNotifications(sethlansUser.isSystemEmailNotifications());
+        this.setVideoEncodingEmailNotifications(sethlansUser.isVideoEncodingEmailNotifications());
+    }
 }

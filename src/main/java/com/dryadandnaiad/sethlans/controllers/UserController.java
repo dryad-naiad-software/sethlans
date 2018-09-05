@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.domains.database.user.SethlansUserChallenge;
 import com.dryadandnaiad.sethlans.domains.info.UserInfo;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.forms.user.NotificationsForm;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.slf4j.Logger;
@@ -117,28 +118,29 @@ public class UserController {
     public UserInfo getUserInfo(@PathVariable String username) {
         if (requestMatchesAuthUser(username)) {
             SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(username);
-
             UserInfo userToSend = new UserInfo();
-            userToSend.setUsername(sethlansUser.getUsername());
-            userToSend.setActive(sethlansUser.isActive());
-            userToSend.setRoles(sethlansUser.getRoles());
-            userToSend.setEmail(sethlansUser.getEmail());
-            userToSend.setId(sethlansUser.getId());
-            List<SethlansUserChallenge> filteredList = new ArrayList<>();
-            for (SethlansUserChallenge sethlansUserChallenge : sethlansUser.getChallengeList()) {
-                SethlansUserChallenge toSend = new SethlansUserChallenge();
-                toSend.setChallenge(sethlansUserChallenge.getChallenge());
-                filteredList.add(toSend);
-            }
-            userToSend.setUserChallengeList(filteredList);
-            userToSend.setLastUpdated(sethlansUser.getLastUpdated());
-            userToSend.setDateCreated(sethlansUser.getDateCreated());
+            userToSend.loadUserInfo(sethlansUser);
             return userToSend;
         } else {
             return null;
         }
     }
 
+    @PostMapping(value = {"/change_notifications"})
+    public boolean changeNotifications(@RequestBody NotificationsForm notificationsForm) {
+        if (SethlansQueryUtils.getMode() != SethlansMode.NODE) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String username = auth.getName();
+            SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(username);
+            sethlansUser.setVideoEncodingEmailNotifications(notificationsForm.isVideoEncodingEmailNotifications());
+            sethlansUser.setProjectEmailNotifications(notificationsForm.isProjectEmailNotifications());
+            sethlansUser.setSystemEmailNotifications(notificationsForm.isSystemEmailNotifications());
+            sethlansUser.setNodeEmailNotifications(notificationsForm.isNodeEmailNotifications());
+            sethlansUserDatabaseService.saveOrUpdate(sethlansUser);
+            return true;
+        }
+        return false;
+    }
 
     @PostMapping(value = {"/change_email/"})
     public boolean changeEmail(@RequestParam String email) {

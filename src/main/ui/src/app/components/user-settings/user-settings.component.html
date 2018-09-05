@@ -61,39 +61,37 @@
               </div>
               <button class="btn btn-outline-dark" [disabled]="!emailForm.valid" (click)="changeEMail()">Change Email
               </button>
-              <h6 class="pt-3">Notification Options</h6>
+              <h6 class="pt-3">Email Notification Settings</h6>
               <div class="form-row pt-2" *ngIf="currentMode !== modes.NODE">
                 <div class="col">
-                  Node Notifications&nbsp;
-                  <span class="fas"
-                        [ngClass]="userInfo.nodeEmailNotifications ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"></span>
-
-                </div>
-                <div class="col">
-                  System Notifications&nbsp;
-                  <span class="fas"
-                        [ngClass]="userInfo.systemEmailNotifications? 'fa-toggle-on': 'fa-toggle-off text-secondary'"></span>
-
-
-                </div>
-                <div class="col">
-
-                </div>
-              </div>
-              <div class="form-row pt-2" *ngIf="currentMode !== modes.NODE">
-                <div class="col">
-                  Project Notifications&nbsp;
-                  <span class="fas"
-                        [ngClass]="userInfo.projectEmailNotifications ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"></span>
-
-                </div>
-                <div class="col">
-                  Video Encoding Notifications&nbsp;
-                  <span class="fas"
-                        [ngClass]="userInfo.videoEncodingEmailNotifications ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"></span>
-                </div>
-                <div class="col">
-
+                  <div class="form-group" *ngIf="isAdministrator">
+                    Node Notifications&nbsp;
+                    <span class="fas"
+                          [ngClass]="notificationSettings.nodeEmailNotifications ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
+                          (click)="notificationSettings.nodeEmailNotifications = !notificationSettings.nodeEmailNotifications"></span>
+                  </div>
+                  <div class="form-group" *ngIf="isAdministrator">
+                    System Notifications&nbsp;
+                    <span class="fas"
+                          [ngClass]="notificationSettings.systemEmailNotifications? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
+                          (click)="notificationSettings.systemEmailNotifications = !notificationSettings.systemEmailNotifications"></span>
+                  </div>
+                  <div class="form-group">
+                    Project Notifications&nbsp;
+                    <span class="fas"
+                          [ngClass]="notificationSettings.projectEmailNotifications ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
+                          (click)="notificationSettings.projectEmailNotifications = !notificationSettings.projectEmailNotifications"
+                    ></span>
+                  </div>
+                  <div class="form-group">
+                    Video Encoding Notifications&nbsp;
+                    <span class="fas"
+                          [ngClass]="notificationSettings.videoEncodingEmailNotifications ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
+                          (click)="notificationSettings.videoEncodingEmailNotifications = !notificationSettings.videoEncodingEmailNotifications"></span>
+                  </div>
+                  <button class="btn btn-outline-dark" (click)="changeNotificationSettings()">Change Email Notification
+                    Settings
+                  </button>
                 </div>
               </div>
             </form>

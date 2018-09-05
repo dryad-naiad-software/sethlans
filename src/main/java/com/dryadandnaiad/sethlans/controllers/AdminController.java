@@ -21,7 +21,6 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
-import com.dryadandnaiad.sethlans.domains.database.user.SethlansUserChallenge;
 import com.dryadandnaiad.sethlans.domains.info.Log;
 import com.dryadandnaiad.sethlans.domains.info.RoleInfo;
 import com.dryadandnaiad.sethlans.domains.info.SethlansSettings;
@@ -118,17 +117,7 @@ public class AdminController {
         List<UserInfo> userInfoList = new ArrayList<>();
         for (SethlansUser sethlansUser : sethlansUsers) {
             UserInfo userToSend = new UserInfo();
-            userToSend.setUsername(sethlansUser.getUsername());
-            userToSend.setActive(sethlansUser.isActive());
-            userToSend.setRoles(sethlansUser.getRoles());
-            userToSend.setEmail(sethlansUser.getEmail());
-            userToSend.setId(sethlansUser.getId());
-            userToSend.setLastUpdated(sethlansUser.getLastUpdated());
-            userToSend.setDateCreated(sethlansUser.getDateCreated());
-            userToSend.setNodeEmailNotifications(sethlansUser.isNodeEmailNotifications());
-            userToSend.setProjectEmailNotifications(sethlansUser.isProjectEmailNotifications());
-            userToSend.setSystemEmailNotifications(sethlansUser.isSystemEmailNotifications());
-            userToSend.setVideoEncodingEmailNotifications(sethlansUser.isVideoEncodingEmailNotifications());
+            userToSend.loadUserInfo(sethlansUser);
             userInfoList.add(userToSend);
         }
         return userInfoList;
@@ -227,24 +216,7 @@ public class AdminController {
             sethlansUser = sethlansUserDatabaseService.excludeSuperUsersById(id);
         }
         UserInfo userToSend = new UserInfo();
-        userToSend.setUsername(sethlansUser.getUsername());
-        userToSend.setActive(sethlansUser.isActive());
-        userToSend.setRoles(sethlansUser.getRoles());
-        userToSend.setEmail(sethlansUser.getEmail());
-        List<SethlansUserChallenge> filteredList = new ArrayList<>();
-        for (SethlansUserChallenge sethlansUserChallenge : sethlansUser.getChallengeList()) {
-            SethlansUserChallenge toSend = new SethlansUserChallenge();
-            toSend.setChallenge(sethlansUserChallenge.getChallenge());
-            filteredList.add(toSend);
-        }
-        userToSend.setUserChallengeList(filteredList);
-        userToSend.setId(sethlansUser.getId());
-        userToSend.setLastUpdated(sethlansUser.getLastUpdated());
-        userToSend.setDateCreated(sethlansUser.getDateCreated());
-        userToSend.setNodeEmailNotifications(sethlansUser.isNodeEmailNotifications());
-        userToSend.setProjectEmailNotifications(sethlansUser.isProjectEmailNotifications());
-        userToSend.setSystemEmailNotifications(sethlansUser.isSystemEmailNotifications());
-        userToSend.setVideoEncodingEmailNotifications(sethlansUser.isVideoEncodingEmailNotifications());
+        userToSend.loadUserInfo(sethlansUser);
         return userToSend;
     }
 
@@ -362,13 +334,7 @@ public class AdminController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(auth.getName());
         UserInfo userToSend = new UserInfo();
-        userToSend.setUsername(sethlansUser.getUsername());
-        userToSend.setActive(sethlansUser.isActive());
-        userToSend.setRoles(sethlansUser.getRoles());
-        userToSend.setEmail(sethlansUser.getEmail());
-        userToSend.setId(sethlansUser.getId());
-        userToSend.setLastUpdated(sethlansUser.getLastUpdated());
-        userToSend.setDateCreated(sethlansUser.getDateCreated());
+        userToSend.loadUserInfo(sethlansUser);
         return userToSend;
     }
 

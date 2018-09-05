@@ -23,6 +23,7 @@ import {UserInfo} from '../../models/user_info.model';
 import {Mode} from '../../enums/mode.enum';
 import {UserChallenge} from '../../models/user_challenge.model';
 import {ActivatedRoute} from '@angular/router';
+import {NotificationsForm} from '../../models/forms/notifications_form.model';
 
 @Component({
   selector: 'app-user-settings',
@@ -40,11 +41,13 @@ export class UserSettingsComponent implements OnInit {
   setRecovery: boolean;
   modes: any = Mode;
   currentMode: Mode;
+  isAdministrator: boolean;
   challenge1: UserChallenge;
   challenge2: UserChallenge;
   challenge3: UserChallenge;
   challengeQuestions: string[];
   userChallengeToSubmit: UserChallenge[];
+  notificationSettings: NotificationsForm;
 
 
   constructor(private http: HttpClient, private activatedRoute: ActivatedRoute) {
@@ -71,12 +74,14 @@ export class UserSettingsComponent implements OnInit {
     this.challenge1 = new UserChallenge();
     this.challenge2 = new UserChallenge();
     this.challenge3 = new UserChallenge();
+    this.notificationSettings = new NotificationsForm();
   }
-
-
 
   ngOnInit() {
     this.http.get('/api/info/sethlans_mode').subscribe((sethlansmode) => this.currentMode = sethlansmode['mode']);
+    this.http.get('/api/users/is_administrator').subscribe((admin: boolean) => {
+      this.isAdministrator = admin;
+    });
     this.http.get('/api/info/challenge_question_list').subscribe((challengeQuestions: string[]) => {
       this.challengeQuestions = challengeQuestions;
       this.challenge1.challenge = this.challengeQuestions[0];
@@ -93,6 +98,10 @@ export class UserSettingsComponent implements OnInit {
         let username = user['username'];
         this.http.get('/api/users/get_user/' + username + '').subscribe((userinfo: UserInfo) => {
           this.userInfo = userinfo;
+          this.notificationSettings.videoEncodingEmailNotifications = this.userInfo.videoEncodingEmailNotifications;
+          this.notificationSettings.projectEmailNotifications = this.userInfo.projectEmailNotifications;
+          this.notificationSettings.nodeEmailNotifications = this.userInfo.systemEmailNotifications;
+          this.notificationSettings.nodeEmailNotifications = this.userInfo.nodeEmailNotifications;
         });
       });
   }
@@ -110,6 +119,21 @@ export class UserSettingsComponent implements OnInit {
       }
     });
 
+  }
+
+  changeNotificationSettings() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    this.http.post('/api/users/change_notifications', JSON.stringify(this.notificationSettings), httpOptions).subscribe((response: boolean) => {
+      if (response) {
+        window.location.href = '/user_settings?status=true';
+      } else {
+        window.location.href = '/user_settings?status=false';
+      }
+    });
   }
 
   populateUserSecurityQuestions() {
