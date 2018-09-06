@@ -101,16 +101,13 @@
                        [(ngModel)]="changedNode.tileSizeGPU">
               </div>
 
-              <label *ngIf="changedNode.selectedGPUDeviceIDs.length > 1">Options:</label>
               <div *ngIf="changedNode.selectedGPUDeviceIDs.length > 1"
                    ngbTooltip="Enabled: Selected GPUs used as one render slot.  Disabled: Each GPU equals one render slot."
                    placement="left">
-                <input type="checkbox"
-                       class="form-control-sm"
-                       name="{{changedNode.combined}}"
-                       value="{{changedNode.combined}}"
-                       [(ngModel)]="changedNode.combined"/>
-                <label class="form-check-label form-control-sm">Combine GPUs</label>
+                <h6>Options:</h6>
+                <span class="fas" [ngClass]="changedNode.combined ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
+                      (click)="changedNode.combined = !changedNode.combined"></span>
+                Combine GPU
                 <br/><br/>
               </div>
             </div>

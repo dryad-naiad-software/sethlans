@@ -65,29 +65,30 @@
               <div class="form-row pt-2" *ngIf="currentMode !== modes.NODE">
                 <div class="col">
                   <div class="form-group" *ngIf="isAdministrator">
-                    Node Notifications&nbsp;
-                    <span class="fas"
-                          [ngClass]="notificationSettings.nodeEmailNotifications ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
+                    <span class="far"
+                          [ngClass]="notificationSettings.nodeEmailNotifications ? 'fa-check-square': 'fa-square text-secondary'"
                           (click)="notificationSettings.nodeEmailNotifications = !notificationSettings.nodeEmailNotifications"></span>
+                    &nbsp;Node Notifications
                   </div>
                   <div class="form-group" *ngIf="isAdministrator">
-                    System Notifications&nbsp;
-                    <span class="fas"
-                          [ngClass]="notificationSettings.systemEmailNotifications? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
+                    <span class="far"
+                          [ngClass]="notificationSettings.systemEmailNotifications? 'fa-check-square': 'fa-square text-secondary'"
                           (click)="notificationSettings.systemEmailNotifications = !notificationSettings.systemEmailNotifications"></span>
+                    &nbsp;System Notifications
                   </div>
                   <div class="form-group">
-                    Project Notifications&nbsp;
-                    <span class="fas"
-                          [ngClass]="notificationSettings.projectEmailNotifications ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
+
+                    <span class="far"
+                          [ngClass]="notificationSettings.projectEmailNotifications ? 'fa-check-square': 'fa-square text-secondary'"
                           (click)="notificationSettings.projectEmailNotifications = !notificationSettings.projectEmailNotifications"
                     ></span>
+                    &nbsp;Project Notifications
                   </div>
                   <div class="form-group">
-                    Video Encoding Notifications&nbsp;
-                    <span class="fas"
-                          [ngClass]="notificationSettings.videoEncodingEmailNotifications ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
+                    <span class="far"
+                          [ngClass]="notificationSettings.videoEncodingEmailNotifications ? 'fa-check-square': 'fa-square text-secondary'"
                           (click)="notificationSettings.videoEncodingEmailNotifications = !notificationSettings.videoEncodingEmailNotifications"></span>
+                    &nbsp;Video Encoding Notifications
                   </div>
                   <button class="btn btn-outline-dark" (click)="changeNotificationSettings()">Change Email Notification
                     Settings

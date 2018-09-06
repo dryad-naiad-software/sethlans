@@ -144,25 +144,27 @@
     </div>
     <div class="form-row" *ngIf="setupForm.configureMail">
       <div class="col">
-        Use SSL&nbsp;
-        <span class="fas" [ngClass]="setupForm.mailSettings.sslEnabled ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
+
+        <span class="far" [ngClass]="setupForm.mailSettings.sslEnabled ? 'fa-check-square': 'fa-square text-secondary'"
               (click)="setupForm.mailSettings.sslEnabled = !setupForm.mailSettings.sslEnabled"></span>
+        &nbsp;Use SSL
 
       </div>
       <div class="col">
-        Enable STARTTLS&nbsp;
-        <span class="fas"
-              [ngClass]="setupForm.mailSettings.startTLSEnabled ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
+
+        <span class="far"
+              [ngClass]="setupForm.mailSettings.startTLSEnabled ? 'fa-check-square': 'fa-square text-secondary'"
               (click)="setupForm.mailSettings.startTLSEnabled = !setupForm.mailSettings.startTLSEnabled"></span>
+        &nbsp;Enable STARTTLS
 
 
       </div>
       <div class="col">
-        <span
-          *ngIf="setupForm.mailSettings.startTLSEnabled">Require STARTTLS&nbsp;</span>
-        <span *ngIf="setupForm.mailSettings.startTLSEnabled" class="fas"
-              [ngClass]="setupForm.mailSettings.startTLSRequired ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
+        <span *ngIf="setupForm.mailSettings.startTLSEnabled" class="far"
+              [ngClass]="setupForm.mailSettings.startTLSRequired ? 'fa-check-square': 'fa-square text-secondary'"
               (click)="setupForm.mailSettings.startTLSRequired = !setupForm.mailSettings.startTLSRequired"></span>
+        <span
+          *ngIf="setupForm.mailSettings.startTLSEnabled">&nbsp;Require STARTTLS</span>
 
 
       </div>

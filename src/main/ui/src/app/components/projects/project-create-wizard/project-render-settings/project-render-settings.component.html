@@ -79,13 +79,13 @@
       </div>
       <div class="col">
         <div class="form-group">
-          <input type="checkbox" id="useParts" name="useParts" [(ngModel)]="projectWizard.project.useParts"
-                 (change)="setParts()">
-          <label for="useParts">Split frame into parts for rendering</label>
+          Use parts for rendering&nbsp;
+          <span class="fas" [ngClass]="projectWizard.project.useParts ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
+                (click)="projectWizard.project.useParts = !projectWizard.project.useParts;setParts()"></span>
         </div>
 
         <div class="form-group">
-          <label for="partsPerFrame">Number of Rendering Parts Per Frame:</label> <span
+          <label for="partsPerFrame">Number of Rendering Parts Per Frame:&nbsp;</label> <span
           *ngIf="projectWizard.project.useParts">{{projectWizard.project.partsPerFrame}}</span>
           <span *ngIf="!projectWizard.project.useParts" class="text-danger">&nbsp;Disabled</span>
           <div class="form-inline">
