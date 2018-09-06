@@ -40,6 +40,7 @@ import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -325,14 +326,34 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             String params = "connection_uuid=" + renderTask.getConnectionUUID() + "&project_uuid=" + renderTask.getProjectUUID();
             if (isDirectoryEmpty(blendFileDir)) {
                 String blendFile = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, blendFileDir.toString());
-                renderTask.setBlendFilename(blendFileDir + File.separator + blendFile);
-                LOG.info("Required files downloaded.");
+                if (FilenameUtils.isExtension(blendFile, "zip")) {
+                    LOG.debug("Blend file zip bundle.  Extracting contents of zip first.");
+                    archiveExtract(blendFile, blendFileDir, true);
+                    File[] files = blendFileDir.listFiles();
+                    for (File file : files != null ? files : new File[0]) {
+                        if (file.toString().contains(".blend")) {
+                            renderTask.setBlendFilename(file.toString());
+                        }
+                    }
+                } else {
+                    renderTask.setBlendFilename(blendFileDir + File.separator + blendFile);
+                    LOG.info("Required files downloaded.");
+                }
+
             } else {
+                // TODO possible error here
                 LOG.info("Blend file for this project exists, using cached version");
                 String[] fileList = blendFileDir.list();
                 if (fileList != null) {
-                    String blendFile = blendFileDir + File.separator + fileList[0];
-                    renderTask.setBlendFilename(blendFile);
+                    for (String s : fileList) {
+                        LOG.debug(s);
+                        if (FilenameUtils.isExtension(s, "blend")) {
+                            String blendFile = blendFileDir + File.separator + s;
+                            LOG.debug(blendFile);
+                            renderTask.setBlendFilename(blendFile);
+                        }
+                    }
+
                 }
             }
             return true;

@@ -442,7 +442,7 @@ public class ProjectController {
             newProject.setFileLocation(location + File.separator + uploadTag + "-" + projectFile.getOriginalFilename());
             SethlansFileUtils.archiveExtract(filename, location, false);
             File[] files = location.listFiles();
-            for (File file : files) {
+            for (File file : files != null ? files : new File[0]) {
                 if (file.toString().contains(".blend")) {
                     newProject.populateForm(blenderParseBlenderFileService.parseBlendFile(file.toString()));
                 }
