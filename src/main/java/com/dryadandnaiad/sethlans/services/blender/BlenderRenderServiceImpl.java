@@ -32,6 +32,7 @@ import com.dryadandnaiad.sethlans.services.database.RenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.RenderTaskHistoryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
+import com.dryadandnaiad.sethlans.utils.SethlansConfigUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import com.google.common.base.Throwables;
@@ -329,36 +330,66 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                 if (FilenameUtils.isExtension(blendFile, "zip")) {
                     LOG.debug("Blend file zip bundle.  Extracting contents of zip first.");
                     archiveExtract(blendFile, blendFileDir, true);
-                    File[] files = blendFileDir.listFiles();
-                    for (File file : files != null ? files : new File[0]) {
-                        if (file.toString().contains(".blend")) {
-                            renderTask.setBlendFilename(file.toString());
-                        }
-                    }
+                    selectCachedBlend(blendFileDir, renderTask);
                 } else {
                     renderTask.setBlendFilename(blendFileDir + File.separator + blendFile);
                     LOG.info("Required files downloaded.");
                 }
 
             } else {
-                // TODO possible error here
                 LOG.info("Blend file for this project exists, using cached version");
-                String[] fileList = blendFileDir.list();
-                if (fileList != null) {
-                    for (String s : fileList) {
-                        LOG.debug(s);
-                        if (FilenameUtils.isExtension(s, "blend")) {
-                            String blendFile = blendFileDir + File.separator + s;
-                            LOG.debug(blendFile);
-                            renderTask.setBlendFilename(blendFile);
+
+                ComputeType computeType = ComputeType.valueOf(SethlansConfigUtils.getProperty(SethlansConfigKeys.COMPUTE_METHOD));
+                boolean combined = Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.COMBINE_GPU));
+                switch (computeType) {
+                    case CPU:
+                        selectCachedBlend(blendFileDir, renderTask);
+                    case GPU:
+                        if (combined) {
+                            selectCachedBlend(blendFileDir, renderTask);
+                        } else {
+                            waitForExtraction(blendFileDir, renderTask);
                         }
-                    }
+                    case CPU_GPU:
+                        waitForExtraction(blendFileDir, renderTask);
 
                 }
             }
             return true;
         }
         return false;
+    }
+
+    private void waitForExtraction(File blendFileDir, RenderTask renderTask) {
+        int count = 0;
+        LOG.debug("Checking to see if blend file download or extraction is currently in progress. " + blendFileDir.toString());
+        while (count < 10) {
+            File[] files = blendFileDir.listFiles();
+            for (File file : files != null ? files : new File[0]) {
+                if (file.toString().contains(".blend")) {
+                    LOG.debug("Blend file found. Download/Extraction is most likely complete.");
+                    renderTask.setBlendFilename(file.toString());
+                    count = 11;
+                    break;
+                } else {
+                    try {
+                        count++;
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    private void selectCachedBlend(File blendFileDir, RenderTask renderTask) {
+        File[] files = blendFileDir.listFiles();
+        for (File file : files != null ? files : new File[0]) {
+            if (file.toString().contains(".blend")) {
+                renderTask.setBlendFilename(file.toString());
+            }
+        }
     }
 
 
