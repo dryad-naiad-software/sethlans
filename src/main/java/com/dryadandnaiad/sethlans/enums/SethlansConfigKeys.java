@@ -66,7 +66,8 @@ public enum SethlansConfigKeys {
     MAIL_SERVER_CONFIGURED("sethlans.configureMail"),
     MAIL_REPLYTO("sethlans.mail.replyto"),
     GETTING_STARTED("sethlans.getStartedWiz"),
-    SETHLANS_URL("sethlans.url");
+    SETHLANS_URL("sethlans.url"),
+    BLENDER_DEBUG("blender.debug");
 
 
 

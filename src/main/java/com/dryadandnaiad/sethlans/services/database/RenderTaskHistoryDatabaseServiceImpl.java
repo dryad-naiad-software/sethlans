@@ -67,6 +67,11 @@ public class RenderTaskHistoryDatabaseServiceImpl implements RenderTaskHistoryDa
         renderTaskHistoryRepository.delete(id);
     }
 
+    @Override
+    public void deleteAll() {
+        renderTaskHistoryRepository.deleteAll();
+    }
+
     @Autowired
     public void setRenderTaskHistoryRepository(RenderTaskHistoryRepository renderTaskHistoryRepository) {
         this.renderTaskHistoryRepository = renderTaskHistoryRepository;

@@ -29,4 +29,6 @@ import com.dryadandnaiad.sethlans.domains.database.render.RenderTaskHistory;
  */
 public interface RenderTaskHistoryDatabaseService extends CRUDService<RenderTaskHistory> {
     RenderTaskHistory findByQueueUUID(String queueUUID);
+
+    void deleteAll();
 }

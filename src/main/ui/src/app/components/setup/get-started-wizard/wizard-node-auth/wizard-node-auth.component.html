@@ -31,9 +31,15 @@
                placeholder="Username" (keyup)="enableNext()">
       </div>
       <div class="col">
-        <input type="password" class="form-control form-control-sm"
+        <div class="input-group">
+          <input [type]="showPass ? 'text' : 'password'" class="form-control form-control-sm"
                [(ngModel)]="getStartedWizardForm.nodeLogin.password" name="password"
                placeholder="Password" (keyup)="enableNext()">
+          <span class="input-group-text" style="background-color: white" (mousedown)="showPass=true"
+                (mouseup)="showPass=false">
+                  <i class="far fa-eye"></i>
+                </span>
+        </div>
       </div>
     </div>
   </form>

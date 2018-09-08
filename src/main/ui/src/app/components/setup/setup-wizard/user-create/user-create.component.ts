@@ -38,12 +38,20 @@ export class UserCreateComponent implements OnInit {
   challenge2: UserChallenge;
   challenge3: UserChallenge;
   modes: any = Mode;
+  showPass: boolean;
+  showResponse1: boolean;
+  showResponse2: boolean;
+  showResponse3: boolean;
 
 
   constructor() {
     this.challenge1 = new UserChallenge();
     this.challenge2 = new UserChallenge();
     this.challenge3 = new UserChallenge();
+    this.showPass = false;
+    this.showResponse1 = false;
+    this.showResponse2 = false;
+    this.showResponse3 = false;
 
   }
 

@@ -33,6 +33,7 @@ import com.dryadandnaiad.sethlans.utils.SethlansFileUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -439,11 +440,12 @@ public class ProjectController {
         newProject.setUploadedFile(projectFile.getOriginalFilename());
 
         if (projectFile.getContentType().contains("zip")) {
+            String filenameWithoutExt = FilenameUtils.removeExtension(projectFile.getOriginalFilename());
             newProject.setFileLocation(location + File.separator + uploadTag + "-" + projectFile.getOriginalFilename());
             SethlansFileUtils.archiveExtract(filename, location, false);
             File[] files = location.listFiles();
             for (File file : files != null ? files : new File[0]) {
-                if (file.toString().contains(".blend")) {
+                if (file.toString().contains(filenameWithoutExt + ".blend")) {
                     newProject.populateForm(blenderParseBlenderFileService.parseBlendFile(file.toString()));
                 }
             }

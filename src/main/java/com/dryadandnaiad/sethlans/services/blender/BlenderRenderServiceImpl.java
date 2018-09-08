@@ -370,9 +370,10 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         int count = 0;
         LOG.debug("Checking to see if blend file download or extraction is currently in progress. " + blendFileDir.toString());
         while (count < 10) {
+            String filenameWithoutExt = FilenameUtils.removeExtension(renderTask.getBlendFilename());
             File[] files = blendFileDir.listFiles();
             for (File file : files != null ? files : new File[0]) {
-                if (file.toString().contains(".blend")) {
+                if (file.toString().contains(filenameWithoutExt + ".blend")) {
                     LOG.debug("Blend file found. Download/Extraction is most likely complete.");
                     renderTask.setBlendFilename(file.toString());
                     count = 11;
@@ -390,9 +391,10 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     }
 
     private void selectCachedBlend(File blendFileDir, RenderTask renderTask) {
+        String filenameWithoutExt = FilenameUtils.removeExtension(renderTask.getBlendFilename());
         File[] files = blendFileDir.listFiles();
         for (File file : files != null ? files : new File[0]) {
-            if (file.toString().contains(".blend")) {
+            if (file.toString().contains(filenameWithoutExt + ".blend")) {
                 renderTask.setBlendFilename(file.toString());
             }
         }
@@ -408,7 +410,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
             PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
             CommandLine commandLine = new CommandLine(renderTask.getBlenderExecutable());
-            if (SethlansConfigUtils.getProperty(SethlansConfigKeys.LOG_LEVEL).equals("DEBUG")) {
+            if (Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.BLENDER_DEBUG))) {
                 commandLine.addArgument("-d");
             }
 

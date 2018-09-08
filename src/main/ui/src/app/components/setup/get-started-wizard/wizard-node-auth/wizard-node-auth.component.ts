@@ -35,11 +35,13 @@ export class WizardNodeAuthComponent implements OnInit {
   nodeListDataSource = new MatTableDataSource();
   @Output() disableNext = new EventEmitter();
   nodeListDisplayedColumns = ['ipAddress', 'port', 'action'];
+  showPass: boolean;
 
 
   constructor() {
     this.nodeItem = new NodeItem();
     this.addDisabled = true;
+    this.showPass = false;
 
   }
 

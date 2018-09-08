@@ -125,6 +125,11 @@ public class AdminNodeController {
         return selectedGPUs;
     }
 
+    @GetMapping(value = {"/delete_render_history_list"})
+    public void deleteRenderHistory() {
+        renderTaskHistoryDatabaseService.deleteAll();
+    }
+
     @GetMapping(value = {"/render_history_list"})
     public List<RenderTaskHistory> renderTaskHistoryList() {
         return renderTaskHistoryDatabaseService.listAll();

@@ -42,6 +42,10 @@ export class RegisterUserComponent implements OnInit {
   challenge2: UserChallenge;
   challenge3: UserChallenge;
   success: boolean;
+  showPass: boolean;
+  showResponse1: boolean;
+  showResponse2: boolean;
+  showResponse3: boolean;
 
   constructor(private router: Router, private http: HttpClient, private route: ActivatedRoute) {
     document.body.style.background = 'rgba(0, 0, 0, .6)';
@@ -49,6 +53,10 @@ export class RegisterUserComponent implements OnInit {
     this.challenge1 = new UserChallenge();
     this.challenge2 = new UserChallenge();
     this.challenge3 = new UserChallenge();
+    this.showPass = false;
+    this.showResponse1 = false;
+    this.showResponse2 = false;
+    this.showResponse3 = false;
     this.route.queryParams.subscribe(params => {
       this.userExists = params['error'];
       this.existingUserName = params['username'];
