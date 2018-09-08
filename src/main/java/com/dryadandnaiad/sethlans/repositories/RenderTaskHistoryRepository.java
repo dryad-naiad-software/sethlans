@@ -29,5 +29,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Project: sethlans
  */
 public interface RenderTaskHistoryRepository extends JpaRepository<RenderTaskHistory, Long> {
-    RenderTaskHistory findByQueueUUID(String queueUUID);
+    RenderTaskHistory findByRenderTaskUUID(String queueUUID);
 }

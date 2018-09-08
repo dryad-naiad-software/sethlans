@@ -75,6 +75,26 @@ class QueueNodeActions {
             RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID());
             BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUIDWithoutFrameParts(renderQueueItem.getProjectUUID());
             LOG.debug("Received rejection for queue item " + processNodeStatus.getQueueUUID() + " adding back to pending queue.");
+            SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(renderQueueItem.getConnectionUUID());
+            switch (renderQueueItem.getRenderComputeType()) {
+                case CPU:
+                    sethlansNode.setCpuSlotInUse(false);
+                    sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+                    break;
+                case GPU:
+                    sethlansNode.setAllGPUSlotInUse(false);
+                    sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+                    for (GPUDevice selectedGPUs : sethlansNode.getSelectedGPUs()) {
+                        if (renderQueueItem.getGpuDeviceId().equals(selectedGPUs.getDeviceID())) {
+                            selectedGPUs.setInUse(false);
+                        }
+
+                    }
+                    break;
+                default:
+                    LOG.error("Invalid compute type");
+            }
+            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
             renderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
             renderQueueItem.setConnectionUUID(null);
             renderQueueItem.setRendering(false);

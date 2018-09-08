@@ -42,6 +42,7 @@ import javax.persistence.Entity;
 @EqualsAndHashCode(callSuper = false)
 public class RenderTask extends AbstractEntityClass {
     private String projectName;
+    private String renderTaskUUID;
     private String connectionUUID;
     private String projectUUID;
     private String serverQueueUUID;

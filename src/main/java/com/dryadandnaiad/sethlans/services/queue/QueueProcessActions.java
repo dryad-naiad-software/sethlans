@@ -133,13 +133,10 @@ class QueueProcessActions {
 
             switch (computeType) {
                 case GPU:
-                    if (sethlansNode.isCombined()) {
-                        sethlansNode.setAllGPUSlotInUse(false);
-                    } else {
-                        for (GPUDevice gpuDevice : sethlansNode.getSelectedGPUs()) {
-                            if (gpuDevice.getDeviceID().equals(renderQueueItem.getGpuDeviceId())) {
-                                gpuDevice.setInUse(false);
-                            }
+                    sethlansNode.setAllGPUSlotInUse(false);
+                    for (GPUDevice gpuDevice : sethlansNode.getSelectedGPUs()) {
+                        if (gpuDevice.getDeviceID().equals(renderQueueItem.getGpuDeviceId())) {
+                            gpuDevice.setInUse(false);
                         }
                     }
                     break;

@@ -23,16 +23,22 @@ import com.dryadandnaiad.sethlans.domains.database.render.RenderTask;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.info.NodeInfo;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.RenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
+import com.dryadandnaiad.sethlans.utils.SethlansConfigUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
+import com.google.common.base.Throwables;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,7 +113,7 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
                         if (counter % 60 == 0 && counter > 59) {
                             LOG.debug("Node idle for " + (counter / 60) + " minutes");
                         }
-                        if (counter > 899) {
+                        if (counter > 399) {
                             LOG.info("Informing server of idle slot(s)");
                             counter = 0;
                             if (slots == 1) {
@@ -152,6 +158,20 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
             String url = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/update/node_idle_notification";
             String param = "connection_uuid=" + sethlansServer.getConnectionUUID() + "&compute_type=" + computeType;
             sethlansAPIConnectionService.sendToRemotePOST(url, param);
+            String cacheDir = SethlansConfigUtils.getProperty(SethlansConfigKeys.CACHE_DIR);
+            String blendFileCache = SethlansConfigUtils.getProperty(SethlansConfigKeys.BLEND_FILE_CACHE_DIR);
+            File cacheDirToClean = new File(cacheDir);
+            File blendFileDirToClean = new File(blendFileCache);
+            try {
+                if (cacheDirToClean.exists()) {
+                    FileUtils.cleanDirectory(cacheDirToClean);
+                }
+                if (blendFileDirToClean.exists()) {
+                    FileUtils.cleanDirectory(blendFileDirToClean);
+                }
+            } catch (IOException e) {
+                LOG.error(e.getMessage() + Throwables.getStackTraceAsString(e));
+            }
         }
     }
 

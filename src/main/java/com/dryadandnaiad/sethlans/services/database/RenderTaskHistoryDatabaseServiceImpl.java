@@ -59,7 +59,7 @@ public class RenderTaskHistoryDatabaseServiceImpl implements RenderTaskHistoryDa
 
     @Override
     public RenderTaskHistory findByQueueUUID(String queueUUID) {
-        return renderTaskHistoryRepository.findByQueueUUID(queueUUID);
+        return renderTaskHistoryRepository.findByRenderTaskUUID(queueUUID);
     }
 
     @Override

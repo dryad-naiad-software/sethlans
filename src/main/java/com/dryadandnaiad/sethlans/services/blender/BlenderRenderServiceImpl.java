@@ -213,7 +213,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             int count = 0;
             while (true) {
                 if (sendResultsToServer(renderTask.getConnectionUUID(), renderTask)) {
-                    RenderTaskHistory renderTaskHistory = renderTaskHistoryDatabaseService.findByQueueUUID(renderTask.getServerQueueUUID());
+                    RenderTaskHistory renderTaskHistory = renderTaskHistoryDatabaseService.findByQueueUUID(renderTask.getRenderTaskUUID());
                     renderTaskHistory.setCompleted(true);
                     renderTaskHistory.setFailed(false);
                     renderTaskHistoryDatabaseService.saveOrUpdate(renderTaskHistory);
@@ -241,7 +241,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
 
         } else {
             LOG.info("Failed render, sending reject notice");
-            RenderTaskHistory renderTaskHistory = renderTaskHistoryDatabaseService.findByQueueUUID(renderTask.getServerQueueUUID());
+            RenderTaskHistory renderTaskHistory = renderTaskHistoryDatabaseService.findByQueueUUID(renderTask.getRenderTaskUUID());
             renderTaskHistory.setCompleted(true);
             renderTaskHistory.setFailed(true);
             renderTaskHistoryDatabaseService.saveOrUpdate(renderTaskHistory);
@@ -249,7 +249,13 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_reject_item/";
             String params = "queue_item_uuid=" + renderTask.getServerQueueUUID();
             sethlansAPIConnectionService.sendToRemoteGET(connectionURL, params);
-            renderTaskDatabaseService.delete(renderTask);
+            try {
+                LOG.debug("Cleaning up " + renderTask.getRenderDir());
+                FileUtils.deleteDirectory(new File(renderTask.getRenderDir()));
+                renderTaskDatabaseService.delete(renderTask);
+            } catch (IOException e) {
+                LOG.error(Throwables.getStackTraceAsString(e));
+            }
         }
     }
 
@@ -402,6 +408,9 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
             PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
             CommandLine commandLine = new CommandLine(renderTask.getBlenderExecutable());
+            if (SethlansConfigUtils.getProperty(SethlansConfigKeys.LOG_LEVEL).equals("DEBUG")) {
+                commandLine.addArgument("-d");
+            }
 
             commandLine.addArgument("-b");
             commandLine.addArgument(renderTask.getBlendFilename());

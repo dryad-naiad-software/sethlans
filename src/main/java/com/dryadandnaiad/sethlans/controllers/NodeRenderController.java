@@ -50,6 +50,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 
@@ -99,7 +100,7 @@ public class NodeRenderController {
             switch (computeType) {
                 case CPU_GPU:
                     if (compute_type.equals(ComputeType.GPU)) {
-                        if (gpu_device_id == null || gpu_device_id.equals("null")) {
+                        if (gpu_device_id == null || gpu_device_id.equals("null") || gpu_device_id.equals("")) {
                             rejectRequest(connection_uuid, queue_item_uuid);
                             rejected = true;
                         }
@@ -160,6 +161,7 @@ public class NodeRenderController {
                 renderTask = new RenderTask();
                 renderTask.setProjectUUID(project_uuid);
                 renderTask.setProjectName(project_name);
+                renderTask.setRenderTaskUUID(UUID.randomUUID().toString());
                 renderTask.setServerQueueUUID(queue_item_uuid);
                 renderTask.setConnectionUUID(connection_uuid);
                 renderTask.setRenderOutputFormat(render_output_format);
@@ -191,7 +193,7 @@ public class NodeRenderController {
                 renderTaskHistory.setProjectName(project_name);
                 renderTaskHistory.setServerName(sethlansServer.getHostname());
                 renderTaskHistory.setTaskDate(System.currentTimeMillis());
-                renderTaskHistory.setQueueUUID(queue_item_uuid);
+                renderTaskHistory.setRenderTaskUUID(renderTask.getRenderTaskUUID());
                 renderTaskHistory.setCompleted(false);
                 renderTaskHistory.setFailed(false);
                 renderTaskHistoryDatabaseService.saveOrUpdate(renderTaskHistory);

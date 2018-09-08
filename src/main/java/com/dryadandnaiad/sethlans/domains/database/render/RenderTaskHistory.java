@@ -42,7 +42,7 @@ public class RenderTaskHistory extends AbstractEntityClass {
     BlenderEngine engine;
     ComputeType computeType;
     String projectName;
-    String queueUUID;
+    String renderTaskUUID;
     boolean completed;
     boolean failed;
     String frameAndPartNumbers;

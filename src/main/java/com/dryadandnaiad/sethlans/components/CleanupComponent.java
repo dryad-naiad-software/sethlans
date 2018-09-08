@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,11 +19,12 @@
 
 package com.dryadandnaiad.sethlans.components;
 
+import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
+import com.dryadandnaiad.sethlans.utils.SethlansConfigUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -40,23 +41,26 @@ import java.io.IOException;
 @Component
 @Profile({"SERVER", "NODE", "DUAL"})
 public class CleanupComponent {
-    @Value("${sethlans.tempDir}")
-    private String tempDir;
-    @Value("${sethlans.cacheDir}")
-    private String cacheDir;
 
     private static final Logger LOG = LoggerFactory.getLogger(CleanupComponent.class);
 
     @PostConstruct
     public void cleanFiles() {
+        String tempDir = SethlansConfigUtils.getProperty(SethlansConfigKeys.TEMP_DIR);
+        String cacheDir = SethlansConfigUtils.getProperty(SethlansConfigKeys.CACHE_DIR);
+        String blendFileCache = SethlansConfigUtils.getProperty(SethlansConfigKeys.BLEND_FILE_CACHE_DIR);
         File tempDirToClean = new File(tempDir);
         File cacheDirToClean = new File(cacheDir);
+        File blendFileDirToClean = new File(blendFileCache);
         try {
             if (tempDirToClean.exists()) {
                 FileUtils.cleanDirectory(tempDirToClean);
             }
             if (cacheDirToClean.exists()) {
                 FileUtils.cleanDirectory(cacheDirToClean);
+            }
+            if (blendFileDirToClean.exists()) {
+                FileUtils.cleanDirectory(blendFileDirToClean);
             }
         } catch (IOException e) {
             LOG.error(e.getMessage() + Throwables.getStackTraceAsString(e));
