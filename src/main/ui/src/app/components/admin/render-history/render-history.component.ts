@@ -21,6 +21,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {HttpClient} from '@angular/common/http';
 import {RenderTaskHistory} from '../../../models/render_task_history.model';
+import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-render-history',
@@ -33,7 +34,7 @@ export class RenderHistoryComponent implements OnInit {
   dataSource = new MatTableDataSource();
   displayedColumns = ['taskDate', 'computeType', 'completed', 'failed', 'engine', 'projectName', 'frameAndPartNumbers', 'serverName'];
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private modalService: NgbModal) {
   }
 
   ngOnInit() {
@@ -46,7 +47,12 @@ export class RenderHistoryComponent implements OnInit {
       this.dataSource = new MatTableDataSource<any>(renderHistoryList.reverse());
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
+    });
+  }
 
+  clearHistory() {
+    this.http.get('/api/management/delete_render_history_list').subscribe(() => {
+      this.loadHistory();
     });
   }
 
@@ -54,6 +60,13 @@ export class RenderHistoryComponent implements OnInit {
     filterValue = filterValue.trim(); // Remove whitespace
     filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
     this.dataSource.filter = filterValue;
+  }
+
+  confirm(content) {
+    let options: NgbModalOptions = {
+      backdrop: 'static'
+    };
+    this.modalService.open(content, options);
   }
 
 

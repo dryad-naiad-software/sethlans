@@ -21,12 +21,17 @@
   <div class="col-md-10 m-auto">
     <div class="card">
       <div class="card-header">
-        <h4>
+        <h4 class="float-left">
           <span style="font-family: 'Fjalla One', sans-serif; ">Render History</span>
-          <button class="btn btn-outline-dark float-right" (click)="loadHistory()">
+        </h4>
+        <div class="btn-toolbar float-right">
+          <button class="mr-2 btn btn-outline-dark" (click)="loadHistory()">
             <span class="fas fa-sync"></span>&nbsp;<span>Refresh</span>
           </button>
-        </h4>
+          <button class="btn btn-outline-dark" (click)="confirm(deleteConfirmation)">
+            <span class="far fa-trash-alt"></span>&nbsp;<span>Clear</span>
+          </button>
+        </div>
       </div>
       <div class="card-body">
         <mat-form-field>
@@ -99,4 +104,21 @@
     </div>
   </div>
 </div>
+<!--Delete Project Confirmation-->
+<ng-template #deleteConfirmation let-c="close('Close click')" let-d="dismiss('Cross click')">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Delete Project</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete all of your render history for this node?</p>
+    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c">No
+    </button>
+    <button type="button" class="btn btn-outline-danger ml-auto float-right"
+            (click)="c; clearHistory()">Yes
+    </button>
+  </div>
 
+</ng-template>
