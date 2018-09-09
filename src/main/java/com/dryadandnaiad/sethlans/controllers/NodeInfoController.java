@@ -170,23 +170,26 @@ public class NodeInfoController {
 
     @GetMapping(value = {"/client_selected_gpu_models"})
     public List<String> getSelectedGPUModels() {
-        List<String> selectedGPUs = new ArrayList<>();
-        try {
-            String[] deviceList = getProperty(SethlansConfigKeys.GPU_DEVICE).split(",");
-            List<GPUDevice> availableGPUs = GPU.listDevices();
-            for (String deviceID : deviceList) {
-                for (GPUDevice gpu : availableGPUs) {
-                    if (gpu.getDeviceID().equals(deviceID)) {
-                        selectedGPUs.add(gpu.getModel());
+        if (!getCurrentComputeType().equals(ComputeType.CPU)) {
+            List<String> selectedGPUs = new ArrayList<>();
+            try {
+                String[] deviceList = getProperty(SethlansConfigKeys.GPU_DEVICE).split(",");
+                List<GPUDevice> availableGPUs = GPU.listDevices();
+                for (String deviceID : deviceList) {
+                    for (GPUDevice gpu : availableGPUs) {
+                        if (gpu.getDeviceID().equals(deviceID)) {
+                            selectedGPUs.add(gpu.getModel());
+                        }
                     }
                 }
+            } catch (NullPointerException e) {
+                LOG.debug("No Selected GPU present");
+
             }
-        } catch (NullPointerException e) {
-            LOG.debug("No Selected GPU present");
-
+            return selectedGPUs;
+        } else {
+            return null;
         }
-
-        return selectedGPUs;
     }
 
     @GetMapping(value = {"/client_used_space"})

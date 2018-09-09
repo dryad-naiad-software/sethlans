@@ -438,7 +438,6 @@ public class ProjectController {
         }
         ProjectForm newProject = new ProjectForm();
         newProject.setUploadedFile(projectFile.getOriginalFilename().toLowerCase());
-        LOG.debug(projectFile.getContentType());
 
         if (projectFile.getContentType().contains("zip") || FilenameUtils.isExtension(projectFile.getOriginalFilename().toLowerCase(), "zip")) {
             String filenameWithoutExt = FilenameUtils.removeExtension(projectFile.getOriginalFilename().toLowerCase());
