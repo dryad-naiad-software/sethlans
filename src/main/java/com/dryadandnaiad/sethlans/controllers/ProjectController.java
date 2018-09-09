@@ -418,17 +418,17 @@ public class ProjectController {
 
     @PostMapping(value = "/api/project_form/upload_project")
     public ProjectForm newProjectUpload(@RequestParam("projectFile") MultipartFile projectFile) {
-        LOG.info(projectFile.getOriginalFilename() + " uploading");
+        LOG.info(projectFile.getOriginalFilename().toLowerCase() + " uploading");
         String uploadTag = SethlansQueryUtils.getShortUUID();
-        String filename = uploadTag + "-" + projectFile.getOriginalFilename();
+        String filename = uploadTag + "-" + projectFile.getOriginalFilename().toLowerCase();
         File location = new File(temp + uploadTag + "_zip_file");
         try {
-            if (projectFile.getContentType().contains("zip")) {
+            if (projectFile.getContentType().contains("zip") || FilenameUtils.isExtension(projectFile.getOriginalFilename().toLowerCase(), "zip")) {
                 location.mkdir();
-                File storeUpload = new File(location + File.separator + uploadTag + "-" + projectFile.getOriginalFilename());
+                File storeUpload = new File(location + File.separator + uploadTag + "-" + projectFile.getOriginalFilename().toLowerCase());
                 projectFile.transferTo(storeUpload);
             } else {
-                File storeUpload = new File(temp + uploadTag + "-" + projectFile.getOriginalFilename());
+                File storeUpload = new File(temp + uploadTag + "-" + projectFile.getOriginalFilename().toLowerCase());
                 projectFile.transferTo(storeUpload);
             }
 
@@ -437,11 +437,12 @@ public class ProjectController {
             LOG.debug(Throwables.getStackTraceAsString(e));
         }
         ProjectForm newProject = new ProjectForm();
-        newProject.setUploadedFile(projectFile.getOriginalFilename());
+        newProject.setUploadedFile(projectFile.getOriginalFilename().toLowerCase());
+        LOG.debug(projectFile.getContentType());
 
-        if (projectFile.getContentType().contains("zip")) {
-            String filenameWithoutExt = FilenameUtils.removeExtension(projectFile.getOriginalFilename());
-            newProject.setFileLocation(location + File.separator + uploadTag + "-" + projectFile.getOriginalFilename());
+        if (projectFile.getContentType().contains("zip") || FilenameUtils.isExtension(projectFile.getOriginalFilename().toLowerCase(), "zip")) {
+            String filenameWithoutExt = FilenameUtils.removeExtension(projectFile.getOriginalFilename().toLowerCase());
+            newProject.setFileLocation(location + File.separator + uploadTag + "-" + projectFile.getOriginalFilename().toLowerCase());
             SethlansFileUtils.archiveExtract(filename, location, false);
             File[] files = location.listFiles();
             for (File file : files != null ? files : new File[0]) {
@@ -451,7 +452,7 @@ public class ProjectController {
             }
 
         } else {
-            newProject.setFileLocation(temp + uploadTag + "-" + projectFile.getOriginalFilename());
+            newProject.setFileLocation(temp + uploadTag + "-" + projectFile.getOriginalFilename().toLowerCase());
             newProject.populateForm(blenderParseBlenderFileService.parseBlendFile(newProject.getFileLocation()));
         }
         LOG.debug(newProject.toString());

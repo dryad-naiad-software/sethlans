@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.components;
 
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
+import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.utils.SethlansConfigUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
@@ -46,24 +47,37 @@ public class CleanupComponent {
 
     @PostConstruct
     public void cleanFiles() {
-        String tempDir = SethlansConfigUtils.getProperty(SethlansConfigKeys.TEMP_DIR);
-        String cacheDir = SethlansConfigUtils.getProperty(SethlansConfigKeys.CACHE_DIR);
-        String blendFileCache = SethlansConfigUtils.getProperty(SethlansConfigKeys.BLEND_FILE_CACHE_DIR);
-        File tempDirToClean = new File(tempDir);
-        File cacheDirToClean = new File(cacheDir);
-        File blendFileDirToClean = new File(blendFileCache);
-        try {
-            if (tempDirToClean.exists()) {
-                FileUtils.cleanDirectory(tempDirToClean);
+        SethlansMode sethlansMode = SethlansMode.valueOf(SethlansConfigUtils.getProperty(SethlansConfigKeys.MODE));
+        if (!sethlansMode.equals(SethlansMode.NODE)) {
+            String tempDir = SethlansConfigUtils.getProperty(SethlansConfigKeys.TEMP_DIR);
+            File tempDirToClean = new File(tempDir);
+            try {
+                if (tempDirToClean.exists()) {
+                    FileUtils.cleanDirectory(tempDirToClean);
+                }
+            } catch (IOException e) {
+                LOG.error(e.getMessage() + Throwables.getStackTraceAsString(e));
             }
-            if (cacheDirToClean.exists()) {
-                FileUtils.cleanDirectory(cacheDirToClean);
-            }
-            if (blendFileDirToClean.exists()) {
-                FileUtils.cleanDirectory(blendFileDirToClean);
-            }
-        } catch (IOException e) {
-            LOG.error(e.getMessage() + Throwables.getStackTraceAsString(e));
         }
+
+        if (!sethlansMode.equals(SethlansMode.SERVER)) {
+            String cacheDir = SethlansConfigUtils.getProperty(SethlansConfigKeys.CACHE_DIR);
+            String blendFileCache = SethlansConfigUtils.getProperty(SethlansConfigKeys.BLEND_FILE_CACHE_DIR);
+
+            File cacheDirToClean = new File(cacheDir);
+            File blendFileDirToClean = new File(blendFileCache);
+            try {
+                if (cacheDirToClean.exists()) {
+                    FileUtils.cleanDirectory(cacheDirToClean);
+                }
+                if (blendFileDirToClean.exists()) {
+                    FileUtils.cleanDirectory(blendFileDirToClean);
+                }
+            } catch (IOException e) {
+                LOG.error(e.getMessage() + Throwables.getStackTraceAsString(e));
+            }
+        }
+
+
     }
 }

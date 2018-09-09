@@ -27,7 +27,6 @@ export class User {
   email: string;
   roles: Role[];
   active: boolean;
-  passwordUpdated: boolean;
   securityQuestionsSet: boolean;
   challengeList: UserChallenge[];
 

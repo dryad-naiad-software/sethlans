@@ -134,6 +134,11 @@ public class InfoController {
         return Collections.singletonMap("ip", SethlansQueryUtils.getIP());
     }
 
+    @GetMapping(value = {"/sethlans_hostname"})
+    public Map getSethlansHostname() {
+        return Collections.singletonMap("hostname", SethlansQueryUtils.getHostname());
+    }
+
     @GetMapping(value = {"/app_url"})
     public Map getAppURL() {
         return Collections.singletonMap("app_url", "https://" + SethlansQueryUtils.getHostname().toLowerCase() + ":" + SethlansQueryUtils.getPort());
