@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.writeProperty;
 import static io.restassured.RestAssured.given;
 
 /**
@@ -210,6 +211,11 @@ public class AdminServerController {
         String params = "access_key=" + getProperty(SethlansConfigKeys.ACCESS_KEY);
         return sethlansAPIConnectionService.queryNode(connection, params);
 
+    }
+
+    @GetMapping(value = {"/change_get_started_wizard"})
+    public void changeGetStartedOnStart(@RequestParam boolean value) {
+        writeProperty(SethlansConfigKeys.GETTING_STARTED, Boolean.toString(value));
     }
 
 
