@@ -58,7 +58,7 @@ public class SetupController {
             LOG.debug(setupForm.toString());
             if (setupForm.getUser().getPassword().isEmpty()
                     || setupForm.getUser().getUsername().isEmpty()
-                    || setupForm.getUser().getChallengeList().size() == 0) {
+                    || setupForm.getUser().getChallengeList().size() == 0 || setupForm.getUser().getChallengeList().size() < 3) {
                 return false;
             }
             if (setupForm.getMode() != SethlansMode.NODE && setupForm.getUser().getEmail().isEmpty()) {
@@ -94,7 +94,7 @@ public class SetupController {
             }
             if (user.getPassword().isEmpty()
                     || user.getUsername().isEmpty()
-                    || user.getChallengeList().size() == 0) {
+                    || user.getChallengeList().size() == 0 || user.getChallengeList().size() < 3) {
                 LOG.info("Password, username and challenge list are all required fields for this form.");
                 return false;
             }

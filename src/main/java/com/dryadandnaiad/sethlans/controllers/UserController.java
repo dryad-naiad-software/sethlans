@@ -167,6 +167,9 @@ public class UserController {
         }
         String username = auth.getName();
         List<SethlansUserChallenge> challengeList = new ArrayList<>(Arrays.asList(userChallenges));
+        if (challengeList.size() < 3) {
+            return false;
+        }
         for (SethlansUserChallenge sethlansUserChallenge : challengeList) {
             if (sethlansUserChallenge.getChallenge().isEmpty() || sethlansUserChallenge.getResponse().isEmpty()) {
                 return false;
