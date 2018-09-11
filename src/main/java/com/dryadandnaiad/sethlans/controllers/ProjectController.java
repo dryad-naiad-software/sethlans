@@ -238,6 +238,16 @@ public class ProjectController {
 
     }
 
+    @GetMapping(value = "/api/project_ui/project_name/{id}")
+    public String getProjectName(@PathVariable Long id) {
+        BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
+        if (blenderProject != null) {
+            return blenderProject.getProjectName();
+        } else {
+            return null;
+        }
+    }
+
 
     @GetMapping(value = "/api/project_ui/project_list_in_progress")
     public List<ProjectInfo> getUnFinishedProjects() {
