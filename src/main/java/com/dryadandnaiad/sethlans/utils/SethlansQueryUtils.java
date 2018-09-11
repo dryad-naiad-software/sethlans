@@ -18,8 +18,11 @@
  */
 
 package com.dryadandnaiad.sethlans.utils;
+
+import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
+import com.dryadandnaiad.sethlans.domains.info.ProjectInfo;
 import com.dryadandnaiad.sethlans.domains.info.SethlansSettings;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
@@ -38,10 +41,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created Mario Estrella on 3/9/17.
@@ -245,6 +245,13 @@ public class SethlansQueryUtils {
         return version;
     }
 
+    public static String getTimeFromMills(Long time) {
+        long second = (time / 1000) % 60;
+        long minute = (time / (1000 * 60)) % 60;
+        long hour = (time / (1000 * 60 * 60));
+
+        return String.format("%02d:%02d:%02d", hour, minute, second);
+    }
     public static List<String> getChallengeQuestionList() {
         List<String> questionList = new ArrayList<>();
         questionList.add("What is the color you hate the most?");
@@ -254,6 +261,61 @@ public class SethlansQueryUtils {
         questionList.add("In what city or town does your nearest sibling live?");
         questionList.add("What was your childhood nickname?");
         return questionList;
+    }
+
+    public static String checkFrameRate(String frameRate) {
+        List<String> supportedFrameRates = Arrays.asList("23.98", "24", "25", "29.97", "30", "50", "59.94", "60");
+        for (String supportedFrameRate : supportedFrameRates) {
+            if (supportedFrameRate.equals(frameRate)) {
+                return frameRate;
+            }
+        }
+        return "30";
+    }
+
+    public static List<ProjectInfo> convertBlenderProjectsToProjectInfo(List<BlenderProject> projectsToConvert) {
+        List<ProjectInfo> projectsToReturn = new ArrayList<>();
+        for (BlenderProject blenderProject : projectsToConvert) {
+            projectsToReturn.add(convertBlenderProjectToProjectInfo(blenderProject));
+        }
+        return projectsToReturn;
+    }
+
+    public static ProjectInfo convertBlenderProjectToProjectInfo(BlenderProject blenderProject) {
+        ProjectInfo projectInfo = new ProjectInfo();
+        projectInfo.setId(blenderProject.getId());
+        projectInfo.setReEncode(blenderProject.isReEncode());
+        projectInfo.setStartFrame(blenderProject.getStartFrame());
+        projectInfo.setEndFrame(blenderProject.getEndFrame());
+        projectInfo.setStepFrame(blenderProject.getStepFrame());
+        projectInfo.setSamples(blenderProject.getSamples());
+        projectInfo.setProjectStatus(blenderProject.getProjectStatus());
+        projectInfo.setProjectType(blenderProject.getProjectType());
+        projectInfo.setProjectName(blenderProject.getProjectName());
+        projectInfo.setSelectedBlenderversion(blenderProject.getBlenderVersion());
+        projectInfo.setRenderOn(blenderProject.getRenderOn());
+        projectInfo.setTotalRenderTime(getTimeFromMills(blenderProject.getTotalRenderTime()));
+        projectInfo.setProjectTime(getTimeFromMills(blenderProject.getTotalProjectTime()));
+        projectInfo.setOutputFormat(blenderProject.getRenderOutputFormat());
+        projectInfo.setUsername(blenderProject.getSethlansUser().getUsername());
+        projectInfo.setFrameRate(blenderProject.getFrameRate());
+        projectInfo.setResolutionX(blenderProject.getResolutionX());
+        projectInfo.setResolutionY(blenderProject.getResolutionY());
+        projectInfo.setBlenderEngine(blenderProject.getBlenderEngine());
+        projectInfo.setResPercentage(blenderProject.getResPercentage());
+        projectInfo.setPartsPerFrame(blenderProject.getPartsPerFrame());
+        projectInfo.setCurrentPercentage(blenderProject.getCurrentPercentage());
+        if (projectInfo.getPartsPerFrame() > 1) {
+            projectInfo.setUseParts(true);
+        } else {
+            projectInfo.setUseParts(false);
+        }
+        projectInfo.setThumbnailPresent(blenderProject.getCurrentFrameThumbnail() != null);
+        if (projectInfo.isThumbnailPresent()) {
+            projectInfo.setThumbnailURL("/api/project_ui/thumbnail/" + blenderProject.getId() + "/");
+
+        }
+        return projectInfo;
     }
 
     public static boolean isCuda(String deviceID) {
