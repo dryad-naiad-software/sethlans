@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -41,6 +41,7 @@ public class ProjectForm {
     private int resolutionX;
     private int resolutionY;
     private int resPercentage;
+    private boolean useParts;
     private ProjectType projectType;
     private ProjectStatus projectStatus;
     private BlenderEngine blenderEngine;

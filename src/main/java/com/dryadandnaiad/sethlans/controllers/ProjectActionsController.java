@@ -256,6 +256,12 @@ public class ProjectActionsController {
                 projectForm.setRenderOn(ComputeType.CPU);
                 projectForm.setSamples(0);
             }
+            if (projectForm.isUseParts() && projectForm.getPartsPerFrame() > 8) {
+                projectForm.setPartsPerFrame(8);
+            }
+            if (!projectForm.isUseParts()) {
+                projectForm.setPartsPerFrame(1);
+            }
             projectForm.setFrameRate(checkFrameRate(projectForm.getFrameRate()));
             projectForm.setUsername(auth.getName());
             projectForm.setProjectStatus(ProjectStatus.Added);
