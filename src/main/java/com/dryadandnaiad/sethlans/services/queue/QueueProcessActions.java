@@ -172,8 +172,9 @@ class QueueProcessActions {
                                    ProcessFrameDatabaseService processFrameDatabaseService) {
         if (blenderProjectDatabaseService.pendingProjectsSize() <= 0 || blenderProjectDatabaseService.remainingQueueProjectsSize() <= 0) {
             for (BlenderProject blenderProject : blenderProjectDatabaseService.listAll()) {
-
                 if (blenderProject.getProjectStatus().equals(ProjectStatus.Rendering) || blenderProject.getProjectStatus().equals(ProjectStatus.Started)) {
+                    LOG.debug("Checking to see if " + blenderProject.getProjectName() + " has completed rendering.");
+
                     if (frameFileUpdateDatabaseService.listByProjectUUID(blenderProject.getProjectUUID()).size() == 0
                             && processFrameDatabaseService.listByProjectUUID(blenderProject.getProjectUUID()).size() == 0) {
                         if (blenderProject.getRemainingQueueSize() == 0) {
