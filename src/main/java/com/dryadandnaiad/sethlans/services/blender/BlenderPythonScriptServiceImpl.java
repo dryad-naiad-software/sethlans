@@ -174,6 +174,10 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.write("bpy.context.scene.render.use_border = True\n");
             scriptWriter.write("bpy.context.scene.render.use_crop_to_border = True\n");
             scriptWriter.write("bpy.context.scene.render.image_settings.file_format = 'PNG'" + "\n");
+            scriptWriter.write("bpy.context.scene.render.image_settings.color_mode = 'RGBA'" + "\n");
+            scriptWriter.write("bpy.context.scene.render.image_settings.color_depth = '16'" + "\n");
+
+
 
 
             scriptWriter.flush();

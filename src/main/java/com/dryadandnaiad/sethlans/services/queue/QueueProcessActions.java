@@ -175,7 +175,6 @@ class QueueProcessActions {
                 if (blenderProject.getProjectStatus().equals(ProjectStatus.Rendering) || blenderProject.getProjectStatus().equals(ProjectStatus.Started)) {
                     if (frameFileUpdateDatabaseService.listByProjectUUID(blenderProject.getProjectUUID()).size() == 0
                             && processFrameDatabaseService.listByProjectUUID(blenderProject.getProjectUUID()).size() == 0) {
-                        LOG.debug("Checking to see if " + blenderProject.getProjectName() + " has completed rendering.");
 
                         if (blenderProject.getRemainingQueueSize() == 0) {
                             if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
