@@ -259,6 +259,9 @@ public class ProjectActionsController {
             if (projectForm.isUseParts()) {
                 if (projectForm.getPartsPerFrame() > 144) {
                     projectForm.setPartsPerFrame(144);
+                }
+                if (projectForm.getPartsPerFrame() < 4) {
+                    projectForm.setPartsPerFrame(4);
                 } else {
                     projectForm.setPartsPerFrame(partsToTheNearestSquare(projectForm.getPartsPerFrame()));
                 }
@@ -308,9 +311,15 @@ public class ProjectActionsController {
             if (projectForm.isUseParts()) {
                 if (projectForm.getPartsPerFrame() > 144) {
                     projectForm.setPartsPerFrame(144);
+                }
+                if (projectForm.getPartsPerFrame() < 4) {
+                    projectForm.setPartsPerFrame(4);
                 } else {
                     projectForm.setPartsPerFrame(partsToTheNearestSquare(projectForm.getPartsPerFrame()));
                 }
+            }
+            if (!projectForm.isUseParts()) {
+                projectForm.setPartsPerFrame(1);
             }
             blenderProject.setFrameRate(projectForm.getFrameRate());
             blenderProjectDatabaseService.saveOrUpdate(blenderProject);
