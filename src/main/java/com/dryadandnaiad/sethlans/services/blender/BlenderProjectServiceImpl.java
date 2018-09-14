@@ -41,7 +41,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 /**
  * Created Mario Estrella on 12/9/17.
@@ -219,7 +218,6 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
                 blenderFramePart.setFrameNumber(frames + 1);
                 blenderFramePart.setPartNumber(parts + 1);
                 blenderFramePart.setPartFilename(blenderFramePart.getFrameFileName() + "-part" + (parts + 1));
-                LOG.debug(parts + "");
                 blenderFramePart.setPartPositionMaxX(partCoordinatesList.get(parts).getMax_x());
                 blenderFramePart.setPartPositionMinX(partCoordinatesList.get(parts).getMin_x());
                 blenderFramePart.setPartPositionMaxY(partCoordinatesList.get(parts).getMax_y());
@@ -242,19 +240,19 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     private List<PartCoordinates> configurePartCoordinates(int partsPerFrame) {
         double sqrtOfPart = Math.sqrt(partsPerFrame);
         int endRange = (int) sqrtOfPart;
-        if (partsPerFrame == 4) {
-            endRange = 3;
-        }
         List<PartCoordinates> partCoordinatesList = new ArrayList<>();
-        int finalEndRange = endRange;
-        IntStream.range(1, finalEndRange).forEach(row -> IntStream.range(1, finalEndRange).forEach(column -> {
-            PartCoordinates partCoordinates = new PartCoordinates();
-            partCoordinates.setMin_x((column - 1) / sqrtOfPart);
-            partCoordinates.setMax_x(column / sqrtOfPart);
-            partCoordinates.setMin_y((sqrtOfPart - row) / sqrtOfPart);
-            partCoordinates.setMax_y((sqrtOfPart - row + 1) / sqrtOfPart);
-            partCoordinatesList.add(partCoordinates);
-        }));
+        for (int r = 0; r < endRange; r++) {
+            int row = r + 1;
+            for (int c = 0; c < endRange; c++) {
+                int col = c + 1;
+                PartCoordinates partCoordinates = new PartCoordinates();
+                partCoordinates.setMin_x((col - 1) / sqrtOfPart);
+                partCoordinates.setMax_x(col / sqrtOfPart);
+                partCoordinates.setMin_y((sqrtOfPart - row) / sqrtOfPart);
+                partCoordinates.setMax_y((sqrtOfPart - row + 1) / sqrtOfPart);
+                partCoordinatesList.add(partCoordinates);
+            }
+        }
         LOG.debug("Part Coordinate List generated " + partCoordinatesList);
         LOG.debug("Number of elements " + partCoordinatesList.size());
 
