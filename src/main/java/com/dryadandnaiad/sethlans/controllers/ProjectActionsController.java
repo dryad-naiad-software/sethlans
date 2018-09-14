@@ -256,19 +256,7 @@ public class ProjectActionsController {
                 projectForm.setRenderOn(ComputeType.CPU);
                 projectForm.setSamples(0);
             }
-            if (projectForm.isUseParts()) {
-                if (projectForm.getPartsPerFrame() > 144) {
-                    projectForm.setPartsPerFrame(144);
-                }
-                if (projectForm.getPartsPerFrame() < 4) {
-                    projectForm.setPartsPerFrame(4);
-                } else {
-                    projectForm.setPartsPerFrame(partsToTheNearestSquare(projectForm.getPartsPerFrame()));
-                }
-            }
-            if (!projectForm.isUseParts()) {
-                projectForm.setPartsPerFrame(1);
-            }
+            partConfiguration(projectForm);
             projectForm.setFrameRate(checkFrameRate(projectForm.getFrameRate()));
             projectForm.setUsername(auth.getName());
             projectForm.setProjectStatus(ProjectStatus.Added);
@@ -308,24 +296,28 @@ public class ProjectActionsController {
             blenderProject.setResolutionX(projectForm.getResolutionX());
             blenderProject.setResolutionY(projectForm.getResolutionY());
             blenderProject.setResPercentage(projectForm.getResPercentage());
-            if (projectForm.isUseParts()) {
-                if (projectForm.getPartsPerFrame() > 144) {
-                    projectForm.setPartsPerFrame(144);
-                }
-                if (projectForm.getPartsPerFrame() < 4) {
-                    projectForm.setPartsPerFrame(4);
-                } else {
-                    projectForm.setPartsPerFrame(partsToTheNearestSquare(projectForm.getPartsPerFrame()));
-                }
-            }
-            if (!projectForm.isUseParts()) {
-                projectForm.setPartsPerFrame(1);
-            }
+            partConfiguration(projectForm);
             blenderProject.setFrameRate(projectForm.getFrameRate());
             blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             return true;
         }
         return false;
+    }
+
+    private void partConfiguration(ProjectForm projectForm) {
+        if (projectForm.isUseParts()) {
+            if (projectForm.getPartsPerFrame() > 144) {
+                projectForm.setPartsPerFrame(144);
+            }
+            if (projectForm.getPartsPerFrame() < 4) {
+                projectForm.setPartsPerFrame(4);
+            } else {
+                projectForm.setPartsPerFrame(partsToTheNearestSquare(projectForm.getPartsPerFrame()));
+            }
+        }
+        if (!projectForm.isUseParts()) {
+            projectForm.setPartsPerFrame(1);
+        }
     }
 
     @PostMapping(value = "/api/project_form/video_settings/{id}")
