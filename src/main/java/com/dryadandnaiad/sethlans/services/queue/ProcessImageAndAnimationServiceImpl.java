@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Created Mario Estrella on 4/21/2018.
@@ -97,20 +98,28 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
             }
         }
         try {
+            int squareRootOfParts = (int) Math.sqrt(blenderProject.getPartsPerFrame());
+            int count = squareRootOfParts;
+            if (blenderProject.getPartsPerFrame() == 4) {
+                count = 3;
+            }
 
             BufferedImage concatImage = new BufferedImage(
-                    images.get(0).getWidth(), images.get(0).getHeight() * blenderProject.getPartsPerFrame(),
+                    images.get(0).getWidth() * squareRootOfParts, images.get(0).getHeight() * squareRootOfParts,
                     BufferedImage.TYPE_INT_ARGB);
             Graphics g = concatImage.getGraphics();
-            int count = 0;
-            for (BufferedImage image : images) {
-                if (count == 0) {
-                    g.drawImage(image, 0, 0, null);
-                } else {
-                    g.drawImage(image, 0, image.getHeight() * count, null);
+            int finalCount = count;
+            IntStream.range(1, finalCount).forEach(row -> IntStream.range(1, finalCount).forEach(column -> {
+                LOG.debug("Row: " + row + " Column: " + column);
+                for (int i = 0; i < images.size(); i++) {
+                    if (row == 1 && column == 1) {
+                        g.drawImage(images.get(i), 0, 0, null);
+                    } else {
+                        g.drawImage(images.get(i), images.get(i).getWidth() * column, images.get(i).getHeight() * row, null);
+                    }
                 }
-                count++;
-            }
+            }));
+
             ImageIO.write(concatImage, fileExtension.toUpperCase(), new File(frameFilename));
             FrameFileUpdateItem newFrameUpdate = new FrameFileUpdateItem();
             newFrameUpdate.setProjectUUID(blenderProject.getProjectUUID());
@@ -128,7 +137,7 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
 
         if (errorCount == 0) {
             LOG.debug("Images combined successfully, deleting parts...");
-            deleteParts(partCleanup);
+            //deleteParts(partCleanup);
         } else {
             LOG.debug("Some images are not complete, will reattempt to combine them.");
         }

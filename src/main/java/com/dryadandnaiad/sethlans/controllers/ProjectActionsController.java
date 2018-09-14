@@ -256,8 +256,12 @@ public class ProjectActionsController {
                 projectForm.setRenderOn(ComputeType.CPU);
                 projectForm.setSamples(0);
             }
-            if (projectForm.isUseParts() && projectForm.getPartsPerFrame() > 8) {
-                projectForm.setPartsPerFrame(8);
+            if (projectForm.isUseParts()) {
+                if (projectForm.getPartsPerFrame() > 144) {
+                    projectForm.setPartsPerFrame(144);
+                } else {
+                    projectForm.setPartsPerFrame(partsToTheNearestSquare(projectForm.getPartsPerFrame()));
+                }
             }
             if (!projectForm.isUseParts()) {
                 projectForm.setPartsPerFrame(1);
@@ -268,6 +272,12 @@ public class ProjectActionsController {
             return blenderProjectDatabaseService.saveOrUpdateProjectForm(projectForm).getId();
         }
         return 0;
+    }
+
+    private int partsToTheNearestSquare(int parts) {
+        double root = Math.sqrt(parts);
+        int nearestPerfectSquareRoot = (int) Math.round(root);
+        return nearestPerfectSquareRoot * nearestPerfectSquareRoot;
     }
 
 
@@ -295,7 +305,13 @@ public class ProjectActionsController {
             blenderProject.setResolutionX(projectForm.getResolutionX());
             blenderProject.setResolutionY(projectForm.getResolutionY());
             blenderProject.setResPercentage(projectForm.getResPercentage());
-            blenderProject.setPartsPerFrame(projectForm.getPartsPerFrame());
+            if (projectForm.isUseParts()) {
+                if (projectForm.getPartsPerFrame() > 144) {
+                    projectForm.setPartsPerFrame(144);
+                } else {
+                    projectForm.setPartsPerFrame(partsToTheNearestSquare(projectForm.getPartsPerFrame()));
+                }
+            }
             blenderProject.setFrameRate(projectForm.getFrameRate());
             blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             return true;

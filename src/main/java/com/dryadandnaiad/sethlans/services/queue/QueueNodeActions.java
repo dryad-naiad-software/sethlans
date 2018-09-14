@@ -249,6 +249,8 @@ class QueueNodeActions {
                     "&part_number=" + renderQueueItem.getBlenderFramePart().getPartNumber() +
                     "&part_resolution_x=" + blenderProject.getResolutionX() +
                     "&part_resolution_y=" + blenderProject.getResolutionY() +
+                    "&part_position_min_x=" + renderQueueItem.getBlenderFramePart().getPartPositionMinX() +
+                    "&part_position_max_x=" + renderQueueItem.getBlenderFramePart().getPartPositionMaxX() +
                     "&part_position_min_y=" + renderQueueItem.getBlenderFramePart().getPartPositionMinY() +
                     "&part_position_max_y=" + renderQueueItem.getBlenderFramePart().getPartPositionMaxY() +
                     "&part_res_percentage=" + blenderProject.getResPercentage() +

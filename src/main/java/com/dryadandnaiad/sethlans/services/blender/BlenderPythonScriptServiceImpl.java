@@ -115,6 +115,10 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.write("\n");
             scriptWriter.write("bpy.context.scene.render.tile_x = " + tileSize + "\n");
             scriptWriter.write("bpy.context.scene.render.tile_y = " + tileSize + "\n");
+            // Final Settings
+            scriptWriter.write("\n");
+            scriptWriter.write("bpy.context.scene.render.use_border = True\n");
+            scriptWriter.write("bpy.context.scene.render.use_crop_to_border = True\n");
             scriptWriter.flush();
             scriptWriter.close();
 
@@ -127,7 +131,7 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
 
     @Override
     public String writeBlenderRenderPythonScript(String renderLocation, RenderOutputFormat renderOutputFormat,
-                                                 String tileSize, int resolutionX, int resolutionY, int resPercentage, double partMaxY, double partMinY) {
+                                                 String tileSize, int resolutionX, int resolutionY, int resPercentage, double partMaxX, double partMinX, double partMaxY, double partMinY) {
         try {
             File script = new File(renderLocation + File.separator + "script-blenderRender.py");
 
@@ -156,8 +160,8 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.write("\n");
             scriptWriter.write("\tscene.render.use_border = True" + "\n");
             scriptWriter.write("\tscene.render.use_crop_to_border = True" + "\n");
-            scriptWriter.write("\tscene.render.border_min_x = 0" + "\n");
-            scriptWriter.write("\tscene.render.border_max_x = 1.0" + "\n");
+            scriptWriter.write("\tscene.render.border_min_x = " + partMinX + "\n");
+            scriptWriter.write("\tscene.render.border_max_x = " + partMaxX + "\n");
             scriptWriter.write("\tscene.render.border_max_y = " + partMaxY + "\n");
             scriptWriter.write("\tscene.render.border_min_y = " + partMinY + "\n");
 
@@ -165,6 +169,10 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.write("\n");
             scriptWriter.write("bpy.context.scene.render.tile_x = " + tileSize + "\n");
             scriptWriter.write("bpy.context.scene.render.tile_y = " + tileSize + "\n");
+            // Final Settings
+            scriptWriter.write("\n");
+            scriptWriter.write("bpy.context.scene.render.use_border = True\n");
+            scriptWriter.write("bpy.context.scene.render.use_crop_to_border = True\n");
             scriptWriter.write("bpy.context.scene.render.image_settings.file_format = 'PNG'" + "\n");
 
 
@@ -183,7 +191,7 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
     public String writeCyclesRenderPythonScript(ComputeType computeType, String renderLocation, List<String> selectedDeviceIds, List<String> unselectedIds,
                                                 boolean cuda,
                                                 RenderOutputFormat renderOutputFormat,
-                                                String tileSize, int resolutionX, int resolutionY, int resPercentage, int samples,
+                                                String tileSize, int resolutionX, int resolutionY, int resPercentage, int samples, double partMaxX, double partMinX,
                                                 double partMaxY, double partMinY) {
         try {
             File script;
@@ -294,8 +302,8 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.write("\n");
             scriptWriter.write("\tscene.render.use_border = True" + "\n");
             scriptWriter.write("\tscene.render.use_crop_to_border = True" + "\n");
-            scriptWriter.write("\tscene.render.border_min_x = 0" + "\n");
-            scriptWriter.write("\tscene.render.border_max_x = 1.0" + "\n");
+            scriptWriter.write("\tscene.render.border_min_x = " + partMinX + "\n");
+            scriptWriter.write("\tscene.render.border_max_x = " + partMaxX + "\n");
             scriptWriter.write("\tscene.render.border_max_y = " + partMaxY + "\n");
             scriptWriter.write("\tscene.render.border_min_y = " + partMinY + "\n");
 
@@ -303,6 +311,8 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.write("\n");
             scriptWriter.write("bpy.context.scene.render.tile_x = " + tileSize + "\n");
             scriptWriter.write("bpy.context.scene.render.tile_y = " + tileSize + "\n");
+            scriptWriter.write("bpy.context.scene.render.use_border = True\n");
+            scriptWriter.write("bpy.context.scene.render.use_crop_to_border = True\n");
             scriptWriter.write("bpy.context.scene.render.image_settings.file_format = 'PNG'" + "\n");
 
 

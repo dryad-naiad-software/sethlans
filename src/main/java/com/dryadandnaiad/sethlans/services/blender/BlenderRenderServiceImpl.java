@@ -129,7 +129,9 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             switch (renderTask.getBlenderEngine()) {
                 case BLENDER_RENDER:
                     script = blenderPythonScriptService.writeBlenderRenderPythonScript(renderTask.getRenderDir(), renderTask.getRenderOutputFormat(), tileSizeCPU,
-                            renderTask.getTaskResolutionX(), renderTask.getTaskResolutionY(), renderTask.getPartResPercentage(), renderTask.getBlenderFramePart().getPartPositionMaxY(),
+                            renderTask.getTaskResolutionX(), renderTask.getTaskResolutionY(), renderTask.getPartResPercentage(),
+                            renderTask.getBlenderFramePart().getPartPositionMaxX(), renderTask.getBlenderFramePart().getPartPositionMinX(),
+                            renderTask.getBlenderFramePart().getPartPositionMaxY(),
                             renderTask.getBlenderFramePart().getPartPositionMinY());
                     saveOnSuccess(renderTask, script);
                     break;
@@ -149,6 +151,8 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                                 renderTask.getTaskResolutionY(),
                                 renderTask.getPartResPercentage(),
                                 renderTask.getSamples(),
+                                renderTask.getBlenderFramePart().getPartPositionMaxX(),
+                                renderTask.getBlenderFramePart().getPartPositionMinX(),
                                 renderTask.getBlenderFramePart().getPartPositionMaxY(),
                                 renderTask.getBlenderFramePart().getPartPositionMinY());
                         saveOnSuccess(renderTask, script);
@@ -179,6 +183,8 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                     renderTask.getTaskResolutionY(),
                     renderTask.getPartResPercentage(),
                     renderTask.getSamples(),
+                    renderTask.getBlenderFramePart().getPartPositionMaxX(),
+                    renderTask.getBlenderFramePart().getPartPositionMinX(),
                     renderTask.getBlenderFramePart().getPartPositionMaxY(),
                     renderTask.getBlenderFramePart().getPartPositionMinY());
         } else {
@@ -194,6 +200,8 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
                     renderTask.getTaskResolutionY(),
                     renderTask.getPartResPercentage(),
                     renderTask.getSamples(),
+                    renderTask.getBlenderFramePart().getPartPositionMaxX(),
+                    renderTask.getBlenderFramePart().getPartPositionMinX(),
                     renderTask.getBlenderFramePart().getPartPositionMaxY(),
                     renderTask.getBlenderFramePart().getPartPositionMinY());
         }

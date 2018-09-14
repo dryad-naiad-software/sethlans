@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -37,9 +37,9 @@ public interface BlenderPythonScriptService {
                                       int resolution_y, int res_percentage);
 
     String writeBlenderRenderPythonScript(String renderLocation, RenderOutputFormat renderOutputFormat,
-                                          String tileSize, int resolutionX, int resolutionY, int resPercentage, double partMaxY, double partMinY);
+                                          String tileSize, int resolutionX, int resolutionY, int resPercentage, double partMaxX, double partMinX, double partMaxY, double partMinY);
 
     String writeCyclesRenderPythonScript(ComputeType computeType, String renderLocation, List<String> selectedDeviceIds, List<String> unselectedIds, boolean cuda, RenderOutputFormat renderOutputFormat,
-                                         String tileSize, int resolutionX, int resolutionY, int resPercentage, int samples,
+                                         String tileSize, int resolutionX, int resolutionY, int resPercentage, int samples, double partMaxX, double partMinX,
                                          double partMaxY, double partMinY);
 }

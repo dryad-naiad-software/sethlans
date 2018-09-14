@@ -32,6 +32,7 @@ export class ProjectRenderSettingsComponent implements OnInit {
   @Input() projectWizard: ProjectWizardForm;
   computeMethods: any = ComputeMethod;
   engines: any = BlenderEngine;
+  validPartsPerFrame: number[] = [4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144];
 
   constructor() {
   }

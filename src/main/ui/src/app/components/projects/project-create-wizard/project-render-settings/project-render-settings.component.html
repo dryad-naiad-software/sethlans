@@ -85,19 +85,25 @@
         </div>
 
         <div class="form-group">
-          <label for="partsPerFrame">Number of Rendering Parts Per Frame:&nbsp;</label> <span
-          *ngIf="projectWizard.project.useParts">{{projectWizard.project.partsPerFrame}}</span>
-          <span *ngIf="!projectWizard.project.useParts" class="text-danger">&nbsp;Disabled</span>
-          <div class="form-inline">
-            <mat-slider [disabled]="!projectWizard.project.useParts"
-                        id="partsPerFrame"
-                        name="partsPerFrame"
-                        min="2"
-                        step="2"
-                        thumb-label="true"
-                        max="8"
-                        [(ngModel)]="projectWizard.project.partsPerFrame"></mat-slider>
-          </div>
+          <label for="partsPerFrame">Number of Rendering Parts Per Frame:&nbsp;</label>
+          <select [disabled]="!projectWizard.project.useParts" class="form-control form-control-sm" id="partsPerFrame"
+                  name="partPerFrame"
+                  [(ngModel)]="projectWizard.project.partsPerFrame">
+            <option *ngFor="let numberOfParts of validPartsPerFrame">{{numberOfParts}}</option>
+          </select>
+          <!--<span-->
+          <!--*ngIf="projectWizard.project.useParts">{{projectWizard.project.partsPerFrame}}</span>-->
+          <!--<span *ngIf="!projectWizard.project.useParts" class="text-danger">&nbsp;Disabled</span>-->
+          <!--<div class="form-inline">-->
+          <!--<mat-slider [disabled]="!projectWizard.project.useParts"-->
+          <!--id="partsPerFrame"-->
+          <!--name="partsPerFrame"-->
+          <!--min="2"-->
+          <!--step="2"-->
+          <!--thumb-label="true"-->
+          <!--max="8"-->
+          <!--[(ngModel)]="projectWizard.project.partsPerFrame"></mat-slider>-->
+          <!--</div>-->
         </div>
       </div>
     </div>

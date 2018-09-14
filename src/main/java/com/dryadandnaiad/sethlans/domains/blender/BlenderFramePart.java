@@ -38,6 +38,8 @@ public class BlenderFramePart implements Serializable {
     private boolean processed;
     private Double partPositionMinY;
     private Double partPositionMaxY;
+    private Double partPositionMinX;
+    private Double partPositionMaxX;
     private String partFilename;
     private String fileExtension;
     private String storedDir;

@@ -86,6 +86,7 @@ public class NodeRenderController {
                               @RequestParam String blend_file, @RequestParam String blender_version,
                               @RequestParam String frame_filename, @RequestParam int frame_number, @RequestParam int part_number,
                               @RequestParam int part_resolution_x, @RequestParam int part_resolution_y,
+                              @RequestParam double part_position_min_x, @RequestParam double part_position_max_x,
                               @RequestParam double part_position_min_y, @RequestParam double part_position_max_y,
                               @RequestParam int part_res_percentage, @RequestParam String part_filename, @RequestParam String file_extension) {
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) == null) {
@@ -154,6 +155,8 @@ public class NodeRenderController {
                 framePart.setFrameFileName(frame_filename);
                 framePart.setPartFilename(part_filename);
                 framePart.setPartNumber(part_number);
+                framePart.setPartPositionMaxX(part_position_max_x);
+                framePart.setPartPositionMinX(part_position_min_x);
                 framePart.setPartPositionMinY(part_position_min_y);
                 framePart.setPartPositionMaxY(part_position_max_y);
 

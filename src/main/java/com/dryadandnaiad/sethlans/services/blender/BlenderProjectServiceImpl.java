@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Created Mario Estrella on 12/9/17.
@@ -210,19 +211,21 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         String truncatedUUID = StringUtils.left(blenderProject.getProjectUUID(), 4);
         String cleanedProjectName = truncatedProjectName.replaceAll(" ", "").replaceAll("[^a-zA-Z0-9_-]", "").toLowerCase();
         List<PartCoordinates> partCoordinatesList = configurePartCoordinates(blenderProject.getPartsPerFrame());
-        for (int i = 0; i < blenderProject.getTotalNumOfFrames(); i++) {
-            frameFileNames.add(cleanedProjectName + "-" + truncatedUUID + "-" + (i + 1));
-            for (int j = 0; j < blenderProject.getPartsPerFrame(); j++) {
+        for (int frames = 0; frames < blenderProject.getTotalNumOfFrames(); frames++) {
+            frameFileNames.add(cleanedProjectName + "-" + truncatedUUID + "-" + (frames + 1));
+            for (int parts = 0; parts < partCoordinatesList.size(); parts++) {
                 BlenderFramePart blenderFramePart = new BlenderFramePart();
-                blenderFramePart.setFrameFileName(frameFileNames.get(i));
-                blenderFramePart.setFrameNumber(i + 1);
-                blenderFramePart.setPartNumber(j + 1);
-                blenderFramePart.setPartFilename(blenderFramePart.getFrameFileName() + "-part" + (j + 1));
-                blenderFramePart.setPartPositionMaxY(partCoordinatesList.get(j).getMax_y());
-                blenderFramePart.setPartPositionMinY(partCoordinatesList.get(j).getMin_y());
+                blenderFramePart.setFrameFileName(frameFileNames.get(frames));
+                blenderFramePart.setFrameNumber(frames + 1);
+                blenderFramePart.setPartNumber(parts + 1);
+                blenderFramePart.setPartFilename(blenderFramePart.getFrameFileName() + "-part" + (parts + 1));
+                LOG.debug(parts + "");
+                blenderFramePart.setPartPositionMaxX(partCoordinatesList.get(parts).getMax_x());
+                blenderFramePart.setPartPositionMinX(partCoordinatesList.get(parts).getMin_x());
+                blenderFramePart.setPartPositionMaxY(partCoordinatesList.get(parts).getMax_y());
+                blenderFramePart.setPartPositionMinY(partCoordinatesList.get(parts).getMin_y());
                 blenderFramePart.setFileExtension("png");
                 blenderFramePartList.add(blenderFramePart);
-
             }
         }
         blenderProject.setFramePartList(blenderFramePartList);
@@ -237,28 +240,23 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
     }
 
     private List<PartCoordinates> configurePartCoordinates(int partsPerFrame) {
-        List<PartCoordinates> partCoordinatesList = new ArrayList<>();
-        Integer parts = partsPerFrame;
-        Double upperLimit = 1.0;
-        Double difference = upperLimit / parts;
-        LOG.debug("Slice Interval " + difference);
-        Double startingPoint = upperLimit;
-        Double endingPoint;
-        for (int i = 0; i < parts; i++) {
-            LOG.debug("Starting Point " + startingPoint);
-            endingPoint = startingPoint - difference;
-            if (i == parts - 1) {
-                endingPoint = 0.0;
-            }
-            PartCoordinates partCoordinates = new PartCoordinates();
-            partCoordinates.setMax_y(startingPoint);
-            partCoordinates.setMin_y(endingPoint);
-            partCoordinatesList.add(partCoordinates);
-            startingPoint = endingPoint;
-            LOG.debug("Ending Point " + endingPoint);
-
+        double sqrtOfPart = Math.sqrt(partsPerFrame);
+        int endRange = (int) sqrtOfPart;
+        if (partsPerFrame == 4) {
+            endRange = 3;
         }
+        List<PartCoordinates> partCoordinatesList = new ArrayList<>();
+        int finalEndRange = endRange;
+        IntStream.range(1, finalEndRange).forEach(row -> IntStream.range(1, finalEndRange).forEach(column -> {
+            PartCoordinates partCoordinates = new PartCoordinates();
+            partCoordinates.setMin_x((column - 1) / sqrtOfPart);
+            partCoordinates.setMax_x(column / sqrtOfPart);
+            partCoordinates.setMin_y((sqrtOfPart - row) / sqrtOfPart);
+            partCoordinates.setMax_y((sqrtOfPart - row + 1) / sqrtOfPart);
+            partCoordinatesList.add(partCoordinates);
+        }));
         LOG.debug("Part Coordinate List generated " + partCoordinatesList);
+        LOG.debug("Number of elements " + partCoordinatesList.size());
 
         return partCoordinatesList;
     }
