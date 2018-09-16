@@ -99,16 +99,16 @@ class ExecuteRenderTask {
                 LOG.debug("Render Output: " + output);
                 switch (renderTask.getBlenderEngine()) {
                     case CYCLES:
-                        if (output.contains("missing DNA block")) {
-                            LOG.error("Render failed: Error: Failed to read blend file ... missing DNA block");
+                        if (output.toLowerCase().contains("failed to read blend file")) {
+                            LOG.error("Render failed: Error: Failed to read blend file ... Missing DNA block");
                             return -1L;
                         }
-                        if (output.contains("Finished")) {
+                        if (output.toLowerCase().contains("finished")) {
                             time = SethlansQueryUtils.getRenderTime(output, time);
                         }
                         break;
                     case BLENDER_RENDER:
-                        if (output.contains("Saving:")) {
+                        if (output.toLowerCase().contains("saving:")) {
                             String[] finished = output.split("\\|");
                             for (String item : finished) {
                                 LOG.debug(item);
