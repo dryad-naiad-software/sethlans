@@ -170,60 +170,58 @@ class QueueProcessActions {
                                    FrameFileUpdateDatabaseService frameFileUpdateDatabaseService,
                                    SethlansNotificationService sethlansNotificationService,
                                    ProcessFrameDatabaseService processFrameDatabaseService) {
-        if (blenderProjectDatabaseService.pendingProjectsSize() <= 0 || blenderProjectDatabaseService.remainingQueueProjectsSize() <= 0) {
-            for (BlenderProject blenderProject : blenderProjectDatabaseService.listAll()) {
-                if (blenderProject.getProjectStatus().equals(ProjectStatus.Rendering) || blenderProject.getProjectStatus().equals(ProjectStatus.Started)) {
-                    if (frameFileUpdateDatabaseService.listByProjectUUID(blenderProject.getProjectUUID()).size() == 0
-                            && processFrameDatabaseService.listByProjectUUID(blenderProject.getProjectUUID()).size() == 0) {
-
-                        if (blenderProject.getRemainingQueueSize() == 0) {
-                            if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
-                                blenderProject.setProjectStatus(ProjectStatus.Processing);
-                                blenderProject.setCurrentPercentage(100);
-                                LOG.info(blenderProject.getProjectName() + " has completed rendering, starting video processing");
-                                String message = blenderProject.getProjectName() + " has completed rendering, starting video processing";
-                                SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
-                                sethlansNotification.setLinkPresent(true);
-                                sethlansNotification.setMailable(true);
-                                sethlansNotification.setSubject(blenderProject.getProjectName());
-                                sethlansNotification.setMessageLink("/projects/view/" + blenderProject.getId());
-                                sethlansNotificationService.sendNotification(sethlansNotification);
-                                processImageAndAnimationService.createAVI(blenderProject);
-                            }
-                            if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
-                                blenderProject.setProjectStatus(ProjectStatus.Processing);
-                                blenderProject.setCurrentPercentage(100);
-                                LOG.info(blenderProject.getProjectName() + " has completed rendering, starting video processing");
-                                String message = blenderProject.getProjectName() + " has completed rendering, starting video processing";
-                                SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
-                                sethlansNotification.setLinkPresent(true);
-                                sethlansNotification.setMailable(true);
-                                sethlansNotification.setSubject(blenderProject.getProjectName());
-                                sethlansNotification.setMessageLink("/projects/view/" + blenderProject.getId());
-                                sethlansNotificationService.sendNotification(sethlansNotification);
-                                processImageAndAnimationService.createMP4(blenderProject);
-                            } else {
-                                blenderProject.setProjectStatus(ProjectStatus.Finished);
-                                blenderProject.setCurrentPercentage(100);
-                                LOG.info(blenderProject.getProjectName() + " has completed");
-                                String message = blenderProject.getProjectName() + " has completed";
-                                SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
-                                sethlansNotification.setLinkPresent(true);
-                                sethlansNotification.setMailable(true);
-                                sethlansNotification.setSubject(blenderProject.getProjectName());
-                                sethlansNotification.setMessageLink("/projects/view/" + blenderProject.getId());
-                                sethlansNotificationService.sendNotification(sethlansNotification);
-                                blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
-                            }
-                            blenderProject.setAllImagesProcessed(true);
-                            blenderProject.setTotalProjectTime(blenderProject.getProjectEnd() - blenderProject.getProjectStart());
-                            blenderProject.setVersion(blenderProjectDatabaseService.getByIdWithoutFrameParts(blenderProject.getId()).getVersion());
-                            blenderProjectDatabaseService.saveOrUpdate(blenderProject);
-                            renderQueueDatabaseService.deleteAllByProject(blenderProject.getProjectUUID());
+        for (BlenderProject blenderProject : blenderProjectDatabaseService.listAll()) {
+            if (blenderProject.getProjectStatus().equals(ProjectStatus.Rendering) || blenderProject.getProjectStatus().equals(ProjectStatus.Started)) {
+                if (frameFileUpdateDatabaseService.listByProjectUUID(blenderProject.getProjectUUID()).size() == 0
+                        && processFrameDatabaseService.listByProjectUUID(blenderProject.getProjectUUID()).size() == 0) {
+                    if (blenderProject.getRemainingQueueSize() == 0) {
+                        if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
+                            blenderProject.setProjectStatus(ProjectStatus.Processing);
+                            blenderProject.setCurrentPercentage(100);
+                            LOG.info(blenderProject.getProjectName() + " has completed rendering, starting video processing");
+                            String message = blenderProject.getProjectName() + " has completed rendering, starting video processing";
+                            SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
+                            sethlansNotification.setLinkPresent(true);
+                            sethlansNotification.setMailable(true);
+                            sethlansNotification.setSubject(blenderProject.getProjectName());
+                            sethlansNotification.setMessageLink("/projects/view/" + blenderProject.getId());
+                            sethlansNotificationService.sendNotification(sethlansNotification);
+                            processImageAndAnimationService.createAVI(blenderProject);
                         }
+                        if (blenderProject.getProjectType() == ProjectType.ANIMATION && blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
+                            blenderProject.setProjectStatus(ProjectStatus.Processing);
+                            blenderProject.setCurrentPercentage(100);
+                            LOG.info(blenderProject.getProjectName() + " has completed rendering, starting video processing");
+                            String message = blenderProject.getProjectName() + " has completed rendering, starting video processing";
+                            SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
+                            sethlansNotification.setLinkPresent(true);
+                            sethlansNotification.setMailable(true);
+                            sethlansNotification.setSubject(blenderProject.getProjectName());
+                            sethlansNotification.setMessageLink("/projects/view/" + blenderProject.getId());
+                            sethlansNotificationService.sendNotification(sethlansNotification);
+                            processImageAndAnimationService.createMP4(blenderProject);
+                        } else {
+                            blenderProject.setProjectStatus(ProjectStatus.Finished);
+                            blenderProject.setCurrentPercentage(100);
+                            LOG.info(blenderProject.getProjectName() + " has completed");
+                            String message = blenderProject.getProjectName() + " has completed";
+                            SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.PROJECT, message, blenderProject.getSethlansUser().getUsername());
+                            sethlansNotification.setLinkPresent(true);
+                            sethlansNotification.setMailable(true);
+                            sethlansNotification.setSubject(blenderProject.getProjectName());
+                            sethlansNotification.setMessageLink("/projects/view/" + blenderProject.getId());
+                            sethlansNotificationService.sendNotification(sethlansNotification);
+                            blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
+                        }
+                        blenderProject.setAllImagesProcessed(true);
+                        blenderProject.setTotalProjectTime(blenderProject.getProjectEnd() - blenderProject.getProjectStart());
+                        blenderProject.setVersion(blenderProjectDatabaseService.getByIdWithoutFrameParts(blenderProject.getId()).getVersion());
+                        blenderProjectDatabaseService.saveOrUpdate(blenderProject);
+                        renderQueueDatabaseService.deleteAllByProject(blenderProject.getProjectUUID());
                     }
                 }
             }
+
         }
 
     }

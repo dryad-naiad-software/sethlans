@@ -109,8 +109,6 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
             for (BufferedImage image : images) {
                 g.drawImage(image, x, y, null);
                 x += image.getWidth();
-                LOG.debug("value of x: " + x);
-                LOG.debug("value of y: " + y);
                 if (x >= concatImage.getWidth()) {
                     x = 0;
                     y += image.getHeight();
