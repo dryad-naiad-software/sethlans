@@ -99,6 +99,15 @@ public class NotificationController {
         return sethlansNotificationService.notificationsPresent(auth.getName());
     }
 
+    @GetMapping(value = "/number_of_new_notifications")
+    public int getNumberOfNewNotifications() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return 0;
+        }
+        return sethlansNotificationService.numberofNewNotifications(auth.getName());
+    }
+
     @GetMapping(value = "/get_notifications")
     public List<SethlansNotification> getNotificationMessages() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

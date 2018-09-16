@@ -152,8 +152,6 @@ public class SethlansQueryUtils {
                     ip = InetAddress.getLocalHost().getHostAddress();
                 }
             }
-        } catch (UnknownHostException e) {
-            LOG.error(Throwables.getStackTraceAsString(e));
         } catch (IOException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
         }

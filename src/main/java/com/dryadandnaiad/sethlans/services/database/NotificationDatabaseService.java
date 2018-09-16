@@ -21,6 +21,8 @@ package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 
+import java.util.List;
+
 /**
  * Created Mario Estrella on 12/11/17.
  * Dryad and Naiad Software LLC
@@ -28,6 +30,18 @@ import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
  * Project: sethlans
  */
 public interface NotificationDatabaseService extends CRUDService<SethlansNotification> {
+
+    List<SethlansNotification> getAdminNotifications();
+
+    List<SethlansNotification> getUserNotifications(String username);
+
+    int numberOfNewUserNotifications(String username);
+
+    int numberofNewAdminNotifications();
+
+    boolean newAdminNotifications();
+
+    boolean newUserNotifications(String username);
 
     void delete(SethlansNotification notification);
 }

@@ -21,7 +21,6 @@ package com.dryadandnaiad.sethlans.services.notification;
 
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
-import com.dryadandnaiad.sethlans.enums.NotificationScope;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.NotificationDatabaseService;
@@ -62,12 +61,25 @@ public class SethlansNotificationServiceImpl implements SethlansNotificationServ
 
     @Override
     public boolean newNotificationsPresent(String username) {
-        for (SethlansNotification sethlansNotification : getNotifications(username)) {
-            if (!sethlansNotification.isAcknowledged()) {
-                return true;
-            }
+        SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(username);
+        boolean isAdministrator = sethlansUser.getRoles().contains(Role.ADMINISTRATOR) || sethlansUser.getRoles().contains(Role.SUPER_ADMINISTRATOR);
+        if (isAdministrator) {
+            return notificationDatabaseService.newAdminNotifications() || notificationDatabaseService.newUserNotifications(username);
+        } else {
+            return notificationDatabaseService.newUserNotifications(username);
         }
-        return false;
+    }
+
+    @Override
+    public int numberofNewNotifications(String username) {
+        int count = 0;
+        SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(username);
+        boolean isAdministrator = sethlansUser.getRoles().contains(Role.ADMINISTRATOR) || sethlansUser.getRoles().contains(Role.SUPER_ADMINISTRATOR);
+        if (isAdministrator) {
+            count += notificationDatabaseService.numberofNewAdminNotifications();
+        }
+        count += notificationDatabaseService.numberOfNewUserNotifications(username);
+        return count;
     }
 
     @Override
@@ -115,18 +127,12 @@ public class SethlansNotificationServiceImpl implements SethlansNotificationServ
         List<SethlansNotification> listToSend = new ArrayList<>();
         SethlansUser sethlansUser = sethlansUserDatabaseService.findByUserName(username);
         boolean isAdministrator = sethlansUser.getRoles().contains(Role.ADMINISTRATOR) || sethlansUser.getRoles().contains(Role.SUPER_ADMINISTRATOR);
-        for (SethlansNotification sethlansNotification : notificationDatabaseService.listAll()) {
-            if (isAdministrator && sethlansNotification.getScope().equals(NotificationScope.ADMIN)) {
+        for (SethlansNotification sethlansNotification : notificationDatabaseService.getAdminNotifications()) {
+            if (isAdministrator) {
                 listToSend.add(sethlansNotification);
-                continue;
-            }
-            if (sethlansNotification.getUsername() != null) {
-                if (sethlansNotification.getScope().equals(NotificationScope.USER) && sethlansNotification.getUsername().equals(sethlansUser.getUsername())) {
-                    listToSend.add(sethlansNotification);
-                }
             }
         }
-
+        listToSend.addAll(notificationDatabaseService.getUserNotifications(username));
         return listToSend;
     }
 

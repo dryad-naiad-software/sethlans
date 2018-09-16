@@ -20,7 +20,10 @@
 package com.dryadandnaiad.sethlans.repositories;
 
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
+import com.dryadandnaiad.sethlans.enums.NotificationScope;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
 
 /**
  * Created Mario Estrella on 12/11/17.
@@ -29,4 +32,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Project: sethlans
  */
 public interface NotificationRepository extends JpaRepository<SethlansNotification, Long> {
+    boolean existsSethlansNotificationByAcknowledgedIsFalseAndUsernameEquals(String username);
+
+    boolean existsSethlansNotificationByAcknowledgedIsFalseAndScopeEquals(NotificationScope scope);
+
+    int countSethlansNotificationByScopeEqualsAndAcknowledgedIsFalse(NotificationScope scope);
+
+    int countSethlansNotificationByUsernameEqualsAndAcknowledgedIsFalse(String username);
+
+    List<SethlansNotification> findSethlansNotificationsByUsernameEquals(String username);
+
+    List<SethlansNotification> findSethlansNotificationsByScopeEquals(NotificationScope scope);
 }

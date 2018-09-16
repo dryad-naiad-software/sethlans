@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
+import com.dryadandnaiad.sethlans.enums.NotificationScope;
 import com.dryadandnaiad.sethlans.repositories.NotificationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +56,37 @@ public class NotificationDatabaseServiceImpl implements NotificationDatabaseServ
             LOG.error("Bean creation failure. Likely during shutdown and DB is being accessed after it was closed. This can be ignored.");
             return new ArrayList<>();
         }
+    }
+
+
+    @Override
+    public List<SethlansNotification> getAdminNotifications() {
+        return notificationRepository.findSethlansNotificationsByScopeEquals(NotificationScope.ADMIN);
+    }
+
+    @Override
+    public List<SethlansNotification> getUserNotifications(String username) {
+        return notificationRepository.findSethlansNotificationsByUsernameEquals(username);
+    }
+
+    @Override
+    public int numberOfNewUserNotifications(String username) {
+        return notificationRepository.countSethlansNotificationByUsernameEqualsAndAcknowledgedIsFalse(username);
+    }
+
+    @Override
+    public int numberofNewAdminNotifications() {
+        return notificationRepository.countSethlansNotificationByScopeEqualsAndAcknowledgedIsFalse(NotificationScope.ADMIN);
+    }
+
+    @Override
+    public boolean newAdminNotifications() {
+        return notificationRepository.existsSethlansNotificationByAcknowledgedIsFalseAndScopeEquals(NotificationScope.ADMIN);
+    }
+
+    @Override
+    public boolean newUserNotifications(String username) {
+        return notificationRepository.existsSethlansNotificationByAcknowledgedIsFalseAndUsernameEquals(username);
     }
 
     @Override
