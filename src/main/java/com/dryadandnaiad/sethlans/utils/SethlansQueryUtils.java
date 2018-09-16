@@ -30,6 +30,7 @@ import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.google.common.base.Throwables;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -279,6 +280,18 @@ public class SethlansQueryUtils {
             projectsToReturn.add(convertBlenderProjectToProjectInfo(blenderProject));
         }
         return projectsToReturn;
+    }
+
+    public static String getRenderTime(String output, String time) {
+        String[] finished = output.split("\\|");
+        for (String item : finished) {
+            LOG.debug(item);
+            if (item.contains("Time:")) {
+                time = StringUtils.substringAfter(item, ":");
+                time = StringUtils.substringBefore(time, ".");
+            }
+        }
+        return time;
     }
 
     public static ProjectInfo convertBlenderProjectToProjectInfo(BlenderProject blenderProject) {

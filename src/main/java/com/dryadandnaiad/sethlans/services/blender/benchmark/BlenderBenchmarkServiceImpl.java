@@ -25,12 +25,14 @@ import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.NotificationType;
+import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.blender.BlenderPythonScriptService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
+import com.dryadandnaiad.sethlans.utils.SethlansConfigUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -45,7 +47,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.dryadandnaiad.sethlans.services.blender.benchmark.PrepareScripts.prepareScriptandExecute;
+import static com.dryadandnaiad.sethlans.services.blender.benchmark.DownloadBenchmarkFiles.downloadRequiredFiles;
+import static com.dryadandnaiad.sethlans.services.blender.benchmark.ExecuteBlenderBenchmark.executeBlenderBenchmark;
+import static com.dryadandnaiad.sethlans.services.blender.benchmark.PrepareBenchmarkScripts.prepareCPUCyclesBenchamrkScript;
+import static com.dryadandnaiad.sethlans.services.blender.benchmark.PrepareBenchmarkScripts.prepareGPUCyclesBenchmarkScript;
 
 /**
  * Created Mario Estrella on 12/10/17.
@@ -138,7 +143,43 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         LOG.info("Starting Benchmark");
         BlenderBenchmarkTask benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark_uuid);
         benchmarkTask.setInProgress(true);
-        prepareScriptandExecute(benchmarkTask, sethlansAPIConnectionService, sethlansServerDatabaseService, blenderBenchmarkTaskDatabaseService, blenderPythonScriptService);
+        String tempDir = SethlansConfigUtils.getProperty(SethlansConfigKeys.TEMP_DIR);
+        LOG.debug("Processing benchmark task: " + benchmarkTask.toString());
+        File benchmarkDir = new File(tempDir + File.separator + benchmarkTask.getBenchmarkUUID() + "_" + benchmarkTask.getBenchmarkURL());
+        if (downloadRequiredFiles(benchmarkDir, benchmarkTask, sethlansAPIConnectionService, sethlansServerDatabaseService)) {
+            String script = null;
+            benchmarkTask = blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
+            if (benchmarkTask.getComputeType().equals(ComputeType.GPU)) {
+                script = prepareGPUCyclesBenchmarkScript(blenderPythonScriptService, benchmarkTask);
+            }
+            if (benchmarkTask.getComputeType().equals(ComputeType.CPU)) {
+                script = prepareCPUCyclesBenchamrkScript(blenderPythonScriptService, benchmarkTask);
+            }
+            int rating = -1;
+
+            if (script != null) {
+                rating = executeBlenderBenchmark(benchmarkTask, script);
+            }
+            if (rating == -1) {
+                LOG.error("Benchmark failed.");
+                LOG.debug(benchmarkTask.toString());
+            } else {
+                LOG.info("Benchmark complete, saving to database.");
+                LOG.debug(benchmarkTask.toString());
+                switch (benchmarkTask.getComputeType()) {
+                    case GPU:
+                        benchmarkTask.setGpuRating(rating);
+
+                    case CPU:
+                        benchmarkTask.setCpuRating(rating);
+
+                }
+                benchmarkTask.setInProgress(false);
+                benchmarkTask.setComplete(true);
+                blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
+            }
+        }
+
         benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark_uuid);
         if (benchmarkTask.isComplete()) {
             try {

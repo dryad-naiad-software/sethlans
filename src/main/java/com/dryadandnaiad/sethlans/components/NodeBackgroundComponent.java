@@ -19,8 +19,8 @@
 
 package com.dryadandnaiad.sethlans.components;
 
-import com.dryadandnaiad.sethlans.services.blender.BlenderRenderService;
 import com.dryadandnaiad.sethlans.services.blender.benchmark.BlenderBenchmarkService;
+import com.dryadandnaiad.sethlans.services.blender.render.BlenderRenderService;
 import com.dryadandnaiad.sethlans.services.network.MulticastSenderService;
 import com.dryadandnaiad.sethlans.services.network.NodeSendUpdateService;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;

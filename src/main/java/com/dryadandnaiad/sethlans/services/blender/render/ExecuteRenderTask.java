@@ -17,9 +17,10 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.blender.benchmark;
+package com.dryadandnaiad.sethlans.services.blender.render;
 
-import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
+import com.dryadandnaiad.sethlans.domains.blender.BlenderFramePart;
+import com.dryadandnaiad.sethlans.domains.database.render.RenderTask;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.utils.SethlansConfigUtils;
@@ -29,6 +30,7 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,36 +38,48 @@ import java.io.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created Mario Estrella on 9/1/2018.
+ * Created Mario Estrella on 9/16/2018.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-class ExecuteBlenderBenchmark {
-    private static final Logger LOG = LoggerFactory.getLogger(ExecuteBlenderBenchmark.class);
+class ExecuteRenderTask {
+    private static final Logger LOG = LoggerFactory.getLogger(ExecuteRenderTask.class);
 
-    static int executeBlenderBenchmark(BlenderBenchmarkTask benchmarkTask, String blenderScript) {
+    static Long executeRenderTask(String cores, RenderTask renderTask, String blenderScript) {
         String error;
+        BlenderFramePart blenderFramePart = renderTask.getBlenderFramePart();
         try {
-            LOG.debug("Starting Benchmark. Benchmark type: " + benchmarkTask.getComputeType());
+            LOG.info("Starting the render of " + renderTask.getProjectName() + " Frame " + blenderFramePart.getFrameNumber() + ": Part: " + blenderFramePart.getPartNumber());
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
             PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
-            CommandLine commandLine = new CommandLine(benchmarkTask.getBlenderExecutable());
+            CommandLine commandLine = new CommandLine(renderTask.getBlenderExecutable());
+            if (Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.BLENDER_DEBUG))) {
+                commandLine.addArgument("-d");
+            }
 
             commandLine.addArgument("-b");
-            commandLine.addArgument(benchmarkTask.getBenchmarkDir() + File.separator + benchmarkTask.getBenchmarkFile());
+            commandLine.addArgument(renderTask.getBlendFilename());
             commandLine.addArgument("-P");
             commandLine.addArgument(blenderScript);
             commandLine.addArgument("-E");
-            commandLine.addArgument("CYCLES");
+            switch (renderTask.getBlenderEngine()) {
+                case CYCLES:
+                    commandLine.addArgument("CYCLES");
+                    break;
+                case BLENDER_RENDER:
+                    commandLine.addArgument("BLENDER_RENDER");
+                    break;
+            }
+
             commandLine.addArgument("-o");
-            commandLine.addArgument(benchmarkTask.getBenchmarkDir() + File.separator);
+            commandLine.addArgument(renderTask.getRenderDir() + File.separator);
             commandLine.addArgument("-f");
-            commandLine.addArgument("1");
-            if (benchmarkTask.getComputeType().equals(ComputeType.CPU)) {
+            commandLine.addArgument(Integer.toString(renderTask.getBlenderFramePart().getFrameNumber()));
+            if (renderTask.getComputeType().equals(ComputeType.CPU)) {
                 commandLine.addArgument("-t");
-                commandLine.addArgument(SethlansConfigUtils.getProperty(SethlansConfigKeys.CPU_CORES));
+                commandLine.addArgument(cores);
             }
             LOG.debug(commandLine.toString());
 
@@ -78,25 +92,46 @@ class ExecuteBlenderBenchmark {
             BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray())));
 
             String output;
+
             String time = null;
 
-            LOG.debug("Benchmark Output");
+            LOG.debug("Render Output:");
             while ((output = in.readLine()) != null) {
                 LOG.debug(output);
-                if (output.contains("Finished")) {
-                    time = SethlansQueryUtils.getRenderTime(output, time);
+                switch (renderTask.getBlenderEngine()) {
+                    case CYCLES:
+                        if (output.contains("missing DNA block")) {
+                            LOG.error("Render failed: Error: Failed to read blend file ... missing DNA block");
+                            return -1L;
+                        }
+                        if (output.contains("Finished")) {
+                            time = SethlansQueryUtils.getRenderTime(output, time);
+                        }
+                        break;
+                    case BLENDER_RENDER:
+                        if (output.contains("Saving:")) {
+                            String[] finished = output.split("\\|");
+                            for (String item : finished) {
+                                LOG.debug(item);
+                                if (item.contains(" Time:")) {
+                                    time = StringUtils.substringAfter(item, ":");
+                                    time = StringUtils.substringBefore(time, ".");
+                                    time = time.replaceAll("\\s", "");
+                                }
+                            }
+                        }
                 }
+
             }
             in.close();
+
             BufferedReader errorIn = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(errorStream.toByteArray())));
 
-
-            LOG.debug("Error Output");
+            LOG.debug("Error Output:");
             while ((error = errorIn.readLine()) != null) {
                 LOG.debug(error);
             }
             errorIn.close();
-
 
             String[] timeToConvert;
             if (time != null) {
@@ -104,8 +139,8 @@ class ExecuteBlenderBenchmark {
                 int minutes = Integer.parseInt(timeToConvert[0]);
                 int seconds = Integer.parseInt(timeToConvert[1]);
                 int timeInSeconds = seconds + 60 * minutes;
-                int timeInMilliseconds = (int) TimeUnit.MILLISECONDS.convert(timeInSeconds, TimeUnit.SECONDS);
-                LOG.debug("Benchmark time in milliseconds: " + timeInMilliseconds);
+                long timeInMilliseconds = TimeUnit.MILLISECONDS.convert(timeInSeconds, TimeUnit.SECONDS);
+                LOG.info("Render time in milliseconds: " + timeInMilliseconds);
                 return timeInMilliseconds;
             }
 
@@ -114,6 +149,7 @@ class ExecuteBlenderBenchmark {
             LOG.error(Throwables.getStackTraceAsString(e));
 
         }
-        return -1;
+        return -1L;
+
     }
 }
