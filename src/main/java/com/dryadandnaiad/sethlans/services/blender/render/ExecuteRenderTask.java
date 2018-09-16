@@ -95,9 +95,8 @@ class ExecuteRenderTask {
 
             String time = null;
 
-            LOG.debug("Render Output:");
             while ((output = in.readLine()) != null) {
-                LOG.debug(output);
+                LOG.debug("Render Output: " + output);
                 switch (renderTask.getBlenderEngine()) {
                     case CYCLES:
                         if (output.contains("missing DNA block")) {
@@ -127,9 +126,8 @@ class ExecuteRenderTask {
 
             BufferedReader errorIn = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(errorStream.toByteArray())));
 
-            LOG.debug("Error Output:");
             while ((error = errorIn.readLine()) != null) {
-                LOG.debug(error);
+                LOG.debug("Error Output: " + error);
             }
             errorIn.close();
 
