@@ -48,6 +48,7 @@ export class NavBarComponent implements OnInit {
   username: string;
   isCollapsed = true;
   newNotifications: boolean;
+  numOfNewNotifications: number;
   notificationTypes: any = NotificationType;
 
 
@@ -91,6 +92,9 @@ export class NavBarComponent implements OnInit {
   checkNotifications() {
     this.http.get('/api/notifications/new_notifications_present').subscribe((newNotification: boolean) => {
       this.newNotifications = newNotification;
+      this.http.get('/api/notifications/number_of_new_notifications').subscribe((numberOfNotifications: number) => {
+        this.numOfNewNotifications = numberOfNotifications;
+      });
     });
     this.http.get('/api/notifications/notifications_present').subscribe((present: boolean) => {
       this.notifications = present;

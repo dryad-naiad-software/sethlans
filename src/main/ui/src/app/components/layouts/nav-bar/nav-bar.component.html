@@ -145,7 +145,7 @@
         <a href="javascript:void(0);" class="text-white nav-link" ngbDropdownToggle
            (click)="acknowledgeAllNotifications()">
           <i class="fas fa-fw fa-bell fa-sm"></i>
-          <span *ngIf="newNotifications == true" class="badge badge-notify">!</span>
+          <span *ngIf="newNotifications == true" class="badge badge-notify">{{numOfNewNotifications}}</span>
         </a>
         <div ngbDropdownMenu>
           <h6 class="dropdown-header py-1">Notifications
