@@ -60,7 +60,7 @@ import static com.dryadandnaiad.sethlans.services.blender.benchmark.PrepareBench
  */
 @Service
 public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
-    @Value("${sethlans.benchmark.gpuMD5}")
+    @Value("${sethlans.benchmark.cpuMD5}")
     private String cpuBenchMD5;
 
     @Value("${sethlans.benchmark.gpuMD5}")
@@ -159,7 +159,6 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
             case GPU:
                 md5ToCheck = gpuBenchMD5;
                 break;
-
         }
         try {
             if (downloadRequiredFiles(benchmarkDir, benchmarkTask, md5ToCheck, sethlansAPIConnectionService, sethlansServerDatabaseService)) {
