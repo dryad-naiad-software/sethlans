@@ -51,6 +51,7 @@ public class RenderTask extends AbstractEntityClass {
     private BlenderEngine blenderEngine;
     private ComputeType computeType;
     private String blendFilename;
+    private String blendFileMD5Sum;
     private String blenderVersion;
     private String blenderExecutable;
     private BlenderFramePart blenderFramePart;

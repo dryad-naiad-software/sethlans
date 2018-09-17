@@ -79,11 +79,14 @@ public class NodeRenderController {
     private String configDir;
 
     @RequestMapping(value = "/api/render/request", method = RequestMethod.POST)
-    public void renderRequest(@RequestParam String project_name, @RequestParam String connection_uuid, @RequestParam String project_uuid,
+    public void renderRequest(@RequestParam String project_name, @RequestParam String connection_uuid,
+                              @RequestParam String project_uuid,
                               @RequestParam String queue_item_uuid, @RequestParam String gpu_device_id,
                               @RequestParam RenderOutputFormat render_output_format,
-                              @RequestParam int samples, @RequestParam BlenderEngine blender_engine, @RequestParam ComputeType compute_type,
-                              @RequestParam String blend_file, @RequestParam String blender_version,
+                              @RequestParam int samples, @RequestParam BlenderEngine blender_engine,
+                              @RequestParam ComputeType compute_type,
+                              @RequestParam String blend_file, @RequestParam String blend_file_md5,
+                              @RequestParam String blender_version,
                               @RequestParam String frame_filename, @RequestParam int frame_number, @RequestParam int part_number,
                               @RequestParam int part_resolution_x, @RequestParam int part_resolution_y,
                               @RequestParam double part_position_min_x, @RequestParam double part_position_max_x,
@@ -172,6 +175,7 @@ public class NodeRenderController {
                 renderTask.setBlenderEngine(blender_engine);
                 renderTask.setComputeType(compute_type);
                 renderTask.setBlendFilename(blend_file);
+                renderTask.setBlendFileMD5Sum(blend_file_md5);
                 renderTask.setBlenderVersion(blender_version);
                 renderTask.setBlenderFramePart(framePart);
                 renderTask.setTaskResolutionX(part_resolution_x);

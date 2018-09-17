@@ -80,6 +80,12 @@ public class SethlansFileUtils {
         return hashValue.equals(md5);
     }
 
+    public static String getMD5ofFile(File file) throws IOException {
+        FileInputStream fileInputStream = new FileInputStream(file);
+        return DigestUtils.md5Hex(IOUtils.toByteArray(fileInputStream));
+
+    }
+
     public static Image createImage(String image, String description) {
         URL imageURL = null;
         try {

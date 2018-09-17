@@ -25,18 +25,19 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
+import com.dryadandnaiad.sethlans.utils.SethlansFileUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 
 import static com.dryadandnaiad.sethlans.utils.BlenderUtils.assignBlenderExecutable;
 import static com.dryadandnaiad.sethlans.utils.BlenderUtils.renameBlenderDir;
 import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 import static com.dryadandnaiad.sethlans.utils.SethlansFileUtils.archiveExtract;
-import static com.dryadandnaiad.sethlans.utils.SethlansFileUtils.isDirectoryEmpty;
 
 /**
  * Created Mario Estrella on 9/16/2018.
@@ -99,37 +100,43 @@ class DownloadProjectFiles {
             }
 
             // Download Blend File from server
-            blendFileDir.mkdirs();
-            String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blend_file/";
-            String params = "connection_uuid=" + renderTask.getConnectionUUID() + "&project_uuid=" + renderTask.getProjectUUID();
-            if (isDirectoryEmpty(blendFileDir)) {
+            if (blendFileDir.mkdirs()) {
+                String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/project/blend_file/";
+                String params = "connection_uuid=" + renderTask.getConnectionUUID() + "&project_uuid=" + renderTask.getProjectUUID();
                 String blendFile = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, blendFileDir.toString());
-                if (FilenameUtils.isExtension(blendFile, "zip")) {
-                    LOG.debug("Blend file zip bundle.  Extracting contents of zip first.");
-                    archiveExtract(blendFile, blendFileDir, true);
-                    selectCachedBlend(blendFileDir, renderTask);
-                } else {
-                    renderTask.setBlendFilename(blendFileDir + File.separator + blendFile);
-                    LOG.info("Required files downloaded.");
-                }
-
-            } else {
-                LOG.info("Blend file for this project exists, using cached version");
-
-                ComputeType computeType = ComputeType.valueOf(getProperty(SethlansConfigKeys.COMPUTE_METHOD));
-                boolean combined = Boolean.parseBoolean(getProperty(SethlansConfigKeys.COMBINE_GPU));
-                switch (computeType) {
-                    case CPU:
-                        selectCachedBlend(blendFileDir, renderTask);
-                    case GPU:
-                        if (combined) {
+                try {
+                    if (SethlansFileUtils.fileCheckMD5(new File(blendFile), renderTask.getBlendFileMD5Sum())) {
+                        if (FilenameUtils.isExtension(blendFile, "zip")) {
+                            LOG.debug("Blend file zip bundle.  Extracting contents of zip first.");
+                            archiveExtract(blendFile, blendFileDir, true);
                             selectCachedBlend(blendFileDir, renderTask);
                         } else {
-                            waitForExtraction(blendFileDir, renderTask);
+                            renderTask.setBlendFilename(blendFileDir + File.separator + blendFile);
+                            LOG.info("Required files downloaded.");
                         }
-                    case CPU_GPU:
-                        waitForExtraction(blendFileDir, renderTask);
+                    }
+                } catch (IOException e) {
+                    LOG.error(e.getMessage());
+                }
+            } else {
+                ComputeType computeType = ComputeType.valueOf(getProperty(SethlansConfigKeys.COMPUTE_METHOD));
+                boolean combined = Boolean.parseBoolean(getProperty(SethlansConfigKeys.COMBINE_GPU));
+                try {
+                    switch (computeType) {
+                        case CPU:
+                            selectCachedBlend(blendFileDir, renderTask);
+                        case GPU:
+                            if (combined) {
+                                selectCachedBlend(blendFileDir, renderTask);
+                            } else {
+                                waitForExtraction(blendFileDir, renderTask);
+                            }
+                        case CPU_GPU:
+                            waitForExtraction(blendFileDir, renderTask);
 
+                    }
+                } catch (IOException e) {
+                    LOG.error(e.getMessage());
                 }
             }
             return true;
@@ -145,8 +152,8 @@ class DownloadProjectFiles {
             File[] files = blendFileDir.listFiles();
             for (File file : files != null ? files : new File[0]) {
                 if (file.toString().contains(filenameWithoutExt + ".blend")) {
-                    LOG.debug("Blend file found. Download/Extraction is most likely complete.");
                     renderTask.setBlendFilename(file.toString());
+                    LOG.info("Blend file for this project exists, using cached version");
                     count = 11;
                     break;
                 } else {
@@ -161,13 +168,22 @@ class DownloadProjectFiles {
         }
     }
 
-    private static void selectCachedBlend(File blendFileDir, RenderTask renderTask) {
-        String filenameWithoutExt = FilenameUtils.removeExtension(renderTask.getBlendFilename());
-        File[] files = blendFileDir.listFiles();
-        for (File file : files != null ? files : new File[0]) {
-            if (file.toString().contains(filenameWithoutExt + ".blend")) {
-                renderTask.setBlendFilename(file.toString());
+    private static void selectCachedBlend(File blendFileDir, RenderTask renderTask) throws IOException {
+        if (FilenameUtils.isExtension(renderTask.getBlendFilename(), ".blend")) {
+            if (SethlansFileUtils.fileCheckMD5(new File(renderTask.getBlendFilename()), renderTask.getBlendFileMD5Sum())) {
+                renderTask.setBlendFilename(blendFileDir + File.separator + renderTask.getBlendFilename());
+                LOG.info("Blend file for this project exists, using cached version");
+            }
+        } else {
+            String filenameWithoutExt = FilenameUtils.removeExtension(renderTask.getBlendFilename());
+            File[] files = blendFileDir.listFiles();
+            for (File file : files != null ? files : new File[0]) {
+                if (file.toString().contains(filenameWithoutExt + ".blend")) {
+                    renderTask.setBlendFilename(file.toString());
+                    LOG.info("Blend file for this project exists, using cached version");
+                }
             }
         }
+
     }
 }

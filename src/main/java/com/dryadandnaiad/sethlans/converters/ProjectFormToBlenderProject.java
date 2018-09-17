@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.converters;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.forms.project.ProjectForm;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
+import com.dryadandnaiad.sethlans.utils.SethlansFileUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -86,6 +87,7 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
                 LOG.debug(projectForm.getUploadedFile() + " moved to " + blenderProjectDirectory.toString());
                 blenderProject.setBlendFileLocation(blenderProjectDirectory + File.separator + projectForm.getUploadedFile());
                 blenderProject.setProjectRootDir(blenderProjectDirectory.toString());
+                blenderProject.setBlendFilenameMD5Sum(SethlansFileUtils.getMD5ofFile(new File(blenderProject.getBlendFileLocation())));
                 blenderProject.setTotalRenderTime(0L);
                 blenderProject.setTotalProjectTime(0L);
                 blenderProject.setReEncode(false);

@@ -65,6 +65,7 @@ public class BlenderProject extends AbstractEntityClass {
     private String frameRate;
     private String projectName;
     private String blendFilename;
+    private String blendFilenameMD5Sum;
     private String blendFileLocation;
     private String blenderVersion;
     private String currentFrameThumbnail;

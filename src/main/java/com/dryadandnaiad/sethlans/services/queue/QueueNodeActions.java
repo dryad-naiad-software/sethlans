@@ -242,6 +242,7 @@ class QueueNodeActions {
                     "&blender_engine=" + blenderProject.getBlenderEngine() +
                     "&compute_type=" + renderQueueItem.getRenderComputeType() +
                     "&blend_file=" + blenderProject.getBlendFilename() +
+                    "&blend_file_md5=" + blenderProject.getBlendFilenameMD5Sum() +
                     "&blender_version=" + blenderProject.getBlenderVersion() +
                     "&frame_filename=" + renderQueueItem.getBlenderFramePart().getFrameFileName() +
                     "&part_filename=" + renderQueueItem.getBlenderFramePart().getPartFilename() +
