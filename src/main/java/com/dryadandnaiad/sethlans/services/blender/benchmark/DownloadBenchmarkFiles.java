@@ -25,11 +25,13 @@ import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.SethlansConfigUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansFileUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 
 import static com.dryadandnaiad.sethlans.utils.BlenderUtils.assignBlenderExecutable;
 import static com.dryadandnaiad.sethlans.utils.BlenderUtils.renameBlenderDir;
@@ -45,9 +47,9 @@ import static com.dryadandnaiad.sethlans.utils.SethlansFileUtils.archiveExtract;
 class DownloadBenchmarkFiles {
     private static final Logger LOG = LoggerFactory.getLogger(DownloadBenchmarkFiles.class);
 
-    static boolean downloadRequiredFiles(File benchmarkDir, BlenderBenchmarkTask benchmarkTask,
+    static boolean downloadRequiredFiles(File benchmarkDir, BlenderBenchmarkTask benchmarkTask, String md5ToCheck,
                                          SethlansAPIConnectionService sethlansAPIConnectionService,
-                                         SethlansServerDatabaseService sethlansServerDatabaseService) {
+                                         SethlansServerDatabaseService sethlansServerDatabaseService) throws IOException {
         String binDir = SethlansConfigUtils.getProperty(SethlansConfigKeys.BINARY_DIR);
         LOG.debug("Downloading required files");
         SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(benchmarkTask.getConnectionUUID());
@@ -106,10 +108,13 @@ class DownloadBenchmarkFiles {
             String connectionURL = "https://" + serverIP + ":" + serverPort + "/api/benchmark_files/" + benchmarkTask.getBenchmarkURL() + "/";
             String params = "connection_uuid=" + benchmarkTask.getConnectionUUID();
             String benchmarkFile = sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, benchmarkDir.toString());
-            benchmarkTask.setBenchmarkFile(benchmarkFile);
-            LOG.debug("Required files downloaded.");
-            return true;
-
+            if (SethlansFileUtils.fileCheckMD5(new File(benchmarkDir + File.separator + benchmarkFile), md5ToCheck)) {
+                benchmarkTask.setBenchmarkFile(benchmarkFile);
+                LOG.debug("Required files downloaded.");
+                return true;
+            } else {
+                return false;
+            }
         }
         return false;
     }

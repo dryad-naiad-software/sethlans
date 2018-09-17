@@ -60,6 +60,11 @@ import static com.dryadandnaiad.sethlans.services.blender.benchmark.PrepareBench
  */
 @Service
 public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
+    @Value("$(sethlans.benchmark.cpuMD5)")
+    private String cpuBenchMD5;
+
+    @Value("$(sethlans.benchmark.gpuMD5)")
+    private String gpuBenchMD5;
 
     @Value("${sethlans.configDir}")
     private String configDir;
@@ -146,7 +151,17 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         String tempDir = SethlansConfigUtils.getProperty(SethlansConfigKeys.TEMP_DIR);
         LOG.debug("Processing benchmark task: " + benchmarkTask.toString());
         File benchmarkDir = new File(tempDir + File.separator + benchmarkTask.getBenchmarkUUID() + "_" + benchmarkTask.getBenchmarkURL());
-        if (downloadRequiredFiles(benchmarkDir, benchmarkTask, sethlansAPIConnectionService, sethlansServerDatabaseService)) {
+        String md5ToCheck = null;
+        switch (benchmarkTask.getComputeType()) {
+            case CPU:
+                md5ToCheck = cpuBenchMD5;
+                break;
+            case GPU:
+                md5ToCheck = gpuBenchMD5;
+                break;
+
+        }
+        if (downloadRequiredFiles(benchmarkDir, benchmarkTask, md5ToCheck, sethlansAPIConnectionService, sethlansServerDatabaseService)) {
             String script = null;
             benchmarkTask = blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
             if (benchmarkTask.getComputeType().equals(ComputeType.GPU)) {
