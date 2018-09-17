@@ -60,10 +60,10 @@ import static com.dryadandnaiad.sethlans.services.blender.benchmark.PrepareBench
  */
 @Service
 public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
-    @Value("$(sethlans.benchmark.cpuMD5)")
+    @Value("${sethlans.benchmark.gpuMD5}")
     private String cpuBenchMD5;
 
-    @Value("$(sethlans.benchmark.gpuMD5)")
+    @Value("${sethlans.benchmark.gpuMD5}")
     private String gpuBenchMD5;
 
     @Value("${sethlans.configDir}")
@@ -161,38 +161,42 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                 break;
 
         }
-        if (downloadRequiredFiles(benchmarkDir, benchmarkTask, md5ToCheck, sethlansAPIConnectionService, sethlansServerDatabaseService)) {
-            String script = null;
-            benchmarkTask = blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
-            if (benchmarkTask.getComputeType().equals(ComputeType.GPU)) {
-                script = prepareGPUCyclesBenchmarkScript(blenderPythonScriptService, benchmarkTask);
-            }
-            if (benchmarkTask.getComputeType().equals(ComputeType.CPU)) {
-                script = prepareCPUCyclesBenchamrkScript(blenderPythonScriptService, benchmarkTask);
-            }
-            int rating = -1;
-
-            if (script != null) {
-                rating = executeBlenderBenchmark(benchmarkTask, script);
-            }
-            if (rating == -1) {
-                LOG.error("Benchmark failed.");
-                LOG.debug(benchmarkTask.toString());
-            } else {
-                LOG.info("Benchmark complete, saving to database.");
-                LOG.debug(benchmarkTask.toString());
-                switch (benchmarkTask.getComputeType()) {
-                    case GPU:
-                        benchmarkTask.setGpuRating(rating);
-
-                    case CPU:
-                        benchmarkTask.setCpuRating(rating);
-
+        try {
+            if (downloadRequiredFiles(benchmarkDir, benchmarkTask, md5ToCheck, sethlansAPIConnectionService, sethlansServerDatabaseService)) {
+                String script = null;
+                benchmarkTask = blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
+                if (benchmarkTask.getComputeType().equals(ComputeType.GPU)) {
+                    script = prepareGPUCyclesBenchmarkScript(blenderPythonScriptService, benchmarkTask);
                 }
-                benchmarkTask.setInProgress(false);
-                benchmarkTask.setComplete(true);
-                blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
+                if (benchmarkTask.getComputeType().equals(ComputeType.CPU)) {
+                    script = prepareCPUCyclesBenchamrkScript(blenderPythonScriptService, benchmarkTask);
+                }
+                int rating = -1;
+
+                if (script != null) {
+                    rating = executeBlenderBenchmark(benchmarkTask, script);
+                }
+                if (rating == -1) {
+                    LOG.error("Benchmark failed.");
+                    LOG.debug(benchmarkTask.toString());
+                } else {
+                    LOG.info("Benchmark complete, saving to database.");
+                    LOG.debug(benchmarkTask.toString());
+                    switch (benchmarkTask.getComputeType()) {
+                        case GPU:
+                            benchmarkTask.setGpuRating(rating);
+
+                        case CPU:
+                            benchmarkTask.setCpuRating(rating);
+
+                    }
+                    benchmarkTask.setInProgress(false);
+                    benchmarkTask.setComplete(true);
+                    blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
+                }
             }
+        } catch (IOException e) {
+            LOG.error(e.getMessage());
         }
 
         benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark_uuid);
