@@ -118,7 +118,7 @@ class DownloadProjectFiles {
                             LOG.info("Required files downloaded.");
                         }
                     }
-                } catch (IOException e) {
+                } catch (IOException | InterruptedException e) {
                     LOG.error(e.getMessage());
                 }
             } else {
@@ -151,7 +151,7 @@ class DownloadProjectFiles {
                             }
 
                     }
-                } catch (IOException e) {
+                } catch (IOException | InterruptedException e) {
                     LOG.error(e.getMessage());
                 }
             }
@@ -184,14 +184,22 @@ class DownloadProjectFiles {
         }
     }
 
-    private static void selectCachedBlend(File blendFileDir, RenderTask renderTask) throws IOException {
+    private static void selectCachedBlend(File blendFileDir, RenderTask renderTask) throws IOException, InterruptedException {
         List<String> filenameSplit = Arrays.asList(renderTask.getBlendFilename().split("\\.(?=[^.]+$)"));
         if (filenameSplit.get(1).contains("blend")) {
             LOG.debug("Verifying md5sum");
-            if (SethlansFileUtils.fileCheckMD5(new File(blendFileDir + File.separator + renderTask.getBlendFilename()), renderTask.getBlendFileMD5Sum())) {
-                renderTask.setBlendFilename(blendFileDir + File.separator + renderTask.getBlendFilename());
-                LOG.info("Blend file for this project exists, using cached version");
+            int count = 0;
+            while(count < 10) {
+                if (SethlansFileUtils.fileCheckMD5(new File(blendFileDir + File.separator + renderTask.getBlendFilename()), renderTask.getBlendFileMD5Sum())) {
+                    renderTask.setBlendFilename(blendFileDir + File.separator + renderTask.getBlendFilename());
+                    LOG.info("Blend file for this project exists, using cached version");
+                    break;
+                } else {
+                    count++;
+                    Thread.sleep(2000);
+                }
             }
+
         } else {
             String filenameWithoutExt = filenameSplit.get(0);
             File[] files = blendFileDir.listFiles();
