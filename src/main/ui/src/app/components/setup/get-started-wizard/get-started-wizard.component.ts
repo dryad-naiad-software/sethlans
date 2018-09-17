@@ -83,8 +83,8 @@ export class GetStartedWizardComponent implements OnInit {
     jsonToSend.login = this.getStartedWizardForm.nodeLogin;
     this.http.post('/api/management/server_to_node_auth', JSON.stringify(jsonToSend), httpOptions).subscribe(() => {
       this.showAuthAlert = false;
-      this.getStartedWizardForm.currentProgress = GetStartedProgress.ADD_NODES;
       this.authComplete = true;
+      this.getStartedWizardForm.currentProgress = GetStartedProgress.ADD_NODES;
     });
   }
 
