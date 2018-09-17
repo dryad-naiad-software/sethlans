@@ -45,6 +45,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansFileUtils.serveFile;
 import static com.dryadandnaiad.sethlans.utils.SethlansQueryUtils.checkFrameRate;
@@ -205,8 +207,10 @@ public class ProjectActionsController {
         String uploadTag = SethlansQueryUtils.getShortUUID();
         String filename = uploadTag + "-" + projectFile.getOriginalFilename().toLowerCase();
         File location = new File(temp + uploadTag + "_zip_file");
+        List<String> filenameSplit = Arrays.asList(projectFile.getOriginalFilename().toLowerCase().split("\\.(?=[^.]+$)"));
+        LOG.debug("Filename and extension " + filenameSplit.toString());
         try {
-            if (projectFile.getContentType().contains("zip") || FilenameUtils.isExtension(projectFile.getOriginalFilename().toLowerCase(), "zip")) {
+            if (projectFile.getContentType().contains("zip") || filenameSplit.get(1).contains("zip")) {
                 location.mkdir();
                 File storeUpload = new File(location + File.separator + uploadTag + "-" + projectFile.getOriginalFilename().toLowerCase());
                 projectFile.transferTo(storeUpload);
@@ -222,7 +226,7 @@ public class ProjectActionsController {
         ProjectForm newProject = new ProjectForm();
         newProject.setUploadedFile(projectFile.getOriginalFilename().toLowerCase());
 
-        if (projectFile.getContentType().contains("zip") || FilenameUtils.isExtension(projectFile.getOriginalFilename().toLowerCase(), "zip")) {
+        if (projectFile.getContentType().contains("zip") || filenameSplit.get(1).contains("zip")) {
             String filenameWithoutExt = FilenameUtils.removeExtension(projectFile.getOriginalFilename().toLowerCase());
             newProject.setFileLocation(location + File.separator + uploadTag + "-" + projectFile.getOriginalFilename().toLowerCase());
             SethlansFileUtils.archiveExtract(filename, location, false);

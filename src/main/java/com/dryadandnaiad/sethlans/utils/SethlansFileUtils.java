@@ -76,7 +76,7 @@ public class SethlansFileUtils {
     public static boolean fileCheckMD5(File file, String md5) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(file);
         String hashValue = DigestUtils.md5Hex(IOUtils.toByteArray(fileInputStream));
-        LOG.debug("Hash md5: " + hashValue + " JSON md5: " + md5);
+        LOG.debug("Current file md5: " + hashValue + " Submitted md5: " + md5);
         return hashValue.equals(md5);
     }
 

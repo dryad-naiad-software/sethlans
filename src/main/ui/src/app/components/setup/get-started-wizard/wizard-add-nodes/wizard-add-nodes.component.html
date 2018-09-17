@@ -16,6 +16,14 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
+<div class="py-2" *ngIf="!getStartedWizardForm.scanComplete">
+  <h5>Checking Connection to Node(s):</h5>
+  <ul>
+    <li *ngFor="let node of getStartedWizardForm.listOfNodes">Querying {{node.ipAddress}}:{{node.port}}
+      &nbsp;&nbsp;<span
+        class="fas fa-circle-notch fa-spin"></span></li>
+  </ul>
+</div>
 <div class="py-2" *ngIf="getStartedWizardForm.scanComplete">
   <h5 *ngIf="getStartedWizardForm.currentProgress == wizardProgress.ADD_NODES">Selected Nodes:</h5>
   <mat-table #resultsTable [dataSource]="obtainedNodeDataSource" matSort>
