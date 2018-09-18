@@ -107,11 +107,7 @@ public class BlenderParseBlendFileServiceImpl implements BlenderParseBlendFileSe
             } else {
                 cyclesSamples = 0;
             }
-            if (resPercent > 100) {
-                resolutionX = (int) (resolutionX * ((float) resPercent / 100.0f));
-                resolutionY = (int) (resolutionY * ((float) resPercent / 100.0f));
-                resPercent = 100;
-            }
+
             if (frameStart < 1) {
                 frameStart = 1;
             }
