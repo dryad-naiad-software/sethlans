@@ -3,7 +3,7 @@
 
 ![logo](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/logo-text-dark.png)
 
-A local render farm system for Blender. https://www.blender.org
+A render farm environment for Blender. https://www.blender.org
  
 ### Terminology
 
