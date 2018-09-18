@@ -169,3 +169,19 @@
   </div>
 </div>
 <app-project-video-settings></app-project-video-settings>
+
+<!--Image Display Modal-->
+<ng-template #stopConfirmation let-c="close('Close click')" let-d="dismiss('Cross click')">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">{{currentProject.projectName}} Result</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <img [src]="modalImage"
+         class="align-top img-fluid img-thumbnail"
+         alt="iamge">
+  </div>
+
+</ng-template>

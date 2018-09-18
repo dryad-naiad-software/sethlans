@@ -139,6 +139,28 @@ public class ProjectUIController {
 
     }
 
+    @GetMapping("/api/project_ui/modal_image/{id}")
+    public ResponseEntity<byte[]> getProjectImage(@PathVariable Long id) {
+        BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
+        if (blenderProject == null) {
+            return null;
+        }
+        if (blenderProject.getCurrentFrameThumbnail().isEmpty()) {
+            return null;
+        }
+        try {
+            File image = new File(blenderProject.getFrameFileNames().get(0));
+            InputStream in = new BufferedInputStream(new FileInputStream(image));
+            byte[] imageToSend = IOUtils.toByteArray(in);
+            in.close();
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(imageToSend);
+
+        } catch (IOException e) {
+            LOG.error("No Image file found");
+            return null;
+        }
+    }
+
     @GetMapping("/api/project_ui/thumbnail/{id}")
     public ResponseEntity<byte[]> getThumbnailImage(@PathVariable Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
