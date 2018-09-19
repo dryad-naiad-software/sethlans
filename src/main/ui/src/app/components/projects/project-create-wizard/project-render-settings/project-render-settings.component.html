@@ -65,16 +65,10 @@
     </div>
     <div class="form-row">
       <div class="col">
-        <label for="resPercentage">Render Image Scaling Percentage:</label>&nbsp;<strong>{{projectWizard.project.resPercentage}}&#37;</strong>
+        <label for="resPercentage">Render Image Scaling Percentage:</label>
         <div class="form-inline">
-          <mat-slider
-            id="resPercentage"
-            name="resPercentage"
-            min="1"
-            step="1"
-            thumb-label="true"
-            max="100"
-            [(ngModel)]="projectWizard.project.resPercentage"></mat-slider>
+          <input type="number" class="form-control form-inline" id="resPercentage" name="resPercentage"
+                 [(ngModel)]="projectWizard.project.resPercentage">
         </div>
       </div>
       <div class="col">
@@ -91,19 +85,6 @@
                   [(ngModel)]="projectWizard.project.partsPerFrame">
             <option *ngFor="let numberOfParts of validPartsPerFrame">{{numberOfParts}}</option>
           </select>
-          <!--<span-->
-          <!--*ngIf="projectWizard.project.useParts">{{projectWizard.project.partsPerFrame}}</span>-->
-          <!--<span *ngIf="!projectWizard.project.useParts" class="text-danger">&nbsp;Disabled</span>-->
-          <!--<div class="form-inline">-->
-          <!--<mat-slider [disabled]="!projectWizard.project.useParts"-->
-          <!--id="partsPerFrame"-->
-          <!--name="partsPerFrame"-->
-          <!--min="2"-->
-          <!--step="2"-->
-          <!--thumb-label="true"-->
-          <!--max="8"-->
-          <!--[(ngModel)]="projectWizard.project.partsPerFrame"></mat-slider>-->
-          <!--</div>-->
         </div>
       </div>
     </div>

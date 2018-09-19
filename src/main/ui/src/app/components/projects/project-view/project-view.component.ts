@@ -28,7 +28,6 @@ import {ProjectType} from '../../../enums/project_type.enum';
 import {BlenderEngine} from '../../../enums/blender_engine.enum';
 import {ComputeMethod} from '../../../enums/compute.method.enum';
 import {ProjectVideoSettingsComponent} from '../project-video-settings/project-video-settings.component';
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-project-view',
@@ -56,7 +55,7 @@ export class ProjectViewComponent implements OnInit {
   @ViewChild(ProjectVideoSettingsComponent) videoSettings: ProjectVideoSettingsComponent;
 
 
-  constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute, private modalService: NgbModal) {
+  constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute) {
     this.currentProject = new Project();
     this.route.params.subscribe(params => {
       this.id = +params['id'];
@@ -78,9 +77,11 @@ export class ProjectViewComponent implements OnInit {
       this.getRemainingQueueSize();
       this.getThumbnailStatus();
       this.getNodeStatus();
+      this.getProjectModalImage();
       this.disableButton = false;
     });
   }
+
 
   getTotalQueueSize() {
     this.http.get('/api/project_ui/total_queue/' + this.id + '/').subscribe((totalQueue: number) => {
