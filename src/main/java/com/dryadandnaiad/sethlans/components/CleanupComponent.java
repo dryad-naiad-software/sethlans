@@ -21,11 +21,14 @@ package com.dryadandnaiad.sethlans.components;
 
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.services.system.SethlansLogManagementService;
 import com.dryadandnaiad.sethlans.utils.SethlansConfigUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
+import org.hibernate.envers.Audited;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -42,22 +45,22 @@ import java.io.IOException;
 @Component
 @Profile({"SERVER", "NODE", "DUAL"})
 public class CleanupComponent {
+    private SethlansLogManagementService sethlansLogManagementService;
 
     private static final Logger LOG = LoggerFactory.getLogger(CleanupComponent.class);
 
     @PostConstruct
     public void cleanFiles() {
         SethlansMode sethlansMode = SethlansMode.valueOf(SethlansConfigUtils.getProperty(SethlansConfigKeys.MODE));
-        if (!sethlansMode.equals(SethlansMode.NODE)) {
-            String tempDir = SethlansConfigUtils.getProperty(SethlansConfigKeys.TEMP_DIR);
-            File tempDirToClean = new File(tempDir);
-            try {
-                if (tempDirToClean.exists()) {
-                    FileUtils.cleanDirectory(tempDirToClean);
-                }
-            } catch (IOException e) {
-                LOG.error(e.getMessage() + Throwables.getStackTraceAsString(e));
+        sethlansLogManagementService.checkAndArchiveLogFiles();
+        String tempDir = SethlansConfigUtils.getProperty(SethlansConfigKeys.TEMP_DIR);
+        File tempDirToClean = new File(tempDir);
+        try {
+            if (tempDirToClean.exists()) {
+                FileUtils.cleanDirectory(tempDirToClean);
             }
+        } catch (IOException e) {
+            LOG.error(e.getMessage() + Throwables.getStackTraceAsString(e));
         }
 
         if (!sethlansMode.equals(SethlansMode.SERVER)) {
@@ -78,6 +81,10 @@ public class CleanupComponent {
             }
         }
 
+    }
 
+    @Autowired
+    public void setSethlansLogManagementService(SethlansLogManagementService sethlansLogManagementService) {
+        this.sethlansLogManagementService = sethlansLogManagementService;
     }
 }

@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.services.system;
 
 import com.dryadandnaiad.sethlans.domains.info.Log;
+import org.springframework.scheduling.annotation.Async;
 
 import java.io.File;
 import java.util.List;
@@ -34,6 +35,9 @@ public interface SethlansLogManagementService {
     File retrieveLogFiles();
 
     boolean archiveLogFiles();
+
+    @Async
+    void checkAndArchiveLogFiles();
 
     List<Log> sethlansLogList();
 }

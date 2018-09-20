@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.utils.SethlansFileUtils;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -48,6 +49,24 @@ import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 @Service
 public class SethlansLogManagementServiceImpl implements SethlansLogManagementService {
     private static final Logger LOG = LoggerFactory.getLogger(SethlansLogManagementServiceImpl.class);
+
+    @Override
+    @Async
+    public void checkAndArchiveLogFiles(){
+        while(true) {
+            LOG.debug("Checking to see if logs are at max capacity");
+            if(isLogDirectoryAtMax()) {
+                archiveLogFiles();
+            }
+            try {
+                Thread.sleep(900000);
+            } catch (InterruptedException e) {
+                LOG.debug("Stopping Log Management Service");
+                break;
+            }
+        }
+
+    }
 
     @Override
     public List<Log> sethlansLogList() {
@@ -111,6 +130,18 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
         } catch (Exception e) {
             LOG.error(e.getMessage());
 
+        }
+        return false;
+    }
+
+    private boolean isLogDirectoryAtMax(){
+        File logDir = new File(getProperty(SethlansConfigKeys.LOGGING_DIR));
+        List<File> logFiles = Arrays.asList(logDir.listFiles());
+        for (File log : logFiles) {
+            List<String> logFileName = Arrays.asList(log.toString().split("\\.(?=[^.]+$)"));
+            if (!logFileName.get(1).contains("7")) {
+                return true;
+            }
         }
         return false;
     }
