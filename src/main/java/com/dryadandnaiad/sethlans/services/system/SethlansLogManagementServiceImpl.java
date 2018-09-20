@@ -80,6 +80,7 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
     @Override
     public File retrieveLogFiles() {
         archiveLogFiles();
+        LOG.debug("Retrieving Sethlans Log bundle.");
         String archiveName = "sethlans_log_bundle_" + new Timestamp(System.currentTimeMillis()).toString() + ".zip";
         String logDir = getProperty(SethlansConfigKeys.LOGGING_DIR);
         String tempDir = getProperty(SethlansConfigKeys.TEMP_DIR);
@@ -99,6 +100,7 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
 
     @Override
     public boolean archiveLogFiles() {
+        LOG.debug("Attempting to archive log files.");
         try {
             String archiveName = "sethlans_logs_" + new Timestamp(System.currentTimeMillis()).toString() + ".zip";
             List<String> filesToArchive = new ArrayList<>();
@@ -120,6 +122,7 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
                             log.delete();
                         }
                     }
+                    LOG.debug("Log files successfully archived.");
                     return true;
                 } else {
                     return false;
