@@ -59,40 +59,60 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
     }
 
     @Override
-    public File archiveLogFiles() {
+    public File retrieveLogFiles() {
+        archiveLogFiles();
+        String archiveName = "sethlans_log_bundle_" + new Timestamp(System.currentTimeMillis()).toString() + ".zip";
+        String logDir = getProperty(SethlansConfigKeys.LOGGING_DIR);
+        String tempDir = getProperty(SethlansConfigKeys.TEMP_DIR);
         try {
-            String archiveName = "sethlans_log" + new Timestamp(System.currentTimeMillis()).toString() + ".zip";
+            File logArchiveDir = new File(logDir + File.separator + "archive");
+            List<File> logArchives = Arrays.asList(logArchiveDir.listFiles());
+            List<String> archiveList = new ArrayList<>();
+            for (File archive : logArchives) {
+                archiveList.add(archive.toString());
+            }
+            return SethlansFileUtils.createArchive(archiveList, tempDir, archiveName);
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public boolean archiveLogFiles() {
+        try {
+            String archiveName = "sethlans_logs_" + new Timestamp(System.currentTimeMillis()).toString() + ".zip";
             List<String> filesToArchive = new ArrayList<>();
             File logDir = new File(getProperty(SethlansConfigKeys.LOGGING_DIR));
             File logArchiveDir = new File(logDir.toString() + File.separator + "archive");
-            if(logArchiveDir.mkdirs()){
+            if (logArchiveDir.mkdirs()) {
                 List<File> logFiles = Arrays.asList(logDir.listFiles());
-                for (File log:logFiles) {
+                for (File log : logFiles) {
                     List<String> logFileName = Arrays.asList(log.toString().split("\\.(?=[^.]+$)"));
-                    if(!logFileName.get(1).contains("log")) {
+                    if (!logFileName.get(1).contains("log")) {
                         filesToArchive.add(log.toString());
                     }
                 }
                 File archive = SethlansFileUtils.createArchive(filesToArchive, logArchiveDir.toString(), archiveName);
-                if(archive.exists()) {
-                    for (File log:logFiles) {
+                if (archive.exists()) {
+                    for (File log : logFiles) {
                         List<String> logFileName = Arrays.asList(log.toString().split("\\.(?=[^.]+$)"));
-                        if(!logFileName.get(1).contains("log")) {
+                        if (!logFileName.get(1).contains("log")) {
                             log.delete();
                         }
                     }
-                    return archive;
+                    return true;
                 } else {
-                    return null;
+                    return false;
                 }
             }
 
 
-        }catch  (Exception e){
-            LOG.error(e.getLocalizedMessage());
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
 
         }
-        return null;
+        return false;
     }
 
     private void populateLogList(String logFile, List<Log> logList) {

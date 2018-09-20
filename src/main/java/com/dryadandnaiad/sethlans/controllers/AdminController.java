@@ -33,6 +33,7 @@ import com.dryadandnaiad.sethlans.services.mail.SethlansEmailService;
 import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
 import com.dryadandnaiad.sethlans.services.system.SethlansLogManagementService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
+import com.dryadandnaiad.sethlans.utils.SethlansFileUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,11 +45,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.writeProperty;
+import static com.dryadandnaiad.sethlans.utils.SethlansFileUtils.serveFile;
+
 /**
  * Created Mario Estrella on 3/2/18.
  * Dryad and Naiad Software LLC
@@ -126,6 +131,14 @@ public class AdminController {
     @GetMapping(value = {"/get_logs"})
     public List<Log> getSethlansLogs() {
         return sethlansLogManagementService.sethlansLogList();
+    }
+
+    @GetMapping(value = {"/get_latest_log_archives"})
+    public void getLatestLogArchiveFile(HttpServletResponse response){
+        File zipFile = sethlansLogManagementService.retrieveLogFiles();
+        if (zipFile != null) {
+            serveFile(zipFile, response);
+        }
     }
 
     @GetMapping(value = "/current_settings")

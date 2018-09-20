@@ -31,7 +31,9 @@ import java.util.List;
  * Project: sethlans
  */
 public interface SethlansLogManagementService {
-    File archiveLogFiles();
+    File retrieveLogFiles();
+
+    boolean archiveLogFiles();
 
     List<Log> sethlansLogList();
 }
