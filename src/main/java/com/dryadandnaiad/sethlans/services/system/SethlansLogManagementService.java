@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.system;
 
 import com.dryadandnaiad.sethlans.domains.info.Log;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ import java.util.List;
  * Project: sethlans
  */
 public interface SethlansLogManagementService {
-    boolean archiveLogFiles();
+    File archiveLogFiles();
 
     List<Log> sethlansLogList();
 }

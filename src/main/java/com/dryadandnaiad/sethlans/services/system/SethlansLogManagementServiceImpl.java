@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.system;
 
 import com.dryadandnaiad.sethlans.domains.info.Log;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
+import com.dryadandnaiad.sethlans.utils.SethlansFileUtils;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +31,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
@@ -56,10 +59,40 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
     }
 
     @Override
-    public boolean archiveLogFiles() {
-        File logDir = new File(getProperty(SethlansConfigKeys.LOGGING_DIR));
-        List<File> logFiles = Arrays.asList(logDir.listFiles());
-        return false;
+    public File archiveLogFiles() {
+        try {
+            String archiveName = "sethlans_log" + new Timestamp(System.currentTimeMillis()).toString() + ".zip";
+            List<String> filesToArchive = new ArrayList<>();
+            File logDir = new File(getProperty(SethlansConfigKeys.LOGGING_DIR));
+            File logArchiveDir = new File(logDir.toString() + File.separator + "archive");
+            if(logArchiveDir.mkdirs()){
+                List<File> logFiles = Arrays.asList(logDir.listFiles());
+                for (File log:logFiles) {
+                    List<String> logFileName = Arrays.asList(log.toString().split("\\.(?=[^.]+$)"));
+                    if(!logFileName.get(1).contains("log")) {
+                        filesToArchive.add(log.toString());
+                    }
+                }
+                File archive = SethlansFileUtils.createArchive(filesToArchive, logArchiveDir.toString(), archiveName);
+                if(archive.exists()) {
+                    for (File log:logFiles) {
+                        List<String> logFileName = Arrays.asList(log.toString().split("\\.(?=[^.]+$)"));
+                        if(!logFileName.get(1).contains("log")) {
+                            log.delete();
+                        }
+                    }
+                    return archive;
+                } else {
+                    return null;
+                }
+            }
+
+
+        }catch  (Exception e){
+            LOG.error(e.getLocalizedMessage());
+
+        }
+        return null;
     }
 
     private void populateLogList(String logFile, List<Log> logList) {

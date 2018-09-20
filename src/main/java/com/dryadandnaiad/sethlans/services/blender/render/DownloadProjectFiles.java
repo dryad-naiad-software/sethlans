@@ -164,7 +164,8 @@ class DownloadProjectFiles {
         int count = 0;
         LOG.debug("Checking to see if blend file download or extraction is currently in progress. " + blendFileDir.toString());
         while (count < 10) {
-            String filenameWithoutExt = FilenameUtils.removeExtension(renderTask.getBlendFilename());
+            List<String> filenameAndExtension = Arrays.asList(renderTask.getBlendFilename().split("\\.(?=[^.]+$)"));
+            String filenameWithoutExt = filenameAndExtension.get(0);
             File[] files = blendFileDir.listFiles();
             for (File file : files != null ? files : new File[0]) {
                 if (file.toString().contains(filenameWithoutExt + ".blend")) {
