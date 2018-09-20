@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,16 +43,23 @@ import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
  * Project: sethlans
  */
 @Service
-public class SethlansLogRetrievalServiceImpl implements SethlansLogRetrievalService {
-    private static final Logger LOG = LoggerFactory.getLogger(SethlansLogRetrievalServiceImpl.class);
+public class SethlansLogManagementServiceImpl implements SethlansLogManagementService {
+    private static final Logger LOG = LoggerFactory.getLogger(SethlansLogManagementServiceImpl.class);
 
     @Override
     public List<Log> sethlansLogList() {
         List<Log> logList = new ArrayList<>();
-        String sethlansLog = getProperty(SethlansConfigKeys.LOGGING_FILE.toString());
+        String sethlansLog = getProperty(SethlansConfigKeys.LOGGING_FILE);
         LOG.debug("Reading log entries from " + sethlansLog);
         populateLogList(sethlansLog, logList);
         return logList;
+    }
+
+    @Override
+    public boolean archiveLogFiles() {
+        File logDir = new File(getProperty(SethlansConfigKeys.LOGGING_DIR));
+        List<File> logFiles = Arrays.asList(logDir.listFiles());
+        return false;
     }
 
     private void populateLogList(String logFile, List<Log> logList) {

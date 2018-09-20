@@ -31,7 +31,7 @@ import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
 import com.dryadandnaiad.sethlans.services.mail.SethlansEmailService;
 import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
-import com.dryadandnaiad.sethlans.services.system.SethlansLogRetrievalService;
+import com.dryadandnaiad.sethlans.services.system.SethlansLogManagementService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.slf4j.Logger;
@@ -59,7 +59,7 @@ import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.writeProperty
 @RequestMapping("/api/management")
 public class AdminController {
     private SethlansUserDatabaseService sethlansUserDatabaseService;
-    private SethlansLogRetrievalService sethlansLogRetrievalService;
+    private SethlansLogManagementService sethlansLogManagementService;
     private SethlansManagerService sethlansManagerService;
     private SethlansNotificationService sethlansNotificationService;
     private SethlansEmailService sethlansEmailService;
@@ -125,7 +125,7 @@ public class AdminController {
 
     @GetMapping(value = {"/get_logs"})
     public List<Log> getSethlansLogs() {
-        return sethlansLogRetrievalService.sethlansLogList();
+        return sethlansLogManagementService.sethlansLogList();
     }
 
     @GetMapping(value = "/current_settings")
@@ -344,8 +344,8 @@ public class AdminController {
     }
 
     @Autowired
-    public void setSethlansLogRetrievalService(SethlansLogRetrievalService sethlansLogRetrievalService) {
-        this.sethlansLogRetrievalService = sethlansLogRetrievalService;
+    public void setSethlansLogManagementService(SethlansLogManagementService sethlansLogManagementService) {
+        this.sethlansLogManagementService = sethlansLogManagementService;
     }
 
     @Autowired

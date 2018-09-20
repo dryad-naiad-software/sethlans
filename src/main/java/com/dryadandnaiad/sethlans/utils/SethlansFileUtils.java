@@ -97,22 +97,22 @@ public class SethlansFileUtils {
         return new ImageIcon(imageURL, description).getImage();
     }
 
-    public static File createArchive(List<String> frameFileNames, String projectRootDir, String projectName) {
+    public static File createArchive(List<String> files, String rootDir, String zipFileName) {
         File createdArchive = null;
         try {
-            if (!new File(projectRootDir + File.separator + projectName + ".zip").exists()) {
-                LOG.debug("Creating Archive for " + projectName);
-                ZipFile zipFile = new ZipFile(projectRootDir + File.separator + projectName + ".zip");
+            if (!new File(rootDir + File.separator + zipFileName + ".zip").exists()) {
+                LOG.debug("Creating Archive " + zipFileName);
+                ZipFile zipFile = new ZipFile(rootDir + File.separator + zipFileName + ".zip");
                 ZipParameters parameters = new ZipParameters();
                 parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
                 parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_MAXIMUM);
-                for (String frameFileName : frameFileNames) {
+                for (String frameFileName : files) {
                     File frame = new File(frameFileName);
                     zipFile.addFile(frame, parameters);
                 }
-                createdArchive = new File(projectRootDir + File.separator + projectName + ".zip");
+                createdArchive = new File(rootDir + File.separator + zipFileName + ".zip");
             } else {
-                createdArchive = new File(projectRootDir + File.separator + projectName + ".zip");
+                createdArchive = new File(rootDir + File.separator + zipFileName + ".zip");
             }
 
         } catch (ZipException e) {
