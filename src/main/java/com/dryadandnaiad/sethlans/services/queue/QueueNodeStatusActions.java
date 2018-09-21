@@ -51,108 +51,116 @@ public class QueueNodeStatusActions {
                                     BlenderProjectDatabaseService blenderProjectDatabaseService,
                                     SethlansNotificationService sethlansNotificationService,
                                     List<NodeOnlineItem> processedStatusNodes) {
-        SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(nodeOnlineItem.getConnectionUUID());
-        if (!nodeOnlineItem.isOnline()) {
-            LOG.info("Marking node " + sethlansNode.getHostname() + " as inactive.");
-            String message = sethlansNode.getHostname() + " has gone offline";
-            SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SYSTEM, message);
-            sethlansNotification.setMailable(true);
-            sethlansNotification.setSubject("Node has gone offline!");
-            sethlansNotification.setLinkPresent(true);
-            sethlansNotification.setMessageLink("/admin/nodes");
-            sethlansNotificationService.sendNotification(sethlansNotification);
-            switch (sethlansNode.getComputeType()) {
-                case GPU:
-                    sethlansNode.setAllGPUSlotInUse(false);
-                    if (sethlansNode.isCombined()) {
-                        sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                    } else {
-                        if (sethlansNode.getAvailableRenderingSlots() == 1) {
+        try {
+            SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(nodeOnlineItem.getConnectionUUID());
+            if (!nodeOnlineItem.isOnline()) {
+                LOG.info("Marking node " + sethlansNode.getHostname() + " as inactive.");
+                String message = sethlansNode.getHostname() + " has gone offline";
+                SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SYSTEM, message);
+                sethlansNotification.setMailable(true);
+                sethlansNotification.setSubject("Node has gone offline!");
+                sethlansNotification.setLinkPresent(true);
+                sethlansNotification.setMessageLink("/admin/nodes");
+                sethlansNotificationService.sendNotification(sethlansNotification);
+                switch (sethlansNode.getComputeType()) {
+                    case GPU:
+                        sethlansNode.setAllGPUSlotInUse(false);
+                        if (sethlansNode.isCombined()) {
                             sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
                         } else {
-                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+                            if (sethlansNode.getAvailableRenderingSlots() == 1) {
+                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                            } else {
+                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+                            }
                         }
-                    }
-                    sethlansNode.setActive(false);
-                    sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                    break;
-                case CPU:
-                    sethlansNode.setActive(false);
-                    sethlansNode.setCpuSlotInUse(false);
-                    sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                    sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                    break;
-                case CPU_GPU:
-                    sethlansNode.setActive(false);
-                    sethlansNode.setCpuSlotInUse(false);
-                    sethlansNode.setAllGPUSlotInUse(false);
-                    sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                    sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                    break;
+                        sethlansNode.setActive(false);
+                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                        break;
+                    case CPU:
+                        sethlansNode.setActive(false);
+                        sethlansNode.setCpuSlotInUse(false);
+                        sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                        break;
+                    case CPU_GPU:
+                        sethlansNode.setActive(false);
+                        sethlansNode.setCpuSlotInUse(false);
+                        sethlansNode.setAllGPUSlotInUse(false);
+                        sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                        break;
+                }
+                if (renderQueueDatabaseService.tableSize() > 0) {
+                    removeNodeFromQueue(sethlansNode.getConnectionUUID(), renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNode);
+                }
             }
-            if (renderQueueDatabaseService.tableSize() > 0) {
-                removeNodeFromQueue(sethlansNode.getConnectionUUID(), renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNode);
+            if (nodeOnlineItem.isOnline()) {
+                LOG.info("Marking node " + sethlansNode.getHostname() + " as active.");
+                String message = sethlansNode.getHostname() + " is back online";
+                SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SYSTEM, message);
+                sethlansNotification.setMailable(true);
+                sethlansNotification.setSubject("Node is back online!");
+                sethlansNotification.setLinkPresent(true);
+                sethlansNotification.setMessageLink("/admin/nodes");
+                sethlansNotificationService.sendNotification(sethlansNotification);
+                sethlansNode.setActive(true);
+                sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
             }
-        }
-        if (nodeOnlineItem.isOnline()) {
-            LOG.info("Marking node " + sethlansNode.getHostname() + " as active.");
-            String message = sethlansNode.getHostname() + " is back online";
-            SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SYSTEM, message);
-            sethlansNotification.setMailable(true);
-            sethlansNotification.setSubject("Node is back online!");
-            sethlansNotification.setLinkPresent(true);
-            sethlansNotification.setMessageLink("/admin/nodes");
-            sethlansNotificationService.sendNotification(sethlansNotification);
-            sethlansNode.setActive(true);
-            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-        }
 
-        processedStatusNodes.add(nodeOnlineItem);
+            processedStatusNodes.add(nodeOnlineItem);
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+        }
     }
 
     static void processIdleNodes(SethlansNodeDatabaseService sethlansNodeDatabaseService,
                                  ProcessIdleNode idleNode, RenderQueueDatabaseService renderQueueDatabaseService,
                                  BlenderProjectDatabaseService blenderProjectDatabaseService, List<ProcessIdleNode> processedNodes, List<ProcessQueueItem> incomingQueueItemList) {
-        SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(idleNode.getConnectionUUID());
-        boolean waitingTobeProcessed = false;
-        // Verify that the current node isn't waiting to be processed.
-        for (ProcessQueueItem processQueueItem : incomingQueueItemList) {
-            if (processQueueItem.getConnectionUUID().equals(idleNode.getConnectionUUID())) {
-                waitingTobeProcessed = true;
+        try {
+            SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(idleNode.getConnectionUUID());
+            boolean waitingTobeProcessed = false;
+            // Verify that the current node isn't waiting to be processed.
+            for (ProcessQueueItem processQueueItem : incomingQueueItemList) {
+                if (processQueueItem.getConnectionUUID().equals(idleNode.getConnectionUUID())) {
+                    waitingTobeProcessed = true;
+                }
             }
-        }
-        if (sethlansNode.isBenchmarkComplete() && !waitingTobeProcessed) {
-            LOG.debug("Received idle notification from  " + sethlansNode.getHostname());
-            switch (idleNode.getComputeType()) {
-                case GPU:
-                    sethlansNode.setAllGPUSlotInUse(false);
-                    if (sethlansNode.isCombined()) {
-                        sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                    } else {
-                        if (sethlansNode.getAvailableRenderingSlots() == 1) {
+            if (sethlansNode.isBenchmarkComplete() && !waitingTobeProcessed) {
+                LOG.debug("Received idle notification from  " + sethlansNode.getHostname());
+                switch (idleNode.getComputeType()) {
+                    case GPU:
+                        sethlansNode.setAllGPUSlotInUse(false);
+                        if (sethlansNode.isCombined()) {
                             sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
                         } else {
-                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+                            if (sethlansNode.getAvailableRenderingSlots() == 1) {
+                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                            } else {
+                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+                            }
                         }
-                    }
-                    sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                    break;
-                case CPU:
-                    sethlansNode.setCpuSlotInUse(false);
-                    sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                    sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                    break;
-                case CPU_GPU:
-                    sethlansNode.setCpuSlotInUse(false);
-                    sethlansNode.setAllGPUSlotInUse(false);
-                    sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                    sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                    break;
-            }
+                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                        break;
+                    case CPU:
+                        sethlansNode.setCpuSlotInUse(false);
+                        sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                        break;
+                    case CPU_GPU:
+                        sethlansNode.setCpuSlotInUse(false);
+                        sethlansNode.setAllGPUSlotInUse(false);
+                        sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                        break;
+                }
 
-            removeNodeFromQueue(idleNode.getConnectionUUID(), renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNode);
+                removeNodeFromQueue(idleNode.getConnectionUUID(), renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNode);
+            }
+            processedNodes.add(idleNode);
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
         }
-        processedNodes.add(idleNode);
     }
 
     static void deleteNodes(Long nodeID, SethlansNodeDatabaseService sethlansNodeDatabaseService, RenderQueueDatabaseService renderQueueDatabaseService, BlenderProjectDatabaseService blenderProjectDatabaseService) {
