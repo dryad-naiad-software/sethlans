@@ -32,7 +32,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -81,12 +81,12 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
     public File retrieveLogFiles() {
         archiveLogFiles();
         LOG.debug("Retrieving Sethlans Log bundle.");
-        String archiveName = "sethlans_log_bundle_" + new Timestamp(System.currentTimeMillis()).toString() + ".zip";
+        String archiveName = "sethlans_log_bundle_" + new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
         String logDir = getProperty(SethlansConfigKeys.LOGGING_DIR);
         String tempDir = getProperty(SethlansConfigKeys.TEMP_DIR);
         try {
             File logArchiveDir = new File(logDir + File.separator + "archive");
-            List<File> logArchives = Arrays.asList(logArchiveDir.listFiles());
+            File[] logArchives = logArchiveDir.listFiles();
             List<String> archiveList = new ArrayList<>();
             for (File archive : logArchives) {
                 archiveList.add(archive.toString());
@@ -102,12 +102,12 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
     public boolean archiveLogFiles() {
         LOG.debug("Attempting to archive log files.");
         try {
-            String archiveName = "sethlans_logs_" + new Timestamp(System.currentTimeMillis()).toString() + ".zip";
+            String archiveName = "sethlans_logs_" + new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
             List<String> filesToArchive = new ArrayList<>();
             File logDir = new File(getProperty(SethlansConfigKeys.LOGGING_DIR));
             File logArchiveDir = new File(logDir.toString() + File.separator + "archive");
             if (logArchiveDir.mkdirs()) {
-                List<File> logFiles = Arrays.asList(logDir.listFiles());
+                File[] logFiles = logDir.listFiles();
                 for (File log : logFiles) {
                     List<String> logFileName = Arrays.asList(log.toString().split("\\.(?=[^.]+$)"));
                     if (!logFileName.get(1).contains("log")) {
@@ -139,7 +139,7 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
 
     private boolean isLogDirectoryAtMax(){
         File logDir = new File(getProperty(SethlansConfigKeys.LOGGING_DIR));
-        List<File> logFiles = Arrays.asList(logDir.listFiles());
+        File[] logFiles = logDir.listFiles();
         for (File log : logFiles) {
             List<String> logFileName = Arrays.asList(log.toString().split("\\.(?=[^.]+$)"));
             if (!logFileName.get(1).contains("7")) {
