@@ -41,6 +41,10 @@ export class LogsComponent implements OnInit {
     this.loadLogs();
   }
 
+  downloadLogs() {
+    window.location.href = '/api/management/get_latest_log_archives/';
+  }
+
   loadLogs() {
     this.http.get('/api/management/get_logs/').subscribe((logList: SethlansLog[]) => {
       this.dataSource = new MatTableDataSource<any>(logList);

@@ -21,13 +21,19 @@
   <div class="col-md-10 m-auto">
     <div class="card">
       <div class="card-header">
-        <h4>
+        <h4 class="float-left">
           <span style="font-family: 'Fjalla One', sans-serif; ">Logs</span>
-          <button class="btn btn-outline-dark float-right"
+        </h4>
+        <div class="btn-toolbar float-right">
+          <button class="mr-2 btn btn-outline-dark"
                   (click)="loadLogs()">
             <span class="fas fa-sync"></span>&nbsp;<span>Refresh</span>
           </button>
-        </h4>
+          <button class="btn btn-outline-dark"
+                  (click)="downloadLogs()">
+            <span class="fa fa-download"></span>&nbsp;<span>Download</span>
+          </button>
+        </div>
       </div>
       <div class="card-body">
         <mat-form-field>

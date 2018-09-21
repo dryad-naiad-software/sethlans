@@ -85,9 +85,11 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
         String logDir = getProperty(SethlansConfigKeys.LOGGING_DIR);
         String tempDir = getProperty(SethlansConfigKeys.TEMP_DIR);
         try {
+            String mainLog = getProperty(SethlansConfigKeys.LOGGING_FILE);
             File logArchiveDir = new File(logDir + File.separator + "archive");
             File[] logArchives = logArchiveDir.listFiles();
             List<String> archiveList = new ArrayList<>();
+            archiveList.add(mainLog);
             for (File archive : logArchives) {
                 archiveList.add(archive.toString());
             }
@@ -102,7 +104,7 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
     public boolean archiveLogFiles() {
         LOG.debug("Attempting to archive log files.");
         try {
-            String archiveName = "sethlans_logs_" + new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
+            String archiveName = "sethlans_log_archive_" + new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
             List<String> filesToArchive = new ArrayList<>();
             File logDir = new File(getProperty(SethlansConfigKeys.LOGGING_DIR));
             File logArchiveDir = new File(logDir.toString() + File.separator + "archive");
