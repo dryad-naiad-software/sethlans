@@ -144,7 +144,7 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
         File[] logFiles = logDir.listFiles();
         for (File log : logFiles) {
             List<String> logFileName = Arrays.asList(log.toString().split("\\.(?=[^.]+$)"));
-            if (!logFileName.get(1).contains("7")) {
+            if (logFileName.get(1).contains("7")) {
                 return true;
             }
         }
