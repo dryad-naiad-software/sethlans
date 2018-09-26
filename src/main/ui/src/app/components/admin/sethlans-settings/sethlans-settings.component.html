@@ -70,6 +70,78 @@
           </tr>
           </tbody>
         </table>
+        <table class="table table-striped table-sm">
+          <thead>
+          <h5>Mail Configuration</h5>
+          </thead>
+          <tbody>
+          <tr>
+            <td style="width: 40%">SMTP Server Enabled</td>
+            <td style="width: 75%">true</td>
+            <td style="width: 33%">
+              <button class="btn btn-outline-primary btn-sm" (click)="open(portEditModal)">Edit</button>
+            </td>
+          </tr>
+          <tr>
+            <td>SMTP Server</td>
+            <td>test.example.com</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm" (click)="open(ipEditModal)">Edit</button>
+            </td>
+          </tr>
+          <tr>
+            <td>SMTP Port</td>
+            <td>25</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Reply To Address</td>
+            <td>noreply@example.com</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Use SSL</td>
+            <td>true</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
+            </td>
+          <tr>
+            <td>Enable Start TLS</td>
+            <td>false</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Require Start TLS</td>
+            <td>false</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
+            </td>
+          </tr>
+          <tr>
+            <td>Use SMTP Authentication</td>
+            <td>true</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
+            </td>
+          </tr>
+          <tr>
+            <td>SMTP Username</td>
+            <td>kitty</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
+            </td>
+          </tr>
+          <tr>
+            <td>SMTP Password</td>
+            <td>**********</td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
         <button [disabled]="!newSettings" type="button" class="btn btn-outline-secondary mr-auto float-left"
                 (click)="undo()">Undo Changes
         </button>
