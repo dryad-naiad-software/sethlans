@@ -30,7 +30,6 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,21 +102,13 @@ class ExecuteRenderTask {
                             LOG.error("Render failed: Error: Failed to read blend file ... Missing DNA block");
                             return -1L;
                         }
-                        if (output.toLowerCase().contains("finished")) {
+                        if (output.toLowerCase().contains("saving:")) {
                             time = SethlansQueryUtils.getRenderTime(output, time);
                         }
                         break;
                     case BLENDER_RENDER:
                         if (output.toLowerCase().contains("saving:")) {
-                            String[] finished = output.split("\\|");
-                            for (String item : finished) {
-                                LOG.debug(item);
-                                if (item.contains(" Time:")) {
-                                    time = StringUtils.substringAfter(item, ":");
-                                    time = StringUtils.substringBefore(time, ".");
-                                    time = time.replaceAll("\\s", "");
-                                }
-                            }
+                            time = SethlansQueryUtils.getRenderTime(output, time);
                         }
                 }
 

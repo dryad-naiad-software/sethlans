@@ -289,7 +289,8 @@ public class SethlansQueryUtils {
                 time = StringUtils.substringBefore(time, ".");
             }
         }
-        return time;
+        LOG.debug(time);
+        return time.replaceAll("\\s", "");
     }
 
     public static ProjectInfo convertBlenderProjectToProjectInfo(BlenderProject blenderProject) {
