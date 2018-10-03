@@ -117,20 +117,19 @@ class PrepareRenderScripts {
         return script;
     }
 
-    private static List<String> getUnselectedIds(List<String> cudaList) {
+    private static List<String> getUnselectedIds(List<String> deviceList) {
         List<GPUDevice> gpuDeviceList = GPU.listDevices();
-        List<String> unselectedGPUs = new ArrayList<>();
-        for (GPUDevice gpuDevice : gpuDeviceList) {
-            for (String cuda : cudaList) {
-                if (!cuda.equals(gpuDevice.getDeviceID())) {
-                    unselectedGPUs.add(gpuDevice.getDeviceID());
-                }
-            }
-        }
+        List<String> gpusToCompare = new ArrayList<>();
         List<String> unselectedIds = new ArrayList<>();
-        for (String gpUs : unselectedGPUs) {
+        for (GPUDevice gpuDevice : gpuDeviceList) {
+            gpusToCompare.add(gpuDevice.getDeviceID());
+        }
+        gpusToCompare.removeAll(deviceList);
+
+        for (String gpUs : gpusToCompare) {
             unselectedIds.add(StringUtils.substringAfter(gpUs, "_"));
         }
+        LOG.debug("The following devices are unselected: " + gpusToCompare);
         return unselectedIds;
     }
 }
