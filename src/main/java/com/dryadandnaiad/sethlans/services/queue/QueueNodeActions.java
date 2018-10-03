@@ -125,17 +125,36 @@ class QueueNodeActions {
                             + renderQueueItem.getBlenderFramePart().getFrameNumber() + " Part: "
                             + renderQueueItem.getBlenderFramePart().getPartNumber() + " is waiting to be rendered.");
                     renderQueueItem = setQueueItemToNode(sethlansNodeDatabaseService, i, nodesToUpdate, renderQueueItem);
-                    LOG.debug(renderQueueItem.getProjectName() + " uuid: " +
-                            renderQueueItem.getProjectUUID() + " Frame: "
-                            + renderQueueItem.getBlenderFramePart().getFrameNumber() + " Part: "
-                            + renderQueueItem.getBlenderFramePart().getPartNumber() + " is updated.");
-                    renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
+                    switch (renderQueueItem.getRenderComputeType()) {
+                        case GPU:
+                            if (renderQueueItem.getGpuDeviceId() != null) {
+                                updateRenderQueueItem(renderQueueItem, renderQueueDatabaseService);
+                            } else {
+                                LOG.debug("No free GPU available for rendering.");
+                            }
+                            break;
+                        case CPU:
+                            updateRenderQueueItem(renderQueueItem, renderQueueDatabaseService);
+                            break;
+                        case CPU_GPU:
+                            updateRenderQueueItem(renderQueueItem, renderQueueDatabaseService);
+                            break;
+                    }
+                   
                 }
             }
             for (SethlansNode sethlansNode : nodesToUpdate) {
                 sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
             }
         }
+    }
+
+    private static void updateRenderQueueItem(RenderQueueItem renderQueueItem, RenderQueueDatabaseService renderQueueDatabaseService) {
+        LOG.debug(renderQueueItem.getProjectName() + " uuid: " +
+                renderQueueItem.getProjectUUID() + " Frame: "
+                + renderQueueItem.getBlenderFramePart().getFrameNumber() + " Part: "
+                + renderQueueItem.getBlenderFramePart().getPartNumber() + " is updated.");
+        renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
     }
 
     private static RenderQueueItem setQueueItemToNode(SethlansNodeDatabaseService sethlansNodeDatabaseService, int i, List<SethlansNode> nodesToUpdate, RenderQueueItem renderQueueItem) {
@@ -156,18 +175,7 @@ class QueueNodeActions {
                             sethlansNode.setCpuSlotInUse(true);
                             break;
                         case GPU:
-                            if (sethlansNode.isCombined()) {
-                                sethlansNode.setAllGPUSlotInUse(true);
-                                renderQueueItem.setGpuDeviceId("COMBO");
-                            } else {
-                                renderQueueItem.setGpuDeviceId(getFastestGPU(sethlansNode));
-                                if (sethlansNode.getAvailableRenderingSlots() == 0) {
-                                    sethlansNode.setAllGPUSlotInUse(true);
-                                }
-                                if (sethlansNode.getAvailableRenderingSlots() == 1 && !sethlansNode.isCpuSlotInUse()) {
-                                    sethlansNode.setAllGPUSlotInUse(true);
-                                }
-                            }
+                            setAllGPUSlotState(renderQueueItem, sethlansNode);
                             break;
                         case CPU_GPU:
                             LOG.error("Failure in logic this message should not be displayed.");
@@ -194,20 +202,27 @@ class QueueNodeActions {
                     sethlansNode = sortedSethlansNodeList.get(i);
                     renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
                     sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
-                    if (sethlansNode.isCombined()) {
-                        sethlansNode.setAllGPUSlotInUse(true);
-                        renderQueueItem.setGpuDeviceId("COMBO");
-                    } else {
-                        renderQueueItem.setGpuDeviceId(getFastestGPU(sethlansNode));
-                        if (sethlansNode.getAvailableRenderingSlots() == 0) {
-                            sethlansNode.setAllGPUSlotInUse(true);
-                        }
-                    }
+                    setAllGPUSlotState(renderQueueItem, sethlansNode);
                     nodesToUpdate.add(sethlansNode);
                 }
                 break;
         }
         return renderQueueItem;
+    }
+
+    private static void setAllGPUSlotState(RenderQueueItem renderQueueItem, SethlansNode sethlansNode) {
+        if (sethlansNode.isCombined()) {
+            sethlansNode.setAllGPUSlotInUse(true);
+            renderQueueItem.setGpuDeviceId("COMBO");
+        } else {
+            renderQueueItem.setGpuDeviceId(getFastestGPU(sethlansNode));
+            if (sethlansNode.getAvailableRenderingSlots() == 0) {
+                sethlansNode.setAllGPUSlotInUse(true);
+            }
+            if (sethlansNode.getAvailableRenderingSlots() == 1 && !sethlansNode.isCpuSlotInUse()) {
+                sethlansNode.setAllGPUSlotInUse(true);
+            }
+        }
     }
 
     private static void nodeStatusLog(int i, List<SethlansNode> sortedSethlansNodeList) {
@@ -274,8 +289,13 @@ class QueueNodeActions {
         if (usedGPU != 99999) {
             sethlansNode.getSelectedGPUs().get(usedGPU).setInUse(true);
         }
-        LOG.debug("GPU device ID selected: " + deviceId);
-        return deviceId;
+        if (!deviceId.equals("")) {
+            LOG.debug("GPU device ID selected: " + deviceId);
+            return deviceId;
+        } else {
+            return null;
+        }
+        
     }
 
     private static RenderQueueItem setQueueItemComputeType(SethlansNode sethlansNode, RenderQueueItem renderQueueItem) {
