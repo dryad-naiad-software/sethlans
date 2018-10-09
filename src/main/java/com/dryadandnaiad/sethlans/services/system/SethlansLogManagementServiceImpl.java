@@ -56,6 +56,7 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
         while(true) {
             LOG.debug("Checking to see if logs are at max capacity");
             if(isLogDirectoryAtMax()) {
+                LOG.debug("Log is at max capacity.");
                 archiveLogFiles();
             }
             try {
@@ -116,6 +117,12 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
                         filesToArchive.add(log.toString());
                     }
                 }
+                LOG.debug("Adding the following log files to new archive:");
+                for (String file :
+                        filesToArchive) {
+                    LOG.debug(file);
+
+                }
                 File archive = SethlansFileUtils.createArchive(filesToArchive, logArchiveDir.toString(), archiveName);
                 if (archive.exists()) {
                     for (File log : logFiles) {
@@ -127,6 +134,7 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
                     LOG.debug("Log files successfully archived.");
                     return true;
                 } else {
+                    LOG.debug("Log archive failed.");
                     return false;
                 }
             }
