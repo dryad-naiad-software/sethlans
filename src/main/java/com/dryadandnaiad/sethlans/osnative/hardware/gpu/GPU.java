@@ -46,6 +46,7 @@ import static org.jocl.CL.*;
 public class GPU {
     private static final Logger LOG = LoggerFactory.getLogger(GPU.class);
     public static List<GPUDevice> devices = null;
+    public static final int CL_DEVICE_BOARD_NAME_AMD = 0x4038;
 
     private static void generateCUDA() {
         LOG.info("Looking for Compatible CUDA Devices");
@@ -158,14 +159,14 @@ public class GPU {
                 String deviceVendor = JOCLSupport.getString(device, CL_DEVICE_VENDOR);
 
                 // CL_DEVICE_NAME
-                String openCLDeviceId = JOCLSupport.getString(device, CL_DEVICE_NAME);
+                String openCLDeviceId = JOCLSupport.getString(device, CL_DEVICE_BOARD_NAME_AMD);
 
                 // CL_DEVICE_GLOBAL_MEM_SIZE
                 memory = JOCLSupport.getLong(device, CL_DEVICE_GLOBAL_MEM_SIZE);
                 String openCLVersionString = JOCLSupport.getString(device, CL_DEVICE_OPENCL_C_VERSION);
                 float openCLVersion = Float.parseFloat(openCLVersionString.substring(openCLVersionString.toLowerCase().lastIndexOf("c") + 1));
                 deviceID = "OPENCL_" + i;
-                model = deviceVendor + " " + openCLDeviceId;
+                model = openCLDeviceId;
                 boolean invalidModel = false;
                 if (deviceVendor.toLowerCase().contains("nvidia") || deviceVendor.toLowerCase().contains("intel")) {
                     invalidModel = true;
