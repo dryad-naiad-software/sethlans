@@ -196,7 +196,7 @@ class DownloadProjectFiles {
                     break;
                 } else {
                     count++;
-                    Thread.sleep(15000);
+                    Thread.sleep(30000);
                 }
             }
 
