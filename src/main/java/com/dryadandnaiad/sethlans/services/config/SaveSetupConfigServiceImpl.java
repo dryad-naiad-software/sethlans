@@ -234,6 +234,7 @@ public class SaveSetupConfigServiceImpl implements SaveSetupConfigService {
             InputStream inputStream = new Resources(benchmark).getResource();
             LOG.debug("Copying Benchmarks...");
             Files.copy(inputStream, Paths.get(benchmarkDirectory + "bmw27.txz"));
+            inputStream.close();
             LOG.debug("Benchmarks copied successfully.");
         } catch (NoSuchFileException e) {
             LOG.error(e.getMessage());

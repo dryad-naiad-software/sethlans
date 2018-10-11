@@ -82,6 +82,7 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
         while ((output = br.readLine()) != null) {
             stringBuilder.append(output);
         }
+        br.close();
         if (stringBuilder.toString().contains("true")) {
             return true;
         }
@@ -145,6 +146,7 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
                         sb.append(stringoutput);
                         LOG.debug(sb.toString());
                     }
+                    br.close();
                 }
 
 

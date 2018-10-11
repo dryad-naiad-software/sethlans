@@ -138,6 +138,7 @@ public class SethlansQueryUtils {
             if (SethlansConfigUtils.getConfigFile().exists()) {
                 FileInputStream fileIn = new FileInputStream(SethlansConfigUtils.getConfigFile());
                 properties.load(fileIn);
+                fileIn.close();
             } else {
                 properties.load(new InputStreamReader(new Resources("sethlans.properties").getResource(), StandardCharsets.UTF_8));
             }
@@ -170,6 +171,7 @@ public class SethlansQueryUtils {
             if (SethlansConfigUtils.getConfigFile().exists()) {
                 FileInputStream fileIn = new FileInputStream(SethlansConfigUtils.getConfigFile());
                 properties.load(fileIn);
+                fileIn.close();
             } else {
                 properties.load(new InputStreamReader(new Resources("sethlans.properties").getResource(), StandardCharsets.UTF_8));
             }
@@ -187,6 +189,7 @@ public class SethlansQueryUtils {
             if (SethlansConfigUtils.getConfigFile().exists()) {
                 FileInputStream fileIn = new FileInputStream(SethlansConfigUtils.getConfigFile());
                 properties.load(fileIn);
+                fileIn.close();
             } else {
                 properties.load(new InputStreamReader(new Resources("sethlans.properties").getResource(), StandardCharsets.UTF_8));
             }

@@ -138,7 +138,7 @@ public class SethlansConfigUtils {
         try {
             FileInputStream fileIn = new FileInputStream(installFile);
             properties.load(fileIn);
-
+            fileIn.close();
             return properties.getProperty(key.toString());
         } catch (IOException e) {
             LOG.error("Unable to read config file, either missing or this is a first time execution");
@@ -153,6 +153,7 @@ public class SethlansConfigUtils {
         try {
             FileInputStream fileIn = new FileInputStream(getConfigFile());
             properties.load(fileIn);
+            fileIn.close();
             return properties.getProperty(key.toString());
         } catch (IOException e) {
             LOG.error("Unable to read config file, either missing or this is a first time execution");
@@ -166,6 +167,7 @@ public class SethlansConfigUtils {
         try {
             FileInputStream fileIn = new FileInputStream(getConfigFile());
             properties.load(fileIn);
+            fileIn.close();
             return properties.getProperty(key);
         } catch (IOException e) {
             LOG.error("Unable to read config file, either missing or this is a first time execution");

@@ -88,6 +88,7 @@ public class FFmpegSetupServiceImpl implements FFmpegSetupService {
                     InputStream inputStream = new Resources(windows64).getResource();
                     String path = binaryDir + filename;
                     Files.copy(inputStream, Paths.get(path));
+                    inputStream.close();
                     return filename;
                 }
             }
@@ -99,6 +100,7 @@ public class FFmpegSetupServiceImpl implements FFmpegSetupService {
                     InputStream inputStream = new Resources(linux64).getResource();
                     String path = binaryDir + filename;
                     Files.copy(inputStream, Paths.get(path));
+                    inputStream.close();
                     return filename;
 
                 }

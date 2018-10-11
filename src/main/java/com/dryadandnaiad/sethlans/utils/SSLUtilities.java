@@ -56,6 +56,8 @@ public final class SSLUtilities {
             // Create an SSLContext that uses our TrustManager
             SSLContext context = SSLContext.getInstance("TLS");
             context.init(null, tmf.getTrustManagers(), null);
+            is.close();
+            keyInput.close();
             return context.getSocketFactory();
 
         } catch (NoSuchAlgorithmException e) {

@@ -92,6 +92,7 @@ public class PythonSetupServiceImpl implements PythonSetupService {
                 }
             }
             writer.close();
+
         } catch (NoSuchFileException | UnsupportedEncodingException | FileNotFoundException ex) {
             LOG.error(ex.getMessage());
         } catch (IOException ex) {
@@ -117,6 +118,7 @@ public class PythonSetupServiceImpl implements PythonSetupService {
                     InputStream inputStream = new Resources(windows64).getResource();
                     String path = binaryDir + filename;
                     Files.copy(inputStream, Paths.get(path));
+                    inputStream.close();
                     return filename;
                 }
             }
@@ -128,6 +130,7 @@ public class PythonSetupServiceImpl implements PythonSetupService {
                     InputStream inputStream = new Resources(linux64).getResource();
                     String path = binaryDir + filename;
                     Files.copy(inputStream, Paths.get(path));
+                    inputStream.close();
                     return filename;
 
                 }
@@ -139,6 +142,7 @@ public class PythonSetupServiceImpl implements PythonSetupService {
                 InputStream inputStream = new Resources(macOS).getResource();
                 String path = binaryDir + filename;
                 Files.copy(inputStream, Paths.get(path));
+                inputStream.close();
                 return filename;
 
             }

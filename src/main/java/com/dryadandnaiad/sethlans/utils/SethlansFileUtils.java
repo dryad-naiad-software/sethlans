@@ -59,7 +59,7 @@ public class SethlansFileUtils {
             response.setContentLength((int) file.length());
             InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
             FileCopyUtils.copy(inputStream, response.getOutputStream());
-
+            inputStream.close();
         } catch (IOException e) {
             LOG.error(e.getMessage());
         }
@@ -76,12 +76,14 @@ public class SethlansFileUtils {
     public static boolean fileCheckMD5(File file, String md5) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(file);
         String hashValue = DigestUtils.md5Hex(IOUtils.toByteArray(fileInputStream));
+        fileInputStream.close();
         LOG.debug("Current file md5: " + hashValue + " Submitted md5: " + md5);
         return hashValue.equals(md5);
     }
 
     public static String getMD5ofFile(File file) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(file);
+        fileInputStream.close();
         return DigestUtils.md5Hex(IOUtils.toByteArray(fileInputStream));
 
     }
