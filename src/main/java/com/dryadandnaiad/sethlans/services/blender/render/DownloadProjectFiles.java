@@ -27,7 +27,6 @@ import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseServic
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.SethlansFileUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -197,7 +196,7 @@ class DownloadProjectFiles {
                     break;
                 } else {
                     count++;
-                    Thread.sleep(2000);
+                    Thread.sleep(15000);
                 }
             }
 
