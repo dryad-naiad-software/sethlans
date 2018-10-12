@@ -83,8 +83,9 @@ public class SethlansFileUtils {
 
     public static String getMD5ofFile(File file) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(file);
+        String md5 = DigestUtils.md5Hex(IOUtils.toByteArray(fileInputStream));
         fileInputStream.close();
-        return DigestUtils.md5Hex(IOUtils.toByteArray(fileInputStream));
+        return md5;
 
     }
 
