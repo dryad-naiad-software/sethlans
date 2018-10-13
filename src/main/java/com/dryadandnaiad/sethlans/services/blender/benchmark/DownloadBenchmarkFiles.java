@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 import static com.dryadandnaiad.sethlans.utils.BlenderUtils.assignBlenderExecutable;
 import static com.dryadandnaiad.sethlans.utils.BlenderUtils.renameBlenderDir;
@@ -49,7 +50,7 @@ class DownloadBenchmarkFiles {
 
     static boolean downloadRequiredFiles(File benchmarkDir, BlenderBenchmarkTask benchmarkTask, String md5ToCheck,
                                          SethlansAPIConnectionService sethlansAPIConnectionService,
-                                         SethlansServerDatabaseService sethlansServerDatabaseService) throws IOException {
+                                         SethlansServerDatabaseService sethlansServerDatabaseService) throws IOException, NoSuchAlgorithmException {
         String binDir = SethlansConfigUtils.getProperty(SethlansConfigKeys.BINARY_DIR);
         LOG.debug("Downloading required files");
         SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(benchmarkTask.getConnectionUUID());

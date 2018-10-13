@@ -44,6 +44,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -194,7 +195,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                     blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | NoSuchAlgorithmException e) {
             LOG.error(e.getMessage());
         }
 

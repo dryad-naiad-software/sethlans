@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -117,7 +118,7 @@ class DownloadProjectFiles {
                             LOG.info("Required files downloaded.");
                         }
                     }
-                } catch (IOException | InterruptedException e) {
+                } catch (IOException | InterruptedException | NoSuchAlgorithmException e) {
                     LOG.error(e.getMessage());
                 }
             } else {
@@ -150,7 +151,7 @@ class DownloadProjectFiles {
                             }
 
                     }
-                } catch (IOException | InterruptedException e) {
+                } catch (IOException | InterruptedException | NoSuchAlgorithmException e) {
                     LOG.error(e.getMessage());
                 }
             }
@@ -184,7 +185,7 @@ class DownloadProjectFiles {
         }
     }
 
-    private static void selectCachedBlend(File blendFileDir, RenderTask renderTask) throws IOException, InterruptedException {
+    private static void selectCachedBlend(File blendFileDir, RenderTask renderTask) throws IOException, InterruptedException, NoSuchAlgorithmException {
         List<String> filenameSplit = Arrays.asList(renderTask.getBlendFilename().split("\\.(?=[^.]+$)"));
         if (filenameSplit.get(1).contains("blend")) {
             LOG.debug("Verifying md5sum");

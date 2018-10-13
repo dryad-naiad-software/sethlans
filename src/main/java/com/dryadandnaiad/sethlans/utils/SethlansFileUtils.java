@@ -24,8 +24,6 @@ import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.util.Zip4jConstants;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.IOUtils;
 import org.rauschig.jarchivelib.ArchiveFormat;
 import org.rauschig.jarchivelib.Archiver;
 import org.rauschig.jarchivelib.ArchiverFactory;
@@ -37,9 +35,15 @@ import org.springframework.util.FileCopyUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.*;
+import javax.xml.bind.DatatypeConverter;
 import java.awt.*;
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 /**
@@ -73,20 +77,23 @@ public class SethlansFileUtils {
         return true;
     }
 
-    public static boolean fileCheckMD5(File file, String md5) throws IOException {
-        FileInputStream fileInputStream = new FileInputStream(file);
-        String hashValue = DigestUtils.md5Hex(IOUtils.toByteArray(fileInputStream));
-        fileInputStream.close();
+    public static boolean fileCheckMD5(File file, String md5) throws IOException, NoSuchAlgorithmException {
+        String hashValue = getMD5ofFile(file);
         LOG.debug("Current file md5: " + hashValue + " Submitted md5: " + md5);
         return hashValue.equals(md5);
     }
 
-    public static String getMD5ofFile(File file) throws IOException {
-        FileInputStream fileInputStream = new FileInputStream(file);
-        String md5 = DigestUtils.md5Hex(IOUtils.toByteArray(fileInputStream));
-        fileInputStream.close();
-        return md5;
+    public static String getMD5ofFile(File file) throws IOException, NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        InputStream inputStream = Files.newInputStream(Paths.get(file.toString()));
+        DigestInputStream digestInputStream = new DigestInputStream(inputStream, md);
+        byte[] buffer = new byte[4096];
+        while (true) {
+            if (digestInputStream.read(buffer) <= -1) break;
+        }
+        inputStream.close();
 
+        return DatatypeConverter.printHexBinary(md.digest()).toLowerCase();
     }
 
     public static Image createImage(String image, String description) {

@@ -43,6 +43,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansFileUtils.fileCheckMD5;
@@ -179,11 +180,13 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                     } catch (MalformedURLException e) {
                         LOG.error("Invalid URL: " + e.getMessage());
                         return false;
-                    } catch (IOException e) {
+                    } catch (IOException | NoSuchAlgorithmException e) {
                         LOG.error("IO Exception: " + e.getMessage());
-                        if (e.getMessage().contains("Connection timed out")) {
-                            LOG.error("Connection time out " + blenderBinary.getDownloadMirrors().get(downloadMirror));
-                            downloadMirror++;
+                        if (e.getMessage() != null) {
+                            if (e.getMessage().contains("Connection timed out")) {
+                                LOG.error("Connection time out " + blenderBinary.getDownloadMirrors().get(downloadMirror));
+                                downloadMirror++;
+                            }
                         } else {
                             LOG.error(Throwables.getStackTraceAsString(e));
                             return false;
