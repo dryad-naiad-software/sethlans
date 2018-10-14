@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUserChallenge;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.forms.setup.SetupForm;
@@ -70,6 +71,13 @@ public class SetupController {
                 }
                 if (!sethlansUserChallenge.isResponseUpdated()) {
                     sethlansUserChallenge.setResponseUpdated(true);
+                }
+            }
+            if (setupForm.getNode().getComputeMethod().equals(ComputeType.CPU_GPU)) {
+                if (!setupForm.getNode().isCombined() && setupForm.getNode().getSelectedGPUDeviceIDs().size() > 1) {
+                    if (setupForm.getNode().getCores().equals(setupForm.getNode().getTotalCores())) {
+                        setupForm.getNode().setCores(setupForm.getNode().getCores() - 1);
+                    }
                 }
             }
             setupForm.getUser().setPromptPasswordChange(false);

@@ -86,6 +86,7 @@ export class ComputeSettingsComponent implements OnInit {
     if (this.changedNode.computeMethod !== ComputeMethod.CPU) {
       this.changedNode.cores = this.totalCores;
       this.changedNode.gpuEmpty = this.changedNode.selectedGPUDeviceIDs.length == 0;
+      this.reduceCores();
       if (this.changedNode.gpuEmpty) {
         this.disableNext = true;
       }
@@ -110,12 +111,15 @@ export class ComputeSettingsComponent implements OnInit {
       .subscribe((currentNode: SethlansNode) => {
         this.currentNode = Object.assign({}, currentNode);
         this.changedNode = Object.assign({}, currentNode);
+        this.changedNode.totalCores = this.totalCores;
+        this.currentNode.totalCores = this.totalCores;
         if (currentNode.computeMethod != ComputeMethod.CPU) {
           this.http.get('/api/management/selected_gpus')
             .subscribe((selectedGPUs: GPU[]) => {
               for (let gpu of selectedGPUs) {
                 this.selectedGPUNames.push(gpu.model);
               }
+              this.reduceCores();
             });
         }
       });
@@ -151,6 +155,7 @@ export class ComputeSettingsComponent implements OnInit {
       });
       this.changedNode.gpuEmpty = false;
       this.disableNext = false;
+      this.reduceCores();
 
     } else if (!checked) {
       let selectedGPUDeviceIDs = this.changedNode.selectedGPUDeviceIDs;
@@ -160,9 +165,20 @@ export class ComputeSettingsComponent implements OnInit {
         }
       }
     }
+
     if (this.changedNode.selectedGPUDeviceIDs.length === 0) {
       this.changedNode.gpuEmpty = true;
       this.disableNext = true;
+    }
+  }
+
+  reduceCores() {
+    if (this.changedNode.cores != null && this.changedNode.cores == this.totalCores) {
+      if (this.changedNode.combined == false) {
+        if (this.changedNode.selectedGPUDeviceIDs.length > 1) {
+          this.changedNode.cores = this.totalCores - 1;
+        }
+      }
     }
   }
 

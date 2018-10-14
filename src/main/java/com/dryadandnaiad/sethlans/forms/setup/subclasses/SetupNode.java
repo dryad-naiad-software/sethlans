@@ -39,4 +39,5 @@ public class SetupNode {
     private boolean gpuEmpty;
     private List<String> selectedGPUDeviceIDs;
     private boolean combined;
+    private Integer totalCores;
 }

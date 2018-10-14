@@ -22,6 +22,7 @@ import {ComputeMethod} from '../enums/compute.method.enum';
 export class SethlansNode {
   computeMethod: ComputeMethod;
   cores: number;
+  totalCores: number;
   selectedGPUDeviceIDs: string[];
   gpuEmpty: boolean;
   combined: boolean;

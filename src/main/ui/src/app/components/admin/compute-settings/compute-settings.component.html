@@ -48,8 +48,10 @@
             <div *ngIf="changedNode.computeMethod !== method.GPU">
               <hr/>
               <h6>CPU Settings:</h6>
+              <p>Selected Cores: {{changedNode.cores}}</p>
               <div class="form-group"
-                   ngbTooltip="Number of CPU cores to be used for rendering." placement="left">
+                   ngbTooltip="Number of CPU cores to be used for rendering. If CPU & GPU mode is selected and GPUs are not combined, one core will be used to handle processing."
+                   placement="left">
                 <label for="cores">Rendering Cores:</label>
                 <mat-slider
                   id="cores"
@@ -106,7 +108,7 @@
                    placement="left">
                 <h6>Options:</h6>
                 <span class="fas" [ngClass]="changedNode.combined ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
-                      (click)="changedNode.combined = !changedNode.combined"></span>
+                      (click)="changedNode.combined = !changedNode.combined; reduceCores()"></span>
                 Combine GPU
                 <br/><br/>
               </div>
@@ -168,6 +170,11 @@
     </div>
   </div>
 </div>
+<div>
+  Debugging:
+  <pre>{{ changedNode | json }}</pre>
+</div>
+
 
 <ng-template #restartModal>
   <div class="modal-header">

@@ -53,6 +53,7 @@ export class NodeConfigComponent implements OnInit {
         this.totalCores = cores;
         if (this.setupForm.node.cores == null) {
           this.setupForm.node.cores = cores;
+          this.setupForm.node.totalCores = this.totalCores;
         }
       });
 
@@ -78,6 +79,7 @@ export class NodeConfigComponent implements OnInit {
     if (this.setupForm.node.computeMethod !== ComputeMethod.CPU) {
       this.setupForm.node.cores = this.totalCores;
       this.setupForm.node.gpuEmpty = this.setupForm.node.selectedGPUDeviceIDs.length == 0;
+      this.reduceCores();
       if (this.setupForm.node.gpuEmpty) {
         this.disableNext.emit(true);
       }
@@ -95,6 +97,7 @@ export class NodeConfigComponent implements OnInit {
     }
     if (this.setupForm.node.computeMethod === ComputeMethod.GPU) {
       this.setupForm.node.cores = null;
+      this.reduceCores();
     }
   }
 
@@ -107,8 +110,10 @@ export class NodeConfigComponent implements OnInit {
           currentNode.selectedGPUDeviceIDs.push(value.deviceID);
         }
       });
+
       this.setupForm.node.gpuEmpty = false;
       this.disableNext.emit(false);
+      this.reduceCores();
 
     } else if (!checked) {
       let selectedGPUDeviceIDs = this.setupForm.node.selectedGPUDeviceIDs;
@@ -121,6 +126,16 @@ export class NodeConfigComponent implements OnInit {
     if (this.setupForm.node.selectedGPUDeviceIDs.length === 0) {
       this.setupForm.node.gpuEmpty = true;
       this.disableNext.emit(true);
+    }
+  }
+
+  reduceCores() {
+    if (this.setupForm.node.cores != null && this.setupForm.node.cores == this.totalCores) {
+      if (this.setupForm.node.combined == false) {
+        if (this.setupForm.node.selectedGPUDeviceIDs.length > 1) {
+          this.setupForm.node.cores = this.totalCores - 1;
+        }
+      }
     }
   }
 

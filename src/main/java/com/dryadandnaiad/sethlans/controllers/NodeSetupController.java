@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.server.AccessKey;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import com.dryadandnaiad.sethlans.services.config.UpdateComputeService;
@@ -89,6 +90,15 @@ public class NodeSetupController {
         LOG.info("Processing Compute Setting Update");
         if (setupNode != null) {
             LOG.debug(setupNode.toString());
+            if (setupNode.getComputeMethod().equals(ComputeType.CPU_GPU)) {
+                if (!setupNode.isCombined() && setupNode.getSelectedGPUDeviceIDs().size() > 1) {
+                    if (setupNode.getCores().equals(setupNode.getTotalCores())) {
+                        LOG.debug("Reducing cores by 1");
+                        setupNode.setCores(setupNode.getCores() - 1);
+                        LOG.debug(setupNode.toString());
+                    }
+                }
+            }
             boolean updateComplete = updateComputeService.saveComputeSettings(setupNode);
             try {
                 Thread.sleep(5000);

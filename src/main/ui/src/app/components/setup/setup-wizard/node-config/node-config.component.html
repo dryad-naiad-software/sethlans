@@ -34,7 +34,8 @@
     <hr/>
     <h6>CPU Settings:</h6>
     <div class="form-group"
-         ngbTooltip="Number of CPU cores to be used for rendering." placement="left">
+         ngbTooltip="Number of CPU cores to be used for rendering. If CPU & GPU mode is selected and GPUs are not combined, one core will be used to handle processing."
+         placement="left">
       <label for="cores">Rendering Cores:</label>
       <mat-slider
         id="cores"
@@ -89,7 +90,7 @@
          placement="left">
       Combine GPUs&nbsp;
       <span class="fas" [ngClass]="setupForm.node.combined ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
-            (click)="setupForm.node.combined = !setupForm.node.combined"></span>
+            (click)="setupForm.node.combined = !setupForm.node.combined; reduceCores()"></span>
     </div>
   </div>
 </form>
