@@ -73,10 +73,12 @@ public class SetupController {
                     sethlansUserChallenge.setResponseUpdated(true);
                 }
             }
-            if (setupForm.getNode().getComputeMethod().equals(ComputeType.CPU_GPU)) {
-                if (!setupForm.getNode().isCombined() && setupForm.getNode().getSelectedGPUDeviceIDs().size() > 1) {
-                    if (setupForm.getNode().getCores().equals(setupForm.getNode().getTotalCores())) {
-                        setupForm.getNode().setCores(setupForm.getNode().getCores() - 1);
+            if (!setupForm.getMode().equals(SethlansMode.SERVER)) {
+                if (setupForm.getNode().getComputeMethod().equals(ComputeType.CPU_GPU)) {
+                    if (!setupForm.getNode().isCombined() && setupForm.getNode().getSelectedGPUDeviceIDs().size() > 1) {
+                        if (setupForm.getNode().getCores().equals(setupForm.getNode().getTotalCores())) {
+                            setupForm.getNode().setCores(setupForm.getNode().getCores() - 1);
+                        }
                     }
                 }
             }
