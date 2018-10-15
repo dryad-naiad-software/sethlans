@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.info.NodeInfo;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
+import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,6 +82,34 @@ public class SethlansNodeUtils {
             }
         }
         return false;
+    }
+
+    public static void cpuGPUNodeCheck(SetupNode setupNode) {
+        if (!setupNode.isCombined() && setupNode.getSelectedGPUDeviceIDs().size() > 1) {
+            int halfTotalCores = setupNode.getTotalCores() / 2;
+            if (setupNode.getSelectedGPUDeviceIDs().size() > halfTotalCores) {
+                // If GPUs are more than half then default to combined mode and reduce core by 1.
+                setupNode.setCombined(true);
+                if (setupNode.getCores().equals(setupNode.getTotalCores())) {
+                    setupNode.setCores(setupNode.getCores() - 1);
+                }
+            } else {
+                // Reduce the number of cores by the number of GPUs to be used.
+                int reducedByGPUs = setupNode.getTotalCores() - setupNode.getSelectedGPUDeviceIDs().size();
+                // Reduce the number of cores by the number of GPUs to be used.
+                if (setupNode.getCores() > reducedByGPUs) {
+                    setupNode.setCores(reducedByGPUs);
+                }
+            }
+            LOG.debug("Changes made to submitted configuration.");
+            LOG.debug(setupNode.toString());
+        } else {
+            if (setupNode.getCores().equals(setupNode.getTotalCores())) {
+                setupNode.setCores(setupNode.getCores() - 1);
+            }
+            LOG.debug("Changes made to submitted configuration.");
+            LOG.debug(setupNode.toString());
+        }
     }
 
     public static void listofNodes(ComputeType computeType, List<SethlansNode> listToSort, SethlansNode sethlansNode) {

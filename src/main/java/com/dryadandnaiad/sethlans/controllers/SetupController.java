@@ -21,12 +21,13 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUserChallenge;
-import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.forms.setup.SetupForm;
+import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import com.dryadandnaiad.sethlans.services.config.SaveSetupConfigService;
 import com.dryadandnaiad.sethlans.services.database.SethlansUserDatabaseService;
+import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,24 +75,9 @@ public class SetupController {
                 }
             }
             if (!setupForm.getMode().equals(SethlansMode.SERVER)) {
-                if (setupForm.getNode().getComputeMethod().equals(ComputeType.CPU_GPU)) {
-                    if (!setupForm.getNode().isCombined() && setupForm.getNode().getSelectedGPUDeviceIDs().size() > 1) {
-                        int halfTotalCores = setupForm.getNode().getTotalCores() / 2;
-                        if (setupForm.getNode().getSelectedGPUDeviceIDs().size() > halfTotalCores) {
-                            // If GPUs are more than half then default to combined mode and reduce core by 1.
-                            setupForm.getNode().setCombined(true);
-                            if (setupForm.getNode().getCores().equals(setupForm.getNode().getTotalCores())) {
-                                setupForm.getNode().setCores(setupForm.getNode().getCores() - 1);
-                            }
-                        } else {
-                            // Reduce the number of cores by the number of GPUs to be used.
-                            if (setupForm.getNode().getCores().equals(setupForm.getNode().getTotalCores())) {
-                                setupForm.getNode().setCores(setupForm.getNode().getCores() - setupForm.getNode().getSelectedGPUDeviceIDs().size());
-                            }
-                        }
-                    }
-                    LOG.debug(setupForm.getNode().toString());
-                }
+                SetupNode node = setupForm.getNode();
+                SethlansNodeUtils.cpuGPUNodeCheck(node);
+                setupForm.setNode(node);
             }
             setupForm.getUser().setPromptPasswordChange(false);
             saveSetupConfigService.saveSetupSettings(setupForm);

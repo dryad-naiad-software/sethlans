@@ -29,6 +29,7 @@ import com.dryadandnaiad.sethlans.services.database.AccessKeyDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
+import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,23 +92,7 @@ public class NodeSetupController {
         if (setupNode != null) {
             LOG.debug(setupNode.toString());
             if (setupNode.getComputeMethod().equals(ComputeType.CPU_GPU)) {
-                if (!setupNode.isCombined() && setupNode.getSelectedGPUDeviceIDs().size() > 1) {
-                    int halfTotalCores = setupNode.getTotalCores() / 2;
-                    if (setupNode.getSelectedGPUDeviceIDs().size() > halfTotalCores) {
-                        // If GPUs are more than half then default to combined mode and reduce core by 1.
-                        setupNode.setCombined(true);
-                        if (setupNode.getCores().equals(setupNode.getTotalCores())) {
-                            setupNode.setCores(setupNode.getCores() - 1);
-                        }
-                    } else {
-                        // Reduce the number of cores by the number of GPUs to be used.
-                        if (setupNode.getCores().equals(setupNode.getTotalCores())) {
-                            setupNode.setCores(setupNode.getCores() - setupNode.getSelectedGPUDeviceIDs().size());
-                        }
-                    }
-                    LOG.debug("Changes made to submitted configuration.");
-                    LOG.debug(setupNode.toString());
-                }
+                SethlansNodeUtils.cpuGPUNodeCheck(setupNode);
             }
             boolean updateComplete = updateComputeService.saveComputeSettings(setupNode);
             try {
@@ -121,6 +106,7 @@ public class NodeSetupController {
             return false;
         }
     }
+
 
     @Autowired
     public void setSethlansServerDatabaseService(SethlansServerDatabaseService sethlansServerDatabaseService) {
