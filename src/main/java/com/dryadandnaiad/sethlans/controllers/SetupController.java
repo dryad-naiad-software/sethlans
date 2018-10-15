@@ -76,10 +76,21 @@ public class SetupController {
             if (!setupForm.getMode().equals(SethlansMode.SERVER)) {
                 if (setupForm.getNode().getComputeMethod().equals(ComputeType.CPU_GPU)) {
                     if (!setupForm.getNode().isCombined() && setupForm.getNode().getSelectedGPUDeviceIDs().size() > 1) {
-                        if (setupForm.getNode().getCores().equals(setupForm.getNode().getTotalCores())) {
-                            setupForm.getNode().setCores(setupForm.getNode().getCores() - 1);
+                        int halfTotalCores = setupForm.getNode().getTotalCores() / 2;
+                        if (setupForm.getNode().getSelectedGPUDeviceIDs().size() > halfTotalCores) {
+                            // If GPUs are more than half then default to combined mode and reduce core by 1.
+                            setupForm.getNode().setCombined(true);
+                            if (setupForm.getNode().getCores().equals(setupForm.getNode().getTotalCores())) {
+                                setupForm.getNode().setCores(setupForm.getNode().getCores() - 1);
+                            }
+                        } else {
+                            // Reduce the number of cores by the number of GPUs to be used.
+                            if (setupForm.getNode().getCores().equals(setupForm.getNode().getTotalCores())) {
+                                setupForm.getNode().setCores(setupForm.getNode().getCores() - setupForm.getNode().getSelectedGPUDeviceIDs().size());
+                            }
                         }
                     }
+                    LOG.debug(setupForm.getNode().toString());
                 }
             }
             setupForm.getUser().setPromptPasswordChange(false);

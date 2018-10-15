@@ -92,11 +92,21 @@ public class NodeSetupController {
             LOG.debug(setupNode.toString());
             if (setupNode.getComputeMethod().equals(ComputeType.CPU_GPU)) {
                 if (!setupNode.isCombined() && setupNode.getSelectedGPUDeviceIDs().size() > 1) {
-                    if (setupNode.getCores().equals(setupNode.getTotalCores())) {
-                        LOG.debug("Reducing cores by 1");
-                        setupNode.setCores(setupNode.getCores() - 1);
-                        LOG.debug(setupNode.toString());
+                    int halfTotalCores = setupNode.getTotalCores() / 2;
+                    if (setupNode.getSelectedGPUDeviceIDs().size() > halfTotalCores) {
+                        // If GPUs are more than half then default to combined mode and reduce core by 1.
+                        setupNode.setCombined(true);
+                        if (setupNode.getCores().equals(setupNode.getTotalCores())) {
+                            setupNode.setCores(setupNode.getCores() - 1);
+                        }
+                    } else {
+                        // Reduce the number of cores by the number of GPUs to be used.
+                        if (setupNode.getCores().equals(setupNode.getTotalCores())) {
+                            setupNode.setCores(setupNode.getCores() - setupNode.getSelectedGPUDeviceIDs().size());
+                        }
                     }
+                    LOG.debug("Changes made to submitted configuration.");
+                    LOG.debug(setupNode.toString());
                 }
             }
             boolean updateComplete = updateComputeService.saveComputeSettings(setupNode);
