@@ -60,7 +60,7 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
                 archiveLogFiles();
             }
             try {
-                Thread.sleep(900000);
+                Thread.sleep(300000);
             } catch (InterruptedException e) {
                 LOG.debug("Stopping Log Management Service");
                 break;
