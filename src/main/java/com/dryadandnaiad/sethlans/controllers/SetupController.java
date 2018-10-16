@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUserChallenge;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.forms.setup.SetupForm;
@@ -74,7 +75,7 @@ public class SetupController {
                     sethlansUserChallenge.setResponseUpdated(true);
                 }
             }
-            if (!setupForm.getMode().equals(SethlansMode.SERVER)) {
+            if (!setupForm.getMode().equals(SethlansMode.SERVER) && setupForm.getNode().getComputeMethod().equals(ComputeType.CPU_GPU)) {
                 SetupNode node = setupForm.getNode();
                 SethlansNodeUtils.cpuGPUNodeCheck(node);
                 setupForm.setNode(node);
