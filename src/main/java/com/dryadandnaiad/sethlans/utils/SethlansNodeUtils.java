@@ -85,7 +85,7 @@ public class SethlansNodeUtils {
     }
 
     public static void cpuGPUNodeCheck(SetupNode setupNode) {
-        if (setupNode.getComputeMethod().equals(ComputeType.CPU_GPU)) {
+        if (setupNode.getTotalCores().equals(setupNode.getCores())) {
             setupNode.setCores(setupNode.getCores() - 1);
         }
 //        if (!setupNode.isCombined() && setupNode.getSelectedGPUDeviceIDs().size() > 1) {
