@@ -33,6 +33,7 @@ import {SethlansNode} from '../../../../models/sethlan_node.model';
 export class NodeConfigComponent implements OnInit {
   @Input() setupForm: SetupWizardForm;
   totalCores: number;
+  availableCores: number;
   availableComputeMethods: ComputeMethod[];
   availableGPUs: GPU[];
   method: any = ComputeMethod;
@@ -77,17 +78,18 @@ export class NodeConfigComponent implements OnInit {
 
   methodSelection() {
     if (this.setupForm.node.computeMethod !== ComputeMethod.CPU) {
-      this.setupForm.node.cores = this.totalCores;
+      this.setupForm.node.cores = this.totalCores - 1;
       this.setupForm.node.gpuEmpty = this.setupForm.node.selectedGPUDeviceIDs.length == 0;
-      this.reduceCores();
       if (this.setupForm.node.gpuEmpty) {
         this.disableNext.emit(true);
       }
+      this.availableCores = this.setupForm.node.cores;
     }
     if (this.setupForm.node.computeMethod === ComputeMethod.CPU) {
       // gpuEmpty is used to control the toggling of the Save button. False means that the node settings can be saved.
       // CPU mode this is always set to false.
       this.setupForm.node.cores = this.totalCores;
+      this.availableCores = this.setupForm.node.cores;
       this.setupForm.node.selectedGPUDeviceIDs = [];
       this.setupForm.node.combined = true;
       this.setupForm.node.gpuEmpty = false;
@@ -97,7 +99,6 @@ export class NodeConfigComponent implements OnInit {
     }
     if (this.setupForm.node.computeMethod === ComputeMethod.GPU) {
       this.setupForm.node.cores = null;
-      this.reduceCores();
     }
   }
 
@@ -113,8 +114,6 @@ export class NodeConfigComponent implements OnInit {
 
       this.setupForm.node.gpuEmpty = false;
       this.disableNext.emit(false);
-      this.reduceCores();
-
     } else if (!checked) {
       let selectedGPUDeviceIDs = this.setupForm.node.selectedGPUDeviceIDs;
       for (let i = 0; i < selectedGPUDeviceIDs.length; i++) {
@@ -129,15 +128,6 @@ export class NodeConfigComponent implements OnInit {
     }
   }
 
-  reduceCores() {
-    if (this.setupForm.node.cores != null && this.setupForm.node.cores == this.totalCores) {
-      if (this.setupForm.node.combined == false) {
-        if (this.setupForm.node.selectedGPUDeviceIDs.length > 1) {
-          this.setupForm.node.cores = this.totalCores - 1;
-        }
-      }
-    }
-  }
 
 
 }

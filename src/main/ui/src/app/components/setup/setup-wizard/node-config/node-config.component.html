@@ -33,6 +33,7 @@
   <div *ngIf="setupForm.node.computeMethod !== method.GPU">
     <hr/>
     <h6>CPU Settings:</h6>
+    <p>Selected Cores: {{setupForm.node.cores}}</p>
     <div class="form-group"
          ngbTooltip="Number of CPU cores to be used for rendering. If CPU & GPU mode is selected and GPUs are not combined, one core will be used to handle processing."
          placement="left">
@@ -42,7 +43,7 @@
         min="1"
         step="1"
         thumbLabel
-        [max]="totalCores"
+        [max]="availableCores"
         #cores="ngModel"
         name="cores"
         [(ngModel)]="setupForm.node.cores"></mat-slider>
