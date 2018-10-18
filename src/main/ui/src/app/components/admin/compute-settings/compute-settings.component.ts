@@ -34,6 +34,7 @@ export class ComputeSettingsComponent implements OnInit {
   editSettings: boolean = false;
   availableComputeMethods: ComputeMethod[] = [];
   totalCores: number;
+  availableCores: number;
   availableGPUs: GPU[] = [];
   currentNode: SethlansNode = new SethlansNode();
   changedNode: SethlansNode = new SethlansNode();
@@ -84,9 +85,9 @@ export class ComputeSettingsComponent implements OnInit {
 
   methodSelection() {
     if (this.changedNode.computeMethod !== ComputeMethod.CPU) {
+      this.availableCores = this.totalCores - 1;
       this.changedNode.cores = this.totalCores;
       this.changedNode.gpuEmpty = this.changedNode.selectedGPUDeviceIDs.length == 0;
-      this.reduceCores();
       if (this.changedNode.gpuEmpty) {
         this.disableNext = true;
       }
@@ -94,7 +95,8 @@ export class ComputeSettingsComponent implements OnInit {
     if (this.changedNode.computeMethod === ComputeMethod.CPU) {
       // gpuEmpty is used to control the toggling of the Save button. False means that the node settings can be saved.
       // CPU mode this is always set to false.
-      this.changedNode.cores = this.totalCores;
+      this.availableCores = this.totalCores;
+      this.changedNode.cores = this.availableCores;
       this.changedNode.selectedGPUDeviceIDs = [];
       this.changedNode.combined = true;
       this.changedNode.gpuEmpty = false;
@@ -114,12 +116,12 @@ export class ComputeSettingsComponent implements OnInit {
         this.changedNode.totalCores = this.totalCores;
         this.currentNode.totalCores = this.totalCores;
         if (currentNode.computeMethod != ComputeMethod.CPU) {
+          this.availableCores = this.totalCores - 1;
           this.http.get('/api/management/selected_gpus')
             .subscribe((selectedGPUs: GPU[]) => {
               for (let gpu of selectedGPUs) {
                 this.selectedGPUNames.push(gpu.model);
               }
-              this.reduceCores();
             });
         }
       });
@@ -135,6 +137,7 @@ export class ComputeSettingsComponent implements OnInit {
     this.http.get('/api/info/total_cores', {responseType: 'text'})
       .subscribe((cores: any) => {
         this.totalCores = cores;
+        this.availableCores = cores;
       }, (error) => console.log(error));
     if (this.availableComputeMethods.indexOf(ComputeMethod.GPU)) {
       this.http.get('/api/info/available_gpus')
@@ -155,7 +158,6 @@ export class ComputeSettingsComponent implements OnInit {
       });
       this.changedNode.gpuEmpty = false;
       this.disableNext = false;
-      this.reduceCores();
 
     } else if (!checked) {
       let selectedGPUDeviceIDs = this.changedNode.selectedGPUDeviceIDs;
@@ -172,14 +174,5 @@ export class ComputeSettingsComponent implements OnInit {
     }
   }
 
-  reduceCores() {
-    if (this.changedNode.cores != null && this.changedNode.cores == this.totalCores) {
-      if (this.changedNode.combined == false) {
-        if (this.changedNode.selectedGPUDeviceIDs.length > 1) {
-          this.changedNode.cores = this.totalCores - 1;
-        }
-      }
-    }
-  }
 
 }

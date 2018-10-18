@@ -58,7 +58,7 @@
                   min="1"
                   step="1"
                   thumbLabel
-                  [max]="totalCores"
+                  [max]="availableCores"
                   #cores="ngModel"
                   name="cores"
                   [(ngModel)]="changedNode.cores"></mat-slider>
@@ -170,10 +170,10 @@
     </div>
   </div>
 </div>
-<div>
-  Debugging:
-  <pre>{{ changedNode | json }}</pre>
-</div>
+<!--<div>-->
+<!--Debugging:-->
+<!--<pre>{{ changedNode | json }}</pre>-->
+<!--</div>-->
 
 
 <ng-template #restartModal>

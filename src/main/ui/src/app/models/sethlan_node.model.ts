@@ -35,6 +35,6 @@ export class SethlansNode {
     this.tileSizeCPU = 32;
     this.tileSizeGPU = 256;
     this.gpuEmpty = false;
-    this.combined = false;
+    this.combined = true;
   }
 }

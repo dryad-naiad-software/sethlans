@@ -52,6 +52,11 @@ export class NodeConfigComponent implements OnInit {
     this.http.get('/api/info/total_cores', {responseType: 'text'})
       .subscribe((cores: any) => {
         this.totalCores = cores;
+        this.availableCores = cores;
+        if (this.setupForm.node.computeMethod == ComputeMethod.CPU_GPU) {
+          this.availableCores = cores - 1;
+        }
+
         if (this.setupForm.node.cores == null) {
           this.setupForm.node.cores = cores;
           this.setupForm.node.totalCores = this.totalCores;
@@ -79,17 +84,17 @@ export class NodeConfigComponent implements OnInit {
   methodSelection() {
     if (this.setupForm.node.computeMethod !== ComputeMethod.CPU) {
       this.setupForm.node.cores = this.totalCores - 1;
+      this.availableCores = this.totalCores - 1;
       this.setupForm.node.gpuEmpty = this.setupForm.node.selectedGPUDeviceIDs.length == 0;
       if (this.setupForm.node.gpuEmpty) {
         this.disableNext.emit(true);
       }
-      this.availableCores = this.setupForm.node.cores;
     }
     if (this.setupForm.node.computeMethod === ComputeMethod.CPU) {
       // gpuEmpty is used to control the toggling of the Save button. False means that the node settings can be saved.
       // CPU mode this is always set to false.
       this.setupForm.node.cores = this.totalCores;
-      this.availableCores = this.setupForm.node.cores;
+      this.availableCores = this.totalCores;
       this.setupForm.node.selectedGPUDeviceIDs = [];
       this.setupForm.node.combined = true;
       this.setupForm.node.gpuEmpty = false;
