@@ -278,14 +278,6 @@
             <version>2.8.5</version>
         </dependency>
 
-
-        <!--https://mvnrepository.com/artifact/org.aksw.gson/gson-utils-parent-->
-        <dependency>
-            <groupId>org.aksw.gson</groupId>
-            <artifactId>gson-utils-core</artifactId>
-            <version>1.0.0</version>
-            <type>pom</type>
-        </dependency>
     </dependencies>
 
     <repositories>

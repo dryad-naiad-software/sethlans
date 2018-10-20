@@ -30,7 +30,8 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.JsonReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -203,28 +204,32 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
 
     private void saveBlenderPartList(BlenderProject blenderProject) {
         try {
-            Writer writer = new FileWriter(blenderProject.getProjectRootDir() + File.separator + blenderProject.getProjectUUID() + ".json");
-            gson.toJson(blenderProject.getFramePartList(), writer);
-            writer.close();
+            FileWriter fileWriter = new FileWriter(blenderProject.getProjectRootDir() + File.separator + blenderProject.getProjectUUID() + ".json");
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            gson.toJson(blenderProject.getFramePartList(), bufferedWriter);
+            bufferedWriter.close();
         } catch (IOException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
         }
     }
 
     private List<BlenderFramePart> loadBlenderPartList(BlenderProject blenderProject) {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(blenderProject.getProjectRootDir() +
-                    File.separator + blenderProject.getProjectUUID() + ".json"));
-            List<BlenderFramePart> blenderFramePartList = gson.fromJson(reader, new TypeToken<List<BlenderFramePart>>() {
-            }.getType());
+        try (JsonReader reader = new JsonReader(new FileReader(blenderProject.getProjectRootDir() +
+                File.separator + blenderProject.getProjectUUID() + ".json"))) {
+            List<BlenderFramePart> blenderFramePartList = new ArrayList<>();
+            reader.beginArray();
+            while (reader.hasNext()) {
+                BlenderFramePart blenderFramePart = gson.fromJson(reader, BlenderFramePart.class);
+                blenderFramePartList.add(blenderFramePart);
+            }
+            reader.endArray();
             reader.close();
             return blenderFramePartList;
         } catch (EOFException e) {
             LOG.debug("End of file reached");
-        } catch (IOException e) {
+        } catch (IOException | JsonSyntaxException e) {
             LOG.error(e.getMessage());
             LOG.error(Throwables.getStackTraceAsString(e));
-
         }
         return null;
     }
