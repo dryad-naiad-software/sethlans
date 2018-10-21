@@ -229,6 +229,7 @@ public class BlenderProjectServiceImpl implements BlenderProjectService {
         blenderProject.setFramePartList(blenderFramePartList);
         blenderProject.setTotalQueueSize(blenderFramePartList.size());
         blenderProject.setQueueIndex(0);
+        blenderProject.setCompletedFrames(0);
         blenderProject.setRemainingQueueSize(blenderFramePartList.size());
         LOG.debug("Project Frames configured.");
         blenderProject.setProjectStatus(ProjectStatus.Pending);

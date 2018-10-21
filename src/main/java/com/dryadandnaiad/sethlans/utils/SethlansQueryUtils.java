@@ -320,6 +320,8 @@ public class SethlansQueryUtils {
         projectInfo.setResPercentage(blenderProject.getResPercentage());
         projectInfo.setPartsPerFrame(blenderProject.getPartsPerFrame());
         projectInfo.setCurrentPercentage(blenderProject.getCurrentPercentage());
+        projectInfo.setCompletedFrames(blenderProject.getCompletedFrames());
+        projectInfo.setTotalNumberOfFrames(blenderProject.getTotalNumberOfFrames());
         if (projectInfo.getPartsPerFrame() > 1) {
             projectInfo.setUseParts(true);
         } else {

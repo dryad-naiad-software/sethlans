@@ -120,6 +120,7 @@ class QueueProjectActions {
                     blenderProject.setProjectStart(0L);
                     blenderProject.setProjectEnd(0L);
                     blenderProject.setQueueIndex(0);
+                    blenderProject.setCompletedFrames(0);
                     blenderProject.setUserStopped(true);
                     blenderProject.setTotalRenderTime(0L);
                     blenderProject.setQueueFillComplete(false);

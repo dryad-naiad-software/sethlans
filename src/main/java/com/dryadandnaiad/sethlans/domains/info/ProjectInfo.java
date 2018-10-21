@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -44,6 +44,8 @@ public class ProjectInfo {
     private int samples;
     private int resPercentage;
     private int partsPerFrame;
+    private int totalNumberOfFrames;
+    private int completedFrames;
     private String username;
     private ProjectStatus projectStatus;
     private boolean allImagesProcessed;

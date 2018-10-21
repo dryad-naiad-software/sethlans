@@ -72,6 +72,8 @@ public class BlenderProject extends AbstractEntityClass {
     private String projectUUID;
     private String projectRootDir;
     private String movieFileLocation;
+    private int totalNumberOfFrames;
+    private int completedFrames;
     private int totalQueueSize;
     private int remainingQueueSize;
     private int queueIndex;

@@ -47,6 +47,8 @@ export class ProjectViewComponent implements OnInit {
   totalQueue: number;
   remainingQueue: number;
   thumbnailStatus: boolean;
+  completedFrames: number;
+  totalNumberOfFrames: number;
   modalImage: any;
   currentThumbnail: any;
   placeholder: any = 'assets/images/placeholder.svg';

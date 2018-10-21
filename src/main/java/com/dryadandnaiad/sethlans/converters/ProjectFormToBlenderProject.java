@@ -69,6 +69,8 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
         blenderProject.setFrameRate(projectForm.getFrameRate());
         blenderProject.setFramePartList(new ArrayList<>());
         blenderProject.setUserStopped(false);
+        // Seems weird but frames are inclusive so you have to add a frame when subtracting these values
+        blenderProject.setTotalNumberOfFrames((blenderProject.getEndFrame() - blenderProject.getStartFrame()) + 1);
 
 
         String truncatedProjectName = StringUtils.left(projectForm.getProjectName(), 10);

@@ -242,7 +242,8 @@ public class QueueServiceImpl implements QueueService {
             modifyingQueue = true;
             List<ProcessQueueItem> itemsReviewed = new ArrayList<>();
             for (ProcessQueueItem processQueueItem : new ArrayList<>(incomingQueueItemList)) {
-                processIncoming(itemsReviewed, processQueueItem, processQueueDatabaseService, renderQueueDatabaseService, sethlansNodeDatabaseService, blenderProjectDatabaseService);
+                processIncoming(itemsReviewed, processQueueItem, processQueueDatabaseService, renderQueueDatabaseService, sethlansNodeDatabaseService,
+                        blenderProjectDatabaseService);
             }
             incomingQueueItemList.removeAll(itemsReviewed);
             modifyingQueue = false;
@@ -502,6 +503,7 @@ public class QueueServiceImpl implements QueueService {
                     }
                     blenderProject.getFrameFileNames().add(frameFileUpdateItem.getFrameFileName());
                     blenderProject.setCurrentFrameThumbnail(frameFileUpdateItem.getCurrentFrameThumbnail());
+                    blenderProject.setCompletedFrames(blenderProject.getCompletedFrames() + 1);
                     frameFileUpdateDatabaseService.delete(frameFileUpdateItem);
                 }
                 if (blenderProject != null && !blenderProject.isUserStopped()) {

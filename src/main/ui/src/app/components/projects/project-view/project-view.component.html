@@ -119,6 +119,14 @@
                 <td>Total Render Time</td>
                 <td>{{totalRenderTime}}</td>
               </tr>
+              <tr *ngIf="currentProject.projectType === projectTypes.ANIMATION">
+                <td>Processed Frames</td>
+                <td>{{completedFrames}}}</td>
+              </tr>
+              <tr *ngIf="currentProject.projectType === projectTypes.ANIMATION">
+                <td>Total Number of Frames</td>
+                <td>{{totalNumberOfFrames}}</td>
+              </tr>
 
               <tr>
                 <td>Preview</td>
