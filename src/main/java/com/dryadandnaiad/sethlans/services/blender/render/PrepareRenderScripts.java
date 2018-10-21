@@ -129,7 +129,7 @@ class PrepareRenderScripts {
         for (String gpUs : gpusToCompare) {
             unselectedIds.add(StringUtils.substringAfter(gpUs, "_"));
         }
-        LOG.debug("The following devices are unselected: " + gpusToCompare);
+        LOG.debug("The following installed GPU(s) are unselected and will not be used for rendering: " + gpusToCompare);
         return unselectedIds;
     }
 }

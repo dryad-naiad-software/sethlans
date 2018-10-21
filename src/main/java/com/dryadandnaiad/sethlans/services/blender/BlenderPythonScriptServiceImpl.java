@@ -22,7 +22,6 @@ package com.dryadandnaiad.sethlans.services.blender;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.PythonImports;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
-import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,19 +48,15 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
                                              String tileSize, int resolutionX, int resolutionY, int resPercentage) {
         try {
             File script = new File(renderLocation + File.separator + "script-" + deviceId + ".py");
+            renderLocation = renderLocation.replace("\\", "/");
+
             FileWriter scriptWriter = new FileWriter(script);
 
             // Write Imports
             scriptWriter.write(PythonImports.BPY.toString() + "\n\n");
 
-            //noinspection ConstantConditions
-            if (SethlansQueryUtils.getOS().contains("Windows")) {
-                scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "r\"" + renderLocation + "\"" + "\n");
-            } else {
-                scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "\"" + renderLocation + "\"" + "\n");
-            }
             //Temp Directory
-
+            scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "\"" + renderLocation + "\"" + "\n");
 
             // Set Device
             scriptWriter.write("bpy.context.scene.cycles.device = " + "\"" + computeType + "\"" + "\n");
@@ -135,18 +130,15 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
         try {
             File script = new File(renderLocation + File.separator + "script-blenderRender.py");
 
+            renderLocation = renderLocation.replace("\\", "/");
+
             FileWriter scriptWriter = new FileWriter(script);
 
             // Write Imports
             scriptWriter.write(PythonImports.BPY.toString() + "\n\n");
 
             //Temp Directory
-            //noinspection ConstantConditions
-            if (SethlansQueryUtils.getOS().contains("Windows")) {
-                scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "r\"" + renderLocation + "\"" + "\n");
-            } else {
-                scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "\"" + renderLocation + "\"" + "\n");
-            }
+            scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "\"" + renderLocation + "\"" + "\n");
 
             // Set Resolution
             scriptWriter.write("\n");
@@ -207,18 +199,17 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
                 script = new File(renderLocation + File.separator + "script-CPU.py");
             }
 
+            renderLocation = renderLocation.replace("\\", "/");
+
+
             FileWriter scriptWriter = new FileWriter(script);
 
             // Write Imports
             scriptWriter.write(PythonImports.BPY.toString() + "\n\n");
 
             //Temp Directory
-            //noinspection ConstantConditions
-            if (SethlansQueryUtils.getOS().contains("Windows")) {
-                scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "r\"" + renderLocation + "\"" + "\n");
-            } else {
-                scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "\"" + renderLocation + "\"" + "\n");
-            }
+            scriptWriter.write("bpy.context.user_preferences.filepaths.temporary_directory = " + "\"" + renderLocation + "\"" + "\n");
+
 
             // Set Device
             scriptWriter.write("\n");
