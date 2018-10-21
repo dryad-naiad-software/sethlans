@@ -183,6 +183,7 @@ public class ProjectUIController {
         }
     }
 
+
     @GetMapping(value = "/api/project_ui/render_time/{id}")
     public String renderTime(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -217,6 +218,24 @@ public class ProjectUIController {
             }
         }
         return null;
+    }
+
+    @GetMapping(value = "/api/project_ui/completed_frames/{id}")
+    public int totalNumberOfFrames(@PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        BlenderProject blenderProject;
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
+            if (blenderProject != null) {
+                return convertBlenderProjectToProjectInfo(blenderProject).getCompletedFrames();
+            }
+        } else {
+            blenderProject = blenderProjectDatabaseService.getProjectByUserWithoutFrameParts(auth.getName(), id);
+            if (blenderProject != null) {
+                return convertBlenderProjectToProjectInfo(blenderProject).getCompletedFrames();
+            }
+        }
+        return 0;
     }
 
     @GetMapping(value = "/api/project_ui/total_queue/{id}")

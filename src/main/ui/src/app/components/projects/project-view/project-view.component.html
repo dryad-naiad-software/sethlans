@@ -120,20 +120,15 @@
                 <td>{{totalRenderTime}}</td>
               </tr>
               <tr *ngIf="currentProject.projectType === projectTypes.ANIMATION">
-                <td>Processed Frames</td>
-                <td>{{completedFrames}}}</td>
+                <td>Render Progress</td>
+                <td>{{completedFrames}} of {{currentProject.totalNumberOfFrames}} Frames Processed</td>
               </tr>
-              <tr *ngIf="currentProject.projectType === projectTypes.ANIMATION">
-                <td>Total Number of Frames</td>
-                <td>{{totalNumberOfFrames}}</td>
-              </tr>
-
               <tr>
                 <td>Preview</td>
                 <td *ngIf="!thumbnailStatus || thumbnailStatus == undefined">
                   <img [src]="placeholder"
                        height="100"
-                       class="align-top img-fluid img-thumbnail"
+                       class="align-top"
                        alt="placeholder">
                 </td>
                 <td *ngIf="thumbnailStatus">

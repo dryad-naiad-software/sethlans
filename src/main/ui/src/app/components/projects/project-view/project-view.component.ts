@@ -48,7 +48,6 @@ export class ProjectViewComponent implements OnInit {
   remainingQueue: number;
   thumbnailStatus: boolean;
   completedFrames: number;
-  totalNumberOfFrames: number;
   modalImage: any;
   currentThumbnail: any;
   placeholder: any = 'assets/images/placeholder.svg';
@@ -80,6 +79,7 @@ export class ProjectViewComponent implements OnInit {
       this.getThumbnailStatus();
       this.getNodeStatus();
       this.getProjectModalImage();
+      this.getCompletedFrames();
       this.disableButton = false;
     });
   }
@@ -107,6 +107,12 @@ export class ProjectViewComponent implements OnInit {
   getProjectTime() {
     this.http.get('/api/project_ui/project_duration/' + this.id + '/', {responseType: 'text'}).subscribe((duration: string) => {
       this.projectTime = duration;
+    });
+  }
+
+  getCompletedFrames() {
+    this.http.get('/api/project_ui/completed_frames/' + this.id + '/').subscribe((completed: number) => {
+      this.completedFrames = completed;
     });
   }
 
