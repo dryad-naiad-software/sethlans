@@ -32,7 +32,7 @@ export class RenderHistoryComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   dataSource = new MatTableDataSource();
-  displayedColumns = ['taskDate', 'computeType', 'completed', 'failed', 'engine', 'projectName', 'frameAndPartNumbers', 'serverName'];
+  displayedColumns = ['taskDate', 'computeType', 'deviceIDs', 'completed', 'failed', 'engine', 'projectName', 'blendFileName', 'frameAndPartNumbers', 'serverName'];
 
   constructor(private http: HttpClient, private modalService: NgbModal) {
   }

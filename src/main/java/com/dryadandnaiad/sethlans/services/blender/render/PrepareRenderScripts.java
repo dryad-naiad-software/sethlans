@@ -20,12 +20,15 @@
 package com.dryadandnaiad.sethlans.services.blender.render;
 
 import com.dryadandnaiad.sethlans.domains.database.render.RenderTask;
+import com.dryadandnaiad.sethlans.domains.database.render.RenderTaskHistory;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.domains.info.NodeInfo;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.services.blender.BlenderPythonScriptService;
+import com.dryadandnaiad.sethlans.services.database.RenderTaskHistoryDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,12 +49,16 @@ class PrepareRenderScripts {
 
     private static final Logger LOG = LoggerFactory.getLogger(PrepareRenderScripts.class);
 
-    static String setCyclesGPURenderScript(BlenderPythonScriptService blenderPythonScriptService, String tileSizeGPU, RenderTask renderTask, NodeInfo nodeInfo) {
+    static String setCyclesGPURenderScript(BlenderPythonScriptService blenderPythonScriptService,
+                                           RenderTaskHistoryDatabaseService renderTaskHistoryDatabaseService,
+                                           String tileSizeGPU, RenderTask renderTask, NodeInfo nodeInfo) {
         String script;
         String deviceID = getProperty(SethlansConfigKeys.GPU_DEVICE);
         List<String> deviceList = Arrays.asList(deviceID.split(","));
+        RenderTaskHistory renderTaskHistory = renderTaskHistoryDatabaseService.findByQueueUUID(renderTask.getRenderTaskUUID());
         List<String> deviceIDList = new ArrayList<>();
         if (nodeInfo.isCombined()) {
+            renderTaskHistory.setDeviceIDs(deviceID);
             boolean isCuda = false;
             LOG.info("Running render task using " + deviceID);
             for (String device : deviceList) {
@@ -73,6 +80,7 @@ class PrepareRenderScripts {
                     renderTask.getBlenderFramePart().getPartPositionMinY());
         } else {
             LOG.info("Running render task using " + renderTask.getDeviceID());
+            renderTaskHistory.setDeviceIDs(renderTask.getDeviceID());
             boolean isCuda = SethlansQueryUtils.isCuda(renderTask.getDeviceID());
             deviceIDList.add(StringUtils.substringAfter(renderTask.getDeviceID(), "_"));
             script = blenderPythonScriptService.writeCyclesRenderPythonScript(renderTask.getComputeType(),
@@ -89,12 +97,23 @@ class PrepareRenderScripts {
                     renderTask.getBlenderFramePart().getPartPositionMaxY(),
                     renderTask.getBlenderFramePart().getPartPositionMinY());
         }
+        String blendFile = FilenameUtils.getBaseName(renderTask.getBlendFilename())
+                + "." + FilenameUtils.getExtension(renderTask.getBlendFilename());
+        renderTaskHistory.setBlendFileName(blendFile);
+        renderTaskHistoryDatabaseService.saveOrUpdate(renderTaskHistory);
         return script;
     }
 
-    static String setCyclesCPURenderScript(BlenderPythonScriptService blenderPythonScriptService, String tileSizeCPU, RenderTask renderTask) {
+    static String setCyclesCPURenderScript(BlenderPythonScriptService blenderPythonScriptService,
+                                           RenderTaskHistoryDatabaseService renderTaskHistoryDatabaseService, String tileSizeCPU, RenderTask renderTask) {
         List<String> emptyList = new ArrayList<>();
-        String script = blenderPythonScriptService.writeCyclesRenderPythonScript(renderTask.getComputeType(),
+        RenderTaskHistory renderTaskHistory = renderTaskHistoryDatabaseService.findByQueueUUID(renderTask.getRenderTaskUUID());
+        renderTaskHistory.setDeviceIDs("CPU");
+        String blendFile = FilenameUtils.getBaseName(renderTask.getBlendFilename())
+                + "." + FilenameUtils.getExtension(renderTask.getBlendFilename());
+        renderTaskHistory.setBlendFileName(blendFile);
+        renderTaskHistoryDatabaseService.saveOrUpdate(renderTaskHistory);
+        return blenderPythonScriptService.writeCyclesRenderPythonScript(renderTask.getComputeType(),
                 renderTask.getRenderDir(), emptyList,
                 emptyList, false, renderTask.getRenderOutputFormat(), tileSizeCPU,
                 renderTask.getTaskResolutionX(),
@@ -105,16 +124,21 @@ class PrepareRenderScripts {
                 renderTask.getBlenderFramePart().getPartPositionMinX(),
                 renderTask.getBlenderFramePart().getPartPositionMaxY(),
                 renderTask.getBlenderFramePart().getPartPositionMinY());
-        return script;
     }
 
-    static String setBlenderRenderScript(BlenderPythonScriptService blenderPythonScriptService, String tileSizeCPU, RenderTask renderTask) {
-        String script = blenderPythonScriptService.writeBlenderRenderPythonScript(renderTask.getRenderDir(), renderTask.getRenderOutputFormat(), tileSizeCPU,
+    static String setBlenderRenderScript(BlenderPythonScriptService blenderPythonScriptService,
+                                         RenderTaskHistoryDatabaseService renderTaskHistoryDatabaseService, String tileSizeCPU, RenderTask renderTask) {
+        RenderTaskHistory renderTaskHistory = renderTaskHistoryDatabaseService.findByQueueUUID(renderTask.getRenderTaskUUID());
+        renderTaskHistory.setDeviceIDs("CPU");
+        String blendFile = FilenameUtils.getBaseName(renderTask.getBlendFilename())
+                + "." + FilenameUtils.getExtension(renderTask.getBlendFilename());
+        renderTaskHistory.setBlendFileName(blendFile);
+        renderTaskHistoryDatabaseService.saveOrUpdate(renderTaskHistory);
+        return blenderPythonScriptService.writeBlenderRenderPythonScript(renderTask.getRenderDir(), renderTask.getRenderOutputFormat(), tileSizeCPU,
                 renderTask.getTaskResolutionX(), renderTask.getTaskResolutionY(), renderTask.getPartResPercentage(),
                 renderTask.getBlenderFramePart().getPartPositionMaxX(), renderTask.getBlenderFramePart().getPartPositionMinX(),
                 renderTask.getBlenderFramePart().getPartPositionMaxY(),
                 renderTask.getBlenderFramePart().getPartPositionMinY());
-        return script;
     }
 
     private static List<String> getUnselectedIds(List<String> deviceList) {

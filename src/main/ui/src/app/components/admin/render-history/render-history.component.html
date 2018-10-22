@@ -52,6 +52,13 @@
               {{history.computeType}}
             </mat-cell>
           </ng-container>
+          <ng-container matColumnDef="deviceIDs">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Device ID(s)</mat-header-cell>
+            <mat-cell *matCellDef="let history">
+              <span class="mobile-label">Device ID(s):</span>
+              {{history.deviceIDs}}
+            </mat-cell>
+          </ng-container>
           <ng-container matColumnDef="completed">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Completed</mat-header-cell>
             <mat-cell *matCellDef="let history">
@@ -78,6 +85,13 @@
             <mat-cell *matCellDef="let history">
               <span class="mobile-label">Project Name:</span>
               {{history.projectName}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="blendFileName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>File Name</mat-header-cell>
+            <mat-cell *matCellDef="let history">
+              <span class="mobile-label">Blend File Name:</span>
+              {{history.blendFileName}}
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="frameAndPartNumbers">

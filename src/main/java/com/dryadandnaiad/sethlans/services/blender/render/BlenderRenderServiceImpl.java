@@ -113,18 +113,18 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             String script;
             switch (renderTask.getBlenderEngine()) {
                 case BLENDER_RENDER:
-                    script = setBlenderRenderScript(blenderPythonScriptService, tileSizeCPU, renderTask);
+                    script = setBlenderRenderScript(blenderPythonScriptService, renderTaskHistoryDatabaseService, tileSizeCPU, renderTask);
                     saveOnSuccess(renderTask, script);
                     break;
                 case CYCLES:
                     if (renderTask.getComputeType().equals(ComputeType.GPU)) {
-                        script = setCyclesGPURenderScript(blenderPythonScriptService, tileSizeGPU, renderTask, nodeInfo);
+                        script = setCyclesGPURenderScript(blenderPythonScriptService, renderTaskHistoryDatabaseService, tileSizeGPU, renderTask, nodeInfo);
                         saveOnSuccess(renderTask, script);
                         break;
 
                     } else {
                         LOG.info("Running render task using CPU");
-                        script = setCyclesCPURenderScript(blenderPythonScriptService, tileSizeCPU, renderTask);
+                        script = setCyclesCPURenderScript(blenderPythonScriptService, renderTaskHistoryDatabaseService, tileSizeCPU, renderTask);
                         saveOnSuccess(renderTask, script);
                         break;
                     }

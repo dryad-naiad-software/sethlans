@@ -23,6 +23,8 @@ import {ComputeMethod} from '../enums/compute.method.enum';
 export class RenderTaskHistory {
   taskDate: Date;
   serverName: string;
+  blendFileName: string;
+  deviceIDs: string;
   engine: BlenderEngine;
   computeType: ComputeMethod;
   projectName: string;
