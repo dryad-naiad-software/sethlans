@@ -25,7 +25,6 @@ import com.dryadandnaiad.sethlans.services.system.SethlansLogManagementService;
 import com.dryadandnaiad.sethlans.utils.SethlansConfigUtils;
 import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
-import org.hibernate.envers.Audited;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
