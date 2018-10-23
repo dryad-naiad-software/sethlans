@@ -18,6 +18,7 @@
  */
 
 import {Mode} from '../enums/mode.enum';
+import {MailSettings} from './mail_settings_model';
 
 export class SethlansConfig {
   httpsPort: string;
@@ -25,4 +26,6 @@ export class SethlansConfig {
   rootDir: string;
   mode: Mode;
   logLevel: string;
+  configureMail: boolean;
+  mailSettings: MailSettings;
 }

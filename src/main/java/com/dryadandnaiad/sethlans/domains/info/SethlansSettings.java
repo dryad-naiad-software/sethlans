@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2018 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.domains.info;
 
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.forms.setup.subclasses.MailSettings;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -37,4 +38,7 @@ public class SethlansSettings {
     private String rootDir;
     private SethlansMode mode;
     private String logLevel;
+    private boolean configureMail;
+    private MailSettings mailSettings;
+
 }

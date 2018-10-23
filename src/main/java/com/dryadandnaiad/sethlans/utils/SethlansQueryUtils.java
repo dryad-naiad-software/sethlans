@@ -94,6 +94,8 @@ public class SethlansQueryUtils {
         sethlansSettings.setMode(SethlansMode.valueOf(mode));
         sethlansSettings.setRootDir(SethlansConfigUtils.getProperty(SethlansConfigKeys.ROOT_DIR, SethlansConfigUtils.getConfigFile()));
         sethlansSettings.setLogLevel(SethlansConfigUtils.getProperty(SethlansConfigKeys.LOG_LEVEL, SethlansConfigUtils.getConfigFile()));
+        sethlansSettings.setConfigureMail(Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_SERVER_CONFIGURED, SethlansConfigUtils.getConfigFile())));
+
         return sethlansSettings;
     }
 
