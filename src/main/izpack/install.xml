@@ -81,7 +81,7 @@
         </pack>
         <pack name="Sethlans Required Files" required="yes" preselected="yes" hidden="true">
             <description>Java 1.8 JRE</description>
-            <file src="jre1.8.0_181.zip" targetdir="$INSTALL_PATH/lib" unpack="true"/>
+            <file src="jre1.8.0_191.zip" targetdir="$INSTALL_PATH/lib" unpack="true"/>
         </pack>
     </packs>
     <resources>

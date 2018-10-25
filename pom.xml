@@ -438,7 +438,7 @@
                                 </copy>
                                 <copy file="${basedir}/src/main/resources/sethlans.manifest"
                                       tofile="${izpack.staging}/${fileName}.manifest"/>
-                                <unzip src="${basedir}/src/main/jre/macOS/jre1.8.0_181.jre.zip"
+                                <unzip src="${basedir}/src/main/jre/macOS/jre1.8.0_191.jre.zip"
                                        dest="${project.build.directory}"/>
                             </target>
                         </configuration>
@@ -478,7 +478,7 @@
                     <iconFile>icon/sethlans.icns</iconFile>
                     <generateDiskImageFile>true</generateDiskImageFile>
                     <diskImageFile>${project.build.directory}/${binLocation}/${fileName}.dmg</diskImageFile>
-                    <jrePath>${project.build.directory}/jre1.8.0_181.jre</jrePath>
+                    <jrePath>${project.build.directory}/jre1.8.0_191.jre</jrePath>
                 </configuration>
                 <executions>
                     <execution>
@@ -494,7 +494,7 @@
             <plugin>
                 <groupId>com.akathist.maven.plugins.launch4j</groupId>
                 <artifactId>launch4j-maven-plugin</artifactId>
-                <version>1.7.22</version>
+                <version>1.7.23</version>
                 <executions>
                     <execution>
                         <id>sethlans-main</id>
@@ -517,7 +517,7 @@
                             </classPath>
                             <icon>${project.basedir}/src/main/resources/icon/sethlans.ico</icon>
                             <jre>
-                                <path>../lib/jre1.8.0_181</path>
+                                <path>../lib/jre1.8.0_191</path>
                                 <minVersion>1.8.0</minVersion>
                                 <jdkPreference>preferJre</jdkPreference>
                                 <bundledJre64Bit>true</bundledJre64Bit>
