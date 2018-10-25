@@ -27,6 +27,7 @@ import com.dryadandnaiad.sethlans.domains.info.SethlansSettings;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.forms.setup.subclasses.MailSettings;
 import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.google.common.base.Throwables;
@@ -95,7 +96,12 @@ public class SethlansQueryUtils {
         sethlansSettings.setRootDir(SethlansConfigUtils.getProperty(SethlansConfigKeys.ROOT_DIR, SethlansConfigUtils.getConfigFile()));
         sethlansSettings.setLogLevel(SethlansConfigUtils.getProperty(SethlansConfigKeys.LOG_LEVEL, SethlansConfigUtils.getConfigFile()));
         sethlansSettings.setConfigureMail(Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_SERVER_CONFIGURED, SethlansConfigUtils.getConfigFile())));
-
+        if(sethlansSettings.isConfigureMail()){
+            MailSettings mailSettings = new MailSettings();
+            mailSettings.setMailHost(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_HOST));
+            mailSettings.setMailPort(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_PORT));
+            sethlansSettings.setMailSettings(mailSettings);
+        }
         return sethlansSettings;
     }
 
