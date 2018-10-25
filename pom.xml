@@ -477,6 +477,7 @@
                     <mainClass>${sLauncherClass}</mainClass>
                     <iconFile>icon/sethlans.icns</iconFile>
                     <generateDiskImageFile>true</generateDiskImageFile>
+                    <includeApplicationsSymlink>true</includeApplicationsSymlink>
                     <diskImageFile>${project.build.directory}/${binLocation}/${fileName}.dmg</diskImageFile>
                     <jrePath>${project.build.directory}/jre1.8.0_191.jre</jrePath>
                 </configuration>
