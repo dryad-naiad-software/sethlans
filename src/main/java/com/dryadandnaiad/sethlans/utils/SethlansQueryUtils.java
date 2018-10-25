@@ -100,6 +100,10 @@ public class SethlansQueryUtils {
             MailSettings mailSettings = new MailSettings();
             mailSettings.setMailHost(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_HOST));
             mailSettings.setMailPort(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_PORT));
+            mailSettings.setSmtpAuth(Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_USE_AUTH)));
+            if(mailSettings.isSmtpAuth()) {
+                mailSettings.setUsername(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_USER));
+            }
             sethlansSettings.setMailSettings(mailSettings);
         }
         return sethlansSettings;
