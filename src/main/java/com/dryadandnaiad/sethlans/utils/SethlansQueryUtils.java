@@ -98,8 +98,14 @@ public class SethlansQueryUtils {
         sethlansSettings.setConfigureMail(Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_SERVER_CONFIGURED, SethlansConfigUtils.getConfigFile())));
         if(sethlansSettings.isConfigureMail()){
             MailSettings mailSettings = new MailSettings();
+            mailSettings.setReplyToAddress(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
             mailSettings.setMailHost(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_HOST));
             mailSettings.setMailPort(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_PORT));
+            mailSettings.setSslEnabled(Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_SSL_ENABLE)));
+            mailSettings.setStartTLSEnabled(Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_TLS_ENABLE)));
+            if(mailSettings.isStartTLSEnabled()) {
+                mailSettings.setStartTLSRequired(Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_TLS_REQUIRED)));
+            }
             mailSettings.setSmtpAuth(Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_USE_AUTH)));
             if(mailSettings.isSmtpAuth()) {
                 mailSettings.setUsername(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_USER));
