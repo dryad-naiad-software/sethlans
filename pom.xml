@@ -57,7 +57,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <binLocation>binaries</binLocation>
-        <node.version>v10.10.0</node.version>
+        <node.version>v10.12.0</node.version>
         <npm.version>6.4.1</npm.version>
         <izpack.staging>${project.build.directory}/staging</izpack.staging>
     </properties>
