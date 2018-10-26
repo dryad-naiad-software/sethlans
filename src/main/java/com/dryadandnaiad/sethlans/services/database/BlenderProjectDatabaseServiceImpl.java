@@ -232,6 +232,11 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
                 LOG.debug("End of file reached");
             } catch (IOException | JsonSyntaxException e) {
                 count++;
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
                 LOG.error(e.getMessage());
                 LOG.error(Throwables.getStackTraceAsString(e));
             }
