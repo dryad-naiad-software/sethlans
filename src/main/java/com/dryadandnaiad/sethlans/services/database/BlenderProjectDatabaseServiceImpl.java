@@ -214,24 +214,30 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
     }
 
     private List<BlenderFramePart> loadBlenderPartList(BlenderProject blenderProject) {
-        try (JsonReader reader = new JsonReader(new FileReader(blenderProject.getProjectRootDir() +
-                File.separator + blenderProject.getProjectUUID() + ".json"))) {
-            List<BlenderFramePart> blenderFramePartList = new ArrayList<>();
-            reader.beginArray();
-            while (reader.hasNext()) {
-                BlenderFramePart blenderFramePart = gson.fromJson(reader, BlenderFramePart.class);
-                blenderFramePartList.add(blenderFramePart);
+        int count = 0;
+        int maxTries = 2;
+        while (count < maxTries) {
+            try (JsonReader reader = new JsonReader(new FileReader(blenderProject.getProjectRootDir() +
+                    File.separator + blenderProject.getProjectUUID() + ".json"))) {
+                List<BlenderFramePart> blenderFramePartList = new ArrayList<>();
+                reader.beginArray();
+                while (reader.hasNext()) {
+                    BlenderFramePart blenderFramePart = gson.fromJson(reader, BlenderFramePart.class);
+                    blenderFramePartList.add(blenderFramePart);
+                }
+                reader.endArray();
+                reader.close();
+                return blenderFramePartList;
+            } catch (EOFException e) {
+                LOG.debug("End of file reached");
+            } catch (IOException | JsonSyntaxException e) {
+                count++;
+                LOG.error(e.getMessage());
+                LOG.error(Throwables.getStackTraceAsString(e));
             }
-            reader.endArray();
-            reader.close();
-            return blenderFramePartList;
-        } catch (EOFException e) {
-            LOG.debug("End of file reached");
-        } catch (IOException | JsonSyntaxException e) {
-            LOG.error(e.getMessage());
-            LOG.error(Throwables.getStackTraceAsString(e));
         }
         return null;
+
     }
 
     @Override
