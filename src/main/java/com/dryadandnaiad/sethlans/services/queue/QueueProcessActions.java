@@ -113,7 +113,14 @@ class QueueProcessActions {
         }
         blenderProject.setRemainingQueueSize(remainingTotalQueue);
         if (blenderProject.getProjectEnd() != null) {
-            blenderProject.setTotalProjectTime(blenderProject.getProjectEnd() - blenderProject.getProjectStart());
+            long timeToAdd = blenderProject.getProjectEnd() - blenderProject.getProjectStart();
+            if (blenderProject.getTotalProjectTime() == 0L) {
+                blenderProject.setTotalProjectTime(timeToAdd);
+            } else {
+                timeToAdd = timeToAdd - blenderProject.getTotalProjectTime();
+                blenderProject.setTotalProjectTime(blenderProject.getTotalProjectTime() + timeToAdd);
+            }
+
         }
         processQueueDatabaseService.delete(processQueueItem);
     }
@@ -214,7 +221,9 @@ class QueueProcessActions {
                             blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
                         }
                         blenderProject.setAllImagesProcessed(true);
-                        blenderProject.setTotalProjectTime(blenderProject.getProjectEnd() - blenderProject.getProjectStart());
+                        long timeToAdd = blenderProject.getProjectEnd() - blenderProject.getProjectStart();
+                        timeToAdd = timeToAdd - blenderProject.getTotalProjectTime();
+                        blenderProject.setTotalProjectTime(blenderProject.getTotalProjectTime() + timeToAdd);
                         blenderProject.setVersion(blenderProjectDatabaseService.getByIdWithoutFrameParts(blenderProject.getId()).getVersion());
                         blenderProjectDatabaseService.saveOrUpdate(blenderProject);
                         renderQueueDatabaseService.deleteAllByProject(blenderProject.getProjectUUID());
