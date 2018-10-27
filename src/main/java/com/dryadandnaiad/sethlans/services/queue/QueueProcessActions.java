@@ -117,7 +117,9 @@ class QueueProcessActions {
             if (blenderProject.getTotalProjectTime() == 0L) {
                 blenderProject.setTotalProjectTime(timeToAdd);
             } else {
-                timeToAdd = timeToAdd - blenderProject.getTotalProjectTime();
+                if (timeToAdd > blenderProject.getTotalProjectTime()) {
+                    timeToAdd = timeToAdd - blenderProject.getTotalProjectTime();
+                }
                 blenderProject.setTotalProjectTime(blenderProject.getTotalProjectTime() + timeToAdd);
             }
 
@@ -222,7 +224,10 @@ class QueueProcessActions {
                         }
                         blenderProject.setAllImagesProcessed(true);
                         long timeToAdd = blenderProject.getProjectEnd() - blenderProject.getProjectStart();
-                        timeToAdd = timeToAdd - blenderProject.getTotalProjectTime();
+                        if (timeToAdd > blenderProject.getTotalProjectTime()) {
+                            timeToAdd = timeToAdd - blenderProject.getTotalProjectTime();
+                        }
+
                         blenderProject.setTotalProjectTime(blenderProject.getTotalProjectTime() + timeToAdd);
                         blenderProject.setVersion(blenderProjectDatabaseService.getByIdWithoutFrameParts(blenderProject.getId()).getVersion());
                         blenderProjectDatabaseService.saveOrUpdate(blenderProject);
