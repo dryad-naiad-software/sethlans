@@ -23,6 +23,7 @@ import {SethlansConfig} from '../../../models/sethlans_config.model';
 import {Mode} from '../../../enums/mode.enum';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Router} from '@angular/router';
+import {MailSettings} from "../../../models/mail_settings_model";
 
 @Component({
   selector: 'app-sethlans-settings',
@@ -45,6 +46,10 @@ export class SethlansSettingsComponent implements OnInit {
     this.http.get('/api/management/current_settings').subscribe((sethlansConfig: SethlansConfig) => {
       this.sethlansConfig = Object.assign({}, sethlansConfig);
       this.updateConfig = Object.assign({}, sethlansConfig);
+      if (this.sethlansConfig.mailSettings == null) {
+        this.sethlansConfig.mailSettings = new MailSettings();
+        this.updateConfig.mailSettings = new MailSettings();
+      }
     });
   }
 

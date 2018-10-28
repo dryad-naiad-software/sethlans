@@ -77,67 +77,67 @@
           <tbody>
           <tr>
             <td style="width: 40%">SMTP Server Enabled</td>
-            <td style="width: 75%">true</td>
+            <td style="width: 75%">{{sethlansConfig.configureMail}}</td>
             <td style="width: 33%">
-              <button class="btn btn-outline-primary btn-sm" (click)="open(portEditModal)">Edit</button>
+              <button class="btn btn-outline-primary btn-sm" (click)="open(enableMailModal)">Edit</button>
             </td>
           </tr>
-          <tr>
+          <tr *ngIf="sethlansConfig.configureMail">
             <td>SMTP Server</td>
-            <td>test.example.com</td>
+            <td>{{sethlansConfig.mailSettings.mailHost}}</td>
             <td>
               <button class="btn btn-outline-primary btn-sm" (click)="open(ipEditModal)">Edit</button>
             </td>
           </tr>
-          <tr>
+          <tr *ngIf="sethlansConfig.configureMail">
             <td>SMTP Port</td>
-            <td>25</td>
+            <td>{{sethlansConfig.mailSettings.mailPort}}</td>
             <td>
-              <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
+              <button class="btn btn-outline-primary btn-sm" (click)="open(enableMailModal)">Edit</button>
             </td>
           </tr>
-          <tr>
+          <tr *ngIf="sethlansConfig.configureMail">
             <td>Reply To Address</td>
-            <td>noreply@example.com</td>
+            <td>{{sethlansConfig.mailSettings.replyToAddress}}</td>
             <td>
               <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
             </td>
           </tr>
-          <tr>
+          <tr *ngIf="sethlansConfig.configureMail">
             <td>Use SSL</td>
-            <td>true</td>
+            <td>{{sethlansConfig.mailSettings.sslEnabled}}</td>
             <td>
               <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
             </td>
-          <tr>
+          <tr *ngIf="sethlansConfig.configureMail">
             <td>Enable Start TLS</td>
-            <td>false</td>
+            <td>{{sethlansConfig.mailSettings.startTLSEnabled}}</td>
             <td>
               <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
             </td>
           </tr>
-          <tr>
+          <tr *ngIf="sethlansConfig.configureMail">
             <td>Require Start TLS</td>
-            <td>false</td>
+            <td>{{sethlansConfig.mailSettings.startTLSRequired}}</td>
             <td>
               <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
             </td>
           </tr>
-          <tr>
+          <tr *ngIf="sethlansConfig.configureMail">
             <td>Use SMTP Authentication</td>
-            <td>true</td>
+            <td>{{sethlansConfig.mailSettings.smtpAuth}}</td>
             <td>
               <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
             </td>
           </tr>
-          <tr>
+          <tr *ngIf="sethlansConfig.configureMail">
             <td>SMTP Username</td>
-            <td>kitty</td>
+            <td>{{sethlansConfig.mailSettings.username}}</td>
             <td>
               <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
             </td>
           </tr>
-          <tr>
+          <tr *ngIf="sethlansConfig.configureMail">
             <td>SMTP Password</td>
             <td>**********</td>
             <td>
@@ -244,7 +244,6 @@
         <option value="INFO">INFO</option>
         <option value="DEBUG">DEBUG</option>
       </select>
-
     </div>
   </div>
   <div class="modal-footer">
@@ -253,4 +252,28 @@
       class="btn btn-outline-dark ml-auto" (click)="c; update()">Update
     </button>
   </div>
+
+</ng-template>
+
+<ng-template #enableMailModal let-c="close('Close click')" let-d="dismiss('Cross click')">
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Enable/Disable SMTP</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d; cancel()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      Configure SMTP Server&nbsp;
+      <span class="fas" [ngClass]="updateConfig.configureMail ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
+            (click)="updateConfig.configureMail = !updateConfig.configureMail"></span>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-outline-secondary mr-auto" (click)="c; cancel()">Cancel</button>
+    <button
+      class="btn btn-outline-dark ml-auto" (click)="c; update()">Update
+    </button>
+  </div>
+
 </ng-template>

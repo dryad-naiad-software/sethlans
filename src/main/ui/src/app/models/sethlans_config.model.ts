@@ -28,4 +28,9 @@ export class SethlansConfig {
   logLevel: string;
   configureMail: boolean;
   mailSettings: MailSettings;
+
+
+  constructor() {
+    this.mailSettings = new MailSettings();
+  }
 }
