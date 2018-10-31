@@ -140,7 +140,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                         } else {
                             filename = blenderVersion + "-" + blenderBinary.getBlenderBinaryOS().toLowerCase() + "." +
                                     com.google.common.io.Files.getFileExtension(blenderBinary.getBlenderFile());
-                            LOG.debug("Setting filename to" + filename);
+                            LOG.debug("Setting filename to " + filename);
                         }
 
                         File toDownload = new File(saveLocation + File.separator + filename);
