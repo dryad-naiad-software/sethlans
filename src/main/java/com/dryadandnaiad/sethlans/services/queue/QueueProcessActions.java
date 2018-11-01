@@ -221,9 +221,9 @@ class QueueProcessActions {
                                 sethlansNotification.setSubject(blenderProject.getProjectName());
                                 sethlansNotification.setMessageLink("/projects/view/" + blenderProject.getId());
                                 sethlansNotificationService.sendNotification(sethlansNotification);
-                                blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
                             }
                             blenderProject.setAllImagesProcessed(true);
+                            blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
                             long timeToAdd = blenderProject.getProjectEnd() - blenderProject.getProjectStart();
                             if (timeToAdd > blenderProject.getTotalProjectTime()) {
                                 timeToAdd = timeToAdd - blenderProject.getTotalProjectTime();
