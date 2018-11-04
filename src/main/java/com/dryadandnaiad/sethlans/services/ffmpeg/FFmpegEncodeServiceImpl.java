@@ -129,7 +129,7 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
             projectToUpdate.setProjectStatus(ProjectStatus.Finished);
             projectToUpdate.setMovieFileLocation(blenderProject.getMovieFileLocation());
             if (!blenderProject.isReEncode()) {
-                projectToUpdate.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
+                projectToUpdate.setTimerEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
             }
             projectToUpdate.setReEncode(false);
             String message = blenderProject.getProjectName() + " video processing has completed";

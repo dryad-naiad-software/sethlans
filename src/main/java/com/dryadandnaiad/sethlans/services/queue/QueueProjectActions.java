@@ -66,7 +66,7 @@ class QueueProjectActions {
                     }
                 }
                 blenderProject.setProjectStatus(ProjectStatus.Paused);
-                blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
+                blenderProject.setTimerEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
                 blenderProject.setVersion(blenderProjectDatabaseService.getByIdWithoutFrameParts(blenderProject.getId()).getVersion());
                 blenderProjectDatabaseService.saveOrUpdate(blenderProject);
                 break;
@@ -80,6 +80,8 @@ class QueueProjectActions {
                         renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
                     }
                 }
+                blenderProject.setTimerEnd(0L);
+                blenderProject.setTimerStart(0L);
                 blenderProject.setProjectStatus(ProjectStatus.Pending);
                 blenderProject.setVersion(blenderProjectDatabaseService.getByIdWithoutFrameParts(blenderProject.getId()).getVersion());
                 blenderProjectDatabaseService.saveOrUpdate(blenderProject);
@@ -117,8 +119,8 @@ class QueueProjectActions {
                 if (!blenderProject.isAllImagesProcessed() && blenderProjectDatabaseService.getByIdWithoutFrameParts(blenderProject.getId()) != null) {
                     blenderProject.setProjectStatus(ProjectStatus.Added);
                     blenderProject.setTotalProjectTime(0L);
-                    blenderProject.setProjectStart(0L);
-                    blenderProject.setProjectEnd(0L);
+                    blenderProject.setTimerStart(0L);
+                    blenderProject.setTimerEnd(0L);
                     blenderProject.setQueueIndex(0);
                     blenderProject.setCompletedFrames(0);
                     blenderProject.setUserStopped(true);

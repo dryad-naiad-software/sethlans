@@ -103,7 +103,7 @@ class QueueProcessActions {
         blenderProject.setTotalRenderTime(blenderProject.getTotalRenderTime() + processQueueItem.getRenderTime());
         if (remainingTotalQueue > 0 && !blenderProject.getProjectStatus().equals(ProjectStatus.Paused)) {
             blenderProject.setProjectStatus(ProjectStatus.Rendering);
-            blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
+            blenderProject.setTimerEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
         }
         if (remainingPartsForFrame == 0) {
             ProcessFrameItem processFrameItem = new ProcessFrameItem();
@@ -112,14 +112,22 @@ class QueueProcessActions {
             processFrameDatabaseService.saveOrUpdate(processFrameItem);
         }
         blenderProject.setRemainingQueueSize(remainingTotalQueue);
-        if (blenderProject.getProjectEnd() != null) {
-            long timeToAdd = blenderProject.getProjectEnd() - blenderProject.getProjectStart();
+        if (blenderProject.getTimerEnd() != null) {
+            LOG.debug("Timer End: " + blenderProject.getTimerEnd());
+            LOG.debug("Timer Start: " + blenderProject.getTimerStart());
+            long timeToAdd = blenderProject.getTimerEnd() - blenderProject.getTimerStart();
+            LOG.debug("Difference: " + timeToAdd);
+            LOG.debug("Project Total Time: " + blenderProject.getTotalProjectTime());
             if (blenderProject.getTotalProjectTime() == 0L) {
+                LOG.debug("Setting Total Project Time: " + timeToAdd);
                 blenderProject.setTotalProjectTime(timeToAdd);
             } else {
-                if (timeToAdd > blenderProject.getTotalProjectTime()) {
+                if (timeToAdd >= blenderProject.getTotalProjectTime()) {
                     timeToAdd = timeToAdd - blenderProject.getTotalProjectTime();
+                    LOG.debug("Time to Add: " + timeToAdd);
                 }
+                LOG.debug("1");
+                LOG.debug("Adding time to total " + timeToAdd);
                 blenderProject.setTotalProjectTime(blenderProject.getTotalProjectTime() + timeToAdd);
             }
 
@@ -223,11 +231,17 @@ class QueueProcessActions {
                                 sethlansNotificationService.sendNotification(sethlansNotification);
                             }
                             blenderProject.setAllImagesProcessed(true);
-                            blenderProject.setProjectEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
-                            long timeToAdd = blenderProject.getProjectEnd() - blenderProject.getProjectStart();
+                            blenderProject.setTimerEnd(TimeUnit.MILLISECONDS.convert(System.nanoTime(), TimeUnit.NANOSECONDS));
+                            LOG.debug("Timer End: " + blenderProject.getTimerEnd());
+                            LOG.debug("Timer Start: " + blenderProject.getTimerStart());
+                            long timeToAdd = blenderProject.getTimerEnd() - blenderProject.getTimerStart();
+                            LOG.debug("Difference: " + timeToAdd);
                             if (timeToAdd > blenderProject.getTotalProjectTime()) {
                                 timeToAdd = timeToAdd - blenderProject.getTotalProjectTime();
+                                LOG.debug("Time to Add: " + timeToAdd);
                             }
+                            LOG.debug("2");
+                            LOG.debug("Adding time to total " + timeToAdd);
 
                             blenderProject.setTotalProjectTime(blenderProject.getTotalProjectTime() + timeToAdd);
                             blenderProject.setVersion(blenderProjectDatabaseService.getByIdWithoutFrameParts(blenderProject.getId()).getVersion());

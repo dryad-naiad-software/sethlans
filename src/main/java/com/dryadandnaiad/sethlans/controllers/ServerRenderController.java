@@ -173,6 +173,9 @@ public class ServerRenderController {
                                 @RequestParam String queue_uuid, @RequestParam String project_uuid, @RequestParam long render_time) {
         if (sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.info("The uuid sent: " + connection_uuid + " is not present in the database");
+            if (blenderProjectDatabaseService.getByProjectUUID(project_uuid) == null) {
+                LOG.info("Project does not exist. Discarding response.");
+            }
         } else {
             if (!part.isEmpty()) {
                 SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);

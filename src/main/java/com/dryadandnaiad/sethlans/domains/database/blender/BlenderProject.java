@@ -81,8 +81,8 @@ public class BlenderProject extends AbstractEntityClass {
     private boolean reEncode;
     private Long totalRenderTime;
     private Long totalProjectTime;
-    private Long projectStart;
-    private Long projectEnd;
+    private Long timerStart;
+    private Long timerEnd;
     @ElementCollection
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<String> frameFileNames;
