@@ -120,4 +120,35 @@ public class SethlansNodeUtils {
                 }
         }
     }
+
+    public static void resetNode(ComputeType compute_type, SethlansNode sethlansNode, boolean isQueueEmpty) {
+        switch (compute_type) {
+            case GPU:
+                sethlansNode.setAllGPUSlotInUse(false);
+                if (isQueueEmpty) {
+                    sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                } else {
+                    if (sethlansNode.isCombined()) {
+                        sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                    } else {
+                        if (sethlansNode.getAvailableRenderingSlots() == 1) {
+                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                        } else {
+                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+                        }
+                    }
+                }
+
+                break;
+            case CPU:
+                sethlansNode.setCpuSlotInUse(false);
+                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                break;
+            case CPU_GPU:
+                sethlansNode.setCpuSlotInUse(false);
+                sethlansNode.setAllGPUSlotInUse(false);
+                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                break;
+        }
+    }
 }

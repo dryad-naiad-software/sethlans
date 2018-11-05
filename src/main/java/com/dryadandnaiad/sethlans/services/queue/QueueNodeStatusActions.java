@@ -31,6 +31,7 @@ import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseServic
 import com.dryadandnaiad.sethlans.services.database.RenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
+import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,39 +62,14 @@ public class QueueNodeStatusActions {
                 sethlansNotification.setSubject("Node has gone offline!");
                 sethlansNotification.setLinkPresent(true);
                 sethlansNotification.setMessageLink("/admin/nodes");
-                sethlansNotificationService.sendNotification(sethlansNotification);
-                switch (sethlansNode.getComputeType()) {
-                    case GPU:
-                        sethlansNode.setAllGPUSlotInUse(false);
-                        if (sethlansNode.isCombined()) {
-                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                        } else {
-                            if (sethlansNode.getAvailableRenderingSlots() == 1) {
-                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                            } else {
-                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
-                            }
-                        }
-                        sethlansNode.setActive(false);
-                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                        break;
-                    case CPU:
-                        sethlansNode.setActive(false);
-                        sethlansNode.setCpuSlotInUse(false);
-                        sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                        break;
-                    case CPU_GPU:
-                        sethlansNode.setActive(false);
-                        sethlansNode.setCpuSlotInUse(false);
-                        sethlansNode.setAllGPUSlotInUse(false);
-                        sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                        break;
-                }
+
                 if (renderQueueDatabaseService.tableSize() > 0) {
+                    SethlansNodeUtils.resetNode(sethlansNode.getComputeType(), sethlansNode, false);
                     removeNodeFromQueue(sethlansNode.getConnectionUUID(), renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNode);
+                } else {
+                    SethlansNodeUtils.resetNode(sethlansNode.getComputeType(), sethlansNode, true);
                 }
+                sethlansNotificationService.sendNotification(sethlansNotification);
             }
             if (nodeOnlineItem.isOnline()) {
                 LOG.info("Marking node " + sethlansNode.getHostname() + " as active.");
@@ -128,33 +104,8 @@ public class QueueNodeStatusActions {
             }
             if (sethlansNode.isBenchmarkComplete() && !waitingTobeProcessed) {
                 LOG.debug("Received idle notification from  " + sethlansNode.getHostname());
-                switch (idleNode.getComputeType()) {
-                    case GPU:
-                        sethlansNode.setAllGPUSlotInUse(false);
-                        if (sethlansNode.isCombined()) {
-                            sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                        } else {
-                            if (sethlansNode.getAvailableRenderingSlots() == 1) {
-                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                            } else {
-                                sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
-                            }
-                        }
-                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                        break;
-                    case CPU:
-                        sethlansNode.setCpuSlotInUse(false);
-                        sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                        break;
-                    case CPU_GPU:
-                        sethlansNode.setCpuSlotInUse(false);
-                        sethlansNode.setAllGPUSlotInUse(false);
-                        sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                        break;
-                }
-
+                SethlansNodeUtils.resetNode(idleNode.getComputeType(), sethlansNode, false);
+                sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                 removeNodeFromQueue(idleNode.getConnectionUUID(), renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNode);
             }
             processedNodes.add(idleNode);

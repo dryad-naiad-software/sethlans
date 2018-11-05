@@ -26,6 +26,7 @@ import com.dryadandnaiad.sethlans.services.database.RenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
 import com.dryadandnaiad.sethlans.services.queue.QueueService;
+import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +56,14 @@ public class ServerBackgroundController {
         if (renderQueueDatabaseService.tableSize() > 0) {
             LOG.debug("Received idle node notification.  Connection ID: " + connection_uuid + " Compute Type: " + compute_type);
             queueService.queueIdleNode(connection_uuid, compute_type);
+        } else {
+            SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
+            if (sethlansNode.isBenchmarkComplete() && sethlansNode.getAvailableRenderingSlots() != sethlansNode.getTotalRenderingSlots()) {
+                LOG.debug("Received idle notification from  " + sethlansNode.getHostname());
+                SethlansNodeUtils.resetNode(compute_type, sethlansNode, true);
+                sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+            }
+
         }
     }
 
