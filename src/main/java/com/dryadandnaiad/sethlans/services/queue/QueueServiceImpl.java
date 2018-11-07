@@ -189,7 +189,14 @@ public class QueueServiceImpl implements QueueService {
 
     @Override
     public void nodeRejectQueueItem(String queue_uuid) {
-        nodeStatuses.add(new ProcessNodeStatus(queue_uuid, false));
+        ProcessQueueItem queueItem = processQueueDatabaseService.getProcessByQueueUUID(queue_uuid);
+        if (queueItem != null) {
+            nodeStatuses.add(new ProcessNodeStatus(queue_uuid, false));
+        } else {
+            LOG.info("Rejection received for item that is no longer in queue.");
+        }
+
+
     }
 
     @Override
