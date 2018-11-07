@@ -106,6 +106,7 @@ public class QueueNodeStatusActions {
                 LOG.debug("Received idle notification from  " + sethlansNode.getHostname());
                 SethlansNodeUtils.resetNode(idleNode.getComputeType(), sethlansNode, false);
                 sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                LOG.debug(sethlansNode.toString());
                 removeNodeFromQueue(idleNode.getConnectionUUID(), renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNode);
             }
             processedNodes.add(idleNode);

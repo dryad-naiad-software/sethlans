@@ -53,6 +53,7 @@ public class ServerBackgroundController {
 
     @PostMapping(value = "/api/update/node_idle_notification")
     public void nodeIdleNotification(@RequestParam String connection_uuid, ComputeType compute_type) {
+        //TODO Add GPU info to request to handle non combined GPU modes
         if (renderQueueDatabaseService.tableSize() > 0) {
             LOG.debug("Received idle node notification.  Connection ID: " + connection_uuid + " Compute Type: " + compute_type);
             queueService.queueIdleNode(connection_uuid, compute_type);

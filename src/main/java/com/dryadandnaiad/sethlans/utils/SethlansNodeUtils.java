@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.domains.info.NodeInfo;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
@@ -121,20 +122,36 @@ public class SethlansNodeUtils {
         }
     }
 
+    private static void resetGPUs(SethlansNode sethlansNode) {
+        List<GPUDevice> selectedGPUs = sethlansNode.getSelectedGPUs();
+        for (GPUDevice gpu : selectedGPUs) {
+            if (gpu.isInUse()) {
+                gpu.setInUse(false);
+            }
+        }
+
+
+    }
+
     public static void resetNode(ComputeType compute_type, SethlansNode sethlansNode, boolean isQueueEmpty) {
         switch (compute_type) {
             case GPU:
                 sethlansNode.setAllGPUSlotInUse(false);
                 if (isQueueEmpty) {
                     sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                    resetGPUs(sethlansNode);
                 } else {
                     if (sethlansNode.isCombined()) {
                         sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                        resetGPUs(sethlansNode);
                     } else {
                         if (sethlansNode.getAvailableRenderingSlots() == 1) {
                             sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                            resetGPUs(sethlansNode);
                         } else {
                             sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+                            resetGPUs(sethlansNode);
+
                         }
                     }
                 }
@@ -148,6 +165,7 @@ public class SethlansNodeUtils {
                 sethlansNode.setCpuSlotInUse(false);
                 sethlansNode.setAllGPUSlotInUse(false);
                 sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+                resetGPUs(sethlansNode);
                 break;
         }
     }

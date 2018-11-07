@@ -154,6 +154,7 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
     }
 
     private void sendIdleUpdate(ComputeType computeType) {
+        //TODO get which GPU is being used if GPU mode
         for (SethlansServer sethlansServer : sethlansServerDatabaseService.listAll()) {
             String url = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/update/node_idle_notification";
             String param = "connection_uuid=" + sethlansServer.getConnectionUUID() + "&compute_type=" + computeType;
