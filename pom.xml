@@ -451,6 +451,9 @@
                         </goals>
                         <configuration>
                             <target>
+                                <zip destfile="${project.build.directory}/${binLocation}/Test${fileName}-macOS.zip"
+                                     basedir="${project.build.directory}/${binLocation}/${fileName}-macOS">
+                                </zip>
                                 <zip destfile="${project.build.directory}/${binLocation}/${fileName}-macOS.zip">
                                     <fileset dir="${project.build.directory}/${binLocation}"
                                              includes="${fileName}.dmg"/>
