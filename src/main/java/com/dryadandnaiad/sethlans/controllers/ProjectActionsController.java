@@ -251,6 +251,9 @@ public class ProjectActionsController {
         if (projectForm != null) {
             LOG.info("Project Submitted" + projectForm);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (projectForm.getEndFrame() <= 0) {
+                projectForm.setProjectType(ProjectType.STILL_IMAGE);
+            }
             if (projectForm.getProjectType() == ProjectType.STILL_IMAGE) {
                 projectForm.setOutputFormat(RenderOutputFormat.PNG);
                 projectForm.setEndFrame(projectForm.getStartFrame());
@@ -260,6 +263,7 @@ public class ProjectActionsController {
                 projectForm.setRenderOn(ComputeType.CPU);
                 projectForm.setSamples(0);
             }
+
             partConfiguration(projectForm);
             projectForm.setFrameRate(checkFrameRate(projectForm.getFrameRate()));
             projectForm.setUsername(auth.getName());
