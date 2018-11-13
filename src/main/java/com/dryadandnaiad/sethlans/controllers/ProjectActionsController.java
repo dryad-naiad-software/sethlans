@@ -251,7 +251,7 @@ public class ProjectActionsController {
         if (projectForm != null) {
             LOG.info("Project Submitted" + projectForm);
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (projectForm.getEndFrame() <= 0) {
+            if (projectForm.getEndFrame() <= 0 || projectForm.getStartFrame() > projectForm.getEndFrame()) {
                 projectForm.setProjectType(ProjectType.STILL_IMAGE);
             }
             if (projectForm.getProjectType() == ProjectType.STILL_IMAGE) {
