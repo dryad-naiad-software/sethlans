@@ -62,13 +62,11 @@ public class QueueNodeStatusActions {
                 sethlansNotification.setSubject("Node has gone offline!");
                 sethlansNotification.setLinkPresent(true);
                 sethlansNotification.setMessageLink("/admin/nodes");
+                removeNodeFromQueue(sethlansNode.getConnectionUUID(), renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNode);
+                SethlansNodeUtils.resetNode(sethlansNode.getComputeType(), sethlansNode, true);
+                sethlansNode.setActive(false);
+                sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
 
-                if (renderQueueDatabaseService.tableSize() > 0) {
-                    SethlansNodeUtils.resetNode(sethlansNode.getComputeType(), sethlansNode, false);
-                    removeNodeFromQueue(sethlansNode.getConnectionUUID(), renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNode);
-                } else {
-                    SethlansNodeUtils.resetNode(sethlansNode.getComputeType(), sethlansNode, true);
-                }
                 sethlansNotificationService.sendNotification(sethlansNotification);
             }
             if (nodeOnlineItem.isOnline()) {
@@ -124,6 +122,7 @@ public class QueueNodeStatusActions {
     static void disableNodes(Long nodeID, SethlansNodeDatabaseService sethlansNodeDatabaseService, RenderQueueDatabaseService renderQueueDatabaseService, BlenderProjectDatabaseService blenderProjectDatabaseService) {
         SethlansNode sethlansNode = sethlansNodeDatabaseService.getById(nodeID);
         removeNodeFromQueue(sethlansNode.getConnectionUUID(), renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNode);
+        SethlansNodeUtils.resetNode(sethlansNode.getComputeType(), sethlansNode, true);
         sethlansNode.setDisabled(true);
         sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
     }

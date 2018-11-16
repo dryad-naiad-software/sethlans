@@ -295,7 +295,8 @@ public class QueueServiceImpl implements QueueService {
             if (nodeOnlineItemList.size() > 0) {
                 List<NodeOnlineItem> processedStatusNodes = new ArrayList<>();
                 for (NodeOnlineItem nodeOnlineItem : new ArrayList<>(nodeOnlineItemList)) {
-                    processOfflineNodes(sethlansNodeDatabaseService, nodeOnlineItem, renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNotificationService, processedStatusNodes);
+                    processOfflineNodes(sethlansNodeDatabaseService, nodeOnlineItem, renderQueueDatabaseService,
+                            blenderProjectDatabaseService, sethlansNotificationService, processedStatusNodes);
                 }
                 nodeOnlineItemList.removeAll(processedStatusNodes);
             }

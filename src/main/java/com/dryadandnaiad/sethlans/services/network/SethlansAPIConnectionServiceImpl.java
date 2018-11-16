@@ -226,7 +226,7 @@ public class SethlansAPIConnectionServiceImpl implements SethlansAPIConnectionSe
         } catch (UnsupportedEncodingException e) {
             LOG.error("Unsupported Encoding Exception " + e.getMessage());
         } catch (IOException e) {
-            LOG.error(e.getMessage());
+            LOG.error("Query to node at " + connectionURL + " failed! " + e.getMessage());
         }
         return false;
     }
