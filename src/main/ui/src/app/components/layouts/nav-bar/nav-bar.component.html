@@ -201,10 +201,10 @@
     </ul>
   </div>
 </nav>
-<ng-template #about let-c="close('Close click')" let-d="dismiss('Cross click')">
+<ng-template #about let-modal>
   <div class="modal-header">
     <h4 style="font-family: 'Fjalla One', sans-serif;">About</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d">
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>

@@ -185,29 +185,29 @@
   </div>
 </div>
 <!--Delete Node Confirmation-->
-<ng-template #deleteConfirmation let-c="close('Close click')" let-d="dismiss('Cross click')">
+<ng-template #deleteConfirmation let-modal>
   <div class="modal-header">
     <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Delete Node</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d">
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
     <p>Are you sure you want to delete <strong>{{selectedNode.hostname}}</strong>?</p>
-    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c">No
+    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="modal.close('Cancel')">No
     </button>
     <button type="button" class="btn btn-outline-danger ml-auto float-right"
-            (click)="c; deleteNode(selectedNode.id)">Yes
+            (click)="modal.close('Save click'); deleteNode(selectedNode.id)">Yes
     </button>
   </div>
 
 </ng-template>
 
 <!--Replace Node Confirmation-->
-<ng-template #replaceConfirmation let-c="close('Close click')" let-d="dismiss('Cross click')">
+<ng-template #replaceConfirmation let-modal>
   <div class="modal-header">
     <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Replace Node</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d">
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -215,10 +215,10 @@
     <p><strong>{{selectedNode.hostname}}</strong> will be replaced with a new entry and rerun benchmarks. <strong>This
       cannot be undone.</strong></p>
     <p>Are you sure you want to replace <strong>{{selectedNode.hostname}}</strong>?</p>
-    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c">No
+    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="modal.close('Cancel')">No
     </button>
     <button type="button" class="btn btn-outline-danger ml-auto float-right"
-            (click)="c; replaceNode(selectedNode.id)">Yes
+            (click)="modal.close('Save click'); replaceNode(selectedNode.id)">Yes
     </button>
   </div>
 

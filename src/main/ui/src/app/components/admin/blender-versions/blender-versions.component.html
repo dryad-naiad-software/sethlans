@@ -53,10 +53,10 @@
         <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[10,25,50]"></mat-paginator>
 
 
-        <ng-template #versionModal let-c="close('Close click')" let-d="dismiss('Cross click')">
+        <ng-template #versionModal let-modal>
           <div class="modal-header">
             <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Add New Blender Version</h4>
-            <button type="button" class="close" aria-label="Close" (click)="d">
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -75,9 +75,9 @@
             </form>
           </div>
           <div class="modal-footer">
-            <button class="btn btn-outline-secondary mr-auto" (click)="c">Cancel</button>
+            <button class="btn btn-outline-secondary mr-auto" (click)="modal.close('Cancel')">Cancel</button>
             <button
-              class="btn btn-outline-dark ml-auto" (click)="c; addVersion()">Add
+              class="btn btn-outline-dark ml-auto" (click)="modal.close('Save click'); addVersion()">Add
             </button>
           </div>
         </ng-template>

@@ -157,10 +157,10 @@
   </div>
 </div>
 
-<ng-template #portEditModal let-c="close('Close click')" let-d="dismiss('Cross click')">
+<ng-template #portEditModal let-modal>
   <div class="modal-header">
     <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Edit HTTPS Port</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d; cancel()">
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -185,17 +185,17 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-outline-secondary mr-auto" (click)="c; cancel()">Cancel</button>
+    <button class="btn btn-outline-secondary mr-auto" (click)="modal.close('Save click'); cancel()">Cancel</button>
     <button
-      class="btn btn-outline-dark ml-auto" (click)="c; update()">Update
+      class="btn btn-outline-dark ml-auto" (click)="modal.close('Save click'); update()">Update
     </button>
   </div>
 </ng-template>
 
-<ng-template #ipEditModal let-c="close('Close click')" let-d="dismiss('Cross click')">
+<ng-template #ipEditModal let-modal>
   <div class="modal-header">
     <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Edit IP Address</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d; cancel()">
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -219,17 +219,17 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-outline-secondary mr-auto" (click)="c; cancel()">Cancel</button>
+    <button class="btn btn-outline-secondary mr-auto" (click)="modal.close('Save click'); cancel()">Cancel</button>
     <button
-      class="btn btn-outline-dark ml-auto" (click)="c; update()">Update
+      class="btn btn-outline-dark ml-auto" (click)="modal.close('Save click'); update()">Update
     </button>
   </div>
 </ng-template>
 
-<ng-template #logLevelEditModal let-c="close('Close click')" let-d="dismiss('Cross click')">
+<ng-template #logLevelEditModal let-modal>
   <div class="modal-header">
     <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Change Logging Level</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d; cancel()">
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -247,18 +247,18 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-outline-secondary mr-auto" (click)="c; cancel()">Cancel</button>
+    <button class="btn btn-outline-secondary mr-auto" (click)="modal.close('Save click'); cancel()">Cancel</button>
     <button
-      class="btn btn-outline-dark ml-auto" (click)="c; update()">Update
+      class="btn btn-outline-dark ml-auto" (click)="modal.close('Save click'); update()">Update
     </button>
   </div>
 
 </ng-template>
 
-<ng-template #enableMailModal let-c="close('Close click')" let-d="dismiss('Cross click')">
+<ng-template #enableMailModal let-modal>
   <div class="modal-header">
     <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Enable/Disable SMTP</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d; cancel()">
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -270,18 +270,18 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-outline-secondary mr-auto" (click)="c; cancel()">Cancel</button>
+    <button class="btn btn-outline-secondary mr-auto" (click)="modal.close('Save click'); cancel()">Cancel</button>
     <button
-      class="btn btn-outline-dark ml-auto" (click)="c; update()">Update
+      class="btn btn-outline-dark ml-auto" (click)="modal.close('Save click'); update()">Update
     </button>
   </div>
 
 </ng-template>
 
-<ng-template #smtpServerEditModal let-c="close('Close click')" let-d="dismiss('Cross click')">
+<ng-template #smtpServerEditModal let-modal>
   <div class="modal-header">
     <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Edit IP Address</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d; cancel()">
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -305,9 +305,9 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-outline-secondary mr-auto" (click)="c; cancel()">Cancel</button>
+    <button class="btn btn-outline-secondary mr-auto" (click)="modal.close('Save click'); cancel()">Cancel</button>
     <button
-      class="btn btn-outline-dark ml-auto" (click)="c; update()">Update
+      class="btn btn-outline-dark ml-auto" (click)="modal.close('Save click'); update()">Update
     </button>
   </div>
 </ng-template>

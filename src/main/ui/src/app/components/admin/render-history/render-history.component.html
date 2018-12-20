@@ -119,19 +119,19 @@
   </div>
 </div>
 <!--Delete Project Confirmation-->
-<ng-template #deleteConfirmation let-c="close('Close click')" let-d="dismiss('Cross click')">
+<ng-template #deleteConfirmation let-modal>
   <div class="modal-header">
     <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Delete Project</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d">
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
     <p>Are you sure you want to delete all of your render history for this node?</p>
-    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c">No
+    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="modal.close('Cancel')">No
     </button>
     <button type="button" class="btn btn-outline-danger ml-auto float-right"
-            (click)="c; clearHistory()">Yes
+            (click)="modal.close('Save click'); clearHistory()">Yes
     </button>
   </div>
 

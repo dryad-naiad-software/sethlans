@@ -17,10 +17,10 @@
   ~
   -->
 
-<ng-template #videoSettings let-c="close('Close click')" let-d="dismiss('Cross click')">
+<ng-template #videoSettings let-modal>
   <div class="modal-header">
     <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Video Settings</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d">
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -46,11 +46,11 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="c">Cancel
+    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="modal.close('Cancel')">Cancel
     </button>
     <button
       [disabled]=""
-      class="btn btn-outline-dark ml-auto" (click)="c; submitChanges()">Change
+      class="btn btn-outline-dark ml-auto" (click)="modal.close('Save click'); submitChanges()">Change
     </button>
 
   </div>
