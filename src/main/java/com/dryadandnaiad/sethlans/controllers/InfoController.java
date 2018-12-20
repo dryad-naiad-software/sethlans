@@ -69,7 +69,7 @@ public class InfoController {
 
     @GetMapping(value = {"/version"})
     public Map getVersion() {
-        return Collections.singletonMap("version", SethlansQueryUtils.getVersion());
+        return Collections.singletonMap("version", SethlansQueryUtils.getVersion() + "-beta");
     }
 
     @GetMapping(value = {"/blender_versions"})
