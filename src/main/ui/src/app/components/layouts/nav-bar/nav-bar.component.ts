@@ -43,7 +43,12 @@ export class NavBarComponent implements OnInit {
   @Input() sethlansVersion: string;
   mode: any = Mode;
   notificationList: SethlansNotification[] = [];
+  notificationlistDisplay: SethlansNotification[] = [];
   notifications: boolean;
+  scrollDistance = 1;
+  throttle = 300;
+  slice = 10;
+  direction = 'down';
   role: any = Role;
   username: string;
   isCollapsed = true;
@@ -80,10 +85,33 @@ export class NavBarComponent implements OnInit {
       this.notificationList = [];
       if (notifications != null) {
         this.notificationList = notifications.reverse();
+        this.notificationlistDisplay = this.notificationList.slice(0, this.slice);
       }
-
     });
   }
+
+  onScrollDown() {
+    console.log('called');
+    if (this.notificationlistDisplay.length < this.notificationList.length) {
+      let len = this.notificationlistDisplay.length;
+      let maxLength = this.notificationList.length;
+
+      if (len + 10 < maxLength) {
+        for (let i = len; i <= len + 10; i++) {
+          this.slice++;
+          this.getNotifications();
+        }
+      } else {
+        for (let i = len; i < maxLength; i++) {
+          this.slice++;
+          this.getNotifications();
+        }
+      }
+
+
+    }
+  }
+
 
   open(content) {
     this.modalService.open(content);

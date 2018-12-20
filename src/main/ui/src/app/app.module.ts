@@ -94,6 +94,7 @@ import {WizardNodeAuthComponent} from './components/setup/get-started-wizard/wiz
 import {WizardAddNodesComponent} from './components/setup/get-started-wizard/wizard-add-nodes/wizard-add-nodes.component';
 import {ForgotPassComponent} from './components/forgot-pass/forgot-pass.component';
 import {RenderHistoryComponent} from './components/admin/render-history/render-history.component';
+import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 
 
 @NgModule({
@@ -164,7 +165,8 @@ import {RenderHistoryComponent} from './components/admin/render-history/render-h
     FormsModule,
     FileUploadModule,
     NgbModule.forRoot(),
-    AppRoutingModule
+    AppRoutingModule,
+    InfiniteScrollModule
   ],
   providers: [WindowRef, LoginService, ProjectListService, UserListService, NodeListService, ServerListService, AccessKeyListService, {
     provide: HTTP_INTERCEPTORS,

@@ -155,8 +155,14 @@
           <div class="dropdown-divider"></div>
           <a *ngIf="notifications == false" href="javascript:void(0);" class="dropdown-item">
             <i class="fas fa-fw fa-info-circle"></i>&nbsp;&nbsp;No new notifications</a>
-          <div *ngIf="notifications == true" class="scrollable">
-            <div *ngFor="let notification of notificationList">
+          <div *ngIf="notifications == true" class="scrollable"
+               infinite-scroll
+               [infiniteScrollDistance]="scrollDistance"
+               [infiniteScrollThrottle]="throttle"
+               [scrollWindow]="false"
+               (scrolled)="onScrollDown()"
+          >
+            <div *ngFor="let notification of notificationlistDisplay">
               <div *ngIf="!notification.linkPresent">
                 <a href="javascript:void(0);" class="dropdown-item">
                   {{notification.message}}
