@@ -43,7 +43,7 @@ export class NavBarComponent implements OnInit {
   @Input() sethlansVersion: string;
   mode: any = Mode;
   notificationList: SethlansNotification[] = [];
-  notificationlistDisplay: SethlansNotification[] = [];
+  notificationListDisplay: SethlansNotification[] = [];
   notifications: boolean;
   scrollDistance = 1;
   throttle = 300;
@@ -85,15 +85,14 @@ export class NavBarComponent implements OnInit {
       this.notificationList = [];
       if (notifications != null) {
         this.notificationList = notifications.reverse();
-        this.notificationlistDisplay = this.notificationList.slice(0, this.slice);
+        this.notificationListDisplay = this.notificationList.slice(0, this.slice);
       }
     });
   }
 
   onScrollDown() {
-    console.log('called');
-    if (this.notificationlistDisplay.length < this.notificationList.length) {
-      let len = this.notificationlistDisplay.length;
+    if (this.notificationListDisplay.length < this.notificationList.length) {
+      let len = this.notificationListDisplay.length;
       let maxLength = this.notificationList.length;
 
       if (len + 10 < maxLength) {

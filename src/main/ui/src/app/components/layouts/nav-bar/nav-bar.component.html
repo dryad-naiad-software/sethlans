@@ -162,7 +162,7 @@
                [scrollWindow]="false"
                (scrolled)="onScrollDown()"
           >
-            <div *ngFor="let notification of notificationlistDisplay">
+            <div *ngFor="let notification of notificationListDisplay">
               <div *ngIf="!notification.linkPresent">
                 <a href="javascript:void(0);" class="dropdown-item">
                   {{notification.message}}
