@@ -42,7 +42,7 @@
               <span
                 *ngIf="node.pendingActivation == false && node.benchmarkComplete == true && node.active == true && node.disabled == false">Active
               </span>
-              <span *ngIf="node.pendingActivation == false && node.benchmarkComplete == true && node.active == false">Inactive
+              <span *ngIf="node.pendingActivation == false && node.benchmarkComplete == true && node.active == false && node.disabled == false">Inactive
               </span>
               <span *ngIf="node.pendingActivation == false && node.benchmarkComplete == true && node.disabled == true">Disabled
               </span>

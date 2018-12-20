@@ -147,7 +147,7 @@
           <i class="fas fa-fw fa-bell fa-sm"></i>
           <span *ngIf="newNotifications == true" class="badge badge-notify">{{numOfNewNotifications}}</span>
         </a>
-        <div ngbDropdownMenu>
+        <div ngbDropdownMenu class="notification-drop">
           <h6 class="dropdown-header py-1">Notifications
             <span *ngIf="notifications == true"> ({{notificationList.length}})</span>
             <span *ngIf="notifications == false">(0)</span>
