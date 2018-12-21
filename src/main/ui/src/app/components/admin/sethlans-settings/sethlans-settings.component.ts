@@ -23,7 +23,7 @@ import {SethlansConfig} from '../../../models/sethlans_config.model';
 import {Mode} from '../../../enums/mode.enum';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Router} from '@angular/router';
-import {MailSettings} from "../../../models/mail_settings_model";
+import {MailSettings} from '../../../models/mail_settings_model';
 
 @Component({
   selector: 'app-sethlans-settings',
@@ -32,7 +32,6 @@ import {MailSettings} from "../../../models/mail_settings_model";
 })
 export class SethlansSettingsComponent implements OnInit {
   sethlansConfig: SethlansConfig = new SethlansConfig();
-  updateConfig: SethlansConfig = new SethlansConfig();
   mode: any = Mode;
   newSettings = false;
   alertSuccess = false;
@@ -45,10 +44,8 @@ export class SethlansSettingsComponent implements OnInit {
   ngOnInit() {
     this.http.get('/api/management/current_settings').subscribe((sethlansConfig: SethlansConfig) => {
       this.sethlansConfig = Object.assign({}, sethlansConfig);
-      this.updateConfig = Object.assign({}, sethlansConfig);
       if (this.sethlansConfig.mailSettings == null) {
         this.sethlansConfig.mailSettings = new MailSettings();
-        this.updateConfig.mailSettings = new MailSettings();
       }
     });
   }
@@ -56,7 +53,6 @@ export class SethlansSettingsComponent implements OnInit {
   undo() {
     this.http.get('/api/management/current_settings').subscribe((sethlansConfig: SethlansConfig) => {
       this.sethlansConfig = Object.assign({}, sethlansConfig);
-      this.updateConfig = Object.assign({}, sethlansConfig);
     });
   }
 
@@ -65,15 +61,6 @@ export class SethlansSettingsComponent implements OnInit {
       backdrop: 'static'
     };
     this.modalService.open(content, options);
-  }
-
-  update() {
-    this.sethlansConfig = Object.assign({}, this.updateConfig);
-    this.newSettings = true;
-  }
-
-  cancel() {
-    this.updateConfig = Object.assign({}, this.sethlansConfig);
   }
 
   submit() {

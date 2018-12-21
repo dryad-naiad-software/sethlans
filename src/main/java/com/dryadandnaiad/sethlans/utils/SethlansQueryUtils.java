@@ -92,6 +92,7 @@ public class SethlansQueryUtils {
         String mode = SethlansConfigUtils.getProperty(SethlansConfigKeys.MODE, SethlansConfigUtils.getConfigFile());
         sethlansSettings.setHttpsPort(SethlansQueryUtils.getPort());
         sethlansSettings.setSethlansIP(SethlansQueryUtils.getIP());
+        sethlansSettings.setSethlansURL(SethlansConfigUtils.getProperty(SethlansConfigKeys.SETHLANS_URL, SethlansConfigUtils.getConfigFile()));
         sethlansSettings.setMode(SethlansMode.valueOf(mode));
         sethlansSettings.setRootDir(SethlansConfigUtils.getProperty(SethlansConfigKeys.ROOT_DIR, SethlansConfigUtils.getConfigFile()));
         sethlansSettings.setLogLevel(SethlansConfigUtils.getProperty(SethlansConfigKeys.LOG_LEVEL, SethlansConfigUtils.getConfigFile()));

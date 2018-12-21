@@ -24,6 +24,7 @@ export class SethlansConfig {
   httpsPort: string;
   sethlansIP: string;
   rootDir: string;
+  sethlansURL: string;
   mode: Mode;
   logLevel: string;
   configureMail: boolean;

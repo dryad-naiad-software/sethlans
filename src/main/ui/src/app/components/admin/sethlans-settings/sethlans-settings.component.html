@@ -17,7 +17,7 @@
   ~
   -->
 
-<div class="row pb-1">
+<div class="row pb-2">
   <div class="col-md-8 m-auto">
     <div class="card">
       <div class="card-header">
@@ -25,289 +25,202 @@
           <span style="font-family: 'Fjalla One', sans-serif; ">Sethlans Configuration</span>
         </h4>
       </div>
-      <div class="card-body table-responsive table-responsive-sm">
-        <div *ngIf="alertSuccess" class="alert alert-success">
-          <h6 class="text-center"><a href="/restart">Restart Sethlans</a> for changes to take effect.</h6>
-        </div>
-        <div *ngIf="alertFailure" class="alert alert-warning">
-          <h6 class="text-center">No new changes detected.</h6>
-        </div>
-        <table class="table table-striped table-sm">
-          <thead>
-          <h5>Main Configuration</h5>
-          </thead>
-          <tbody>
-          <tr>
-            <td style="width: 40%">HTTPS Port</td>
-            <td style="width: 75%">{{sethlansConfig.httpsPort}}</td>
-            <td style="width: 33%">
-              <button class="btn btn-outline-primary btn-sm" (click)="open(portEditModal)">Edit</button>
-            </td>
-          </tr>
-          <tr>
-            <td>IP</td>
-            <td>{{sethlansConfig.sethlansIP}}</td>
-            <td>
-              <button class="btn btn-outline-primary btn-sm" (click)="open(ipEditModal)">Edit</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Mode</td>
-            <td>{{sethlansConfig.mode}}</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>Sethlans Root Directory</td>
-            <td>{{sethlansConfig.rootDir}}</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>Log Level</td>
-            <td>{{sethlansConfig.logLevel}}</td>
-            <td>
-              <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-        <table class="table table-striped table-sm">
-          <thead>
-          <h5>Mail Configuration</h5>
-          </thead>
-          <tbody>
-          <tr>
-            <td style="width: 40%">SMTP Server Enabled</td>
-            <td style="width: 75%">{{sethlansConfig.configureMail}}</td>
-            <td style="width: 33%">
-              <button class="btn btn-outline-primary btn-sm" (click)="open(enableMailModal)">Edit</button>
-            </td>
-          </tr>
-          <tr *ngIf="sethlansConfig.configureMail">
-            <td>SMTP Server</td>
-            <td>{{sethlansConfig.mailSettings.mailHost}}</td>
-            <td>
-              <button class="btn btn-outline-primary btn-sm" (click)="open(ipEditModal)">Edit</button>
-            </td>
-          </tr>
-          <tr *ngIf="sethlansConfig.configureMail">
-            <td>SMTP Port</td>
-            <td>{{sethlansConfig.mailSettings.mailPort}}</td>
-            <td>
-              <button class="btn btn-outline-primary btn-sm" (click)="open(enableMailModal)">Edit</button>
-            </td>
-          </tr>
-          <tr *ngIf="sethlansConfig.configureMail">
-            <td>Reply To Address</td>
-            <td>{{sethlansConfig.mailSettings.replyToAddress}}</td>
-            <td>
-              <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
-            </td>
-          </tr>
-          <tr *ngIf="sethlansConfig.configureMail">
-            <td>Use SSL</td>
-            <td>{{sethlansConfig.mailSettings.sslEnabled}}</td>
-            <td>
-              <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
-            </td>
-          <tr *ngIf="sethlansConfig.configureMail">
-            <td>Enable Start TLS</td>
-            <td>{{sethlansConfig.mailSettings.startTLSEnabled}}</td>
-            <td>
-              <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
-            </td>
-          </tr>
-          <tr *ngIf="sethlansConfig.configureMail">
-            <td>Require Start TLS</td>
-            <td>{{sethlansConfig.mailSettings.startTLSRequired}}</td>
-            <td>
-              <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
-            </td>
-          </tr>
-          <tr *ngIf="sethlansConfig.configureMail">
-            <td>Use SMTP Authentication</td>
-            <td>{{sethlansConfig.mailSettings.smtpAuth}}</td>
-            <td>
-              <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
-            </td>
-          </tr>
-          <tr *ngIf="sethlansConfig.configureMail">
-            <td>SMTP Username</td>
-            <td>{{sethlansConfig.mailSettings.username}}</td>
-            <td>
-              <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
-            </td>
-          </tr>
-          <tr *ngIf="sethlansConfig.configureMail">
-            <td>SMTP Password</td>
-            <td>**********</td>
-            <td>
-              <button class="btn btn-outline-primary btn-sm" (click)="open(logLevelEditModal)">Edit</button>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-        <button [disabled]="!newSettings" type="button" class="btn btn-outline-secondary mr-auto float-left"
-                (click)="undo()">Undo Changes
-        </button>
-        <button [disabled]="!newSettings" type="button" class="btn btn-outline-primary ml-auto float-right"
-                (click)="submit()">Save Changes
-        </button>
+      <div class="card-body">
+        <form #settingsForm="ngForm" class="editForm">
+          <div>
+            <h6>Network</h6>
+            <div class="form-group" ngbTooltip="IP Address used for communication between server and nodes."
+                 placement="left">
+              <label for="ipAddress">IP Address:</label>
+              <input id="ipAddress"
+                     type="text"
+                     name="ipAddress"
+                     #ipAddress="ngModel"
+                     [(ngModel)]="sethlansConfig.sethlansIP"
+                     required
+                     pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+                     [ngClass]="{'is-invalid':ipAddress.errors && ipAddress.touched}"
+                     class="form-control form-control-sm"/>
+              <div class="invalid-feedback" [hidden]="ipAddress.valid">
+                <ul>
+                  <li>A valid IPv4 address is required.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="form-group" ngbTooltip="Default HTTPS port is 7443. Sethlans will communicate on this port."
+                 placement="left">
+              <label for="httpsPort">Sethlans HTTPS Port: </label>
+              <input id="httpsPort"
+                     type="number"
+                     name="httpsPort"
+                     #httpsPort="ngModel"
+                     [(ngModel)]="sethlansConfig.httpsPort"
+                     required
+                     pattern="^(?:6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[1-9])$"
+                     [ngClass]="{'is-invalid':httpsPort.errors && httpsPort.touched}"
+                     class="form-control form-control-sm"/>
+              <div class="invalid-feedback" [hidden]="httpsPort.valid">
+                <ul>
+                  <li>A valid port is required. Range 1-65535</li>
+                </ul>
+              </div>
+            </div>
+            <div class="form-group"
+                 ngbTooltip="HTTPS address of Sethlans. Sethlans will use this value when generating links in email notifications."
+                 placement="left">
+              <label for="sethlansURL">Sethlans URL:</label>
+              <input id="sethlansURL"
+                     type="text"
+                     name="appURL"
+                     #appURL="ngModel"
+                     [(ngModel)]="sethlansConfig.sethlansURL"
+                     required
+                     class="form-control form-control-sm"/>
+            </div>
+            <hr/>
+            <h6>Advanced</h6>
+            <div class="form-group">
+              <div class="form-group"
+                   ngbTooltip="Main location for Sethlans.  By default created as a subdirectory in the home directory of installation user."
+                   placement="left">
+                <label for="rootDirectory">Sethlans Home Directory:</label>
+                <input id="rootDirectory"
+                       type="text"
+                       name="rootDirectory"
+                       #rootDirectory="ngModel"
+                       disabled
+                       [(ngModel)]="sethlansConfig.rootDir"
+                       required
+                       class="form-control form-control-sm"/>
+              </div>
+              <label for="logLevel">Log Level:</label>
+              <select class="form-control form-control-sm"
+                      id="logLevel"
+                      name="logLevel"
+                      #logLevel="ngModel"
+                      [(ngModel)]="sethlansConfig.logLevel">
+                <option value="INFO">INFO</option>
+                <option value="DEBUG">DEBUG</option>
+              </select>
+            </div>
+          </div>
+          <h6>Mail Settings</h6>
+          <div class="form-group">
+            Configure SMTP Server&nbsp;
+            <span class="fas" [ngClass]="sethlansConfig.configureMail ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
+                  (click)="sethlansConfig.configureMail = !sethlansConfig.configureMail"></span>
+
+          </div>
+          <div *ngIf="sethlansConfig.configureMail">
+
+            <div class="form-group">
+              <label for="mailHost">SMTP Server</label>
+              <input id="mailHost"
+                     [disabled]="!sethlansConfig.configureMail"
+                     type="text"
+                     name="mailHost"
+                     #mailHost="ngModel"
+                     [(ngModel)]="sethlansConfig.mailSettings.mailHost"
+                     required
+                     [ngClass]="{'is-invalid':mailHost.errors && mailHost.touched}"
+                     class="form-control form-control-sm"
+                     placeholder="smtp.example.com"
+                     placeholder="smtp.example.com"
+                     minlength="4"/>
+            </div>
+            <div class="form-group">
+              <label for="mailPort">SMTP Port</label>
+              <input id="mailPort"
+                     [disabled]="!sethlansConfig.configureMail"
+                     type="number"
+                     name="mailPort"
+                     #mailPort="ngModel"
+                     [(ngModel)]="sethlansConfig.mailSettings.mailPort"
+                     required
+                     [ngClass]="{'is-invalid':mailPort.errors && mailPort.touched}"
+                     class="form-control form-control-sm"
+                     placeholder="25"
+                     pattern="^(?:6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[1-9])$"/>
+            </div>
+            <div class="form-group">
+              <label for="replyToAddress">Reply To Address:</label>
+              <input id="replyToAddress"
+                     [disabled]="!sethlansConfig.configureMail"
+                     type="text"
+                     name="replyToAddress"
+                     #replyToAddress="ngModel"
+                     [(ngModel)]="sethlansConfig.mailSettings.replyToAddress"
+                     required
+                     [ngClass]="{'is-invalid':replyToAddress.errors && replyToAddress.touched}"
+                     class="form-control form-control-sm"
+                     placeholder="noreply@example.com" pattern="^[^\s@]+@[^\s@]+\.[^\s@]{1,}$"/>
+            </div>
+            <div class="form-row" *ngIf="sethlansConfig.configureMail">
+              <div class="col">
+
+        <span class="far"
+              [ngClass]="sethlansConfig.mailSettings.sslEnabled ? 'fa-check-square': 'fa-square text-secondary'"
+              (click)="sethlansConfig.mailSettings.sslEnabled = !sethlansConfig.mailSettings.sslEnabled"></span>
+                &nbsp;Use SSL
+
+              </div>
+              <div class="col">
+
+        <span class="far"
+              [ngClass]="sethlansConfig.mailSettings.startTLSEnabled ? 'fa-check-square': 'fa-square text-secondary'"
+              (click)="sethlansConfig.mailSettings.startTLSEnabled = !sethlansConfig.mailSettings.startTLSEnabled"></span>
+                &nbsp;Enable STARTTLS
+
+
+              </div>
+              <div class="col">
+        <span *ngIf="sethlansConfig.mailSettings.startTLSEnabled" class="far"
+              [ngClass]="sethlansConfig.mailSettings.startTLSRequired ? 'fa-check-square': 'fa-square text-secondary'"
+              (click)="sethlansConfig.mailSettings.startTLSRequired = !sethlansConfig.mailSettings.startTLSRequired"></span>
+                <span
+                  *ngIf="sethlansConfig.mailSettings.startTLSEnabled">&nbsp;Require STARTTLS</span>
+
+
+              </div>
+            </div>
+            <hr *ngIf="sethlansConfig.configureMail"/>
+
+            <div class="form-group" *ngIf="sethlansConfig.configureMail">
+              Use SMTP Authentication&nbsp;
+              <span class="fas"
+                    [ngClass]="sethlansConfig.mailSettings.smtpAuth ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
+                    (click)="sethlansConfig.mailSettings.smtpAuth = !sethlansConfig.mailSettings.smtpAuth"></span>
+
+            </div>
+
+            <div *ngIf="sethlansConfig.mailSettings.smtpAuth" class="form-group">
+              <label for="mailUsername">SMTP Username:</label>
+              <input [disabled]="!sethlansConfig.mailSettings.smtpAuth" id="mailUsername"
+                     type="text"
+                     name="username"
+                     #username="ngModel"
+                     [ngClass]="{'is-invalid':username.errors && username.touched}"
+                     [(ngModel)]="sethlansConfig.mailSettings.username"
+                     required
+                     class="form-control form-control-sm"
+                     placeholder="username" minlength="2"/>
+            </div>
+            <div *ngIf="sethlansConfig.mailSettings.smtpAuth" class="form-group">
+              <label for="mailPassword">SMTP Password:</label>
+              <input [disabled]="!sethlansConfig.mailSettings.smtpAuth" id="mailPassword"
+                     type="password"
+                     name="password"
+                     #password="ngModel"
+                     [ngClass]="{'is-invalid':password.errors && password.touched}"
+                     [(ngModel)]="sethlansConfig.mailSettings.password"
+                     required
+                     class="form-control form-control-sm"
+                     placeholder="password" minlength="2"/>
+            </div>
+
+          </div>
+        </form>
       </div>
     </div>
   </div>
 </div>
-
-<ng-template #portEditModal let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Edit HTTPS Port</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <div class="form-group" ngbTooltip="Default HTTPS port is 7443. Sethlans will communicate on this port."
-         placement="left">
-      <label for="httpsPort">Sethlans HTTPS Port: </label>
-      <input id="httpsPort"
-             type="number"
-             name="httpsPort"
-             #httpsPort="ngModel"
-             [(ngModel)]="updateConfig.httpsPort"
-             required
-             pattern="^(?:6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5][0-9]{4}|[1-9][0-9]{1,3}|[1-9])$"
-             [ngClass]="{'is-invalid':httpsPort.errors && httpsPort.touched}"
-             class="form-control form-control-sm"/>
-      <div class="invalid-feedback" [hidden]="httpsPort.valid">
-        <ul>
-          <li>A valid port is required. Range 1-65535</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-outline-secondary mr-auto" (click)="modal.close('Save click'); cancel()">Cancel</button>
-    <button
-      class="btn btn-outline-dark ml-auto" (click)="modal.close('Save click'); update()">Update
-    </button>
-  </div>
-</ng-template>
-
-<ng-template #ipEditModal let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Edit IP Address</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <div class="form-group" ngbTooltip="IP Address used for communication between server and nodes." placement="left">
-      <label for="ipAddress">IP Address:</label>
-      <input id="ipAddress"
-             type="text"
-             name="ipAddress"
-             #ipAddress="ngModel"
-             [(ngModel)]="updateConfig.sethlansIP"
-             required
-             pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
-             [ngClass]="{'is-invalid':ipAddress.errors && ipAddress.touched}"
-             class="form-control form-control-sm"/>
-      <div class="invalid-feedback" [hidden]="ipAddress.valid">
-        <ul>
-          <li>A valid IPv4 address is required.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-outline-secondary mr-auto" (click)="modal.close('Save click'); cancel()">Cancel</button>
-    <button
-      class="btn btn-outline-dark ml-auto" (click)="modal.close('Save click'); update()">Update
-    </button>
-  </div>
-</ng-template>
-
-<ng-template #logLevelEditModal let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Change Logging Level</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <div class="form-group">
-      <label for="logLevel">Log Level:</label>
-      <select class="form-control form-control-sm"
-              id="logLevel"
-              name="logLevel"
-              #logLevel="ngModel"
-              [(ngModel)]="updateConfig.logLevel">
-        <option value="INFO">INFO</option>
-        <option value="DEBUG">DEBUG</option>
-      </select>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-outline-secondary mr-auto" (click)="modal.close('Save click'); cancel()">Cancel</button>
-    <button
-      class="btn btn-outline-dark ml-auto" (click)="modal.close('Save click'); update()">Update
-    </button>
-  </div>
-
-</ng-template>
-
-<ng-template #enableMailModal let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Enable/Disable SMTP</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <div class="form-group">
-      Configure SMTP Server&nbsp;
-      <span class="fas" [ngClass]="updateConfig.configureMail ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
-            (click)="updateConfig.configureMail = !updateConfig.configureMail"></span>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-outline-secondary mr-auto" (click)="modal.close('Save click'); cancel()">Cancel</button>
-    <button
-      class="btn btn-outline-dark ml-auto" (click)="modal.close('Save click'); update()">Update
-    </button>
-  </div>
-
-</ng-template>
-
-<ng-template #smtpServerEditModal let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Edit IP Address</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="modal-body">
-    <div class="form-group" ngbTooltip="IP Address used for communication between server and nodes." placement="left">
-      <label for="mailHost">IP Address:</label>
-      <input id="mailHost"
-             type="text"
-             name="mailHost"
-             #mailHost="ngModel"
-             [(ngModel)]="updateConfig.mailSettings.mailHost"
-             required
-             pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
-             [ngClass]="{'is-invalid':ipAddress.errors && ipAddress.touched}"
-             class="form-control form-control-sm"/>
-      <div class="invalid-feedback" [hidden]="ipAddress.valid">
-        <ul>
-          <li>A valid IPv4 address is required.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button class="btn btn-outline-secondary mr-auto" (click)="modal.close('Save click'); cancel()">Cancel</button>
-    <button
-      class="btn btn-outline-dark ml-auto" (click)="modal.close('Save click'); update()">Update
-    </button>
-  </div>
-</ng-template>

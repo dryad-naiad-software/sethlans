@@ -36,6 +36,7 @@ public class SethlansSettings {
     private String httpsPort;
     private String sethlansIP;
     private String rootDir;
+    private String sethlansURL;
     private SethlansMode mode;
     private String logLevel;
     private boolean configureMail;
