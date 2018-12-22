@@ -26,6 +26,12 @@
         </h4>
       </div>
       <div class="card-body">
+        <div *ngIf="alertSuccess" class="alert alert-success">
+          <h6 class="text-center"><a href="/restart">Restart Sethlans</a> for changes to take effect.</h6>
+        </div>
+        <div *ngIf="alertFailure" class="alert alert-warning">
+          <h6 class="text-center">No new changes detected.</h6>
+        </div>
         <form #settingsForm="ngForm" class="editForm">
           <div>
             <div class="row">
@@ -223,9 +229,9 @@
       </div>
       <div class="card-footer">
         <nav>
-          <button class="btn btn-outline-secondary float-left">Cancel
+          <button class="btn btn-outline-secondary float-left" (click)="undo()">Cancel
           </button>
-          <button class="btn btn-outline-primary float-right">Submit Changes
+          <button class="btn btn-outline-primary float-right" (click)="submit()">Submit Changes
           </button>
         </nav>
       </div>

@@ -33,7 +33,6 @@ import com.dryadandnaiad.sethlans.services.mail.SethlansEmailService;
 import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
 import com.dryadandnaiad.sethlans.services.system.SethlansLogManagementService;
 import com.dryadandnaiad.sethlans.services.system.SethlansManagerService;
-import com.dryadandnaiad.sethlans.utils.SethlansFileUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,6 +155,21 @@ public class AdminController {
             writeProperty(SethlansConfigKeys.HTTPS_PORT, sethlansSettingsUpdate.getHttpsPort());
             writeProperty(SethlansConfigKeys.SETHLANS_IP, sethlansSettingsUpdate.getSethlansIP());
             writeProperty(SethlansConfigKeys.LOG_LEVEL, sethlansSettingsUpdate.getLogLevel());
+            writeProperty(SethlansConfigKeys.SETHLANS_URL, sethlansSettingsUpdate.getSethlansURL());
+            writeProperty(SethlansConfigKeys.MAIL_SERVER_CONFIGURED, Boolean.toString(sethlansSettingsUpdate.isConfigureMail()));
+            if (sethlansSettingsUpdate.isConfigureMail()) {
+                writeProperty(SethlansConfigKeys.MAIL_HOST, sethlansSettingsUpdate.getMailSettings().getMailHost());
+                writeProperty(SethlansConfigKeys.MAIL_PORT, sethlansSettingsUpdate.getMailSettings().getMailPort());
+                writeProperty(SethlansConfigKeys.MAIL_REPLYTO, sethlansSettingsUpdate.getMailSettings().getReplyToAddress());
+                writeProperty(SethlansConfigKeys.MAIL_USE_AUTH, Boolean.toString(sethlansSettingsUpdate.getMailSettings().isSmtpAuth()));
+                if (sethlansSettingsUpdate.getMailSettings().isSmtpAuth()) {
+                    writeProperty(SethlansConfigKeys.MAIL_USER, sethlansSettingsUpdate.getMailSettings().getUsername());
+                    writeProperty(SethlansConfigKeys.MAIL_PASS, sethlansSettingsUpdate.getMailSettings().getPassword());
+                }
+                writeProperty(SethlansConfigKeys.MAIL_SSL_ENABLE, Boolean.toString(sethlansSettingsUpdate.getMailSettings().isSslEnabled()));
+                writeProperty(SethlansConfigKeys.MAIL_TLS_ENABLE, Boolean.toString(sethlansSettingsUpdate.getMailSettings().isStartTLSEnabled()));
+                writeProperty(SethlansConfigKeys.MAIL_TLS_REQUIRED, Boolean.toString(sethlansSettingsUpdate.getMailSettings().isStartTLSRequired()));
+            }
             return true;
         }
         return false;
