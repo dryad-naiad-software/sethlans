@@ -51,7 +51,6 @@ public class RoutingController {
             "/shutdown",
             "/forgot_pass",
             "/projects/**",
-            "/help",
             "/user_settings",
             "/admin/metrics",
             "/admin/user_management",
