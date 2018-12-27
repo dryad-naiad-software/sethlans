@@ -3,7 +3,7 @@
 
 ![logo](https://github.com/dryad-naiad-software/sethlans/raw/master/wiki/images/logo-text-dark.png)
 
-A render farm environment for Blender. https://www.blender.org
+A distributed render environment for [Blender](https://www.blender.org). 
  
 ### Terminology
 

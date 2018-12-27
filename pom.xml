@@ -459,6 +459,14 @@
                         </goals>
                         <configuration>
                             <target>
+                                <copy file="${basedir}/src/main/scripts/stub.sh"
+                                      toFile="${basedir}/target/binaries/stub.sh"/>
+                                <exec executable="cat">
+                                    <redirector output="${basedir}/target/binaries/${fileName}.run"
+                                                binaryOutput="true"/>
+                                    <arg value="${basedir}/target/binaries/stub.sh"/>
+                                    <arg value="${basedir}/target/binaries/${fileName}.jar"/>
+                                </exec>
                                 <zip destfile="${project.build.directory}/${binLocation}/${fileName}-macOS.zip">
                                     <fileset dir="${project.build.directory}/${binLocation}"
                                              includes="${fileName}.dmg"/>
