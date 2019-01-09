@@ -64,6 +64,7 @@
         <jna.version>5.1.0</jna.version>
         <oshi.version>3.12.0</oshi.version>
         <jcuda.version>10.0.0</jcuda.version>
+        <izpack.version>5.1.3</izpack.version>
         <izpack.staging>${project.build.directory}/staging</izpack.staging>
     </properties>
 
@@ -604,7 +605,7 @@
             <plugin>
                 <groupId>org.codehaus.izpack</groupId>
                 <artifactId>izpack-maven-plugin</artifactId>
-                <version>5.1.3</version>
+                <version>${izpack.version}</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -615,6 +616,8 @@
                             <!-- base for relative paths in izpack descriptor -->
                             <baseDir>${izpack.staging}</baseDir>
                             <installFile>${izpack.staging}/install.xml</installFile>
+                            <finalName>${fileName}-win-installer.jar</finalName>
+                            <enableAttachArtifact>false</enableAttachArtifact>
                             <output>${project.build.directory}/staging/${fileName}-win-installer.jar</output>
                         </configuration>
                     </execution>
@@ -623,7 +626,7 @@
                     <dependency>
                         <groupId>org.codehaus.izpack</groupId>
                         <artifactId>izpack-native</artifactId>
-                        <version>5.1.2</version>
+                        <version>${izpack.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
