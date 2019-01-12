@@ -6,6 +6,6 @@
 A distributed render environment for [Blender](https://www.blender.org). 
  
 
-A more detailed description of Sethlans features plus a Getting Started Guide are available on the [wiki](https://github.com/dryad-naiad-software/sethlans/wiki).
+A more detailed description of Sethlans features plus a Getting Started Guide are available at [Sethlans Docs](https://sethlans-docs.dryadandnaiad.com/).
 
 
