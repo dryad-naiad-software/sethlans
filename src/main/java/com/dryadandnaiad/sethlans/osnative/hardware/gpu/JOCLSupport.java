@@ -104,7 +104,7 @@ public class JOCLSupport {
             // Create a string from the buffer (excluding the trailing \0 byte)
             return new String(buffer, 0, buffer.length - 1);
         } catch (NegativeArraySizeException e) {
-            LOG.error(e.getMessage());
+            LOG.error("No OpenCL device found");
             return "";
         }
     }
