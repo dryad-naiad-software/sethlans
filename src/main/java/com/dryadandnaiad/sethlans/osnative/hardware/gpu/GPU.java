@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -88,7 +88,7 @@ public class GPU {
             }
 
             for (int num = 0; num < count.getValue(); num++) {
-                byte name[] = new byte[256];
+                byte[] name = new byte[256];
 
                 result = cudalib.cuDeviceGetName(name, 256, num);
                 if (result != CUresult.CUDA_SUCCESS) {
@@ -110,7 +110,7 @@ public class GPU {
                 }
 
                 LOG.info("One CUDA Device found, adding to list.");
-                devices.add(new GPUDevice(new String(name).trim(), ram.getValue(), "CUDA_" + Integer.toString(num), false, true));
+                devices.add(new GPUDevice(new String(name).trim(), ram.getValue(), "CUDA_" + num, false, true));
             }
 
         } catch (java.lang.UnsatisfiedLinkError e) {
@@ -130,13 +130,13 @@ public class GPU {
             if (devices == null) {
                 devices = new LinkedList<>();
             }
-            int numPlatforms[] = new int[1];
+            int[] numPlatforms = new int[1];
             clGetPlatformIDs(0, null, numPlatforms);
             String model;
             long memory;
             String deviceID;
             // Obtain the platform IDs
-            cl_platform_id platforms[] = new cl_platform_id[numPlatforms[0]];
+            cl_platform_id[] platforms = new cl_platform_id[numPlatforms[0]];
             clGetPlatformIDs(platforms.length, platforms, null);
 
             // Collect all devices of all platforms
@@ -144,9 +144,9 @@ public class GPU {
             for (cl_platform_id platform : platforms) {
 
                 // Obtain the number of devices for the current platform
-                int numDevices[] = new int[1];
+                int[] numDevices = new int[1];
                 clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, null, numDevices);
-                cl_device_id devicesArray[] = new cl_device_id[numDevices[0]];
+                cl_device_id[] devicesArray = new cl_device_id[numDevices[0]];
                 clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, numDevices[0], devicesArray, null);
 
                 openCLdevices.addAll(Arrays.asList(devicesArray));
