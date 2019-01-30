@@ -46,7 +46,7 @@ import static org.jocl.CL.*;
 public class GPU {
     private static final Logger LOG = LoggerFactory.getLogger(GPU.class);
     public static List<GPUDevice> devices = null;
-    public static final int CL_DEVICE_BOARD_NAME_AMD = 0x4038;
+    private static final int CL_DEVICE_BOARD_NAME_AMD = 0x4038;
 
     private static void generateCUDA() {
         LOG.info("Looking for Compatible CUDA Devices");
