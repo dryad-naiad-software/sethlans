@@ -100,6 +100,7 @@ public class JOCLSupport {
             // Create a buffer of the appropriate size and fill it with the info
             byte[] buffer = new byte[(int) size[0]];
             clGetDeviceInfo(device, paramName, buffer.length, Pointer.to(buffer), null);
+            LOG.debug(size.length + " " + buffer.length);
 
             // Create a string from the buffer (excluding the trailing \0 byte)
             return new String(buffer, 0, buffer.length - 1);
