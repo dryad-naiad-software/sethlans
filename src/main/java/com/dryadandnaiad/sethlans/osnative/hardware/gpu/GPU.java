@@ -5,12 +5,12 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- *
+ *  
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ *  
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -155,30 +155,26 @@ public class GPU {
             for (int i = 0; i < openCLdevices.size(); i++) {
                 cl_device_id device = openCLdevices.get(i);
 
-                // CL_DEVICE_VENDOR
-                String deviceVendor = JOCLSupport.getString(device, CL_DEVICE_VENDOR);
-
-                // CL_DEVICE_NAME
-                String openCLDeviceId = JOCLSupport.getString(device, CL_DEVICE_BOARD_NAME_AMD);
-
-                // CL_DEVICE_GLOBAL_MEM_SIZE
-                memory = JOCLSupport.getLong(device, CL_DEVICE_GLOBAL_MEM_SIZE);
-                String openCLVersionString = JOCLSupport.getString(device, CL_DEVICE_OPENCL_C_VERSION);
-                float openCLVersion = Float.parseFloat(openCLVersionString.substring(openCLVersionString.toLowerCase().lastIndexOf("c") + 1));
-                deviceID = "OPENCL_" + i;
-                model = openCLDeviceId;
                 boolean invalidModel = false;
+                String deviceVendor = JOCLSupport.getString(device, CL_DEVICE_VENDOR);
                 if (deviceVendor.toLowerCase().contains("nvidia") || deviceVendor.toLowerCase().contains("intel")) {
+                    LOG.debug("Invalid OpenCL graphics card vendor detected, skipping further analysis. Intel and NVIDIA OpenCL is not supported.");
                     invalidModel = true;
                 }
 
-                if (!invalidModel && openCLVersion > 1.2) {
-                    LOG.info("One OpenCL device found, adding to list");
-                    LOG.debug("Open CL version " + openCLVersion);
-                    devices.add(new GPUDevice(model, memory, deviceID, true, false));
+                if (!invalidModel) {
+                    String openCLVersionString = JOCLSupport.getString(device, CL_DEVICE_OPENCL_C_VERSION);
+                    String openCLDeviceId = JOCLSupport.getString(device, CL_DEVICE_BOARD_NAME_AMD);
+                    memory = JOCLSupport.getLong(device, CL_DEVICE_GLOBAL_MEM_SIZE);
+                    float openCLVersion = Float.parseFloat(openCLVersionString.substring(openCLVersionString.toLowerCase().lastIndexOf("c") + 1));
+                    deviceID = "OPENCL_" + i;
+                    model = openCLDeviceId;
+                    if (openCLVersion > 1.2) {
+                        LOG.info("One OpenCL device found, adding to list");
+                        LOG.debug("Open CL version " + openCLVersion);
+                        devices.add(new GPUDevice(model, memory, deviceID, true, false));
+                    }
                 }
-
-
             }
         } catch (UnsatisfiedLinkError e) {
             LOG.error(e.getMessage() + " Most likely, OpenCL not present on system.");

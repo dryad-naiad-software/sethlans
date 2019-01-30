@@ -96,7 +96,6 @@ public class JOCLSupport {
         try {
             long[] size = new long[1];
             clGetDeviceInfo(device, paramName, 0, null, size);
-
             // Create a buffer of the appropriate size and fill it with the info
             byte[] buffer = new byte[(int) size[0]];
             clGetDeviceInfo(device, paramName, buffer.length, Pointer.to(buffer), null);
