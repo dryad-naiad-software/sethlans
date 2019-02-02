@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,10 +26,7 @@ import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.utils.SethlansConfigUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import com.google.common.base.Throwables;
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecuteResultHandler;
-import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.PumpStreamHandler;
+import org.apache.commons.exec.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,6 +82,7 @@ class ExecuteRenderTask {
             DefaultExecutor executor = new DefaultExecutor();
             executor.setStreamHandler(pumpStreamHandler);
             DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
+            executor.setWatchdog(new ExecuteWatchdog(ExecuteWatchdog.INFINITE_TIMEOUT));
             executor.execute(commandLine, resultHandler);
             resultHandler.waitFor();
 
