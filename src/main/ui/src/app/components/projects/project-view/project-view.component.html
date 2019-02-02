@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2018 Dryad and Naiad Software LLC
+  ~ Copyright (c) 2019 Dryad and Naiad Software LLC
   ~
   ~ This program is free software; you can redistribute it and/or
   ~ modify it under the terms of the GNU General Public License
@@ -119,7 +119,8 @@
                 <td>Total Render Time</td>
                 <td>{{totalRenderTime}}</td>
               </tr>
-              <tr *ngIf="currentProject.projectType === projectTypes.ANIMATION">
+              <tr
+                *ngIf="currentProject.projectType === projectTypes.ANIMATION && currentProject.projectStatus !== statuses.Finished && currentProject.projectStatus !== statuses.Added">
                 <td>Render Progress</td>
                 <td>{{completedFrames}} of {{currentProject.totalNumberOfFrames}} Frames Processed</td>
               </tr>
