@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -33,6 +33,7 @@ import {MailSettings} from '../../../models/mail_settings_model';
 export class SethlansSettingsComponent implements OnInit {
   sethlansConfig: SethlansConfig = new SethlansConfig();
   mode: any = Mode;
+  currentMode: Mode;
   newSettings = false;
   alertSuccess = false;
   alertFailure = false;
@@ -42,6 +43,10 @@ export class SethlansSettingsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.http.get('/api/info/sethlans_mode')
+      .subscribe((sethlansmode) => {
+        this.currentMode = sethlansmode['mode'];
+      });
     this.http.get('/api/management/current_settings').subscribe((sethlansConfig: SethlansConfig) => {
       this.sethlansConfig = Object.assign({}, sethlansConfig);
       if (this.sethlansConfig.mailSettings == null) {
