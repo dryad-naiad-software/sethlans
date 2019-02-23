@@ -5,7 +5,12 @@
 
 A distributed render environment for [Blender](https://www.blender.org). 
 
+## Overview
+
+Sethlans is designed to be a render farm that can work in both local and remote networks utilizing Blender as the rendering backend.  
+
 ## Features
+* Cross Platform
 * Web based project administration
 * Real time project updates
 * Discovery of Sethlans nodes on network
@@ -14,7 +19,7 @@ A distributed render environment for [Blender](https://www.blender.org).
 * AMD GPU Support
 * Combined CPU and GPU rendering on a single node
 * Blender version selection per project
-
+* User access control. Regular users can see their own projects but not others.  Administrators can see all.
 
 A more detailed description of Sethlans features plus a Getting Started Guide are available at [Sethlans Docs](https://sethlans-docs.dryadandnaiad.com/).
 
