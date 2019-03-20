@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -69,7 +69,7 @@ public class InfoController {
 
     @GetMapping(value = {"/version"})
     public Map getVersion() {
-        return Collections.singletonMap("version", SethlansQueryUtils.getVersion() + "-beta");
+        return Collections.singletonMap("version", SethlansQueryUtils.getVersion() + "-beta2");
     }
 
     @GetMapping(value = {"/blender_versions"})
