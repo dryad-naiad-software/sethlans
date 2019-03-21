@@ -52,7 +52,7 @@ class QueueProjectActions {
 
     static void queueProjectActions(QueueActionItem queueActionItem, RenderQueueDatabaseService renderQueueDatabaseService,
                                     BlenderProjectDatabaseService blenderProjectDatabaseService, ProcessQueueDatabaseService processQueueDatabaseService,
-                                    SethlansNodeDatabaseService sethlansNodeDatabaseService, List<QueueActionItem> processedAction, SethlansAPIConnectionService sethlansAPIConnectionService) {
+                                    SethlansNodeDatabaseService sethlansNodeDatabaseService, List<QueueActionItem> processedAction, SethlansAPIConnectionService sethlansAPIConnectionService) throws InterruptedException {
         BlenderProject blenderProject = queueActionItem.getBlenderProject();
         List<RenderQueueItem> renderQueueItemList;
         switch (queueActionItem.getQueueAction()) {
@@ -116,6 +116,7 @@ class QueueProjectActions {
                                 LOG.error("Wrong compute type used, this message should not be displayed.");
                         }
                         sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+                        Thread.sleep(250);
                     }
 
                 }

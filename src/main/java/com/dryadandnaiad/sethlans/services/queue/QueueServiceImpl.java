@@ -258,7 +258,7 @@ public class QueueServiceImpl implements QueueService {
     }
 
 
-    private void projectActions() {
+    private void projectActions() throws InterruptedException {
         if (!modifyingQueue) {
             modifyingQueue = true;
             if (queueActionItemList.size() > 0) {
