@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,6 +29,7 @@ import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseServic
 import com.dryadandnaiad.sethlans.services.database.ProcessQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.RenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -51,7 +52,7 @@ class QueueProjectActions {
 
     static void queueProjectActions(QueueActionItem queueActionItem, RenderQueueDatabaseService renderQueueDatabaseService,
                                     BlenderProjectDatabaseService blenderProjectDatabaseService, ProcessQueueDatabaseService processQueueDatabaseService,
-                                    SethlansNodeDatabaseService sethlansNodeDatabaseService, List<QueueActionItem> processedAction) {
+                                    SethlansNodeDatabaseService sethlansNodeDatabaseService, List<QueueActionItem> processedAction, SethlansAPIConnectionService sethlansAPIConnectionService) {
         BlenderProject blenderProject = queueActionItem.getBlenderProject();
         List<RenderQueueItem> renderQueueItemList;
         switch (queueActionItem.getQueueAction()) {
@@ -96,6 +97,9 @@ class QueueProjectActions {
                     }
                     if (renderQueueItem.getConnectionUUID() != null) {
                         SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(renderQueueItem.getConnectionUUID());
+                        String connectionURL = "https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() + "/api/render/cancel";
+                        String params = "queue_item_uuid=" + renderQueueItem.getQueueItemUUID() + "&connection_uuid=" + sethlansNode.getConnectionUUID();
+                        sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params);
                         switch (renderQueueItem.getRenderComputeType()) {
                             case CPU:
                                 sethlansNode.setCpuSlotInUse(false);

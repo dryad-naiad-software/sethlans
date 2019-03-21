@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -266,7 +266,7 @@ public class QueueServiceImpl implements QueueService {
                 for (QueueActionItem queueActionItem : new ArrayList<>(queueActionItemList)) {
                     queueProjectActions(queueActionItem, renderQueueDatabaseService,
                             blenderProjectDatabaseService, processQueueDatabaseService,
-                            sethlansNodeDatabaseService, processedAction);
+                            sethlansNodeDatabaseService, processedAction, sethlansAPIConnectionService);
                 }
                 queueActionItemList.removeAll(processedAction);
             }

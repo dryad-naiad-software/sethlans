@@ -86,10 +86,12 @@ class ExecuteRenderTask {
             DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
             executor.execute(commandLine, resultHandler);
             while (!resultHandler.hasResult()) {
-                LOG.debug("Check DB for cancellation");
                 RenderTask taskToCheck = renderTaskDatabaseService.getById(renderTask.getId());
                 if (taskToCheck.isCancelRequestReceived()) {
                     executor.getWatchdog().destroyProcess();
+                    LOG.info("Terminating task with UUID" + renderTask.getServerQueueUUID());
+                    Thread.sleep(1000);
+                    return -1L;
                 } else {
                     Thread.sleep(2500);
                 }

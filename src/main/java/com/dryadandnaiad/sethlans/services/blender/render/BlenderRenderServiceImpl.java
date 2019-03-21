@@ -136,6 +136,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
         Long renderTime = executeRenderTask(cores, renderTask, script, renderTaskDatabaseService);
         String renderedFileName = String.format("%04d", renderTask.getBlenderFramePart().getFrameNumber());
         File result = new File(renderTask.getRenderDir() + File.separator + renderedFileName + "." + renderTask.getBlenderFramePart().getFileExtension());
+        renderTask = renderTaskDatabaseService.getById(renderTask.getId());
         if (renderTime != -1L && result.exists()) {
             LOG.info("Render Successful! Updating task status.");
             renderTask.setInProgress(false);
@@ -183,9 +184,10 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             sethlansAPIConnectionService.sendToRemoteGET(connectionURL, params);
             try {
                 LOG.debug("Cleaning up " + renderTask.getRenderDir());
+                Thread.sleep(2000);
                 FileUtils.deleteDirectory(new File(renderTask.getRenderDir()));
                 renderTaskDatabaseService.delete(renderTask);
-            } catch (IOException e) {
+            } catch (IOException | InterruptedException e) {
                 LOG.error(Throwables.getStackTraceAsString(e));
             }
         }
