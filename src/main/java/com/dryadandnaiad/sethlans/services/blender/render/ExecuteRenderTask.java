@@ -23,13 +23,11 @@ import com.dryadandnaiad.sethlans.domains.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.render.RenderTask;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
+import com.dryadandnaiad.sethlans.services.database.RenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansConfigUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import com.google.common.base.Throwables;
-import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecuteResultHandler;
-import org.apache.commons.exec.DefaultExecutor;
-import org.apache.commons.exec.PumpStreamHandler;
+import org.apache.commons.exec.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +43,7 @@ import java.util.concurrent.TimeUnit;
 class ExecuteRenderTask {
     private static final Logger LOG = LoggerFactory.getLogger(ExecuteRenderTask.class);
 
-    static Long executeRenderTask(String cores, RenderTask renderTask, String blenderScript) {
+    static Long executeRenderTask(String cores, RenderTask renderTask, String blenderScript, RenderTaskDatabaseService renderTaskDatabaseService) {
         String error;
         BlenderFramePart blenderFramePart = renderTask.getBlenderFramePart();
         try {
@@ -84,10 +82,18 @@ class ExecuteRenderTask {
 
             DefaultExecutor executor = new DefaultExecutor();
             executor.setStreamHandler(pumpStreamHandler);
+            executor.setWatchdog(new ExecuteWatchdog(ExecuteWatchdog.INFINITE_TIMEOUT));
             DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
-            //executor.setWatchdog(new ExecuteWatchdog(ExecuteWatchdog.INFINITE_TIMEOUT));
             executor.execute(commandLine, resultHandler);
-            resultHandler.waitFor();
+            while (!resultHandler.hasResult()) {
+                LOG.debug("Check DB for cancellation");
+                RenderTask taskToCheck = renderTaskDatabaseService.getById(renderTask.getId());
+                if (taskToCheck.isCancelRequestReceived()) {
+                    executor.getWatchdog().destroyProcess();
+                } else {
+                    Thread.sleep(2500);
+                }
+            }
 
             BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray())));
 

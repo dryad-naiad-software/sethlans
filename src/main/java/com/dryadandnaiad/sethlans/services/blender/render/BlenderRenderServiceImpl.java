@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -133,7 +133,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
     }
 
     private void saveOnSuccess(RenderTask renderTask, String script) {
-        Long renderTime = executeRenderTask(cores, renderTask, script);
+        Long renderTime = executeRenderTask(cores, renderTask, script, renderTaskDatabaseService);
         String renderedFileName = String.format("%04d", renderTask.getBlenderFramePart().getFrameNumber());
         File result = new File(renderTask.getRenderDir() + File.separator + renderedFileName + "." + renderTask.getBlenderFramePart().getFileExtension());
         if (renderTime != -1L && result.exists()) {

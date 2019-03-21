@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -77,6 +77,24 @@ public class NodeRenderController {
 
     @Value("${sethlans.configDir}")
     private String configDir;
+
+    @RequestMapping(value = "/api/render/cancel", method = RequestMethod.POST)
+    public void cancelRender(@RequestParam String queue_item_uuid, @RequestParam String connection_uuid) {
+        if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) == null) {
+            LOG.error("The uuid sent: " + connection_uuid + " is not present in the database");
+        } else {
+            RenderTask tasktoCancel = renderTaskDatabaseService.findByQueueUUID(queue_item_uuid);
+            if (tasktoCancel != null) {
+                LOG.info("Attempting to cancel task with uuid " + queue_item_uuid);
+                tasktoCancel.setCancelRequestReceived(true);
+                renderTaskDatabaseService.saveOrUpdate(tasktoCancel);
+            } else {
+                LOG.info("Unable to cancel task with uuid " + queue_item_uuid + ", task not found.");
+            }
+
+        }
+
+    }
 
     @RequestMapping(value = "/api/render/request", method = RequestMethod.POST)
     public void renderRequest(@RequestParam String project_name, @RequestParam String connection_uuid,
@@ -182,6 +200,7 @@ public class NodeRenderController {
                 renderTask.setTaskResolutionY(part_resolution_y);
                 renderTask.setPartResPercentage(part_res_percentage);
                 renderTask.setComplete(false);
+                renderTask.setCancelRequestReceived(false);
 
                 if (compute_type == ComputeType.GPU) {
                     if (nodeInfo.isCombined()) {
