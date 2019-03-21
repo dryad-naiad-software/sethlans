@@ -29,6 +29,7 @@ import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseServic
 import com.dryadandnaiad.sethlans.services.database.ProcessQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.RenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.services.network.GetRawDataService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
@@ -52,7 +53,8 @@ class QueueProjectActions {
 
     static void queueProjectActions(QueueActionItem queueActionItem, RenderQueueDatabaseService renderQueueDatabaseService,
                                     BlenderProjectDatabaseService blenderProjectDatabaseService, ProcessQueueDatabaseService processQueueDatabaseService,
-                                    SethlansNodeDatabaseService sethlansNodeDatabaseService, List<QueueActionItem> processedAction, SethlansAPIConnectionService sethlansAPIConnectionService) throws InterruptedException {
+                                    SethlansNodeDatabaseService sethlansNodeDatabaseService, List<QueueActionItem> processedAction,
+                                    SethlansAPIConnectionService sethlansAPIConnectionService, GetRawDataService getRawDataService) throws InterruptedException {
         BlenderProject blenderProject = queueActionItem.getBlenderProject();
         List<RenderQueueItem> renderQueueItemList;
         switch (queueActionItem.getQueueAction()) {
@@ -103,14 +105,14 @@ class QueueProjectActions {
                         switch (renderQueueItem.getRenderComputeType()) {
                             case CPU:
                                 sethlansNode.setCpuSlotInUse(false);
-                                setSlots(sethlansNode);
+                                setSlots(sethlansNode, getRawDataService);
                                 break;
                             case GPU:
                                 sethlansNode.setAllGPUSlotInUse(false);
                                 for (GPUDevice gpu : sethlansNode.getSelectedGPUs()) {
                                     gpu.setInUse(false);
                                 }
-                                setSlots(sethlansNode);
+                                setSlots(sethlansNode, getRawDataService);
                                 break;
                             default:
                                 LOG.error("Wrong compute type used, this message should not be displayed.");
@@ -149,7 +151,9 @@ class QueueProjectActions {
         processedAction.add(queueActionItem);
     }
 
-    private static void setSlots(SethlansNode sethlansNode) {
+    private static void setSlots(SethlansNode sethlansNode, GetRawDataService getRawDataService) {
+        sethlansNode.setAvailableRenderingSlots(Integer.parseInt(getRawDataService.getNodeResult("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort()
+                + "/api/info/available_slotss").trim()));
         if (sethlansNode.getAvailableRenderingSlots() <= 0) {
             sethlansNode.setAvailableRenderingSlots(1);
         } else {

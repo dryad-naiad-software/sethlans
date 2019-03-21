@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -111,33 +111,13 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
             sethlansNode.setPendingActivation(true);
             sethlansNode.setDisabled(false);
             sethlansNode.setActive(false);
-            switch (sethlansNode.getComputeType()) {
-                case CPU:
-                    sethlansNode.setTotalRenderingSlots(1);
-                    break;
-                case GPU:
-                    sethlansNode.setSelectedGPURatings(new ArrayList<>());
-                    if (sethlansNode.isCombined()) {
-                        sethlansNode.setTotalRenderingSlots(1);
-                    } else {
-                        sethlansNode.setTotalRenderingSlots(sethlansNode.getSelectedGPUs().size());
-                    }
-                    break;
-                case CPU_GPU:
-                    sethlansNode.setSelectedGPURatings(new ArrayList<>());
-                    if (sethlansNode.isCombined()) {
-                        sethlansNode.setTotalRenderingSlots(2);
-                    } else {
-                        sethlansNode.setTotalRenderingSlots(sethlansNode.getSelectedGPUs().size() + 1);
-                    }
-                    break;
-            }
+            sethlansNode.setTotalRenderingSlots(Integer.parseInt(getRawDataService.getNodeResult("https://" + ip + ":" + port + "/api/info/node_total_slots").trim()));
             sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
             sethlansNode.setCpuSlotInUse(false);
             sethlansNode.setAllGPUSlotInUse(false);
             sethlansNode.setConnectionUUID(UUID.randomUUID().toString());
 
-        } catch (NullPointerException e) {
+        } catch (NullPointerException | NumberFormatException e) {
             LOG.error("Unable to read JSON data from " + ip + ":" + port);
         }
         return sethlansNode;

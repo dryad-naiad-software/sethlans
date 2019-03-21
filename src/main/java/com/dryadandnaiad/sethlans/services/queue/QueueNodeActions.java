@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,6 +29,7 @@ import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.RenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.services.network.GetRawDataService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,8 @@ class QueueNodeActions {
     static void processAcknowledgements(ProcessNodeStatus processNodeStatus,
                                         RenderQueueDatabaseService renderQueueDatabaseService,
                                         BlenderProjectDatabaseService blenderProjectDatabaseService,
-                                        SethlansNodeDatabaseService sethlansNodeDatabaseService, List<ProcessNodeStatus> itemsProcessed) {
+                                        SethlansNodeDatabaseService sethlansNodeDatabaseService, List<ProcessNodeStatus> itemsProcessed, GetRawDataService getRawDataService
+    ) {
         if (processNodeStatus.isAccepted()) {
             RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID());
             BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProjectUUID());
@@ -79,11 +81,13 @@ class QueueNodeActions {
             switch (renderQueueItem.getRenderComputeType()) {
                 case CPU:
                     sethlansNode.setCpuSlotInUse(false);
-                    sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+                    sethlansNode.setAvailableRenderingSlots(Integer.parseInt(getRawDataService.getNodeResult("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort()
+                            + "/api/info/available_slots").trim()));
                     break;
                 case GPU:
                     sethlansNode.setAllGPUSlotInUse(false);
-                    sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
+                    sethlansNode.setAvailableRenderingSlots(Integer.parseInt(getRawDataService.getNodeResult("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort()
+                            + "/api/info/available_slots").trim()));
                     for (GPUDevice selectedGPUs : sethlansNode.getSelectedGPUs()) {
                         if (renderQueueItem.getGpuDeviceId().equals(selectedGPUs.getDeviceID())) {
                             selectedGPUs.setInUse(false);

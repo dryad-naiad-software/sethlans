@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.domains.database.queue.*;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.QueueAction;
 import com.dryadandnaiad.sethlans.services.database.*;
+import com.dryadandnaiad.sethlans.services.network.GetRawDataService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
 import com.google.common.base.Throwables;
@@ -61,6 +62,7 @@ public class QueueServiceImpl implements QueueService {
     private ProcessFrameDatabaseService processFrameDatabaseService;
     private FrameFileUpdateDatabaseService frameFileUpdateDatabaseService;
     private SethlansNotificationService sethlansNotificationService;
+    private GetRawDataService getRawDataService;
     private List<ProcessNodeStatus> nodeStatuses = new ArrayList<>();
     private List<ProcessIdleNode> idleNodes = new ArrayList<>();
     private List<QueueActionItem> queueActionItemList = new ArrayList<>();
@@ -266,7 +268,7 @@ public class QueueServiceImpl implements QueueService {
                 for (QueueActionItem queueActionItem : new ArrayList<>(queueActionItemList)) {
                     queueProjectActions(queueActionItem, renderQueueDatabaseService,
                             blenderProjectDatabaseService, processQueueDatabaseService,
-                            sethlansNodeDatabaseService, processedAction, sethlansAPIConnectionService);
+                            sethlansNodeDatabaseService, processedAction, sethlansAPIConnectionService, getRawDataService);
                 }
                 queueActionItemList.removeAll(processedAction);
             }
@@ -312,7 +314,7 @@ public class QueueServiceImpl implements QueueService {
                 for (ProcessNodeStatus processNodeStatus : new ArrayList<>(nodeStatuses)) {
                     try {
                         processAcknowledgements(processNodeStatus, renderQueueDatabaseService,
-                                blenderProjectDatabaseService, sethlansNodeDatabaseService, itemsProcessed);
+                                blenderProjectDatabaseService, sethlansNodeDatabaseService, itemsProcessed, getRawDataService);
                     } catch (NullPointerException e) {
                         LOG.error("Node acknowledgement received before node was shutdown/removed.");
                     }
@@ -592,5 +594,10 @@ public class QueueServiceImpl implements QueueService {
     @Autowired
     public void setSethlansNotificationService(SethlansNotificationService sethlansNotificationService) {
         this.sethlansNotificationService = sethlansNotificationService;
+    }
+
+    @Autowired
+    public void setGetRawDataService(GetRawDataService getRawDataService) {
+        this.getRawDataService = getRawDataService;
     }
 }
