@@ -86,6 +86,9 @@ public class NodeInfoController {
 
     @GetMapping(value = "/node_keep_alive")
     public boolean nodeKeepAlive(@RequestParam String connection_uuid) {
+        if (firstTime) {
+            return false;
+        }
         LOG.debug("Keep alive received");
         return sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) != null;
     }
@@ -100,6 +103,9 @@ public class NodeInfoController {
 
     @GetMapping(value = "/check_key")
     public boolean isKeyValid(@RequestParam String access_key) {
+        if (firstTime) {
+            return false;
+        }
         if (accessKeyDatabaseService.getByUUID(access_key) != null) {
             LOG.debug("Key is present");
             return true;
@@ -110,11 +116,17 @@ public class NodeInfoController {
 
     @GetMapping(value = {"/is_gpu_combined"})
     public Boolean isGpuCombined() {
+        if (firstTime) {
+            return false;
+        }
         return Boolean.parseBoolean(getProperty(SethlansConfigKeys.COMBINE_GPU.toString()));
     }
 
     @GetMapping(value = {"/available_slots"})
     public Integer getAvailableSlots() {
+        if (firstTime) {
+            return 0;
+        }
         int totalSlots = getTotalSlots();
         int slotsInUse = (int) renderTaskDatabaseService.tableSize();
         return totalSlots - slotsInUse;
@@ -122,6 +134,9 @@ public class NodeInfoController {
 
     @GetMapping(value = {"/node_total_slots"})
     public Integer getTotalSlots() {
+        if (firstTime) {
+            return 0;
+        }
         boolean combined = Boolean.parseBoolean(getProperty(SethlansConfigKeys.COMBINE_GPU.toString()));
         NodeInfo nodeInfo = SethlansNodeUtils.getNodeInfo();
         switch (computeType) {
