@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -27,6 +27,7 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.services.database.AccessKeyDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.RenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
@@ -60,6 +61,7 @@ import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 public class NodeInfoController {
     private static final Logger LOG = LoggerFactory.getLogger(NodeInfoController.class);
     private SethlansServerDatabaseService sethlansServerDatabaseService;
+    private RenderTaskDatabaseService renderTaskDatabaseService;
     private AccessKeyDatabaseService accessKeyDatabaseService;
     private List<ComputeType> availableMethods = SethlansQueryUtils.getAvailableMethods();
     private Integer totalCores = new CPU().getCores();
@@ -109,6 +111,13 @@ public class NodeInfoController {
     @GetMapping(value = {"/is_gpu_combined"})
     public Boolean isGpuCombined() {
         return Boolean.parseBoolean(getProperty(SethlansConfigKeys.COMBINE_GPU.toString()));
+    }
+
+    @GetMapping(value = {"/available_slots"})
+    public Integer getAvailableSlots() {
+        int totalSlots = getTotalSlots();
+        int slotsInUse = (int) renderTaskDatabaseService.tableSize();
+        return totalSlots - slotsInUse;
     }
 
     @GetMapping(value = {"/node_total_slots"})
@@ -253,5 +262,10 @@ public class NodeInfoController {
     @Autowired
     public void setAccessKeyDatabaseService(AccessKeyDatabaseService accessKeyDatabaseService) {
         this.accessKeyDatabaseService = accessKeyDatabaseService;
+    }
+
+    @Autowired
+    public void setRenderTaskDatabaseService(RenderTaskDatabaseService renderTaskDatabaseService) {
+        this.renderTaskDatabaseService = renderTaskDatabaseService;
     }
 }

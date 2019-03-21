@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -127,7 +127,7 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
                         connection = (HttpURLConnection) url.openConnection();
                         InputStream stream = connection.getInputStream();
                         if (connection.getResponseCode() == 200) {
-                            LOG.debug("Creating placeholder file" + downloadPlaceholder + " to let service know an active download is in place.");
+                            LOG.debug("Creating placeholder file " + downloadPlaceholder + " to let service know an active download is in place.");
                             //noinspection ResultOfMethodCallIgnored
                             downloadPlaceholder.createNewFile();
                         }
@@ -179,12 +179,16 @@ public class BlenderDownloadServiceImpl implements BlenderDownloadService {
 
                     } catch (MalformedURLException e) {
                         LOG.error("Invalid URL: " + e.getMessage());
+                        downloadMirror++;
                         return false;
                     } catch (IOException | NoSuchAlgorithmException e) {
                         LOG.error("IO Exception: " + e.getMessage());
                         if (e.getMessage() != null) {
                             if (e.getMessage().contains("Connection timed out")) {
                                 LOG.error("Connection time out " + blenderBinary.getDownloadMirrors().get(downloadMirror));
+                                downloadMirror++;
+                            } else {
+                                LOG.error("Unable to reach " + blenderBinary.getDownloadMirrors().get(downloadMirror));
                                 downloadMirror++;
                             }
                         } else {
