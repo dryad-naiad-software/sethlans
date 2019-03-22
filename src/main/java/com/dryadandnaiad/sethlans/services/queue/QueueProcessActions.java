@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,6 +29,7 @@ import com.dryadandnaiad.sethlans.domains.database.queue.RenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.services.database.*;
+import com.dryadandnaiad.sethlans.services.network.GetRawDataService;
 import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
@@ -126,7 +127,6 @@ class QueueProcessActions {
                     timeToAdd = timeToAdd - blenderProject.getTotalProjectTime();
                     LOG.debug("Time to Add: " + timeToAdd);
                 }
-                LOG.debug("1");
                 LOG.debug("Adding time to total " + timeToAdd);
                 blenderProject.setTotalProjectTime(blenderProject.getTotalProjectTime() + timeToAdd);
             }
@@ -135,7 +135,9 @@ class QueueProcessActions {
         processQueueDatabaseService.delete(processQueueItem);
     }
 
-    static void processIncoming(List<ProcessQueueItem> itemsReviewed, ProcessQueueItem processQueueItem, ProcessQueueDatabaseService processQueueDatabaseService, RenderQueueDatabaseService renderQueueDatabaseService, SethlansNodeDatabaseService sethlansNodeDatabaseService, BlenderProjectDatabaseService blenderProjectDatabaseService) {
+    static void processIncoming(List<ProcessQueueItem> itemsReviewed, ProcessQueueItem processQueueItem, ProcessQueueDatabaseService processQueueDatabaseService,
+                                RenderQueueDatabaseService renderQueueDatabaseService, SethlansNodeDatabaseService sethlansNodeDatabaseService,
+                                BlenderProjectDatabaseService blenderProjectDatabaseService, GetRawDataService getRawDataService) {
         try {
             processQueueDatabaseService.saveOrUpdate(processQueueItem);
             RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processQueueItem.getQueueUUID());
@@ -151,22 +153,23 @@ class QueueProcessActions {
             switch (computeType) {
                 case GPU:
                     sethlansNode.setAllGPUSlotInUse(false);
-                    for (GPUDevice gpuDevice : sethlansNode.getSelectedGPUs()) {
-                        if (gpuDevice.getDeviceID().equals(renderQueueItem.getGpuDeviceId())) {
-                            gpuDevice.setInUse(false);
+                    sethlansNode.setAvailableRenderingSlots(Integer.parseInt(getRawDataService.getNodeResult("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort()
+                            + "/api/info/available_slots").trim()));
+                    for (GPUDevice selectedGPUs : sethlansNode.getSelectedGPUs()) {
+                        if (renderQueueItem.getGpuDeviceId().equals(selectedGPUs.getDeviceID())) {
+                            selectedGPUs.setInUse(false);
                         }
                     }
                     break;
                 case CPU:
                     sethlansNode.setCpuSlotInUse(false);
+                    sethlansNode.setAvailableRenderingSlots(Integer.parseInt(getRawDataService.getNodeResult("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort()
+                            + "/api/info/available_slots").trim()));
                     break;
                 default:
                     LOG.error("Invalid compute type, this message should not occur.");
             }
-            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
-            if (sethlansNode.getAvailableRenderingSlots() > sethlansNode.getTotalRenderingSlots()) {
-                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-            }
+
             if (sethlansNode.getAvailableRenderingSlots() == sethlansNode.getTotalRenderingSlots()) {
                 sethlansNode.setAllGPUSlotInUse(false);
                 sethlansNode.setCpuSlotInUse(false);

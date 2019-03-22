@@ -278,7 +278,7 @@ public class QueueServiceImpl implements QueueService {
             List<ProcessQueueItem> itemsReviewed = new ArrayList<>();
             for (ProcessQueueItem processQueueItem : new ArrayList<>(incomingQueueItemList)) {
                 processIncoming(itemsReviewed, processQueueItem, processQueueDatabaseService, renderQueueDatabaseService, sethlansNodeDatabaseService,
-                        blenderProjectDatabaseService);
+                        blenderProjectDatabaseService, getRawDataService);
             }
             incomingQueueItemList.removeAll(itemsReviewed);
             modifyingQueue = false;
