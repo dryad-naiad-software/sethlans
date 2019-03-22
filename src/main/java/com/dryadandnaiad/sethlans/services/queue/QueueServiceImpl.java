@@ -110,6 +110,11 @@ public class QueueServiceImpl implements QueueService {
                     continue;
                 }
 
+                if (!nodeSlotUpdateItemList.isEmpty()) {
+                    processNodeSlotUpdates();
+                    continue;
+                }
+
                 if (!idleNodes.isEmpty()) {
                     freeIdleNode();
                     continue;
@@ -151,6 +156,21 @@ public class QueueServiceImpl implements QueueService {
         }
     }
 
+    private void processNodeSlotUpdates() {
+        if (!modifyingQueue) {
+            modifyingQueue = true;
+            if (nodeSlotUpdateItemList.size() > 0) {
+                List<NodeSlotUpdateItem> reviewedUpdates = new ArrayList<>();
+                for (NodeSlotUpdateItem updateItem : new ArrayList<>(nodeSlotUpdateItemList)) {
+                    updateSlots(updateItem, sethlansNodeDatabaseService);
+                    reviewedUpdates.add(updateItem);
+                }
+                nodeSlotUpdateItemList.removeAll(reviewedUpdates);
+            }
+        }
+        modifyingQueue = false;
+    }
+
     private void assignmentWorkflow() {
         int count = sethlansNodeDatabaseService.activeNodeswithFreeSlots().size();
         do {
@@ -187,8 +207,7 @@ public class QueueServiceImpl implements QueueService {
 
     @Override
     public void nodeSlotUpdate(String connection_uuid, String device_id, int available_slots) {
-
-
+        nodeSlotUpdateItemList.add(new NodeSlotUpdateItem(connection_uuid, device_id, available_slots));
     }
 
     @Override

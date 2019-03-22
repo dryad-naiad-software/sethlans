@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,10 +22,7 @@ package com.dryadandnaiad.sethlans.services.queue;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
-import com.dryadandnaiad.sethlans.domains.database.queue.NodeOnlineItem;
-import com.dryadandnaiad.sethlans.domains.database.queue.ProcessIdleNode;
-import com.dryadandnaiad.sethlans.domains.database.queue.ProcessQueueItem;
-import com.dryadandnaiad.sethlans.domains.database.queue.RenderQueueItem;
+import com.dryadandnaiad.sethlans.domains.database.queue.*;
 import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.RenderQueueDatabaseService;
@@ -125,6 +122,18 @@ public class QueueNodeStatusActions {
         SethlansNodeUtils.resetNode(sethlansNode.getComputeType(), sethlansNode, true);
         sethlansNode.setDisabled(true);
         sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+    }
+
+    static void updateSlots(NodeSlotUpdateItem updateItem, SethlansNodeDatabaseService sethlansNodeDatabaseService) {
+        SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(updateItem.getConnection_uuid());
+        sethlansNode.setAvailableRenderingSlots(updateItem.getAvailable_slots());
+        if (updateItem.getDevice_id().equals("CPU")) {
+            sethlansNode.setCpuSlotInUse(false);
+        }
+        if (updateItem.getDevice_id().equals("COMBO")) {
+            sethlansNode.setAllGPUSlotInUse(false);
+        }
+
     }
 
     private static void removeNodeFromQueue(String connection_uuid, RenderQueueDatabaseService renderQueueDatabaseService, BlenderProjectDatabaseService blenderProjectDatabaseService, SethlansNode sethlansNode) {
