@@ -86,9 +86,13 @@ public class NodeRenderController {
             if (tasktoCancel != null) {
                 LOG.info("Attempting to cancel task with uuid " + queue_item_uuid);
                 tasktoCancel.setCancelRequestReceived(true);
-                int slotsInUse = (int) renderTaskDatabaseService.tableSize();
-                slotsInUse--;
                 renderTaskDatabaseService.saveOrUpdate(tasktoCancel);
+                int slotsInUse = (int) renderTaskDatabaseService.tableSize();
+                for (RenderTask renderTask : renderTaskDatabaseService.listAll()) {
+                    if (renderTask.isCancelRequestReceived()) {
+                        slotsInUse--;
+                    }
+                }
                 SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connection_uuid);
                 String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_slot_update/";
                 String params = "connection_uuid=" + connection_uuid + "&device_id=" + tasktoCancel.getDeviceID() + "&available_slots=" + SethlansNodeUtils.getAvailableSlots(slotsInUse);

@@ -134,11 +134,4 @@ class QueueProjectActions {
         }
         processedAction.add(queueActionItem);
     }
-
-    private static void setSlots(SethlansNode sethlansNode, GetRawDataService getRawDataService) {
-        int availableSlots = Integer.parseInt(getRawDataService.getNodeResult("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort()
-                + "/api/info/available_slots").trim());
-        LOG.debug(availableSlots + "");
-        sethlansNode.setAvailableRenderingSlots(availableSlots);
-    }
 }

@@ -181,7 +181,7 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(renderTask.getConnectionUUID());
             String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_reject_item/";
             String params = "queue_item_uuid=" + renderTask.getServerQueueUUID();
-            sethlansAPIConnectionService.sendToRemoteGET(connectionURL, params);
+            sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params);
             try {
                 LOG.debug("Cleaning up " + renderTask.getRenderDir());
                 Thread.sleep(2000);

@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.*;
+import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.RenderQueueDatabaseService;
@@ -133,6 +134,15 @@ public class QueueNodeStatusActions {
         if (updateItem.getDevice_id().equals("COMBO")) {
             sethlansNode.setAllGPUSlotInUse(false);
         }
+        if (!updateItem.getDevice_id().equals("CPU") || !updateItem.getDevice_id().equals("COMBO")) {
+            sethlansNode.setAllGPUSlotInUse(false);
+            for (GPUDevice selectedGPUs : sethlansNode.getSelectedGPUs()) {
+                if (updateItem.getDevice_id().equals(selectedGPUs.getDeviceID())) {
+                    selectedGPUs.setInUse(false);
+                }
+            }
+        }
+        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
 
     }
 

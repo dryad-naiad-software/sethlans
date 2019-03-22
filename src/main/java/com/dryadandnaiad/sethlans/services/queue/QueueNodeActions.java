@@ -92,7 +92,6 @@ class QueueNodeActions {
                         if (renderQueueItem.getGpuDeviceId().equals(selectedGPUs.getDeviceID())) {
                             selectedGPUs.setInUse(false);
                         }
-
                     }
                     break;
                 default:
