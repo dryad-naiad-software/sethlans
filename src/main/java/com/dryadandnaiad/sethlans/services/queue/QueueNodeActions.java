@@ -107,8 +107,6 @@ class QueueNodeActions {
         itemsProcessed.add(processNodeStatus);
     }
 
-
-
     static void assignToNode(RenderQueueDatabaseService renderQueueDatabaseService, SethlansNodeDatabaseService sethlansNodeDatabaseService) {
         List<RenderQueueItem> renderQueueItemList = renderQueueDatabaseService.listPendingRender();
         int totalAvailableSlots = sethlansNodeDatabaseService.activeNodeswithFreeSlots().size();

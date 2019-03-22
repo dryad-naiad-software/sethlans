@@ -179,9 +179,6 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             renderTaskHistory.setFailed(true);
             renderTaskHistoryDatabaseService.saveOrUpdate(renderTaskHistory);
             SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(renderTask.getConnectionUUID());
-            String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_reject_item/";
-            String params = "queue_item_uuid=" + renderTask.getServerQueueUUID();
-            sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params);
             try {
                 LOG.debug("Cleaning up " + renderTask.getRenderDir());
                 Thread.sleep(2000);
@@ -190,6 +187,9 @@ public class BlenderRenderServiceImpl implements BlenderRenderService {
             } catch (IOException | InterruptedException e) {
                 LOG.error(Throwables.getStackTraceAsString(e));
             }
+            String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_reject_item/";
+            String params = "queue_item_uuid=" + renderTask.getServerQueueUUID();
+            sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params);
         }
     }
 
