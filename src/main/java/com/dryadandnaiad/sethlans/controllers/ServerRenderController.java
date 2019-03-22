@@ -116,6 +116,7 @@ public class ServerRenderController {
             LOG.info("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
             LOG.info("Receiving benchmark from Node: " + sethlansNode.getHostname());
+            LOG.debug(sethlansNode.toString());
             if (compute_type.equals(ComputeType.CPU)) {
                 sethlansNode.setCpuRating(rating);
             }

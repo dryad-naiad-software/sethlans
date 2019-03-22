@@ -113,6 +113,7 @@ public class NodeDiscoveryServiceImpl implements NodeDiscoveryService {
             sethlansNode.setActive(false);
             sethlansNode.setTotalRenderingSlots(Integer.parseInt(getRawDataService.getNodeResult("https://" + ip + ":" + port + "/api/info/node_total_slots").trim()));
             sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
+            sethlansNode.setSelectedGPURatings(new ArrayList<>());
             sethlansNode.setCpuSlotInUse(false);
             sethlansNode.setAllGPUSlotInUse(false);
             sethlansNode.setConnectionUUID(UUID.randomUUID().toString());
