@@ -67,6 +67,7 @@ public class QueueServiceImpl implements QueueService {
     private List<ProcessIdleNode> idleNodes = new ArrayList<>();
     private List<QueueActionItem> queueActionItemList = new ArrayList<>();
     private List<ProcessQueueItem> incomingQueueItemList = new ArrayList<>();
+    private List<NodeSlotUpdateItem> nodeSlotUpdateItemList = new ArrayList<>();
     private Set<NodeOnlineItem> nodeOnlineItemList = new HashSet<>();
     private List<Long> nodesToDelete = new ArrayList<>();
     private List<Long> nodesToDisable = new ArrayList<>();
@@ -182,6 +183,12 @@ public class QueueServiceImpl implements QueueService {
     @Override
     public void addNodeToDisable(Long id) {
         nodesToDisable.add(id);
+    }
+
+    @Override
+    public void nodeSlotUpdate(String connection_uuid, String device_id, int available_slots) {
+
+
     }
 
     @Override

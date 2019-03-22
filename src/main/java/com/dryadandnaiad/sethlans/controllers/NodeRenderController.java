@@ -43,8 +43,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -78,7 +77,7 @@ public class NodeRenderController {
     @Value("${sethlans.configDir}")
     private String configDir;
 
-    @RequestMapping(value = "/api/render/cancel", method = RequestMethod.POST)
+    @PostMapping(value = "/api/render/cancel")
     public void cancelRender(@RequestParam String queue_item_uuid, @RequestParam String connection_uuid) {
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.error("The uuid sent: " + connection_uuid + " is not present in the database");
@@ -87,7 +86,14 @@ public class NodeRenderController {
             if (tasktoCancel != null) {
                 LOG.info("Attempting to cancel task with uuid " + queue_item_uuid);
                 tasktoCancel.setCancelRequestReceived(true);
+                int slotsInUse = (int) renderTaskDatabaseService.tableSize();
+                slotsInUse--;
                 renderTaskDatabaseService.saveOrUpdate(tasktoCancel);
+                SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connection_uuid);
+                String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_slot_update/";
+                String params = "connection_uuid=" + connection_uuid + "&device_id=" + tasktoCancel.getDeviceID() + "&available_slots=" + SethlansNodeUtils.getAvailableSlots(slotsInUse);
+                sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params);
+
             } else {
                 LOG.info("Unable to cancel task with uuid " + queue_item_uuid + ", task not found.");
             }
@@ -96,7 +102,7 @@ public class NodeRenderController {
 
     }
 
-    @RequestMapping(value = "/api/render/request", method = RequestMethod.POST)
+    @PostMapping(value = "/api/render/request")
     public void renderRequest(@RequestParam String project_name, @RequestParam String connection_uuid,
                               @RequestParam String project_uuid,
                               @RequestParam String queue_item_uuid, @RequestParam String gpu_device_id,
@@ -168,7 +174,7 @@ public class NodeRenderController {
                 SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connection_uuid);
                 String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_accept_item/";
                 String params = "queue_item_uuid=" + queue_item_uuid;
-                sethlansAPIConnectionService.sendToRemoteGET(connectionURL, params);
+                sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params);
                 RenderTask renderTask;
                 BlenderFramePart framePart = new BlenderFramePart();
                 framePart.setFrameNumber(frame_number);
@@ -236,10 +242,10 @@ public class NodeRenderController {
         SethlansServer sethlansServer = sethlansServerDatabaseService.getByConnectionUUID(connection_uuid);
         String connectionURL = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/project/node_reject_item/";
         String params = "queue_item_uuid=" + queue_item_uuid;
-        sethlansAPIConnectionService.sendToRemoteGET(connectionURL, params);
+        sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params);
     }
 
-    @RequestMapping(value = "/api/benchmark/request", method = RequestMethod.POST)
+    @PostMapping(value = "/api/benchmark/request")
     public void benchmarkRequest(@RequestParam String connection_uuid, @RequestParam ComputeType compute_type, @RequestParam String blender_version) {
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.error("The uuid sent: " + connection_uuid + " is not present in the database");

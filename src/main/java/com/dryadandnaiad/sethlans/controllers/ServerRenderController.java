@@ -209,14 +209,19 @@ public class ServerRenderController {
         }
     }
 
-    @GetMapping(value = "/api/project/node_accept_item/")
+    @PostMapping(value = "/api/project/node_accept_item/")
     public void acceptedQueueItem(@RequestParam String queue_item_uuid) {
         queueService.nodeAcknowledgeQueueItem(queue_item_uuid);
     }
 
-    @GetMapping(value = "/api/project/node_reject_item/")
+    @PostMapping(value = "/api/project/node_reject_item/")
     public void rejectedQueueItem(@RequestParam String queue_item_uuid) {
         queueService.nodeRejectQueueItem(queue_item_uuid);
+    }
+
+    @PostMapping(value = "/api/project/node_slot_update")
+    public void nodeSlotUpdate(@RequestParam String connection_uuid, @RequestParam String device_id, @RequestParam int available_slots) {
+        queueService.nodeSlotUpdate(connection_uuid, device_id, available_slots);
     }
 
     @GetMapping(value = "/api/project/blend_file/")

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -31,6 +31,8 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 
 /**
  * Created Mario Estrella on 8/23/2018.
@@ -131,6 +133,33 @@ public class SethlansNodeUtils {
         }
 
 
+    }
+
+    public static Integer getAvailableSlots(int slotsInUse) {
+        int totalSlots = getTotalSlots();
+        return totalSlots - slotsInUse;
+    }
+
+    public static Integer getTotalSlots() {
+        boolean combined = Boolean.parseBoolean(getProperty(SethlansConfigKeys.COMBINE_GPU.toString()));
+        NodeInfo nodeInfo = getNodeInfo();
+        switch (nodeInfo.getComputeType()) {
+            case CPU:
+                return 1;
+            case GPU:
+                if (combined) {
+                    return 1;
+                } else {
+                    return nodeInfo.getSelectedGPUs().size();
+                }
+            case CPU_GPU:
+                if (combined) {
+                    return 2;
+                } else {
+                    return nodeInfo.getSelectedGPUs().size() + 1;
+                }
+        }
+        return 0;
     }
 
     public static void resetNode(ComputeType compute_type, SethlansNode sethlansNode, boolean isQueueEmpty) {

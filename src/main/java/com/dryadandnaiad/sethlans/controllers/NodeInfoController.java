@@ -127,9 +127,7 @@ public class NodeInfoController {
         if (firstTime) {
             return 0;
         }
-        int totalSlots = getTotalSlots();
-        int slotsInUse = (int) renderTaskDatabaseService.tableSize();
-        return totalSlots - slotsInUse;
+        return SethlansNodeUtils.getAvailableSlots((int) renderTaskDatabaseService.tableSize());
     }
 
     @GetMapping(value = {"/node_total_slots"})
@@ -137,25 +135,7 @@ public class NodeInfoController {
         if (firstTime) {
             return 0;
         }
-        boolean combined = Boolean.parseBoolean(getProperty(SethlansConfigKeys.COMBINE_GPU.toString()));
-        NodeInfo nodeInfo = SethlansNodeUtils.getNodeInfo();
-        switch (computeType) {
-            case CPU:
-                return 1;
-            case GPU:
-                if (combined) {
-                    return 1;
-                } else {
-                    return nodeInfo.getSelectedGPUs().size();
-                }
-            case CPU_GPU:
-                if (combined) {
-                    return 2;
-                } else {
-                    return nodeInfo.getSelectedGPUs().size() + 1;
-                }
-        }
-        return 0;
+        return SethlansNodeUtils.getTotalSlots();
     }
 
     @GetMapping(value = {"/available_methods"})

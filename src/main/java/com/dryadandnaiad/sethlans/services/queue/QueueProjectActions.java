@@ -23,7 +23,6 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.QueueActionItem;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderQueueItem;
-import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.ProcessQueueDatabaseService;
@@ -57,6 +56,7 @@ class QueueProjectActions {
                                     SethlansAPIConnectionService sethlansAPIConnectionService, GetRawDataService getRawDataService) throws InterruptedException {
         BlenderProject blenderProject = queueActionItem.getBlenderProject();
         List<RenderQueueItem> renderQueueItemList;
+        List<SethlansNode> nodesToReset = new ArrayList<>();
         switch (queueActionItem.getQueueAction()) {
             case PAUSE:
                 LOG.debug("Pausing queue for " + blenderProject.getProjectName());
@@ -99,26 +99,10 @@ class QueueProjectActions {
                     }
                     if (renderQueueItem.getConnectionUUID() != null) {
                         SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(renderQueueItem.getConnectionUUID());
+                        nodesToReset.add(sethlansNode);
                         String connectionURL = "https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() + "/api/render/cancel";
                         String params = "queue_item_uuid=" + renderQueueItem.getQueueItemUUID() + "&connection_uuid=" + sethlansNode.getConnectionUUID();
                         sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params);
-                        switch (renderQueueItem.getRenderComputeType()) {
-                            case CPU:
-                                sethlansNode.setCpuSlotInUse(false);
-                                setSlots(sethlansNode, getRawDataService);
-                                break;
-                            case GPU:
-                                sethlansNode.setAllGPUSlotInUse(false);
-                                for (GPUDevice gpu : sethlansNode.getSelectedGPUs()) {
-                                    gpu.setInUse(false);
-                                }
-                                setSlots(sethlansNode, getRawDataService);
-                                break;
-                            default:
-                                LOG.error("Wrong compute type used, this message should not be displayed.");
-                        }
-                        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-                        Thread.sleep(250);
                     }
 
                 }
@@ -152,15 +136,9 @@ class QueueProjectActions {
     }
 
     private static void setSlots(SethlansNode sethlansNode, GetRawDataService getRawDataService) {
-        sethlansNode.setAvailableRenderingSlots(Integer.parseInt(getRawDataService.getNodeResult("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort()
-                + "/api/info/available_slotss").trim()));
-        if (sethlansNode.getAvailableRenderingSlots() <= 0) {
-            sethlansNode.setAvailableRenderingSlots(1);
-        } else {
-            sethlansNode.setAvailableRenderingSlots(sethlansNode.getAvailableRenderingSlots() + 1);
-            if (sethlansNode.getAvailableRenderingSlots() > sethlansNode.getTotalRenderingSlots()) {
-                sethlansNode.setAvailableRenderingSlots(sethlansNode.getTotalRenderingSlots());
-            }
-        }
+        int availableSlots = Integer.parseInt(getRawDataService.getNodeResult("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort()
+                + "/api/info/available_slots").trim());
+        LOG.debug(availableSlots + "");
+        sethlansNode.setAvailableRenderingSlots(availableSlots);
     }
 }
