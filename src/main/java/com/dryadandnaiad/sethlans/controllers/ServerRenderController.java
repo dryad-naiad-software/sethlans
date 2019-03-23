@@ -124,7 +124,6 @@ public class ServerRenderController {
                 for (GPUDevice gpuDevice : sethlansNode.getSelectedGPUs()) {
                     if (gpuDevice.getDeviceID().equals(cuda_name)) {
                         gpuDevice.setRating(rating);
-                        sethlansNode.getSelectedGPURatings().add(rating);
                         LOG.debug(sethlansNode.toString());
                     }
                 }

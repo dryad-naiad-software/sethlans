@@ -23,13 +23,11 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.*;
-import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.RenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
-import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +59,6 @@ public class QueueNodeStatusActions {
                 sethlansNotification.setLinkPresent(true);
                 sethlansNotification.setMessageLink("/admin/nodes");
                 removeNodeFromQueue(sethlansNode.getConnectionUUID(), renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNode);
-                SethlansNodeUtils.resetNode(sethlansNode.getComputeType(), sethlansNode, true);
                 sethlansNode.setActive(false);
                 sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
 
@@ -100,7 +97,6 @@ public class QueueNodeStatusActions {
             }
             if (sethlansNode.isBenchmarkComplete() && !waitingTobeProcessed) {
                 LOG.debug("Received idle notification from  " + sethlansNode.getHostname());
-                SethlansNodeUtils.resetNode(idleNode.getComputeType(), sethlansNode, false);
                 sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
                 LOG.debug(sethlansNode.toString());
                 removeNodeFromQueue(idleNode.getConnectionUUID(), renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNode);
@@ -120,29 +116,14 @@ public class QueueNodeStatusActions {
     static void disableNodes(Long nodeID, SethlansNodeDatabaseService sethlansNodeDatabaseService, RenderQueueDatabaseService renderQueueDatabaseService, BlenderProjectDatabaseService blenderProjectDatabaseService) {
         SethlansNode sethlansNode = sethlansNodeDatabaseService.getById(nodeID);
         removeNodeFromQueue(sethlansNode.getConnectionUUID(), renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNode);
-        SethlansNodeUtils.resetNode(sethlansNode.getComputeType(), sethlansNode, true);
         sethlansNode.setDisabled(true);
         sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
     }
 
     static void updateSlots(NodeSlotUpdateItem updateItem, SethlansNodeDatabaseService sethlansNodeDatabaseService) {
         SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(updateItem.getConnection_uuid());
-        sethlansNode.setAvailableRenderingSlots(updateItem.getAvailable_slots());
-        if (updateItem.getDevice_id().equals("CPU")) {
-            sethlansNode.setCpuSlotInUse(false);
-        }
-        if (updateItem.getDevice_id().equals("COMBO")) {
-            sethlansNode.setAllGPUSlotInUse(false);
-        }
-        if (!updateItem.getDevice_id().equals("CPU") || !updateItem.getDevice_id().equals("COMBO")) {
-            sethlansNode.setAllGPUSlotInUse(false);
-            for (GPUDevice selectedGPUs : sethlansNode.getSelectedGPUs()) {
-                if (updateItem.getDevice_id().equals(selectedGPUs.getDeviceID())) {
-                    selectedGPUs.setInUse(false);
-                }
-            }
-        }
-        sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+
+        //sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
 
     }
 

@@ -23,7 +23,6 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessNodeStatus;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderQueueItem;
-import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
@@ -35,12 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import static com.dryadandnaiad.sethlans.utils.SethlansNodeUtils.listofNodes;
-import static com.dryadandnaiad.sethlans.utils.SethlansNodeUtils.sortedNodeList;
 
 /**
  * Created Mario Estrella on 5/11/2018.
@@ -77,27 +72,7 @@ class QueueNodeActions {
             RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID());
             BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUIDWithoutFrameParts(renderQueueItem.getProjectUUID());
             LOG.debug("Received rejection for queue item " + processNodeStatus.getQueueUUID() + " adding back to pending queue.");
-            SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(renderQueueItem.getConnectionUUID());
-            switch (renderQueueItem.getRenderComputeType()) {
-                case CPU:
-                    sethlansNode.setCpuSlotInUse(false);
-                    sethlansNode.setAvailableRenderingSlots(Integer.parseInt(getRawDataService.getNodeResult("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort()
-                            + "/api/info/available_slots").trim()));
-                    break;
-                case GPU:
-                    sethlansNode.setAllGPUSlotInUse(false);
-                    sethlansNode.setAvailableRenderingSlots(Integer.parseInt(getRawDataService.getNodeResult("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort()
-                            + "/api/info/available_slots").trim()));
-                    for (GPUDevice selectedGPUs : sethlansNode.getSelectedGPUs()) {
-                        if (renderQueueItem.getGpuDeviceId().equals(selectedGPUs.getDeviceID())) {
-                            selectedGPUs.setInUse(false);
-                        }
-                    }
-                    break;
-                default:
-                    LOG.error("Invalid compute type");
-            }
-            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
+
             renderQueueItem.setRenderComputeType(blenderProject.getRenderOn());
             renderQueueItem.setConnectionUUID(null);
             renderQueueItem.setRendering(false);
@@ -161,82 +136,69 @@ class QueueNodeActions {
     private static RenderQueueItem setQueueItemToNode(SethlansNodeDatabaseService sethlansNodeDatabaseService, int i, List<SethlansNode> nodesToUpdate, RenderQueueItem renderQueueItem) {
         List<SethlansNode> sortedSethlansNodeList;
         SethlansNode sethlansNode;
-        switch (renderQueueItem.getRenderComputeType()) {
-            case CPU_GPU:
-                sortedSethlansNodeList = getSortedNodeList(ComputeType.CPU_GPU, sethlansNodeDatabaseService);
-                nodeStatusLog(i, sortedSethlansNodeList);
-                if (sortedSethlansNodeList != null) {
-                    sethlansNode = sortedSethlansNodeList.get(i);
-                    sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
-                    renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
-                    renderQueueItem = setQueueItemComputeType(sethlansNode, renderQueueItem);
-                    LOG.debug(renderQueueItem.toString());
-                    switch (renderQueueItem.getRenderComputeType()) {
-                        case CPU:
-                            sethlansNode.setCpuSlotInUse(true);
-                            break;
-                        case GPU:
-                            setAllGPUSlotState(renderQueueItem, sethlansNode);
-                            break;
-                        case CPU_GPU:
-                            LOG.error("Failure in logic this message should not be displayed.");
-                            break;
-                    }
-                    nodesToUpdate.add(sethlansNode);
-                }
-                break;
-            case CPU:
-                sortedSethlansNodeList = getSortedNodeList(ComputeType.CPU, sethlansNodeDatabaseService);
-                nodeStatusLog(i, sortedSethlansNodeList);
-                if (sortedSethlansNodeList != null) {
-                    sethlansNode = sortedSethlansNodeList.get(i);
-                    renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
-                    sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
-                    sethlansNode.setCpuSlotInUse(true);
-                    nodesToUpdate.add(sethlansNode);
-                }
-                break;
-            case GPU:
-                sortedSethlansNodeList = getSortedNodeList(ComputeType.GPU, sethlansNodeDatabaseService);
-                nodeStatusLog(i, sortedSethlansNodeList);
-                if (sortedSethlansNodeList != null) {
-                    sethlansNode = sortedSethlansNodeList.get(i);
-                    renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
-                    sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
-                    setAllGPUSlotState(renderQueueItem, sethlansNode);
-                    nodesToUpdate.add(sethlansNode);
-                }
-                break;
-        }
+//        switch (renderQueueItem.getRenderComputeType()) {
+//            case CPU_GPU:
+//                sortedSethlansNodeList = getSortedNodeList(ComputeType.CPU_GPU, sethlansNodeDatabaseService);
+//                nodeStatusLog(i, sortedSethlansNodeList);
+//                if (sortedSethlansNodeList != null) {
+//                    sethlansNode = sortedSethlansNodeList.get(i);
+//                    sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
+//                    renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
+//                    renderQueueItem = setQueueItemComputeType(sethlansNode, renderQueueItem);
+//                    LOG.debug(renderQueueItem.toString());
+//                    switch (renderQueueItem.getRenderComputeType()) {
+//                        case CPU:
+//                            sethlansNode.setCpuSlotInUse(true);
+//                            break;
+//                        case GPU:
+//                            setAllGPUSlotState(renderQueueItem, sethlansNode);
+//                            break;
+//                        case CPU_GPU:
+//                            LOG.error("Failure in logic this message should not be displayed.");
+//                            break;
+//                    }
+//                    nodesToUpdate.add(sethlansNode);
+//                }
+//                break;
+//            case CPU:
+//                sortedSethlansNodeList = getSortedNodeList(ComputeType.CPU, sethlansNodeDatabaseService);
+//                nodeStatusLog(i, sortedSethlansNodeList);
+//                if (sortedSethlansNodeList != null) {
+//                    sethlansNode = sortedSethlansNodeList.get(i);
+//                    renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
+//                    sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
+//                    sethlansNode.setCpuSlotInUse(true);
+//                    nodesToUpdate.add(sethlansNode);
+//                }
+//                break;
+//            case GPU:
+//                sortedSethlansNodeList = getSortedNodeList(ComputeType.GPU, sethlansNodeDatabaseService);
+//                nodeStatusLog(i, sortedSethlansNodeList);
+//                if (sortedSethlansNodeList != null) {
+//                    sethlansNode = sortedSethlansNodeList.get(i);
+//                    renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
+//                    sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
+//                    setAllGPUSlotState(renderQueueItem, sethlansNode);
+//                    nodesToUpdate.add(sethlansNode);
+//                }
+//                break;
+//        }
         return renderQueueItem;
     }
 
-    private static void setAllGPUSlotState(RenderQueueItem renderQueueItem, SethlansNode sethlansNode) {
-        if (sethlansNode.isCombined()) {
-            sethlansNode.setAllGPUSlotInUse(true);
-            renderQueueItem.setGpuDeviceId("COMBO");
-        } else {
-            renderQueueItem.setGpuDeviceId(getFastestGPU(sethlansNode));
-            if (sethlansNode.getAvailableRenderingSlots() == 0) {
-                sethlansNode.setAllGPUSlotInUse(true);
-            }
-            if (sethlansNode.getAvailableRenderingSlots() == 1 && !sethlansNode.isCpuSlotInUse()) {
-                sethlansNode.setAllGPUSlotInUse(true);
-            }
-        }
-    }
+
 
     private static void nodeStatusLog(int i, List<SethlansNode> sortedSethlansNodeList) {
-        if (i == 0 && sortedSethlansNodeList != null) {
-            LOG.debug("Current Node Status:");
-            for (SethlansNode node : sortedSethlansNodeList) {
-                LOG.debug(node.getHostname() +
-                        ": Available Slots(" + node.getAvailableRenderingSlots() +
-                        "). Compute Type(" + node.getComputeType().getName() +
-                        "). CPU in use(" + node.isCpuSlotInUse() +
-                        "). (All) GPU(s) in use (" + node.isAllGPUSlotInUse() + ")");
-            }
-        }
+//        if (i == 0 && sortedSethlansNodeList != null) {
+//            LOG.debug("Current Node Status:");
+//            for (SethlansNode node : sortedSethlansNodeList) {
+//                LOG.debug(node.getHostname() +
+//                        ": Available Slots(" + node.getAvailableRenderingSlots() +
+//                        "). Compute Type(" + node.getComputeType().getName() +
+//                        "). CPU in use(" + node.isCpuSlotInUse() +
+//                        "). (All) GPU(s) in use (" + node.isAllGPUSlotInUse() + ")");
+//            }
+//        }
     }
 
     static void sendQueueItemsToNodes(RenderQueueDatabaseService renderQueueDatabaseService,
@@ -278,24 +240,27 @@ class QueueNodeActions {
     }
 
     private static String getFastestGPU(SethlansNode sethlansNode) {
-        sethlansNode.getSelectedGPUs().sort(Comparator.comparingInt(GPUDevice::getRating));
-        int usedGPU = 99999;
-        String deviceId = "";
-        for (int i = 0; i < sethlansNode.getSelectedGPUs().size(); i++) {
-            if (!sethlansNode.getSelectedGPUs().get(i).isInUse()) {
-                usedGPU = i;
-                deviceId = sethlansNode.getSelectedGPUs().get(i).getDeviceID();
-            }
-        }
-        if (usedGPU != 99999) {
-            sethlansNode.getSelectedGPUs().get(usedGPU).setInUse(true);
-        }
-        if (!deviceId.equals("")) {
-            LOG.debug("GPU device ID selected: " + deviceId);
-            return deviceId;
-        } else {
-            return null;
-        }
+        // Needs to be redone
+
+//        sethlansNode.getSelectedGPUs().sort(Comparator.comparingInt(GPUDevice::getRating));
+//        int usedGPU = 99999;
+//        String deviceId = "";
+//        for (int i = 0; i < sethlansNode.getSelectedGPUs().size(); i++) {
+//            if (!sethlansNode.getSelectedGPUs().get(i).isInUse()) {
+//                usedGPU = i;
+//                deviceId = sethlansNode.getSelectedGPUs().get(i).getDeviceID();
+//            }
+//        }
+//        if (usedGPU != 99999) {
+//            sethlansNode.getSelectedGPUs().get(usedGPU).setInUse(true);
+//        }
+//        if (!deviceId.equals("")) {
+//            LOG.debug("GPU device ID selected: " + deviceId);
+//            return deviceId;
+//        } else {
+//            return null;
+//        }
+        return null;
         
     }
 
@@ -317,30 +282,30 @@ class QueueNodeActions {
     }
 
     private static void getFastestFreeCompute(SethlansNode sethlansNode, RenderQueueItem renderQueueItem) {
-        if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating() && !sethlansNode.isAllGPUSlotInUse()) {
-            renderQueueItem.setRenderComputeType(ComputeType.GPU);
-        } else if (sethlansNode.getCombinedGPURating() > sethlansNode.getCpuRating() && !sethlansNode.isCpuSlotInUse()) {
-            renderQueueItem.setRenderComputeType(ComputeType.CPU);
-        } else if (sethlansNode.getCombinedGPURating() == sethlansNode.getCpuRating() && !sethlansNode.isCpuSlotInUse()) {
-            renderQueueItem.setRenderComputeType(ComputeType.CPU);
-        } else if (sethlansNode.isCpuSlotInUse()) {
-            renderQueueItem.setRenderComputeType(ComputeType.GPU);
-        } else if (sethlansNode.isAllGPUSlotInUse()) {
-            renderQueueItem.setRenderComputeType(ComputeType.CPU);
-        }
+//        if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating() && !sethlansNode.isAllGPUSlotInUse()) {
+//            renderQueueItem.setRenderComputeType(ComputeType.GPU);
+//        } else if (sethlansNode.getCombinedGPURating() > sethlansNode.getCpuRating() && !sethlansNode.isCpuSlotInUse()) {
+//            renderQueueItem.setRenderComputeType(ComputeType.CPU);
+//        } else if (sethlansNode.getCombinedGPURating() == sethlansNode.getCpuRating() && !sethlansNode.isCpuSlotInUse()) {
+//            renderQueueItem.setRenderComputeType(ComputeType.CPU);
+//        } else if (sethlansNode.isCpuSlotInUse()) {
+//            renderQueueItem.setRenderComputeType(ComputeType.GPU);
+//        } else if (sethlansNode.isAllGPUSlotInUse()) {
+//            renderQueueItem.setRenderComputeType(ComputeType.CPU);
+//        }
     }
 
 
     private static List<SethlansNode> getSortedNodeList(ComputeType computeType, SethlansNodeDatabaseService sethlansNodeDatabaseService) {
-        List<SethlansNode> sortedSethlansNodeList = new ArrayList<>();
-        for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
-            if (sethlansNode.getAvailableRenderingSlots() > 0 && sethlansNode.isBenchmarkComplete() && sethlansNode.isActive()) {
-                listofNodes(computeType, sortedSethlansNodeList, sethlansNode);
-            }
-        }
-        if (sortedNodeList(computeType, sortedSethlansNodeList)) {
-            return sortedSethlansNodeList;
-        }
+//        List<SethlansNode> sortedSethlansNodeList = new ArrayList<>();
+//        for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
+//            if (sethlansNode.getAvailableRenderingSlots() > 0 && sethlansNode.isBenchmarkComplete() && sethlansNode.isActive()) {
+//                listofNodes(computeType, sortedSethlansNodeList, sethlansNode);
+//            }
+//        }
+//        if (sortedNodeList(computeType, sortedSethlansNodeList)) {
+//            return sortedSethlansNodeList;
+//        }
         return null;
 
     }

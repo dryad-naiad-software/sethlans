@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -24,9 +24,9 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.services.blender.benchmark.BlenderBenchmarkService;
 import com.dryadandnaiad.sethlans.services.database.RenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.services.network.GetRawDataService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
 import com.dryadandnaiad.sethlans.services.queue.QueueService;
-import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,22 +49,14 @@ public class ServerBackgroundController {
     private NodeDiscoveryService nodeDiscoveryService;
     private QueueService queueService;
     private static final Logger LOG = LoggerFactory.getLogger(ServerBackgroundController.class);
+    private GetRawDataService getRawDataService;
 
 
     @PostMapping(value = "/api/update/node_idle_notification")
     public void nodeIdleNotification(@RequestParam String connection_uuid, ComputeType compute_type) {
-        //TODO Add GPU info to request to handle non combined GPU modes
         if (renderQueueDatabaseService.tableSize() > 0) {
             LOG.debug("Received idle node notification.  Connection ID: " + connection_uuid + " Compute Type: " + compute_type);
             queueService.queueIdleNode(connection_uuid, compute_type);
-        } else {
-            SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
-            if (sethlansNode.isBenchmarkComplete() && sethlansNode.getAvailableRenderingSlots() != sethlansNode.getTotalRenderingSlots()) {
-                LOG.debug("Received idle notification from  " + sethlansNode.getHostname());
-                SethlansNodeUtils.resetNode(compute_type, sethlansNode, true);
-                sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-            }
-
         }
     }
 
@@ -80,31 +72,8 @@ public class ServerBackgroundController {
             SethlansNode tempNode = nodeDiscoveryService.discoverUnicastNode(sethlansNodetoUpdate.getIpAddress(), sethlansNodetoUpdate.getNetworkPort());
             if (sethlansNodetoUpdate.isActive()) {
                 sethlansNodetoUpdate.setBenchmarkComplete(false);
-                switch (tempNode.getComputeType()) {
-                    case CPU_GPU:
-                        if (tempNode.isCombined()) {
-                            sethlansNodetoUpdate.setTotalRenderingSlots(2);
-                            sethlansNodetoUpdate.setAvailableRenderingSlots(2);
-                        } else {
-                            sethlansNodetoUpdate.setTotalRenderingSlots(tempNode.getSelectedGPUs().size() + 1);
-                            sethlansNodetoUpdate.setAvailableRenderingSlots(tempNode.getSelectedGPUs().size() + 1);
-                        }
-                        break;
-                    case GPU:
-                        if (tempNode.isCombined()) {
-                            sethlansNodetoUpdate.setTotalRenderingSlots(1);
-                            sethlansNodetoUpdate.setAvailableRenderingSlots(1);
-                        } else {
-                            sethlansNodetoUpdate.setTotalRenderingSlots(tempNode.getSelectedGPUs().size());
-                            sethlansNodetoUpdate.setAvailableRenderingSlots(tempNode.getSelectedGPUs().size());
-                        }
-                        break;
-                    case CPU:
-                        sethlansNodetoUpdate.setTotalRenderingSlots(1);
-                        sethlansNodetoUpdate.setAvailableRenderingSlots(1);
-                        break;
-
-                }
+                sethlansNodetoUpdate.setTotalRenderingSlots(Integer.parseInt(getRawDataService.getNodeResult("https://" + sethlansNodetoUpdate.getIpAddress() + ":"
+                        + sethlansNodetoUpdate.getNetworkPort() + "/api/info/node_total_slots").trim()));
 
                 updateNode(sethlansNodetoUpdate, tempNode);
                 try {
@@ -156,5 +125,10 @@ public class ServerBackgroundController {
     @Autowired
     public void setQueueService(QueueService queueService) {
         this.queueService = queueService;
+    }
+
+    @Autowired
+    public void setGetRawDataService(GetRawDataService getRawDataService) {
+        this.getRawDataService = getRawDataService;
     }
 }

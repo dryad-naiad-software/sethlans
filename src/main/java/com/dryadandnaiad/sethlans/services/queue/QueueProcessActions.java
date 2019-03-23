@@ -26,8 +26,10 @@ import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessFrameItem;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessQueueItem;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderQueueItem;
-import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
-import com.dryadandnaiad.sethlans.enums.*;
+import com.dryadandnaiad.sethlans.enums.NotificationType;
+import com.dryadandnaiad.sethlans.enums.ProjectStatus;
+import com.dryadandnaiad.sethlans.enums.ProjectType;
+import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import com.dryadandnaiad.sethlans.services.database.*;
 import com.dryadandnaiad.sethlans.services.network.GetRawDataService;
 import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
@@ -142,40 +144,11 @@ class QueueProcessActions {
             processQueueDatabaseService.saveOrUpdate(processQueueItem);
             RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processQueueItem.getQueueUUID());
             SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(processQueueItem.getConnectionUUID());
-            ComputeType computeType = renderQueueItem.getRenderComputeType();
             BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProjectUUID());
             renderQueueItem.getBlenderFramePart().setStoredDir(blenderProject.getProjectRootDir() +
                     File.separator + "frame_" + renderQueueItem.getBlenderFramePart().getFrameNumber() + File.separator);
             renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
-
             LOG.info("Completed Render Task received from " + sethlansNode.getHostname() + ". Adding to processing queue.");
-
-            switch (computeType) {
-                case GPU:
-                    sethlansNode.setAllGPUSlotInUse(false);
-                    sethlansNode.setAvailableRenderingSlots(Integer.parseInt(getRawDataService.getNodeResult("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort()
-                            + "/api/info/available_slots").trim()));
-                    for (GPUDevice selectedGPUs : sethlansNode.getSelectedGPUs()) {
-                        if (renderQueueItem.getGpuDeviceId().equals(selectedGPUs.getDeviceID())) {
-                            selectedGPUs.setInUse(false);
-                        }
-                    }
-                    break;
-                case CPU:
-                    sethlansNode.setCpuSlotInUse(false);
-                    sethlansNode.setAvailableRenderingSlots(Integer.parseInt(getRawDataService.getNodeResult("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort()
-                            + "/api/info/available_slots").trim()));
-                    break;
-                default:
-                    LOG.error("Invalid compute type, this message should not occur.");
-            }
-
-            if (sethlansNode.getAvailableRenderingSlots() == sethlansNode.getTotalRenderingSlots()) {
-                sethlansNode.setAllGPUSlotInUse(false);
-                sethlansNode.setCpuSlotInUse(false);
-            }
-            LOG.debug(sethlansNode.getHostname() + " state: " + sethlansNode.toString());
-            sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
             itemsReviewed.add(processQueueItem);
         } catch (NullPointerException e) {
             LOG.error("Received incoming items for queue after queue has been stopped");

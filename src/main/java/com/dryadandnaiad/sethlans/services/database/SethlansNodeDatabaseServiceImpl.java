@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -92,11 +92,11 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
     public List<SethlansNode> activeNodeswithFreeSlots() {
         List<SethlansNode> nodes = activeNodeList();
         List<SethlansNode> nodesNotRendering = new ArrayList<>();
-        for (SethlansNode node : nodes) {
-            if (node.getAvailableRenderingSlots() > 0) {
-                nodesNotRendering.add(node);
-            }
-        }
+//        for (SethlansNode node : nodes) {
+//            if (node.getAvailableRenderingSlots() > 0) {
+//                nodesNotRendering.add(node);
+//            }
+//        }
         return nodesNotRendering;
     }
 
@@ -140,11 +140,11 @@ public class SethlansNodeDatabaseServiceImpl implements SethlansNodeDatabaseServ
     public List<SethlansNode> activeNodesWithNoFreeSlots() {
         List<SethlansNode> nodes = activeNodeList();
         List<SethlansNode> nodesRendering = new ArrayList<>();
-        for (SethlansNode node : nodes) {
-            if (node.getAvailableRenderingSlots() == 0) {
-                nodesRendering.add(node);
-            }
-        }
+//        for (SethlansNode node : nodes) {
+//            if (node.getAvailableRenderingSlots() == 0) {
+//                nodesRendering.add(node);
+//            }
+//        }
         return nodesRendering;
     }
 

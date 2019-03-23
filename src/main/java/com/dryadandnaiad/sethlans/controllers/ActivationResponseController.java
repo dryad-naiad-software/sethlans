@@ -31,8 +31,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-
 /**
  * Created Mario Estrella on 12/6/17.
  * Dryad and Naiad Software LLC
@@ -61,7 +59,6 @@ public class ActivationResponseController {
             sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid);
             sethlansNode.setPendingActivation(false);
             sethlansNode.setActive(true);
-            sethlansNode.setSelectedGPURatings(new ArrayList<>());
             sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
             LOG.debug(sethlansNode.toString());
             LOG.info("Processed node activation response.");
