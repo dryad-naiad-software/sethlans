@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -63,9 +63,6 @@ public class SethlansNode extends AbstractEntityClass {
     private List<String> selectedDeviceID = new ArrayList<>();
     @ElementCollection(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
-    private List<Integer> selectedGPURatings = new ArrayList<>();
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SELECT)
     private List<String> selectedGPUModels = new ArrayList<>();
     private boolean active;
     private boolean disabled;
@@ -74,9 +71,6 @@ public class SethlansNode extends AbstractEntityClass {
     private int cpuRating;
     private boolean benchmarkComplete;
     private int totalRenderingSlots;
-    private int availableRenderingSlots;
-    private boolean cpuSlotInUse;
-    private boolean allGPUSlotInUse;
     private boolean combined;
 
     public Integer getCombinedGPURating() {
@@ -116,7 +110,6 @@ public class SethlansNode extends AbstractEntityClass {
                 ", selectedCores='" + selectedCores + '\'' +
                 ", selectedGPUs=" + selectedGPUs +
                 ", selectedDeviceID=" + selectedDeviceID +
-                ", selectedGPURatings=" + selectedGPURatings +
                 ", selectedGPUModels=" + selectedGPUModels +
                 ", active=" + active +
                 ", disabled=" + disabled +
@@ -125,9 +118,6 @@ public class SethlansNode extends AbstractEntityClass {
                 ", cpuRating=" + cpuRating +
                 ", benchmarkComplete=" + benchmarkComplete +
                 ", totalRenderingSlots=" + totalRenderingSlots +
-                ", availableRenderingSlots=" + availableRenderingSlots +
-                ", cpuSlotInUse=" + cpuSlotInUse +
-                ", allGPUSlotInUse=" + allGPUSlotInUse +
                 ", combined=" + combined +
                 ", combinedGPURating=" + getCombinedGPURating() +
                 ", combinedCPUGPURating=" + getCombinedCPUGPURating() +

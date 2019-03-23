@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -38,7 +38,6 @@ public class GPUDevice {
     private boolean openCL;
     private boolean cuda;
     private String deviceID;
-    private boolean inUse = false;
 
     public GPUDevice(String model, long ram, String deviceID, boolean openCL, boolean cuda) {
         this.model = model;
