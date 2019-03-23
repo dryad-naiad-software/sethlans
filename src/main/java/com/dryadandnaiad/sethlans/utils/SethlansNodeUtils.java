@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.domains.hardware.GPUDevice;
 import com.dryadandnaiad.sethlans.domains.info.NodeInfo;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
@@ -27,7 +28,10 @@ import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 
@@ -64,25 +68,6 @@ public class SethlansNodeUtils {
         return nodeInfo;
     }
 
-    public static boolean sortedNodeList(ComputeType computeType, List<SethlansNode> listToSort) {
-        if (listToSort.size() > 0) {
-            switch (computeType) {
-                case CPU:
-                    LOG.debug("Sorting by CPU");
-                    listToSort.sort(Comparator.comparing(SethlansNode::getCpuRating));
-                    return true;
-                case GPU:
-                    LOG.debug("Sorting by GPU");
-                    listToSort.sort(Comparator.comparing(SethlansNode::getCombinedGPURating));
-                    return true;
-                case CPU_GPU:
-                    LOG.debug("Sorting by CPU_GPU");
-                    listToSort.sort(Comparator.comparing(SethlansNode::getCombinedCPUGPURating));
-                    return true;
-            }
-        }
-        return false;
-    }
 
     public static void cpuGPUNodeCheck(SetupNode setupNode) {
         if (setupNode.getTotalCores().equals(setupNode.getCores())) {
@@ -90,36 +75,6 @@ public class SethlansNodeUtils {
         }
     }
 
-    public static void listofNodes(ComputeType computeType, List<SethlansNode> listToSort, SethlansNode sethlansNode) {
-        switch (computeType) {
-            case CPU:
-                if (sethlansNode.getComputeType().equals(ComputeType.CPU)) {
-                    listToSort.add(sethlansNode);
-                }
-                if (sethlansNode.getComputeType().equals(ComputeType.CPU_GPU)) {
-                    listToSort.add(sethlansNode);
-                }
-                break;
-            case GPU:
-                if (sethlansNode.getComputeType().equals(ComputeType.GPU)) {
-                    listToSort.add(sethlansNode);
-                }
-                if (sethlansNode.getComputeType().equals(ComputeType.CPU_GPU)) {
-                    listToSort.add(sethlansNode);
-                }
-                break;
-            case CPU_GPU:
-                if (sethlansNode.getComputeType().equals(ComputeType.CPU)) {
-                    listToSort.add(sethlansNode);
-                }
-                if (sethlansNode.getComputeType().equals(ComputeType.GPU)) {
-                    listToSort.add(sethlansNode);
-                }
-                if (sethlansNode.getComputeType().equals(ComputeType.CPU_GPU)) {
-                    listToSort.add(sethlansNode);
-                }
-        }
-    }
 
 
     public static Integer getAvailableSlots(int slotsInUse) {
@@ -140,6 +95,24 @@ public class SethlansNodeUtils {
         }
         nodeDeviceIds.removeAll(deviceIdsInUse);
         return new ArrayList<>(nodeDeviceIds);
+    }
+
+    public static Integer getDeviceIdBenchmark(SethlansNode sethlansNode, String availableDeviceId) {
+        int benchmark = 0;
+        if (availableDeviceId.equals("CPU")) {
+            benchmark = sethlansNode.getCpuRating();
+        } else if (availableDeviceId.equals("COMBO")) {
+            benchmark = sethlansNode.getCombinedGPURating();
+        } else {
+            for (GPUDevice selectedGPUs : sethlansNode.getSelectedGPUs()) {
+                if (selectedGPUs.getDeviceID().equals(availableDeviceId)) {
+                    benchmark = selectedGPUs.getRating();
+                }
+            }
+
+        }
+        return benchmark;
+
     }
 
 

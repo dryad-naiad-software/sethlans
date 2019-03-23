@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -32,11 +32,7 @@ import java.util.List;
 public interface SethlansNodeDatabaseService extends CRUDService<SethlansNode> {
     SethlansNode getByConnectionUUID(String uuid);
 
-    List<SethlansNode> activeNodeswithFreeSlots();
-
     boolean activeNodes();
-
-    List<SethlansNode> activeNonComboNodes();
 
     List<SethlansNode> activeNodeList();
 
@@ -45,8 +41,6 @@ public interface SethlansNodeDatabaseService extends CRUDService<SethlansNode> {
     List<SethlansNode> activeGPUNodes();
 
     List<SethlansNode> activeCPUGPUNodes();
-
-    List<SethlansNode> activeNodesWithNoFreeSlots();
 
     boolean checkForDuplicatesAndSave(SethlansNode sethlansNode);
 
