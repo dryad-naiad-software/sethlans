@@ -61,7 +61,7 @@
         <npm.version>6.4.1</npm.version>
         <h2.version>1.4.197</h2.version>
         <guava.version>27.0.1-jre</guava.version>
-        <jna.version>5.1.0</jna.version>
+        <jna.version>5.2.0</jna.version>
         <oshi.version>3.12.0</oshi.version>
         <jcuda.version>10.0.0</jcuda.version>
         <izpack.version>5.1.3</izpack.version>

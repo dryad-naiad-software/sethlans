@@ -1,11 +1,10 @@
 /*
- * Copyright (C) 2010-2017 Laurent CLOUET
- * Author Laurent CLOUET <laurent.clouet@nopnop.net>
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; version 2
- * of the License.
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,7 +13,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
  */
 
 
@@ -32,11 +32,13 @@ import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.LongByReference;
 
 public interface CUDA extends Library {
+
+    /**
+     * @param flags
+     * @return CUDA_SUCCESS, CUDA_ERROR_INVALID_VALUE, CUDA_ERROR_INVALID_DEVICE, CUDA_ERROR_SYSTEM_DRIVER_MISMATCH, CUDA_ERROR_COMPAT_NOT_SUPPORTED_ON_DEVICE
+     */
     int cuInit(int flags);
 
-    /*
-     * @return: CUDA_SUCCESS, CUDA_ERROR_DEINITIALIZED, CUDA_ERROR_NOT_INITIALIZED, CUDA_ERROR_INVALID_CONTEXT, CUDA_ERROR_INVALID_VALUE
-    */
     int cuDeviceGetCount(IntByReference count);
 
     int cuDeviceGetName(byte[] name, int len, int dev);

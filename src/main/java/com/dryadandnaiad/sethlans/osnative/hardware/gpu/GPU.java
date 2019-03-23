@@ -62,7 +62,7 @@ public class GPU {
         CUDA cudalib;
         int result;
         try {
-            cudalib = Native.loadLibrary(path, CUDA.class);
+            cudalib = Native.load(path, CUDA.class);
             result = cudalib.cuInit(0);
             if (result != CUresult.CUDA_SUCCESS) {
                 LOG.error("cuInit failed (ret: " + result + ")");
@@ -194,18 +194,6 @@ public class GPU {
         return null;
     }
 
-    public static List<String> listModels() {
-        if (devices == null) {
-            generateCUDA();
-            generateOpenCL();
-        }
-
-        List<String> devs = new LinkedList<>();
-        for (GPUDevice dev : devices) {
-            devs.add(dev.getModel());
-        }
-        return devs;
-    }
 
     public static List<GPUDevice> listDevices() {
         if (devices == null) {
