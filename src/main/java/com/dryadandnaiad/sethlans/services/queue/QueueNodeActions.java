@@ -23,7 +23,6 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessNodeStatus;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderQueueItem;
-import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.RenderQueueDatabaseService;
@@ -227,74 +226,5 @@ class QueueNodeActions {
         }
     }
 
-    private static String getFastestGPU(SethlansNode sethlansNode) {
-        // Needs to be redone
 
-//        sethlansNode.getSelectedGPUs().sort(Comparator.comparingInt(GPUDevice::getRating));
-//        int usedGPU = 99999;
-//        String deviceId = "";
-//        for (int i = 0; i < sethlansNode.getSelectedGPUs().size(); i++) {
-//            if (!sethlansNode.getSelectedGPUs().get(i).isInUse()) {
-//                usedGPU = i;
-//                deviceId = sethlansNode.getSelectedGPUs().get(i).getDeviceID();
-//            }
-//        }
-//        if (usedGPU != 99999) {
-//            sethlansNode.getSelectedGPUs().get(usedGPU).setInUse(true);
-//        }
-//        if (!deviceId.equals("")) {
-//            LOG.debug("GPU device ID selected: " + deviceId);
-//            return deviceId;
-//        } else {
-//            return null;
-//        }
-        return null;
-        
-    }
-
-    private static RenderQueueItem setQueueItemComputeType(SethlansNode sethlansNode, RenderQueueItem renderQueueItem) {
-        // Before sending to a node the compute type must be either GPU or CPU,  CPU&GPU is only used for sorting at the server level.
-        LOG.debug("Setting Queue Item Compute Type");
-        switch (sethlansNode.getComputeType()) {
-            case CPU_GPU:
-                getFastestFreeCompute(sethlansNode, renderQueueItem);
-                return renderQueueItem;
-            case GPU:
-                renderQueueItem.setRenderComputeType(ComputeType.GPU);
-                return renderQueueItem;
-            case CPU:
-                renderQueueItem.setRenderComputeType(ComputeType.CPU);
-                return renderQueueItem;
-        }
-        return renderQueueItem;
-    }
-
-    private static void getFastestFreeCompute(SethlansNode sethlansNode, RenderQueueItem renderQueueItem) {
-//        if (sethlansNode.getCombinedGPURating() < sethlansNode.getCpuRating() && !sethlansNode.isAllGPUSlotInUse()) {
-//            renderQueueItem.setRenderComputeType(ComputeType.GPU);
-//        } else if (sethlansNode.getCombinedGPURating() > sethlansNode.getCpuRating() && !sethlansNode.isCpuSlotInUse()) {
-//            renderQueueItem.setRenderComputeType(ComputeType.CPU);
-//        } else if (sethlansNode.getCombinedGPURating() == sethlansNode.getCpuRating() && !sethlansNode.isCpuSlotInUse()) {
-//            renderQueueItem.setRenderComputeType(ComputeType.CPU);
-//        } else if (sethlansNode.isCpuSlotInUse()) {
-//            renderQueueItem.setRenderComputeType(ComputeType.GPU);
-//        } else if (sethlansNode.isAllGPUSlotInUse()) {
-//            renderQueueItem.setRenderComputeType(ComputeType.CPU);
-//        }
-    }
-
-
-    private static List<SethlansNode> getSortedNodeList(ComputeType computeType, SethlansNodeDatabaseService sethlansNodeDatabaseService) {
-//        List<SethlansNode> sortedSethlansNodeList = new ArrayList<>();
-//        for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
-//            if (sethlansNode.getAvailableRenderingSlots() > 0 && sethlansNode.isBenchmarkComplete() && sethlansNode.isActive()) {
-//                listofNodes(computeType, sortedSethlansNodeList, sethlansNode);
-//            }
-//        }
-//        if (sortedNodeList(computeType, sortedSethlansNodeList)) {
-//            return sortedSethlansNodeList;
-//        }
-        return null;
-
-    }
 }

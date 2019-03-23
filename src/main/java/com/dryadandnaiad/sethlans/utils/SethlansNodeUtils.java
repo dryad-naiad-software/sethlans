@@ -27,9 +27,7 @@ import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 
@@ -128,6 +126,22 @@ public class SethlansNodeUtils {
         int totalSlots = getTotalSlots();
         return totalSlots - slotsInUse;
     }
+
+    public static List<String> getAvailableDeviceIds(SethlansNode node, Collection<String> deviceIdsInUse) {
+        Collection<String> nodeDeviceIds = new ArrayList<>();
+        if (node.isCombined()) {
+            nodeDeviceIds.add("COMBO");
+        }
+        if (node.getComputeType() == ComputeType.CPU || node.getComputeType() == ComputeType.CPU_GPU) {
+            nodeDeviceIds.add("CPU");
+        }
+        if (node.getComputeType() == ComputeType.GPU || node.getComputeType() == ComputeType.CPU_GPU & !node.isCombined()) {
+            nodeDeviceIds.addAll(node.getSelectedDeviceID());
+        }
+        nodeDeviceIds.removeAll(deviceIdsInUse);
+        return new ArrayList<>(nodeDeviceIds);
+    }
+
 
     public static Integer getTotalSlots() {
         boolean combined = Boolean.parseBoolean(getProperty(SethlansConfigKeys.COMBINE_GPU.toString()));
