@@ -136,6 +136,8 @@ class QueueNodeActions {
     private static RenderQueueItem setQueueItemToNode(SethlansNodeDatabaseService sethlansNodeDatabaseService, int i, List<SethlansNode> nodesToUpdate, RenderQueueItem renderQueueItem) {
         List<SethlansNode> sortedSethlansNodeList;
         SethlansNode sethlansNode;
+        // TODO poll nodes in order to get available slots and which device id's are available, a class or a map to hold the following information;
+        //  node_id, available deviceid, benchmark rating for selected deviceid
 //        switch (renderQueueItem.getRenderComputeType()) {
 //            case CPU_GPU:
 //                sortedSethlansNodeList = getSortedNodeList(ComputeType.CPU_GPU, sethlansNodeDatabaseService);
@@ -186,20 +188,6 @@ class QueueNodeActions {
         return renderQueueItem;
     }
 
-
-
-    private static void nodeStatusLog(int i, List<SethlansNode> sortedSethlansNodeList) {
-//        if (i == 0 && sortedSethlansNodeList != null) {
-//            LOG.debug("Current Node Status:");
-//            for (SethlansNode node : sortedSethlansNodeList) {
-//                LOG.debug(node.getHostname() +
-//                        ": Available Slots(" + node.getAvailableRenderingSlots() +
-//                        "). Compute Type(" + node.getComputeType().getName() +
-//                        "). CPU in use(" + node.isCpuSlotInUse() +
-//                        "). (All) GPU(s) in use (" + node.isAllGPUSlotInUse() + ")");
-//            }
-//        }
-    }
 
     static void sendQueueItemsToNodes(RenderQueueDatabaseService renderQueueDatabaseService,
                                       BlenderProjectDatabaseService blenderProjectDatabaseService,

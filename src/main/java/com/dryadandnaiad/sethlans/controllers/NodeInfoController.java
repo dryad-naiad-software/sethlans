@@ -130,6 +130,15 @@ public class NodeInfoController {
         return SethlansNodeUtils.getAvailableSlots((int) renderTaskDatabaseService.tableSize());
     }
 
+    // TODO poll for available device_ids
+    @GetMapping(value = {"/available_device_ids"})
+    public List<String> getAvailableDeviceIds() {
+        if (firstTime) {
+            return null;
+        }
+        return null;
+    }
+
     @GetMapping(value = {"/node_total_slots"})
     public Integer getTotalSlots() {
         if (firstTime) {
