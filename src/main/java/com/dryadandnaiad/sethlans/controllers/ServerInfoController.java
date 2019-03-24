@@ -25,6 +25,10 @@ import com.dryadandnaiad.sethlans.domains.info.ServerDashBoardInfo;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.services.network.GetRawDataService;
+import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -60,6 +64,7 @@ public class ServerInfoController {
     private String configDir;
 
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
+    private GetRawDataService getRawDataService;
 
 
     @GetMapping(value = {"/total_nodes"})
@@ -119,11 +124,13 @@ public class ServerInfoController {
     @GetMapping(value = {"/server_idle_slots"})
     public int getIdleSlots() {
         int availableSlotsCount = 0;
+        Gson gson = new Gson();
         for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
-            if (sethlansNode.isActive() && !sethlansNode.isDisabled() && sethlansNode.isBenchmarkComplete()) {
-                // TODO query node for this information at intervals and cache it
-                // availableSlotsCount = availableSlotsCount + sethlansNode.getAvailableRenderingSlots();
-            }
+            List<String> deviceIdsInUse =
+                    gson.fromJson(getRawDataService.getNodeResult("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() +
+                            "/api/info/used_device_ids"), new TypeToken<List<String>>() {
+                    }.getType());
+            availableSlotsCount = SethlansNodeUtils.getAvailableDeviceIds(sethlansNode, deviceIdsInUse).size();
         }
         return availableSlotsCount;
 
@@ -193,5 +200,10 @@ public class ServerInfoController {
     @Autowired
     public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {
         this.sethlansNodeDatabaseService = sethlansNodeDatabaseService;
+    }
+
+    @Autowired
+    public void setGetRawDataService(GetRawDataService getRawDataService) {
+        this.getRawDataService = getRawDataService;
     }
 }

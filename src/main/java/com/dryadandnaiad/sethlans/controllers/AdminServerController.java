@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -31,6 +31,7 @@ import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
 import com.google.gson.Gson;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -131,6 +132,11 @@ public class AdminServerController {
             }
         }
         return listToSend;
+    }
+
+    @GetMapping(value = {"/device_benchmark"})
+    public Integer getDeviceBenchmark(@RequestParam String device_id, @RequestParam String connection_uuid) {
+        return SethlansNodeUtils.getDeviceIdBenchmark(sethlansNodeDatabaseService.getByConnectionUUID(connection_uuid), device_id);
     }
 
     @GetMapping(value = {"/node_info_by_uuid"})

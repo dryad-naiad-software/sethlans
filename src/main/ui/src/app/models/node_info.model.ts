@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,6 +20,7 @@
 import {ComputeMethod} from '../enums/compute.method.enum';
 import {BlenderBinaryOS} from '../enums/blender_binary_os.enum';
 import {CPUInfo} from './cpu_info.model';
+import {GPU} from './gpu.model';
 
 export class NodeInfo {
   id: number;
@@ -32,7 +33,7 @@ export class NodeInfo {
   selectedCores: string;
   selectedDeviceID: string[];
   selectedGPUModels: string[];
-  selectedGPURatings: number[];
+  selectedGPUs: GPU[];
   active: boolean;
   disabled: boolean;
   pendingActivation: boolean;
@@ -54,6 +55,7 @@ export class NodeInfo {
     this.selectedCores = '';
     this.selectedDeviceID = [];
     this.selectedGPUModels = [];
+    this.selectedGPUs = [];
     this.active = false;
     this.disabled = false;
     this.pendingActivation = false;
@@ -61,6 +63,7 @@ export class NodeInfo {
     this.benchmarkComplete = false;
     this.combinedCPUGPURating = 0;
     this.combinedGPURating = 0;
-    this.selectedGPURatings = [];
   }
 }
+
+

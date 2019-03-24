@@ -97,15 +97,15 @@ public class SethlansNodeUtils {
         return new ArrayList<>(nodeDeviceIds);
     }
 
-    public static Integer getDeviceIdBenchmark(SethlansNode sethlansNode, String availableDeviceId) {
+    public static Integer getDeviceIdBenchmark(SethlansNode sethlansNode, String deviceId) {
         int benchmark = 0;
-        if (availableDeviceId.equals("CPU")) {
+        if (deviceId.equals("CPU")) {
             benchmark = sethlansNode.getCpuRating();
-        } else if (availableDeviceId.equals("COMBO")) {
+        } else if (deviceId.equals("COMBO")) {
             benchmark = sethlansNode.getCombinedGPURating();
         } else {
             for (GPUDevice selectedGPUs : sethlansNode.getSelectedGPUs()) {
-                if (selectedGPUs.getDeviceID().equals(availableDeviceId)) {
+                if (selectedGPUs.getDeviceID().equals(deviceId)) {
                     benchmark = selectedGPUs.getRating();
                 }
             }
