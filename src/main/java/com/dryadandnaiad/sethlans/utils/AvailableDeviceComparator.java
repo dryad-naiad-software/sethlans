@@ -33,6 +33,13 @@ public class AvailableDeviceComparator implements Comparator<AvailableDevice> {
 
     @Override
     public int compare(AvailableDevice o1, AvailableDevice o2) {
-        return Integer.compare(o2.getDeviceBenchmark(), o1.getDeviceBenchmark());
+        if (o1.getDeviceBenchmark() > o2.getDeviceBenchmark()) {
+            return 1;
+        }
+        if (o1.getDeviceBenchmark() == o2.getDeviceBenchmark()) {
+            return 0;
+        } else {
+            return -1;
+        }
     }
 }

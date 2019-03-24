@@ -171,22 +171,13 @@ public class QueueServiceImpl implements QueueService {
         modifyingQueue = false;
     }
 
-    private void assignmentWorkflow() {
-        int count = sethlansNodeDatabaseService.activeNodeswithFreeSlots().size();
-        do {
-            if (!nodeStatuses.isEmpty()) {
-                processNodeAcknowledgements();
-            }
-            assignQueueItemToNode();
-            sendQueueItemsToAssignedNode();
-            if (count == sethlansNodeDatabaseService.activeNodeswithFreeSlots().size()) {
-                // If the free slot size doesn't change after going through the assignments, break the loop.
-                break;
-            }
-            count = sethlansNodeDatabaseService.activeNodeswithFreeSlots().size();
-            LOG.debug("Active nodes with free spots " + sethlansNodeDatabaseService.activeNodeswithFreeSlots().size());
+    private void assignmentWorkflow() throws InterruptedException {
+        if (!nodeStatuses.isEmpty()) {
+            processNodeAcknowledgements();
         }
-        while (sethlansNodeDatabaseService.activeNodeswithFreeSlots().size() > 0 && blenderProjectDatabaseService.remainingQueueProjectsSize() > 0);
+        assignQueueItemToNode();
+        sendQueueItemsToAssignedNode();
+        Thread.sleep(5000);
     }
 
     private void processingWorkflow() {
@@ -564,7 +555,7 @@ public class QueueServiceImpl implements QueueService {
     private void assignQueueItemToNode() {
         if (!modifyingQueue) {
             modifyingQueue = true;
-            assignToNode(renderQueueDatabaseService, sethlansNodeDatabaseService);
+            queueItemToNode(renderQueueDatabaseService, sethlansNodeDatabaseService, getRawDataService);
             modifyingQueue = false;
         }
     }

@@ -87,7 +87,7 @@ class QueueNodeActions {
         itemsProcessed.add(processNodeStatus);
     }
 
-    static void assignToNode(RenderQueueDatabaseService renderQueueDatabaseService, SethlansNodeDatabaseService sethlansNodeDatabaseService, GetRawDataService getRawDataService) {
+    static void queueItemToNode(RenderQueueDatabaseService renderQueueDatabaseService, SethlansNodeDatabaseService sethlansNodeDatabaseService, GetRawDataService getRawDataService) {
         List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.activeNodeList();
         Gson gson = new Gson();
         List<AvailableDevice> availableDeviceList = new ArrayList<>();
@@ -102,46 +102,49 @@ class QueueNodeActions {
             }
         }
         availableDeviceList.sort(new AvailableDeviceComparator());
-        List<RenderQueueItem> renderQueueItemList = renderQueueDatabaseService.listPendingRender();
         for (AvailableDevice availableDevice : availableDeviceList) {
-            for (RenderQueueItem renderQueueItem : renderQueueItemList) {
-                if (!availableDevice.isAssigned()) {
-                    if (!renderQueueItem.isRendering()) {
-                        LOG.debug(renderQueueItem.getProjectName() + " uuid: " +
-                                renderQueueItem.getProjectUUID() + " Frame: "
-                                + renderQueueItem.getBlenderFramePart().getFrameNumber() + " Part: "
-                                + renderQueueItem.getBlenderFramePart().getPartNumber() + " is waiting to be rendered.");
-                        SethlansNode sethlansNode = sethlansNodeDatabaseService.getById(availableDevice.getId());
-                        switch (renderQueueItem.getRenderComputeType()) {
-                            case CPU_GPU:
+            assignItemToNode(renderQueueDatabaseService, sethlansNodeDatabaseService, availableDevice);
+        }
+    }
+
+    private static void assignItemToNode(RenderQueueDatabaseService renderQueueDatabaseService, SethlansNodeDatabaseService sethlansNodeDatabaseService, AvailableDevice availableDevice) {
+        List<RenderQueueItem> renderQueueItemList = renderQueueDatabaseService.listPendingRender();
+        for (RenderQueueItem renderQueueItem : renderQueueItemList) {
+            if (!availableDevice.isAssigned()) {
+                if (!renderQueueItem.isRendering() || renderQueueItem.getConnectionUUID().isEmpty()) {
+                    LOG.debug(renderQueueItem.getProjectName() + " uuid: " +
+                            renderQueueItem.getProjectUUID() + " Frame: "
+                            + renderQueueItem.getBlenderFramePart().getFrameNumber() + " Part: "
+                            + renderQueueItem.getBlenderFramePart().getPartNumber() + " is waiting to be rendered.");
+                    SethlansNode sethlansNode = sethlansNodeDatabaseService.getById(availableDevice.getId());
+                    switch (renderQueueItem.getRenderComputeType()) {
+                        case CPU_GPU:
+                            renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
+                            renderQueueItem.setDeviceId(availableDevice.getDeviceId());
+                            availableDevice.setAssigned(true);
+                            if (availableDevice.getDeviceId().equals("CPU")) {
+                                renderQueueItem.setRenderComputeType(ComputeType.CPU);
+                            } else {
+                                renderQueueItem.setRenderComputeType(ComputeType.GPU);
+                            }
+                            break;
+                        case CPU:
+                            if (availableDevice.getDeviceId().equals("CPU")) {
                                 renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
                                 renderQueueItem.setDeviceId(availableDevice.getDeviceId());
                                 availableDevice.setAssigned(true);
-                                if (availableDevice.getDeviceId().equals("CPU")) {
-                                    renderQueueItem.setRenderComputeType(ComputeType.CPU);
-                                } else {
-                                    renderQueueItem.setRenderComputeType(ComputeType.GPU);
-                                }
-                                updateRenderQueueItem(renderQueueItem, renderQueueDatabaseService, sethlansNode.getHostname());
+                            }
+                            break;
+                        case GPU:
+                            if (!availableDevice.getDeviceId().equals("CPU")) {
+                                renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
+                                renderQueueItem.setDeviceId(availableDevice.getDeviceId());
+                                availableDevice.setAssigned(true);
                                 break;
-                            case CPU:
-                                if (availableDevice.getDeviceId().equals("CPU")) {
-                                    renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
-                                    renderQueueItem.setDeviceId(availableDevice.getDeviceId());
-                                    availableDevice.setAssigned(true);
-                                    updateRenderQueueItem(renderQueueItem, renderQueueDatabaseService, sethlansNode.getHostname());
-                                }
-                                break;
-                            case GPU:
-                                if (!availableDevice.getDeviceId().equals("CPU")) {
-                                    renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
-                                    renderQueueItem.setDeviceId(availableDevice.getDeviceId());
-                                    availableDevice.setAssigned(true);
-                                    updateRenderQueueItem(renderQueueItem, renderQueueDatabaseService, sethlansNode.getHostname());
-                                }
-                                break;
-                        }
+                            }
                     }
+                    updateRenderQueueItem(renderQueueItem, renderQueueDatabaseService, sethlansNode.getHostname());
+
                 }
             }
         }
