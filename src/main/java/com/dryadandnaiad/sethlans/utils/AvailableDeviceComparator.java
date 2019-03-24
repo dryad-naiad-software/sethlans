@@ -17,10 +17,11 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.domains.info;
+package com.dryadandnaiad.sethlans.utils;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.dryadandnaiad.sethlans.domains.info.AvailableDevice;
+
+import java.util.Comparator;
 
 /**
  * Created Mario Estrella on 3/23/2019.
@@ -28,11 +29,10 @@ import lombok.Data;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Data
-@AllArgsConstructor
-public class FreeDevice {
-    private Long id;
-    private String deviceId;
-    private int deviceBenchmark;
+public class AvailableDeviceComparator implements Comparator<AvailableDevice> {
 
+    @Override
+    public int compare(AvailableDevice o1, AvailableDevice o2) {
+        return Integer.compare(o2.getDeviceBenchmark(), o1.getDeviceBenchmark());
+    }
 }

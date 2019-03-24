@@ -109,7 +109,7 @@ public class NodeRenderController {
     @PostMapping(value = "/api/render/request")
     public void renderRequest(@RequestParam String project_name, @RequestParam String connection_uuid,
                               @RequestParam String project_uuid,
-                              @RequestParam String queue_item_uuid, @RequestParam String gpu_device_id,
+                              @RequestParam String queue_item_uuid, @RequestParam String device_id,
                               @RequestParam RenderOutputFormat render_output_format,
                               @RequestParam int samples, @RequestParam BlenderEngine blender_engine,
                               @RequestParam ComputeType compute_type,
@@ -132,7 +132,7 @@ public class NodeRenderController {
             switch (computeType) {
                 case CPU_GPU:
                     if (compute_type.equals(ComputeType.GPU)) {
-                        if (gpu_device_id == null || gpu_device_id.equals("null") || gpu_device_id.equals("")) {
+                        if (device_id == null || device_id.equals("null") || device_id.equals("")) {
                             rejectRequest(connection_uuid, queue_item_uuid);
                             rejected = true;
                         }
@@ -150,7 +150,7 @@ public class NodeRenderController {
                     }
                     break;
                 case GPU:
-                    if (gpu_device_id == null || gpu_device_id.equals("null")) {
+                    if (device_id == null || device_id.equals("null")) {
                         rejectRequest(connection_uuid, queue_item_uuid);
                         rejected = true;
                     }
@@ -209,19 +209,10 @@ public class NodeRenderController {
                 renderTask.setTaskResolutionX(part_resolution_x);
                 renderTask.setTaskResolutionY(part_resolution_y);
                 renderTask.setPartResPercentage(part_res_percentage);
+                renderTask.setDeviceID(device_id);
                 renderTask.setComplete(false);
                 renderTask.setCancelRequestReceived(false);
-
-                if (compute_type == ComputeType.GPU) {
-                    if (nodeInfo.isCombined()) {
-                        renderTask.setDeviceID("COMBO");
-                    } else {
-                        renderTask.setDeviceID(gpu_device_id);
-                    }
-                } else {
-                    renderTask.setDeviceID("CPU");
-                }
-                LOG.debug(renderTask.toString());
+                LOG.debug("Render task created: " + renderTask.toString());
                 RenderTaskHistory renderTaskHistory = new RenderTaskHistory();
                 renderTaskHistory.setComputeType(compute_type);
                 renderTaskHistory.setEngine(blender_engine);

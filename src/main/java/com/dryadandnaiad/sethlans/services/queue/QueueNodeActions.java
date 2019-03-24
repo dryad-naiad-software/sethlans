@@ -23,13 +23,15 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessNodeStatus;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderQueueItem;
-import com.dryadandnaiad.sethlans.domains.info.FreeDevice;
+import com.dryadandnaiad.sethlans.domains.info.AvailableDevice;
+import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.RenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.GetRawDataService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
+import com.dryadandnaiad.sethlans.utils.AvailableDeviceComparator;
 import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -85,61 +87,10 @@ class QueueNodeActions {
         itemsProcessed.add(processNodeStatus);
     }
 
-    static void assignToNode(RenderQueueDatabaseService renderQueueDatabaseService, SethlansNodeDatabaseService sethlansNodeDatabaseService) {
-//        List<RenderQueueItem> renderQueueItemList = renderQueueDatabaseService.listPendingRender();
-//        int totalAvailableSlots = sethlansNodeDatabaseService.activeNodeswithFreeSlots().size();
-//        if (renderQueueItemList.size() > 0 && totalAvailableSlots > 0) {
-//            int count;
-//            if (totalAvailableSlots > renderQueueItemList.size()) {
-//                count = renderQueueItemList.size();
-//            } else {
-//                count = totalAvailableSlots;
-//            }
-//            List<SethlansNode> nodesToUpdate = new ArrayList<>();
-//            for (int i = 0; i < count; i++) {
-//                RenderQueueItem renderQueueItem = renderQueueItemList.get(i);
-//                if (!renderQueueItem.isRendering()) {
-//                    LOG.debug(renderQueueItem.getProjectName() + " uuid: " +
-//                            renderQueueItem.getProjectUUID() + " Frame: "
-//                            + renderQueueItem.getBlenderFramePart().getFrameNumber() + " Part: "
-//                            + renderQueueItem.getBlenderFramePart().getPartNumber() + " is waiting to be rendered.");
-//                    renderQueueItem = setQueueItemToNode(sethlansNodeDatabaseService, i, nodesToUpdate, renderQueueItem);
-//                    switch (renderQueueItem.getRenderComputeType()) {
-//                        case GPU:
-//                            if (renderQueueItem.getGpuDeviceId() != null) {
-//                                updateRenderQueueItem(renderQueueItem, renderQueueDatabaseService);
-//                            } else {
-//                                LOG.debug("No free GPU available for rendering.");
-//                            }
-//                            break;
-//                        case CPU:
-//                            updateRenderQueueItem(renderQueueItem, renderQueueDatabaseService);
-//                            break;
-//                        case CPU_GPU:
-//                            updateRenderQueueItem(renderQueueItem, renderQueueDatabaseService);
-//                            break;
-//                    }
-//
-//                }
-//            }
-//            for (SethlansNode sethlansNode : nodesToUpdate) {
-//                sethlansNodeDatabaseService.saveOrUpdate(sethlansNode);
-//            }
-//        }
-    }
-
-    private static void updateRenderQueueItem(RenderQueueItem renderQueueItem, RenderQueueDatabaseService renderQueueDatabaseService) {
-        LOG.debug(renderQueueItem.getProjectName() + " uuid: " +
-                renderQueueItem.getProjectUUID() + " Frame: "
-                + renderQueueItem.getBlenderFramePart().getFrameNumber() + " Part: "
-                + renderQueueItem.getBlenderFramePart().getPartNumber() + " is updated.");
-        renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
-    }
-
-    private static RenderQueueItem setQueueItemToNode(SethlansNodeDatabaseService sethlansNodeDatabaseService, int i, List<SethlansNode> nodesToUpdate, RenderQueueItem renderQueueItem, GetRawDataService getRawDataService) {
+    static void assignToNode(RenderQueueDatabaseService renderQueueDatabaseService, SethlansNodeDatabaseService sethlansNodeDatabaseService, GetRawDataService getRawDataService) {
         List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.activeNodeList();
         Gson gson = new Gson();
-        List<FreeDevice> freeDeviceList = new ArrayList<>();
+        List<AvailableDevice> availableDeviceList = new ArrayList<>();
         for (SethlansNode sethlansNode : sethlansNodeList) {
             List<String> deviceIdsInUse =
                     gson.fromJson(getRawDataService.getNodeResult("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() +
@@ -147,62 +98,62 @@ class QueueNodeActions {
                     }.getType());
             List<String> availableDeviceIds = SethlansNodeUtils.getAvailableDeviceIds(sethlansNode, deviceIdsInUse);
             for (String availableDeviceId : availableDeviceIds) {
-                freeDeviceList.add(new FreeDevice(sethlansNode.getId(), availableDeviceId, SethlansNodeUtils.getDeviceIdBenchmark(sethlansNode, availableDeviceId)));
+                availableDeviceList.add(new AvailableDevice(sethlansNode.getId(), availableDeviceId, SethlansNodeUtils.getDeviceIdBenchmark(sethlansNode, availableDeviceId), false));
             }
         }
-
-        // TODO poll nodes in order to get available slots and which device id's are available, a class or a map to hold the following information;
-        //  node_id, available deviceid, benchmark rating for selected deviceid
-//        switch (renderQueueItem.getRenderComputeType()) {
-//            case CPU_GPU:
-//                sortedSethlansNodeList = getSortedNodeList(ComputeType.CPU_GPU, sethlansNodeDatabaseService);
-//                nodeStatusLog(i, sortedSethlansNodeList);
-//                if (sortedSethlansNodeList != null) {
-//                    sethlansNode = sortedSethlansNodeList.get(i);
-//                    sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
-//                    renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
-//                    renderQueueItem = setQueueItemComputeType(sethlansNode, renderQueueItem);
-//                    LOG.debug(renderQueueItem.toString());
-//                    switch (renderQueueItem.getRenderComputeType()) {
-//                        case CPU:
-//                            sethlansNode.setCpuSlotInUse(true);
-//                            break;
-//                        case GPU:
-//                            setAllGPUSlotState(renderQueueItem, sethlansNode);
-//                            break;
-//                        case CPU_GPU:
-//                            LOG.error("Failure in logic this message should not be displayed.");
-//                            break;
-//                    }
-//                    nodesToUpdate.add(sethlansNode);
-//                }
-//                break;
-//            case CPU:
-//                sortedSethlansNodeList = getSortedNodeList(ComputeType.CPU, sethlansNodeDatabaseService);
-//                nodeStatusLog(i, sortedSethlansNodeList);
-//                if (sortedSethlansNodeList != null) {
-//                    sethlansNode = sortedSethlansNodeList.get(i);
-//                    renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
-//                    sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
-//                    sethlansNode.setCpuSlotInUse(true);
-//                    nodesToUpdate.add(sethlansNode);
-//                }
-//                break;
-//            case GPU:
-//                sortedSethlansNodeList = getSortedNodeList(ComputeType.GPU, sethlansNodeDatabaseService);
-//                nodeStatusLog(i, sortedSethlansNodeList);
-//                if (sortedSethlansNodeList != null) {
-//                    sethlansNode = sortedSethlansNodeList.get(i);
-//                    renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
-//                    sethlansNode.setAvailableRenderingSlots(Math.max(0, sethlansNode.getAvailableRenderingSlots() - 1));
-//                    setAllGPUSlotState(renderQueueItem, sethlansNode);
-//                    nodesToUpdate.add(sethlansNode);
-//                }
-//                break;
-//        }
-        return renderQueueItem;
+        availableDeviceList.sort(new AvailableDeviceComparator());
+        List<RenderQueueItem> renderQueueItemList = renderQueueDatabaseService.listPendingRender();
+        for (AvailableDevice availableDevice : availableDeviceList) {
+            for (RenderQueueItem renderQueueItem : renderQueueItemList) {
+                if (!availableDevice.isAssigned()) {
+                    if (!renderQueueItem.isRendering()) {
+                        LOG.debug(renderQueueItem.getProjectName() + " uuid: " +
+                                renderQueueItem.getProjectUUID() + " Frame: "
+                                + renderQueueItem.getBlenderFramePart().getFrameNumber() + " Part: "
+                                + renderQueueItem.getBlenderFramePart().getPartNumber() + " is waiting to be rendered.");
+                        SethlansNode sethlansNode = sethlansNodeDatabaseService.getById(availableDevice.getId());
+                        switch (renderQueueItem.getRenderComputeType()) {
+                            case CPU_GPU:
+                                renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
+                                renderQueueItem.setDeviceId(availableDevice.getDeviceId());
+                                availableDevice.setAssigned(true);
+                                if (availableDevice.getDeviceId().equals("CPU")) {
+                                    renderQueueItem.setRenderComputeType(ComputeType.CPU);
+                                } else {
+                                    renderQueueItem.setRenderComputeType(ComputeType.GPU);
+                                }
+                                updateRenderQueueItem(renderQueueItem, renderQueueDatabaseService, sethlansNode.getHostname());
+                                break;
+                            case CPU:
+                                if (availableDevice.getDeviceId().equals("CPU")) {
+                                    renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
+                                    renderQueueItem.setDeviceId(availableDevice.getDeviceId());
+                                    availableDevice.setAssigned(true);
+                                    updateRenderQueueItem(renderQueueItem, renderQueueDatabaseService, sethlansNode.getHostname());
+                                }
+                                break;
+                            case GPU:
+                                if (!availableDevice.getDeviceId().equals("CPU")) {
+                                    renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
+                                    renderQueueItem.setDeviceId(availableDevice.getDeviceId());
+                                    availableDevice.setAssigned(true);
+                                    updateRenderQueueItem(renderQueueItem, renderQueueDatabaseService, sethlansNode.getHostname());
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
+    private static void updateRenderQueueItem(RenderQueueItem renderQueueItem, RenderQueueDatabaseService renderQueueDatabaseService, String node) {
+        LOG.debug(renderQueueItem.getProjectName() + " uuid: " +
+                renderQueueItem.getProjectUUID() + " Frame: "
+                + renderQueueItem.getBlenderFramePart().getFrameNumber() + " Part: "
+                + renderQueueItem.getBlenderFramePart().getPartNumber() + " has been assigned to " + renderQueueItem.getDeviceId() + " on " + node);
+        renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
+    }
 
     static void sendQueueItemsToNodes(RenderQueueDatabaseService renderQueueDatabaseService,
                                       BlenderProjectDatabaseService blenderProjectDatabaseService,
@@ -216,7 +167,7 @@ class QueueNodeActions {
             String params = "project_name=" + blenderProject.getProjectName() +
                     "&connection_uuid=" + sethlansNode.getConnectionUUID() +
                     "&project_uuid=" + blenderProject.getProjectUUID() +
-                    "&gpu_device_id=" + renderQueueItem.getGpuDeviceId() +
+                    "&device_id=" + renderQueueItem.getDeviceId() +
                     "&queue_item_uuid=" + renderQueueItem.getQueueItemUUID() +
                     "&render_output_format=" + blenderProject.getRenderOutputFormat() +
                     "&samples=" + blenderProject.getSamples() +

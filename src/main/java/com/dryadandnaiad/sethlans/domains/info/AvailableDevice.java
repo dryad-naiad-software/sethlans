@@ -17,36 +17,22 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.domains.database.queue;
+package com.dryadandnaiad.sethlans.domains.info;
 
-import com.dryadandnaiad.sethlans.domains.blender.BlenderFramePart;
-import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
-import com.dryadandnaiad.sethlans.enums.ComputeType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-
-import javax.persistence.Entity;
 
 /**
- * Created Mario Estrella on 12/28/17.
+ * Created Mario Estrella on 3/23/2019.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Entity
 @Data
-@EqualsAndHashCode(callSuper = false)
-public class RenderQueueItem extends AbstractEntityClass {
-    private String connectionUUID;
-    private String projectUUID;
-    private int projectIndex;
-    private String projectName;
-    private String queueItemUUID;
+@AllArgsConstructor
+public class AvailableDevice {
+    private Long id;
     private String deviceId;
-    private BlenderFramePart blenderFramePart;
-    private ComputeType renderComputeType;
-    private boolean complete;
-    private boolean paused;
-    private boolean rendering;
-
+    private int deviceBenchmark;
+    private boolean assigned;
 }
