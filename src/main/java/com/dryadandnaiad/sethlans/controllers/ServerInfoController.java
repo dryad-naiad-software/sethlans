@@ -131,18 +131,15 @@ public class ServerInfoController {
     @GetMapping(value = {"/server_idle_slots"})
     public int getIdleSlots() {
         int availableSlotsCount = 0;
-
         if (sethlansNodeDatabaseService.activeNodes()) {
             Gson gson = new Gson();
             for (SethlansNode sethlansNode : sethlansNodeDatabaseService.activeNodeList()) {
-                LOG.debug("Checking slots on " + sethlansNode.getHostname());
                 List<String> deviceIdsInUse =
                         gson.fromJson(getRawDataService.getNodeResult("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() +
                                 "/api/info/used_device_ids"), new TypeToken<List<String>>() {
                         }.getType());
                 int slotsToAdd = SethlansNodeUtils.getAvailableDeviceIds(sethlansNode, deviceIdsInUse).size();
                 availableSlotsCount = availableSlotsCount + slotsToAdd;
-                LOG.debug("Slots to add " + slotsToAdd);
             }
             LOG.debug("Available Slot Count " + availableSlotsCount);
         }

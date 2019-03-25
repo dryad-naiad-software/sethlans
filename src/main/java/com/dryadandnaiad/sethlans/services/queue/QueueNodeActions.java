@@ -124,31 +124,24 @@ class QueueNodeActions {
                     SethlansNode sethlansNode = sethlansNodeDatabaseService.getById(availableDevice.getId());
                     switch (renderQueueItem.getRenderComputeType()) {
                         case CPU_GPU:
-                            LOG.debug("CPU GPU Case");
                             renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
                             renderQueueItem.setDeviceId(availableDevice.getDeviceId());
                             availableDevice.setAssigned(true);
                             if (availableDevice.getDeviceId().equals("CPU")) {
-                                LOG.debug("CPU found");
                                 renderQueueItem.setRenderComputeType(ComputeType.CPU);
                             } else {
-                                LOG.debug("GPU found");
                                 renderQueueItem.setRenderComputeType(ComputeType.GPU);
                             }
                             break;
                         case CPU:
-                            LOG.debug("CPU Case");
                             if (availableDevice.getDeviceId().equals("CPU")) {
-                                LOG.debug("CPU found");
                                 renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
                                 renderQueueItem.setDeviceId(availableDevice.getDeviceId());
                                 availableDevice.setAssigned(true);
                             }
                             break;
                         case GPU:
-                            LOG.debug("GPU Case");
                             if (!availableDevice.getDeviceId().equals("CPU")) {
-                                LOG.debug("GPU found");
                                 renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
                                 renderQueueItem.setDeviceId(availableDevice.getDeviceId());
                                 availableDevice.setAssigned(true);
