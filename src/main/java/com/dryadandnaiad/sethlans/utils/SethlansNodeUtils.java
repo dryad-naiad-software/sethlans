@@ -90,9 +90,12 @@ public class SethlansNodeUtils {
         if (node.getComputeType() == ComputeType.CPU || node.getComputeType() == ComputeType.CPU_GPU) {
             nodeDeviceIds.add("CPU");
         }
-        if (node.getComputeType() == ComputeType.GPU || node.getComputeType() == ComputeType.CPU_GPU & !node.isCombined()) {
-            nodeDeviceIds.addAll(node.getSelectedDeviceID());
+        if (node.getComputeType() == ComputeType.GPU || node.getComputeType() == ComputeType.CPU_GPU) {
+            if (!node.isCombined()) {
+                nodeDeviceIds.addAll(node.getSelectedDeviceID());
+            }
         }
+        LOG.debug("Id's on node " + nodeDeviceIds.toString());
         nodeDeviceIds.removeAll(deviceIdsInUse);
         return new ArrayList<>(nodeDeviceIds);
     }
