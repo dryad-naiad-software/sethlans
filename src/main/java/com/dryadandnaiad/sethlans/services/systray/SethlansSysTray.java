@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.services.systray;
 
+import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +46,7 @@ class SethlansSysTray extends TrayIcon {
         super(createImage(IMAGE, TOOLTIP), TOOLTIP);
     }
 
-    void setup() {
+    void setup(SethlansMode mode) {
         LOG.debug("Starting Sethlans System Tray");
         popup = new PopupMenu();
         menuItems();
@@ -62,6 +63,10 @@ class SethlansSysTray extends TrayIcon {
     void remove() {
         LOG.debug("Stopping Sethlans System Tray");
         tray.remove(this);
+
+    }
+
+    void changeIcon() {
 
     }
 
