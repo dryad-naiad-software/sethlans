@@ -124,6 +124,7 @@ class QueueNodeActions {
                     SethlansNode sethlansNode = sethlansNodeDatabaseService.getById(availableDevice.getId());
                     switch (renderQueueItem.getRenderComputeType()) {
                         case CPU_GPU:
+                            LOG.debug("CPU GPU Case");
                             renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
                             renderQueueItem.setDeviceId(availableDevice.getDeviceId());
                             availableDevice.setAssigned(true);
@@ -134,6 +135,8 @@ class QueueNodeActions {
                             }
                             break;
                         case CPU:
+                            LOG.debug("CPU Case");
+
                             if (availableDevice.getDeviceId().equals("CPU")) {
                                 renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
                                 renderQueueItem.setDeviceId(availableDevice.getDeviceId());
@@ -141,6 +144,8 @@ class QueueNodeActions {
                             }
                             break;
                         case GPU:
+                            LOG.debug("GPU Case");
+
                             if (!availableDevice.getDeviceId().equals("CPU")) {
                                 renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
                                 renderQueueItem.setDeviceId(availableDevice.getDeviceId());
