@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -30,6 +30,7 @@ export class AppComponent implements OnInit {
   firstTime: boolean;
   mode: any = Mode;
   sethlansVersion: string;
+  javaVersion;
 
   constructor(private http: HttpClient) {
   }
@@ -38,5 +39,6 @@ export class AppComponent implements OnInit {
     this.http.get('/api/info/first_time').subscribe((firstTime: boolean) => this.firstTime = firstTime);
     this.http.get('/api/info/version').subscribe((version) => this.sethlansVersion = version['version']);
     this.http.get('/api/info/sethlans_mode').subscribe((sethlansmode) => this.mode = sethlansmode['mode']);
+    this.http.get('/api/info/java_version').subscribe((java_version) => this.javaVersion = java_version['java_version']);
   }
 }

@@ -86,6 +86,11 @@ public class InfoController {
         }
     }
 
+    @GetMapping(value = {"/java_version"})
+    public Map getJavaVersion() {
+        return Collections.singletonMap("java_version", System.getProperty("java.version"));
+    }
+
     @GetMapping(value = {"/get_started"})
     public boolean runGetStarted() {
         if (firstTime) {
