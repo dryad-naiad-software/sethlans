@@ -171,35 +171,41 @@ public class AdminServerController {
 
     @PostMapping(value = "/server_to_node_auth")
     public boolean serverToNodeAuth(HttpEntity<String> httpEntity) {
-        String json = httpEntity.getBody();
-        Gson gson = new Gson();
-        String accessKey = getAccessKeyFromServer();
-        GettingStartedInfo gettingStartedInfo = gson.fromJson(json, GettingStartedInfo.class);
-        for (NodeItem node : gettingStartedInfo.getListOfNodes()) {
-            RestAssured.useRelaxedHTTPSValidation();
-            RestAssured.baseURI = "https://" + node.getIpAddress();
-            RestAssured.port = node.getPort();
-            RestAssured.basePath = "/";
-            Response response =
-                    given().
-                            when().get("/login").
-                            then().extract().response();
-            String token = response.cookie("XSRF-TOKEN");
+        try {
+            String json = httpEntity.getBody();
+            Gson gson = new Gson();
+            String accessKey = getAccessKeyFromServer();
+            GettingStartedInfo gettingStartedInfo = gson.fromJson(json, GettingStartedInfo.class);
+            for (NodeItem node : gettingStartedInfo.getListOfNodes()) {
+                RestAssured.useRelaxedHTTPSValidation();
+                RestAssured.baseURI = "https://" + node.getIpAddress();
+                RestAssured.port = node.getPort();
+                RestAssured.basePath = "/";
+                Response response =
+                        given().
+                                when().get("/login").
+                                then().extract().response();
+                String token = response.cookie("XSRF-TOKEN");
 
-            response = given().log().ifValidationFails()
-                    .header("X-XSRF-TOKEN", token)
-                    .cookie("XSRF-TOKEN", token).param("username", gettingStartedInfo.getLogin().getUsername().toLowerCase()).param("password", gettingStartedInfo.getLogin().getPassword())
-                    .when().post("/login").then().statusCode(302).extract().response();
+                response = given().log().ifValidationFails()
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie("XSRF-TOKEN", token).param("username", gettingStartedInfo.getLogin().getUsername().toLowerCase()).param("password", gettingStartedInfo.getLogin().getPassword())
+                        .when().post("/login").then().statusCode(302).extract().response();
 
-            RestAssured.sessionId = response.cookie("JSESSIONID");
+                RestAssured.sessionId = response.cookie("JSESSIONID");
 
-            given().log().ifValidationFails()
-                    .header("X-XSRF-TOKEN", token)
-                    .cookie("XSRF-TOKEN", token).param("access_key", accessKey)
-                    .when().post("/api/setup/add_access_key");
+                given().log().ifValidationFails()
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie("XSRF-TOKEN", token).param("access_key", accessKey)
+                        .when().post("/api/setup/add_access_key");
+            }
+
+            return true;
+        } catch (IllegalArgumentException e) {
+            LOG.error(e.getMessage() + ", most likely connecting to a node that is not configured or a non-sethlans web server.");
+            return false;
         }
 
-        return true;
     }
 
 
