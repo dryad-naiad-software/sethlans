@@ -100,7 +100,15 @@ class QueueNodeActions {
                 availableDeviceList.add(new AvailableDevice(sethlansNode.getId(), availableDeviceId, SethlansNodeUtils.getDeviceIdBenchmark(sethlansNode, availableDeviceId), false));
             }
         }
+        LOG.debug("Before Sort");
+        for (AvailableDevice availableDevice : availableDeviceList) {
+            LOG.debug(availableDevice.toString());
+        }
         availableDeviceList.sort(new AvailableDeviceComparator());
+        LOG.debug("After Sort");
+        for (AvailableDevice availableDevice : availableDeviceList) {
+            LOG.debug(availableDevice.toString());
+        }
         for (AvailableDevice availableDevice : availableDeviceList) {
             assignItemToNode(renderQueueDatabaseService, sethlansNodeDatabaseService, availableDevice);
         }
