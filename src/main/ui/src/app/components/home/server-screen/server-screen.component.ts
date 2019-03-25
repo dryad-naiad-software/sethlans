@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -61,7 +61,7 @@ export class ServerScreenComponent implements OnInit {
   ngOnInit() {
     this.getInfo();
     this.projectLoad();
-    let scheduler = timer(5000, 5000);
+    let scheduler = timer(15000, 15000);
     scheduler.subscribe(() => this.getInfo())
 
   }
