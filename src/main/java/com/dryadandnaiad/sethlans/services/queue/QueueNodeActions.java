@@ -31,6 +31,7 @@ import com.dryadandnaiad.sethlans.services.database.RenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.GetRawDataService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
+import com.dryadandnaiad.sethlans.utils.AvailableDeviceComparator;
 import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -100,6 +101,7 @@ class QueueNodeActions {
                     availableDeviceList.add(new AvailableDevice(sethlansNode.getId(), availableDeviceId, SethlansNodeUtils.getDeviceIdBenchmark(sethlansNode, availableDeviceId), false));
                 }
             }
+            availableDeviceList.sort(new AvailableDeviceComparator());
             for (AvailableDevice availableDevice : availableDeviceList) {
                 if (!availableDevice.isAssigned()) {
                     LOG.debug(availableDevice.toString());
