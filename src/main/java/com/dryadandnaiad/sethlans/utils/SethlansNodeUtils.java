@@ -93,9 +93,7 @@ public class SethlansNodeUtils {
         if (node.getComputeType() == ComputeType.GPU || node.getComputeType() == ComputeType.CPU_GPU & !node.isCombined()) {
             nodeDeviceIds.addAll(node.getSelectedDeviceID());
         }
-        LOG.debug("device Id's in use " + deviceIdsInUse.size());
         nodeDeviceIds.removeAll(deviceIdsInUse);
-        LOG.debug("available device ids " + nodeDeviceIds.size());
         return new ArrayList<>(nodeDeviceIds);
     }
 
