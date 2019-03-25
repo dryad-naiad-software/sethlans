@@ -88,7 +88,7 @@ public class QueueServiceImpl implements QueueService {
                 if (renderQueueDatabaseService.listPendingRender().size() > 0) {
                     Thread.sleep(250);
                 } else {
-                    Thread.sleep(1000);
+                    Thread.sleep(2500);
                 }
                 if (!queueActionItemList.isEmpty()) {
                     projectActions();
