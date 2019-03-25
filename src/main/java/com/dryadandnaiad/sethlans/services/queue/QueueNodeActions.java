@@ -116,7 +116,7 @@ class QueueNodeActions {
         List<RenderQueueItem> renderQueueItemList = renderQueueDatabaseService.listPendingRender();
         for (RenderQueueItem renderQueueItem : renderQueueItemList) {
             if (!availableDevice.isAssigned()) {
-                if (!renderQueueItem.isRendering() || renderQueueItem.getConnectionUUID().isEmpty()) {
+                if (!renderQueueItem.isRendering() && renderQueueItem.getConnectionUUID().isEmpty()) {
                     LOG.debug(renderQueueItem.getProjectName() + " uuid: " +
                             renderQueueItem.getProjectUUID() + " Frame: "
                             + renderQueueItem.getBlenderFramePart().getFrameNumber() + " Part: "
