@@ -29,6 +29,8 @@ import com.dryadandnaiad.sethlans.services.network.GetRawDataService;
 import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -55,6 +57,7 @@ import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 @Profile({"SERVER", "DUAL", "SETUP"})
 @RequestMapping("/api/info")
 public class ServerInfoController {
+    private static final Logger LOG = LoggerFactory.getLogger(ServerInfoController.class);
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
 
@@ -118,19 +121,26 @@ public class ServerInfoController {
 
     @GetMapping(value = {"/server_rendering_slots"})
     public int getRenderingSlots() {
-        return getTotalSlots() - getIdleSlots();
+        if (sethlansNodeDatabaseService.activeNodes()) {
+            return getTotalSlots() - getIdleSlots();
+        }
+        return 0;
+
     }
 
     @GetMapping(value = {"/server_idle_slots"})
     public int getIdleSlots() {
         int availableSlotsCount = 0;
-        Gson gson = new Gson();
-        for (SethlansNode sethlansNode : sethlansNodeDatabaseService.listAll()) {
-            List<String> deviceIdsInUse =
-                    gson.fromJson(getRawDataService.getNodeResult("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() +
-                            "/api/info/used_device_ids"), new TypeToken<List<String>>() {
-                    }.getType());
-            availableSlotsCount = SethlansNodeUtils.getAvailableDeviceIds(sethlansNode, deviceIdsInUse).size();
+        if (sethlansNodeDatabaseService.activeNodes()) {
+            Gson gson = new Gson();
+            for (SethlansNode sethlansNode : sethlansNodeDatabaseService.activeNodeList()) {
+                List<String> deviceIdsInUse =
+                        gson.fromJson(getRawDataService.getNodeResult("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() +
+                                "/api/info/used_device_ids"), new TypeToken<List<String>>() {
+                        }.getType());
+                LOG.debug("Device id's in use gathered so far " + deviceIdsInUse.size());
+                availableSlotsCount = SethlansNodeUtils.getAvailableDeviceIds(sethlansNode, deviceIdsInUse).size();
+            }
         }
         return availableSlotsCount;
 
