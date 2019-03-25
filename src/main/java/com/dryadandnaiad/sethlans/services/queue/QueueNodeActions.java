@@ -152,9 +152,11 @@ class QueueNodeActions {
                                 renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
                                 renderQueueItem.setDeviceId(availableDevice.getDeviceId());
                                 availableDevice.setAssigned(true);
-                                break;
                             }
+                            break;
                     }
+                    LOG.debug(availableDevice.toString());
+                    LOG.debug(renderQueueItem.toString());
                     updateRenderQueueItem(renderQueueItem, renderQueueDatabaseService);
                 }
             }
