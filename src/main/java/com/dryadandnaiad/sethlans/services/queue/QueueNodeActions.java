@@ -143,14 +143,14 @@ class QueueNodeActions {
                                 break;
                             }
                     }
-                    updateRenderQueueItem(renderQueueItem, renderQueueDatabaseService, sethlansNode.getHostname());
+                    updateRenderQueueItem(renderQueueItem, renderQueueDatabaseService);
 
                 }
             }
         }
     }
 
-    private static void updateRenderQueueItem(RenderQueueItem renderQueueItem, RenderQueueDatabaseService renderQueueDatabaseService, String node) {
+    private static void updateRenderQueueItem(RenderQueueItem renderQueueItem, RenderQueueDatabaseService renderQueueDatabaseService) {
         renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
     }
 
