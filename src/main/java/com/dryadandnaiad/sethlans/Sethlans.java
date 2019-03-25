@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,8 +29,8 @@ import org.kohsuke.args4j.Option;
 import org.kohsuke.args4j.OptionHandlerFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.logging.LogLevel;
 
 import java.io.File;
@@ -136,7 +136,9 @@ public class Sethlans {
                         springArgs = new String[arrayArgs.size()];
                         springArgs = arrayArgs.toArray(springArgs);
                     }
-                    sethlansState.sethlansActive = SpringApplication.run(Sethlans.class, springArgs).isActive();
+                    SpringApplicationBuilder builder = new SpringApplicationBuilder(Sethlans.class);
+                    builder.headless(false);
+                    sethlansState.sethlansActive = builder.run(springArgs).isActive();
                 }
             } catch (InterruptedException e) {
                 LOG.error(Throwables.getStackTraceAsString(e));

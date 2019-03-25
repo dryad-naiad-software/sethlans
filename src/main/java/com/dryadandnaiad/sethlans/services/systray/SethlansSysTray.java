@@ -1,23 +1,23 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- *
+ *  
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ *  
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
 
-package com.dryadandnaiad.sethlans.systray;
+package com.dryadandnaiad.sethlans.services.systray;
 
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
@@ -34,24 +34,35 @@ import static com.dryadandnaiad.sethlans.utils.SethlansFileUtils.createImage;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class SethlansSysTray extends TrayIcon implements Runnable {
+class SethlansSysTray extends TrayIcon {
     private static final String IMAGE = "images/sethlans_systray.png";
     private static final String TOOLTIP = "Sethlans";
     private static final Logger LOG = LoggerFactory.getLogger(SethlansSysTray.class);
     private PopupMenu popup;
     private SystemTray tray;
 
-    public SethlansSysTray() {
+    SethlansSysTray() {
         super(createImage(IMAGE, TOOLTIP), TOOLTIP);
     }
 
-    private void setup() {
+    void setup() {
+        LOG.debug("Starting Sethlans System Tray");
+        popup = new PopupMenu();
+        menuItems();
+        tray = SystemTray.getSystemTray();
+        this.setImageAutoSize(true);
         setPopupMenu(popup);
         try {
             tray.add(this);
         } catch (AWTException e) {
             LOG.error(Throwables.getStackTraceAsString(e));
         }
+    }
+
+    void remove() {
+        LOG.debug("Stopping Sethlans System Tray");
+        tray.remove(this);
+
     }
 
     private void menuItems() {
@@ -73,13 +84,4 @@ public class SethlansSysTray extends TrayIcon implements Runnable {
         popup.add(exitItem);
     }
 
-    @Override
-    public void run() {
-        popup = new PopupMenu();
-        menuItems();
-        tray = SystemTray.getSystemTray();
-        this.setImageAutoSize(true);
-        setup();
-
-    }
 }

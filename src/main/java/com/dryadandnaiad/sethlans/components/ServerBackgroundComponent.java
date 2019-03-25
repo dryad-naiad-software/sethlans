@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.services.blender.BlenderDownloadService;
 import com.dryadandnaiad.sethlans.services.mail.SethlansEmailService;
 import com.dryadandnaiad.sethlans.services.network.NodeQueryService;
 import com.dryadandnaiad.sethlans.services.queue.QueueService;
+import com.dryadandnaiad.sethlans.services.systray.SystrayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,7 @@ public class ServerBackgroundComponent {
     private NodeQueryService nodeQueryService;
     private QueueService queueService;
     private SethlansEmailService sethlansEmailService;
+    private SystrayService systrayService;
     private static final Logger LOG = LoggerFactory.getLogger(ServerBackgroundComponent.class);
 
     @PostConstruct
@@ -70,6 +72,12 @@ public class ServerBackgroundComponent {
         nodeQueryService.start();
     }
 
+    @PostConstruct
+    public void startSystemTray() {
+        systrayService.start();
+
+    }
+
     @Autowired
     public void setBlenderDownloadService(BlenderDownloadService blenderDownloadService) {
         this.blenderDownloadService = blenderDownloadService;
@@ -89,5 +97,10 @@ public class ServerBackgroundComponent {
     @Autowired
     public void setSethlansEmailService(SethlansEmailService sethlansEmailService) {
         this.sethlansEmailService = sethlansEmailService;
+    }
+
+    @Autowired
+    public void setSystrayService(SystrayService systrayService) {
+        this.systrayService = systrayService;
     }
 }

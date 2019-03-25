@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.services.system;
 
 import com.dryadandnaiad.sethlans.executor.SethlansExecutor;
+import com.dryadandnaiad.sethlans.services.systray.SystrayService;
 import com.dryadandnaiad.sethlans.utils.SethlansState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,7 @@ import org.springframework.stereotype.Service;
 public class SethlansManagerServiceImpl implements SethlansManagerService {
     private static final Logger LOG = LoggerFactory.getLogger(SethlansManagerServiceImpl.class);
     private ApplicationContext applicationContext;
+    private SystrayService systrayService;
 
 
     @Async
@@ -58,6 +60,7 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
 
     @Override
     public void restart() {
+        systrayService.stop();
         SethlansState sethlansState = SethlansState.getInstance();
         SethlansExecutor sethlansExecutor = SethlansExecutor.getInstance();
         LOG.info("Restarting Sethlans...");
@@ -80,5 +83,10 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
     @Autowired
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
+    }
+
+    @Autowired
+    public void setSystrayService(SystrayService systrayService) {
+        this.systrayService = systrayService;
     }
 }

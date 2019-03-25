@@ -17,25 +17,19 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.utils;
+package com.dryadandnaiad.sethlans.services.systray;
+
+import org.springframework.scheduling.annotation.Async;
 
 /**
- * Created Mario Estrella on 12/19/17.
+ * Created Mario Estrella on 3/25/2019.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class SethlansState {
-    private static SethlansState ourInstance = new SethlansState();
+public interface SystrayService {
+    @Async
+    void start();
 
-    public boolean sethlansActive;
-
-
-    public static SethlansState getInstance() {
-        return ourInstance;
-    }
-
-    private SethlansState() {
-        sethlansActive = false;
-    }
+    void stop();
 }
