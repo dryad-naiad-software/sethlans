@@ -151,10 +151,6 @@ class QueueNodeActions {
     }
 
     private static void updateRenderQueueItem(RenderQueueItem renderQueueItem, RenderQueueDatabaseService renderQueueDatabaseService, String node) {
-        LOG.debug(renderQueueItem.getProjectName() + " uuid: " +
-                renderQueueItem.getProjectUUID() + " Frame: "
-                + renderQueueItem.getBlenderFramePart().getFrameNumber() + " Part: "
-                + renderQueueItem.getBlenderFramePart().getPartNumber() + " has been assigned to " + renderQueueItem.getDeviceId() + " on " + node);
         renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
     }
 
@@ -191,6 +187,10 @@ class QueueNodeActions {
                     "&part_position_max_y=" + renderQueueItem.getBlenderFramePart().getPartPositionMaxY() +
                     "&part_res_percentage=" + blenderProject.getResPercentage() +
                     "&file_extension=" + renderQueueItem.getBlenderFramePart().getFileExtension();
+            LOG.debug(renderQueueItem.getProjectName() + " uuid: " +
+                    renderQueueItem.getProjectUUID() + " Frame: "
+                    + renderQueueItem.getBlenderFramePart().getFrameNumber() + " Part: "
+                    + renderQueueItem.getBlenderFramePart().getPartNumber() + " has been assigned to " + renderQueueItem.getDeviceId() + " on " + sethlansNode.getHostname());
             LOG.debug("Sending " + renderQueueItem + " to " + sethlansNode.getHostname());
             sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params);
         }

@@ -84,18 +84,17 @@ public class SethlansNodeUtils {
 
     public static List<String> getAvailableDeviceIds(SethlansNode node, Collection<String> deviceIdsInUse) {
         Collection<String> nodeDeviceIds = new ArrayList<>();
-        if (node.isCombined()) {
-            nodeDeviceIds.add("COMBO");
-        }
+
         if (node.getComputeType() == ComputeType.CPU || node.getComputeType() == ComputeType.CPU_GPU) {
             nodeDeviceIds.add("CPU");
         }
         if (node.getComputeType() == ComputeType.GPU || node.getComputeType() == ComputeType.CPU_GPU) {
             if (!node.isCombined()) {
                 nodeDeviceIds.addAll(node.getSelectedDeviceID());
+            } else {
+                nodeDeviceIds.add("COMBO");
             }
         }
-        LOG.debug("Id's on node " + nodeDeviceIds.toString());
         nodeDeviceIds.removeAll(deviceIdsInUse);
         return new ArrayList<>(nodeDeviceIds);
     }
