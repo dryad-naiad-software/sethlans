@@ -102,7 +102,7 @@ class QueueNodeActions {
             }
             for (AvailableDevice availableDevice : availableDeviceList) {
                 if (!availableDevice.isAssigned()) {
-                    LOG.debug("Available Device: " + availableDevice.toString());
+                    LOG.debug(availableDevice.toString());
                     assignItemToNode(renderQueueDatabaseService, sethlansNodeDatabaseService, availableDevice);
                 }
             }
