@@ -86,25 +86,28 @@ class QueueNodeActions {
     }
 
     static void queueItemToNode(RenderQueueDatabaseService renderQueueDatabaseService, SethlansNodeDatabaseService sethlansNodeDatabaseService, GetRawDataService getRawDataService) {
-        List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.activeNodeList();
-        Gson gson = new Gson();
-        List<AvailableDevice> availableDeviceList = new ArrayList<>();
-        for (SethlansNode sethlansNode : sethlansNodeList) {
-            List<String> deviceIdsInUse =
-                    gson.fromJson(getRawDataService.getNodeResult("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() +
-                            "/api/info/used_device_ids"), new TypeToken<List<String>>() {
-                    }.getType());
-            List<String> availableDeviceIds = SethlansNodeUtils.getAvailableDeviceIds(sethlansNode, deviceIdsInUse);
-            for (String availableDeviceId : availableDeviceIds) {
-                availableDeviceList.add(new AvailableDevice(sethlansNode.getId(), availableDeviceId, SethlansNodeUtils.getDeviceIdBenchmark(sethlansNode, availableDeviceId), false));
+        if (renderQueueDatabaseService.listPendingRender().size() > 0) {
+            List<SethlansNode> sethlansNodeList = sethlansNodeDatabaseService.activeNodeList();
+            Gson gson = new Gson();
+            List<AvailableDevice> availableDeviceList = new ArrayList<>();
+            for (SethlansNode sethlansNode : sethlansNodeList) {
+                List<String> deviceIdsInUse =
+                        gson.fromJson(getRawDataService.getNodeResult("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() +
+                                "/api/info/used_device_ids"), new TypeToken<List<String>>() {
+                        }.getType());
+                List<String> availableDeviceIds = SethlansNodeUtils.getAvailableDeviceIds(sethlansNode, deviceIdsInUse);
+                for (String availableDeviceId : availableDeviceIds) {
+                    availableDeviceList.add(new AvailableDevice(sethlansNode.getId(), availableDeviceId, SethlansNodeUtils.getDeviceIdBenchmark(sethlansNode, availableDeviceId), false));
+                }
+            }
+            for (AvailableDevice availableDevice : availableDeviceList) {
+                if (!availableDevice.isAssigned()) {
+                    LOG.debug("Available Device: " + availableDevice.toString());
+                    assignItemToNode(renderQueueDatabaseService, sethlansNodeDatabaseService, availableDevice);
+                }
             }
         }
-        for (AvailableDevice availableDevice : availableDeviceList) {
-            if (!availableDevice.isAssigned()) {
-                LOG.debug("Available Device: " + availableDevice.toString());
-                assignItemToNode(renderQueueDatabaseService, sethlansNodeDatabaseService, availableDevice);
-            }
-        }
+
     }
 
     private static void assignItemToNode(RenderQueueDatabaseService renderQueueDatabaseService, SethlansNodeDatabaseService sethlansNodeDatabaseService, AvailableDevice availableDevice) {
