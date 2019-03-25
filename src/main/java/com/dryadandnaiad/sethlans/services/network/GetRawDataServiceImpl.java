@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -55,7 +55,8 @@ public class GetRawDataServiceImpl implements GetRawDataService {
             connection.connect();
 
             int response = connection.getResponseCode();
-            LOG.debug("HTTP Response code " + response);
+            // TODO: 3/24/2019  throw error if response code is something other than 200
+
 
             StringBuilder result = new StringBuilder();
 
@@ -103,7 +104,6 @@ public class GetRawDataServiceImpl implements GetRawDataService {
             connection.connect();
 
             int response = connection.getResponseCode();
-            LOG.debug("HTTP Response code " + response);
 
             StringBuilder result = new StringBuilder();
 

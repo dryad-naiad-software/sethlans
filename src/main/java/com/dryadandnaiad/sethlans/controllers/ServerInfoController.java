@@ -138,7 +138,10 @@ public class ServerInfoController {
                         gson.fromJson(getRawDataService.getNodeResult("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() +
                                 "/api/info/used_device_ids"), new TypeToken<List<String>>() {
                         }.getType());
-                availableSlotsCount = availableSlotsCount + SethlansNodeUtils.getAvailableDeviceIds(sethlansNode, deviceIdsInUse).size();
+                int slotsToAdd = SethlansNodeUtils.getAvailableDeviceIds(sethlansNode, deviceIdsInUse).size();
+                availableSlotsCount = availableSlotsCount + slotsToAdd;
+                LOG.debug("Slots to add " + slotsToAdd);
+                LOG.debug("Available Slot Count " + availableSlotsCount);
             }
         }
         return availableSlotsCount;
