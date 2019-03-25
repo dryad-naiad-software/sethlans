@@ -129,15 +129,17 @@ class QueueNodeActions {
                             renderQueueItem.setDeviceId(availableDevice.getDeviceId());
                             availableDevice.setAssigned(true);
                             if (availableDevice.getDeviceId().equals("CPU")) {
+                                LOG.debug("CPU found");
                                 renderQueueItem.setRenderComputeType(ComputeType.CPU);
                             } else {
+                                LOG.debug("GPU found");
                                 renderQueueItem.setRenderComputeType(ComputeType.GPU);
                             }
                             break;
                         case CPU:
                             LOG.debug("CPU Case");
-
                             if (availableDevice.getDeviceId().equals("CPU")) {
+                                LOG.debug("CPU found");
                                 renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
                                 renderQueueItem.setDeviceId(availableDevice.getDeviceId());
                                 availableDevice.setAssigned(true);
@@ -145,8 +147,8 @@ class QueueNodeActions {
                             break;
                         case GPU:
                             LOG.debug("GPU Case");
-
                             if (!availableDevice.getDeviceId().equals("CPU")) {
+                                LOG.debug("GPU found");
                                 renderQueueItem.setConnectionUUID(sethlansNode.getConnectionUUID());
                                 renderQueueItem.setDeviceId(availableDevice.getDeviceId());
                                 availableDevice.setAssigned(true);
