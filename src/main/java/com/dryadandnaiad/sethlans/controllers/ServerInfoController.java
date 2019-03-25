@@ -135,9 +135,7 @@ public class ServerInfoController {
         if (sethlansNodeDatabaseService.activeNodes()) {
             Gson gson = new Gson();
             for (SethlansNode sethlansNode : sethlansNodeDatabaseService.activeNodeList()) {
-                LOG.debug("Starting Available Slot Count " + availableSlotsCount);
                 LOG.debug("Checking slots on " + sethlansNode.getHostname());
-
                 List<String> deviceIdsInUse =
                         gson.fromJson(getRawDataService.getNodeResult("https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() +
                                 "/api/info/used_device_ids"), new TypeToken<List<String>>() {
@@ -145,8 +143,8 @@ public class ServerInfoController {
                 int slotsToAdd = SethlansNodeUtils.getAvailableDeviceIds(sethlansNode, deviceIdsInUse).size();
                 availableSlotsCount = availableSlotsCount + slotsToAdd;
                 LOG.debug("Slots to add " + slotsToAdd);
-                LOG.debug("Available Slot Count " + availableSlotsCount);
             }
+            LOG.debug("Available Slot Count " + availableSlotsCount);
         }
         return availableSlotsCount;
 

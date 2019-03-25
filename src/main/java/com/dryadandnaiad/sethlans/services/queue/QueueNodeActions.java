@@ -55,8 +55,7 @@ class QueueNodeActions {
     static void processAcknowledgements(ProcessNodeStatus processNodeStatus,
                                         RenderQueueDatabaseService renderQueueDatabaseService,
                                         BlenderProjectDatabaseService blenderProjectDatabaseService,
-                                        SethlansNodeDatabaseService sethlansNodeDatabaseService, List<ProcessNodeStatus> itemsProcessed, GetRawDataService getRawDataService
-    ) {
+                                        SethlansNodeDatabaseService sethlansNodeDatabaseService, List<ProcessNodeStatus> itemsProcessed) {
         if (processNodeStatus.isAccepted()) {
             RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID());
             BlenderProject blenderProject = blenderProjectDatabaseService.getByProjectUUID(renderQueueItem.getProjectUUID());

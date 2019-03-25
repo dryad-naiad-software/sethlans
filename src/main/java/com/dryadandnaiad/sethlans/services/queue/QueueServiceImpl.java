@@ -331,7 +331,7 @@ public class QueueServiceImpl implements QueueService {
                 for (ProcessNodeStatus processNodeStatus : new ArrayList<>(nodeStatuses)) {
                     try {
                         processAcknowledgements(processNodeStatus, renderQueueDatabaseService,
-                                blenderProjectDatabaseService, sethlansNodeDatabaseService, itemsProcessed, getRawDataService);
+                                blenderProjectDatabaseService, sethlansNodeDatabaseService, itemsProcessed);
                     } catch (NullPointerException e) {
                         LOG.error("Node acknowledgement received before node was shutdown/removed.");
                     }
