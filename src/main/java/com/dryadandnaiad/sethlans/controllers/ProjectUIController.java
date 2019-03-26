@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -36,6 +36,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.*;
@@ -139,17 +140,15 @@ public class ProjectUIController {
 
     }
 
-    @GetMapping("/api/project_ui/modal_image/{id}")
-    public ResponseEntity<byte[]> getProjectImage(@PathVariable Long id) {
-        BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
+    private boolean checkProjectState(BlenderProject blenderProject) {
         if (blenderProject == null) {
-            return null;
+            return false;
         }
-        if (blenderProject.getCurrentFrameThumbnail().isEmpty()) {
-            return null;
-        }
+        return !blenderProject.getCurrentFrameThumbnail().isEmpty();
+    }
+
+    private ResponseEntity<byte[]> sendImage(File image) {
         try {
-            File image = new File(blenderProject.getFrameFileNames().get(0));
             InputStream in = new BufferedInputStream(new FileInputStream(image));
             byte[] imageToSend = IOUtils.toByteArray(in);
             in.close();
@@ -161,26 +160,35 @@ public class ProjectUIController {
         }
     }
 
+    @GetMapping("/api/project_ui/images/{id}/frame")
+    public ResponseEntity<byte[]> getFrameImage(@PathVariable Long id, @RequestParam int number) {
+        BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
+        if (checkProjectState(blenderProject)) {
+            File image = new File(blenderProject.getFrameFileNames().get(number));
+            return sendImage(image);
+        }
+        return null;
+    }
+
+
+    @GetMapping("/api/project_ui/modal_image/{id}")
+    public ResponseEntity<byte[]> getProjectImage(@PathVariable Long id) {
+        BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
+        if (checkProjectState(blenderProject)) {
+            File image = new File(blenderProject.getFrameFileNames().get(0));
+            return sendImage(image);
+        }
+        return null;
+    }
+
     @GetMapping("/api/project_ui/thumbnail/{id}")
     public ResponseEntity<byte[]> getThumbnailImage(@PathVariable Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
-        if (blenderProject == null) {
-            return null;
-        }
-        if (blenderProject.getCurrentFrameThumbnail().isEmpty()) {
-            return null;
-        }
-        try {
+        if (checkProjectState(blenderProject)) {
             File image = new File(blenderProject.getCurrentFrameThumbnail());
-            InputStream in = new BufferedInputStream(new FileInputStream(image));
-            byte[] imageToSend = IOUtils.toByteArray(in);
-            in.close();
-            return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(imageToSend);
-
-        } catch (IOException e) {
-            LOG.error("No Image file found");
-            return null;
+            return sendImage(image);
         }
+        return null;
     }
 
 
