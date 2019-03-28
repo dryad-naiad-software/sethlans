@@ -34,14 +34,14 @@
                       ngbTooltip="Start"
                       [disabled]="!nodesReady" [attr.id]="'start'+ currentProject.id"
                       *ngIf="currentProject.projectStatus.valueOf().toString() == 'Added'.valueOf()"
-                      class="btn btn-outline-dark btn-sm btn-block" type="button"
+                      class="btn btn-outline-success btn-sm btn-block" type="button"
                       (click)="startProject(currentProject.id)">
                 <span class="fa fa-play"></span>
               </button>
               <button placement="bottom"
                       ngbTooltip="Resume"
                       *ngIf="currentProject.projectStatus.valueOf().toString() == 'Paused'.valueOf()"
-                      class="btn btn-outline-dark btn-sm btn-block" type="button"
+                      class="btn btn-outline-success btn-sm btn-block" type="button"
                       (click)="resumeProject(currentProject.id)">
                 <span class="fa fa-step-forward"></span>
               </button>
@@ -49,7 +49,7 @@
                       ngbTooltip="Pause"
                       *ngIf="currentProject.projectStatus.valueOf().toString() != 'Finished'.valueOf() &&
                         currentProject.projectStatus.valueOf().toString() != 'Added'.valueOf()  && currentProject.projectStatus.valueOf().toString() != 'Paused'.valueOf()"
-                      class="btn btn-outline-dark btn-sm" type="button" (click)="pauseProject(currentProject.id)">
+                      class="btn btn-outline-warning btn-sm" type="button" (click)="pauseProject(currentProject.id)">
                 <span class="fa fa-pause"></span>
               </button>
               <button placement="bottom"

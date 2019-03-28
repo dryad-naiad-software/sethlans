@@ -110,14 +110,14 @@
                         ngbTooltip="Start"
                         [disabled]="!nodesReady" [attr.id]="'start'+ project.id"
                         *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf()"
-                        class="btn btn-outline-dark btn-sm btn-block" type="button"
+                        class="btn btn-outline-success btn-sm btn-block" type="button"
                         (click)="startProject(project.id)">
                   <span class="fa fa-play"></span>
                 </button>
                 <button placement="bottom"
                         ngbTooltip="Resume"
                         *ngIf="project.projectStatus.valueOf().toString() == 'Paused'.valueOf()"
-                        class="btn btn-outline-dark btn-sm btn-block" type="button"
+                        class="btn btn-outline-success btn-sm btn-block" type="button"
                         (click)="resumeProject(project.id)">
                   <span class="fa fa-step-forward"></span>
                 </button>
@@ -125,14 +125,14 @@
                         ngbTooltip="Pause"
                         *ngIf="project.projectStatus.valueOf().toString() != 'Finished'.valueOf() &&
                         project.projectStatus.valueOf().toString() != 'Added'.valueOf()  && project.projectStatus.valueOf().toString() != 'Paused'.valueOf()"
-                        class="btn btn-outline-dark btn-sm" type="button" (click)="pauseProject(project.id)">
+                        class="btn btn-outline-warning btn-sm" type="button" (click)="pauseProject(project.id)">
                   <span class="fa fa-pause"></span>
                 </button>
                 <button placement="bottom"
                         ngbTooltip="Details"
-                        class="btn btn-outline-dark btn-sm" type="button"
+                        class="btn btn-outline-info btn-sm" type="button"
                         (click)="viewProject(project.id)">
-                  <span class="fa fa-list"></span>
+                  <span class="fa fa-search-plus"></span>
                 </button>
 
                 <button placement="bottom"
