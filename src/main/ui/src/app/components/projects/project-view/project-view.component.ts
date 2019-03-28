@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -110,6 +110,10 @@ export class ProjectViewComponent implements OnInit {
     });
   }
 
+  editProject(id) {
+    window.location.href = '/projects/edit/' + id;
+  }
+
   getCompletedFrames() {
     this.http.get('/api/project_ui/completed_frames/' + this.id + '/').subscribe((completed: number) => {
       this.completedFrames = completed;
@@ -155,9 +159,20 @@ export class ProjectViewComponent implements OnInit {
     this.http.get('/api/project_actions/resume_project/' + id + '/').subscribe();
   }
 
+  stopProject(id) {
+    this.http.get('/api/project_actions/stop_project/' + id + '/').subscribe();
+  }
 
   returnToProjects(): void {
     window.location.href = '/projects';
+  }
+
+  downloadProject(id) {
+    window.location.href = '/api/project_actions/download_project/' + id;
+  }
+
+  downloadVideo(id) {
+    window.location.href = '/api/project_actions/download_project_video/' + id;
   }
 
 }
