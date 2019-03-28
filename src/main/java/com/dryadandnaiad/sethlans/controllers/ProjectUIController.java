@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,10 +35,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -55,6 +53,7 @@ import static com.dryadandnaiad.sethlans.utils.SethlansQueryUtils.convertBlender
 
 @RestController
 @Profile({"SERVER", "DUAL"})
+@RequestMapping("/api/project_ui")
 public class ProjectUIController {
     private static final Logger LOG = LoggerFactory.getLogger(ProjectUIController.class);
     @Value("${sethlans.benchmarkDir}")
@@ -68,7 +67,7 @@ public class ProjectUIController {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
 
-    @GetMapping(value = "/api/project_ui/num_of_projects")
+    @GetMapping(value = "/num_of_projects")
     public Long numberOfProjects() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
@@ -78,12 +77,12 @@ public class ProjectUIController {
         }
     }
 
-    @GetMapping(value = "/api/project_ui/nodes_ready")
+    @GetMapping(value = "/nodes_ready")
     public boolean nodesReady() {
         return sethlansNodeDatabaseService.activeNodes();
     }
 
-    @GetMapping(value = "/api/project_ui/project_list")
+    @GetMapping(value = "/project_list")
     public List<ProjectInfo> getProjects() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
@@ -94,7 +93,7 @@ public class ProjectUIController {
 
     }
 
-    @GetMapping(value = "/api/project_ui/project_name/{id}")
+    @GetMapping(value = "/project_name/{id}")
     public String getProjectName(@PathVariable Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
         if (blenderProject != null) {
@@ -105,31 +104,28 @@ public class ProjectUIController {
     }
 
 
-    @GetMapping(value = "/api/project_ui/project_list_in_progress")
+    @GetMapping(value = "/project_list_in_progress")
     public List<ProjectInfo> getUnFinishedProjects() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        List<BlenderProject> blenderProjectList;
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-            List<BlenderProject> blenderProjectList = blenderProjectDatabaseService.listWithoutFramePart();
-            List<BlenderProject> unfinishedProjects = new ArrayList<>();
-            for (BlenderProject blenderProject : blenderProjectList) {
-                if (!blenderProject.getProjectStatus().equals(ProjectStatus.Finished)) {
-                    unfinishedProjects.add(blenderProject);
-                }
-            }
-            return convertBlenderProjectsToProjectInfo(unfinishedProjects);
+            blenderProjectList = blenderProjectDatabaseService.listWithoutFramePart();
         } else {
-            List<BlenderProject> blenderProjectList = blenderProjectDatabaseService.getProjectsByUserWithoutFrameParts(auth.getName());
-            List<BlenderProject> unfinishedProjects = new ArrayList<>();
+            blenderProjectList = blenderProjectDatabaseService.getProjectsByUserWithoutFrameParts(auth.getName());
+        }
+        if (blenderProjectList == null) {
+            return null;
+        }
+        List<BlenderProject> unfinishedProjects = new ArrayList<>();
             for (BlenderProject blenderProject : blenderProjectList) {
                 if (!blenderProject.getProjectStatus().equals(ProjectStatus.Finished)) {
                     unfinishedProjects.add(blenderProject);
                 }
             }
             return convertBlenderProjectsToProjectInfo(unfinishedProjects);
-        }
     }
 
-    @GetMapping("/api/project_ui/thumbnail_status/{id}")
+    @GetMapping("/thumbnail_status/{id}")
     public boolean thumbnailPresent(@PathVariable Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
         if (blenderProject == null) {
@@ -143,8 +139,7 @@ public class ProjectUIController {
     private boolean checkProjectState(BlenderProject blenderProject) {
         if (blenderProject == null) {
             return false;
-        }
-        return !blenderProject.getCurrentFrameThumbnail().isEmpty();
+        } else return blenderProject.getCurrentFrameThumbnail() != null;
     }
 
     private ResponseEntity<byte[]> sendImage(File image) {
@@ -160,7 +155,7 @@ public class ProjectUIController {
         }
     }
 
-    @GetMapping("/api/project_ui/images/{id}/frame")
+    @GetMapping("/images/{id}/frame")
     public ResponseEntity<byte[]> getFrameImage(@PathVariable Long id, @RequestParam int number) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
         if (checkProjectState(blenderProject)) {
@@ -170,8 +165,23 @@ public class ProjectUIController {
         return null;
     }
 
+    @GetMapping("/completed_frame_ids/{id}")
+    public List<Integer> getCompleteFrameIds(@PathVariable Long id) {
+        BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
+        if (checkProjectState(blenderProject)) {
+            String firstTag = File.separator + "frame_";
+            String lastTag = File.separator;
+            List<Integer> completedIds = new ArrayList<>();
+            for (String frameFileName : blenderProject.getFrameFileNames()) {
+                completedIds.add(Integer.parseInt(StringUtils.substringBetween(frameFileName, firstTag, lastTag)));
+            }
+            return completedIds;
+        }
+        return null;
+    }
 
-    @GetMapping("/api/project_ui/modal_image/{id}")
+
+    @GetMapping("/modal_image/{id}")
     public ResponseEntity<byte[]> getProjectImage(@PathVariable Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
         if (checkProjectState(blenderProject)) {
@@ -181,7 +191,7 @@ public class ProjectUIController {
         return null;
     }
 
-    @GetMapping("/api/project_ui/thumbnail/{id}")
+    @GetMapping("/thumbnail/{id}")
     public ResponseEntity<byte[]> getThumbnailImage(@PathVariable Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
         if (checkProjectState(blenderProject)) {
@@ -192,7 +202,7 @@ public class ProjectUIController {
     }
 
 
-    @GetMapping(value = "/api/project_ui/render_time/{id}")
+    @GetMapping(value = "/render_time/{id}")
     public String renderTime(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BlenderProject blenderProject;
@@ -210,7 +220,7 @@ public class ProjectUIController {
         return null;
     }
 
-    @GetMapping(value = "/api/project_ui/project_duration/{id}")
+    @GetMapping(value = "/project_duration/{id}")
     public String projectDuration(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BlenderProject blenderProject;
@@ -228,7 +238,7 @@ public class ProjectUIController {
         return null;
     }
 
-    @GetMapping(value = "/api/project_ui/completed_frames/{id}")
+    @GetMapping(value = "/completed_frames/{id}")
     public int totalNumberOfFrames(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BlenderProject blenderProject;
@@ -246,7 +256,7 @@ public class ProjectUIController {
         return 0;
     }
 
-    @GetMapping(value = "/api/project_ui/total_queue/{id}")
+    @GetMapping(value = "/total_queue/{id}")
     public int totalQueue(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BlenderProject blenderProject;
@@ -264,7 +274,7 @@ public class ProjectUIController {
         return 0;
     }
 
-    @GetMapping(value = "/api/project_ui/remaining_queue/{id}")
+    @GetMapping(value = "/remaining_queue/{id}")
     public int remainingQueue(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BlenderProject blenderProject;
@@ -282,7 +292,7 @@ public class ProjectUIController {
         return 0;
     }
 
-    @GetMapping(value = "/api/project_ui/progress/{id}")
+    @GetMapping(value = "/progress/{id}")
     public int currentProgress(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BlenderProject blenderProject;
@@ -301,7 +311,7 @@ public class ProjectUIController {
 
     }
 
-    @GetMapping(value = "/api/project_ui/status/{id}")
+    @GetMapping(value = "/status/{id}")
     public ProjectStatus currentStatus(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BlenderProject blenderProject;
@@ -319,7 +329,7 @@ public class ProjectUIController {
         return null;
     }
 
-    @GetMapping(value = "/api/project_ui/project_details/{id}")
+    @GetMapping(value = "/project_details/{id}")
     public ProjectInfo getProject(@PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
