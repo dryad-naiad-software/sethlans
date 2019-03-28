@@ -22,93 +22,126 @@
   <div class="col-md-8 m-auto">
     <div class="card">
       <div class="card-header">
-        <h4 style="font-family: 'Fjalla One', sans-serif; ">{{currentProject.projectName}}</h4>
-        <div class="btn-group-adjust float-right">
-          <div class="btn-group btn-group-sm">
-            <button placement="bottom"
-                    ngbTooltip="Start"
-                    [disabled]="!nodesReady" [attr.id]="'start'+ currentProject.id"
-                    *ngIf="currentProject.projectStatus.valueOf().toString() == 'Added'.valueOf()"
-                    class="btn btn-outline-dark btn-sm btn-block" type="button"
-                    (click)="startProject(currentProject.id)">
-              <span class="fa fa-play"></span>
-            </button>
-            <button placement="bottom"
-                    ngbTooltip="Resume"
-                    *ngIf="currentProject.projectStatus.valueOf().toString() == 'Paused'.valueOf()"
-                    class="btn btn-outline-dark btn-sm btn-block" type="button"
-                    (click)="resumeProject(currentProject.id)">
-              <span class="fa fa-step-forward"></span>
-            </button>
-            <button placement="bottom"
-                    ngbTooltip="Pause"
-                    *ngIf="currentProject.projectStatus.valueOf().toString() != 'Finished'.valueOf() &&
+        <div class="row pt-1 px-md-1">
+          <div class="col-6">
+            <h4 style="font-family: 'Fjalla One', sans-serif; ">{{currentProject.projectName}} Details</h4>
+          </div>
+          <div class="col-3">
+          </div>
+          <div class="col-3">
+            <div class="btn-group btn-group-sm float-right">
+              <button placement="bottom"
+                      ngbTooltip="Start"
+                      [disabled]="!nodesReady" [attr.id]="'start'+ currentProject.id"
+                      *ngIf="currentProject.projectStatus.valueOf().toString() == 'Added'.valueOf()"
+                      class="btn btn-outline-dark btn-sm btn-block" type="button"
+                      (click)="startProject(currentProject.id)">
+                <span class="fa fa-play"></span>
+              </button>
+              <button placement="bottom"
+                      ngbTooltip="Resume"
+                      *ngIf="currentProject.projectStatus.valueOf().toString() == 'Paused'.valueOf()"
+                      class="btn btn-outline-dark btn-sm btn-block" type="button"
+                      (click)="resumeProject(currentProject.id)">
+                <span class="fa fa-step-forward"></span>
+              </button>
+              <button placement="bottom"
+                      ngbTooltip="Pause"
+                      *ngIf="currentProject.projectStatus.valueOf().toString() != 'Finished'.valueOf() &&
                         currentProject.projectStatus.valueOf().toString() != 'Added'.valueOf()  && currentProject.projectStatus.valueOf().toString() != 'Paused'.valueOf()"
-                    class="btn btn-outline-dark btn-sm" type="button" (click)="pauseProject(currentProject.id)">
-              <span class="fa fa-pause"></span>
-            </button>
-            <button placement="bottom"
-                    ngbTooltip="Project List"
-                    class="btn btn-outline-dark btn-sm" type="button"
-                    (click)="returnToProjects()">
-              <span class="fa fa-list"></span>
-            </button>
+                      class="btn btn-outline-dark btn-sm" type="button" (click)="pauseProject(currentProject.id)">
+                <span class="fa fa-pause"></span>
+              </button>
+              <button placement="bottom"
+                      ngbTooltip="Project List"
+                      class="btn btn-outline-dark btn-sm" type="button"
+                      (click)="returnToProjects()">
+                <span class="fa fa-list"></span>
+              </button>
 
-            <button placement="bottom"
-                    ngbTooltip="Images"
-                    *ngIf="currentProject.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
-                    class="btn btn-outline-dark btn-sm" type="button" (click)="downloadProject(currentProject.id)">
-              <span class="fa fa-images"></span>
-            </button>
-            <button placement="bottom"
-                    ngbTooltip="Video"
-                    *ngIf="currentProject.projectStatus.valueOf().toString() == 'Finished'.valueOf() && currentProject.outputFormat.valueOf().toString() != 'PNG'"
-                    class="btn btn-outline-dark btn-sm" type="button" (click)="downloadVideo(currentProject.id)">
-              <span class="fa fa-film"></span>
-            </button>
-            <button placement="bottom"
-                    ngbTooltip="Edit"
-                    *ngIf="currentProject.projectStatus.valueOf().toString() == 'Added'.valueOf()"
-                    class="btn btn-outline-dark btn-sm" type="button" (click)="editProject(currentProject.id)">
-              <span class="fa fa-edit"></span>
-            </button>
-            <button
-              placement="bottom"
-              ngbTooltip="Stop"
-              *ngIf="currentProject.projectStatus.valueOf().toString() == 'Started'.valueOf() ||
+              <button placement="bottom"
+                      ngbTooltip="Images"
+                      *ngIf="currentProject.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
+                      class="btn btn-outline-dark btn-sm" type="button" (click)="downloadProject(currentProject.id)">
+                <span class="fa fa-images"></span>
+              </button>
+              <button placement="bottom"
+                      ngbTooltip="Video"
+                      *ngIf="currentProject.projectStatus.valueOf().toString() == 'Finished'.valueOf() && currentProject.outputFormat.valueOf().toString() != 'PNG'"
+                      class="btn btn-outline-dark btn-sm" type="button" (click)="downloadVideo(currentProject.id)">
+                <span class="fa fa-film"></span>
+              </button>
+              <button placement="bottom"
+                      ngbTooltip="Edit"
+                      *ngIf="currentProject.projectStatus.valueOf().toString() == 'Added'.valueOf()"
+                      class="btn btn-outline-dark btn-sm" type="button" (click)="editProject(currentProject.id)">
+                <span class="fa fa-edit"></span>
+              </button>
+              <button
+                placement="bottom"
+                ngbTooltip="Stop"
+                *ngIf="currentProject.projectStatus.valueOf().toString() == 'Started'.valueOf() ||
                     currentProject.projectStatus.valueOf().toString() == 'Rendering'.valueOf() ||
                     currentProject.projectStatus.valueOf().toString() == 'Pending'.valueOf() ||
                     currentProject.projectStatus.valueOf().toString() == 'Paused'.valueOf() ||
                     currentProject.projectStatus.valueOf().toString() == 'Processing'.valueOf()"
-              class="btn btn-outline-danger btn-sm" type="button"
-              (click)="confirm(stopConfirmation)">
-              <span class="fa fa-stop">&nbsp;</span>
-            </button>
+                class="btn btn-outline-danger btn-sm" type="button"
+                (click)="confirm(stopConfirmation)">
+                <span class="fa fa-stop">&nbsp;</span>
+              </button>
+            </div>
           </div>
         </div>
+
       </div>
       <div class="card-body">
         <div class="row">
-          <div class="mx-auto table-responsive col-md-10">
+          <div class="col-9">
+          </div>
+          <div class="col-3">
+            <img *ngIf="!thumbnailStatus || thumbnailStatus == undefined" [src]="placeholder"
+                 height="100"
+                 class="float-right"
+                 alt="placeholder">
+            <div *ngIf="thumbnailStatus">
+              <a *ngIf="currentProject.projectType === projectTypes.STILL_IMAGE" [href]="modalImage"
+                 target="_blank">
+                <img [src]="currentThumbnail"
+                     height="100"
+                     class="float-right img-fluid img-thumbnail"
+                     alt="thumbnail"></a>
+              <a *ngIf="currentProject.projectType === projectTypes.ANIMATION" href="javascript:void(0)">
+                <img [src]="currentThumbnail"
+                     height="100"
+                     class="float-right img-fluid img-thumbnail"
+                     alt="thumbnail"></a>
+            </div>
+          </div>
+        </div>
+        <hr/>
+        <div class="row">
+          <div class="col-9">
+            <h5>Status: {{currentProject.projectStatus}}</h5>
+          </div>
+          <div class="col-3">
+            Progress:
+            <ngb-progressbar showValue="true" type="success"
+                             [value]="currentProject.currentPercentage"></ngb-progressbar>
+          </div>
+        </div>
+        <div class="row pt-5">
+          <div class="col-4">
+            <strong>Project Summary</strong>
             <table class="table table-sm">
               <tbody>
               <tr>
-                <td>Project Status</td>
-                <td *ngIf="currentProject.projectStatus !== statuses.Finished">{{currentProject.projectStatus}}</td>
-                <td *ngIf="currentProject.projectStatus === statuses.Finished"><a
-                  [href]="'/api/project_actions/download_project/' + currentProject.id">{{currentProject.projectStatus}}</a>
-                </td>
-              </tr>
-              <tr
-                *ngIf="currentProject.projectStatus === statuses.Finished && currentProject.outputFormat !== formats.PNG">
-                <td>Download Video</td>
-                <td *ngIf="currentProject.projectStatus === statuses.Finished"><a
-                  [href]="'/api/project_actions/download_project_video/' + currentProject.id">{{currentProject.projectName}}</a>
-                </td>
+                <td>Blender Version</td>
+                <td>{{currentProject.selectedBlenderversion}}</td>
               </tr>
               <tr>
-                <td>Selected Blender Version</td>
-                <td>{{currentProject.selectedBlenderversion}}</td>
+                <td>Project Type</td>
+                <td *ngIf="currentProject.projectType === projectTypes.STILL_IMAGE">Still Image</td>
+                <td *ngIf="currentProject.projectType === projectTypes.ANIMATION">Animation</td>
               </tr>
               <tr>
                 <td>Output Format</td>
@@ -117,11 +150,6 @@
               <tr *ngIf="currentProject.outputFormat !== formats.PNG">
                 <td>Frame Rate</td>
                 <td>{{currentProject.frameRate}} fps</td>
-              </tr>
-              <tr>
-                <td>Project Type</td>
-                <td *ngIf="currentProject.projectType === projectTypes.STILL_IMAGE">Still Image</td>
-                <td *ngIf="currentProject.projectType === projectTypes.ANIMATION">Animation</td>
               </tr>
               <tr>
                 <td>Start Frame</td>
@@ -135,6 +163,43 @@
                 <td>Frame Step</td>
                 <td>{{currentProject.stepFrame}}</td>
               </tr>
+              <tr *ngIf="currentProject.useParts">
+                <td>Parts Per Frame</td>
+                <td>{{currentProject.partsPerFrame}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-4">
+            <strong>Statistics</strong>
+            <table class="table table-sm">
+              <tbody>
+              <tr
+                *ngIf="currentProject.projectStatus !== statuses.Finished && currentProject.projectStatus !== statuses.Added">
+                <td>Queue Progress</td>
+                <td>{{remainingQueue}} of {{totalQueue}} Remaining</td>
+              </tr>
+              <tr>
+                <td>Project Duration</td>
+                <td>{{projectTime}}</td>
+              </tr>
+              <tr>
+                <td>Cumulative Render</td>
+                <td>{{totalRenderTime}}</td>
+              </tr>
+              <tr
+                *ngIf="currentProject.projectType === projectTypes.ANIMATION && currentProject.projectStatus !== statuses.Finished && currentProject.projectStatus !== statuses.Added">
+                <td>Render Progress</td>
+                <td>{{completedFrames}} of {{currentProject.totalNumberOfFrames}} Frames Processed</td>
+              </tr>
+              </tbody>
+            </table>
+
+          </div>
+          <div class="col-4">
+            <strong>Render Settings</strong>
+            <table class="table table-sm">
+              <tbody>
               <tr *ngIf="currentProject.blenderEngine !== engines.BLENDER_RENDER">
                 <td>Render On</td>
                 <td>
@@ -159,87 +224,39 @@
                 <td>Image Scaling Percentage</td>
                 <td>{{currentProject.resPercentage}}&#37;</td>
               </tr>
-              <tr *ngIf="currentProject.useParts">
-                <td>Parts Per Frame</td>
-                <td>{{currentProject.partsPerFrame}}</td>
-              </tr>
-              <tr>
-                <td>Current Percentage</td>
-                <td class="pt-2 pb-2">
-                  <ngb-progressbar showValue="true" type="success"
-                                   [value]="currentProject.currentPercentage"></ngb-progressbar>
-                </td>
-              </tr>
-              <tr
-                *ngIf="currentProject.projectStatus !== statuses.Finished && currentProject.projectStatus !== statuses.Added">
-                <td>Queue Progress</td>
-                <td>{{remainingQueue}} of {{totalQueue}} Remaining</td>
-              </tr>
-              <tr>
-                <td>Project Duration</td>
-                <td>{{projectTime}}</td>
-              </tr>
-              <tr>
-                <td>Total Render Time</td>
-                <td>{{totalRenderTime}}</td>
-              </tr>
-              <tr
-                *ngIf="currentProject.projectType === projectTypes.ANIMATION && currentProject.projectStatus !== statuses.Finished && currentProject.projectStatus !== statuses.Added">
-                <td>Render Progress</td>
-                <td>{{completedFrames}} of {{currentProject.totalNumberOfFrames}} Frames Processed</td>
-              </tr>
-              <tr>
-                <td>Preview</td>
-                <td *ngIf="!thumbnailStatus || thumbnailStatus == undefined">
-                  <img [src]="placeholder"
-                       height="100"
-                       class="align-top"
-                       alt="placeholder">
-                </td>
-                <td *ngIf="thumbnailStatus">
-                  <a *ngIf="currentProject.projectType === projectTypes.STILL_IMAGE" [href]="modalImage"
-                     target="_blank">
-                    <img [src]="currentThumbnail"
-                         height="100"
-                         class="align-top img-fluid img-thumbnail"
-                         alt="thumbnail"></a>
-                  <a *ngIf="currentProject.projectType === projectTypes.ANIMATION" href="javascript:void(0)">
-                    <img [src]="currentThumbnail"
-                         height="100"
-                         class="align-top img-fluid img-thumbnail"
-                         alt="thumbnail"></a>
-                </td>
-              </tr>
+
               </tbody>
             </table>
           </div>
         </div>
       </div>
-      <div class="card-footer">
-        <button class="btn btn-outline-dark mr-auto float-left" (click)="returnToProjects()">Project List View
-        </button>
-        <button id="videoPropertiesButton"
-                *ngIf="currentProject.projectStatus === statuses.Finished && currentProject.outputFormat !== formats.PNG"
-                class="btn btn-outline-dark ml-auto float-right" (click)="videoSettings.open(currentProject)">Video
-          Settings
-        </button>
-        <button [disabled]="!nodesReady || disableButton" id="startButton"
-                *ngIf="currentProject.projectStatus === statuses.Added"
-                class="btn btn-outline-primary ml-auto float-right" (click)="startProject(currentProject.id)">Start
-          Project
-        </button>
-        <button id="pauseButton"
-                [disabled]="disableButton"
-                *ngIf="currentProject.projectStatus !== statuses.Finished && currentProject.projectStatus !== statuses.Added && currentProject.projectStatus !== statuses.Paused"
-                class="btn btn-outline-info ml-auto float-right" (click)="pauseProject(currentProject.id)">Pause Project
-        </button>
-        <button [disabled]="disableButton"
-                id="resumeButton" *ngIf="currentProject.projectStatus === statuses.Paused"
-                class="btn btn-outline-success ml-auto float-right" (click)="resumeProject(currentProject.id)">Resume
-          Project
-        </button>
 
-      </div>
+
+      <!--<div class="card-footer">-->
+      <!--<button class="btn btn-outline-dark mr-auto float-left" (click)="returnToProjects()">Project List View-->
+      <!--</button>-->
+      <!--<button id="videoPropertiesButton"-->
+      <!--*ngIf="currentProject.projectStatus === statuses.Finished && currentProject.outputFormat !== formats.PNG"-->
+      <!--class="btn btn-outline-dark ml-auto float-right" (click)="videoSettings.open(currentProject)">Video-->
+      <!--Settings-->
+      <!--</button>-->
+      <!--<button [disabled]="!nodesReady || disableButton" id="startButton"-->
+      <!--*ngIf="currentProject.projectStatus === statuses.Added"-->
+      <!--class="btn btn-outline-primary ml-auto float-right" (click)="startProject(currentProject.id)">Start-->
+      <!--Project-->
+      <!--</button>-->
+      <!--<button id="pauseButton"-->
+      <!--[disabled]="disableButton"-->
+      <!--*ngIf="currentProject.projectStatus !== statuses.Finished && currentProject.projectStatus !== statuses.Added && currentProject.projectStatus !== statuses.Paused"-->
+      <!--class="btn btn-outline-info ml-auto float-right" (click)="pauseProject(currentProject.id)">Pause Project-->
+      <!--</button>-->
+      <!--<button [disabled]="disableButton"-->
+      <!--id="resumeButton" *ngIf="currentProject.projectStatus === statuses.Paused"-->
+      <!--class="btn btn-outline-success ml-auto float-right" (click)="resumeProject(currentProject.id)">Resume-->
+      <!--Project-->
+      <!--</button>-->
+
+      <!--</div>-->
     </div>
   </div>
 </div>
