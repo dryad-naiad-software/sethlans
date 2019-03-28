@@ -16,14 +16,15 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
+<!--TODO Replace the list view with various columns containing information.  Move preview to the upper Right hand corner.-->
 
 <div class="row pb-1">
-  <div class="col-md-6 m-auto">
+  <div class="col-md-8 m-auto">
     <div class="card">
       <div class="card-header">
-        <h4 style="font-family: 'Fjalla One', sans-serif; ">Project Details - {{currentProject.projectName}}</h4>
-        <div class="btn-group-adjust">
-          <div class="btn-group btn-group-sm pt-1 pb-5">
+        <h4 style="font-family: 'Fjalla One', sans-serif; ">{{currentProject.projectName}}</h4>
+        <div class="btn-group-adjust float-right">
+          <div class="btn-group btn-group-sm">
             <button placement="bottom"
                     ngbTooltip="Start"
                     [disabled]="!nodesReady" [attr.id]="'start'+ currentProject.id"
@@ -46,6 +47,12 @@
                     class="btn btn-outline-dark btn-sm" type="button" (click)="pauseProject(currentProject.id)">
               <span class="fa fa-pause"></span>
             </button>
+            <button placement="bottom"
+                    ngbTooltip="Project List"
+                    class="btn btn-outline-dark btn-sm" type="button"
+                    (click)="returnToProjects()">
+              <span class="fa fa-list"></span>
+            </button>
 
             <button placement="bottom"
                     ngbTooltip="Images"
@@ -66,13 +73,15 @@
               <span class="fa fa-edit"></span>
             </button>
             <button
+              placement="bottom"
+              ngbTooltip="Stop"
               *ngIf="currentProject.projectStatus.valueOf().toString() == 'Started'.valueOf() ||
                     currentProject.projectStatus.valueOf().toString() == 'Rendering'.valueOf() ||
                     currentProject.projectStatus.valueOf().toString() == 'Pending'.valueOf() ||
                     currentProject.projectStatus.valueOf().toString() == 'Paused'.valueOf() ||
                     currentProject.projectStatus.valueOf().toString() == 'Processing'.valueOf()"
               class="btn btn-outline-danger btn-sm" type="button"
-              (click)="stopProject(currentProject.id)">
+              (click)="confirm(stopConfirmation)">
               <span class="fa fa-stop">&nbsp;</span>
             </button>
           </div>
@@ -234,5 +243,24 @@
     </div>
   </div>
 </div>
+<!--Stop Project Confirmation-->
+<ng-template #stopConfirmation let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" style="font-family: 'Fjalla One', sans-serif; ">Stop Project</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to stop <strong>{{currentProject.projectName}}</strong>?</p>
+    <button type="button" class="btn btn-outline-secondary mr-auto float-left" (click)="modal.close('Cancel')">No
+    </button>
+    <button type="button" class="btn btn-outline-danger ml-auto float-right"
+            (click)="modal.close('Save click'); stopProject(currentProject.id)">Yes
+    </button>
+  </div>
+
+</ng-template>
+
 <app-project-video-settings></app-project-video-settings>
 
