@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -86,6 +86,9 @@ public class BlenderProject extends AbstractEntityClass {
     @ElementCollection
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<String> frameFileNames;
+    @ElementCollection
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<String> thumbnailFileNames;
     @Transient
     private List<BlenderFramePart> framePartList;
 

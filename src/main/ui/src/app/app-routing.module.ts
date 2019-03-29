@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -42,6 +42,7 @@ import {ProjectViewComponent} from './components/projects/project-view/project-v
 import {ProjectEditWizardComponent} from './components/projects/project-edit-wizard/project-edit-wizard.component';
 import {ForgotPassComponent} from './components/forgot-pass/forgot-pass.component';
 import {RenderHistoryComponent} from './components/admin/render-history/render-history.component';
+import {ProjectFramesComponent} from './components/projects/project-frames/project-frames.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -67,6 +68,7 @@ const routes: Routes = [
   {path: 'user_settings', component: UserSettingsComponent},
   {path: 'projects/view/:id', component: ProjectViewComponent},
   {path: 'projects/edit/:id', component: ProjectEditWizardComponent},
+  {path: 'projects/frames/:id', component: ProjectFramesComponent},
 
 ];
 

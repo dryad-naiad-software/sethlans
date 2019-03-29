@@ -165,6 +165,17 @@ public class ProjectUIController {
         return null;
     }
 
+    @GetMapping("/images/{id}/thumbnail")
+    public ResponseEntity<byte[]> getFrameThumbnail(@PathVariable Long id, @RequestParam int number) {
+        BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
+        if (checkProjectState(blenderProject)) {
+            File image = new File(blenderProject.getFrameFileNames().get(number));
+            return sendImage(image);
+        }
+        return null;
+    }
+
+
     @GetMapping("/completed_frame_ids/{id}")
     public List<Integer> getCompleteFrameIds(@PathVariable Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
@@ -191,7 +202,7 @@ public class ProjectUIController {
         return null;
     }
 
-    @GetMapping("/thumbnail/{id}")
+    @GetMapping("/current_thumbnail/{id}")
     public ResponseEntity<byte[]> getThumbnailImage(@PathVariable Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
         if (checkProjectState(blenderProject)) {

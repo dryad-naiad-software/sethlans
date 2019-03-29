@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -95,6 +95,7 @@ import {WizardAddNodesComponent} from './components/setup/get-started-wizard/wiz
 import {ForgotPassComponent} from './components/forgot-pass/forgot-pass.component';
 import {RenderHistoryComponent} from './components/admin/render-history/render-history.component';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
+import {ProjectFramesComponent} from './components/projects/project-frames/project-frames.component';
 
 
 @NgModule({
@@ -148,6 +149,7 @@ import {InfiniteScrollModule} from 'ngx-infinite-scroll';
     WizardAddNodesComponent,
     ForgotPassComponent,
     RenderHistoryComponent,
+    ProjectFramesComponent,
   ],
   imports: [
     BrowserModule,

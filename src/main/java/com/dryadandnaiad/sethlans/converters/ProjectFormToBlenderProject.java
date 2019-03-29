@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -68,6 +68,8 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
         blenderProject.setPartsPerFrame(projectForm.getPartsPerFrame());
         blenderProject.setFrameRate(projectForm.getFrameRate());
         blenderProject.setFramePartList(new ArrayList<>());
+        blenderProject.setThumbnailFileNames(new ArrayList<>());
+        blenderProject.setFrameFileNames(new ArrayList<>());
         blenderProject.setUserStopped(false);
         // Seems weird but frames are inclusive so you have to add a frame when subtracting these values
         blenderProject.setTotalNumberOfFrames((blenderProject.getEndFrame() - blenderProject.getStartFrame()) + 1);

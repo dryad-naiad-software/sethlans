@@ -16,7 +16,6 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
-<!--TODO Replace the list view with various columns containing information.  Move preview to the upper Right hand corner.-->
 
 <div class="row pb-1">
   <div class="col-md-8 m-auto">
@@ -110,7 +109,8 @@
                      height="100"
                      class="float-right img-fluid img-thumbnail"
                      alt="thumbnail"></a>
-              <a *ngIf="currentProject.projectType === projectTypes.ANIMATION" href="javascript:void(0)">
+              <a *ngIf="currentProject.projectType === projectTypes.ANIMATION"
+                 href="/projects/frames/{{currentProject.id}}">
                 <img [src]="currentThumbnail"
                      height="100"
                      class="float-right img-fluid img-thumbnail"

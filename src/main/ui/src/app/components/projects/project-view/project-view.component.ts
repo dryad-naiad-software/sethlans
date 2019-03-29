@@ -125,7 +125,7 @@ export class ProjectViewComponent implements OnInit {
     this.http.get('/api/project_ui/thumbnail_status/' + this.id + '/').subscribe((thumbnailStatus: boolean) => {
       this.thumbnailStatus = thumbnailStatus;
       if (thumbnailStatus == true) {
-        this.currentThumbnail = '/api/project_ui/thumbnail/' + this.id + '/';
+        this.currentThumbnail = '/api/project_ui/current_thumbnail/' + this.id + '/';
       }
     });
   }
@@ -175,6 +175,7 @@ export class ProjectViewComponent implements OnInit {
   downloadVideo(id) {
     window.location.href = '/api/project_actions/download_project_video/' + id;
   }
+
 
   confirm(content) {
     let options: NgbModalOptions = {
