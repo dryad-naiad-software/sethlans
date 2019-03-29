@@ -102,7 +102,7 @@ export class ServerScreenComponent implements OnInit {
   }
 
   projectLoad() {
-    this.projectService.getProjectList().subscribe(data => {
+    this.projectService.getLastFive().subscribe(data => {
       this.dataSource = new MatTableDataSource<any>(data);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;

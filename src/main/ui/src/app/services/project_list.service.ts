@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,6 +26,10 @@ import {Injectable} from '@angular/core';
 export class ProjectListService {
 
   constructor(private http: HttpClient) {
+  }
+
+  getLastFive(): Observable<Project[]> {
+    return this.http.get<Project[]>('/api/project_ui/last_five_projects');
   }
 
   getProjectList(): Observable<Project[]> {

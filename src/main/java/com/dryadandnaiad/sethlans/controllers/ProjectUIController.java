@@ -93,6 +93,20 @@ public class ProjectUIController {
 
     }
 
+    @GetMapping(value = "/last_five_projects")
+    public List<ProjectInfo> getLastFiveProjects() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            List<BlenderProject> projects = blenderProjectDatabaseService.listWithoutFramePart();
+            List<BlenderProject> last5projects = projects.subList(Math.max(projects.size() - 5, 0), projects.size());
+            return convertBlenderProjectsToProjectInfo(last5projects);
+        } else {
+            List<BlenderProject> projects = blenderProjectDatabaseService.getProjectsByUserWithoutFrameParts(auth.getName());
+            List<BlenderProject> last5projects = projects.subList(Math.max(projects.size() - 5, 0), projects.size());
+            return convertBlenderProjectsToProjectInfo(last5projects);
+        }
+    }
+
     @GetMapping(value = "/project_name/{id}")
     public String getProjectName(@PathVariable Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
