@@ -24,6 +24,26 @@
         <h4 style="font-family: 'Fjalla One', sans-serif; ">{{currentProject.projectName}} Frames</h4>
       </div>
       <div class="card-body">
+        <mat-grid-list cols="4" rowHeight="101px" gutterSize="30px">
+          <mat-grid-tile><img src="/api/project_ui/images/{{id}}/thumbnail?number=1"
+                              height="100"
+                              class="float-right img-fluid img-thumbnail"
+                              alt="thumbnail"></mat-grid-tile>
+          <mat-grid-tile><img src="/api/project_ui/images/{{id}}/thumbnail?number=27"
+                              height="100"
+                              class="float-right img-fluid img-thumbnail"
+                              alt="thumbnail"></mat-grid-tile>
+          <mat-grid-tile><img src="/api/project_ui/images/{{id}}/thumbnail?number=25"
+                              height="100"
+                              class="float-right img-fluid img-thumbnail"
+                              alt="thumbnail"></mat-grid-tile>
+          <mat-grid-tile><img src="/api/project_ui/images/{{id}}/thumbnail?number=17"
+                              height="100"
+                              class="float-right img-fluid img-thumbnail"
+                              alt="thumbnail"></mat-grid-tile>
+
+        </mat-grid-list>
+
 
       </div>
     </div>

@@ -25,6 +25,7 @@ import {FormsModule} from '@angular/forms';
 import {
   MatCheckboxModule,
   MatFormFieldModule,
+  MatGridListModule,
   MatInputModule,
   MatPaginatorModule,
   MatProgressBarModule,
@@ -157,6 +158,7 @@ import {ProjectFramesComponent} from './components/projects/project-frames/proje
     ChartModule,
     MatSliderModule,
     MatTableModule,
+    MatGridListModule,
     MatPaginatorModule,
     MatFormFieldModule,
     MatCheckboxModule,
@@ -166,9 +168,9 @@ import {ProjectFramesComponent} from './components/projects/project-frames/proje
     MatProgressBarModule,
     FormsModule,
     FileUploadModule,
-    NgbModule.forRoot(),
+    NgbModule,
     AppRoutingModule,
-    InfiniteScrollModule
+    InfiniteScrollModule,
   ],
   providers: [WindowRef, LoginService, ProjectListService, UserListService, NodeListService, ServerListService, AccessKeyListService, {
     provide: HTTP_INTERCEPTORS,

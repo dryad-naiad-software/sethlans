@@ -183,7 +183,7 @@ public class ProjectUIController {
     public ResponseEntity<byte[]> getFrameThumbnail(@PathVariable Long id, @RequestParam int number) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
         if (checkProjectState(blenderProject)) {
-            File image = new File(blenderProject.getFrameFileNames().get(number));
+            File image = new File(blenderProject.getThumbnailFileNames().get(number));
             return sendImage(image);
         }
         return null;

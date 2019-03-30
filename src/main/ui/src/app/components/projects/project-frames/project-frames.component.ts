@@ -31,6 +31,7 @@ import {timer} from 'rxjs';
 export class ProjectFramesComponent implements OnInit {
   currentProject: Project;
   id: number;
+  frameIds: number[] = [];
 
 
   constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute) {
@@ -42,13 +43,17 @@ export class ProjectFramesComponent implements OnInit {
 
   ngOnInit() {
     this.loadProjectDetails();
-    let scheduler = timer(5000, 5000);
+    let scheduler = timer(30000, 30000);
     scheduler.subscribe(() => this.loadProjectDetails());
   }
 
   loadProjectDetails() {
     this.http.get('/api/project_ui/project_details/' + this.id + '/').subscribe((projectDetails: Project) => {
       this.currentProject = projectDetails;
+      this.http.get('/api/project_ui/completed_frame_ids/' + this.id + '/').subscribe((frameIdList: number[]) => {
+        this.frameIds = frameIdList;
+        console.log(this.frameIds);
+      });
     });
   }
 
