@@ -21,7 +21,6 @@ import {Component, OnInit} from '@angular/core';
 import {Project} from '../../../models/project.model';
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
-import {timer} from 'rxjs';
 
 @Component({
   selector: 'app-project-frames',
@@ -43,8 +42,6 @@ export class ProjectFramesComponent implements OnInit {
 
   ngOnInit() {
     this.loadProjectDetails();
-    let scheduler = timer(30000, 30000);
-    scheduler.subscribe(() => this.loadProjectDetails());
   }
 
   loadProjectDetails() {
@@ -55,6 +52,14 @@ export class ProjectFramesComponent implements OnInit {
         console.log(this.frameIds);
       });
     });
+  }
+
+  refresh() {
+    window.location.href = '/projects/frames/' + this.id + '/';
+  }
+
+  return() {
+    window.location.href = '/projects/view/' + this.id + '/';
   }
 
 }
