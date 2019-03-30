@@ -36,11 +36,11 @@
       </div>
       <div class="card-body">
         <mat-grid-list cols="4" rowHeight="101px" gutterSize="30px">
-          <mat-grid-tile *ngFor="let frameId of frameIdsToDisplay; let i=index">
+          <mat-grid-tile *ngFor="let frameId of frameIdsToDisplay">
             <div class="thumbnail text-center">
-              <a href="/api/project_ui/images/{{id}}/frame?number={{i}}"
+              <a href="/api/project_ui/images/{{id}}/frame?number={{frameId}}"
                  target="_blank">
-                <img src="/api/project_ui/images/{{id}}/thumbnail?number={{i}}"
+                <img src="/api/project_ui/images/{{id}}/thumbnail?number={{frameId}}"
                      height="100"
                      class="img-fluid"
                      alt="thumbnail">

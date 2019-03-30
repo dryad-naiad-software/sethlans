@@ -173,8 +173,15 @@ public class ProjectUIController {
     public ResponseEntity<byte[]> getFrameImage(@PathVariable Long id, @RequestParam int number) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
         if (checkProjectState(blenderProject)) {
-            File image = new File(blenderProject.getFrameFileNames().get(number));
-            return sendImage(image);
+            for (String fileName :
+                    blenderProject.getFrameFileNames()) {
+                if (fileName.contains(File.separator + "frame_" + number + File.separator)) {
+                    File image = new File(fileName);
+                    return sendImage(image);
+                }
+
+            }
+
         }
         return null;
     }
@@ -183,8 +190,15 @@ public class ProjectUIController {
     public ResponseEntity<byte[]> getFrameThumbnail(@PathVariable Long id, @RequestParam int number) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
         if (checkProjectState(blenderProject)) {
-            File image = new File(blenderProject.getThumbnailFileNames().get(number));
-            return sendImage(image);
+            for (String fileName :
+                    blenderProject.getThumbnailFileNames()) {
+                if (fileName.contains(File.separator + "frame_" + number + File.separator)) {
+                    File image = new File(fileName);
+                    return sendImage(image);
+                }
+
+            }
+
         }
         return null;
     }
