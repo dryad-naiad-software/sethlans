@@ -31,6 +31,9 @@ export class ProjectFramesComponent implements OnInit {
   currentProject: Project;
   id: number;
   frameIds: number[] = [];
+  page = 0;
+  size = 16;
+  frameIdsToDisplay: number[] = [];
 
 
   constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute) {
@@ -44,12 +47,24 @@ export class ProjectFramesComponent implements OnInit {
     this.loadProjectDetails();
   }
 
+  getFramesToDisplay(obj) {
+    let index = 0,
+      startingIndex = obj.pageIndex * obj.pageSize,
+      endingIndex = startingIndex + obj.pageSize;
+
+    this.frameIdsToDisplay = this.frameIds.filter(() => {
+      index++;
+      return (index > startingIndex && index <= endingIndex);
+    });
+  }
+
   loadProjectDetails() {
     this.http.get('/api/project_ui/project_details/' + this.id + '/').subscribe((projectDetails: Project) => {
       this.currentProject = projectDetails;
       this.http.get('/api/project_ui/completed_frame_ids/' + this.id + '/').subscribe((frameIdList: number[]) => {
         this.frameIds = frameIdList;
-        console.log(this.frameIds);
+        this.getFramesToDisplay({pageIndex: this.page, pageSize: this.size});
+        console.log(this.frameIdsToDisplay);
       });
     });
   }

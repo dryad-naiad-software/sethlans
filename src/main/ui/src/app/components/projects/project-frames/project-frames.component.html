@@ -36,22 +36,21 @@
       </div>
       <div class="card-body">
         <mat-grid-list cols="4" rowHeight="101px" gutterSize="30px">
-          <mat-grid-tile *ngFor="let frameId of frameIds; let i=index">
+          <mat-grid-tile *ngFor="let frameId of frameIdsToDisplay; let i=index">
             <div class="thumbnail text-center">
               <a href="/api/project_ui/images/{{id}}/frame?number={{i}}"
                  target="_blank">
                 <img src="/api/project_ui/images/{{id}}/thumbnail?number={{i}}"
                      height="100"
-                     class="float-right img-fluid"
+                     class="img-fluid"
                      alt="thumbnail">
                 <div class="caption"><p> {{frameId}}</p></div>
               </a>
             </div>
           </mat-grid-tile>
-
         </mat-grid-list>
-
-
+        <mat-paginator [length]="frameIds.length" [pageSize]="size" [pageIndex]="page"
+                       [pageSizeOptions]="[16, 24, 32, 64, 100]" (page)="getFramesToDisplay($event)"></mat-paginator>
       </div>
     </div>
   </div>

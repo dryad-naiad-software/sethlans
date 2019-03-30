@@ -39,7 +39,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansQueryUtils.convertBlenderProjectToProjectInfo;
@@ -201,7 +200,6 @@ public class ProjectUIController {
             for (String frameFileName : blenderProject.getFrameFileNames()) {
                 completedIds.add(Integer.parseInt(StringUtils.substringBetween(frameFileName, firstTag, lastTag)));
             }
-            Collections.sort(completedIds);
             return completedIds;
         }
         return null;
