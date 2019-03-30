@@ -21,7 +21,7 @@ import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {ServerDashboard} from '../../../models/server_dash.model';
 import {HttpClient} from '@angular/common/http';
 import {ProjectListService} from '../../../services/project_list.service';
-import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {MatSort, MatTableDataSource} from '@angular/material';
 import {ProjectStatus} from '../../../enums/project_status.enum';
 import {Mode} from '../../../enums/mode.enum';
 import {timer} from 'rxjs/internal/observable/timer';
@@ -36,7 +36,6 @@ import {Project} from '../../../models/project.model';
 })
 export class ServerScreenComponent implements OnInit {
   serverDash: ServerDashboard;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   dataSource = new MatTableDataSource();
   displayedColumns = ['projectName', 'projectStatus', 'progress', 'actions'];
@@ -104,7 +103,6 @@ export class ServerScreenComponent implements OnInit {
   projectLoad() {
     this.projectService.getLastFive().subscribe(data => {
       this.dataSource = new MatTableDataSource<any>(data);
-      this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
     });
   }
