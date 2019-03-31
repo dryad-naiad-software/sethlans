@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -27,7 +27,6 @@ import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.forms.project.ProjectForm;
 import com.dryadandnaiad.sethlans.repositories.BlenderProjectRepository;
 import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -139,11 +138,6 @@ public class BlenderProjectDatabaseServiceImpl implements BlenderProjectDatabase
             return false;
         }
 
-    }
-
-    @Override
-    public List<BlenderProject> listAllReverse() {
-        return new ArrayList<>(Lists.reverse(listAll()));
     }
 
     @Override

@@ -30,11 +30,12 @@
           </button>
           <button class="btn btn-outline-dark"
                   (click)="return()">
-            <span class="fa fa-hand-point-left"></span>&nbsp;<span>Return to View</span>
+            <span>Return to View</span>
           </button>
         </div>
       </div>
       <div class="card-body">
+        <p class="alert alert-info text-center">Frames displayed in the order they were processed.</p>
         <mat-grid-list cols="4" rowHeight="101px" gutterSize="30px">
           <mat-grid-tile *ngFor="let frameId of frameIdsToDisplay">
             <div class="thumbnail text-center">
