@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,10 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
-import com.dryadandnaiad.sethlans.domains.info.Log;
-import com.dryadandnaiad.sethlans.domains.info.RoleInfo;
-import com.dryadandnaiad.sethlans.domains.info.SethlansSettings;
-import com.dryadandnaiad.sethlans.domains.info.UserInfo;
+import com.dryadandnaiad.sethlans.domains.info.*;
 import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
@@ -67,6 +64,7 @@ public class AdminController {
     private SethlansManagerService sethlansManagerService;
     private SethlansNotificationService sethlansNotificationService;
     private SethlansEmailService sethlansEmailService;
+
 
     private static final Logger LOG = LoggerFactory.getLogger(AdminController.class);
 
@@ -358,6 +356,18 @@ public class AdminController {
         UserInfo userToSend = new UserInfo();
         userToSend.loadUserInfo(sethlansUser);
         return userToSend;
+    }
+
+    @GetMapping("/systeminfo")
+    public SethlansSystemInfo getSystemInfo() {
+        SethlansSystemInfo systemInfo = new SethlansSystemInfo();
+        systemInfo.setJavaVersion(System.getProperty("java.version"));
+        systemInfo.setJvmFreeMem(SethlansQueryUtils.getJVMFreeMemory());
+        systemInfo.setJvmMaxMem(SethlansQueryUtils.getJVMMaxMemory());
+        systemInfo.setJvmTotalMem(SethlansQueryUtils.getJVMTotalMemory());
+        systemInfo.setJvmUsedMem(SethlansQueryUtils.getJVMUsedMemory());
+        systemInfo.setPercentageUsedMem(SethlansQueryUtils.getJVMPercentageUsed());
+        return systemInfo;
     }
 
     @Autowired

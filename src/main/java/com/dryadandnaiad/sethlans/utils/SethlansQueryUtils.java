@@ -43,6 +43,8 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.*;
 
 /**
@@ -53,9 +55,53 @@ import java.util.*;
  */
 public class SethlansQueryUtils {
     private static final Logger LOG = LoggerFactory.getLogger(SethlansQueryUtils.class);
+    private static final DecimalFormat ROUNDED_DOUBLE_DECIMALFORMAT;
+
+    static {
+        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
+        otherSymbols.setDecimalSeparator('.');
+        otherSymbols.setGroupingSeparator(',');
+        ROUNDED_DOUBLE_DECIMALFORMAT = new DecimalFormat("####0.00", otherSymbols);
+        ROUNDED_DOUBLE_DECIMALFORMAT.setGroupingUsed(false);
+    }
+
+
     public static String getShortUUID() {
         return UUID.randomUUID().toString().substring(0, 13);
     }
+
+    private static String humanReadableByteCount(long bytes, boolean si) {
+        int unit = si ? 1000 : 1024;
+        if (bytes < unit) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+    }
+
+
+    public static String getJVMMaxMemory() {
+        return humanReadableByteCount(Runtime.getRuntime().maxMemory(), false);
+    }
+
+    public static String getJVMUsedMemory() {
+        return humanReadableByteCount(Runtime.getRuntime().maxMemory() - Runtime.getRuntime().freeMemory(), false);
+    }
+
+    public static String getJVMTotalMemory() {
+        return humanReadableByteCount(Runtime.getRuntime().totalMemory(), false);
+    }
+
+    public static String getJVMFreeMemory() {
+        return humanReadableByteCount(Runtime.getRuntime().freeMemory(), false);
+    }
+
+    public static String getJVMPercentageUsed() {
+        long usedJVMMemory = Runtime.getRuntime().maxMemory() - Runtime.getRuntime().freeMemory();
+        long maxJVMMemory = Runtime.getRuntime().maxMemory();
+        double percentageUsed = ((double) usedJVMMemory / maxJVMMemory) * 100;
+        return ROUNDED_DOUBLE_DECIMALFORMAT.format(percentageUsed) + "%";
+    }
+
 
     public static String getGPUDeviceString(SetupNode setupNode) {
         if (!setupNode.getSelectedGPUDeviceIDs().isEmpty()) {
