@@ -38,6 +38,9 @@ class SethlansSysTray extends TrayIcon {
     private static final String IMAGE = "images/sethlans_systray.png";
     private static final String IMAGE_ACTIVE = "images/systray_active.png";
     private static final String TOOLTIP = "Sethlans";
+    private Image activeImage = createImage(IMAGE_ACTIVE, "Sethlans");
+    private Image defaultImage = createImage(IMAGE, "Sethlans");
+
     private static final Logger LOG = LoggerFactory.getLogger(SethlansSysTray.class);
     private PopupMenu popup;
     private SystemTray tray;
@@ -67,14 +70,19 @@ class SethlansSysTray extends TrayIcon {
 
     }
 
-    void changeIcon() {
+    void nodeActive() {
+        setImage(activeImage);
+    }
 
+    void nodeInactive() {
+        setImage(defaultImage);
     }
 
     private void menuItems() {
         MenuItem openBrowser = new MenuItem("Open Sethlans");
         openBrowser.addActionListener(e -> OpenBrowser.openSethlansLink("/"));
         popup.add(openBrowser);
+
         if (mode != SethlansMode.SETUP) {
             if (mode != SethlansMode.NODE) {
                 Menu projects = new Menu("Projects");

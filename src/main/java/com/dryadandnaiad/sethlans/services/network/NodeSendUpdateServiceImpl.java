@@ -24,9 +24,10 @@ import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.info.NodeInfo;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
-import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.BenchmarkTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.RenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
+import com.dryadandnaiad.sethlans.services.systray.SystrayService;
 import com.dryadandnaiad.sethlans.utils.SethlansConfigUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
 import com.google.common.base.Throwables;
@@ -53,7 +54,8 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private RenderTaskDatabaseService renderTaskDatabaseService;
-    private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
+    private BenchmarkTaskDatabaseService benchmarkTaskDatabaseService;
+    private SystrayService systrayService;
     private static final Logger LOG = LoggerFactory.getLogger(NodeSendUpdateServiceImpl.class);
 
     @Async
@@ -103,11 +105,14 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
                     } else {
                         Thread.sleep(1000);
                     }
-                    if (sethlansServerDatabaseService.listActive().size() > 0 && blenderBenchmarkTaskDatabaseService.allBenchmarksComplete()) {
+
+                    if (sethlansServerDatabaseService.listActive().size() > 0 && benchmarkTaskDatabaseService.allBenchmarksComplete()) {
                         if (renderTaskDatabaseService.tableSize() > 0) {
+                            systrayService.nodeState(true);
                             counter = 0;
                         }
                         if (renderTaskDatabaseService.tableSize() == 0) {
+                            systrayService.nodeState(false);
                             counter++;
                         }
                         if (counter % 60 == 0 && counter > 59) {
@@ -199,8 +204,8 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
     }
 
     @Autowired
-    public void setBlenderBenchmarkTaskDatabaseService(BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService) {
-        this.blenderBenchmarkTaskDatabaseService = blenderBenchmarkTaskDatabaseService;
+    public void setBenchmarkTaskDatabaseService(BenchmarkTaskDatabaseService benchmarkTaskDatabaseService) {
+        this.benchmarkTaskDatabaseService = benchmarkTaskDatabaseService;
     }
 
     @Autowired
@@ -216,5 +221,10 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
     @Autowired
     public void setRenderTaskDatabaseService(RenderTaskDatabaseService renderTaskDatabaseService) {
         this.renderTaskDatabaseService = renderTaskDatabaseService;
+    }
+
+    @Autowired
+    public void setSystrayService(SystrayService systrayService) {
+        this.systrayService = systrayService;
     }
 }

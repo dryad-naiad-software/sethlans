@@ -44,7 +44,19 @@ public class SystrayServiceImpl implements SystrayService {
             sysTray = new SethlansSysTray();
             sysTray.setup(mode);
         }
+    }
 
+    @Override
+    public void nodeState(boolean active) {
+        if (SystemTray.isSupported()) {
+            if (SethlansQueryUtils.getMode() != SethlansMode.SERVER) {
+                if (active) {
+                    sysTray.nodeActive();
+                } else {
+                    sysTray.nodeInactive();
+                }
+            }
+        }
     }
 
     public void stop() {

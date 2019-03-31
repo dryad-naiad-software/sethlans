@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC.
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -27,7 +27,7 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBenchmarkTask;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface BlenderBenchmarkTaskDatabaseService extends CRUDService<BlenderBenchmarkTask> {
+public interface BenchmarkTaskDatabaseService extends CRUDService<BlenderBenchmarkTask> {
 
     boolean allBenchmarksComplete();
 

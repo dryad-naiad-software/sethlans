@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -27,7 +27,7 @@ import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.blender.BlenderPythonScriptService;
-import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.BenchmarkTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
@@ -72,7 +72,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
 
 
     private static final Logger LOG = LoggerFactory.getLogger(BlenderBenchmarkServiceImpl.class);
-    private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
+    private BenchmarkTaskDatabaseService benchmarkTaskDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private BlenderPythonScriptService blenderPythonScriptService;
@@ -101,7 +101,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         try {
             Thread.sleep(10000);
             LOG.debug("Checking to see if any benchmarks are pending.");
-            List<BlenderBenchmarkTask> blenderBenchmarkTaskList = blenderBenchmarkTaskDatabaseService.listAll();
+            List<BlenderBenchmarkTask> blenderBenchmarkTaskList = benchmarkTaskDatabaseService.listAll();
             List<BlenderBenchmarkTask> pendingBenchmarks = new ArrayList<>();
             for (BlenderBenchmarkTask benchmarkTask : blenderBenchmarkTaskList) {
                 if (!benchmarkTask.isComplete() && sethlansServerDatabaseService.getByConnectionUUID(benchmarkTask.getConnectionUUID()) != null) {
@@ -109,7 +109,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                 }
                 if (!benchmarkTask.isComplete() && sethlansServerDatabaseService.getByConnectionUUID(benchmarkTask.getConnectionUUID()) == null) {
                     LOG.debug("Removing stale benchmarks.");
-                    blenderBenchmarkTaskDatabaseService.deleteAllByConnection(benchmarkTask.getConnectionUUID());
+                    benchmarkTaskDatabaseService.deleteAllByConnection(benchmarkTask.getConnectionUUID());
                 }
             }
             if (pendingBenchmarks.size() > 1) {
@@ -147,7 +147,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
 
     private void startBenchmarkService(String benchmark_uuid) {
         LOG.info("Starting Benchmark");
-        BlenderBenchmarkTask benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark_uuid);
+        BlenderBenchmarkTask benchmarkTask = benchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark_uuid);
         benchmarkTask.setInProgress(true);
         String tempDir = SethlansConfigUtils.getProperty(SethlansConfigKeys.TEMP_DIR);
         LOG.debug("Processing benchmark task: " + benchmarkTask.toString());
@@ -164,7 +164,7 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         try {
             if (downloadRequiredFiles(benchmarkDir, benchmarkTask, md5ToCheck, sethlansAPIConnectionService, sethlansServerDatabaseService)) {
                 String script = null;
-                benchmarkTask = blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
+                benchmarkTask = benchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
                 if (benchmarkTask.getComputeType().equals(ComputeType.GPU)) {
                     script = prepareGPUCyclesBenchmarkScript(blenderPythonScriptService, benchmarkTask);
                 }
@@ -192,14 +192,14 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
                     }
                     benchmarkTask.setInProgress(false);
                     benchmarkTask.setComplete(true);
-                    blenderBenchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
+                    benchmarkTaskDatabaseService.saveOrUpdate(benchmarkTask);
                 }
             }
         } catch (IOException | NoSuchAlgorithmException e) {
             LOG.error(e.getMessage());
         }
 
-        benchmarkTask = blenderBenchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark_uuid);
+        benchmarkTask = benchmarkTaskDatabaseService.getByBenchmarkUUID(benchmark_uuid);
         if (benchmarkTask.isComplete()) {
             try {
                 FileUtils.deleteDirectory(new File(benchmarkTask.getBenchmarkDir()));
@@ -230,9 +230,9 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
         String message = "Sending " + blenderBenchmarkTask.getComputeType() + " benchmark result to " + sethlansServer.getHostname();
         SethlansNotification sethlansNotification = new SethlansNotification(NotificationType.SERVER, message);
         sethlansNotificationService.sendNotification(sethlansNotification);
-        blenderBenchmarkTaskDatabaseService.delete(blenderBenchmarkTask.getId());
-        LOG.info("Remaining benchmarks to process: " + blenderBenchmarkTaskDatabaseService.tableSize());
-        boolean complete = blenderBenchmarkTaskDatabaseService.tableSize() <= 0;
+        benchmarkTaskDatabaseService.delete(blenderBenchmarkTask.getId());
+        LOG.info("Remaining benchmarks to process: " + benchmarkTaskDatabaseService.tableSize());
+        boolean complete = benchmarkTaskDatabaseService.tableSize() <= 0;
         String serverUrl = "https://" + sethlansServer.getIpAddress() + ":" + sethlansServer.getNetworkPort() + "/api/benchmark/response";
         String params;
         if (blenderBenchmarkTask.getComputeType().equals(ComputeType.CPU)) {
@@ -252,8 +252,8 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     }
 
     @Autowired
-    public void setBlenderBenchmarkTaskDatabaseService(BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService) {
-        this.blenderBenchmarkTaskDatabaseService = blenderBenchmarkTaskDatabaseService;
+    public void setBenchmarkTaskDatabaseService(BenchmarkTaskDatabaseService benchmarkTaskDatabaseService) {
+        this.benchmarkTaskDatabaseService = benchmarkTaskDatabaseService;
     }
 
     @Autowired
@@ -275,4 +275,5 @@ public class BlenderBenchmarkServiceImpl implements BlenderBenchmarkService {
     public void setBlenderBinaryDatabaseService(BlenderBinaryDatabaseService blenderBinaryDatabaseService) {
         this.blenderBinaryDatabaseService = blenderBinaryDatabaseService;
     }
+
 }

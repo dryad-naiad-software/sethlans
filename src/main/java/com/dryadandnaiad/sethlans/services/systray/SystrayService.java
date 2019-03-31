@@ -31,5 +31,7 @@ public interface SystrayService {
     @Async
     void start();
 
+    void nodeState(boolean active);
+
     void stop();
 }

@@ -31,7 +31,7 @@ import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.blender.benchmark.BlenderBenchmarkService;
 import com.dryadandnaiad.sethlans.services.blender.render.BlenderRenderService;
-import com.dryadandnaiad.sethlans.services.database.BlenderBenchmarkTaskDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.BenchmarkTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.RenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.RenderTaskHistoryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
@@ -67,7 +67,7 @@ public class NodeRenderController {
 
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private RenderTaskDatabaseService renderTaskDatabaseService;
-    private BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService;
+    private BenchmarkTaskDatabaseService benchmarkTaskDatabaseService;
     private BlenderBenchmarkService blenderBenchmarkService;
     private BlenderRenderService blenderRenderService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
@@ -245,10 +245,10 @@ public class NodeRenderController {
         if (sethlansServerDatabaseService.getByConnectionUUID(connection_uuid) == null) {
             LOG.error("The uuid sent: " + connection_uuid + " is not present in the database");
         } else {
-            List<BlenderBenchmarkTask> blenderBenchmarkTaskList = blenderBenchmarkTaskDatabaseService.listAll();
+            List<BlenderBenchmarkTask> blenderBenchmarkTaskList = benchmarkTaskDatabaseService.listAll();
             if (blenderBenchmarkTaskList.size() > 0) {
                 LOG.debug("Clearing out any existing benchmarks associated with the requesting server");
-                blenderBenchmarkTaskDatabaseService.deleteAllByConnection(connection_uuid);
+                benchmarkTaskDatabaseService.deleteAllByConnection(connection_uuid);
             }
             String[] cudaList = cuda.split(",");
             BlenderBenchmarkTask cpuBenchmarkTask = new BlenderBenchmarkTask();
@@ -277,13 +277,13 @@ public class NodeRenderController {
             List<String> benchmarks = new ArrayList<>();
             switch (compute_type) {
                 case CPU:
-                    blenderBenchmarkTaskDatabaseService.saveOrUpdate(cpuBenchmarkTask);
+                    benchmarkTaskDatabaseService.saveOrUpdate(cpuBenchmarkTask);
                     blenderBenchmarkService.processReceivedBenchmark(cpuBenchmarkTask.getBenchmarkUUID());
                     break;
                 case CPU_GPU:
-                    blenderBenchmarkTaskDatabaseService.saveOrUpdate(cpuBenchmarkTask);
+                    benchmarkTaskDatabaseService.saveOrUpdate(cpuBenchmarkTask);
                     for (BlenderBenchmarkTask gpuTask : gpuTasks) {
-                        blenderBenchmarkTaskDatabaseService.saveOrUpdate(gpuTask);
+                        benchmarkTaskDatabaseService.saveOrUpdate(gpuTask);
                         benchmarks.add(gpuTask.getBenchmarkUUID());
                     }
                     benchmarks.add(cpuBenchmarkTask.getBenchmarkUUID());
@@ -291,7 +291,7 @@ public class NodeRenderController {
                     break;
                 case GPU:
                     for (BlenderBenchmarkTask gpuTask : gpuTasks) {
-                        blenderBenchmarkTaskDatabaseService.saveOrUpdate(gpuTask);
+                        benchmarkTaskDatabaseService.saveOrUpdate(gpuTask);
                         benchmarks.add(gpuTask.getBenchmarkUUID());
                     }
                     blenderBenchmarkService.processReceivedBenchmarks(benchmarks);
@@ -313,8 +313,8 @@ public class NodeRenderController {
     }
 
     @Autowired
-    public void setBlenderBenchmarkTaskDatabaseService(BlenderBenchmarkTaskDatabaseService blenderBenchmarkTaskDatabaseService) {
-        this.blenderBenchmarkTaskDatabaseService = blenderBenchmarkTaskDatabaseService;
+    public void setBenchmarkTaskDatabaseService(BenchmarkTaskDatabaseService benchmarkTaskDatabaseService) {
+        this.benchmarkTaskDatabaseService = benchmarkTaskDatabaseService;
     }
 
     @Autowired
