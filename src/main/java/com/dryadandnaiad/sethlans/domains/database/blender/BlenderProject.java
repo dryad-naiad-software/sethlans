@@ -43,7 +43,7 @@ import java.util.List;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class BlenderProject extends AbstractEntityClass {
+public class BlenderProject extends AbstractEntityClass implements Comparable<BlenderProject> {
     private RenderOutputFormat renderOutputFormat;
     private ProjectType projectType;
     private BlenderEngine blenderEngine;
@@ -134,5 +134,14 @@ public class BlenderProject extends AbstractEntityClass {
                 ", allImagesProcessed='" + allImagesProcessed + '\'' +
                 ", totalNumOfFrames=" + getTotalNumOfFrames() +
                 '}';
+    }
+
+    @Override
+    public int compareTo(BlenderProject o) {
+        if (getId() < o.getId()) {
+            return 1;
+        } else {
+            return -1;
+        }
     }
 }

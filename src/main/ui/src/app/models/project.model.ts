@@ -53,5 +53,6 @@ export class Project {
 
   constructor() {
     this.projectStatus = ProjectStatus.Added;
+    this.projectName = '';
   }
 }

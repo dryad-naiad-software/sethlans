@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.domains.info.ProjectInfo;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.google.common.collect.Lists;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -39,6 +40,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansQueryUtils.convertBlenderProjectToProjectInfo;
@@ -86,9 +88,12 @@ public class ProjectUIController {
     public List<ProjectInfo> getProjects() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-            return convertBlenderProjectsToProjectInfo(blenderProjectDatabaseService.listWithoutFramePart());
+            List<BlenderProject> blenderProjects = blenderProjectDatabaseService.listWithoutFramePart();
+            blenderProjects.sort(Collections.reverseOrder());
+            return convertBlenderProjectsToProjectInfo(Lists.reverse(blenderProjects));
         } else {
-            return convertBlenderProjectsToProjectInfo(blenderProjectDatabaseService.getProjectsByUserWithoutFrameParts(auth.getName()));
+            List<BlenderProject> blenderProjects = blenderProjectDatabaseService.getProjectsByUserWithoutFrameParts(auth.getName());
+            return convertBlenderProjectsToProjectInfo(Lists.reverse(blenderProjects));
         }
 
     }
@@ -99,11 +104,11 @@ public class ProjectUIController {
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
             List<BlenderProject> projects = blenderProjectDatabaseService.listWithoutFramePart();
             List<BlenderProject> last5projects = projects.subList(Math.max(projects.size() - 5, 0), projects.size());
-            return convertBlenderProjectsToProjectInfo(last5projects);
+            return convertBlenderProjectsToProjectInfo(Lists.reverse(last5projects));
         } else {
             List<BlenderProject> projects = blenderProjectDatabaseService.getProjectsByUserWithoutFrameParts(auth.getName());
             List<BlenderProject> last5projects = projects.subList(Math.max(projects.size() - 5, 0), projects.size());
-            return convertBlenderProjectsToProjectInfo(last5projects);
+            return convertBlenderProjectsToProjectInfo(Lists.reverse(last5projects));
         }
     }
 

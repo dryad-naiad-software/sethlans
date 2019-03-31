@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -41,8 +41,7 @@ export class ProjectUploadComponent implements OnInit {
   }
 
   loadProjectDetails(event) {
-    let response: any = JSON.parse(event.xhr.response);
-    this.projectWizard.project = <Project>response;
+    this.projectWizard.project = <Project>event.originalEvent.body;
     if (this.projectWizard.project.projectType == ProjectType.STILL_IMAGE) {
       this.projectWizard.project.endFrame = 1;
       this.projectWizard.project.stepFrame = 1;
@@ -53,12 +52,9 @@ export class ProjectUploadComponent implements OnInit {
     this.projectWizard.project.useParts = true;
     this.projectWizard.project.partsPerFrame = 4;
     this.projectWizard.projectLoaded = true;
+    this.projectWizard.project.projectName = '';
     this.projectWizard.currentProgress = ProjectWizardProgress.PROJECT_DETAILS;
   }
 
-  beforeSend(event: any) {
-    this.uploading = true;
-    event.xhr.setRequestHeader('X-XSRF-TOKEN', document.cookie.slice(document.cookie.indexOf('TOKEN=') + 'TOKEN='.length));
-  }
 
 }

@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2018 Dryad and Naiad Software LLC
+  ~ Copyright (c) 2019 Dryad and Naiad Software LLC
   ~
   ~ This program is free software; you can redistribute it and/or
   ~ modify it under the terms of the GNU General Public License
@@ -48,8 +48,8 @@
   </ul>
 
   <div class="text-center">
-    <p-fileUpload name="projectFile" (onBeforeSend)="beforeSend($event)" mode="basic"
-                  (onUpload)="loadProjectDetails($event)"
+    <p-fileUpload name="projectFile" mode="basic"
+                  (onUpload)="loadProjectDetails($event)" withCredentials="true"
                   url="/api/project_form/upload_project/"
                   accept=".blend,.zip"></p-fileUpload>
   </div>
