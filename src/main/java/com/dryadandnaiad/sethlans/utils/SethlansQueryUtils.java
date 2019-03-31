@@ -31,14 +31,17 @@ import com.dryadandnaiad.sethlans.forms.setup.subclasses.MailSettings;
 import com.dryadandnaiad.sethlans.forms.setup.subclasses.SetupNode;
 import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.google.common.base.Throwables;
+import com.sun.management.OperatingSystemMXBean;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.management.MBeanServerConnection;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -102,6 +105,24 @@ public class SethlansQueryUtils {
         return ROUNDED_DOUBLE_DECIMALFORMAT.format(percentageUsed) + "%";
     }
 
+    public static String getCPUUsage() {
+        try {
+            MBeanServerConnection mbsc = ManagementFactory.getPlatformMBeanServer();
+
+            OperatingSystemMXBean osMBean = ManagementFactory.newPlatformMXBeanProxy(
+                    mbsc, ManagementFactory.OPERATING_SYSTEM_MXBEAN_NAME, OperatingSystemMXBean.class);
+
+            double cpu = osMBean.getProcessCpuLoad();
+
+            double percent = cpu * 100;
+
+            return ROUNDED_DOUBLE_DECIMALFORMAT.format(percent) + "%";
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     public static String getGPUDeviceString(SetupNode setupNode) {
         if (!setupNode.getSelectedGPUDeviceIDs().isEmpty()) {
@@ -143,18 +164,18 @@ public class SethlansQueryUtils {
         sethlansSettings.setRootDir(SethlansConfigUtils.getProperty(SethlansConfigKeys.ROOT_DIR, SethlansConfigUtils.getConfigFile()));
         sethlansSettings.setLogLevel(SethlansConfigUtils.getProperty(SethlansConfigKeys.LOG_LEVEL, SethlansConfigUtils.getConfigFile()));
         sethlansSettings.setConfigureMail(Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_SERVER_CONFIGURED, SethlansConfigUtils.getConfigFile())));
-        if(sethlansSettings.isConfigureMail()){
+        if (sethlansSettings.isConfigureMail()) {
             MailSettings mailSettings = new MailSettings();
             mailSettings.setReplyToAddress(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_REPLYTO));
             mailSettings.setMailHost(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_HOST));
             mailSettings.setMailPort(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_PORT));
             mailSettings.setSslEnabled(Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_SSL_ENABLE)));
             mailSettings.setStartTLSEnabled(Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_TLS_ENABLE)));
-            if(mailSettings.isStartTLSEnabled()) {
+            if (mailSettings.isStartTLSEnabled()) {
                 mailSettings.setStartTLSRequired(Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_TLS_REQUIRED)));
             }
             mailSettings.setSmtpAuth(Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_USE_AUTH)));
-            if(mailSettings.isSmtpAuth()) {
+            if (mailSettings.isSmtpAuth()) {
                 mailSettings.setUsername(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_USER));
             }
             sethlansSettings.setMailSettings(mailSettings);
@@ -193,7 +214,6 @@ public class SethlansQueryUtils {
         }
         return hostname.toUpperCase();
     }
-
 
 
     public static String getIP() {
@@ -319,6 +339,7 @@ public class SethlansQueryUtils {
 
         return String.format("%02d:%02d:%02d", hour, minute, second);
     }
+
     public static List<String> getChallengeQuestionList() {
         List<String> questionList = new ArrayList<>();
         questionList.add("What is the color you hate the most?");

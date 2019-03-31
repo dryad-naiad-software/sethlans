@@ -367,6 +367,7 @@ public class AdminController {
         systemInfo.setJvmTotalMem(SethlansQueryUtils.getJVMTotalMemory());
         systemInfo.setJvmUsedMem(SethlansQueryUtils.getJVMUsedMemory());
         systemInfo.setPercentageUsedMem(SethlansQueryUtils.getJVMPercentageUsed());
+        systemInfo.setCpuUsage(SethlansQueryUtils.getCPUUsage());
         return systemInfo;
     }
 

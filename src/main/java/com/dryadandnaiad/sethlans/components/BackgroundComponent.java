@@ -39,7 +39,6 @@ public class BackgroundComponent {
     @PostConstruct
     public void startSystemTray() {
         systrayService.start();
-
     }
 
     @Autowired

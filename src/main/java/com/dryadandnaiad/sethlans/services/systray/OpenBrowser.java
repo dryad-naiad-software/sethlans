@@ -36,16 +36,30 @@ import java.net.URL;
  */
 public class OpenBrowser {
     private static final Logger LOG = LoggerFactory.getLogger(OpenBrowser.class);
+    private static String ip = SethlansQueryUtils.getIP();
+    private static String port = SethlansQueryUtils.getPort();
 
-    public static void start() throws MalformedURLException {
-        String ip = SethlansQueryUtils.getIP();
-        String port = SethlansQueryUtils.getPort();
-        URL url = new URL("https://" + ip + ":" + port + "/");
-        openWebpage(url);
-
+    static void openHelp() {
+        URL url = null;
+        try {
+            url = new URL("https://sethlans-docs.dryadandnaiad.com/");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        openPage(url);
     }
 
-    public static void openWebpage(URL url) {
+    static void openSethlansLink(String location) {
+        URL url = null;
+        try {
+            url = new URL("https://" + ip + ":" + port + location);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        openPage(url);
+    }
+
+    private static void openPage(URL url) {
         Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
         if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
             try {
@@ -58,10 +72,4 @@ public class OpenBrowser {
     }
 
 
-    public static void settings() throws MalformedURLException {
-        String ip = SethlansQueryUtils.getIP();
-        String port = SethlansQueryUtils.getPort();
-        URL url = new URL("https://" + ip + ":" + port + "/" + "settings");
-        openWebpage(url);
-    }
 }

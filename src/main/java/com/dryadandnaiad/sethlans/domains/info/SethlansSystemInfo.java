@@ -35,4 +35,5 @@ public class SethlansSystemInfo {
     private String jvmTotalMem;
     private String jvmUsedMem;
     private String percentageUsedMem;
+    private String cpuUsage;
 }

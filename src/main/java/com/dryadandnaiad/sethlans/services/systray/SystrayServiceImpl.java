@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.services.systray;
 
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -34,12 +35,12 @@ import java.awt.*;
 @Service
 public class SystrayServiceImpl implements SystrayService {
     private SethlansSysTray sysTray;
-    private SethlansMode mode;
 
     @Async
     @Override
     public void start() {
         if (SystemTray.isSupported()) {
+            SethlansMode mode = SethlansQueryUtils.getMode();
             sysTray = new SethlansSysTray();
             sysTray.setup(mode);
         }
@@ -52,4 +53,5 @@ public class SystrayServiceImpl implements SystrayService {
         }
 
     }
+
 }
