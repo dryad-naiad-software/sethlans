@@ -23,11 +23,13 @@ import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.info.BlenderBinaryInfo;
 import com.dryadandnaiad.sethlans.domains.info.GettingStartedInfo;
+import com.dryadandnaiad.sethlans.domains.info.Login;
 import com.dryadandnaiad.sethlans.domains.info.NodeItem;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.services.network.MulticastReceiverService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
@@ -42,10 +44,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.writeProperty;
@@ -66,6 +65,8 @@ public class AdminServerController {
     private NodeDiscoveryService nodeDiscoveryService;
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
+    private MulticastReceiverService multicastReceiverService;
+
 
 
     @GetMapping(value = "/get_current_binary_os/{version}")
@@ -169,6 +170,42 @@ public class AdminServerController {
         return newBlenderVersions;
     }
 
+    @PostMapping(value = "/server_to_node_auth_scan")
+    public boolean serverToNodeAuthScan(Login login) {
+        Set<String> foundNodes = multicastReceiverService.currentSethlansClients();
+        if (foundNodes != null) {
+            String accessKey = getAccessKeyFromServer();
+            for (String node : foundNodes) {
+                String[] split = node.split(":");
+                String ip = split[0];
+                String port = split[1];
+                RestAssured.useRelaxedHTTPSValidation();
+                RestAssured.baseURI = "https://" + ip;
+                RestAssured.port = Integer.parseInt(port);
+                RestAssured.basePath = "/";
+                Response response =
+                        given().
+                                when().get("/login").
+                                then().extract().response();
+                String token = response.cookie("XSRF-TOKEN");
+
+                response = given().log().ifValidationFails()
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie("XSRF-TOKEN", token).param("username", login.getUsername().toLowerCase()).param("password", login.getPassword())
+                        .when().post("/login").then().statusCode(302).extract().response();
+
+                RestAssured.sessionId = response.cookie("JSESSIONID");
+
+                given().log().ifValidationFails()
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie("XSRF-TOKEN", token).param("access_key", accessKey)
+                        .when().post("/api/setup/add_access_key");
+            }
+
+        }
+        return false;
+    }
+
     @PostMapping(value = "/server_to_node_auth")
     public boolean serverToNodeAuth(HttpEntity<String> httpEntity) {
         try {
@@ -251,4 +288,8 @@ public class AdminServerController {
         this.sethlansAPIConnectionService = sethlansAPIConnectionService;
     }
 
+    @Autowired
+    public void setMulticastReceiverService(MulticastReceiverService multicastReceiverService) {
+        this.multicastReceiverService = multicastReceiverService;
+    }
 }
