@@ -20,6 +20,8 @@
 package com.dryadandnaiad.sethlans.components;
 
 import com.dryadandnaiad.sethlans.services.systray.SystrayService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,11 +36,13 @@ import javax.annotation.PostConstruct;
 @Component
 public class BackgroundComponent {
     private SystrayService systrayService;
+    private static final Logger LOG = LoggerFactory.getLogger(BackgroundComponent.class);
 
 
     @PostConstruct
     public void startSystemTray() {
         systrayService.start();
+        LOG.debug("Starting System Tray");
     }
 
     @Autowired

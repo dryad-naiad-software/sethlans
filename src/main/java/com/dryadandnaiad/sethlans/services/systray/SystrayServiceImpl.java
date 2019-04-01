@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.services.systray;
 
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -35,12 +36,20 @@ import java.awt.*;
 @Service
 public class SystrayServiceImpl implements SystrayService {
     private SethlansSysTray sysTray;
+    @Value("${sethlans.firsttime}")
+    private boolean firstTime;
 
     @Async
     @Override
     public void start() {
         if (SystemTray.isSupported()) {
-            SethlansMode mode = SethlansQueryUtils.getMode();
+            SethlansMode mode = null;
+            if (firstTime) {
+                mode = SethlansMode.SETUP;
+            } else {
+                mode = SethlansQueryUtils.getMode();
+
+            }
             sysTray = new SethlansSysTray();
             sysTray.setup(mode);
         }
