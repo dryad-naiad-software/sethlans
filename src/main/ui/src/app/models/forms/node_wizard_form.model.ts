@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,10 +21,12 @@ import {NodeWizardProgress} from '../../enums/node_wizard_progress.enum';
 import {NodeAddType} from '../../enums/node_wizard_add_type.enum';
 import {NodeItem} from '../node_item.model';
 import {NodeInfo} from '../node_info.model';
+import {Login} from '../login.model';
 
 export class NodeWizardForm {
   currentProgress: NodeWizardProgress;
   addType: NodeAddType;
+  nodeLogin: Login;
   multipleNodeAdd: boolean;
   multipleNodes: NodeItem[];
   singleNode: NodeItem;
@@ -37,6 +39,7 @@ export class NodeWizardForm {
   constructor() {
     this.currentProgress = NodeWizardProgress.Start;
     this.finished = false;
+    this.nodeLogin = new Login();
     this.summaryComplete = false;
     this.multipleNodeAdd = false;
   }

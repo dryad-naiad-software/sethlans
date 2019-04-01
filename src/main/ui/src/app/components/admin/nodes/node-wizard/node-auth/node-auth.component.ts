@@ -17,7 +17,8 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {NodeWizardForm} from '../../../../../models/forms/node_wizard_form.model';
 
 @Component({
   selector: 'app-node-auth',
@@ -25,11 +26,20 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./node-auth.component.scss']
 })
 export class NodeAuthComponent implements OnInit {
+  @Input() nodeWizardForm: NodeWizardForm;
+  @Output() disableNext = new EventEmitter();
+  @Output() clickNext = new EventEmitter();
+  showPass: boolean;
 
   constructor() {
+    this.showPass = false;
   }
 
   ngOnInit() {
+  }
+
+  enableNext() {
+    this.disableNext.emit(true);
   }
 
 }

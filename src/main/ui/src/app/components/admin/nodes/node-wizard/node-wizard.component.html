@@ -105,7 +105,9 @@
             </fieldset>
           </form>
         </div>
-        <app-node-auth *ngIf="nodeWizardForm.currentProgress == wizardProgress.Auth"></app-node-auth>
+        <app-node-auth [nodeWizardForm]="nodeWizardForm" (disableNext)="disableNext($event)"
+                       (clickNext)="next()"
+                       *ngIf="nodeWizardForm.currentProgress == wizardProgress.Auth"></app-node-auth>
         <app-node-manual-add [nodeWizardForm]="nodeWizardForm"
                              (disableNext)="disableNext($event)"
                              (clickNext)="next()"

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -114,8 +114,12 @@ export class NodeWizardComponent implements OnInit {
   next() {
     switch (this.nodeWizardForm.currentProgress) {
       case NodeWizardProgress.Start:
-        this.nodeWizardForm.currentProgress = NodeWizardProgress.Add;
+        this.nodeWizardForm.currentProgress = NodeWizardProgress.Auth;
         this.previousDisabled = false;
+        break;
+      case NodeWizardProgress.Auth:
+        this.nodeWizardForm.currentProgress = NodeWizardProgress.Add;
+        this.nextDisabled = true;
         break;
       case NodeWizardProgress.Add:
         this.nodeWizardForm.currentProgress = NodeWizardProgress.Summary;
@@ -126,8 +130,11 @@ export class NodeWizardComponent implements OnInit {
 
   previous() {
     switch (this.nodeWizardForm.currentProgress) {
-      case NodeWizardProgress.Add:
+      case NodeWizardProgress.Auth:
         this.nodeWizardForm.currentProgress = NodeWizardProgress.Start;
+        break;
+      case NodeWizardProgress.Add:
+        this.nodeWizardForm.currentProgress = NodeWizardProgress.Auth;
         break;
       case NodeWizardProgress.Summary:
         this.nodeWizardForm.currentProgress = NodeWizardProgress.Add;
