@@ -68,6 +68,7 @@ export class SethlansSettingsComponent implements OnInit {
     this.modalService.open(content, options);
   }
 
+
   submit() {
     const httpOptions = {
       headers: new HttpHeaders({

@@ -62,9 +62,7 @@ export class GetStartedWizardComponent implements OnInit {
   }
 
   setOnStart() {
-    console.log(this.onStartCheckBox);
     this.http.get('/api/management/change_get_started_wizard/?value=' + this.onStartCheckBox).subscribe();
-
   }
 
   disableNext(value: boolean) {

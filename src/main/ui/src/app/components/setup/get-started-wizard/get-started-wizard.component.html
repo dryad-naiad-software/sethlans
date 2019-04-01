@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2018 Dryad and Naiad Software LLC
+  ~ Copyright (c) 2019 Dryad and Naiad Software LLC
   ~
   ~ This program is free software; you can redistribute it and/or
   ~ modify it under the terms of the GNU General Public License
@@ -68,11 +68,6 @@
             <li>Setting up Server to Node Authorization</li>
             <li>Add Nodes to this Server</li>
           </ul>
-          <div class="form-group float-right">
-            <input type="checkbox" id="onStartCheckBox" name="onStartCheckBox" [(ngModel)]="onStartCheckBox"
-                   (change)="setOnStart()">
-            <label for="onStartCheckBox">&nbsp;Show this wizard instead of Dashboard</label>
-          </div>
         </div>
         <app-wizard-node-auth [getStartedWizardForm]="getStartedWizardForm"
                               (disableNext)="disableNext($event)"

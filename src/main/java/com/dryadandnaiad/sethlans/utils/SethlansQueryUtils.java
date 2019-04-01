@@ -50,6 +50,8 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
 
+import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
+
 /**
  * Created Mario Estrella on 3/9/17.
  * Dryad and Naiad Software LLC
@@ -161,6 +163,7 @@ public class SethlansQueryUtils {
         sethlansSettings.setSethlansIP(SethlansQueryUtils.getIP());
         sethlansSettings.setSethlansURL(SethlansConfigUtils.getProperty(SethlansConfigKeys.SETHLANS_URL, SethlansConfigUtils.getConfigFile()));
         sethlansSettings.setMode(SethlansMode.valueOf(mode));
+        sethlansSettings.setGetStarted(Boolean.parseBoolean(getProperty(SethlansConfigKeys.GETTING_STARTED)));
         sethlansSettings.setRootDir(SethlansConfigUtils.getProperty(SethlansConfigKeys.ROOT_DIR, SethlansConfigUtils.getConfigFile()));
         sethlansSettings.setLogLevel(SethlansConfigUtils.getProperty(SethlansConfigKeys.LOG_LEVEL, SethlansConfigUtils.getConfigFile()));
         sethlansSettings.setConfigureMail(Boolean.parseBoolean(SethlansConfigUtils.getProperty(SethlansConfigKeys.MAIL_SERVER_CONFIGURED, SethlansConfigUtils.getConfigFile())));

@@ -154,6 +154,7 @@ public class AdminController {
             writeProperty(SethlansConfigKeys.SETHLANS_IP, sethlansSettingsUpdate.getSethlansIP());
             writeProperty(SethlansConfigKeys.LOG_LEVEL, sethlansSettingsUpdate.getLogLevel());
             writeProperty(SethlansConfigKeys.SETHLANS_URL, sethlansSettingsUpdate.getSethlansURL());
+            writeProperty(SethlansConfigKeys.GETTING_STARTED, Boolean.toString(sethlansSettingsUpdate.isGetStarted()));
             writeProperty(SethlansConfigKeys.MAIL_SERVER_CONFIGURED, Boolean.toString(sethlansSettingsUpdate.isConfigureMail()));
             if (sethlansSettingsUpdate.isConfigureMail()) {
                 writeProperty(SethlansConfigKeys.MAIL_HOST, sethlansSettingsUpdate.getMailSettings().getMailHost());

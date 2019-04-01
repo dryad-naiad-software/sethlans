@@ -30,6 +30,7 @@ export class NodeAuthComponent implements OnInit {
   @Output() disableNext = new EventEmitter();
   @Output() clickNext = new EventEmitter();
   showPass: boolean;
+  skipAuth: boolean;
 
   constructor() {
     this.showPass = false;

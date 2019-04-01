@@ -27,7 +27,8 @@
       </div>
       <div class="card-body">
         <div *ngIf="alertSuccess" class="alert alert-success">
-          <h6 class="text-center"><a href="/restart">Restart Sethlans</a> for changes to take effect.</h6>
+          <h6 class="text-center">Certain changes will require you to<a href="/restart">Restart Sethlans</a> to take
+            effect.</h6>
         </div>
         <div *ngIf="alertFailure" class="alert alert-warning">
           <h6 class="text-center">No new changes detected.</h6>
@@ -111,6 +112,13 @@
                     <option value="INFO">INFO</option>
                     <option value="DEBUG">DEBUG</option>
                   </select>
+                  <div>
+                    <br/>
+                    Show Get Started Wizard on Login
+                    <span class="fas"
+                          [ngClass]="sethlansConfig.getStarted ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
+                          (click)="sethlansConfig.getStarted = !sethlansConfig.getStarted"></span>
+                  </div>
                 </div>
               </div>
             </div>
