@@ -58,11 +58,11 @@ export class WizardAddNodesComponent implements OnInit {
           value.active = false;
         }
         if (idx === array.length - 1) {
-          var wizard = this;
+          let wizard = this;
           setTimeout(function () {
             wizard.refreshList();
-            this.getStartedWizardForm.scanComplete = true;
-          }, 1000);
+            wizard.getStartedWizardForm.scanComplete = true;
+          }, array.length * 500);
         }
       });
     });
