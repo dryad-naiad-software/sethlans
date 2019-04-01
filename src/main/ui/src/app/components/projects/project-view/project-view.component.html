@@ -103,7 +103,7 @@
                  class="float-right"
                  alt="placeholder">
             <div *ngIf="thumbnailStatus">
-              <a *ngIf="currentProject.projectType === projectTypes.STILL_IMAGE" [href]="modalImage"
+              <a *ngIf="currentProject.projectType === projectTypes.STILL_IMAGE" [href]="stillImage"
                  target="_blank">
                 <img [src]="currentThumbnail"
                      height="100"

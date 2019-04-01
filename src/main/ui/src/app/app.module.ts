@@ -97,6 +97,7 @@ import {ForgotPassComponent} from './components/forgot-pass/forgot-pass.componen
 import {RenderHistoryComponent} from './components/admin/render-history/render-history.component';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {ProjectFramesComponent} from './components/projects/project-frames/project-frames.component';
+import {NodeAuthComponent} from './components/admin/nodes/node-wizard/node-auth/node-auth.component';
 
 
 @NgModule({
@@ -151,6 +152,7 @@ import {ProjectFramesComponent} from './components/projects/project-frames/proje
     ForgotPassComponent,
     RenderHistoryComponent,
     ProjectFramesComponent,
+    NodeAuthComponent,
   ],
   imports: [
     BrowserModule,

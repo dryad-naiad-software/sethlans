@@ -49,7 +49,7 @@ export class ProjectViewComponent implements OnInit {
   remainingQueue: number;
   thumbnailStatus: boolean;
   completedFrames: number;
-  modalImage: any;
+  stillImage: any;
   currentThumbnail: any;
   placeholder: any = 'assets/images/placeholder.svg';
   nodesReady: boolean = false;
@@ -79,7 +79,7 @@ export class ProjectViewComponent implements OnInit {
       this.getRemainingQueueSize();
       this.getThumbnailStatus();
       this.getNodeStatus();
-      this.getProjectModalImage();
+      this.getProjectStillImage();
       this.getCompletedFrames();
       this.disableButton = false;
     });
@@ -130,9 +130,9 @@ export class ProjectViewComponent implements OnInit {
     });
   }
 
-  getProjectModalImage(){
+  getProjectStillImage() {
     if(this.currentProject.projectStatus == ProjectStatus.Finished) {
-      this.modalImage = '/api/project_ui/modal_image/' + this.id + '/';
+      this.stillImage = '/api/project_ui/still_image/' + this.id + '/';
     }
   }
 

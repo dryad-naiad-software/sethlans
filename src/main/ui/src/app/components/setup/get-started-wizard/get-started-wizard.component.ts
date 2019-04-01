@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -139,6 +139,8 @@ export class GetStartedWizardComponent implements OnInit {
         break;
       case GetStartedProgress.ADD_NODES:
         this.getStartedWizardForm.currentProgress = GetStartedProgress.NODE_AUTH;
+        this.getStartedWizardForm.nodesToAdd = [];
+        this.getStartedWizardForm.scanComplete = false;
         this.disablePrevious = false;
     }
 

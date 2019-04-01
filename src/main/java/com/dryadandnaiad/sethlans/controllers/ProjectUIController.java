@@ -225,7 +225,7 @@ public class ProjectUIController {
     }
 
 
-    @GetMapping("/modal_image/{id}")
+    @GetMapping("/still_image/{id}")
     public ResponseEntity<byte[]> getProjectImage(@PathVariable Long id) {
         BlenderProject blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
         if (checkProjectState(blenderProject)) {

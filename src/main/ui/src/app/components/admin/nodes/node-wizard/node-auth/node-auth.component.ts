@@ -17,10 +17,19 @@
  *
  */
 
-export enum NodeWizardProgress {
-  Start,
-  Auth,
-  Add,
-  Summary,
-  Finished
+import {Component, OnInit} from '@angular/core';
+
+@Component({
+  selector: 'app-node-auth',
+  templateUrl: './node-auth.component.html',
+  styleUrls: ['./node-auth.component.scss']
+})
+export class NodeAuthComponent implements OnInit {
+
+  constructor() {
+  }
+
+  ngOnInit() {
+  }
+
 }
