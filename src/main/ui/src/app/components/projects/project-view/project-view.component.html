@@ -59,13 +59,13 @@
               </button>
 
               <button placement="bottom"
-                      ngbTooltip="Images"
+                      ngbTooltip="Download Image(s)"
                       *ngIf="currentProject.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
                       class="btn btn-outline-dark btn-sm" type="button" (click)="downloadProject(currentProject.id)">
                 <span class="fa fa-images"></span>
               </button>
               <button placement="bottom"
-                      ngbTooltip="Video"
+                      ngbTooltip="Download Video"
                       *ngIf="currentProject.projectStatus.valueOf().toString() == 'Finished'.valueOf() && currentProject.outputFormat.valueOf().toString() != 'PNG'"
                       class="btn btn-outline-dark btn-sm" type="button" (click)="downloadVideo(currentProject.id)">
                 <span class="fa fa-film"></span>

@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2018 Dryad and Naiad Software LLC
+  ~ Copyright (c) 2019 Dryad and Naiad Software LLC
   ~
   ~ This program is free software; you can redistribute it and/or
   ~ modify it under the terms of the GNU General Public License
@@ -30,6 +30,13 @@
                     [ngClass]="nodeWizardForm.currentProgress === wizardProgress.Start ? 'btn-outline-primary':'btn-outline-dark'"
                     (click)="nodeWizardForm.currentProgress = wizardProgress.Start">
               <i class="fas fa-flag-checkered"></i></button>
+          </li>
+          <li>
+            <button type="button" class="btn btn-circle btn-lg"
+                    [disabled]="nodeWizardForm.addType == null"
+                    [ngClass]="nodeWizardForm.currentProgress === wizardProgress.Auth ? 'btn-outline-primary':'btn-outline-dark'"
+                    (click)="nodeWizardForm.currentProgress = wizardProgress.Auth">
+              <i class="fas fa-key"></i></button>
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
@@ -98,6 +105,7 @@
             </fieldset>
           </form>
         </div>
+        <app-node-auth *ngIf="nodeWizardForm.currentProgress == wizardProgress.Auth"></app-node-auth>
         <app-node-manual-add [nodeWizardForm]="nodeWizardForm"
                              (disableNext)="disableNext($event)"
                              (clickNext)="next()"

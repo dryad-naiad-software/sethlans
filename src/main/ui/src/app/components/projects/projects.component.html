@@ -135,16 +135,16 @@
                   <span class="fa fa-search-plus"></span>
                 </button>
 
-                <button placement="bottom"
-                        ngbTooltip="Images"
-                        *ngIf="project.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
-                        class="btn btn-outline-dark btn-sm" type="button" (click)="downloadProject(project.id)">
+                  <button placement="right"
+                          ngbTooltip="Download Image(s)"
+                          *ngIf="project.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
+                          class="btn btn-outline-dark btn-sm" type="button" (click)="downloadProject(project.id)">
                   <span class="fa fa-images"></span>
                 </button>
-                <button placement="bottom"
-                        ngbTooltip="Video"
-                        *ngIf="project.projectStatus.valueOf().toString() == 'Finished'.valueOf() && project.outputFormat.valueOf().toString() != 'PNG'"
-                        class="btn btn-outline-dark btn-sm" type="button" (click)="downloadVideo(project.id)">
+                  <button placement="right"
+                          ngbTooltip="Download Video"
+                          *ngIf="project.projectStatus.valueOf().toString() == 'Finished'.valueOf() && project.outputFormat.valueOf().toString() != 'PNG'"
+                          class="btn btn-outline-dark btn-sm" type="button" (click)="downloadVideo(project.id)">
                   <span class="fa fa-film"></span>
                 </button>
                 <button placement="bottom"
