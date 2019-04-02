@@ -48,6 +48,7 @@ export class NodeWizardComponent implements OnInit {
     this.http.get('/api/management/get_key_from_server', {responseType: 'text'}).subscribe((key: string) => this.accessKey = key);
   }
 
+
   disableNext(value: boolean) {
     this.nextDisabled = value;
   }

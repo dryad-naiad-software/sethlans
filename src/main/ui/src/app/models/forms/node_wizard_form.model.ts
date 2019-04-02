@@ -26,6 +26,7 @@ import {Login} from '../login.model';
 export class NodeWizardForm {
   currentProgress: NodeWizardProgress;
   addType: NodeAddType;
+  dontUseAuth: boolean;
   nodeLogin: Login;
   multipleNodeAdd: boolean;
   multipleNodes: NodeItem[];
@@ -34,13 +35,16 @@ export class NodeWizardForm {
   summaryComplete: boolean;
   nodeToAdd: NodeInfo;
   nodesToAdd: NodeInfo[];
+  authOptionSelected: boolean;
 
 
   constructor() {
     this.currentProgress = NodeWizardProgress.Start;
     this.finished = false;
+    this.dontUseAuth = false;
     this.nodeLogin = new Login();
     this.summaryComplete = false;
     this.multipleNodeAdd = false;
+    this.authOptionSelected = false;
   }
 }

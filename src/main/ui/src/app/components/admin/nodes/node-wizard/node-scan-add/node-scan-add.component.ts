@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,7 +21,7 @@ import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild
 import {NodeWizardForm} from '../../../../../models/forms/node_wizard_form.model';
 import {NodeInfo} from '../../../../../models/node_info.model';
 import {Observable} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {SelectionModel} from '@angular/cdk/collections';
 
@@ -46,7 +46,18 @@ export class NodeScanAddComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.nodeWizardForm.nodesToAdd = [];
-    this.loadTable();
+    if (!this.nodeWizardForm.dontUseAuth) {
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+        })
+      };
+      this.http.post('/api/management/server_to_node_auth_scan', JSON.stringify(this.nodeWizardForm.nodeLogin), httpOptions).subscribe(() => {
+        this.loadTable();
+      });
+    } else {
+      this.loadTable();
+    }
     this.disableNext.emit(true);
   }
 
@@ -59,6 +70,10 @@ export class NodeScanAddComponent implements OnInit, AfterViewInit {
       setTimeout(() => this.scanTableDataSource.paginator = this.scanTablePaginator);
 
     });
+  }
+
+  submitAuth() {
+
   }
 
   getScannedNodes(): Observable<NodeInfo[]> {

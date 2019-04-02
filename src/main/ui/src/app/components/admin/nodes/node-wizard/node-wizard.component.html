@@ -35,12 +35,14 @@
             <button type="button" class="btn btn-circle btn-lg"
                     [disabled]="nodeWizardForm.addType == null"
                     [ngClass]="nodeWizardForm.currentProgress === wizardProgress.Auth ? 'btn-outline-primary':'btn-outline-dark'"
-                    (click)="nodeWizardForm.currentProgress = wizardProgress.Auth">
+                    (click)="nodeWizardForm.currentProgress = wizardProgress.Auth"
+                    placement="top"
+                    ngbTooltip="Node Authorization">
               <i class="fas fa-key"></i></button>
           </li>
           <li>
             <button type="button" class="btn btn-circle btn-lg"
-                    [disabled]="nodeWizardForm.addType == null"
+                    [disabled]="!nodeWizardForm.authOptionSelected"
                     [ngClass]="nodeWizardForm.currentProgress === wizardProgress.Add ? 'btn-outline-primary':'btn-outline-dark'"
                     placement="top"
                     ngbTooltip="Node Form" (click)="nodeWizardForm.currentProgress = wizardProgress.Add">

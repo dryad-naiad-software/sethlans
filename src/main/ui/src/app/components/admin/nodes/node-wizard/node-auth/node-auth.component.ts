@@ -30,17 +30,28 @@ export class NodeAuthComponent implements OnInit {
   @Output() disableNext = new EventEmitter();
   @Output() clickNext = new EventEmitter();
   showPass: boolean;
-  skipAuth: boolean;
+
 
   constructor() {
     this.showPass = false;
   }
 
   ngOnInit() {
+    this.disableNext.emit(true);
   }
 
-  enableNext() {
-    this.disableNext.emit(true);
+
+  checkAuthOption() {
+    if (this.nodeWizardForm.dontUseAuth) {
+      this.nodeWizardForm.authOptionSelected = true;
+      this.disableNext.emit(false);
+    } else if (!this.nodeWizardForm.dontUseAuth && !this.nodeWizardForm.nodeLogin.loginNotReady()) {
+      this.nodeWizardForm.authOptionSelected = true;
+      this.disableNext.emit(false);
+    } else {
+      this.nodeWizardForm.authOptionSelected = false;
+      this.disableNext.emit(true);
+    }
   }
 
 }
