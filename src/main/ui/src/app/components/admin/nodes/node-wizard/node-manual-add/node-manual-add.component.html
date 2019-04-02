@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2018 Dryad and Naiad Software LLC
+  ~ Copyright (c) 2019 Dryad and Naiad Software LLC
   ~
   ~ This program is free software; you can redistribute it and/or
   ~ modify it under the terms of the GNU General Public License
@@ -16,49 +16,24 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
-<ul class="nav nav-tabs p-2">
-  <li class="nav-item"><a [ngClass]="nodeWizardForm.multipleNodeAdd ? '' : 'active'" class="nav-link"
-                          (click)="nodeWizardForm.multipleNodeAdd = false; clearNode(); clearList()"
-                          href="javascript:void(0)">Single
-    Node</a></li>
-  <li class="nav-item"><a [ngClass]="nodeWizardForm.multipleNodeAdd ? 'active' : ''" class="nav-link"
-                          (click)="nodeWizardForm.multipleNodeAdd = true; clearNode(); clearList()"
-                          href="javascript:void(0)">Multiple
-    Nodes</a></li>
-</ul>
-<form #addNodeForm="ngForm" class="editForm p-2" *ngIf="!nodeWizardForm.multipleNodeAdd">
-  <br/>
-  <div class="form-group">
-    <input type="text" class="form-control" id="ipAddress" name="ipAddress"
-           [(ngModel)]="nodeWizardForm.singleNode.ipAddress" (keyup)="enableNext(); enterPress($event)"
-           required placeholder="IP Address or Hostname">
-  </div>
-  <div class="form-group">
-    <input type="number" class="form-control" id="port" name="port"
-           [(ngModel)]="nodeWizardForm.singleNode.port"
-           (keyup)="enableNext(); enterPress($event)"
-           required placeholder="Port">
-  </div>
-</form>
-<form #addMultiNodeForm="ngForm" class="editForm p-2" *ngIf="nodeWizardForm.multipleNodeAdd">
+<form>
+  <h6><u>Nodes</u></h6>
   <div class="form-row">
     <div class="col">
-      <input type="text" class="form-control form-control-sm" id="nodeAddIPAddress" name="ipAddress"
-             [(ngModel)]="nodeItem.ipAddress" (keyup)="enableAdd()"
-             required placeholder="IP Address or Hostname">
+      <input type="text" class="form-control form-control-sm" [(ngModel)]="nodeItem.ipAddress" name="ipAddress"
+             (keyup)="enableAdd()"
+             placeholder="IP Address or Hostname">
     </div>
     <div class="col">
-      <input type="number" class="form-control form-control-sm" id="nodeAddPort" name="port" [(ngModel)]="nodeItem.port"
+      <input type="number" class="form-control form-control-sm" [(ngModel)]="nodeItem.port" name="port"
              (keyup)="enableAdd()"
-             required placeholder="Port">
+             placeholder="Port">
     </div>
     <div class="col">
       <button [disabled]="addDisabled" class="btn btn-sm btn-outline-dark" (click)="addNodeToList()">Add To List
       </button>
     </div>
   </div>
-
-
   <div class="form-group">
     <hr/>
     <mat-table #nodeListTable [dataSource]="nodeListDataSource">
@@ -83,4 +58,5 @@
     <mat-paginator #nodeListPaginator [pageSize]="5" [pageSizeOptions]="[]"></mat-paginator>
 
   </div>
+
 </form>

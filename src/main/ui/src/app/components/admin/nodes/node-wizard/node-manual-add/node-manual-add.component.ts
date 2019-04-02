@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -29,13 +29,14 @@ import {NodeWizardForm} from '../../../../../models/forms/node_wizard_form.model
 })
 export class NodeManualAddComponent implements OnInit {
   @Input() nodeWizardForm: NodeWizardForm;
-  nodeItem: NodeItem;
-  @ViewChild(MatPaginator) nodeListPaginator: MatPaginator;
-  nodeListDataSource = new MatTableDataSource();
-  nodeListDisplayedColumns = ['ipAddress', 'port', 'action'];
   @Output() disableNext = new EventEmitter();
   @Output() clickNext = new EventEmitter();
   addDisabled: boolean;
+  nodeListDisplayedColumns = ['ipAddress', 'port', 'action'];
+  @ViewChild(MatPaginator) nodeListPaginator: MatPaginator;
+  nodeListDataSource = new MatTableDataSource();
+  nodeItem: NodeItem;
+
 
   constructor() {
     this.nodeItem = new NodeItem();
@@ -43,62 +44,35 @@ export class NodeManualAddComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.disableNext.emit(true);
-    this.nodeWizardForm.singleNode = new NodeItem();
-    this.nodeWizardForm.summaryComplete = false;
-
+    this.refreshList();
+    this.nodeWizardForm.listOfNodes = [];
+    this.nodeWizardForm.nodesToAdd = [];
   }
 
-  clearNode() {
-    this.nodeWizardForm.singleNode = new NodeItem();
-    this.disableNext.emit(true);
+  addNodeToList() {
+    this.nodeWizardForm.listOfNodes.push(this.nodeItem);
+    this.nodeItem = new NodeItem();
+    this.refreshList();
+    this.enableNext();
   }
 
-  enterPress(event) {
-    if (!this.nodeWizardForm.multipleNodeAdd && !this.nodeWizardForm.singleNode.nodeItemNotReady()) {
-      if (event.key === 'Enter') {
-        this.clickNext.emit();
-      }
-    }
-  }
-
-  enableNext() {
-    if (!this.nodeWizardForm.multipleNodeAdd && !this.nodeWizardForm.singleNode.nodeItemNotReady()) {
-      this.disableNext.emit(false);
-    } else if (this.nodeWizardForm.multipleNodeAdd && this.nodeWizardForm.multipleNodes.length > 0) {
-      this.disableNext.emit(false);
-    } else {
-      this.disableNext.emit(true);
-    }
+  refreshList() {
+    this.nodeListDataSource = new MatTableDataSource<any>(this.nodeWizardForm.listOfNodes);
+    this.nodeListDataSource.paginator = this.nodeListPaginator;
   }
 
   enableAdd() {
     this.addDisabled = this.nodeItem.nodeItemNotReady();
   }
 
-  clearList() {
-    this.nodeWizardForm.multipleNodes = [];
-    this.refreshList();
-    this.disableNext.emit(true);
-  }
-
-  addNodeToList() {
-    this.nodeWizardForm.multipleNodes.push(this.nodeItem);
-    this.nodeItem = new NodeItem();
-    this.addDisabled = true;
-    this.refreshList();
-  }
-
-  refreshList() {
-    this.nodeListDataSource = new MatTableDataSource<any>(this.nodeWizardForm.multipleNodes);
-    this.nodeListDataSource.paginator = this.nodeListPaginator;
-    this.enableNext();
+  enableNext() {
+    this.disableNext.emit(!(this.nodeWizardForm.listOfNodes.length > 0));
   }
 
   deleteNodeFromList(node: NodeItem) {
-    let index = this.nodeWizardForm.multipleNodes.indexOf(node);
+    let index = this.nodeWizardForm.listOfNodes.indexOf(node);
     if (index > -1) {
-      this.nodeWizardForm.multipleNodes.splice(index, 1);
+      this.nodeWizardForm.listOfNodes.splice(index, 1);
       this.refreshList();
     }
   }

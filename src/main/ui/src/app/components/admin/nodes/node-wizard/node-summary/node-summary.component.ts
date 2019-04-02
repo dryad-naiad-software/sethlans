@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,10 +20,13 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {NodeWizardForm} from '../../../../../models/forms/node_wizard_form.model';
 import {NodeInfo} from '../../../../../models/node_info.model';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {NodeWizardProgress} from '../../../../../enums/node_wizard_progress.enum';
 import {NodeAddType} from '../../../../../enums/node_wizard_add_type.enum';
+import {NodeItem} from '../../../../../models/node_item.model';
+import {Login} from '../../../../../models/login.model';
+import {ComputeMethod} from '../../../../../enums/compute.method.enum';
 
 @Component({
   selector: 'app-node-summary',
@@ -34,6 +37,7 @@ export class NodeSummaryComponent implements OnInit, AfterViewInit {
   @Input() nodeWizardForm: NodeWizardForm;
   @Input() accessKey: string;
   wizardModes: any = NodeWizardProgress;
+  computeTypes: any = ComputeMethod;
   keyPresent: boolean;
   downloadComplete: boolean;
   @Output() disableNext = new EventEmitter();
@@ -42,27 +46,47 @@ export class NodeSummaryComponent implements OnInit, AfterViewInit {
   obtainedNodeDataSource = new MatTableDataSource();
   obtainedNodeDisplayedColumns = ['hostname', 'ipAddress', 'port', 'os', 'computeMethods', 'cpuName', 'selectedCores', 'selectedGPUs'];
   wizardTypes: any = NodeAddType;
+  jsonToSend: JsonToSend;
 
 
 
   constructor(private http: HttpClient) {
     this.downloadComplete = false;
+    this.jsonToSend = new JsonToSend();
   }
 
   ngOnInit() {
-
     if (this.nodeWizardForm.addType == NodeAddType.Manual) {
-      if (this.nodeWizardForm.multipleNodeAdd) {
-        this.nodeWizardForm.nodesToAdd = [];
-        this.multiNodeQuery();
-      } else {
-        this.nodeWizardForm.nodeToAdd = new NodeInfo();
-        this.singleNodeQuery();
-      }
+      this.multiNodeQuery();
     } else {
       this.scannedSummary();
     }
+  }
 
+  multiNodeQuery() {
+    this.nodeWizardForm.listOfNodes.forEach((value, idx, array) => {
+      this.http.get('/api/management/node_check?ip=' + value.ipAddress + '&port=' + value.port).subscribe((node: NodeInfo) => {
+        if (node != null) {
+          this.nodeWizardForm.nodesToAdd.push(node);
+          value.active = true;
+        } else {
+          value.active = false;
+        }
+        if (idx === array.length - 1) {
+          let wizard = this;
+          setTimeout(function () {
+            wizard.refreshList();
+            wizard.downloadComplete = true;
+          }, array.length * 500);
+        }
+      });
+    });
+  }
+
+  refreshList() {
+    this.obtainedNodeDataSource = new MatTableDataSource<any>(this.nodeWizardForm.nodesToAdd);
+    this.obtainedNodeDataSource.paginator = this.obtainedNodePaginator;
+    this.obtainedNodeDataSource.sort = this.obtainedNodeSort;
   }
 
   scannedSummary() {
@@ -71,77 +95,27 @@ export class NodeSummaryComponent implements OnInit, AfterViewInit {
     this.disableNext.emit(false);
   }
 
-  refreshList() {
-    if (!this.nodeWizardForm.multipleNodeAdd) {
-      let tempTable: NodeInfo[] = [];
-      tempTable.push(this.nodeWizardForm.nodeToAdd);
-      this.obtainedNodeDataSource = new MatTableDataSource<any>(tempTable);
-      this.obtainedNodeDataSource.paginator = this.obtainedNodePaginator;
-    } else {
-      this.obtainedNodeDataSource = new MatTableDataSource<any>(this.nodeWizardForm.nodesToAdd);
-      this.obtainedNodeDataSource.paginator = this.obtainedNodePaginator;
-      this.obtainedNodeDataSource.sort = this.obtainedNodeSort;
-    }
-  }
 
-  singleNodeQuery() {
-    this.http.get('/api/management/is_key_present?ip=' + this.nodeWizardForm.singleNode.ipAddress + '&port=' + this.nodeWizardForm.singleNode.port).subscribe((value: boolean) => {
-      this.keyPresent = value;
-      console.log(value);
-      if (value) {
-        this.http.get('/api/management/node_check?ip=' + this.nodeWizardForm.singleNode.ipAddress + '&port=' + this.nodeWizardForm.singleNode.port).subscribe((node: NodeInfo) => {
-          if (node != null) {
-            this.nodeWizardForm.nodeToAdd = node;
-            this.nodeWizardForm.summaryComplete = true;
-            this.downloadComplete = true;
-            this.disableNext.emit(false);
-            this.refreshList();
-          } else {
-            this.nodeWizardForm.summaryComplete = true;
-            this.downloadComplete = false;
-          }
-        });
-      } else {
-        this.nodeWizardForm.summaryComplete = true;
-      }
+  submitAuth() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })
+    };
+    this.jsonToSend.login = this.nodeWizardForm.nodeLogin;
+    this.http.post('/api/management/server_to_node_auth', JSON.stringify(this.jsonToSend), httpOptions).subscribe(() => {
     });
   }
 
-  multiNodeQuery() {
-    this.nodeWizardForm.multipleNodes.forEach((value, idx, array) => {
-      this.http.get('/api/management/is_key_present?ip=' + value.ipAddress + '&port=' + value.port).subscribe((result: boolean) => {
-        if (result) {
-          this.http.get('/api/management/node_check?ip=' + value.ipAddress + '&port=' + value.port).subscribe((node: NodeInfo) => {
-            if (node != null) {
-              this.nodeWizardForm.nodesToAdd.push(node);
-              value.active = true;
-              this.keyPresent = true;
-              this.disableNext.emit(false);
-            } else {
-              value.active = false;
-            }
-            if (idx === array.length - 1) {
-              this.nodeWizardForm.summaryComplete = true;
-              this.downloadComplete = true;
-              this.refreshList();
-            }
-          });
-        } else {
-          value.active = false;
-          if (idx === array.length - 1) {
-            this.nodeWizardForm.summaryComplete = true;
-            this.downloadComplete = true;
-            this.refreshList();
-            this.disableNext.emit(true);
-
-          }
-        }
-      });
-    });
-  }
 
   ngAfterViewInit(): void {
     this.obtainedNodeDataSource.paginator = this.obtainedNodePaginator;
   }
+
+}
+
+class JsonToSend {
+  listOfNodes: NodeItem[];
+  login: Login;
 
 }

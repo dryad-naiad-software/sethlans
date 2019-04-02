@@ -25,16 +25,13 @@ import {Login} from '../login.model';
 
 export class NodeWizardForm {
   currentProgress: NodeWizardProgress;
+  listOfNodes: NodeItem[];
+  nodesToAdd: NodeInfo[];
   addType: NodeAddType;
   dontUseAuth: boolean;
   nodeLogin: Login;
-  multipleNodeAdd: boolean;
-  multipleNodes: NodeItem[];
-  singleNode: NodeItem;
   finished: boolean;
   summaryComplete: boolean;
-  nodeToAdd: NodeInfo;
-  nodesToAdd: NodeInfo[];
   authOptionSelected: boolean;
 
 
@@ -44,7 +41,6 @@ export class NodeWizardForm {
     this.dontUseAuth = false;
     this.nodeLogin = new Login();
     this.summaryComplete = false;
-    this.multipleNodeAdd = false;
     this.authOptionSelected = false;
   }
 }

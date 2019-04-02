@@ -23,6 +23,7 @@ import {NodeWizardProgress} from '../../../../enums/node_wizard_progress.enum';
 import {NodeAddType} from '../../../../enums/node_wizard_add_type.enum';
 import {NodeWizardForm} from '../../../../models/forms/node_wizard_form.model';
 
+
 @Component({
   selector: 'app-node-wizard',
   templateUrl: './node-wizard.component.html',
@@ -77,6 +78,7 @@ export class NodeWizardComponent implements OnInit {
   returnToNodes() {
     window.location.href = '/admin/nodes';
   }
+
 
   finish() {
     if (this.nodeWizardForm.addType == NodeAddType.Manual) {
