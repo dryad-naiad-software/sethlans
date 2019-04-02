@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2018 Dryad and Naiad Software LLC
+  ~ Copyright (c) 2019 Dryad and Naiad Software LLC
   ~
   ~ This program is free software; you can redistribute it and/or
   ~ modify it under the terms of the GNU General Public License
@@ -20,8 +20,16 @@
   <div *ngIf="!nodeScanComplete">
     <h5>Node Scan:</h5>
     <ul>
-      <li>
+      <li *ngIf="nodeWizardForm.dontUseAuth">
         Scanning for nodes on the network. &nbsp; &nbsp;
+        <span class="fas fa-circle-notch fa-spin"></span>
+      </li>
+      <li *ngIf="!nodeWizardForm.dontUseAuth && !keyDistributed">
+        Sending server key to advertising nodes.&nbsp; &nbsp;
+        <span class="fas fa-circle-notch fa-spin"></span>
+      </li>
+      <li *ngIf="!nodeWizardForm.dontUseAuth && keyDistributed">
+        Gathering information from advertising nodes on the network. &nbsp; &nbsp;
         <span class="fas fa-circle-notch fa-spin"></span>
       </li>
     </ul>

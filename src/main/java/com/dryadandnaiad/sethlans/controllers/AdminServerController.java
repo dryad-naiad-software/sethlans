@@ -171,7 +171,7 @@ public class AdminServerController {
     }
 
     @PostMapping(value = "/server_to_node_auth_scan")
-    public boolean serverToNodeAuthScan(Login login) {
+    public boolean serverToNodeAuthScan(@RequestBody Login login) {
         Set<String> foundNodes = multicastReceiverService.currentSethlansClients();
         if (foundNodes != null) {
             String accessKey = getAccessKeyFromServer();
@@ -188,7 +188,6 @@ public class AdminServerController {
                                 when().get("/login").
                                 then().extract().response();
                 String token = response.cookie("XSRF-TOKEN");
-
                 response = given().log().ifValidationFails()
                         .header("X-XSRF-TOKEN", token)
                         .cookie("XSRF-TOKEN", token).param("username", login.getUsername().toLowerCase()).param("password", login.getPassword())

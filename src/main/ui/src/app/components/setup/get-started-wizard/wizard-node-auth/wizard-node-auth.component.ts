@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -37,12 +37,10 @@ export class WizardNodeAuthComponent implements OnInit {
   nodeListDisplayedColumns = ['ipAddress', 'port', 'action'];
   showPass: boolean;
 
-
   constructor() {
     this.nodeItem = new NodeItem();
     this.addDisabled = true;
     this.showPass = false;
-
   }
 
   ngOnInit() {

@@ -33,6 +33,7 @@ import {SelectionModel} from '@angular/cdk/collections';
 export class NodeScanAddComponent implements OnInit, AfterViewInit {
   nodeScanComplete: boolean = false;
   scanSize: number;
+  keyDistributed: boolean = false;
   @Input() nodeWizardForm: NodeWizardForm;
   @Output() disableNext = new EventEmitter();
   scanTableDataSource = new MatTableDataSource();
@@ -53,6 +54,7 @@ export class NodeScanAddComponent implements OnInit, AfterViewInit {
         })
       };
       this.http.post('/api/management/server_to_node_auth_scan', JSON.stringify(this.nodeWizardForm.nodeLogin), httpOptions).subscribe(() => {
+        this.keyDistributed = true;
         this.loadTable();
       });
     } else {
