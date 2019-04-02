@@ -27,14 +27,14 @@
       <input [disabled]=nodeWizardForm.dontUseAuth type="text" class="form-control form-control-sm"
              [(ngModel)]="nodeWizardForm.nodeLogin.username"
              name="username"
-             placeholder="Username" (keyup)="checkAuthOption()">
+             placeholder="Username" (keyup)="checkAuthOption($event)">
     </div>
     <div class="col">
       <div class="input-group">
         <input [disabled]=nodeWizardForm.dontUseAuth [type]="showPass ? 'text' : 'password'"
                class="form-control form-control-sm"
                [(ngModel)]="nodeWizardForm.nodeLogin.password" name="password"
-               placeholder="Password" (keyup)="checkAuthOption()">
+               placeholder="Password" (keyup)="checkAuthOption($event)">
         <span class="input-group-text" style="background-color: white" (mousedown)="showPass=true"
               (mouseup)="showPass=false">
                   <i class="far fa-eye"></i>
@@ -49,5 +49,5 @@
   Don't Use Authorization
   <span class="fas"
         [ngClass]="nodeWizardForm.dontUseAuth ? 'fa-toggle-on': 'fa-toggle-off text-secondary'"
-        (click)="nodeWizardForm.dontUseAuth = !nodeWizardForm.dontUseAuth; checkAuthOption()"></span>
+        (click)="nodeWizardForm.dontUseAuth = !nodeWizardForm.dontUseAuth; checkAuthOption($event)"></span>
 </div>

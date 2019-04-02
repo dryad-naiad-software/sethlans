@@ -74,9 +74,6 @@ export class NodeScanAddComponent implements OnInit, AfterViewInit {
     });
   }
 
-  submitAuth() {
-
-  }
 
   getScannedNodes(): Observable<NodeInfo[]> {
     return this.http.get<NodeInfo[]>('/api/management/node_scan/');

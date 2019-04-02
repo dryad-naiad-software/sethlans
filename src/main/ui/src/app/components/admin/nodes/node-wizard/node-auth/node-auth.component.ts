@@ -41,13 +41,16 @@ export class NodeAuthComponent implements OnInit {
   }
 
 
-  checkAuthOption() {
+  checkAuthOption(event) {
     if (this.nodeWizardForm.dontUseAuth) {
       this.nodeWizardForm.authOptionSelected = true;
       this.disableNext.emit(false);
     } else if (!this.nodeWizardForm.dontUseAuth && !this.nodeWizardForm.nodeLogin.loginNotReady()) {
       this.nodeWizardForm.authOptionSelected = true;
       this.disableNext.emit(false);
+      if (event.key === 'Enter') {
+        this.clickNext.emit();
+      }
     } else {
       this.nodeWizardForm.authOptionSelected = false;
       this.disableNext.emit(true);

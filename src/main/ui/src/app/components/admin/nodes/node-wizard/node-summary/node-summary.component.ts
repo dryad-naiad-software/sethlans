@@ -57,7 +57,15 @@ export class NodeSummaryComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     if (this.nodeWizardForm.addType == NodeAddType.Manual) {
-      this.multiNodeQuery();
+      if (!this.nodeWizardForm.dontUseAuth) {
+        this.submitAuth();
+        let wizard = this;
+        setTimeout(function () {
+          wizard.multiNodeQuery();
+        }, wizard.nodeWizardForm.listOfNodes.length * 500);
+      } else {
+        this.multiNodeQuery();
+      }
     } else {
       this.scannedSummary();
     }
@@ -77,6 +85,7 @@ export class NodeSummaryComponent implements OnInit, AfterViewInit {
           setTimeout(function () {
             wizard.refreshList();
             wizard.downloadComplete = true;
+            wizard.disableNext.emit(false);
           }, array.length * 500);
         }
       });
@@ -102,6 +111,7 @@ export class NodeSummaryComponent implements OnInit, AfterViewInit {
         'Content-Type': 'application/json',
       })
     };
+    this.jsonToSend.listOfNodes = this.nodeWizardForm.listOfNodes;
     this.jsonToSend.login = this.nodeWizardForm.nodeLogin;
     this.http.post('/api/management/server_to_node_auth', JSON.stringify(this.jsonToSend), httpOptions).subscribe(() => {
     });

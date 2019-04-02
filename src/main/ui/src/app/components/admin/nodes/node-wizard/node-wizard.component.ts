@@ -81,20 +81,7 @@ export class NodeWizardComponent implements OnInit {
 
 
   finish() {
-    if (this.nodeWizardForm.addType == NodeAddType.Manual) {
-      if (!this.nodeWizardForm.multipleNodeAdd) {
-        this.http.get('/api/setup/node_add?ip=' + this.nodeWizardForm.singleNode.ipAddress + '&port=' +
-          this.nodeWizardForm.singleNode.port, {responseType: 'text'}).subscribe(() => {
-          this.nodeWizardForm.currentProgress = NodeWizardProgress.Finished;
-          this.previousDisabled = true;
-        });
-      } else {
-        this.sendMultiple();
-      }
-    } else {
       this.sendMultiple();
-
-    }
   }
 
   sendMultiple() {
@@ -142,7 +129,7 @@ export class NodeWizardComponent implements OnInit {
       case NodeWizardProgress.Summary:
         this.nodeWizardForm.currentProgress = NodeWizardProgress.Add;
         this.nodeWizardForm.summaryComplete = false;
-        this.nodeWizardForm.multipleNodes = [];
+        this.nodeWizardForm.nodesToAdd = [];
         break;
 
     }

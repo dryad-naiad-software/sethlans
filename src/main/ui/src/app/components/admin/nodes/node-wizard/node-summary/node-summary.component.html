@@ -16,7 +16,7 @@
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   ~
   -->
-<div class="py-2" *ngIf="!downloadComplete">
+<div class="py-2" *ngIf="!downloadComplete && nodeWizardForm.addType != wizardTypes.Scan">
   <h5>Checking Connection to Node(s):</h5>
   <ul>
     <li *ngFor="let node of nodeWizardForm.listOfNodes">Querying {{node.ipAddress}}:{{node.port}}
