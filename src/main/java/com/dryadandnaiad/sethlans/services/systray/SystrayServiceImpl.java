@@ -48,7 +48,6 @@ public class SystrayServiceImpl implements SystrayService {
                 mode = SethlansMode.SETUP;
             } else {
                 mode = SethlansQueryUtils.getMode();
-
             }
             sysTray = new SethlansSysTray();
             sysTray.setup(mode);
@@ -61,8 +60,10 @@ public class SystrayServiceImpl implements SystrayService {
             if (SethlansQueryUtils.getMode() != SethlansMode.SERVER) {
                 if (active) {
                     sysTray.nodeActive();
+                    sysTray.setToolTip("Sethlans - Rendering");
                 } else {
                     sysTray.nodeInactive();
+                    sysTray.setToolTip("Sethlans");
                 }
             }
         }

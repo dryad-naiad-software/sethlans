@@ -58,10 +58,8 @@ class QueueProjectActions {
                 LOG.debug("Pausing queue for " + blenderProject.getProjectName());
                 renderQueueItemList =
                         renderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProjectUUID());
-                int count = 0;
                 for (RenderQueueItem renderQueueItem : renderQueueItemList) {
-                    ++count;
-                    LOG.debug(count + "");
+
                     if (!renderQueueItem.isComplete()) {
                         renderQueueItem.setPaused(true);
                         if (renderQueueItem.getConnectionUUID() != null) {

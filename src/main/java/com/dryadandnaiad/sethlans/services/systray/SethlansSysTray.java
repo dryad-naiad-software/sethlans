@@ -79,6 +79,10 @@ class SethlansSysTray extends TrayIcon {
         setImage(defaultImage);
     }
 
+    void updateToolTip(String tooltip) {
+        setToolTip(tooltip);
+    }
+
     private void menuConfig() {
         MenuItem openBrowser = new MenuItem("Open Sethlans");
         openBrowser.addActionListener(e -> OpenBrowser.openSethlansLink("/"));
