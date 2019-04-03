@@ -36,7 +36,7 @@ import javax.persistence.Entity;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class QueueHistory extends AbstractEntityClass {
+public class QueueHistoryItem extends AbstractEntityClass {
     private Long taskDate;
     private String nodeName;
     private BlenderEngine engine;

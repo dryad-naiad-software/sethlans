@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,28 +17,16 @@
  *
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+package com.dryadandnaiad.sethlans.repositories;
 
-import {RenderHistoryComponent} from './render-history.component';
+import com.dryadandnaiad.sethlans.domains.database.queue.QueueHistoryItem;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-describe('RenderHistoryComponent', () => {
-  let component: RenderHistoryComponent;
-  let fixture: ComponentFixture<RenderHistoryComponent>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [RenderHistoryComponent]
-    })
-      .compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(RenderHistoryComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+/**
+ * Created Mario Estrella on 4/2/2019.
+ * Dryad and Naiad Software LLC
+ * mestrella@dryadandnaiad.com
+ * Project: sethlans
+ */
+public interface QueueHistoryRepository extends JpaRepository<QueueHistoryItem, Long> {
+}

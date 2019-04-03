@@ -5,12 +5,12 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- *  
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *  
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -45,6 +45,7 @@ class SethlansSysTray extends TrayIcon {
     private PopupMenu popup;
     private SystemTray tray;
     private SethlansMode mode;
+
     SethlansSysTray() {
         super(createImage(IMAGE, TOOLTIP), TOOLTIP);
     }
@@ -53,7 +54,7 @@ class SethlansSysTray extends TrayIcon {
         this.mode = mode;
         LOG.debug("Starting Sethlans System Tray");
         popup = new PopupMenu();
-        menuItems();
+        menuConfig();
         tray = SystemTray.getSystemTray();
         this.setImageAutoSize(true);
         setPopupMenu(popup);
@@ -78,60 +79,67 @@ class SethlansSysTray extends TrayIcon {
         setImage(defaultImage);
     }
 
-    private void menuItems() {
+    private void menuConfig() {
         MenuItem openBrowser = new MenuItem("Open Sethlans");
         openBrowser.addActionListener(e -> OpenBrowser.openSethlansLink("/"));
         popup.add(openBrowser);
 
         if (mode != SethlansMode.SETUP) {
-            if (mode != SethlansMode.NODE) {
-                Menu projects = new Menu("Projects");
-                MenuItem addProjects = new MenuItem("Add New Project");
-                addProjects.addActionListener(e -> OpenBrowser.openSethlansLink("/projects/add"));
-                projects.add(addProjects);
-                MenuItem displayProjects = new MenuItem("Project List");
-                displayProjects.addActionListener(e -> OpenBrowser.openSethlansLink("/projects"));
-                projects.add(displayProjects);
-                popup.add(projects);
-            }
             Menu administration = new Menu("Administration");
-            MenuItem logs = new MenuItem("Logs");
-            logs.addActionListener(e -> OpenBrowser.openSethlansLink("/admin/logs"));
-            administration.add(logs);
+            Menu tools = new Menu("Tools");
             MenuItem sethlansConfig = new MenuItem("Settings");
             sethlansConfig.addActionListener(e -> OpenBrowser.openSethlansLink("/admin/sethlans_settings"));
             administration.add(sethlansConfig);
             if (mode != SethlansMode.NODE) {
-                Menu servers = new Menu("Server");
-                MenuItem displayNodePage = new MenuItem("Node Administration");
-                displayNodePage.addActionListener(e -> OpenBrowser.openSethlansLink("/admin/nodes"));
-                servers.add(displayNodePage);
+                Menu projects = new Menu("Projects");
+                MenuItem addProjects = new MenuItem("Add New Project");
+                MenuItem displayProjects = new MenuItem("Project List");
+                addProjects.addActionListener(e -> OpenBrowser.openSethlansLink("/projects/add"));
+                displayProjects.addActionListener(e -> OpenBrowser.openSethlansLink("/projects"));
+
+                projects.add(addProjects);
+                projects.add(displayProjects);
+                popup.add(projects);
+
+                MenuItem addNode = new MenuItem("Add Node(s)");
+                MenuItem displayNodePage = new MenuItem("Manage Nodes");
                 MenuItem blenderVersion = new MenuItem("Configure Blender Versions");
+                displayNodePage.addActionListener(e -> OpenBrowser.openSethlansLink("/admin/nodes"));
+                addNode.addActionListener(e -> OpenBrowser.openSethlansLink("/admin/nodes/add"));
                 blenderVersion.addActionListener(e -> OpenBrowser.openSethlansLink("/admin/blender_version_admin"));
-                servers.add(blenderVersion);
-                administration.add(servers);
+
+                MenuItem nodeRenderHistory = new MenuItem("Node Render History");
+                nodeRenderHistory.addActionListener(e -> OpenBrowser.openSethlansLink("/admin/render_history"));
+
+                tools.add(nodeRenderHistory);
+                administration.add(addNode);
+                administration.add(displayNodePage);
+                administration.add(blenderVersion);
             }
             if (mode != SethlansMode.SERVER) {
-                Menu nodes = new Menu("Node");
                 MenuItem configureNode = new MenuItem("Change Compute Settings");
-                configureNode.addActionListener(e -> OpenBrowser.openSethlansLink("/admin/compute_settings"));
-                nodes.add(configureNode);
-                MenuItem displayServerPage = new MenuItem("Authorize Server(s)/Add Access Key");
-                displayServerPage.addActionListener(e -> OpenBrowser.openSethlansLink("/admin/servers"));
-                nodes.add(displayServerPage);
-                administration.add(nodes);
-            }
-            popup.add(administration);
-            MenuItem displayHelp = new MenuItem("Help");
-            displayHelp.addActionListener(e -> OpenBrowser.openHelp());
-            popup.add(displayHelp);
+                MenuItem displayServerPage = new MenuItem("Authorize Server / Add Access Key");
 
+                configureNode.addActionListener(e -> OpenBrowser.openSethlansLink("/admin/compute_settings"));
+                displayServerPage.addActionListener(e -> OpenBrowser.openSethlansLink("/admin/servers"));
+
+                administration.add(configureNode);
+                administration.add(displayServerPage);
+            }
+
+            MenuItem logs = new MenuItem("Logs");
+            MenuItem displayHelp = new MenuItem("Help");
+
+            logs.addActionListener(e -> OpenBrowser.openSethlansLink("/admin/logs"));
+            displayHelp.addActionListener(e -> OpenBrowser.openHelp());
+
+            tools.add(logs);
+            popup.add(administration);
+            popup.add(tools);
+            popup.add(displayHelp);
         }
 
-
         MenuItem exitItem = new MenuItem("Exit");
-
-
         exitItem.addActionListener(e -> System.exit(0));
         popup.add(exitItem);
     }

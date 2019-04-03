@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,10 +25,10 @@ import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-render-history',
-  templateUrl: './render-history.component.html',
-  styleUrls: ['./render-history.component.scss']
+  templateUrl: './node-render-history.component.html',
+  styleUrls: ['./node-render-history.component.scss']
 })
-export class RenderHistoryComponent implements OnInit {
+export class NodeRenderHistoryComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   dataSource = new MatTableDataSource();

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -52,19 +52,7 @@ public class RoutingController {
             "/forgot_pass",
             "/projects/**",
             "/user_settings",
-            "/admin/metrics",
-            "/admin/user_management",
-            "/admin/user_management/**",
-            "/admin/sethlans_settings",
-            "/admin/nodes",
-            "/admin/nodes/add",
-            "/admin/nodes/edit/**",
-            "/admin/nodes/scan",
-            "/admin/render_history",
-            "/admin/servers",
-            "/admin/compute_settings",
-            "/admin/blender_version_admin",
-            "/admin/logs"})
+            "/admin/**"})
     public String getUrl() {
         return "forward:/";
     }

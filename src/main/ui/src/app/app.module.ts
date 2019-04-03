@@ -94,7 +94,7 @@ import {ProjectVideoSettingsComponent} from './components/projects/project-video
 import {WizardNodeAuthComponent} from './components/setup/get-started-wizard/wizard-node-auth/wizard-node-auth.component';
 import {WizardAddNodesComponent} from './components/setup/get-started-wizard/wizard-add-nodes/wizard-add-nodes.component';
 import {ForgotPassComponent} from './components/forgot-pass/forgot-pass.component';
-import {RenderHistoryComponent} from './components/admin/render-history/render-history.component';
+import {NodeRenderHistoryComponent} from './components/admin/node-render-history/node-render-history.component';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {ProjectFramesComponent} from './components/projects/project-frames/project-frames.component';
 import {NodeAuthComponent} from './components/admin/nodes/node-wizard/node-auth/node-auth.component';
@@ -150,7 +150,7 @@ import {NodeAuthComponent} from './components/admin/nodes/node-wizard/node-auth/
     WizardNodeAuthComponent,
     WizardAddNodesComponent,
     ForgotPassComponent,
-    RenderHistoryComponent,
+    NodeRenderHistoryComponent,
     ProjectFramesComponent,
     NodeAuthComponent,
   ],

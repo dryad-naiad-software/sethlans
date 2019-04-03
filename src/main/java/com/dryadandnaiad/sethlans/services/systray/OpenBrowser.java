@@ -36,7 +36,6 @@ import java.net.URL;
  */
 public class OpenBrowser {
     private static final Logger LOG = LoggerFactory.getLogger(OpenBrowser.class);
-    private static String ip = SethlansQueryUtils.getIP();
     private static String port = SethlansQueryUtils.getPort();
 
     static void openHelp() {
@@ -52,7 +51,7 @@ public class OpenBrowser {
     static void openSethlansLink(String location) {
         URL url = null;
         try {
-            url = new URL("https://" + ip + ":" + port + location);
+            url = new URL("https://" + "localhost" + ":" + port + location);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
