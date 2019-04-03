@@ -30,5 +30,5 @@ import com.dryadandnaiad.sethlans.domains.database.queue.QueueHistoryItem;
 public interface QueueHistoryDatabaseService extends CRUDService<QueueHistoryItem> {
     QueueHistoryItem findQueueHistoryItemToUpdate(String queueUUID, String nodeName, String deviceId);
 
-    QueueHistoryItem findQueueHistoryItemToPause(String queueUUID, String deviceId);
+    QueueHistoryItem findQueueHistoryItemToPause(String queueUUID, String nodeName, String deviceId);
 }

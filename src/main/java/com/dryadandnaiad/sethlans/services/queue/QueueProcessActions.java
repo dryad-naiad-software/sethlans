@@ -150,9 +150,12 @@ class QueueProcessActions {
             renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
             LOG.info("Completed Render Task received from " + sethlansNode.getHostname() + ". Adding to processing queue.");
             QueueHistoryItem queueHistoryItem = queueHistoryDatabaseService.findQueueHistoryItemToUpdate(renderQueueItem.getQueueItemUUID(), sethlansNode.getHostname(), renderQueueItem.getDeviceId());
-            queueHistoryItem.setRendering(false);
-            queueHistoryItem.setComplete(true);
-            queueHistoryDatabaseService.saveOrUpdate(queueHistoryItem);
+            if (queueHistoryItem != null) {
+                queueHistoryItem.setRendering(false);
+                queueHistoryItem.setPaused(false);
+                queueHistoryItem.setComplete(true);
+                queueHistoryDatabaseService.saveOrUpdate(queueHistoryItem);
+            }
             itemsReviewed.add(processQueueItem);
         } catch (NullPointerException e) {
             LOG.error("Received incoming items for queue after queue has been stopped");
@@ -220,7 +223,6 @@ class QueueProcessActions {
                                 timeToAdd = timeToAdd - blenderProject.getTotalProjectTime();
                                 LOG.debug("Time to Add: " + timeToAdd);
                             }
-                            LOG.debug("2");
                             LOG.debug("Adding time to total " + timeToAdd);
 
                             blenderProject.setTotalProjectTime(blenderProject.getTotalProjectTime() + timeToAdd);

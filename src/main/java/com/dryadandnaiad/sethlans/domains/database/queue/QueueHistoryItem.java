@@ -48,5 +48,6 @@ public class QueueHistoryItem extends AbstractEntityClass {
     private boolean paused;
     private boolean rendering;
     private boolean failed;
+    private boolean cancelled;
     String frameAndPartNumbers;
 }

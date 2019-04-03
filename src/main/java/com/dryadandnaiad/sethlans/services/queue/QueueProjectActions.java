@@ -53,19 +53,25 @@ class QueueProjectActions {
                                     SethlansAPIConnectionService sethlansAPIConnectionService, QueueHistoryDatabaseService queueHistoryDatabaseService) {
         BlenderProject blenderProject = queueActionItem.getBlenderProject();
         List<RenderQueueItem> renderQueueItemList;
-        List<SethlansNode> nodesToReset = new ArrayList<>();
         switch (queueActionItem.getQueueAction()) {
             case PAUSE:
                 LOG.debug("Pausing queue for " + blenderProject.getProjectName());
                 renderQueueItemList =
                         renderQueueDatabaseService.listQueueItemsByProjectUUID(blenderProject.getProjectUUID());
+                int count = 0;
                 for (RenderQueueItem renderQueueItem : renderQueueItemList) {
+                    ++count;
+                    LOG.debug(count + "");
                     if (!renderQueueItem.isComplete()) {
                         renderQueueItem.setPaused(true);
-                        QueueHistoryItem queueHistoryItem = queueHistoryDatabaseService.findQueueHistoryItemToPause(renderQueueItem.getQueueItemUUID(), renderQueueItem.getDeviceId());
-                        queueHistoryItem.setRendering(false);
-                        queueHistoryItem.setPaused(true);
-                        queueHistoryDatabaseService.saveOrUpdate(queueHistoryItem);
+                        if (renderQueueItem.getConnectionUUID() != null) {
+                            QueueHistoryItem queueHistoryItem = queueHistoryDatabaseService.findQueueHistoryItemToPause(renderQueueItem.getQueueItemUUID(), sethlansNodeDatabaseService.getByConnectionUUID(renderQueueItem.getConnectionUUID()).getHostname(), renderQueueItem.getDeviceId());
+                            if (queueHistoryItem != null) {
+                                queueHistoryItem.setRendering(false);
+                                queueHistoryItem.setPaused(true);
+                                queueHistoryDatabaseService.saveOrUpdate(queueHistoryItem);
+                            }
+                        }
                         renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
                     }
                 }
@@ -100,10 +106,17 @@ class QueueProjectActions {
                     }
                     if (renderQueueItem.getConnectionUUID() != null) {
                         SethlansNode sethlansNode = sethlansNodeDatabaseService.getByConnectionUUID(renderQueueItem.getConnectionUUID());
-                        nodesToReset.add(sethlansNode);
                         String connectionURL = "https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() + "/api/render/cancel";
                         String params = "queue_item_uuid=" + renderQueueItem.getQueueItemUUID() + "&connection_uuid=" + sethlansNode.getConnectionUUID();
                         sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params);
+                        QueueHistoryItem queueHistoryItem = queueHistoryDatabaseService.findQueueHistoryItemToUpdate(renderQueueItem.getQueueItemUUID(), sethlansNode.getHostname(), renderQueueItem.getDeviceId());
+                        if (queueHistoryItem != null) {
+                            queueHistoryItem.setCancelled(true);
+                            queueHistoryItem.setPaused(false);
+                            queueHistoryItem.setRendering(false);
+                            queueHistoryDatabaseService.saveOrUpdate(queueHistoryItem);
+                        }
+
                     }
 
                 }

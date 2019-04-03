@@ -29,7 +29,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Project: sethlans
  */
 public interface QueueHistoryRepository extends JpaRepository<QueueHistoryItem, Long> {
-    QueueHistoryItem findByQueueItemUUIDAndNodeNameAndDeviceIdAndFailedIsFalseAndCompleteIsFalse(String queueUUID, String nodeName, String deviceId);
+    QueueHistoryItem findByQueueItemUUIDAndNodeNameAndDeviceIdAndRenderingIsTrue(String queueUUID, String nodeName, String deviceId);
 
-    QueueHistoryItem findByQueueItemUUIDAndDeviceIdAndCompleteIsFalse(String queueUUID, String deviceId);
+    QueueHistoryItem findByQueueItemUUIDAndNodeNameAndDeviceIdAndCompleteIsFalseAndCancelledIsFalse(String queueUUID, String nodeName, String deviceId);
+
 }

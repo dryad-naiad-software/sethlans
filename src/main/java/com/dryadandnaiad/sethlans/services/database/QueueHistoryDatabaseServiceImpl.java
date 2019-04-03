@@ -67,12 +67,12 @@ public class QueueHistoryDatabaseServiceImpl implements QueueHistoryDatabaseServ
 
     @Override
     public QueueHistoryItem findQueueHistoryItemToUpdate(String queueUUID, String nodeName, String deviceId) {
-        return queueHistoryRepository.findByQueueItemUUIDAndNodeNameAndDeviceIdAndFailedIsFalseAndCompleteIsFalse(queueUUID, nodeName, deviceId);
+        return queueHistoryRepository.findByQueueItemUUIDAndNodeNameAndDeviceIdAndCompleteIsFalseAndCancelledIsFalse(queueUUID, nodeName, deviceId);
     }
 
     @Override
-    public QueueHistoryItem findQueueHistoryItemToPause(String queueUUID, String deviceId) {
-        return queueHistoryRepository.findByQueueItemUUIDAndDeviceIdAndCompleteIsFalse(queueUUID, deviceId);
+    public QueueHistoryItem findQueueHistoryItemToPause(String queueUUID, String nodeName, String deviceId) {
+        return queueHistoryRepository.findByQueueItemUUIDAndNodeNameAndDeviceIdAndRenderingIsTrue(queueUUID, nodeName, deviceId);
     }
 
     @Autowired

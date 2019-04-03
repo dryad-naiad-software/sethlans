@@ -21,6 +21,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
+import com.dryadandnaiad.sethlans.domains.database.queue.QueueHistoryItem;
 import com.dryadandnaiad.sethlans.domains.info.BlenderBinaryInfo;
 import com.dryadandnaiad.sethlans.domains.info.GettingStartedInfo;
 import com.dryadandnaiad.sethlans.domains.info.Login;
@@ -28,6 +29,7 @@ import com.dryadandnaiad.sethlans.domains.info.NodeItem;
 import com.dryadandnaiad.sethlans.enums.BlenderBinaryOS;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.database.BlenderBinaryDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.QueueHistoryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.MulticastReceiverService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
@@ -66,7 +68,13 @@ public class AdminServerController {
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private MulticastReceiverService multicastReceiverService;
+    private QueueHistoryDatabaseService queueHistoryDatabaseService;
 
+
+    @GetMapping(value = "/get_queue_history")
+    public List<QueueHistoryItem> getQueueHistory() {
+        return queueHistoryDatabaseService.listAll();
+    }
 
 
     @GetMapping(value = "/get_current_binary_os/{version}")
@@ -290,5 +298,10 @@ public class AdminServerController {
     @Autowired
     public void setMulticastReceiverService(MulticastReceiverService multicastReceiverService) {
         this.multicastReceiverService = multicastReceiverService;
+    }
+
+    @Autowired
+    public void setQueueHistoryDatabaseService(QueueHistoryDatabaseService queueHistoryDatabaseService) {
+        this.queueHistoryDatabaseService = queueHistoryDatabaseService;
     }
 }
