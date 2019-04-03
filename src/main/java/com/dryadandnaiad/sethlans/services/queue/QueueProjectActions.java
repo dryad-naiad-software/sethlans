@@ -22,13 +22,10 @@ package com.dryadandnaiad.sethlans.services.queue;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.QueueActionItem;
+import com.dryadandnaiad.sethlans.domains.database.queue.QueueHistoryItem;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderQueueItem;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
-import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
-import com.dryadandnaiad.sethlans.services.database.ProcessQueueDatabaseService;
-import com.dryadandnaiad.sethlans.services.database.RenderQueueDatabaseService;
-import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
-import com.dryadandnaiad.sethlans.services.network.GetRawDataService;
+import com.dryadandnaiad.sethlans.services.database.*;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.google.common.base.Throwables;
 import org.apache.commons.io.FileUtils;
@@ -53,7 +50,7 @@ class QueueProjectActions {
     static void queueProjectActions(QueueActionItem queueActionItem, RenderQueueDatabaseService renderQueueDatabaseService,
                                     BlenderProjectDatabaseService blenderProjectDatabaseService, ProcessQueueDatabaseService processQueueDatabaseService,
                                     SethlansNodeDatabaseService sethlansNodeDatabaseService, List<QueueActionItem> processedAction,
-                                    SethlansAPIConnectionService sethlansAPIConnectionService, GetRawDataService getRawDataService) throws InterruptedException {
+                                    SethlansAPIConnectionService sethlansAPIConnectionService, QueueHistoryDatabaseService queueHistoryDatabaseService) {
         BlenderProject blenderProject = queueActionItem.getBlenderProject();
         List<RenderQueueItem> renderQueueItemList;
         List<SethlansNode> nodesToReset = new ArrayList<>();
@@ -65,6 +62,10 @@ class QueueProjectActions {
                 for (RenderQueueItem renderQueueItem : renderQueueItemList) {
                     if (!renderQueueItem.isComplete()) {
                         renderQueueItem.setPaused(true);
+                        QueueHistoryItem queueHistoryItem = queueHistoryDatabaseService.findQueueHistoryItemToPause(renderQueueItem.getQueueItemUUID(), renderQueueItem.getDeviceId());
+                        queueHistoryItem.setRendering(false);
+                        queueHistoryItem.setPaused(true);
+                        queueHistoryDatabaseService.saveOrUpdate(queueHistoryItem);
                         renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
                     }
                 }

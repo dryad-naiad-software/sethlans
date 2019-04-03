@@ -60,6 +60,7 @@ public class QueueServiceImpl implements QueueService {
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private ProcessQueueDatabaseService processQueueDatabaseService;
     private ProcessFrameDatabaseService processFrameDatabaseService;
+    private QueueHistoryDatabaseService queueHistoryDatabaseService;
     private FrameFileUpdateDatabaseService frameFileUpdateDatabaseService;
     private SethlansNotificationService sethlansNotificationService;
     private GetRawDataService getRawDataService;
@@ -269,7 +270,7 @@ public class QueueServiceImpl implements QueueService {
             List<ProcessQueueItem> itemsReviewed = new ArrayList<>();
             for (ProcessQueueItem processQueueItem : new ArrayList<>(incomingQueueItemList)) {
                 processIncoming(itemsReviewed, processQueueItem, processQueueDatabaseService, renderQueueDatabaseService, sethlansNodeDatabaseService,
-                        blenderProjectDatabaseService, getRawDataService);
+                        blenderProjectDatabaseService, queueHistoryDatabaseService);
             }
             incomingQueueItemList.removeAll(itemsReviewed);
             modifyingQueue = false;
@@ -285,7 +286,7 @@ public class QueueServiceImpl implements QueueService {
                 for (QueueActionItem queueActionItem : new ArrayList<>(queueActionItemList)) {
                     queueProjectActions(queueActionItem, renderQueueDatabaseService,
                             blenderProjectDatabaseService, processQueueDatabaseService,
-                            sethlansNodeDatabaseService, processedAction, sethlansAPIConnectionService, getRawDataService);
+                            sethlansNodeDatabaseService, processedAction, sethlansAPIConnectionService, queueHistoryDatabaseService);
                 }
                 queueActionItemList.removeAll(processedAction);
             }
@@ -331,7 +332,7 @@ public class QueueServiceImpl implements QueueService {
                 for (ProcessNodeStatus processNodeStatus : new ArrayList<>(nodeStatuses)) {
                     try {
                         processAcknowledgements(processNodeStatus, renderQueueDatabaseService,
-                                blenderProjectDatabaseService, sethlansNodeDatabaseService, itemsProcessed);
+                                blenderProjectDatabaseService, queueHistoryDatabaseService, sethlansNodeDatabaseService, itemsProcessed);
                     } catch (NullPointerException e) {
                         LOG.error("Node acknowledgement received before node was shutdown/removed.");
                     }
@@ -564,7 +565,7 @@ public class QueueServiceImpl implements QueueService {
     private void sendQueueItemsToAssignedNode() {
         if (!modifyingQueue) {
             modifyingQueue = true;
-            sendQueueItemsToNodes(renderQueueDatabaseService, blenderProjectDatabaseService, sethlansNodeDatabaseService, sethlansAPIConnectionService);
+            sendQueueItemsToNodes(renderQueueDatabaseService, blenderProjectDatabaseService, queueHistoryDatabaseService, sethlansNodeDatabaseService, sethlansAPIConnectionService);
             modifyingQueue = false;
         }
     }
@@ -617,5 +618,10 @@ public class QueueServiceImpl implements QueueService {
     @Autowired
     public void setGetRawDataService(GetRawDataService getRawDataService) {
         this.getRawDataService = getRawDataService;
+    }
+
+    @Autowired
+    public void setQueueHistoryDatabaseService(QueueHistoryDatabaseService queueHistoryDatabaseService) {
+        this.queueHistoryDatabaseService = queueHistoryDatabaseService;
     }
 }

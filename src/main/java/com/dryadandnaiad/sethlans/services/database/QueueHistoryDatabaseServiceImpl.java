@@ -20,8 +20,11 @@
 package com.dryadandnaiad.sethlans.services.database;
 
 import com.dryadandnaiad.sethlans.domains.database.queue.QueueHistoryItem;
+import com.dryadandnaiad.sethlans.repositories.QueueHistoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,28 +35,50 @@ import java.util.List;
  */
 @Service
 public class QueueHistoryDatabaseServiceImpl implements QueueHistoryDatabaseService {
+    private QueueHistoryRepository queueHistoryRepository;
+
     @Override
     public long tableSize() {
-        return 0;
+        return queueHistoryRepository.count();
     }
 
     @Override
     public List<QueueHistoryItem> listAll() {
-        return null;
+        return new ArrayList<>(queueHistoryRepository.findAll());
     }
 
     @Override
     public QueueHistoryItem getById(Long id) {
-        return null;
+        return queueHistoryRepository.findOne(id);
     }
 
     @Override
     public QueueHistoryItem saveOrUpdate(QueueHistoryItem domainObject) {
-        return null;
+        return queueHistoryRepository.save(domainObject);
     }
+
 
     @Override
     public void delete(Long id) {
+        QueueHistoryItem queueHistoryItem = queueHistoryRepository.findOne(id);
+        queueHistoryRepository.delete(queueHistoryItem);
 
     }
+
+    @Override
+    public QueueHistoryItem findQueueHistoryItemToUpdate(String queueUUID, String nodeName, String deviceId) {
+        return queueHistoryRepository.findByQueueItemUUIDAndNodeNameAndDeviceIdAndFailedIsFalseAndCompleteIsFalse(queueUUID, nodeName, deviceId);
+    }
+
+    @Override
+    public QueueHistoryItem findQueueHistoryItemToPause(String queueUUID, String deviceId) {
+        return queueHistoryRepository.findByQueueItemUUIDAndDeviceIdAndCompleteIsFalse(queueUUID, deviceId);
+    }
+
+    @Autowired
+    public void setQueueHistoryRepository(QueueHistoryRepository queueHistoryRepository) {
+        this.queueHistoryRepository = queueHistoryRepository;
+    }
+
+
 }

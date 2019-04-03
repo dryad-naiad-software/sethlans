@@ -25,13 +25,13 @@ import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessFrameItem;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessQueueItem;
+import com.dryadandnaiad.sethlans.domains.database.queue.QueueHistoryItem;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderQueueItem;
 import com.dryadandnaiad.sethlans.enums.NotificationType;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.enums.ProjectType;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import com.dryadandnaiad.sethlans.services.database.*;
-import com.dryadandnaiad.sethlans.services.network.GetRawDataService;
 import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
@@ -139,7 +139,7 @@ class QueueProcessActions {
 
     static void processIncoming(List<ProcessQueueItem> itemsReviewed, ProcessQueueItem processQueueItem, ProcessQueueDatabaseService processQueueDatabaseService,
                                 RenderQueueDatabaseService renderQueueDatabaseService, SethlansNodeDatabaseService sethlansNodeDatabaseService,
-                                BlenderProjectDatabaseService blenderProjectDatabaseService, GetRawDataService getRawDataService) {
+                                BlenderProjectDatabaseService blenderProjectDatabaseService, QueueHistoryDatabaseService queueHistoryDatabaseService) {
         try {
             processQueueDatabaseService.saveOrUpdate(processQueueItem);
             RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processQueueItem.getQueueUUID());
@@ -149,6 +149,10 @@ class QueueProcessActions {
                     File.separator + "frame_" + renderQueueItem.getBlenderFramePart().getFrameNumber() + File.separator);
             renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
             LOG.info("Completed Render Task received from " + sethlansNode.getHostname() + ". Adding to processing queue.");
+            QueueHistoryItem queueHistoryItem = queueHistoryDatabaseService.findQueueHistoryItemToUpdate(renderQueueItem.getQueueItemUUID(), sethlansNode.getHostname(), renderQueueItem.getDeviceId());
+            queueHistoryItem.setRendering(false);
+            queueHistoryItem.setComplete(true);
+            queueHistoryDatabaseService.saveOrUpdate(queueHistoryItem);
             itemsReviewed.add(processQueueItem);
         } catch (NullPointerException e) {
             LOG.error("Received incoming items for queue after queue has been stopped");

@@ -22,11 +22,13 @@ package com.dryadandnaiad.sethlans.services.queue;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.database.queue.ProcessNodeStatus;
+import com.dryadandnaiad.sethlans.domains.database.queue.QueueHistoryItem;
 import com.dryadandnaiad.sethlans.domains.database.queue.RenderQueueItem;
 import com.dryadandnaiad.sethlans.domains.info.AvailableDevice;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.QueueHistoryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.RenderQueueDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.GetRawDataService;
@@ -54,7 +56,7 @@ class QueueNodeActions {
 
     static void processAcknowledgements(ProcessNodeStatus processNodeStatus,
                                         RenderQueueDatabaseService renderQueueDatabaseService,
-                                        BlenderProjectDatabaseService blenderProjectDatabaseService,
+                                        BlenderProjectDatabaseService blenderProjectDatabaseService, QueueHistoryDatabaseService queueHistoryDatabaseService,
                                         SethlansNodeDatabaseService sethlansNodeDatabaseService, List<ProcessNodeStatus> itemsProcessed) {
         if (processNodeStatus.isAccepted()) {
             RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID());
@@ -71,6 +73,10 @@ class QueueNodeActions {
             renderQueueItem.setRendering(true);
             renderQueueItem.setVersion(renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID()).getVersion());
             renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
+
+            QueueHistoryItem queueHistoryItem = queueHistoryDatabaseService.findQueueHistoryItemToUpdate(renderQueueItem.getQueueItemUUID(), sethlansNode.getHostname(), renderQueueItem.getDeviceId());
+            queueHistoryItem.setRendering(true);
+            queueHistoryDatabaseService.saveOrUpdate(queueHistoryItem);
         }
         if (!processNodeStatus.isAccepted()) {
             RenderQueueItem renderQueueItem = renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID());
@@ -82,6 +88,10 @@ class QueueNodeActions {
             renderQueueItem.setRendering(false);
             renderQueueItem.setVersion(renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID()).getVersion());
             renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
+            QueueHistoryItem queueHistoryItem = queueHistoryDatabaseService.findQueueHistoryItemToUpdate(renderQueueItem.getQueueItemUUID(), sethlansNodeDatabaseService.getByConnectionUUID(renderQueueItem.getConnectionUUID()).getHostname(), renderQueueItem.getDeviceId());
+            queueHistoryItem.setRendering(false);
+            queueHistoryItem.setFailed(true);
+            queueHistoryDatabaseService.saveOrUpdate(queueHistoryItem);
         }
         itemsProcessed.add(processNodeStatus);
     }
@@ -157,12 +167,13 @@ class QueueNodeActions {
         }
     }
 
+
     private static void updateRenderQueueItem(RenderQueueItem renderQueueItem, RenderQueueDatabaseService renderQueueDatabaseService) {
         renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
     }
 
     static void sendQueueItemsToNodes(RenderQueueDatabaseService renderQueueDatabaseService,
-                                      BlenderProjectDatabaseService blenderProjectDatabaseService,
+                                      BlenderProjectDatabaseService blenderProjectDatabaseService, QueueHistoryDatabaseService queueHistoryDatabaseService,
                                       SethlansNodeDatabaseService sethlansNodeDatabaseService, SethlansAPIConnectionService sethlansAPIConnectionService) {
         List<RenderQueueItem> renderQueueItemList = renderQueueDatabaseService.listPendingRenderWithNodeAssigned();
         for (RenderQueueItem renderQueueItem : renderQueueItemList) {
@@ -200,7 +211,24 @@ class QueueNodeActions {
                     + renderQueueItem.getBlenderFramePart().getPartNumber() + " has been assigned to " + renderQueueItem.getDeviceId() + " on " + sethlansNode.getHostname());
             LOG.debug("Sending " + renderQueueItem + " to " + sethlansNode.getHostname());
             sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params);
+            createQueueHistoryItem(renderQueueItem, queueHistoryDatabaseService, sethlansNode, blenderProject);
         }
+    }
+
+    private static void createQueueHistoryItem(RenderQueueItem renderQueueItem, QueueHistoryDatabaseService queueHistoryDatabaseService, SethlansNode node, BlenderProject blenderProject) {
+        QueueHistoryItem queueHistoryItem = new QueueHistoryItem();
+        queueHistoryItem.setComputeType(renderQueueItem.getRenderComputeType());
+        queueHistoryItem.setComplete(false);
+        queueHistoryItem.setDeviceId(renderQueueItem.getDeviceId());
+        queueHistoryItem.setEngine(blenderProject.getBlenderEngine());
+        queueHistoryItem.setNodeName(node.getHostname());
+        queueHistoryItem.setFailed(false);
+        queueHistoryItem.setPaused(false);
+        queueHistoryItem.setQueueItemUUID(renderQueueItem.getQueueItemUUID());
+        queueHistoryItem.setRendering(false);
+        queueHistoryItem.setFrameAndPartNumbers(renderQueueItem.getBlenderFramePart().getFrameNumber() + ":" + renderQueueItem.getBlenderFramePart().getPartNumber());
+        queueHistoryItem.setTaskDate(System.currentTimeMillis());
+        queueHistoryDatabaseService.saveOrUpdate(queueHistoryItem);
     }
 
 
