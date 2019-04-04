@@ -222,6 +222,7 @@ class QueueNodeActions {
         queueHistoryItem.setDeviceId(renderQueueItem.getDeviceId());
         queueHistoryItem.setEngine(blenderProject.getBlenderEngine());
         queueHistoryItem.setProjectName(blenderProject.getProjectName());
+        queueHistoryItem.setProjectLocation(blenderProject.getProjectRootDir());
         queueHistoryItem.setNodeName(node.getHostname());
         queueHistoryItem.setFailed(false);
         queueHistoryItem.setPaused(false);

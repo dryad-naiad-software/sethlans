@@ -98,6 +98,7 @@ import {NodeRenderHistoryComponent} from './components/admin/node-render-history
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {ProjectFramesComponent} from './components/projects/project-frames/project-frames.component';
 import {NodeAuthComponent} from './components/admin/nodes/node-wizard/node-auth/node-auth.component';
+import {ServerQueueHistoryComponent} from './components/admin/server-queue-history/server-queue-history.component';
 
 
 @NgModule({
@@ -153,6 +154,7 @@ import {NodeAuthComponent} from './components/admin/nodes/node-wizard/node-auth/
     NodeRenderHistoryComponent,
     ProjectFramesComponent,
     NodeAuthComponent,
+    ServerQueueHistoryComponent,
   ],
   imports: [
     BrowserModule,

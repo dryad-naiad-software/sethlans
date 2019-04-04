@@ -20,18 +20,18 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {HttpClient} from '@angular/common/http';
-import {RenderTaskHistory} from '../../../models/render_task_history.model';
+import {ServerQueueHistory} from '../../../models/server_queue_history';
 
 @Component({
-  selector: 'app-render-history',
-  templateUrl: './node-render-history.component.html',
-  styleUrls: ['./node-render-history.component.scss']
+  selector: 'app-server-queue-history',
+  templateUrl: './server-queue-history.component.html',
+  styleUrls: ['./server-queue-history.component.scss']
 })
-export class NodeRenderHistoryComponent implements OnInit {
+export class ServerQueueHistoryComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   dataSource = new MatTableDataSource();
-  displayedColumns = ['taskDate', 'computeType', 'deviceIDs', 'completed', 'failed', 'engine', 'projectName', 'frameAndPartNumbers', 'serverName'];
+  displayedColumns = ['taskDate', 'nodeName', 'engine', 'computeType', 'projectName', 'deviceId', 'complete', 'paused', 'rendering', 'failed', 'cancelled', 'frameAndPartNumbers'];
 
   constructor(private http: HttpClient) {
   }
@@ -41,8 +41,8 @@ export class NodeRenderHistoryComponent implements OnInit {
   }
 
   loadHistory() {
-    this.http.get('/api/management/render_history_list').subscribe((renderHistoryList: RenderTaskHistory[]) => {
-      this.dataSource = new MatTableDataSource<any>(renderHistoryList.reverse());
+    this.http.get('/api/management/get_queue_history').subscribe((queueHistoryList: ServerQueueHistory[]) => {
+      this.dataSource = new MatTableDataSource<any>(queueHistoryList.reverse());
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
     });

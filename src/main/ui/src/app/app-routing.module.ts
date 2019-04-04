@@ -43,6 +43,7 @@ import {ProjectEditWizardComponent} from './components/projects/project-edit-wiz
 import {ForgotPassComponent} from './components/forgot-pass/forgot-pass.component';
 import {NodeRenderHistoryComponent} from './components/admin/node-render-history/node-render-history.component';
 import {ProjectFramesComponent} from './components/projects/project-frames/project-frames.component';
+import {ServerQueueHistoryComponent} from './components/admin/server-queue-history/server-queue-history.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -57,6 +58,7 @@ const routes: Routes = [
   {path: 'admin/user_management/edit/:id', component: UserEditComponent},
   {path: 'admin/sethlans_settings', component: SethlansSettingsComponent},
   {path: 'admin/node_render_history', component: NodeRenderHistoryComponent},
+  {path: 'admin/server_queue_history', component: ServerQueueHistoryComponent},
   {path: 'admin/servers', component: ServersComponent},
   {path: 'admin/compute_settings', component: ComputeSettingsComponent},
   {path: 'admin/blender_version_admin', component: BlenderVersionsComponent},

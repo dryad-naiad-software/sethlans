@@ -22,7 +22,7 @@
     <div class="card">
       <div class="card-header">
         <h4 class="float-left">
-          <span style="font-family: 'Fjalla One', sans-serif; ">Node Render History</span>
+          <span style="font-family: 'Fjalla One', sans-serif; ">Server Queue History</span>
         </h4>
         <div class="btn-toolbar float-right">
           <button class="mr-2 btn btn-outline-dark" (click)="loadHistory()">
@@ -42,6 +42,20 @@
               {{history.taskDate | date:'yyyy-MM-dd HH:mm:ss.SSS'}}
             </mat-cell>
           </ng-container>
+          <ng-container matColumnDef="nodeName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Node</mat-header-cell>
+            <mat-cell *matCellDef="let history">
+              <span class="mobile-label">Node:</span>
+              {{history.nodeName}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="engine">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Engine</mat-header-cell>
+            <mat-cell *matCellDef="let history">
+              <span class="mobile-label">Engine:</span>
+              {{history.engine}}
+            </mat-cell>
+          </ng-container>
           <ng-container matColumnDef="computeType">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Compute Type</mat-header-cell>
             <mat-cell *matCellDef="let history">
@@ -49,18 +63,40 @@
               {{history.computeType}}
             </mat-cell>
           </ng-container>
-          <ng-container matColumnDef="deviceIDs">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Device ID(s)</mat-header-cell>
+          <ng-container matColumnDef="projectName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Project</mat-header-cell>
             <mat-cell *matCellDef="let history">
-              <span class="mobile-label">Device ID(s):</span>
-              {{history.deviceIDs}}
+              <span class="mobile-label">Project:</span>
+              {{history.projectName}}
             </mat-cell>
           </ng-container>
-          <ng-container matColumnDef="completed">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Completed</mat-header-cell>
+          <ng-container matColumnDef="deviceId">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Device Id(s)</mat-header-cell>
             <mat-cell *matCellDef="let history">
-              <span class="mobile-label">Completed:</span>
-              {{history.completed}}
+              <span class="mobile-label">Device Id(s):</span>
+              {{history.deviceId}}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="complete">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Complete</mat-header-cell>
+            <mat-cell *matCellDef="let history">
+              <span class="mobile-label">Complete:</span>
+              {{history.complete}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="paused">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Paused</mat-header-cell>
+            <mat-cell *matCellDef="let history">
+              <span class="mobile-label">Paused:</span>
+              {{history.paused}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="rendering">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Rendering</mat-header-cell>
+            <mat-cell *matCellDef="let history">
+              <span class="mobile-label">Rendering:</span>
+              {{history.rendering}}
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="failed">
@@ -70,33 +106,18 @@
               {{history.failed}}
             </mat-cell>
           </ng-container>
-          <ng-container matColumnDef="engine">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Blender Engine</mat-header-cell>
+          <ng-container matColumnDef="cancelled">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Cancelled</mat-header-cell>
             <mat-cell *matCellDef="let history">
-              <span class="mobile-label">Blender Engine:</span>
-              {{history.engine}}
-            </mat-cell>
-          </ng-container>
-          <ng-container matColumnDef="projectName">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Project Name</mat-header-cell>
-            <mat-cell *matCellDef="let history">
-              <span class="mobile-label">Project Name:</span>
-              {{history.projectName}}
+              <span class="mobile-label">Cancelled:</span>
+              {{history.cancelled}}
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="frameAndPartNumbers">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Frame</mat-header-cell>
             <mat-cell *matCellDef="let history">
-              <span class="mobile-label">Frame Number:</span>
+              <span class="mobile-label">Frame:</span>
               {{history.frameAndPartNumbers}}
-            </mat-cell>
-          </ng-container>
-
-          <ng-container matColumnDef="serverName">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Server Name</mat-header-cell>
-            <mat-cell *matCellDef="let history">
-              <span class="mobile-label">Server Name:</span>
-              {{history.serverName}}
             </mat-cell>
           </ng-container>
 

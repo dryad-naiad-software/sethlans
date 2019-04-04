@@ -44,6 +44,8 @@ public class QueueHistoryItem extends AbstractEntityClass {
     private String projectName;
     private String deviceId;
     private String queueItemUUID;
+    private String projectLocation;
+    private String projectUUID;
     private boolean complete;
     private boolean paused;
     private boolean rendering;
