@@ -31,7 +31,7 @@ export class ServerQueueHistoryComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   dataSource = new MatTableDataSource();
-  displayedColumns = ['taskDate', 'nodeName', 'engine', 'computeType', 'projectName', 'deviceId', 'complete', 'paused', 'rendering', 'failed', 'cancelled', 'frameAndPartNumbers'];
+  displayedColumns = ['taskDate', 'nodeName', 'engine', 'computeType', 'projectName', 'deviceId', 'state', 'frameAndPartNumbers'];
 
   constructor(private http: HttpClient) {
   }

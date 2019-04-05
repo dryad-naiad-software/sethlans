@@ -52,9 +52,16 @@
                 <span class="fa fa-pause"></span>
               </button>
               <button placement="bottom"
-                      ngbTooltip="Project List"
+                      ngbTooltip="Frame View"
+                      *ngIf="currentProject.projectType === projectTypes.ANIMATION &&
+                        thumbnailStatus"
+                      class="btn btn-outline-dark btn-sm" type="button" (click)="frameView(currentProject.id)">
+                <span class="fa fa-image"></span>
+              </button>
+              <button placement="bottom"
+                      ngbTooltip="Project Queue"
                       class="btn btn-outline-dark btn-sm" type="button"
-                      (click)="returnToProjects()">
+                      (click)="projectQueue(currentProject.id)">
                 <span class="fa fa-list"></span>
               </button>
 

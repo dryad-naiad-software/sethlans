@@ -18,12 +18,11 @@
   -->
 
 <div class="row pb-1">
-  <div class="col-md-10 m-auto">
+  <div class="col-md-8 m-auto">
     <div class="card">
       <div class="card-header">
-        <h4 class="float-left">
-          <span style="font-family: 'Fjalla One', sans-serif; ">Node Render History</span>
-        </h4>
+        <h4 class="float-left" style="font-family: 'Fjalla One', sans-serif; ">{{currentProject.projectName}}
+          Queue</h4>
         <div class="btn-toolbar float-right">
           <button class="mr-2 btn btn-outline-dark" (click)="loadHistory()">
             <span class="fas fa-sync"></span>&nbsp;<span>Refresh</span>
@@ -34,12 +33,19 @@
         <mat-form-field>
           <input matInput id="table-search" (keyup)="applyFilter($event.target.value)" placeholder="Search">
         </mat-form-field>
-        <mat-table #renderHistoryTable [dataSource]="dataSource" matSort matSortActive="date" matSortDirection="desc">
+        <mat-table #queueHistoryTable [dataSource]="dataSource" matSort matSortActive="date" matSortDirection="desc">
           <ng-container matColumnDef="taskDate">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Date</mat-header-cell>
             <mat-cell *matCellDef="let history">
               <span class="mobile-label">Date:</span>
               {{history.taskDate | date:'yyyy-MM-dd HH:mm:ss.SSS'}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="nodeName">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Node</mat-header-cell>
+            <mat-cell *matCellDef="let history">
+              <span class="mobile-label">Node:</span>
+              {{history.nodeName}}
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="computeType">
@@ -49,50 +55,29 @@
               {{history.computeType}}
             </mat-cell>
           </ng-container>
-          <ng-container matColumnDef="deviceIDs">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Device ID(s)</mat-header-cell>
+          <ng-container matColumnDef="deviceId">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Device Id(s)</mat-header-cell>
             <mat-cell *matCellDef="let history">
-              <span class="mobile-label">Device ID(s):</span>
-              {{history.deviceIDs}}
+              <span class="mobile-label">Device Id(s):</span>
+              {{history.deviceId}}
             </mat-cell>
           </ng-container>
+
           <ng-container matColumnDef="state">
             <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
             <mat-cell *matCellDef="let history">
               <span class="mobile-label">State:</span>
-              <span class="text-success" *ngIf="history.completed">Complete</span>
+              <span class="text-success" *ngIf="history.complete">Complete</span>
+              <span class="text-primary" *ngIf="history.rendering">Rendering</span>
+              <span class="text-warning" *ngIf="history.paused">Paused</span>
               <span class="text-danger" *ngIf="history.failed">Failed</span>
-              <span class="text-primary" *ngIf="!history.failed && !history.completed">Rendering</span>
-
-            </mat-cell>
-          </ng-container>
-          <ng-container matColumnDef="engine">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Blender Engine</mat-header-cell>
-            <mat-cell *matCellDef="let history">
-              <span class="mobile-label">Blender Engine:</span>
-              {{history.engine}}
-            </mat-cell>
-          </ng-container>
-          <ng-container matColumnDef="projectName">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Project Name</mat-header-cell>
-            <mat-cell *matCellDef="let history">
-              <span class="mobile-label">Project Name:</span>
-              {{history.projectName}}
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="frameAndPartNumbers">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Frame</mat-header-cell>
             <mat-cell *matCellDef="let history">
-              <span class="mobile-label">Frame Number:</span>
+              <span class="mobile-label">Frame:</span>
               {{history.frameAndPartNumbers}}
-            </mat-cell>
-          </ng-container>
-
-          <ng-container matColumnDef="serverName">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Server Name</mat-header-cell>
-            <mat-cell *matCellDef="let history">
-              <span class="mobile-label">Server Name:</span>
-              {{history.serverName}}
             </mat-cell>
           </ng-container>
 

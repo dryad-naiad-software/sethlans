@@ -20,9 +20,11 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
+import com.dryadandnaiad.sethlans.domains.database.queue.QueueHistoryItem;
 import com.dryadandnaiad.sethlans.domains.info.ProjectInfo;
 import com.dryadandnaiad.sethlans.enums.ProjectStatus;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
+import com.dryadandnaiad.sethlans.services.database.QueueHistoryDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.google.common.collect.Lists;
 import org.apache.commons.io.IOUtils;
@@ -68,6 +70,7 @@ public class ProjectUIController {
     private String temp;
     private SethlansNodeDatabaseService sethlansNodeDatabaseService;
     private BlenderProjectDatabaseService blenderProjectDatabaseService;
+    private QueueHistoryDatabaseService queueHistoryDatabaseService;
 
     @GetMapping(value = "/num_of_projects")
     public Long numberOfProjects() {
@@ -121,6 +124,7 @@ public class ProjectUIController {
             return null;
         }
     }
+
 
 
     @GetMapping(value = "/project_list_in_progress")
@@ -383,6 +387,25 @@ public class ProjectUIController {
         }
     }
 
+    @GetMapping(value = "/project_queue/{id}")
+    public List<QueueHistoryItem> getProjectQueueHistory(@PathVariable Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        BlenderProject blenderProject;
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            blenderProject = blenderProjectDatabaseService.getByIdWithoutFrameParts(id);
+            if (blenderProject != null) {
+                return queueHistoryDatabaseService.getProjectQueueHistory(blenderProject.getProjectUUID());
+            }
+
+        } else {
+            blenderProject = blenderProjectDatabaseService.getProjectByUserWithoutFrameParts(auth.getName(), id);
+            if (blenderProject != null) {
+                return queueHistoryDatabaseService.getProjectQueueHistory(blenderProject.getProjectUUID());
+            }
+        }
+        return null;
+    }
+
     @Autowired
     public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {
         this.sethlansNodeDatabaseService = sethlansNodeDatabaseService;
@@ -391,5 +414,10 @@ public class ProjectUIController {
     @Autowired
     public void setBlenderProjectDatabaseService(BlenderProjectDatabaseService blenderProjectDatabaseService) {
         this.blenderProjectDatabaseService = blenderProjectDatabaseService;
+    }
+
+    @Autowired
+    public void setQueueHistoryDatabaseService(QueueHistoryDatabaseService queueHistoryDatabaseService) {
+        this.queueHistoryDatabaseService = queueHistoryDatabaseService;
     }
 }

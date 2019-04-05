@@ -17,22 +17,28 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.services.database;
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import com.dryadandnaiad.sethlans.domains.database.queue.QueueHistoryItem;
+import {ProjectQueueListComponent} from './project-queue-list.component';
 
-import java.util.List;
+describe('ProjectQueueListComponent', () => {
+  let component: ProjectQueueListComponent;
+  let fixture: ComponentFixture<ProjectQueueListComponent>;
 
-/**
- * Created Mario Estrella on 4/2/2019.
- * Dryad and Naiad Software LLC
- * mestrella@dryadandnaiad.com
- * Project: sethlans
- */
-public interface QueueHistoryDatabaseService extends CRUDService<QueueHistoryItem> {
-    QueueHistoryItem getQueueHistoryItemToUpdate(String queueUUID, String nodeName, String deviceId);
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ProjectQueueListComponent]
+    })
+      .compileComponents();
+  }));
 
-    QueueHistoryItem getQueueHistoryItemToPause(String queueUUID, String nodeName, String deviceId);
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ProjectQueueListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    List<QueueHistoryItem> getProjectQueueHistory(String projectUUID);
-}
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

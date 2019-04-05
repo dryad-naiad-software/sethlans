@@ -74,7 +74,7 @@ class QueueNodeActions {
             renderQueueItem.setVersion(renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID()).getVersion());
             renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
 
-            QueueHistoryItem queueHistoryItem = queueHistoryDatabaseService.findQueueHistoryItemToUpdate(renderQueueItem.getQueueItemUUID(), sethlansNode.getHostname(), renderQueueItem.getDeviceId());
+            QueueHistoryItem queueHistoryItem = queueHistoryDatabaseService.getQueueHistoryItemToUpdate(renderQueueItem.getQueueItemUUID(), sethlansNode.getHostname(), renderQueueItem.getDeviceId());
             queueHistoryItem.setRendering(true);
             queueHistoryDatabaseService.saveOrUpdate(queueHistoryItem);
         }
@@ -88,7 +88,7 @@ class QueueNodeActions {
             renderQueueItem.setRendering(false);
             renderQueueItem.setVersion(renderQueueDatabaseService.getByQueueUUID(processNodeStatus.getQueueUUID()).getVersion());
             renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
-            QueueHistoryItem queueHistoryItem = queueHistoryDatabaseService.findQueueHistoryItemToUpdate(renderQueueItem.getQueueItemUUID(), sethlansNodeDatabaseService.getByConnectionUUID(renderQueueItem.getConnectionUUID()).getHostname(), renderQueueItem.getDeviceId());
+            QueueHistoryItem queueHistoryItem = queueHistoryDatabaseService.getQueueHistoryItemToUpdate(renderQueueItem.getQueueItemUUID(), sethlansNodeDatabaseService.getByConnectionUUID(renderQueueItem.getConnectionUUID()).getHostname(), renderQueueItem.getDeviceId());
             queueHistoryItem.setRendering(false);
             queueHistoryItem.setFailed(true);
             queueHistoryDatabaseService.saveOrUpdate(queueHistoryItem);
@@ -226,6 +226,7 @@ class QueueNodeActions {
         queueHistoryItem.setNodeName(node.getHostname());
         queueHistoryItem.setFailed(false);
         queueHistoryItem.setPaused(false);
+        queueHistoryItem.setProjectUUID(blenderProject.getProjectUUID());
         queueHistoryItem.setQueueItemUUID(renderQueueItem.getQueueItemUUID());
         queueHistoryItem.setRendering(false);
         queueHistoryItem.setFrameAndPartNumbers(renderQueueItem.getBlenderFramePart().getFrameNumber() + ":" + renderQueueItem.getBlenderFramePart().getPartNumber());

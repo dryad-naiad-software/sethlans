@@ -63,7 +63,7 @@ class QueueProjectActions {
                     if (!renderQueueItem.isComplete()) {
                         renderQueueItem.setPaused(true);
                         if (renderQueueItem.getConnectionUUID() != null) {
-                            QueueHistoryItem queueHistoryItem = queueHistoryDatabaseService.findQueueHistoryItemToPause(renderQueueItem.getQueueItemUUID(), sethlansNodeDatabaseService.getByConnectionUUID(renderQueueItem.getConnectionUUID()).getHostname(), renderQueueItem.getDeviceId());
+                            QueueHistoryItem queueHistoryItem = queueHistoryDatabaseService.getQueueHistoryItemToPause(renderQueueItem.getQueueItemUUID(), sethlansNodeDatabaseService.getByConnectionUUID(renderQueueItem.getConnectionUUID()).getHostname(), renderQueueItem.getDeviceId());
                             if (queueHistoryItem != null) {
                                 queueHistoryItem.setRendering(false);
                                 queueHistoryItem.setPaused(true);
@@ -107,7 +107,7 @@ class QueueProjectActions {
                         String connectionURL = "https://" + sethlansNode.getIpAddress() + ":" + sethlansNode.getNetworkPort() + "/api/render/cancel";
                         String params = "queue_item_uuid=" + renderQueueItem.getQueueItemUUID() + "&connection_uuid=" + sethlansNode.getConnectionUUID();
                         sethlansAPIConnectionService.sendToRemotePOST(connectionURL, params);
-                        QueueHistoryItem queueHistoryItem = queueHistoryDatabaseService.findQueueHistoryItemToUpdate(renderQueueItem.getQueueItemUUID(), sethlansNode.getHostname(), renderQueueItem.getDeviceId());
+                        QueueHistoryItem queueHistoryItem = queueHistoryDatabaseService.getQueueHistoryItemToUpdate(renderQueueItem.getQueueItemUUID(), sethlansNode.getHostname(), renderQueueItem.getDeviceId());
                         if (queueHistoryItem != null) {
                             queueHistoryItem.setCancelled(true);
                             queueHistoryItem.setPaused(false);

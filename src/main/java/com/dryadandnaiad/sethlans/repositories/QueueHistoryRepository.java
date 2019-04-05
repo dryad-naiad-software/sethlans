@@ -22,6 +22,8 @@ package com.dryadandnaiad.sethlans.repositories;
 import com.dryadandnaiad.sethlans.domains.database.queue.QueueHistoryItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 /**
  * Created Mario Estrella on 4/2/2019.
  * Dryad and Naiad Software LLC
@@ -33,4 +35,5 @@ public interface QueueHistoryRepository extends JpaRepository<QueueHistoryItem, 
 
     QueueHistoryItem findByQueueItemUUIDAndNodeNameAndDeviceIdAndCompleteIsFalseAndCancelledIsFalse(String queueUUID, String nodeName, String deviceId);
 
+    List<QueueHistoryItem> findQueueHistoryItemsByProjectUUIDAndCancelledIsFalse(String projectUUID);
 }

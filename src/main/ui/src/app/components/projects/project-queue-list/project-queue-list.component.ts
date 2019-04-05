@@ -17,24 +17,25 @@
  *
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Project} from '../../../models/project.model';
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute} from '@angular/router';
+import {ServerQueueHistory} from '../../../models/server_queue_history';
+import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 
 @Component({
-  selector: 'app-project-frames',
-  templateUrl: './project-frames.component.html',
-  styleUrls: ['./project-frames.component.scss']
+  selector: 'app-project-queue-list',
+  templateUrl: './project-queue-list.component.html',
+  styleUrls: ['./project-queue-list.component.scss']
 })
-export class ProjectFramesComponent implements OnInit {
+export class ProjectQueueListComponent implements OnInit {
   currentProject: Project;
   id: number;
-  frameIds: number[] = [];
-  page = 0;
-  size = 16;
-  frameIdsToDisplay: number[] = [];
-
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+  dataSource = new MatTableDataSource();
+  displayedColumns = ['taskDate', 'nodeName', 'computeType', 'deviceId', 'state', 'frameAndPartNumbers'];
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {
     this.currentProject = new Project();
@@ -47,34 +48,25 @@ export class ProjectFramesComponent implements OnInit {
     this.loadProjectDetails();
   }
 
-  getFramesToDisplay(obj) {
-    let index = 0,
-      startingIndex = obj.pageIndex * obj.pageSize,
-      endingIndex = startingIndex + obj.pageSize;
-
-    this.frameIdsToDisplay = this.frameIds.filter(() => {
-      index++;
-      return (index > startingIndex && index <= endingIndex);
-    });
-  }
-
   loadProjectDetails() {
     this.http.get('/api/project_ui/project_details/' + this.id + '/').subscribe((projectDetails: Project) => {
       this.currentProject = projectDetails;
-      this.http.get('/api/project_ui/completed_frame_ids/' + this.id + '/').subscribe((frameIdList: number[]) => {
-        this.frameIds = frameIdList;
-        this.getFramesToDisplay({pageIndex: this.page, pageSize: this.size});
-        console.log(this.frameIdsToDisplay);
-      });
+      this.loadHistory();
     });
   }
 
-  refresh() {
-    window.location.href = '/projects/frames/' + this.id + '/';
+  loadHistory() {
+    this.http.get('/api/project_ui/project_queue/' + this.id).subscribe((queueHistoryList: ServerQueueHistory[]) => {
+      this.dataSource = new MatTableDataSource<any>(queueHistoryList.reverse());
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
+    });
   }
 
-  return() {
-    window.location.href = '/projects/view/' + this.id + '/';
+  applyFilter(filterValue: string) {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
   }
 
 }

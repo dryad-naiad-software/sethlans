@@ -34,7 +34,7 @@
         <mat-form-field>
           <input matInput id="table-search" (keyup)="applyFilter($event.target.value)" placeholder="Search">
         </mat-form-field>
-        <mat-table #renderHistoryTable [dataSource]="dataSource" matSort matSortActive="date" matSortDirection="desc">
+        <mat-table #queueHistoryTable [dataSource]="dataSource" matSort matSortActive="date" matSortDirection="desc">
           <ng-container matColumnDef="taskDate">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Date</mat-header-cell>
             <mat-cell *matCellDef="let history">
@@ -78,41 +78,18 @@
             </mat-cell>
           </ng-container>
 
-          <ng-container matColumnDef="complete">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Complete</mat-header-cell>
+          <ng-container matColumnDef="state">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
             <mat-cell *matCellDef="let history">
-              <span class="mobile-label">Complete:</span>
-              {{history.complete}}
+              <span class="mobile-label">State:</span>
+              <span class="text-success" *ngIf="history.complete">Complete</span>
+              <span class="text-primary" *ngIf="history.rendering">Rendering</span>
+              <span class="text-warning" *ngIf="history.paused">Paused</span>
+              <span class="text-danger" *ngIf="history.failed">Failed</span>
+              <span class="text-secondary" *ngIf="history.cancelled">Cancelled</span>
             </mat-cell>
           </ng-container>
-          <ng-container matColumnDef="paused">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Paused</mat-header-cell>
-            <mat-cell *matCellDef="let history">
-              <span class="mobile-label">Paused:</span>
-              {{history.paused}}
-            </mat-cell>
-          </ng-container>
-          <ng-container matColumnDef="rendering">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Rendering</mat-header-cell>
-            <mat-cell *matCellDef="let history">
-              <span class="mobile-label">Rendering:</span>
-              {{history.rendering}}
-            </mat-cell>
-          </ng-container>
-          <ng-container matColumnDef="failed">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Failed</mat-header-cell>
-            <mat-cell *matCellDef="let history">
-              <span class="mobile-label">Failed:</span>
-              {{history.failed}}
-            </mat-cell>
-          </ng-container>
-          <ng-container matColumnDef="cancelled">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Cancelled</mat-header-cell>
-            <mat-cell *matCellDef="let history">
-              <span class="mobile-label">Cancelled:</span>
-              {{history.cancelled}}
-            </mat-cell>
-          </ng-container>
+
           <ng-container matColumnDef="frameAndPartNumbers">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Frame</mat-header-cell>
             <mat-cell *matCellDef="let history">

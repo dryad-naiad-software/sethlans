@@ -164,10 +164,6 @@ export class ProjectViewComponent implements OnInit {
     this.http.get('/api/project_actions/stop_project/' + id + '/').subscribe();
   }
 
-  returnToProjects(): void {
-    window.location.href = '/projects';
-  }
-
   downloadProject(id) {
     window.location.href = '/api/project_actions/download_project/' + id;
   }
@@ -176,6 +172,13 @@ export class ProjectViewComponent implements OnInit {
     window.location.href = '/api/project_actions/download_project_video/' + id;
   }
 
+  projectQueue(id) {
+    window.location.href = '/projects/queue/' + id;
+  }
+
+  frameView(id) {
+    window.location.href = '/projects/frames/' + id;
+  }
 
   confirm(content) {
     let options: NgbModalOptions = {

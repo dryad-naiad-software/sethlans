@@ -44,6 +44,7 @@ import {ForgotPassComponent} from './components/forgot-pass/forgot-pass.componen
 import {NodeRenderHistoryComponent} from './components/admin/node-render-history/node-render-history.component';
 import {ProjectFramesComponent} from './components/projects/project-frames/project-frames.component';
 import {ServerQueueHistoryComponent} from './components/admin/server-queue-history/server-queue-history.component';
+import {ProjectQueueListComponent} from './components/projects/project-queue-list/project-queue-list.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -71,6 +72,7 @@ const routes: Routes = [
   {path: 'projects/view/:id', component: ProjectViewComponent},
   {path: 'projects/edit/:id', component: ProjectEditWizardComponent},
   {path: 'projects/frames/:id', component: ProjectFramesComponent},
+  {path: 'projects/queue/:id', component: ProjectQueueListComponent},
 
 ];
 

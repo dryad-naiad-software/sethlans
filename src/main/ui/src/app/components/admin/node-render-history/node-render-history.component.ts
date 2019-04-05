@@ -31,7 +31,7 @@ export class NodeRenderHistoryComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   dataSource = new MatTableDataSource();
-  displayedColumns = ['taskDate', 'computeType', 'deviceIDs', 'completed', 'failed', 'engine', 'projectName', 'frameAndPartNumbers', 'serverName'];
+  displayedColumns = ['taskDate', 'computeType', 'deviceIDs', 'state', 'engine', 'projectName', 'frameAndPartNumbers', 'serverName'];
 
   constructor(private http: HttpClient) {
   }

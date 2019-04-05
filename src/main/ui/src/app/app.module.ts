@@ -99,6 +99,7 @@ import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {ProjectFramesComponent} from './components/projects/project-frames/project-frames.component';
 import {NodeAuthComponent} from './components/admin/nodes/node-wizard/node-auth/node-auth.component';
 import {ServerQueueHistoryComponent} from './components/admin/server-queue-history/server-queue-history.component';
+import {ProjectQueueListComponent} from './components/projects/project-queue-list/project-queue-list.component';
 
 
 @NgModule({
@@ -155,6 +156,7 @@ import {ServerQueueHistoryComponent} from './components/admin/server-queue-histo
     ProjectFramesComponent,
     NodeAuthComponent,
     ServerQueueHistoryComponent,
+    ProjectQueueListComponent,
   ],
   imports: [
     BrowserModule,

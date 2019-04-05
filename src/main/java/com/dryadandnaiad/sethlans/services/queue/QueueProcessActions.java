@@ -149,7 +149,7 @@ class QueueProcessActions {
                     File.separator + "frame_" + renderQueueItem.getBlenderFramePart().getFrameNumber() + File.separator);
             renderQueueDatabaseService.saveOrUpdate(renderQueueItem);
             LOG.info("Completed Render Task received from " + sethlansNode.getHostname() + ". Adding to processing queue.");
-            QueueHistoryItem queueHistoryItem = queueHistoryDatabaseService.findQueueHistoryItemToUpdate(renderQueueItem.getQueueItemUUID(), sethlansNode.getHostname(), renderQueueItem.getDeviceId());
+            QueueHistoryItem queueHistoryItem = queueHistoryDatabaseService.getQueueHistoryItemToUpdate(renderQueueItem.getQueueItemUUID(), sethlansNode.getHostname(), renderQueueItem.getDeviceId());
             if (queueHistoryItem != null) {
                 queueHistoryItem.setRendering(false);
                 queueHistoryItem.setPaused(false);
