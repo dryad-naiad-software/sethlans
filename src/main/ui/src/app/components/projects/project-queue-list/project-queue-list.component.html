@@ -27,6 +27,10 @@
           <button class="mr-2 btn btn-outline-dark" (click)="loadHistory()">
             <span class="fas fa-sync"></span>&nbsp;<span>Refresh</span>
           </button>
+          <button class="btn btn-outline-dark"
+                  (click)="return()">
+            <span>Return to Details</span>
+          </button>
         </div>
       </div>
       <div class="card-body">
@@ -71,6 +75,8 @@
               <span class="text-primary" *ngIf="history.rendering">Rendering</span>
               <span class="text-warning" *ngIf="history.paused">Paused</span>
               <span class="text-danger" *ngIf="history.failed">Failed</span>
+              <span class="text-secondary"
+                    *ngIf="!history.complete && !history.rendering && !history.paused && !history.failed">Waiting</span>
             </mat-cell>
           </ng-container>
           <ng-container matColumnDef="frameAndPartNumbers">

@@ -118,6 +118,7 @@ class QueueProjectActions {
                     }
 
                 }
+                cancelProjectHistory(blenderProject, queueHistoryDatabaseService);
                 renderQueueDatabaseService.deleteAllByProject(blenderProject.getProjectUUID());
                 if (!blenderProject.isAllImagesProcessed() && blenderProjectDatabaseService.getByIdWithoutFrameParts(blenderProject.getId()) != null) {
                     blenderProject.setProjectStatus(ProjectStatus.Added);
@@ -146,5 +147,12 @@ class QueueProjectActions {
                 break;
         }
         processedAction.add(queueActionItem);
+    }
+
+    private static void cancelProjectHistory(BlenderProject blenderProject, QueueHistoryDatabaseService queueHistoryDatabaseService) {
+        for (QueueHistoryItem queueHistoryItem : queueHistoryDatabaseService.getProjectQueueHistory(blenderProject.getProjectUUID())) {
+            queueHistoryItem.setCancelled(true);
+            queueHistoryDatabaseService.saveOrUpdate(queueHistoryItem);
+        }
     }
 }

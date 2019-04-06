@@ -69,4 +69,8 @@ export class ProjectQueueListComponent implements OnInit {
     this.dataSource.filter = filterValue;
   }
 
+  return() {
+    window.location.href = '/projects/view/' + this.id + '/';
+  }
+
 }

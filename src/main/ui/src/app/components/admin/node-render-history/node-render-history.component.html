@@ -60,8 +60,9 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>State</mat-header-cell>
             <mat-cell *matCellDef="let history">
               <span class="mobile-label">State:</span>
-              <span class="text-success" *ngIf="history.completed">Complete</span>
-              <span class="text-danger" *ngIf="history.failed">Failed</span>
+              <span class="text-secondary" *ngIf="history.completed && history.failed">Cancelled</span>
+              <span class="text-success" *ngIf="history.completed && !history.failed">Complete</span>
+              <span class="text-danger" *ngIf="history.failed && !history.completed">Failed</span>
               <span class="text-primary" *ngIf="!history.failed && !history.completed">Rendering</span>
 
             </mat-cell>
