@@ -29,6 +29,7 @@ import com.dryadandnaiad.sethlans.osnative.hardware.gpu.GPU;
 import com.dryadandnaiad.sethlans.services.database.AccessKeyDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.RenderTaskDatabaseService;
 import com.dryadandnaiad.sethlans.services.database.SethlansServerDatabaseService;
+import com.dryadandnaiad.sethlans.services.system.SethlansLogManagementService;
 import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import org.slf4j.Logger;
@@ -43,11 +44,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
+import static com.dryadandnaiad.sethlans.utils.SethlansFileUtils.serveFile;
 
 /**
  * Created Mario Estrella on 10/28/17.
@@ -63,6 +66,7 @@ public class NodeInfoController {
     private SethlansServerDatabaseService sethlansServerDatabaseService;
     private RenderTaskDatabaseService renderTaskDatabaseService;
     private AccessKeyDatabaseService accessKeyDatabaseService;
+    private SethlansLogManagementService sethlansLogManagementService;
     private List<ComputeType> availableMethods = SethlansQueryUtils.getAvailableMethods();
     private Integer totalCores = new CPU().getCores();
     private List<GPUDevice> gpuDevices = GPU.listDevices();
@@ -128,6 +132,16 @@ public class NodeInfoController {
             return 0;
         }
         return SethlansNodeUtils.getAvailableSlots((int) renderTaskDatabaseService.tableSize());
+    }
+
+    @GetMapping(value = {"/get_log_archive"})
+    public void getLatestLogArchiveFile(HttpServletResponse response, @RequestParam String access_key) {
+        if (!firstTime && isKeyValid(access_key)) {
+            File zipFile = sethlansLogManagementService.retrieveLogFiles();
+            if (zipFile != null) {
+                serveFile(zipFile, response);
+            }
+        }
     }
 
     @GetMapping(value = {"/used_device_ids"})
@@ -270,5 +284,10 @@ public class NodeInfoController {
     @Autowired
     public void setRenderTaskDatabaseService(RenderTaskDatabaseService renderTaskDatabaseService) {
         this.renderTaskDatabaseService = renderTaskDatabaseService;
+    }
+
+    @Autowired
+    public void setSethlansLogManagementService(SethlansLogManagementService sethlansLogManagementService) {
+        this.sethlansLogManagementService = sethlansLogManagementService;
     }
 }

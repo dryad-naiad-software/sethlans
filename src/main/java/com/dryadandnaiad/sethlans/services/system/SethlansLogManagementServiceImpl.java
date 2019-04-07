@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.services.system;
 import com.dryadandnaiad.sethlans.domains.info.Log;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.utils.SethlansFileUtils;
+import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +83,8 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
     public File retrieveLogFiles() {
         archiveLogFiles();
         LOG.debug("Retrieving Sethlans Log bundle.");
-        String archiveName = "sethlans_log_bundle_" + new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
+        String hostname = SethlansQueryUtils.getHostname();
+        String archiveName = "sethlans_log_bundle_" + hostname.toUpperCase() + "_" + new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
         String logDir = getProperty(SethlansConfigKeys.LOGGING_DIR);
         String tempDir = getProperty(SethlansConfigKeys.TEMP_DIR);
         try {
@@ -105,7 +107,8 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
     public boolean archiveLogFiles() {
         LOG.debug("Attempting to archive log files.");
         try {
-            String archiveName = "sethlans_log_archive_" + new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
+            String hostname = SethlansQueryUtils.getHostname();
+            String archiveName = "sethlans_log_archive_" + hostname.toUpperCase() + "_" + new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
             List<String> filesToArchive = new ArrayList<>();
             File logDir = new File(getProperty(SethlansConfigKeys.LOGGING_DIR));
             File logArchiveDir = new File(logDir.toString() + File.separator + "archive");
