@@ -17,14 +17,26 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.enums;
+package com.dryadandnaiad.sethlans.domains.blender;
+
+import com.dryadandnaiad.sethlans.enums.PixelFormat;
+import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
+import com.dryadandnaiad.sethlans.enums.VideoCodec;
+import lombok.Data;
+
+import javax.persistence.Embeddable;
 
 /**
- * Created Mario Estrella on 4/1/17.
+ * Created Mario Estrella on 4/8/2019.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public enum RenderOutputFormat {
-    PNG, MP4, AVI, MKV
+@Embeddable
+@Data
+public class VideoSettings {
+    private String frameRate;
+    private VideoCodec codec;
+    private PixelFormat pixelFormat;
+    private RenderOutputFormat videoOutputFormat;
 }

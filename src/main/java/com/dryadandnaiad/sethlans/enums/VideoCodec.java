@@ -20,11 +20,13 @@
 package com.dryadandnaiad.sethlans.enums;
 
 /**
- * Created Mario Estrella on 4/1/17.
+ * Created Mario Estrella on 4/8/2019.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public enum RenderOutputFormat {
-    PNG, MP4, AVI, MKV
+public enum VideoCodec {
+    UTVIDEO,
+    LIBX264,
+    FFV1
 }
