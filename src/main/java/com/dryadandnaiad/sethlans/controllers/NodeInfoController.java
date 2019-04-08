@@ -134,7 +134,7 @@ public class NodeInfoController {
         return SethlansNodeUtils.getAvailableSlots((int) renderTaskDatabaseService.tableSize());
     }
 
-    @GetMapping(value = {"/get_log_archive"})
+    @GetMapping(value = {"/get_node_log_archive"})
     public void getLatestLogArchiveFile(HttpServletResponse response, @RequestParam String access_key) {
         if (!firstTime && isKeyValid(access_key)) {
             File zipFile = sethlansLogManagementService.retrieveLogFiles();

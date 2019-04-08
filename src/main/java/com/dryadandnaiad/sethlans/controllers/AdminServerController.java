@@ -34,6 +34,7 @@ import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
 import com.dryadandnaiad.sethlans.services.network.MulticastReceiverService;
 import com.dryadandnaiad.sethlans.services.network.NodeDiscoveryService;
 import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
+import com.dryadandnaiad.sethlans.services.system.SethlansLogManagementService;
 import com.dryadandnaiad.sethlans.utils.BlenderUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansNodeUtils;
 import com.google.gson.Gson;
@@ -46,10 +47,13 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.util.*;
 
 import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.writeProperty;
+import static com.dryadandnaiad.sethlans.utils.SethlansFileUtils.serveFile;
 import static io.restassured.RestAssured.given;
 
 /**
@@ -69,6 +73,7 @@ public class AdminServerController {
     private SethlansAPIConnectionService sethlansAPIConnectionService;
     private MulticastReceiverService multicastReceiverService;
     private QueueHistoryDatabaseService queueHistoryDatabaseService;
+    private SethlansLogManagementService sethlansLogManagementService;
 
 
     @GetMapping(value = "/get_queue_history")
@@ -112,6 +117,14 @@ public class AdminServerController {
     @GetMapping(value = "/get_key_from_server")
     public String getAccessKeyFromServer() {
         return getProperty(SethlansConfigKeys.ACCESS_KEY);
+    }
+
+    @GetMapping(value = "/get_node_logs")
+    public void getLogsFromAllNodes(HttpServletResponse response) {
+        File zipFile = sethlansLogManagementService.getLogFilesFromNodes();
+        if (zipFile != null) {
+            serveFile(zipFile, response);
+        }
     }
 
     @GetMapping(value = {"node_scan"})
@@ -303,5 +316,10 @@ public class AdminServerController {
     @Autowired
     public void setQueueHistoryDatabaseService(QueueHistoryDatabaseService queueHistoryDatabaseService) {
         this.queueHistoryDatabaseService = queueHistoryDatabaseService;
+    }
+
+    @Autowired
+    public void setSethlansLogManagementService(SethlansLogManagementService sethlansLogManagementService) {
+        this.sethlansLogManagementService = sethlansLogManagementService;
     }
 }

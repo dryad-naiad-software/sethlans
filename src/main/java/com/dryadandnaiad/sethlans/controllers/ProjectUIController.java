@@ -205,9 +205,7 @@ public class ProjectUIController {
                     File image = new File(fileName);
                     return sendImage(image);
                 }
-
             }
-
         }
         return null;
     }

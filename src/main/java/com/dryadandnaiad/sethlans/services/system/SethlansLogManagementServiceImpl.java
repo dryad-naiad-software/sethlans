@@ -19,13 +19,17 @@
 
 package com.dryadandnaiad.sethlans.services.system;
 
+import com.dryadandnaiad.sethlans.domains.database.node.SethlansNode;
 import com.dryadandnaiad.sethlans.domains.info.Log;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
+import com.dryadandnaiad.sethlans.services.database.SethlansNodeDatabaseService;
+import com.dryadandnaiad.sethlans.services.network.SethlansAPIConnectionService;
 import com.dryadandnaiad.sethlans.utils.SethlansFileUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -50,13 +54,16 @@ import static com.dryadandnaiad.sethlans.utils.SethlansConfigUtils.getProperty;
 @Service
 public class SethlansLogManagementServiceImpl implements SethlansLogManagementService {
     private static final Logger LOG = LoggerFactory.getLogger(SethlansLogManagementServiceImpl.class);
+    private SethlansNodeDatabaseService sethlansNodeDatabaseService;
+    private SethlansAPIConnectionService sethlansAPIConnectionService;
+
 
     @Override
     @Async
-    public void checkAndArchiveLogFiles(){
-        while(true) {
+    public void checkAndArchiveLogFiles() {
+        while (true) {
             LOG.debug("Checking to see if logs are at max capacity");
-            if(isLogDirectoryAtMax()) {
+            if (isLogDirectoryAtMax()) {
                 LOG.debug("Log is at max capacity.");
                 archiveLogFiles();
             }
@@ -68,6 +75,35 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
             }
         }
 
+    }
+
+    @Override
+    public File getLogFilesFromNodes() {
+        List<SethlansNode> nodes = sethlansNodeDatabaseService.listAll();
+        if (nodes != null && nodes.size() > 0) {
+            String tempDir = getProperty(SethlansConfigKeys.TEMP_DIR);
+            File nodeLogDir = new File(tempDir + File.separator + "node_logs");
+            String archiveName = "sethlans_node_log_bundle_" + new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
+            if (nodeLogDir.mkdir()) {
+                for (SethlansNode node : nodes) {
+                    if (node.isActive()) {
+                        String connectionURL = "https://" + node.getIpAddress() + ":" + node.getNetworkPort() + "/api/info/get_node_log_archive";
+                        String params = "access_key=" + getProperty(SethlansConfigKeys.ACCESS_KEY);
+                        sethlansAPIConnectionService.downloadFromRemoteGET(connectionURL, params, nodeLogDir.toString());
+                    }
+                }
+                File[] logArchives = nodeLogDir.listFiles();
+                if (logArchives != null) {
+                    List<String> archiveList = new ArrayList<>();
+                    for (File archive : logArchives) {
+                        archiveList.add(archive.toString());
+                    }
+                    return SethlansFileUtils.createArchive(archiveList, tempDir, archiveName);
+                }
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -91,12 +127,15 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
             String mainLog = getProperty(SethlansConfigKeys.LOGGING_FILE);
             File logArchiveDir = new File(logDir + File.separator + "archive");
             File[] logArchives = logArchiveDir.listFiles();
-            List<String> archiveList = new ArrayList<>();
-            archiveList.add(mainLog);
-            for (File archive : logArchives) {
-                archiveList.add(archive.toString());
+            if (logArchives != null) {
+
+                List<String> archiveList = new ArrayList<>();
+                archiveList.add(mainLog);
+                for (File archive : logArchives) {
+                    archiveList.add(archive.toString());
+                }
+                return SethlansFileUtils.createArchive(archiveList, tempDir, archiveName);
             }
-            return SethlansFileUtils.createArchive(archiveList, tempDir, archiveName);
         } catch (Exception e) {
             LOG.error(e.getMessage());
         }
@@ -114,28 +153,31 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
             File logArchiveDir = new File(logDir.toString() + File.separator + "archive");
             if (logArchiveDir.mkdirs()) {
                 File[] logFiles = logDir.listFiles();
-                for (File log : logFiles) {
-                    List<String> logFileName = Arrays.asList(log.toString().split("\\.(?=[^.]+$)"));
-                    if (!logFileName.get(1).contains("log")) {
-                        filesToArchive.add(log.toString());
-                    }
-                }
-                LOG.debug("Adding the following log files to new archive:");
-                for (String file :
-                        filesToArchive) {
-                    LOG.debug(file);
-
-                }
-                File archive = SethlansFileUtils.createArchive(filesToArchive, logArchiveDir.toString(), archiveName);
-                if (archive.exists()) {
+                if (logFiles != null) {
                     for (File log : logFiles) {
                         List<String> logFileName = Arrays.asList(log.toString().split("\\.(?=[^.]+$)"));
                         if (!logFileName.get(1).contains("log")) {
-                            log.delete();
+                            filesToArchive.add(log.toString());
                         }
                     }
-                    LOG.debug("Log files successfully archived.");
-                    return true;
+                    LOG.debug("Adding the following log files to new archive:");
+                    for (String file :
+                            filesToArchive) {
+                        LOG.debug(file);
+
+                    }
+                    File archive = SethlansFileUtils.createArchive(filesToArchive, logArchiveDir.toString(), archiveName);
+                    if (archive.exists()) {
+                        for (File log : logFiles) {
+                            List<String> logFileName = Arrays.asList(log.toString().split("\\.(?=[^.]+$)"));
+                            if (!logFileName.get(1).contains("log")) {
+                                log.delete();
+                            }
+                        }
+                        LOG.debug("Log files successfully archived.");
+                        return true;
+                    }
+
                 } else {
                     LOG.debug("Log archive failed.");
                     return false;
@@ -150,13 +192,16 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
         return false;
     }
 
-    private boolean isLogDirectoryAtMax(){
+    private boolean isLogDirectoryAtMax() {
         File logDir = new File(getProperty(SethlansConfigKeys.LOGGING_DIR));
+
         File[] logFiles = logDir.listFiles();
-        for (File log : logFiles) {
-            List<String> logFileName = Arrays.asList(log.toString().split("\\.(?=[^.]+$)"));
-            if (logFileName.get(1).contains("7")) {
-                return true;
+        if (logFiles != null) {
+            for (File log : logFiles) {
+                List<String> logFileName = Arrays.asList(log.toString().split("\\.(?=[^.]+$)"));
+                if (logFileName.get(1).contains("7")) {
+                    return true;
+                }
             }
         }
         return false;
@@ -199,4 +244,13 @@ public class SethlansLogManagementServiceImpl implements SethlansLogManagementSe
         }
     }
 
+    @Autowired
+    public void setSethlansNodeDatabaseService(SethlansNodeDatabaseService sethlansNodeDatabaseService) {
+        this.sethlansNodeDatabaseService = sethlansNodeDatabaseService;
+    }
+
+    @Autowired
+    public void setSethlansAPIConnectionService(SethlansAPIConnectionService sethlansAPIConnectionService) {
+        this.sethlansAPIConnectionService = sethlansAPIConnectionService;
+    }
 }

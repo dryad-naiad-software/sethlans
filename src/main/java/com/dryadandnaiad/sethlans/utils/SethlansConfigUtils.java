@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -149,17 +149,7 @@ public class SethlansConfigUtils {
 
 
     public static String getProperty(SethlansConfigKeys key) {
-        final Properties properties = new Properties();
-        try {
-            FileInputStream fileIn = new FileInputStream(getConfigFile());
-            properties.load(fileIn);
-            fileIn.close();
-            return properties.getProperty(key.toString());
-        } catch (IOException e) {
-            LOG.error("Unable to read config file, either missing or this is a first time execution");
-
-        }
-        return null;
+        return getProperty(key.toString());
     }
 
     public static String getProperty(String key) {
