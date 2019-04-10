@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,6 +19,7 @@
 
 package com.dryadandnaiad.sethlans.domains.info;
 
+import com.dryadandnaiad.sethlans.domains.blender.VideoSettings;
 import com.dryadandnaiad.sethlans.enums.*;
 import lombok.Data;
 
@@ -50,12 +51,12 @@ public class ProjectInfo {
     private ProjectStatus projectStatus;
     private boolean allImagesProcessed;
     private RenderOutputFormat outputFormat;
+    private VideoSettings videoSettings;
     private boolean useParts;
     private boolean thumbnailPresent;
     private boolean reEncode;
     private String thumbnailURL;
     private int currentPercentage;
-    private String frameRate;
     private String totalRenderTime;
     private String projectTime;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,12 +19,10 @@
 
 package com.dryadandnaiad.sethlans.services.ffmpeg;
 
+import com.dryadandnaiad.sethlans.domains.blender.VideoSettings;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.events.SethlansNotification;
-import com.dryadandnaiad.sethlans.enums.NotificationType;
-import com.dryadandnaiad.sethlans.enums.ProjectStatus;
-import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
-import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
+import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
 import com.dryadandnaiad.sethlans.services.notification.SethlansNotificationService;
 import org.apache.commons.exec.CommandLine;
@@ -68,11 +66,12 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
         PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(outputStream, errorStream);
+        VideoSettings videoSettings = blenderProject.getVideoSettings();
         CommandLine ffmpeg = new CommandLine(getProperty(SethlansConfigKeys.FFMPEG_BIN.toString()));
         String movieType = "";
 
         ffmpeg.addArgument("-framerate");
-        ffmpeg.addArgument(blenderProject.getFrameRate());
+        ffmpeg.addArgument(videoSettings.getFrameRate());
 
         ffmpeg.addArgument("-i");
         for (String frameFileName : blenderProject.getFrameFileNames()) {
@@ -86,22 +85,35 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
 
         ffmpeg.addArgument(blenderProject.getProjectRootDir() + File.separator + "temp" + File.separator + cleanedProjectName + "-" + truncatedUUID + "-" + "%d.png");
         ffmpeg.addArgument("-c:v");
-        if (blenderProject.getRenderOutputFormat() == RenderOutputFormat.AVI) {
+        if (videoSettings.getVideoOutputFormat() == RenderOutputFormat.AVI) {
             movieType = "AVI";
-            ffmpeg.addArgument("utvideo");
+            ffmpeg.addArgument(videoSettings.getCodec().getName());
             ffmpeg.addArgument("-pix_fmt");
-            ffmpeg.addArgument("yuv422p");
+            ffmpeg.addArgument(videoSettings.getPixelFormat().getName());
 
         }
-        if (blenderProject.getRenderOutputFormat() == RenderOutputFormat.MP4) {
+        if (videoSettings.getVideoOutputFormat() == RenderOutputFormat.MP4) {
             movieType = "MP4";
-            ffmpeg.addArgument("libx264");
+            ffmpeg.addArgument(videoSettings.getCodec().getName());
             ffmpeg.addArgument("-crf");
-            ffmpeg.addArgument("17");
+            ffmpeg.addArgument(videoSettings.getVideoQuality().getName());
             ffmpeg.addArgument("-preset");
             ffmpeg.addArgument("medium");
             ffmpeg.addArgument("-pix_fmt");
-            ffmpeg.addArgument("yuv420p");
+            ffmpeg.addArgument(videoSettings.getPixelFormat().getName());
+        }
+
+        if (videoSettings.getVideoOutputFormat() == RenderOutputFormat.MKV) {
+            movieType = "MPV";
+            ffmpeg.addArgument(videoSettings.getCodec().getName());
+            if (videoSettings.getCodec() == VideoCodec.LIBX264) {
+                ffmpeg.addArgument("-crf");
+                ffmpeg.addArgument(videoSettings.getVideoQuality().getName());
+                ffmpeg.addArgument("-preset");
+                ffmpeg.addArgument("medium");
+            }
+            ffmpeg.addArgument("-pix_fmt");
+            ffmpeg.addArgument(videoSettings.getPixelFormat().getName());
         }
 
         ffmpeg.addArgument(blenderProject.getMovieFileLocation());

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.forms.project;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlendFile;
+import com.dryadandnaiad.sethlans.domains.blender.VideoSettings;
 import com.dryadandnaiad.sethlans.enums.*;
 import lombok.Data;
 
@@ -45,11 +46,11 @@ public class ProjectForm {
     private ProjectType projectType;
     private ProjectStatus projectStatus;
     private BlenderEngine blenderEngine;
-    private String frameRate;
     private String uploadedFile;
     private String fileLocation;
     private String selectedBlenderversion;
     private ComputeType renderOn;
+    private VideoSettings videoSettings;
     private RenderOutputFormat outputFormat;
     private String username;
     private String uuid;

@@ -17,20 +17,24 @@
  *
  */
 
-package com.dryadandnaiad.sethlans.forms.project;
-
-import com.dryadandnaiad.sethlans.domains.blender.VideoSettings;
-import lombok.Data;
+package com.dryadandnaiad.sethlans.enums;
 
 /**
- * Created Mario Estrella on 6/23/2018.
+ * Created Mario Estrella on 4/9/2019.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Data
-public class VideoChangeForm {
-    private VideoSettings videoSettings;
+public enum VideoQuality {
+    Low264("28"), Medium264("23"), High264("18"), Lossless264("12");
 
+    private final String name;
 
+    VideoQuality(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

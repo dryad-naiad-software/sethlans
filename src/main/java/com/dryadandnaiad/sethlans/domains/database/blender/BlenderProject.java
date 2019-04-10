@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.domains.database.blender;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlenderFramePart;
+import com.dryadandnaiad.sethlans.domains.blender.VideoSettings;
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
 import com.dryadandnaiad.sethlans.domains.database.user.SethlansUser;
 import com.dryadandnaiad.sethlans.enums.*;
@@ -62,7 +63,7 @@ public class BlenderProject extends AbstractEntityClass implements Comparable<Bl
     private boolean allImagesProcessed;
     private boolean userStopped;
     private ProjectStatus projectStatus;
-    private String frameRate;
+    private VideoSettings videoSettings;
     private String projectName;
     private String blendFilename;
     private String blendFilenameMD5Sum;

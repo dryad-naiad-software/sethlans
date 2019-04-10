@@ -402,7 +402,7 @@ public class SethlansQueryUtils {
         projectInfo.setProjectTime(getTimeFromMills(blenderProject.getTotalProjectTime()));
         projectInfo.setOutputFormat(blenderProject.getRenderOutputFormat());
         projectInfo.setUsername(blenderProject.getSethlansUser().getUsername());
-        projectInfo.setFrameRate(blenderProject.getFrameRate());
+        projectInfo.setVideoSettings(blenderProject.getVideoSettings());
         projectInfo.setResolutionX(blenderProject.getResolutionX());
         projectInfo.setResolutionY(blenderProject.getResolutionY());
         projectInfo.setBlenderEngine(blenderProject.getBlenderEngine());

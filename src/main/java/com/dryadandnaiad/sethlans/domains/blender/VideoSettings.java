@@ -22,6 +22,7 @@ package com.dryadandnaiad.sethlans.domains.blender;
 import com.dryadandnaiad.sethlans.enums.PixelFormat;
 import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import com.dryadandnaiad.sethlans.enums.VideoCodec;
+import com.dryadandnaiad.sethlans.enums.VideoQuality;
 import lombok.Data;
 
 import javax.persistence.Embeddable;
@@ -39,4 +40,5 @@ public class VideoSettings {
     private VideoCodec codec;
     private PixelFormat pixelFormat;
     private RenderOutputFormat videoOutputFormat;
+    private VideoQuality videoQuality;
 }

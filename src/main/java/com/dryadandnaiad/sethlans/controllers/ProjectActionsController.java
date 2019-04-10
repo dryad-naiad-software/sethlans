@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -265,7 +265,7 @@ public class ProjectActionsController {
             }
 
             partConfiguration(projectForm);
-            projectForm.setFrameRate(checkFrameRate(projectForm.getFrameRate()));
+            projectForm.getVideoSettings().setFrameRate(checkFrameRate(projectForm.getVideoSettings().getFrameRate()));
             projectForm.setUsername(auth.getName());
             projectForm.setProjectStatus(ProjectStatus.Added);
             return blenderProjectDatabaseService.saveOrUpdateProjectForm(projectForm).getId();
@@ -305,7 +305,7 @@ public class ProjectActionsController {
             blenderProject.setResolutionY(projectForm.getResolutionY());
             blenderProject.setResPercentage(projectForm.getResPercentage());
             partConfiguration(projectForm);
-            blenderProject.setFrameRate(projectForm.getFrameRate());
+            blenderProject.setVideoSettings(projectForm.getVideoSettings());
             blenderProjectDatabaseService.saveOrUpdate(blenderProject);
             return true;
         }

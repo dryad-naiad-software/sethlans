@@ -66,7 +66,7 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
         blenderProject.setResPercentage(projectForm.getResPercentage());
         blenderProject.setBlendFilename(projectForm.getUploadedFile());
         blenderProject.setPartsPerFrame(projectForm.getPartsPerFrame());
-        blenderProject.setFrameRate(projectForm.getFrameRate());
+        blenderProject.setVideoSettings(projectForm.getVideoSettings());
         blenderProject.setFramePartList(new ArrayList<>());
         blenderProject.setThumbnailFileNames(new ArrayList<>());
         blenderProject.setFrameFileNames(new ArrayList<>());
