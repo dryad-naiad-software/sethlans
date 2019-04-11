@@ -18,27 +18,16 @@
  */
 
 
-import {Project} from '../project.model';
-import {ProjectWizardProgress} from '../../enums/project_wizard_progress';
+import {Component, OnInit} from '@angular/core';
 
-export class ProjectWizardForm {
-  project: Project;
-  currentProgress: ProjectWizardProgress;
-  detailsValid: boolean;
-  formComplete: boolean;
-  finished: boolean;
-  projectLoaded: boolean;
-  videoEnabled: boolean;
-  availableBlenderVersions: string[];
+@Component({
+  selector: 'app-project-edit-video-settings',
+  templateUrl: './project-edit-video-settings.component.html',
+  styleUrls: ['./project-edit-video-settings.component.scss']
+})
+export class ProjectEditVideoSettingsComponent implements OnInit {
 
-
-  constructor() {
-    this.project = new Project();
-    this.currentProgress = ProjectWizardProgress.UPLOAD;
-    this.finished = false;
-    this.projectLoaded = false;
-    this.detailsValid = false;
-    this.videoEnabled = false;
-    this.formComplete = false;
+  ngOnInit(): void {
   }
+
 }

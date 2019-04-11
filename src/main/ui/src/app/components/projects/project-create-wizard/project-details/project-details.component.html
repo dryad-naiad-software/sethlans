@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2018 Dryad and Naiad Software LLC
+  ~ Copyright (c) 2019 Dryad and Naiad Software LLC
   ~
   ~ This program is free software; you can redistribute it and/or
   ~ modify it under the terms of the GNU General Public License
@@ -48,16 +48,8 @@
               [(ngModel)]="projectWizard.project.outputFormat">
         <option value="{{formats.MP4}}">MP4</option>
         <option value="{{formats.AVI}}">AVI</option>
+        <option value="{{formats.MKV}}">MKV</option>
         <option value="{{formats.PNG}}">PNG</option>
-      </select>
-    </div>
-    <div class="form-group"
-         *ngIf="projectWizard.project.projectType == projectTypes.ANIMATION && projectWizard.project.outputFormat == 'AVI' || projectWizard.project.outputFormat == 'MP4'">
-      <label for="frameRate">Frame Rate</label>
-      <select class="form-control form-control-sm" id="frameRate" name="frameRate"
-              [(ngModel)]="projectWizard.project.frameRate">
-        <option *ngFor="let frameRate of frameRates">{{frameRate}}
-        </option>
       </select>
     </div>
     <div class="form-group" *ngIf="projectWizard.project.projectType == projectTypes.STILL_IMAGE">
@@ -81,7 +73,7 @@
         <label class="form-check-label"><input type="radio" name="projectType" class="form-check-input"
                                                [(ngModel)]="projectWizard.project.projectType"
                                                value="{{projectTypes.ANIMATION}}"
-                                               (click)="setDefaultFrameRate()">Animation</label>
+                                               (click)="setDefaultAnimation()">Animation</label>
       </div>
     </fieldset>
     <div class="form-row">

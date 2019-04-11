@@ -17,28 +17,28 @@
  *
  */
 
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {Project} from '../project.model';
-import {ProjectWizardProgress} from '../../enums/project_wizard_progress';
+import {ProjectEditVideoSettingsComponent} from './project-edit-video-settings.component';
 
-export class ProjectWizardForm {
-  project: Project;
-  currentProgress: ProjectWizardProgress;
-  detailsValid: boolean;
-  formComplete: boolean;
-  finished: boolean;
-  projectLoaded: boolean;
-  videoEnabled: boolean;
-  availableBlenderVersions: string[];
+describe('ProjectEditVideoSettingsComponent', () => {
+  let component: ProjectEditVideoSettingsComponent;
+  let fixture: ComponentFixture<ProjectEditVideoSettingsComponent>;
 
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ProjectEditVideoSettingsComponent]
+    })
+      .compileComponents();
+  }));
 
-  constructor() {
-    this.project = new Project();
-    this.currentProgress = ProjectWizardProgress.UPLOAD;
-    this.finished = false;
-    this.projectLoaded = false;
-    this.detailsValid = false;
-    this.videoEnabled = false;
-    this.formComplete = false;
-  }
-}
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ProjectEditVideoSettingsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

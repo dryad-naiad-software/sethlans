@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -30,7 +30,6 @@ import {RenderOutputFormat} from '../../../../enums/render_output_format.enum';
 export class ProjectDetailsComponent implements OnInit {
   @Input() projectWizard: ProjectWizardForm;
   projectTypes: any = ProjectType;
-  frameRates: string[] = ['23.98', '24', '25', '29.97', '30', '50', '59.94', '60'];
   formats: any = RenderOutputFormat;
   @ViewChild('projectDetailsForm') form: any;
   @Output() disableNext = new EventEmitter();
@@ -60,8 +59,7 @@ export class ProjectDetailsComponent implements OnInit {
     this.projectWizard.project.outputFormat = RenderOutputFormat.PNG;
   }
 
-  setDefaultFrameRate() {
-    this.projectWizard.project.frameRate = '23.98';
+  setDefaultAnimation() {
     this.projectWizard.project.endFrame = 50;
   }
 

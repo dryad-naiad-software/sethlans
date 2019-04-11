@@ -90,7 +90,7 @@ import {ProjectSummaryComponent} from './components/projects/project-create-wiza
 import {FileUploadModule} from 'primeng/fileupload';
 import {ProjectViewComponent} from './components/projects/project-view/project-view.component';
 import {ProjectEditWizardComponent} from './components/projects/project-edit-wizard/project-edit-wizard.component';
-import {ProjectVideoSettingsComponent} from './components/projects/project-video-settings/project-video-settings.component';
+import {ProjectEditVideoSettingsComponent} from './components/projects/project-edit-video-settings/project-edit-video-settings.component';
 import {WizardNodeAuthComponent} from './components/setup/get-started-wizard/wizard-node-auth/wizard-node-auth.component';
 import {WizardAddNodesComponent} from './components/setup/get-started-wizard/wizard-add-nodes/wizard-add-nodes.component';
 import {ForgotPassComponent} from './components/forgot-pass/forgot-pass.component';
@@ -100,6 +100,7 @@ import {ProjectFramesComponent} from './components/projects/project-frames/proje
 import {NodeAuthComponent} from './components/admin/nodes/node-wizard/node-auth/node-auth.component';
 import {ServerQueueHistoryComponent} from './components/admin/server-queue-history/server-queue-history.component';
 import {ProjectQueueListComponent} from './components/projects/project-queue-list/project-queue-list.component';
+import {ProjectVideoSettingsComponent} from './components/projects/project-create-wizard/project-video-settings/project-video-settings.component';
 
 
 @NgModule({
@@ -148,7 +149,7 @@ import {ProjectQueueListComponent} from './components/projects/project-queue-lis
     ProjectSummaryComponent,
     ProjectViewComponent,
     ProjectEditWizardComponent,
-    ProjectVideoSettingsComponent,
+    ProjectEditVideoSettingsComponent,
     WizardNodeAuthComponent,
     WizardAddNodesComponent,
     ForgotPassComponent,
@@ -157,6 +158,7 @@ import {ProjectQueueListComponent} from './components/projects/project-queue-lis
     NodeAuthComponent,
     ServerQueueHistoryComponent,
     ProjectQueueListComponent,
+    ProjectVideoSettingsComponent,
   ],
   imports: [
     BrowserModule,

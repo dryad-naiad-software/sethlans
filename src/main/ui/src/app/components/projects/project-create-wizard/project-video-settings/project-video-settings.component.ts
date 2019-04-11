@@ -1,5 +1,5 @@
-/*!
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+/*
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,3 +17,24 @@
  *
  */
 
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {ProjectWizardForm} from '../../../../models/forms/project_wizard_form.model';
+
+@Component({
+  selector: 'app-project-video-settings',
+  templateUrl: './project-video-settings.component.html',
+  styleUrls: ['./project-video-settings.component.scss']
+})
+export class ProjectVideoSettingsComponent implements OnInit {
+  @Input() projectWizard: ProjectWizardForm;
+  frameRates: string[] = ['23.98', '24', '25', '29.97', '30', '50', '59.94', '60'];
+  @Output() disableNext = new EventEmitter();
+
+
+  constructor() {
+  }
+
+  ngOnInit() {
+  }
+
+}

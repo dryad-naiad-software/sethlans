@@ -27,7 +27,7 @@ import {timer} from 'rxjs';
 import {ProjectType} from '../../../enums/project_type.enum';
 import {BlenderEngine} from '../../../enums/blender_engine.enum';
 import {ComputeMethod} from '../../../enums/compute.method.enum';
-import {ProjectVideoSettingsComponent} from '../project-video-settings/project-video-settings.component';
+import {ProjectEditVideoSettingsComponent} from '../project-edit-video-settings/project-edit-video-settings.component';
 import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -54,7 +54,7 @@ export class ProjectViewComponent implements OnInit {
   placeholder: any = 'assets/images/placeholder.svg';
   nodesReady: boolean = false;
   disableButton: boolean;
-  @ViewChild(ProjectVideoSettingsComponent) videoSettings: ProjectVideoSettingsComponent;
+  @ViewChild(ProjectEditVideoSettingsComponent) videoSettings: ProjectEditVideoSettingsComponent;
 
 
   constructor(private http: HttpClient, private router: Router, private route: ActivatedRoute, private modalService: NgbModal) {

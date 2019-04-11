@@ -17,28 +17,6 @@
  *
  */
 
-
-import {Project} from '../project.model';
-import {ProjectWizardProgress} from '../../enums/project_wizard_progress';
-
-export class ProjectWizardForm {
-  project: Project;
-  currentProgress: ProjectWizardProgress;
-  detailsValid: boolean;
-  formComplete: boolean;
-  finished: boolean;
-  projectLoaded: boolean;
-  videoEnabled: boolean;
-  availableBlenderVersions: string[];
-
-
-  constructor() {
-    this.project = new Project();
-    this.currentProgress = ProjectWizardProgress.UPLOAD;
-    this.finished = false;
-    this.projectLoaded = false;
-    this.detailsValid = false;
-    this.videoEnabled = false;
-    this.formComplete = false;
-  }
+export enum ImageOutputFormat {
+  PNG
 }
