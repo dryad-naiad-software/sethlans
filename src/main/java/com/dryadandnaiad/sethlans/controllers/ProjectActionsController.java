@@ -19,10 +19,10 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.domains.blender.VideoSettings;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.forms.project.ProjectForm;
-import com.dryadandnaiad.sethlans.forms.project.VideoChangeForm;
 import com.dryadandnaiad.sethlans.services.blender.BlenderParseBlendFileService;
 import com.dryadandnaiad.sethlans.services.blender.BlenderProjectService;
 import com.dryadandnaiad.sethlans.services.database.BlenderProjectDatabaseService;
@@ -329,7 +329,7 @@ public class ProjectActionsController {
     }
 
     @PostMapping(value = "/api/project_form/video_settings/{id}")
-    public boolean editVideoSettings(@RequestBody VideoChangeForm videoChangeForm, @PathVariable Long id) {
+    public boolean editVideoSettings(@RequestBody VideoSettings newSettings, @PathVariable Long id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         BlenderProject blenderProject;
         if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
@@ -337,21 +337,14 @@ public class ProjectActionsController {
         } else {
             blenderProject = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
         }
-        if (videoChangeForm != null && blenderProject != null) {
-            if (blenderProject.getProjectStatus().equals(ProjectStatus.Finished) && !videoChangeForm.getOutputFormat().equals(RenderOutputFormat.PNG)) {
-                boolean changed = false;
-                if (!blenderProject.getRenderOutputFormat().equals(videoChangeForm.getOutputFormat())) {
-                    blenderProject.setRenderOutputFormat(videoChangeForm.getOutputFormat());
-                    changed = true;
-                }
-                if (!blenderProject.getFrameRate().equals(videoChangeForm.getFrameRate())) {
-                    blenderProject.setFrameRate(videoChangeForm.getFrameRate());
-                    changed = true;
-                }
-                if (changed) {
-                    LOG.info("Video Settings changed for " + blenderProject.getProjectName() + " : " + videoChangeForm);
+        if (newSettings != null && blenderProject != null) {
+            VideoSettings videoSettings = blenderProject.getVideoSettings();
+            if (blenderProject.getProjectStatus().equals(ProjectStatus.Finished) && !newSettings.getVideoOutputFormat().equals(RenderOutputFormat.PNG)) {
+                if (!videoSettings.equals(newSettings)) {
+                    LOG.info("Video Settings changed for " + blenderProject.getProjectName() + " : " + newSettings);
                     blenderProject.setProjectStatus(ProjectStatus.Processing);
                     blenderProject.setReEncode(true);
+                    blenderProject.setVideoSettings(videoSettings);
                     blenderProject = blenderProjectDatabaseService.saveOrUpdate(blenderProject);
                     try {
                         LOG.info("Starting encoding process");

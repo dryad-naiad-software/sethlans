@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import com.dryadandnaiad.sethlans.enums.VideoCodec;
 import com.dryadandnaiad.sethlans.enums.VideoQuality;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Embeddable;
 
@@ -35,6 +36,7 @@ import javax.persistence.Embeddable;
  */
 @Embeddable
 @Data
+@EqualsAndHashCode
 public class VideoSettings {
     private String frameRate;
     private VideoCodec codec;

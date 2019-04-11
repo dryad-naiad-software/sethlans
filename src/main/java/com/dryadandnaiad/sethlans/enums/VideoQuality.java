@@ -26,7 +26,7 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum VideoQuality {
-    Low264("28"), Medium264("23"), High264("18"), Lossless264("12");
+    Low264("28"), Low265("32"), Medium264("23"), Medium265("28"), High264("17"), High265("20"), Lossless264("12"), Lossless265("12");
 
     private final String name;
 
