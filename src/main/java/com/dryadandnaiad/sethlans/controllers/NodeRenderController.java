@@ -27,7 +27,7 @@ import com.dryadandnaiad.sethlans.domains.database.server.SethlansServer;
 import com.dryadandnaiad.sethlans.domains.info.NodeInfo;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
+import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.enums.SethlansConfigKeys;
 import com.dryadandnaiad.sethlans.services.blender.benchmark.BlenderBenchmarkService;
 import com.dryadandnaiad.sethlans.services.blender.render.BlenderRenderService;
@@ -110,7 +110,7 @@ public class NodeRenderController {
     public void renderRequest(@RequestParam String project_name, @RequestParam String connection_uuid,
                               @RequestParam String project_uuid,
                               @RequestParam String queue_item_uuid, @RequestParam String device_id,
-                              @RequestParam RenderOutputFormat render_output_format,
+                              @RequestParam ImageOutputFormat render_output_format,
                               @RequestParam int samples, @RequestParam BlenderEngine blender_engine,
                               @RequestParam ComputeType compute_type,
                               @RequestParam String blend_file, @RequestParam String blend_file_md5,
@@ -198,7 +198,7 @@ public class NodeRenderController {
                 renderTask.setRenderTaskUUID(UUID.randomUUID().toString());
                 renderTask.setServerQueueUUID(queue_item_uuid);
                 renderTask.setConnectionUUID(connection_uuid);
-                renderTask.setRenderOutputFormat(render_output_format);
+                renderTask.setImageOutputFormat(render_output_format);
                 renderTask.setSamples(samples);
                 renderTask.setBlenderEngine(blender_engine);
                 renderTask.setComputeType(compute_type);

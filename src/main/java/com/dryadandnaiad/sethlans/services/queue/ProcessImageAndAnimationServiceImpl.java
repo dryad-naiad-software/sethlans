@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,6 +20,7 @@
 package com.dryadandnaiad.sethlans.services.queue;
 
 import com.dryadandnaiad.sethlans.domains.blender.BlenderFramePart;
+import com.dryadandnaiad.sethlans.domains.blender.VideoSettings;
 import com.dryadandnaiad.sethlans.domains.database.blender.BlenderProject;
 import com.dryadandnaiad.sethlans.domains.database.queue.FrameFileUpdateItem;
 import com.dryadandnaiad.sethlans.services.database.FrameFileUpdateDatabaseService;
@@ -50,19 +51,12 @@ public class ProcessImageAndAnimationServiceImpl implements ProcessImageAndAnima
     private FFmpegEncodeService fFmpegEncodeService;
     private FrameFileUpdateDatabaseService frameFileUpdateDatabaseService;
 
-    @Override
-    public void createMP4(BlenderProject blenderProject) {
-        String movieFileDirectory = blenderProject.getProjectRootDir() + File.separator + "MP4" + File.separator;
-        String movieFile = blenderProject.getProjectName().toLowerCase().replaceAll(" ", "_").replaceAll("[^a-zA-Z0-9_-]", "") + ".mp4";
-        blenderProject.setMovieFileLocation(movieFileDirectory + movieFile);
-        new File(movieFileDirectory).mkdir();
-        fFmpegEncodeService.encodeImagesToVideo(blenderProject);
-    }
 
     @Override
-    public void createAVI(BlenderProject blenderProject) {
-        String movieFileDirectory = blenderProject.getProjectRootDir() + File.separator + "AVI" + File.separator;
-        String movieFile = blenderProject.getProjectName().toLowerCase().replaceAll(" ", "_").replaceAll("[^a-zA-Z0-9_-]", "") + ".avi";
+    public void createMovie(BlenderProject blenderProject) {
+        VideoSettings videoSettings = blenderProject.getVideoSettings();
+        String movieFileDirectory = blenderProject.getProjectRootDir() + File.separator + videoSettings.getVideoOutputFormat().getName() + File.separator;
+        String movieFile = blenderProject.getProjectName().toLowerCase().replaceAll(" ", "_").replaceAll("[^a-zA-Z0-9_-]", "") + "." + videoSettings.getVideoOutputFormat().getName().toLowerCase();
         blenderProject.setMovieFileLocation(movieFileDirectory + movieFile);
         new File(movieFileDirectory).mkdir();
         fFmpegEncodeService.encodeImagesToVideo(blenderProject);

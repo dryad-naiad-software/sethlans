@@ -51,7 +51,8 @@ public class ProjectForm {
     private String selectedBlenderversion;
     private ComputeType renderOn;
     private VideoSettings videoSettings;
-    private RenderOutputFormat outputFormat;
+    private ImageOutputFormat imageOutputFormat;
+    private AnimationType animationType;
     private String username;
     private String uuid;
     private int partsPerFrame;
@@ -61,7 +62,7 @@ public class ProjectForm {
         this.stepFrame = 1;
         this.projectType = ProjectType.STILL_IMAGE;
         this.renderOn = ComputeType.CPU_GPU;
-        this.outputFormat = RenderOutputFormat.PNG;
+        this.imageOutputFormat = ImageOutputFormat.PNG;
         this.uuid = UUID.randomUUID().toString();
         this.partsPerFrame = 4;
     }

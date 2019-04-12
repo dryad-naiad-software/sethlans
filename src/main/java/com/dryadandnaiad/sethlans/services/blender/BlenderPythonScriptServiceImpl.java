@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,8 +20,8 @@
 package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.enums.ComputeType;
+import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.enums.PythonImports;
-import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import com.google.common.base.Throwables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,7 +125,7 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
     }
 
     @Override
-    public String writeBlenderRenderPythonScript(String renderLocation, RenderOutputFormat renderOutputFormat,
+    public String writeBlenderRenderPythonScript(String renderLocation, ImageOutputFormat imageOutputFormat,
                                                  String tileSize, int resolutionX, int resolutionY, int resPercentage, double partMaxX, double partMinX, double partMaxY, double partMinY) {
         try {
             File script = new File(renderLocation + File.separator + "script-blenderRender.py");
@@ -165,9 +165,12 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.write("\n");
             scriptWriter.write("bpy.context.scene.render.use_border = True\n");
             scriptWriter.write("bpy.context.scene.render.use_crop_to_border = True\n");
-            scriptWriter.write("bpy.context.scene.render.image_settings.file_format = 'PNG'" + "\n");
-            scriptWriter.write("bpy.context.scene.render.image_settings.color_mode = 'RGBA'" + "\n");
-            scriptWriter.write("bpy.context.scene.render.image_settings.color_depth = '16'" + "\n");
+            scriptWriter.write("bpy.context.scene.render.image_settings.file_format = '" + imageOutputFormat.getName().toUpperCase() + "'" + "\n");
+            if (imageOutputFormat.equals(ImageOutputFormat.PNG)) {
+                scriptWriter.write("bpy.context.scene.render.image_settings.color_mode = 'RGBA'" + "\n");
+                scriptWriter.write("bpy.context.scene.render.image_settings.color_depth = '16'" + "\n");
+            }
+
 
 
 
@@ -186,7 +189,7 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
     @Override
     public String writeCyclesRenderPythonScript(ComputeType computeType, String renderLocation, List<String> selectedDeviceIds, List<String> unselectedIds,
                                                 boolean cuda,
-                                                RenderOutputFormat renderOutputFormat,
+                                                ImageOutputFormat imageOutputFormat,
                                                 String tileSize, int resolutionX, int resolutionY, int resPercentage, int samples, double partMaxX, double partMinX,
                                                 double partMaxY, double partMinY) {
         try {
@@ -306,9 +309,15 @@ public class BlenderPythonScriptServiceImpl implements BlenderPythonScriptServic
             scriptWriter.write("\n");
             scriptWriter.write("bpy.context.scene.render.tile_x = " + tileSize + "\n");
             scriptWriter.write("bpy.context.scene.render.tile_y = " + tileSize + "\n");
+
+            // Final Settings
             scriptWriter.write("bpy.context.scene.render.use_border = True\n");
             scriptWriter.write("bpy.context.scene.render.use_crop_to_border = True\n");
-            scriptWriter.write("bpy.context.scene.render.image_settings.file_format = 'PNG'" + "\n");
+            scriptWriter.write("bpy.context.scene.render.image_settings.file_format = '" + imageOutputFormat.getName().toUpperCase() + "'" + "\n");
+            if (imageOutputFormat.equals(ImageOutputFormat.PNG)) {
+                scriptWriter.write("bpy.context.scene.render.image_settings.color_mode = 'RGBA'" + "\n");
+                scriptWriter.write("bpy.context.scene.render.image_settings.color_depth = '16'" + "\n");
+            }
 
 
             scriptWriter.flush();

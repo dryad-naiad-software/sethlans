@@ -83,16 +83,16 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
         }
 
 
-        ffmpeg.addArgument(blenderProject.getProjectRootDir() + File.separator + "temp" + File.separator + cleanedProjectName + "-" + truncatedUUID + "-" + "%d.png");
+        ffmpeg.addArgument(blenderProject.getProjectRootDir() + File.separator + "temp" + File.separator + cleanedProjectName + "-" + truncatedUUID + "-" + "%d." + blenderProject.getImageOutputFormat().getName().toLowerCase());
         ffmpeg.addArgument("-c:v");
-        if (videoSettings.getVideoOutputFormat() == RenderOutputFormat.AVI) {
+        if (videoSettings.getVideoOutputFormat() == VideoOutputFormat.AVI) {
             movieType = "AVI";
             ffmpeg.addArgument(videoSettings.getCodec().getName());
             ffmpeg.addArgument("-pix_fmt");
             ffmpeg.addArgument(videoSettings.getPixelFormat().getName());
 
         }
-        if (videoSettings.getVideoOutputFormat() == RenderOutputFormat.MP4) {
+        if (videoSettings.getVideoOutputFormat() == VideoOutputFormat.MP4) {
             movieType = "MP4";
             ffmpeg.addArgument(videoSettings.getCodec().getName());
             ffmpeg.addArgument("-crf");
@@ -103,7 +103,7 @@ public class FFmpegEncodeServiceImpl implements FFmpegEncodeService {
             ffmpeg.addArgument(videoSettings.getPixelFormat().getName());
         }
 
-        if (videoSettings.getVideoOutputFormat() == RenderOutputFormat.MKV) {
+        if (videoSettings.getVideoOutputFormat() == VideoOutputFormat.MKV) {
             movieType = "MPV";
             ffmpeg.addArgument(videoSettings.getCodec().getName());
             if (videoSettings.getCodec() == VideoCodec.LIBX264) {

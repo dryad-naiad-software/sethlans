@@ -26,5 +26,15 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum ImageOutputFormat {
-    PNG
+    PNG("PNG");
+
+    private final String name;
+
+    ImageOutputFormat(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

@@ -50,7 +50,8 @@ public class ProjectInfo {
     private String username;
     private ProjectStatus projectStatus;
     private boolean allImagesProcessed;
-    private RenderOutputFormat outputFormat;
+    private ImageOutputFormat imageOutputFormat;
+    private AnimationType animationType;
     private VideoSettings videoSettings;
     private boolean useParts;
     private boolean thumbnailPresent;

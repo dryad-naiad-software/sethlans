@@ -30,7 +30,6 @@ import com.dryadandnaiad.sethlans.services.queue.ProcessImageAndAnimationService
 import com.dryadandnaiad.sethlans.utils.SethlansFileUtils;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
 import com.google.common.base.Throwables;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,17 +155,9 @@ public class ProjectActionsController {
         } else {
             project = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
         }
-        switch (project.getRenderOutputFormat()) {
-            case AVI:
-                processImageAndAnimationService.createAVI(project);
-                break;
-            case MP4:
-                processImageAndAnimationService.createMP4(project);
-                break;
-            case PNG:
-                break;
+        if (project.getAnimationType().equals(AnimationType.Movie)) {
+            processImageAndAnimationService.createMovie(project);
         }
-
     }
 
     @GetMapping(value = "/api/project_actions/download_project_video/{id}")
@@ -178,8 +169,7 @@ public class ProjectActionsController {
         } else {
             project = blenderProjectDatabaseService.getProjectByUser(auth.getName(), id);
         }
-        if (project.getProjectType().equals(ProjectType.ANIMATION) && project.getRenderOutputFormat().equals(RenderOutputFormat.MP4)
-                || project.getRenderOutputFormat().equals(RenderOutputFormat.AVI)) {
+        if (project.getProjectType().equals(ProjectType.ANIMATION) && project.getAnimationType().equals(AnimationType.Movie)) {
             File video = new File(project.getMovieFileLocation());
             serveFile(video, response);
         }
@@ -255,7 +245,6 @@ public class ProjectActionsController {
                 projectForm.setProjectType(ProjectType.STILL_IMAGE);
             }
             if (projectForm.getProjectType() == ProjectType.STILL_IMAGE) {
-                projectForm.setOutputFormat(RenderOutputFormat.PNG);
                 projectForm.setEndFrame(projectForm.getStartFrame());
                 projectForm.setStepFrame(1);
             }
@@ -293,7 +282,7 @@ public class ProjectActionsController {
             LOG.info("Project Edited" + projectForm);
             blenderProject.setProjectName(projectForm.getProjectName());
             blenderProject.setBlenderVersion(projectForm.getSelectedBlenderversion());
-            blenderProject.setRenderOutputFormat(projectForm.getOutputFormat());
+            blenderProject.setImageOutputFormat(projectForm.getImageOutputFormat());
             blenderProject.setProjectType(projectForm.getProjectType());
             blenderProject.setStartFrame(projectForm.getStartFrame());
             blenderProject.setEndFrame(projectForm.getEndFrame());
@@ -339,7 +328,7 @@ public class ProjectActionsController {
         }
         if (newSettings != null && blenderProject != null) {
             VideoSettings videoSettings = blenderProject.getVideoSettings();
-            if (blenderProject.getProjectStatus().equals(ProjectStatus.Finished) && !newSettings.getVideoOutputFormat().equals(RenderOutputFormat.PNG)) {
+            if (blenderProject.getProjectStatus().equals(ProjectStatus.Finished) && blenderProject.getAnimationType().equals(AnimationType.Movie)) {
                 if (!videoSettings.equals(newSettings)) {
                     LOG.info("Video Settings changed for " + blenderProject.getProjectName() + " : " + newSettings);
                     blenderProject.setProjectStatus(ProjectStatus.Processing);
@@ -348,16 +337,7 @@ public class ProjectActionsController {
                     blenderProject = blenderProjectDatabaseService.saveOrUpdate(blenderProject);
                     try {
                         LOG.info("Starting encoding process");
-                        switch (blenderProject.getRenderOutputFormat()) {
-                            case MP4:
-                                FileUtils.deleteDirectory(new File(blenderProject.getProjectRootDir() + File.separator + "MP4"));
-                                processImageAndAnimationService.createMP4(blenderProject);
-                                break;
-                            case AVI:
-                                FileUtils.deleteDirectory(new File(blenderProject.getProjectRootDir() + File.separator + "AVI"));
-                                processImageAndAnimationService.createAVI(blenderProject);
-                                break;
-                        }
+                        processImageAndAnimationService.createMovie(blenderProject);
 
                     } catch (Exception e) {
                         LOG.error("Exception found during encoding " + e.getMessage());

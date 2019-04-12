@@ -26,5 +26,15 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum VideoOutputFormat {
-    MP4, AVI, MKV
+    MP4("MP4"), AVI("AVI"), MKV("MKV");
+
+    private final String name;
+
+    VideoOutputFormat(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

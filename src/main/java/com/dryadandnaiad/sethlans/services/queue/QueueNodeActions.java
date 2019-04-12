@@ -186,7 +186,7 @@ class QueueNodeActions {
                     "&project_uuid=" + blenderProject.getProjectUUID() +
                     "&device_id=" + renderQueueItem.getDeviceId() +
                     "&queue_item_uuid=" + renderQueueItem.getQueueItemUUID() +
-                    "&render_output_format=" + blenderProject.getRenderOutputFormat() +
+                    "&render_output_format=" + blenderProject.getImageOutputFormat() +
                     "&samples=" + blenderProject.getSamples() +
                     "&blender_engine=" + blenderProject.getBlenderEngine() +
                     "&compute_type=" + renderQueueItem.getRenderComputeType() +

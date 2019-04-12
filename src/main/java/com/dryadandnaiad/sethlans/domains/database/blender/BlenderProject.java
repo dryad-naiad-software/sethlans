@@ -45,7 +45,8 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class BlenderProject extends AbstractEntityClass implements Comparable<BlenderProject> {
-    private RenderOutputFormat renderOutputFormat;
+    private ImageOutputFormat imageOutputFormat;
+    private AnimationType animationType;
     private ProjectType projectType;
     private BlenderEngine blenderEngine;
     private ComputeType renderOn;
@@ -109,7 +110,6 @@ public class BlenderProject extends AbstractEntityClass implements Comparable<Bl
         return "BlenderProject{" +
                 "projectName='" + projectName + '\'' +
                 ", sethlansUser=" + sethlansUser +
-                ", renderOutputFormat=" + renderOutputFormat +
                 ", projectType=" + projectType +
                 ", startFrame=" + startFrame +
                 ", endFrame=" + endFrame +

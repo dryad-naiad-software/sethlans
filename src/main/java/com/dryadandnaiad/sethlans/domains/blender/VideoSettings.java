@@ -20,8 +20,8 @@
 package com.dryadandnaiad.sethlans.domains.blender;
 
 import com.dryadandnaiad.sethlans.enums.PixelFormat;
-import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
 import com.dryadandnaiad.sethlans.enums.VideoCodec;
+import com.dryadandnaiad.sethlans.enums.VideoOutputFormat;
 import com.dryadandnaiad.sethlans.enums.VideoQuality;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -41,6 +41,6 @@ public class VideoSettings {
     private String frameRate;
     private VideoCodec codec;
     private PixelFormat pixelFormat;
-    private RenderOutputFormat videoOutputFormat;
+    private VideoOutputFormat videoOutputFormat;
     private VideoQuality videoQuality;
 }

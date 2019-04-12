@@ -21,8 +21,9 @@ import {ComputeMethod} from '../enums/compute.method.enum';
 import {ProjectType} from '../enums/project_type.enum';
 import {BlenderEngine} from '../enums/blender_engine.enum';
 import {ProjectStatus} from '../enums/project_status.enum';
-import {RenderOutputFormat} from '../enums/render_output_format.enum';
 import {VideoSettings} from './video_settings.model';
+import {AnimationType} from '../enums/animation_type.enum';
+import {ImageOutputFormat} from '../enums/image_output_format.enum';
 
 export class Project {
   id: number;
@@ -46,7 +47,8 @@ export class Project {
   selectedBlenderversion: string;
   partsPerFrame: number;
   fileLocation: string;
-  outputFormat: RenderOutputFormat;
+  animationType: AnimationType;
+  imageOutputFormat: ImageOutputFormat;
   useParts: boolean;
   thumbnailPresent: boolean;
   thumbnailURL: string;

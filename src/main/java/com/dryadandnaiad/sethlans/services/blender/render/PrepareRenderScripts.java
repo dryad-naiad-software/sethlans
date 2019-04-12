@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -68,7 +68,7 @@ class PrepareRenderScripts {
             script = blenderPythonScriptService.writeCyclesRenderPythonScript(renderTask.getComputeType(),
                     renderTask.getRenderDir(), deviceIDList,
                     getUnselectedIds(deviceList), isCuda,
-                    renderTask.getRenderOutputFormat(),
+                    renderTask.getImageOutputFormat(),
                     tileSizeGPU,
                     renderTask.getTaskResolutionX(),
                     renderTask.getTaskResolutionY(),
@@ -86,7 +86,7 @@ class PrepareRenderScripts {
             script = blenderPythonScriptService.writeCyclesRenderPythonScript(renderTask.getComputeType(),
                     renderTask.getRenderDir(), deviceIDList,
                     getUnselectedIds(deviceList), isCuda,
-                    renderTask.getRenderOutputFormat(),
+                    renderTask.getImageOutputFormat(),
                     tileSizeGPU,
                     renderTask.getTaskResolutionX(),
                     renderTask.getTaskResolutionY(),
@@ -115,7 +115,7 @@ class PrepareRenderScripts {
         renderTaskHistoryDatabaseService.saveOrUpdate(renderTaskHistory);
         return blenderPythonScriptService.writeCyclesRenderPythonScript(renderTask.getComputeType(),
                 renderTask.getRenderDir(), emptyList,
-                emptyList, false, renderTask.getRenderOutputFormat(), tileSizeCPU,
+                emptyList, false, renderTask.getImageOutputFormat(), tileSizeCPU,
                 renderTask.getTaskResolutionX(),
                 renderTask.getTaskResolutionY(),
                 renderTask.getPartResPercentage(),
@@ -134,7 +134,7 @@ class PrepareRenderScripts {
                 + "." + FilenameUtils.getExtension(renderTask.getBlendFilename());
         renderTaskHistory.setBlendFileName(blendFile);
         renderTaskHistoryDatabaseService.saveOrUpdate(renderTaskHistory);
-        return blenderPythonScriptService.writeBlenderRenderPythonScript(renderTask.getRenderDir(), renderTask.getRenderOutputFormat(), tileSizeCPU,
+        return blenderPythonScriptService.writeBlenderRenderPythonScript(renderTask.getRenderDir(), renderTask.getImageOutputFormat(), tileSizeCPU,
                 renderTask.getTaskResolutionX(), renderTask.getTaskResolutionY(), renderTask.getPartResPercentage(),
                 renderTask.getBlenderFramePart().getPartPositionMaxX(), renderTask.getBlenderFramePart().getPartPositionMinX(),
                 renderTask.getBlenderFramePart().getPartPositionMaxY(),

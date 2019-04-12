@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,7 +20,7 @@
 package com.dryadandnaiad.sethlans.services.blender;
 
 import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
+import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 
 import java.util.List;
 
@@ -36,10 +36,10 @@ public interface BlenderPythonScriptService {
                                       String deviceId, boolean cuda, String tileSize, int resolution_x,
                                       int resolution_y, int res_percentage);
 
-    String writeBlenderRenderPythonScript(String renderLocation, RenderOutputFormat renderOutputFormat,
+    String writeBlenderRenderPythonScript(String renderLocation, ImageOutputFormat imageOutputFormat,
                                           String tileSize, int resolutionX, int resolutionY, int resPercentage, double partMaxX, double partMinX, double partMaxY, double partMinY);
 
-    String writeCyclesRenderPythonScript(ComputeType computeType, String renderLocation, List<String> selectedDeviceIds, List<String> unselectedIds, boolean cuda, RenderOutputFormat renderOutputFormat,
+    String writeCyclesRenderPythonScript(ComputeType computeType, String renderLocation, List<String> selectedDeviceIds, List<String> unselectedIds, boolean cuda, ImageOutputFormat imageOutputFormat,
                                          String tileSize, int resolutionX, int resolutionY, int resPercentage, int samples, double partMaxX, double partMinX,
                                          double partMaxY, double partMinY);
 }

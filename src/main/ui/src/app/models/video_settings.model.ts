@@ -17,15 +17,15 @@
  *
  */
 
-import {RenderOutputFormat} from '../enums/render_output_format.enum';
 import {VideoCodec} from '../enums/video_codec.enum';
 import {PixelFormat} from '../enums/pixel_format.enum';
 import {VideoQuality} from '../enums/video_quality.enum';
+import {VideoOuputFormat} from '../enums/video_output_format.enum';
 
 export class VideoSettings {
   frameRate: string;
   codec: VideoCodec;
   pixelFormat: PixelFormat;
-  videoOutputFormat: RenderOutputFormat;
+  videoOutputFormat: VideoOuputFormat;
   videoQuality: VideoQuality;
 }

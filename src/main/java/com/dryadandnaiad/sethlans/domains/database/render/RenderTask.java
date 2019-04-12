@@ -23,7 +23,7 @@ import com.dryadandnaiad.sethlans.domains.blender.BlenderFramePart;
 import com.dryadandnaiad.sethlans.domains.database.AbstractEntityClass;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeType;
-import com.dryadandnaiad.sethlans.enums.RenderOutputFormat;
+import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -46,7 +46,7 @@ public class RenderTask extends AbstractEntityClass {
     private String connectionUUID;
     private String projectUUID;
     private String serverQueueUUID;
-    private RenderOutputFormat renderOutputFormat;
+    private ImageOutputFormat imageOutputFormat;
     private int samples;
     private BlenderEngine blenderEngine;
     private ComputeType computeType;
