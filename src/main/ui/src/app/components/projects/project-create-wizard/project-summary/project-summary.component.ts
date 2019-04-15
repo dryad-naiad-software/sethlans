@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,9 +20,11 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ProjectWizardForm} from '../../../../models/forms/project_wizard_form.model';
 import {ProjectType} from '../../../../enums/project_type.enum';
-import {RenderOutputFormat} from '../../../../enums/render_output_format.enum';
 import {BlenderEngine} from '../../../../enums/blender_engine.enum';
 import {ProjectWizardProgress} from '../../../../enums/project_wizard_progress';
+import {ImageOutputFormat} from '../../../../enums/image_output_format.enum';
+import {AnimationType} from '../../../../enums/animation_type.enum';
+import {VideoCodec} from '../../../../enums/video_codec.enum';
 
 @Component({
   selector: 'app-project-summary',
@@ -34,8 +36,10 @@ export class ProjectSummaryComponent implements OnInit {
   @Input() projectWizard: ProjectWizardForm;
   @Input() isEdit: boolean;
   projectTypes: any = ProjectType;
-  outputFormat: any = RenderOutputFormat;
+  outputFormat: any = ImageOutputFormat;
+  animationTypes: any = AnimationType;
   engines: any = BlenderEngine;
+  codecs: any = VideoCodec;
   wizardProgress: any = ProjectWizardProgress;
 
   constructor() {

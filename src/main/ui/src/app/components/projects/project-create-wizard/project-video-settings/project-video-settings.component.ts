@@ -31,7 +31,7 @@ import {VideoQuality} from '../../../../enums/video_quality.enum';
 })
 export class ProjectVideoSettingsComponent implements OnInit {
   @Input() projectWizard: ProjectWizardForm;
-  frameRates: string[] = ['23.98', '24', '25', '29.97', '30', '50', '59.94', '60'];
+  frameRates: string[] = ['30', '15', '23.98', '24', '25', '29.97', '48', '50', '59.94', '60', '120'];
   videoCodecs: any = VideoCodec;
   videoOuputFormats: any = VideoOuputFormat;
   pixelFormats: any = PixelFormat;

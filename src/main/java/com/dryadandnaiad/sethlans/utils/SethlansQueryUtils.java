@@ -355,7 +355,8 @@ public class SethlansQueryUtils {
     }
 
     public static String checkFrameRate(String frameRate) {
-        List<String> supportedFrameRates = Arrays.asList("23.98", "24", "25", "29.97", "30", "50", "59.94", "60");
+        List<String> supportedFrameRates = Arrays.asList("15", "23.98", "24", "25", "29.97", "30", "48", "50",
+                "59.94", "60", "120");
         for (String supportedFrameRate : supportedFrameRates) {
             if (supportedFrameRate.equals(frameRate)) {
                 return frameRate;

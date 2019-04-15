@@ -73,7 +73,7 @@
               </button>
               <button placement="bottom"
                       ngbTooltip="Download Video"
-                      *ngIf="currentProject.projectStatus.valueOf().toString() == 'Finished'.valueOf() && currentProject.outputFormat.valueOf().toString() != 'PNG'"
+                      *ngIf="currentProject.projectStatus.valueOf().toString() == 'Finished'.valueOf() && currentProject.animationType != animationTypes.Movie"
                       class="btn btn-outline-dark btn-sm" type="button" (click)="downloadVideo(currentProject.id)">
                 <span class="fa fa-film"></span>
               </button>
@@ -146,18 +146,41 @@
                 <td>{{currentProject.selectedBlenderversion}}</td>
               </tr>
               <tr>
+                <td>Image Output Format</td>
+                <td>{{currentProject.imageOutputFormat}}</td>
+              </tr>
+              <tr>
                 <td>Project Type</td>
                 <td *ngIf="currentProject.projectType === projectTypes.STILL_IMAGE">Still Image</td>
                 <td *ngIf="currentProject.projectType === projectTypes.ANIMATION">Animation</td>
               </tr>
-              <tr>
-                <td>Output Format</td>
-                <td>{{currentProject.outputFormat}}</td>
+              <tr *ngIf="currentProject.projectType == projectTypes.ANIMATION">
+                <td>Animation Type</td>
+                <td>{{currentProject.animationType}}</td>
               </tr>
-              <tr *ngIf="currentProject.outputFormat !== formats.PNG">
+              <tr *ngIf="currentProject.animationType == animationTypes.Movie">
                 <td>Frame Rate</td>
-                <td>{{currentProject.frameRate}} fps</td>
+                <td>{{currentProject.videoSettings.frameRate}}</td>
               </tr>
+              <tr *ngIf="currentProject.animationType == animationTypes.Movie">
+                <td>Video Codec</td>
+                <td>{{currentProject.videoSettings.codec}}</td>
+              </tr>
+              <tr *ngIf="currentProject.animationType == animationTypes.Movie">
+                <td>Output Format</td>
+                <td>{{currentProject.videoSettings.videoOutputFormat}}</td>
+              </tr>
+              <tr *ngIf="currentProject.animationType == animationTypes.Movie">
+                <td>Pixel Format</td>
+                <td>{{currentProject.videoSettings.pixelFormat}}</td>
+              </tr>
+              <tr
+                *ngIf="currentProject.animationType == animationTypes.Movie && currentProject.videoSettings.codec != codecs.FFV1 && currentProject.videoSettings.codec != codecs.UTVIDEO">
+                <td>Video Quality</td>
+                <td>{{currentProject.videoSettings.videoQuality}}</td>
+              </tr>
+
+
               <tr>
                 <td>Start Frame</td>
                 <td>{{currentProject.startFrame}}</td>

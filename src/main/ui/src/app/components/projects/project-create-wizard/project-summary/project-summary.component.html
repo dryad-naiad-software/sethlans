@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2018 Dryad and Naiad Software LLC
+  ~ Copyright (c) 2019 Dryad and Naiad Software LLC
   ~
   ~ This program is free software; you can redistribute it and/or
   ~ modify it under the terms of the GNU General Public License
@@ -34,8 +34,8 @@
       <td>{{projectWizard.project.selectedBlenderversion}}</td>
     </tr>
     <tr>
-      <td>Output Format</td>
-      <td>{{projectWizard.project.outputFormat}}</td>
+      <td>Image Output Format</td>
+      <td>{{projectWizard.project.imageOutputFormat}}</td>
     </tr>
     <tr *ngIf="projectWizard.project.projectType === projectTypes.STILL_IMAGE">
       <td>Project Type</td>
@@ -58,10 +58,29 @@
       <td>{{projectWizard.project.stepFrame}}</td>
     </tr>
     <tr
-      *ngIf="projectWizard.project.projectType === projectTypes.ANIMATION && projectWizard.project.outputFormat === outputFormat.MP4
-      || projectWizard.project.outputFormat === outputFormat.AVI">
+      *ngIf="projectWizard.project.projectType === projectTypes.ANIMATION && projectWizard.project.animationType === animationTypes.Movie">
       <td>Frame Rate</td>
-      <td>{{projectWizard.project.frameRate}}</td>
+      <td>{{projectWizard.project.videoSettings.frameRate}}</td>
+    </tr>
+    <tr
+      *ngIf="projectWizard.project.projectType === projectTypes.ANIMATION && projectWizard.project.animationType === animationTypes.Movie">
+      <td>Video Codec</td>
+      <td>{{projectWizard.project.videoSettings.codec}}</td>
+    </tr>
+    <tr
+      *ngIf="projectWizard.project.projectType === projectTypes.ANIMATION && projectWizard.project.animationType === animationTypes.Movie">
+      <td>Output Format</td>
+      <td>{{projectWizard.project.videoSettings.videoOutputFormat}}</td>
+    </tr>
+    <tr
+      *ngIf="projectWizard.project.projectType === projectTypes.ANIMATION && projectWizard.project.animationType === animationTypes.Movie">
+      <td>Pixel Format</td>
+      <td>{{projectWizard.project.videoSettings.pixelFormat}}</td>
+    </tr>
+    <tr
+      *ngIf="projectWizard.project.projectType === projectTypes.ANIMATION && projectWizard.project.animationType === animationTypes.Movie && projectWizard.project.videoSettings.codec != codecs.FFV1 && projectWizard.project.videoSettings.codec != codecs.UTVIDEO">
+      <td>Video Quality</td>
+      <td>{{projectWizard.project.videoSettings.videoQuality}}</td>
     </tr>
     <tr *ngIf="projectWizard.project.blenderEngine !== engines.BLENDER_RENDER">
       <td>Render On</td>

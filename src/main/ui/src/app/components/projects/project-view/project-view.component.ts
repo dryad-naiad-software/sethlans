@@ -22,13 +22,14 @@ import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Project} from '../../../models/project.model';
 import {ProjectStatus} from '../../../enums/project_status.enum';
-import {RenderOutputFormat} from '../../../enums/render_output_format.enum';
 import {timer} from 'rxjs';
 import {ProjectType} from '../../../enums/project_type.enum';
 import {BlenderEngine} from '../../../enums/blender_engine.enum';
 import {ComputeMethod} from '../../../enums/compute.method.enum';
 import {ProjectEditVideoSettingsComponent} from '../project-edit-video-settings/project-edit-video-settings.component';
 import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
+import {AnimationType} from '../../../enums/animation_type.enum';
+import {VideoCodec} from '../../../enums/video_codec.enum';
 
 @Component({
   selector: 'app-project-view',
@@ -39,8 +40,8 @@ export class ProjectViewComponent implements OnInit {
   currentProject: Project;
   id: number;
   statuses: any = ProjectStatus;
-  formats: any = RenderOutputFormat;
   projectTypes: any = ProjectType;
+  codecs: any = VideoCodec;
   engines: any = BlenderEngine;
   computeMethods: any = ComputeMethod;
   totalRenderTime: string;
@@ -50,6 +51,7 @@ export class ProjectViewComponent implements OnInit {
   thumbnailStatus: boolean;
   completedFrames: number;
   stillImage: any;
+  animationTypes: any = AnimationType;
   currentThumbnail: any;
   placeholder: any = 'assets/images/placeholder.svg';
   nodesReady: boolean = false;
