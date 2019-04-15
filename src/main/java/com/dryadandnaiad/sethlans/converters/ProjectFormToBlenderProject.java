@@ -50,6 +50,7 @@ public class ProjectFormToBlenderProject implements Converter<ProjectForm, Blend
         blenderProject.setBlenderEngine(projectForm.getBlenderEngine());
         blenderProject.setProjectStatus(projectForm.getProjectStatus());
         blenderProject.setImageOutputFormat(projectForm.getImageOutputFormat());
+        blenderProject.setAnimationType(projectForm.getAnimationType());
         blenderProject.setSamples(projectForm.getSamples());
         blenderProject.setRenderOn(projectForm.getRenderOn());
         blenderProject.setProjectUUID(projectForm.getUuid());

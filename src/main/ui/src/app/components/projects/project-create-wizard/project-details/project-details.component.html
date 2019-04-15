@@ -53,7 +53,7 @@
     <!--      </select>-->
     <!--    </div>-->
     <div class="form-group" *ngIf="projectWizard.project.projectType == projectTypes.STILL_IMAGE">
-      <label for="outputFormat2">Output Format</label>
+      <label for="outputFormat2">Image Output Format</label>
       <select class="form-control form-control-sm" id="outputFormat2" name="outputFormat"
               [(ngModel)]="projectWizard.project.imageOutputFormat" (mousemove)="validateForm()">
         <option [selected]="formats.PNG">PNG</option>
@@ -74,6 +74,20 @@
                                                [(ngModel)]="projectWizard.project.projectType"
                                                value="{{projectTypes.ANIMATION}}"
                                                (click)="setDefaultAnimation()">Animation</label>
+      </div>
+    </fieldset>
+
+    <fieldset class="form-group" *ngIf="projectWizard.project.projectType == projectTypes.ANIMATION">
+      <label>Animation Type</label>
+      <div class="form-check">
+        <label class="form-check-label"><input type="radio" name="animationType" class="form-check-input"
+                                               [(ngModel)]="projectWizard.project.animationType"
+                                               value="{{animationTypes.Images}}">Images</label>
+      </div>
+      <div class="form-check">
+        <label class="form-check-label"><input type="radio" name="animationType" class="form-check-input"
+                                               [(ngModel)]="projectWizard.project.animationType"
+                                               value="{{animationTypes.Movie}}">Movie</label>
       </div>
     </fieldset>
     <div class="form-row">

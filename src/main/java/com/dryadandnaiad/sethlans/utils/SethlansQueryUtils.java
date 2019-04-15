@@ -388,6 +388,7 @@ public class SethlansQueryUtils {
     public static ProjectInfo convertBlenderProjectToProjectInfo(BlenderProject blenderProject) {
         ProjectInfo projectInfo = new ProjectInfo();
         projectInfo.setId(blenderProject.getId());
+        projectInfo.setAnimationType(blenderProject.getAnimationType());
         projectInfo.setReEncode(blenderProject.isReEncode());
         projectInfo.setStartFrame(blenderProject.getStartFrame());
         projectInfo.setEndFrame(blenderProject.getEndFrame());

@@ -20,7 +20,8 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {ProjectWizardForm} from '../../../../models/forms/project_wizard_form.model';
 import {ProjectType} from '../../../../enums/project_type.enum';
-import {RenderOutputFormat} from '../../../../enums/render_output_format.enum';
+import {ImageOutputFormat} from '../../../../enums/image_output_format.enum';
+import {AnimationType} from '../../../../enums/animation_type.enum';
 
 @Component({
   selector: 'app-project-details',
@@ -30,7 +31,8 @@ import {RenderOutputFormat} from '../../../../enums/render_output_format.enum';
 export class ProjectDetailsComponent implements OnInit {
   @Input() projectWizard: ProjectWizardForm;
   projectTypes: any = ProjectType;
-  formats: any = RenderOutputFormat;
+  animationTypes: any = AnimationType;
+  formats: any = ImageOutputFormat;
   @ViewChild('projectDetailsForm') form: any;
   @Output() disableNext = new EventEmitter();
 
@@ -55,12 +57,12 @@ export class ProjectDetailsComponent implements OnInit {
     console.log(this.form.valid);
   }
 
-  setDefaultFormat() {
-    this.projectWizard.project.outputFormat = RenderOutputFormat.PNG;
-  }
-
   setDefaultAnimation() {
     this.projectWizard.project.endFrame = 50;
+  }
+
+  setDefaultFormat() {
+    this.projectWizard.project.animationType = AnimationType.Images;
   }
 
 }
