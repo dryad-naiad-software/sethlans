@@ -19,6 +19,10 @@
 
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ProjectWizardForm} from '../../../../models/forms/project_wizard_form.model';
+import {VideoCodec} from '../../../../enums/video_codec.enum';
+import {VideoOuputFormat} from '../../../../enums/video_output_format.enum';
+import {PixelFormat} from '../../../../enums/pixel_format.enum';
+import {VideoQuality} from '../../../../enums/video_quality.enum';
 
 @Component({
   selector: 'app-project-video-settings',
@@ -28,6 +32,10 @@ import {ProjectWizardForm} from '../../../../models/forms/project_wizard_form.mo
 export class ProjectVideoSettingsComponent implements OnInit {
   @Input() projectWizard: ProjectWizardForm;
   frameRates: string[] = ['23.98', '24', '25', '29.97', '30', '50', '59.94', '60'];
+  videoCodecs: any = VideoCodec;
+  videoOuputFormats: any = VideoOuputFormat;
+  pixelFormats: any = PixelFormat;
+  videoQuality: any = VideoQuality;
   @Output() disableNext = new EventEmitter();
 
 

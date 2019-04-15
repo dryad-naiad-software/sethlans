@@ -19,5 +19,6 @@
 
 export enum PixelFormat {
   YUV420P,
-  YUV422P
+  YUV422P,
+  YUV444P
 }

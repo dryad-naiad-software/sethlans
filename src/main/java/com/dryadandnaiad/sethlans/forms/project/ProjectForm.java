@@ -63,6 +63,7 @@ public class ProjectForm {
         this.projectType = ProjectType.STILL_IMAGE;
         this.renderOn = ComputeType.CPU_GPU;
         this.imageOutputFormat = ImageOutputFormat.PNG;
+        this.animationType = AnimationType.Images;
         this.uuid = UUID.randomUUID().toString();
         this.partsPerFrame = 4;
     }

@@ -27,7 +27,9 @@ package com.dryadandnaiad.sethlans.enums;
  */
 public enum PixelFormat {
     YUV420P("yuv420p"),
-    YUV422P("yuv422p");
+    YUV422P("yuv422p"),
+    YUV444P("yuv444p");
+
 
     private final String name;
 
