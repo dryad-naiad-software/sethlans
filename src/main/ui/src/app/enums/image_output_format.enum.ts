@@ -18,5 +18,5 @@
  */
 
 export enum ImageOutputFormat {
-  PNG
+  PNG = 'PNG'
 }

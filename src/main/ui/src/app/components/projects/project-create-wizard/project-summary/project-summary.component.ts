@@ -46,6 +46,7 @@ export class ProjectSummaryComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log(this.projectWizard.project);
   }
 
 }

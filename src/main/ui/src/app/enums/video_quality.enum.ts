@@ -18,5 +18,5 @@
  */
 
 export enum VideoQuality {
-  Low264, Low265, Medium264, Medium265, High264, High265, Lossless264, Lossless265
+  Low264 = 'Low264', Low265 = 'Low265', Medium264 = 'Medium264', Medium265 = 'Medium265', High264 = 'High264', High265 = 'High265', Lossless264 = 'Lossless264', Lossless265 = 'Lossless265'
 }

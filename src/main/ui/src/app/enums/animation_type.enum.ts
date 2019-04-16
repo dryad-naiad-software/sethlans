@@ -18,5 +18,5 @@
  */
 
 export enum AnimationType {
-  Movie, Images
+  Movie = 'Movie', Images = 'Images'
 }

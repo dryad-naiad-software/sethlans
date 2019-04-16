@@ -22,6 +22,7 @@ import {ProjectWizardForm} from '../../../../models/forms/project_wizard_form.mo
 import {ProjectType} from '../../../../enums/project_type.enum';
 import {ImageOutputFormat} from '../../../../enums/image_output_format.enum';
 import {AnimationType} from '../../../../enums/animation_type.enum';
+import {VideoSettings} from '../../../../models/video_settings.model';
 
 @Component({
   selector: 'app-project-details',
@@ -54,11 +55,11 @@ export class ProjectDetailsComponent implements OnInit {
     } else {
       this.disableNext.emit(true);
     }
-    console.log(this.form.valid);
   }
 
   setDefaultAnimation() {
     this.projectWizard.project.endFrame = 50;
+    this.projectWizard.project.videoSettings = new VideoSettings();
   }
 
   setDefaultFormat() {

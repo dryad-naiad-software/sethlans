@@ -18,5 +18,5 @@
  */
 
 export enum VideoOuputFormat {
-  MP4, AVI, MKV
+  MP4 = 'MP4', AVI = 'AVI', MKV = 'MKV'
 }

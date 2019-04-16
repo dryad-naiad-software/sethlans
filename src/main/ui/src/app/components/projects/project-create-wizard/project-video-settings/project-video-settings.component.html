@@ -33,11 +33,11 @@
             [(ngModel)]="projectWizard.project.videoSettings.videoOutputFormat">
       <option value="{{videoOuputFormats.MKV}}">MKV (Matroska)</option>
       <option
-        *ngIf="projectWizard.project.videoSettings.codec != videoCodecs.UTVIDEO || projectWizard.project.videoSettings.codec != videoCodecs.FFV1"
+        *ngIf="projectWizard.project.videoSettings.codec != videoCodecs.UTVIDEO && projectWizard.project.videoSettings.codec != videoCodecs.FFV1"
         value="{{videoOuputFormats.MP4}}">MP4
       </option>
       <option
-        *ngIf="projectWizard.project.videoSettings.codec != videoCodecs.LIBX264 || projectWizard.project.videoSettings.codec != videoCodecs.LIBX265"
+        *ngIf="projectWizard.project.videoSettings.codec != videoCodecs.LIBX264 && projectWizard.project.videoSettings.codec != videoCodecs.LIBX265"
         value="{{videoOuputFormats.AVI}}">AVI
       </option>
     </select>

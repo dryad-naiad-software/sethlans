@@ -18,8 +18,8 @@
  */
 
 export enum VideoCodec {
-  UTVIDEO,
-  LIBX264,
-  LIBX265,
-  FFV1
+  UTVIDEO = 'UTVIDEO',
+  LIBX264 = 'LIBX264',
+  LIBX265 = 'LIBX265',
+  FFV1 = 'FFV1'
 }

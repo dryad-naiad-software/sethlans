@@ -28,4 +28,13 @@ export class VideoSettings {
   pixelFormat: PixelFormat;
   videoOutputFormat: VideoOuputFormat;
   videoQuality: VideoQuality;
+
+  constructor() {
+    this.frameRate = '30';
+    this.codec = VideoCodec.LIBX264;
+    this.videoOutputFormat = VideoOuputFormat.MP4;
+    this.pixelFormat = PixelFormat.YUV420P;
+    this.videoQuality = VideoQuality.Medium264;
+  }
 }
+

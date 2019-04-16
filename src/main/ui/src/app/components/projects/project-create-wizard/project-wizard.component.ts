@@ -91,7 +91,11 @@ export class ProjectWizardComponent implements OnInit {
         this.projectWizard.currentProgress = ProjectWizardProgress.PROJECT_DETAILS;
         break;
       case ProjectWizardProgress.SUMMARY:
-        this.projectWizard.currentProgress = ProjectWizardProgress.RENDER_SETTINGS;
+        if (this.projectWizard.project.animationType == AnimationType.Images) {
+          this.projectWizard.currentProgress = ProjectWizardProgress.RENDER_SETTINGS;
+        } else {
+          this.projectWizard.currentProgress = ProjectWizardProgress.VIDEO_SETTINGS;
+        }
         break;
     }
   }
