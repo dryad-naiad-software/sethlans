@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,6 +23,7 @@ import {ProjectWizardProgress} from '../../../enums/project_wizard_progress';
 import {HttpClient, HttpHeaders} from '../../../../../node_modules/@angular/common/http';
 import {ActivatedRoute} from '@angular/router';
 import {Project} from '../../../models/project.model';
+import {AnimationType} from '../../../enums/animation_type.enum';
 
 @Component({
   selector: 'app-project-edit-wizard',
@@ -51,6 +52,11 @@ export class ProjectEditWizardComponent implements OnInit {
     this.http.get('/api/project_ui/project_details/' + this.id + '/').subscribe((projectDetails: Project) => {
       this.projectWizard.project = projectDetails;
       this.projectWizard.projectLoaded = true;
+      this.projectWizard.detailsValid = true;
+      this.projectWizard.formComplete = true;
+      if (projectDetails.animationType == AnimationType.Movie) {
+        this.projectWizard.videoEnabled = true;
+      }
     });
   }
 
@@ -92,6 +98,13 @@ export class ProjectEditWizardComponent implements OnInit {
         break;
       case ProjectWizardProgress.RENDER_SETTINGS:
         this.projectWizard.formComplete = true;
+        if (this.projectWizard.project.animationType == AnimationType.Images) {
+          this.projectWizard.currentProgress = ProjectWizardProgress.SUMMARY;
+        } else {
+          this.projectWizard.currentProgress = ProjectWizardProgress.VIDEO_SETTINGS;
+        }
+        break;
+      case ProjectWizardProgress.VIDEO_SETTINGS:
         this.projectWizard.currentProgress = ProjectWizardProgress.SUMMARY;
         break;
     }
@@ -103,7 +116,11 @@ export class ProjectEditWizardComponent implements OnInit {
         this.projectWizard.currentProgress = ProjectWizardProgress.PROJECT_DETAILS;
         break;
       case ProjectWizardProgress.SUMMARY:
-        this.projectWizard.currentProgress = ProjectWizardProgress.RENDER_SETTINGS;
+        if (this.projectWizard.project.animationType == AnimationType.Images) {
+          this.projectWizard.currentProgress = ProjectWizardProgress.RENDER_SETTINGS;
+        } else {
+          this.projectWizard.currentProgress = ProjectWizardProgress.VIDEO_SETTINGS;
+        }
         break;
     }
   }

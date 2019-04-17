@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Dryad and Naiad Software LLC
+ * Copyright (c) 2019 Dryad and Naiad Software LLC
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -39,7 +39,7 @@ export class ProjectsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   dataSource = new MatTableDataSource();
-  displayedColumns = ['projectName', 'type', 'renderOn', 'format', 'projectStatus', 'progress', 'preview', 'actions'];
+  displayedColumns = ['projectName', 'type', 'renderOn', 'projectStatus', 'progress', 'preview', 'actions'];
   placeholder: any = 'assets/images/placeholder.svg';
   nodesReady: boolean = false;
   projectSize: number;

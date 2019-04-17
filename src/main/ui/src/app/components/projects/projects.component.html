@@ -33,6 +33,21 @@
           <input matInput id="table-search" (keyup)="applyFilter($event.target.value)" placeholder="Search">
         </mat-form-field>
         <mat-table #projectTable [dataSource]="dataSource" matSort>
+          <ng-container matColumnDef="preview">
+            <mat-header-cell *matHeaderCellDef>Preview</mat-header-cell>
+            <mat-cell *matCellDef="let project">
+              <span class="mobile-label">Preview:</span>
+              <span *ngIf="project.thumbnailPresent == false"><img [src]="placeholder"
+                                                                   height="85"
+                                                                   class="align-top  py-1"
+                                                                   alt="placeholder">
+              </span>
+              <span *ngIf="project.thumbnailPresent == true">
+                <img [src]="project.thumbnailURL" height="85" class="align-top py-1"
+                     alt="thumbnail">
+              </span>
+            </mat-cell>
+          </ng-container>
           <ng-container matColumnDef="projectName">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Name</mat-header-cell>
             <mat-cell *matCellDef="let project">
@@ -61,15 +76,6 @@
             </mat-cell>
           </ng-container>
 
-          <ng-container matColumnDef="format">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Format</mat-header-cell>
-            <mat-cell *matCellDef="let project">
-              <span class="mobile-label">Format:</span>
-
-              {{project.outputFormat}}
-            </mat-cell>
-          </ng-container>
-
           <ng-container matColumnDef="projectStatus">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Status</mat-header-cell>
             <mat-cell *matCellDef="let project">
@@ -84,21 +90,7 @@
               <span>{{project.currentPercentage}}&#37;</span>
             </mat-cell>
           </ng-container>
-          <ng-container matColumnDef="preview">
-            <mat-header-cell *matHeaderCellDef>Preview</mat-header-cell>
-            <mat-cell *matCellDef="let project">
-              <span class="mobile-label">Preview:</span>
-              <span *ngIf="project.thumbnailPresent == false"><img [src]="placeholder"
-                                                                   height="85"
-                                                                   class="align-top  py-1"
-                                                                   alt="placeholder">
-              </span>
-              <span *ngIf="project.thumbnailPresent == true">
-                <img [src]="project.thumbnailURL" height="85" class="align-top py-1"
-                     alt="thumbnail">
-              </span>
-            </mat-cell>
-          </ng-container>
+
 
           <ng-container matColumnDef="actions">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>

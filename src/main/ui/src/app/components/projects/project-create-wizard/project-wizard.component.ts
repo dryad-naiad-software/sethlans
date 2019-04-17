@@ -82,6 +82,7 @@ export class ProjectWizardComponent implements OnInit {
         break;
       case ProjectWizardProgress.VIDEO_SETTINGS:
         this.projectWizard.currentProgress = ProjectWizardProgress.SUMMARY;
+        break;
     }
   }
 

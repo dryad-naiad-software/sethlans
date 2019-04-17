@@ -30,6 +30,7 @@ import {ProjectEditVideoSettingsComponent} from '../project-edit-video-settings/
 import {NgbModal, NgbModalOptions} from '@ng-bootstrap/ng-bootstrap';
 import {AnimationType} from '../../../enums/animation_type.enum';
 import {VideoCodec} from '../../../enums/video_codec.enum';
+import {VideoQuality} from '../../../enums/video_quality.enum';
 
 @Component({
   selector: 'app-project-view',
@@ -56,6 +57,7 @@ export class ProjectViewComponent implements OnInit {
   placeholder: any = 'assets/images/placeholder.svg';
   nodesReady: boolean = false;
   disableButton: boolean;
+  videoQuality: any = VideoQuality;
   @ViewChild(ProjectEditVideoSettingsComponent) videoSettings: ProjectEditVideoSettingsComponent;
 
 
