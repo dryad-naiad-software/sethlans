@@ -23,89 +23,128 @@
       <span *ngIf="isEdit">The project has been updated.</span>
     </p></div>
   <h4 class="text-center pb-3" *ngIf="projectWizard.currentProgress !== wizardProgress.FINISHED">Project Summary</h4>
-  <table class="table table-striped table-sm">
-    <tbody>
-    <tr>
-      <td>Project Name</td>
-      <td>{{projectWizard.project.projectName}}</td>
-    </tr>
-    <tr>
-      <td>Selected Blender Version</td>
-      <td>{{projectWizard.project.selectedBlenderversion}}</td>
-    </tr>
-    <tr>
-      <td>Image Output Format</td>
-      <td>{{projectWizard.project.imageOutputFormat}}</td>
-    </tr>
-    <tr *ngIf="projectWizard.project.projectType === projectTypes.STILL_IMAGE">
-      <td>Project Type</td>
-      <td>Still Image</td>
-    </tr>
-    <tr *ngIf="projectWizard.project.projectType === projectTypes.ANIMATION">
-      <td>Project Type</td>
-      <td>Animation</td>
-    </tr>
-    <tr>
-      <td>Start Frame</td>
-      <td>{{projectWizard.project.startFrame}}</td>
-    </tr>
-    <tr *ngIf="projectWizard.project.projectType === projectTypes.ANIMATION">
-      <td>End Frame</td>
-      <td>{{projectWizard.project.endFrame}}</td>
-    </tr>
-    <tr *ngIf="projectWizard.project.projectType === projectTypes.ANIMATION">
-      <td>Frame Step</td>
-      <td>{{projectWizard.project.stepFrame}}</td>
-    </tr>
-    <tr
-      *ngIf="projectWizard.project.projectType === projectTypes.ANIMATION && projectWizard.project.animationType === animationTypes.Movie">
-      <td>Frame Rate</td>
-      <td>{{projectWizard.project.videoSettings.frameRate}}</td>
-    </tr>
-    <tr
-      *ngIf="projectWizard.project.projectType === projectTypes.ANIMATION && projectWizard.project.animationType === animationTypes.Movie">
-      <td>Video Codec</td>
-      <td>{{projectWizard.project.videoSettings.codec}}</td>
-    </tr>
-    <tr
-      *ngIf="projectWizard.project.projectType === projectTypes.ANIMATION && projectWizard.project.animationType === animationTypes.Movie">
-      <td>Output Format</td>
-      <td>{{projectWizard.project.videoSettings.videoOutputFormat}}</td>
-    </tr>
-    <tr
-      *ngIf="projectWizard.project.projectType === projectTypes.ANIMATION && projectWizard.project.animationType === animationTypes.Movie">
-      <td>Pixel Format</td>
-      <td>{{projectWizard.project.videoSettings.pixelFormat}}</td>
-    </tr>
-    <tr
-      *ngIf="projectWizard.project.projectType === projectTypes.ANIMATION && projectWizard.project.animationType === animationTypes.Movie && projectWizard.project.videoSettings.codec != codecs.FFV1 && projectWizard.project.videoSettings.codec != codecs.UTVIDEO">
-      <td>Video Quality</td>
-      <td>{{projectWizard.project.videoSettings.videoQuality}}</td>
-    </tr>
-    <tr *ngIf="projectWizard.project.blenderEngine !== engines.BLENDER_RENDER">
-      <td>Render On</td>
-      <td>{{projectWizard.project.renderOn}}</td>
-    </tr>
-    <tr>
-      <td>Rendering Engine</td>
-      <td>{{projectWizard.project.blenderEngine}}</td>
-    </tr>
-    <tr *ngIf="projectWizard.project.blenderEngine !== engines.BLENDER_RENDER">
-      <td>Samples</td>
-      <td>{{projectWizard.project.samples}}</td>
-    </tr>
-    <tr>
-      <td>Render Resolution</td>
-      <td>{{projectWizard.project.resolutionX}} &times; {{projectWizard.project.resolutionY}}</td>
-    </tr>
-    <tr>
-      <td>Image Scaling Percentage</td>
-      <td>{{projectWizard.project.resPercentage}}&#37;</td>
-    </tr>
-    <tr *ngIf="projectWizard.project.useParts == true">
-      <td>Parts Per Frame</td>
-      <td>{{projectWizard.project.partsPerFrame}}</td>
-    </tr>
-    </tbody>
-  </table>
+  <div class="row pt-1 px-md-1">
+    <div class="col-4">
+      <table class="table table-sm">
+        <tbody>
+        <tr>
+          <td>Project Name</td>
+          <td>{{projectWizard.project.projectName}}</td>
+        </tr>
+        <tr>
+          <td>Selected Blender Version</td>
+          <td>{{projectWizard.project.selectedBlenderversion}}</td>
+        </tr>
+        <tr>
+          <td>Image Output Format</td>
+          <td>{{projectWizard.project.imageOutputFormat}}</td>
+        </tr>
+        <tr *ngIf="projectWizard.project.projectType === projectTypes.STILL_IMAGE">
+          <td>Project Type</td>
+          <td>Still Image</td>
+        </tr>
+        <tr *ngIf="projectWizard.project.projectType === projectTypes.ANIMATION">
+          <td>Project Type</td>
+          <td>Animation</td>
+        </tr>
+        <tr *ngIf="projectWizard.project.projectType == projectTypes.ANIMATION">
+          <td>Animation Type</td>
+          <td>{{projectWizard.project.animationType}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-4">
+      <table class="table table-sm" *ngIf="projectWizard.project.projectType === projectTypes.ANIMATION">
+        <tbody>
+        <tr>
+          <td>Start Frame</td>
+          <td>{{projectWizard.project.startFrame}}</td>
+        </tr>
+        <tr *ngIf="projectWizard.project.projectType === projectTypes.ANIMATION">
+          <td>End Frame</td>
+          <td>{{projectWizard.project.endFrame}}</td>
+        </tr>
+        <tr *ngIf="projectWizard.project.projectType === projectTypes.ANIMATION">
+          <td>Frame Step</td>
+          <td>{{projectWizard.project.stepFrame}}</td>
+        </tr>
+        <tr
+          *ngIf="projectWizard.project.projectType === projectTypes.ANIMATION && projectWizard.project.animationType === animationTypes.Movie">
+          <td>Frame Rate</td>
+          <td>{{projectWizard.project.videoSettings.frameRate}} fps</td>
+        </tr>
+        <tr *ngIf="projectWizard.project.animationType === animationTypes.Movie">
+          <td>Video Codec</td>
+          <td *ngIf="projectWizard.project.videoSettings.codec == codecs.LIBX264">H.264</td>
+          <td *ngIf="projectWizard.project.videoSettings.codec == codecs.LIBX265">H.265</td>
+          <td *ngIf="projectWizard.project.videoSettings.codec == codecs.UTVIDEO">UT Video</td>
+          <td *ngIf="projectWizard.project.videoSettings.codec == codecs.FFV1">FFV1</td>
+        </tr>
+        <tr *ngIf="projectWizard.project.animationType === animationTypes.Movie">
+          <td>Container</td>
+          <td>{{projectWizard.project.videoSettings.videoOutputFormat}}</td>
+        </tr>
+        <tr *ngIf="projectWizard.project.animationType === animationTypes.Movie">
+          <td>Pixel Format</td>
+          <td>{{projectWizard.project.videoSettings.pixelFormat}}</td>
+        </tr>
+        <tr
+          *ngIf="projectWizard.project.animationType === animationTypes.Movie && projectWizard.project.videoSettings.codec != codecs.FFV1 && projectWizard.project.videoSettings.codec != codecs.UTVIDEO">
+          <td>Video Quality</td>
+          <td
+            *ngIf="projectWizard.project.videoSettings.videoQuality == videoQuality.Low264 || projectWizard.project.videoSettings.videoQuality == videoQuality.Low265">
+            Low
+          </td>
+          <td
+            *ngIf="projectWizard.project.videoSettings.videoQuality == videoQuality.Medium264 || projectWizard.project.videoSettings.videoQuality == videoQuality.Medium265">
+            Medium
+          </td>
+          <td
+            *ngIf="projectWizard.project.videoSettings.videoQuality == videoQuality.High264 || projectWizard.project.videoSettings.videoQuality == videoQuality.High265">
+            High
+          </td>
+          <td
+            *ngIf="projectWizard.project.videoSettings.videoQuality == videoQuality.Lossless264 || projectWizard.project.videoSettings.videoQuality == videoQuality.Lossless265">
+            Lossless
+          </td>
+        </tr>
+
+        </tbody>
+      </table>
+    </div>
+    <div class="col-4">
+      <table class="table table-sm">
+        <tbody>
+        <tr *ngIf="projectWizard.project.blenderEngine !== engines.BLENDER_RENDER">
+          <td>Render On</td>
+          <td>{{projectWizard.project.renderOn}}</td>
+        </tr>
+        <tr>
+          <td>Rendering Engine</td>
+          <td>{{projectWizard.project.blenderEngine}}</td>
+        </tr>
+        <tr *ngIf="projectWizard.project.blenderEngine !== engines.BLENDER_RENDER">
+          <td>Samples</td>
+          <td>{{projectWizard.project.samples}}</td>
+        </tr>
+        <tr>
+          <td>Render Resolution</td>
+          <td>{{projectWizard.project.resolutionX}} &times; {{projectWizard.project.resolutionY}}</td>
+        </tr>
+        <tr>
+          <td>Image Scaling Percentage</td>
+          <td>{{projectWizard.project.resPercentage}}&#37;</td>
+        </tr>
+        <tr *ngIf="projectWizard.project.useParts == true">
+          <td>Parts Per Frame</td>
+          <td>{{projectWizard.project.partsPerFrame}}</td>
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+
 </div>

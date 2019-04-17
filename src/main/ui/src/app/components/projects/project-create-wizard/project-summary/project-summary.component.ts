@@ -25,6 +25,7 @@ import {ProjectWizardProgress} from '../../../../enums/project_wizard_progress';
 import {ImageOutputFormat} from '../../../../enums/image_output_format.enum';
 import {AnimationType} from '../../../../enums/animation_type.enum';
 import {VideoCodec} from '../../../../enums/video_codec.enum';
+import {VideoQuality} from '../../../../enums/video_quality.enum';
 
 @Component({
   selector: 'app-project-summary',
@@ -41,6 +42,8 @@ export class ProjectSummaryComponent implements OnInit {
   engines: any = BlenderEngine;
   codecs: any = VideoCodec;
   wizardProgress: any = ProjectWizardProgress;
+  videoQuality: any = VideoQuality;
+
 
   constructor() {
   }
