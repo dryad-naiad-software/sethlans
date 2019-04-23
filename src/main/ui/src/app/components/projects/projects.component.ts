@@ -29,6 +29,7 @@ import {Project} from '../../models/project.model';
 import {Router} from '@angular/router';
 import {ProjectType} from '../../enums/project_type.enum';
 import {ComputeMethod} from '../../enums/compute.method.enum';
+import {AnimationType} from '../../enums/animation_type.enum';
 
 @Component({
   selector: 'app-projects',
@@ -41,6 +42,7 @@ export class ProjectsComponent implements OnInit {
   dataSource = new MatTableDataSource();
   displayedColumns = ['projectName', 'type', 'renderOn', 'projectStatus', 'progress', 'preview', 'actions'];
   placeholder: any = 'assets/images/placeholder.svg';
+  animationTypes: any = AnimationType;
   nodesReady: boolean = false;
   projectSize: number;
   selectedProject: Project;

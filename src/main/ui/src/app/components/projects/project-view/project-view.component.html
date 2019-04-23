@@ -73,7 +73,7 @@
               </button>
               <button placement="bottom"
                       ngbTooltip="Download Video"
-                      *ngIf="currentProject.projectStatus.valueOf().toString() == 'Finished'.valueOf() && currentProject.animationType != animationTypes.Movie"
+                      *ngIf="currentProject.projectStatus.valueOf().toString() == 'Finished'.valueOf() && currentProject.animationType == animationTypes.Movie"
                       class="btn btn-outline-dark btn-sm" type="button" (click)="downloadVideo(currentProject.id)">
                 <span class="fa fa-film"></span>
               </button>
