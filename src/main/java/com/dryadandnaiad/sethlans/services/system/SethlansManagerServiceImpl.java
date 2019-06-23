@@ -64,6 +64,7 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
     public void restart() {
         if (!GraphicsEnvironment.isHeadless()) {
             systrayService.stop();
+
         }
         SethlansState sethlansState = SethlansState.getInstance();
         SethlansExecutor sethlansExecutor = SethlansExecutor.getInstance();
