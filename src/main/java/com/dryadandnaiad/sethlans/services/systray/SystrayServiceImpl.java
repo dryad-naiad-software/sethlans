@@ -42,7 +42,7 @@ public class SystrayServiceImpl implements SystrayService {
     @Async
     @Override
     public void start() {
-        if (SystemTray.isSupported()) {
+        if (!GraphicsEnvironment.isHeadless()) {
             SethlansMode mode = null;
             if (firstTime) {
                 mode = SethlansMode.SETUP;
@@ -56,7 +56,7 @@ public class SystrayServiceImpl implements SystrayService {
 
     @Override
     public void nodeState(boolean active) {
-        if (SystemTray.isSupported()) {
+        if (!GraphicsEnvironment.isHeadless()) {
             if (SethlansQueryUtils.getMode() != SethlansMode.SERVER) {
                 if (active) {
                     sysTray.nodeActive();
@@ -70,7 +70,7 @@ public class SystrayServiceImpl implements SystrayService {
     }
 
     public void stop() {
-        if (SystemTray.isSupported()) {
+        if (!GraphicsEnvironment.isHeadless()) {
             sysTray.remove();
         }
 

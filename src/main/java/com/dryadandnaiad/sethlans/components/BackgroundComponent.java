@@ -42,7 +42,7 @@ public class BackgroundComponent {
 
     @PostConstruct
     public void startSystemTray() {
-        if (SystemTray.isSupported()) {
+        if (!GraphicsEnvironment.isHeadless()) {
             systrayService.start();
             LOG.debug("Starting System Tray");
         }
