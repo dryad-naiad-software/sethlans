@@ -55,7 +55,7 @@ public class SystrayServiceImpl implements SystrayService {
                 }
                 sysTray = new SethlansSysTray();
                 sysTray.setup(mode);
-            } catch (AWTError e) {
+            } catch (AWTError | NoClassDefFoundError e) {
                 LOG.debug("Display not present, skipping sys tray load");
 
             }
