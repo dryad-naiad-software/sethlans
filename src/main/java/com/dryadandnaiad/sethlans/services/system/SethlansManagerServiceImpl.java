@@ -30,6 +30,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
+
 /**
  * Created Mario Estrella on 3/22/17.
  * Dryad and Naiad Software LLC
@@ -60,7 +62,9 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
 
     @Override
     public void restart() {
-        systrayService.stop();
+        if (!GraphicsEnvironment.isHeadless()) {
+            systrayService.stop();
+        }
         SethlansState sethlansState = SethlansState.getInstance();
         SethlansExecutor sethlansExecutor = SethlansExecutor.getInstance();
         LOG.info("Restarting Sethlans...");
