@@ -43,13 +43,8 @@ public class BackgroundComponent {
     @PostConstruct
     public void startSystemTray() {
         if (!GraphicsEnvironment.isHeadless()) {
-            try {
-                systrayService.start();
-                LOG.debug("Starting System Tray");
-            } catch (AWTError e) {
-                LOG.debug("Display not present, skipping sys tray load");
-
-            }
+            systrayService.start();
+            LOG.debug("Starting System Tray");
 
         }
     }

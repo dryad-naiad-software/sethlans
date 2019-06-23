@@ -21,6 +21,8 @@ package com.dryadandnaiad.sethlans.services.systray;
 
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.utils.SethlansQueryUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -35,7 +37,8 @@ import java.awt.*;
  */
 @Service
 public class SystrayServiceImpl implements SystrayService {
-    private SethlansSysTray sysTray;
+    private static final Logger LOG = LoggerFactory.getLogger(SystrayServiceImpl.class);
+    private SethlansSysTray sysTray = null;
     @Value("${sethlans.firsttime}")
     private boolean firstTime;
 
@@ -43,20 +46,26 @@ public class SystrayServiceImpl implements SystrayService {
     @Override
     public void start() {
         if (!GraphicsEnvironment.isHeadless()) {
-            SethlansMode mode = null;
-            if (firstTime) {
-                mode = SethlansMode.SETUP;
-            } else {
-                mode = SethlansQueryUtils.getMode();
+            try {
+                SethlansMode mode = null;
+                if (firstTime) {
+                    mode = SethlansMode.SETUP;
+                } else {
+                    mode = SethlansQueryUtils.getMode();
+                }
+                sysTray = new SethlansSysTray();
+                sysTray.setup(mode);
+            } catch (AWTError e) {
+                LOG.debug("Display not present, skipping sys tray load");
+
             }
-            sysTray = new SethlansSysTray();
-            sysTray.setup(mode);
+
         }
     }
 
     @Override
     public void nodeState(boolean active) {
-        if (!GraphicsEnvironment.isHeadless()) {
+        if (sysTray != null) {
             if (SethlansQueryUtils.getMode() != SethlansMode.SERVER) {
                 if (active) {
                     sysTray.nodeActive();
@@ -67,13 +76,14 @@ public class SystrayServiceImpl implements SystrayService {
                 }
             }
         }
+
     }
 
     public void stop() {
-        if (!GraphicsEnvironment.isHeadless()) {
+        if (sysTray != null) {
+
             sysTray.remove();
         }
-
     }
 
 }
