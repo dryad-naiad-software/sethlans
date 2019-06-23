@@ -98,72 +98,78 @@
               <span class="mobile-label">Actions:</span>
               <div class="btn-group-adjust">
                 <div class="btn-group btn-group-sm pt-1 pb-5">
-                <button placement="bottom"
-                        ngbTooltip="Start"
-                        [disabled]="!nodesReady" [attr.id]="'start'+ project.id"
-                        *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf()"
-                        class="btn btn-outline-success btn-sm btn-block" type="button"
-                        (click)="startProject(project.id)">
-                  <span class="fa fa-play"></span>
-                </button>
-                <button placement="bottom"
-                        ngbTooltip="Resume"
-                        *ngIf="project.projectStatus.valueOf().toString() == 'Paused'.valueOf()"
-                        class="btn btn-outline-success btn-sm btn-block" type="button"
-                        (click)="resumeProject(project.id)">
-                  <span class="fa fa-step-forward"></span>
-                </button>
-                <button placement="bottom"
-                        ngbTooltip="Pause"
-                        *ngIf="project.projectStatus.valueOf().toString() != 'Finished'.valueOf() &&
+                  <button placement="bottom"
+                          ngbTooltip="Start"
+                          [disabled]="!nodesReady" [attr.id]="'start'+ project.id"
+                          *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf()"
+                          class="btn btn-outline-success btn-sm btn-block" type="button"
+                          (click)="startProject(project.id)">
+                    <span class="fa fa-play"></span>
+                  </button>
+                  <button placement="bottom"
+                          ngbTooltip="Resume"
+                          *ngIf="project.projectStatus.valueOf().toString() == 'Paused'.valueOf()"
+                          class="btn btn-outline-success btn-sm btn-block" type="button"
+                          (click)="resumeProject(project.id)">
+                    <span class="fa fa-step-forward"></span>
+                  </button>
+                  <button placement="bottom"
+                          ngbTooltip="Pause"
+                          *ngIf="project.projectStatus.valueOf().toString() != 'Finished'.valueOf() &&
                         project.projectStatus.valueOf().toString() != 'Added'.valueOf()  && project.projectStatus.valueOf().toString() != 'Paused'.valueOf()"
-                        class="btn btn-outline-warning btn-sm" type="button" (click)="pauseProject(project.id)">
-                  <span class="fa fa-pause"></span>
-                </button>
-                <button placement="bottom"
-                        ngbTooltip="Details"
-                        class="btn btn-outline-info btn-sm" type="button"
-                        (click)="viewProject(project.id)">
-                  <span class="fa fa-search-plus"></span>
-                </button>
+                          class="btn btn-outline-warning btn-sm" type="button" (click)="pauseProject(project.id)">
+                    <span class="fa fa-pause"></span>
+                  </button>
+                  <button placement="bottom"
+                          ngbTooltip="Details"
+                          class="btn btn-outline-info btn-sm" type="button"
+                          (click)="viewProject(project.id)">
+                    <span class="fa fa-search-plus"></span>
+                  </button>
 
                   <button placement="right"
                           ngbTooltip="Download Image(s)"
                           *ngIf="project.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
                           class="btn btn-outline-dark btn-sm" type="button" (click)="downloadProject(project.id)">
-                  <span class="fa fa-images"></span>
-                </button>
+                    <span class="fa fa-images"></span>
+                  </button>
                   <button placement="right"
                           ngbTooltip="Download Video"
                           *ngIf="project.projectStatus.valueOf().toString() == 'Finished'.valueOf() && project.animationType == animationTypes.Movie"
                           class="btn btn-outline-dark btn-sm" type="button" (click)="downloadVideo(project.id)">
-                  <span class="fa fa-film"></span>
-                </button>
-                <button placement="bottom"
-                        ngbTooltip="Edit"
-                        *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf()"
-                        class="btn btn-outline-dark btn-sm" type="button" (click)="editProject(project.id)">
-                  <span class="fa fa-edit"></span>
-                </button>
-                <button placement="bottom"
-                        ngbTooltip="Delete"
-                        *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf() ||  project.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
-                        class="btn btn-outline-danger btn-sm" type="button"
-                        (click)="confirm(project, deleteConfirmation)">
-                  <span class="fa fa-trash-alt"></span>
-                </button>
-                <button
-                  placement="bottom"
-                  ngbTooltip="Stop"
-                  *ngIf="project.projectStatus.valueOf().toString() == 'Started'.valueOf() ||
+                    <span class="fa fa-film"></span>
+                  </button>
+                  <button placement="bottom"
+                          ngbTooltip="Video Settings"
+                          *ngIf="project.projectStatus.valueOf().toString() == 'Finished'.valueOf() && project.projectType === projectTypes.ANIMATION"
+                          class="btn btn-outline-dark btn-sm" type="button" (click)="editVideoSettings(project.id)">
+                    <span class="fa fa-cog"></span>
+                  </button>
+                  <button placement="bottom"
+                          ngbTooltip="Edit"
+                          *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf()"
+                          class="btn btn-outline-dark btn-sm" type="button" (click)="editProject(project.id)">
+                    <span class="fa fa-edit"></span>
+                  </button>
+                  <button placement="bottom"
+                          ngbTooltip="Delete"
+                          *ngIf="project.projectStatus.valueOf().toString() == 'Added'.valueOf() ||  project.projectStatus.valueOf().toString() == 'Finished'.valueOf()"
+                          class="btn btn-outline-danger btn-sm" type="button"
+                          (click)="confirm(project, deleteConfirmation)">
+                    <span class="fa fa-trash-alt"></span>
+                  </button>
+                  <button
+                    placement="bottom"
+                    ngbTooltip="Stop"
+                    *ngIf="project.projectStatus.valueOf().toString() == 'Started'.valueOf() ||
                     project.projectStatus.valueOf().toString() == 'Rendering'.valueOf() ||
                     project.projectStatus.valueOf().toString() == 'Pending'.valueOf() ||
                     project.projectStatus.valueOf().toString() == 'Paused'.valueOf() ||
                     project.projectStatus.valueOf().toString() == 'Processing'.valueOf()"
-                  class="btn btn-outline-danger btn-sm" type="button"
-                  (click)="confirm(project, stopConfirmation)">
-                  <span class="fa fa-stop">&nbsp;</span>
-                </button>
+                    class="btn btn-outline-danger btn-sm" type="button"
+                    (click)="confirm(project, stopConfirmation)">
+                    <span class="fa fa-stop">&nbsp;</span>
+                  </button>
                 </div>
               </div>
             </mat-cell>

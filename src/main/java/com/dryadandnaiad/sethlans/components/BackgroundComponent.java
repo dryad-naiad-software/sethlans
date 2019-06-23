@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.awt.*;
 
 /**
  * Created Mario Estrella on 3/28/2019.
@@ -41,8 +42,10 @@ public class BackgroundComponent {
 
     @PostConstruct
     public void startSystemTray() {
-        systrayService.start();
-        LOG.debug("Starting System Tray");
+        if (SystemTray.isSupported()) {
+            systrayService.start();
+            LOG.debug("Starting System Tray");
+        }
     }
 
     @Autowired

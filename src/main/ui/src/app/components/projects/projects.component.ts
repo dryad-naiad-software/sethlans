@@ -124,6 +124,10 @@ export class ProjectsComponent implements OnInit {
     window.location.href = '/projects/edit/' + id;
   }
 
+  editVideoSettings(id) {
+    window.location.href = '/projects/video_settings/' + id;
+  }
+
   viewProject(id) {
     window.location.href = '/projects/view/' + id;
   }

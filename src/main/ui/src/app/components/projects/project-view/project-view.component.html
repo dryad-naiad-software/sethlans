@@ -78,6 +78,12 @@
                 <span class="fa fa-film"></span>
               </button>
               <button placement="bottom"
+                      ngbTooltip="Video Settings"
+                      *ngIf="currentProject.projectStatus.valueOf().toString() == 'Finished'.valueOf() && currentProject.projectType === projectTypes.ANIMATION"
+                      class="btn btn-outline-dark btn-sm" type="button" (click)="editVideoSettings(currentProject.id)">
+                <span class="fa fa-cog"></span>
+              </button>
+              <button placement="bottom"
                       ngbTooltip="Edit"
                       *ngIf="currentProject.projectStatus.valueOf().toString() == 'Added'.valueOf()"
                       class="btn btn-outline-dark btn-sm" type="button" (click)="editProject(currentProject.id)">

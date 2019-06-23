@@ -108,6 +108,10 @@ export class ProjectViewComponent implements OnInit {
     });
   }
 
+  editVideoSettings(id) {
+    window.location.href = '/projects/video_settings/' + id;
+  }
+
 
   getProjectTime() {
     this.http.get('/api/project_ui/project_duration/' + this.id + '/', {responseType: 'text'}).subscribe((duration: string) => {

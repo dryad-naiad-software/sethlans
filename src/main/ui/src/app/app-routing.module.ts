@@ -45,6 +45,7 @@ import {NodeRenderHistoryComponent} from './components/admin/node-render-history
 import {ProjectFramesComponent} from './components/projects/project-frames/project-frames.component';
 import {ServerQueueHistoryComponent} from './components/admin/server-queue-history/server-queue-history.component';
 import {ProjectQueueListComponent} from './components/projects/project-queue-list/project-queue-list.component';
+import {ProjectEditVideoSettingsComponent} from './components/projects/project-edit-video-settings/project-edit-video-settings.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -73,6 +74,7 @@ const routes: Routes = [
   {path: 'projects/edit/:id', component: ProjectEditWizardComponent},
   {path: 'projects/frames/:id', component: ProjectFramesComponent},
   {path: 'projects/queue/:id', component: ProjectQueueListComponent},
+  {path: 'projects/video_settings/:id', component: ProjectEditVideoSettingsComponent},
 
 ];
 

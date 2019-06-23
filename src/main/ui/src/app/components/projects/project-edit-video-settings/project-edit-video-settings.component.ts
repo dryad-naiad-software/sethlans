@@ -19,6 +19,9 @@
 
 
 import {Component, OnInit} from '@angular/core';
+import {Project} from '../../../models/project.model';
+import {ActivatedRoute} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-project-edit-video-settings',
@@ -26,8 +29,26 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./project-edit-video-settings.component.scss']
 })
 export class ProjectEditVideoSettingsComponent implements OnInit {
+  currentProject: Project;
+  id: number;
+
+
+  constructor(private http: HttpClient, private route: ActivatedRoute) {
+    document.body.style.background = 'rgba(0, 0, 0, .6)';
+    this.currentProject = new Project();
+    this.route.params.subscribe(params => {
+      this.id = +params['id'];
+    });
+  }
 
   ngOnInit(): void {
+    this.loadProjectDetails();
+  }
+
+  loadProjectDetails() {
+    this.http.get('/api/project_ui/project_details/' + this.id + '/').subscribe((projectDetails: Project) => {
+      this.currentProject = projectDetails;
+    });
   }
 
 }

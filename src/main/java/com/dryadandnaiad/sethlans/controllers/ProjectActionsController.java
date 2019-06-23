@@ -254,7 +254,11 @@ public class ProjectActionsController {
             }
 
             partConfiguration(projectForm);
-            projectForm.getVideoSettings().setFrameRate(checkFrameRate(projectForm.getVideoSettings().getFrameRate()));
+            if (projectForm.getProjectType() == ProjectType.ANIMATION) {
+                if (projectForm.getAnimationType() == AnimationType.Movie) {
+                    projectForm.getVideoSettings().setFrameRate(checkFrameRate(projectForm.getVideoSettings().getFrameRate()));
+                }
+            }
             projectForm.setUsername(auth.getName());
             projectForm.setProjectStatus(ProjectStatus.Added);
             return blenderProjectDatabaseService.saveOrUpdateProjectForm(projectForm).getId();
