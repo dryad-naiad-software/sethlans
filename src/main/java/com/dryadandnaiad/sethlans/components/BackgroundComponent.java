@@ -44,7 +44,7 @@ public class BackgroundComponent {
     public void startSystemTray() {
         if (!GraphicsEnvironment.isHeadless()) {
             systrayService.start();
-            LOG.debug("Starting System Tray");
+            LOG.debug("Starting System Tray Service");
 
         }
     }
