@@ -38,6 +38,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -108,11 +109,15 @@ public class NodeSendUpdateServiceImpl implements NodeSendUpdateService {
 
                     if (sethlansServerDatabaseService.listActive().size() > 0 && benchmarkTaskDatabaseService.allBenchmarksComplete()) {
                         if (renderTaskDatabaseService.tableSize() > 0) {
-                            systrayService.nodeState(true);
+                            if (!GraphicsEnvironment.isHeadless()) {
+                                systrayService.nodeState(true);
+                            }
                             counter = 0;
                         }
                         if (renderTaskDatabaseService.tableSize() == 0) {
-                            systrayService.nodeState(false);
+                            if (!GraphicsEnvironment.isHeadless()) {
+                                systrayService.nodeState(false);
+                            }
                             counter++;
                         }
                         if (counter % 60 == 0 && counter > 59) {
