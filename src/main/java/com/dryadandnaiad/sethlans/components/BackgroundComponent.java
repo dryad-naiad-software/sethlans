@@ -46,6 +46,8 @@ public class BackgroundComponent {
             systrayService.start();
             LOG.debug("Starting System Tray Service");
 
+        } else {
+            LOG.debug("Headless mode detected, system tray service will not be started");
         }
     }
 
