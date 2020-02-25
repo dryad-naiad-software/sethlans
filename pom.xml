@@ -1,77 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Copyright (c) 2019 Dryad and Naiad Software LLC
-  ~
-  ~ This program is free software; you can redistribute it and/or
-  ~ modify it under the terms of the GNU General Public License
-  ~ as published by the Free Software Foundation; either version 2
-  ~ of the License, or (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program; if not, write to the Free Software
-  ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-  ~
-  -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>com.dryadandnaiad</groupId>
-    <artifactId>Sethlans</artifactId>
-    <version>1.0.0</version>
-    <packaging>jar</packaging>
-
-    <name>Sethlans</name>
-    <description>Distributed render farm for blender</description>
-
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.19.RELEASE</version>
+        <version>2.2.4.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
-
-    <organization>
-        <!-- Used as the 'Vendor' for JNLP generation -->
-        <name>Dryad and Naiad Software LLC</name>
-    </organization>
+    <groupId>com.dryadandnaiad</groupId>
+    <artifactId>sethlans</artifactId>
+    <version>1.5.0</version>
+    <name>sethlans</name>
+    <description>Distributed render farm for blender</description>
 
     <properties>
-        <info.appName>${project.name}</info.appName>
-        <info.company.name>${project.organization.name}</info.company.name>
-        <info.company.email>support@dryadandnaiad.com</info.company.email>
-        <info.version>${project.version}</info.version>
-        <sLauncherClass>org.springframework.boot.loader.JarLauncher</sLauncherClass>
-        <!--suppress UnresolvedMavenProperty -->
-        <fileName>${project.artifactId}-${project.version}.${git.closest.tag.commit.count}</fileName>
-        <!--suppress UnresolvedMavenProperty -->
-        <buildNumber>${git.closest.tag.commit.count}</buildNumber>
-        <timestamp>${maven.build.timestamp}</timestamp>
-        <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
-        <binLocation>binaries</binLocation>
-        <node.version>v11.13.0</node.version>
-        <npm.version>6.7.0</npm.version>
-        <h2.version>1.4.197</h2.version>
-        <guava.version>27.0.1-jre</guava.version>
-        <jna.version>5.2.0</jna.version>
-        <oshi.version>3.12.0</oshi.version>
-        <jcuda.version>10.0.0</jcuda.version>
-        <izpack.version>5.1.3</izpack.version>
-        <launch4j.version>1.7.25</launch4j.version>
-        <izpack.staging>${project.build.directory}/staging</izpack.staging>
+        <java.version>11</java.version>
     </properties>
 
     <dependencies>
-
-        <!--Spring Web-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-rest</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -86,552 +45,40 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-undertow</artifactId>
         </dependency>
-
-        <!--Spring Mail-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-mail</artifactId>
-        </dependency>
-
-        <!--Spring Database-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.flywaydb</groupId>-->
+<!--            <artifactId>flyway-core</artifactId>-->
+<!--        </dependency>-->
 
         <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-            <version>5.1.4</version>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
         </dependency>
-
-        <!--Lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-
-        <!--Spring Security-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-data</artifactId>
-        </dependency>
-
-        <!-- Tests -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-
-
-        <!-- Other Dependencies - Non Spring Specific-->
-
-        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.11</version>
-        </dependency>
-
-
-        <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 -->
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>2.9.2</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui -->
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.9.2</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>rest-assured</artifactId>
-            <version>3.1.0</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${h2.version}</version>
-        </dependency>
-
-
-        <!-- https://mvnrepository.com/artifact/org.tukaani/xz -->
-        <dependency>
-            <groupId>org.tukaani</groupId>
-            <artifactId>xz</artifactId>
-            <version>1.8</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>com.github.oshi</groupId>
-            <artifactId>oshi-core</artifactId>
-            <version>${oshi.version}</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>com.github.oshi</groupId>
-            <artifactId>oshi-json</artifactId>
-            <version>${oshi.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.7</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-text</artifactId>
-            <version>1.4</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-exec</artifactId>
-            <version>1.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jcuda</groupId>
-            <artifactId>jcuda</artifactId>
-            <version>${jcuda.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jocl</groupId>
-            <artifactId>jocl</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna-platform</artifactId>
-            <version>${jna.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna</artifactId>
-            <version>${jna.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.kohsuke.args4j</groupId>
-            <artifactId>args4j-maven-plugin</artifactId>
-            <version>2.33</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
-            <version>1.18</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.6</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.rauschig</groupId>
-            <artifactId>jarchivelib</artifactId>
-            <version>0.8.0</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>net.lingala.zip4j</groupId>
-            <artifactId>zip4j</artifactId>
-            <version>1.3.2</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.5</version>
-        </dependency>
-
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>spring-snapshots</id>
-            <name>Spring Snapshots</name>
-            <url>https://repo.spring.io/libs-snapshot</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                        <configuration>
-                            <finalName>${fileName}</finalName>
-                            <outputDirectory>${project.build.directory}/${binLocation}</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <configuration>
-                    <mainClass>com.dryadandnaiad.sethlans.Sethlans</mainClass>
-                    <cleanupDaemonThreads>false</cleanupDaemonThreads>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.12</version>
-                <executions>
-                    <execution>
-                        <id>timestamp-property</id>
-                        <goals>
-                            <goal>timestamp-property</goal>
-                        </goals>
-                        <phase>validate</phase>
-                        <configuration>
-                            <name>current.year</name>
-                            <pattern>yyyy</pattern>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-
-            <!-- Git Version Plugin -->
-            <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-                <version>2.2.4</version>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>revision</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
-                    <gitDescribe>
-                        <dirty>-DEV</dirty>
-                    </gitDescribe>
-                    <abbrevLength>4</abbrevLength>
-                    <excludeProperties>
-                        <excludeProperty>git.commit.user.email</excludeProperty>
-                        <excludeProperty>git.build.user.email</excludeProperty>
-                    </excludeProperties>
-                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                    <generateGitPropertiesFilename>src/main/resources/git.properties</generateGitPropertiesFilename>
-                </configuration>
-            </plugin>
-            <!-- Frontend -->
-            <plugin>
-                <groupId>com.github.eirslett</groupId>
-                <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.6</version>
-                <configuration>
-                    <workingDirectory>src/main/ui</workingDirectory>
-                    <nodeDownloadRoot>https://nodejs.org/dist/</nodeDownloadRoot>
-                    <nodeVersion>${node.version}</nodeVersion>
-                    <npmVersion>${npm.version}</npmVersion>
-                    <installDirectory>target</installDirectory>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>install node and npm</id>
-                        <goals>
-                            <goal>install-node-and-npm</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                    </execution>
-                    <execution>
-                        <id>npm install</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>install</arguments>
-                            <installDirectory>target</installDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>angular cli build</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <arguments>run build</arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-                <version>1.0.0</version>
-                <executions>
-                    <execution>
-                        <phase>initialize</phase>
-                        <goals>
-                            <goal>read-project-properties</goal>
-                        </goals>
-                        <configuration>
-                            <files>
-                                <file>${basedir}/src/main/resources/git.properties</file>
-                            </files>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--Staging area-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
-                <executions>
-                    <execution>
-                        <id>create-staging-area</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <copy todir="${izpack.staging}">
-                                    <fileset dir="${basedir}/src/main/izpack"/>
-                                    <fileset dir="${basedir}/src/main/jre/win64">
-                                        <include name="*.zip"/>
-                                    </fileset>
-                                </copy>
-                                <copy file="${basedir}/src/main/resources/sethlans.manifest"
-                                      tofile="${izpack.staging}/${fileName}.manifest"/>
-                                <unzip src="${basedir}/src/main/jre/macOS/jre1.8.0_191.jre.zip"
-                                       dest="${project.build.directory}"/>
-                            </target>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>compress-mac-dmg</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <copy file="${basedir}/src/main/scripts/stub.sh"
-                                      toFile="${basedir}/target/binaries/stub.sh"/>
-                                <exec executable="cat">
-                                    <redirector output="${basedir}/target/binaries/${fileName}.run"
-                                                binaryOutput="true"/>
-                                    <arg value="${basedir}/target/binaries/stub.sh"/>
-                                    <arg value="${basedir}/target/binaries/${fileName}.jar"/>
-                                </exec>
-                                <zip destfile="${project.build.directory}/${binLocation}/${fileName}-macOS.zip">
-                                    <fileset dir="${project.build.directory}/${binLocation}"
-                                             includes="${fileName}.dmg"/>
-                                </zip>
-                                <delete file="${project.build.directory}/${binLocation}/${fileName}.dmg"/>
-                                <copy file="${izpack.staging}/Sethlans.exe"
-                                      tofile="${project.build.directory}/${binLocation}/Test${fileName}.exe"/>
-
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Creates an OSX app Bundle -->
-            <plugin>
-                <groupId>sh.tak.appbundler</groupId>
-                <artifactId>appbundle-maven-plugin</artifactId>
-                <version>1.2.0</version>
-                <configuration>
-                    <buildDirectory>
-                        ${project.build.directory}/${binLocation}/${fileName}-macOS
-                    </buildDirectory>
-                    <mainClass>${sLauncherClass}</mainClass>
-                    <iconFile>icon/sethlans.icns</iconFile>
-                    <generateDiskImageFile>true</generateDiskImageFile>
-                    <includeApplicationsSymlink>true</includeApplicationsSymlink>
-                    <diskImageFile>${project.build.directory}/${binLocation}/${fileName}.dmg</diskImageFile>
-                    <jrePath>${project.build.directory}/jre1.8.0_191.jre</jrePath>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>bundle</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- Creates Windows executable file -->
-
-            <plugin>
-                <groupId>com.akathist.maven.plugins.launch4j</groupId>
-                <artifactId>launch4j-maven-plugin</artifactId>
-                <version>${launch4j.version}</version>
-                <executions>
-                    <execution>
-                        <id>sethlans-main</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>launch4j</goal>
-                        </goals>
-                        <configuration>
-                            <headerType>gui</headerType>
-                            <jar>
-                                ${project.build.directory}/${binLocation}/${fileName}.jar
-                            </jar>
-                            <outfile>
-                                ${izpack.staging}/Sethlans.exe
-                            </outfile>
-                            <errTitle>Sethlans</errTitle>
-                            <downloadUrl>https://www.java.com</downloadUrl>
-                            <classPath>
-                                <mainClass>${sLauncherClass}</mainClass>
-                            </classPath>
-                            <icon>${project.basedir}/src/main/resources/icon/sethlans.ico</icon>
-                            <jre>
-                                <path>../lib/jre1.8.0_191</path>
-                                <minVersion>1.8.0</minVersion>
-                                <jdkPreference>preferJre</jdkPreference>
-                                <bundledJre64Bit>true</bundledJre64Bit>
-                                <runtimeBits>64</runtimeBits>
-                            </jre>
-                            <versionInfo>
-                                <productName>Sethlans</productName>
-                                <fileVersion>${project.version}.${buildNumber}</fileVersion>
-                                <txtFileVersion>${project.version}.${buildNumber}</txtFileVersion>
-                                <fileDescription>${project.name}</fileDescription>
-                                <copyright>2018 ${project.organization.name}</copyright>
-                                <productVersion>${project.version}.${buildNumber}</productVersion>
-                                <txtProductVersion>${project.version}</txtProductVersion>
-                                <companyName>${project.organization.name}</companyName>
-                                <internalName>${project.name}</internalName>
-                                <originalFilename>${project.name}.exe</originalFilename>
-                            </versionInfo>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>installer</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>launch4j</goal>
-                        </goals>
-                        <configuration>
-                            <headerType>gui</headerType>
-                            <jar>
-                                ${izpack.staging}/${fileName}-win-installer.jar
-                            </jar>
-                            <manifest>${izpack.staging}/${fileName}.manifest</manifest>
-
-                            <outfile>
-                                ${project.build.directory}/${binLocation}/${fileName}-Installer.exe
-                            </outfile>
-                            <errTitle>Sethlans</errTitle>
-                            <downloadUrl>https://www.java.com</downloadUrl>
-                            <classPath>
-                                <mainClass>com.izforge.izpack.installer.bootstrap.Installer</mainClass>
-                            </classPath>
-                            <icon>${izpack.staging}/icon/sethlans.ico</icon>
-                            <jre>
-                                <minVersion>1.8.0</minVersion>
-                                <jdkPreference>preferJre</jdkPreference>
-                                <runtimeBits>64</runtimeBits>
-
-                            </jre>
-                            <versionInfo>
-                                <productName>Sethlans Installer</productName>
-                                <fileVersion>${project.version}.${buildNumber}</fileVersion>
-                                <txtFileVersion>${project.version}.${buildNumber}</txtFileVersion>
-                                <fileDescription>${project.name}</fileDescription>
-                                <copyright>2018 ${project.organization.name}</copyright>
-                                <productVersion>${project.version}.${buildNumber}</productVersion>
-                                <txtProductVersion>${project.version}</txtProductVersion>
-                                <companyName>${project.organization.name}</companyName>
-                                <internalName>${project.name}</internalName>
-                                <originalFilename>${project.name}.${project.version}.${buildNumber}.exe
-                                </originalFilename>
-                            </versionInfo>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-
-            <plugin>
-                <groupId>org.codehaus.izpack</groupId>
-                <artifactId>izpack-maven-plugin</artifactId>
-                <version>${izpack.version}</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>izpack</goal>
-                        </goals>
-                        <configuration>
-                            <!-- base for relative paths in izpack descriptor -->
-                            <baseDir>${izpack.staging}</baseDir>
-                            <installFile>${izpack.staging}/install.xml</installFile>
-                            <finalName>${fileName}-win-installer.jar</finalName>
-                            <enableAttachArtifact>false</enableAttachArtifact>
-                            <output>${project.build.directory}/staging/${fileName}-win-installer.jar</output>
-                        </configuration>
-                    </execution>
-                </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.codehaus.izpack</groupId>
-                        <artifactId>izpack-native</artifactId>
-                        <version>${izpack.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-
         </plugins>
     </build>
+
 </project>
