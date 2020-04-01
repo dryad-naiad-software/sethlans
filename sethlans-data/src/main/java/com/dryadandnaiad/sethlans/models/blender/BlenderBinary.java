@@ -15,35 +15,24 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.models;
+package com.dryadandnaiad.sethlans.models.blender;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.dryadandnaiad.sethlans.enums.OS;
+import com.dryadandnaiad.sethlans.models.BaseEntity;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
+import java.util.Set;
 
 /**
- * Created by Mario Estrella on 3/29/2020.
+ * Created by Mario Estrella on 4/1/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@MappedSuperclass
-public class BaseEntity implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    @Version
-    private Long version;
-    private Date dateCreated;
-    private Date lastUpdated;
-
+public class BlenderBinary extends BaseEntity {
+    private String blenderVersion;
+    private OS blenderOS;
+    private String blenderFile;
+    private String blenderFileMd5;
+    private Set<String> downloadMirrors;
+    private boolean downloaded = false;
 }

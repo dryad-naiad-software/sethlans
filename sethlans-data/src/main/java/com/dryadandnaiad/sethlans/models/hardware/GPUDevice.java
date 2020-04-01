@@ -15,16 +15,11 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+package com.dryadandnaiad.sethlans.models.hardware;
+
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
 
 /**
  * Created by Mario Estrella on 3/29/2020.
@@ -32,18 +27,13 @@ import java.util.Date;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Getter
-@Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@MappedSuperclass
-public class BaseEntity implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    @Version
-    private Long version;
-    private Date dateCreated;
-    private Date lastUpdated;
-
+@Data
+public class GPUDevice {
+    private String model;
+    private long memory; // in B
+    private int rating;
+    private boolean openCLDevice;
+    private boolean cudaDevice;
+    private String deviceID;
 }

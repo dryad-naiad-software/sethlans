@@ -15,35 +15,24 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.models;
+package com.dryadandnaiad.sethlans.models.blender.project;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
+import com.dryadandnaiad.sethlans.enums.PixelFormat;
+import com.dryadandnaiad.sethlans.enums.VideoCodec;
+import com.dryadandnaiad.sethlans.enums.VideoOutputFormat;
+import com.dryadandnaiad.sethlans.enums.VideoQuality;
 
 /**
- * Created by Mario Estrella on 3/29/2020.
+ * Created by Mario Estrella on 4/1/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@MappedSuperclass
-public class BaseEntity implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    @Version
-    private Long version;
-    private Date dateCreated;
-    private Date lastUpdated;
-
+public class VideoSettings {
+    private int frameRate;
+    private VideoCodec codec;
+    private PixelFormat pixelFormat;
+    private VideoOutputFormat videoOutputFormat;
+    private VideoQuality videoQuality;
+    private String videoFileLocation;
 }

@@ -9,12 +9,21 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <properties>
+        <sethlansVersion>1.5.0</sethlansVersion>
+    </properties>
+
     <artifactId>sethlans-rest</artifactId>
     <dependencies>
         <dependency>
             <artifactId>sethlans-data</artifactId>
             <groupId>com.dryadandnaiad</groupId>
-            <version>1.5.0</version>
+            <version>${sethlansVersion}</version>
+        </dependency>
+        <dependency>
+            <artifactId>sethlans-render</artifactId>
+            <groupId>com.dryadandnaiad</groupId>
+            <version>${sethlansVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

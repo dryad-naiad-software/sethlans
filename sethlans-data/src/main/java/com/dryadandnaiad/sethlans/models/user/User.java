@@ -15,35 +15,34 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.models;
+package com.dryadandnaiad.sethlans.models.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.dryadandnaiad.sethlans.enums.Role;
+import com.dryadandnaiad.sethlans.models.BaseEntity;
 
-import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
+import java.util.Set;
 
 /**
- * Created by Mario Estrella on 3/29/2020.
+ * Created by Mario Estrella on 4/1/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@MappedSuperclass
-public class BaseEntity implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    @Version
-    private Long version;
-    private Date dateCreated;
-    private Date lastUpdated;
+public class User extends BaseEntity {
+    private String username;
+    private String password;
+    private boolean active;
+    private String email;
+    private boolean welcomeEmailSent;
+    private boolean securityQuestionsSet;
+    private boolean promptPasswordChange;
+    private boolean systemEmailNotifications;
+    private boolean nodeEmailNotifications;
+    private boolean projectEmailNotifications;
+    private boolean videoEncodingEmailNotifications;
+    private boolean passwordUpdated;
+    private Set<String> tokens;
+    private Set<UserChallenge> challengeList;
+    private Set<Role> roles;
 
 }
