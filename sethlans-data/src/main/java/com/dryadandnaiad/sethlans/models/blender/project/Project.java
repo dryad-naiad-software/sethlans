@@ -22,6 +22,7 @@ import com.dryadandnaiad.sethlans.models.BaseEntity;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frames;
 import com.dryadandnaiad.sethlans.models.user.User;
 
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -30,15 +31,21 @@ import java.util.List;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Entity
 public class Project extends BaseEntity {
     private ProjectType projectType;
+    @OneToOne(cascade = CascadeType.ALL)
     private ProjectSettings projectSettings;
+    @OneToOne(cascade = CascadeType.ALL)
     private ProjectStatus projectStatus;
     private User user;
     private String projectName;
     private String projectUUID;
     private String projectRootDir;
+    @ElementCollection
     private List<String> frameFileNames;
+    @ElementCollection
     private List<String> thumbnailFileNames;
+    @Transient
     private List<Frames> framesList;
 }

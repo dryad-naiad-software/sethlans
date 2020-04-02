@@ -20,6 +20,11 @@ package com.dryadandnaiad.sethlans.models.blender.project;
 import com.dryadandnaiad.sethlans.enums.AnimationType;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
+import com.dryadandnaiad.sethlans.models.BaseEntity;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 
 /**
  * Created by Mario Estrella on 4/1/2020.
@@ -27,7 +32,8 @@ import com.dryadandnaiad.sethlans.enums.ComputeOn;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class ProjectSettings {
+@Entity
+public class ProjectSettings extends BaseEntity {
     private BlenderEngine blenderEngine;
     private ComputeOn computeOn;
     private AnimationType animationType;
@@ -41,6 +47,8 @@ public class ProjectSettings {
     private String blendFilenameMD5Sum;
     private String blendFileLocation;
     private String blenderVersion;
+    @OneToOne(cascade = CascadeType.ALL)
     private VideoSettings videoSettings;
+    @OneToOne(cascade = CascadeType.ALL)
     private ImageSettings imageSettings;
 }

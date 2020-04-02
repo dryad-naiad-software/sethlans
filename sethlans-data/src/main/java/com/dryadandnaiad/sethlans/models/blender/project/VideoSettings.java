@@ -21,6 +21,9 @@ import com.dryadandnaiad.sethlans.enums.PixelFormat;
 import com.dryadandnaiad.sethlans.enums.VideoCodec;
 import com.dryadandnaiad.sethlans.enums.VideoOutputFormat;
 import com.dryadandnaiad.sethlans.enums.VideoQuality;
+import com.dryadandnaiad.sethlans.models.BaseEntity;
+
+import javax.persistence.Entity;
 
 /**
  * Created by Mario Estrella on 4/1/2020.
@@ -28,7 +31,8 @@ import com.dryadandnaiad.sethlans.enums.VideoQuality;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class VideoSettings {
+@Entity
+public class VideoSettings extends BaseEntity {
     private int frameRate;
     private VideoCodec codec;
     private PixelFormat pixelFormat;

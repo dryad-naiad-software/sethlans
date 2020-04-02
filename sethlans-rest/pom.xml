@@ -16,11 +16,6 @@
     <artifactId>sethlans-rest</artifactId>
     <dependencies>
         <dependency>
-            <artifactId>sethlans-data</artifactId>
-            <groupId>com.dryadandnaiad</groupId>
-            <version>${sethlansVersion}</version>
-        </dependency>
-        <dependency>
             <artifactId>sethlans-render</artifactId>
             <groupId>com.dryadandnaiad</groupId>
             <version>${sethlansVersion}</version>

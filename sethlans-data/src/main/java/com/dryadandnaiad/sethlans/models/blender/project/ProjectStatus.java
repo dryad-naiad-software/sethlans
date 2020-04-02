@@ -18,6 +18,9 @@
 package com.dryadandnaiad.sethlans.models.blender.project;
 
 import com.dryadandnaiad.sethlans.enums.ProjectState;
+import com.dryadandnaiad.sethlans.models.BaseEntity;
+
+import javax.persistence.Entity;
 
 /**
  * Created by Mario Estrella on 4/1/2020.
@@ -25,7 +28,8 @@ import com.dryadandnaiad.sethlans.enums.ProjectState;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class ProjectStatus {
+@Entity
+public class ProjectStatus extends BaseEntity {
     private int currentPercentage;
     private int completedFrames;
     private int totalQueueSize;

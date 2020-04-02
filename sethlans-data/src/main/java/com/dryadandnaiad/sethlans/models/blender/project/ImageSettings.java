@@ -18,6 +18,9 @@
 package com.dryadandnaiad.sethlans.models.blender.project;
 
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
+import com.dryadandnaiad.sethlans.models.BaseEntity;
+
+import javax.persistence.Entity;
 
 /**
  * Created by Mario Estrella on 4/1/2020.
@@ -25,7 +28,8 @@ import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class ImageSettings {
+@Entity
+public class ImageSettings extends BaseEntity {
     private int resolutionX;
     private int resolutionY;
     private int resPercentage;
