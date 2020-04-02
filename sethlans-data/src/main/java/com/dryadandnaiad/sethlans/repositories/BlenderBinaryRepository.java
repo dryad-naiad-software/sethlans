@@ -21,6 +21,9 @@ import com.dryadandnaiad.sethlans.models.blender.BlenderBinary;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 /**
  * Created by Mario Estrella on 4/2/2020.
  * Dryad and Naiad Software LLC
@@ -29,4 +32,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface BlenderBinaryRepository extends JpaRepository<BlenderBinary, Long> {
+    Optional<List<BlenderBinary>> findBlenderBinariesByBlenderVersion(String blenderVersion);
 }

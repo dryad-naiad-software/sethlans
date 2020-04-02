@@ -29,4 +29,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface BenchmarkTaskRepository extends JpaRepository<BenchmarkTask, Long> {
+    int countBenchmarkTasksByCompleteIsTrue();
 }
