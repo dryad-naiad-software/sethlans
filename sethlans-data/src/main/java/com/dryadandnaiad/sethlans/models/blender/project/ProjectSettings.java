@@ -17,7 +17,9 @@
 
 package com.dryadandnaiad.sethlans.models.blender.project;
 
-import com.dryadandnaiad.sethlans.enums.ProjectState;
+import com.dryadandnaiad.sethlans.enums.AnimationType;
+import com.dryadandnaiad.sethlans.enums.BlenderEngine;
+import com.dryadandnaiad.sethlans.enums.ComputeOn;
 
 /**
  * Created by Mario Estrella on 4/1/2020.
@@ -25,20 +27,20 @@ import com.dryadandnaiad.sethlans.enums.ProjectState;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class ProjectStatus {
-    private int currentPercentage;
-    private int completedFrames;
-    private int totalQueueSize;
-    private int remainingQueueSize;
-    private int queueIndex;
-    private Long totalRenderTime;
-    private Long totalProjectTime;
-    private Long timerStart;
-    private Long timerEnd;
-    private boolean allImagesProcessed;
-    private boolean userStopped;
-    private boolean queueFillComplete;
-    private boolean reEncode;
-    private String currentFrameThumbnail;
-    private ProjectState projectState;
+public class ProjectSettings {
+    private BlenderEngine blenderEngine;
+    private ComputeOn computeOn;
+    private AnimationType animationType;
+    private int startFrame;
+    private int endFrame;
+    private int stepFrame;
+    private int samples;
+    private int partsPerFrame;
+    private int totalNumberOfFrames;
+    private String blendFilename;
+    private String blendFilenameMD5Sum;
+    private String blendFileLocation;
+    private String blenderVersion;
+    private VideoSettings videoSettings;
+    private ImageSettings imageSettings;
 }

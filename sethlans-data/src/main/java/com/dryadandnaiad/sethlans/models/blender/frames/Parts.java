@@ -15,9 +15,7 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.models.blender.project;
-
-import com.dryadandnaiad.sethlans.enums.ProjectState;
+package com.dryadandnaiad.sethlans.models.blender.frames;
 
 /**
  * Created by Mario Estrella on 4/1/2020.
@@ -25,20 +23,12 @@ import com.dryadandnaiad.sethlans.enums.ProjectState;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class ProjectStatus {
-    private int currentPercentage;
-    private int completedFrames;
-    private int totalQueueSize;
-    private int remainingQueueSize;
-    private int queueIndex;
-    private Long totalRenderTime;
-    private Long totalProjectTime;
-    private Long timerStart;
-    private Long timerEnd;
-    private boolean allImagesProcessed;
-    private boolean userStopped;
-    private boolean queueFillComplete;
-    private boolean reEncode;
-    private String currentFrameThumbnail;
-    private ProjectState projectState;
+public class Parts {
+    private int partNumber;
+    private boolean processed;
+    private Double partPositionMinY;
+    private Double partPositionMaxY;
+    private Double partPositionMinX;
+    private Double partPositionMaxX;
+    private String partFilename;
 }

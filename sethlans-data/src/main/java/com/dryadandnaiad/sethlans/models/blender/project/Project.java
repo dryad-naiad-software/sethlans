@@ -17,14 +17,12 @@
 
 package com.dryadandnaiad.sethlans.models.blender.project;
 
-import com.dryadandnaiad.sethlans.enums.AnimationType;
-import com.dryadandnaiad.sethlans.enums.BlenderEngine;
-import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.enums.ProjectType;
 import com.dryadandnaiad.sethlans.models.BaseEntity;
+import com.dryadandnaiad.sethlans.models.blender.frames.Frames;
 import com.dryadandnaiad.sethlans.models.user.User;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by Mario Estrella on 4/1/2020.
@@ -33,27 +31,14 @@ import java.util.Set;
  * Project: sethlans
  */
 public class Project extends BaseEntity {
-    private AnimationType animationType;
     private ProjectType projectType;
-    private BlenderEngine blenderEngine;
-    private ComputeOn computeOn;
+    private ProjectSettings projectSettings;
+    private ProjectStatus projectStatus;
     private User user;
-    private int startFrame;
-    private int endFrame;
-    private int stepFrame;
-    private int samples;
-    private int partsPerFrame;
-    private int totalNumberOfFrames;
     private String projectName;
-    private String blendFilename;
-    private String blendFilenameMD5Sum;
-    private String blendFileLocation;
-    private String blenderVersion;
     private String projectUUID;
     private String projectRootDir;
-    private Set<String> frameFileNames;
-    private Set<String> thumbnailFileNames;
-    private VideoSettings videoSettings;
-    private ImageSettings imageSettings;
-    private ProjectStatus projectStatus;
+    private List<String> frameFileNames;
+    private List<String> thumbnailFileNames;
+    private List<Frames> framesList;
 }
