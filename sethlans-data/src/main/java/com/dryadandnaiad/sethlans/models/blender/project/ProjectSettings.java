@@ -22,9 +22,7 @@ import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.models.BaseEntity;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 /**
  * Created by Mario Estrella on 4/1/2020.
@@ -34,8 +32,11 @@ import javax.persistence.OneToOne;
  */
 @Entity
 public class ProjectSettings extends BaseEntity {
+    @Enumerated(value = EnumType.STRING)
     private BlenderEngine blenderEngine;
+    @Enumerated(value = EnumType.STRING)
     private ComputeOn computeOn;
+    @Enumerated(value = EnumType.STRING)
     private AnimationType animationType;
     private int startFrame;
     private int endFrame;

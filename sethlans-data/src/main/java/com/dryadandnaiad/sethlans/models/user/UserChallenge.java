@@ -17,12 +17,15 @@
 
 package com.dryadandnaiad.sethlans.models.user;
 
+import javax.persistence.Embeddable;
+
 /**
  * Created by Mario Estrella on 4/1/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Embeddable
 public class UserChallenge {
     private String challenge;
     private String response;

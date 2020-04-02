@@ -21,6 +21,8 @@ import com.dryadandnaiad.sethlans.enums.ProjectState;
 import com.dryadandnaiad.sethlans.models.BaseEntity;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 /**
  * Created by Mario Estrella on 4/1/2020.
@@ -44,5 +46,6 @@ public class ProjectStatus extends BaseEntity {
     private boolean queueFillComplete;
     private boolean reEncode;
     private String currentFrameThumbnail;
+    @Enumerated(value = EnumType.STRING)
     private ProjectState projectState;
 }

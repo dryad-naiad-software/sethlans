@@ -15,15 +15,12 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.models.blender;
+package com.dryadandnaiad.sethlans;
 
-import com.dryadandnaiad.sethlans.enums.OS;
-import com.dryadandnaiad.sethlans.models.BaseEntity;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,14 +29,15 @@ import java.util.List;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Entity
-public class BlenderBinary extends BaseEntity {
-    private String blenderVersion;
-    @Enumerated(value = EnumType.STRING)
-    private OS blenderOS;
-    private String blenderFile;
-    private String blenderFileMd5;
-    @ElementCollection
-    private List<String> downloadMirrors;
-    private boolean downloaded = false;
+
+@SpringBootApplication
+public class SethlansApplication {
+
+    public static void main(String[] args) {
+        List<String> arrayArgs = new ArrayList<>();
+        arrayArgs.add("--spring.config.name=sethlans");
+        String[] springArgs = new String[arrayArgs.size()];
+        springArgs = arrayArgs.toArray(springArgs);
+        SpringApplication.run(SethlansApplication.class, springArgs);
+    }
 }

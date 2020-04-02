@@ -21,17 +21,23 @@ package com.dryadandnaiad.sethlans.models.blender;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.models.BaseEntity;
 
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+
 /**
  * Created by Mario Estrella on 4/1/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Entity
 public class BenchmarkTask extends BaseEntity {
     private String benchmarkURL;
     private String blenderVersion;
     private String connectionUUID;
     private String benchmarkUUID;
+    @Enumerated(value = EnumType.STRING)
     private ComputeOn computeOn;
     private String blenderExecutable;
     private String benchmarkDir;

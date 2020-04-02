@@ -15,31 +15,18 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.models.blender;
+package com.dryadandnaiad.sethlans.repositories;
 
-import com.dryadandnaiad.sethlans.enums.OS;
-import com.dryadandnaiad.sethlans.models.BaseEntity;
-
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import java.util.List;
+import com.dryadandnaiad.sethlans.models.blender.BenchmarkTask;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
- * Created by Mario Estrella on 4/1/2020.
+ * Created by Mario Estrella on 4/2/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Entity
-public class BlenderBinary extends BaseEntity {
-    private String blenderVersion;
-    @Enumerated(value = EnumType.STRING)
-    private OS blenderOS;
-    private String blenderFile;
-    private String blenderFileMd5;
-    @ElementCollection
-    private List<String> downloadMirrors;
-    private boolean downloaded = false;
+@Repository
+public interface BenchmarkTaskRepository extends JpaRepository<BenchmarkTask, Long> {
 }

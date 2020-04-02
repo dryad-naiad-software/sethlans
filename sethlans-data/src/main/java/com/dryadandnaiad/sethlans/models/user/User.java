@@ -19,7 +19,10 @@ package com.dryadandnaiad.sethlans.models.user;
 
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.models.BaseEntity;
+import com.dryadandnaiad.sethlans.models.blender.project.Project;
 
+import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -28,6 +31,7 @@ import java.util.Set;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Entity
 public class User extends BaseEntity {
     private String username;
     private String password;
@@ -41,8 +45,14 @@ public class User extends BaseEntity {
     private boolean projectEmailNotifications;
     private boolean videoEncodingEmailNotifications;
     private boolean passwordUpdated;
-    private Set<String> tokens;
-    private Set<UserChallenge> challengeList;
+    @ElementCollection
+    private List<String> tokens;
+    @ElementCollection
+    private List<UserChallenge> challengeList;
+    @ElementCollection
+    @Enumerated(value = EnumType.STRING)
     private Set<Role> roles;
+    @OneToMany
+    private List<Project> projects;
 
 }

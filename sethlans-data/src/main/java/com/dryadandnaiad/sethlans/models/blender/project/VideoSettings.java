@@ -24,6 +24,8 @@ import com.dryadandnaiad.sethlans.enums.VideoQuality;
 import com.dryadandnaiad.sethlans.models.BaseEntity;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 /**
  * Created by Mario Estrella on 4/1/2020.
@@ -34,9 +36,13 @@ import javax.persistence.Entity;
 @Entity
 public class VideoSettings extends BaseEntity {
     private int frameRate;
+    @Enumerated(value = EnumType.STRING)
     private VideoCodec codec;
+    @Enumerated(value = EnumType.STRING)
     private PixelFormat pixelFormat;
+    @Enumerated(value = EnumType.STRING)
     private VideoOutputFormat videoOutputFormat;
+    @Enumerated(value = EnumType.STRING)
     private VideoQuality videoQuality;
     private String videoFileLocation;
 }

@@ -33,11 +33,13 @@ import java.util.List;
  */
 @Entity
 public class Project extends BaseEntity {
+    @Enumerated(value = EnumType.STRING)
     private ProjectType projectType;
     @OneToOne(cascade = CascadeType.ALL)
     private ProjectSettings projectSettings;
     @OneToOne(cascade = CascadeType.ALL)
     private ProjectStatus projectStatus;
+    @ManyToOne
     private User user;
     private String projectName;
     private String projectUUID;

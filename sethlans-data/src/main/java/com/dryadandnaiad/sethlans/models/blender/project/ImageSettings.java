@@ -21,6 +21,8 @@ import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.models.BaseEntity;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 /**
  * Created by Mario Estrella on 4/1/2020.
@@ -33,6 +35,7 @@ public class ImageSettings extends BaseEntity {
     private int resolutionX;
     private int resolutionY;
     private int resPercentage;
+    @Enumerated(value = EnumType.STRING)
     private ImageOutputFormat imageOutputFormat;
 
 }
