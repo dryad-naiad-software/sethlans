@@ -17,7 +17,10 @@
 
 package com.dryadandnaiad.sethlans.models.system;
 
-import com.dryadandnaiad.sethlans.models.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Entity;
 
@@ -27,14 +30,13 @@ import javax.persistence.Entity;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-public class Server extends BaseEntity {
-    private String hostname;
-    private String ipAddress;
-    private String networkPort;
-    private String connectionID;
+public class Server extends System {
     private boolean acknowledged;
     private boolean pendingResponse;
     private boolean nodeUpdated;
-    private String accessKey;
 }

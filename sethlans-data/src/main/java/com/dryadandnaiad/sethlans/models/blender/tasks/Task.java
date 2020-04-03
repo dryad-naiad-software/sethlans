@@ -15,17 +15,17 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.models.blender;
+package com.dryadandnaiad.sethlans.models.blender.tasks;
 
-import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
-import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.models.BaseEntity;
-import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.MappedSuperclass;
 
 /**
  * Created by Mario Estrella on 4/2/2020.
@@ -33,32 +33,20 @@ import javax.persistence.Enumerated;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Entity
-public class RenderTask extends BaseEntity {
-    private String projectName;
-    private String renderTaskUUID;
-    private String connectionUUID;
-    private String projectUUID;
-    private String serverQueueUUID;
-    private int samples;
-    private String blendFilename;
-    private String blendFileMD5Sum;
+@Getter
+@Setter
+@NoArgsConstructor
+@MappedSuperclass
+public class Task extends BaseEntity {
     private String blenderVersion;
+    private String connectionID;
+    private String taskID;
+    private String taskFile;
+    private String taskFileMD5Sum;
     private String blenderExecutable;
-    private int taskResolutionX;
-    private int taskResolutionY;
-    private int taskResPercentage;
-    private boolean complete;
-    private boolean inProgress;
-    private String renderDir;
-    private Long renderTime;
-    private String deviceID;
+    private String taskDir;
     private boolean cancelRequestReceived;
-    @Enumerated(value = EnumType.STRING)
-    private BlenderEngine blenderEngine;
+    private String deviceID;
     @Enumerated(value = EnumType.STRING)
     private ComputeOn computeOn;
-    @Enumerated(value = EnumType.STRING)
-    private ImageOutputFormat imageOutputFormat;
-    private Frame frame;
 }

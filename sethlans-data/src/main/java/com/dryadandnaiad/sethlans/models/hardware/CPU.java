@@ -19,8 +19,10 @@
 package com.dryadandnaiad.sethlans.models.hardware;
 
 import com.dryadandnaiad.sethlans.models.BaseEntity;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.GlobalMemory;
@@ -36,7 +38,9 @@ import javax.persistence.Entity;
  * Project: sethlans
  */
 @Entity
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
 @NoArgsConstructor
 public class CPU extends BaseEntity {
     private String name;

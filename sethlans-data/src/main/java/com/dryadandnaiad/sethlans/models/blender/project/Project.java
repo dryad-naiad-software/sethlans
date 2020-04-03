@@ -21,8 +21,13 @@ import com.dryadandnaiad.sethlans.enums.ProjectType;
 import com.dryadandnaiad.sethlans.models.BaseEntity;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.models.user.User;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +36,10 @@ import java.util.List;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Project extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
@@ -42,12 +51,12 @@ public class Project extends BaseEntity {
     @ManyToOne
     private User user;
     private String projectName;
-    private String projectUUID;
+    private String projectID;
     private String projectRootDir;
     @ElementCollection
-    private List<String> frameFileNames;
+    private List<String> frameFileNames = new ArrayList<>();
     @ElementCollection
-    private List<String> thumbnailFileNames;
+    private List<String> thumbnailFileNames = new ArrayList<>();
     @Transient
-    private List<Frame> frameList;
+    private List<Frame> frameList = new ArrayList<>();
 }

@@ -17,7 +17,7 @@
 
 package com.dryadandnaiad.sethlans.repositories;
 
-import com.dryadandnaiad.sethlans.models.blender.RenderTask;
+import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

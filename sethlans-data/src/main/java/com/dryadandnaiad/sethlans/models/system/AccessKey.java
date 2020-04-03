@@ -15,25 +15,27 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.models.blender.frames;
+package com.dryadandnaiad.sethlans.models.system;
 
-import lombok.Data;
+import com.dryadandnaiad.sethlans.models.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.Embeddable;
+import javax.persistence.Entity;
 
 /**
- * Created by Mario Estrella on 4/1/2020.
+ * Created by Mario Estrella on 4/2/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Data
-@Embeddable
-public class Frame {
-    private String frameFileName;
-    private int frameNumber;
-    private boolean combined;
-    private String storedDir;
-    private String fileExtension;
-    private Part part;
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+public class AccessKey extends BaseEntity {
+    private String accessKey;
 }

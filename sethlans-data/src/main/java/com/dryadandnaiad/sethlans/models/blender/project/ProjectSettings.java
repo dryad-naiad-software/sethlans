@@ -21,6 +21,10 @@ import com.dryadandnaiad.sethlans.enums.AnimationType;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.models.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -30,6 +34,10 @@ import javax.persistence.*;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class ProjectSettings extends BaseEntity {
     @Enumerated(value = EnumType.STRING)

@@ -15,25 +15,18 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.models.blender.frames;
+package com.dryadandnaiad.sethlans.repositories;
 
-import lombok.Data;
-
-import javax.persistence.Embeddable;
+import com.dryadandnaiad.sethlans.models.system.AccessKey;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
- * Created by Mario Estrella on 4/1/2020.
+ * Created by Mario Estrella on 4/2/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Data
-@Embeddable
-public class Frame {
-    private String frameFileName;
-    private int frameNumber;
-    private boolean combined;
-    private String storedDir;
-    private String fileExtension;
-    private Part part;
+@Repository
+public interface AccessKeyRepository extends JpaRepository<AccessKey, Long> {
 }

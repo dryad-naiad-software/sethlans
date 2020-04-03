@@ -19,8 +19,10 @@
 package com.dryadandnaiad.sethlans.models.hardware;
 
 import com.dryadandnaiad.sethlans.models.BaseEntity;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Entity;
 
@@ -30,8 +32,10 @@ import javax.persistence.Entity;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Getter
+@Setter
+@AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Entity
 public class GPU extends BaseEntity {
     private String model;

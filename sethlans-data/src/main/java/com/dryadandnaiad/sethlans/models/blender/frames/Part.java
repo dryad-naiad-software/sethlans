@@ -17,6 +17,8 @@
 
 package com.dryadandnaiad.sethlans.models.blender.frames;
 
+import lombok.Data;
+
 import javax.persistence.Embeddable;
 
 /**
@@ -25,6 +27,7 @@ import javax.persistence.Embeddable;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Data
 @Embeddable
 public class Part {
     private int partNumber;

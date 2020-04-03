@@ -41,6 +41,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     int countProjectsByProjectStatusEquals(ProjectStatus projectStatus);
 
-    Optional<Project> findProjectByProjectUUID(String projectUUID);
+    Optional<Project> findProjectByProjectID(String projectID);
 
 }

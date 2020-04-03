@@ -15,40 +15,38 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.models.blender;
+package com.dryadandnaiad.sethlans.models.blender.tasks;
 
-import com.dryadandnaiad.sethlans.enums.OS;
-import com.dryadandnaiad.sethlans.models.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.dryadandnaiad.sethlans.enums.BlenderEngine;
+import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
+import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Created by Mario Estrella on 4/1/2020.
+ * Created by Mario Estrella on 4/2/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
-public class BlenderBinary extends BaseEntity {
-    private String blenderVersion;
+public class RenderTask extends Task {
+    private String projectName;
+    private String projectID;
+    private String queueID;
+    private int samples;
+    private int taskResolutionX;
+    private int taskResolutionY;
+    private int taskResPercentage;
+    private boolean complete;
+    private boolean inProgress;
+    private Long renderTime;
+    private String deviceID;
     @Enumerated(value = EnumType.STRING)
-    private OS blenderOS;
-    private String blenderFile;
-    private String blenderFileMd5;
-    @ElementCollection
-    private List<String> downloadMirrors = new ArrayList<>();
-    private boolean downloaded = false;
+    private BlenderEngine blenderEngine;
+    @Enumerated(value = EnumType.STRING)
+    private ImageOutputFormat imageOutputFormat;
+    private Frame frame;
 }

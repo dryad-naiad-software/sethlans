@@ -19,11 +19,15 @@ package com.dryadandnaiad.sethlans.models.system;
 
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.enums.OS;
-import com.dryadandnaiad.sethlans.models.BaseEntity;
 import com.dryadandnaiad.sethlans.models.hardware.CPU;
 import com.dryadandnaiad.sethlans.models.hardware.GPU;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,12 +36,12 @@ import java.util.List;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
-public class Node extends BaseEntity {
-    private String hostname;
-    private String ipAddress;
-    private String networkPort;
+public class Node extends System {
     @Enumerated(value = EnumType.STRING)
     private OS os;
     @Enumerated(value = EnumType.STRING)
@@ -49,9 +53,8 @@ public class Node extends BaseEntity {
     private boolean benchmarkComplete;
     private int totalRenderingSlots;
     private int cpuRating;
-    private String connectionID;
     @OneToMany
-    private List<GPU> selectedGPUs;
+    private List<GPU> selectedGPUs = new ArrayList<>();
     @OneToOne
     private CPU cpu;
 }

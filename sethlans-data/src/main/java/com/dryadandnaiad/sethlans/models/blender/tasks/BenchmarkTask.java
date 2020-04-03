@@ -15,11 +15,10 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.models.blender.frames;
 
-import lombok.Data;
+package com.dryadandnaiad.sethlans.models.blender.tasks;
 
-import javax.persistence.Embeddable;
+import javax.persistence.Entity;
 
 /**
  * Created by Mario Estrella on 4/1/2020.
@@ -27,13 +26,11 @@ import javax.persistence.Embeddable;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Data
-@Embeddable
-public class Frame {
-    private String frameFileName;
-    private int frameNumber;
-    private boolean combined;
-    private String storedDir;
-    private String fileExtension;
-    private Part part;
+@Entity
+public class BenchmarkTask extends Task {
+    private String benchmarkURL;
+    private boolean complete;
+    private int cpuRating;
+    private int gpuRating;
+    private boolean inProgress;
 }

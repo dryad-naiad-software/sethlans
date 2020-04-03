@@ -15,36 +15,30 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+package com.dryadandnaiad.sethlans.models.system;
 
-package com.dryadandnaiad.sethlans.models.blender;
-
-import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.models.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.MappedSuperclass;
 
 /**
- * Created by Mario Estrella on 4/1/2020.
+ * Created by Mario Estrella on 4/2/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Entity
-public class BenchmarkTask extends BaseEntity {
-    private String benchmarkURL;
-    private String blenderVersion;
-    private String connectionUUID;
-    private String benchmarkUUID;
-    @Enumerated(value = EnumType.STRING)
-    private ComputeOn computeOn;
-    private String blenderExecutable;
-    private String benchmarkDir;
-    private String benchmarkFile;
-    private boolean complete;
-    private int cpuRating;
-    private int gpuRating;
-    private String deviceID;
-    private boolean inProgress;
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@MappedSuperclass
+public class System extends BaseEntity {
+    private String hostname;
+    private String ipAddress;
+    private String networkPort;
+    private String connectionID;
 }
