@@ -21,11 +21,6 @@
             <version>${sethlansVersion}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.oshi</groupId>
-            <artifactId>oshi-core</artifactId>
-            <version>4.5.2</version>
-        </dependency>
-        <dependency>
             <groupId>org.jcuda</groupId>
             <artifactId>jcuda</artifactId>
             <version>10.2.0</version>

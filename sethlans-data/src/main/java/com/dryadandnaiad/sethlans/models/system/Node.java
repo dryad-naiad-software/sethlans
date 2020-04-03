@@ -15,39 +15,43 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.models.blender.project;
+package com.dryadandnaiad.sethlans.models.system;
 
-import com.dryadandnaiad.sethlans.enums.ProjectType;
+import com.dryadandnaiad.sethlans.enums.ComputeOn;
+import com.dryadandnaiad.sethlans.enums.OS;
 import com.dryadandnaiad.sethlans.models.BaseEntity;
-import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
-import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.models.hardware.CPU;
+import com.dryadandnaiad.sethlans.models.hardware.GPU;
 
 import javax.persistence.*;
 import java.util.List;
 
 /**
- * Created by Mario Estrella on 4/1/2020.
+ * Created by Mario Estrella on 4/2/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+
 @Entity
-public class Project extends BaseEntity {
+public class Node extends BaseEntity {
+    private String hostname;
+    private String ipAddress;
+    private String networkPort;
     @Enumerated(value = EnumType.STRING)
-    private ProjectType projectType;
-    @OneToOne(cascade = CascadeType.ALL)
-    private ProjectSettings projectSettings;
-    @OneToOne(cascade = CascadeType.ALL)
-    private ProjectStatus projectStatus;
-    @ManyToOne
-    private User user;
-    private String projectName;
-    private String projectUUID;
-    private String projectRootDir;
-    @ElementCollection
-    private List<String> frameFileNames;
-    @ElementCollection
-    private List<String> thumbnailFileNames;
-    @Transient
-    private List<Frame> frameList;
+    private OS os;
+    @Enumerated(value = EnumType.STRING)
+    private ComputeOn computeOn;
+    private boolean active;
+    private boolean disabled;
+    private boolean pendingActivation;
+    private boolean combined;
+    private boolean benchmarkComplete;
+    private int totalRenderingSlots;
+    private int cpuRating;
+    private String connectionID;
+    @OneToMany
+    private List<GPU> selectedGPUs;
+    @OneToOne
+    private CPU cpu;
 }

@@ -17,13 +17,9 @@
 
 package com.dryadandnaiad.sethlans.repositories;
 
-import com.dryadandnaiad.sethlans.enums.Role;
-import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.models.blender.RenderTask;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by Mario Estrella on 4/2/2020.
@@ -32,13 +28,5 @@ import java.util.Optional;
  * Project: sethlans
  */
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-
-    Optional<User> findByUsername(String username);
-
-    int countUsersByRolesEquals(Role role);
-
-    Optional<List<User>> findUsersByRolesIsNot(Role role);
-
-    boolean existsUserByUsername(String username);
+public interface RenderTaskRepository extends JpaRepository<RenderTask, Long> {
 }

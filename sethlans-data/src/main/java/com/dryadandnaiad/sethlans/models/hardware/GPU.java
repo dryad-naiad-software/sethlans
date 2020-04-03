@@ -15,19 +15,29 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.models.blender.frames;
+
+package com.dryadandnaiad.sethlans.models.hardware;
+
+import com.dryadandnaiad.sethlans.models.BaseEntity;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Entity;
 
 /**
- * Created by Mario Estrella on 4/1/2020.
+ * Created by Mario Estrella on 3/29/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class Frames {
-    private String frameFileName;
-    private int frameNumber;
-    private boolean combined;
-    private String storedDir;
-    private String fileExtension;
-    private Parts parts;
+@NoArgsConstructor
+@Data
+@Entity
+public class GPU extends BaseEntity {
+    private String model;
+    private long memory; // in B
+    private int rating;
+    private boolean openCLDevice;
+    private boolean cudaDevice;
+    private String deviceID;
 }

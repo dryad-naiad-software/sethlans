@@ -15,30 +15,22 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.repositories;
+package com.dryadandnaiad.sethlans.models.blender.frames;
 
-import com.dryadandnaiad.sethlans.enums.Role;
-import com.dryadandnaiad.sethlans.models.user.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Optional;
+import javax.persistence.Embeddable;
 
 /**
- * Created by Mario Estrella on 4/2/2020.
+ * Created by Mario Estrella on 4/1/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-
-    Optional<User> findByUsername(String username);
-
-    int countUsersByRolesEquals(Role role);
-
-    Optional<List<User>> findUsersByRolesIsNot(Role role);
-
-    boolean existsUserByUsername(String username);
+@Embeddable
+public class Frame {
+    private String frameFileName;
+    private int frameNumber;
+    private boolean combined;
+    private String storedDir;
+    private String fileExtension;
+    private Part part;
 }
