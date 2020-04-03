@@ -46,4 +46,13 @@ public class BaseEntity implements Serializable {
     private Date dateCreated;
     private Date lastUpdated;
 
+    @PreUpdate
+    @PrePersist
+    public void updateTimeStamps() {
+        lastUpdated = new Date();
+        if (dateCreated == null) {
+            dateCreated = new Date();
+        }
+    }
+
 }
