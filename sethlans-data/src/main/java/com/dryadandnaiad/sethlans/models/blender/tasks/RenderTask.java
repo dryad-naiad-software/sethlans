@@ -21,17 +21,12 @@ import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-
 /**
  * Created by Mario Estrella on 4/2/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Entity
 public class RenderTask extends Task {
     private String projectName;
     private String projectID;
@@ -44,9 +39,7 @@ public class RenderTask extends Task {
     private boolean inProgress;
     private Long renderTime;
     private String deviceID;
-    @Enumerated(value = EnumType.STRING)
     private BlenderEngine blenderEngine;
-    @Enumerated(value = EnumType.STRING)
     private ImageOutputFormat imageOutputFormat;
     private Frame frame;
 }

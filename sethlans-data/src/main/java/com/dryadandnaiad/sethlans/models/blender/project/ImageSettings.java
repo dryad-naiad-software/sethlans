@@ -18,15 +18,10 @@
 package com.dryadandnaiad.sethlans.models.blender.project;
 
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
-import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 
 /**
  * Created by Mario Estrella on 4/1/2020.
@@ -34,16 +29,14 @@ import javax.persistence.Enumerated;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageSettings extends BaseEntity {
+public class ImageSettings {
     private int resolutionX;
     private int resolutionY;
     private int resPercentage;
-    @Enumerated(value = EnumType.STRING)
     private ImageOutputFormat imageOutputFormat;
 
 }

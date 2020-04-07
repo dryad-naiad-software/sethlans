@@ -21,15 +21,10 @@ import com.dryadandnaiad.sethlans.enums.PixelFormat;
 import com.dryadandnaiad.sethlans.enums.VideoCodec;
 import com.dryadandnaiad.sethlans.enums.VideoOutputFormat;
 import com.dryadandnaiad.sethlans.enums.VideoQuality;
-import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 
 /**
  * Created by Mario Estrella on 4/1/2020.
@@ -41,16 +36,11 @@ import javax.persistence.Enumerated;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class VideoSettings extends BaseEntity {
+public class VideoSettings {
     private int frameRate;
-    @Enumerated(value = EnumType.STRING)
     private VideoCodec codec;
-    @Enumerated(value = EnumType.STRING)
     private PixelFormat pixelFormat;
-    @Enumerated(value = EnumType.STRING)
     private VideoOutputFormat videoOutputFormat;
-    @Enumerated(value = EnumType.STRING)
     private VideoQuality videoQuality;
     private String videoFileLocation;
 }

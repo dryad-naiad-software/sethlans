@@ -18,7 +18,6 @@
 package com.dryadandnaiad.sethlans.models.blender.project;
 
 import com.dryadandnaiad.sethlans.enums.ProjectType;
-import com.dryadandnaiad.sethlans.models.BaseEntity;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.models.user.User;
 import lombok.AllArgsConstructor;
@@ -26,7 +25,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,23 +38,15 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class Project extends BaseEntity {
-    @Enumerated(value = EnumType.STRING)
+public class Project {
     private ProjectType projectType;
-    @OneToOne(cascade = CascadeType.ALL)
     private ProjectSettings projectSettings;
-    @OneToOne(cascade = CascadeType.ALL)
     private ProjectStatus projectStatus;
-    @ManyToOne
     private User user;
     private String projectName;
     private String projectID;
     private String projectRootDir;
-    @ElementCollection
     private List<String> frameFileNames = new ArrayList<>();
-    @ElementCollection
     private List<String> thumbnailFileNames = new ArrayList<>();
-    @Transient
     private List<Frame> frameList = new ArrayList<>();
 }

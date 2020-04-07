@@ -18,16 +18,11 @@
 package com.dryadandnaiad.sethlans.models.blender;
 
 import com.dryadandnaiad.sethlans.enums.OS;
-import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,14 +36,11 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class BlenderBinary extends BaseEntity {
+public class BlenderBinary {
     private String blenderVersion;
-    @Enumerated(value = EnumType.STRING)
     private OS blenderOS;
     private String blenderFile;
     private String blenderFileMd5;
-    @ElementCollection
     private List<String> downloadMirrors = new ArrayList<>();
     private boolean downloaded = false;
 }

@@ -18,14 +18,9 @@
 package com.dryadandnaiad.sethlans.models.blender.tasks;
 
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
-import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.MappedSuperclass;
 
 /**
  * Created by Mario Estrella on 4/2/2020.
@@ -36,8 +31,7 @@ import javax.persistence.MappedSuperclass;
 @Getter
 @Setter
 @NoArgsConstructor
-@MappedSuperclass
-public class Task extends BaseEntity {
+public class Task {
     private String blenderVersion;
     private String connectionID;
     private String taskID;
@@ -47,6 +41,5 @@ public class Task extends BaseEntity {
     private String taskDir;
     private boolean cancelRequestReceived;
     private String deviceID;
-    @Enumerated(value = EnumType.STRING)
     private ComputeOn computeOn;
 }

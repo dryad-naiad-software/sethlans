@@ -18,15 +18,12 @@
 
 package com.dryadandnaiad.sethlans.models.blender.tasks;
 
-import javax.persistence.Entity;
-
 /**
  * Created by Mario Estrella on 4/1/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Entity
 public class BenchmarkTask extends Task {
     private String benchmarkURL;
     private boolean complete;

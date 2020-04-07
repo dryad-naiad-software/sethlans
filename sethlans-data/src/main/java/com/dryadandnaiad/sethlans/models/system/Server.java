@@ -22,8 +22,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-
 /**
  * Created by Mario Estrella on 4/2/2020.
  * Dryad and Naiad Software LLC
@@ -34,7 +32,6 @@ import javax.persistence.Entity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 public class Server extends System {
     private boolean acknowledged;
     private boolean pendingResponse;

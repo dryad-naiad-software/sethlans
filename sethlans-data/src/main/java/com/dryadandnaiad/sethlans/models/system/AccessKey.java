@@ -17,13 +17,10 @@
 
 package com.dryadandnaiad.sethlans.models.system;
 
-import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.Entity;
 
 /**
  * Created by Mario Estrella on 4/2/2020.
@@ -35,7 +32,6 @@ import javax.persistence.Entity;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class AccessKey extends BaseEntity {
+public class AccessKey {
     private String accessKey;
 }

@@ -18,15 +18,10 @@
 package com.dryadandnaiad.sethlans.models.blender.project;
 
 import com.dryadandnaiad.sethlans.enums.ProjectState;
-import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 
 /**
  * Created by Mario Estrella on 4/1/2020.
@@ -38,8 +33,7 @@ import javax.persistence.Enumerated;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class ProjectStatus extends BaseEntity {
+public class ProjectStatus {
     private int currentPercentage;
     private int completedFrames;
     private int totalQueueSize;
@@ -54,6 +48,5 @@ public class ProjectStatus extends BaseEntity {
     private boolean queueFillComplete;
     private boolean reEncode;
     private String currentFrameThumbnail;
-    @Enumerated(value = EnumType.STRING)
     private ProjectState projectState;
 }

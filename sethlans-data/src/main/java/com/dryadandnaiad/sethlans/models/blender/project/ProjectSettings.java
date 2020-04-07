@@ -20,13 +20,10 @@ package com.dryadandnaiad.sethlans.models.blender.project;
 import com.dryadandnaiad.sethlans.enums.AnimationType;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
-import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.*;
 
 /**
  * Created by Mario Estrella on 4/1/2020.
@@ -38,13 +35,9 @@ import javax.persistence.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class ProjectSettings extends BaseEntity {
-    @Enumerated(value = EnumType.STRING)
+public class ProjectSettings {
     private BlenderEngine blenderEngine;
-    @Enumerated(value = EnumType.STRING)
     private ComputeOn computeOn;
-    @Enumerated(value = EnumType.STRING)
     private AnimationType animationType;
     private int startFrame;
     private int endFrame;
@@ -56,8 +49,6 @@ public class ProjectSettings extends BaseEntity {
     private String blendFilenameMD5Sum;
     private String blendFileLocation;
     private String blenderVersion;
-    @OneToOne(cascade = CascadeType.ALL)
     private VideoSettings videoSettings;
-    @OneToOne(cascade = CascadeType.ALL)
     private ImageSettings imageSettings;
 }

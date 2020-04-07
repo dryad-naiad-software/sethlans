@@ -18,7 +18,7 @@
 package com.dryadandnaiad.sethlans.repositories;
 
 import com.dryadandnaiad.sethlans.models.system.Server;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -28,5 +28,5 @@ import org.springframework.stereotype.Repository;
  * Project: sethlans
  */
 @Repository
-public interface ServerRepository extends JpaRepository<Server, Long> {
+public interface ServerRepository extends ReactiveCrudRepository<Server, Long> {
 }

@@ -26,7 +26,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,11 +39,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 public class Node extends System {
-    @Enumerated(value = EnumType.STRING)
     private OS os;
-    @Enumerated(value = EnumType.STRING)
     private ComputeOn computeOn;
     private boolean active;
     private boolean disabled;
@@ -53,8 +49,6 @@ public class Node extends System {
     private boolean benchmarkComplete;
     private int totalRenderingSlots;
     private int cpuRating;
-    @OneToMany
     private List<GPU> selectedGPUs = new ArrayList<>();
-    @OneToOne
     private CPU cpu;
 }

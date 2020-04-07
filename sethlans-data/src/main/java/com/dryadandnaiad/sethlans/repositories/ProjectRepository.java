@@ -18,13 +18,8 @@
 package com.dryadandnaiad.sethlans.repositories;
 
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
-import com.dryadandnaiad.sethlans.models.blender.project.ProjectStatus;
-import com.dryadandnaiad.sethlans.models.user.User;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by Mario Estrella on 4/2/2020.
@@ -33,14 +28,6 @@ import java.util.Optional;
  * Project: sethlans
  */
 @Repository
-public interface ProjectRepository extends JpaRepository<Project, Long> {
-
-    int countProjectsByUser(User user);
-
-    Optional<List<Project>> findProjectsByUser(User user);
-
-    int countProjectsByProjectStatusEquals(ProjectStatus projectStatus);
-
-    Optional<Project> findProjectByProjectID(String projectID);
+public interface ProjectRepository extends ReactiveCrudRepository<Project, Long> {
 
 }

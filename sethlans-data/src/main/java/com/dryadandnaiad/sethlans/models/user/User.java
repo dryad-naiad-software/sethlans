@@ -18,14 +18,12 @@
 package com.dryadandnaiad.sethlans.models.user;
 
 import com.dryadandnaiad.sethlans.enums.Role;
-import com.dryadandnaiad.sethlans.models.BaseEntity;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -40,8 +38,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class User extends BaseEntity {
+public class User {
     private String username;
     private String password;
     private boolean active;
@@ -54,14 +51,9 @@ public class User extends BaseEntity {
     private boolean projectEmailNotifications;
     private boolean videoEncodingEmailNotifications;
     private boolean passwordUpdated;
-    @ElementCollection
     private List<String> tokens = new ArrayList<>();
-    @ElementCollection
     private List<UserChallenge> challengeList = new ArrayList<>();
-    @ElementCollection
-    @Enumerated(value = EnumType.STRING)
     private Set<Role> roles;
-    @OneToMany
     private List<Project> projects = new ArrayList<>();
 
 }

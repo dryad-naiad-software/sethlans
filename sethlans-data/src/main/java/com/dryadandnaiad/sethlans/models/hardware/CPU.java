@@ -18,7 +18,6 @@
 
 package com.dryadandnaiad.sethlans.models.hardware;
 
-import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,20 +28,17 @@ import oshi.hardware.GlobalMemory;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.util.FormatUtil;
 
-import javax.persistence.Entity;
-
 /**
  * Created by Mario Estrella on 3/29/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CPU extends BaseEntity {
+public class CPU {
     private String name;
     private String model;
     private String family;

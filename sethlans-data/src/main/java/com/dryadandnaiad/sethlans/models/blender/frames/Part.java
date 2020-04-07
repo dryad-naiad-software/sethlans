@@ -19,8 +19,6 @@ package com.dryadandnaiad.sethlans.models.blender.frames;
 
 import lombok.Data;
 
-import javax.persistence.Embeddable;
-
 /**
  * Created by Mario Estrella on 4/1/2020.
  * Dryad and Naiad Software LLC
@@ -28,7 +26,6 @@ import javax.persistence.Embeddable;
  * Project: sethlans
  */
 @Data
-@Embeddable
 public class Part {
     private int partNumber;
     private boolean processed;

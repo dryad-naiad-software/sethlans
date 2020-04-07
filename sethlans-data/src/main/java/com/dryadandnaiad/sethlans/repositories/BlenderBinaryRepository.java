@@ -18,11 +18,8 @@
 package com.dryadandnaiad.sethlans.repositories;
 
 import com.dryadandnaiad.sethlans.models.blender.BlenderBinary;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by Mario Estrella on 4/2/2020.
@@ -31,6 +28,5 @@ import java.util.Optional;
  * Project: sethlans
  */
 @Repository
-public interface BlenderBinaryRepository extends JpaRepository<BlenderBinary, Long> {
-    Optional<List<BlenderBinary>> findBlenderBinariesByBlenderVersion(String blenderVersion);
+public interface BlenderBinaryRepository extends ReactiveCrudRepository<BlenderBinary, Long> {
 }

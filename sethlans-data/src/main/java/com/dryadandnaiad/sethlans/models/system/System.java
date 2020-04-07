@@ -17,13 +17,12 @@
 
 package com.dryadandnaiad.sethlans.models.system;
 
-import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.NotBlank;
 
 /**
  * Created by Mario Estrella on 4/2/2020.
@@ -35,10 +34,11 @@ import javax.persistence.MappedSuperclass;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@MappedSuperclass
-public class System extends BaseEntity {
+public class System {
     private String hostname;
+    @NotBlank
     private String ipAddress;
+    @NotBlank
     private String networkPort;
     private String connectionID;
 }
