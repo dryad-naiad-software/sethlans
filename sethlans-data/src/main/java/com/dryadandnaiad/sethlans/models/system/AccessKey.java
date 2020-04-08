@@ -17,6 +17,7 @@
 
 package com.dryadandnaiad.sethlans.models.system;
 
+import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccessKey {
+public class AccessKey extends BaseEntity {
     private String accessKey;
 }

@@ -18,6 +18,7 @@
 package com.dryadandnaiad.sethlans.models.blender;
 
 import com.dryadandnaiad.sethlans.enums.OS;
+import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,7 +37,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BlenderBinary {
+public class BlenderBinary extends BaseEntity {
     private String blenderVersion;
     private OS blenderOS;
     private String blenderFile;

@@ -38,7 +38,6 @@ public class RenderTask extends Task {
     private boolean complete;
     private boolean inProgress;
     private Long renderTime;
-    private String deviceID;
     private BlenderEngine blenderEngine;
     private ImageOutputFormat imageOutputFormat;
     private Frame frame;

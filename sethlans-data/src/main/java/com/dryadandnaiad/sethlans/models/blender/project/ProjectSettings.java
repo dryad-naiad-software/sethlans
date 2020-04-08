@@ -20,6 +20,7 @@ package com.dryadandnaiad.sethlans.models.blender.project;
 import com.dryadandnaiad.sethlans.enums.AnimationType;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
+import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,7 +36,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProjectSettings {
+public class ProjectSettings extends BaseEntity {
     private BlenderEngine blenderEngine;
     private ComputeOn computeOn;
     private AnimationType animationType;

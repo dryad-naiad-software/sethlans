@@ -18,6 +18,7 @@
 package com.dryadandnaiad.sethlans.models.blender.project;
 
 import com.dryadandnaiad.sethlans.enums.ProjectType;
+import com.dryadandnaiad.sethlans.models.BaseEntity;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.models.user.User;
 import lombok.AllArgsConstructor;
@@ -38,7 +39,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Project {
+public class Project extends BaseEntity {
     private ProjectType projectType;
     private ProjectSettings projectSettings;
     private ProjectStatus projectStatus;

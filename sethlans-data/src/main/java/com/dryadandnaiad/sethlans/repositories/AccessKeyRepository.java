@@ -18,8 +18,7 @@
 package com.dryadandnaiad.sethlans.repositories;
 
 import com.dryadandnaiad.sethlans.models.system.AccessKey;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 
 /**
  * Created by Mario Estrella on 4/2/2020.
@@ -27,6 +26,5 @@ import org.springframework.stereotype.Repository;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Repository
-public interface AccessKeyRepository extends ReactiveCrudRepository<AccessKey, Long> {
+public interface AccessKeyRepository extends ReactiveMongoRepository<AccessKey, String> {
 }

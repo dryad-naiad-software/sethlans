@@ -18,8 +18,13 @@
 package com.dryadandnaiad.sethlans.repositories;
 
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.stereotype.Repository;
+import com.dryadandnaiad.sethlans.models.blender.project.ProjectStatus;
+import com.dryadandnaiad.sethlans.models.user.User;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 /**
  * Created by Mario Estrella on 4/2/2020.
@@ -27,7 +32,12 @@ import org.springframework.stereotype.Repository;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Repository
-public interface ProjectRepository extends ReactiveCrudRepository<Project, Long> {
+public interface ProjectRepository extends ReactiveMongoRepository<Project, String> {
+    Flux<List<Project>> findProjectsByUser(User user);
 
+    Mono<Project> findProjectByProjectID(String projectID);
+
+    Flux<Long> countProjectsByUser(User user);
+
+    Flux<Long> countProjectsByProjectStatusEquals(ProjectStatus projectStatus);
 }

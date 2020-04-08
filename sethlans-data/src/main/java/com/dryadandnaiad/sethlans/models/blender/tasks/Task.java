@@ -18,6 +18,7 @@
 package com.dryadandnaiad.sethlans.models.blender.tasks;
 
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
+import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,7 +32,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Task {
+public class Task extends BaseEntity {
     private String blenderVersion;
     private String connectionID;
     private String taskID;

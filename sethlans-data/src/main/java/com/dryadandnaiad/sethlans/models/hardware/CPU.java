@@ -18,6 +18,7 @@
 
 package com.dryadandnaiad.sethlans.models.hardware;
 
+import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,7 +39,7 @@ import oshi.util.FormatUtil;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CPU {
+public class CPU extends BaseEntity {
     private String name;
     private String model;
     private String family;

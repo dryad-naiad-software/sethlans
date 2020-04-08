@@ -18,8 +18,8 @@
 package com.dryadandnaiad.sethlans.repositories;
 
 import com.dryadandnaiad.sethlans.models.user.User;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import reactor.core.publisher.Mono;
 
 /**
  * Created by Mario Estrella on 4/2/2020.
@@ -27,7 +27,7 @@ import org.springframework.stereotype.Repository;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Repository
-public interface UserRepository extends ReactiveCrudRepository<User, Long> {
+public interface UserRepository extends ReactiveMongoRepository<User, String> {
+    Mono<User> findByUsername(String username);
 
 }

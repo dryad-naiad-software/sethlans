@@ -17,6 +17,7 @@
 
 package com.dryadandnaiad.sethlans.models.system;
 
+import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +35,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class System {
+public class System extends BaseEntity {
     private String hostname;
     @NotBlank
     private String ipAddress;

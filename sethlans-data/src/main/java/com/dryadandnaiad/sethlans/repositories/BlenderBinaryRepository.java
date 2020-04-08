@@ -18,8 +18,7 @@
 package com.dryadandnaiad.sethlans.repositories;
 
 import com.dryadandnaiad.sethlans.models.blender.BlenderBinary;
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 
 /**
  * Created by Mario Estrella on 4/2/2020.
@@ -27,6 +26,5 @@ import org.springframework.stereotype.Repository;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Repository
-public interface BlenderBinaryRepository extends ReactiveCrudRepository<BlenderBinary, Long> {
+public interface BlenderBinaryRepository extends ReactiveMongoRepository<BlenderBinary, String> {
 }

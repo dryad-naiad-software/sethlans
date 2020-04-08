@@ -18,6 +18,7 @@
 package com.dryadandnaiad.sethlans.models.user;
 
 import com.dryadandnaiad.sethlans.enums.Role;
+import com.dryadandnaiad.sethlans.models.BaseEntity;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -38,7 +39,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User extends BaseEntity {
     private String username;
     private String password;
     private boolean active;

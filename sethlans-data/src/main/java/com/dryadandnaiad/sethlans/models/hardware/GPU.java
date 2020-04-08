@@ -18,6 +18,7 @@
 
 package com.dryadandnaiad.sethlans.models.hardware;
 
+import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +34,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GPU {
+public class GPU extends BaseEntity {
     private String model;
     private long memory; // in B
     private int rating;
