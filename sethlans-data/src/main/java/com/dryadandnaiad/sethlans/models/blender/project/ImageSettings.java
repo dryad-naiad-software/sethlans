@@ -18,7 +18,6 @@
 package com.dryadandnaiad.sethlans.models.blender.project;
 
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
-import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +33,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageSettings extends BaseEntity {
+public class ImageSettings {
     private int resolutionX;
     private int resolutionY;
     private int resPercentage;

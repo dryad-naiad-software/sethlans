@@ -23,6 +23,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * Created by Mario Estrella on 3/29/2020.
@@ -34,6 +35,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Document
 public class GPU extends BaseEntity {
     private String model;
     private long memory; // in B

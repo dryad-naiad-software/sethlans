@@ -24,6 +24,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Document
 public class User extends BaseEntity {
     private String username;
     private String password;
@@ -55,6 +58,7 @@ public class User extends BaseEntity {
     private List<String> tokens = new ArrayList<>();
     private List<UserChallenge> challengeList = new ArrayList<>();
     private Set<Role> roles;
+    @DBRef
     private List<Project> projects = new ArrayList<>();
 
 }

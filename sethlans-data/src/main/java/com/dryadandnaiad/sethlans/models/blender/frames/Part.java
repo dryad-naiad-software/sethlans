@@ -17,7 +17,11 @@
 
 package com.dryadandnaiad.sethlans.models.blender.frames;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * Created by Mario Estrella on 4/1/2020.
@@ -25,7 +29,11 @@ import lombok.Data;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Document
 public class Part {
     private int partNumber;
     private boolean processed;

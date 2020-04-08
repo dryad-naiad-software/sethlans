@@ -18,7 +18,6 @@
 package com.dryadandnaiad.sethlans.models.blender.project;
 
 import com.dryadandnaiad.sethlans.enums.ProjectState;
-import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +33,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProjectStatus extends BaseEntity {
+public class ProjectStatus {
     private int currentPercentage;
     private int completedFrames;
     private int totalQueueSize;

@@ -35,7 +35,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class System extends BaseEntity {
+public abstract class System extends BaseEntity {
     private String hostname;
     @NotBlank
     private String ipAddress;

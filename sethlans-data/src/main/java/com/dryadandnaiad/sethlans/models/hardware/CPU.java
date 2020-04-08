@@ -23,6 +23,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Document;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.GlobalMemory;
@@ -39,6 +40,7 @@ import oshi.util.FormatUtil;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Document
 public class CPU extends BaseEntity {
     private String name;
     private String model;

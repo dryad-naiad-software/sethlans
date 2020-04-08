@@ -21,7 +21,6 @@ import com.dryadandnaiad.sethlans.enums.PixelFormat;
 import com.dryadandnaiad.sethlans.enums.VideoCodec;
 import com.dryadandnaiad.sethlans.enums.VideoOutputFormat;
 import com.dryadandnaiad.sethlans.enums.VideoQuality;
-import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,11 +32,12 @@ import lombok.Setter;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class VideoSettings extends BaseEntity {
+public class VideoSettings {
     private int frameRate;
     private VideoCodec codec;
     private PixelFormat pixelFormat;

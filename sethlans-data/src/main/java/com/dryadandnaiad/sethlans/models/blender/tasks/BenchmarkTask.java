@@ -18,12 +18,23 @@
 
 package com.dryadandnaiad.sethlans.models.blender.tasks;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 /**
  * Created by Mario Estrella on 4/1/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Document
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class BenchmarkTask extends Task {
     private String benchmarkURL;
     private boolean complete;

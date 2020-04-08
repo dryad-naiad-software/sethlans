@@ -25,6 +25,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Document
 public class Node extends System {
     private OS os;
     private ComputeOn computeOn;
@@ -49,6 +52,7 @@ public class Node extends System {
     private boolean benchmarkComplete;
     private int totalRenderingSlots;
     private int cpuRating;
+    @DBRef
     private List<GPU> selectedGPUs = new ArrayList<>();
     private CPU cpu;
 }

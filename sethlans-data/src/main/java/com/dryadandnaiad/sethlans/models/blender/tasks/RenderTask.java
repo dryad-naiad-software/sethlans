@@ -20,6 +20,11 @@ package com.dryadandnaiad.sethlans.models.blender.tasks;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * Created by Mario Estrella on 4/2/2020.
@@ -27,6 +32,11 @@ import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Document
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class RenderTask extends Task {
     private String projectName;
     private String projectID;
