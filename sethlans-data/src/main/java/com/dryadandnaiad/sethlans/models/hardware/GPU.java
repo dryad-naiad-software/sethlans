@@ -18,12 +18,10 @@
 
 package com.dryadandnaiad.sethlans.models.hardware;
 
-import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * Created by Mario Estrella on 3/29/2020.
@@ -35,8 +33,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Document
-public class GPU extends BaseEntity {
+public class GPU {
     private String model;
     private long memory; // in B
     private int rating;
