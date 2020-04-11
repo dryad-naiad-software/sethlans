@@ -17,11 +17,16 @@
 
 package com.dryadandnaiad.sethlans.bootstrap;
 
+import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.models.system.AccessKey;
+import com.dryadandnaiad.sethlans.models.user.User;
 import com.dryadandnaiad.sethlans.repositories.AccessKeyRepository;
+import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -34,9 +39,11 @@ import java.util.UUID;
 public class Bootstrap implements CommandLineRunner {
 
     private final AccessKeyRepository accessKeyRepository;
+    private final UserRepository userRepository;
 
-    public Bootstrap(AccessKeyRepository accessKeyRepository) {
+    public Bootstrap(AccessKeyRepository accessKeyRepository, UserRepository userRepository) {
         this.accessKeyRepository = accessKeyRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -48,6 +55,19 @@ public class Bootstrap implements CommandLineRunner {
             accessKeyRepository.save(AccessKey.builder().accessKey(UUID.randomUUID().toString()).build()).block();
 
             System.out.println("Loaded Access Keys: " + accessKeyRepository.count().block());
+        }
+        if (userRepository.count().block() == 0) {
+            Set<Role> hashset = new HashSet<>();
+            hashset.add(Role.ADMINISTRATOR);
+            // load data
+            System.out.println("#### Populating User Repository ####");
+            userRepository.save(User.builder().username("Bubba").password("test1234").email("test@test.com").
+                    active(true).roles(hashset).build()).block();
+            userRepository.save(User.builder().username("Bubba2").password("test123442").email("test2@test.com").
+                    active(true).roles(hashset).build()).block();
+
+            System.out.println("Loaded Users: " + userRepository.count().block());
+
         }
 
     }
