@@ -17,12 +17,14 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.models.user.User;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.bool.BooleanUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -33,7 +35,7 @@ import reactor.core.publisher.Mono;
  * Project: sethlans
  */
 @RestController
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1/users/")
 public class UserController {
     private final UserRepository userRepository;
 
@@ -41,13 +43,28 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("users")
+    @GetMapping("list")
     Flux<User> list() {
         return userRepository.findAll();
     }
 
-    @GetMapping("users/{id}")
+    @GetMapping("{id}")
     Mono<User> getById(@PathVariable String id) {
         return userRepository.findById(id);
+    }
+
+    @GetMapping("{username}")
+    Mono<User> getByUsername(@PathVariable String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @GetMapping("is_admin/{username}")
+    Mono<Boolean> isAdministrator(@PathVariable String username) {
+        return BooleanUtils.or(userRepository.existsUserByUsernameAndRolesContains(username, Role.ADMINISTRATOR), userRepository.existsUserByUsernameAndRolesContains(username, Role.SUPER_ADMINISTRATOR));
+    }
+
+    @GetMapping("is_super_admin/{username}")
+    Mono<Boolean> isSuperAdministrator(@PathVariable String username) {
+        return userRepository.existsUserByUsernameAndRolesContains(username, Role.SUPER_ADMINISTRATOR);
     }
 }

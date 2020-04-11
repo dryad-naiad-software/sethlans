@@ -57,7 +57,7 @@ class UserControllerTest {
                                 .build()));
 
         webTestClient.get()
-                .uri("/api/v1/users/")
+                .uri("/api/v1/users/list")
                 .exchange()
                 .expectBodyList(User.class)
                 .hasSize(2);
@@ -74,5 +74,17 @@ class UserControllerTest {
                 .uri("/api/v1/users/someid")
                 .exchange()
                 .expectBody(User.class);
+    }
+
+    @Test
+    void isAdministrator() {
+    }
+
+    @Test
+    void isSuperAdministrator() {
+    }
+
+    @Test
+    void getByUsername() {
     }
 }

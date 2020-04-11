@@ -57,14 +57,20 @@ public class Bootstrap implements CommandLineRunner {
             System.out.println("Loaded Access Keys: " + accessKeyRepository.count().block());
         }
         if (userRepository.count().block() == 0) {
-            Set<Role> hashset = new HashSet<>();
-            hashset.add(Role.ADMINISTRATOR);
+            Set<Role> admin = new HashSet<>();
+            Set<Role> user = new HashSet<>();
+            Set<Role> superUser = new HashSet<>();
+            admin.add(Role.ADMINISTRATOR);
+            superUser.add(Role.SUPER_ADMINISTRATOR);
+            user.add(Role.USER);
             // load data
             System.out.println("#### Populating User Repository ####");
-            userRepository.save(User.builder().username("Bubba").password("test1234").email("test@test.com").
-                    active(true).roles(hashset).build()).block();
-            userRepository.save(User.builder().username("Bubba2").password("test123442").email("test2@test.com").
-                    active(true).roles(hashset).build()).block();
+            userRepository.save(User.builder().username("bubba").password("test1234").email("test@test.com").
+                    active(true).roles(admin).build()).block();
+            userRepository.save(User.builder().username("bubba2").password("test123442").email("test2@test.com").
+                    active(true).roles(user).build()).block();
+            userRepository.save(User.builder().username("bubba3").password("test123442").email("test2@test.com").
+                    active(true).roles(superUser).build()).block();
 
             System.out.println("Loaded Users: " + userRepository.count().block());
 
