@@ -51,7 +51,7 @@ public class MongoInMemory {
     }
 
     @PostConstruct
-    public void init() throws IOException {
+    public void init() throws IOException, InterruptedException {
         Storage storage = new Storage(
                 System.getProperty("user.home") + "/.sethlans/data/mongodb", null, 0);
 
