@@ -13,6 +13,8 @@
 
     <properties>
         <sethlansVersion>1.5.0</sethlansVersion>
+        <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+
     </properties>
 
     <dependencies>
