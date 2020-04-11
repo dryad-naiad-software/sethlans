@@ -18,16 +18,15 @@
 package com.dryadandnaiad.sethlans.models.user;
 
 import com.dryadandnaiad.sethlans.enums.Role;
-import com.dryadandnaiad.sethlans.models.BaseEntity;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -37,12 +36,13 @@ import java.util.Set;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Getter
-@Setter
+@Document
 @AllArgsConstructor
 @NoArgsConstructor
-@Document
-public class User extends BaseEntity {
+@Data
+public class User {
+    @Id
+    private String id;
     private String username;
     private String password;
     private boolean active;
@@ -57,8 +57,7 @@ public class User extends BaseEntity {
     private boolean passwordUpdated;
     private List<String> tokens = new ArrayList<>();
     private List<UserChallenge> challengeList = new ArrayList<>();
-    private Set<Role> roles;
-    @DBRef
+    private Set<Role> roles = new HashSet<>();
     private List<Project> projects = new ArrayList<>();
 
 }

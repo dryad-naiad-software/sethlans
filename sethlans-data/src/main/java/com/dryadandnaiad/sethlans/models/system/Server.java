@@ -18,10 +18,12 @@
 package com.dryadandnaiad.sethlans.models.system;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * Created by Mario Estrella on 4/2/2020.
@@ -29,12 +31,19 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Document
-public class Server extends System {
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+public class Server {
+    @Id
+    private String id;
+    private String hostname;
+    @NotBlank
+    private String ipAddress;
+    @NotBlank
+    private String networkPort;
+    private String connectionID;
     private boolean acknowledged;
     private boolean pendingResponse;
     private boolean nodeUpdated;

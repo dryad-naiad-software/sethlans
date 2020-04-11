@@ -18,9 +18,8 @@
 package com.dryadandnaiad.sethlans.models.blender.frames;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.List;
 
@@ -30,10 +29,9 @@ import java.util.List;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class Frame {
     private String frameFileName;
     private int frameNumber;

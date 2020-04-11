@@ -18,12 +18,13 @@
 package com.dryadandnaiad.sethlans.models.blender.tasks;
 
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
+import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -33,11 +34,22 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * Project: sethlans
  */
 @Document
-@Getter
-@Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class RenderTask extends Task {
+@AllArgsConstructor
+@Data
+public class RenderTask {
+    @Id
+    private String id;
+    private String blenderVersion;
+    private String connectionID;
+    private String taskID;
+    private String taskFile;
+    private String taskFileMD5Sum;
+    private String blenderExecutable;
+    private String taskDir;
+    private boolean cancelRequestReceived;
+    private String deviceID;
+    private ComputeOn computeOn;
     private String projectName;
     private String projectID;
     private String queueID;

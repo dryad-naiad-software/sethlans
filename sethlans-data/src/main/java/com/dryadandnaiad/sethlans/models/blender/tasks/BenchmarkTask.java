@@ -18,11 +18,11 @@
 
 package com.dryadandnaiad.sethlans.models.blender.tasks;
 
+import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.annotation.Id;
 
 /**
  * Created by Mario Estrella on 4/1/2020.
@@ -30,12 +30,22 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Document
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BenchmarkTask extends Task {
+@Data
+public class BenchmarkTask {
+    @Id
+    private String id;
+    private String blenderVersion;
+    private String connectionID;
+    private String taskID;
+    private String taskFile;
+    private String taskFileMD5Sum;
+    private String blenderExecutable;
+    private String taskDir;
+    private boolean cancelRequestReceived;
+    private String deviceID;
+    private ComputeOn computeOn;
     private String benchmarkURL;
     private boolean complete;
     private int cpuRating;

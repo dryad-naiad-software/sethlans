@@ -17,11 +17,10 @@
 
 package com.dryadandnaiad.sethlans.models.system;
 
-import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -30,11 +29,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Document
-public class AccessKey extends BaseEntity {
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+public class AccessKey {
+    @Id
+    private String id;
     private String accessKey;
 }

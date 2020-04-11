@@ -18,13 +18,12 @@
 package com.dryadandnaiad.sethlans.models.blender.project;
 
 import com.dryadandnaiad.sethlans.enums.ProjectType;
-import com.dryadandnaiad.sethlans.models.BaseEntity;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.models.user.User;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -37,11 +36,12 @@ import java.util.List;
  * Project: sethlans
  */
 @Document
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Project extends BaseEntity {
+@Data
+public class Project {
+    @Id
+    private String id;
     private ProjectType projectType;
     private ProjectSettings projectSettings;
     private ProjectStatus projectStatus;

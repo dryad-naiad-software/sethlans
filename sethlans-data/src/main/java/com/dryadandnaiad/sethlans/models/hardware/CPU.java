@@ -18,8 +18,7 @@
 
 package com.dryadandnaiad.sethlans.models.hardware;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.GlobalMemory;
@@ -32,8 +31,7 @@ import oshi.util.FormatUtil;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Getter
-@Setter
+@Data
 public class CPU {
     private String name;
     private String model;

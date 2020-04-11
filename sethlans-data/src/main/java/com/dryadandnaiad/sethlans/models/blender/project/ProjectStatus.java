@@ -19,9 +19,8 @@ package com.dryadandnaiad.sethlans.models.blender.project;
 
 import com.dryadandnaiad.sethlans.enums.ProjectState;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * Created by Mario Estrella on 4/1/2020.
@@ -29,10 +28,9 @@ import lombok.Setter;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class ProjectStatus {
     private int currentPercentage;
     private int completedFrames;

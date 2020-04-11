@@ -22,11 +22,12 @@ import com.dryadandnaiad.sethlans.enums.OS;
 import com.dryadandnaiad.sethlans.models.hardware.CPU;
 import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,12 +37,19 @@ import java.util.List;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Document
-public class Node extends System {
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+public class Node {
+    @Id
+    private String id;
+    private String hostname;
+    @NotBlank
+    private String ipAddress;
+    @NotBlank
+    private String networkPort;
+    private String connectionID;
     private OS os;
     private ComputeOn computeOn;
     private boolean active;

@@ -21,9 +21,8 @@ import com.dryadandnaiad.sethlans.enums.AnimationType;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * Created by Mario Estrella on 4/1/2020.
@@ -32,10 +31,9 @@ import lombok.Setter;
  * Project: sethlans
  */
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class ProjectSettings {
     private BlenderEngine blenderEngine;
     private ComputeOn computeOn;

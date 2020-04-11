@@ -19,9 +19,8 @@
 package com.dryadandnaiad.sethlans.models.hardware;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * Created by Mario Estrella on 3/29/2020.
@@ -29,8 +28,7 @@ import lombok.Setter;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class GPU {

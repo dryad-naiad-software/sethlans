@@ -22,9 +22,8 @@ import com.dryadandnaiad.sethlans.enums.VideoCodec;
 import com.dryadandnaiad.sethlans.enums.VideoOutputFormat;
 import com.dryadandnaiad.sethlans.enums.VideoQuality;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * Created by Mario Estrella on 4/1/2020.
@@ -33,10 +32,9 @@ import lombok.Setter;
  * Project: sethlans
  */
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class VideoSettings {
     private int frameRate;
     private VideoCodec codec;

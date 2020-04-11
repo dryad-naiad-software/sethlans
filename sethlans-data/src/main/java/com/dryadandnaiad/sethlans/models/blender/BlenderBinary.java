@@ -18,11 +18,10 @@
 package com.dryadandnaiad.sethlans.models.blender;
 
 import com.dryadandnaiad.sethlans.enums.OS;
-import com.dryadandnaiad.sethlans.models.BaseEntity;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -34,12 +33,13 @@ import java.util.List;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Document
-public class BlenderBinary extends BaseEntity {
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+public class BlenderBinary {
+    @Id
+    private String id;
     private String blenderVersion;
     private OS blenderOS;
     private String blenderFile;
