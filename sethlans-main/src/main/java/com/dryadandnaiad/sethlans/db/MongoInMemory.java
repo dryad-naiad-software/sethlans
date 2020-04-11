@@ -40,8 +40,8 @@ import java.io.IOException;
  */
 @Slf4j
 public class MongoInMemory {
-    private int port;
-    private String host;
+    private final int port;
+    private final String host;
     private MongodProcess process = null;
     private final File embedMongo = new File(System.getProperty("user.home") + "/.embedmongo");
 
@@ -51,7 +51,7 @@ public class MongoInMemory {
     }
 
     @PostConstruct
-    public void init() throws IOException, InterruptedException {
+    public void init() throws IOException {
         Storage storage = new Storage(
                 System.getProperty("user.home") + "/.sethlans/data/mongodb", null, 0);
 
