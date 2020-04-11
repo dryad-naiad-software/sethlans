@@ -21,12 +21,12 @@ import com.dryadandnaiad.sethlans.enums.ProjectType;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.models.user.User;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,6 +39,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class Project {
     @Id
     private String id;
@@ -49,7 +50,7 @@ public class Project {
     private String projectName;
     private String projectID;
     private String projectRootDir;
-    private List<String> frameFileNames = new ArrayList<>();
-    private List<String> thumbnailFileNames = new ArrayList<>();
-    private List<Frame> frameList = new ArrayList<>();
+    private List<String> frameFileNames;
+    private List<String> thumbnailFileNames;
+    private List<Frame> frameList;
 }

@@ -17,6 +17,7 @@
 
 package com.dryadandnaiad.sethlans.models.user;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -26,6 +27,7 @@ import lombok.Data;
  * Project: sethlans
  */
 @Data
+@Builder
 public class UserChallenge {
     private String challenge;
     private String response;

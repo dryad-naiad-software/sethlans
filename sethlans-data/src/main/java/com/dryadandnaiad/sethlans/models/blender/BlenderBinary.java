@@ -19,12 +19,12 @@ package com.dryadandnaiad.sethlans.models.blender;
 
 import com.dryadandnaiad.sethlans.enums.OS;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,6 +37,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Builder
 public class BlenderBinary {
     @Id
     private String id;
@@ -44,6 +45,6 @@ public class BlenderBinary {
     private OS blenderOS;
     private String blenderFile;
     private String blenderFileMd5;
-    private List<String> downloadMirrors = new ArrayList<>();
-    private boolean downloaded = false;
+    private List<String> downloadMirrors;
+    private boolean downloaded;
 }

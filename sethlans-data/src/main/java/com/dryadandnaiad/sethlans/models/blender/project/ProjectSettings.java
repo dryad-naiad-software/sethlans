@@ -21,6 +21,7 @@ import com.dryadandnaiad.sethlans.enums.AnimationType;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -34,6 +35,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class ProjectSettings {
     private BlenderEngine blenderEngine;
     private ComputeOn computeOn;

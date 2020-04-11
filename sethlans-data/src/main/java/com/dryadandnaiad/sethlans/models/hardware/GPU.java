@@ -19,6 +19,7 @@
 package com.dryadandnaiad.sethlans.models.hardware;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -31,6 +32,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class GPU {
     private String model;
     private long memory; // in B

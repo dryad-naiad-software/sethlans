@@ -17,6 +17,7 @@
 
 package com.dryadandnaiad.sethlans.config;
 
+import com.dryadandnaiad.sethlans.db.MongoInMemory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +37,7 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
  * Project: sethlans
  */
 @Configuration
-public class ContentConfig {
+public class SethlansConfig {
 
     @Bean
     public RouterFunction<ServerResponse> htmlRouter(
@@ -44,5 +45,12 @@ public class ContentConfig {
         return route(GET("/"), request
                 -> ok().contentType(MediaType.TEXT_HTML).bodyValue(html)
         );
+    }
+
+    @Bean
+    public MongoInMemory mongoInMemory(
+            @Value("${spring.data.mongodb.port}") int port,
+            @Value("${spring.data.mongodb.host}") String host) {
+        return new MongoInMemory(port, host);
     }
 }

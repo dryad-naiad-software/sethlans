@@ -22,13 +22,13 @@ import com.dryadandnaiad.sethlans.enums.OS;
 import com.dryadandnaiad.sethlans.models.hardware.CPU;
 import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,6 +41,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Builder
 public class Node {
     @Id
     private String id;
@@ -59,6 +60,6 @@ public class Node {
     private boolean benchmarkComplete;
     private int totalRenderingSlots;
     private int cpuRating;
-    private List<GPU> selectedGPUs = new ArrayList<>();
+    private List<GPU> selectedGPUs;
     private CPU cpu;
 }

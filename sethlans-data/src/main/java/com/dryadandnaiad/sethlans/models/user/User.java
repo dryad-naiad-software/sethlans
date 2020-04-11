@@ -20,13 +20,12 @@ package com.dryadandnaiad.sethlans.models.user;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -40,6 +39,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class User {
     @Id
     private String id;
@@ -55,9 +55,9 @@ public class User {
     private boolean projectEmailNotifications;
     private boolean videoEncodingEmailNotifications;
     private boolean passwordUpdated;
-    private List<String> tokens = new ArrayList<>();
-    private List<UserChallenge> challengeList = new ArrayList<>();
-    private Set<Role> roles = new HashSet<>();
-    private List<Project> projects = new ArrayList<>();
+    private List<String> tokens;
+    private List<UserChallenge> challengeList;
+    private Set<Role> roles;
+    private List<Project> projects;
 
 }

@@ -22,6 +22,7 @@ import com.dryadandnaiad.sethlans.enums.VideoCodec;
 import com.dryadandnaiad.sethlans.enums.VideoOutputFormat;
 import com.dryadandnaiad.sethlans.enums.VideoQuality;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -35,6 +36,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class VideoSettings {
     private int frameRate;
     private VideoCodec codec;
