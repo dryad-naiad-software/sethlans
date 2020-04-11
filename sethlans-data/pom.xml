@@ -17,6 +17,11 @@
 
     <dependencies>
         <dependency>
+            <artifactId>sethlans-utils</artifactId>
+            <groupId>com.dryadandnaiad</groupId>
+            <version>${sethlansVersion}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
         </dependency>

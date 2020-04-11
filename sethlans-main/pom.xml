@@ -13,7 +13,7 @@
         <sethlansVersion>1.5.0</sethlansVersion>
     </properties>
 
-    <artifactId>sethlans-rest</artifactId>
+    <artifactId>sethlans-main</artifactId>
     <dependencies>
         <dependency>
             <artifactId>sethlans-render</artifactId>
