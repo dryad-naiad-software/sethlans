@@ -7,7 +7,6 @@
         <module>sethlans-data</module>
         <module>sethlans-main</module>
         <module>sethlans-render</module>
-        <module>sethlans-utils</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
