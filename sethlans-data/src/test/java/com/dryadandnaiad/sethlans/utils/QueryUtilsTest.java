@@ -17,9 +17,11 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by Mario Estrella on 4/19/2020.
@@ -41,5 +43,20 @@ class QueryUtilsTest {
     void getShortUUID() {
         assertThat(QueryUtils.getShortUUID()).hasSize(13);
         assertThat(QueryUtils.getShortUUID()).contains("-");
+    }
+
+    @Test
+    void getOS() {
+        assertNotNull(QueryUtils.getOS());
+        if (SystemUtils.IS_OS_WINDOWS) {
+            assertThat(QueryUtils.getOS()).contains("Windows");
+        }
+        if (SystemUtils.IS_OS_LINUX) {
+            assertThat(QueryUtils.getOS()).contains("Linux");
+        }
+        if (SystemUtils.IS_OS_MAC) {
+            assertThat(QueryUtils.getOS()).contains("MacOS");
+        }
+
     }
 }

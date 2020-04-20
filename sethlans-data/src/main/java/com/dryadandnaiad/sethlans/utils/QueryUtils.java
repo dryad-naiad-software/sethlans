@@ -18,6 +18,7 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -50,6 +51,38 @@ public class QueryUtils {
      */
     public static String getShortUUID() {
         return UUID.randomUUID().toString().substring(0, 13);
+    }
+
+    /**
+     * Returns the operating system name (Windows, Linux, MacOS) as well as if it's 32bits or 64bits
+     *
+     * @return String in the form of "Windows64"
+     */
+    public static String getOS() {
+        if (SystemUtils.IS_OS_WINDOWS) {
+            String arch = System.getenv("PROCESSOR_ARCHITECTURE");
+            String wow64Arch = System.getenv("PROCESSOR_ARCHITEW6432");
+
+            String realArch = arch.endsWith("64")
+                    || wow64Arch != null && wow64Arch.endsWith("64")
+                    ? "64" : "32";
+            if (realArch.equals("64")) {
+                return "Windows64";
+            } else {
+                return "Windows32";
+            }
+        }
+        if (SystemUtils.IS_OS_MAC) {
+            return "MacOS";
+        }
+        if (SystemUtils.IS_OS_LINUX) {
+            if (SystemUtils.OS_ARCH.contains("64")) {
+                return "Linux64";
+            } else {
+                return "Linux32";
+            }
+        }
+        return null;
     }
 
 }
