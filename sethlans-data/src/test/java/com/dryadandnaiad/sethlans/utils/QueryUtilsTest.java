@@ -15,26 +15,31 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+package com.dryadandnaiad.sethlans.utils;
 
-package com.dryadandnaiad.sethlans.models.blender.tasks;
+import org.junit.jupiter.api.Test;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Created by Mario Estrella on 4/1/2020.
+ * Created by Mario Estrella on 4/19/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
-@Builder
-public class BenchmarkTask {
-    private String benchmarkURL;
-    private int cpuRating;
-    private int gpuRating;
+class QueryUtilsTest {
+
+//    @BeforeEach
+//    void setUp() {
+//    }
+//
+//    @AfterEach
+//    void tearDown() {
+//    }
+
+    @Test
+    void getShortUUID() {
+        assertThat(QueryUtils.getShortUUID()).hasSize(13);
+        assertThat(QueryUtils.getShortUUID()).contains("-");
+    }
 }

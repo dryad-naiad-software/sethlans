@@ -15,26 +15,31 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-
-package com.dryadandnaiad.sethlans.models.blender.tasks;
+package com.dryadandnaiad.sethlans.models.system;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import org.springframework.data.annotation.Id;
 
 /**
- * Created by Mario Estrella on 4/1/2020.
+ * Created by Mario Estrella on 4/11/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-@Builder
-public class BenchmarkTask {
-    private String benchmarkURL;
-    private int cpuRating;
-    private int gpuRating;
+@Getter
+@Setter
+public abstract class System {
+    @Id
+    private String id;
+    private String hostname;
+    private String ipAddress;
+    private String networkPort;
+    private String connectionID;
 }

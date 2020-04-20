@@ -18,13 +18,11 @@
 package com.dryadandnaiad.sethlans.models.system;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import javax.validation.constraints.NotBlank;
 
 /**
  * Created by Mario Estrella on 4/2/2020.
@@ -36,16 +34,9 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Builder
-public class Server {
-    @Id
-    private String id;
-    private String hostname;
-    @NotBlank
-    private String ipAddress;
-    @NotBlank
-    private String networkPort;
-    private String connectionID;
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
+public class Server extends System {
     private boolean acknowledged;
     private boolean pendingResponse;
     private boolean nodeUpdated;

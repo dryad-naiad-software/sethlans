@@ -48,7 +48,7 @@ public class UserController {
         return userRepository.findAll();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("id/{id}")
     Mono<User> getById(@PathVariable String id) {
         return userRepository.findById(id);
     }

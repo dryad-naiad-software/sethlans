@@ -22,13 +22,12 @@ import com.dryadandnaiad.sethlans.enums.OS;
 import com.dryadandnaiad.sethlans.models.hardware.CPU;
 import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -41,16 +40,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Builder
-public class Node {
-    @Id
-    private String id;
-    private String hostname;
-    @NotBlank
-    private String ipAddress;
-    @NotBlank
-    private String networkPort;
-    private String connectionID;
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
+public class Node extends System {
     private OS os;
     private ComputeOn computeOn;
     private boolean active;
