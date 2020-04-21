@@ -57,8 +57,11 @@ public class ConfigUtils {
         try {
             if (!configFile.exists()) {
                 log.debug("sethlans.properties file doesn't exist, creating a new file. " + configFile.toString());
-                configDirectory.mkdirs();
-                configFile.createNewFile();
+                val configDirSusccess = configDirectory.mkdirs();
+                val configFileSuccess = configFile.createNewFile();
+                if(!configDirSusccess || !configFileSuccess) {
+                    log.error("Unable to create config directory and/or file. Check permissions.");
+                }
             }
 
         } catch (Exception e) {
