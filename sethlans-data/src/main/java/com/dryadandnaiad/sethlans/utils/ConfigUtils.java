@@ -57,7 +57,7 @@ public class ConfigUtils {
         try {
             if (!configFile.exists()) {
                 log.debug("sethlans.properties file doesn't exist, creating a new file. " + configFile.toString());
-                configDirectory.mkdir();
+                configDirectory.mkdirs();
                 configFile.createNewFile();
             }
 
