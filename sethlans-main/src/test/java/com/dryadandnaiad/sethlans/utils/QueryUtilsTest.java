@@ -20,6 +20,8 @@ package com.dryadandnaiad.sethlans.utils;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.models.system.Node;
+import com.dryadandnaiad.sethlans.models.system.Server;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.SystemUtils;
@@ -64,13 +66,13 @@ class QueryUtilsTest {
         val os = QueryUtils.getOS();
         assertNotNull(os);
         if (SystemUtils.IS_OS_WINDOWS) {
-            assertThat(os).contains("Windows");
+            assertThat(os.getName()).contains("Windows");
         }
         if (SystemUtils.IS_OS_LINUX) {
-            assertThat(os).contains("Linux");
+            assertThat(os.getName()).contains("Linux");
         }
         if (SystemUtils.IS_OS_MAC) {
-            assertThat(os).contains("MacOS");
+            assertThat(os.getName()).contains("MacOS");
         }
 
     }
@@ -112,5 +114,19 @@ class QueryUtilsTest {
         if (availableMethods.size() > 1) {
             assertThat(availableMethods).contains(ComputeOn.GPU);
         }
+    }
+
+    @Test
+    void getCurrentSystemInfo() {
+        val serverSystemInfo = QueryUtils.getCurrentSystemInfo(Server.class);
+        val nodeSystemInfo = QueryUtils.getCurrentSystemInfo(Node.class);
+        assertThat(serverSystemInfo).isInstanceOf(Server.class);
+        assertThat(nodeSystemInfo).isInstanceOf(Node.class);
+    }
+
+    @Test
+    void getVersion() {
+        val version = QueryUtils.getVersion();
+        assertNotNull(version);
     }
 }

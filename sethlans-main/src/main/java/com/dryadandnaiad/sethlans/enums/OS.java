@@ -24,5 +24,19 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum OS {
-    WINDOWS, MAC, LINUX
+    WINDOWS_64("Windows_64"),
+    WINDOWS_32("Windows_32"),
+    MACOS("MacOS"),
+    LINUX_64("Linux_64"),
+    LINUX_32("Linux_32");
+
+    private final String name;
+
+    OS(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

@@ -20,7 +20,11 @@ package com.dryadandnaiad.sethlans.utils;
 import com.dryadandnaiad.sethlans.devices.ScanGPU;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.enums.OS;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.models.system.Node;
+import com.dryadandnaiad.sethlans.models.system.Server;
+import com.dryadandnaiad.sethlans.models.system.System;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
@@ -29,15 +33,14 @@ import oshi.hardware.HardwareAbstractionLayer;
 import oshi.software.os.OperatingSystem;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by Mario Estrella on 4/19/2020.
@@ -72,26 +75,26 @@ public class QueryUtils {
      *
      * @return String in the form of "Windows64"
      */
-    public static String getOS() {
+    public static OS getOS() {
         SystemInfo si = new SystemInfo();
         HardwareAbstractionLayer hal = si.getHardware();
         OperatingSystem os = si.getOperatingSystem();
         int bits = os.getBitness();
         if (SystemUtils.IS_OS_WINDOWS) {
             if (bits == 64) {
-                return "Windows64";
+                return OS.WINDOWS_64;
             } else {
-                return "Windows32";
+                return OS.WINDOWS_32;
             }
         }
         if (SystemUtils.IS_OS_MAC) {
-            return "MacOS";
+            return OS.MACOS;
         }
         if (SystemUtils.IS_OS_LINUX) {
             if (bits == 64) {
-                return "Linux64";
+                return OS.LINUX_64;
             } else {
-                return "Linux32";
+                return OS.LINUX_32;
             }
         }
         return null;
@@ -168,5 +171,41 @@ public class QueryUtils {
         }
         return availableMethods;
 
+    }
+
+    public static <T extends System> System getCurrentSystemInfo(Class<T> type) {
+        if (type.getSimpleName().equals("Server")) {
+            return Server.builder()
+                    .networkPort(getPort())
+                    .hostname(getHostname())
+                    .ipAddress(getIP())
+                    .build();
+        } else {
+            return Node.builder()
+                    .networkPort(getPort())
+                    .hostname(getHostname())
+                    .ipAddress(getIP())
+                    .os(getOS())
+                    .build();
+        }
+    }
+
+    private static String getPort() {
+        return ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT);
+    }
+
+    public static String getVersion() {
+        final Properties properties = new Properties();
+        try {
+            properties.load(new InputStreamReader(new Resources("git.properties").getResource(),
+                    StandardCharsets.UTF_8));
+            String buildNumber = String.format("%04d",
+                    Integer.parseInt(properties.getProperty("git.total.commit.count")));
+            return properties.getProperty("git.build.version") + "." + buildNumber;
+        } catch (IOException e) {
+            log.error(Throwables.getStackTraceAsString(e));
+            log.error("Unable to access git.properties file");
+        }
+        return null;
     }
 }

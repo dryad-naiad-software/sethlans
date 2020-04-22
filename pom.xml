@@ -59,6 +59,29 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- Git Version Plugin -->
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>4.0.0</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+                    <includeOnlyProperties>
+                        <includeOnlyProperty>git.build.version</includeOnlyProperty>
+                        <includeOnlyProperty>git.total.commit.count</includeOnlyProperty>
+                    </includeOnlyProperties>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <generateGitPropertiesFilename>src/main/resources/git.properties</generateGitPropertiesFilename>
+                </configuration>
+            </plugin>
         </plugins>
 
 
