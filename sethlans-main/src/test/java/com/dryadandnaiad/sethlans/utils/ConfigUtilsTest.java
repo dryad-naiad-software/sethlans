@@ -28,9 +28,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.Assert.*;
 
 /**
  * Created by Mario Estrella on 4/20/2020.
