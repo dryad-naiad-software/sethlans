@@ -93,4 +93,9 @@ class QueryUtilsTest {
         assertThat(QueryUtils.getIP()).isNotEqualTo("127.0.0.1");
         assertTrue("Not a valid IP address", validator.isValidInet4Address(QueryUtils.getIP()));
     }
+
+    @Test
+    void getFirstTime() {
+        assertThat(QueryUtils.getFirstTime()).isTrue();
+    }
 }

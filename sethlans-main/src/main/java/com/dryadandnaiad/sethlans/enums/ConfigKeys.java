@@ -25,9 +25,9 @@ package com.dryadandnaiad.sethlans.enums;
  */
 public enum ConfigKeys {
     ACCESS_KEY("sethlans.accessKey"),
-    SETHLANS_IP("server.ipaddress"),
+    SETHLANS_IP("server.ipAddress"),
     HTTPS_PORT("server.port"),
-    FIRST_TIME("sethlans.firsttime"),
+    FIRST_TIME("sethlans.firstTime"),
     LOGGING_FILE("logging.file"),
     MODE("sethlans.mode"),
     COMPUTE_METHOD("sethlans.computeMethod"),
@@ -62,8 +62,8 @@ public enum ConfigKeys {
     MAIL_TLS_REQUIRED("spring.mail.properties.mail.smtp.starttls.required"),
     MAIL_USE_AUTH("spring.mail.properties.mail.smtp.auth"),
     MAIL_SERVER_CONFIGURED("sethlans.configureMail"),
-    MAIL_REPLY_TO("sethlans.mail.replyto"),
-    GETTING_STARTED("sethlans.getStartedWiz"),
+    MAIL_REPLY_TO("sethlans.mail.replyTo"),
+    GETTING_STARTED("sethlans.getStartedWizard"),
     SETHLANS_URL("sethlans.url"),
     BLENDER_DEBUG("blender.debug");
 

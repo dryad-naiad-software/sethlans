@@ -51,14 +51,13 @@ public class ConfigUtils {
      */
     static File getConfigFile() {
         var configDirSuccess = false;
-        var configFileSuccess = false;
         val configDirectory = new File(SystemUtils.USER_HOME + File.separator + ".sethlans" + File.separator + "config" + File.separator);
         val configFile = new File(configDirectory + File.separator + "sethlans.properties");
         try {
             if (!configFile.exists()) {
                 log.debug("sethlans.properties file doesn't exist, creating a new file. " + configFile.toString());
                 configDirSuccess = configDirectory.mkdirs();
-                configFileSuccess = configFile.createNewFile();
+                configFile.createNewFile();
             }
 
         } catch (IOException e) {
@@ -66,9 +65,7 @@ public class ConfigUtils {
             if (!configDirSuccess) {
                 log.error("Unable to create config directory");
             }
-            if (!configFileSuccess) {
-                log.error("Unable to write config file");
-            }
+            log.error("Unable to write config file");
         }
         return configFile;
     }
@@ -86,7 +83,6 @@ public class ConfigUtils {
         val sethlansProperties = new Properties();
 
         try {
-
             val fileOutputStream = new FileOutputStream(getConfigFile());
             sethlansProperties.setProperty(key, value);
             //Save Properties to File
@@ -112,20 +108,32 @@ public class ConfigUtils {
 
         val properties = new Properties();
         try {
-            if (ConfigUtils.getConfigFile().exists()) {
-                val fileIn = new FileInputStream(getConfigFile());
-                properties.load(fileIn);
-                fileIn.close();
-                return properties.getProperty(key);
+            // Try to get property from local file system first
+            val fileIn = new FileInputStream(getConfigFile());
+            properties.load(fileIn);
+            fileIn.close();
+            val value = properties.getProperty(key);
+            if (value != null) {
+                log.debug(value);
+                return value;
             } else {
-                properties.load(new InputStreamReader(new Resources("sethlans.properties").getResource(), StandardCharsets.UTF_8));
+                // Obtain value from built in sethlans.properties file(defaults)
+                loadFromResource(properties);
+                return properties.getProperty(key);
             }
 
-        } catch (IOException e) {
+        } catch (
+                IOException e) {
             log.error("Unable to read config file!");
+            log.error(Throwables.getStackTraceAsString(e));
 
         }
         return null;
+    }
+
+    private static void loadFromResource(Properties properties) throws IOException {
+        properties.load(new InputStreamReader(new Resources("sethlans.properties").getResource(),
+                StandardCharsets.UTF_8));
     }
 
 

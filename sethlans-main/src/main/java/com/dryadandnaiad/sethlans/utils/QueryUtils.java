@@ -147,4 +147,8 @@ public class QueryUtils {
         return ip;
     }
 
+    public static boolean getFirstTime() {
+        return Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.FIRST_TIME));
+    }
+
 }
