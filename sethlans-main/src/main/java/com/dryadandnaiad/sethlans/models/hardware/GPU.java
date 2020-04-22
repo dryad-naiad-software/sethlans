@@ -39,5 +39,6 @@ public class GPU {
     private int rating;
     private boolean openCLDevice;
     private boolean cudaDevice;
+    private boolean optixDevice;
     private String deviceID;
 }
