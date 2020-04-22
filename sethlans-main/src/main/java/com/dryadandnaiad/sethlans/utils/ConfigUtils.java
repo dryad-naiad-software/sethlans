@@ -114,11 +114,10 @@ public class ConfigUtils {
             fileIn.close();
             val value = properties.getProperty(key);
             if (value != null) {
-                log.debug(value);
                 return value;
             } else {
                 // Obtain value from built in sethlans.properties file(defaults)
-                loadFromResource(properties);
+                loadPropertiesFileFromResource(properties);
                 return properties.getProperty(key);
             }
 
@@ -131,7 +130,7 @@ public class ConfigUtils {
         return null;
     }
 
-    private static void loadFromResource(Properties properties) throws IOException {
+    private static void loadPropertiesFileFromResource(Properties properties) throws IOException {
         properties.load(new InputStreamReader(new Resources("sethlans.properties").getResource(),
                 StandardCharsets.UTF_8));
     }

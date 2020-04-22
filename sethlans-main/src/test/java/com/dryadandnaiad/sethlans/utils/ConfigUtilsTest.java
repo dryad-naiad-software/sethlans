@@ -20,7 +20,6 @@ package com.dryadandnaiad.sethlans.utils;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +28,9 @@ import java.io.IOException;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Created by Mario Estrella on 4/20/2020.
@@ -61,12 +63,19 @@ class ConfigUtilsTest {
 
     @Test
     void writeProperty() throws IOException {
-        Assert.assertTrue("Key is not present", FileUtils.readFileToString(ConfigUtils.getConfigFile(), "UTF-8").contains(key.toString()));
-        Assert.assertTrue("Value is not present", FileUtils.readFileToString(ConfigUtils.getConfigFile(), "UTF-8").contains(value));
+        var configFile = ConfigUtils.getConfigFile();
+        ConfigUtils.writeProperty(ConfigKeys.MAIL_HOST, "localhost.local");
+        assertTrue("Key is not present", FileUtils.readFileToString(configFile,
+                "UTF-8").contains(ConfigKeys.MAIL_HOST.toString()));
+        assertTrue("Value is not present", FileUtils.readFileToString(configFile,
+                "UTF-8").contains("localhost.local"));
     }
 
     @Test
     void getProperty() {
-        Assert.assertTrue("Incorrect value retrieved", ConfigUtils.getProperty(key).contains(value));
+        assertTrue("Incorrect value retrieved", ConfigUtils.getProperty(key).contains(value));
+        assertNotNull("Unable to find value in sethlans.properties located in resources",
+                ConfigUtils.getProperty(ConfigKeys.LOG_LEVEL));
+        assertNull("Property should be null", ConfigUtils.getProperty(ConfigKeys.BENCHMARK_DIR));
     }
 }

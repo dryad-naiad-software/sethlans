@@ -161,6 +161,7 @@ public class QueryUtils {
             availableMethods.add(ComputeOn.CPU_GPU);
             availableMethods.add(ComputeOn.GPU);
             availableMethods.add(ComputeOn.CPU);
+            availableMethods.add(ComputeOn.HYBRID);
         } else {
             availableMethods.add(ComputeOn.CPU);
         }

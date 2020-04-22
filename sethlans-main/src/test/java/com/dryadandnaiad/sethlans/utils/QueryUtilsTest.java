@@ -17,6 +17,7 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import lombok.extern.slf4j.Slf4j;
@@ -53,21 +54,23 @@ class QueryUtilsTest {
 
     @Test
     void getShortUUID() {
-        assertThat(QueryUtils.getShortUUID()).hasSize(13);
-        assertThat(QueryUtils.getShortUUID()).contains("-");
+        val shortUUID = QueryUtils.getShortUUID();
+        assertThat(shortUUID).hasSize(13);
+        assertThat(shortUUID).contains("-");
     }
 
     @Test
     void getOS() {
-        assertNotNull(QueryUtils.getOS());
+        val os = QueryUtils.getOS();
+        assertNotNull(os);
         if (SystemUtils.IS_OS_WINDOWS) {
-            assertThat(QueryUtils.getOS()).contains("Windows");
+            assertThat(os).contains("Windows");
         }
         if (SystemUtils.IS_OS_LINUX) {
-            assertThat(QueryUtils.getOS()).contains("Linux");
+            assertThat(os).contains("Linux");
         }
         if (SystemUtils.IS_OS_MAC) {
-            assertThat(QueryUtils.getOS()).contains("MacOS");
+            assertThat(os).contains("MacOS");
         }
 
     }
@@ -79,23 +82,35 @@ class QueryUtilsTest {
 
     @Test
     void getHostname() {
-        assertNotNull(QueryUtils.getHostname());
-        assertThat(QueryUtils.getHostname()).doesNotContain(".");
-        assertThat(QueryUtils.getHostname()).isUpperCase();
+        val hostname = QueryUtils.getHostname();
+        assertNotNull(hostname);
+        assertThat(hostname).doesNotContain(".");
+        assertThat(hostname).isUpperCase();
     }
 
     @Test
     void getIP() {
+        val ipAddress = QueryUtils.getIP();
         val validator = InetAddressValidator.getInstance();
-        assertNotNull(QueryUtils.getIP());
-        assertThat(QueryUtils.getIP()).isNotEqualTo("0.0.0.0");
-        assertThat(QueryUtils.getIP()).isNotEqualTo("255.255.255.255");
-        assertThat(QueryUtils.getIP()).isNotEqualTo("127.0.0.1");
-        assertTrue("Not a valid IP address", validator.isValidInet4Address(QueryUtils.getIP()));
+        assertNotNull(ipAddress);
+        assertThat(ipAddress).isNotEqualTo("0.0.0.0");
+        assertThat(ipAddress).isNotEqualTo("255.255.255.255");
+        assertThat(ipAddress).isNotEqualTo("127.0.0.1");
+        assertTrue("Not a valid IP address", validator.isValidInet4Address(ipAddress));
     }
 
     @Test
     void getFirstTime() {
         assertThat(QueryUtils.getFirstTime()).isTrue();
+    }
+
+    @Test
+    void getAvailableMethods() {
+        val availableMethods = QueryUtils.getAvailableMethods();
+        assertNotNull(availableMethods);
+        assertThat(availableMethods).hasSizeGreaterThan(0);
+        if (availableMethods.size() > 1) {
+            assertThat(availableMethods).contains(ComputeOn.GPU);
+        }
     }
 }
