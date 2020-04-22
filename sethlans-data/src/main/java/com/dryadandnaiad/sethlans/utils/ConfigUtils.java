@@ -50,17 +50,25 @@ public class ConfigUtils {
      * @return sethlans configuration file
      */
     static File getConfigFile() {
+        var configDirSuccess = false;
+        var configFileSuccess = false;
         val configDirectory = new File(SystemUtils.USER_HOME + File.separator + ".sethlans" + File.separator + "config" + File.separator);
         val configFile = new File(configDirectory + File.separator + "sethlans.properties");
         try {
             if (!configFile.exists()) {
                 log.debug("sethlans.properties file doesn't exist, creating a new file. " + configFile.toString());
-                configDirectory.mkdir();
-                configFile.createNewFile();
+                configDirSuccess = configDirectory.mkdirs();
+                configFileSuccess = configFile.createNewFile();
             }
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             log.error(e.getMessage());
+            if (!configDirSuccess) {
+                log.error("Unable to create config directory");
+            }
+            if (!configFileSuccess) {
+                log.error("Unable to write config file");
+            }
         }
         return configFile;
     }
