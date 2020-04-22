@@ -24,6 +24,9 @@ import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
+import oshi.SystemInfo;
+import oshi.hardware.HardwareAbstractionLayer;
+import oshi.software.os.OperatingSystem;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -70,14 +73,12 @@ public class QueryUtils {
      * @return String in the form of "Windows64"
      */
     public static String getOS() {
+        SystemInfo si = new SystemInfo();
+        HardwareAbstractionLayer hal = si.getHardware();
+        OperatingSystem os = si.getOperatingSystem();
+        int bits = os.getBitness();
         if (SystemUtils.IS_OS_WINDOWS) {
-            String arch = System.getenv("PROCESSOR_ARCHITECTURE");
-            String wow64Arch = System.getenv("PROCESSOR_ARCHITEW6432");
-
-            String realArch = arch.endsWith("64")
-                    || wow64Arch != null && wow64Arch.endsWith("64")
-                    ? "64" : "32";
-            if (realArch.equals("64")) {
+            if (bits == 64) {
                 return "Windows64";
             } else {
                 return "Windows32";
@@ -87,7 +88,7 @@ public class QueryUtils {
             return "MacOS";
         }
         if (SystemUtils.IS_OS_LINUX) {
-            if (SystemUtils.OS_ARCH.contains("64")) {
+            if (bits == 64) {
                 return "Linux64";
             } else {
                 return "Linux32";
