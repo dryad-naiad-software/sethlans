@@ -17,6 +17,8 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.devices.ScanGPU;
+import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.google.common.base.Throwables;
@@ -29,7 +31,9 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -151,4 +155,16 @@ public class QueryUtils {
         return Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.FIRST_TIME));
     }
 
+    public static Set<ComputeOn> getAvailableMethods() {
+        Set<ComputeOn> availableMethods = new HashSet<>();
+        if (ScanGPU.listDevices().size() != 0) {
+            availableMethods.add(ComputeOn.CPU_GPU);
+            availableMethods.add(ComputeOn.GPU);
+            availableMethods.add(ComputeOn.CPU);
+        } else {
+            availableMethods.add(ComputeOn.CPU);
+        }
+        return availableMethods;
+
+    }
 }
