@@ -44,7 +44,7 @@ class ConfigUtilsTest {
 
     @BeforeEach
     void setUp() {
-        log.info("Initiating Setup");
+        log.info("Initiating Test Setup");
         ConfigUtils.getConfigFile();
         ConfigUtils.writeProperty(key, value);
     }
@@ -68,7 +68,5 @@ class ConfigUtilsTest {
     @Test
     void getProperty() {
         Assert.assertTrue("Incorrect value retrieved", ConfigUtils.getProperty(key).contains(value));
-
-
     }
 }

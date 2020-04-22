@@ -52,7 +52,7 @@ public enum ConfigKeys {
     ROOT_DIR("sethlans.rootDir"),
     SESSION_TIMEOUT("server.session.timeout"),
     LOG_LEVEL("logging.level.com.dryadandnaiad.sethlans"),
-    DATABASE_LOC("spring.datasource.url"),
+    DATABASE_LOCATION("spring.datasource.url"),
     MAIL_HOST("spring.mail.host"),
     MAIL_PORT("spring.mail.port"),
     MAIL_USER("spring.mail.username"),
@@ -62,7 +62,7 @@ public enum ConfigKeys {
     MAIL_TLS_REQUIRED("spring.mail.properties.mail.smtp.starttls.required"),
     MAIL_USE_AUTH("spring.mail.properties.mail.smtp.auth"),
     MAIL_SERVER_CONFIGURED("sethlans.configureMail"),
-    MAIL_REPLYTO("sethlans.mail.replyto"),
+    MAIL_REPLY_TO("sethlans.mail.replyto"),
     GETTING_STARTED("sethlans.getStartedWiz"),
     SETHLANS_URL("sethlans.url"),
     BLENDER_DEBUG("blender.debug");

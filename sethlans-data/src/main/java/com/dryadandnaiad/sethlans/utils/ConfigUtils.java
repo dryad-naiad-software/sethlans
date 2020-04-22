@@ -23,10 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.SystemUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Properties;
@@ -106,12 +104,17 @@ public class ConfigUtils {
 
         val properties = new Properties();
         try {
-            val fileIn = new FileInputStream(getConfigFile());
-            properties.load(fileIn);
-            fileIn.close();
-            return properties.getProperty(key);
+            if (ConfigUtils.getConfigFile().exists()) {
+                val fileIn = new FileInputStream(getConfigFile());
+                properties.load(fileIn);
+                fileIn.close();
+                return properties.getProperty(key);
+            } else {
+                properties.load(new InputStreamReader(new Resources("sethlans.properties").getResource(), StandardCharsets.UTF_8));
+            }
+
         } catch (IOException e) {
-            log.error("Unable to read config file, either missing or this is a first time execution");
+            log.error("Unable to read config file!");
 
         }
         return null;

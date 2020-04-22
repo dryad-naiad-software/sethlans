@@ -17,11 +17,18 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.validator.routines.InetAddressValidator;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * Created by Mario Estrella on 4/19/2020.
@@ -29,15 +36,20 @@ import static org.junit.Assert.assertNotNull;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Slf4j
 class QueryUtilsTest {
 
-//    @BeforeEach
-//    void setUp() {
-//    }
-//
-//    @AfterEach
-//    void tearDown() {
-//    }
+    @BeforeEach
+    void setUp() {
+        log.info("Initiating Test Setup");
+        ConfigUtils.getConfigFile();
+        ConfigUtils.writeProperty(ConfigKeys.MODE, SethlansMode.SERVER.toString());
+    }
+
+    @AfterEach
+    void tearDown() {
+        ConfigUtils.getConfigFile().delete();
+    }
 
     @Test
     void getShortUUID() {
@@ -58,5 +70,27 @@ class QueryUtilsTest {
             assertThat(QueryUtils.getOS()).contains("MacOS");
         }
 
+    }
+
+    @Test
+    void getMode() {
+        assertEquals("Values do not match", SethlansMode.SERVER, QueryUtils.getMode());
+    }
+
+    @Test
+    void getHostname() {
+        assertNotNull(QueryUtils.getHostname());
+        assertThat(QueryUtils.getHostname()).doesNotContain(".");
+        assertThat(QueryUtils.getHostname()).isUpperCase();
+    }
+
+    @Test
+    void getIP() {
+        val validator = InetAddressValidator.getInstance();
+        assertNotNull(QueryUtils.getIP());
+        assertThat(QueryUtils.getIP()).isNotEqualTo("0.0.0.0");
+        assertThat(QueryUtils.getIP()).isNotEqualTo("255.255.255.255");
+        assertThat(QueryUtils.getIP()).isNotEqualTo("127.0.0.1");
+        assertTrue("Not a valid IP address", validator.isValidInet4Address(QueryUtils.getIP()));
     }
 }

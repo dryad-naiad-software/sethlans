@@ -17,9 +17,16 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -83,6 +90,61 @@ public class QueryUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns the currently configured mode for Sethlans.
+     *
+     * @return SethlansMode enum
+     */
+    public static SethlansMode getMode() {
+        return SethlansMode.valueOf(ConfigUtils.getProperty(ConfigKeys.MODE));
+    }
+
+    /**
+     * Returns the hostname for the current system
+     *
+     * @return String hostname
+     */
+    public static String getHostname() {
+        String hostname = null;
+        try {
+            hostname = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            log.error(Throwables.getStackTraceAsString(e));
+        }
+        int indexEnd = hostname.indexOf(".");
+        if (indexEnd != -1) {
+            log.debug(hostname + " contains a domain name. Removing it.");
+            hostname = hostname.substring(0, indexEnd);
+        }
+        return hostname.toUpperCase();
+    }
+
+
+    /**
+     * Returns the IP address for the current system
+     *
+     * @return String ip
+     */
+    public static String getIP() {
+        String ip = null;
+        try {
+            ip = ConfigUtils.getProperty(ConfigKeys.SETHLANS_IP);
+            if (ip == null) {
+                if (SystemUtils.IS_OS_LINUX) {
+                    // Make a connection to 8.8.8.8 DNS in order to get IP address
+                    Socket s = new Socket("8.8.8.8", 53);
+                    ip = s.getLocalAddress().getHostAddress();
+                    s.close();
+                } else {
+                    ip = InetAddress.getLocalHost().getHostAddress();
+                }
+            }
+        } catch (IOException e) {
+            log.error(Throwables.getStackTraceAsString(e));
+        }
+        return ip;
     }
 
 }
