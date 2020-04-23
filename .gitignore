@@ -5,6 +5,7 @@ target/
 !**/src/test/**
 git.properties
 
+
 ### STS ###
 .apt_generated
 .classpath
