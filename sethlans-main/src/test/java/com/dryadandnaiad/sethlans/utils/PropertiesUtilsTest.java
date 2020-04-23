@@ -18,29 +18,31 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
+import lombok.val;
+import org.apache.commons.validator.routines.InetAddressValidator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 /**
- * Created by Mario Estrella on 4/20/2020.
+ * Created by Mario Estrella on 4/22/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
 @Slf4j
-class ConfigUtilsTest {
-
+class PropertiesUtilsTest {
     @BeforeEach
     void setUp() {
+        log.info("Initiating Test Setup");
         ConfigUtils.getConfigFile();
+        ConfigUtils.writeProperty(ConfigKeys.MODE, SethlansMode.SERVER.toString());
+        ConfigUtils.writeProperty(ConfigKeys.CPU_CORES, "3");
     }
 
     @AfterEach
@@ -49,24 +51,32 @@ class ConfigUtilsTest {
     }
 
     @Test
-    void getConfigFile() {
-        assertThat(ConfigUtils.getConfigFile()).exists();
+    void getSelectedCores() {
+        assertEquals("Values do not match", "3", PropertiesUtils.getSelectedCores());
+        ConfigUtils.writeProperty(ConfigKeys.CPU_CORES, "2");
+        assertEquals("Values do not match", "2", PropertiesUtils.getSelectedCores());
     }
 
     @Test
-    void writeProperty() throws IOException {
-        var configFile = ConfigUtils.getConfigFile();
-        ConfigUtils.writeProperty(ConfigKeys.MAIL_HOST, "localhost.local");
-        assertTrue("Key is not present", FileUtils.readFileToString(configFile,
-                "UTF-8").contains(ConfigKeys.MAIL_HOST.toString()));
-        assertTrue("Value is not present", FileUtils.readFileToString(configFile,
-                "UTF-8").contains("localhost.local"));
+    void getMode() {
+        assertEquals("Values do not match", SethlansMode.SERVER, PropertiesUtils.getMode());
     }
 
     @Test
-    void getProperty() {
-        assertNotNull("Unable to find value in sethlans.properties located in resources",
-                ConfigUtils.getProperty(ConfigKeys.LOG_LEVEL));
-        assertNull("Property should be null", ConfigUtils.getProperty(ConfigKeys.BENCHMARK_DIR));
+    void getIP() {
+        val ipAddress = PropertiesUtils.getIP();
+        val validator = InetAddressValidator.getInstance();
+        assertNotNull(ipAddress);
+        assertThat(ipAddress).isNotEqualTo("0.0.0.0");
+        assertThat(ipAddress).isNotEqualTo("255.255.255.255");
+        assertThat(ipAddress).isNotEqualTo("127.0.0.1");
+        assertTrue("Not a valid IP address", validator.isValidInet4Address(ipAddress));
     }
+
+    @Test
+    void getFirstTime() {
+        assertThat(PropertiesUtils.getFirstTime()).isTrue();
+    }
+
+
 }

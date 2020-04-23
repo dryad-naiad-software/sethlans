@@ -18,20 +18,15 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
-import com.dryadandnaiad.sethlans.enums.ConfigKeys;
-import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.validator.routines.InetAddressValidator;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Created by Mario Estrella on 4/19/2020.
@@ -41,20 +36,6 @@ import static org.junit.Assert.*;
  */
 @Slf4j
 class QueryUtilsTest {
-
-    @BeforeEach
-    void setUp() {
-        log.info("Initiating Test Setup");
-        ConfigUtils.getConfigFile();
-        ConfigUtils.writeProperty(ConfigKeys.MODE, SethlansMode.SERVER.toString());
-        ConfigUtils.writeProperty(ConfigKeys.CPU_CORES, "3");
-
-    }
-
-    @AfterEach
-    void tearDown() {
-        //ConfigUtils.getConfigFile().delete();
-    }
 
     @Test
     void getShortUUID() {
@@ -80,32 +61,11 @@ class QueryUtilsTest {
     }
 
     @Test
-    void getMode() {
-        assertEquals("Values do not match", SethlansMode.SERVER, QueryUtils.getMode());
-    }
-
-    @Test
     void getHostname() {
         val hostname = QueryUtils.getHostname();
         assertNotNull(hostname);
         assertThat(hostname).doesNotContain(".");
         assertThat(hostname).isUpperCase();
-    }
-
-    @Test
-    void getIP() {
-        val ipAddress = QueryUtils.getIP();
-        val validator = InetAddressValidator.getInstance();
-        assertNotNull(ipAddress);
-        assertThat(ipAddress).isNotEqualTo("0.0.0.0");
-        assertThat(ipAddress).isNotEqualTo("255.255.255.255");
-        assertThat(ipAddress).isNotEqualTo("127.0.0.1");
-        assertTrue("Not a valid IP address", validator.isValidInet4Address(ipAddress));
-    }
-
-    @Test
-    void getFirstTime() {
-        assertThat(QueryUtils.getFirstTime()).isTrue();
     }
 
     @Test
@@ -138,12 +98,5 @@ class QueryUtilsTest {
         assertThat(time.equals("02:30:00"));
     }
 
-    @Test
-    void getSelectedCores() {
-        assertEquals("Values do not match", "3", QueryUtils.getSelectedCores());
-        ConfigUtils.writeProperty(ConfigKeys.CPU_CORES, "2");
-        assertEquals("Values do not match", "2", QueryUtils.getSelectedCores());
 
-
-    }
 }

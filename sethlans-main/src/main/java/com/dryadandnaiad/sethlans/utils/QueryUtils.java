@@ -19,9 +19,7 @@ package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.devices.ScanGPU;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
-import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.OS;
-import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.hardware.CPU;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Server;
@@ -35,12 +33,14 @@ import oshi.software.os.OperatingSystem;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
+
+import static com.dryadandnaiad.sethlans.utils.PropertiesUtils.getIP;
+import static com.dryadandnaiad.sethlans.utils.PropertiesUtils.getPort;
 
 /**
  * Created by Mario Estrella on 4/19/2020.
@@ -100,15 +100,6 @@ public class QueryUtils {
     }
 
     /**
-     * Returns the currently configured mode for Sethlans.
-     *
-     * @return SethlansMode enum
-     */
-    public static SethlansMode getMode() {
-        return SethlansMode.valueOf(ConfigUtils.getProperty(ConfigKeys.MODE));
-    }
-
-    /**
      * Returns the hostname for the current system
      *
      * @return String hostname
@@ -128,40 +119,6 @@ public class QueryUtils {
         return hostname.toUpperCase();
     }
 
-
-    /**
-     * Returns the IP address for the current system
-     *
-     * @return String ip
-     */
-    public static String getIP() {
-        String ip = null;
-        try {
-            ip = ConfigUtils.getProperty(ConfigKeys.SETHLANS_IP);
-            if (ip == null) {
-                if (SystemUtils.IS_OS_LINUX) {
-                    // Make a connection to 8.8.8.8 DNS in order to get IP address
-                    Socket s = new Socket("8.8.8.8", 53);
-                    ip = s.getLocalAddress().getHostAddress();
-                    s.close();
-                } else {
-                    ip = InetAddress.getLocalHost().getHostAddress();
-                }
-            }
-        } catch (IOException e) {
-            log.error(Throwables.getStackTraceAsString(e));
-        }
-        return ip;
-    }
-
-    /**
-     * Checks if Sethlans has been configured before.
-     *
-     * @return Boolean
-     */
-    public static boolean getFirstTime() {
-        return Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.FIRST_TIME));
-    }
 
     /**
      * Retrieves the available methods. If no GPUs are detected only ComputeOn.CPU is available.
@@ -206,14 +163,6 @@ public class QueryUtils {
         }
     }
 
-    /**
-     * Retrieves the configured port for Sethlans.  Default is 7443
-     *
-     * @return String port
-     */
-    private static String getPort() {
-        return ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT);
-    }
 
     /**
      * Retrieves the current version and build.
@@ -249,12 +198,5 @@ public class QueryUtils {
         return String.format("%02d:%02d:%02d", hour, minute, second);
     }
 
-    /**
-     * Retrieves the selected cores for rendering used by the current node
-     *
-     * @return String
-     */
-    public static String getSelectedCores() {
-        return ConfigUtils.getProperty(ConfigKeys.CPU_CORES);
-    }
+
 }

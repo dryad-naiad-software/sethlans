@@ -36,7 +36,7 @@ import java.util.Properties;
  * Project: sethlans
  */
 @Slf4j
-public class ConfigUtils {
+class ConfigUtils {
 
     private static String updateTimeStamp() {
         Date currentDate = GregorianCalendar.getInstance().getTime();
