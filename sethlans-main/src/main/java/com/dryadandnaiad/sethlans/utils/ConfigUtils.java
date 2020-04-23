@@ -80,13 +80,16 @@ public class ConfigUtils {
     public static boolean writeProperty(ConfigKeys configKey, String value) {
         val comment = updateTimeStamp();
         val key = configKey.toString();
-        val sethlansProperties = new Properties();
+        val properties = new Properties();
 
         try {
+            val fileIn = new FileInputStream(getConfigFile());
+            properties.load(fileIn);
+            fileIn.close();
             val fileOutputStream = new FileOutputStream(getConfigFile());
-            sethlansProperties.setProperty(key, value);
+            properties.setProperty(key, value);
             //Save Properties to File
-            sethlansProperties.store(fileOutputStream, comment);
+            properties.store(fileOutputStream, comment);
             log.debug("SethlansConfigKey: " + key + " written to " + getConfigFile().toString());
             fileOutputStream.close();
             return true;

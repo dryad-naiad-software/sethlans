@@ -22,6 +22,7 @@ import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.OS;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.models.hardware.CPU;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.models.system.System;
@@ -29,7 +30,6 @@ import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 import oshi.SystemInfo;
-import oshi.hardware.HardwareAbstractionLayer;
 import oshi.software.os.OperatingSystem;
 
 import java.io.IOException;
@@ -77,7 +77,6 @@ public class QueryUtils {
      */
     public static OS getOS() {
         SystemInfo si = new SystemInfo();
-        HardwareAbstractionLayer hal = si.getHardware();
         OperatingSystem os = si.getOperatingSystem();
         int bits = os.getBitness();
         if (SystemUtils.IS_OS_WINDOWS) {
@@ -186,6 +185,7 @@ public class QueryUtils {
                     .hostname(getHostname())
                     .ipAddress(getIP())
                     .os(getOS())
+                    .cpu(new CPU())
                     .build();
         }
     }
@@ -207,5 +207,17 @@ public class QueryUtils {
             log.error("Unable to access git.properties file");
         }
         return null;
+    }
+
+    public static String getTimeFromMills(Long time) {
+        long second = (time / 1000) % 60;
+        long minute = (time / (1000 * 60)) % 60;
+        long hour = (time / (1000 * 60 * 60));
+
+        return String.format("%02d:%02d:%02d", hour, minute, second);
+    }
+
+    public static String getSelectedCores() {
+        return ConfigUtils.getProperty(ConfigKeys.CPU_CORES);
     }
 }

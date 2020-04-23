@@ -47,11 +47,13 @@ class QueryUtilsTest {
         log.info("Initiating Test Setup");
         ConfigUtils.getConfigFile();
         ConfigUtils.writeProperty(ConfigKeys.MODE, SethlansMode.SERVER.toString());
+        ConfigUtils.writeProperty(ConfigKeys.CPU_CORES, "3");
+
     }
 
     @AfterEach
     void tearDown() {
-        ConfigUtils.getConfigFile().delete();
+        //ConfigUtils.getConfigFile().delete();
     }
 
     @Test
@@ -128,5 +130,20 @@ class QueryUtilsTest {
     void getVersion() {
         val version = QueryUtils.getVersion();
         assertNotNull(version);
+    }
+
+    @Test
+    void getTimeFromMills() {
+        val time = QueryUtils.getTimeFromMills(9000000L);
+        assertThat(time.equals("02:30:00"));
+    }
+
+    @Test
+    void getSelectedCores() {
+        assertEquals("Values do not match", "3", QueryUtils.getSelectedCores());
+        ConfigUtils.writeProperty(ConfigKeys.CPU_CORES, "2");
+        assertEquals("Values do not match", "2", QueryUtils.getSelectedCores());
+
+
     }
 }
