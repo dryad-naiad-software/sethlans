@@ -154,10 +154,20 @@ public class QueryUtils {
         return ip;
     }
 
+    /**
+     * Checks if Sethlans has been configured before.
+     *
+     * @return Boolean
+     */
     public static boolean getFirstTime() {
         return Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.FIRST_TIME));
     }
 
+    /**
+     * Retrieves the available methods. If no GPUs are detected only ComputeOn.CPU is available.
+     *
+     * @return Set of ComputeOn enums
+     */
     public static Set<ComputeOn> getAvailableMethods() {
         Set<ComputeOn> availableMethods = new HashSet<>();
         if (ScanGPU.listDevices().size() != 0) {
@@ -172,6 +182,12 @@ public class QueryUtils {
 
     }
 
+    /**
+     * Retrieves base information and returns a System type object
+     *
+     * @param type Server or Node class.
+     * @return Server or Node class populated with basic information
+     */
     public static <T extends System> System getCurrentSystemInfo(Class<T> type) {
         if (type.getSimpleName().equals("Server")) {
             return Server.builder()
@@ -190,10 +206,20 @@ public class QueryUtils {
         }
     }
 
+    /**
+     * Retrieves the configured port for Sethlans.  Default is 7443
+     *
+     * @return String port
+     */
     private static String getPort() {
         return ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT);
     }
 
+    /**
+     * Retrieves the current version and build.
+     *
+     * @return String version
+     */
     public static String getVersion() {
         final Properties properties = new Properties();
         try {
@@ -209,6 +235,12 @@ public class QueryUtils {
         return null;
     }
 
+    /**
+     * Takes in time in milliseconds(long) and returns it in a readable format.
+     *
+     * @param time Time in milliseconds
+     * @return String hh:mm:ss
+     */
     public static String getTimeFromMills(Long time) {
         long second = (time / 1000) % 60;
         long minute = (time / (1000 * 60)) % 60;
@@ -217,6 +249,11 @@ public class QueryUtils {
         return String.format("%02d:%02d:%02d", hour, minute, second);
     }
 
+    /**
+     * Retrieves the selected cores for rendering used by the current node
+     *
+     * @return String
+     */
     public static String getSelectedCores() {
         return ConfigUtils.getProperty(ConfigKeys.CPU_CORES);
     }
