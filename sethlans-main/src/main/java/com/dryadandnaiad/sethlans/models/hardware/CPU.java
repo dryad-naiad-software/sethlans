@@ -19,6 +19,7 @@
 package com.dryadandnaiad.sethlans.models.hardware;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import oshi.SystemInfo;
 import oshi.hardware.CentralProcessor;
 import oshi.hardware.GlobalMemory;
@@ -31,6 +32,7 @@ import oshi.util.FormatUtil;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Slf4j
 @Data
 public class CPU {
     private String name;
@@ -40,23 +42,25 @@ public class CPU {
     private int cores;
     private int cpuPackage;
     private String totalMemory;
+    private long[] oldTicks;
+    private SystemInfo si = new SystemInfo();
+    private HardwareAbstractionLayer hal = si.getHardware();
+    private CentralProcessor centralProcessor = hal.getProcessor();
+    private GlobalMemory globalMemory = hal.getMemory();
+
 
     public CPU() {
-        SystemInfo si = new SystemInfo();
-        HardwareAbstractionLayer hal = si.getHardware();
-        CentralProcessor processor = hal.getProcessor();
-        GlobalMemory globalMemory = hal.getMemory();
-        this.name = processor.getProcessorIdentifier().getName();
-        this.model = processor.getProcessorIdentifier().getModel();
-        this.family = processor.getProcessorIdentifier().getFamily();
-        this.cores = processor.getLogicalProcessorCount();
-        this.cpuPackage = processor.getPhysicalPackageCount();
+        this.name = centralProcessor.getProcessorIdentifier().getName();
+        this.model = centralProcessor.getProcessorIdentifier().getModel();
+        this.family = centralProcessor.getProcessorIdentifier().getFamily();
+        this.cores = centralProcessor.getLogicalProcessorCount();
+        this.cpuPackage = centralProcessor.getPhysicalPackageCount();
         this.totalMemory = FormatUtil.formatBytes(globalMemory.getTotal());
         this.generateArch();
     }
 
 
-    public void generateArch() {
+    private void generateArch() {
         String arch = System.getProperty("os.arch").toLowerCase();
         switch (arch) {
             case "i386":

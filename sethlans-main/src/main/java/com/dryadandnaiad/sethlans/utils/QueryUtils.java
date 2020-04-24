@@ -26,6 +26,7 @@ import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.models.system.System;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import oshi.SystemInfo;
 import oshi.software.os.OperatingSystem;
@@ -35,9 +36,10 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
+import java.util.UUID;
 
 import static com.dryadandnaiad.sethlans.utils.PropertiesUtils.getIP;
 import static com.dryadandnaiad.sethlans.utils.PropertiesUtils.getPort;
@@ -51,15 +53,6 @@ import static com.dryadandnaiad.sethlans.utils.PropertiesUtils.getPort;
 @Slf4j
 public class QueryUtils {
 
-    private static final DecimalFormat ROUNDED_DOUBLE_DECIMALFORMAT;
-
-    static {
-        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
-        otherSymbols.setDecimalSeparator('.');
-        otherSymbols.setGroupingSeparator(',');
-        ROUNDED_DOUBLE_DECIMALFORMAT = new DecimalFormat("####0.00", otherSymbols);
-        ROUNDED_DOUBLE_DECIMALFORMAT.setGroupingUsed(false);
-    }
 
     /**
      * Creates a short UUID of 13 characters in the format of xxxxxxxx-xxxx
@@ -198,5 +191,15 @@ public class QueryUtils {
         return String.format("%02d:%02d:%02d", hour, minute, second);
     }
 
+    public static String getRenderTime(String output, String time) {
+        String[] finished = output.split("\\|");
+        for (String item : finished) {
+            if (item.contains("Time:")) {
+                time = StringUtils.substringAfter(item, ":");
+                time = StringUtils.substringBefore(time, ".");
+            }
+        }
+        return time.replaceAll("\\s", "");
+    }
 
 }

@@ -99,4 +99,13 @@ class QueryUtilsTest {
     }
 
 
+    @Test
+    void getRenderTime() {
+        String time = null;
+        String output = " Time: 08:06.55 (Saving: 00:00.80)";
+        time = QueryUtils.getRenderTime(output, null);
+        assertNotNull(time);
+        assertThat(time).isEqualTo("08:06");
+
+    }
 }
