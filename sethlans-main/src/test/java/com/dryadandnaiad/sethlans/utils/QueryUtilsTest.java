@@ -107,5 +107,6 @@ class QueryUtilsTest {
         assertNotNull(time);
         assertThat(time).isEqualTo("08:06");
 
+
     }
 }
