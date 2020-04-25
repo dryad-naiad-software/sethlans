@@ -165,7 +165,7 @@ public class QueryUtils {
     public static String getVersion() {
         final Properties properties = new Properties();
         try {
-            properties.load(new InputStreamReader(new Resources("git.properties").getResource(),
+            properties.load(new InputStreamReader(new SethlansResources("git.properties").getResource(),
                     StandardCharsets.UTF_8));
             String buildNumber = String.format("%04d",
                     Integer.parseInt(properties.getProperty("git.total.commit.count")));

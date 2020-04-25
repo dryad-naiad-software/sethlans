@@ -24,7 +24,14 @@ import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.model.enums.CompressionLevel;
 import net.lingala.zip4j.model.enums.CompressionMethod;
+import org.apache.commons.lang3.SystemUtils;
+import org.rauschig.jarchivelib.ArchiveFormat;
+import org.rauschig.jarchivelib.Archiver;
+import org.rauschig.jarchivelib.ArchiverFactory;
+import org.rauschig.jarchivelib.CompressionType;
 import org.springframework.core.io.ClassPathResource;
+import org.zeroturnaround.exec.ProcessExecutor;
+import org.zeroturnaround.exec.stream.slf4j.Slf4jStream;
 
 import javax.swing.*;
 import javax.xml.bind.DatatypeConverter;
@@ -40,6 +47,7 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by Mario Estrella on 4/23/2020.
@@ -50,6 +58,13 @@ import java.util.List;
 @Slf4j
 public class SethlansFileUtils {
 
+    /**
+     * Checks if a directory is empty
+     *
+     * @param directory
+     * @return boolean
+     * @throws FileNotFoundException
+     */
     public static boolean isDirectoryEmpty(File directory) throws FileNotFoundException {
         if (!directory.isDirectory()) {
             throw new FileNotFoundException("This is not a valid directory");
@@ -58,12 +73,29 @@ public class SethlansFileUtils {
         return files == null || files.length <= 0;
     }
 
+    /**
+     * Verify that the file and the MD5 hash provided match.
+     *
+     * @param file
+     * @param md5
+     * @return boolean
+     * @throws IOException
+     * @throws NoSuchAlgorithmException
+     */
     public static boolean fileCheckMD5(File file, String md5) throws IOException, NoSuchAlgorithmException {
         String hashValue = getMD5ofFile(file);
         log.debug("Current file md5: " + hashValue + " Submitted md5: " + md5);
         return hashValue.equals(md5);
     }
 
+    /**
+     * Retrieve the MD5 hash of a file
+     *
+     * @param file
+     * @return String
+     * @throws IOException
+     * @throws NoSuchAlgorithmException
+     */
     public static String getMD5ofFile(File file) throws IOException, NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("MD5");
         InputStream inputStream = Files.newInputStream(Paths.get(file.toString()));
@@ -77,6 +109,13 @@ public class SethlansFileUtils {
         return DatatypeConverter.printHexBinary(md.digest()).toLowerCase();
     }
 
+    /**
+     * Returns an Image object from the disk
+     *
+     * @param image
+     * @param description
+     * @return
+     */
     public static Image createImageIcon(String image, String description) {
         URL imageURL = null;
         try {
@@ -88,6 +127,12 @@ public class SethlansFileUtils {
         return new ImageIcon(imageURL, description).getImage();
     }
 
+    /**
+     * @param files
+     * @param rootDir
+     * @param zipFileName
+     * @return
+     */
     public static File createArchive(List<String> files, String rootDir, String zipFileName) {
         File createdArchive = null;
         try {
@@ -112,4 +157,88 @@ public class SethlansFileUtils {
         }
         return createdArchive;
     }
+
+    /**
+     * Extracts xz, bzip, gzip and zip files.
+     * Supports files with extension txz, tar.gz, tar.bz2 and zip
+     *
+     * @param toExtract
+     * @param extractLocation
+     * @param deleteArchive
+     * @return boolean
+     */
+    public static boolean extractArchive(String toExtract, File extractLocation, boolean deleteArchive) {
+        File archive = new File(extractLocation + File.separator + toExtract);
+        try {
+            if (archive.toString().contains("txz")) {
+                extractLocation.mkdirs();
+                log.debug("Extracting " + archive + " to " + extractLocation);
+                Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.XZ);
+                archiver.extract(archive, extractLocation);
+                if (deleteArchive) {
+                    archive.delete();
+                }
+                return true;
+            }
+            if (archive.toString().contains("tar.gz")) {
+                extractLocation.mkdirs();
+                log.debug("Extracting " + archive + " to " + extractLocation);
+                Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.GZIP);
+                archiver.extract(archive, extractLocation);
+                if (deleteArchive) {
+                    archive.delete();
+                }
+                return true;
+            }
+            if (archive.toString().contains("tar.bz2")) {
+                extractLocation.mkdirs();
+                log.debug("Extracting " + archive + " to " + extractLocation);
+                Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.BZIP2);
+                archiver.extract(archive, extractLocation);
+                if (deleteArchive) {
+                    archive.delete();
+                }
+                return true;
+            }
+            if (archive.toString().contains("zip")) {
+                extractLocation.mkdirs();
+                ZipFile archiver = new ZipFile(archive);
+                log.debug("Extracting " + archive + " to " + extractLocation);
+                archiver.extractAll(extractLocation.toString());
+                if (deleteArchive) {
+                    archive.delete();
+                }
+
+                return true;
+            } else {
+                log.error("Unsupported archive extension/format provided.");
+            }
+
+        } catch (IOException e) {
+            log.error("Error extracting archive " + e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            System.exit(1);
+        }
+
+        return false;
+    }
+
+    public static boolean extractDMG(String dmgLocation) {
+        if (SystemUtils.IS_OS_MAC) {
+            try {
+                int exit = new ProcessExecutor().command("hdiutil mount " + dmgLocation)
+                        .redirectOutput(Slf4jStream.ofCaller().asInfo()).execute().getExitValue();
+                log.debug("Exit is " + exit);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (TimeoutException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+        return false;
+    }
+
 }

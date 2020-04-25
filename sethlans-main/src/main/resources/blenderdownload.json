@@ -1,0 +1,47 @@
+[
+  {
+    "blenderVersion": "2.82a",
+    "macOS": [
+      "https://download.blender.org/release/Blender2.82/blender-2.82a-macOS.dmg",
+      "https://mirror.clarkson.edu/blender/release/Blender2.82/blender-2.82a-macOS.dmg",
+      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.82/blender-2.82a-macOS.dmg",
+      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.82/blender-2.82a-macOS.dmg"
+    ],
+    "windows64": [
+      "https://download.blender.org/release/Blender2.82/blender-2.82a-windows64.zip",
+      "https://mirror.clarkson.edu/blender/release/Blender2.82/blender-2.82a-windows64.zip",
+      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.82/blender-2.82a-windows64.zip",
+      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.82/blender-2.82a-windows64.zip"
+    ],
+    "linux64": [
+      "https://download.blender.org/release/Blender2.82/blender-2.82a-linux64.tar.xz",
+      "https://mirror.clarkson.edu/blender/release/Blender2.82/blender-2.82a-linux64.tar.xz",
+      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.82/blender-2.82a-linux64.tar.xz",
+      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.82/blender-2.82a-linux64.tar.xz"
+    ],
+    "md5MacOS": "111a04380d92736e20bc213be2e641b8",
+    "md5Windows64": "70a94f402194c2b97d14f8eb705bf631",
+    "md5Linux64": "816fb39f98a7e0c3ce1cc2bece9143e9"
+  },
+  {
+    "blenderVersion": "2.79b",
+    "macOS": [
+      "https://mirror.clarkson.edu/blender/release/Blender2.79/blender-2.79b-macOS-10.6.zip",
+      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.79/blender-2.79b-macOS-10.6.zip",
+      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.79/blender-2.79b-macOS-10.6.zip"
+    ],
+    "windows64": [
+      "https://mirror.clarkson.edu/blender/release/Blender2.79/blender-2.79b-windows64.zip",
+      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.79/blender-2.79b-windows64.zip",
+      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.79/blender-2.79b-windows64.zip"
+    ],
+    "linux64": [
+      "https://mirror.clarkson.edu/blender/release/Blender2.79/blender-2.79b-linux-glibc219-x86_64.tar.bz2",
+      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.79/blender-2.79b-linux-glibc219-x86_64.tar.bz2",
+      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.79/blender-2.79b-linux-glibc219-x86_64.tar.bz2"
+    ],
+    "md5MacOS": "18d7c73def50d068e47034a73331f7ee",
+    "md5Windows64": "fb904ee151e1b9c4d942e96b3259cd5c",
+    "md5Linux64": "099555c6c8cb16bfcc0745dd303d692c"
+  }
+]

@@ -26,17 +26,23 @@ import java.nio.file.NoSuchFileException;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class Resources {
+public class SethlansResources {
 
     private final String filePath;
 
-    public Resources(String filePath) {
+    public SethlansResources(String filePath) {
         this.filePath = filePath;
         if (filePath.startsWith("/")) {
             throw new IllegalArgumentException("Only relative paths are supported, remove the leading slash");
         }
     }
 
+    /**
+     * Retrieves items from the resources folder.
+     *
+     * @return
+     * @throws NoSuchFileException
+     */
     public InputStream getResource() throws NoSuchFileException {
         ClassLoader classLoader = getClass().getClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream(filePath);

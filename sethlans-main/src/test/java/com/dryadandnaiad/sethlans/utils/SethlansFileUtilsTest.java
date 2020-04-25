@@ -132,4 +132,12 @@ class SethlansFileUtilsTest {
         file3.delete();
         zipFile.delete();
     }
+
+    @Test
+    void extractArchive() {
+    }
+
+    @Test
+    void extractDMG() {
+    }
 }
