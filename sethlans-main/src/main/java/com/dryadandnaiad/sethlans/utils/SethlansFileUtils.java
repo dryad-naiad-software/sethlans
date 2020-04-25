@@ -30,6 +30,7 @@ import javax.swing.*;
 import javax.xml.bind.DatatypeConverter;
 import java.awt.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -49,12 +50,12 @@ import java.util.List;
 @Slf4j
 public class SethlansFileUtils {
 
-    public static boolean isDirectoryEmpty(File directory) {
-        if (directory.isDirectory()) {
-            String[] files = directory.list();
-            return files == null || files.length <= 0;
+    public static boolean isDirectoryEmpty(File directory) throws FileNotFoundException {
+        if (!directory.isDirectory()) {
+            throw new FileNotFoundException("This is not a valid directory");
         }
-        return true;
+        String[] files = directory.list();
+        return files == null || files.length <= 0;
     }
 
     public static boolean fileCheckMD5(File file, String md5) throws IOException, NoSuchAlgorithmException {
@@ -76,12 +77,12 @@ public class SethlansFileUtils {
         return DatatypeConverter.printHexBinary(md.digest()).toLowerCase();
     }
 
-    public static Image createImage(String image, String description) {
+    public static Image createImageIcon(String image, String description) {
         URL imageURL = null;
         try {
             imageURL = new ClassPathResource(image).getURL();
         } catch (IOException e) {
-            log.error("Failed Creating Image. Resource not found. " + e.getMessage());
+            log.error("Failed Creating Image Icon. Resource not found. " + e.getMessage());
             System.exit(1);
         }
         return new ImageIcon(imageURL, description).getImage();
@@ -100,10 +101,10 @@ public class SethlansFileUtils {
                     File frame = new File(frameFileName);
                     zipFile.addFile(frame, parameters);
                 }
-                createdArchive = new File(rootDir + File.separator + zipFileName + ".zip");
             } else {
-                createdArchive = new File(rootDir + File.separator + zipFileName + ".zip");
+                log.info("Archive " + zipFileName + " already exists");
             }
+            createdArchive = new File(rootDir + File.separator + zipFileName + ".zip");
 
         } catch (ZipException e) {
             log.error(e.getMessage());
