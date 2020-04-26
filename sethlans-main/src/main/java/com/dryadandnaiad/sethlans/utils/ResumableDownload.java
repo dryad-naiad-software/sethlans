@@ -13,7 +13,7 @@ import java.net.URLConnection;
  * <p>
  * https://github.com/eugenp/tutorials/tree/master/core-java-modules/core-java-networking-2
  * <p>
- * File created by Mario Estrella on 4/26/2020.
+ * File File created by Mario Estrella on 4/26/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
