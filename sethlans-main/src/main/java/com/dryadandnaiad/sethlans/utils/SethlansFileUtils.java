@@ -133,21 +133,21 @@ public class SethlansFileUtils {
      * @param zipFileName
      * @return
      */
-    public static File createArchive(List<String> files, String rootDir, String zipFileName) {
+    public static File createZipArchive(List<String> files, String rootDir, String zipFileName) {
         File createdArchive = null;
         try {
             if (!new File(rootDir + File.separator + zipFileName + ".zip").exists()) {
-                log.debug("Creating Archive " + zipFileName);
+                log.debug("Creating Zip Archive " + zipFileName);
                 ZipFile zipFile = new ZipFile(rootDir + File.separator + zipFileName + ".zip");
                 ZipParameters parameters = new ZipParameters();
                 parameters.setCompressionMethod(CompressionMethod.DEFLATE);
                 parameters.setCompressionLevel(CompressionLevel.MAXIMUM);
-                for (String frameFileName : files) {
-                    File frame = new File(frameFileName);
-                    zipFile.addFile(frame, parameters);
+                for (String filename : files) {
+                    File file = new File(filename);
+                    zipFile.addFile(file, parameters);
                 }
             } else {
-                log.info("Archive " + zipFileName + " already exists");
+                log.info("Zip Archive " + zipFileName + " already exists");
             }
             createdArchive = new File(rootDir + File.separator + zipFileName + ".zip");
 
@@ -167,46 +167,45 @@ public class SethlansFileUtils {
      * @param deleteArchive
      * @return boolean
      */
-    public static boolean extractArchive(String toExtract, File extractLocation, boolean deleteArchive) {
-        File archive = new File(extractLocation + File.separator + toExtract);
+    public static boolean extractArchive(File toExtract, File extractLocation, boolean deleteArchive) {
         try {
-            if (archive.toString().contains("txz")) {
+            if (toExtract.toString().contains(".txz") || toExtract.toString().contains(".tar.xz")) {
                 extractLocation.mkdirs();
-                log.debug("Extracting " + archive + " to " + extractLocation);
+                log.debug("Extracting " + toExtract + " to " + extractLocation);
                 Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.XZ);
-                archiver.extract(archive, extractLocation);
+                archiver.extract(toExtract, extractLocation);
                 if (deleteArchive) {
-                    archive.delete();
+                    toExtract.delete();
                 }
                 return true;
             }
-            if (archive.toString().contains("tar.gz")) {
+            if (toExtract.toString().contains(".tar.gz")) {
                 extractLocation.mkdirs();
-                log.debug("Extracting " + archive + " to " + extractLocation);
+                log.debug("Extracting " + toExtract + " to " + extractLocation);
                 Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.GZIP);
-                archiver.extract(archive, extractLocation);
+                archiver.extract(toExtract, extractLocation);
                 if (deleteArchive) {
-                    archive.delete();
+                    toExtract.delete();
                 }
                 return true;
             }
-            if (archive.toString().contains("tar.bz2")) {
+            if (toExtract.toString().contains(".tar.bz2")) {
                 extractLocation.mkdirs();
-                log.debug("Extracting " + archive + " to " + extractLocation);
+                log.debug("Extracting " + toExtract + " to " + extractLocation);
                 Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.BZIP2);
-                archiver.extract(archive, extractLocation);
+                archiver.extract(toExtract, extractLocation);
                 if (deleteArchive) {
-                    archive.delete();
+                    toExtract.delete();
                 }
                 return true;
             }
-            if (archive.toString().contains("zip")) {
+            if (toExtract.toString().contains(".zip")) {
                 extractLocation.mkdirs();
-                ZipFile archiver = new ZipFile(archive);
-                log.debug("Extracting " + archive + " to " + extractLocation);
+                ZipFile archiver = new ZipFile(toExtract);
+                log.debug("Extracting " + toExtract + " to " + extractLocation);
                 archiver.extractAll(extractLocation.toString());
                 if (deleteArchive) {
-                    archive.delete();
+                    toExtract.delete();
                 }
 
                 return true;
@@ -223,7 +222,7 @@ public class SethlansFileUtils {
         return false;
     }
 
-    public static boolean extractDMG(String dmgLocation) {
+    public static boolean extractBlenderFromDMG(String dmgLocation) {
         if (SystemUtils.IS_OS_MAC) {
             try {
                 int exit = new ProcessExecutor().command("hdiutil mount " + dmgLocation)
