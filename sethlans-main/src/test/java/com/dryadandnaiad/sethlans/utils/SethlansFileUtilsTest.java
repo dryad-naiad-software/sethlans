@@ -18,11 +18,14 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.rauschig.jarchivelib.ArchiveFormat;
 import org.rauschig.jarchivelib.Archiver;
 import org.rauschig.jarchivelib.ArchiverFactory;
@@ -34,6 +37,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,32 +53,30 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 class SethlansFileUtilsTest {
 
-    File testDirectory;
+    File TEST_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + "testing");
 
     @BeforeEach
     void setUp() {
-        testDirectory = new File(SystemUtils.USER_HOME + File.separator + "testing");
-        testDirectory.mkdirs();
+        TEST_DIRECTORY.mkdirs();
 
     }
 
     @AfterEach
     void tearDown() {
-        testDirectory.delete();
+        FileSystemUtils.deleteRecursively(TEST_DIRECTORY);
     }
 
     @Test
     void isDirectoryEmpty() throws IOException {
-        assertThat(SethlansFileUtils.isDirectoryEmpty(testDirectory)).isTrue();
-        var file = new File(testDirectory + File.separator + "sample.txt");
+        assertThat(SethlansFileUtils.isDirectoryEmpty(TEST_DIRECTORY)).isTrue();
+        var file = new File(TEST_DIRECTORY + File.separator + "sample.txt");
         file.createNewFile();
-        assertThat(SethlansFileUtils.isDirectoryEmpty(testDirectory)).isFalse();
-        file.delete();
+        assertThat(SethlansFileUtils.isDirectoryEmpty(TEST_DIRECTORY)).isFalse();
     }
 
     @Test
     void fileCheckMD5() throws IOException, NoSuchAlgorithmException {
-        var file = new File(testDirectory + File.separator + "sample.txt");
+        var file = new File(TEST_DIRECTORY + File.separator + "sample.txt");
         file.createNewFile();
         var fileWriter = new FileWriter(file);
         var printWriter = new PrintWriter(fileWriter);
@@ -82,19 +84,17 @@ class SethlansFileUtilsTest {
         printWriter.close();
         var md5 = SethlansFileUtils.getMD5ofFile(file);
         assertThat(SethlansFileUtils.fileCheckMD5(file, md5)).isTrue();
-        file.delete();
     }
 
     @Test
     void getMD5ofFile() throws IOException, NoSuchAlgorithmException {
-        var file = new File(testDirectory + File.separator + "sample.txt");
+        var file = new File(TEST_DIRECTORY + File.separator + "sample.txt");
         file.createNewFile();
         var fileWriter = new FileWriter(file);
         var printWriter = new PrintWriter(fileWriter);
         printWriter.println(RandomStringUtils.random(4096, true, false));
         printWriter.close();
         assertThat(SethlansFileUtils.getMD5ofFile(file)).isNotNull();
-        file.delete();
     }
 
     @Test
@@ -108,95 +108,92 @@ class SethlansFileUtilsTest {
     @Test
     void createZipArchive() throws IOException {
         var archiveName = "testFile";
-        var zipFile = new File(testDirectory + File.separator + archiveName + ".zip");
+        var zipFile = new File(TEST_DIRECTORY + File.separator + archiveName + ".zip");
         assertThat(zipFile).doesNotExist();
         var files = createFiles();
-        var archive = SethlansFileUtils.createZipArchive(files, testDirectory.toString(), archiveName);
-        assertThat(archive.toString()).isEqualTo(testDirectory + File.separator + archiveName + ".zip");
+        var archive = SethlansFileUtils.createZipArchive(files, TEST_DIRECTORY.toString(), archiveName);
+        assertThat(archive.toString()).isEqualTo(TEST_DIRECTORY + File.separator + archiveName + ".zip");
         assertThat(archive.toString());
-        deleteFiles();
-        zipFile.delete();
     }
 
     @Test
     void extractArchive() throws IOException {
-        var archiveDir = new File(testDirectory + File.separator + "extracted");
+        var archiveDir = new File(TEST_DIRECTORY + File.separator + "extracted");
 
         var xzArchive = makeTxzArchive();
-        deleteFiles();
         assertThat(xzArchive).exists();
         assertThat(SethlansFileUtils.extractArchive(xzArchive, archiveDir, true)).isTrue();
         assertThat(SethlansFileUtils.isDirectoryEmpty(archiveDir)).isFalse();
-        FileSystemUtils.deleteRecursively(archiveDir);
 
         var gzArchive = makeTarGzArchive();
-        deleteFiles();
         assertThat(gzArchive).exists();
         assertThat(SethlansFileUtils.extractArchive(gzArchive, archiveDir, true)).isTrue();
         assertThat(SethlansFileUtils.isDirectoryEmpty(archiveDir)).isFalse();
-        FileSystemUtils.deleteRecursively(archiveDir);
 
         var bz2Archive = makeTarBz2Archive();
-        deleteFiles();
         assertThat(bz2Archive).exists();
         assertThat(SethlansFileUtils.extractArchive(bz2Archive, archiveDir, true)).isTrue();
         assertThat(SethlansFileUtils.isDirectoryEmpty(archiveDir)).isFalse();
-        FileSystemUtils.deleteRecursively(archiveDir);
 
         var files = createFiles();
-        var zipArchive = SethlansFileUtils.createZipArchive(files, testDirectory.toString(), "zipArchive");
-        deleteFiles();
+        var zipArchive = SethlansFileUtils.createZipArchive(files, TEST_DIRECTORY.toString(), "zipArchive");
         assertThat(SethlansFileUtils.extractArchive(zipArchive, archiveDir, true)).isTrue();
         assertThat(SethlansFileUtils.isDirectoryEmpty(archiveDir)).isFalse();
-        FileSystemUtils.deleteRecursively(archiveDir);
 
         var sevenZArchive = make7z();
-        deleteFiles();
         assertThat(sevenZArchive).exists();
         assertThat(SethlansFileUtils.extractArchive(sevenZArchive, archiveDir, true)).isFalse();
-        sevenZArchive.delete();
     }
 
     @Test
-    void extractBlenderFromDMG() {
+    @EnabledOnOs(OS.MAC)
+    void extractBlenderFromDMG() throws IOException, URISyntaxException {
+        val dmgName = TEST_DIRECTORY.toString() + File.separator + "blender-2.82-macOS.dmg";
+        val dmgURL = "https://download.blender.org/release/Blender2.82/blender-2.82-macOS.dmg";
+        ResumableDownload.downloadFileWithResume(dmgURL, dmgName);
+        var extractDirectory = new File(TEST_DIRECTORY + File.separator + "Blender.app");
+        assertThat(SethlansFileUtils.extractBlenderFromDMG(TEST_DIRECTORY + File.separator
+                + "blender-2.82-macOS.dmg", TEST_DIRECTORY.toString())).isTrue();
+        assertThat(extractDirectory).exists();
+        FileSystemUtils.deleteRecursively(extractDirectory);
     }
 
     private File make7z() throws IOException {
         var name = "archive.tar.7z";
-        File archive = new File(testDirectory + File.separator + name);
+        File archive = new File(TEST_DIRECTORY + File.separator + name);
         Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.SEVEN_Z);
-        archiver.create(name, testDirectory, fileListArray());
+        archiver.create(name, TEST_DIRECTORY, fileListArray());
         return archive;
     }
 
     private File makeTxzArchive() throws IOException {
         var name = "archive.tar.xz";
-        File archive = new File(testDirectory + File.separator + name);
+        File archive = new File(TEST_DIRECTORY + File.separator + name);
         Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.XZ);
-        archiver.create(name, testDirectory, fileListArray());
+        archiver.create(name, TEST_DIRECTORY, fileListArray());
         return archive;
     }
 
     private File makeTarGzArchive() throws IOException {
         var name = "archive.tar.gz";
-        File archive = new File(testDirectory + File.separator + name);
+        File archive = new File(TEST_DIRECTORY + File.separator + name);
         Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.GZIP);
-        archiver.create(name, testDirectory, fileListArray());
+        archiver.create(name, TEST_DIRECTORY, fileListArray());
         return archive;
     }
 
     private File makeTarBz2Archive() throws IOException {
         var name = "archive.tar.bz2";
-        File archive = new File(testDirectory + File.separator + name);
+        File archive = new File(TEST_DIRECTORY + File.separator + name);
         Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.BZIP2);
-        archiver.create(name, testDirectory, fileListArray());
+        archiver.create(name, TEST_DIRECTORY, fileListArray());
         return archive;
     }
 
     private List<String> createFiles() throws IOException {
-        var file1 = new File(testDirectory + File.separator + "sample.txt");
-        var file2 = new File(testDirectory + File.separator + "sample1.txt");
-        var file3 = new File(testDirectory + File.separator + "sample2.txt");
+        var file1 = new File(TEST_DIRECTORY + File.separator + "sample.txt");
+        var file2 = new File(TEST_DIRECTORY + File.separator + "sample1.txt");
+        var file3 = new File(TEST_DIRECTORY + File.separator + "sample2.txt");
         file1.createNewFile();
         file2.createNewFile();
         file3.createNewFile();
@@ -218,15 +215,6 @@ class SethlansFileUtilsTest {
         files.add(file3.toString());
         return files;
 
-    }
-
-    private void deleteFiles() {
-        var file1 = new File(testDirectory + File.separator + "sample.txt");
-        var file2 = new File(testDirectory + File.separator + "sample1.txt");
-        var file3 = new File(testDirectory + File.separator + "sample2.txt");
-        file1.delete();
-        file2.delete();
-        file3.delete();
     }
 
     private File[] fileListArray() throws IOException {

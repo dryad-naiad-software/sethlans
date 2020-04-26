@@ -222,20 +222,25 @@ public class SethlansFileUtils {
         return false;
     }
 
-    public static boolean extractBlenderFromDMG(String dmgLocation) {
+    /**
+     * @param dmgFile
+     * @return
+     */
+    public static boolean extractBlenderFromDMG(String dmgFile, String destination) {
         if (SystemUtils.IS_OS_MAC) {
             try {
-                int exit = new ProcessExecutor().command("hdiutil mount " + dmgLocation)
+                int exit = new ProcessExecutor().command("hdiutil", "mount", dmgFile)
                         .redirectOutput(Slf4jStream.ofCaller().asInfo()).execute().getExitValue();
-                log.debug("Exit is " + exit);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (TimeoutException e) {
-                e.printStackTrace();
+                if (exit > 0) {
+                    return false;
+                }
+                exit = new ProcessExecutor().command("cp", "-R", "/Volumes/Blender/Blender.app", destination)
+                        .redirectOutput(Slf4jStream.ofCaller().asInfo()).execute().getExitValue();
+                return exit <= 0;
+            } catch (IOException | InterruptedException | TimeoutException e) {
+                log.error(e.getMessage());
+                log.error(Throwables.getStackTraceAsString(e));
             }
-            return true;
         }
         return false;
     }
