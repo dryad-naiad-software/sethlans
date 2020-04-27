@@ -18,8 +18,9 @@ This takes a blend file argument and prints out some of its details, eg:
     Samples(Only for Cycles) = Int
     
 """
-import sys
+
 import blendfile
+import sys
 
 filepath = sys.argv[-1]
 
@@ -33,7 +34,6 @@ def listbase_iter(data, struct, listbase):
 
 def idprop_group_iter(idprops, ):
     return listbase_iter(idprops, b'data', b'group')
-
 
 
 def query_main_scene(filepath, callbacks):
@@ -142,7 +142,7 @@ frame_start, frame_end, frame_current, frame_skip = query_main_scene(filepath, [
 
 samples, = query_main_scene(filepath, [get_samples])
 
-
-print(scene_name, ",", engine, ",", frame_start, ",", frame_end, ",", frame_skip, ",", res_percent, ",", resolution_x,
-      ",", resolution_y,
-      ",", camera_name, ",", samples)
+print("{\"blenderFile\":" + "{\"sceneName\":\"" + scene_name + "\",\"blenderEngine\":\"" + engine + "\",\"frameStart\":"
+      + str(frame_start) + ",\"frameEnd\":" + str(frame_end) + ",\"frameStep\":" + str(frame_skip) + ",\"resPercent\":"
+      + str(res_percent) + ",\"resolutionX\":" + str(resolution_x) + ",\"resolutionY\":" + str(resolution_y)
+      + ",\"cameraName\":\"" + camera_name + "\",\"cyclesSamples\":" + str(samples) + "}}")

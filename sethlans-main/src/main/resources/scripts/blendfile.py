@@ -19,19 +19,16 @@
 # (c) 2009, At Mind B.V. - Jeroen Bakker
 # (c) 2014, Blender Foundation - Campbell Barton
 
-import gzip
 import logging
 import os
+
+import gzip
 import struct
 import tempfile
 
 log = logging.getLogger("blendfile")
 
 FILE_BUFFER_SIZE = 1024 * 1024
-
-
-class BlendFileError(Exception):
-    """Raised when there was an error reading/parsing a blend file."""
 
 
 # -----------------------------------------------------------------------------
@@ -77,9 +74,9 @@ def open_blend(filename, access="rb"):
             bfile.filepath_orig = filename
             return bfile
         else:
-            raise BlendFileError("filetype inside gzip not a blend")
+            raise Exception("filetype inside gzip not a blend")
     else:
-        raise BlendFileError("filetype not a blend or a gzip blend")
+        raise Exception("filetype not a blend or a gzip blend")
 
 
 def pad_up_4(offset):
@@ -147,13 +144,10 @@ class BlendFile:
         self.blocks.append(block)
 
         if not self.structs:
-            raise BlendFileError("No DNA1 block in file, this is not a valid .blend file!")
+            raise Exception("No DNA1 block in file, this is not a valid .blend file!")
 
         # cache (could lazy init, incase we never use?)
         self.block_from_offset = {block.addr_old: block for block in self.blocks if block.code != b'ENDB'}
-
-    def __repr__(self):
-        return '<%s %r>' % (self.__class__.__qualname__, self.handle)
 
     def __enter__(self):
         return self
@@ -380,7 +374,7 @@ class BlendFileBlock:
         self.refine_type_from_index(self.file.sdna_index_from_id[dna_type_id])
 
     def get_file_offset(self, path,
-                        default=...,
+                        default=Ellipsis,
                         sdna_index_refine=None,
                         base_index=0,
                         ):
@@ -407,7 +401,7 @@ class BlendFileBlock:
         return (self.file.handle.tell(), field.dna_name.array_size)
 
     def get(self, path,
-            default=...,
+            default=Ellipsis,
             sdna_index_refine=None,
             use_nil=True, use_str=True,
             base_index=0,
@@ -432,7 +426,7 @@ class BlendFileBlock:
         )
 
     def get_recursive_iter(self, path, path_root=b"",
-                           default=...,
+                           default=Ellipsis,
                            sdna_index_refine=None,
                            use_nil=True, use_str=True,
                            base_index=0,
@@ -454,12 +448,16 @@ class BlendFileBlock:
             else:
                 struct = self.file.structs[struct_index]
                 for f in struct.fields:
-                    yield from self.get_recursive_iter(
-                        f.dna_name.name_only, path_full, default, None, use_nil, use_str, 0)
+                    # Use "yield from" when Python2 is dropped
+                    for y in self.get_recursive_iter(
+                            f.dna_name.name_only, path_full, default, None, use_nil, use_str, 0):
+                        yield y
 
-    def items_recursive_iter(self, use_nil=True):
+    def items_recursive_iter(self):
         for k in self.keys():
-            yield from self.get_recursive_iter(k, use_nil=use_nil, use_str=False)
+            # Use "yield from" when Python2 is dropped
+            for y in self.get_recursive_iter(k, use_str=False):
+                yield y
 
     def get_data_hash(self):
         """
@@ -500,7 +498,7 @@ class BlendFileBlock:
     #   avoid inline pointer casting
     def get_pointer(
             self, path,
-            default=...,
+            default=Ellipsis,
             sdna_index_refine=None,
             base_index=0,
     ):
@@ -761,12 +759,12 @@ class DNAStruct:
                 return field.dna_type.field_from_path(header, handle, name_tail)
 
     def field_get(self, header, handle, path,
-                  default=...,
+                  default=Ellipsis,
                   use_nil=True, use_str=True,
                   ):
         field = self.field_from_path(header, handle, path)
         if field is None:
-            if default is not ...:
+            if default is not Ellipsis:
                 return default
             else:
                 raise KeyError("%r not found in %r (%r)" %

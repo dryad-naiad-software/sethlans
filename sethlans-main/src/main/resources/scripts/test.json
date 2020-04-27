@@ -1,0 +1,14 @@
+{
+  "blenderFile": {
+    "sceneName": "SCScene",
+    "blenderEngine": "CYCLES",
+    "frameStart": 1,
+    "frameEnd": 1000,
+    "frameStep": 1,
+    "resPercent": 50,
+    "resolutionX": 1920,
+    "resolutionY": 1080,
+    "cameraName": "OBCamera",
+    "cyclesSamples": 35
+  }
+}
