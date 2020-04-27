@@ -40,5 +40,5 @@ public class GPU {
     private boolean openCLDevice;
     private boolean cudaDevice;
     private boolean optixDevice;
-    private String deviceID;
+    private String gpuID;
 }

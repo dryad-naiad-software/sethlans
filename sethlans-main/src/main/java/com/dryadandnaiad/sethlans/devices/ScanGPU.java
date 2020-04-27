@@ -111,20 +111,20 @@ public class ScanGPU {
 
                 optix = modelName.contains("RTX");
 
-                String deviceID;
+                String gpuID;
 
                 if (optix) {
-                    deviceID = "OPTIX_" + num;
+                    gpuID = "OPTIX_" + num;
 
                 } else {
-                    deviceID = "CUDA_" + num;
+                    gpuID = "CUDA_" + num;
                 }
 
                 log.info("One CUDA Device found, adding to list.");
                 devices.add(GPU.builder()
                         .model(modelName)
                         .memory(ram.getValue())
-                        .deviceID(deviceID)
+                        .gpuID(gpuID)
                         .openCLDevice(false)
                         .cudaDevice(true)
                         .optixDevice(optix)
@@ -153,7 +153,7 @@ public class ScanGPU {
             clGetPlatformIDs(0, null, numPlatforms);
             String model;
             long memory;
-            String deviceID;
+            String gpuID;
             // Obtain the platform IDs
             cl_platform_id[] platforms = new cl_platform_id[numPlatforms[0]];
             clGetPlatformIDs(platforms.length, platforms, null);
@@ -183,18 +183,18 @@ public class ScanGPU {
 
                 if (!invalidModel) {
                     String openCLVersionString = JOCLSupport.getString(device, CL_DEVICE_OPENCL_C_VERSION);
-                    String openCLDeviceId = JOCLSupport.getString(device, CL_DEVICE_BOARD_NAME_AMD);
+                    String openCLgpuID = JOCLSupport.getString(device, CL_DEVICE_BOARD_NAME_AMD);
                     memory = JOCLSupport.getLong(device, CL_DEVICE_GLOBAL_MEM_SIZE);
                     float openCLVersion = Float.parseFloat(openCLVersionString.substring(openCLVersionString.toLowerCase().lastIndexOf("c") + 1));
-                    deviceID = "OPENCL_" + i;
-                    model = openCLDeviceId;
+                    gpuID = "OPENCL_" + i;
+                    model = openCLgpuID;
                     if (openCLVersion > 1.2) {
                         log.info("One OpenCL device found, adding to list");
                         log.debug("Open CL version " + openCLVersion);
                         devices.add(GPU.builder()
                                 .model(model)
                                 .memory(memory)
-                                .deviceID(deviceID)
+                                .gpuID(gpuID)
                                 .openCLDevice(true)
                                 .cudaDevice(false)
                                 .build());
