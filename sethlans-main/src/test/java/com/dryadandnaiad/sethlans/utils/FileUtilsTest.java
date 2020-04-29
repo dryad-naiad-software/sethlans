@@ -151,8 +151,8 @@ class FileUtilsTest {
         val dmgURL = "https://download.blender.org/release/Blender2.82/blender-2.82-macOS.dmg";
         DownloadFile.downloadFileWithResume(dmgURL, dmgName);
         var extractDirectory = new File(TEST_DIRECTORY + File.separator + "Blender.app");
-        assertThat(FileUtils.extractBlenderFromDMG(TEST_DIRECTORY + File.separator
-                + "blender-2.82-macOS.dmg", TEST_DIRECTORY.toString())).isTrue();
+        assertThat(FileUtils.extractBlenderFromDMG(dmgName, TEST_DIRECTORY.toString(), true)).isTrue();
+        assertThat(new File(dmgName)).doesNotExist();
         assertThat(extractDirectory).exists();
         FileSystemUtils.deleteRecursively(extractDirectory);
     }

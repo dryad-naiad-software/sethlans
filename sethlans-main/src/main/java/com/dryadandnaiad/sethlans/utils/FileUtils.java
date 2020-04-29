@@ -230,7 +230,7 @@ public class FileUtils {
      * @param dmgFile
      * @return
      */
-    public static boolean extractBlenderFromDMG(String dmgFile, String destination) {
+    public static boolean extractBlenderFromDMG(String dmgFile, String destination, boolean deleteArchive) {
         if (SystemUtils.IS_OS_MAC) {
             try {
                 int exit = new ProcessExecutor().command("hdiutil", "mount", dmgFile)
@@ -240,6 +240,12 @@ public class FileUtils {
                 }
                 exit = new ProcessExecutor().command("cp", "-R", "/Volumes/Blender/Blender.app", destination)
                         .redirectOutput(Slf4jStream.ofCaller().asInfo()).execute().getExitValue();
+                if (exit > 0) {
+                    return false;
+                }
+                exit = new ProcessExecutor().command("hdiutil", "unmount", "/Volumes/Blender/")
+                        .redirectOutput(Slf4jStream.ofCaller().asInfo()).execute().getExitValue();
+                new File(dmgFile).delete();
                 return exit <= 0;
             } catch (IOException | InterruptedException | TimeoutException e) {
                 log.error(e.getMessage());
