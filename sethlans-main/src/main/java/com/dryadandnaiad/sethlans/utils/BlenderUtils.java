@@ -106,10 +106,10 @@ public class BlenderUtils {
 
 
         if (jsonLocation.equals("resource")) {
-            blenderDownloadJSON = QueryUtils.readStringFromResource("blenderdownload.json");
+            blenderDownloadJSON = QueryUtils.getStringFromResource("blenderdownload.json");
 
         } else {
-            blenderDownloadJSON = QueryUtils.readStringFromFile(jsonLocation);
+            blenderDownloadJSON = QueryUtils.getStringFromFile(jsonLocation);
         }
         if (blenderDownloadJSON == null) {
             return null;

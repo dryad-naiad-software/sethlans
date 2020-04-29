@@ -110,5 +110,12 @@ class QueryUtilsTest {
 
     @Test
     void readStringFromFile() {
+        assertThat(QueryUtils.getStringFromFile("test")).isNull();
+    }
+
+    @Test
+    void readStringFromResource() {
+        assertThat(QueryUtils.getStringFromResource("blenderdownload.json")).isNotNull();
+        assertThat(QueryUtils.getStringFromResource("cookie")).isNull();
     }
 }

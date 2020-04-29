@@ -217,7 +217,7 @@ public class QueryUtils {
      * @param fileLocation
      * @return String format
      */
-    public static String readStringFromFile(String fileLocation) {
+    public static String getStringFromFile(String fileLocation) {
         FileInputStream input;
         try {
             input = new FileInputStream(fileLocation);
@@ -232,12 +232,12 @@ public class QueryUtils {
     /**
      * Reads a resource and returns it as a String.
      *
-     * @param resourceLocaiton
+     * @param resourceLocation
      * @return String format
      */
-    public static String readStringFromResource(String resourceLocaiton) {
+    public static String getStringFromResource(String resourceLocation) {
         try {
-            return IOUtils.toString(new ResourcesUtils(resourceLocaiton).getResource(),
+            return IOUtils.toString(new ResourcesUtils(resourceLocation).getResource(),
                     StandardCharsets.UTF_8.name());
         } catch (IOException e) {
             log.error("Resource cannot be read. " + e.getMessage());
