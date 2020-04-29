@@ -106,11 +106,9 @@ class QueryUtilsTest {
         time = QueryUtils.getRenderTime(output);
         assertNotNull(time);
         assertThat(time).isEqualTo("08:06");
-
-
     }
 
     @Test
-    void readJSONFromFile() {
+    void readStringFromFile() {
     }
 }

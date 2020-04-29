@@ -24,11 +24,11 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum OS {
-    WINDOWS_64("Windows_64"),
-    WINDOWS_32("Windows_32"),
+    WINDOWS_64("Windows64"),
+    WINDOWS_32("Windows32"),
     MACOS("MacOS"),
-    LINUX_64("Linux_64"),
-    LINUX_32("Linux_32");
+    LINUX_64("Linux64"),
+    LINUX_32("Linux32");
 
     private final String name;
 

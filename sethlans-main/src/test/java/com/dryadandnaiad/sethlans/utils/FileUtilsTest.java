@@ -51,7 +51,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Project: sethlans
  */
 @Slf4j
-class SethlansFileUtilsTest {
+class FileUtilsTest {
 
     File TEST_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + "testing");
 
@@ -68,10 +68,10 @@ class SethlansFileUtilsTest {
 
     @Test
     void isDirectoryEmpty() throws IOException {
-        assertThat(SethlansFileUtils.isDirectoryEmpty(TEST_DIRECTORY)).isTrue();
+        assertThat(FileUtils.isDirectoryEmpty(TEST_DIRECTORY)).isTrue();
         var file = new File(TEST_DIRECTORY + File.separator + "sample.txt");
         file.createNewFile();
-        assertThat(SethlansFileUtils.isDirectoryEmpty(TEST_DIRECTORY)).isFalse();
+        assertThat(FileUtils.isDirectoryEmpty(TEST_DIRECTORY)).isFalse();
     }
 
     @Test
@@ -82,8 +82,8 @@ class SethlansFileUtilsTest {
         var printWriter = new PrintWriter(fileWriter);
         printWriter.println(RandomStringUtils.random(4096, true, false));
         printWriter.close();
-        var md5 = SethlansFileUtils.getMD5ofFile(file);
-        assertThat(SethlansFileUtils.fileCheckMD5(file, md5)).isTrue();
+        var md5 = FileUtils.getMD5ofFile(file);
+        assertThat(FileUtils.fileCheckMD5(file, md5)).isTrue();
     }
 
     @Test
@@ -94,13 +94,13 @@ class SethlansFileUtilsTest {
         var printWriter = new PrintWriter(fileWriter);
         printWriter.println(RandomStringUtils.random(4096, true, false));
         printWriter.close();
-        assertThat(SethlansFileUtils.getMD5ofFile(file)).isNotNull();
+        assertThat(FileUtils.getMD5ofFile(file)).isNotNull();
     }
 
     @Test
     void createImageIcon() {
         String image = "images/sethlans_systray.png";
-        var imageIcon = SethlansFileUtils.createImageIcon(image, "Test Image");
+        var imageIcon = FileUtils.createImageIcon(image, "Test Image");
         assertThat(imageIcon).isNotNull();
         assertThat(imageIcon).isInstanceOf(Image.class);
     }
@@ -111,7 +111,7 @@ class SethlansFileUtilsTest {
         var zipFile = new File(TEST_DIRECTORY + File.separator + archiveName + ".zip");
         assertThat(zipFile).doesNotExist();
         var files = createFiles();
-        var archive = SethlansFileUtils.createZipArchive(files, TEST_DIRECTORY.toString(), archiveName);
+        var archive = FileUtils.createZipArchive(files, TEST_DIRECTORY.toString(), archiveName);
         assertThat(archive.toString()).isEqualTo(TEST_DIRECTORY + File.separator + archiveName + ".zip");
         assertThat(archive.toString());
     }
@@ -122,27 +122,27 @@ class SethlansFileUtilsTest {
 
         var xzArchive = makeTxzArchive();
         assertThat(xzArchive).exists();
-        assertThat(SethlansFileUtils.extractArchive(xzArchive, archiveDir, true)).isTrue();
-        assertThat(SethlansFileUtils.isDirectoryEmpty(archiveDir)).isFalse();
+        assertThat(FileUtils.extractArchive(xzArchive, archiveDir, true)).isTrue();
+        assertThat(FileUtils.isDirectoryEmpty(archiveDir)).isFalse();
 
         var gzArchive = makeTarGzArchive();
         assertThat(gzArchive).exists();
-        assertThat(SethlansFileUtils.extractArchive(gzArchive, archiveDir, true)).isTrue();
-        assertThat(SethlansFileUtils.isDirectoryEmpty(archiveDir)).isFalse();
+        assertThat(FileUtils.extractArchive(gzArchive, archiveDir, true)).isTrue();
+        assertThat(FileUtils.isDirectoryEmpty(archiveDir)).isFalse();
 
         var bz2Archive = makeTarBz2Archive();
         assertThat(bz2Archive).exists();
-        assertThat(SethlansFileUtils.extractArchive(bz2Archive, archiveDir, true)).isTrue();
-        assertThat(SethlansFileUtils.isDirectoryEmpty(archiveDir)).isFalse();
+        assertThat(FileUtils.extractArchive(bz2Archive, archiveDir, true)).isTrue();
+        assertThat(FileUtils.isDirectoryEmpty(archiveDir)).isFalse();
 
         var files = createFiles();
-        var zipArchive = SethlansFileUtils.createZipArchive(files, TEST_DIRECTORY.toString(), "zipArchive");
-        assertThat(SethlansFileUtils.extractArchive(zipArchive, archiveDir, true)).isTrue();
-        assertThat(SethlansFileUtils.isDirectoryEmpty(archiveDir)).isFalse();
+        var zipArchive = FileUtils.createZipArchive(files, TEST_DIRECTORY.toString(), "zipArchive");
+        assertThat(FileUtils.extractArchive(zipArchive, archiveDir, true)).isTrue();
+        assertThat(FileUtils.isDirectoryEmpty(archiveDir)).isFalse();
 
         var sevenZArchive = make7z();
         assertThat(sevenZArchive).exists();
-        assertThat(SethlansFileUtils.extractArchive(sevenZArchive, archiveDir, true)).isFalse();
+        assertThat(FileUtils.extractArchive(sevenZArchive, archiveDir, true)).isFalse();
     }
 
     @Test
@@ -150,9 +150,9 @@ class SethlansFileUtilsTest {
     void extractBlenderFromDMG() throws IOException, URISyntaxException {
         val dmgName = TEST_DIRECTORY.toString() + File.separator + "blender-2.82-macOS.dmg";
         val dmgURL = "https://download.blender.org/release/Blender2.82/blender-2.82-macOS.dmg";
-        ResumableDownload.downloadFileWithResume(dmgURL, dmgName);
+        DownloadFile.downloadFileWithResume(dmgURL, dmgName);
         var extractDirectory = new File(TEST_DIRECTORY + File.separator + "Blender.app");
-        assertThat(SethlansFileUtils.extractBlenderFromDMG(TEST_DIRECTORY + File.separator
+        assertThat(FileUtils.extractBlenderFromDMG(TEST_DIRECTORY + File.separator
                 + "blender-2.82-macOS.dmg", TEST_DIRECTORY.toString())).isTrue();
         assertThat(extractDirectory).exists();
         FileSystemUtils.deleteRecursively(extractDirectory);
@@ -224,5 +224,9 @@ class SethlansFileUtilsTest {
             fileArray[i] = new File(filesToArchive.get(i));
         }
         return fileArray;
+    }
+
+    @Test
+    void getExtensionFromString() {
     }
 }

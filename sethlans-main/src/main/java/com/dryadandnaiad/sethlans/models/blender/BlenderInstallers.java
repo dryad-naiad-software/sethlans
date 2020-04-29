@@ -17,7 +17,6 @@
 
 package com.dryadandnaiad.sethlans.models.blender;
 
-import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
@@ -28,7 +27,6 @@ import java.util.List;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Builder
 @Data
 public class BlenderInstallers {
     private String blenderVersion;

@@ -134,7 +134,7 @@ class ConfigUtils {
     }
 
     private static void loadPropertiesFileFromResource(Properties properties) throws IOException {
-        properties.load(new InputStreamReader(new SethlansResources("sethlans.properties").getResource(),
+        properties.load(new InputStreamReader(new ResourcesUtils("sethlans.properties").getResource(),
                 StandardCharsets.UTF_8));
     }
 

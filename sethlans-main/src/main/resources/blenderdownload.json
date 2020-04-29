@@ -26,16 +26,19 @@
   {
     "blenderVersion": "2.79b",
     "macOS": [
+      "https://download.blender.org/release/Blender2.79/blender-2.79b-macOS-10.6.zip",
       "https://mirror.clarkson.edu/blender/release/Blender2.79/blender-2.79b-macOS-10.6.zip",
       "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.79/blender-2.79b-macOS-10.6.zip",
       "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.79/blender-2.79b-macOS-10.6.zip"
     ],
     "windows64": [
+      "https://download.blender.org/release/Blender2.79/blender-2.79b-windows64.zip",
       "https://mirror.clarkson.edu/blender/release/Blender2.79/blender-2.79b-windows64.zip",
       "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.79/blender-2.79b-windows64.zip",
       "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.79/blender-2.79b-windows64.zip"
     ],
     "linux64": [
+      "https://download.blender.org/release/Blender2.79/blender-2.79b-linux-glibc219-x86_64.tar.bz2",
       "https://mirror.clarkson.edu/blender/release/Blender2.79/blender-2.79b-linux-glibc219-x86_64.tar.bz2",
       "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.79/blender-2.79b-linux-glibc219-x86_64.tar.bz2",
       "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.79/blender-2.79b-linux-glibc219-x86_64.tar.bz2"

@@ -167,7 +167,7 @@ public class QueryUtils {
     public static String getVersion() {
         final Properties properties = new Properties();
         try {
-            properties.load(new InputStreamReader(new SethlansResources("git.properties").getResource(),
+            properties.load(new InputStreamReader(new ResourcesUtils("git.properties").getResource(),
                     StandardCharsets.UTF_8));
             String buildNumber = String.format("%04d",
                     Integer.parseInt(properties.getProperty("git.total.commit.count")));
@@ -197,7 +197,7 @@ public class QueryUtils {
      * Parses and returns the string implementation of render time returned from Blender output
      *
      * @param output Blender's output
-     * @return String in hh:mm:ss format
+     * @return String in mm:ss format
      */
     public static String getRenderTime(String output) {
         String time = null;
@@ -212,18 +212,19 @@ public class QueryUtils {
     }
 
     /**
-     * Reads JSON from a file and returns it as a String.
+     * Reads a file and returns it as a String.
      *
-     * @param jsonLocation
-     * @return JSON in String format
+     * @param fileLocation
+     * @return String format
      */
-    public static String readJSONFromFile(String jsonLocation) {
-        FileInputStream input = null;
+    public static String readStringFromFile(String fileLocation) {
+        FileInputStream input;
         try {
-            input = new FileInputStream(jsonLocation);
+            input = new FileInputStream(fileLocation);
             return IOUtils.toString(input, StandardCharsets.UTF_8.toString());
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("File cannot be read. " + e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
         }
         return null;
     }

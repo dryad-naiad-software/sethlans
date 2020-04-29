@@ -19,7 +19,7 @@ import java.net.URLConnection;
  * Project: sethlans
  */
 @Slf4j
-public class ResumableDownload {
+public class DownloadFile {
 
     public static long downloadFile(String downloadUrl, String saveAsFileName) throws IOException, URISyntaxException {
         log.info("Downloading " + saveAsFileName + " from " + downloadUrl);
@@ -45,14 +45,16 @@ public class ResumableDownload {
         return bytesDownloaded;
     }
 
-    public static long downloadFileWithResume(String downloadUrl, String saveAsFileName) throws IOException, URISyntaxException {
+    public static long downloadFileWithResume(String downloadUrl, String saveAsFileName) throws IOException,
+            URISyntaxException {
         log.info("Downloading " + saveAsFileName + " from " + downloadUrl);
         File outputFile = new File(saveAsFileName);
         URLConnection downloadFileConnection = addFileResumeFunctionality(downloadUrl, outputFile);
         return transferDataAndGetBytesDownloaded(downloadFileConnection, outputFile);
     }
 
-    private static URLConnection addFileResumeFunctionality(String downloadUrl, File outputFile) throws IOException, URISyntaxException {
+    private static URLConnection addFileResumeFunctionality(String downloadUrl, File outputFile) throws IOException,
+            URISyntaxException {
         long existingFileSize = 0L;
         URLConnection downloadFileConnection = new URI(downloadUrl).toURL()
                 .openConnection();

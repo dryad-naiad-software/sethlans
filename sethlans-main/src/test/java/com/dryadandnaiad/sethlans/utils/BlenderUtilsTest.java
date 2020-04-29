@@ -17,7 +17,16 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.enums.OS;
+import org.apache.commons.lang3.SystemUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.FileSystemUtils;
+
+import java.io.File;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * File created by Mario Estrella on 4/26/2020.
@@ -27,12 +36,35 @@ import org.junit.jupiter.api.Test;
  */
 class BlenderUtilsTest {
 
+    static File TEST_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + "testing");
+
+    @BeforeEach
+    void setUp() {
+        TEST_DIRECTORY.mkdirs();
+
+    }
+
+    @AfterEach
+    void tearDown() {
+        FileSystemUtils.deleteRecursively(TEST_DIRECTORY);
+    }
+
     @Test
     void parseBlenderFile() {
     }
 
     @Test
     void downloadBlender() {
-        BlenderUtils.downloadBlender("2", "resource", "test");
+        assertThat(BlenderUtils
+                .downloadBlender("2.80b",
+                        "resource",
+                        TEST_DIRECTORY.toString(),
+                        OS.LINUX_64)).isFalse();
+        assertThat(BlenderUtils
+                .downloadBlender("2.79b",
+                        "resource",
+                        TEST_DIRECTORY.toString(),
+                        OS.LINUX_64)).isTrue();
+        assertThat(new File(TEST_DIRECTORY + File.separator + "2.79b-linux64.tar.bz2")).exists();
     }
 }

@@ -13,7 +13,7 @@ import java.security.NoSuchAlgorithmException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ResumableDownloadTest {
+class DownloadFileTest {
 
     static File TEST_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + "testing");
     static String FILE_URL = "http://ovh.net/files/1Mio.dat";
@@ -34,13 +34,13 @@ class ResumableDownloadTest {
 
     @Test
     void downloadFile() throws IOException, URISyntaxException, NoSuchAlgorithmException {
-        ResumableDownload.downloadFile(FILE_URL, FILE_NAME);
-        assertTrue(SethlansFileUtils.fileCheckMD5(new File(FILE_NAME), FILE_MD5_HASH));
+        DownloadFile.downloadFile(FILE_URL, FILE_NAME);
+        assertTrue(FileUtils.fileCheckMD5(new File(FILE_NAME), FILE_MD5_HASH));
     }
 
     @Test
     void downloadFileWithResume() throws IOException, URISyntaxException, NoSuchAlgorithmException {
-        ResumableDownload.downloadFileWithResume(FILE_URL, FILE_NAME);
-        assertTrue(SethlansFileUtils.fileCheckMD5(new File(FILE_NAME), FILE_MD5_HASH));
+        DownloadFile.downloadFileWithResume(FILE_URL, FILE_NAME);
+        assertTrue(FileUtils.fileCheckMD5(new File(FILE_NAME), FILE_MD5_HASH));
     }
 }

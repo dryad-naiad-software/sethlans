@@ -24,6 +24,7 @@ import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.model.enums.CompressionLevel;
 import net.lingala.zip4j.model.enums.CompressionMethod;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.rauschig.jarchivelib.ArchiveFormat;
 import org.rauschig.jarchivelib.Archiver;
@@ -56,7 +57,7 @@ import java.util.concurrent.TimeoutException;
  * Project: sethlans
  */
 @Slf4j
-public class SethlansFileUtils {
+public class FileUtils {
 
     /**
      * Checks if a directory is empty
@@ -243,6 +244,16 @@ public class SethlansFileUtils {
             }
         }
         return false;
+    }
+
+    public static String getExtensionFromString(String file) {
+        String extension = StringUtils.substringAfterLast(file, ".").toLowerCase();
+        if (extension.equals("gz") || extension.equals("bz2")) {
+            extension = ".tar." + extension;
+        } else {
+            extension = "." + extension;
+        }
+        return extension;
     }
 
 }
