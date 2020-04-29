@@ -26,11 +26,13 @@ import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.models.system.System;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import oshi.SystemInfo;
 import oshi.software.os.OperatingSystem;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
@@ -191,7 +193,14 @@ public class QueryUtils {
         return String.format("%02d:%02d:%02d", hour, minute, second);
     }
 
-    public static String getRenderTime(String output, String time) {
+    /**
+     * Parses and returns the string implementation of render time returned from Blender output
+     *
+     * @param output Blender's output
+     * @return String in hh:mm:ss format
+     */
+    public static String getRenderTime(String output) {
+        String time = null;
         String[] finished = output.split("\\|");
         for (String item : finished) {
             if (item.contains("Time:")) {
@@ -202,4 +211,20 @@ public class QueryUtils {
         return time.replaceAll("\\s", "");
     }
 
+    /**
+     * Reads JSON from a file and returns it as a String.
+     *
+     * @param jsonLocation
+     * @return JSON in String format
+     */
+    public static String readJSONFromFile(String jsonLocation) {
+        FileInputStream input = null;
+        try {
+            input = new FileInputStream(jsonLocation);
+            return IOUtils.toString(input, StandardCharsets.UTF_8.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

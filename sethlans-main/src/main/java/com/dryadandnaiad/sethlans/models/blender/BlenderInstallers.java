@@ -15,24 +15,27 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.utils;
+package com.dryadandnaiad.sethlans.models.blender;
 
-import org.junit.jupiter.api.Test;
+import lombok.Builder;
+import lombok.Data;
+
+import java.util.List;
 
 /**
- * File created by Mario Estrella on 4/26/2020.
+ * File created by Mario Estrella on 4/27/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-class BlenderUtilsTest {
-
-    @Test
-    void parseBlenderFile() {
-    }
-
-    @Test
-    void downloadBlender() {
-        BlenderUtils.downloadBlender("2", "resource", "test");
-    }
+@Builder
+@Data
+public class BlenderInstallers {
+    private String blenderVersion;
+    private List<String> windows64;
+    private List<String> macOS;
+    private List<String> linux64;
+    private String md5MacOS;
+    private String md5Windows64;
+    private String md5Linux64;
 }
