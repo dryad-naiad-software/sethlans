@@ -72,4 +72,8 @@ class BlenderUtilsTest {
     void availableBlenderVersions() {
         assertThat(BlenderUtils.availableBlenderVersions("resource")).hasSizeGreaterThan(0);
     }
+
+    @Test
+    void extractBlender() {
+    }
 }
