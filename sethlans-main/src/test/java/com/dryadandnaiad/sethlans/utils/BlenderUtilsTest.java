@@ -67,4 +67,9 @@ class BlenderUtilsTest {
                         OS.LINUX_64)).isTrue();
         assertThat(new File(TEST_DIRECTORY + File.separator + "2.79b-linux64.tar.bz2")).exists();
     }
+
+    @Test
+    void availableBlenderVersions() {
+        assertThat(BlenderUtils.availableBlenderVersions("resource")).hasSizeGreaterThan(0);
+    }
 }

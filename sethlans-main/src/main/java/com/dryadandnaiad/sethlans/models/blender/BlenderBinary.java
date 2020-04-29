@@ -25,8 +25,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-
 /**
  * File created by Mario Estrella on 4/1/2020.
  * Dryad and Naiad Software LLC
@@ -45,6 +43,5 @@ public class BlenderBinary {
     private OS blenderOS;
     private String blenderFile;
     private String blenderFileMd5;
-    private List<String> downloadMirrors;
     private boolean downloaded;
 }

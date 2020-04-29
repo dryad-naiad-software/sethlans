@@ -228,4 +228,21 @@ public class QueryUtils {
         }
         return null;
     }
+
+    /**
+     * Reads a resource and returns it as a String.
+     *
+     * @param resourceLocaiton
+     * @return String format
+     */
+    public static String readStringFromResource(String resourceLocaiton) {
+        try {
+            return IOUtils.toString(new ResourcesUtils(resourceLocaiton).getResource(),
+                    StandardCharsets.UTF_8.name());
+        } catch (IOException e) {
+            log.error("Resource cannot be read. " + e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+        }
+        return null;
+    }
 }

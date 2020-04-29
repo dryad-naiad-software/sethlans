@@ -38,7 +38,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,7 +74,7 @@ class FileUtilsTest {
     }
 
     @Test
-    void fileCheckMD5() throws IOException, NoSuchAlgorithmException {
+    void fileCheckMD5() throws IOException {
         var file = new File(TEST_DIRECTORY + File.separator + "sample.txt");
         file.createNewFile();
         var fileWriter = new FileWriter(file);
@@ -87,7 +86,7 @@ class FileUtilsTest {
     }
 
     @Test
-    void getMD5ofFile() throws IOException, NoSuchAlgorithmException {
+    void getMD5ofFile() throws IOException {
         var file = new File(TEST_DIRECTORY + File.separator + "sample.txt");
         file.createNewFile();
         var fileWriter = new FileWriter(file);

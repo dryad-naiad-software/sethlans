@@ -25,13 +25,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,37 +46,49 @@ public class BlenderUtils {
         return null;
     }
 
+    public static List<String> availableBlenderVersions(String jsonLocation) {
+        var availableVersions = new ArrayList<String>();
+        var blenderInstallersList = getInstallersList(jsonLocation);
+        for (BlenderInstallers blenderInstallers : blenderInstallersList) {
+            availableVersions.add(blenderInstallers.getBlenderVersion());
+        }
+        return availableVersions;
+    }
+
     public static boolean downloadBlender(String blenderVersion, String jsonLocation, String blenderDir, OS os) {
-        BlenderInstallers selectedInstallers = getInstallers(jsonLocation, blenderVersion);
+        BlenderInstallers selectedInstallers = getInstallersByVersion(getInstallersList(jsonLocation), blenderVersion);
         if (selectedInstallers == null) {
-            log.error("Blender version: " + blenderVersion + ", or JSON file location: " + jsonLocation + " is incorrect");
+            log.error("Blender version: " + blenderVersion + ", or JSON file location: "
+                    + jsonLocation + " is incorrect");
             return false;
         }
-        List<String> downloadURLs = null;
+        List<String> downloadURLs;
+        String md5;
 
         switch (os) {
             case MACOS:
                 downloadURLs = selectedInstallers.getMacOS();
+                md5 = selectedInstallers.getMd5MacOS();
                 break;
             case WINDOWS_64:
                 downloadURLs = selectedInstallers.getWindows64();
+                md5 = selectedInstallers.getMd5Windows64();
                 break;
             case LINUX_64:
                 downloadURLs = selectedInstallers.getLinux64();
+                md5 = selectedInstallers.getMd5Linux64();
                 break;
             default:
                 log.error("Invalid OS given. " + os.getName() + " is not supported.");
                 return false;
         }
-        File fileToSave = new File(blenderDir + File.separator +
+        var fileToSave = new File(blenderDir + File.separator +
                 blenderVersion + "-" + os.getName().toLowerCase() +
                 FileUtils.getExtensionFromString(downloadURLs.get(0)));
         for (String downloadURL : downloadURLs) {
             try {
-                long size = DownloadFile.downloadFileWithResume(downloadURL, fileToSave.toString());
-                if (size > 0) {
-                    return true;
-                }
+                DownloadFile.downloadFileWithResume(downloadURL, fileToSave.toString());
+                return FileUtils.fileCheckMD5(fileToSave, md5);
             } catch (FileNotFoundException e) {
                 log.error("Not found, either link is down or mirror is gone. " + e.getMessage());
                 log.error(Throwables.getStackTraceAsString(e));
@@ -89,37 +100,38 @@ public class BlenderUtils {
         return false;
     }
 
-    private static BlenderInstallers getInstallers(String jsonLocation, String blenderVersion) {
-        var mapper = new ObjectMapper();
+    private static List<BlenderInstallers> getInstallersList(String jsonLocation) {
         String blenderDownloadJSON;
         List<BlenderInstallers> blenderInstallersList;
 
+
         if (jsonLocation.equals("resource")) {
-            try {
-                blenderDownloadJSON = IOUtils.toString(new ResourcesUtils("blenderdownload.json").getResource(),
-                        StandardCharsets.UTF_8.name());
-            } catch (JsonProcessingException e) {
-                log.error("Unable to process JSON " + e.getMessage());
-                log.error(Throwables.getStackTraceAsString(e));
-                return null;
-            } catch (IOException e) {
-                log.error("Not a valid resource file");
-                log.error(Throwables.getStackTraceAsString(e));
-                return null;
-            }
+            blenderDownloadJSON = QueryUtils.readStringFromResource("blenderdownload.json");
 
         } else {
             blenderDownloadJSON = QueryUtils.readStringFromFile(jsonLocation);
         }
+        if (blenderDownloadJSON == null) {
+            return null;
+        }
+        var mapper = new ObjectMapper();
+
 
         try {
             blenderInstallersList = mapper.readValue(blenderDownloadJSON, new TypeReference<>() {
             });
+            return blenderInstallersList;
         } catch (JsonProcessingException e) {
             log.error("Unable to process JSON " + e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
             return null;
         }
+
+    }
+
+    private static BlenderInstallers getInstallersByVersion(List<BlenderInstallers> blenderInstallersList,
+                                                            String blenderVersion) {
+
         for (BlenderInstallers blenderInstallers : blenderInstallersList) {
             if (blenderInstallers.getBlenderVersion().equals(blenderVersion)) {
                 return blenderInstallers;
@@ -127,4 +139,6 @@ public class BlenderUtils {
         }
         return null;
     }
+
+
 }

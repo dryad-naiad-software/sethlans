@@ -80,11 +80,12 @@ public class FileUtils {
      * @param file
      * @param md5
      * @return boolean
-     * @throws IOException
-     * @throws NoSuchAlgorithmException
      */
-    public static boolean fileCheckMD5(File file, String md5) throws IOException, NoSuchAlgorithmException {
+    public static boolean fileCheckMD5(File file, String md5) {
         String hashValue = getMD5ofFile(file);
+        if (hashValue == null) {
+            return false;
+        }
         log.debug("Current file md5: " + hashValue + " Submitted md5: " + md5);
         return hashValue.equals(md5);
     }
@@ -94,20 +95,22 @@ public class FileUtils {
      *
      * @param file
      * @return String
-     * @throws IOException
-     * @throws NoSuchAlgorithmException
      */
-    public static String getMD5ofFile(File file) throws IOException, NoSuchAlgorithmException {
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        InputStream inputStream = Files.newInputStream(Paths.get(file.toString()));
-        DigestInputStream digestInputStream = new DigestInputStream(inputStream, md);
-        byte[] buffer = new byte[4096];
-        while (true) {
-            if (digestInputStream.read(buffer) <= -1) break;
+    public static String getMD5ofFile(File file) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            InputStream inputStream = Files.newInputStream(Paths.get(file.toString()));
+            DigestInputStream digestInputStream = new DigestInputStream(inputStream, md);
+            byte[] buffer = new byte[4096];
+            while (true) {
+                if (digestInputStream.read(buffer) <= -1) break;
+            }
+            inputStream.close();
+            return DatatypeConverter.printHexBinary(md.digest()).toLowerCase();
+        } catch (NoSuchAlgorithmException | IOException e) {
+            log.error(Throwables.getStackTraceAsString(e));
         }
-        inputStream.close();
-
-        return DatatypeConverter.printHexBinary(md.digest()).toLowerCase();
+        return null;
     }
 
     /**
