@@ -247,7 +247,9 @@ public class FileUtils {
                 }
                 exit = new ProcessExecutor().command("hdiutil", "unmount", "/Volumes/Blender/")
                         .redirectOutput(Slf4jStream.ofCaller().asInfo()).execute().getExitValue();
-                new File(dmgFile).delete();
+                if (deleteArchive) {
+                    new File(dmgFile).delete();
+                }
                 return exit <= 0;
             } catch (IOException | InterruptedException | TimeoutException e) {
                 log.error(e.getMessage());

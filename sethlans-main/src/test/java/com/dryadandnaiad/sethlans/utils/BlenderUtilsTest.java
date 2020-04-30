@@ -109,7 +109,7 @@ class BlenderUtilsTest {
                         "resource",
                         TEST_DIRECTORY.toString(),
                         OS.MACOS);
-        assertThat(BlenderUtils.extractBlender(TEST_DIRECTORY.toString(), OS.LINUX_64,
+        assertThat(BlenderUtils.extractBlender(TEST_DIRECTORY.toString(), OS.MACOS,
                 blenderDownload.toString(), SethlansMode.SERVER));
         assertThat(blenderDownload).exists();
     }
@@ -122,9 +122,9 @@ class BlenderUtilsTest {
                         "resource",
                         TEST_DIRECTORY.toString(),
                         OS.MACOS);
-        assertThat(BlenderUtils.extractBlender(TEST_DIRECTORY.toString(), OS.LINUX_64,
+        assertThat(BlenderUtils.extractBlender(TEST_DIRECTORY.toString(), OS.MACOS,
                 blenderDownload.toString(), SethlansMode.NODE));
-        assertThat(blenderDownload).exists();
+        assertThat(blenderDownload).doesNotExist();
     }
 
 }
