@@ -18,7 +18,6 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.OS;
-import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -85,8 +84,8 @@ class BlenderUtilsTest {
                         TEST_DIRECTORY.toString(),
                         OS.WINDOWS_64);
         assertThat(BlenderUtils.extractBlender(TEST_DIRECTORY.toString(), OS.WINDOWS_64,
-                blenderDownload.toString(), SethlansMode.SERVER));
-        assertThat(blenderDownload.exists());
+                blenderDownload.toString()));
+        assertThat(blenderDownload).doesNotExist();
     }
 
     @Test
@@ -97,33 +96,21 @@ class BlenderUtilsTest {
                         TEST_DIRECTORY.toString(),
                         OS.LINUX_64);
         assertThat(BlenderUtils.extractBlender(TEST_DIRECTORY.toString(), OS.LINUX_64,
-                blenderDownload.toString(), SethlansMode.NODE));
+                blenderDownload.toString()));
         assertThat(blenderDownload).doesNotExist();
     }
 
-    @Test
-    @EnabledOnOs(MAC)
-    void extractBlenderMacBinaryServer() {
-        var blenderDownload = BlenderUtils
-                .downloadBlender("2.82a",
-                        "resource",
-                        TEST_DIRECTORY.toString(),
-                        OS.MACOS);
-        assertThat(BlenderUtils.extractBlender(TEST_DIRECTORY.toString(), OS.MACOS,
-                blenderDownload.toString(), SethlansMode.SERVER));
-        assertThat(blenderDownload).exists();
-    }
 
     @Test
     @EnabledOnOs(MAC)
-    void extractBlenderMacBinaryNode() {
+    void extractBlenderMacBinary() {
         var blenderDownload = BlenderUtils
                 .downloadBlender("2.82a",
                         "resource",
                         TEST_DIRECTORY.toString(),
                         OS.MACOS);
         assertThat(BlenderUtils.extractBlender(TEST_DIRECTORY.toString(), OS.MACOS,
-                blenderDownload.toString(), SethlansMode.NODE));
+                blenderDownload.toString()));
         assertThat(blenderDownload).doesNotExist();
     }
 

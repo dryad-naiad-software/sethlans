@@ -122,28 +122,27 @@ class FileUtilsTest {
 
         var xzArchive = makeTxzArchive();
         assertThat(xzArchive).exists();
-        assertThat(FileUtils.extractArchive(xzArchive.toString(), archiveDir.toString(), true)).isTrue();
+        assertThat(FileUtils.extractArchive(xzArchive.toString(), archiveDir.toString())).isTrue();
         assertThat(FileUtils.isDirectoryEmpty(archiveDir)).isFalse();
 
         var gzArchive = makeTarGzArchive();
         assertThat(gzArchive).exists();
-        assertThat(FileUtils.extractArchive(gzArchive.toString(), archiveDir.toString(), true)).isTrue();
+        assertThat(FileUtils.extractArchive(gzArchive.toString(), archiveDir.toString())).isTrue();
         assertThat(FileUtils.isDirectoryEmpty(archiveDir)).isFalse();
 
         var bz2Archive = makeTarBz2Archive();
         assertThat(bz2Archive).exists();
-        assertThat(FileUtils.extractArchive(bz2Archive.toString(), archiveDir.toString(), true)).isTrue();
+        assertThat(FileUtils.extractArchive(bz2Archive.toString(), archiveDir.toString())).isTrue();
         assertThat(FileUtils.isDirectoryEmpty(archiveDir)).isFalse();
 
         var files = createFiles();
         var zipArchive = FileUtils.createZipArchive(files, TEST_DIRECTORY.toString(), "zipArchive");
-        assertThat(FileUtils.extractArchive(zipArchive.toString(), archiveDir.toString(), true)).isTrue();
+        assertThat(FileUtils.extractArchive(zipArchive.toString(), archiveDir.toString())).isTrue();
         assertThat(FileUtils.isDirectoryEmpty(archiveDir)).isFalse();
 
         var sevenZArchive = make7z();
         assertThat(sevenZArchive).exists();
-        assertThat(FileUtils.extractArchive(sevenZArchive.toString(), archiveDir.toString(),
-                true)).isFalse();
+        assertThat(FileUtils.extractArchive(sevenZArchive.toString(), archiveDir.toString())).isFalse();
     }
 
     @Test
@@ -153,7 +152,7 @@ class FileUtilsTest {
         val dmgURL = "https://download.blender.org/release/Blender2.82/blender-2.82-macOS.dmg";
         DownloadFile.downloadFileWithResume(dmgURL, dmgName);
         var extractDirectory = new File(TEST_DIRECTORY + File.separator + "Blender.app");
-        assertThat(FileUtils.extractBlenderFromDMG(dmgName, TEST_DIRECTORY.toString(), true)).isTrue();
+        assertThat(FileUtils.extractBlenderFromDMG(dmgName, TEST_DIRECTORY.toString())).isTrue();
         assertThat(new File(dmgName)).doesNotExist();
         assertThat(extractDirectory).exists();
         FileSystemUtils.deleteRecursively(extractDirectory);

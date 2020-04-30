@@ -168,10 +168,9 @@ public class FileUtils {
      *
      * @param extractFile
      * @param location
-     * @param deleteArchive
      * @return boolean
      */
-    public static boolean extractArchive(String extractFile, String location, boolean deleteArchive) {
+    public static boolean extractArchive(String extractFile, String location) {
         var toExtract = new File(extractFile);
         var extractLocation = new File(location);
         try {
@@ -180,9 +179,7 @@ public class FileUtils {
                 log.debug("Extracting " + toExtract + " to " + extractLocation);
                 Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.XZ);
                 archiver.extract(toExtract, extractLocation);
-                if (deleteArchive) {
-                    toExtract.delete();
-                }
+                toExtract.delete();
                 return true;
             }
             if (toExtract.toString().contains(".tar.gz")) {
@@ -190,9 +187,7 @@ public class FileUtils {
                 log.debug("Extracting " + toExtract + " to " + extractLocation);
                 Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.GZIP);
                 archiver.extract(toExtract, extractLocation);
-                if (deleteArchive) {
-                    toExtract.delete();
-                }
+                toExtract.delete();
                 return true;
             }
             if (toExtract.toString().contains(".tar.bz2")) {
@@ -200,9 +195,7 @@ public class FileUtils {
                 log.debug("Extracting " + toExtract + " to " + extractLocation);
                 Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.BZIP2);
                 archiver.extract(toExtract, extractLocation);
-                if (deleteArchive) {
-                    toExtract.delete();
-                }
+                toExtract.delete();
                 return true;
             }
             if (toExtract.toString().contains(".zip")) {
@@ -210,9 +203,7 @@ public class FileUtils {
                 ZipFile archiver = new ZipFile(toExtract);
                 log.debug("Extracting " + toExtract + " to " + extractLocation);
                 archiver.extractAll(extractLocation.toString());
-                if (deleteArchive) {
-                    toExtract.delete();
-                }
+                toExtract.delete();
 
                 return true;
             } else {
@@ -232,7 +223,7 @@ public class FileUtils {
      * @param dmgFile
      * @return
      */
-    public static boolean extractBlenderFromDMG(String dmgFile, String destination, boolean deleteArchive) {
+    public static boolean extractBlenderFromDMG(String dmgFile, String destination) {
         if (SystemUtils.IS_OS_MAC) {
             try {
                 int exit = new ProcessExecutor().command("hdiutil", "mount", dmgFile)
@@ -247,9 +238,8 @@ public class FileUtils {
                 }
                 exit = new ProcessExecutor().command("hdiutil", "unmount", "/Volumes/Blender/")
                         .redirectOutput(Slf4jStream.ofCaller().asInfo()).execute().getExitValue();
-                if (deleteArchive) {
-                    new File(dmgFile).delete();
-                }
+                new File(dmgFile).delete();
+
                 return exit <= 0;
             } catch (IOException | InterruptedException | TimeoutException e) {
                 log.error(e.getMessage());

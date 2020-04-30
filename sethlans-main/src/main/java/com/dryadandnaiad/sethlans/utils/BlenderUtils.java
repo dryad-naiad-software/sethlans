@@ -18,7 +18,6 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.OS;
-import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.blender.BlenderFile;
 import com.dryadandnaiad.sethlans.models.blender.BlenderInstallers;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -47,17 +46,11 @@ public class BlenderUtils {
         return null;
     }
 
-    public static boolean extractBlender(String blenderDir, OS os, String fileName, SethlansMode mode) {
-        boolean deleteArchive = false;
-
-        if (mode == SethlansMode.NODE) {
-            deleteArchive = true;
-        }
-
+    public static boolean extractBlender(String blenderDir, OS os, String fileName) {
         if (os == OS.MACOS) {
-            FileUtils.extractBlenderFromDMG(fileName, blenderDir, deleteArchive);
+            FileUtils.extractBlenderFromDMG(fileName, blenderDir);
         } else {
-            FileUtils.extractArchive(fileName, blenderDir, deleteArchive);
+            FileUtils.extractArchive(fileName, blenderDir);
         }
         return false;
     }
