@@ -47,24 +47,17 @@ public class BlenderUtils {
         return null;
     }
 
-    public static boolean extractBlender(String blenderDir, OS os, String blenderVersion, SethlansMode mode) {
+    public static boolean extractBlender(String blenderDir, OS os, String fileName, SethlansMode mode) {
         boolean deleteArchive = false;
 
         if (mode == SethlansMode.NODE) {
             deleteArchive = true;
         }
 
-        switch (os) {
-            case MACOS:
-                //FileUtils.extractBlenderFromDMG()
-                break;
-            case LINUX_64:
-                //FileUtils.extractArchive();
-                break;
-            case WINDOWS_64:
-                //FileUtils.extractArchive();
-                break;
-
+        if (os == OS.MACOS) {
+            FileUtils.extractBlenderFromDMG(fileName, blenderDir, deleteArchive);
+        } else {
+            FileUtils.extractArchive(fileName, blenderDir, deleteArchive);
         }
         return false;
     }
@@ -78,12 +71,12 @@ public class BlenderUtils {
         return availableVersions;
     }
 
-    public static boolean downloadBlender(String blenderVersion, String jsonLocation, String blenderDir, OS os) {
+    public static File downloadBlender(String blenderVersion, String jsonLocation, String blenderDir, OS os) {
         BlenderInstallers selectedInstallers = getInstallersByVersion(getInstallersList(jsonLocation), blenderVersion);
         if (selectedInstallers == null) {
             log.error("Blender version: " + blenderVersion + ", or JSON file location: "
                     + jsonLocation + " is incorrect");
-            return false;
+            return null;
         }
         List<String> downloadURLs;
         String md5;
@@ -103,7 +96,7 @@ public class BlenderUtils {
                 break;
             default:
                 log.error("Invalid OS given. " + os.getName() + " is not supported.");
-                return false;
+                return null;
         }
         var fileToSave = new File(blenderDir + File.separator +
                 blenderVersion + "-" + os.getName().toLowerCase() +
@@ -111,16 +104,20 @@ public class BlenderUtils {
         for (String downloadURL : downloadURLs) {
             try {
                 DownloadFile.downloadFileWithResume(downloadURL, fileToSave.toString());
-                return FileUtils.fileCheckMD5(fileToSave, md5);
+                if (FileUtils.fileCheckMD5(fileToSave, md5)) {
+                    return fileToSave;
+                } else {
+                    return null;
+                }
             } catch (FileNotFoundException e) {
                 log.error("Not found, either link is down or mirror is gone. " + e.getMessage());
                 log.error(Throwables.getStackTraceAsString(e));
             } catch (IOException | URISyntaxException e) {
                 log.error(Throwables.getStackTraceAsString(e));
-                return false;
+                return null;
             }
         }
-        return false;
+        return null;
     }
 
     private static List<BlenderInstallers> getInstallersList(String jsonLocation) {

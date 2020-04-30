@@ -166,12 +166,14 @@ public class FileUtils {
      * Extracts xz, bzip, gzip and zip files.
      * Supports files with extension txz, tar.gz, tar.bz2 and zip
      *
-     * @param toExtract
-     * @param extractLocation
+     * @param extractFile
+     * @param location
      * @param deleteArchive
      * @return boolean
      */
-    public static boolean extractArchive(File toExtract, File extractLocation, boolean deleteArchive) {
+    public static boolean extractArchive(String extractFile, String location, boolean deleteArchive) {
+        var toExtract = new File(extractFile);
+        var extractLocation = new File(location);
         try {
             if (toExtract.toString().contains(".txz") || toExtract.toString().contains(".tar.xz")) {
                 extractLocation.mkdirs();
@@ -257,7 +259,7 @@ public class FileUtils {
 
     public static String getExtensionFromString(String file) {
         String extension = StringUtils.substringAfterLast(file, ".").toLowerCase();
-        if (extension.equals("gz") || extension.equals("bz2")) {
+        if (extension.equals("gz") || extension.equals("bz2") || extension.equals("xz")) {
             extension = ".tar." + extension;
         } else {
             extension = "." + extension;

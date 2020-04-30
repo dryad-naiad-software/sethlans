@@ -18,15 +18,18 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.OS;
+import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.condition.OS.MAC;
 
 /**
  * File created by Mario Estrella on 4/26/2020.
@@ -59,13 +62,14 @@ class BlenderUtilsTest {
                 .downloadBlender("2.80b",
                         "resource",
                         TEST_DIRECTORY.toString(),
-                        OS.LINUX_64)).isFalse();
-        assertThat(BlenderUtils
+                        OS.LINUX_64)).isNull();
+        var blenderDownload = BlenderUtils
                 .downloadBlender("2.79b",
                         "resource",
                         TEST_DIRECTORY.toString(),
-                        OS.LINUX_64)).isTrue();
-        assertThat(new File(TEST_DIRECTORY + File.separator + "2.79b-linux64.tar.bz2")).exists();
+                        OS.LINUX_64);
+        assertThat(blenderDownload).isNotNull();
+        assertThat(blenderDownload).exists();
     }
 
     @Test
@@ -74,6 +78,53 @@ class BlenderUtilsTest {
     }
 
     @Test
-    void extractBlender() {
+    void extractBlenderWindowsBinary() {
+        var blenderDownload = BlenderUtils
+                .downloadBlender("2.82a",
+                        "resource",
+                        TEST_DIRECTORY.toString(),
+                        OS.WINDOWS_64);
+        assertThat(BlenderUtils.extractBlender(TEST_DIRECTORY.toString(), OS.WINDOWS_64,
+                blenderDownload.toString(), SethlansMode.SERVER));
+        assertThat(blenderDownload.exists());
     }
+
+    @Test
+    void extractBlenderLinuxBinary() {
+        var blenderDownload = BlenderUtils
+                .downloadBlender("2.82a",
+                        "resource",
+                        TEST_DIRECTORY.toString(),
+                        OS.LINUX_64);
+        assertThat(BlenderUtils.extractBlender(TEST_DIRECTORY.toString(), OS.LINUX_64,
+                blenderDownload.toString(), SethlansMode.NODE));
+        assertThat(blenderDownload).doesNotExist();
+    }
+
+    @Test
+    @EnabledOnOs(MAC)
+    void extractBlenderMacBinaryServer() {
+        var blenderDownload = BlenderUtils
+                .downloadBlender("2.82a",
+                        "resource",
+                        TEST_DIRECTORY.toString(),
+                        OS.MACOS);
+        assertThat(BlenderUtils.extractBlender(TEST_DIRECTORY.toString(), OS.LINUX_64,
+                blenderDownload.toString(), SethlansMode.SERVER));
+        assertThat(blenderDownload).exists();
+    }
+
+    @Test
+    @EnabledOnOs(MAC)
+    void extractBlenderMacBinaryNode() {
+        var blenderDownload = BlenderUtils
+                .downloadBlender("2.82a",
+                        "resource",
+                        TEST_DIRECTORY.toString(),
+                        OS.MACOS);
+        assertThat(BlenderUtils.extractBlender(TEST_DIRECTORY.toString(), OS.LINUX_64,
+                blenderDownload.toString(), SethlansMode.NODE));
+        assertThat(blenderDownload).exists();
+    }
+
 }
