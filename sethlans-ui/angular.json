@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "sethlans-ui"
+    }
+  },
+  "defaultProject": "sethlans-ui",
+  "cli": {
+    "analytics": "fc44cd1c-811f-4267-9369-457ac0880994"
+  }
 }
