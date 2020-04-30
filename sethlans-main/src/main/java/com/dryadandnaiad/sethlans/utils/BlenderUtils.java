@@ -43,7 +43,7 @@ import java.util.List;
 @Slf4j
 public class BlenderUtils {
 
-    public static BlenderFile parseBlenderFile(String blenderFile, String scriptsDir, String pythonBinary) {
+    public static BlenderFile parseBlenderFile(String blenderFile, String scriptsDir, String blenderDir) {
         return null;
     }
 
