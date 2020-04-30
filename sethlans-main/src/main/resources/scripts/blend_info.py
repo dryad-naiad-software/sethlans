@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 import json
 import sys
+from pathlib import Path
+
 from blender_asset_tracer import blendfile
 from blender_asset_tracer.blendfile import iterators
-from pathlib import Path
 
 if len(sys.argv) != 2:
     print(f'Usage: {sys.argv[0]} somefile.blend', file=sys.stderr)
@@ -17,11 +18,16 @@ window_managers = bf.find_blocks_from_code(b'WM')
 assert window_managers, 'The Blend file has no window manager'
 window_manager = window_managers[0]
 
-# Get the scene from the first window.
-windows = window_manager.get_pointer((b'windows', b'first'))
-for window in iterators.listbase(windows):
-    scene = window.get_pointer(b'scene')
-    break
+# Get the scene from the first window. If key error is returned then use the old method of getting scene.
+try:
+    windows = window_manager.get_pointer((b'windows', b'first'))
+    for window in iterators.listbase(windows):
+        scene = window.get_pointer(b'scene')
+        break
+except KeyError as e:
+    for window in iterators.listbase(windows):
+        screen = window.get_pointer(b'screen')
+        scene = screen.get_pointer(b'scene')
 
 # BAT can only return simple values, so it can't return the embedded
 # struct 'r'. 'r.engine' is a simple string, though.
