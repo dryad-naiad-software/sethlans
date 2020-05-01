@@ -42,15 +42,25 @@ import java.util.List;
 @Slf4j
 public class BlenderUtils {
 
-    public static BlenderFile parseBlenderFile(String blenderFile, String scriptsDir, String blenderDir) {
+    public static BlenderFile parseBlenderFile(String blenderFile, String scriptsDir, String pythonDir) {
         return null;
     }
 
-    public static boolean extractBlender(String blenderDir, OS os, String fileName) {
+    public static boolean extractBlender(String blenderDir, OS os, String fileName, String version) {
+        var directoryName = new File(blenderDir +
+                File.separator + "blender-" + version + "-" + os.getName().toLowerCase());
         if (os == OS.MACOS) {
-            FileUtils.extractBlenderFromDMG(fileName, blenderDir);
+            if (FileUtils.extractBlenderFromDMG(fileName, blenderDir)) {
+                var directories = FileUtils.listDirectories(blenderDir);
+                return new File(blenderDir + File.separator + directories.iterator().next())
+                        .renameTo(directoryName);
+            }
         } else {
-            FileUtils.extractArchive(fileName, blenderDir);
+            if (FileUtils.extractArchive(fileName, blenderDir)) {
+                var directories = FileUtils.listDirectories(blenderDir);
+                return new File(blenderDir + File.separator + directories.iterator().next())
+                        .renameTo(directoryName);
+            }
         }
         return false;
     }

@@ -48,7 +48,10 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * File created by Mario Estrella on 4/23/2020.
@@ -141,7 +144,7 @@ public class FileUtils {
         File createdArchive = null;
         try {
             if (!new File(rootDir + File.separator + zipFileName + ".zip").exists()) {
-                log.debug("Creating Zip Archive " + zipFileName);
+                log.info("Creating Zip Archive " + zipFileName);
                 ZipFile zipFile = new ZipFile(rootDir + File.separator + zipFileName + ".zip");
                 ZipParameters parameters = new ZipParameters();
                 parameters.setCompressionMethod(CompressionMethod.DEFLATE);
@@ -176,7 +179,7 @@ public class FileUtils {
         try {
             if (toExtract.toString().contains(".txz") || toExtract.toString().contains(".tar.xz")) {
                 extractLocation.mkdirs();
-                log.debug("Extracting " + toExtract + " to " + extractLocation);
+                log.info("Extracting " + toExtract + " to " + extractLocation);
                 Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.XZ);
                 archiver.extract(toExtract, extractLocation);
                 toExtract.delete();
@@ -184,7 +187,7 @@ public class FileUtils {
             }
             if (toExtract.toString().contains(".tar.gz")) {
                 extractLocation.mkdirs();
-                log.debug("Extracting " + toExtract + " to " + extractLocation);
+                log.info("Extracting " + toExtract + " to " + extractLocation);
                 Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.GZIP);
                 archiver.extract(toExtract, extractLocation);
                 toExtract.delete();
@@ -192,7 +195,7 @@ public class FileUtils {
             }
             if (toExtract.toString().contains(".tar.bz2")) {
                 extractLocation.mkdirs();
-                log.debug("Extracting " + toExtract + " to " + extractLocation);
+                log.info("Extracting " + toExtract + " to " + extractLocation);
                 Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.BZIP2);
                 archiver.extract(toExtract, extractLocation);
                 toExtract.delete();
@@ -201,10 +204,9 @@ public class FileUtils {
             if (toExtract.toString().contains(".zip")) {
                 extractLocation.mkdirs();
                 ZipFile archiver = new ZipFile(toExtract);
-                log.debug("Extracting " + toExtract + " to " + extractLocation);
+                log.info("Extracting " + toExtract + " to " + extractLocation);
                 archiver.extractAll(extractLocation.toString());
                 toExtract.delete();
-
                 return true;
             } else {
                 log.error("Unsupported archive extension/format provided.");
@@ -249,6 +251,10 @@ public class FileUtils {
         return false;
     }
 
+    /**
+     * @param file
+     * @return
+     */
     public static String getExtensionFromString(String file) {
         String extension = StringUtils.substringAfterLast(file, ".").toLowerCase();
         if (extension.equals("gz") || extension.equals("bz2") || extension.equals("xz")) {
@@ -257,6 +263,40 @@ public class FileUtils {
             extension = "." + extension;
         }
         return extension;
+    }
+
+    /**
+     * @param file
+     * @return
+     */
+    public static String removeExtensionFromString(String file) {
+        String fileName = StringUtils.substringBeforeLast(file, ".").toLowerCase();
+        if (fileName.contains(".tar")) {
+            fileName = StringUtils.substringBeforeLast(fileName, ".").toLowerCase();
+        }
+        return fileName;
+    }
+
+    /**
+     * @param dir
+     * @return
+     */
+    public static Set<String> listFiles(String dir) {
+        return Stream.of(new File(dir).listFiles())
+                .filter(file -> !file.isDirectory())
+                .map(File::getName)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * @param dir
+     * @return
+     */
+    public static Set<String> listDirectories(String dir) {
+        return Stream.of(new File(dir).listFiles())
+                .filter(file -> file.isDirectory())
+                .map(File::getName)
+                .collect(Collectors.toSet());
     }
 
 }

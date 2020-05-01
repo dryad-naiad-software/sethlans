@@ -91,7 +91,7 @@ public class QueryUtils {
                 return OS.LINUX_32;
             }
         }
-        return null;
+        return OS.UNSUPPORTED;
     }
 
     /**
