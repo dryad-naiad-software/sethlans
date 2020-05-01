@@ -18,6 +18,7 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.OS;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +37,7 @@ import static org.junit.jupiter.api.condition.OS.MAC;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Slf4j
 class BlenderUtilsTest {
 
     static File TEST_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + "testing");
@@ -51,7 +53,17 @@ class BlenderUtilsTest {
     }
 
     @Test
-    void parseBlenderFile() {
+    void parseBlendFile() {
+        var scriptDir = TEST_DIRECTORY + File.separator + "scripts";
+        new File(scriptDir).mkdirs();
+        var binaryDir = TEST_DIRECTORY + File.separator + "binaries";
+        new File(binaryDir).mkdirs();
+        var pythonDir = binaryDir + File.separator + "python";
+        PythonUtils.copyPythonArchiveToDisk(binaryDir, QueryUtils.getOS());
+        PythonUtils.copyAndExtractScripts(scriptDir);
+        PythonUtils.installPython(binaryDir, QueryUtils.getOS());
+        String blenderFile = SystemUtils.USER_HOME + File.separator + "Desktop" + File.separator + "wasp_bot.blend";
+        log.debug(BlenderUtils.parseBlendFile(blenderFile, scriptDir, pythonDir).toString());
     }
 
     @Test

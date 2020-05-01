@@ -18,13 +18,15 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.OS;
-import com.dryadandnaiad.sethlans.models.blender.BlenderFile;
+import com.dryadandnaiad.sethlans.models.blender.BlendFile;
 import com.dryadandnaiad.sethlans.models.blender.BlenderInstallers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
+import org.zeroturnaround.exec.InvalidExitValueException;
+import org.zeroturnaround.exec.ProcessExecutor;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,6 +34,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 /**
  * File created by Mario Estrella on 4/26/2020.
@@ -42,8 +45,45 @@ import java.util.List;
 @Slf4j
 public class BlenderUtils {
 
-    public static BlenderFile parseBlenderFile(String blenderFile, String scriptsDir, String pythonDir) {
-        return null;
+    public static BlendFile parseBlendFile(String blendFile, String scriptsDir, String pythonDir) {
+        var os = QueryUtils.getOS();
+        String pythonBinary;
+        String script = scriptsDir + File.separator + "blend_info.py";
+        switch (os) {
+            case WINDOWS_64:
+                pythonBinary = pythonDir + File.separator + "bin" + File.separator + "python.exe";
+                break;
+            case LINUX_64:
+            case MACOS:
+                pythonBinary = pythonDir + File.separator + "bin" + File.separator + "python3.7m";
+                break;
+            default:
+                log.error("Operating System not supported. " + os.getName());
+                return null;
+        }
+
+        String output;
+        try {
+            output = new ProcessExecutor().command(pythonBinary, script, blendFile)
+                    .readOutput(true).exitValues(0).execute().outputUTF8();
+        } catch (InvalidExitValueException e) {
+            log.error("Process exited with " + e.getExitValue());
+            log.error(e.getMessage());
+            return null;
+        } catch (InterruptedException | IOException | TimeoutException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            return null;
+        }
+        var mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(output, new TypeReference<>() {
+            });
+        } catch (JsonProcessingException e) {
+            log.error("Unable to process JSON " + e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            return null;
+        }
     }
 
     public static boolean extractBlender(String blenderDir, OS os, String fileName, String version) {

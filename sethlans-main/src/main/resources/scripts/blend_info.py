@@ -41,12 +41,12 @@ res_percent = scene[b'r', b'size']
 
 render_info = {
     'engine': engine,
-    'frame_start': frame_start,
-    'frame_end': frame_end,
-    'frame_skip': frame_skip,
-    'res_percent': res_percent,
-    'resolution_x': res_x,
-    'resolution_y': res_y,
+    'frameStart': frame_start,
+    'frameEnd': frame_end,
+    'frameSkip': frame_skip,
+    'resPercent': res_percent,
+    'resolutionX': res_x,
+    'resolutionY': res_y
 }
 
 json.dump(render_info, sys.stdout, indent=4, sort_keys=False)

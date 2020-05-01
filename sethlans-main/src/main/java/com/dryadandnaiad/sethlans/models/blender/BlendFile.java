@@ -18,9 +18,10 @@
 package com.dryadandnaiad.sethlans.models.blender;
 
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * File created by Mario Estrella on 4/26/2020.
@@ -29,17 +30,14 @@ import lombok.Data;
  * Project: sethlans
  */
 @Data
-@AllArgsConstructor
-@Builder
-public class BlenderFile {
-    private String sceneName;
+public class BlendFile {
     private BlenderEngine engine;
     private int frameStart;
     private int frameEnd;
-    private int frameStep;
+    private int frameSkip;
     private int resPercent;
     private int resolutionX;
     private int resolutionY;
-    private String cameraName;
-    private int cyclesSamples;
+    private List<String> cameras = new ArrayList<>();
+    private String scene;
 }
