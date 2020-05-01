@@ -58,7 +58,6 @@ class FileUtilsTest {
     @BeforeEach
     void setUp() {
         TEST_DIRECTORY.mkdirs();
-
     }
 
     @AfterEach

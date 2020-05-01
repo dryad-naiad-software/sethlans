@@ -17,6 +17,7 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.enums.OS;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,41 +35,43 @@ import java.nio.file.Paths;
  */
 @Slf4j
 public class PythonUtils {
+    static String WINDOWS_ARCHIVE = "python3.7-windows.zip";
+    static String LINUX_ARCHIVE = "python3.7-linux.zip";
+    static String MACOS_ARCHIVE = "python3.7-macos.zip";
 
-    public static File copyPythonArchiveToDisk(String binaryDir) {
-        var os = QueryUtils.getOS();
+    public static boolean copyPythonArchiveToDisk(String binaryDir, OS os) {
         String filename;
         String path;
         InputStream inputStream;
         try {
             switch (os) {
                 case WINDOWS_64:
-                    log.info("Downloading Python 3.7 binary for Windows.");
-                    filename = "python3.7-windows.zip";
+                    log.info("Downloading Python binary for Windows.");
+                    filename = WINDOWS_ARCHIVE;
                     inputStream = new ResourcesUtils("python/" + filename).getResource();
                     path = binaryDir + File.separator + filename;
                     Files.copy(inputStream, Paths.get(path));
                     inputStream.close();
-                    log.info("Python 3.7 binary for Windows downloaded.");
-                    return new File(path);
+                    log.info("Python binary for Windows downloaded.");
+                    return new File(path).exists();
                 case LINUX_64:
-                    log.info("Downloading Python 3.7 binary for Linux.");
-                    filename = "python3.7-linux.zip";
+                    log.info("Downloading Python binary for Linux.");
+                    filename = LINUX_ARCHIVE;
                     inputStream = new ResourcesUtils("python/" + filename).getResource();
                     path = binaryDir + File.separator + filename;
                     Files.copy(inputStream, Paths.get(path));
                     inputStream.close();
-                    log.info("Python 3.7 binary for Linux downloaded.");
-                    return new File(path);
+                    log.info("Python binary for Linux downloaded.");
+                    return new File(path).exists();
                 case MACOS:
-                    log.info("Downloading Python 3.7 binary for MacOS.");
-                    filename = "python3.7-macos.zip";
+                    log.info("Downloading Python binary for MacOS.");
+                    filename = MACOS_ARCHIVE;
                     inputStream = new ResourcesUtils("python/" + filename).getResource();
                     path = binaryDir + File.separator + filename;
                     Files.copy(inputStream, Paths.get(path));
                     inputStream.close();
-                    log.info("Python 3.7 binary for MacOS downloaded.");
-                    return new File(path);
+                    log.info("Python binary for MacOS downloaded.");
+                    return new File(path).exists();
                 default:
                     log.error("Operating System not supported. " + os.getName());
             }
@@ -76,7 +79,7 @@ public class PythonUtils {
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
         }
-        return null;
+        return false;
     }
 
     public static boolean copyAndExtractScripts(String scriptsDir) {
@@ -94,7 +97,17 @@ public class PythonUtils {
         return false;
     }
 
-    public static boolean installPython(String binaryDir) {
+    public static boolean installPython(String binaryDir, OS os) {
+        switch (os) {
+            case WINDOWS_64:
+                return FileUtils.extractArchive(binaryDir + File.separator + WINDOWS_ARCHIVE, binaryDir);
+            case LINUX_64:
+                return FileUtils.extractArchive(binaryDir + File.separator + LINUX_ARCHIVE, binaryDir);
+            case MACOS:
+                return FileUtils.extractArchive(binaryDir + File.separator + MACOS_ARCHIVE, binaryDir);
+            default:
+                log.error("Operating System not supported. " + os.getName());
+        }
         return false;
     }
 }

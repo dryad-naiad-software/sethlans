@@ -17,6 +17,7 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.enums.OS;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,7 +41,6 @@ class PythonUtilsTest {
     @BeforeEach
     void setUp() {
         TEST_DIRECTORY.mkdirs();
-
     }
 
     @AfterEach
@@ -50,8 +50,12 @@ class PythonUtilsTest {
 
     @Test
     void copyPythonToDisk() {
-        var filename = PythonUtils.copyPythonArchiveToDisk(TEST_DIRECTORY.toString());
-        assertThat(filename).exists();
+        var result = PythonUtils.copyPythonArchiveToDisk(TEST_DIRECTORY.toString(), OS.LINUX_64);
+        assertThat(result).isTrue();
+        result = PythonUtils.copyPythonArchiveToDisk(TEST_DIRECTORY.toString(), OS.UNSUPPORTED);
+        assertThat(result).isFalse();
+        result = PythonUtils.copyPythonArchiveToDisk(TEST_DIRECTORY.toString(), OS.WINDOWS_32);
+        assertThat(result).isFalse();
     }
 
     @Test
@@ -60,6 +64,27 @@ class PythonUtilsTest {
     }
 
     @Test
-    void installPython() {
+    void installPythonWindows() {
+        assertThat(PythonUtils.copyPythonArchiveToDisk(TEST_DIRECTORY.toString(), OS.WINDOWS_64)).isTrue();
+        assertThat(PythonUtils.installPython(TEST_DIRECTORY.toString(), OS.WINDOWS_64)).isTrue();
     }
+
+    @Test
+    void installPythonLinux() {
+        assertThat(PythonUtils.copyPythonArchiveToDisk(TEST_DIRECTORY.toString(), OS.LINUX_64)).isTrue();
+        assertThat(PythonUtils.installPython(TEST_DIRECTORY.toString(), OS.LINUX_64)).isTrue();
+    }
+
+    @Test
+    void installPythonMac() {
+        assertThat(PythonUtils.copyPythonArchiveToDisk(TEST_DIRECTORY.toString(), OS.MACOS)).isTrue();
+        assertThat(PythonUtils.installPython(TEST_DIRECTORY.toString(), OS.MACOS)).isTrue();
+    }
+
+    @Test
+    void installPythonUnsupported() {
+        assertThat(PythonUtils.copyPythonArchiveToDisk(TEST_DIRECTORY.toString(), OS.WINDOWS_32)).isFalse();
+        assertThat(PythonUtils.installPython(TEST_DIRECTORY.toString(), OS.WINDOWS_32)).isFalse();
+    }
+
 }

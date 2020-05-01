@@ -43,7 +43,6 @@ class BlenderUtilsTest {
     @BeforeEach
     void setUp() {
         TEST_DIRECTORY.mkdirs();
-
     }
 
     @AfterEach

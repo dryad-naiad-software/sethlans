@@ -23,7 +23,6 @@ class DownloadFileTest {
     @BeforeEach
     void setUp() {
         TEST_DIRECTORY.mkdirs();
-
     }
 
     @AfterEach
