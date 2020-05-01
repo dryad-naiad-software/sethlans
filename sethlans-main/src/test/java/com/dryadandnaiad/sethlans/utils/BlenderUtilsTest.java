@@ -53,7 +53,7 @@ class BlenderUtilsTest {
     }
 
     @Test
-    void parseBlendFile() {
+    void parseBlendFileyes() {
         var scriptDir = TEST_DIRECTORY + File.separator + "scripts";
         new File(scriptDir).mkdirs();
         var binaryDir = TEST_DIRECTORY + File.separator + "binaries";

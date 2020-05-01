@@ -38,6 +38,8 @@ public class PythonUtils {
     static String WINDOWS_ARCHIVE = "python3.7-windows.zip";
     static String LINUX_ARCHIVE = "python3.7-linux.zip";
     static String MACOS_ARCHIVE = "python3.7-macos.zip";
+    static String PYTHON_FILES = "files/python/";
+    static String SCRIPTS = "files/scripts/scripts.zip";
 
     public static boolean copyPythonArchiveToDisk(String binaryDir, OS os) {
         String filename;
@@ -48,7 +50,7 @@ public class PythonUtils {
                 case WINDOWS_64:
                     log.info("Downloading Python binary for Windows.");
                     filename = WINDOWS_ARCHIVE;
-                    inputStream = new ResourcesUtils("python/" + filename).getResource();
+                    inputStream = new ResourcesUtils(PYTHON_FILES + filename).getResource();
                     path = binaryDir + File.separator + filename;
                     Files.copy(inputStream, Paths.get(path));
                     inputStream.close();
@@ -57,7 +59,7 @@ public class PythonUtils {
                 case LINUX_64:
                     log.info("Downloading Python binary for Linux.");
                     filename = LINUX_ARCHIVE;
-                    inputStream = new ResourcesUtils("python/" + filename).getResource();
+                    inputStream = new ResourcesUtils(PYTHON_FILES + filename).getResource();
                     path = binaryDir + File.separator + filename;
                     Files.copy(inputStream, Paths.get(path));
                     inputStream.close();
@@ -66,7 +68,7 @@ public class PythonUtils {
                 case MACOS:
                     log.info("Downloading Python binary for MacOS.");
                     filename = MACOS_ARCHIVE;
-                    inputStream = new ResourcesUtils("python/" + filename).getResource();
+                    inputStream = new ResourcesUtils(PYTHON_FILES + filename).getResource();
                     path = binaryDir + File.separator + filename;
                     Files.copy(inputStream, Paths.get(path));
                     inputStream.close();
@@ -86,7 +88,7 @@ public class PythonUtils {
         String scripts = "scripts.zip";
         String path = scriptsDir + File.separator + scripts;
         try {
-            InputStream inputStream = new ResourcesUtils("scripts/scripts.zip").getResource();
+            InputStream inputStream = new ResourcesUtils(SCRIPTS).getResource();
             Files.copy(inputStream, Paths.get(path));
             inputStream.close();
             return FileUtils.extractArchive(path, scriptsDir);
