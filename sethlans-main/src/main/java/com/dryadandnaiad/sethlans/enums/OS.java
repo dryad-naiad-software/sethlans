@@ -28,7 +28,8 @@ public enum OS {
     WINDOWS_32("Windows32"),
     MACOS("MacOS"),
     LINUX_64("Linux64"),
-    LINUX_32("Linux32");
+    LINUX_32("Linux32"),
+    UNSUPPORTED("Unsupported");
 
     private final String name;
 

@@ -78,25 +78,27 @@ class BlenderUtilsTest {
 
     @Test
     void extractBlenderWindowsBinary() {
+        var version = "2.82a";
         var blenderDownload = BlenderUtils
-                .downloadBlender("2.82a",
+                .downloadBlender(version,
                         "resource",
                         TEST_DIRECTORY.toString(),
                         OS.WINDOWS_64);
         assertThat(BlenderUtils.extractBlender(TEST_DIRECTORY.toString(), OS.WINDOWS_64,
-                blenderDownload.toString()));
+                blenderDownload.toString(), version)).isTrue();
         assertThat(blenderDownload).doesNotExist();
     }
 
     @Test
     void extractBlenderLinuxBinary() {
+        var version = "2.82a";
         var blenderDownload = BlenderUtils
-                .downloadBlender("2.82a",
+                .downloadBlender(version,
                         "resource",
                         TEST_DIRECTORY.toString(),
                         OS.LINUX_64);
         assertThat(BlenderUtils.extractBlender(TEST_DIRECTORY.toString(), OS.LINUX_64,
-                blenderDownload.toString()));
+                blenderDownload.toString(), version)).isTrue();
         assertThat(blenderDownload).doesNotExist();
     }
 
@@ -104,13 +106,14 @@ class BlenderUtilsTest {
     @Test
     @EnabledOnOs(MAC)
     void extractBlenderMacBinary() {
+        var version = "2.82a";
         var blenderDownload = BlenderUtils
-                .downloadBlender("2.82a",
+                .downloadBlender(version,
                         "resource",
                         TEST_DIRECTORY.toString(),
                         OS.MACOS);
         assertThat(BlenderUtils.extractBlender(TEST_DIRECTORY.toString(), OS.MACOS,
-                blenderDownload.toString()));
+                blenderDownload.toString(), version)).isTrue();
         assertThat(blenderDownload).doesNotExist();
     }
 

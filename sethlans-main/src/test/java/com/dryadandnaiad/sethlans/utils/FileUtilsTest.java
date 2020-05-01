@@ -158,6 +158,39 @@ class FileUtilsTest {
         FileSystemUtils.deleteRecursively(extractDirectory);
     }
 
+    @Test
+    void getExtensionFromString() {
+        var toTest = "regular.file.with.multiple.dots.txt";
+        var toTest2 = "string.with.multiple.dots.tar.gz";
+        assertThat(FileUtils.getExtensionFromString(toTest)).isEqualTo(".txt");
+        assertThat(FileUtils.getExtensionFromString(toTest2)).isEqualTo(".tar.gz");
+    }
+
+    @Test
+    void removeExtensionFromString() {
+        var toTest = "blender-2.82a-macos.dmg";
+        var toTest2 = "blender-2.82a-linux.tar.gz";
+        assertThat(FileUtils.removeExtensionFromString(toTest)).isEqualTo("blender-2.82a-macos");
+        assertThat(FileUtils.removeExtensionFromString(toTest2)).isEqualTo("blender-2.82a-linux");
+    }
+
+    @Test
+    void listFiles() throws IOException {
+        createFiles();
+        new File(TEST_DIRECTORY + File.separator + "testDir").mkdirs();
+        var set = FileUtils.listFiles(TEST_DIRECTORY.toString());
+        assertThat(set).doesNotContain("testDir");
+        assertThat(set).hasSize(3);
+    }
+
+    @Test
+    void listDirectories() throws IOException {
+        createFiles();
+        new File(TEST_DIRECTORY + File.separator + "testDir").mkdirs();
+        var set = FileUtils.listDirectories(TEST_DIRECTORY.toString());
+        assertThat(set).containsOnly("testDir");
+    }
+
     private File make7z() throws IOException {
         var name = "archive.tar.7z";
         File archive = new File(TEST_DIRECTORY + File.separator + name);
@@ -226,7 +259,5 @@ class FileUtilsTest {
         return fileArray;
     }
 
-    @Test
-    void getExtensionFromString() {
-    }
+
 }
