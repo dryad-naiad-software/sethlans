@@ -18,6 +18,7 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.OS;
+import com.dryadandnaiad.sethlans.testutils.TestResource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -53,7 +54,7 @@ class BlenderUtilsTest {
     }
 
     @Test
-    void parseBlendFileyes() {
+    void parseBlendFiles() {
         var scriptDir = TEST_DIRECTORY + File.separator + "scripts";
         new File(scriptDir).mkdirs();
         var binaryDir = TEST_DIRECTORY + File.separator + "binaries";
@@ -62,8 +63,20 @@ class BlenderUtilsTest {
         PythonUtils.copyPythonArchiveToDisk(binaryDir, QueryUtils.getOS());
         PythonUtils.copyAndExtractScripts(scriptDir);
         PythonUtils.installPython(binaryDir, QueryUtils.getOS());
-        String blenderFile = SystemUtils.USER_HOME + File.separator + "Desktop" + File.separator + "wasp_bot.blend";
-        log.debug(BlenderUtils.parseBlendFile(blenderFile, scriptDir, pythonDir).toString());
+        var resource1 = new TestResource().getResource("blend_files/wasp_bot.blend");
+        var resource2 = new TestResource().getResource("blend_files/test.blend");
+        var resource3 = new TestResource().getResource("blend_files/bmw27_gpu.blend");
+        var resource4 = new TestResource().getResource("blend_files/udim-monster.blend");
+        var blendfile1 = BlenderUtils.parseBlendFile(resource1.toString(), scriptDir, pythonDir);
+        var blendfile2 = BlenderUtils.parseBlendFile(resource2.toString(), scriptDir, pythonDir);
+        var blendfile3 = BlenderUtils.parseBlendFile(resource3.toString(), scriptDir, pythonDir);
+        var blendfile4 = BlenderUtils.parseBlendFile(resource4.toString(), scriptDir, pythonDir);
+        var blendfile5 = BlenderUtils.parseBlendFile("sample", scriptDir, pythonDir);
+        assertThat(blendfile1).isNotNull();
+        assertThat(blendfile2).isNotNull();
+        assertThat(blendfile3).isNotNull();
+        assertThat(blendfile4).isNotNull();
+        assertThat(blendfile5).isNull();
     }
 
     @Test
