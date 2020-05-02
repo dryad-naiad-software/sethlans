@@ -24,5 +24,18 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum VideoCodec {
-    UTVIDEO, LIBX264, LIBX265, FFV1
+    UTVIDEO("utvideo"),
+    LIBX264("libx264"),
+    LIBX265("libx265"),
+    FFV1("ffv1");
+
+    private final String name;
+
+    VideoCodec(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

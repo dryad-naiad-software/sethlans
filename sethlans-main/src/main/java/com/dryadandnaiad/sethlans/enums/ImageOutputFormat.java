@@ -24,5 +24,7 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum ImageOutputFormat {
-    PNG, OPENEXR, TIFF
+    PNG,
+    OPENEXR,
+    TIFF
 }

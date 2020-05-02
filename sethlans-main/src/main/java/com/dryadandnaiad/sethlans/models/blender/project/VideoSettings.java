@@ -38,7 +38,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class VideoSettings {
-    private int frameRate;
+    private Integer frameRate;
     private VideoCodec codec;
     private PixelFormat pixelFormat;
     private VideoOutputFormat videoOutputFormat;

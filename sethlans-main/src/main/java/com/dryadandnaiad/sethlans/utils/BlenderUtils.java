@@ -46,6 +46,10 @@ import java.util.concurrent.TimeoutException;
 public class BlenderUtils {
 
     public static BlendFile parseBlendFile(String blendFile, String scriptsDir, String pythonDir) {
+        if (!new File(blendFile).exists()) {
+            log.error(blendFile + " does not exist!");
+            return null;
+        }
         var os = QueryUtils.getOS();
         String pythonBinary;
         String script = scriptsDir + File.separator + "blend_info.py";

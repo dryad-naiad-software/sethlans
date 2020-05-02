@@ -17,6 +17,7 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.OS;
 import com.dryadandnaiad.sethlans.testutils.TestResource;
 import lombok.extern.slf4j.Slf4j;
@@ -76,7 +77,12 @@ class BlenderUtilsTest {
         assertThat(blendfile2).isNotNull();
         assertThat(blendfile3).isNotNull();
         assertThat(blendfile4).isNotNull();
+        assertThat(blendfile1.getEngine()).isEqualTo(BlenderEngine.BLENDER_EEVEE);
+        assertThat(blendfile2.getEngine()).isEqualTo(BlenderEngine.CYCLES);
+        assertThat(blendfile3.getEngine()).isEqualTo(BlenderEngine.CYCLES);
+        assertThat(blendfile4.getEngine()).isEqualTo(BlenderEngine.BLENDER_EEVEE);
         assertThat(blendfile5).isNull();
+
     }
 
     @Test
