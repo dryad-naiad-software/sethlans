@@ -28,10 +28,13 @@ import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.FileSystemUtils;
+import org.zeroturnaround.exec.InvalidExitValueException;
+import org.zeroturnaround.exec.ProcessExecutor;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.concurrent.TimeoutException;
 
 import static org.apache.commons.io.FileUtils.copyFileToDirectory;
 
@@ -122,6 +125,7 @@ public class FFmpegUtils {
      */
     public static boolean encodeImagesToVideo(Project blenderProject, String ffmpegDir) {
         log.info("Preparing " + blenderProject.getProjectName() + " for video encoding.");
+        var videoFile = blenderProject.getProjectSettings().getVideoSettings().getVideoFileLocation();
         String ffmpegBinary = getFFmpegBinary(ffmpegDir);
         if (ffmpegBinary == null) {
             return false;
@@ -151,13 +155,10 @@ public class FFmpegUtils {
         var result = executeFFmpegCommand(createFFmpegCommand(ffmpegBinary, blenderProject), blenderProject.getProjectName());
         FileSystemUtils.deleteRecursively(tempDir);
         if (result) {
-            log.debug("Test");
+            return verifyVideoFile(videoFile, getFFprobeBinary(ffmpegDir));
         } else {
             return false;
         }
-
-
-        return false;
     }
 
 
@@ -269,7 +270,45 @@ public class FFmpegUtils {
                 return null;
         }
         return ffmpegBinary;
+    }
 
+    private static String getFFprobeBinary(String ffmpegDir) {
+        String ffprobeBinary;
+        var os = QueryUtils.getOS();
+        switch (os) {
+            case WINDOWS_64:
+                ffprobeBinary = ffmpegDir + File.separator + "bin" + File.separator + "ffprobe.exe";
+                break;
+            case LINUX_64:
+            case MACOS:
+                ffprobeBinary = ffmpegDir + File.separator + "bin" + File.separator + "ffprobe";
+                break;
+            default:
+                log.error("Operating System not supported. " + os.getName());
+                return null;
+        }
+        return ffprobeBinary;
+    }
+
+    private static boolean verifyVideoFile(String videoFile, String ffprobeBinary) {
+        log.info("Verifying that " + videoFile + " was created successfully.");
+        String output;
+        try {
+            output = new ProcessExecutor().command(ffprobeBinary, videoFile)
+                    .readOutput(true).exitValues(0).execute().outputUTF8();
+            log.debug(output);
+            log.info(videoFile + " has been verified.");
+            return true;
+        } catch (InvalidExitValueException e) {
+            log.error("Video file " + videoFile + " is either invalid or does not exist.");
+            log.error("Process exited with " + e.getExitValue());
+            log.error(e.getMessage());
+            return false;
+        } catch (InterruptedException | IOException | TimeoutException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            return false;
+        }
     }
 
 
