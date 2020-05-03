@@ -101,7 +101,7 @@ class QueryUtilsTest {
 
     @Test
     void getRenderTime() {
-        String time = null;
+        String time;
         String output = " Time: 08:06.55 (Saving: 00:00.80)";
         time = QueryUtils.getRenderTime(output);
         assertNotNull(time);

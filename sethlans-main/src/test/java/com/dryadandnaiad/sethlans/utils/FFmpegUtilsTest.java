@@ -90,14 +90,107 @@ class FFmpegUtilsTest {
         assertThat(FFmpegUtils.installFFmpeg(TEST_DIRECTORY.toString(), OS.WINDOWS_32)).isFalse();
     }
 
-
     @Test
-    void encodeImagesToVideo() {
+    void encodeImagesToMP4() {
         var binaryDirectory = new File(TEST_DIRECTORY + File.separator + "binaries");
         binaryDirectory.mkdirs();
         FFmpegUtils.copyFFmpegArchiveToDisk(binaryDirectory.toString(), QueryUtils.getOS());
         FFmpegUtils.installFFmpeg(binaryDirectory.toString(), QueryUtils.getOS());
         var ffmpegDirectory = new File(binaryDirectory + File.separator + "ffmpeg");
+        var project = createProject();
+        assertThat(FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString())).isTrue();
+    }
+
+    @Test
+    void encodeImagesToAVI() {
+        var binaryDirectory = new File(TEST_DIRECTORY + File.separator + "binaries");
+        var projectDir = new File(TEST_DIRECTORY + File.separator + "project");
+        var videoDirectory = new File(projectDir + File.separator + "video");
+        binaryDirectory.mkdirs();
+        FFmpegUtils.copyFFmpegArchiveToDisk(binaryDirectory.toString(), QueryUtils.getOS());
+        FFmpegUtils.installFFmpeg(binaryDirectory.toString(), QueryUtils.getOS());
+        var ffmpegDirectory = new File(binaryDirectory + File.separator + "ffmpeg");
+        var project = createProject();
+        var videoSettings = project.getProjectSettings().getVideoSettings();
+        videoSettings.setCodec(VideoCodec.UTVIDEO);
+        videoSettings.setVideoOutputFormat(VideoOutputFormat.AVI);
+        videoSettings.setVideoFileLocation(videoDirectory + File.separator + "thesample-123e." +
+                VideoOutputFormat.AVI.name().toLowerCase());
+        project.getProjectSettings().setVideoSettings(videoSettings);
+        assertThat(FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString())).isTrue();
+    }
+
+    @Test
+    void encodeImagesToMKV() {
+        var binaryDirectory = new File(TEST_DIRECTORY + File.separator + "binaries");
+        var projectDir = new File(TEST_DIRECTORY + File.separator + "project");
+        var videoDirectory = new File(projectDir + File.separator + "video");
+        binaryDirectory.mkdirs();
+        FFmpegUtils.copyFFmpegArchiveToDisk(binaryDirectory.toString(), QueryUtils.getOS());
+        FFmpegUtils.installFFmpeg(binaryDirectory.toString(), QueryUtils.getOS());
+        var ffmpegDirectory = new File(binaryDirectory + File.separator + "ffmpeg");
+        var project = createProject();
+        var videoSettings = project.getProjectSettings().getVideoSettings();
+        videoSettings.setCodec(VideoCodec.LIBX265);
+        videoSettings.setVideoQuality(VideoQuality.HIGH_X265);
+        videoSettings.setVideoOutputFormat(VideoOutputFormat.MKV);
+        videoSettings.setVideoFileLocation(videoDirectory + File.separator + "thesample-123e." +
+                VideoOutputFormat.MKV.name().toLowerCase());
+        project.getProjectSettings().setVideoSettings(videoSettings);
+        assertThat(FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString())).isTrue();
+    }
+
+    @Test
+    void invalidEncodeMismatchedImage() {
+        var binaryDirectory = new File(TEST_DIRECTORY + File.separator + "binaries");
+        binaryDirectory.mkdirs();
+        FFmpegUtils.copyFFmpegArchiveToDisk(binaryDirectory.toString(), QueryUtils.getOS());
+        FFmpegUtils.installFFmpeg(binaryDirectory.toString(), QueryUtils.getOS());
+        var ffmpegDirectory = new File(binaryDirectory + File.separator + "ffmpeg");
+        var project = createProject();
+        project.getProjectSettings().getImageSettings().setImageOutputFormat(ImageOutputFormat.TIFF);
+        assertThat(FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString())).isFalse();
+    }
+
+    @Test
+    void invalidEncodeMissingFile() {
+        var binaryDirectory = new File(TEST_DIRECTORY + File.separator + "binaries");
+        binaryDirectory.mkdirs();
+        FFmpegUtils.copyFFmpegArchiveToDisk(binaryDirectory.toString(), QueryUtils.getOS());
+        FFmpegUtils.installFFmpeg(binaryDirectory.toString(), QueryUtils.getOS());
+        var ffmpegDirectory = new File(binaryDirectory + File.separator + "ffmpeg");
+        var project = createProject();
+        var filename = "test";
+        project.getFrameFileNames().set(0, filename);
+        assertThat(FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString())).isFalse();
+    }
+
+    @Test
+    void invalidEncodeEmptyFileList() {
+        var binaryDirectory = new File(TEST_DIRECTORY + File.separator + "binaries");
+        binaryDirectory.mkdirs();
+        FFmpegUtils.copyFFmpegArchiveToDisk(binaryDirectory.toString(), QueryUtils.getOS());
+        FFmpegUtils.installFFmpeg(binaryDirectory.toString(), QueryUtils.getOS());
+        var ffmpegDirectory = new File(binaryDirectory + File.separator + "ffmpeg");
+        var project = createProject();
+        project.setFrameFileNames(new ArrayList<>());
+        assertThat(FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString())).isFalse();
+    }
+
+    @Test
+    void invalidEncodeFileLocation() {
+        var binaryDirectory = new File(TEST_DIRECTORY + File.separator + "binaries");
+        binaryDirectory.mkdirs();
+        FFmpegUtils.copyFFmpegArchiveToDisk(binaryDirectory.toString(), QueryUtils.getOS());
+        FFmpegUtils.installFFmpeg(binaryDirectory.toString(), QueryUtils.getOS());
+        var ffmpegDirectory = new File(binaryDirectory + File.separator + "ffmpeg");
+        var project = createProject();
+        project.getProjectSettings().getVideoSettings().setVideoFileLocation("test");
+        assertThat(FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString())).isFalse();
+    }
+
+
+    private Project createProject() {
         var projectDir = new File(TEST_DIRECTORY + File.separator + "project");
         var videoDirectory = new File(projectDir + File.separator + "video");
         var imageDir = new File(projectDir + File.separator + "images");
@@ -106,7 +199,6 @@ class FFmpegUtilsTest {
         videoDirectory.mkdirs();
         var archive = "movie.tar.xz";
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "movie/" + archive, archive);
-
         FileUtils.extractArchive(TEST_DIRECTORY.toString() + File.separator + archive,
                 imageDir.toString());
         var initialList = FileUtils.listFiles(imageDir.toString());
@@ -123,14 +215,14 @@ class FFmpegUtilsTest {
                 .frameRate(30)
                 .videoQuality(VideoQuality.HIGH_X264)
                 .pixelFormat(PixelFormat.YUV420P)
-                .videoFileLocation(videoDirectory.toString() + File.separator + "thesample-123e." + VideoOutputFormat.MP4.name().toLowerCase())
+                .videoFileLocation(videoDirectory + File.separator + "thesample-123e." + VideoOutputFormat.MP4.name().toLowerCase())
                 .build();
         var projectSettings = ProjectSettings.builder()
                 .videoSettings(videoSettings)
                 .animationType(AnimationType.MOVIE)
                 .imageSettings(imageSettings)
                 .build();
-        var project = Project.builder()
+        return Project.builder()
                 .projectID("123e4567-e89b-12d3-a456-426655440000")
                 .projectName("The Sample Project")
                 .projectType(ProjectType.ANIMATION)
@@ -138,8 +230,6 @@ class FFmpegUtilsTest {
                 .projectRootDir(projectDir.toString())
                 .frameFileNames(imageList)
                 .build();
-        log.debug(project.toString());
-        FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString());
     }
 
 }
