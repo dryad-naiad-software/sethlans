@@ -18,17 +18,21 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.OS;
+import com.dryadandnaiad.sethlans.enums.VideoCodec;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import static org.apache.commons.io.FileUtils.copyFileToDirectory;
 
 /**
  * File created by Mario Estrella on 5/1/2020.
@@ -43,17 +47,50 @@ public class FFmpegUtils {
     static String MACOS_ARCHIVE = "ffmpeg-4.2.2-macos.tar.xz";
     static String FFMPEG_FILES = "files/ffmpeg/";
 
+    /**
+     * @param blenderProject
+     * @param ffmpegDir
+     * @return
+     */
     public static boolean encodeImagesToVideo(Project blenderProject, String ffmpegDir) {
+        log.info("Preparing " + blenderProject.getProjectName() + " for video encoding.");
         String ffmpegBinary = getFFmpegBinary(ffmpegDir);
         if (ffmpegBinary == null) {
             return false;
         }
+
+        if (blenderProject.getFrameFileNames() == null || blenderProject.getFrameFileNames().isEmpty()) {
+            log.error("No frame filenames present.");
+            return false;
+        }
+        // Copy images to temporary directory for video processing
+        log.info("Copying image files to temporary directory.");
+        var tempDir = new File(blenderProject.getProjectRootDir()
+                + File.separator + "temp");
+        tempDir.mkdirs();
+        for (String frameFileName : blenderProject.getFrameFileNames()) {
+            try {
+                log.debug("Copying " + frameFileName + " to " + tempDir.toString());
+                copyFileToDirectory(new File(frameFileName), tempDir);
+            } catch (IOException e) {
+                log.error("Error copying file: " + frameFileName);
+                log.error(e.getMessage());
+                log.error(Throwables.getStackTraceAsString(e));
+                return false;
+            }
+        }
+
         var command = createFFmpegCommand(ffmpegBinary, blenderProject);
-
-
+        log.debug(command.toString());
         log.debug(ffmpegBinary);
 
 
+        return false;
+    }
+
+    private static boolean executeFFmpegCommand() {
+        var outputStream = new ByteArrayOutputStream();
+        var errorStream = new ByteArrayOutputStream();
         return false;
     }
 
@@ -64,25 +101,51 @@ public class FFmpegUtils {
                 .replaceAll("[^a-zA-Z0-9_-]", "").toLowerCase();
         var videoSettings = blenderProject.getProjectSettings().getVideoSettings();
 
-        CommandLine ffmpeg = new CommandLine(ffmpegBinary);
+        var ffmpeg = new CommandLine(ffmpegBinary);
+        // Set Framerate
         ffmpeg.addArgument("-framerate");
         ffmpeg.addArgument(videoSettings.getFrameRate().toString());
-        ffmpeg.addArgument("-i");
 
+        // Configure input images
+        ffmpeg.addArgument("-i");
         ffmpeg.addArgument(blenderProject.getProjectRootDir() + File.separator + "temp" +
                 File.separator + cleanedProjectName + "-" + truncatedUUID + "-" + "%d." +
                 blenderProject.getProjectSettings().getImageSettings().getImageOutputFormat()
                         .name().toLowerCase());
 
 
+        // Configure video codec
+        ffmpeg.addArgument("-c:v");
         switch (videoSettings.getVideoOutputFormat()) {
             case MP4:
+                ffmpeg.addArgument(videoSettings.getCodec().getName());
+                ffmpeg.addArgument("-crf");
+                ffmpeg.addArgument(videoSettings.getVideoQuality().getName());
+                ffmpeg.addArgument("-preset");
+                ffmpeg.addArgument("medium");
+                ffmpeg.addArgument("-pix_fmt");
+                ffmpeg.addArgument(videoSettings.getPixelFormat().getName());
                 break;
             case AVI:
+                ffmpeg.addArgument(videoSettings.getCodec().getName());
+                ffmpeg.addArgument("-pix_fmt");
+                ffmpeg.addArgument(videoSettings.getPixelFormat().getName());
                 break;
             case MKV:
+                ffmpeg.addArgument(videoSettings.getCodec().getName());
+                if (videoSettings.getCodec().equals(VideoCodec.LIBX264) || videoSettings.getCodec().equals(VideoCodec.LIBX265)) {
+                    ffmpeg.addArgument("-crf");
+                    ffmpeg.addArgument(videoSettings.getVideoQuality().getName());
+                    ffmpeg.addArgument("-preset");
+                    ffmpeg.addArgument("medium");
+                }
+                ffmpeg.addArgument("-pix_fmt");
+                ffmpeg.addArgument(videoSettings.getPixelFormat().getName());
                 break;
         }
+
+        // Configure output file
+        ffmpeg.addArgument(videoSettings.getVideoFileLocation());
         return ffmpeg;
     }
 
@@ -105,6 +168,11 @@ public class FFmpegUtils {
 
     }
 
+    /**
+     * @param binaryDir
+     * @param os
+     * @return
+     */
     public static boolean copyFFmpegArchiveToDisk(String binaryDir, OS os) {
         String filename;
         String path;
@@ -148,6 +216,11 @@ public class FFmpegUtils {
         return false;
     }
 
+    /**
+     * @param binaryDir
+     * @param os
+     * @return
+     */
     public static boolean installFFmpeg(String binaryDir, OS os) {
         switch (os) {
             case WINDOWS_64:

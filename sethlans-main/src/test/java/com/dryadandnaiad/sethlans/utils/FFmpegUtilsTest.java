@@ -22,6 +22,7 @@ import com.dryadandnaiad.sethlans.models.blender.project.ImageSettings;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.models.blender.project.ProjectSettings;
 import com.dryadandnaiad.sethlans.models.blender.project.VideoSettings;
+import com.dryadandnaiad.sethlans.testutils.TestResource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -30,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -96,10 +98,19 @@ class FFmpegUtilsTest {
         FFmpegUtils.copyFFmpegArchiveToDisk(binaryDirectory.toString(), QueryUtils.getOS());
         FFmpegUtils.installFFmpeg(binaryDirectory.toString(), QueryUtils.getOS());
         var ffmpegDirectory = new File(binaryDirectory + File.separator + "ffmpeg");
-        var videoDirectory = new File(TEST_DIRECTORY + File.separator + "video");
         var projectDir = new File(TEST_DIRECTORY + File.separator + "project");
+        var videoDirectory = new File(projectDir + File.separator + "video");
+        var imageDir = new File(projectDir + File.separator + "images");
         projectDir.mkdirs();
+        imageDir.mkdirs();
         videoDirectory.mkdirs();
+        FileUtils.extractArchive(new TestResource().getResource("movie/movie.tar.xz").toString(),
+                imageDir.toString());
+        var initialList = FileUtils.listFiles(imageDir.toString());
+        var imageList = new ArrayList<String>();
+        for (String file : initialList) {
+            imageList.add(imageDir + File.separator + file);
+        }
         var imageSettings = ImageSettings.builder()
                 .imageOutputFormat(ImageOutputFormat.PNG)
                 .build();
@@ -122,10 +133,9 @@ class FFmpegUtilsTest {
                 .projectType(ProjectType.ANIMATION)
                 .projectSettings(projectSettings)
                 .projectRootDir(projectDir.toString())
+                .frameFileNames(imageList)
                 .build();
         log.debug(project.toString());
         FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString());
-
-
     }
 }

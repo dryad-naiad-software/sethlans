@@ -35,11 +35,12 @@ import java.nio.file.Paths;
  */
 @Slf4j
 public class PythonUtils {
-    static String WINDOWS_ARCHIVE = "python3.7-windows.zip";
-    static String LINUX_ARCHIVE = "python3.7-linux.zip";
-    static String MACOS_ARCHIVE = "python3.7-macos.zip";
+    static String WINDOWS_ARCHIVE = "python3.7-windows.tar.xz";
+    static String LINUX_ARCHIVE = "python3.7-linux.tar.xz";
+    static String MACOS_ARCHIVE = "python3.7-macos.tar.xz";
     static String PYTHON_FILES = "files/python/";
-    static String SCRIPTS = "files/scripts/scripts.zip";
+    static String SCRIPTS_FILE = "scripts.tar.xz";
+    static String SCRIPTS = "files/scripts/scripts.tar.xz";
 
     public static boolean copyPythonArchiveToDisk(String binaryDir, OS os) {
         String filename;
@@ -85,8 +86,7 @@ public class PythonUtils {
     }
 
     public static boolean copyAndExtractScripts(String scriptsDir) {
-        String scripts = "scripts.zip";
-        String path = scriptsDir + File.separator + scripts;
+        String path = scriptsDir + File.separator + SCRIPTS_FILE;
         try {
             InputStream inputStream = new ResourcesUtils(SCRIPTS).getResource();
             Files.copy(inputStream, Paths.get(path));

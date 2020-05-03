@@ -26,11 +26,11 @@ import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.models.system.System;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import oshi.SystemInfo;
-import oshi.software.os.OperatingSystem;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -71,9 +71,9 @@ public class QueryUtils {
      * @return String in the form of "Windows64"
      */
     public static OS getOS() {
-        SystemInfo si = new SystemInfo();
-        OperatingSystem os = si.getOperatingSystem();
-        int bits = os.getBitness();
+        var si = new SystemInfo();
+        var os = si.getOperatingSystem();
+        var bits = os.getBitness();
         if (SystemUtils.IS_OS_WINDOWS) {
             if (bits == 64) {
                 return OS.WINDOWS_64;
@@ -106,7 +106,7 @@ public class QueryUtils {
         } catch (UnknownHostException e) {
             log.error(Throwables.getStackTraceAsString(e));
         }
-        int indexEnd = hostname.indexOf(".");
+        var indexEnd = hostname.indexOf(".");
         if (indexEnd != -1) {
             log.debug(hostname + " contains a domain name. Removing it.");
             hostname = hostname.substring(0, indexEnd);
@@ -121,7 +121,7 @@ public class QueryUtils {
      * @return Set of ComputeOn enums
      */
     public static Set<ComputeOn> getAvailableMethods() {
-        Set<ComputeOn> availableMethods = new HashSet<>();
+        var availableMethods = new HashSet<ComputeOn>();
         if (ScanGPU.listDevices().size() != 0) {
             availableMethods.add(ComputeOn.CPU_GPU);
             availableMethods.add(ComputeOn.GPU);
@@ -165,7 +165,7 @@ public class QueryUtils {
      * @return String version
      */
     public static String getVersion() {
-        final Properties properties = new Properties();
+        val properties = new Properties();
         try {
             properties.load(new InputStreamReader(new ResourcesUtils("git.properties").getResource(),
                     StandardCharsets.UTF_8));
@@ -201,7 +201,7 @@ public class QueryUtils {
      */
     public static String getRenderTime(String output) {
         String time = null;
-        String[] finished = output.split("\\|");
+        var finished = output.split("\\|");
         for (String item : finished) {
             if (item.contains("Time:")) {
                 time = StringUtils.substringAfter(item, ":");

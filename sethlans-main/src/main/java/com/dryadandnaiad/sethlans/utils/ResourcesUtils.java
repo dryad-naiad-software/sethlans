@@ -44,8 +44,8 @@ public class ResourcesUtils {
      * @throws NoSuchFileException
      */
     public InputStream getResource() throws NoSuchFileException {
-        ClassLoader classLoader = getClass().getClassLoader();
-        InputStream inputStream = classLoader.getResourceAsStream(filePath);
+        var classLoader = getClass().getClassLoader();
+        var inputStream = classLoader.getResourceAsStream(filePath);
         if (inputStream == null) {
             throw new NoSuchFileException(filePath + " File not found");
         }

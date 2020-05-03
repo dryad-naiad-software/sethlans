@@ -52,7 +52,7 @@ public class BlenderUtils {
         }
         var os = QueryUtils.getOS();
         String pythonBinary;
-        String script = scriptsDir + File.separator + "blend_info.py";
+        var script = scriptsDir + File.separator + "blend_info.py";
         switch (os) {
             case WINDOWS_64:
                 pythonBinary = pythonDir + File.separator + "bin" + File.separator + "python.exe";
@@ -119,7 +119,7 @@ public class BlenderUtils {
     }
 
     public static File downloadBlender(String blenderVersion, String jsonLocation, String blenderDir, OS os) {
-        BlenderInstallers selectedInstallers = getInstallersByVersion(getInstallersList(jsonLocation), blenderVersion);
+        var selectedInstallers = getInstallersByVersion(getInstallersList(jsonLocation), blenderVersion);
         if (selectedInstallers == null) {
             log.error("Blender version: " + blenderVersion + ", or JSON file location: "
                     + jsonLocation + " is incorrect");

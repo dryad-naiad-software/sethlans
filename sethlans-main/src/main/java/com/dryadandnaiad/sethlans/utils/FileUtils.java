@@ -48,7 +48,6 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -281,22 +280,22 @@ public class FileUtils {
      * @param dir
      * @return
      */
-    public static Set<String> listFiles(String dir) {
+    public static List<String> listFiles(String dir) {
         return Stream.of(new File(dir).listFiles())
                 .filter(file -> !file.isDirectory())
                 .map(File::getName)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     /**
      * @param dir
      * @return
      */
-    public static Set<String> listDirectories(String dir) {
+    public static List<String> listDirectories(String dir) {
         return Stream.of(new File(dir).listFiles())
-                .filter(file -> file.isDirectory())
+                .filter(File::isDirectory)
                 .map(File::getName)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
 }

@@ -2,7 +2,9 @@ package com.dryadandnaiad.sethlans.utils;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -23,17 +25,18 @@ public class DownloadFile {
 
     public static long downloadFile(String downloadUrl, String saveAsFileName) throws IOException, URISyntaxException {
         log.info("Downloading " + saveAsFileName + " from " + downloadUrl);
-        File outputFile = new File(saveAsFileName);
-        URLConnection downloadFileConnection = new URI(downloadUrl).toURL()
+        var outputFile = new File(saveAsFileName);
+        var downloadFileConnection = new URI(downloadUrl).toURL()
                 .openConnection();
         return transferDataAndGetBytesDownloaded(downloadFileConnection, outputFile);
     }
 
     private static long transferDataAndGetBytesDownloaded(URLConnection downloadFileConnection, File outputFile) throws IOException {
         long bytesDownloaded = 0;
-        try (InputStream is = downloadFileConnection.getInputStream(); OutputStream os = new FileOutputStream(outputFile, true)) {
+        try (var is = downloadFileConnection.getInputStream();
+             var os = new FileOutputStream(outputFile, true)) {
 
-            byte[] buffer = new byte[1024];
+            var buffer = new byte[1024];
 
             int bytesCount;
             while ((bytesCount = is.read(buffer)) > 0) {
@@ -48,24 +51,24 @@ public class DownloadFile {
     public static long downloadFileWithResume(String downloadUrl, String saveAsFileName) throws IOException,
             URISyntaxException {
         log.info("Downloading " + saveAsFileName + " from " + downloadUrl);
-        File outputFile = new File(saveAsFileName);
-        URLConnection downloadFileConnection = addFileResumeFunctionality(downloadUrl, outputFile);
+        var outputFile = new File(saveAsFileName);
+        var downloadFileConnection = addFileResumeFunctionality(downloadUrl, outputFile);
         return transferDataAndGetBytesDownloaded(downloadFileConnection, outputFile);
     }
 
     private static URLConnection addFileResumeFunctionality(String downloadUrl, File outputFile) throws IOException,
             URISyntaxException {
-        long existingFileSize = 0L;
+        var existingFileSize = 0L;
         URLConnection downloadFileConnection = new URI(downloadUrl).toURL()
                 .openConnection();
 
         if (outputFile.exists() && downloadFileConnection instanceof HttpURLConnection) {
-            HttpURLConnection httpFileConnection = (HttpURLConnection) downloadFileConnection;
+            var httpFileConnection = (HttpURLConnection) downloadFileConnection;
 
-            HttpURLConnection tmpFileConn = (HttpURLConnection) new URI(downloadUrl).toURL()
+            var tmpFileConn = (HttpURLConnection) new URI(downloadUrl).toURL()
                     .openConnection();
             tmpFileConn.setRequestMethod("HEAD");
-            long fileLength = tmpFileConn.getContentLengthLong();
+            var fileLength = tmpFileConn.getContentLengthLong();
             existingFileSize = outputFile.length();
 
             if (existingFileSize < fileLength) {

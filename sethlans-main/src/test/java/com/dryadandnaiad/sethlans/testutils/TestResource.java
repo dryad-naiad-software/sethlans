@@ -28,7 +28,7 @@ import java.io.File;
 public class TestResource {
 
     public File getResource(String resourceName) {
-        ClassLoader classLoader = getClass().getClassLoader();
+        var classLoader = getClass().getClassLoader();
         return new File(classLoader.getResource(resourceName).getFile());
     }
 
