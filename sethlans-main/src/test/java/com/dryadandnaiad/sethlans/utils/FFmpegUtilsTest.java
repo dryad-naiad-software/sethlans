@@ -22,7 +22,7 @@ import com.dryadandnaiad.sethlans.models.blender.project.ImageSettings;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.models.blender.project.ProjectSettings;
 import com.dryadandnaiad.sethlans.models.blender.project.VideoSettings;
-import com.dryadandnaiad.sethlans.testutils.TestResource;
+import com.dryadandnaiad.sethlans.testutils.TestFileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -104,7 +104,10 @@ class FFmpegUtilsTest {
         projectDir.mkdirs();
         imageDir.mkdirs();
         videoDirectory.mkdirs();
-        FileUtils.extractArchive(new TestResource().getResource("movie/movie.tar.xz").toString(),
+        var archive = "movie.tar.xz";
+        TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "movie/" + archive, archive);
+
+        FileUtils.extractArchive(TEST_DIRECTORY.toString() + File.separator + archive,
                 imageDir.toString());
         var initialList = FileUtils.listFiles(imageDir.toString());
         var imageList = new ArrayList<String>();
@@ -138,4 +141,5 @@ class FFmpegUtilsTest {
         log.debug(project.toString());
         FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString());
     }
+
 }

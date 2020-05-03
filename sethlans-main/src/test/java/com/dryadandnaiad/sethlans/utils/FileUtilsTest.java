@@ -177,17 +177,17 @@ class FileUtilsTest {
     void listFiles() throws IOException {
         createFiles();
         new File(TEST_DIRECTORY + File.separator + "testDir").mkdirs();
-        var set = FileUtils.listFiles(TEST_DIRECTORY.toString());
-        assertThat(set).doesNotContain("testDir");
-        assertThat(set).hasSize(3);
+        var list = FileUtils.listFiles(TEST_DIRECTORY.toString());
+        assertThat(list).doesNotContain("testDir");
+        assertThat(list).hasSize(3);
     }
 
     @Test
     void listDirectories() throws IOException {
         createFiles();
         new File(TEST_DIRECTORY + File.separator + "testDir").mkdirs();
-        var set = FileUtils.listDirectories(TEST_DIRECTORY.toString());
-        assertThat(set).containsOnly("testDir");
+        var list = FileUtils.listDirectories(TEST_DIRECTORY.toString());
+        assertThat(list).containsOnly("testDir");
     }
 
     private File make7z() throws IOException {

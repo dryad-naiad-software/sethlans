@@ -17,19 +17,29 @@
 
 package com.dryadandnaiad.sethlans.testutils;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
- * File created by Mario Estrella on 5/1/2020.
+ * File created by Mario Estrella on 5/3/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class TestResource {
+public class TestFileUtils {
 
-    public InputStream getResource(String resourceName) {
-        var classLoader = getClass().getClassLoader();
-        return (classLoader.getResourceAsStream(resourceName));
+    public static boolean copyTestArchiveToDisk(String dir, String archiveLoc, String filename) {
+        InputStream inputStream = new TestResource().getResource(archiveLoc);
+        var path = dir + File.separator + filename;
+        try {
+            Files.copy(inputStream, Paths.get(path));
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new File(path).exists();
     }
-
 }
