@@ -120,7 +120,8 @@ class FFmpegUtilsTest {
                 .frameRate(30)
                 .videoQuality(VideoQuality.HIGH_X264)
                 .pixelFormat(PixelFormat.YUV420P)
-                .videoFileLocation(videoDirectory.toString())
+                .videoFileLocation(videoDirectory.toString() + File.separator + "thesample-123e." + VideoOutputFormat.MP4.name().toLowerCase())
+                .videoFileLocation("test")
                 .build();
         var projectSettings = ProjectSettings.builder()
                 .videoSettings(videoSettings)

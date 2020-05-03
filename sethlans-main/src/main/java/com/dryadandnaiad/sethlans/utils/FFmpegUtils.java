@@ -23,12 +23,13 @@ import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecuteResultHandler;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.FileSystemUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -46,127 +47,6 @@ public class FFmpegUtils {
     static String LINUX_ARCHIVE = "ffmpeg-4.2.2-linux64.tar.xz";
     static String MACOS_ARCHIVE = "ffmpeg-4.2.2-macos.tar.xz";
     static String FFMPEG_FILES = "files/ffmpeg/";
-
-    /**
-     * @param blenderProject
-     * @param ffmpegDir
-     * @return
-     */
-    public static boolean encodeImagesToVideo(Project blenderProject, String ffmpegDir) {
-        log.info("Preparing " + blenderProject.getProjectName() + " for video encoding.");
-        String ffmpegBinary = getFFmpegBinary(ffmpegDir);
-        if (ffmpegBinary == null) {
-            return false;
-        }
-
-        if (blenderProject.getFrameFileNames() == null || blenderProject.getFrameFileNames().isEmpty()) {
-            log.error("No frame filenames present.");
-            return false;
-        }
-        // Copy images to temporary directory for video processing
-        log.info("Copying image files to temporary directory.");
-        var tempDir = new File(blenderProject.getProjectRootDir()
-                + File.separator + "temp");
-        tempDir.mkdirs();
-        for (String frameFileName : blenderProject.getFrameFileNames()) {
-            try {
-                log.debug("Copying " + frameFileName + " to " + tempDir.toString());
-                copyFileToDirectory(new File(frameFileName), tempDir);
-            } catch (IOException e) {
-                log.error("Error copying file: " + frameFileName);
-                log.error(e.getMessage());
-                log.error(Throwables.getStackTraceAsString(e));
-                return false;
-            }
-        }
-
-        var command = createFFmpegCommand(ffmpegBinary, blenderProject);
-        log.debug(command.toString());
-        log.debug(ffmpegBinary);
-
-
-        return false;
-    }
-
-    private static boolean executeFFmpegCommand() {
-        var outputStream = new ByteArrayOutputStream();
-        var errorStream = new ByteArrayOutputStream();
-        return false;
-    }
-
-    private static CommandLine createFFmpegCommand(String ffmpegBinary, Project blenderProject) {
-        var truncatedProjectName = StringUtils.left(blenderProject.getProjectName(), 10);
-        var truncatedUUID = StringUtils.left(blenderProject.getProjectID(), 4);
-        var cleanedProjectName = truncatedProjectName.replaceAll(" ", "")
-                .replaceAll("[^a-zA-Z0-9_-]", "").toLowerCase();
-        var videoSettings = blenderProject.getProjectSettings().getVideoSettings();
-
-        var ffmpeg = new CommandLine(ffmpegBinary);
-        // Set Framerate
-        ffmpeg.addArgument("-framerate");
-        ffmpeg.addArgument(videoSettings.getFrameRate().toString());
-
-        // Configure input images
-        ffmpeg.addArgument("-i");
-        ffmpeg.addArgument(blenderProject.getProjectRootDir() + File.separator + "temp" +
-                File.separator + cleanedProjectName + "-" + truncatedUUID + "-" + "%d." +
-                blenderProject.getProjectSettings().getImageSettings().getImageOutputFormat()
-                        .name().toLowerCase());
-
-
-        // Configure video codec
-        ffmpeg.addArgument("-c:v");
-        switch (videoSettings.getVideoOutputFormat()) {
-            case MP4:
-                ffmpeg.addArgument(videoSettings.getCodec().getName());
-                ffmpeg.addArgument("-crf");
-                ffmpeg.addArgument(videoSettings.getVideoQuality().getName());
-                ffmpeg.addArgument("-preset");
-                ffmpeg.addArgument("medium");
-                ffmpeg.addArgument("-pix_fmt");
-                ffmpeg.addArgument(videoSettings.getPixelFormat().getName());
-                break;
-            case AVI:
-                ffmpeg.addArgument(videoSettings.getCodec().getName());
-                ffmpeg.addArgument("-pix_fmt");
-                ffmpeg.addArgument(videoSettings.getPixelFormat().getName());
-                break;
-            case MKV:
-                ffmpeg.addArgument(videoSettings.getCodec().getName());
-                if (videoSettings.getCodec().equals(VideoCodec.LIBX264) || videoSettings.getCodec().equals(VideoCodec.LIBX265)) {
-                    ffmpeg.addArgument("-crf");
-                    ffmpeg.addArgument(videoSettings.getVideoQuality().getName());
-                    ffmpeg.addArgument("-preset");
-                    ffmpeg.addArgument("medium");
-                }
-                ffmpeg.addArgument("-pix_fmt");
-                ffmpeg.addArgument(videoSettings.getPixelFormat().getName());
-                break;
-        }
-
-        // Configure output file
-        ffmpeg.addArgument(videoSettings.getVideoFileLocation());
-        return ffmpeg;
-    }
-
-    private static String getFFmpegBinary(String ffmpegDir) {
-        String ffmpegBinary;
-        var os = QueryUtils.getOS();
-        switch (os) {
-            case WINDOWS_64:
-                ffmpegBinary = ffmpegDir + File.separator + "bin" + File.separator + "ffmpeg.exe";
-                break;
-            case LINUX_64:
-            case MACOS:
-                ffmpegBinary = ffmpegDir + File.separator + "bin" + File.separator + "ffmpeg";
-                break;
-            default:
-                log.error("Operating System not supported. " + os.getName());
-                return null;
-        }
-        return ffmpegBinary;
-
-    }
 
     /**
      * @param binaryDir
@@ -234,4 +114,163 @@ public class FFmpegUtils {
         }
         return false;
     }
+
+    /**
+     * @param blenderProject
+     * @param ffmpegDir
+     * @return
+     */
+    public static boolean encodeImagesToVideo(Project blenderProject, String ffmpegDir) {
+        log.info("Preparing " + blenderProject.getProjectName() + " for video encoding.");
+        String ffmpegBinary = getFFmpegBinary(ffmpegDir);
+        if (ffmpegBinary == null) {
+            return false;
+        }
+
+        if (blenderProject.getFrameFileNames() == null || blenderProject.getFrameFileNames().isEmpty()) {
+            log.error("No frame filenames present.");
+            return false;
+        }
+        // Copy images to temporary directory for video processing
+        log.info("Copying image files to temporary directory.");
+        var tempDir = new File(blenderProject.getProjectRootDir()
+                + File.separator + "temp");
+        tempDir.mkdirs();
+        for (String frameFileName : blenderProject.getFrameFileNames()) {
+            try {
+                log.debug("Copying " + frameFileName + " to " + tempDir.toString());
+                copyFileToDirectory(new File(frameFileName), tempDir);
+            } catch (IOException e) {
+                log.error("Error copying file: " + frameFileName);
+                log.error(e.getMessage());
+                log.error(Throwables.getStackTraceAsString(e));
+                return false;
+            }
+        }
+
+        var result = executeFFmpegCommand(createFFmpegCommand(ffmpegBinary, blenderProject), blenderProject.getProjectName());
+        FileSystemUtils.deleteRecursively(tempDir);
+        if (result) {
+            log.debug("Test");
+        } else {
+            return false;
+        }
+
+
+        return false;
+    }
+
+
+    private static CommandLine createFFmpegCommand(String ffmpegBinary, Project blenderProject) {
+        var truncatedProjectName = StringUtils.left(blenderProject.getProjectName(), 10);
+        var truncatedUUID = StringUtils.left(blenderProject.getProjectID(), 4);
+        var cleanedProjectName = truncatedProjectName.replaceAll(" ", "")
+                .replaceAll("[^a-zA-Z0-9_-]", "").toLowerCase();
+        var videoSettings = blenderProject.getProjectSettings().getVideoSettings();
+
+        var ffmpeg = new CommandLine(ffmpegBinary);
+        // Set Framerate
+        ffmpeg.addArgument("-framerate");
+        ffmpeg.addArgument(videoSettings.getFrameRate().toString());
+
+        // Configure input images
+        ffmpeg.addArgument("-i");
+        ffmpeg.addArgument(blenderProject.getProjectRootDir() + File.separator + "temp" +
+                File.separator + cleanedProjectName + "-" + truncatedUUID + "-" + "%04d." +
+                blenderProject.getProjectSettings().getImageSettings().getImageOutputFormat()
+                        .name().toLowerCase());
+
+
+        // Configure video codec
+        ffmpeg.addArgument("-c:v");
+        switch (videoSettings.getVideoOutputFormat()) {
+            case MP4:
+                ffmpeg.addArgument(videoSettings.getCodec().getName());
+                ffmpeg.addArgument("-crf");
+                ffmpeg.addArgument(videoSettings.getVideoQuality().getName());
+                ffmpeg.addArgument("-preset");
+                ffmpeg.addArgument("medium");
+                ffmpeg.addArgument("-pix_fmt");
+                ffmpeg.addArgument(videoSettings.getPixelFormat().getName());
+                break;
+            case AVI:
+                ffmpeg.addArgument(videoSettings.getCodec().getName());
+                ffmpeg.addArgument("-pix_fmt");
+                ffmpeg.addArgument(videoSettings.getPixelFormat().getName());
+                break;
+            case MKV:
+                ffmpeg.addArgument(videoSettings.getCodec().getName());
+                if (videoSettings.getCodec().equals(VideoCodec.LIBX264) || videoSettings.getCodec().equals(VideoCodec.LIBX265)) {
+                    ffmpeg.addArgument("-crf");
+                    ffmpeg.addArgument(videoSettings.getVideoQuality().getName());
+                    ffmpeg.addArgument("-preset");
+                    ffmpeg.addArgument("medium");
+                }
+                ffmpeg.addArgument("-pix_fmt");
+                ffmpeg.addArgument(videoSettings.getPixelFormat().getName());
+                break;
+        }
+
+        // Configure output file
+        ffmpeg.addArgument(videoSettings.getVideoFileLocation());
+        return ffmpeg;
+    }
+
+    private static boolean executeFFmpegCommand(CommandLine command, String projectName) {
+        var outputStream = new ByteArrayOutputStream();
+        var pumpStreamHandler = new PumpStreamHandler(outputStream);
+        var executor = new DefaultExecutor();
+        executor.setStreamHandler(pumpStreamHandler);
+        executor.setExitValue(0);
+        var resultHandler = new DefaultExecuteResultHandler();
+        String output;
+
+        try {
+            log.info("Starting video encoding of " + projectName);
+            log.debug("Executing the following command " + command.toString());
+            executor.execute(command, resultHandler);
+            resultHandler.waitFor();
+            var out = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray())));
+            while ((output = out.readLine()) != null) {
+                log.debug(output);
+            }
+            out.close();
+
+            var exitValue = resultHandler.getExitValue();
+
+            if (exitValue != 0) {
+                log.error("Video encoding of " + projectName + " failed!");
+                return false;
+            }
+
+            log.info("Video encoding of " + projectName + " complete!");
+            return true;
+        } catch (IOException | InterruptedException e) {
+            log.error("Error executing command " + command.toString());
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            return false;
+        }
+    }
+
+    private static String getFFmpegBinary(String ffmpegDir) {
+        String ffmpegBinary;
+        var os = QueryUtils.getOS();
+        switch (os) {
+            case WINDOWS_64:
+                ffmpegBinary = ffmpegDir + File.separator + "bin" + File.separator + "ffmpeg.exe";
+                break;
+            case LINUX_64:
+            case MACOS:
+                ffmpegBinary = ffmpegDir + File.separator + "bin" + File.separator + "ffmpeg";
+                break;
+            default:
+                log.error("Operating System not supported. " + os.getName());
+                return null;
+        }
+        return ffmpegBinary;
+
+    }
+
+
 }
