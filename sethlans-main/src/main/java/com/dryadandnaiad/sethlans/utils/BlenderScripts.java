@@ -111,6 +111,7 @@ public class BlenderScripts {
     }
 
     private static void cyclesCUDA(PrintStream scriptWriter, RenderTask renderTask) {
+        // Devices = 0, CUDA
         List<String> strippedID = new ArrayList<>();
         for (String deviceID : renderTask.getDeviceIDs()) {
             strippedID.add(StringUtils.substringAfter(deviceID, "_"));
@@ -119,8 +120,6 @@ public class BlenderScripts {
                 "\"CUDA\"");
         scriptWriter.println();
         scriptWriter.println("devices = bpy.context.user_preferences.addons['cycles'].preferences.get_devices()");
-        //CUDA = 0
-        scriptWriter.println("render_device = device[0]");
         scriptWriter.println("cuda_devices = devices[0]");
         scriptWriter.println("selected_cuda = []");
         for (String id : strippedID) {
@@ -138,15 +137,35 @@ public class BlenderScripts {
         scriptWriter.println();
         scriptWriter.println("for dev in devices[1]:");
         scriptWriter.println("\tdev.use = False");
-
-
     }
 
     private static void cyclesOPENCL(PrintStream scriptWriter, RenderTask renderTask) {
-        List<String> strippedId = new ArrayList<>();
+        // Devices = 1, OPENCL
+
+        List<String> strippedID = new ArrayList<>();
         for (String deviceID : renderTask.getDeviceIDs()) {
-            strippedId.add(StringUtils.substringAfter(deviceID, "_"));
+            strippedID.add(StringUtils.substringAfter(deviceID, "_"));
         }
+        scriptWriter.println("bpy.context.user_preferences.addons['cycles'].preferences.compute_device_type = " +
+                "\"OPENCL\"");
+        scriptWriter.println("devices = bpy.context.user_preferences.addons['cycles'].preferences.get_devices()");
+        scriptWriter.println("opencl_devices = devices[1]");
+        scriptWriter.println("selected_opencl = []");
+        for (String id : strippedID) {
+            scriptWriter.println("selected_opencl.append(" + id + ")");
+        }
+        scriptWriter.println();
+        scriptWriter.println("for i in range(len(selected_opencl)):");
+        scriptWriter.println("\tif(opencl_devices[i] == selected_opencl[i]):");
+        scriptWriter.println("\t\topencl_devices[i].use = True");
+        scriptWriter.println();
+        scriptWriter.println("unselected_opencl = list(set(opencl_devices) - set(selected_opencl))");
+        scriptWriter.println();
+        scriptWriter.println("for i in range(len(unselected_opencl)):");
+        scriptWriter.println("\topencl_devices[unselected_opencl[i]].use = False");
+        scriptWriter.println();
+        scriptWriter.println("for dev in devices[0]:");
+        scriptWriter.println("\tdev.use = False");
     }
 
 
