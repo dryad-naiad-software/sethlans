@@ -21,10 +21,13 @@ import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * File created by Mario Estrella on 5/3/2020.
@@ -64,12 +67,16 @@ public class BlenderScripts {
                 scriptWriter.println("bpy.context.scene.cycles.device = " + "\"" + renderTask.getComputeOn() + "\"");
                 scriptWriter.println();
                 if (renderTask.getComputeOn().equals(ComputeOn.GPU)) {
-                    if (renderTask.getDeviceIDs().get(0).contains("CUDA")) {
-                        cyclesCUDA(scriptWriter, renderTask);
+                    for (String deviceID : renderTask.getDeviceIDs()) {
+                        if (deviceID.contains("CUDA")) {
+                            cyclesCUDA(scriptWriter, renderTask);
+                            break;
+                        }
+                        if (deviceID.contains("OPENCL")) {
+                            cyclesOPENCL(scriptWriter, renderTask);
+                        }
                     }
-                    if (renderTask.getDeviceIDs().get(0).contains("OPENCL")) {
-                        cyclesOPENCL(scriptWriter, renderTask);
-                    }
+
                 }
             }
 
@@ -104,25 +111,42 @@ public class BlenderScripts {
     }
 
     private static void cyclesCUDA(PrintStream scriptWriter, RenderTask renderTask) {
+        List<String> strippedID = new ArrayList<>();
+        for (String deviceID : renderTask.getDeviceIDs()) {
+            strippedID.add(StringUtils.substringAfter(deviceID, "_"));
+        }
         scriptWriter.println("bpy.context.user_preferences.addons['cycles'].preferences.compute_device_type = " +
                 "\"CUDA\"");
         scriptWriter.println();
         scriptWriter.println("devices = bpy.context.user_preferences.addons['cycles'].preferences.get_devices()");
         //CUDA = 0
         scriptWriter.println("render_device = device[0]");
-        if (renderTask.getDeviceIDs().size() == 1) {
-            scriptWriter.println("cuda_devices = devices[0]");
-            scriptWriter.println("cuda_id = " + renderTask.getDeviceIDs().get(0));
-            scriptWriter.println();
-            scriptWriter.println("for i in range(len(cuda_devices)):");
-            scriptWriter.println("\tcuda_devices[i].use = (i == cuda_id)");
+        scriptWriter.println("cuda_devices = devices[0]");
+        scriptWriter.println("selected_cuda = []");
+        for (String id : strippedID) {
+            scriptWriter.println("selected_cuda.append(" + id + ")");
         }
+        scriptWriter.println();
+        scriptWriter.println("for i in range(len(selected_cuda)):");
+        scriptWriter.println("\tif(cuda_devices[i] == selected_cuda[i]):");
+        scriptWriter.println("\t\tcuda_devices[i].use = True");
+        scriptWriter.println();
+        scriptWriter.println("unselected_cuda = list(set(cuda_devices) - set(selected_cuda))");
+        scriptWriter.println();
+        scriptWriter.println("for i in range(len(unselected_cuda)):");
+        scriptWriter.println("\tcuda_devices[unselected_cuda[i]].use = False");
+        scriptWriter.println();
+        scriptWriter.println("for dev in devices[1]:");
+        scriptWriter.println("\tdev.use = False");
 
 
     }
 
     private static void cyclesOPENCL(PrintStream scriptWriter, RenderTask renderTask) {
-
+        List<String> strippedId = new ArrayList<>();
+        for (String deviceID : renderTask.getDeviceIDs()) {
+            strippedId.add(StringUtils.substringAfter(deviceID, "_"));
+        }
     }
 
 
