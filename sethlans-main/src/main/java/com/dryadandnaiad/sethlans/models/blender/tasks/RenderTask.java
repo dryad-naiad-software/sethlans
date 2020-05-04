@@ -18,13 +18,11 @@
 package com.dryadandnaiad.sethlans.models.blender.tasks;
 
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
+import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -38,17 +36,36 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @Getter
 @Setter
-@SuperBuilder
-public class RenderTask extends Task {
+@Builder
+public class RenderTask {
+    @Id
+    private String id;
+    private String blenderVersion;
+    private String connectionID;
+    private String taskID;
+    private String taskFile;
+    private String taskFileMD5Sum;
+    private String blenderExecutable;
+    private String taskDir;
     private String projectName;
     private String projectID;
     private String queueID;
-    private int samples;
-    private int taskResolutionX;
-    private int taskResolutionY;
-    private int taskResPercentage;
-    private Long renderTime;
+    private String benchmarkURL;
+    private Integer taskResolutionX;
+    private Integer taskResolutionY;
+    private Integer taskResPercentage;
+    private Integer taskTileSize;
+    private Integer samples;
+    private Integer cpuRating;
+    private Integer gpuRating;
+    private String deviceID;
+    private ComputeOn computeOn;
     private BlenderEngine blenderEngine;
-    private ImageOutputFormat imageOutputFormat;
     private Frame frame;
+    private Long renderTime;
+    private ImageOutputFormat imageOutputFormat;
+    private boolean isBenchmark;
+    private boolean cancelRequestReceived;
+    private boolean complete;
+    private boolean inProgress;
 }
