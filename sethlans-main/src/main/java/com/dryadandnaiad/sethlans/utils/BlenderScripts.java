@@ -18,6 +18,7 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
+import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,12 +33,19 @@ import java.io.PrintStream;
  * Project: sethlans
  */
 @Slf4j
-class BlenderScripts {
+public class BlenderScripts {
 
-    boolean writeBaseScript(RenderTask renderTask) {
+    public static boolean writeRenderScript(RenderTask renderTask) {
         try {
-            File script = new File(renderTask.getTaskDir() + File.separator + "script-" +
-                    renderTask.getDeviceID() + ".py");
+            File script = null;
+            if (renderTask.getDeviceIDs().size() > 1) {
+                script = new File(renderTask.getTaskDir() + File.separator + "script-MULTI.py");
+            }
+            if (renderTask.getDeviceIDs().size() == 1) {
+                script = new File(renderTask.getTaskDir() + File.separator + "script-" +
+                        renderTask.getDeviceIDs().get(0) + ".py");
+            }
+
 
             var location = renderTask.getTaskDir().replace("\\", "/");
 
@@ -45,6 +53,7 @@ class BlenderScripts {
 
             // Write Imports
             scriptWriter.println("import bpy");
+            scriptWriter.println();
 
             // Temp Directory
             scriptWriter.println("bpy.context.user_preferences.filepaths.temporary_directory = "
@@ -52,8 +61,16 @@ class BlenderScripts {
 
             // Set Device
             if (renderTask.getBlenderEngine().equals(BlenderEngine.CYCLES)) {
-                scriptWriter.println();
                 scriptWriter.println("bpy.context.scene.cycles.device = " + "\"" + renderTask.getComputeOn() + "\"");
+                scriptWriter.println();
+                if (renderTask.getComputeOn().equals(ComputeOn.GPU)) {
+                    if (renderTask.getDeviceIDs().get(0).contains("CUDA")) {
+                        cyclesCUDA(scriptWriter, renderTask);
+                    }
+                    if (renderTask.getDeviceIDs().get(0).contains("OPENCL")) {
+                        cyclesOPENCL(scriptWriter, renderTask);
+                    }
+                }
             }
 
 
@@ -74,13 +91,37 @@ class BlenderScripts {
             scriptWriter.println("bpy.context.scene.render.use_border = True");
             scriptWriter.println("bpy.context.scene.render.use_crop_to_border = True");
 
+            scriptWriter.flush();
+            scriptWriter.close();
 
-            return false;
+            return script.exists();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
         return false;
+
+    }
+
+    private static void cyclesCUDA(PrintStream scriptWriter, RenderTask renderTask) {
+        scriptWriter.println("bpy.context.user_preferences.addons['cycles'].preferences.compute_device_type = " +
+                "\"CUDA\"");
+        scriptWriter.println();
+        scriptWriter.println("devices = bpy.context.user_preferences.addons['cycles'].preferences.get_devices()");
+        //CUDA = 0
+        scriptWriter.println("render_device = device[0]");
+        if (renderTask.getDeviceIDs().size() == 1) {
+            scriptWriter.println("cuda_devices = devices[0]");
+            scriptWriter.println("cuda_id = " + renderTask.getDeviceIDs().get(0));
+            scriptWriter.println();
+            scriptWriter.println("for i in range(len(cuda_devices)):");
+            scriptWriter.println("\tcuda_devices[i].use = (i == cuda_id)");
+        }
+
+
+    }
+
+    private static void cyclesOPENCL(PrintStream scriptWriter, RenderTask renderTask) {
 
     }
 

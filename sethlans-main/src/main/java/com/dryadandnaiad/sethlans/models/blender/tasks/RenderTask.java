@@ -25,6 +25,8 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 /**
  * File created by Mario Estrella on 4/2/2020.
  * Dryad and Naiad Software LLC
@@ -58,7 +60,7 @@ public class RenderTask {
     private Integer samples;
     private Integer cpuRating;
     private Integer gpuRating;
-    private String deviceID;
+    private List<String> deviceIDs;
     private ComputeOn computeOn;
     private BlenderEngine blenderEngine;
     private Frame frame;
