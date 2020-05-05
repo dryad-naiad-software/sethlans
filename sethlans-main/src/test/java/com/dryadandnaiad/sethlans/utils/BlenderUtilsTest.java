@@ -151,4 +151,7 @@ class BlenderUtilsTest {
         assertThat(blenderDownload).doesNotExist();
     }
 
+    @Test
+    void executeRenderTask() {
+    }
 }
