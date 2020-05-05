@@ -60,10 +60,10 @@ public class RenderTask {
     private Integer samples;
     private Integer cpuRating;
     private Integer gpuRating;
-    private Integer partMinX;
-    private Integer partMaxX;
-    private Integer partMinY;
-    private Integer partMaxY;
+    private Double partMinX;
+    private Double partMaxX;
+    private Double partMinY;
+    private Double partMaxY;
     private List<String> deviceIDs;
     private ComputeOn computeOn;
     private BlenderEngine blenderEngine;

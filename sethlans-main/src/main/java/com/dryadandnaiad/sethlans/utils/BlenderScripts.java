@@ -90,7 +90,11 @@ public class BlenderScripts {
                             break;
                         }
                         if (renderTask.getDeviceIDs().get(0).contains("OPTIX")) {
-                            cyclesOPTIX(scriptWriter, renderTask);
+                            if (renderTask.getBlenderVersion().contains("2.7")) {
+                                cyclesCUDA(scriptWriter, renderTask);
+                            } else {
+                                cyclesOPTIX(scriptWriter, renderTask);
+                            }
                             break;
                         }
 
@@ -99,9 +103,15 @@ public class BlenderScripts {
                     }
                     break;
                 case BLENDER_EEVEE:
+                    if (renderTask.getBlenderVersion().contains("2.7")) {
+                        return false;
+                    }
                     scriptWriter.println("scene.render.engine = 'BLENDER_EEVEE'");
                     break;
                 case BLENDER_RENDER:
+                    if (!renderTask.getBlenderVersion().contains("2.7")) {
+                        return false;
+                    }
                     scriptWriter.println("scene.render.engine = 'BLENDER_RENDER'");
                     break;
             }

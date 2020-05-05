@@ -25,9 +25,13 @@ import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 /**
  * File created by Mario Estrella on 5/3/2020.
@@ -46,11 +50,170 @@ class BlenderScriptsTest {
 
     @AfterEach
     void tearDown() {
-        //FileSystemUtils.deleteRecursively(TEST_DIRECTORY);
+        FileSystemUtils.deleteRecursively(TEST_DIRECTORY);
     }
 
     @Test
-    void writeRenderScript() {
+    void writeRenderScriptBenchmark() {
+        var deviceIDs = new ArrayList<String>();
+        deviceIDs.add("CPU");
+        var renderTask = RenderTask.builder()
+                .taskDir(TEST_DIRECTORY.toString())
+                .blenderEngine(BlenderEngine.CYCLES)
+                .computeOn(ComputeOn.CPU)
+                .deviceIDs(deviceIDs)
+                .blenderVersion("2.82a")
+                .isBenchmark(true)
+                .useParts(false)
+                .taskResolutionX(1920)
+                .taskResolutionY(1080)
+                .taskResPercentage(50)
+                .taskTileSize(256)
+                .samples(50)
+                .imageOutputFormat(ImageOutputFormat.PNG)
+                .build();
+        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+    }
+
+    @Test
+    void writeRenderScriptEEVEE() {
+        var deviceIDs = new ArrayList<String>();
+        deviceIDs.add("OPENCL_0");
+        var renderTask = RenderTask.builder()
+                .taskDir(TEST_DIRECTORY.toString())
+                .blenderEngine(BlenderEngine.BLENDER_EEVEE)
+                .computeOn(ComputeOn.GPU)
+                .blenderVersion("2.82a")
+                .deviceIDs(deviceIDs)
+                .isBenchmark(false)
+                .useParts(true)
+                .taskResolutionX(1920)
+                .taskResolutionY(1080)
+                .taskResPercentage(50)
+                .taskTileSize(256)
+                .partMinX(0.0)
+                .partMaxX(0.5)
+                .partMinY(0.0)
+                .partMaxY(0.5)
+                .samples(50)
+                .imageOutputFormat(ImageOutputFormat.PNG)
+                .build();
+        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+        renderTask.setBlenderVersion("2.79b");
+        assertThat(BlenderScripts.writeRenderScript(renderTask)).isFalse();
+
+    }
+
+    @Test
+    void writeRenderScriptBlenderRender() {
+        var deviceIDs = new ArrayList<String>();
+        deviceIDs.add("OPENCL_0");
+        var renderTask = RenderTask.builder()
+                .taskDir(TEST_DIRECTORY.toString())
+                .blenderEngine(BlenderEngine.BLENDER_RENDER)
+                .computeOn(ComputeOn.CPU)
+                .blenderVersion("2.79b")
+                .deviceIDs(deviceIDs)
+                .isBenchmark(false)
+                .useParts(true)
+                .taskResolutionX(1920)
+                .taskResolutionY(1080)
+                .taskResPercentage(50)
+                .taskTileSize(256)
+                .partMinX(0.0)
+                .partMaxX(0.5)
+                .partMinY(0.0)
+                .partMaxY(0.5)
+                .samples(50)
+                .imageOutputFormat(ImageOutputFormat.PNG)
+                .build();
+        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+        renderTask.setBlenderVersion("2.82a");
+        assertThat(BlenderScripts.writeRenderScript(renderTask)).isFalse();
+    }
+
+
+    @Test
+    void writeRenderScriptMultiOpenCL() {
+        var deviceIDs = new ArrayList<String>();
+        deviceIDs.add("OPENCL_0");
+        deviceIDs.add("OPENCL_1");
+        var renderTask = RenderTask.builder()
+                .taskDir(TEST_DIRECTORY.toString())
+                .blenderEngine(BlenderEngine.CYCLES)
+                .computeOn(ComputeOn.GPU)
+                .deviceIDs(deviceIDs)
+                .blenderVersion("2.79b")
+                .isBenchmark(false)
+                .useParts(true)
+                .taskResolutionX(1920)
+                .taskResolutionY(1080)
+                .taskResPercentage(50)
+                .taskTileSize(256)
+                .partMinX(0.0)
+                .partMaxX(0.5)
+                .partMinY(0.0)
+                .partMaxY(0.5)
+                .samples(50)
+                .imageOutputFormat(ImageOutputFormat.PNG)
+                .build();
+        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+    }
+
+    @Test
+    void writeRenderScriptOptix() {
+        var deviceIDs = new ArrayList<String>();
+        deviceIDs.add("OPTIX_0");
+        var renderTask = RenderTask.builder()
+                .taskDir(TEST_DIRECTORY.toString())
+                .blenderEngine(BlenderEngine.CYCLES)
+                .computeOn(ComputeOn.GPU)
+                .deviceIDs(deviceIDs)
+                .blenderVersion("2.82a")
+                .isBenchmark(false)
+                .useParts(true)
+                .taskResolutionX(1920)
+                .taskResolutionY(1080)
+                .taskResPercentage(50)
+                .taskTileSize(256)
+                .partMinX(0.0)
+                .partMaxX(0.5)
+                .partMinY(0.0)
+                .partMaxY(0.5)
+                .samples(50)
+                .imageOutputFormat(ImageOutputFormat.PNG)
+                .build();
+        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+    }
+
+    @Test
+    void writeRenderScriptOptixLegacy() {
+        var deviceIDs = new ArrayList<String>();
+        deviceIDs.add("OPTIX_0");
+        var renderTask = RenderTask.builder()
+                .taskDir(TEST_DIRECTORY.toString())
+                .blenderEngine(BlenderEngine.CYCLES)
+                .computeOn(ComputeOn.GPU)
+                .deviceIDs(deviceIDs)
+                .blenderVersion("2.79b")
+                .isBenchmark(false)
+                .useParts(true)
+                .taskResolutionX(1920)
+                .taskResolutionY(1080)
+                .taskResPercentage(50)
+                .taskTileSize(256)
+                .partMinX(0.0)
+                .partMaxX(0.5)
+                .partMinY(0.0)
+                .partMaxY(0.5)
+                .samples(50)
+                .imageOutputFormat(ImageOutputFormat.PNG)
+                .build();
+        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+    }
+
+    @Test
+    void writeRenderScriptMultiCuda() {
         var deviceIDs = new ArrayList<String>();
         deviceIDs.add("CUDA_0");
         deviceIDs.add("CUDA_1");
@@ -66,11 +229,13 @@ class BlenderScriptsTest {
                 .taskResolutionY(1080)
                 .taskResPercentage(50)
                 .taskTileSize(256)
+                .partMinX(0.0)
+                .partMaxX(0.5)
+                .partMinY(0.0)
+                .partMaxY(0.5)
                 .samples(50)
                 .imageOutputFormat(ImageOutputFormat.PNG)
                 .build();
-        BlenderScripts.writeRenderScript(renderTask);
-
-
+        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
     }
 }
