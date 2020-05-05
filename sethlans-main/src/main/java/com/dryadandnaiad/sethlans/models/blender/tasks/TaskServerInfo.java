@@ -17,41 +17,20 @@
 
 package com.dryadandnaiad.sethlans.models.blender.tasks;
 
-import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * File created by Mario Estrella on 4/2/2020.
+ * File created by Mario Estrella on 5/5/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Document
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Builder
-public class RenderTask {
-    @Id
-    private String id;
-    private String blenderVersion;
-    private String blenderExecutable;
-    private String taskID;
-    private String taskBlendFile;
-    private String taskBlendFileMD5Sum;
-    private String taskDir;
-    private String projectName;
-    private String projectID;
-    private String benchmarkURL;
-    private Long renderTime;
-    private boolean isBenchmark;
-    private boolean cancelRequestReceived;
-    private boolean complete;
-    private boolean inProgress;
-    private boolean useParts;
-    private TaskFrameInfo frameInfo;
-    private TaskScriptInfo scriptInfo;
-    private TaskServerInfo serverInfo;
+public class TaskServerInfo {
+    private String connectionID;
+    private String serverQueueID;
 }

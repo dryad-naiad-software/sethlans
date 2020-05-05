@@ -67,22 +67,22 @@ public class BlenderScripts {
             scriptWriter.println("scene = bpy.context.scene");
 
             // Set Device
-            switch (renderTask.getBlenderEngine()) {
+            switch (renderTask.getScriptInfo().getBlenderEngine()) {
                 case CYCLES:
                     scriptWriter.println("scene.render.engine = 'CYCLES'");
-                    scriptWriter.println("scene.cycles.device = " + "'" + renderTask.getComputeOn() + "'");
+                    scriptWriter.println("scene.cycles.device = " + "'" + renderTask.getScriptInfo().getComputeOn() + "'");
                     scriptWriter.println();
                     scriptWriter.println("cycles_prefs = prefs.addons['cycles'].preferences");
-                    if (renderTask.getComputeOn().equals(ComputeOn.GPU)) {
-                        if (renderTask.getDeviceIDs().get(0).contains("CUDA")) {
+                    if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.GPU)) {
+                        if (renderTask.getScriptInfo().getDeviceIDs().get(0).contains("CUDA")) {
                             cyclesCUDA(scriptWriter, renderTask);
                             break;
                         }
-                        if (renderTask.getDeviceIDs().get(0).contains("OPENCL")) {
+                        if (renderTask.getScriptInfo().getDeviceIDs().get(0).contains("OPENCL")) {
                             cyclesOPENCL(scriptWriter, renderTask);
                             break;
                         }
-                        if (renderTask.getDeviceIDs().get(0).contains("OPTIX")) {
+                        if (renderTask.getScriptInfo().getDeviceIDs().get(0).contains("OPTIX")) {
                             if (renderTask.getBlenderVersion().contains("2.7")) {
                                 cyclesCUDA(scriptWriter, renderTask);
                             } else {
@@ -121,40 +121,40 @@ public class BlenderScripts {
             // Set Resolution and Samples
             scriptWriter.println();
             scriptWriter.println("for scene in bpy.data.scenes:");
-            scriptWriter.println("\tscene.render.resolution_x = " + renderTask.getTaskResolutionX());
-            scriptWriter.println("\tscene.render.resolution_y = " + renderTask.getTaskResolutionY());
-            scriptWriter.println("\tscene.render.resolution_percentage = " + renderTask.getTaskResPercentage());
-            if (renderTask.getBlenderEngine().equals(BlenderEngine.CYCLES)) {
-                scriptWriter.println("\tscene.cycles.samples = " + renderTask.getSamples());
+            scriptWriter.println("\tscene.render.resolution_x = " + renderTask.getScriptInfo().getTaskResolutionX());
+            scriptWriter.println("\tscene.render.resolution_y = " + renderTask.getScriptInfo().getTaskResolutionY());
+            scriptWriter.println("\tscene.render.resolution_percentage = " + renderTask.getScriptInfo().getTaskResPercentage());
+            if (renderTask.getScriptInfo().getBlenderEngine().equals(BlenderEngine.CYCLES)) {
+                scriptWriter.println("\tscene.cycles.samples = " + renderTask.getScriptInfo().getSamples());
             }
 
             // Set Part
             if (!renderTask.isBenchmark() && renderTask.isUseParts()) {
                 scriptWriter.println("\tscene.render.use_border = True");
                 scriptWriter.println("\tscene.render.use_crop_to_border = True");
-                scriptWriter.println("\tscene.render.border_min_x = " + renderTask.getPartMinX());
-                scriptWriter.println("\tscene.render.border_max_x = " + renderTask.getPartMaxX());
-                scriptWriter.println("\tscene.render.border_min_y = " + renderTask.getPartMinY());
-                scriptWriter.println("\tscene.render.border_max_y = " + renderTask.getPartMaxY());
+                scriptWriter.println("\tscene.render.border_min_x = " + renderTask.getFrameInfo().getPartMinX());
+                scriptWriter.println("\tscene.render.border_max_x = " + renderTask.getFrameInfo().getPartMaxX());
+                scriptWriter.println("\tscene.render.border_min_y = " + renderTask.getFrameInfo().getPartMinY());
+                scriptWriter.println("\tscene.render.border_max_y = " + renderTask.getFrameInfo().getPartMaxY());
             }
 
             //Set Cores (CPU rendering)
-            if (renderTask.getComputeOn().equals(ComputeOn.CPU)) {
+            if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.CPU)) {
                 scriptWriter.println("\tscene.render.threads_mode = 'FIXED'");
-                scriptWriter.println("\tscene.render.threads = " + renderTask.getCores());
+                scriptWriter.println("\tscene.render.threads = " + renderTask.getScriptInfo().getCores());
             }
 
 
             // Tile Sizes
             scriptWriter.println();
-            scriptWriter.println("scene.render.tile_x = " + renderTask.getTaskTileSize());
-            scriptWriter.println("scene.render.tile_y = " + renderTask.getTaskTileSize());
+            scriptWriter.println("scene.render.tile_x = " + renderTask.getScriptInfo().getTaskTileSize());
+            scriptWriter.println("scene.render.tile_y = " + renderTask.getScriptInfo().getTaskTileSize());
 
             // Final Settings
             scriptWriter.println();
             scriptWriter.println("scene.render.use_border = True");
             scriptWriter.println("scene.render.use_crop_to_border = True");
-            if (renderTask.getImageOutputFormat().equals(ImageOutputFormat.PNG)) {
+            if (renderTask.getScriptInfo().getImageOutputFormat().equals(ImageOutputFormat.PNG)) {
                 scriptWriter.println("scene.render.image_settings.color_mode = 'RGBA'");
                 scriptWriter.println("scene.render.image_settings.color_depth = '16'");
             }
@@ -181,12 +181,12 @@ public class BlenderScripts {
     }
 
     private static void cyclesOPTIX(PrintStream scriptWriter, RenderTask renderTask) {
-        var strippedIDs = stripDeviceTypeFromID(renderTask.getDeviceIDs());
+        var strippedIDs = stripDeviceTypeFromID(renderTask.getScriptInfo().getDeviceIDs());
     }
 
     private static void cyclesCUDA(PrintStream scriptWriter, RenderTask renderTask) {
         // Devices = 0, CUDA Devices
-        var strippedIDs = stripDeviceTypeFromID(renderTask.getDeviceIDs());
+        var strippedIDs = stripDeviceTypeFromID(renderTask.getScriptInfo().getDeviceIDs());
         scriptWriter.println("cycles_prefs.compute_device_type = 'CUDA'");
         scriptWriter.println();
         scriptWriter.println("devices = cycles_prefs.get_devices()");
@@ -211,7 +211,7 @@ public class BlenderScripts {
 
     private static void cyclesOPENCL(PrintStream scriptWriter, RenderTask renderTask) {
         // Devices = 1, OPENCL Devices
-        var strippedIDs = stripDeviceTypeFromID(renderTask.getDeviceIDs());
+        var strippedIDs = stripDeviceTypeFromID(renderTask.getScriptInfo().getDeviceIDs());
 
         scriptWriter.println("cycles_prefs.compute_device_type = 'OPENCL'");
         scriptWriter.println("devices = cycles_prefs.get_devices()");

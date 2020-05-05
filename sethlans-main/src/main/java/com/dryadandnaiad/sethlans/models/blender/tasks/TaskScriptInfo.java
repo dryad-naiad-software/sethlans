@@ -17,41 +17,33 @@
 
 package com.dryadandnaiad.sethlans.models.blender.tasks;
 
-import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import com.dryadandnaiad.sethlans.enums.BlenderEngine;
+import com.dryadandnaiad.sethlans.enums.ComputeOn;
+import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
 
 /**
- * File created by Mario Estrella on 4/2/2020.
+ * File created by Mario Estrella on 5/5/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Document
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
 @Builder
-public class RenderTask {
-    @Id
-    private String id;
-    private String blenderVersion;
-    private String blenderExecutable;
-    private String taskID;
-    private String taskBlendFile;
-    private String taskBlendFileMD5Sum;
-    private String taskDir;
-    private String projectName;
-    private String projectID;
-    private String benchmarkURL;
-    private Long renderTime;
-    private boolean isBenchmark;
-    private boolean cancelRequestReceived;
-    private boolean complete;
-    private boolean inProgress;
-    private boolean useParts;
-    private TaskFrameInfo frameInfo;
-    private TaskScriptInfo scriptInfo;
-    private TaskServerInfo serverInfo;
+public class TaskScriptInfo {
+    private Integer taskResolutionX;
+    private Integer taskResolutionY;
+    private Integer taskResPercentage;
+    private Integer taskTileSize;
+    private Integer samples;
+    private Integer cores;
+    private ComputeOn computeOn;
+    private BlenderEngine blenderEngine;
+    private ImageOutputFormat imageOutputFormat;
+    private List<String> deviceIDs;
 }
