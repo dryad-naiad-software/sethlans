@@ -46,7 +46,37 @@ import java.util.concurrent.TimeoutException;
 @Slf4j
 public class BlenderUtils {
 
-    public static String executeRenderTask(RenderTask renderTask) {
+    public static String executeRenderTask(RenderTask renderTask, boolean debug) {
+        log.info("Starting to render of " + renderTask.getProjectName() + ":");
+        log.info("Frame: " + renderTask.getFrameInfo().getFrameNumber());
+        if (renderTask.isUseParts()) {
+            log.info("Part: " + renderTask.getFrameInfo().getPartNumber());
+        }
+
+        String output;
+
+        try {
+            if (debug) {
+                output = new ProcessExecutor().command(renderTask.getBlenderExecutable(), "-d", "-b",
+                        renderTask.getTaskBlendFile(), "-P", renderTask.getTaskID() + ".py", "-o", renderTask.getTaskDir()
+                                + File.separator, "-f", renderTask.getFrameInfo().getFrameNumber().toString())
+                        .readOutput(true).exitValues(0).execute().outputUTF8();
+            } else {
+                output = new ProcessExecutor().command(renderTask.getBlenderExecutable(), "-b",
+                        renderTask.getTaskBlendFile(), "-P", renderTask.getTaskID() + ".py", "-o", renderTask.getTaskDir()
+                                + File.separator, "-f", renderTask.getFrameInfo().getFrameNumber().toString())
+                        .readOutput(true).exitValues(0).execute().outputUTF8();
+            }
+        } catch (InvalidExitValueException e) {
+            log.error("Process exited with " + e.getExitValue());
+            log.error(e.getMessage());
+            return null;
+        } catch (InterruptedException | IOException | TimeoutException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            return null;
+        }
+
         return null;
     }
 
