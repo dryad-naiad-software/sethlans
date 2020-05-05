@@ -41,16 +41,9 @@ import java.util.List;
 public class BlenderScripts {
 
     public static boolean writeRenderScript(RenderTask renderTask) {
-        try {
-            File script = null;
-            if (renderTask.getDeviceIDs().size() > 1) {
-                script = new File(renderTask.getTaskDir() + File.separator + "script-MULTI.py");
-            }
-            if (renderTask.getDeviceIDs().size() == 1) {
-                script = new File(renderTask.getTaskDir() + File.separator + "script-" +
-                        renderTask.getDeviceIDs().get(0) + ".py");
-            }
+        File script = new File(renderTask.getTaskDir() + File.separator + renderTask.getTaskID() + ".py");
 
+        try {
 
             var location = renderTask.getTaskDir().replace("\\", "/");
 
@@ -104,12 +97,20 @@ public class BlenderScripts {
                     break;
                 case BLENDER_EEVEE:
                     if (renderTask.getBlenderVersion().contains("2.7")) {
+                        log.error("EEVEE is not supported on Blender versions less than 2.80");
+                        scriptWriter.flush();
+                        scriptWriter.close();
+                        script.delete();
                         return false;
                     }
                     scriptWriter.println("scene.render.engine = 'BLENDER_EEVEE'");
                     break;
                 case BLENDER_RENDER:
                     if (!renderTask.getBlenderVersion().contains("2.7")) {
+                        log.error("Blender Render is not supported on Blender versions greater than 2.79b");
+                        scriptWriter.flush();
+                        scriptWriter.close();
+                        script.delete();
                         return false;
                     }
                     scriptWriter.println("scene.render.engine = 'BLENDER_RENDER'");
@@ -135,6 +136,12 @@ public class BlenderScripts {
                 scriptWriter.println("\tscene.render.border_max_x = " + renderTask.getPartMaxX());
                 scriptWriter.println("\tscene.render.border_min_y = " + renderTask.getPartMinY());
                 scriptWriter.println("\tscene.render.border_max_y = " + renderTask.getPartMaxY());
+            }
+
+            //Set Cores (CPU rendering)
+            if (renderTask.getComputeOn().equals(ComputeOn.CPU)) {
+                scriptWriter.println("\tscene.render.threads_mode = 'FIXED'");
+                scriptWriter.println("\tscene.render.threads = " + renderTask.getCores());
             }
 
 

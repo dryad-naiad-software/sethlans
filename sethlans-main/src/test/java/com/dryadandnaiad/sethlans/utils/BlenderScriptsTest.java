@@ -29,6 +29,7 @@ import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -58,6 +59,8 @@ class BlenderScriptsTest {
         var deviceIDs = new ArrayList<String>();
         deviceIDs.add("CPU");
         var renderTask = RenderTask.builder()
+                .taskID(UUID.randomUUID().toString())
+                .cores(6)
                 .taskDir(TEST_DIRECTORY.toString())
                 .blenderEngine(BlenderEngine.CYCLES)
                 .computeOn(ComputeOn.CPU)
@@ -80,6 +83,7 @@ class BlenderScriptsTest {
         var deviceIDs = new ArrayList<String>();
         deviceIDs.add("OPENCL_0");
         var renderTask = RenderTask.builder()
+                .taskID(UUID.randomUUID().toString())
                 .taskDir(TEST_DIRECTORY.toString())
                 .blenderEngine(BlenderEngine.BLENDER_EEVEE)
                 .computeOn(ComputeOn.GPU)
@@ -100,8 +104,8 @@ class BlenderScriptsTest {
                 .build();
         assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
         renderTask.setBlenderVersion("2.79b");
+        renderTask.setTaskID(UUID.randomUUID().toString());
         assertThat(BlenderScripts.writeRenderScript(renderTask)).isFalse();
-
     }
 
     @Test
@@ -109,6 +113,7 @@ class BlenderScriptsTest {
         var deviceIDs = new ArrayList<String>();
         deviceIDs.add("OPENCL_0");
         var renderTask = RenderTask.builder()
+                .taskID(UUID.randomUUID().toString())
                 .taskDir(TEST_DIRECTORY.toString())
                 .blenderEngine(BlenderEngine.BLENDER_RENDER)
                 .computeOn(ComputeOn.CPU)
@@ -129,6 +134,7 @@ class BlenderScriptsTest {
                 .build();
         assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
         renderTask.setBlenderVersion("2.82a");
+        renderTask.setTaskID(UUID.randomUUID().toString());
         assertThat(BlenderScripts.writeRenderScript(renderTask)).isFalse();
     }
 
@@ -139,6 +145,7 @@ class BlenderScriptsTest {
         deviceIDs.add("OPENCL_0");
         deviceIDs.add("OPENCL_1");
         var renderTask = RenderTask.builder()
+                .taskID(UUID.randomUUID().toString())
                 .taskDir(TEST_DIRECTORY.toString())
                 .blenderEngine(BlenderEngine.CYCLES)
                 .computeOn(ComputeOn.GPU)
@@ -165,6 +172,7 @@ class BlenderScriptsTest {
         var deviceIDs = new ArrayList<String>();
         deviceIDs.add("OPTIX_0");
         var renderTask = RenderTask.builder()
+                .taskID(UUID.randomUUID().toString())
                 .taskDir(TEST_DIRECTORY.toString())
                 .blenderEngine(BlenderEngine.CYCLES)
                 .computeOn(ComputeOn.GPU)
@@ -191,6 +199,7 @@ class BlenderScriptsTest {
         var deviceIDs = new ArrayList<String>();
         deviceIDs.add("OPTIX_0");
         var renderTask = RenderTask.builder()
+                .taskID(UUID.randomUUID().toString())
                 .taskDir(TEST_DIRECTORY.toString())
                 .blenderEngine(BlenderEngine.CYCLES)
                 .computeOn(ComputeOn.GPU)
@@ -218,6 +227,7 @@ class BlenderScriptsTest {
         deviceIDs.add("CUDA_0");
         deviceIDs.add("CUDA_1");
         var renderTask = RenderTask.builder()
+                .taskID(UUID.randomUUID().toString())
                 .taskDir(TEST_DIRECTORY.toString())
                 .blenderEngine(BlenderEngine.CYCLES)
                 .computeOn(ComputeOn.GPU)

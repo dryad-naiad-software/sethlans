@@ -20,6 +20,7 @@ package com.dryadandnaiad.sethlans.utils;
 import com.dryadandnaiad.sethlans.enums.OS;
 import com.dryadandnaiad.sethlans.models.blender.BlendFile;
 import com.dryadandnaiad.sethlans.models.blender.BlenderInstallers;
+import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,6 +45,10 @@ import java.util.concurrent.TimeoutException;
  */
 @Slf4j
 public class BlenderUtils {
+
+    public static String executeRenderTask(RenderTask renderTask) {
+        return null;
+    }
 
     public static BlendFile parseBlendFile(String blendFile, String scriptsDir, String pythonDir) {
         if (!new File(blendFile).exists()) {

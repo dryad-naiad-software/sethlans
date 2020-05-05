@@ -60,6 +60,7 @@ public class RenderTask {
     private Integer samples;
     private Integer cpuRating;
     private Integer gpuRating;
+    private Integer cores;
     private Double partMinX;
     private Double partMaxX;
     private Double partMinY;
