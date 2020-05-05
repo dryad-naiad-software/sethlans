@@ -21,6 +21,7 @@ import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
+import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -58,7 +59,6 @@ public class BlenderScripts {
             // Write Imports
             scriptWriter.println("import bpy");
             scriptWriter.println();
-            scriptWriter.println("scene = bpy.context.scene");
 
 
             // Temp Directory
@@ -70,11 +70,14 @@ public class BlenderScripts {
             scriptWriter.println("prefs.filepaths.temporary_directory = "
                     + "\"" + location + "\"");
 
+            scriptWriter.println();
+            scriptWriter.println("scene = bpy.context.scene");
 
             // Set Device
             switch (renderTask.getBlenderEngine()) {
                 case CYCLES:
-                    scriptWriter.println("scene.cycles.device = " + "\"" + renderTask.getComputeOn() + "\"");
+                    scriptWriter.println("scene.render.engine = 'CYCLES'");
+                    scriptWriter.println("scene.cycles.device = " + "'" + renderTask.getComputeOn() + "'");
                     scriptWriter.println();
                     scriptWriter.println("cycles_prefs = prefs.addons['cycles'].preferences");
                     if (renderTask.getComputeOn().equals(ComputeOn.GPU)) {
@@ -88,12 +91,16 @@ public class BlenderScripts {
                             }
                         }
 
+                    } else {
+                        scriptWriter.println("cycles_prefs.compute_device_type = 'NONE'");
                     }
                     break;
                 case BLENDER_EEVEE:
+                    scriptWriter.println("scene.render.engine = 'BLENDER_EEVEE'");
                     scriptWriter.println();
                     break;
                 case BLENDER_RENDER:
+                    scriptWriter.println("scene.render.engine = 'BLENDER_RENDER'");
                     break;
             }
 
@@ -111,12 +118,12 @@ public class BlenderScripts {
             // Set Part
             // X is the width of the image, parts are then slices from top to bottom along Y axis.
             if (!renderTask.isBenchmark() && renderTask.isUseParts()) {
-                scriptWriter.println("\tscene.render.use_border = True" + "\n");
-                scriptWriter.println("\tscene.render.use_crop_to_border = True" + "\n");
-                scriptWriter.println("\tscene.render.border_min_x = " + renderTask.getPartMinX() + "\n");
-                scriptWriter.println("\tscene.render.border_max_x = " + renderTask.getPartMaxX() + "\n");
-                scriptWriter.println("\tscene.render.border_min_y = " + renderTask.getPartMinY() + "\n");
-                scriptWriter.println("\tscene.render.border_max_y = " + renderTask.getPartMaxY() + "\n");
+                scriptWriter.println("\tscene.render.use_border = True");
+                scriptWriter.println("\tscene.render.use_crop_to_border = True");
+                scriptWriter.println("\tscene.render.border_min_x = " + renderTask.getPartMinX());
+                scriptWriter.println("\tscene.render.border_max_x = " + renderTask.getPartMaxX());
+                scriptWriter.println("\tscene.render.border_min_y = " + renderTask.getPartMinY());
+                scriptWriter.println("\tscene.render.border_max_y = " + renderTask.getPartMaxY());
             }
 
 
@@ -140,10 +147,11 @@ public class BlenderScripts {
             return script.exists();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error creating render script!");
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            return false;
         }
-        return false;
-
     }
 
     private static void cyclesCUDA(PrintStream scriptWriter, RenderTask renderTask) {
@@ -152,8 +160,7 @@ public class BlenderScripts {
         for (String deviceID : renderTask.getDeviceIDs()) {
             strippedID.add(StringUtils.substringAfter(deviceID, "_"));
         }
-        scriptWriter.println("cycles_prefs.compute_device_type = " +
-                "\"CUDA\"");
+        scriptWriter.println("cycles_prefs.compute_device_type = 'CUDA'");
         scriptWriter.println();
         scriptWriter.println("devices = cycles_prefs.get_devices()");
         scriptWriter.println("cuda_devices = devices[0]");
@@ -182,8 +189,7 @@ public class BlenderScripts {
         for (String deviceID : renderTask.getDeviceIDs()) {
             strippedID.add(StringUtils.substringAfter(deviceID, "_"));
         }
-        scriptWriter.println("cycles_prefs.compute_device_type = " +
-                "\"OPENCL\"");
+        scriptWriter.println("cycles_prefs.compute_device_type = 'OPENCL'");
         scriptWriter.println("devices = cycles_prefs.get_devices()");
         scriptWriter.println("opencl_devices = devices[1]");
         scriptWriter.println("selected_opencl = []");

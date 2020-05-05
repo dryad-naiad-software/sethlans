@@ -19,6 +19,7 @@ package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
+import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -51,17 +52,22 @@ class BlenderScriptsTest {
     @Test
     void writeRenderScript() {
         var deviceIDs = new ArrayList<String>();
-        deviceIDs.add("OPENCL_0");
+        deviceIDs.add("CUDA_0");
+        deviceIDs.add("CUDA_1");
         var renderTask = RenderTask.builder()
                 .taskDir(TEST_DIRECTORY.toString())
                 .blenderEngine(BlenderEngine.CYCLES)
                 .computeOn(ComputeOn.GPU)
                 .deviceIDs(deviceIDs)
-                .blenderVersion("2.82a")
+                .blenderVersion("2.79b")
+                .isBenchmark(false)
+                .useParts(true)
                 .taskResolutionX(1920)
                 .taskResolutionY(1080)
                 .taskResPercentage(50)
                 .taskTileSize(256)
+                .samples(50)
+                .imageOutputFormat(ImageOutputFormat.PNG)
                 .build();
         BlenderScripts.writeRenderScript(renderTask);
 
