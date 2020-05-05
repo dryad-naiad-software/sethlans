@@ -81,14 +81,17 @@ public class BlenderScripts {
                     scriptWriter.println();
                     scriptWriter.println("cycles_prefs = prefs.addons['cycles'].preferences");
                     if (renderTask.getComputeOn().equals(ComputeOn.GPU)) {
-                        for (String deviceID : renderTask.getDeviceIDs()) {
-                            if (deviceID.contains("CUDA")) {
-                                cyclesCUDA(scriptWriter, renderTask);
-                                break;
-                            }
-                            if (deviceID.contains("OPENCL")) {
-                                cyclesOPENCL(scriptWriter, renderTask);
-                            }
+                        if (renderTask.getDeviceIDs().get(0).contains("CUDA")) {
+                            cyclesCUDA(scriptWriter, renderTask);
+                            break;
+                        }
+                        if (renderTask.getDeviceIDs().get(0).contains("OPENCL")) {
+                            cyclesOPENCL(scriptWriter, renderTask);
+                            break;
+                        }
+                        if (renderTask.getDeviceIDs().get(0).contains("OPTIX")) {
+                            cyclesOPTIX(scriptWriter, renderTask);
+                            break;
                         }
 
                     } else {
@@ -97,7 +100,6 @@ public class BlenderScripts {
                     break;
                 case BLENDER_EEVEE:
                     scriptWriter.println("scene.render.engine = 'BLENDER_EEVEE'");
-                    scriptWriter.println();
                     break;
                 case BLENDER_RENDER:
                     scriptWriter.println("scene.render.engine = 'BLENDER_RENDER'");
@@ -116,7 +118,6 @@ public class BlenderScripts {
             }
 
             // Set Part
-            // X is the width of the image, parts are then slices from top to bottom along Y axis.
             if (!renderTask.isBenchmark() && renderTask.isUseParts()) {
                 scriptWriter.println("\tscene.render.use_border = True");
                 scriptWriter.println("\tscene.render.use_crop_to_border = True");
@@ -154,18 +155,27 @@ public class BlenderScripts {
         }
     }
 
+    private static List<String> stripDeviceTypeFromID(List<String> deviceIDs) {
+        List<String> strippedIDs = new ArrayList<>();
+        for (String deviceID : deviceIDs) {
+            strippedIDs.add(StringUtils.substringAfter(deviceID, "_"));
+        }
+        return strippedIDs;
+    }
+
+    private static void cyclesOPTIX(PrintStream scriptWriter, RenderTask renderTask) {
+        var strippedIDs = stripDeviceTypeFromID(renderTask.getDeviceIDs());
+    }
+
     private static void cyclesCUDA(PrintStream scriptWriter, RenderTask renderTask) {
         // Devices = 0, CUDA Devices
-        List<String> strippedID = new ArrayList<>();
-        for (String deviceID : renderTask.getDeviceIDs()) {
-            strippedID.add(StringUtils.substringAfter(deviceID, "_"));
-        }
+        var strippedIDs = stripDeviceTypeFromID(renderTask.getDeviceIDs());
         scriptWriter.println("cycles_prefs.compute_device_type = 'CUDA'");
         scriptWriter.println();
         scriptWriter.println("devices = cycles_prefs.get_devices()");
         scriptWriter.println("cuda_devices = devices[0]");
         scriptWriter.println("selected_cuda = []");
-        for (String id : strippedID) {
+        for (String id : strippedIDs) {
             scriptWriter.println("selected_cuda.append(" + id + ")");
         }
         scriptWriter.println();
@@ -184,16 +194,13 @@ public class BlenderScripts {
 
     private static void cyclesOPENCL(PrintStream scriptWriter, RenderTask renderTask) {
         // Devices = 1, OPENCL Devices
+        var strippedIDs = stripDeviceTypeFromID(renderTask.getDeviceIDs());
 
-        List<String> strippedID = new ArrayList<>();
-        for (String deviceID : renderTask.getDeviceIDs()) {
-            strippedID.add(StringUtils.substringAfter(deviceID, "_"));
-        }
         scriptWriter.println("cycles_prefs.compute_device_type = 'OPENCL'");
         scriptWriter.println("devices = cycles_prefs.get_devices()");
         scriptWriter.println("opencl_devices = devices[1]");
         scriptWriter.println("selected_opencl = []");
-        for (String id : strippedID) {
+        for (String id : strippedIDs) {
             scriptWriter.println("selected_opencl.append(" + id + ")");
         }
         scriptWriter.println();
