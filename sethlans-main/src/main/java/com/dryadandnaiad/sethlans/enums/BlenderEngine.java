@@ -24,5 +24,5 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum BlenderEngine {
-    CYCLES, BLENDER_EEVEE
+    CYCLES, BLENDER_EEVEE, BLENDER_RENDER
 }

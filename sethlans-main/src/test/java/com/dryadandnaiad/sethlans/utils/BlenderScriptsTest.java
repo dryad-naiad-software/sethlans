@@ -24,7 +24,6 @@ import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ class BlenderScriptsTest {
 
     @AfterEach
     void tearDown() {
-        FileSystemUtils.deleteRecursively(TEST_DIRECTORY);
+        //FileSystemUtils.deleteRecursively(TEST_DIRECTORY);
     }
 
     @Test
@@ -58,6 +57,7 @@ class BlenderScriptsTest {
                 .blenderEngine(BlenderEngine.CYCLES)
                 .computeOn(ComputeOn.GPU)
                 .deviceIDs(deviceIDs)
+                .blenderVersion("2.82a")
                 .taskResolutionX(1920)
                 .taskResolutionY(1080)
                 .taskResPercentage(50)

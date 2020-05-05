@@ -60,6 +60,10 @@ public class RenderTask {
     private Integer samples;
     private Integer cpuRating;
     private Integer gpuRating;
+    private Integer partMinX;
+    private Integer partMaxX;
+    private Integer partMinY;
+    private Integer partMaxY;
     private List<String> deviceIDs;
     private ComputeOn computeOn;
     private BlenderEngine blenderEngine;
@@ -70,4 +74,5 @@ public class RenderTask {
     private boolean cancelRequestReceived;
     private boolean complete;
     private boolean inProgress;
+    private boolean useParts;
 }
