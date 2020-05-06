@@ -46,13 +46,51 @@ import java.util.concurrent.TimeoutException;
 @Slf4j
 public class BlenderUtils {
 
+    public static String getBlenderExecutable(String binaryDir, String version) {
+        var os = QueryUtils.getOS();
+        var directory = binaryDir + File.separator + "blender-" + version + "-" + os.getName().toLowerCase();
+        String file;
+        switch (os) {
+            case WINDOWS_64:
+                return directory + File.separator + "blender.exe";
+            case LINUX_64:
+                file = directory + File.separator + "blender";
+                if (!makeExecutable(file)) return null;
+                return file;
+            case MACOS:
+                file = directory + File.separator + "Contents" + File.separator + "MacOS" + File.separator + "Blender";
+                if (!makeExecutable(file)) return null;
+                return file;
+            default:
+                log.error("Operating System not supported. " + os.getName());
+                return null;
+        }
+
+    }
+
+    private static boolean makeExecutable(String file) {
+        try {
+            new ProcessExecutor().command("chmod", "-x", file)
+                    .readOutput(true).exitValues(0).execute();
+        } catch (InvalidExitValueException e) {
+            log.error("Process exited with " + e.getExitValue());
+            log.error(e.getMessage());
+            return false;
+        } catch (InterruptedException | IOException | TimeoutException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            return false;
+        }
+        return true;
+    }
+
+
     public static Long executeRenderTask(RenderTask renderTask, boolean debug) {
         log.info("Starting to render of " + renderTask.getProjectName() + ":");
         log.info("Frame: " + renderTask.getFrameInfo().getFrameNumber());
         if (renderTask.isUseParts()) {
             log.info("Part: " + renderTask.getFrameInfo().getPartNumber());
         }
-
         String output;
 
         try {
@@ -128,19 +166,19 @@ public class BlenderUtils {
         }
     }
 
-    public static boolean extractBlender(String blenderDir, OS os, String fileName, String version) {
-        var directoryName = new File(blenderDir +
+    public static boolean extractBlender(String binaryDir, OS os, String fileName, String version) {
+        var directoryName = new File(binaryDir +
                 File.separator + "blender-" + version + "-" + os.getName().toLowerCase());
         if (os == OS.MACOS) {
-            if (FileUtils.extractBlenderFromDMG(fileName, blenderDir)) {
-                var directories = FileUtils.listDirectories(blenderDir);
-                return new File(blenderDir + File.separator + directories.iterator().next())
+            if (FileUtils.extractBlenderFromDMG(fileName, binaryDir)) {
+                var directories = FileUtils.listDirectories(binaryDir);
+                return new File(binaryDir + File.separator + directories.iterator().next())
                         .renameTo(directoryName);
             }
         } else {
-            if (FileUtils.extractArchive(fileName, blenderDir)) {
-                var directories = FileUtils.listDirectories(blenderDir);
-                return new File(blenderDir + File.separator + directories.iterator().next())
+            if (FileUtils.extractArchive(fileName, binaryDir)) {
+                var directories = FileUtils.listDirectories(binaryDir);
+                return new File(binaryDir + File.separator + directories.iterator().next())
                         .renameTo(directoryName);
             }
         }

@@ -215,11 +215,5 @@ class BlenderUtilsTest {
                 .build();
     }
 
-    private String getBlenderExecutable(File binaryDir, String version, OS os) {
-        var blender = binaryDir + File.separator + "blender-" + version + "-" +
-                os.getName().toLowerCase() + File.separator;
-        return null;
-    }
-
 
 }
