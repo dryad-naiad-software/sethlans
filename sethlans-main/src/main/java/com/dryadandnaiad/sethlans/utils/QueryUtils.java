@@ -42,6 +42,7 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static com.dryadandnaiad.sethlans.utils.PropertiesUtils.getIP;
 import static com.dryadandnaiad.sethlans.utils.PropertiesUtils.getPort;
@@ -209,6 +210,22 @@ public class QueryUtils {
             }
         }
         return time.replaceAll("\\s", "");
+    }
+
+    /**
+     * Converts time in mm:ss format to time in milliseconds
+     *
+     * @param time
+     * @return total milliseconds
+     */
+    public static long timeInMilliseconds(String time) {
+        var timeToConvert = time.split(":");
+        int minutes = Integer.parseInt(timeToConvert[0]);
+        int seconds = Integer.parseInt(timeToConvert[1]);
+        int timeInSeconds = seconds + 60 * minutes;
+        long timeInMilliseconds = TimeUnit.MILLISECONDS.convert(timeInSeconds, TimeUnit.SECONDS);
+        log.info("Render time in milliseconds: " + timeInMilliseconds);
+        return timeInMilliseconds;
     }
 
     /**

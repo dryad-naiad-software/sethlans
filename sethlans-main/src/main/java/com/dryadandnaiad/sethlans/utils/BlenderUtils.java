@@ -46,7 +46,7 @@ import java.util.concurrent.TimeoutException;
 @Slf4j
 public class BlenderUtils {
 
-    public static String executeRenderTask(RenderTask renderTask, boolean debug) {
+    public static Long executeRenderTask(RenderTask renderTask, boolean debug) {
         log.info("Starting to render of " + renderTask.getProjectName() + ":");
         log.info("Frame: " + renderTask.getFrameInfo().getFrameNumber());
         if (renderTask.isUseParts()) {
@@ -58,15 +58,18 @@ public class BlenderUtils {
         try {
             if (debug) {
                 output = new ProcessExecutor().command(renderTask.getBlenderExecutable(), "-d", "-b",
-                        renderTask.getTaskBlendFile(), "-P", renderTask.getTaskDir() + File.separator + renderTask.getTaskID() + ".py", "-o", renderTask.getTaskDir()
+                        renderTask.getTaskBlendFile(), "-P", renderTask.getTaskDir() + File.separator +
+                                renderTask.getTaskID() + ".py", "-o", renderTask.getTaskDir()
                                 + File.separator, "-f", renderTask.getFrameInfo().getFrameNumber().toString())
                         .readOutput(true).exitValues(0).execute().outputUTF8();
             } else {
                 output = new ProcessExecutor().command(renderTask.getBlenderExecutable(), "-b",
-                        renderTask.getTaskBlendFile(), "-P", renderTask.getTaskDir() + File.separator + renderTask.getTaskID() + ".py", "-o", renderTask.getTaskDir()
+                        renderTask.getTaskBlendFile(), "-P", renderTask.getTaskDir() + File.separator +
+                                renderTask.getTaskID() + ".py", "-o", renderTask.getTaskDir()
                                 + File.separator, "-f", renderTask.getFrameInfo().getFrameNumber().toString())
                         .readOutput(true).exitValues(0).execute().outputUTF8();
             }
+            log.debug(output);
         } catch (InvalidExitValueException e) {
             log.error("Process exited with " + e.getExitValue());
             log.error(e.getMessage());
@@ -153,7 +156,7 @@ public class BlenderUtils {
         return availableVersions;
     }
 
-    public static File downloadBlender(String blenderVersion, String jsonLocation, String blenderDir, OS os) {
+    public static File downloadBlenderToServer(String blenderVersion, String jsonLocation, String blenderDir, OS os) {
         var selectedInstallers = getInstallersByVersion(getInstallersList(jsonLocation), blenderVersion);
         if (selectedInstallers == null) {
             log.error("Blender version: " + blenderVersion + ", or JSON file location: "

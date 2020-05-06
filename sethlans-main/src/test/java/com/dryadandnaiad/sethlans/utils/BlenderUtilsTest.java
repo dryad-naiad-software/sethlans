@@ -18,7 +18,12 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
+import com.dryadandnaiad.sethlans.enums.ComputeOn;
+import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.enums.OS;
+import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
+import com.dryadandnaiad.sethlans.models.blender.tasks.TaskFrameInfo;
+import com.dryadandnaiad.sethlans.models.blender.tasks.TaskScriptInfo;
 import com.dryadandnaiad.sethlans.testutils.TestFileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
@@ -29,6 +34,8 @@ import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.condition.OS.MAC;
@@ -86,18 +93,37 @@ class BlenderUtilsTest {
         assertThat(blendfile3.getEngine()).isEqualTo(BlenderEngine.CYCLES);
         assertThat(blendfile4.getEngine()).isEqualTo(BlenderEngine.BLENDER_EEVEE);
         assertThat(blendfile5).isNull();
+    }
+
+    @Test
+    void executeRenderTask() {
+        var file1 = "bmw27_gpu.blend";
+        var os = QueryUtils.getOS();
+        TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
+        var binaryDir = new File(TEST_DIRECTORY + File.separator + "binaries");
+        binaryDir.mkdirs();
+        var version = "2.82a";
+        var download = BlenderUtils.downloadBlenderToServer(version,
+                "resource",
+                TEST_DIRECTORY.toString(),
+                os);
+        assertThat(BlenderUtils.extractBlender(binaryDir.toString(),
+                os, download.toString(), version)).isTrue();
+        var blenderExecutable = "stub";
+        var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
+                ComputeOn.CPU, BlenderEngine.CYCLES, blenderExecutable);
 
     }
 
     @Test
-    void downloadBlender() {
+    void downloadBlenderToServer() {
         assertThat(BlenderUtils
-                .downloadBlender("2.80b",
+                .downloadBlenderToServer("2.80b",
                         "resource",
                         TEST_DIRECTORY.toString(),
                         OS.LINUX_64)).isNull();
         var blenderDownload = BlenderUtils
-                .downloadBlender("2.79b",
+                .downloadBlenderToServer("2.79b",
                         "resource",
                         TEST_DIRECTORY.toString(),
                         OS.LINUX_64);
@@ -114,7 +140,7 @@ class BlenderUtilsTest {
     void extractBlenderWindowsBinary() {
         var version = "2.82a";
         var blenderDownload = BlenderUtils
-                .downloadBlender(version,
+                .downloadBlenderToServer(version,
                         "resource",
                         TEST_DIRECTORY.toString(),
                         OS.WINDOWS_64);
@@ -127,7 +153,7 @@ class BlenderUtilsTest {
     void extractBlenderLinuxBinary() {
         var version = "2.82a";
         var blenderDownload = BlenderUtils
-                .downloadBlender(version,
+                .downloadBlenderToServer(version,
                         "resource",
                         TEST_DIRECTORY.toString(),
                         OS.LINUX_64);
@@ -142,7 +168,7 @@ class BlenderUtilsTest {
     void extractBlenderMacBinary() {
         var version = "2.82a";
         var blenderDownload = BlenderUtils
-                .downloadBlender(version,
+                .downloadBlenderToServer(version,
                         "resource",
                         TEST_DIRECTORY.toString(),
                         OS.MACOS);
@@ -151,7 +177,49 @@ class BlenderUtilsTest {
         assertThat(blenderDownload).doesNotExist();
     }
 
-    @Test
-    void executeRenderTask() {
+    private RenderTask makeRenderTask(String version, String blendFile,
+                                      ComputeOn computeOn, BlenderEngine engine, String blenderExecutable) {
+        var taskDir = new File(TEST_DIRECTORY + File.separator + "render");
+        taskDir.mkdirs();
+        var deviceIDs = new ArrayList<String>();
+        if (computeOn.equals(ComputeOn.GPU)) {
+            deviceIDs.add("CUDA_0");
+        } else {
+            deviceIDs.add("CPU");
+        }
+        var scriptInfo = TaskScriptInfo.builder()
+                .blenderEngine(engine)
+                .computeOn(computeOn)
+                .deviceIDs(deviceIDs)
+                .taskResolutionX(1920)
+                .taskResolutionY(1080)
+                .taskResPercentage(50)
+                .taskTileSize(256)
+                .samples(50)
+                .imageOutputFormat(ImageOutputFormat.PNG)
+                .build();
+        var frameInfo = TaskFrameInfo.builder()
+                .frameNumber(1)
+                .build();
+        return RenderTask.builder()
+                .taskID(UUID.randomUUID().toString())
+                .taskDir(taskDir.toString())
+                .blenderVersion(version)
+                .blenderExecutable(blenderExecutable)
+                .scriptInfo(scriptInfo)
+                .frameInfo(frameInfo)
+                .isBenchmark(false)
+                .taskBlendFile(blendFile)
+                .projectName("A Sample Project")
+                .useParts(false)
+                .build();
     }
+
+    private String getBlenderExecutable(File binaryDir, String version, OS os) {
+        var blender = binaryDir + File.separator + "blender-" + version + "-" +
+                os.getName().toLowerCase() + File.separator;
+        return null;
+    }
+
+
 }
