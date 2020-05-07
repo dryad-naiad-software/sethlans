@@ -43,10 +43,7 @@ public class BlenderScripts {
 
     public static boolean writeRenderScript(RenderTask renderTask) {
         File script = new File(renderTask.getTaskDir() + File.separator + renderTask.getTaskID() + ".py");
-
-
         try {
-
             var location = renderTask.getTaskDir().replace("\\", "/");
 
             PrintStream scriptWriter = new PrintStream(script);
@@ -267,7 +264,8 @@ public class BlenderScripts {
         scriptWriter.println("unselected_cuda = list(set(cuda_devices) - set(selected_cuda))");
         scriptWriter.println();
         scriptWriter.println("for i in range(len(unselected_cuda)):");
-        scriptWriter.println("\tcuda_devices[unselected_cuda[i]].use = False");
+        scriptWriter.println("\tif(cuda_devices[i] == unselected_cuda[i]):");
+        scriptWriter.println("\t\tcuda_devices[i].use = False");
         scriptWriter.println();
         scriptWriter.println("for dev in devices[1]:");
         scriptWriter.println("\tdev.use = False");
@@ -292,7 +290,8 @@ public class BlenderScripts {
         scriptWriter.println("unselected_opencl = list(set(opencl_devices) - set(selected_opencl))");
         scriptWriter.println();
         scriptWriter.println("for i in range(len(unselected_opencl)):");
-        scriptWriter.println("\topencl_devices[unselected_opencl[i]].use = False");
+        scriptWriter.println("\tif(opencl_devices[i] == unselected_opencl[i]):");
+        scriptWriter.println("\t\topencl_devices[i].use = False");
         scriptWriter.println();
         scriptWriter.println("for dev in devices[0]:");
         scriptWriter.println("\tdev.use = False");

@@ -100,6 +100,18 @@ public class BlenderUtils {
 
 
     public static Long executeRenderTask(RenderTask renderTask, boolean debug) {
+        var projectNameAndID = QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(), renderTask.getProjectID());
+        String outputPathAndFilename;
+        if (renderTask.isUseParts()) {
+            outputPathAndFilename = renderTask.getTaskDir()
+                    + File.separator + projectNameAndID + "-"
+                    + "####" + "-part-"
+                    + renderTask.getFrameInfo().getPartNumber();
+        } else {
+            outputPathAndFilename = renderTask.getTaskDir()
+                    + File.separator + projectNameAndID + "-" + "frame-####";
+        }
+
         log.info("Starting to render of `" + renderTask.getProjectName() + "`");
         log.info("Frame: " + renderTask.getFrameInfo().getFrameNumber());
         if (renderTask.isUseParts()) {
@@ -112,14 +124,12 @@ public class BlenderUtils {
             if (debug) {
                 output = new ProcessExecutor().command(renderTask.getBlenderExecutable(), "-d", "-b",
                         renderTask.getTaskBlendFile(), "-P", renderTask.getTaskDir() + File.separator +
-                                renderTask.getTaskID() + ".py", "-o", renderTask.getTaskDir()
-                                + File.separator, "-f", renderTask.getFrameInfo().getFrameNumber().toString())
+                                renderTask.getTaskID() + ".py", "-o", outputPathAndFilename, "-f", renderTask.getFrameInfo().getFrameNumber().toString())
                         .readOutput(true).exitValues(0).execute().outputUTF8();
             } else {
                 output = new ProcessExecutor().command(renderTask.getBlenderExecutable(), "-b",
                         renderTask.getTaskBlendFile(), "-P", renderTask.getTaskDir() + File.separator +
-                                renderTask.getTaskID() + ".py", "-o", renderTask.getTaskDir()
-                                + File.separator, "-f", renderTask.getFrameInfo().getFrameNumber().toString())
+                                renderTask.getTaskID() + ".py", "-o", outputPathAndFilename, "-f", renderTask.getFrameInfo().getFrameNumber().toString())
                         .readOutput(true).exitValues(0).execute().outputUTF8();
             }
             var endTime = System.currentTimeMillis();

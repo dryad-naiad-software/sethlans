@@ -26,7 +26,6 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.FileSystemUtils;
 import org.zeroturnaround.exec.InvalidExitValueException;
 import org.zeroturnaround.exec.ProcessExecutor;
@@ -163,10 +162,6 @@ public class FFmpegUtils {
 
 
     private static CommandLine createFFmpegCommand(String ffmpegBinary, Project blenderProject) {
-        var truncatedProjectName = StringUtils.left(blenderProject.getProjectName(), 10);
-        var truncatedUUID = StringUtils.left(blenderProject.getProjectID(), 4);
-        var cleanedProjectName = truncatedProjectName.replaceAll(" ", "")
-                .replaceAll("[^a-zA-Z0-9_-]", "").toLowerCase();
         var videoSettings = blenderProject.getProjectSettings().getVideoSettings();
 
         var ffmpeg = new CommandLine(ffmpegBinary);
@@ -177,7 +172,9 @@ public class FFmpegUtils {
         // Configure input images
         ffmpeg.addArgument("-i");
         ffmpeg.addArgument(blenderProject.getProjectRootDir() + File.separator + "temp" +
-                File.separator + cleanedProjectName + "-" + truncatedUUID + "-" + "%04d." +
+                File.separator +
+                QueryUtils.truncatedProjectNameAndID(blenderProject.getProjectName(),
+                        blenderProject.getProjectID()) + "-" + "%04d." +
                 blenderProject.getProjectSettings().getImageSettings().getImageOutputFormat()
                         .name().toLowerCase());
 

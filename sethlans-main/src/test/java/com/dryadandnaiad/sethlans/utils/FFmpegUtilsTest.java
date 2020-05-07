@@ -92,12 +92,18 @@ class FFmpegUtilsTest {
 
     @Test
     void encodeImagesToMP4() {
+        var projectDir = new File(TEST_DIRECTORY + File.separator + "project");
         var binaryDirectory = new File(TEST_DIRECTORY + File.separator + "binaries");
+        var videoDirectory = new File(projectDir + File.separator + "video");
         binaryDirectory.mkdirs();
         FFmpegUtils.copyFFmpegArchiveToDisk(binaryDirectory.toString(), QueryUtils.getOS());
         FFmpegUtils.installFFmpeg(binaryDirectory.toString(), QueryUtils.getOS());
         var ffmpegDirectory = new File(binaryDirectory + File.separator + "ffmpeg");
         var project = createProject();
+        var videoSettings = project.getProjectSettings().getVideoSettings();
+        videoSettings.setVideoFileLocation(videoDirectory + File.separator + QueryUtils.truncatedProjectNameAndID(project.getProjectName(),
+                project.getProjectID()) + "." +
+                VideoOutputFormat.MP4.name().toLowerCase());
         assertThat(FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString())).isTrue();
     }
 
@@ -114,7 +120,8 @@ class FFmpegUtilsTest {
         var videoSettings = project.getProjectSettings().getVideoSettings();
         videoSettings.setCodec(VideoCodec.UTVIDEO);
         videoSettings.setVideoOutputFormat(VideoOutputFormat.AVI);
-        videoSettings.setVideoFileLocation(videoDirectory + File.separator + "thesample-123e." +
+        videoSettings.setVideoFileLocation(videoDirectory + File.separator + QueryUtils.truncatedProjectNameAndID(project.getProjectName(),
+                project.getProjectID()) + "." +
                 VideoOutputFormat.AVI.name().toLowerCase());
         project.getProjectSettings().setVideoSettings(videoSettings);
         assertThat(FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString())).isTrue();
@@ -134,7 +141,9 @@ class FFmpegUtilsTest {
         videoSettings.setCodec(VideoCodec.LIBX265);
         videoSettings.setVideoQuality(VideoQuality.HIGH_X265);
         videoSettings.setVideoOutputFormat(VideoOutputFormat.MKV);
-        videoSettings.setVideoFileLocation(videoDirectory + File.separator + "thesample-123e." +
+        videoSettings.setVideoFileLocation(videoDirectory + File.separator +
+                QueryUtils.truncatedProjectNameAndID(project.getProjectName(),
+                        project.getProjectID()) + "." +
                 VideoOutputFormat.MKV.name().toLowerCase());
         project.getProjectSettings().setVideoSettings(videoSettings);
         assertThat(FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString())).isTrue();
@@ -215,7 +224,6 @@ class FFmpegUtilsTest {
                 .frameRate(30)
                 .videoQuality(VideoQuality.HIGH_X264)
                 .pixelFormat(PixelFormat.YUV420P)
-                .videoFileLocation(videoDirectory + File.separator + "thesample-123e." + VideoOutputFormat.MP4.name().toLowerCase())
                 .build();
         var projectSettings = ProjectSettings.builder()
                 .videoSettings(videoSettings)

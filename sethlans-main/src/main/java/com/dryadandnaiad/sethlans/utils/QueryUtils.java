@@ -28,6 +28,7 @@ import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import oshi.SystemInfo;
 
@@ -190,6 +191,13 @@ public class QueryUtils {
         long hour = (time / (1000 * 60 * 60));
 
         return String.format("%02d:%02d:%02d", hour, minute, second);
+    }
+
+    public static String truncatedProjectNameAndID(String projectName, String uuid) {
+        var truncatedProjectName = StringUtils.left(projectName, 10).replaceAll(" ", "")
+                .replaceAll("[^a-zA-Z0-9_-]", "").toLowerCase();
+        var truncatedUUID = StringUtils.left(uuid, 4);
+        return truncatedProjectName + "-" + truncatedUUID;
     }
 
 

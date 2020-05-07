@@ -29,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.springframework.util.FileSystemUtils;
@@ -96,7 +97,7 @@ class BlenderUtilsTest {
     }
 
     @Test
-    void executeRenderTaskCPU() {
+    void executeRenderTaskCPUFrame() {
         var file1 = "bmw27_gpu.blend";
         var os = QueryUtils.getOS();
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
@@ -116,13 +117,17 @@ class BlenderUtilsTest {
         assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
+        var finalFile = new File(renderTask.getTaskDir() + File.separator +
+                QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(), renderTask.getProjectID())
+                + "-000" + renderTask.getFrameInfo().getFrameNumber() + ".png");
         assertThat(result).isNotNull();
         assertThat(result).isNotNegative();
         assertThat(result).isGreaterThan(0L);
+        assertThat(finalFile).exists();
     }
 
     @Test
-    void executeRenderTaskGPU() {
+    void executeRenderTaskCPUFramePart() {
         var file1 = "bmw27_gpu.blend";
         var os = QueryUtils.getOS();
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
@@ -137,14 +142,65 @@ class BlenderUtilsTest {
                 os, download.toString(), version)).isTrue();
         var blenderExecutable = BlenderUtils.getBlenderExecutable(binaryDir.toString(), version);
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
-                ComputeOn.GPU, BlenderEngine.CYCLES, blenderExecutable);
+                ComputeOn.CPU, BlenderEngine.CYCLES, blenderExecutable);
         renderTask.getScriptInfo().setCores(4);
+        renderTask.setUseParts(true);
+        var frameInfo = TaskFrameInfo.builder()
+                .frameNumber(1)
+                .partNumber(2)
+                .partMinX(0.0)
+                .partMaxX(0.5)
+                .partMinY(0.0)
+                .partMaxY(0.5).build();
+        renderTask.setFrameInfo(frameInfo);
         assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
         assertThat(result).isNotNull();
         assertThat(result).isNotNegative();
         assertThat(result).isGreaterThan(0L);
+        var finalFile = new File(renderTask.getTaskDir() + File.separator +
+                QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(), renderTask.getProjectID())
+                + "-000" + renderTask.getFrameInfo().getFrameNumber() + "-part-" +
+                renderTask.getFrameInfo().getPartNumber() + ".png");
+        assertThat(finalFile).exists();
+    }
+
+    @Disabled
+    @Test
+    void executeRenderTaskGPU() {
+        var file1 = "bmw27_gpu.blend";
+        var os = QueryUtils.getOS();
+        TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
+        var binaryDir = new File(TEST_DIRECTORY + File.separator + "binaries");
+        binaryDir.mkdirs();
+        var version = "2.82a";
+        var tileSize = 256;
+        var deviceIDs = new ArrayList<String>();
+        deviceIDs.add("CUDA_0");
+        deviceIDs.add("CUDA_1");
+        var download = BlenderUtils.downloadBlenderToServer(version,
+                "resource",
+                TEST_DIRECTORY.toString(),
+                os);
+        assertThat(BlenderUtils.extractBlender(binaryDir.toString(),
+                os, download.toString(), version)).isTrue();
+        var blenderExecutable = BlenderUtils.getBlenderExecutable(binaryDir.toString(), version);
+        var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
+                ComputeOn.GPU, BlenderEngine.CYCLES, blenderExecutable);
+        renderTask.getScriptInfo().setDeviceIDs(deviceIDs);
+        renderTask.getScriptInfo().setTaskTileSize(tileSize);
+        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+        var result = BlenderUtils.executeRenderTask(renderTask, true);
+        log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
+        assertThat(result).isNotNull();
+        assertThat(result).isNotNegative();
+        assertThat(result).isGreaterThan(0L);
+        var finalFile = new File(renderTask.getTaskDir() + File.separator +
+                QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(), renderTask.getProjectID())
+                + "-000" + renderTask.getFrameInfo().getFrameNumber() + ".png");
+        assertThat(finalFile).exists();
+
     }
 
 
@@ -213,12 +269,14 @@ class BlenderUtilsTest {
     private RenderTask makeRenderTask(String version, String blendFile,
                                       ComputeOn computeOn, BlenderEngine engine, String blenderExecutable) {
         var taskDir = new File(TEST_DIRECTORY + File.separator + "render");
+        var tileSize = 32;
         taskDir.mkdirs();
         var deviceIDs = new ArrayList<String>();
+        deviceIDs.add("CPU");
+
         if (computeOn.equals(ComputeOn.GPU)) {
-            deviceIDs.add("CUDA_0");
+
         } else {
-            deviceIDs.add("CPU");
         }
         var scriptInfo = TaskScriptInfo.builder()
                 .blenderEngine(engine)
@@ -227,7 +285,7 @@ class BlenderUtilsTest {
                 .taskResolutionX(1920)
                 .taskResolutionY(1080)
                 .taskResPercentage(25)
-                .taskTileSize(256)
+                .taskTileSize(tileSize)
                 .samples(10)
                 .imageOutputFormat(ImageOutputFormat.PNG)
                 .build();
@@ -235,6 +293,7 @@ class BlenderUtilsTest {
                 .frameNumber(1)
                 .build();
         return RenderTask.builder()
+                .projectID(UUID.randomUUID().toString())
                 .taskID(UUID.randomUUID().toString())
                 .taskDir(taskDir.toString())
                 .blenderVersion(version)
