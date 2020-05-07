@@ -40,8 +40,12 @@ import java.util.List;
 @Slf4j
 public class BlenderScripts {
 
+
     public static boolean writeRenderScript(RenderTask renderTask) {
         File script = new File(renderTask.getTaskDir() + File.separator + renderTask.getTaskID() + ".py");
+
+        // RenderTask verification
+
 
         try {
 
@@ -53,6 +57,13 @@ public class BlenderScripts {
             scriptWriter.println("import bpy");
             scriptWriter.println();
 
+            if (renderTask.getBlenderVersion() == null) {
+                log.error("BlenderVersion cannot be null.");
+                scriptWriter.flush();
+                scriptWriter.close();
+                script.delete();
+                return false;
+            }
 
             // Temp Directory
             if (renderTask.getBlenderVersion().contains("2.7")) {
@@ -65,6 +76,14 @@ public class BlenderScripts {
 
             scriptWriter.println();
             scriptWriter.println("scene = bpy.context.scene");
+
+            if (renderTask.getScriptInfo().getBlenderEngine() == null) {
+                log.error("BlenderEngine cannot be null.");
+                scriptWriter.flush();
+                scriptWriter.close();
+                script.delete();
+                return false;
+            }
 
             // Set Device
             switch (renderTask.getScriptInfo().getBlenderEngine()) {
@@ -117,6 +136,15 @@ public class BlenderScripts {
                     break;
             }
 
+            if (renderTask.getScriptInfo().getTaskResolutionX() == null ||
+                    renderTask.getScriptInfo().getTaskResolutionY() == null ||
+                    renderTask.getScriptInfo().getTaskResPercentage() == null) {
+                log.error("TaskResolutionX, TaskResolutionY and TaskResPercentage cannot be null.");
+                scriptWriter.flush();
+                scriptWriter.close();
+                script.delete();
+                return false;
+            }
 
             // Set Resolution and Samples
             scriptWriter.println();
@@ -130,6 +158,15 @@ public class BlenderScripts {
 
             // Set Part
             if (!renderTask.isBenchmark() && renderTask.isUseParts()) {
+                if (renderTask.getFrameInfo().getPartMaxX() == null |
+                        renderTask.getFrameInfo().getPartMinX() == null ||
+                        renderTask.getFrameInfo().getPartMaxY() == null || renderTask.getFrameInfo().getPartMinY() == null) {
+                    log.error("PartMaxX, PartMinX, PartMaxY, PartMinY cannot be null when parts are being used.");
+                    scriptWriter.flush();
+                    scriptWriter.close();
+                    script.delete();
+                    return false;
+                }
                 scriptWriter.println("\tscene.render.use_border = True");
                 scriptWriter.println("\tscene.render.use_crop_to_border = True");
                 scriptWriter.println("\tscene.render.border_min_x = " + renderTask.getFrameInfo().getPartMinX());
@@ -140,16 +177,37 @@ public class BlenderScripts {
 
             //Set Cores (CPU rendering)
             if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.CPU)) {
+                if (renderTask.getScriptInfo().getCores() == null) {
+                    log.error("Cores cannot be null when computing on CPU.");
+                    scriptWriter.flush();
+                    scriptWriter.close();
+                    script.delete();
+                    return false;
+                }
                 scriptWriter.println("\tscene.render.threads_mode = 'FIXED'");
                 scriptWriter.println("\tscene.render.threads = " + renderTask.getScriptInfo().getCores());
             }
 
 
+            if (renderTask.getScriptInfo().getTaskTileSize() == null) {
+                log.error("TaskTileSize cannot be null.");
+                scriptWriter.flush();
+                scriptWriter.close();
+                script.delete();
+                return false;
+            }
             // Tile Sizes
             scriptWriter.println();
             scriptWriter.println("scene.render.tile_x = " + renderTask.getScriptInfo().getTaskTileSize());
             scriptWriter.println("scene.render.tile_y = " + renderTask.getScriptInfo().getTaskTileSize());
 
+            if (renderTask.getScriptInfo().getImageOutputFormat() == null) {
+                log.error("ImageOutputFormat cannot be null.");
+                scriptWriter.flush();
+                scriptWriter.close();
+                script.delete();
+                return false;
+            }
             // Final Settings
             scriptWriter.println();
             scriptWriter.println("scene.render.use_border = True");

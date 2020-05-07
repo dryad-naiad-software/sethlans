@@ -48,19 +48,33 @@ public class BlenderUtils {
 
     public static String getBlenderExecutable(String binaryDir, String version) {
         var os = QueryUtils.getOS();
-        var directory = binaryDir + File.separator + "blender-" + version + "-" + os.getName().toLowerCase();
-        String file;
+        var directory = new File(binaryDir + File.separator + "blender-" + version + "-" + os.getName().toLowerCase());
+        if (!directory.exists()) {
+            return null;
+        }
+        File file;
         switch (os) {
             case WINDOWS_64:
-                return directory + File.separator + "blender.exe";
+                file = new File(directory + File.separator + "blender.exe");
+                if (file.exists()) {
+                    return file.toString();
+                }
+                return null;
+
             case LINUX_64:
-                file = directory + File.separator + "blender";
-                if (!makeExecutable(file)) return null;
-                return file;
+                file = new File(directory + File.separator + "blender");
+                if (!file.exists()) return null;
+                if (makeExecutable(file.toString())) {
+                    return file.toString();
+                }
+                return null;
             case MACOS:
-                file = directory + File.separator + "Contents" + File.separator + "MacOS" + File.separator + "Blender";
-                if (!makeExecutable(file)) return null;
-                return file;
+                file = new File(directory + File.separator + "Contents" + File.separator + "MacOS" + File.separator + "Blender");
+                if (!file.exists()) return null;
+                if (makeExecutable(file.toString())) {
+                    return file.toString();
+                }
+                return null;
             default:
                 log.error("Operating System not supported. " + os.getName());
                 return null;
@@ -72,6 +86,7 @@ public class BlenderUtils {
         try {
             new ProcessExecutor().command("chmod", "-x", file)
                     .readOutput(true).exitValues(0).execute();
+            return true;
         } catch (InvalidExitValueException e) {
             log.error("Process exited with " + e.getExitValue());
             log.error(e.getMessage());
@@ -81,7 +96,6 @@ public class BlenderUtils {
             log.error(Throwables.getStackTraceAsString(e));
             return false;
         }
-        return true;
     }
 
 

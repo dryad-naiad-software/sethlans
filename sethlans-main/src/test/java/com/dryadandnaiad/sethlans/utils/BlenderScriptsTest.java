@@ -132,6 +132,7 @@ class BlenderScriptsTest {
                 .taskResPercentage(50)
                 .taskTileSize(256)
                 .samples(50)
+                .cores(4)
                 .imageOutputFormat(ImageOutputFormat.PNG).build();
 
         var frameInfo = TaskFrameInfo.builder()
@@ -208,7 +209,8 @@ class BlenderScriptsTest {
         var frameInfo = TaskFrameInfo.builder()
                 .partMinX(0.0)
                 .partMaxX(0.5)
-                .partMinY(0.0).build();
+                .partMinY(0.0)
+                .partMaxY(0.5).build();
 
         var renderTask = RenderTask.builder()
                 .taskID(UUID.randomUUID().toString())
@@ -240,7 +242,8 @@ class BlenderScriptsTest {
         var frameInfo = TaskFrameInfo.builder()
                 .partMinX(0.0)
                 .partMaxX(0.5)
-                .partMinY(0.0).build();
+                .partMinY(0.0)
+                .partMaxY(0.5).build();
 
         var renderTask = RenderTask.builder()
                 .taskID(UUID.randomUUID().toString())
@@ -274,7 +277,8 @@ class BlenderScriptsTest {
         var frameInfo = TaskFrameInfo.builder()
                 .partMinX(0.0)
                 .partMaxX(0.5)
-                .partMinY(0.0).build();
+                .partMinY(0.0)
+                .partMaxY(0.5).build();
 
         var renderTask = RenderTask.builder()
                 .taskID(UUID.randomUUID().toString())

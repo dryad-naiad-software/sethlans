@@ -109,9 +109,12 @@ class BlenderUtilsTest {
                 os);
         assertThat(BlenderUtils.extractBlender(binaryDir.toString(),
                 os, download.toString(), version)).isTrue();
-        var blenderExecutable = "stub";
+        var blenderExecutable = BlenderUtils.getBlenderExecutable(binaryDir.toString(), version);
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.CPU, BlenderEngine.CYCLES, blenderExecutable);
+        renderTask.getScriptInfo().setCores(4);
+        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+        BlenderUtils.executeRenderTask(renderTask, true);
 
     }
 
@@ -193,9 +196,9 @@ class BlenderUtilsTest {
                 .deviceIDs(deviceIDs)
                 .taskResolutionX(1920)
                 .taskResolutionY(1080)
-                .taskResPercentage(50)
+                .taskResPercentage(25)
                 .taskTileSize(256)
-                .samples(50)
+                .samples(10)
                 .imageOutputFormat(ImageOutputFormat.PNG)
                 .build();
         var frameInfo = TaskFrameInfo.builder()
