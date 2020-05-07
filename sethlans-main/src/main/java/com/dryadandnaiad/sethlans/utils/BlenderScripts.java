@@ -44,8 +44,6 @@ public class BlenderScripts {
     public static boolean writeRenderScript(RenderTask renderTask) {
         File script = new File(renderTask.getTaskDir() + File.separator + renderTask.getTaskID() + ".py");
 
-        // RenderTask verification
-
 
         try {
 
@@ -59,6 +57,14 @@ public class BlenderScripts {
 
             if (renderTask.getBlenderVersion() == null) {
                 log.error("BlenderVersion cannot be null.");
+                scriptWriter.flush();
+                scriptWriter.close();
+                script.delete();
+                return false;
+            }
+
+            if (renderTask.getScriptInfo().getDeviceIDs() == null) {
+                log.error("Device IDs cannot be null.");
                 scriptWriter.flush();
                 scriptWriter.close();
                 script.delete();
