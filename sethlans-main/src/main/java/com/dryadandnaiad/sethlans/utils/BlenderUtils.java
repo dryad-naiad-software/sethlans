@@ -301,7 +301,6 @@ public class BlenderUtils {
 
     private static BlenderInstallers getInstallersByVersion(List<BlenderInstallers> blenderInstallersList,
                                                             String blenderVersion) {
-
         for (BlenderInstallers blenderInstallers : blenderInstallersList) {
             if (blenderInstallers.getBlenderVersion().equals(blenderVersion)) {
                 return blenderInstallers;
