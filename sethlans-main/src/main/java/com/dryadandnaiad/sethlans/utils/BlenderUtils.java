@@ -84,7 +84,7 @@ public class BlenderUtils {
 
     private static boolean makeExecutable(String file) {
         try {
-            new ProcessExecutor().command("chmod", "-x", file)
+            new ProcessExecutor().command("chmod", "+x", file)
                     .readOutput(true).exitValues(0).execute();
             return true;
         } catch (InvalidExitValueException e) {
@@ -109,7 +109,7 @@ public class BlenderUtils {
                     + renderTask.getFrameInfo().getPartNumber();
         } else {
             outputPathAndFilename = renderTask.getTaskDir()
-                    + File.separator + projectNameAndID + "-" + "frame-####";
+                    + File.separator + projectNameAndID + "-" + "####";
         }
 
         log.info("Starting to render of `" + renderTask.getProjectName() + "`");
