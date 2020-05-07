@@ -18,7 +18,7 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.devices.ScanGPU;
-import com.dryadandnaiad.sethlans.enums.ComputeOn;
+import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.enums.OS;
 import com.dryadandnaiad.sethlans.models.hardware.CPU;
 import com.dryadandnaiad.sethlans.models.system.Node;
@@ -28,7 +28,6 @@ import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import oshi.SystemInfo;
 
@@ -42,7 +41,6 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import static com.dryadandnaiad.sethlans.utils.PropertiesUtils.getIP;
 import static com.dryadandnaiad.sethlans.utils.PropertiesUtils.getPort;
@@ -117,19 +115,19 @@ public class QueryUtils {
 
 
     /**
-     * Retrieves the available methods. If no GPUs are detected only ComputeOn.CPU is available.
+     * Retrieves the available methods. If no GPUs are detected only NodeType.CPU is available.
      *
-     * @return Set of ComputeOn enums
+     * @return Set of NodeType enums
      */
-    public static Set<ComputeOn> getAvailableMethods() {
-        var availableMethods = new HashSet<ComputeOn>();
+    public static Set<NodeType> getAvailableMethods() {
+        var availableMethods = new HashSet<NodeType>();
         if (ScanGPU.listDevices().size() != 0) {
-            availableMethods.add(ComputeOn.CPU_GPU);
-            availableMethods.add(ComputeOn.GPU);
-            availableMethods.add(ComputeOn.CPU);
-            availableMethods.add(ComputeOn.HYBRID);
+            availableMethods.add(NodeType.CPU_GPU);
+            availableMethods.add(NodeType.GPU);
+            availableMethods.add(NodeType.CPU);
+            availableMethods.add(NodeType.HYBRID);
         } else {
-            availableMethods.add(ComputeOn.CPU);
+            availableMethods.add(NodeType.CPU);
         }
         return availableMethods;
 
@@ -194,39 +192,6 @@ public class QueryUtils {
         return String.format("%02d:%02d:%02d", hour, minute, second);
     }
 
-    /**
-     * Parses and returns the string implementation of render time returned from Blender output
-     *
-     * @param output Blender's output
-     * @return String in mm:ss format
-     */
-    public static String getRenderTime(String output) {
-        String time = null;
-        var finished = output.split("\\|");
-        for (String item : finished) {
-            if (item.contains("Time:")) {
-                time = StringUtils.substringAfter(item, ":");
-                time = StringUtils.substringBefore(time, ".");
-            }
-        }
-        return time.replaceAll("\\s", "");
-    }
-
-    /**
-     * Converts time in mm:ss format to time in milliseconds
-     *
-     * @param time
-     * @return total milliseconds
-     */
-    public static long timeInMilliseconds(String time) {
-        var timeToConvert = time.split(":");
-        int minutes = Integer.parseInt(timeToConvert[0]);
-        int seconds = Integer.parseInt(timeToConvert[1]);
-        int timeInSeconds = seconds + 60 * minutes;
-        long timeInMilliseconds = TimeUnit.MILLISECONDS.convert(timeInSeconds, TimeUnit.SECONDS);
-        log.info("Render time in milliseconds: " + timeInMilliseconds);
-        return timeInMilliseconds;
-    }
 
     /**
      * Reads a file and returns it as a String.

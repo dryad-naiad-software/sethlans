@@ -18,11 +18,11 @@
 package com.dryadandnaiad.sethlans.enums;
 
 /**
- * File created by Mario Estrella on 4/1/2020.
+ * File created by Mario Estrella on 5/6/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public enum ComputeOn {
-    CPU, GPU
+public enum NodeType {
+    CPU_GPU, CPU, GPU, HYBRID
 }

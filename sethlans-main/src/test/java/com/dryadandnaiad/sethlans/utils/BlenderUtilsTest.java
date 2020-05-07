@@ -96,7 +96,7 @@ class BlenderUtilsTest {
     }
 
     @Test
-    void executeRenderTask() {
+    void executeRenderTaskCPU() {
         var file1 = "bmw27_gpu.blend";
         var os = QueryUtils.getOS();
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
@@ -114,9 +114,39 @@ class BlenderUtilsTest {
                 ComputeOn.CPU, BlenderEngine.CYCLES, blenderExecutable);
         renderTask.getScriptInfo().setCores(4);
         assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
-        BlenderUtils.executeRenderTask(renderTask, true);
-
+        var result = BlenderUtils.executeRenderTask(renderTask, true);
+        log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
+        assertThat(result).isNotNull();
+        assertThat(result).isNotNegative();
+        assertThat(result).isGreaterThan(0L);
     }
+
+    @Test
+    void executeRenderTaskGPU() {
+        var file1 = "bmw27_gpu.blend";
+        var os = QueryUtils.getOS();
+        TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
+        var binaryDir = new File(TEST_DIRECTORY + File.separator + "binaries");
+        binaryDir.mkdirs();
+        var version = "2.82a";
+        var download = BlenderUtils.downloadBlenderToServer(version,
+                "resource",
+                TEST_DIRECTORY.toString(),
+                os);
+        assertThat(BlenderUtils.extractBlender(binaryDir.toString(),
+                os, download.toString(), version)).isTrue();
+        var blenderExecutable = BlenderUtils.getBlenderExecutable(binaryDir.toString(), version);
+        var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
+                ComputeOn.GPU, BlenderEngine.CYCLES, blenderExecutable);
+        renderTask.getScriptInfo().setCores(4);
+        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+        var result = BlenderUtils.executeRenderTask(renderTask, true);
+        log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
+        assertThat(result).isNotNull();
+        assertThat(result).isNotNegative();
+        assertThat(result).isGreaterThan(0L);
+    }
+
 
     @Test
     void downloadBlenderToServer() {

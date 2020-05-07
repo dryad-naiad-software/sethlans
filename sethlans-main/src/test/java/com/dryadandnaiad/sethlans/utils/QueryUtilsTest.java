@@ -17,7 +17,7 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
-import com.dryadandnaiad.sethlans.enums.ComputeOn;
+import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import lombok.extern.slf4j.Slf4j;
@@ -74,7 +74,9 @@ class QueryUtilsTest {
         assertNotNull(availableMethods);
         assertThat(availableMethods).hasSizeGreaterThan(0);
         if (availableMethods.size() > 1) {
-            assertThat(availableMethods).contains(ComputeOn.GPU);
+            assertThat(availableMethods).contains(NodeType.GPU);
+        } else {
+            assertThat(availableMethods.contains(NodeType.CPU));
         }
     }
 
@@ -98,15 +100,6 @@ class QueryUtilsTest {
         assertThat(time.equals("02:30:00"));
     }
 
-
-    @Test
-    void getRenderTime() {
-        String time;
-        String output = " Time: 08:06.55 (Saving: 00:00.80)";
-        time = QueryUtils.getRenderTime(output);
-        assertNotNull(time);
-        assertThat(time).isEqualTo("08:06");
-    }
 
     @Test
     void readStringFromFile() {

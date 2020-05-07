@@ -100,7 +100,7 @@ public class BlenderUtils {
 
 
     public static Long executeRenderTask(RenderTask renderTask, boolean debug) {
-        log.info("Starting to render of " + renderTask.getProjectName() + ":");
+        log.info("Starting to render of `" + renderTask.getProjectName() + "`");
         log.info("Frame: " + renderTask.getFrameInfo().getFrameNumber());
         if (renderTask.isUseParts()) {
             log.info("Part: " + renderTask.getFrameInfo().getPartNumber());
@@ -108,6 +108,7 @@ public class BlenderUtils {
         String output;
 
         try {
+            var startTime = System.currentTimeMillis();
             if (debug) {
                 output = new ProcessExecutor().command(renderTask.getBlenderExecutable(), "-d", "-b",
                         renderTask.getTaskBlendFile(), "-P", renderTask.getTaskDir() + File.separator +
@@ -121,7 +122,11 @@ public class BlenderUtils {
                                 + File.separator, "-f", renderTask.getFrameInfo().getFrameNumber().toString())
                         .readOutput(true).exitValues(0).execute().outputUTF8();
             }
+            var endTime = System.currentTimeMillis();
             log.debug(output);
+            return endTime - startTime;
+
+
         } catch (InvalidExitValueException e) {
             log.error("Process exited with " + e.getExitValue());
             log.error(e.getMessage());
@@ -131,8 +136,6 @@ public class BlenderUtils {
             log.error(Throwables.getStackTraceAsString(e));
             return null;
         }
-
-        return null;
     }
 
     public static BlendFile parseBlendFile(String blendFile, String scriptsDir, String pythonDir) {
