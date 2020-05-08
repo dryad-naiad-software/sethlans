@@ -49,7 +49,8 @@ public class BlenderUtils {
 
     public static String getBlenderExecutable(String binaryDir, String version) {
         var os = QueryUtils.getOS();
-        var directory = new File(binaryDir + File.separator + "blender-" + version + "-" + os.getName().toLowerCase());
+        var directory = new File(binaryDir + File.separator + "blender-" + version + "-" +
+                os.getName().toLowerCase());
         if (!directory.exists()) {
             return null;
         }
@@ -70,7 +71,8 @@ public class BlenderUtils {
                 }
                 return null;
             case MACOS:
-                file = new File(directory + File.separator + "Contents" + File.separator + "MacOS" + File.separator + "Blender");
+                file = new File(directory + File.separator + "Contents" + File.separator +
+                        "MacOS" + File.separator + "Blender");
                 if (!file.exists()) return null;
                 if (makeExecutable(file.toString())) {
                     return file.toString();
@@ -101,7 +103,8 @@ public class BlenderUtils {
 
 
     public static Long executeRenderTask(RenderTask renderTask, boolean debug) {
-        var projectNameAndID = QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(), renderTask.getProjectID());
+        var projectNameAndID = QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(),
+                renderTask.getProjectID());
         String outputPathAndFilename;
         if (renderTask.isUseParts()) {
             outputPathAndFilename = renderTask.getTaskDir()
@@ -125,12 +128,14 @@ public class BlenderUtils {
             if (debug) {
                 output = new ProcessExecutor().command(renderTask.getBlenderExecutable(), "-d", "-b",
                         renderTask.getTaskBlendFile(), "-P", renderTask.getTaskDir() + File.separator +
-                                renderTask.getTaskID() + ".py", "-o", outputPathAndFilename, "-f", renderTask.getFrameInfo().getFrameNumber().toString())
+                                renderTask.getTaskID() + ".py", "-o", outputPathAndFilename, "-f",
+                        renderTask.getFrameInfo().getFrameNumber().toString())
                         .readOutput(true).exitValues(0).execute().outputUTF8();
             } else {
                 output = new ProcessExecutor().command(renderTask.getBlenderExecutable(), "-b",
                         renderTask.getTaskBlendFile(), "-P", renderTask.getTaskDir() + File.separator +
-                                renderTask.getTaskID() + ".py", "-o", outputPathAndFilename, "-f", renderTask.getFrameInfo().getFrameNumber().toString())
+                                renderTask.getTaskID() + ".py", "-o", outputPathAndFilename, "-f",
+                        renderTask.getFrameInfo().getFrameNumber().toString())
                         .readOutput(true).exitValues(0).execute().outputUTF8();
             }
             var endTime = System.currentTimeMillis();
@@ -140,10 +145,11 @@ public class BlenderUtils {
 
         } catch (InvalidExitValueException e) {
             log.error("Process exited with " + e.getExitValue());
-            log.error(e.getMessage());
-            if (renderTask.getScriptInfo().getBlenderEngine().equals(BlenderEngine.BLENDER_EEVEE)) {
+            if (renderTask.getScriptInfo().getBlenderEngine().equals(BlenderEngine.BLENDER_EEVEE) &&
+                    QueryUtils.getOS().equals(OS.LINUX_64)) {
                 log.error("Eevee failed to render, check that display is available if running Linux!");
             }
+            log.error(e.getMessage());
             return null;
         } catch (InterruptedException | IOException | TimeoutException e) {
             log.error(e.getMessage());
