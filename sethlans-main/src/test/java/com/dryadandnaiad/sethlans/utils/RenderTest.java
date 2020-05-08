@@ -119,6 +119,7 @@ public class RenderTest {
         renderTask.setFrameInfo(frameInfo);
         assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
+        assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
         assertThat(result).isNotNull();
         assertThat(result).isNotNegative();
@@ -150,6 +151,7 @@ public class RenderTest {
         renderTask.getScriptInfo().setCores(4);
         assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
+        assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
         var finalFile = new File(renderTask.getTaskDir() + File.separator +
                 QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(), renderTask.getProjectID())
@@ -180,6 +182,7 @@ public class RenderTest {
         renderTask.getScriptInfo().setCores(4);
         assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
+        assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
         var finalFile = new File(renderTask.getTaskDir() + File.separator +
                 QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(), renderTask.getProjectID())
@@ -210,6 +213,7 @@ public class RenderTest {
         renderTask.getScriptInfo().setCores(4);
         assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
+        assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
         var finalFile = new File(renderTask.getTaskDir() + File.separator +
                 QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(), renderTask.getProjectID())
@@ -249,6 +253,7 @@ public class RenderTest {
         renderTask.setFrameInfo(frameInfo);
         assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
+        assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
         assertThat(result).isNotNull();
         assertThat(result).isNotNegative();
@@ -286,6 +291,7 @@ public class RenderTest {
         renderTask.getScriptInfo().setTaskTileSize(tileSize);
         assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
+        assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
         assertThat(result).isNotNull();
         assertThat(result).isNotNegative();
