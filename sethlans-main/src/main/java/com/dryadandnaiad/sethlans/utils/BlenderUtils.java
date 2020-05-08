@@ -17,6 +17,7 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.OS;
 import com.dryadandnaiad.sethlans.models.blender.BlendFile;
 import com.dryadandnaiad.sethlans.models.blender.BlenderInstallers;
@@ -140,6 +141,9 @@ public class BlenderUtils {
         } catch (InvalidExitValueException e) {
             log.error("Process exited with " + e.getExitValue());
             log.error(e.getMessage());
+            if (e.getExitValue() == 134 && renderTask.getScriptInfo().getBlenderEngine().equals(BlenderEngine.BLENDER_EEVEE)) {
+                log.error("Eevee failed to render, check that display is available if running Linux!");
+            }
             return null;
         } catch (InterruptedException | IOException | TimeoutException e) {
             log.error(e.getMessage());
