@@ -141,7 +141,7 @@ public class BlenderUtils {
         } catch (InvalidExitValueException e) {
             log.error("Process exited with " + e.getExitValue());
             log.error(e.getMessage());
-            if (e.getExitValue() == 134 && renderTask.getScriptInfo().getBlenderEngine().equals(BlenderEngine.BLENDER_EEVEE)) {
+            if (renderTask.getScriptInfo().getBlenderEngine().equals(BlenderEngine.BLENDER_EEVEE)) {
                 log.error("Eevee failed to render, check that display is available if running Linux!");
             }
             return null;

@@ -30,6 +30,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
@@ -59,6 +61,7 @@ public class RenderTest {
     }
 
     @Test
+    @DisabledOnOs(OS.LINUX)
     void executeRenderTaskEeveeFrame() {
         var file1 = "wasp_bot.blend";
         var os = QueryUtils.getOS();
@@ -91,6 +94,7 @@ public class RenderTest {
     }
 
     @Test
+    @DisabledOnOs(OS.LINUX)
     void executeRenderTaskEeveeFramePart() {
         var file1 = "wasp_bot.blend";
         var os = QueryUtils.getOS();
