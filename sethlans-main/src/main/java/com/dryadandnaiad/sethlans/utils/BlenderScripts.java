@@ -221,7 +221,7 @@ public class BlenderScripts {
                 scriptWriter.println("scene.render.image_settings.color_depth = '16'");
             }
 
-            if (renderTask.getScriptInfo().getImageOutputFormat().equals(ImageOutputFormat.OPENEXR)) {
+            if (renderTask.getScriptInfo().getImageOutputFormat().equals(ImageOutputFormat.OPEN_EXR)) {
                 scriptWriter.println("scene.render.image_settings.file_format = 'OPEN_EXR'");
                 scriptWriter.println("scene.render.image_settings.color_mode = 'RGBA'");
                 scriptWriter.println("scene.render.image_settings.color_depth = '16'");
