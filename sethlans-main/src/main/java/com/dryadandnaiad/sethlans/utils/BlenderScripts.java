@@ -216,6 +216,19 @@ public class BlenderScripts {
             scriptWriter.println("scene.render.use_border = True");
             scriptWriter.println("scene.render.use_crop_to_border = True");
             if (renderTask.getScriptInfo().getImageOutputFormat().equals(ImageOutputFormat.PNG)) {
+                scriptWriter.println("scene.render.image_settings.file_format = 'PNG'");
+                scriptWriter.println("scene.render.image_settings.color_mode = 'RGBA'");
+                scriptWriter.println("scene.render.image_settings.color_depth = '16'");
+            }
+
+            if (renderTask.getScriptInfo().getImageOutputFormat().equals(ImageOutputFormat.OPENEXR)) {
+                scriptWriter.println("scene.render.image_settings.file_format = 'OPEN_EXR'");
+                scriptWriter.println("scene.render.image_settings.color_mode = 'RGBA'");
+                scriptWriter.println("scene.render.image_settings.color_depth = '16'");
+            }
+
+            if (renderTask.getScriptInfo().getImageOutputFormat().equals(ImageOutputFormat.TIFF)) {
+                scriptWriter.println("scene.render.image_settings.file_format = 'TIFF'");
                 scriptWriter.println("scene.render.image_settings.color_mode = 'RGBA'");
                 scriptWriter.println("scene.render.image_settings.color_depth = '16'");
             }

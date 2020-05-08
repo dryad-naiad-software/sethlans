@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 import json
 import sys
+from pathlib import Path
+
 from blender_asset_tracer import blendfile
 from blender_asset_tracer.blendfile import iterators
-from pathlib import Path
 
 if len(sys.argv) != 2:
     print(f'Usage: {sys.argv[0]} somefile.blend', file=sys.stderr)
@@ -37,6 +38,9 @@ frame_skip = scene[b'r', b'frame_step']
 res_x = scene[b'r', b'xsch']
 res_y = scene[b'r', b'ysch']
 res_percent = scene[b'r', b'size']
+
+if engine is "":
+    engine = "BLENDER_RENDER"
 
 render_info = {
     'engine': engine,

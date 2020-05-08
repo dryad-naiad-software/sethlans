@@ -30,6 +30,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class RenderTest {
 
     @AfterEach
     void tearDown() {
-        //FileSystemUtils.deleteRecursively(TEST_DIRECTORY);
+        FileSystemUtils.deleteRecursively(TEST_DIRECTORY);
     }
 
     @Test
@@ -146,6 +147,36 @@ public class RenderTest {
         var blenderExecutable = BlenderUtils.getBlenderExecutable(binaryDir.toString(), version);
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.CPU, BlenderEngine.CYCLES, blenderExecutable);
+        renderTask.getScriptInfo().setCores(4);
+        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+        var result = BlenderUtils.executeRenderTask(renderTask, true);
+        log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
+        var finalFile = new File(renderTask.getTaskDir() + File.separator +
+                QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(), renderTask.getProjectID())
+                + "-000" + renderTask.getFrameInfo().getFrameNumber() + ".png");
+        assertThat(result).isNotNull();
+        assertThat(result).isNotNegative();
+        assertThat(result).isGreaterThan(0L);
+        assertThat(finalFile).exists();
+    }
+
+    @Test
+    void executeRenderTaskBlenderRenderFrame() {
+        var file1 = "refract_monkey.blend";
+        var os = QueryUtils.getOS();
+        TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
+        var binaryDir = new File(TEST_DIRECTORY + File.separator + "binaries");
+        binaryDir.mkdirs();
+        var version = "2.79b";
+        var download = BlenderUtils.downloadBlenderToServer(version,
+                "resource",
+                TEST_DIRECTORY.toString(),
+                os);
+        assertThat(BlenderUtils.extractBlender(binaryDir.toString(),
+                os, download.toString(), version)).isTrue();
+        var blenderExecutable = BlenderUtils.getBlenderExecutable(binaryDir.toString(), version);
+        var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
+                ComputeOn.CPU, BlenderEngine.BLENDER_RENDER, blenderExecutable);
         renderTask.getScriptInfo().setCores(4);
         assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
