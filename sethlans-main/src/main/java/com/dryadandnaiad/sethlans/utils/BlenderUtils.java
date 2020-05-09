@@ -27,6 +27,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.FileSystemUtils;
 import org.zeroturnaround.exec.InvalidExitValueException;
 import org.zeroturnaround.exec.ProcessExecutor;
 
@@ -204,19 +205,24 @@ public class BlenderUtils {
     }
 
     public static boolean extractBlender(String binaryDir, OS os, String fileName, String version) {
+        var tempDirectory = new File(binaryDir + File.separator + "temp");
         var directoryName = new File(binaryDir +
                 File.separator + "blender-" + version + "-" + os.getName().toLowerCase());
         if (os == OS.MACOS) {
-            if (FileUtils.extractBlenderFromDMG(fileName, binaryDir)) {
-                var directories = FileUtils.listDirectories(binaryDir);
-                return new File(binaryDir + File.separator + directories.iterator().next())
-                        .renameTo(directoryName);
+            if (FileUtils.extractBlenderFromDMG(fileName, tempDirectory.toString())) {
+                var directories = FileUtils.listDirectories(tempDirectory.toString());
+                if (new File(tempDirectory + File.separator + directories.iterator().next())
+                        .renameTo(directoryName)) {
+                    return FileSystemUtils.deleteRecursively(tempDirectory);
+                }
             }
         } else {
-            if (FileUtils.extractArchive(fileName, binaryDir)) {
-                var directories = FileUtils.listDirectories(binaryDir);
-                return new File(binaryDir + File.separator + directories.iterator().next())
-                        .renameTo(directoryName);
+            if (FileUtils.extractArchive(fileName, tempDirectory.toString())) {
+                var directories = FileUtils.listDirectories(tempDirectory.toString());
+                if (new File(tempDirectory + File.separator + directories.iterator().next())
+                        .renameTo(directoryName)) {
+                    return FileSystemUtils.deleteRecursively(tempDirectory);
+                }
             }
         }
         return false;
