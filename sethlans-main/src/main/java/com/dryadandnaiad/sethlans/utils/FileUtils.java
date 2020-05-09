@@ -225,29 +225,28 @@ public class FileUtils {
      * @return
      */
     public static boolean extractBlenderFromDMG(String dmgFile, String destination) {
-
         if (SystemUtils.IS_OS_MAC) {
+            log.info("Copying contents of " + dmgFile + " to " + destination);
             try {
                 int exit = new ProcessExecutor().command("hdiutil", "mount", dmgFile)
-                        .redirectOutput(Slf4jStream.ofCaller().asInfo()).execute().getExitValue();
+                        .redirectOutput(Slf4jStream.ofCaller().asDebug()).execute().getExitValue();
                 if (exit > 0) {
                     return false;
                 }
                 if (dmgFile.contains("2.79b")) {
                     exit = new ProcessExecutor().command("cp", "-R", "/Volumes/Blender/Blender/blender.app", destination)
-                            .redirectOutput(Slf4jStream.ofCaller().asInfo()).execute().getExitValue();
+                            .redirectOutput(Slf4jStream.ofCaller().asDebug()).execute().getExitValue();
                 } else {
                     exit = new ProcessExecutor().command("cp", "-R", "/Volumes/Blender/Blender.app", destination)
-                            .redirectOutput(Slf4jStream.ofCaller().asInfo()).execute().getExitValue();
+                            .redirectOutput(Slf4jStream.ofCaller().asDebug()).execute().getExitValue();
                 }
 
                 if (exit > 0) {
                     return false;
                 }
                 exit = new ProcessExecutor().command("hdiutil", "unmount", "/Volumes/Blender/")
-                        .redirectOutput(Slf4jStream.ofCaller().asInfo()).execute().getExitValue();
+                        .redirectOutput(Slf4jStream.ofCaller().asDebug()).execute().getExitValue();
                 new File(dmgFile).delete();
-
                 return exit <= 0;
             } catch (IOException | InterruptedException | TimeoutException e) {
                 log.error(e.getMessage());
