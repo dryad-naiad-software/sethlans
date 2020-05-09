@@ -26,10 +26,7 @@ import com.dryadandnaiad.sethlans.models.blender.tasks.TaskScriptInfo;
 import com.dryadandnaiad.sethlans.testutils.TestFileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 import org.springframework.util.FileSystemUtils;
@@ -48,7 +45,33 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Slf4j
 public class RenderTest {
+    static File BIN_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + "test-binaries");
     static File TEST_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + "testing");
+
+    @BeforeAll
+    static void beforeAll() {
+        BIN_DIRECTORY.mkdirs();
+        var version = "2.82a";
+        var os = QueryUtils.getOS();
+        var download = BlenderUtils.downloadBlenderToServer(version,
+                "resource",
+                BIN_DIRECTORY.toString(),
+                os);
+        BlenderUtils.extractBlender(BIN_DIRECTORY.toString(),
+                os, download.toString(), version);
+        version = "2.79b";
+        download = BlenderUtils.downloadBlenderToServer(version,
+                "resource",
+                BIN_DIRECTORY.toString(),
+                os);
+        BlenderUtils.extractBlender(BIN_DIRECTORY.toString(),
+                os, download.toString(), version);
+    }
+
+    @AfterAll
+    static void afterAll() {
+        FileSystemUtils.deleteRecursively(BIN_DIRECTORY);
+    }
 
     @BeforeEach
     void setUp() {
@@ -64,30 +87,20 @@ public class RenderTest {
     @DisabledOnOs(OS.LINUX)
     void executeRenderTaskEeveeFrame() {
         var file1 = "wasp_bot.blend";
-        var os = QueryUtils.getOS();
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
-        var binaryDir = new File(TEST_DIRECTORY + File.separator + "binaries");
-        binaryDir.mkdirs();
         var version = "2.82a";
-        var download = BlenderUtils.downloadBlenderToServer(version,
-                "resource",
-                TEST_DIRECTORY.toString(),
-                os);
-        assertThat(BlenderUtils.extractBlender(binaryDir.toString(),
-                os, download.toString(), version)).isTrue();
-        var blenderExecutable = BlenderUtils.getBlenderExecutable(binaryDir.toString(), version);
+        var blenderExecutable = BlenderUtils.getBlenderExecutable(BIN_DIRECTORY.toString(), version);
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.CPU, BlenderEngine.BLENDER_EEVEE, blenderExecutable);
         renderTask.getScriptInfo().setTaskResPercentage(100);
         renderTask.getScriptInfo().setCores(4);
-        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
         assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
         var finalFile = new File(renderTask.getTaskDir() + File.separator +
                 QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(), renderTask.getProjectID())
                 + "-000" + renderTask.getFrameInfo().getFrameNumber() + ".png");
-        assertThat(result).isNotNull();
         assertThat(result).isNotNegative();
         assertThat(result).isGreaterThan(0L);
         assertThat(finalFile).exists();
@@ -97,18 +110,9 @@ public class RenderTest {
     @DisabledOnOs(OS.LINUX)
     void executeRenderTaskEeveeFramePart() {
         var file1 = "wasp_bot.blend";
-        var os = QueryUtils.getOS();
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
-        var binaryDir = new File(TEST_DIRECTORY + File.separator + "binaries");
-        binaryDir.mkdirs();
         var version = "2.82a";
-        var download = BlenderUtils.downloadBlenderToServer(version,
-                "resource",
-                TEST_DIRECTORY.toString(),
-                os);
-        assertThat(BlenderUtils.extractBlender(binaryDir.toString(),
-                os, download.toString(), version)).isTrue();
-        var blenderExecutable = BlenderUtils.getBlenderExecutable(binaryDir.toString(), version);
+        var blenderExecutable = BlenderUtils.getBlenderExecutable(BIN_DIRECTORY.toString(), version);
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.CPU, BlenderEngine.BLENDER_EEVEE, blenderExecutable);
         renderTask.getScriptInfo().setTaskResPercentage(100);
@@ -122,16 +126,15 @@ public class RenderTest {
                 .partMinY(0.5)
                 .partMaxY(1.0).build();
         renderTask.setFrameInfo(frameInfo);
-        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
         assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
-        assertThat(result).isNotNull();
         assertThat(result).isNotNegative();
         assertThat(result).isGreaterThan(0L);
         var finalFile = new File(renderTask.getTaskDir() + File.separator +
                 QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(), renderTask.getProjectID())
-                + "-000" + renderTask.getFrameInfo().getFrameNumber() + "-part-" +
+                + "-000" + renderTask.getFrameInfo().getFrameNumber() + "-" +
                 renderTask.getFrameInfo().getPartNumber() + ".png");
         assertThat(finalFile).exists();
     }
@@ -139,29 +142,19 @@ public class RenderTest {
     @Test
     void executeRenderTaskCyclesCPUFrame27x() {
         var file1 = "bmw27_gpu.blend";
-        var os = QueryUtils.getOS();
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
-        var binaryDir = new File(TEST_DIRECTORY + File.separator + "binaries");
-        binaryDir.mkdirs();
         var version = "2.79b";
-        var download = BlenderUtils.downloadBlenderToServer(version,
-                "resource",
-                TEST_DIRECTORY.toString(),
-                os);
-        assertThat(BlenderUtils.extractBlender(binaryDir.toString(),
-                os, download.toString(), version)).isTrue();
-        var blenderExecutable = BlenderUtils.getBlenderExecutable(binaryDir.toString(), version);
+        var blenderExecutable = BlenderUtils.getBlenderExecutable(BIN_DIRECTORY.toString(), version);
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.CPU, BlenderEngine.CYCLES, blenderExecutable);
         renderTask.getScriptInfo().setCores(4);
-        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
         assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
         var finalFile = new File(renderTask.getTaskDir() + File.separator +
                 QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(), renderTask.getProjectID())
                 + "-000" + renderTask.getFrameInfo().getFrameNumber() + ".png");
-        assertThat(result).isNotNull();
         assertThat(result).isNotNegative();
         assertThat(result).isGreaterThan(0L);
         assertThat(finalFile).exists();
@@ -170,29 +163,19 @@ public class RenderTest {
     @Test
     void executeRenderTaskBlenderRenderFrame() {
         var file1 = "refract_monkey.blend";
-        var os = QueryUtils.getOS();
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
-        var binaryDir = new File(TEST_DIRECTORY + File.separator + "binaries");
-        binaryDir.mkdirs();
         var version = "2.79b";
-        var download = BlenderUtils.downloadBlenderToServer(version,
-                "resource",
-                TEST_DIRECTORY.toString(),
-                os);
-        assertThat(BlenderUtils.extractBlender(binaryDir.toString(),
-                os, download.toString(), version)).isTrue();
-        var blenderExecutable = BlenderUtils.getBlenderExecutable(binaryDir.toString(), version);
+        var blenderExecutable = BlenderUtils.getBlenderExecutable(BIN_DIRECTORY.toString(), version);
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.CPU, BlenderEngine.BLENDER_RENDER, blenderExecutable);
         renderTask.getScriptInfo().setCores(4);
-        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
         assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
         var finalFile = new File(renderTask.getTaskDir() + File.separator +
                 QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(), renderTask.getProjectID())
                 + "-000" + renderTask.getFrameInfo().getFrameNumber() + ".png");
-        assertThat(result).isNotNull();
         assertThat(result).isNotNegative();
         assertThat(result).isGreaterThan(0L);
         assertThat(finalFile).exists();
@@ -201,49 +184,75 @@ public class RenderTest {
     @Test
     void executeRenderTaskCyclesCPUFrame() {
         var file1 = "bmw27_gpu.blend";
-        var os = QueryUtils.getOS();
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
-        var binaryDir = new File(TEST_DIRECTORY + File.separator + "binaries");
-        binaryDir.mkdirs();
         var version = "2.82a";
-        var download = BlenderUtils.downloadBlenderToServer(version,
-                "resource",
-                TEST_DIRECTORY.toString(),
-                os);
-        assertThat(BlenderUtils.extractBlender(binaryDir.toString(),
-                os, download.toString(), version)).isTrue();
-        var blenderExecutable = BlenderUtils.getBlenderExecutable(binaryDir.toString(), version);
+        var blenderExecutable = BlenderUtils.getBlenderExecutable(BIN_DIRECTORY.toString(), version);
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.CPU, BlenderEngine.CYCLES, blenderExecutable);
         renderTask.getScriptInfo().setCores(4);
-        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
         assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
         var finalFile = new File(renderTask.getTaskDir() + File.separator +
                 QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(), renderTask.getProjectID())
                 + "-000" + renderTask.getFrameInfo().getFrameNumber() + ".png");
-        assertThat(result).isNotNull();
         assertThat(result).isNotNegative();
         assertThat(result).isGreaterThan(0L);
         assertThat(finalFile).exists();
     }
 
     @Test
+    void executeRenderTaskOpenEXR() {
+        var file1 = "bmw27_gpu.blend";
+        TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
+        var version = "2.82a";
+        var blenderExecutable = BlenderUtils.getBlenderExecutable(BIN_DIRECTORY.toString(), version);
+        var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
+                ComputeOn.CPU, BlenderEngine.CYCLES, blenderExecutable);
+        renderTask.getScriptInfo().setCores(4);
+        renderTask.getScriptInfo().setImageOutputFormat(ImageOutputFormat.OPEN_EXR);
+        var finalFile = new File(renderTask.getTaskDir() + File.separator +
+                QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(), renderTask.getProjectID())
+                + "-000" + renderTask.getFrameInfo().getFrameNumber() + ".exr");
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
+        var result = BlenderUtils.executeRenderTask(renderTask, true);
+        assertThat(result).isNotNull();
+        log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
+        assertThat(result).isNotNegative();
+        assertThat(result).isGreaterThan(0L);
+        assertThat(finalFile).exists();
+    }
+
+    @Test
+    void executeRenderTaskTIFF() {
+        var file1 = "bmw27_gpu.blend";
+        TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
+        var version = "2.82a";
+        var blenderExecutable = BlenderUtils.getBlenderExecutable(BIN_DIRECTORY.toString(), version);
+        var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
+                ComputeOn.CPU, BlenderEngine.CYCLES, blenderExecutable);
+        renderTask.getScriptInfo().setCores(4);
+        renderTask.getScriptInfo().setImageOutputFormat(ImageOutputFormat.TIFF);
+        var finalFile = new File(renderTask.getTaskDir() + File.separator +
+                QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(), renderTask.getProjectID())
+                + "-000" + renderTask.getFrameInfo().getFrameNumber() + ".tif");
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
+        var result = BlenderUtils.executeRenderTask(renderTask, true);
+        assertThat(result).isNotNull();
+        log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
+        assertThat(result).isNotNegative();
+        assertThat(result).isGreaterThan(0L);
+        assertThat(finalFile).exists();
+    }
+
+
+    @Test
     void executeRenderTaskCyclesCPUFramePart() {
         var file1 = "bmw27_gpu.blend";
-        var os = QueryUtils.getOS();
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
-        var binaryDir = new File(TEST_DIRECTORY + File.separator + "binaries");
-        binaryDir.mkdirs();
         var version = "2.82a";
-        var download = BlenderUtils.downloadBlenderToServer(version,
-                "resource",
-                TEST_DIRECTORY.toString(),
-                os);
-        assertThat(BlenderUtils.extractBlender(binaryDir.toString(),
-                os, download.toString(), version)).isTrue();
-        var blenderExecutable = BlenderUtils.getBlenderExecutable(binaryDir.toString(), version);
+        var blenderExecutable = BlenderUtils.getBlenderExecutable(BIN_DIRECTORY.toString(), version);
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.CPU, BlenderEngine.CYCLES, blenderExecutable);
         renderTask.getScriptInfo().setCores(4);
@@ -256,16 +265,15 @@ public class RenderTest {
                 .partMinY(0.0)
                 .partMaxY(0.5).build();
         renderTask.setFrameInfo(frameInfo);
-        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
         assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
-        assertThat(result).isNotNull();
         assertThat(result).isNotNegative();
         assertThat(result).isGreaterThan(0L);
         var finalFile = new File(renderTask.getTaskDir() + File.separator +
                 QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(), renderTask.getProjectID())
-                + "-000" + renderTask.getFrameInfo().getFrameNumber() + "-part-" +
+                + "-000" + renderTask.getFrameInfo().getFrameNumber() + "-" +
                 renderTask.getFrameInfo().getPartNumber() + ".png");
         assertThat(finalFile).exists();
     }
@@ -274,31 +282,21 @@ public class RenderTest {
     @Test
     void executeRenderTaskCyclesGPU() {
         var file1 = "bmw27_gpu.blend";
-        var os = QueryUtils.getOS();
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
-        var binaryDir = new File(TEST_DIRECTORY + File.separator + "binaries");
-        binaryDir.mkdirs();
         var version = "2.82a";
+        var blenderExecutable = BlenderUtils.getBlenderExecutable(BIN_DIRECTORY.toString(), version);
         var tileSize = 256;
         var deviceIDs = new ArrayList<String>();
         deviceIDs.add("CUDA_0");
         deviceIDs.add("CUDA_1");
-        var download = BlenderUtils.downloadBlenderToServer(version,
-                "resource",
-                TEST_DIRECTORY.toString(),
-                os);
-        assertThat(BlenderUtils.extractBlender(binaryDir.toString(),
-                os, download.toString(), version)).isTrue();
-        var blenderExecutable = BlenderUtils.getBlenderExecutable(binaryDir.toString(), version);
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.GPU, BlenderEngine.CYCLES, blenderExecutable);
         renderTask.getScriptInfo().setDeviceIDs(deviceIDs);
         renderTask.getScriptInfo().setTaskTileSize(tileSize);
-        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
         assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
-        assertThat(result).isNotNull();
         assertThat(result).isNotNegative();
         assertThat(result).isGreaterThan(0L);
         var finalFile = new File(renderTask.getTaskDir() + File.separator +

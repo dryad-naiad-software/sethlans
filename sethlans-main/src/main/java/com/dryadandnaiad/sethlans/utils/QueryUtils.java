@@ -20,6 +20,7 @@ package com.dryadandnaiad.sethlans.utils;
 import com.dryadandnaiad.sethlans.devices.ScanGPU;
 import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.enums.OS;
+import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.models.hardware.CPU;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Server;
@@ -112,6 +113,31 @@ public class QueryUtils {
             hostname = hostname.substring(0, indexEnd);
         }
         return hostname.toUpperCase();
+    }
+
+    /**
+     * Returns the standard name of a potential file generated from a project.
+     * <p>
+     * Setting part to null, returns the name of the frame only.
+     *
+     * @param project
+     * @param frame
+     * @param part
+     * @return
+     */
+    public static String getFrameAndPartFilename(Project project, Integer frame, Integer part) {
+        var projectNameAndID = QueryUtils.truncatedProjectNameAndID(project.getProjectName(),
+                project.getProjectID());
+        String outputFileName;
+
+        if (part == null) {
+            outputFileName = projectNameAndID + "-" + String.format("%04d", frame) + "-" + part + "." +
+                    project.getProjectSettings().getImageSettings().getImageOutputFormat().name().toLowerCase();
+        } else {
+            outputFileName = projectNameAndID + "-" + String.format("%04d", frame) + "." +
+                    project.getProjectSettings().getImageSettings().getImageOutputFormat().name().toLowerCase();
+        }
+        return outputFileName;
     }
 
 

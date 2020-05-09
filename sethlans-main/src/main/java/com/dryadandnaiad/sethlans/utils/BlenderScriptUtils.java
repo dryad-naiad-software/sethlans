@@ -38,7 +38,7 @@ import java.util.List;
  * Project: sethlans
  */
 @Slf4j
-public class BlenderScripts {
+public class BlenderScriptUtils {
 
 
     public static boolean writeRenderScript(RenderTask renderTask) {
@@ -60,8 +60,9 @@ public class BlenderScripts {
                 return false;
             }
 
-            if (renderTask.getScriptInfo().getDeviceIDs() == null) {
-                log.error("Device IDs cannot be null.");
+            if (renderTask.getScriptInfo().getDeviceIDs() == null ||
+                    renderTask.getScriptInfo().getDeviceIDs().isEmpty()) {
+                log.error("Device IDs cannot be null or empty.");
                 scriptWriter.flush();
                 scriptWriter.close();
                 script.delete();
@@ -92,7 +93,8 @@ public class BlenderScripts {
             switch (renderTask.getScriptInfo().getBlenderEngine()) {
                 case CYCLES:
                     scriptWriter.println("scene.render.engine = 'CYCLES'");
-                    scriptWriter.println("scene.cycles.device = " + "'" + renderTask.getScriptInfo().getComputeOn() + "'");
+                    scriptWriter.println("scene.cycles.device = " + "'" +
+                            renderTask.getScriptInfo().getComputeOn() + "'");
                     scriptWriter.println();
                     scriptWriter.println("cycles_prefs = prefs.addons['cycles'].preferences");
                     if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.GPU)) {
@@ -154,7 +156,8 @@ public class BlenderScripts {
             scriptWriter.println("for scene in bpy.data.scenes:");
             scriptWriter.println("\tscene.render.resolution_x = " + renderTask.getScriptInfo().getTaskResolutionX());
             scriptWriter.println("\tscene.render.resolution_y = " + renderTask.getScriptInfo().getTaskResolutionY());
-            scriptWriter.println("\tscene.render.resolution_percentage = " + renderTask.getScriptInfo().getTaskResPercentage());
+            scriptWriter.println("\tscene.render.resolution_percentage = " +
+                    renderTask.getScriptInfo().getTaskResPercentage());
             if (renderTask.getScriptInfo().getBlenderEngine().equals(BlenderEngine.CYCLES)) {
                 scriptWriter.println("\tscene.cycles.samples = " + renderTask.getScriptInfo().getSamples());
             }
@@ -163,7 +166,8 @@ public class BlenderScripts {
             if (!renderTask.isBenchmark() && renderTask.isUseParts()) {
                 if (renderTask.getFrameInfo().getPartMaxX() == null |
                         renderTask.getFrameInfo().getPartMinX() == null ||
-                        renderTask.getFrameInfo().getPartMaxY() == null || renderTask.getFrameInfo().getPartMinY() == null) {
+                        renderTask.getFrameInfo().getPartMaxY() == null ||
+                        renderTask.getFrameInfo().getPartMinY() == null) {
                     log.error("PartMaxX, PartMinX, PartMaxY, PartMinY cannot be null when parts are being used.");
                     scriptWriter.flush();
                     scriptWriter.close();
@@ -224,7 +228,8 @@ public class BlenderScripts {
             if (renderTask.getScriptInfo().getImageOutputFormat().equals(ImageOutputFormat.OPEN_EXR)) {
                 scriptWriter.println("scene.render.image_settings.file_format = 'OPEN_EXR'");
                 scriptWriter.println("scene.render.image_settings.color_mode = 'RGBA'");
-                scriptWriter.println("scene.render.image_settings.color_depth = '16'");
+                scriptWriter.println("scene.render.image_settings.exr_codec = 'ZIP'");
+                scriptWriter.println("scene.render.image_settings.color_depth = '32'");
             }
 
             if (renderTask.getScriptInfo().getImageOutputFormat().equals(ImageOutputFormat.TIFF)) {

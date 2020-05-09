@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-class BlenderScriptsTest {
+class BlenderScriptUtilsTest {
 
     static File TEST_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + "testing");
 
@@ -54,6 +54,54 @@ class BlenderScriptsTest {
     @AfterEach
     void tearDown() {
         FileSystemUtils.deleteRecursively(TEST_DIRECTORY);
+    }
+
+    @Test
+    void writeErrorScripts() {
+        var deviceIds = new ArrayList<String>();
+        deviceIds.add("CPU");
+        var frameInfo = TaskFrameInfo.builder()
+                .partMinX(0.0)
+                .partMaxX(0.5)
+                .partMinY(0.0)
+                .partMaxY(0.5).build();
+
+        var scriptInfo = TaskScriptInfo.builder()
+                .blenderEngine(BlenderEngine.CYCLES)
+                .cores(6)
+                .deviceIDs(deviceIds)
+                .computeOn(ComputeOn.CPU)
+                .taskResolutionX(1920)
+                .taskResolutionY(1080)
+                .taskResPercentage(50)
+                .taskTileSize(256)
+                .samples(50)
+                .build();
+
+        var renderTask = RenderTask.builder()
+                .taskID(UUID.randomUUID().toString())
+                .taskDir(TEST_DIRECTORY.toString())
+                .blenderVersion("2.82a")
+                .scriptInfo(scriptInfo)
+                .frameInfo(frameInfo)
+                .isBenchmark(false)
+                .useParts(true)
+                .build();
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isFalse();
+        renderTask.getScriptInfo().setTaskTileSize(null);
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isFalse();
+        renderTask.getScriptInfo().setCores(null);
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isFalse();
+        renderTask.getFrameInfo().setPartMaxX(null);
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isFalse();
+        renderTask.getScriptInfo().setTaskResolutionX(null);
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isFalse();
+        renderTask.getScriptInfo().setBlenderEngine(null);
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isFalse();
+        renderTask.getScriptInfo().setDeviceIDs(null);
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isFalse();
+        renderTask.setBlenderVersion(null);
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isFalse();
     }
 
     @Test
@@ -81,7 +129,7 @@ class BlenderScriptsTest {
                 .isBenchmark(true)
                 .useParts(false)
                 .build();
-        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
     }
 
     @Test
@@ -113,10 +161,10 @@ class BlenderScriptsTest {
                 .scriptInfo(scriptInfo)
                 .frameInfo(frameInfo)
                 .build();
-        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
         renderTask.setBlenderVersion("2.79b");
         renderTask.setTaskID(UUID.randomUUID().toString());
-        assertThat(BlenderScripts.writeRenderScript(renderTask)).isFalse();
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isFalse();
     }
 
     @Test
@@ -149,10 +197,10 @@ class BlenderScriptsTest {
                 .frameInfo(frameInfo)
                 .scriptInfo(scriptInfo)
                 .build();
-        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
         renderTask.setBlenderVersion("2.82a");
         renderTask.setTaskID(UUID.randomUUID().toString());
-        assertThat(BlenderScripts.writeRenderScript(renderTask)).isFalse();
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isFalse();
     }
 
 
@@ -187,7 +235,7 @@ class BlenderScriptsTest {
                 .frameInfo(frameInfo)
                 .scriptInfo(scriptInfo)
                 .build();
-        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
     }
 
     @Test
@@ -221,7 +269,7 @@ class BlenderScriptsTest {
                 .frameInfo(frameInfo)
                 .scriptInfo(scriptInfo)
                 .build();
-        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
     }
 
     @Test
@@ -254,7 +302,7 @@ class BlenderScriptsTest {
                 .frameInfo(frameInfo)
                 .scriptInfo(scriptInfo)
                 .build();
-        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
     }
 
     @Test
@@ -289,6 +337,6 @@ class BlenderScriptsTest {
                 .frameInfo(frameInfo)
                 .scriptInfo(scriptInfo)
                 .build();
-        assertThat(BlenderScripts.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
     }
 }

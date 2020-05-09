@@ -109,7 +109,7 @@ public class BlenderUtils {
         if (renderTask.isUseParts()) {
             outputPathAndFilename = renderTask.getTaskDir()
                     + File.separator + projectNameAndID + "-"
-                    + "####" + "-part-"
+                    + "####" + "-"
                     + renderTask.getFrameInfo().getPartNumber();
         } else {
             outputPathAndFilename = renderTask.getTaskDir()
