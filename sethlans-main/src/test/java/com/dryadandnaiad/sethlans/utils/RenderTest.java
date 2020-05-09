@@ -92,7 +92,6 @@ public class RenderTest {
         var blenderExecutable = BlenderUtils.getBlenderExecutable(BIN_DIRECTORY.toString(), version);
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.CPU, BlenderEngine.BLENDER_EEVEE, blenderExecutable);
-        renderTask.getScriptInfo().setTaskResPercentage(100);
         renderTask.getScriptInfo().setCores(4);
         assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
@@ -115,7 +114,6 @@ public class RenderTest {
         var blenderExecutable = BlenderUtils.getBlenderExecutable(BIN_DIRECTORY.toString(), version);
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.CPU, BlenderEngine.BLENDER_EEVEE, blenderExecutable);
-        renderTask.getScriptInfo().setTaskResPercentage(100);
         renderTask.getScriptInfo().setCores(4);
         renderTask.setUseParts(true);
         var frameInfo = TaskFrameInfo.builder()
