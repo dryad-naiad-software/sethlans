@@ -72,8 +72,14 @@ public class BlenderUtils {
                 }
                 return null;
             case MACOS:
-                file = new File(directory + File.separator + "Contents" + File.separator +
-                        "MacOS" + File.separator + "Blender");
+                if (version.contains("2.79b")) {
+                    file = new File(directory + File.separator +
+                            "MacOS" + File.separator + "blender");
+                } else {
+                    file = new File(directory + File.separator +
+                            "MacOS" + File.separator + "Blender");
+                }
+
                 if (!file.exists()) return null;
                 if (makeExecutable(file.toString())) {
                     return file.toString();
@@ -205,7 +211,7 @@ public class BlenderUtils {
     }
 
     public static boolean extractBlender(String binaryDir, OS os, String fileName, String version) {
-        var tempDirectory = new File(binaryDir + File.separator + "temp");
+        var tempDirectory = new File(binaryDir + File.separator + "temp" + File.separator);
         var directoryName = new File(binaryDir +
                 File.separator + "blender-" + version + "-" + os.getName().toLowerCase());
         if (os == OS.MACOS) {
