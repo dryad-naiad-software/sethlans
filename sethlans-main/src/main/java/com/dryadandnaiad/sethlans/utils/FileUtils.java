@@ -25,14 +25,11 @@ import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.model.enums.CompressionLevel;
 import net.lingala.zip4j.model.enums.CompressionMethod;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
 import org.rauschig.jarchivelib.ArchiveFormat;
 import org.rauschig.jarchivelib.Archiver;
 import org.rauschig.jarchivelib.ArchiverFactory;
 import org.rauschig.jarchivelib.CompressionType;
 import org.springframework.core.io.ClassPathResource;
-import org.zeroturnaround.exec.ProcessExecutor;
-import org.zeroturnaround.exec.stream.slf4j.Slf4jStream;
 
 import javax.swing.*;
 import javax.xml.bind.DatatypeConverter;
@@ -48,7 +45,6 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -217,42 +213,6 @@ public class FileUtils {
             System.exit(1);
         }
 
-        return false;
-    }
-
-    /**
-     * @param dmgFile
-     * @return
-     */
-    public static boolean extractBlenderFromDMG(String dmgFile, String destination) {
-        if (SystemUtils.IS_OS_MAC) {
-            log.info("Copying contents of " + dmgFile + " to " + destination);
-            try {
-                int exit = new ProcessExecutor().command("hdiutil", "mount", dmgFile)
-                        .redirectOutput(Slf4jStream.ofCaller().asDebug()).execute().getExitValue();
-                if (exit > 0) {
-                    return false;
-                }
-                if (dmgFile.contains("2.79b")) {
-                    exit = new ProcessExecutor().command("cp", "-R", "/Volumes/Blender/Blender/blender.app", destination)
-                            .redirectOutput(Slf4jStream.ofCaller().asDebug()).execute().getExitValue();
-                } else {
-                    exit = new ProcessExecutor().command("cp", "-R", "/Volumes/Blender/Blender.app", destination)
-                            .redirectOutput(Slf4jStream.ofCaller().asDebug()).execute().getExitValue();
-                }
-
-                if (exit > 0) {
-                    return false;
-                }
-                exit = new ProcessExecutor().command("hdiutil", "unmount", "/Volumes/Blender/")
-                        .redirectOutput(Slf4jStream.ofCaller().asDebug()).execute().getExitValue();
-                new File(dmgFile).delete();
-                return exit <= 0;
-            } catch (IOException | InterruptedException | TimeoutException e) {
-                log.error(e.getMessage());
-                log.error(Throwables.getStackTraceAsString(e));
-            }
-        }
         return false;
     }
 

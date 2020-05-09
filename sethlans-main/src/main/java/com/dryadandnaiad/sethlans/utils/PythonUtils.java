@@ -51,7 +51,7 @@ public class PythonUtils {
                 case WINDOWS_64:
                     log.info("Downloading Python binary for Windows.");
                     filename = WINDOWS_ARCHIVE;
-                    inputStream = new ResourcesUtils(PYTHON_FILES + filename).getResource();
+                    inputStream = new ResourceUtils(PYTHON_FILES + filename).getResource();
                     path = binaryDir + File.separator + filename;
                     Files.copy(inputStream, Paths.get(path));
                     inputStream.close();
@@ -60,7 +60,7 @@ public class PythonUtils {
                 case LINUX_64:
                     log.info("Downloading Python binary for Linux.");
                     filename = LINUX_ARCHIVE;
-                    inputStream = new ResourcesUtils(PYTHON_FILES + filename).getResource();
+                    inputStream = new ResourceUtils(PYTHON_FILES + filename).getResource();
                     path = binaryDir + File.separator + filename;
                     Files.copy(inputStream, Paths.get(path));
                     inputStream.close();
@@ -69,7 +69,7 @@ public class PythonUtils {
                 case MACOS:
                     log.info("Downloading Python binary for MacOS.");
                     filename = MACOS_ARCHIVE;
-                    inputStream = new ResourcesUtils(PYTHON_FILES + filename).getResource();
+                    inputStream = new ResourceUtils(PYTHON_FILES + filename).getResource();
                     path = binaryDir + File.separator + filename;
                     Files.copy(inputStream, Paths.get(path));
                     inputStream.close();
@@ -88,7 +88,7 @@ public class PythonUtils {
     public static boolean copyAndExtractScripts(String scriptsDir) {
         String path = scriptsDir + File.separator + SCRIPTS_FILE;
         try {
-            InputStream inputStream = new ResourcesUtils(SCRIPTS).getResource();
+            InputStream inputStream = new ResourceUtils(SCRIPTS).getResource();
             Files.copy(inputStream, Paths.get(path));
             inputStream.close();
             return FileUtils.extractArchive(path, scriptsDir);

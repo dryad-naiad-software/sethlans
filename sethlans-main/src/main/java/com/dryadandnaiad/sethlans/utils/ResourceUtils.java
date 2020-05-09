@@ -26,11 +26,11 @@ import java.nio.file.NoSuchFileException;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public class ResourcesUtils {
+public class ResourceUtils {
 
     private final String filePath;
 
-    public ResourcesUtils(String filePath) {
+    public ResourceUtils(String filePath) {
         this.filePath = filePath;
         if (filePath.startsWith("/")) {
             throw new IllegalArgumentException("Only relative paths are supported, remove the leading slash");

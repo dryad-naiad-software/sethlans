@@ -193,7 +193,7 @@ public class QueryUtils {
     public static String getVersion() {
         val properties = new Properties();
         try {
-            properties.load(new InputStreamReader(new ResourcesUtils("git.properties").getResource(),
+            properties.load(new InputStreamReader(new ResourceUtils("git.properties").getResource(),
                     StandardCharsets.UTF_8));
             String buildNumber = String.format("%04d",
                     Integer.parseInt(properties.getProperty("git.total.commit.count")));
@@ -253,7 +253,7 @@ public class QueryUtils {
      */
     public static String getStringFromResource(String resourceLocation) {
         try {
-            return IOUtils.toString(new ResourcesUtils(resourceLocation).getResource(),
+            return IOUtils.toString(new ResourceUtils(resourceLocation).getResource(),
                     StandardCharsets.UTF_8.name());
         } catch (IOException e) {
             log.error("Resource cannot be read. " + e.getMessage());

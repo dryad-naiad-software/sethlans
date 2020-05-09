@@ -15,21 +15,26 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.utils;
+package com.dryadandnaiad.sethlans.blender;
 
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.OS;
 import com.dryadandnaiad.sethlans.models.blender.BlendFile;
 import com.dryadandnaiad.sethlans.models.blender.BlenderInstallers;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
+import com.dryadandnaiad.sethlans.utils.DownloadFile;
+import com.dryadandnaiad.sethlans.utils.FileUtils;
+import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.SystemUtils;
 import org.springframework.util.FileSystemUtils;
 import org.zeroturnaround.exec.InvalidExitValueException;
 import org.zeroturnaround.exec.ProcessExecutor;
+import org.zeroturnaround.exec.stream.slf4j.Slf4jStream;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -215,7 +220,7 @@ public class BlenderUtils {
         var directoryName = new File(binaryDir +
                 File.separator + "blender-" + version + "-" + os.getName().toLowerCase());
         if (os == OS.MACOS) {
-            if (FileUtils.extractBlenderFromDMG(fileName, tempDirectory.toString())) {
+            if (extractBlenderFromDMG(fileName, tempDirectory.toString())) {
                 var directories = FileUtils.listDirectories(tempDirectory.toString());
                 if (new File(tempDirectory + File.separator + directories.iterator().next())
                         .renameTo(directoryName)) {
@@ -334,4 +339,39 @@ public class BlenderUtils {
     }
 
 
+    /**
+     * @param dmgFile
+     * @return
+     */
+    public static boolean extractBlenderFromDMG(String dmgFile, String destination) {
+        if (SystemUtils.IS_OS_MAC) {
+            log.info("Copying contents of " + dmgFile + " to " + destination);
+            try {
+                int exit = new ProcessExecutor().command("hdiutil", "mount", dmgFile)
+                        .redirectOutput(Slf4jStream.ofCaller().asDebug()).execute().getExitValue();
+                if (exit > 0) {
+                    return false;
+                }
+                if (dmgFile.contains("2.79b")) {
+                    exit = new ProcessExecutor().command("cp", "-R", "/Volumes/Blender/Blender/blender.app", destination)
+                            .redirectOutput(Slf4jStream.ofCaller().asDebug()).execute().getExitValue();
+                } else {
+                    exit = new ProcessExecutor().command("cp", "-R", "/Volumes/Blender/Blender.app", destination)
+                            .redirectOutput(Slf4jStream.ofCaller().asDebug()).execute().getExitValue();
+                }
+
+                if (exit > 0) {
+                    return false;
+                }
+                exit = new ProcessExecutor().command("hdiutil", "unmount", "/Volumes/Blender/")
+                        .redirectOutput(Slf4jStream.ofCaller().asDebug()).execute().getExitValue();
+                new File(dmgFile).delete();
+                return exit <= 0;
+            } catch (IOException | InterruptedException | TimeoutException e) {
+                log.error(e.getMessage());
+                log.error(Throwables.getStackTraceAsString(e));
+            }
+        }
+        return false;
+    }
 }

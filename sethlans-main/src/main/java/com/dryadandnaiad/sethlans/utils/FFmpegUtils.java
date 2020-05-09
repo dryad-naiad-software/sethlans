@@ -64,7 +64,7 @@ public class FFmpegUtils {
                 case WINDOWS_64:
                     log.info("Downloading FFmpeg binary for Windows.");
                     filename = WINDOWS_ARCHIVE;
-                    inputStream = new ResourcesUtils(FFMPEG_FILES + filename).getResource();
+                    inputStream = new ResourceUtils(FFMPEG_FILES + filename).getResource();
                     path = binaryDir + File.separator + filename;
                     Files.copy(inputStream, Paths.get(path));
                     inputStream.close();
@@ -73,7 +73,7 @@ public class FFmpegUtils {
                 case LINUX_64:
                     log.info("Downloading FFmpeg binary for Linux.");
                     filename = LINUX_ARCHIVE;
-                    inputStream = new ResourcesUtils(FFMPEG_FILES + filename).getResource();
+                    inputStream = new ResourceUtils(FFMPEG_FILES + filename).getResource();
                     path = binaryDir + File.separator + filename;
                     Files.copy(inputStream, Paths.get(path));
                     inputStream.close();
@@ -82,7 +82,7 @@ public class FFmpegUtils {
                 case MACOS:
                     log.info("Downloading FFmpeg binary for MacOS.");
                     filename = MACOS_ARCHIVE;
-                    inputStream = new ResourcesUtils(FFMPEG_FILES + filename).getResource();
+                    inputStream = new ResourceUtils(FFMPEG_FILES + filename).getResource();
                     path = binaryDir + File.separator + filename;
                     Files.copy(inputStream, Paths.get(path));
                     inputStream.close();

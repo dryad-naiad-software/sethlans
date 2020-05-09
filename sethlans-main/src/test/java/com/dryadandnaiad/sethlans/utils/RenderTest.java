@@ -17,6 +17,8 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.blender.BlenderScript;
+import com.dryadandnaiad.sethlans.blender.BlenderUtils;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
@@ -93,7 +95,7 @@ public class RenderTest {
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.CPU, BlenderEngine.BLENDER_EEVEE, blenderExecutable);
         renderTask.getScriptInfo().setCores(4);
-        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScript.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
         assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
@@ -124,7 +126,7 @@ public class RenderTest {
                 .partMinY(0.5)
                 .partMaxY(1.0).build();
         renderTask.setFrameInfo(frameInfo);
-        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScript.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
         assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
@@ -146,7 +148,7 @@ public class RenderTest {
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.CPU, BlenderEngine.CYCLES, blenderExecutable);
         renderTask.getScriptInfo().setCores(4);
-        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScript.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
         assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
@@ -167,7 +169,7 @@ public class RenderTest {
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.CPU, BlenderEngine.BLENDER_RENDER, blenderExecutable);
         renderTask.getScriptInfo().setCores(4);
-        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScript.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
         assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
@@ -188,7 +190,7 @@ public class RenderTest {
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.CPU, BlenderEngine.CYCLES, blenderExecutable);
         renderTask.getScriptInfo().setCores(4);
-        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScript.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
         assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
@@ -213,7 +215,7 @@ public class RenderTest {
         var finalFile = new File(renderTask.getTaskDir() + File.separator +
                 QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(), renderTask.getProjectID())
                 + "-000" + renderTask.getFrameInfo().getFrameNumber() + ".exr");
-        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScript.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
         assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
@@ -235,7 +237,7 @@ public class RenderTest {
         var finalFile = new File(renderTask.getTaskDir() + File.separator +
                 QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(), renderTask.getProjectID())
                 + "-000" + renderTask.getFrameInfo().getFrameNumber() + ".tif");
-        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScript.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
         assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
@@ -263,7 +265,7 @@ public class RenderTest {
                 .partMinY(0.0)
                 .partMaxY(0.5).build();
         renderTask.setFrameInfo(frameInfo);
-        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScript.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
         assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));
@@ -291,7 +293,7 @@ public class RenderTest {
                 ComputeOn.GPU, BlenderEngine.CYCLES, blenderExecutable);
         renderTask.getScriptInfo().setDeviceIDs(deviceIDs);
         renderTask.getScriptInfo().setTaskTileSize(tileSize);
-        assertThat(BlenderScriptUtils.writeRenderScript(renderTask)).isTrue();
+        assertThat(BlenderScript.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
         assertThat(result).isNotNull();
         log.info("Task completed in " + QueryUtils.getTimeFromMills(result));

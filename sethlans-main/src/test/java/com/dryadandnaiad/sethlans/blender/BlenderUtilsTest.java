@@ -15,11 +15,13 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.utils;
+package com.dryadandnaiad.sethlans.blender;
 
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.OS;
 import com.dryadandnaiad.sethlans.testutils.TestFileUtils;
+import com.dryadandnaiad.sethlans.utils.PythonUtils;
+import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;

@@ -17,6 +17,7 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.blender.BlenderUtils;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -151,7 +152,7 @@ class FileUtilsTest {
         val dmgURL = "https://download.blender.org/release/Blender2.82/blender-2.82-macOS.dmg";
         DownloadFile.downloadFileWithResume(dmgURL, dmgName);
         var extractDirectory = new File(TEST_DIRECTORY + File.separator + "Blender.app");
-        assertThat(FileUtils.extractBlenderFromDMG(dmgName, TEST_DIRECTORY.toString())).isTrue();
+        assertThat(BlenderUtils.extractBlenderFromDMG(dmgName, TEST_DIRECTORY.toString())).isTrue();
         assertThat(new File(dmgName)).doesNotExist();
         assertThat(extractDirectory).exists();
         FileSystemUtils.deleteRecursively(extractDirectory);

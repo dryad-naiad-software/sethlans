@@ -15,7 +15,7 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.utils;
+package com.dryadandnaiad.sethlans.blender;
 
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
@@ -38,7 +38,7 @@ import java.util.List;
  * Project: sethlans
  */
 @Slf4j
-public class BlenderScriptUtils {
+public class BlenderScript {
 
 
     public static boolean writeRenderScript(RenderTask renderTask) {
