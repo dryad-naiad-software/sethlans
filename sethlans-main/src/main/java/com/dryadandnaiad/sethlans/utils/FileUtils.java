@@ -225,6 +225,7 @@ public class FileUtils {
      * @return
      */
     public static boolean extractBlenderFromDMG(String dmgFile, String destination) {
+
         if (SystemUtils.IS_OS_MAC) {
             try {
                 int exit = new ProcessExecutor().command("hdiutil", "mount", dmgFile)
@@ -232,8 +233,14 @@ public class FileUtils {
                 if (exit > 0) {
                     return false;
                 }
-                exit = new ProcessExecutor().command("cp", "-R", "/Volumes/Blender/Blender.app", destination)
-                        .redirectOutput(Slf4jStream.ofCaller().asInfo()).execute().getExitValue();
+                if (dmgFile.contains("2.79b")) {
+                    exit = new ProcessExecutor().command("cp", "-R", "/Volumes/Blender/Blender/blender.app", destination)
+                            .redirectOutput(Slf4jStream.ofCaller().asInfo()).execute().getExitValue();
+                } else {
+                    exit = new ProcessExecutor().command("cp", "-R", "/Volumes/Blender/Blender.app", destination)
+                            .redirectOutput(Slf4jStream.ofCaller().asInfo()).execute().getExitValue();
+                }
+
                 if (exit > 0) {
                     return false;
                 }
