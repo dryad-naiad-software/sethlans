@@ -219,6 +219,7 @@ public class BlenderUtils {
                 var directories = FileUtils.listDirectories(tempDirectory.toString());
                 if (new File(tempDirectory + File.separator + directories.iterator().next())
                         .renameTo(directoryName)) {
+                    log.info("Blender " + version + " installed in " + directoryName);
                     return FileSystemUtils.deleteRecursively(tempDirectory);
                 }
             }
@@ -227,6 +228,7 @@ public class BlenderUtils {
                 var directories = FileUtils.listDirectories(tempDirectory.toString());
                 if (new File(tempDirectory + File.separator + directories.iterator().next())
                         .renameTo(directoryName)) {
+                    log.info("Blender " + version + " installed in " + directoryName);
                     return FileSystemUtils.deleteRecursively(tempDirectory);
                 }
             }
