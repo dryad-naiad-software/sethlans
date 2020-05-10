@@ -17,25 +17,18 @@
 
 package com.dryadandnaiad.sethlans.models.blender.frames;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
- * File created by Mario Estrella on 4/1/2020.
+ * File created by Mario Estrella on 5/9/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
 public class Part {
-    private int partNumber;
-    private boolean processed;
-    private Double partPositionMinY;
-    private Double partPositionMaxY;
-    private Double partPositionMinX;
-    private Double partPositionMaxX;
-    private String partFilename;
+    private double minX;
+    private double maxX;
+    private double minY;
+    private double maxY;
 }

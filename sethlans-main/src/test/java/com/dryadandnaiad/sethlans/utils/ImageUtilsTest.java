@@ -15,26 +15,26 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.models.blender.frames;
+package com.dryadandnaiad.sethlans.utils;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
 
 /**
- * File created by Mario Estrella on 4/1/2020.
+ * File created by Mario Estrella on 5/9/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
-public class Frame {
-    private String frameFileName;
-    private Integer frameNumber;
-    private boolean combined;
-    private String storedDir;
-    private String fileExtension;
-    private Integer numberOfParts;
+@Slf4j
+class ImageUtilsTest {
+
+    @Test
+    void createThumbnail() {
+    }
+
+    @Test
+    void configurePartCoordinates() {
+        log.debug(ImageUtils.configurePartCoordinates(4) + "");
+    }
 }
