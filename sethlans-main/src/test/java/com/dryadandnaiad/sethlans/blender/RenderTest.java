@@ -15,10 +15,8 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.utils;
+package com.dryadandnaiad.sethlans.blender;
 
-import com.dryadandnaiad.sethlans.blender.BlenderScript;
-import com.dryadandnaiad.sethlans.blender.BlenderUtils;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
@@ -26,6 +24,7 @@ import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskFrameInfo;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskScriptInfo;
 import com.dryadandnaiad.sethlans.testutils.TestFileUtils;
+import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.*;
@@ -82,7 +81,7 @@ public class RenderTest {
 
     @AfterEach
     void tearDown() {
-        FileSystemUtils.deleteRecursively(TEST_DIRECTORY);
+        //FileSystemUtils.deleteRecursively(TEST_DIRECTORY);
     }
 
     @Test
@@ -203,7 +202,7 @@ public class RenderTest {
     }
 
     @Test
-    void executeRenderTaskOpenEXR() {
+    void executeRenderTaskHDR() {
         var file1 = "bmw27_gpu.blend";
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
         var version = "2.82a";
@@ -211,10 +210,10 @@ public class RenderTest {
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.CPU, BlenderEngine.CYCLES, blenderExecutable);
         renderTask.getScriptInfo().setCores(4);
-        renderTask.getScriptInfo().setImageOutputFormat(ImageOutputFormat.OPEN_EXR);
+        renderTask.getScriptInfo().setImageOutputFormat(ImageOutputFormat.HDR);
         var finalFile = new File(renderTask.getTaskDir() + File.separator +
                 QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(), renderTask.getProjectID())
-                + "-000" + renderTask.getFrameInfo().getFrameNumber() + ".exr");
+                + "-000" + renderTask.getFrameInfo().getFrameNumber() + ".hdr");
         assertThat(BlenderScript.writeRenderScript(renderTask)).isTrue();
         var result = BlenderUtils.executeRenderTask(renderTask, true);
         assertThat(result).isNotNull();

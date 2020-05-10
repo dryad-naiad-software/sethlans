@@ -22,8 +22,6 @@ import com.dryadandnaiad.sethlans.models.blender.frames.Part;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
-import org.openimaj.image.ImageUtilities;
-import org.openimaj.image.MBFImage;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -44,7 +42,7 @@ import java.util.List;
 public class ImageUtils {
 
     public static boolean combineParts(Project project, Frame frame) {
-        var images = new ArrayList<MBFImage>();
+        var images = new ArrayList<BufferedImage>();
         var numberOfParts = project.getProjectSettings().getPartsPerFrame();
         var imageFormat = project.getProjectSettings().getImageSettings().getImageOutputFormat();
         var filenameBase = frame.getFrameFileName();
@@ -52,87 +50,42 @@ public class ImageUtils {
         try {
 
             for (int i = 0; i < numberOfParts; i++) {
-                images.add(ImageUtilities.readMBF(new File(partDirectory + File.separator + filenameBase + "-" + i + "." + imageFormat.name().toLowerCase())));
+                images.add(ImageIO.read(new File(partDirectory + File.separator +
+                        filenameBase + "-" + i + "." + imageFormat.name().toLowerCase())));
             }
+
+            int squareRootOfParts = (int) Math.sqrt(numberOfParts);
+
+            BufferedImage concatImage = new BufferedImage(
+                    images.get(0).getWidth() * squareRootOfParts, images.get(0).getHeight() * squareRootOfParts,
+                    BufferedImage.TYPE_INT_ARGB);
+            Graphics g = concatImage.getGraphics();
+
+            int x = 0;
+            int y = 0;
+            for (BufferedImage image : images) {
+                g.drawImage(image, x, y, null);
+                x += image.getWidth();
+                if (x >= concatImage.getWidth()) {
+                    x = 0;
+                    y += image.getHeight();
+                }
+            }
+
+            ImageIO.write(concatImage, imageFormat.name().toUpperCase(),
+                    new File(frame.getFrameFileName() + "." + imageFormat.name().toLowerCase()));
+
+            return true;
+
+
         } catch (IOException e) {
             log.error("Unable to read image.");
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
             return false;
         }
-
-        return false;
     }
 
-//    public static boolean combineParts(BlenderProject blenderProject, int frameNumber) {
-//        List<String> partCleanup = new ArrayList<>();
-//        List<BufferedImage> images = new ArrayList<>();
-//        String frameFilename = null;
-//        String storedDir = null;
-//        String fileExtension = null;
-//        String plainFilename = null;
-//        LOG.debug("Combining images");
-//        int errorCount = 0;
-//        for (BlenderFramePart blenderFramePart : blenderProject.getFramePartList()) {
-//            if (frameNumber == blenderFramePart.getFrameNumber()) {
-//                try {
-//                    String file = blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension();
-//                    LOG.debug("Reading file " + file);
-//                    images.add(ImageIO.read(new File(file)));
-//                    partCleanup.add(blenderFramePart.getStoredDir() + blenderFramePart.getPartFilename() + "." + blenderFramePart.getFileExtension());
-//                    frameFilename = blenderFramePart.getStoredDir() + blenderFramePart.getFrameFileName() + "." + blenderFramePart.getFileExtension();
-//                    storedDir = blenderFramePart.getStoredDir();
-//                    fileExtension = blenderFramePart.getFileExtension();
-//                    plainFilename = blenderFramePart.getFrameFileName();
-//                } catch (IOException e) {
-//                    LOG.error("Unable to read image.");
-//                    errorCount++;
-//                    LOG.error(Throwables.getStackTraceAsString(e));
-//                }
-//            }
-//        }
-//        try {
-//            int squareRootOfParts = (int) Math.sqrt(blenderProject.getPartsPerFrame());
-//
-//            BufferedImage concatImage = new BufferedImage(
-//                    images.get(0).getWidth() * squareRootOfParts, images.get(0).getHeight() * squareRootOfParts,
-//                    BufferedImage.TYPE_INT_ARGB);
-//            Graphics g = concatImage.getGraphics();
-//
-//            int x = 0;
-//            int y = 0;
-//            for (BufferedImage image : images) {
-//                g.drawImage(image, x, y, null);
-//                x += image.getWidth();
-//                if (x >= concatImage.getWidth()) {
-//                    x = 0;
-//                    y += image.getHeight();
-//                }
-//            }
-//
-//            ImageIO.write(concatImage, fileExtension.toUpperCase(), new File(frameFilename));
-//            FrameFileUpdateItem newFrameUpdate = new FrameFileUpdateItem();
-//            newFrameUpdate.setProjectUUID(blenderProject.getProjectUUID());
-//            newFrameUpdate.setFrameFileName(frameFilename);
-//            newFrameUpdate.setCurrentFrameThumbnail(createThumbnail(frameFilename, storedDir, plainFilename, fileExtension));
-//            frameFileUpdateDatabaseService.saveOrUpdate(newFrameUpdate);
-//
-//        } catch (IOException e) {
-//            LOG.error(Throwables.getStackTraceAsString(e));
-//        } catch (IndexOutOfBoundsException e) {
-//            LOG.error("Possible node idle collision");
-//            LOG.error(Throwables.getStackTraceAsString(e));
-//        }
-//
-//
-//        if (errorCount == 0) {
-//            LOG.debug("Images combined successfully, deleting parts...");
-//            deleteParts(partCleanup);
-//        } else {
-//            LOG.debug("Some images are not complete, will reattempt to combine them.");
-//        }
-//        return true;
-//    }
 
     public static String createThumbnail(String frameImage, String directory,
                                          String frameFilename, String fileExtension) {

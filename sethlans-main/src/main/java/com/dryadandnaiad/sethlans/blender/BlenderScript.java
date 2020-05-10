@@ -225,10 +225,9 @@ public class BlenderScript {
                 scriptWriter.println("scene.render.image_settings.color_depth = '16'");
             }
 
-            if (renderTask.getScriptInfo().getImageOutputFormat().equals(ImageOutputFormat.OPEN_EXR)) {
-                scriptWriter.println("scene.render.image_settings.file_format = 'OPEN_EXR'");
-                scriptWriter.println("scene.render.image_settings.color_mode = 'RGBA'");
-                scriptWriter.println("scene.render.image_settings.exr_codec = 'ZIP'");
+            if (renderTask.getScriptInfo().getImageOutputFormat().equals(ImageOutputFormat.HDR)) {
+                scriptWriter.println("scene.render.image_settings.file_format = 'HDR'");
+                scriptWriter.println("scene.render.image_settings.color_mode = 'RGB'");
                 scriptWriter.println("scene.render.image_settings.color_depth = '32'");
             }
 
