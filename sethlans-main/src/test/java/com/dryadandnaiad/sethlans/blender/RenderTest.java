@@ -81,7 +81,7 @@ public class RenderTest {
 
     @AfterEach
     void tearDown() {
-        //FileSystemUtils.deleteRecursively(TEST_DIRECTORY);
+        FileSystemUtils.deleteRecursively(TEST_DIRECTORY);
     }
 
     @Test
