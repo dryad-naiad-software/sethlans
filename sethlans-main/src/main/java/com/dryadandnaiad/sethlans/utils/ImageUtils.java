@@ -17,9 +17,13 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.models.blender.frames.Part;
+import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
+import org.openimaj.image.ImageUtilities;
+import org.openimaj.image.MBFImage;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -38,6 +42,27 @@ import java.util.List;
  */
 @Slf4j
 public class ImageUtils {
+
+    public static boolean combineParts(Project project, Frame frame) {
+        var images = new ArrayList<MBFImage>();
+        var numberOfParts = project.getProjectSettings().getPartsPerFrame();
+        var imageFormat = project.getProjectSettings().getImageSettings().getImageOutputFormat();
+        var filenameBase = frame.getFrameFileName();
+        var partDirectory = frame.getStoredDir() + File.separator + "parts";
+        try {
+
+            for (int i = 0; i < numberOfParts; i++) {
+                images.add(ImageUtilities.readMBF(new File(partDirectory + File.separator + filenameBase + "-" + i + "." + imageFormat.name().toLowerCase())));
+            }
+        } catch (IOException e) {
+            log.error("Unable to read image.");
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            return false;
+        }
+
+        return false;
+    }
 
 //    public static boolean combineParts(BlenderProject blenderProject, int frameNumber) {
 //        List<String> partCleanup = new ArrayList<>();

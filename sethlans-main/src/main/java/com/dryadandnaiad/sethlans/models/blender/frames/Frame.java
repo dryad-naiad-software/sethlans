@@ -36,5 +36,4 @@ public class Frame {
     private boolean combined;
     private String storedDir;
     private String fileExtension;
-    private Integer numberOfParts;
 }
