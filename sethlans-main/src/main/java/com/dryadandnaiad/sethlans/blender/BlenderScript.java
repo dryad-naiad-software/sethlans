@@ -269,20 +269,22 @@ public class BlenderScript {
         scriptWriter.println();
         scriptWriter.println("devices = cycles_prefs.get_devices()");
         scriptWriter.println("cuda_devices = devices[0]");
+        scriptWriter.println("selected_id = []");
         scriptWriter.println("selected_cuda = []");
         for (String id : strippedIDs) {
-            scriptWriter.println("selected_cuda.append(" + id + ")");
+            scriptWriter.println("selected_id.append(" + id + ")");
         }
         scriptWriter.println();
-        scriptWriter.println("for i in range(len(selected_cuda)):");
-        scriptWriter.println("\tif(cuda_devices[i] == selected_cuda[i]):");
-        scriptWriter.println("\t\tcuda_devices[i].use = True");
+        scriptWriter.println("for i in range(len(selected_id)):");
+        scriptWriter.println("\tcuda_devices[i].use = True");
+        scriptWriter.println("\tselected_cuda.append(cuda_devices[i])");
         scriptWriter.println();
         scriptWriter.println("unselected_cuda = list(set(cuda_devices) - set(selected_cuda))");
         scriptWriter.println();
-        scriptWriter.println("for i in range(len(unselected_cuda)):");
-        scriptWriter.println("\tif(cuda_devices[i] == unselected_cuda[i]):");
-        scriptWriter.println("\t\tcuda_devices[i].use = False");
+        scriptWriter.println("if len(unselected_cuda) > 0:");
+        scriptWriter.println("\tfor i in range(len(unselected_cuda)):");
+        scriptWriter.println("\t\tif(cuda_devices[i] == unselected_cuda[i]):");
+        scriptWriter.println("\t\t\tcuda_devices[i].use = False");
         scriptWriter.println();
         scriptWriter.println("for dev in devices[1]:");
         scriptWriter.println("\tdev.use = False");
@@ -296,19 +298,21 @@ public class BlenderScript {
         scriptWriter.println("devices = cycles_prefs.get_devices()");
         scriptWriter.println("opencl_devices = devices[1]");
         scriptWriter.println("selected_opencl = []");
+        scriptWriter.println("selected_id = []");
         for (String id : strippedIDs) {
-            scriptWriter.println("selected_opencl.append(" + id + ")");
+            scriptWriter.println("selected_id.append(" + id + ")");
         }
         scriptWriter.println();
-        scriptWriter.println("for i in range(len(selected_opencl)):");
-        scriptWriter.println("\tif(opencl_devices[i] == selected_opencl[i]):");
-        scriptWriter.println("\t\topencl_devices[i].use = True");
+        scriptWriter.println("for i in range(len(selected_id)):");
+        scriptWriter.println("\topencl_devices[i].use = True");
+        scriptWriter.println("\tselected_opencl.append(opencl_devices[i])");
         scriptWriter.println();
         scriptWriter.println("unselected_opencl = list(set(opencl_devices) - set(selected_opencl))");
         scriptWriter.println();
-        scriptWriter.println("for i in range(len(unselected_opencl)):");
-        scriptWriter.println("\tif(opencl_devices[i] == unselected_opencl[i]):");
-        scriptWriter.println("\t\topencl_devices[i].use = False");
+        scriptWriter.println("if len(unselected_opencl) > 0:");
+        scriptWriter.println("\tfor i in range(len(unselected_opencl)):");
+        scriptWriter.println("\t\tif(opencl_devices[i] == unselected_opencl[i]):");
+        scriptWriter.println("\t\t\topencl_devices[i].use = False");
         scriptWriter.println();
         scriptWriter.println("for dev in devices[0]:");
         scriptWriter.println("\tdev.use = False");

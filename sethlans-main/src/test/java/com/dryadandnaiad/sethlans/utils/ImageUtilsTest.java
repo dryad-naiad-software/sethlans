@@ -18,7 +18,13 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.SystemUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.FileSystemUtils;
+
+import java.io.File;
 
 /**
  * File created by Mario Estrella on 5/9/2020.
@@ -29,12 +35,32 @@ import org.junit.jupiter.api.Test;
 @Slf4j
 class ImageUtilsTest {
 
+    static File TEST_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + "testing");
+
+
+    @BeforeEach
+    void setUp() {
+        TEST_DIRECTORY.mkdirs();
+    }
+
+    @AfterEach
+    void tearDown() {
+        FileSystemUtils.deleteRecursively(TEST_DIRECTORY);
+    }
+
     @Test
     void createThumbnail() {
     }
 
     @Test
     void configurePartCoordinates() {
-        log.debug(ImageUtils.configurePartCoordinates(4) + "");
+        log.debug(ImageUtils.configurePartCoordinates(9) + "");
     }
+
+    @Test
+    void combineParts() {
+
+    }
+
+
 }

@@ -17,6 +17,7 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.models.blender.frames.Part;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
@@ -87,42 +88,44 @@ public class ImageUtils {
     }
 
 
-    public static String createThumbnail(String frameImage, String directory,
-                                         String frameFilename, String fileExtension) {
+    public static boolean createThumbnail(Frame frame, ImageOutputFormat imageOutputFormat) {
         try {
-            BufferedImage image = ImageIO.read(new File(frameImage));
-            BufferedImage thumbnail = new BufferedImage(128, 101, image.getType());
+            BufferedImage image = ImageIO.read(new File(frame.getStoredDir()
+                    + File.separator + frame.getFrameFileName() + "." + frame.getFileExtension()));
+            BufferedImage thumbnail = new BufferedImage(128, 72, image.getType());
             Graphics2D g = thumbnail.createGraphics();
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
                     RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-            g.drawImage(image, 0, 0, 128, 101, 0, 0, image.getWidth(),
+            g.drawImage(image, 0, 0, 128, 72, 0, 0, image.getWidth(),
                     image.getHeight(), null);
             g.dispose();
-            ImageIO.write(thumbnail, fileExtension.toUpperCase(), new File(directory + frameFilename +
-                    "-thumbnail" + "." + fileExtension));
+            ImageIO.write(thumbnail, imageOutputFormat.name().toUpperCase(), new File(frame.getStoredDir()
+                    + File.separator + frame.getFrameFileName() + "-thumbnail" + "." + frame.getFileExtension()));
+            return true;
         } catch (IOException e) {
+            log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
+            return false;
         }
 
-        return directory + frameFilename + "-thumbnail" + "." + fileExtension;
     }
 
     public static List<Part> configurePartCoordinates(int partsPerFrame) {
-        double sqrtOfPart = Math.sqrt(partsPerFrame);
-        int endRange = (int) sqrtOfPart;
         List<Part> partCoordinatesList = new ArrayList<>();
-        for (int r = 0; r < endRange; r++) {
-            int row = r + 1;
-            for (int c = 0; c < endRange; c++) {
-                int col = c + 1;
+        var partsPerRow = (int) Math.sqrt(partsPerFrame);
+        var slices = 1.0 / partsPerRow;
+
+        for (int y = 0; y < partsPerRow; y++) {
+            for (int x = 0; x < partsPerRow; x++) {
                 Part partCoordinates = new Part();
-                partCoordinates.setMinX((col - 1) / sqrtOfPart);
-                partCoordinates.setMaxX(col / sqrtOfPart);
-                partCoordinates.setMaxY((sqrtOfPart - row) / sqrtOfPart);
-                partCoordinates.setMaxY((sqrtOfPart - row + 1) / sqrtOfPart);
+                partCoordinates.setMinX(slices * x);
+                partCoordinates.setMaxX(slices * (x + 1));
+                partCoordinates.setMinY(1.0 - (slices * (y + 1)));
+                partCoordinates.setMaxY(1.0 - (slices * y));
                 partCoordinatesList.add(partCoordinates);
             }
         }
+
         log.debug("Part Coordinate List generated");
         return partCoordinatesList;
     }
