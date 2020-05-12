@@ -152,7 +152,6 @@ public class QueryUtils {
             availableMethods.add(NodeType.CPU_GPU);
             availableMethods.add(NodeType.GPU);
             availableMethods.add(NodeType.CPU);
-            availableMethods.add(NodeType.HYBRID);
         } else {
             availableMethods.add(NodeType.CPU);
         }
