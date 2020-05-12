@@ -19,6 +19,7 @@ package com.dryadandnaiad.sethlans.blender;
 
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
+import com.dryadandnaiad.sethlans.enums.DeviceType;
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskFrameInfo;
@@ -311,8 +312,6 @@ public class RenderTest {
         var tileSize = 32;
         taskDir.mkdirs();
         var deviceIDs = new ArrayList<String>();
-        deviceIDs.add("CPU");
-
         var scriptInfo = TaskScriptInfo.builder()
                 .blenderEngine(engine)
                 .computeOn(computeOn)
@@ -321,6 +320,7 @@ public class RenderTest {
                 .taskResolutionY(1080)
                 .taskResPercentage(25)
                 .taskTileSize(tileSize)
+                .deviceType(DeviceType.CUDA)
                 .samples(10)
                 .imageOutputFormat(ImageOutputFormat.PNG)
                 .build();
