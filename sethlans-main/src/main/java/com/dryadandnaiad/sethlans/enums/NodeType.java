@@ -24,5 +24,5 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum NodeType {
-    CPU_GPU, CPU, GPU, HYBRID
+    CPU_GPU, CPU, GPU
 }

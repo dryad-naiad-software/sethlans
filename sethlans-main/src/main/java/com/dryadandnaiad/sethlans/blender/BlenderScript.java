@@ -98,23 +98,27 @@ public class BlenderScript {
                     scriptWriter.println();
                     scriptWriter.println("cycles_prefs = prefs.addons['cycles'].preferences");
                     if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.GPU)) {
-                        if (renderTask.getScriptInfo().getDeviceIDs().get(0).contains("CUDA")) {
-                            cyclesCUDA(scriptWriter, renderTask);
-                            break;
-                        }
-                        if (renderTask.getScriptInfo().getDeviceIDs().get(0).contains("OPENCL")) {
-                            cyclesOPENCL(scriptWriter, renderTask);
-                            break;
-                        }
-                        if (renderTask.getScriptInfo().getDeviceIDs().get(0).contains("OPTIX")) {
-                            if (renderTask.getBlenderVersion().contains("2.7")) {
+                        switch (renderTask.getScriptInfo().getDeviceType()) {
+                            case CUDA:
                                 cyclesCUDA(scriptWriter, renderTask);
-                            } else {
-                                cyclesOPTIX(scriptWriter, renderTask);
-                            }
-                            break;
+                                break;
+                            case OPENCL:
+                                cyclesOPENCL(scriptWriter, renderTask);
+                                break;
+                            case OPTIX:
+                                if (renderTask.getBlenderVersion().contains("2.7")) {
+                                    cyclesCUDA(scriptWriter, renderTask);
+                                } else {
+                                    cyclesOPTIX(scriptWriter, renderTask);
+                                }
+                                break;
+                            default:
+                                log.error("Unsupported DeviceType");
+                                return false;
                         }
-
+                    } else if (!renderTask.getBlenderVersion().contains("2.7") && renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.HYBRID)) {
+                        cyclesHybrid(scriptWriter, renderTask);
+                        break;
                     } else {
                         scriptWriter.println("cycles_prefs.compute_device_type = 'NONE'");
                     }
@@ -262,6 +266,10 @@ public class BlenderScript {
         var strippedIDs = stripDeviceTypeFromID(renderTask.getScriptInfo().getDeviceIDs());
     }
 
+    private static void cyclesHybrid(PrintStream scriptWriter, RenderTask renderTask) {
+
+    }
+
     private static void cyclesCUDA(PrintStream scriptWriter, RenderTask renderTask) {
         // Devices = 0, CUDA Devices
         var strippedIDs = stripDeviceTypeFromID(renderTask.getScriptInfo().getDeviceIDs());
@@ -275,16 +283,17 @@ public class BlenderScript {
             scriptWriter.println("selected_id.append(" + id + ")");
         }
         scriptWriter.println();
-        scriptWriter.println("for i in range(len(selected_id)):");
-        scriptWriter.println("\tcuda_devices[i].use = True");
-        scriptWriter.println("\tselected_cuda.append(cuda_devices[i])");
+        scriptWriter.println("for id in selected_id:");
+        scriptWriter.println("\tcuda_devices[id].use = True");
+        scriptWriter.println("\tselected_cuda.append(cuda_devices[id])");
         scriptWriter.println();
+        scriptWriter.println("print(\"Selected Devices: \" + str(selected_cuda))");
         scriptWriter.println("unselected_cuda = list(set(cuda_devices) - set(selected_cuda))");
+        scriptWriter.println("print(\"Unselected Devices: \" + str(unselected_cuda))");
         scriptWriter.println();
         scriptWriter.println("if len(unselected_cuda) > 0:");
-        scriptWriter.println("\tfor i in range(len(unselected_cuda)):");
-        scriptWriter.println("\t\tif(cuda_devices[i] == unselected_cuda[i]):");
-        scriptWriter.println("\t\t\tcuda_devices[i].use = False");
+        scriptWriter.println("\tfor unselected in unselected_cuda:");
+        scriptWriter.println("\t\tunselected.use = False");
         scriptWriter.println();
         scriptWriter.println("for dev in devices[1]:");
         scriptWriter.println("\tdev.use = False");
@@ -303,18 +312,19 @@ public class BlenderScript {
             scriptWriter.println("selected_id.append(" + id + ")");
         }
         scriptWriter.println();
-        scriptWriter.println("for i in range(len(selected_id)):");
-        scriptWriter.println("\topencl_devices[i].use = True");
-        scriptWriter.println("\tselected_opencl.append(opencl_devices[i])");
+        scriptWriter.println("for id in selected_id:");
+        scriptWriter.println("\topencl_devices[id].use = True");
+        scriptWriter.println("\tselected_opencl.append(opencl_devices[id])");
         scriptWriter.println();
+        scriptWriter.println("print(\"Selected Devices: \" + str(selected_opencl))");
         scriptWriter.println("unselected_opencl = list(set(opencl_devices) - set(selected_opencl))");
+        scriptWriter.println("print(\"Unselected Devices: \" + str(unselected_opencl))");
         scriptWriter.println();
         scriptWriter.println("if len(unselected_opencl) > 0:");
-        scriptWriter.println("\tfor i in range(len(unselected_opencl)):");
-        scriptWriter.println("\t\tif(opencl_devices[i] == unselected_opencl[i]):");
-        scriptWriter.println("\t\t\topencl_devices[i].use = False");
+        scriptWriter.println("\tfor unselected in unselected_opencl:");
+        scriptWriter.println("\t\tunselected.use = False");
         scriptWriter.println();
-        scriptWriter.println("for dev in devices[0]:");
+        scriptWriter.println("for dev in devices[1]:");
         scriptWriter.println("\tdev.use = False");
     }
 

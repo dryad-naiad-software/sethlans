@@ -26,6 +26,8 @@ import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * File created by Mario Estrella on 5/9/2020.
  * Dryad and Naiad Software LLC
@@ -54,7 +56,7 @@ class ImageUtilsTest {
 
     @Test
     void configurePartCoordinates() {
-        log.debug(ImageUtils.configurePartCoordinates(9) + "");
+        assertThat(ImageUtils.configurePartCoordinates(4)).hasSize(4);
     }
 
     @Test

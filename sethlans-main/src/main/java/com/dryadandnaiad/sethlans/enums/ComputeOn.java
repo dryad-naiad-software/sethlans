@@ -24,5 +24,5 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum ComputeOn {
-    CPU, GPU
+    CPU, GPU, HYBRID
 }

@@ -19,6 +19,7 @@ package com.dryadandnaiad.sethlans.models.blender.tasks;
 
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
+import com.dryadandnaiad.sethlans.enums.DeviceType;
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,6 +44,7 @@ public class TaskScriptInfo {
     private Integer samples;
     private Integer cores;
     private ComputeOn computeOn;
+    private DeviceType deviceType;
     private BlenderEngine blenderEngine;
     private ImageOutputFormat imageOutputFormat;
     private List<String> deviceIDs;
