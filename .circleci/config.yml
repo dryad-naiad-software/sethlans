@@ -18,7 +18,7 @@ jobs:
       MAVEN_OPTS: -Xmx3200m
 
     steps:
-      - run: sudo apt update || sudo apt update && sudo apt install -y libglu1 clinfo openjdk-11-jdk
+      - run: apt update && apt install -y libglu1 clinfo openjdk-11-jdk
 
       - checkout
 
