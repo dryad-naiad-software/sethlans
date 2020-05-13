@@ -25,7 +25,6 @@ import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 
@@ -50,7 +49,7 @@ class ImageUtilsTest {
 
     @AfterEach
     void tearDown() {
-        FileSystemUtils.deleteRecursively(TEST_DIRECTORY);
+        //FileSystemUtils.deleteRecursively(TEST_DIRECTORY);
     }
 
     @Test
@@ -140,6 +139,24 @@ class ImageUtilsTest {
                 .build();
         assertThat(ImageUtils.combineParts(frame, ImageOutputFormat.PNG)).isTrue();
 
+    }
+
+    @Test
+    void combine4PartsTIFF() {
+        var file1 = "tiff-4-parts.zip";
+        var partLocation = new File(TEST_DIRECTORY + File.separator + "frames" + File.separator + "parts");
+        partLocation.mkdirs();
+        TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "image_parts/" + file1, file1);
+        FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString());
+        var frame = Frame.builder()
+                .frameFileName("asamplep-4d6e-0001")
+                .fileExtension("tif")
+                .partsPerFrame(4)
+                .storedDir(TEST_DIRECTORY + File.separator + "frames")
+                .combined(false)
+                .frameNumber(1)
+                .build();
+        assertThat(ImageUtils.combineParts(frame, ImageOutputFormat.TIFF)).isTrue();
     }
 
 

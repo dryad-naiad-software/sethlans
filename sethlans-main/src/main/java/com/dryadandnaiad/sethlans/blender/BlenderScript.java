@@ -147,7 +147,7 @@ public class BlenderScript {
             }
 
             // Set Part
-            if (!renderTask.isBenchmark() && renderTask.isUseParts()) {
+            if (!renderTask.isBenchmark() && renderTask.isUseParts() && !renderTask.getScriptInfo().getImageOutputFormat().equals(ImageOutputFormat.HDR)) {
                 if (renderTask.getFrameInfo().getPartMaxX() == null |
                         renderTask.getFrameInfo().getPartMinX() == null ||
                         renderTask.getFrameInfo().getPartMaxY() == null ||

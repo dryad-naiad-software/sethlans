@@ -52,9 +52,13 @@ public class ImageUtils {
 
             for (int i = 0; i < numberOfParts; i++) {
                 var filename = new File(partDirectory + File.separator +
-                        filenameBase + "-" + (i + 1) + "." + imageOutputFormat.name().toLowerCase());
+                        filenameBase + "-" + (i + 1) + "." + frame.getFileExtension());
                 log.debug("Processing part: " + filename.toString());
                 images.add(ImageIO.read(filename));
+            }
+            if (images.size() == 0) {
+                log.error("Unable to process images loaded.");
+                return false;
             }
 
             int squareRootOfParts = (int) Math.sqrt(numberOfParts);
@@ -78,8 +82,11 @@ public class ImageUtils {
             var frameFilename = new File(frame.getStoredDir() + File.separator +
                     frame.getFrameFileName() + "." + imageOutputFormat.name().toLowerCase());
 
-            ImageIO.write(concatImage, imageOutputFormat.name().toUpperCase(), frameFilename
-            );
+            if (!ImageIO.write(concatImage, imageOutputFormat.name().toUpperCase(), frameFilename
+            )) {
+                log.error("Unable to combine images.");
+                return false;
+            }
 
             log.info("Completed processing of " + frameFilename.toString());
 
