@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - run: DEBIAN_FRONTEND="noninteractive"
-      - run: apt update && apt install -y libglu1 clinfo openjdk-11-jdk
+      - run: apt update && apt install -y libglu1 clinfo openjdk-11-jdk-headless
 
 
       - checkout
