@@ -4,7 +4,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: unbuntu/focal
+      - image: ubuntu/focal
 
     # Specify service dependencies here if necessary
     # CircleCI maintains a library of pre-built images
