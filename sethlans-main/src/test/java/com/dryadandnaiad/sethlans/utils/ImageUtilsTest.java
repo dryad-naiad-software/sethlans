@@ -25,6 +25,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 
@@ -49,7 +50,7 @@ class ImageUtilsTest {
 
     @AfterEach
     void tearDown() {
-        //FileSystemUtils.deleteRecursively(TEST_DIRECTORY);
+        FileSystemUtils.deleteRecursively(TEST_DIRECTORY);
     }
 
     @Test

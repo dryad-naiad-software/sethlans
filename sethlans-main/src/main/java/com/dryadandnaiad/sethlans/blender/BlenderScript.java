@@ -146,8 +146,17 @@ public class BlenderScript {
                 scriptWriter.println("\tscene.cycles.samples = " + renderTask.getScriptInfo().getSamples());
             }
 
+            if (renderTask.getScriptInfo().getImageOutputFormat() == null) {
+                log.error("ImageOutputFormat cannot be null.");
+                scriptWriter.flush();
+                scriptWriter.close();
+                script.delete();
+                return false;
+            }
+
             // Set Part
-            if (!renderTask.isBenchmark() && renderTask.isUseParts() && !renderTask.getScriptInfo().getImageOutputFormat().equals(ImageOutputFormat.HDR)) {
+            if (!renderTask.isBenchmark() && renderTask.isUseParts() &&
+                    !renderTask.getScriptInfo().getImageOutputFormat().equals(ImageOutputFormat.HDR)) {
                 if (renderTask.getFrameInfo().getPartMaxX() == null |
                         renderTask.getFrameInfo().getPartMinX() == null ||
                         renderTask.getFrameInfo().getPartMaxY() == null ||
@@ -192,13 +201,7 @@ public class BlenderScript {
             scriptWriter.println("scene.render.tile_x = " + renderTask.getScriptInfo().getTaskTileSize());
             scriptWriter.println("scene.render.tile_y = " + renderTask.getScriptInfo().getTaskTileSize());
 
-            if (renderTask.getScriptInfo().getImageOutputFormat() == null) {
-                log.error("ImageOutputFormat cannot be null.");
-                scriptWriter.flush();
-                scriptWriter.close();
-                script.delete();
-                return false;
-            }
+
             // Final Settings
             scriptWriter.println();
             scriptWriter.println("scene.render.use_border = True");

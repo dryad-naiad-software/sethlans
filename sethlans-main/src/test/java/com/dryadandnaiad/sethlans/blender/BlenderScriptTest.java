@@ -73,6 +73,7 @@ class BlenderScriptTest {
                 .deviceIDs(deviceIds)
                 .computeOn(ComputeOn.CPU)
                 .deviceType(DeviceType.CPU)
+                .imageOutputFormat(ImageOutputFormat.PNG)
                 .taskResolutionX(1920)
                 .taskResolutionY(1080)
                 .taskResPercentage(50)
@@ -89,12 +90,13 @@ class BlenderScriptTest {
                 .isBenchmark(false)
                 .useParts(true)
                 .build();
-        assertThat(BlenderScript.writeRenderScript(renderTask)).isFalse();
         renderTask.getScriptInfo().setTaskTileSize(null);
         assertThat(BlenderScript.writeRenderScript(renderTask)).isFalse();
         renderTask.getScriptInfo().setCores(null);
         assertThat(BlenderScript.writeRenderScript(renderTask)).isFalse();
         renderTask.getFrameInfo().setPartMaxX(null);
+        assertThat(BlenderScript.writeRenderScript(renderTask)).isFalse();
+        renderTask.getScriptInfo().setImageOutputFormat(null);
         assertThat(BlenderScript.writeRenderScript(renderTask)).isFalse();
         renderTask.getScriptInfo().setTaskResolutionX(null);
         assertThat(BlenderScript.writeRenderScript(renderTask)).isFalse();
