@@ -272,6 +272,7 @@ public class RenderTest {
     }
 
     @Test
+    @Disabled
     void executeRenderTaskCyclesGPU() {
         var gpuDevices = ScanGPU.listDevices();
         log.debug(gpuDevices.toString());
