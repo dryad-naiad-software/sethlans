@@ -17,9 +17,7 @@
 
 package com.dryadandnaiad.sethlans.models.blender.frames;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * File created by Mario Estrella on 4/1/2020.
@@ -30,6 +28,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class Frame {
     private String frameFileName;
     private Integer frameNumber;

@@ -17,12 +17,12 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
-import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.models.blender.frames.Part;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -88,19 +88,13 @@ public class ImageUtils {
     }
 
 
-    public static boolean createThumbnail(Frame frame, ImageOutputFormat imageOutputFormat) {
+    public static boolean createThumbnail(Frame frame) {
+        var originalImage = new File(frame.getStoredDir()
+                + File.separator + frame.getFrameFileName() + "." + frame.getFileExtension());
+        var thumbnail = new File(frame.getStoredDir() + File.separator
+                + frame.getFrameFileName() + "-thumbnail" + "." + "png");
         try {
-            BufferedImage image = ImageIO.read(new File(frame.getStoredDir()
-                    + File.separator + frame.getFrameFileName() + "." + frame.getFileExtension()));
-            BufferedImage thumbnail = new BufferedImage(128, 72, image.getType());
-            Graphics2D g = thumbnail.createGraphics();
-            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                    RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-            g.drawImage(image, 0, 0, 128, 72, 0, 0, image.getWidth(),
-                    image.getHeight(), null);
-            g.dispose();
-            ImageIO.write(thumbnail, imageOutputFormat.name().toUpperCase(), new File(frame.getStoredDir()
-                    + File.separator + frame.getFrameFileName() + "-thumbnail" + "." + frame.getFileExtension()));
+            Thumbnails.of(originalImage).size(128, 128).toFile(thumbnail);
             return true;
         } catch (IOException e) {
             log.error(e.getMessage());

@@ -17,7 +17,7 @@
 
 package com.dryadandnaiad.sethlans.models.blender.frames;
 
-import lombok.Data;
+import lombok.*;
 
 /**
  * File created by Mario Estrella on 5/9/2020.
@@ -26,6 +26,9 @@ import lombok.Data;
  * Project: sethlans
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Part {
     private double minX;
     private double maxX;

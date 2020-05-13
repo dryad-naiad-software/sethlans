@@ -17,6 +17,8 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
+import com.dryadandnaiad.sethlans.testutils.TestFileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -51,8 +53,50 @@ class ImageUtilsTest {
     }
 
     @Test
-    void createThumbnail() {
+    void createThumbnailPNG() {
+        var file1 = "asamplep-fd4e-0001.png";
+        TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "frame/" + file1, file1);
+        var filename = "asamplep-fd4e-0001";
+        var frame = Frame.builder()
+                .frameFileName(filename)
+                .frameNumber(1)
+                .combined(true)
+                .storedDir(TEST_DIRECTORY.toString())
+                .fileExtension("png")
+                .build();
+        assertThat(ImageUtils.createThumbnail(frame)).isTrue();
     }
+
+    @Test
+    void createThumbnailTIFF() {
+        var file1 = "asamplep-1127-0001.tif";
+        TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "frame/" + file1, file1);
+        var filename = "asamplep-1127-0001";
+        var frame = Frame.builder()
+                .frameFileName(filename)
+                .frameNumber(1)
+                .combined(true)
+                .storedDir(TEST_DIRECTORY.toString())
+                .fileExtension("tif")
+                .build();
+        assertThat(ImageUtils.createThumbnail(frame)).isTrue();
+    }
+
+    @Test
+    void createThumbnailHDR() {
+        var file1 = "asamplep-ee32-0001.hdr";
+        TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "frame/" + file1, file1);
+        var filename = "asamplep-ee32-0001";
+        var frame = Frame.builder()
+                .frameFileName(filename)
+                .frameNumber(1)
+                .combined(true)
+                .storedDir(TEST_DIRECTORY.toString())
+                .fileExtension("hdr")
+                .build();
+        assertThat(ImageUtils.createThumbnail(frame)).isTrue();
+    }
+
 
     @Test
     void configurePartCoordinates() {
