@@ -19,6 +19,7 @@ package com.dryadandnaiad.sethlans.blender;
 
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
+import com.dryadandnaiad.sethlans.enums.DeviceType;
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskFrameInfo;
@@ -71,6 +72,7 @@ class BlenderScriptTest {
                 .cores(6)
                 .deviceIDs(deviceIds)
                 .computeOn(ComputeOn.CPU)
+                .deviceType(DeviceType.CPU)
                 .taskResolutionX(1920)
                 .taskResolutionY(1080)
                 .taskResPercentage(50)
@@ -112,6 +114,7 @@ class BlenderScriptTest {
                 .blenderEngine(BlenderEngine.CYCLES)
                 .cores(6)
                 .computeOn(ComputeOn.CPU)
+                .deviceType(DeviceType.CPU)
                 .deviceIDs(deviceIDs)
                 .taskResolutionX(1920)
                 .taskResolutionY(1080)
@@ -139,6 +142,7 @@ class BlenderScriptTest {
         var scriptInfo = TaskScriptInfo.builder()
                 .blenderEngine(BlenderEngine.BLENDER_EEVEE)
                 .computeOn(ComputeOn.GPU)
+                .deviceType(DeviceType.CUDA)
                 .deviceIDs(deviceIDs)
                 .taskResolutionX(1920)
                 .taskResolutionY(1080)
@@ -173,6 +177,7 @@ class BlenderScriptTest {
         deviceIDs.add("OPENCL_0");
         var scriptInfo = TaskScriptInfo.builder()
                 .computeOn(ComputeOn.CPU)
+                .deviceType(DeviceType.CPU)
                 .deviceIDs(deviceIDs)
                 .blenderEngine(BlenderEngine.BLENDER_RENDER)
                 .taskResolutionX(1920)
@@ -213,6 +218,7 @@ class BlenderScriptTest {
         var scriptInfo = TaskScriptInfo.builder()
                 .blenderEngine(BlenderEngine.CYCLES)
                 .computeOn(ComputeOn.GPU)
+                .deviceType(DeviceType.CUDA)
                 .deviceIDs(deviceIDs)
                 .taskResolutionX(1920)
                 .taskResolutionY(1080)
@@ -246,6 +252,7 @@ class BlenderScriptTest {
         var scriptInfo = TaskScriptInfo.builder()
                 .blenderEngine(BlenderEngine.CYCLES)
                 .computeOn(ComputeOn.GPU)
+                .deviceType(DeviceType.CUDA)
                 .deviceIDs(deviceIDs)
                 .taskResolutionX(1920)
                 .taskResolutionY(1080)
@@ -279,6 +286,7 @@ class BlenderScriptTest {
         var scriptInfo = TaskScriptInfo.builder()
                 .blenderEngine(BlenderEngine.CYCLES)
                 .computeOn(ComputeOn.GPU)
+                .deviceType(DeviceType.CUDA)
                 .deviceIDs(deviceIDs)
                 .taskResolutionX(1920)
                 .taskResolutionY(1080)
@@ -314,6 +322,7 @@ class BlenderScriptTest {
         var scriptInfo = TaskScriptInfo.builder()
                 .blenderEngine(BlenderEngine.CYCLES)
                 .computeOn(ComputeOn.GPU)
+                .deviceType(DeviceType.CUDA)
                 .deviceIDs(deviceIDs)
                 .taskResolutionX(1920)
                 .taskResolutionY(1080)
