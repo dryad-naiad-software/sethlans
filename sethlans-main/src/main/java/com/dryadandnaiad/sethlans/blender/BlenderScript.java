@@ -249,15 +249,18 @@ public class BlenderScript {
         switch (renderTask.getScriptInfo().getDeviceType()) {
             case CUDA:
                 scriptWriter.println("cycles_prefs.compute_device_type = 'CUDA'");
+                scriptWriter.println("devices = cycles_prefs.get_devices()");
+                scriptWriter.println("hardware_devices = devices[0]");
                 break;
             case OPENCL:
                 scriptWriter.println("cycles_prefs.compute_device_type = 'OPENCL'");
+                scriptWriter.println("devices = cycles_prefs.get_devices()");
+                scriptWriter.println("hardware_devices = devices[1]");
                 break;
             default:
                 return false;
         }
-        scriptWriter.println("devices = cycles_prefs.get_devices()");
-        scriptWriter.println("hardware_devices = devices[0]");
+
         scriptWriter.println("selected_id = []");
         scriptWriter.println("selected_hardware = []");
         for (String id : strippedIDs) {
