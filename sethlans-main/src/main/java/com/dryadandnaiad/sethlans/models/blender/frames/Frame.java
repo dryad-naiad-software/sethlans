@@ -17,7 +17,10 @@
 
 package com.dryadandnaiad.sethlans.models.blender.frames;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * File created by Mario Estrella on 4/1/2020.
@@ -35,4 +38,5 @@ public class Frame {
     private boolean combined;
     private String storedDir;
     private String fileExtension;
+    private Integer partsPerFrame;
 }

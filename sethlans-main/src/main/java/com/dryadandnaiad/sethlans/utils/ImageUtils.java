@@ -17,9 +17,9 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.models.blender.frames.Part;
-import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
@@ -42,17 +42,19 @@ import java.util.List;
 @Slf4j
 public class ImageUtils {
 
-    public static boolean combineParts(Project project, Frame frame) {
+    public static boolean combineParts(Frame frame, ImageOutputFormat imageOutputFormat) {
+        log.info("Combining parts for " + frame.getFrameFileName());
         var images = new ArrayList<BufferedImage>();
-        var numberOfParts = project.getProjectSettings().getPartsPerFrame();
-        var imageFormat = project.getProjectSettings().getImageSettings().getImageOutputFormat();
+        var numberOfParts = frame.getPartsPerFrame();
         var filenameBase = frame.getFrameFileName();
         var partDirectory = frame.getStoredDir() + File.separator + "parts";
         try {
 
             for (int i = 0; i < numberOfParts; i++) {
-                images.add(ImageIO.read(new File(partDirectory + File.separator +
-                        filenameBase + "-" + i + "." + imageFormat.name().toLowerCase())));
+                var filename = new File(partDirectory + File.separator +
+                        filenameBase + "-" + (i + 1) + "." + imageOutputFormat.name().toLowerCase());
+                log.debug("Processing part: " + filename.toString());
+                images.add(ImageIO.read(filename));
             }
 
             int squareRootOfParts = (int) Math.sqrt(numberOfParts);
@@ -73,8 +75,22 @@ public class ImageUtils {
                 }
             }
 
-            ImageIO.write(concatImage, imageFormat.name().toUpperCase(),
-                    new File(frame.getFrameFileName() + "." + imageFormat.name().toLowerCase()));
+            var frameFilename = new File(frame.getStoredDir() + File.separator +
+                    frame.getFrameFileName() + "." + imageOutputFormat.name().toLowerCase());
+
+            ImageIO.write(concatImage, imageOutputFormat.name().toUpperCase(), frameFilename
+            );
+
+            log.info("Completed processing of " + frameFilename.toString());
+
+
+            // Part Cleanup
+            for (int i = 0; i < numberOfParts; i++) {
+                var filename = new File(partDirectory + File.separator +
+                        filenameBase + "-" + (i + 1) + "." + imageOutputFormat.name().toLowerCase());
+                log.debug("Deleting part " + filename.toString());
+                filename.delete();
+            }
 
             return true;
 
@@ -89,12 +105,16 @@ public class ImageUtils {
 
 
     public static boolean createThumbnail(Frame frame) {
+        var thumbnailDir = new File(frame.getStoredDir() + File.separator + "thumbnails");
+        thumbnailDir.mkdirs();
         var originalImage = new File(frame.getStoredDir()
                 + File.separator + frame.getFrameFileName() + "." + frame.getFileExtension());
-        var thumbnail = new File(frame.getStoredDir() + File.separator
+        var thumbnail = new File(thumbnailDir + File.separator
                 + frame.getFrameFileName() + "-thumbnail" + "." + "png");
+        log.info("Creating thumbnail for " + originalImage);
         try {
             Thumbnails.of(originalImage).size(128, 128).toFile(thumbnail);
+            log.info("Thumbnail " + thumbnail + " successfully created.");
             return true;
         } catch (IOException e) {
             log.error(e.getMessage());
