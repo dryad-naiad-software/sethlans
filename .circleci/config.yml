@@ -18,7 +18,9 @@ jobs:
       MAVEN_OPTS: -Xmx3200m
 
     steps:
+      - run: DEBIAN_FRONTEND="noninteractive"
       - run: apt update && apt install -y libglu1 clinfo openjdk-11-jdk
+
 
       - checkout
 
