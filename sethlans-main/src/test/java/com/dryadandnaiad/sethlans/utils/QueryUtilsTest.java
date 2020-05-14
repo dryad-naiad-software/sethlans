@@ -17,7 +17,11 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.enums.NodeType;
+import com.dryadandnaiad.sethlans.models.blender.project.ImageSettings;
+import com.dryadandnaiad.sethlans.models.blender.project.Project;
+import com.dryadandnaiad.sethlans.models.blender.project.ProjectSettings;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import lombok.extern.slf4j.Slf4j;
@@ -110,5 +114,32 @@ class QueryUtilsTest {
     void readStringFromResource() {
         assertThat(QueryUtils.getStringFromResource("blenderdownload.json")).isNotNull();
         assertThat(QueryUtils.getStringFromResource("cookie")).isNull();
+    }
+
+    @Test
+    void getFrameAndPartFilename() {
+        var imageSettings = ImageSettings.builder().imageOutputFormat(ImageOutputFormat.PNG).build();
+        var projectSettings = ProjectSettings.builder().imageSettings(imageSettings).build();
+        var project = Project.builder()
+                .projectName("An example of a Project")
+                .projectID("92fb0f42-46b3-476c-b4b9-3d2b7d80e6e9")
+                .projectSettings(projectSettings)
+                .build();
+        assertThat(QueryUtils.getFrameAndPartFilename(project, 1, 2))
+                .isEqualTo("anexample-92fb-0001-2.png");
+        assertThat(QueryUtils.getFrameAndPartFilename(project, 1, null))
+                .isEqualTo("anexample-92fb-0001.png");
+        imageSettings.setImageOutputFormat(ImageOutputFormat.TIFF);
+        project.getProjectSettings().setImageSettings(imageSettings);
+        assertThat(QueryUtils.getFrameAndPartFilename(project, 1, 2))
+                .isEqualTo("anexample-92fb-0001-2.tif");
+        assertThat(QueryUtils.getFrameAndPartFilename(project, 1, null))
+                .isEqualTo("anexample-92fb-0001.tif");
+        imageSettings.setImageOutputFormat(ImageOutputFormat.HDR);
+        project.getProjectSettings().setImageSettings(imageSettings);
+        assertThat(QueryUtils.getFrameAndPartFilename(project, 1, 2))
+                .isEqualTo("anexample-92fb-0001-2.hdr");
+        assertThat(QueryUtils.getFrameAndPartFilename(project, 1, null))
+                .isEqualTo("anexample-92fb-0001.hdr");
     }
 }

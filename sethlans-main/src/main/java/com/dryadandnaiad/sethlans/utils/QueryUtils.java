@@ -129,13 +129,25 @@ public class QueryUtils {
         var projectNameAndID = QueryUtils.truncatedProjectNameAndID(project.getProjectName(),
                 project.getProjectID());
         String outputFileName;
+        String extension = "";
 
-        if (part == null) {
+        switch (project.getProjectSettings().getImageSettings().getImageOutputFormat()) {
+            case PNG:
+                extension = "png";
+                break;
+            case TIFF:
+                extension = "tif";
+                break;
+            case HDR:
+                extension = "hdr";
+        }
+
+        if (part != null) {
             outputFileName = projectNameAndID + "-" + String.format("%04d", frame) + "-" + part + "." +
-                    project.getProjectSettings().getImageSettings().getImageOutputFormat().name().toLowerCase();
+                    extension;
         } else {
             outputFileName = projectNameAndID + "-" + String.format("%04d", frame) + "." +
-                    project.getProjectSettings().getImageSettings().getImageOutputFormat().name().toLowerCase();
+                    extension;
         }
         return outputFileName;
     }
