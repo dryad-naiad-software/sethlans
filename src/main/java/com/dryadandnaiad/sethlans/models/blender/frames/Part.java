@@ -17,7 +17,10 @@
 
 package com.dryadandnaiad.sethlans.models.blender.frames;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * File created by Mario Estrella on 5/9/2020.

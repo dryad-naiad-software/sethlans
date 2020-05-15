@@ -36,7 +36,7 @@ import java.util.Properties;
  * Project: sethlans
  */
 @Slf4j
-class ConfigUtils {
+public class ConfigUtils {
 
     private static String updateTimeStamp() {
         Date currentDate = GregorianCalendar.getInstance().getTime();
@@ -49,7 +49,7 @@ class ConfigUtils {
      *
      * @return sethlans configuration file
      */
-    static File getConfigFile() {
+    public static File getConfigFile() {
         var configDirSuccess = false;
         val configDirectory = new File(SystemUtils.USER_HOME + File.separator + ".sethlans" + File.separator + "config" + File.separator);
         val configFile = new File(configDirectory + File.separator + "sethlans.properties");
