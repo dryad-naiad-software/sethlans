@@ -22,6 +22,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class SethlansApplication {
         ConfigUtils.getConfigFile();
         List<String> arrayArgs = new ArrayList<>();
         arrayArgs.add("--spring.config.name=sethlans");
-        //arrayArgs.add("--spring.config.location=" + System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "config" + File.separator);
+        arrayArgs.add("--spring.config.additional-location=" + System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "config" + File.separator);
         String[] springArgs = new String[arrayArgs.size()];
         springArgs = arrayArgs.toArray(springArgs);
         SpringApplication.run(SethlansApplication.class, springArgs);
