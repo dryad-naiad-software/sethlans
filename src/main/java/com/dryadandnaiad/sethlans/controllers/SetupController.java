@@ -17,9 +17,13 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 /**
  * File created by Mario Estrella on 5/15/2020.
@@ -31,4 +35,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/setup/")
 public class SetupController {
+
+    @PostMapping("/submit")
+    public Mono<Boolean> submit(@RequestBody SetupForm setupForm) {
+        return null;
+    }
+
+
 }

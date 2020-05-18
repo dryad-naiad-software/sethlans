@@ -136,6 +136,11 @@
             <artifactId>thumbnailator</artifactId>
             <version>0.4.11</version>
         </dependency>
+        <dependency>
+            <groupId>org.openpnp</groupId>
+            <artifactId>opencv</artifactId>
+            <version>4.3.0-2</version>
+        </dependency>
 
 
         <!--        Native Access Packages-->
