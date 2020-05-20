@@ -44,6 +44,9 @@ public class ImageUtils {
 
     public static boolean combineParts(Frame frame, ImageOutputFormat imageOutputFormat) {
         log.info("Combining parts for " + frame.getFrameFileName());
+        if (imageOutputFormat.equals(ImageOutputFormat.HDR)) {
+            return combineHDR(frame);
+        }
         var images = new ArrayList<BufferedImage>();
         var numberOfParts = frame.getPartsPerFrame();
         var filenameBase = frame.getFrameFileName();
@@ -108,6 +111,10 @@ public class ImageUtils {
             log.error(Throwables.getStackTraceAsString(e));
             return false;
         }
+    }
+
+    public static boolean combineHDR(Frame frame) {
+        return false;
     }
 
 
