@@ -124,6 +124,25 @@ class ImageUtilsTest {
     }
 
     @Test
+    void combine9PartsPNGBarcelone() {
+        var file1 = "png-9-parts-barcelone.zip";
+        var partLocation = new File(TEST_DIRECTORY + File.separator + "frames" + File.separator + "parts");
+        partLocation.mkdirs();
+        TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "image_parts/" + file1, file1);
+        FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString());
+        var frame = Frame.builder()
+                .frameFileName("asamplep-2a7f-0001")
+                .fileExtension("png")
+                .partsPerFrame(9)
+                .storedDir(TEST_DIRECTORY + File.separator + "frames")
+                .combined(false)
+                .frameNumber(1)
+                .build();
+        assertThat(ImageUtils.combineParts(frame, ImageOutputFormat.PNG)).isTrue();
+
+    }
+
+    @Test
     void combine4PartsHDR() {
         var file1 = "hdr-4-parts.zip";
         var partLocation = new File(TEST_DIRECTORY + File.separator + "frames" + File.separator + "parts");
@@ -140,6 +159,42 @@ class ImageUtilsTest {
                 .build();
         assertThat(ImageUtils.combineParts(frame, ImageOutputFormat.HDR)).isTrue();
 
+    }
+
+    @Test
+    void combine9PartsHDR() {
+        var file1 = "hdr-9-parts.zip";
+        var partLocation = new File(TEST_DIRECTORY + File.separator + "frames" + File.separator + "parts");
+        partLocation.mkdirs();
+        TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "image_parts/" + file1, file1);
+        FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString());
+        var frame = Frame.builder()
+                .frameFileName("asamplep-4d6e-0001")
+                .fileExtension("hdr")
+                .partsPerFrame(9)
+                .storedDir(TEST_DIRECTORY + File.separator + "frames")
+                .combined(false)
+                .frameNumber(1)
+                .build();
+        assertThat(ImageUtils.combineParts(frame, ImageOutputFormat.HDR)).isTrue();
+    }
+
+    @Test
+    void combine9PartsHDRBarcelone() {
+        var file1 = "hdr-9-parts-barcelone.zip";
+        var partLocation = new File(TEST_DIRECTORY + File.separator + "frames" + File.separator + "parts");
+        partLocation.mkdirs();
+        TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "image_parts/" + file1, file1);
+        FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString());
+        var frame = Frame.builder()
+                .frameFileName("asamplep-2a7f-0001")
+                .fileExtension("hdr")
+                .partsPerFrame(9)
+                .storedDir(TEST_DIRECTORY + File.separator + "frames")
+                .combined(false)
+                .frameNumber(1)
+                .build();
+        assertThat(ImageUtils.combineParts(frame, ImageOutputFormat.HDR)).isTrue();
     }
 
     @Test
