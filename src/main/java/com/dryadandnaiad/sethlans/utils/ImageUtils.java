@@ -119,56 +119,72 @@ public class ImageUtils {
 
     public static boolean combineHDR(Frame frame) {
         nu.pattern.OpenCV.loadShared();
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        var imageCodecs = new Imgcodecs();
         var numberOfParts = frame.getPartsPerFrame();
         var filenameBase = frame.getFrameFileName();
         var partDirectory = frame.getStoredDir() + File.separator + "parts";
         int squareRootOfParts = (int) Math.sqrt(numberOfParts);
-        var images = new ArrayList<ArrayList<Mat>>();
+        var imageArrays = new ArrayList<ArrayList<Mat>>();
 
 
         try {
             for (int i = 0; i < squareRootOfParts; i++) {
-                images.add(new ArrayList<>());
+                imageArrays.add(new ArrayList<>());
             }
             for (int i = 0; i < numberOfParts; i++) {
                 var filename = new File(partDirectory + File.separator +
                         filenameBase + "-" + (i + 1) + "." + frame.getFileExtension());
                 log.debug("Processing part: " + filename.toString());
                 var arrayId = 0;
-                var currentArray = images.get(arrayId);
-                System.out.println(currentArray.size());
+                var currentArray = imageArrays.get(arrayId);
                 while (currentArray.size() > squareRootOfParts - 1) {
                     arrayId++;
-                    currentArray = images.get(arrayId);
+                    currentArray = imageArrays.get(arrayId);
                 }
-                currentArray.add(Imgcodecs.imread(filename.toString()));
+                currentArray.add(Imgcodecs.imread(filename.toString(), Imgcodecs.IMREAD_UNCHANGED));
 
             }
-            if (images.size() == 0) {
-                log.error("Unable to process images loaded.");
+            for (ArrayList<Mat> imageArray : imageArrays) {
+                if (imageArray.size() == 0) {
+                    log.error("Unable to process images loaded.");
+                    return false;
+                }
+            }
+
+
+            var frameFilename = new File(frame.getStoredDir() + File.separator +
+                    frame.getFrameFileName() + "." + "hdr");
+
+            var rowResult = new ArrayList<Mat>();
+
+            for (int row = 0; row < imageArrays.size(); row++) {
+                rowResult.add(row, new Mat());
+                Core.hconcat(imageArrays.get(row), rowResult.get(row));
+            }
+
+            var finalResult = new Mat();
+
+            Core.vconcat(rowResult, finalResult);
+            if (!Imgcodecs.imwrite(frameFilename.toString(), finalResult)) {
+                log.error("Unable to combine images.");
                 return false;
             }
+            log.info("Completed processing of " + frameFilename.toString());
 
-            System.out.println(images);
-
-
-//            var result = new Mat();
-//            var frameFilename = new File(frame.getStoredDir() + File.separator +
-//                    frame.getFrameFileName() + "." + "hdr");
-//            for (int row = 0; row < squareRootOfParts; row++) {
-//
-//            }
-//            Core.hconcat(images, result);
-//            imageCodecs.imwrite(frameFilename.toString(), result);
-
+            // Part Cleanup
+            for (int i = 0; i < numberOfParts; i++) {
+                var filename = new File(partDirectory + File.separator +
+                        filenameBase + "-" + (i + 1) + "." + "hdr");
+                log.debug("Deleting part " + filename.toString());
+                filename.delete();
+            }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            return false;
         }
 
-        return false;
+        return true;
     }
 
 
