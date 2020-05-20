@@ -23,6 +23,9 @@ import com.dryadandnaiad.sethlans.models.blender.frames.Part;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.imgcodecs.Imgcodecs;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -51,6 +54,7 @@ public class ImageUtils {
         var numberOfParts = frame.getPartsPerFrame();
         var filenameBase = frame.getFrameFileName();
         var partDirectory = frame.getStoredDir() + File.separator + "parts";
+
         try {
 
             for (int i = 0; i < numberOfParts; i++) {
@@ -114,6 +118,56 @@ public class ImageUtils {
     }
 
     public static boolean combineHDR(Frame frame) {
+        nu.pattern.OpenCV.loadShared();
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        var imageCodecs = new Imgcodecs();
+        var numberOfParts = frame.getPartsPerFrame();
+        var filenameBase = frame.getFrameFileName();
+        var partDirectory = frame.getStoredDir() + File.separator + "parts";
+        int squareRootOfParts = (int) Math.sqrt(numberOfParts);
+        var images = new ArrayList<ArrayList<Mat>>();
+
+
+        try {
+            for (int i = 0; i < squareRootOfParts; i++) {
+                images.add(new ArrayList<>());
+            }
+            for (int i = 0; i < numberOfParts; i++) {
+                var filename = new File(partDirectory + File.separator +
+                        filenameBase + "-" + (i + 1) + "." + frame.getFileExtension());
+                log.debug("Processing part: " + filename.toString());
+                var arrayId = 0;
+                var currentArray = images.get(arrayId);
+                System.out.println(currentArray.size());
+                while (currentArray.size() > squareRootOfParts - 1) {
+                    arrayId++;
+                    currentArray = images.get(arrayId);
+                }
+                currentArray.add(Imgcodecs.imread(filename.toString()));
+
+            }
+            if (images.size() == 0) {
+                log.error("Unable to process images loaded.");
+                return false;
+            }
+
+            System.out.println(images);
+
+
+//            var result = new Mat();
+//            var frameFilename = new File(frame.getStoredDir() + File.separator +
+//                    frame.getFrameFileName() + "." + "hdr");
+//            for (int row = 0; row < squareRootOfParts; row++) {
+//
+//            }
+//            Core.hconcat(images, result);
+//            imageCodecs.imwrite(frameFilename.toString(), result);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return false;
     }
 
