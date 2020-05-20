@@ -127,6 +127,7 @@ public class ImageUtils {
 
 
         try {
+            // Create image arrays equal to the square root number of parts.
             for (int i = 0; i < squareRootOfParts; i++) {
                 imageArrays.add(new ArrayList<>());
             }
@@ -136,6 +137,7 @@ public class ImageUtils {
                 log.debug("Processing part: " + filename.toString());
                 var arrayId = 0;
                 var currentArray = imageArrays.get(arrayId);
+                // Each array equals one row of images.  Move to the next array once the row is complete.
                 while (currentArray.size() > squareRootOfParts - 1) {
                     arrayId++;
                     currentArray = imageArrays.get(arrayId);
@@ -150,12 +152,12 @@ public class ImageUtils {
                 }
             }
 
-
             var frameFilename = new File(frame.getStoredDir() + File.separator +
                     frame.getFrameFileName() + "." + "hdr");
 
             var rowResult = new ArrayList<Mat>();
 
+            // Combine images within rows
             for (int row = 0; row < imageArrays.size(); row++) {
                 rowResult.add(row, new Mat());
                 Core.hconcat(imageArrays.get(row), rowResult.get(row));
@@ -163,6 +165,7 @@ public class ImageUtils {
 
             var finalResult = new Mat();
 
+            // Combine rows
             Core.vconcat(rowResult, finalResult);
             if (!Imgcodecs.imwrite(frameFilename.toString(), finalResult)) {
                 log.error("Unable to combine images.");

@@ -196,31 +196,27 @@ public class BlenderScript {
                 return false;
             }
             // Tile Sizes
-            scriptWriter.println();
-            scriptWriter.println("scene.render.tile_x = " + renderTask.getScriptInfo().getTaskTileSize());
-            scriptWriter.println("scene.render.tile_y = " + renderTask.getScriptInfo().getTaskTileSize());
+            scriptWriter.println("\tscene.render.tile_x = " + renderTask.getScriptInfo().getTaskTileSize());
+            scriptWriter.println("\tscene.render.tile_y = " + renderTask.getScriptInfo().getTaskTileSize());
 
 
             // Final Settings
-            scriptWriter.println();
-            scriptWriter.println("scene.render.use_border = True");
-            scriptWriter.println("scene.render.use_crop_to_border = True");
             if (renderTask.getScriptInfo().getImageOutputFormat().equals(ImageOutputFormat.PNG)) {
-                scriptWriter.println("scene.render.image_settings.file_format = 'PNG'");
-                scriptWriter.println("scene.render.image_settings.color_mode = 'RGBA'");
-                scriptWriter.println("scene.render.image_settings.color_depth = '16'");
+                scriptWriter.println("\tscene.render.image_settings.file_format = 'PNG'");
+                scriptWriter.println("\tscene.render.image_settings.color_mode = 'RGBA'");
+                scriptWriter.println("\tscene.render.image_settings.color_depth = '16'");
             }
 
             if (renderTask.getScriptInfo().getImageOutputFormat().equals(ImageOutputFormat.HDR)) {
-                scriptWriter.println("scene.render.image_settings.file_format = 'HDR'");
-                scriptWriter.println("scene.render.image_settings.color_mode = 'RGB'");
-                scriptWriter.println("scene.render.image_settings.color_depth = '32'");
+                scriptWriter.println("\tscene.render.image_settings.file_format = 'HDR'");
+                scriptWriter.println("\tscene.render.image_settings.color_mode = 'RGB'");
+                scriptWriter.println("\tscene.render.image_settings.color_depth = '32'");
             }
 
             if (renderTask.getScriptInfo().getImageOutputFormat().equals(ImageOutputFormat.TIFF)) {
-                scriptWriter.println("scene.render.image_settings.file_format = 'TIFF'");
-                scriptWriter.println("scene.render.image_settings.color_mode = 'RGBA'");
-                scriptWriter.println("scene.render.image_settings.color_depth = '16'");
+                scriptWriter.println("\tscene.render.image_settings.file_format = 'TIFF'");
+                scriptWriter.println("\tscene.render.image_settings.color_mode = 'RGBA'");
+                scriptWriter.println("\tscene.render.image_settings.color_depth = '16'");
             }
 
             scriptWriter.flush();
