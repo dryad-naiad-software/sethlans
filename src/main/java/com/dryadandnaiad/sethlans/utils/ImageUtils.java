@@ -118,7 +118,7 @@ public class ImageUtils {
     }
 
     public static boolean combineHDR(Frame frame) {
-        nu.pattern.OpenCV.loadShared();
+        nu.pattern.OpenCV.loadLocally();
         var numberOfParts = frame.getPartsPerFrame();
         var filenameBase = frame.getFrameFileName();
         var partDirectory = frame.getStoredDir() + File.separator + "parts";
