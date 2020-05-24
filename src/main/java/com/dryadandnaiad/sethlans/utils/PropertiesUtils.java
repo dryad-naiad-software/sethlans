@@ -19,6 +19,7 @@ package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
@@ -37,6 +38,24 @@ import java.net.Socket;
  */
 @Slf4j
 public class PropertiesUtils {
+
+    public static boolean writeMailSettings(MailSettings mailSettings) {
+        if (mailSettings.isMailEnabled()) {
+            ConfigUtils.writeProperty(ConfigKeys.MAIL_SERVER_CONFIGURED, "true");
+            if (mailSettings.isSmtpAuth()) {
+                ConfigUtils.writeProperty(ConfigKeys.MAIL_USE_AUTH, "true");
+                ConfigUtils.writeProperty(ConfigKeys.MAIL_USER, mailSettings.getUsername());
+                ConfigUtils.writeProperty(ConfigKeys.MAIL_PASS, mailSettings.getPassword());
+            }
+            ConfigUtils.writeProperty(ConfigKeys.MAIL_HOST, mailSettings.getMailHost());
+            ConfigUtils.writeProperty(ConfigKeys.MAIL_PORT, mailSettings.getMailPort());
+            ConfigUtils.writeProperty(ConfigKeys.MAIL_REPLY_TO, mailSettings.getReplyToAddress());
+            ConfigUtils.writeProperty(ConfigKeys.MAIL_SSL_ENABLE, Boolean.toString(mailSettings.isSslEnabled()));
+            ConfigUtils.writeProperty(ConfigKeys.MAIL_TLS_ENABLE, Boolean.toString(mailSettings.isStartTLSEnabled()));
+            return ConfigUtils.writeProperty(ConfigKeys.MAIL_TLS_REQUIRED, Boolean.toString(mailSettings.isStartTLSRequired()));
+        }
+        return true;
+    }
 
 
     public static String getSelectedCores() {
