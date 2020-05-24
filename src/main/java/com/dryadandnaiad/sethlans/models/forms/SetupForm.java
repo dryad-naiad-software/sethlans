@@ -21,6 +21,7 @@ import com.dryadandnaiad.sethlans.enums.LogLevel;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.user.User;
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -30,6 +31,7 @@ import lombok.Data;
  * Project: sethlans
  */
 @Data
+@Builder
 public class SetupForm {
     private SethlansMode mode;
     private User user;

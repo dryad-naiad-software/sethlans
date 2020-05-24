@@ -17,6 +17,7 @@
 
 package com.dryadandnaiad.sethlans.models.settings;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -26,6 +27,7 @@ import lombok.Data;
  * Project: sethlans
  */
 @Data
+@Builder
 public class MailSettings {
     private String mailHost;
     private String mailPort;
