@@ -26,6 +26,8 @@ import oshi.hardware.GlobalMemory;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.util.FormatUtil;
 
+import javax.persistence.Embeddable;
+
 /**
  * File created by Mario Estrella on 3/29/2020.
  * Dryad and Naiad Software LLC
@@ -34,6 +36,7 @@ import oshi.util.FormatUtil;
  */
 @Slf4j
 @Data
+@Embeddable
 public class CPU {
     private String name;
     private String model;

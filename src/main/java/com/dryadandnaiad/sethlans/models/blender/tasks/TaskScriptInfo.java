@@ -21,10 +21,13 @@ import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.enums.DeviceType;
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
+import javax.persistence.ElementCollection;
+import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import java.util.List;
 
 /**
@@ -36,6 +39,9 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@Embeddable
+@NoArgsConstructor
+@AllArgsConstructor
 public class TaskScriptInfo {
     private Integer taskResolutionX;
     private Integer taskResolutionY;
@@ -47,5 +53,7 @@ public class TaskScriptInfo {
     private DeviceType deviceType;
     private BlenderEngine blenderEngine;
     private ImageOutputFormat imageOutputFormat;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     private List<String> deviceIDs;
 }

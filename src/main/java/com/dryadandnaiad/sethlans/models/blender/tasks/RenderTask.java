@@ -18,8 +18,9 @@
 package com.dryadandnaiad.sethlans.models.blender.tasks;
 
 import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
  * File created by Mario Estrella on 4/2/2020.
@@ -27,7 +28,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Document
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -35,7 +36,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 public class RenderTask {
     @Id
-    private String id;
+    private Long id;
     private String blenderVersion;
     private String blenderExecutable;
     private String taskID;

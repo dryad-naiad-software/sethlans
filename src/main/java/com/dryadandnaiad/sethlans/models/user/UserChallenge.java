@@ -20,6 +20,8 @@ package com.dryadandnaiad.sethlans.models.user;
 import lombok.Builder;
 import lombok.Data;
 
+import javax.persistence.Embeddable;
+
 /**
  * File created by Mario Estrella on 4/1/2020.
  * Dryad and Naiad Software LLC
@@ -28,6 +30,7 @@ import lombok.Data;
  */
 @Data
 @Builder
+@Embeddable
 public class UserChallenge {
     private String challenge;
     private String response;

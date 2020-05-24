@@ -23,9 +23,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
+import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
 
@@ -35,14 +36,14 @@ import java.util.Set;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Document
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
 public class User {
     @Id
-    private String id;
+    private Long id;
     private String username;
     private String password;
     private boolean active;
@@ -55,9 +56,16 @@ public class User {
     private boolean projectEmailNotifications;
     private boolean videoEncodingEmailNotifications;
     private boolean passwordUpdated;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     private List<String> tokens;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     private List<UserChallenge> challengeList;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     private Set<Role> roles;
+    @OneToMany
     private List<Project> projects;
 
 }

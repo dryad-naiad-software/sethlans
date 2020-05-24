@@ -23,6 +23,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Embeddable;
+
 /**
  * File created by Mario Estrella on 3/29/2020.
  * Dryad and Naiad Software LLC
@@ -33,6 +35,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Embeddable
 public class GPU {
     private String model;
     private long memory; // in B

@@ -26,8 +26,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
+import javax.persistence.ElementCollection;
+import javax.persistence.FetchType;
 import java.util.List;
 
 /**
@@ -36,7 +39,6 @@ import java.util.List;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Document
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -52,6 +54,8 @@ public class Node extends System {
     private boolean benchmarkComplete;
     private int totalRenderingSlots;
     private int cpuRating;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     private List<GPU> selectedGPUs;
     private CPU cpu;
 }

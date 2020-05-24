@@ -22,8 +22,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
  * File created by Mario Estrella on 4/1/2020.
@@ -31,14 +32,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Document
+@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
 public class BlenderBinary {
     @Id
-    private String id;
+    private Long id;
     private String blenderVersion;
     private OS blenderOS;
     private String blenderFile;

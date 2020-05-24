@@ -17,9 +17,9 @@
 
 package com.dryadandnaiad.sethlans.models.blender.tasks;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
+import javax.persistence.Embeddable;
 
 /**
  * File created by Mario Estrella on 5/5/2020.
@@ -30,6 +30,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@Embeddable
+@NoArgsConstructor
+@AllArgsConstructor
 public class TaskFrameInfo {
     private Integer frameNumber;
     private Integer partNumber;

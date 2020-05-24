@@ -22,7 +22,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.Id;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
  * File created by Mario Estrella on 4/11/2020.
@@ -35,9 +37,10 @@ import org.springframework.data.annotation.Id;
 @NoArgsConstructor
 @Getter
 @Setter
+@Entity
 public abstract class System {
     @Id
-    private String id;
+    private Long id;
     private String hostname;
     private String ipAddress;
     private String networkPort;

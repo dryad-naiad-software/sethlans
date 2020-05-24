@@ -26,6 +26,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Embeddable;
+
 /**
  * File created by Mario Estrella on 4/1/2020.
  * Dryad and Naiad Software LLC
@@ -37,6 +39,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Builder
+@Embeddable
 public class VideoSettings {
     private Integer frameRate;
     private VideoCodec codec;
