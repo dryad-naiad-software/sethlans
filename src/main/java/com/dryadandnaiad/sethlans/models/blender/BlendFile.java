@@ -32,12 +32,12 @@ import java.util.List;
 @Data
 public class BlendFile {
     private BlenderEngine engine;
-    private int frameStart;
-    private int frameEnd;
-    private int frameSkip;
-    private int resPercent;
-    private int resolutionX;
-    private int resolutionY;
+    private Integer frameStart;
+    private Integer frameEnd;
+    private Integer frameSkip;
+    private Integer resPercent;
+    private Integer resolutionX;
+    private Integer resolutionY;
     private List<String> cameras = new ArrayList<>();
     private String scene;
 }

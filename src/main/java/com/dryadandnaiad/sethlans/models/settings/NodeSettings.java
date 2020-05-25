@@ -19,8 +19,10 @@ package com.dryadandnaiad.sethlans.models.settings;
 
 import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.models.hardware.GPU;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -32,6 +34,8 @@ import java.util.List;
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class NodeSettings {
     private NodeType nodeType;
     private Integer cores;

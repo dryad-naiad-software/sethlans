@@ -17,8 +17,10 @@
 
 package com.dryadandnaiad.sethlans.models.user;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
 
@@ -31,6 +33,8 @@ import javax.persistence.Embeddable;
 @Data
 @Builder
 @Embeddable
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserChallenge {
     private String challenge;
     private String response;

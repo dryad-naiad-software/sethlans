@@ -18,10 +18,13 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.enums.LogLevel;
+import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
+import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
+import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
 import com.dryadandnaiad.sethlans.models.user.User;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -77,6 +80,7 @@ class SetupControllerTest {
         SetupForm form = getSetupForm();
         ObjectMapper objectMapper = new ObjectMapper();
         String formJson = objectMapper.writeValueAsString(form);
+        System.out.println(formJson);
 
         mockMvc.perform(
                 post("/api/v1/setup/submit")
@@ -89,9 +93,11 @@ class SetupControllerTest {
                 .appURL("https://localhost:7443")
                 .ipAddress("10.10.10.10")
                 .logLevel(LogLevel.DEBUG)
-                .mode(SethlansMode.SERVER)
+                .mode(SethlansMode.DUAL)
                 .port("7443")
                 .user(getUser())
+                .nodeSettings(getNodeSettings())
+                .serverSettings(getServerSettings())
                 .mailSettings(getMailSettings()).build();
     }
 
@@ -114,6 +120,20 @@ class SetupControllerTest {
                 .mailPort("25")
                 .replyToAddress("noreply@test.com")
                 .smtpAuth(false).build();
+    }
+
+    NodeSettings getNodeSettings() {
+        return NodeSettings.builder()
+                .cores(4)
+                .nodeType(NodeType.CPU)
+                .selectedGPUs(new ArrayList<>())
+                .tileSizeCPU(32)
+                .build();
+    }
+
+    ServerSettings getServerSettings() {
+        return ServerSettings.builder()
+                .blenderVersion("2.79b").build();
     }
 
 }

@@ -37,11 +37,11 @@ import javax.persistence.Embeddable;
 @Builder
 @Embeddable
 public class ProjectStatus {
-    private int currentPercentage;
-    private int completedFrames;
-    private int totalQueueSize;
-    private int remainingQueueSize;
-    private int queueIndex;
+    private Integer currentPercentage;
+    private Integer completedFrames;
+    private Integer totalQueueSize;
+    private Integer remainingQueueSize;
+    private Integer queueIndex;
     private Long totalRenderTime;
     private Long totalProjectTime;
     private Long timerStart;

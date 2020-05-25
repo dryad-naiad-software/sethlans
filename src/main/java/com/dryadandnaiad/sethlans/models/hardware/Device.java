@@ -33,6 +33,6 @@ import lombok.Data;
 public class Device {
     private String nodeID;
     private String deviceID;
-    private int deviceBenchmark;
+    private Integer deviceBenchmark;
     private boolean assigned;
 }

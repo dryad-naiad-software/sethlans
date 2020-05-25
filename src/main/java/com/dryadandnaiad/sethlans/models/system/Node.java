@@ -51,8 +51,8 @@ public class Node extends System {
     private boolean disabled;
     private boolean pendingActivation;
     private boolean benchmarkComplete;
-    private int totalRenderingSlots;
-    private int cpuRating;
+    private Integer totalRenderingSlots;
+    private Integer cpuRating;
     @ElementCollection(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     private List<GPU> selectedGPUs;

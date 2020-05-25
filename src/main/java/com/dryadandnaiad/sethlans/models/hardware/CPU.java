@@ -42,8 +42,8 @@ public class CPU {
     private String model;
     private String family;
     private String arch; // 32 or 64 bits
-    private int cores;
-    private int cpuPackage;
+    private Integer cores;
+    private Integer cpuPackage;
     private String totalMemory;
     private long[] oldTicks;
     private SystemInfo si = new SystemInfo();

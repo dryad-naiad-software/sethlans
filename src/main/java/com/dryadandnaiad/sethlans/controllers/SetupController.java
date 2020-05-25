@@ -18,10 +18,13 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
+import com.google.common.base.Throwables;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Profile("SETUP")
 @RestController
 @RequestMapping("/api/v1/setup")
+@Slf4j
 public class SetupController {
     private final UserRepository userRepository;
 
@@ -48,11 +52,23 @@ public class SetupController {
 
     @PostMapping("/submit")
     public ResponseEntity saveForm(@RequestBody SetupForm setupForm) {
-        ConfigUtils.writeProperty(ConfigKeys.MODE, setupForm.getMode().name());
-        PropertiesUtils.writeMailSettings(setupForm.getMailSettings());
-        ConfigUtils.writeProperty(ConfigKeys.SETHLANS_IP, setupForm.getIpAddress());
-        ConfigUtils.writeProperty(ConfigKeys.HTTPS_PORT, setupForm.getPort());
-        ConfigUtils.writeProperty(ConfigKeys.SETHLANS_URL, setupForm.getAppURL());
+        try {
+            ConfigUtils.writeProperty(ConfigKeys.MODE, setupForm.getMode().name());
+            ConfigUtils.writeProperty(ConfigKeys.SETHLANS_IP, setupForm.getIpAddress());
+            ConfigUtils.writeProperty(ConfigKeys.HTTPS_PORT, setupForm.getPort());
+            ConfigUtils.writeProperty(ConfigKeys.SETHLANS_URL, setupForm.getAppURL());
+            if (setupForm.getMode().equals(SethlansMode.DUAL) || setupForm.getMode().equals(SethlansMode.SERVER)) {
+            }
+            if (setupForm.getMode().equals(SethlansMode.DUAL) || setupForm.getMode().equals(SethlansMode.NODE)) {
+                PropertiesUtils.writeNodeSettings(setupForm.getNodeSettings());
+            }
+            PropertiesUtils.writeMailSettings(setupForm.getMailSettings());
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
         userRepository.save(setupForm.getUser());
         return new ResponseEntity(HttpStatus.CREATED);
     }

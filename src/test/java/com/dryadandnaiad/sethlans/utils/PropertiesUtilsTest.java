@@ -38,7 +38,7 @@ import static org.junit.Assert.*;
 @Slf4j
 class PropertiesUtilsTest {
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         log.info("Initiating Test Setup");
         ConfigUtils.getConfigFile();
         ConfigUtils.writeProperty(ConfigKeys.MODE, SethlansMode.SERVER.toString());
@@ -51,7 +51,7 @@ class PropertiesUtilsTest {
     }
 
     @Test
-    void getSelectedCores() {
+    void getSelectedCores() throws Exception {
         assertEquals("Values do not match", "3", PropertiesUtils.getSelectedCores());
         ConfigUtils.writeProperty(ConfigKeys.CPU_CORES, "2");
         assertEquals("Values do not match", "2", PropertiesUtils.getSelectedCores());
@@ -79,4 +79,15 @@ class PropertiesUtilsTest {
     }
 
 
+    @Test
+    void writeMailSettings() {
+    }
+
+    @Test
+    void getPort() {
+    }
+
+    @Test
+    void writeNodeSettings() {
+    }
 }

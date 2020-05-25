@@ -37,9 +37,9 @@ import javax.persistence.Embeddable;
 @Builder
 @Embeddable
 public class ImageSettings {
-    private int resolutionX;
-    private int resolutionY;
-    private int resPercentage;
+    private Integer resolutionX;
+    private Integer resolutionY;
+    private Integer resPercentage;
     private ImageOutputFormat imageOutputFormat;
 
 }

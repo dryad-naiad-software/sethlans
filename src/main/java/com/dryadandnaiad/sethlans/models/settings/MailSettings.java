@@ -17,8 +17,10 @@
 
 package com.dryadandnaiad.sethlans.models.settings;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * File created by Mario Estrella on 5/15/2020.
@@ -28,6 +30,8 @@ import lombok.Data;
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MailSettings {
     private String mailHost;
     private String mailPort;

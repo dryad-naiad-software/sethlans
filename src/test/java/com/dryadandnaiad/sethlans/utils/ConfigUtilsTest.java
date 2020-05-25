@@ -24,8 +24,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
@@ -54,7 +52,7 @@ class ConfigUtilsTest {
     }
 
     @Test
-    void writeProperty() throws IOException {
+    void writeProperty() throws Exception {
         var configFile = ConfigUtils.getConfigFile();
         ConfigUtils.writeProperty(ConfigKeys.MAIL_HOST, "localhost.local");
         assertTrue("Key is not present", FileUtils.readFileToString(configFile,

@@ -33,8 +33,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Part {
-    private double minX;
-    private double maxX;
-    private double minY;
-    private double maxY;
+    private Double minX;
+    private Double maxX;
+    private Double minY;
+    private Double maxY;
 }

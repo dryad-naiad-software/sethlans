@@ -75,12 +75,15 @@ public class ConfigUtils {
      *
      * @param configKey Sethlans configuration key
      * @param value     value to store
-     * @return true is write is successful
      */
-    public static boolean writeProperty(ConfigKeys configKey, String value) {
+    public static void writeProperty(ConfigKeys configKey, String value) throws Exception {
         val comment = updateTimeStamp();
         val key = configKey.toString();
         val properties = new Properties();
+
+        if (value == null) {
+            throw new Exception("Null values are not valid for properties");
+        }
 
         try {
             val fileIn = new FileInputStream(getConfigFile());
@@ -92,12 +95,10 @@ public class ConfigUtils {
             properties.store(fileOutputStream, comment);
             log.debug("SethlansConfigKey: " + key + " written to " + getConfigFile().toString());
             fileOutputStream.close();
-            return true;
         } catch (IOException e) {
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
         }
-        return false;
     }
 
     /**

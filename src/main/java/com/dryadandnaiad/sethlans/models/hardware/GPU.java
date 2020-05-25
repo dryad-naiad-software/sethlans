@@ -38,8 +38,8 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class GPU {
     private String model;
-    private long memory; // in B
-    private int rating;
+    private Long memory; // in B
+    private Integer rating;
     private boolean openCLDevice;
     private boolean cudaDevice;
     private boolean optixDevice;
