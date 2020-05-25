@@ -17,7 +17,12 @@
 
 package com.dryadandnaiad.sethlans.models.settings;
 
+import com.dryadandnaiad.sethlans.enums.NodeType;
+import com.dryadandnaiad.sethlans.models.hardware.GPU;
+import lombok.Builder;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * File created by Mario Estrella on 5/15/2020.
@@ -26,12 +31,12 @@ import lombok.Data;
  * Project: sethlans
  */
 @Data
+@Builder
 public class NodeSettings {
-    private String mailHost;
-    private String mailPort;
-    private String replyToAddress;
-    private boolean smtpAuth;
-    private boolean sslEnabled;
-    private boolean startTLSEnabled;
-    private boolean startTLSRequired;
+    private NodeType nodeType;
+    private Integer cores;
+    private Integer tileSizeGPU;
+    private Integer tileSizeCPU;
+    private List<GPU> selectedGPUs;
+    private boolean gpuCombined;
 }

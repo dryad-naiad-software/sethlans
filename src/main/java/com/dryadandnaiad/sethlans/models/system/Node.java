@@ -17,7 +17,7 @@
 
 package com.dryadandnaiad.sethlans.models.system;
 
-import com.dryadandnaiad.sethlans.enums.ComputeOn;
+import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.enums.OS;
 import com.dryadandnaiad.sethlans.models.hardware.CPU;
 import com.dryadandnaiad.sethlans.models.hardware.GPU;
@@ -46,11 +46,10 @@ import java.util.List;
 @SuperBuilder
 public class Node extends System {
     private OS os;
-    private ComputeOn computeOn;
+    private NodeType nodeType;
     private boolean active;
     private boolean disabled;
     private boolean pendingActivation;
-    private boolean combined;
     private boolean benchmarkComplete;
     private int totalRenderingSlots;
     private int cpuRating;
