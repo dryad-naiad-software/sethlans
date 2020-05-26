@@ -17,16 +17,20 @@
 
 package com.dryadandnaiad.sethlans.services;
 
+import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.repositories.BlenderBinaryRepository;
-import com.dryadandnaiad.sethlans.repositories.UserRepository;
+import com.dryadandnaiad.sethlans.services.database.UserDatabaseService;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * File created by Mario Estrella on 5/25/2020.
@@ -37,12 +41,12 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class SetupServiceImpl implements SetupService {
-    private final UserRepository userRepository;
+    private final UserDatabaseService userDatabaseService;
     private final BlenderBinaryRepository blenderBinaryRepository;
 
-    public SetupServiceImpl(UserRepository userRepository, BlenderBinaryRepository blenderBinaryRepository) {
-        this.userRepository = userRepository;
+    public SetupServiceImpl(UserDatabaseService userDatabaseService, BlenderBinaryRepository blenderBinaryRepository) {
         this.blenderBinaryRepository = blenderBinaryRepository;
+        this.userDatabaseService = userDatabaseService;
     }
 
     @Override
@@ -64,12 +68,16 @@ public class SetupServiceImpl implements SetupService {
             PropertiesUtils.writeMailSettings(setupForm.getMailSettings());
 
         } catch (Exception e) {
-            System.out.println("Test1");
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
             return false;
         }
-        userRepository.save(setupForm.getUser());
+        var user = setupForm.getUser();
+        user.setUsername(user.getUsername().toLowerCase());
+        user.setRoles(Stream.of(Role.SUPER_ADMINISTRATOR).collect(Collectors.toSet()));
+        user.setActive(true);
+        user.setPasswordUpdated(true);
+        userDatabaseService.save(user);
         return true;
 
     }
