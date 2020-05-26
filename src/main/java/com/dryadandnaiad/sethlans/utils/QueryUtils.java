@@ -22,16 +22,13 @@ import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.enums.OS;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.models.hardware.CPU;
-import com.dryadandnaiad.sethlans.models.system.Node;
-import com.dryadandnaiad.sethlans.models.system.Server;
-import com.dryadandnaiad.sethlans.models.system.System;
+import com.dryadandnaiad.sethlans.models.system.SystemInfo;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
-import oshi.SystemInfo;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -43,9 +40,6 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
-
-import static com.dryadandnaiad.sethlans.utils.PropertiesUtils.getIP;
-import static com.dryadandnaiad.sethlans.utils.PropertiesUtils.getPort;
 
 /**
  * File created by Mario Estrella on 4/19/2020.
@@ -72,7 +66,7 @@ public class QueryUtils {
      * @return String in the form of "Windows64"
      */
     public static OS getOS() {
-        var si = new SystemInfo();
+        var si = new oshi.SystemInfo();
         var os = si.getOperatingSystem();
         var bits = os.getBitness();
         if (SystemUtils.IS_OS_WINDOWS) {
@@ -113,6 +107,17 @@ public class QueryUtils {
             hostname = hostname.substring(0, indexEnd);
         }
         return hostname.toUpperCase();
+    }
+
+    public static SystemInfo getCurrentSystemInfo() {
+        return SystemInfo.builder()
+                .hostname(getHostname())
+                .os(getOS())
+                .ipAddress(PropertiesUtils.getIP())
+                .networkPort(PropertiesUtils.getPort())
+                .cpu(new CPU())
+                .gpuList(ScanGPU.listDevices())
+                .build();
     }
 
     /**
@@ -169,30 +174,6 @@ public class QueryUtils {
         }
         return availableMethods;
 
-    }
-
-    /**
-     * Retrieves base information and returns a System type object
-     *
-     * @param type Server or Node class.
-     * @return Server or Node class populated with basic information
-     */
-    public static <T extends System> System getCurrentSystemInfo(Class<T> type) {
-        if (type.getSimpleName().equals("Server")) {
-            return Server.builder()
-                    .networkPort(getPort())
-                    .hostname(getHostname())
-                    .ipAddress(getIP())
-                    .build();
-        } else {
-            return Node.builder()
-                    .networkPort(getPort())
-                    .hostname(getHostname())
-                    .ipAddress(getIP())
-                    .os(getOS())
-                    .cpu(new CPU())
-                    .build();
-        }
     }
 
 

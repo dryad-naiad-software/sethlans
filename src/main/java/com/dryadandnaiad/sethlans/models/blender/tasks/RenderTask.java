@@ -17,10 +17,11 @@
 
 package com.dryadandnaiad.sethlans.models.blender.tasks;
 
+import com.dryadandnaiad.sethlans.models.AbstractModel;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
 /**
  * File created by Mario Estrella on 4/2/2020.
@@ -33,10 +34,9 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @Getter
 @Setter
-@Builder
-public class RenderTask {
-    @Id
-    private Long id;
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
+public class RenderTask extends AbstractModel {
     private String blenderVersion;
     private String blenderExecutable;
     private String taskID;

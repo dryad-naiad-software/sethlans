@@ -17,26 +17,18 @@
 
 package com.dryadandnaiad.sethlans.models.system;
 
-import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.enums.OS;
-import com.dryadandnaiad.sethlans.models.AbstractModel;
 import com.dryadandnaiad.sethlans.models.hardware.CPU;
 import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import java.util.List;
 
 /**
- * File created by Mario Estrella on 4/2/2020.
+ * File created by Mario Estrella on 5/26/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
@@ -44,24 +36,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@EqualsAndHashCode(callSuper = true)
-@SuperBuilder
-@Entity
-public class Node extends AbstractModel {
+@Builder
+public class SystemInfo {
     private String hostname;
     private String ipAddress;
     private String networkPort;
-    private String connectionID;
     private OS os;
-    private NodeType nodeType;
-    private boolean active;
-    private boolean disabled;
-    private boolean pendingActivation;
-    private boolean benchmarkComplete;
-    private Integer totalRenderingSlots;
-    private Integer cpuRating;
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SELECT)
-    private List<GPU> selectedGPUs;
     private CPU cpu;
+    private List<GPU> gpuList;
 }

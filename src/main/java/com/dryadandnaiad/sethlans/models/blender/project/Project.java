@@ -18,16 +18,21 @@
 package com.dryadandnaiad.sethlans.models.blender.project;
 
 import com.dryadandnaiad.sethlans.enums.ProjectType;
+import com.dryadandnaiad.sethlans.models.AbstractModel;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.models.user.User;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.*;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import java.util.List;
 
 /**
@@ -40,10 +45,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Builder
-public class Project {
-    @Id
-    private Long id;
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
+public class Project extends AbstractModel {
     private ProjectType projectType;
     private ProjectSettings projectSettings;
     private ProjectStatus projectStatus;

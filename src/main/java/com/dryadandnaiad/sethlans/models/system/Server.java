@@ -17,11 +17,14 @@
 
 package com.dryadandnaiad.sethlans.models.system;
 
+import com.dryadandnaiad.sethlans.models.AbstractModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import javax.persistence.Entity;
 
 /**
  * File created by Mario Estrella on 4/2/2020.
@@ -34,7 +37,12 @@ import lombok.experimental.SuperBuilder;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
-public class Server extends System {
+@Entity
+public class Server extends AbstractModel {
+    private String hostname;
+    private String ipAddress;
+    private String networkPort;
+    private String connectionID;
     private boolean acknowledged;
     private boolean pendingResponse;
     private boolean nodeUpdated;

@@ -22,8 +22,6 @@ import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.models.blender.project.ImageSettings;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.models.blender.project.ProjectSettings;
-import com.dryadandnaiad.sethlans.models.system.Node;
-import com.dryadandnaiad.sethlans.models.system.Server;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.SystemUtils;
@@ -86,10 +84,8 @@ class QueryUtilsTest {
 
     @Test
     void getCurrentSystemInfo() {
-        val serverSystemInfo = QueryUtils.getCurrentSystemInfo(Server.class);
-        val nodeSystemInfo = QueryUtils.getCurrentSystemInfo(Node.class);
-        assertThat(serverSystemInfo).isInstanceOf(Server.class);
-        assertThat(nodeSystemInfo).isInstanceOf(Node.class);
+        val systemInfo = QueryUtils.getCurrentSystemInfo();
+        assertThat(systemInfo).isNotNull();
     }
 
     @Test

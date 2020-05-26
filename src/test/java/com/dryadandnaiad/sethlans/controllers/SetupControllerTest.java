@@ -26,16 +26,14 @@ import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
 import com.dryadandnaiad.sethlans.models.user.User;
-import com.dryadandnaiad.sethlans.repositories.BlenderBinaryRepository;
-import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -56,7 +54,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Project: sethlans
  */
 @ActiveProfiles("SETUP")
-@WebMvcTest(SetupController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class SetupControllerTest {
 
     static File SETHLANS_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + ".sethlans");
@@ -64,11 +63,6 @@ class SetupControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    @MockBean
-    UserRepository userRepository;
-
-    @MockBean
-    BlenderBinaryRepository blenderBinaryRepository;
 
     @BeforeEach
     void setUp() {
@@ -80,7 +74,7 @@ class SetupControllerTest {
     }
 
     @Test
-    void saveForm() throws Exception {
+    void completeSetup() throws Exception {
         SetupForm form = getSetupForm();
         ObjectMapper objectMapper = new ObjectMapper();
         String formJson = objectMapper.writeValueAsString(form);

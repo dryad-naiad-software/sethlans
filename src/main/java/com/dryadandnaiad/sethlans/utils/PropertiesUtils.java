@@ -20,6 +20,7 @@ package com.dryadandnaiad.sethlans.utils;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,9 +28,14 @@ import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.UUID;
+
+import static com.dryadandnaiad.sethlans.utils.ConfigUtils.getProperty;
+import static com.dryadandnaiad.sethlans.utils.ConfigUtils.writeProperty;
 
 /**
  * Static methods that write and retrieve information from the sethlans.properties file
@@ -43,24 +49,24 @@ import java.net.Socket;
 public class PropertiesUtils {
 
     public static String getSelectedCores() {
-        return ConfigUtils.getProperty(ConfigKeys.CPU_CORES);
+        return getProperty(ConfigKeys.CPU_CORES);
     }
 
 
     public static String getPort() {
-        return ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT);
+        return getProperty(ConfigKeys.HTTPS_PORT);
     }
 
 
     public static boolean getFirstTime() {
-        return Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.FIRST_TIME));
+        return Boolean.parseBoolean(getProperty(ConfigKeys.FIRST_TIME));
     }
 
 
     public static String getIP() {
         String ip = null;
         try {
-            ip = ConfigUtils.getProperty(ConfigKeys.SETHLANS_IP);
+            ip = getProperty(ConfigKeys.SETHLANS_IP);
             if (ip == null) {
                 if (SystemUtils.IS_OS_LINUX) {
                     // Make a connection to 8.8.8.8 DNS in order to get IP address
@@ -78,28 +84,39 @@ public class PropertiesUtils {
     }
 
     public static SethlansMode getMode() {
-        return SethlansMode.valueOf(ConfigUtils.getProperty(ConfigKeys.MODE));
+        return SethlansMode.valueOf(getProperty(ConfigKeys.MODE));
     }
 
+    public static void writeMainSettings(SetupForm setupForm) throws Exception {
+        writeProperty(ConfigKeys.MODE, setupForm.getMode().name());
+        writeProperty(ConfigKeys.SETHLANS_IP, setupForm.getIpAddress());
+        writeProperty(ConfigKeys.HTTPS_PORT, setupForm.getPort());
+        writeProperty(ConfigKeys.SETHLANS_URL, setupForm.getAppURL());
+    }
+
+    public static void writeServerSettings(SetupForm setupForm) throws Exception {
+        writeProperty(ConfigKeys.ACCESS_KEY, UUID.randomUUID().toString());
+        writeProperty(ConfigKeys.GETTING_STARTED, "true");
+    }
 
     public static void writeNodeSettings(NodeSettings nodeSettings) throws Exception {
-        ConfigUtils.writeProperty(ConfigKeys.NODE_TYPE, nodeSettings.getNodeType().toString());
+        writeProperty(ConfigKeys.NODE_TYPE, nodeSettings.getNodeType().toString());
         if (!nodeSettings.getNodeType().equals(NodeType.GPU)) {
-            ConfigUtils.writeProperty(ConfigKeys.CPU_CORES, nodeSettings.getCores().toString());
-            ConfigUtils.writeProperty(ConfigKeys.TILE_SIZE_CPU, nodeSettings.getTileSizeCPU().toString());
+            writeProperty(ConfigKeys.CPU_CORES, nodeSettings.getCores().toString());
+            writeProperty(ConfigKeys.TILE_SIZE_CPU, nodeSettings.getTileSizeCPU().toString());
         } else {
-            ConfigUtils.writeProperty(ConfigKeys.CPU_CORES, "0");
-            ConfigUtils.writeProperty(ConfigKeys.TILE_SIZE_CPU, "0");
+            writeProperty(ConfigKeys.CPU_CORES, "0");
+            writeProperty(ConfigKeys.TILE_SIZE_CPU, "0");
         }
         if (!nodeSettings.getNodeType().equals(NodeType.CPU)) {
             ObjectMapper objectMapper = new ObjectMapper();
             String selectedGPUs = objectMapper.writeValueAsString(nodeSettings.getSelectedGPUs());
-            ConfigUtils.writeProperty(ConfigKeys.SELECTED_GPU, selectedGPUs);
-            ConfigUtils.writeProperty(ConfigKeys.TILE_SIZE_GPU, nodeSettings.getTileSizeGPU().toString());
-            ConfigUtils.writeProperty(ConfigKeys.COMBINE_GPU, Boolean.toString(nodeSettings.isGpuCombined()));
+            writeProperty(ConfigKeys.SELECTED_GPU, selectedGPUs);
+            writeProperty(ConfigKeys.TILE_SIZE_GPU, nodeSettings.getTileSizeGPU().toString());
+            writeProperty(ConfigKeys.COMBINE_GPU, Boolean.toString(nodeSettings.isGpuCombined()));
         } else {
-            ConfigUtils.writeProperty(ConfigKeys.SELECTED_GPU, "{}");
-            ConfigUtils.writeProperty(ConfigKeys.TILE_SIZE_GPU, "0");
+            writeProperty(ConfigKeys.SELECTED_GPU, "{}");
+            writeProperty(ConfigKeys.TILE_SIZE_GPU, "0");
         }
 
 
@@ -107,18 +124,64 @@ public class PropertiesUtils {
 
     public static void writeMailSettings(MailSettings mailSettings) throws Exception {
         if (mailSettings.isMailEnabled()) {
-            ConfigUtils.writeProperty(ConfigKeys.MAIL_SERVER_CONFIGURED, "true");
+            writeProperty(ConfigKeys.MAIL_SERVER_CONFIGURED, "true");
             if (mailSettings.isSmtpAuth()) {
-                ConfigUtils.writeProperty(ConfigKeys.MAIL_USE_AUTH, "true");
-                ConfigUtils.writeProperty(ConfigKeys.MAIL_USER, mailSettings.getUsername());
-                ConfigUtils.writeProperty(ConfigKeys.MAIL_PASS, mailSettings.getPassword());
+                writeProperty(ConfigKeys.MAIL_USE_AUTH, "true");
+                writeProperty(ConfigKeys.MAIL_USER, mailSettings.getUsername());
+                writeProperty(ConfigKeys.MAIL_PASS, mailSettings.getPassword());
             }
-            ConfigUtils.writeProperty(ConfigKeys.MAIL_HOST, mailSettings.getMailHost());
-            ConfigUtils.writeProperty(ConfigKeys.MAIL_PORT, mailSettings.getMailPort());
-            ConfigUtils.writeProperty(ConfigKeys.MAIL_REPLY_TO, mailSettings.getReplyToAddress());
-            ConfigUtils.writeProperty(ConfigKeys.MAIL_SSL_ENABLE, Boolean.toString(mailSettings.isSslEnabled()));
-            ConfigUtils.writeProperty(ConfigKeys.MAIL_TLS_ENABLE, Boolean.toString(mailSettings.isStartTLSEnabled()));
-            ConfigUtils.writeProperty(ConfigKeys.MAIL_TLS_REQUIRED, Boolean.toString(mailSettings.isStartTLSRequired()));
+            writeProperty(ConfigKeys.MAIL_HOST, mailSettings.getMailHost());
+            writeProperty(ConfigKeys.MAIL_PORT, mailSettings.getMailPort());
+            writeProperty(ConfigKeys.MAIL_REPLY_TO, mailSettings.getReplyToAddress());
+            writeProperty(ConfigKeys.MAIL_SSL_ENABLE, Boolean.toString(mailSettings.isSslEnabled()));
+            writeProperty(ConfigKeys.MAIL_TLS_ENABLE, Boolean.toString(mailSettings.isStartTLSEnabled()));
+            writeProperty(ConfigKeys.MAIL_TLS_REQUIRED, Boolean.toString(mailSettings.isStartTLSRequired()));
         }
+    }
+
+    public static void writeDirectories(SethlansMode mode) throws Exception {
+        String rootDirectory = SystemUtils.USER_HOME + File.separator + ".sethlans";
+        String scriptsDirectory = rootDirectory + File.separator + "scripts";
+        String downloadDirectory = rootDirectory + File.separator + "downloads";
+        String tempDirectory = rootDirectory + File.separator + "temp";
+        String cacheDirectory = rootDirectory + File.separator + "render_cache";
+        String blendFileCacheDirectory = rootDirectory + File.separator + "blendfile_cache";
+        String logDirectory = rootDirectory + File.separator + "logs";
+        String binDirectory = rootDirectory + File.separator + "bin";
+        String benchmarkDirectory = rootDirectory + File.separator + "benchmarks";
+        String projectDirectory = rootDirectory + File.separator + "projects";
+
+        writeProperty(ConfigKeys.ROOT_DIR, rootDirectory);
+        writeProperty(ConfigKeys.SCRIPTS_DIR, scriptsDirectory);
+        writeProperty(ConfigKeys.TEMP_DIR, tempDirectory);
+        writeProperty(ConfigKeys.BINARY_DIR, binDirectory);
+        writeProperty(ConfigKeys.LOGGING_DIR, logDirectory);
+        createDirectories(new File(binDirectory));
+        createDirectories(new File(scriptsDirectory));
+        createDirectories(new File(tempDirectory));
+
+
+        if (mode.equals(SethlansMode.DUAL) || mode.equals(SethlansMode.SERVER)) {
+            writeProperty(ConfigKeys.PROJECT_DIR, projectDirectory);
+            writeProperty(ConfigKeys.DOWNLOAD_DIR, downloadDirectory);
+            createDirectories(new File(projectDirectory));
+            createDirectories(new File(downloadDirectory));
+        }
+
+        if (mode.equals(SethlansMode.DUAL) || mode.equals(SethlansMode.NODE)) {
+            writeProperty(ConfigKeys.BENCHMARK_DIR, benchmarkDirectory);
+            writeProperty(ConfigKeys.CACHE_DIR, cacheDirectory);
+            writeProperty(ConfigKeys.BLEND_FILE_CACHE_DIR, blendFileCacheDirectory);
+            createDirectories(new File(benchmarkDirectory));
+            createDirectories(new File(cacheDirectory));
+            createDirectories(new File(blendFileCacheDirectory));
+        }
+    }
+
+    private static void createDirectories(File directory) {
+        if (!directory.mkdirs()) {
+            log.error("Unable to create directory" + directory);
+        }
+
     }
 }

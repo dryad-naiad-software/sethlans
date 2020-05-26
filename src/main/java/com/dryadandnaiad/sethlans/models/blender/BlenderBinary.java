@@ -18,13 +18,14 @@
 package com.dryadandnaiad.sethlans.models.blender;
 
 import com.dryadandnaiad.sethlans.enums.OS;
+import com.dryadandnaiad.sethlans.models.AbstractModel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
 /**
  * File created by Mario Estrella on 4/1/2020.
@@ -36,10 +37,9 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Builder
-public class BlenderBinary {
-    @Id
-    private Long id;
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
+public class BlenderBinary extends AbstractModel {
     private String blenderVersion;
     private OS blenderOS;
     private String blenderFile;

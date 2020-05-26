@@ -18,17 +18,18 @@
 package com.dryadandnaiad.sethlans.models.user;
 
 import com.dryadandnaiad.sethlans.enums.Role;
+import com.dryadandnaiad.sethlans.models.AbstractModel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import java.util.List;
 import java.util.Set;
 
@@ -42,10 +43,9 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Builder
-public class User {
-    @Id
-    private Long id;
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
+public class User extends AbstractModel {
     private String username;
     private String password;
     private boolean active;

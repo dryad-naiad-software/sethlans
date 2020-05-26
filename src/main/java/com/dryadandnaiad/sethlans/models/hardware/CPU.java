@@ -27,6 +27,7 @@ import oshi.hardware.HardwareAbstractionLayer;
 import oshi.util.FormatUtil;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 /**
  * File created by Mario Estrella on 3/29/2020.
@@ -45,10 +46,15 @@ public class CPU {
     private Integer cores;
     private Integer cpuPackage;
     private String totalMemory;
+    @Transient
     private long[] oldTicks;
+    @Transient
     private SystemInfo si = new SystemInfo();
+    @Transient
     private HardwareAbstractionLayer hal = si.getHardware();
+    @Transient
     private CentralProcessor centralProcessor = hal.getProcessor();
+    @Transient
     private GlobalMemory globalMemory = hal.getMemory();
 
 

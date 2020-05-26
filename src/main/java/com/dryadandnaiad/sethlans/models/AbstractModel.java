@@ -15,7 +15,7 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.models.system;
+package com.dryadandnaiad.sethlans.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,11 +23,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Date;
 
 /**
- * File created by Mario Estrella on 4/11/2020.
+ * File created by Mario Estrella on 5/26/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
@@ -37,12 +37,23 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @Getter
 @Setter
-@Entity
-public abstract class System {
+@MappedSuperclass
+public abstract class AbstractModel {
     @Id
-    private Long id;
-    private String hostname;
-    private String ipAddress;
-    private String networkPort;
-    private String connectionID;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    Long id;
+    @Version
+    private Long version;
+    private Date dateCreated;
+    private Date lastUpdated;
+
+
+    @PreUpdate
+    @PrePersist
+    public void updateTimeStamps() {
+        lastUpdated = new Date();
+        if (dateCreated == null) {
+            dateCreated = new Date();
+        }
+    }
 }

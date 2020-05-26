@@ -15,29 +15,16 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.models.system;
+package com.dryadandnaiad.sethlans.services;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 
 /**
- * File created by Mario Estrella on 4/2/2020.
+ * File created by Mario Estrella on 5/25/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
-@Builder
-public class AccessKey {
-    @Id
-    private Long id;
-    private String accessKey;
+public interface SetupService {
+    boolean saveSetupSettings(SetupForm setupForm);
 }
