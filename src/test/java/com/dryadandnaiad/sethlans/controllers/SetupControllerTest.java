@@ -26,6 +26,7 @@ import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
 import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.repositories.BlenderBinaryRepository;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.SystemUtils;
@@ -66,6 +67,9 @@ class SetupControllerTest {
     @MockBean
     UserRepository userRepository;
 
+    @MockBean
+    BlenderBinaryRepository blenderBinaryRepository;
+
     @BeforeEach
     void setUp() {
     }
@@ -80,7 +84,6 @@ class SetupControllerTest {
         SetupForm form = getSetupForm();
         ObjectMapper objectMapper = new ObjectMapper();
         String formJson = objectMapper.writeValueAsString(form);
-        System.out.println(formJson);
 
         mockMvc.perform(
                 post("/api/v1/setup/submit")

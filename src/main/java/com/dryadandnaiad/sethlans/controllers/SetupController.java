@@ -19,10 +19,13 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.models.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
+import com.dryadandnaiad.sethlans.repositories.BlenderBinaryRepository;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
+import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -45,9 +48,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class SetupController {
     private final UserRepository userRepository;
+    private final BlenderBinaryRepository blenderBinaryRepository;
 
-    public SetupController(UserRepository userRepository) {
+    public SetupController(UserRepository userRepository, BlenderBinaryRepository blenderBinaryRepository) {
         this.userRepository = userRepository;
+        this.blenderBinaryRepository = blenderBinaryRepository;
     }
 
     @PostMapping("/submit")
@@ -58,6 +63,11 @@ public class SetupController {
             ConfigUtils.writeProperty(ConfigKeys.HTTPS_PORT, setupForm.getPort());
             ConfigUtils.writeProperty(ConfigKeys.SETHLANS_URL, setupForm.getAppURL());
             if (setupForm.getMode().equals(SethlansMode.DUAL) || setupForm.getMode().equals(SethlansMode.SERVER)) {
+                blenderBinaryRepository.save(BlenderBinary.builder()
+                        .blenderOS(QueryUtils.getOS())
+                        .downloaded(false)
+                        .blenderVersion(setupForm.getServerSettings().getBlenderVersion())
+                        .build());
             }
             if (setupForm.getMode().equals(SethlansMode.DUAL) || setupForm.getMode().equals(SethlansMode.NODE)) {
                 PropertiesUtils.writeNodeSettings(setupForm.getNodeSettings());
