@@ -24,7 +24,7 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum ConfigKeys {
-    ACCESS_KEY("sethlans.accessKey"),
+    SYSTEM_ID("sethlans.systemID"),
     SETHLANS_IP("server.ipAddress"),
     HTTPS_PORT("server.port"),
     FIRST_TIME("sethlans.firstTime"),

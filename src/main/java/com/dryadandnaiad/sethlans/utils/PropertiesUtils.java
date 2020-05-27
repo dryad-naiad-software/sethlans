@@ -92,10 +92,11 @@ public class PropertiesUtils {
         writeProperty(ConfigKeys.SETHLANS_IP, setupForm.getIpAddress());
         writeProperty(ConfigKeys.HTTPS_PORT, setupForm.getPort());
         writeProperty(ConfigKeys.SETHLANS_URL, setupForm.getAppURL());
+        writeProperty(ConfigKeys.SYSTEM_ID, UUID.randomUUID().toString());
+
     }
 
     public static void writeServerSettings(SetupForm setupForm) throws Exception {
-        writeProperty(ConfigKeys.ACCESS_KEY, UUID.randomUUID().toString());
         writeProperty(ConfigKeys.GETTING_STARTED, "true");
     }
 

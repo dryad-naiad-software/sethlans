@@ -22,11 +22,12 @@ import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.repositories.BlenderBinaryRepository;
-import com.dryadandnaiad.sethlans.services.database.UserDatabaseService;
+import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
@@ -41,12 +42,14 @@ import java.util.stream.Stream;
 @Service
 @Slf4j
 public class SetupServiceImpl implements SetupService {
-    private final UserDatabaseService userDatabaseService;
+    private final UserRepository userRepository;
     private final BlenderBinaryRepository blenderBinaryRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public SetupServiceImpl(UserDatabaseService userDatabaseService, BlenderBinaryRepository blenderBinaryRepository) {
+    public SetupServiceImpl(UserRepository userRepository, BlenderBinaryRepository blenderBinaryRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.blenderBinaryRepository = blenderBinaryRepository;
-        this.userDatabaseService = userDatabaseService;
+        this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
@@ -76,8 +79,8 @@ public class SetupServiceImpl implements SetupService {
         user.setUsername(user.getUsername().toLowerCase());
         user.setRoles(Stream.of(Role.SUPER_ADMINISTRATOR).collect(Collectors.toSet()));
         user.setActive(true);
-        user.setPasswordUpdated(true);
-        userDatabaseService.save(user);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
         return true;
 
     }
