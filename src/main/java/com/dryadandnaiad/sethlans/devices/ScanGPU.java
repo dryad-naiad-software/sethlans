@@ -203,6 +203,7 @@ public class ScanGPU {
             }
         } catch (UnsatisfiedLinkError | NoClassDefFoundError e) {
             log.error(e.getMessage() + " Most likely, OpenCL not present on system.");
+            log.error(Throwables.getStackTraceAsString(e));
         }
     }
 
