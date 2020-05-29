@@ -22,6 +22,9 @@ import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.SystemUtils;
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+import org.jasypt.iv.RandomIvGenerator;
+import org.jasypt.properties.EncryptableProperties;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -37,6 +40,8 @@ import java.util.Properties;
  */
 @Slf4j
 public class ConfigUtils {
+
+    private static final String PASSKEY = "8T7qn5EtLzqFKCW4";
 
     private static String updateTimeStamp() {
         Date currentDate = GregorianCalendar.getInstance().getTime();
@@ -75,6 +80,35 @@ public class ConfigUtils {
         return configFile;
     }
 
+    public static void writeEncryptedProperty(ConfigKeys configKey, String value) throws Exception {
+        if (value == null) {
+            throw new Exception("Null values are not valid for properties");
+        }
+        StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
+        encryptor.setPassword(PASSKEY);
+        encryptor.setAlgorithm("PBEWithHMACSHA512AndAES_256");
+        encryptor.setIvGenerator(new RandomIvGenerator());
+        val comment = updateTimeStamp();
+        val key = configKey.toString();
+        val properties = new EncryptableProperties(encryptor);
+
+        try {
+            val fileIn = new FileInputStream(getConfigFile());
+            properties.load(fileIn);
+            fileIn.close();
+            val fileOutputStream = new FileOutputStream(getConfigFile());
+            properties.setProperty(key, encryptor.encrypt(value));
+            //Save Properties to File
+            properties.store(fileOutputStream, comment);
+            log.debug("SethlansConfigKey: " + key + " written to " + getConfigFile().toString());
+            fileOutputStream.close();
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+        }
+
+    }
+
     /**
      * Writes a property value to sethlans.properties file
      *
@@ -82,13 +116,12 @@ public class ConfigUtils {
      * @param value     value to store
      */
     public static void writeProperty(ConfigKeys configKey, String value) throws Exception {
-        val comment = updateTimeStamp();
-        val key = configKey.toString();
-        val properties = new Properties();
-
         if (value == null) {
             throw new Exception("Null values are not valid for properties");
         }
+        val comment = updateTimeStamp();
+        val key = configKey.toString();
+        val properties = new Properties();
 
         try {
             val fileIn = new FileInputStream(getConfigFile());
@@ -114,7 +147,6 @@ public class ConfigUtils {
      */
     public static String getProperty(ConfigKeys configKey) {
         val key = configKey.toString();
-
         val properties = new Properties();
         try {
             // Try to get property from local file system first
@@ -128,6 +160,41 @@ public class ConfigUtils {
                 // Obtain value from built in sethlans.properties file(defaults)
                 loadPropertiesFileFromResource(properties);
                 return properties.getProperty(key);
+            }
+
+        } catch (
+                IOException e) {
+            log.error("Unable to read config file!");
+            log.error(Throwables.getStackTraceAsString(e));
+
+        }
+        return null;
+    }
+
+    public static String getEncryptedProperty(ConfigKeys configKey) {
+        StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
+        encryptor.setPassword(PASSKEY);
+        encryptor.setAlgorithm("PBEWithHMACSHA512AndAES_256");
+        encryptor.setIvGenerator(new RandomIvGenerator());
+        val key = configKey.toString();
+
+        val properties = new EncryptableProperties(encryptor);
+        try {
+            // Try to get property from local file system first
+            val fileIn = new FileInputStream(getConfigFile());
+            properties.load(fileIn);
+            fileIn.close();
+            var value = properties.getProperty(key);
+            if (value != null) {
+                return encryptor.decrypt(value);
+            } else {
+                // Obtain value from built in sethlans.properties file(defaults)
+                loadPropertiesFileFromResource(properties);
+                value = properties.getProperty(key);
+                if (value != null) {
+                    return encryptor.decrypt(value);
+                }
+                return null;
             }
 
         } catch (

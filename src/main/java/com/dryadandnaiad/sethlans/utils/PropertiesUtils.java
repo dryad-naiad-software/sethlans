@@ -34,8 +34,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.UUID;
 
-import static com.dryadandnaiad.sethlans.utils.ConfigUtils.getProperty;
-import static com.dryadandnaiad.sethlans.utils.ConfigUtils.writeProperty;
+import static com.dryadandnaiad.sethlans.utils.ConfigUtils.*;
 
 /**
  * Static methods that write and retrieve information from the sethlans.properties file
@@ -96,7 +95,7 @@ public class PropertiesUtils {
 
     }
 
-    public static void writeServerSettings(SetupForm setupForm) throws Exception {
+    public static void writeServerSettings() throws Exception {
         writeProperty(ConfigKeys.GETTING_STARTED, "true");
     }
 
@@ -129,7 +128,7 @@ public class PropertiesUtils {
             if (mailSettings.isSmtpAuth()) {
                 writeProperty(ConfigKeys.MAIL_USE_AUTH, "true");
                 writeProperty(ConfigKeys.MAIL_USER, mailSettings.getUsername());
-                writeProperty(ConfigKeys.MAIL_PASS, mailSettings.getPassword());
+                writeEncryptedProperty(ConfigKeys.MAIL_PASS, mailSettings.getPassword());
             }
             writeProperty(ConfigKeys.MAIL_HOST, mailSettings.getMailHost());
             writeProperty(ConfigKeys.MAIL_PORT, mailSettings.getMailPort());
