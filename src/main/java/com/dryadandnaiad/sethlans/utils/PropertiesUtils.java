@@ -86,12 +86,13 @@ public class PropertiesUtils {
         return SethlansMode.valueOf(getProperty(ConfigKeys.MODE));
     }
 
-    public static void writeMainSettings(SetupForm setupForm) throws Exception {
+    public static void writeSetupSettings(SetupForm setupForm) throws Exception {
         writeProperty(ConfigKeys.MODE, setupForm.getMode().name());
         writeProperty(ConfigKeys.SETHLANS_IP, setupForm.getIpAddress());
         writeProperty(ConfigKeys.HTTPS_PORT, setupForm.getPort());
         writeProperty(ConfigKeys.SETHLANS_URL, setupForm.getAppURL());
         writeProperty(ConfigKeys.SYSTEM_ID, UUID.randomUUID().toString());
+        writeProperty(ConfigKeys.LOG_LEVEL, setupForm.getLogLevel().toString());
 
     }
 

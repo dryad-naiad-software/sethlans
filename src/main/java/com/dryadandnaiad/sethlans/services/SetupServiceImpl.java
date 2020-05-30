@@ -55,7 +55,7 @@ public class SetupServiceImpl implements SetupService {
     @Override
     public boolean saveSetupSettings(SetupForm setupForm) {
         try {
-            PropertiesUtils.writeMainSettings(setupForm);
+            PropertiesUtils.writeSetupSettings(setupForm);
             PropertiesUtils.writeDirectories(setupForm.getMode());
             if (setupForm.getMode().equals(SethlansMode.DUAL) || setupForm.getMode().equals(SethlansMode.SERVER)) {
                 PropertiesUtils.writeServerSettings();

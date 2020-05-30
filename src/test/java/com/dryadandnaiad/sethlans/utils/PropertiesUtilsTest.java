@@ -163,13 +163,20 @@ class PropertiesUtilsTest {
     }
 
     @Test
-    void writeMainSettings() {
-        SetupForm.builder()
+    void writeSetupSettings() throws Exception {
+        var setupSettings = SetupForm.builder()
                 .appURL("https://localhost:7443")
                 .ipAddress("10.10.10.10")
                 .logLevel(LogLevel.DEBUG)
                 .mode(SethlansMode.DUAL)
                 .port("7443").build();
+        PropertiesUtils.writeSetupSettings(setupSettings);
+        assertThat(ConfigUtils.getProperty(ConfigKeys.MODE)).isEqualTo("DUAL");
+        assertThat(ConfigUtils.getProperty(ConfigKeys.LOG_LEVEL)).isEqualTo("DEBUG");
+        assertThat(ConfigUtils.getProperty(ConfigKeys.SETHLANS_IP)).isEqualTo("10.10.10.10");
+        assertThat(ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT)).isEqualTo("7443");
+        assertThat(ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID)).isNotNull();
+        assertThat(ConfigUtils.getProperty(ConfigKeys.SETHLANS_URL)).isEqualTo("https://localhost:7443");
     }
 
     @Test
