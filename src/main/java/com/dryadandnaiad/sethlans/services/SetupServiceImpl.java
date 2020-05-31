@@ -58,7 +58,6 @@ public class SetupServiceImpl implements SetupService {
             PropertiesUtils.writeSetupSettings(setupForm);
             PropertiesUtils.writeDirectories(setupForm.getMode());
             if (setupForm.getMode().equals(SethlansMode.DUAL) || setupForm.getMode().equals(SethlansMode.SERVER)) {
-                PropertiesUtils.writeServerSettings();
                 blenderBinaryRepository.save(BlenderBinary.builder()
                         .blenderOS(QueryUtils.getOS())
                         .downloaded(false)

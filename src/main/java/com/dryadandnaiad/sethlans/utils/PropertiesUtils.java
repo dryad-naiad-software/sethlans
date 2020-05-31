@@ -93,11 +93,10 @@ public class PropertiesUtils {
         writeProperty(ConfigKeys.SETHLANS_URL, setupForm.getAppURL());
         writeProperty(ConfigKeys.SYSTEM_ID, UUID.randomUUID().toString());
         writeProperty(ConfigKeys.LOG_LEVEL, setupForm.getLogLevel().toString());
+        if (setupForm.getMode().equals(SethlansMode.SERVER) || setupForm.getMode().equals(SethlansMode.DUAL)) {
+            writeProperty(ConfigKeys.GETTING_STARTED, "true");
+        }
 
-    }
-
-    public static void writeServerSettings() throws Exception {
-        writeProperty(ConfigKeys.GETTING_STARTED, "true");
     }
 
     public static void writeNodeSettings(NodeSettings nodeSettings) throws Exception {

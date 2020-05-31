@@ -177,13 +177,61 @@ class PropertiesUtilsTest {
         assertThat(ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT)).isEqualTo("7443");
         assertThat(ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID)).isNotNull();
         assertThat(ConfigUtils.getProperty(ConfigKeys.SETHLANS_URL)).isEqualTo("https://localhost:7443");
+        assertThat(ConfigUtils.getProperty(ConfigKeys.GETTING_STARTED)).isEqualTo("true");
+    }
+
+
+    @Test
+    void writeDirectoriesServer() throws Exception {
+        String rootDirectory = SETHLANS_DIRECTORY.toString();
+        String scriptsDirectory = rootDirectory + File.separator + "scripts";
+        String downloadDirectory = rootDirectory + File.separator + "downloads";
+        String tempDirectory = rootDirectory + File.separator + "temp";
+        String binDirectory = rootDirectory + File.separator + "bin";
+        String projectDirectory = rootDirectory + File.separator + "projects";
+        String logDirectory = rootDirectory + File.separator + "logs";
+        PropertiesUtils.writeDirectories(SethlansMode.SERVER);
+        assertThat(ConfigUtils.getProperty(ConfigKeys.ROOT_DIR)).isEqualTo(rootDirectory);
+        assertThat(ConfigUtils.getProperty(ConfigKeys.SCRIPTS_DIR)).isEqualTo(scriptsDirectory);
+        assertThat(ConfigUtils.getProperty(ConfigKeys.TEMP_DIR)).isEqualTo(tempDirectory);
+        assertThat(ConfigUtils.getProperty(ConfigKeys.BINARY_DIR)).isEqualTo(binDirectory);
+        assertThat(ConfigUtils.getProperty(ConfigKeys.LOGGING_DIR)).isEqualTo(logDirectory);
+        assertThat(ConfigUtils.getProperty(ConfigKeys.PROJECT_DIR)).isEqualTo(projectDirectory);
+        assertThat(ConfigUtils.getProperty(ConfigKeys.DOWNLOAD_DIR)).isEqualTo(downloadDirectory);
+        assertThat(new File(rootDirectory)).exists();
+        assertThat(new File(scriptsDirectory)).exists();
+        assertThat(new File(tempDirectory)).exists();
+        assertThat(new File(binDirectory)).exists();
+        assertThat(new File(projectDirectory)).exists();
+        assertThat(new File(downloadDirectory)).exists();
     }
 
     @Test
-    void writeServerSettings() {
+    void writeDirectoriesNode() throws Exception {
+        String rootDirectory = SETHLANS_DIRECTORY.toString();
+        String scriptsDirectory = rootDirectory + File.separator + "scripts";
+        String tempDirectory = rootDirectory + File.separator + "temp";
+        String binDirectory = rootDirectory + File.separator + "bin";
+        String cacheDirectory = rootDirectory + File.separator + "render_cache";
+        String blendFileCacheDirectory = rootDirectory + File.separator + "blendfile_cache";
+        String logDirectory = rootDirectory + File.separator + "logs";
+        String benchmarkDirectory = rootDirectory + File.separator + "benchmarks";
+        PropertiesUtils.writeDirectories(SethlansMode.NODE);
+        assertThat(ConfigUtils.getProperty(ConfigKeys.ROOT_DIR)).isEqualTo(rootDirectory);
+        assertThat(ConfigUtils.getProperty(ConfigKeys.SCRIPTS_DIR)).isEqualTo(scriptsDirectory);
+        assertThat(ConfigUtils.getProperty(ConfigKeys.TEMP_DIR)).isEqualTo(tempDirectory);
+        assertThat(ConfigUtils.getProperty(ConfigKeys.BINARY_DIR)).isEqualTo(binDirectory);
+        assertThat(ConfigUtils.getProperty(ConfigKeys.LOGGING_DIR)).isEqualTo(logDirectory);
+        assertThat(ConfigUtils.getProperty(ConfigKeys.BENCHMARK_DIR)).isEqualTo(benchmarkDirectory);
+        assertThat(ConfigUtils.getProperty(ConfigKeys.CACHE_DIR)).isEqualTo(cacheDirectory);
+        assertThat(ConfigUtils.getProperty(ConfigKeys.BLEND_FILE_CACHE_DIR)).isEqualTo(blendFileCacheDirectory);
+        assertThat(new File(rootDirectory)).exists();
+        assertThat(new File(scriptsDirectory)).exists();
+        assertThat(new File(tempDirectory)).exists();
+        assertThat(new File(binDirectory)).exists();
+        assertThat(new File(benchmarkDirectory)).exists();
+        assertThat(new File(cacheDirectory)).exists();
+        assertThat(new File(blendFileCacheDirectory)).exists();
     }
 
-    @Test
-    void writeDirectories() {
-    }
 }
