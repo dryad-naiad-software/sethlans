@@ -81,6 +81,5 @@ public class SetupServiceImpl implements SetupService {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return true;
-
     }
 }

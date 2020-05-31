@@ -17,10 +17,13 @@
 
 package com.dryadandnaiad.sethlans;
 
+import com.dryadandnaiad.sethlans.executor.SethlansState;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
-import org.springframework.boot.SpringApplication;
+import com.google.common.base.Throwables;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,17 +35,43 @@ import java.util.List;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-
+@Slf4j
 @SpringBootApplication(exclude = EmbeddedMongoAutoConfiguration.class)
 public class SethlansApplication {
 
     public static void main(String[] args) {
         ConfigUtils.getConfigFile();
+        new SethlansApplication().doMain(args);
+    }
+
+    public void doMain(String[] args) {
         List<String> arrayArgs = new ArrayList<>();
         arrayArgs.add("--spring.config.name=sethlans");
         arrayArgs.add("--spring.config.additional-location=" + System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "config" + File.separator);
         String[] springArgs = new String[arrayArgs.size()];
         springArgs = arrayArgs.toArray(springArgs);
-        SpringApplication.run(SethlansApplication.class, springArgs);
+        startSpring(springArgs);
+
+    }
+
+    private void startSpring(String[] springArgs) {
+        SethlansState sethlansState = SethlansState.getInstance();
+        while (true) {
+            try {
+                if (sethlansState.sethlansActive) {
+                    Thread.sleep(1000);
+                } else {
+                    Thread.sleep(1000);
+                    SpringApplicationBuilder builder = new SpringApplicationBuilder(SethlansApplication.class);
+                    builder.headless(false);
+                    sethlansState.sethlansActive = builder.run(springArgs).isActive();
+                }
+            } catch (InterruptedException e) {
+                log.error(e.getMessage());
+                log.error(Throwables.getStackTraceAsString(e));
+            }
+        }
+
+
     }
 }
