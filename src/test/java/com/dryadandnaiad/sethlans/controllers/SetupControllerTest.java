@@ -85,6 +85,7 @@ class SetupControllerTest {
                 .andExpect(status().isCreated());
     }
 
+
     SetupForm getSetupForm() {
         return SetupForm.builder()
                 .appURL("https://localhost:7443")
@@ -132,5 +133,6 @@ class SetupControllerTest {
         return ServerSettings.builder()
                 .blenderVersion("2.79b").build();
     }
+
 
 }

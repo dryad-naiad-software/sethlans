@@ -18,15 +18,13 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
+import com.dryadandnaiad.sethlans.services.SethlansManagerService;
 import com.dryadandnaiad.sethlans.services.SetupService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * File created by Mario Estrella on 5/24/2020.
@@ -40,9 +38,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class SetupController {
     private final SetupService setupService;
+    private final SethlansManagerService sethlansManagerService;
 
-    public SetupController(SetupService setupService) {
+    public SetupController(SetupService setupService, SethlansManagerService sethlansManagerService) {
         this.setupService = setupService;
+        this.sethlansManagerService = sethlansManagerService;
     }
 
 
@@ -53,6 +53,11 @@ public class SetupController {
         } else {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
+    }
 
+    @GetMapping("/restart")
+    public ResponseEntity restartSethlans() {
+        sethlansManagerService.restart();
+        return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 }

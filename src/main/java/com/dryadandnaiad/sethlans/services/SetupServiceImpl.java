@@ -45,11 +45,13 @@ public class SetupServiceImpl implements SetupService {
     private final UserRepository userRepository;
     private final BlenderBinaryRepository blenderBinaryRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final SethlansManagerService sethlansManagerService;
 
-    public SetupServiceImpl(UserRepository userRepository, BlenderBinaryRepository blenderBinaryRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public SetupServiceImpl(UserRepository userRepository, BlenderBinaryRepository blenderBinaryRepository, BCryptPasswordEncoder bCryptPasswordEncoder, SethlansManagerService sethlansManagerService) {
         this.blenderBinaryRepository = blenderBinaryRepository;
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.sethlansManagerService = sethlansManagerService;
     }
 
     @Override
