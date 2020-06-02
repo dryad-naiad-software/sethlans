@@ -25,8 +25,10 @@ import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
 import com.dryadandnaiad.sethlans.models.user.User;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Set;
@@ -39,6 +41,8 @@ import java.util.Set;
  */
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class SetupForm {
     private SethlansMode mode;
     private User user;

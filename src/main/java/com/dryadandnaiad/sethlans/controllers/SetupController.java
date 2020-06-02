@@ -20,6 +20,7 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.blender.BlenderUtils;
 import com.dryadandnaiad.sethlans.devices.ScanGPU;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.enums.LogLevel;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.services.SethlansManagerService;
 import com.dryadandnaiad.sethlans.services.SetupService;
@@ -51,11 +52,12 @@ public class SetupController {
     }
 
     @GetMapping("/get_setup")
-    public SetupForm prePopulatedSetup() {
+    public SetupForm prePopulatedSetupForm() {
         var port = ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT);
         return SetupForm.builder()
                 .ipAddress(QueryUtils.getIP())
                 .port(port)
+                .logLevel(LogLevel.INFO)
                 .appURL("https://" + QueryUtils.getHostname().toLowerCase() + ":" + port + "/")
                 .availableTypes(QueryUtils.getAvailableTypes())
                 .availableGPUs(ScanGPU.listDevices())

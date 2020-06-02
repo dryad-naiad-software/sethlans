@@ -49,7 +49,7 @@ import static com.dryadandnaiad.sethlans.utils.ConfigUtils.*;
 public class PropertiesUtils {
 
     public static List<GPU> getSelectedGPUs() {
-        ObjectMapper objectMapper = new ObjectMapper();
+        var objectMapper = new ObjectMapper();
         try {
             return objectMapper.readValue(ConfigUtils.getProperty(ConfigKeys.SELECTED_GPU),
                     new TypeReference<>() {
@@ -126,16 +126,16 @@ public class PropertiesUtils {
     }
 
     public static void writeDirectories(SethlansMode mode) throws Exception {
-        String rootDirectory = SystemUtils.USER_HOME + File.separator + ".sethlans";
-        String scriptsDirectory = rootDirectory + File.separator + "scripts";
-        String downloadDirectory = rootDirectory + File.separator + "downloads";
-        String tempDirectory = rootDirectory + File.separator + "temp";
-        String cacheDirectory = rootDirectory + File.separator + "render_cache";
-        String blendFileCacheDirectory = rootDirectory + File.separator + "blendfile_cache";
-        String logDirectory = rootDirectory + File.separator + "logs";
-        String binDirectory = rootDirectory + File.separator + "bin";
-        String benchmarkDirectory = rootDirectory + File.separator + "benchmarks";
-        String projectDirectory = rootDirectory + File.separator + "projects";
+        var rootDirectory = SystemUtils.USER_HOME + File.separator + ".sethlans";
+        var scriptsDirectory = rootDirectory + File.separator + "scripts";
+        var downloadDirectory = rootDirectory + File.separator + "downloads";
+        var tempDirectory = rootDirectory + File.separator + "temp";
+        var cacheDirectory = rootDirectory + File.separator + "render_cache";
+        var blendFileCacheDirectory = rootDirectory + File.separator + "blendfile_cache";
+        var logDirectory = rootDirectory + File.separator + "logs";
+        var binDirectory = rootDirectory + File.separator + "bin";
+        var benchmarkDirectory = rootDirectory + File.separator + "benchmarks";
+        var projectDirectory = rootDirectory + File.separator + "projects";
 
         writeProperty(ConfigKeys.ROOT_DIR, rootDirectory);
         writeProperty(ConfigKeys.SCRIPTS_DIR, scriptsDirectory);

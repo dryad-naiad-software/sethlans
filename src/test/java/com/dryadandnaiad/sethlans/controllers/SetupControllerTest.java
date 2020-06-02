@@ -26,6 +26,7 @@ import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
 import com.dryadandnaiad.sethlans.models.user.User;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -44,6 +45,8 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -75,14 +78,23 @@ class SetupControllerTest {
 
     @Test
     void completeSetup() throws Exception {
-        SetupForm form = getSetupForm();
-        ObjectMapper objectMapper = new ObjectMapper();
-        String formJson = objectMapper.writeValueAsString(form);
+        var form = getSetupForm();
+        var objectMapper = new ObjectMapper();
+        var formJson = objectMapper.writeValueAsString(form);
 
         mockMvc.perform(
                 post("/api/v1/setup/submit")
                         .contentType(MediaType.APPLICATION_JSON).content(formJson))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void prePopulatedSetupForm() throws Exception {
+        var result = mockMvc.perform(get("/api/v1/setup/get_setup")).andExpect(status().isOk()).andReturn();
+        var objectMapper = new ObjectMapper();
+        var setupForm = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<SetupForm>() {
+        });
+        assertThat(setupForm).isNotNull();
     }
 
 
