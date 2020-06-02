@@ -17,15 +17,15 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.enums.LogLevel;
-import com.dryadandnaiad.sethlans.enums.NodeType;
-import com.dryadandnaiad.sethlans.enums.Role;
-import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.devices.ScanGPU;
+import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
 import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.utils.ConfigUtils;
+import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.SystemUtils;
@@ -94,7 +94,15 @@ class SetupControllerTest {
         var objectMapper = new ObjectMapper();
         var setupForm = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<SetupForm>() {
         });
+        var availableGPU = ScanGPU.listDevices();
         assertThat(setupForm).isNotNull();
+        assertThat(setupForm.getIpAddress()).isEqualTo(QueryUtils.getIP());
+        assertThat(setupForm.getAvailableTypes().size()).isGreaterThan(0);
+        assertThat(setupForm.getBlenderVersions()).isNotNull();
+        assertThat(setupForm.getLogLevel()).isEqualTo(LogLevel.INFO);
+        assertThat(setupForm.getAppURL()).isEqualTo("https://" + QueryUtils.getHostname().toLowerCase() + ":" +
+                ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT) + "/");
+        assertThat(setupForm.getAvailableGPUs()).isEqualTo(availableGPU);
     }
 
 
