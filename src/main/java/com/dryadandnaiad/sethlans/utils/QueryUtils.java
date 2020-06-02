@@ -118,7 +118,7 @@ public class QueryUtils {
                 .hostname(getHostname())
                 .os(getOS())
                 .ipAddress(getIP())
-                .networkPort(PropertiesUtils.getPort())
+                .networkPort(ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT))
                 .cpu(new CPU())
                 .gpuList(ScanGPU.listDevices())
                 .build();
