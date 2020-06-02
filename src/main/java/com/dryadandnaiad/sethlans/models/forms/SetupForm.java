@@ -18,13 +18,18 @@
 package com.dryadandnaiad.sethlans.models.forms;
 
 import com.dryadandnaiad.sethlans.enums.LogLevel;
+import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
 import com.dryadandnaiad.sethlans.models.user.User;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * File created by Mario Estrella on 5/15/2020.
@@ -38,6 +43,8 @@ public class SetupForm {
     private SethlansMode mode;
     private User user;
     private LogLevel logLevel;
+    private Set<NodeType> availableTypes;
+    private List<GPU> availableGPUs;
     private MailSettings mailSettings;
     private NodeSettings nodeSettings;
     private ServerSettings serverSettings;

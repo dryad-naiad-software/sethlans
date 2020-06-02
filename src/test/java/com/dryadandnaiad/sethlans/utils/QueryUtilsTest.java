@@ -25,10 +25,12 @@ import com.dryadandnaiad.sethlans.models.blender.project.ProjectSettings;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.validator.routines.InetAddressValidator;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * File created by Mario Estrella on 4/19/2020.
@@ -44,6 +46,17 @@ class QueryUtilsTest {
         val shortUUID = QueryUtils.getShortUUID();
         assertThat(shortUUID).hasSize(13);
         assertThat(shortUUID).contains("-");
+    }
+
+    @Test
+    void getIP() {
+        val ipAddress = QueryUtils.getIP();
+        val validator = InetAddressValidator.getInstance();
+        assertNotNull(ipAddress);
+        assertThat(ipAddress).isNotEqualTo("0.0.0.0");
+        assertThat(ipAddress).isNotEqualTo("255.255.255.255");
+        assertThat(ipAddress).isNotEqualTo("127.0.0.1");
+        assertTrue("Not a valid IP address", validator.isValidInet4Address(ipAddress));
     }
 
     @Test
@@ -72,7 +85,7 @@ class QueryUtilsTest {
 
     @Test
     void getAvailableMethods() {
-        val availableMethods = QueryUtils.getAvailableMethods();
+        val availableMethods = QueryUtils.getAvailableTypes();
         assertNotNull(availableMethods);
         assertThat(availableMethods).hasSizeGreaterThan(0);
         if (availableMethods.size() > 1) {

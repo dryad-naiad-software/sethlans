@@ -17,9 +17,12 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.devices.ScanGPU;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.services.SethlansManagerService;
 import com.dryadandnaiad.sethlans.services.SetupService;
+import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
+import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -43,6 +46,18 @@ public class SetupController {
     public SetupController(SetupService setupService, SethlansManagerService sethlansManagerService) {
         this.setupService = setupService;
         this.sethlansManagerService = sethlansManagerService;
+    }
+
+    @GetMapping("/get_setup")
+    public SetupForm prePopulatedSetup() {
+        return SetupForm.builder()
+                .ipAddress(QueryUtils.getIP())
+                .port(PropertiesUtils.getPort())
+                .appURL("https://" + QueryUtils.getHostname().toLowerCase() + ":" + PropertiesUtils.getPort() + "/")
+                .availableTypes(QueryUtils.getAvailableTypes())
+                .availableGPUs(ScanGPU.listDevices())
+                .build();
+
     }
 
 

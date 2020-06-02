@@ -24,14 +24,10 @@ import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.Socket;
 import java.util.UUID;
 
 import static com.dryadandnaiad.sethlans.utils.ConfigUtils.*;
@@ -61,26 +57,6 @@ public class PropertiesUtils {
         return Boolean.parseBoolean(getProperty(ConfigKeys.FIRST_TIME));
     }
 
-
-    public static String getIP() {
-        String ip = null;
-        try {
-            ip = getProperty(ConfigKeys.SETHLANS_IP);
-            if (ip == null) {
-                if (SystemUtils.IS_OS_LINUX) {
-                    // Make a connection to 8.8.8.8 DNS in order to get IP address
-                    Socket s = new Socket("8.8.8.8", 53);
-                    ip = s.getLocalAddress().getHostAddress();
-                    s.close();
-                } else {
-                    ip = InetAddress.getLocalHost().getHostAddress();
-                }
-            }
-        } catch (IOException e) {
-            log.error(Throwables.getStackTraceAsString(e));
-        }
-        return ip;
-    }
 
     public static SethlansMode getMode() {
         return SethlansMode.valueOf(getProperty(ConfigKeys.MODE));

@@ -29,9 +29,7 @@ import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.apache.commons.lang3.SystemUtils;
-import org.apache.commons.validator.routines.InetAddressValidator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -43,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * File created by Mario Estrella on 4/22/2020.
@@ -81,16 +79,6 @@ class PropertiesUtilsTest {
         assertEquals("Values do not match", SethlansMode.SERVER, PropertiesUtils.getMode());
     }
 
-    @Test
-    void getIP() {
-        val ipAddress = PropertiesUtils.getIP();
-        val validator = InetAddressValidator.getInstance();
-        assertNotNull(ipAddress);
-        assertThat(ipAddress).isNotEqualTo("0.0.0.0");
-        assertThat(ipAddress).isNotEqualTo("255.255.255.255");
-        assertThat(ipAddress).isNotEqualTo("127.0.0.1");
-        assertTrue("Not a valid IP address", validator.isValidInet4Address(ipAddress));
-    }
 
     @Test
     void getFirstTime() {

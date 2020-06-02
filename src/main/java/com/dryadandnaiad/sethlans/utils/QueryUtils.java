@@ -18,6 +18,7 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.devices.ScanGPU;
+import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.enums.OS;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
@@ -34,12 +35,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
+
+import static com.dryadandnaiad.sethlans.utils.ConfigUtils.getProperty;
 
 /**
  * File created by Mario Estrella on 4/19/2020.
@@ -113,7 +117,7 @@ public class QueryUtils {
         return SystemInfo.builder()
                 .hostname(getHostname())
                 .os(getOS())
-                .ipAddress(PropertiesUtils.getIP())
+                .ipAddress(getIP())
                 .networkPort(PropertiesUtils.getPort())
                 .cpu(new CPU())
                 .gpuList(ScanGPU.listDevices())
@@ -163,7 +167,7 @@ public class QueryUtils {
      *
      * @return Set of NodeType enums
      */
-    public static Set<NodeType> getAvailableMethods() {
+    public static Set<NodeType> getAvailableTypes() {
         var availableMethods = new HashSet<NodeType>();
         if (ScanGPU.listDevices().size() != 0) {
             availableMethods.add(NodeType.CPU_GPU);
@@ -252,5 +256,20 @@ public class QueryUtils {
             log.error(Throwables.getStackTraceAsString(e));
         }
         return null;
+    }
+
+    public static String getIP() {
+        String ip = null;
+        try {
+            ip = getProperty(ConfigKeys.SETHLANS_IP);
+            if (ip == null) {
+                Socket s = new Socket("8.8.8.8", 53);
+                ip = s.getLocalAddress().getHostAddress();
+                s.close();
+            }
+        } catch (IOException e) {
+            log.error(Throwables.getStackTraceAsString(e));
+        }
+        return ip;
     }
 }
