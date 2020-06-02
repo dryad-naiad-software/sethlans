@@ -17,10 +17,9 @@
 
 package com.dryadandnaiad.sethlans.services;
 
+import com.dryadandnaiad.sethlans.SethlansApplication;
 import com.dryadandnaiad.sethlans.executor.MainExecutor;
-import com.dryadandnaiad.sethlans.executor.SethlansState;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
@@ -41,24 +40,7 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
 
     @Override
     public void restart() {
-        SethlansState sethlansState = SethlansState.getInstance();
-        MainExecutor mainExecutor = MainExecutor.getInstance();
-        log.info("Restarting Sethlans...");
-        mainExecutor.getExecutor().shutdown();
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            log.debug("Executor service closed");
-
-        }
-        Thread thread = new Thread(() -> {
-            sethlansState.sethlansActive = false;
-            SpringApplication.exit(applicationContext, () -> 0);
-
-        });
-        thread.setDaemon(false);
-        thread.start();
-
+        SethlansApplication.restart();
     }
 
     @Override
