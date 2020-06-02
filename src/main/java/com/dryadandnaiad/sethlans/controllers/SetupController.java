@@ -17,11 +17,13 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.blender.BlenderUtils;
 import com.dryadandnaiad.sethlans.devices.ScanGPU;
+import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.services.SethlansManagerService;
 import com.dryadandnaiad.sethlans.services.SetupService;
-import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
+import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -50,12 +52,14 @@ public class SetupController {
 
     @GetMapping("/get_setup")
     public SetupForm prePopulatedSetup() {
+        var port = ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT);
         return SetupForm.builder()
                 .ipAddress(QueryUtils.getIP())
-                .port(PropertiesUtils.getPort())
-                .appURL("https://" + QueryUtils.getHostname().toLowerCase() + ":" + PropertiesUtils.getPort() + "/")
+                .port(port)
+                .appURL("https://" + QueryUtils.getHostname().toLowerCase() + ":" + port + "/")
                 .availableTypes(QueryUtils.getAvailableTypes())
                 .availableGPUs(ScanGPU.listDevices())
+                .blenderVersions(BlenderUtils.availableBlenderVersions(ConfigUtils.getProperty(ConfigKeys.BLENDER_DOWNLOAD_JSON_LOCATION)))
                 .build();
 
     }

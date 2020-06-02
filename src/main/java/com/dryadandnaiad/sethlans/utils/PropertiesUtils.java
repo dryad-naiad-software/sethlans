@@ -21,13 +21,18 @@ import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
+import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
+import java.util.List;
 import java.util.UUID;
 
 import static com.dryadandnaiad.sethlans.utils.ConfigUtils.*;
@@ -43,13 +48,18 @@ import static com.dryadandnaiad.sethlans.utils.ConfigUtils.*;
 @Slf4j
 public class PropertiesUtils {
 
-    public static String getSelectedCores() {
-        return getProperty(ConfigKeys.CPU_CORES);
-    }
-
-
-    public static String getPort() {
-        return getProperty(ConfigKeys.HTTPS_PORT);
+    public static List<GPU> getSelectedGPUs() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(ConfigUtils.getProperty(ConfigKeys.SELECTED_GPU),
+                    new TypeReference<>() {
+                    });
+        } catch (JsonProcessingException e) {
+            log.error("Error getting list of selected GPUs");
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+        }
+        return null;
     }
 
 

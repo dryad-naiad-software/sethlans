@@ -45,6 +45,7 @@ public class SetupForm {
     private LogLevel logLevel;
     private Set<NodeType> availableTypes;
     private List<GPU> availableGPUs;
+    private List<String> blenderVersions;
     private MailSettings mailSettings;
     private NodeSettings nodeSettings;
     private ServerSettings serverSettings;

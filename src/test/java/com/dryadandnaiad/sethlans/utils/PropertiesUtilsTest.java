@@ -26,8 +26,6 @@ import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -67,12 +65,6 @@ class PropertiesUtilsTest {
         FileSystemUtils.deleteRecursively(SETHLANS_DIRECTORY);
     }
 
-    @Test
-    void getSelectedCores() throws Exception {
-        assertEquals("Values do not match", "3", PropertiesUtils.getSelectedCores());
-        ConfigUtils.writeProperty(ConfigKeys.CPU_CORES, "2");
-        assertEquals("Values do not match", "2", PropertiesUtils.getSelectedCores());
-    }
 
     @Test
     void getMode() {
@@ -84,12 +76,6 @@ class PropertiesUtilsTest {
     void getFirstTime() {
         assertThat(PropertiesUtils.getFirstTime()).isTrue();
     }
-
-    @Test
-    void getPort() {
-        assertThat(PropertiesUtils.getPort().equals("7443"));
-    }
-
 
     @Test
     void writeMailSettings() throws Exception {
@@ -123,10 +109,7 @@ class PropertiesUtilsTest {
                 .gpuCombined(true)
                 .build();
         PropertiesUtils.writeNodeSettings(nodeSettings);
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<GPU> selectedGPUs = objectMapper.readValue(ConfigUtils.getProperty(ConfigKeys.SELECTED_GPU),
-                new TypeReference<>() {
-                });
+        List<GPU> selectedGPUs = PropertiesUtils.getSelectedGPUs();
         assertThat(selectedGPUs.size()).isGreaterThan(0);
         assertThat(ConfigUtils.getProperty(ConfigKeys.NODE_TYPE)).isEqualTo(NodeType.GPU.toString());
         assertThat(ConfigUtils.getProperty(ConfigKeys.TILE_SIZE_CPU)).isEqualTo("0");
