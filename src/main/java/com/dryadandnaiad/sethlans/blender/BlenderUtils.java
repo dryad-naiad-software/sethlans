@@ -250,7 +250,7 @@ public class BlenderUtils {
         return availableVersions;
     }
 
-    public static File downloadBlenderToServer(String blenderVersion, String jsonLocation, String blenderDir, OS os) {
+    public static File downloadBlenderToServer(String blenderVersion, String jsonLocation, String downloadDir, OS os) {
         var selectedInstallers = getInstallersByVersion(getInstallersList(jsonLocation), blenderVersion);
         if (selectedInstallers == null) {
             log.error("Blender version: " + blenderVersion + ", or JSON file location: "
@@ -277,7 +277,7 @@ public class BlenderUtils {
                 log.error("Invalid OS given. " + os.getName() + " is not supported.");
                 return null;
         }
-        var fileToSave = new File(blenderDir + File.separator +
+        var fileToSave = new File(downloadDir + File.separator +
                 blenderVersion + "-" + os.getName().toLowerCase() +
                 FileUtils.getExtensionFromString(downloadURLs.get(0)));
         for (String downloadURL : downloadURLs) {

@@ -1,0 +1,75 @@
+/*
+ * Copyright (c) 2020. Dryad and Naiad Software LLC.
+ *   This program is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU General Public License
+ *   as published by the Free Software Foundation; either version 2
+ *   of the License, or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+package com.dryadandnaiad.sethlans.services;
+
+import com.dryadandnaiad.sethlans.blender.BlenderUtils;
+import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.models.blender.BlenderBinary;
+import com.dryadandnaiad.sethlans.repositories.BlenderBinaryRepository;
+import com.dryadandnaiad.sethlans.utils.ConfigUtils;
+import com.dryadandnaiad.sethlans.utils.FileUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+/**
+ * File created by Mario Estrella on 6/2/2020.
+ * Dryad and Naiad Software LLC
+ * mestrella@dryadandnaiad.com
+ * Project: sethlans
+ */
+@Slf4j
+@Service
+@Profile({"SERVER", "DUAL"})
+public class DownloadServiceImpl implements DownloadService {
+    private final BlenderBinaryRepository blenderBinaryRepository;
+
+    public DownloadServiceImpl(BlenderBinaryRepository blenderBinaryRepository) {
+        this.blenderBinaryRepository = blenderBinaryRepository;
+    }
+
+    @Override
+    @Async
+    public void downloadBlenderFilesAsync(boolean wait) {
+        if (wait) {
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        log.info("Attempting to download any needed Blender Binaries.");
+        var downloadDir = ConfigUtils.getProperty(ConfigKeys.DOWNLOAD_DIR);
+        var jsonLocation = ConfigUtils.getProperty(ConfigKeys.BLENDER_DOWNLOAD_JSON_LOCATION);
+        var blenderBinaries = blenderBinaryRepository.findAll();
+        for (BlenderBinary blenderBinary : blenderBinaries) {
+            if (!blenderBinary.isDownloaded()) {
+                var downloadedFile = BlenderUtils.downloadBlenderToServer(blenderBinary.getBlenderVersion(),
+                        jsonLocation, downloadDir, blenderBinary.getBlenderOS());
+                if (downloadedFile != null) {
+                    blenderBinary.setBlenderFile(downloadedFile.toString());
+                    blenderBinary.setBlenderFileMd5(FileUtils.getMD5ofFile(downloadedFile));
+                    blenderBinary.setDownloaded(true);
+                    blenderBinaryRepository.save(blenderBinary);
+                }
+            }
+        }
+    }
+}

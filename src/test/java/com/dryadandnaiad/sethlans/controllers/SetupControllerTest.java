@@ -28,6 +28,7 @@ import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,6 +60,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("SETUP")
 @SpringBootTest
 @AutoConfigureMockMvc
+@Slf4j
 class SetupControllerTest {
 
     static File SETHLANS_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + ".sethlans");
@@ -81,6 +83,7 @@ class SetupControllerTest {
         var form = getSetupForm();
         var objectMapper = new ObjectMapper();
         var formJson = objectMapper.writeValueAsString(form);
+        System.out.println(formJson);
 
         mockMvc.perform(
                 post("/api/v1/setup/submit")

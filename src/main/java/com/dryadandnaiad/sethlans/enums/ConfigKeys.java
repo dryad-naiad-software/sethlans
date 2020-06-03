@@ -29,7 +29,7 @@ public enum ConfigKeys {
     HTTPS_PORT("server.port"),
     FIRST_TIME("sethlans.firstTime"),
     LOGGING_FILE("logging.file"),
-    MODE("sethlans.mode"),
+    MODE("spring.profiles.active"),
     BLENDER_DOWNLOAD_JSON_LOCATION("sethlans.blender.json.location"),
     NODE_TYPE("sethlans.nodeType"),
     PROJECT_DIR("sethlans.projectDir"),
