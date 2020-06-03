@@ -166,7 +166,7 @@ public class PropertiesUtils {
 
     private static void createDirectories(File directory) {
         if (!directory.mkdirs()) {
-            log.error("Unable to create directory" + directory);
+            log.error("Unable to create directory " + directory + ": Directory probably already exists.");
         }
 
     }
