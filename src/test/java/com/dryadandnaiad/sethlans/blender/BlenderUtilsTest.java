@@ -116,7 +116,7 @@ class BlenderUtilsTest {
 
     @Test
     void extractBlenderWindowsBinary() {
-        var version = "2.82a";
+        var version = "2.83";
         var blenderDownload = BlenderUtils
                 .downloadBlenderToServer(version,
                         "resource",
@@ -129,7 +129,7 @@ class BlenderUtilsTest {
 
     @Test
     void extractBlenderLinuxBinary() {
-        var version = "2.82a";
+        var version = "2.83";
         var blenderDownload = BlenderUtils
                 .downloadBlenderToServer(version,
                         "resource",
@@ -144,7 +144,7 @@ class BlenderUtilsTest {
     @Test
     @EnabledOnOs(MAC)
     void extractBlenderMacBinary() {
-        var version = "2.82a";
+        var version = "2.83";
         var blenderDownload = BlenderUtils
                 .downloadBlenderToServer(version,
                         "resource",
