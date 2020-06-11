@@ -17,14 +17,12 @@
 
 package com.dryadandnaiad.sethlans.services;
 
-import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.LogLevel;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.blender.BlenderBinary;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.repositories.BlenderBinaryRepository;
-import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -66,8 +64,6 @@ class DownloadServiceTest {
 
     @BeforeAll
     static void beforeAll() throws Exception {
-        ConfigUtils.writeProperty(ConfigKeys.BLENDER_DOWNLOAD_JSON_LOCATION, "resource");
-
         var setupSettings = SetupForm.builder()
                 .appURL("https://localhost:7443")
                 .ipAddress("10.10.10.10")
