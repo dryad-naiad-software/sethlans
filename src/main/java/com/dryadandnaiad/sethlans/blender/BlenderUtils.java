@@ -286,6 +286,7 @@ public class BlenderUtils {
                 if (FileUtils.fileCheckMD5(fileToSave, md5)) {
                     return fileToSave;
                 } else {
+                    fileToSave.delete();
                     return null;
                 }
             } catch (FileNotFoundException e) {
