@@ -62,6 +62,10 @@ public class PropertiesUtils {
         return null;
     }
 
+    public static NodeType getNodeType() {
+        return NodeType.valueOf(getProperty(ConfigKeys.NODE_TYPE));
+    }
+
 
     public static boolean getFirstTime() {
         return Boolean.parseBoolean(getProperty(ConfigKeys.FIRST_TIME));
