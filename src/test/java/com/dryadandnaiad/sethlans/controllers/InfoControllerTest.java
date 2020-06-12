@@ -86,9 +86,10 @@ class InfoControllerTest {
     @WithMockUser("spring")
     @Test
     void getNodeInfo() throws Exception {
-        mvc.perform(get("/api/v1/info/node_info")
+        var result = mvc.perform(get("/api/v1/info/node_info")
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk()).andReturn();
+        System.out.println(result.getResponse().getContentAsString());
 
     }
 }

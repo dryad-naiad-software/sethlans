@@ -17,7 +17,9 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.models.system.Node;
+import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +48,7 @@ public class InfoController {
                 .os(QueryUtils.getOS())
                 .ipAddress(systemInfo.getIpAddress())
                 .hostname(systemInfo.getHostname())
+                .networkPort(ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT))
                 .cpu(systemInfo.getCpu())
                 .selectedGPUs(PropertiesUtils.getSelectedGPUs())
                 .build();
