@@ -19,6 +19,7 @@ package com.dryadandnaiad.sethlans.config;
 
 import com.dryadandnaiad.sethlans.exceptions.CustomAsyncExceptionHandler;
 import com.dryadandnaiad.sethlans.executor.MainExecutor;
+import com.dryadandnaiad.sethlans.services.SethlansUserDetailsService;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
@@ -26,6 +27,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.concurrent.Executor;
@@ -41,10 +43,25 @@ import java.util.concurrent.Executor;
 @Configuration
 public class CommonBeanConfig implements AsyncConfigurer {
 
+    private final SethlansUserDetailsService userDetailsService;
+
+    public CommonBeanConfig(SethlansUserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setPasswordEncoder(bCryptPasswordEncoder());
+        return authenticationProvider;
+    }
+
 
     @Override
     public Executor getAsyncExecutor() {
@@ -59,4 +76,6 @@ public class CommonBeanConfig implements AsyncConfigurer {
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
         return new CustomAsyncExceptionHandler();
     }
+
+
 }
