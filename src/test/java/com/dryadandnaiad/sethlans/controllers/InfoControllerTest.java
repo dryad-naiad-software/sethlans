@@ -17,7 +17,31 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.enums.LogLevel;
+import com.dryadandnaiad.sethlans.enums.NodeType;
+import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.models.forms.SetupForm;
+import com.dryadandnaiad.sethlans.models.settings.MailSettings;
+import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
+import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
+import org.apache.commons.lang3.SystemUtils;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.FileSystemUtils;
+
+import java.io.File;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 /**
  * File created by Mario Estrella on 6/12/2020.
@@ -25,9 +49,46 @@ import org.junit.jupiter.api.Test;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@ActiveProfiles("NODE")
+@SpringBootTest
+@AutoConfigureMockMvc
 class InfoControllerTest {
+    static File SETHLANS_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + ".sethlans");
 
+    @Autowired
+    private MockMvc mvc;
+
+    @BeforeAll
+    static void beforeAll() throws Exception {
+        var setupSettings = SetupForm.builder()
+                .appURL("https://localhost:7443")
+                .ipAddress("10.10.10.10")
+                .logLevel(LogLevel.DEBUG)
+                .mode(SethlansMode.NODE)
+                .port("7443").build();
+        var nodeSettings = NodeSettings.builder().nodeType(NodeType.CPU).tileSizeCPU(32).cores(4).build();
+        PropertiesUtils.writeNodeSettings(nodeSettings);
+        PropertiesUtils.writeSetupSettings(setupSettings);
+        PropertiesUtils.writeDirectories(SethlansMode.NODE);
+        var mailSettings = MailSettings.builder()
+                .mailEnabled(false)
+                .build();
+        PropertiesUtils.writeMailSettings(mailSettings);
+
+    }
+
+    @AfterAll
+    static void afterAll() {
+        FileSystemUtils.deleteRecursively(SETHLANS_DIRECTORY);
+    }
+
+
+    @WithMockUser("spring")
     @Test
-    void getNodeInfo() {
+    void getNodeInfo() throws Exception {
+        mvc.perform(get("/api/v1/info/node_info")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
     }
 }

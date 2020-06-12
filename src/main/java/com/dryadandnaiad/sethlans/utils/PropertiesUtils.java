@@ -51,9 +51,15 @@ public class PropertiesUtils {
     public static List<GPU> getSelectedGPUs() {
         var objectMapper = new ObjectMapper();
         try {
-            return objectMapper.readValue(ConfigUtils.getProperty(ConfigKeys.SELECTED_GPU),
-                    new TypeReference<>() {
-                    });
+            var value = ConfigUtils.getProperty(ConfigKeys.SELECTED_GPU);
+            if (value == null || value.equals("{}")) {
+                return null;
+
+            } else {
+                return objectMapper.readValue(value,
+                        new TypeReference<>() {
+                        });
+            }
         } catch (JsonProcessingException e) {
             log.error("Error getting list of selected GPUs");
             log.error(e.getMessage());
