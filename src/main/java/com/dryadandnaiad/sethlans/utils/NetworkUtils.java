@@ -19,6 +19,8 @@ package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.models.system.Node;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,6 +28,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -78,12 +81,24 @@ public class NetworkUtils {
                 var messageArray = multicastMessage.split(":");
                 var ip = messageArray[1];
                 var port = messageArray[2];
+                var node = getNodeViaJson(ip, port);
+                if (node != null) {
+                    nodeSet.add(node);
+                }
             }
         }
         return nodeSet;
     }
 
     public static Node getNodeViaJson(String ip, String port) {
-        return null;
+        try {
+            var nodeURL = new URL("https://" + ip + ":" + port + "/api/v1/info/node_info");
+            var objectMapper = new ObjectMapper();
+            return objectMapper.readValue(nodeURL, new TypeReference<>() {
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

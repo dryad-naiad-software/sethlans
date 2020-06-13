@@ -71,6 +71,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .loginPage("/login")
                     .permitAll()
                     .and()
+                    .authorizeRequests()
+                    .antMatchers("/api/v1/info/node_info")
+                    .permitAll()
+                    .and()
                     .logout()
                     .permitAll();
         } else {
