@@ -82,4 +82,8 @@ public class NetworkUtils {
         }
         return nodeSet;
     }
+
+    public static Node getNodeViaJson(String ip, String port) {
+        return null;
+    }
 }
