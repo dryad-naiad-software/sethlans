@@ -45,10 +45,9 @@ public class MulticastServiceImpl implements MulticastService {
     public void sendSethlansMulticast() {
         var ip = QueryUtils.getIP();
         var port = ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT);
-        var hostname = QueryUtils.getHostname();
         var multicastSocketPort = Integer.parseInt(ConfigUtils.getProperty(ConfigKeys.MULTICAST_PORT));
 
-        var message = "Sethlans:" + hostname + ":" + ip + ":" + port;
+        var message = "Sethlans:" + ip + ":" + port;
 
         try {
             byte[] buffer = message.getBytes();

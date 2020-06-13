@@ -85,5 +85,6 @@ class MulticastServiceTest {
         var multicastMessages = NetworkUtils.getSethlansMulticastMessages();
         assertThat(multicastMessages).isNotEmpty();
         assertThat(multicastMessages).hasSizeGreaterThan(0);
+        assertThat(multicastMessages.iterator().next()).contains("Sethlans");
     }
 }

@@ -18,6 +18,7 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.models.system.Node;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,8 +42,6 @@ public class NetworkUtils {
         var detectedNodes = new HashSet<String>();
         var multicastIP = ConfigUtils.getProperty(ConfigKeys.MULTICAST_IP);
         var multicastSocketPort = Integer.parseInt(ConfigUtils.getProperty(ConfigKeys.MULTICAST_PORT));
-
-
         byte[] buffer = new byte[256];
         try {
             var clientSocket = new MulticastSocket(multicastSocketPort);
@@ -56,7 +55,9 @@ public class NetworkUtils {
                 var msgPacket = new DatagramPacket(buffer, buffer.length);
                 clientSocket.receive(msgPacket);
                 var msg = new String(msgPacket.getData(), 0, msgPacket.getLength());
-                detectedNodes.add(msg);
+                if (msg.contains("Sethlans")) {
+                    detectedNodes.add(msg);
+                }
             }
             clientSocket.close();
         } catch (IOException e) {
@@ -65,5 +66,20 @@ public class NetworkUtils {
         }
         log.debug("Number of nodes detected: " + detectedNodes.size());
         return detectedNodes;
+    }
+
+    public static Set<Node> discoverNodesViaMulticast() {
+        var nodeSet = new HashSet<Node>();
+        log.info("Starting Node Multicast Scan");
+        var multicastMessages = getSethlansMulticastMessages();
+        if (!multicastMessages.isEmpty()) {
+            for (String multicastMessage : multicastMessages) {
+                log.debug("Processing received message: " + multicastMessage);
+                var messageArray = multicastMessage.split(":");
+                var ip = messageArray[1];
+                var port = messageArray[2];
+            }
+        }
+        return nodeSet;
     }
 }
