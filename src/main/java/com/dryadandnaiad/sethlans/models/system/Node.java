@@ -51,7 +51,7 @@ public class Node extends AbstractModel {
     private String hostname;
     private String ipAddress;
     private String networkPort;
-    private String connectionID;
+    private String systemID;
     private OS os;
     private NodeType nodeType;
     private boolean active;

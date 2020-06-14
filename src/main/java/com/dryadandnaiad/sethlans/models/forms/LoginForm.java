@@ -15,35 +15,18 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.models.system;
+package com.dryadandnaiad.sethlans.models.forms;
 
-import com.dryadandnaiad.sethlans.models.AbstractModel;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
-
-import javax.persistence.Entity;
 
 /**
- * File created by Mario Estrella on 4/2/2020.
+ * File created by Mario Estrella on 6/14/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
-@EqualsAndHashCode(callSuper = true)
-@SuperBuilder
-@Entity
-public class Server extends AbstractModel {
-    private String hostname;
-    private String ipAddress;
-    private String networkPort;
-    private String systemID;
-    private boolean acknowledged;
-    private boolean pendingResponse;
-    private boolean nodeUpdated;
+public class LoginForm {
+    private String username;
+    private String password;
 }

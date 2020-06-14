@@ -15,35 +15,28 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.models.system;
+package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.models.AbstractModel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
-
-import javax.persistence.Entity;
+import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.utils.ConfigUtils;
+import org.springframework.context.annotation.Profile;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * File created by Mario Estrella on 4/2/2020.
+ * File created by Mario Estrella on 6/14/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@NoArgsConstructor
-@AllArgsConstructor
-@Data
-@EqualsAndHashCode(callSuper = true)
-@SuperBuilder
-@Entity
-public class Server extends AbstractModel {
-    private String hostname;
-    private String ipAddress;
-    private String networkPort;
-    private String systemID;
-    private boolean acknowledged;
-    private boolean pendingResponse;
-    private boolean nodeUpdated;
+@RestController
+@RequestMapping("/api/v1/management")
+@Profile({"NODE", "DUAL"})
+public class AdminNodeController {
+
+    @GetMapping("/system_id")
+    public String getSystemID() {
+        return ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID);
+    }
 }

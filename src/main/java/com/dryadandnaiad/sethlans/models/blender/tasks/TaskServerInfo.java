@@ -34,6 +34,6 @@ import javax.persistence.Embeddable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TaskServerInfo {
-    private String connectionID;
+    private String systemID;
     private String serverQueueID;
 }
