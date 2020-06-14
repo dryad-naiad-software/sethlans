@@ -27,6 +27,7 @@ public enum ConfigKeys {
     SYSTEM_ID("sethlans.systemID"),
     MULTICAST_IP("sethlans.multicast"),
     MULTICAST_PORT("sethlans.multicast.port"),
+    USE_SETHLANS_CERT("sethlans.self-signed"),
     SETHLANS_IP("server.ipAddress"),
     HTTPS_PORT("server.port"),
     FIRST_TIME("sethlans.firstTime"),

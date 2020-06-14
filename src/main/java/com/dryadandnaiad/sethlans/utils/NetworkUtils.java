@@ -110,8 +110,10 @@ public class NetworkUtils {
     public static String getJSONFromURL(URL url) {
         try {
             var connection = (HttpsURLConnection) url.openConnection();
-            connection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
-            connection.setHostnameVerifier(SSLUtilities.allHostsValid());
+            if (Boolean.valueOf(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
+                connection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
+                connection.setHostnameVerifier(SSLUtilities.allHostsValid());
+            }
             connection.setRequestMethod("GET");
             connection.connect();
 
