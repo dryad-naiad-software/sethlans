@@ -44,8 +44,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.FileSystemUtils;
 
-import javax.annotation.Resource;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -69,9 +69,6 @@ class AdminServerControllerTest {
 
     @Autowired
     private MockMvc mvc;
-
-    @Resource
-    private InfoController infoController;
 
     @BeforeAll
     static void beforeAll() throws Exception {
@@ -108,6 +105,22 @@ class AdminServerControllerTest {
         });
         assertThat(nodeSet).hasSizeGreaterThan(0);
 
+
+    }
+
+    @WithMockUser("spring")
+    @Test
+    void nodesSet() throws Exception {
+        var nodeList = new ArrayList<Node>();
+        nodeList.add(Node.builder().ipAddress(QueryUtils.getIP()).networkPort("7443").build());
+        var objectMapper = new ObjectMapper();
+        var nodeJSON = objectMapper.writeValueAsString(nodeList);
+        var result = mvc.perform(get("/api/v1/management/node_list")
+                .contentType(MediaType.APPLICATION_JSON).content(nodeJSON))
+                .andExpect(status().isOk()).andReturn();
+        var nodeSet = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<Set<Node>>() {
+        });
+        assertThat(nodeSet).hasSizeGreaterThan(0);
 
     }
 }
