@@ -15,9 +15,10 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.models.forms;
+package com.dryadandnaiad.sethlans.repositories;
 
-import lombok.Data;
+import com.dryadandnaiad.sethlans.models.system.Server;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * File created by Mario Estrella on 6/14/2020.
@@ -25,8 +26,5 @@ import lombok.Data;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Data
-public class LoginForm {
-    private String username;
-    private String password;
+public interface ServerRepository extends JpaRepository<Server, Long> {
 }

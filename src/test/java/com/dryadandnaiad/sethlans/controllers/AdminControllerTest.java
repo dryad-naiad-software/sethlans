@@ -57,7 +57,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(locations = "classpath:sethlans.properties")
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-class AdminNodeControllerTest {
+class AdminControllerTest {
 
     static File SETHLANS_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + ".sethlans");
 

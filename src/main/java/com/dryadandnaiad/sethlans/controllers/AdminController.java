@@ -17,13 +17,10 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.models.system.Server;
-import com.dryadandnaiad.sethlans.repositories.ServerRepository;
+import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,19 +32,11 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/v1/management")
-@Profile({"NODE", "DUAL"})
-public class AdminNodeController {
+@Profile({"SERVER", "NODE", "DUAL"})
+public class AdminController {
 
-    private final ServerRepository serverRepository;
-
-    public AdminNodeController(ServerRepository serverRepository) {
-        this.serverRepository = serverRepository;
+    @GetMapping("/system_id")
+    public String getSystemID() {
+        return ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID);
     }
-
-    @PostMapping("/add_server")
-    public ResponseEntity addServer(@RequestBody Server server) {
-        return new ResponseEntity(HttpStatus.CREATED);
-    }
-
-
 }

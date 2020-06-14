@@ -17,13 +17,14 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.models.forms.NodeForm;
 import com.dryadandnaiad.sethlans.models.system.Node;
+import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.utils.NetworkUtils;
 import org.springframework.context.annotation.Profile;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.List;
@@ -40,21 +41,32 @@ import java.util.Set;
 @Profile({"SERVER", "DUAL"})
 public class AdminServerController {
 
+    private final NodeRepository nodeRepository;
+
+    public AdminServerController(NodeRepository nodeRepository) {
+        this.nodeRepository = nodeRepository;
+    }
+
     @GetMapping("/node_scan")
     public Set<Node> nodeScan() {
         return NetworkUtils.discoverNodesViaMulticast();
     }
 
     @GetMapping("/node_list")
-    public Set<Node> nodesSet(@RequestBody List<Node> nodes) {
+    public Set<Node> nodesSet(@RequestBody List<NodeForm> nodes) {
         var nodeSet = new HashSet<Node>();
-        for (Node node : nodes) {
+        for (NodeForm node : nodes) {
             var retrievedNode = NetworkUtils.getNodeViaJson(node.getIpAddress(), node.getNetworkPort());
             if (retrievedNode != null) {
                 nodeSet.add(retrievedNode);
             }
         }
         return nodeSet;
+    }
+
+    @PostMapping("/add_nodes")
+    public ResponseEntity addNodes(@RequestBody List<NodeForm> selectedNodes) {
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
 }
