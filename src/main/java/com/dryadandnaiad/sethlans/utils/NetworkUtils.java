@@ -22,9 +22,12 @@ import com.dryadandnaiad.sethlans.models.system.Node;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
+import com.google.common.io.CharStreams;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
@@ -93,12 +96,34 @@ public class NetworkUtils {
     public static Node getNodeViaJson(String ip, String port) {
         try {
             var nodeURL = new URL("https://" + ip + ":" + port + "/api/v1/info/node_info");
+            log.info("Retrieving node information from " + nodeURL);
             var objectMapper = new ObjectMapper();
-            return objectMapper.readValue(nodeURL, new TypeReference<>() {
+            return objectMapper.readValue(getJSONFromURL(nodeURL), new TypeReference<>() {
             });
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
             return null;
         }
+    }
+
+    public static String getJSONFromURL(URL url) {
+        try {
+            var connection = (HttpsURLConnection) url.openConnection();
+            connection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
+            connection.setHostnameVerifier(SSLUtilities.allHostsValid());
+            connection.setRequestMethod("GET");
+            connection.connect();
+
+            if (connection.getResponseCode() == 200) {
+                var reader = new InputStreamReader(connection.getInputStream());
+                return CharStreams.toString(reader);
+            }
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            return null;
+        }
+        return null;
     }
 }

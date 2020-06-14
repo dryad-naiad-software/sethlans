@@ -15,30 +15,20 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.controllers;
+package com.dryadandnaiad.sethlans.utils;
 
-import com.dryadandnaiad.sethlans.models.system.Node;
-import com.dryadandnaiad.sethlans.utils.NetworkUtils;
-import org.springframework.context.annotation.Profile;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Set;
+import org.junit.jupiter.api.Test;
 
 /**
- * File created by Mario Estrella on 6/12/2020.
+ * File created by Mario Estrella on 6/13/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@RestController
-@RequestMapping("/api/v1/management")
-@Profile({"SERVER", "DUAL"})
-public class AdminServerController {
+class NetworkUtilsTest {
 
-    @GetMapping("/node_scan")
-    public Set<Node> nodeScan() {
-        return NetworkUtils.discoverNodesViaMulticast();
+
+    @Test
+    void getNodeViaJson() {
     }
 }
