@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
+import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.SystemUtils;
@@ -67,7 +68,7 @@ class InfoControllerTest {
     static void beforeAll() throws Exception {
         var setupSettings = SetupForm.builder()
                 .appURL("https://localhost:7443")
-                .ipAddress("10.10.10.10")
+                .ipAddress(QueryUtils.getIP())
                 .logLevel(LogLevel.DEBUG)
                 .mode(SethlansMode.NODE)
                 .port("7443").build();

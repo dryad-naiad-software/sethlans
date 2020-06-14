@@ -23,8 +23,11 @@ import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
+import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -43,9 +46,12 @@ import org.springframework.util.FileSystemUtils;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.Set;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 /**
  * File created by Mario Estrella on 6/13/2020.
@@ -97,5 +103,11 @@ class AdminServerControllerTest {
         var result = mvc.perform(get("/api/v1/management/node_scan")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
+        var objectMapper = new ObjectMapper();
+        var nodeSet = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<Set<Node>>() {
+        });
+        assertThat(nodeSet).hasSizeGreaterThan(0);
+
+
     }
 }
