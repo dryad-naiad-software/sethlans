@@ -98,7 +98,7 @@ class InfoControllerTest {
         var node = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<Node>() {
         });
         assertThat(node).isNotNull();
-        assertThat(node.getIpAddress()).isEqualTo("10.10.10.10");
+        assertThat(node.getIpAddress()).isEqualTo(QueryUtils.getIP());
         assertThat(node.getNetworkPort()).isEqualTo("7443");
         assertThat(node.getNodeType()).isEqualTo(NodeType.CPU);
     }
