@@ -17,6 +17,7 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
+import com.dryadandnaiad.sethlans.enums.OS;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import net.lingala.zip4j.ZipFile;
@@ -29,6 +30,7 @@ import org.rauschig.jarchivelib.ArchiveFormat;
 import org.rauschig.jarchivelib.Archiver;
 import org.rauschig.jarchivelib.ArchiverFactory;
 import org.rauschig.jarchivelib.CompressionType;
+import org.slf4j.Logger;
 import org.springframework.core.io.ClassPathResource;
 
 import javax.swing.*;
@@ -264,4 +266,17 @@ public class FileUtils {
                 .collect(Collectors.toList());
     }
 
+    public static boolean installApplication(String binaryDir, OS os, String windowsArchive, String linuxArchive, String macosArchive, Logger log) {
+        switch (os) {
+            case WINDOWS_64:
+                return extractArchive(binaryDir + File.separator + windowsArchive, binaryDir);
+            case LINUX_64:
+                return extractArchive(binaryDir + File.separator + linuxArchive, binaryDir);
+            case MACOS:
+                return extractArchive(binaryDir + File.separator + macosArchive, binaryDir);
+            default:
+                log.error("Operating System not supported. " + os.getName());
+        }
+        return false;
+    }
 }

@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.Objects;
 
 /**
  * File created by Mario Estrella on 6/11/2020.
@@ -45,7 +46,8 @@ public class MulticastServiceImpl implements MulticastService {
     public void sendSethlansMulticast() {
         var ip = QueryUtils.getIP();
         var port = ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT);
-        var multicastSocketPort = Integer.parseInt(ConfigUtils.getProperty(ConfigKeys.MULTICAST_PORT));
+        var multicastSocketPort =
+                Integer.parseInt(Objects.requireNonNull(ConfigUtils.getProperty(ConfigKeys.MULTICAST_PORT)));
 
         var message = "Sethlans:" + ip + ":" + port;
 

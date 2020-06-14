@@ -35,6 +35,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeoutException;
 
+import static com.dryadandnaiad.sethlans.utils.FileUtils.installApplication;
 import static org.apache.commons.io.FileUtils.copyFileToDirectory;
 
 /**
@@ -104,17 +105,7 @@ public class FFmpegUtils {
      * @return
      */
     public static boolean installFFmpeg(String binaryDir, OS os) {
-        switch (os) {
-            case WINDOWS_64:
-                return FileUtils.extractArchive(binaryDir + File.separator + WINDOWS_ARCHIVE, binaryDir);
-            case LINUX_64:
-                return FileUtils.extractArchive(binaryDir + File.separator + LINUX_ARCHIVE, binaryDir);
-            case MACOS:
-                return FileUtils.extractArchive(binaryDir + File.separator + MACOS_ARCHIVE, binaryDir);
-            default:
-                log.error("Operating System not supported. " + os.getName());
-        }
-        return false;
+        return installApplication(binaryDir, os, WINDOWS_ARCHIVE, LINUX_ARCHIVE, MACOS_ARCHIVE, log);
     }
 
     /**

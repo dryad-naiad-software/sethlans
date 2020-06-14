@@ -24,6 +24,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
 import com.google.common.io.CharStreams;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
@@ -33,6 +35,7 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -47,7 +50,8 @@ public class NetworkUtils {
     public static Set<String> getSethlansMulticastMessages() {
         var detectedNodes = new HashSet<String>();
         var multicastIP = ConfigUtils.getProperty(ConfigKeys.MULTICAST_IP);
-        var multicastSocketPort = Integer.parseInt(ConfigUtils.getProperty(ConfigKeys.MULTICAST_PORT));
+        var multicastSocketPort =
+                Integer.parseInt(Objects.requireNonNull(ConfigUtils.getProperty(ConfigKeys.MULTICAST_PORT)));
         byte[] buffer = new byte[256];
         try {
             var clientSocket = new MulticastSocket(multicastSocketPort);
@@ -110,7 +114,7 @@ public class NetworkUtils {
     public static String getJSONFromURL(URL url) {
         try {
             var connection = (HttpsURLConnection) url.openConnection();
-            if (Boolean.valueOf(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
+            if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
                 connection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
                 connection.setHostnameVerifier(SSLUtilities.allHostsValid());
             }
@@ -128,4 +132,13 @@ public class NetworkUtils {
         }
         return null;
     }
+
+    public static ResponseEntity<Void> postJSONToURLWithAuth(URL url, String json, String username, String password) {
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    public static ResponseEntity<Void> postJSONToURL(URL url, String json) {
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
 }

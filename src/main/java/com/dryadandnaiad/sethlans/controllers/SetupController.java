@@ -61,24 +61,25 @@ public class SetupController {
                 .appURL("https://" + QueryUtils.getHostname().toLowerCase() + ":" + port + "/")
                 .availableTypes(QueryUtils.getAvailableTypes())
                 .availableGPUs(ScanGPU.listDevices())
-                .blenderVersions(BlenderUtils.availableBlenderVersions(ConfigUtils.getProperty(ConfigKeys.BLENDER_DOWNLOAD_JSON_LOCATION)))
+                .blenderVersions(BlenderUtils.availableBlenderVersions(
+                        ConfigUtils.getProperty(ConfigKeys.BLENDER_DOWNLOAD_JSON_LOCATION)))
                 .build();
 
     }
 
 
     @PostMapping("/submit")
-    public ResponseEntity completeSetup(@RequestBody SetupForm setupForm) {
+    public ResponseEntity<Void> completeSetup(@RequestBody SetupForm setupForm) {
         if (setupService.saveSetupSettings(setupForm)) {
-            return new ResponseEntity(HttpStatus.CREATED);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         } else {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping("/restart")
-    public ResponseEntity restartSethlans() {
+    public ResponseEntity<Void> restartSethlans() {
         sethlansManagerService.restart();
-        return new ResponseEntity(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }

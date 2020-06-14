@@ -55,8 +55,6 @@ public class Node extends AbstractModel {
     private OS os;
     private NodeType nodeType;
     private boolean active;
-    private boolean disabled;
-    private boolean pendingActivation;
     private boolean benchmarkComplete;
     private Integer totalRenderingSlots;
     private Integer cpuRating;

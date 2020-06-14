@@ -38,10 +38,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static com.dryadandnaiad.sethlans.utils.ConfigUtils.getProperty;
 
@@ -105,7 +102,7 @@ public class QueryUtils {
         } catch (UnknownHostException e) {
             log.error(Throwables.getStackTraceAsString(e));
         }
-        var indexEnd = hostname.indexOf(".");
+        var indexEnd = Objects.requireNonNull(hostname).indexOf(".");
         if (indexEnd != -1) {
             log.debug(hostname + " contains a domain name. Removing it.");
             hostname = hostname.substring(0, indexEnd);

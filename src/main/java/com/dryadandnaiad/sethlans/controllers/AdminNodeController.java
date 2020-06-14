@@ -45,8 +45,12 @@ public class AdminNodeController {
     }
 
     @PostMapping("/add_server")
-    public ResponseEntity addServer(@RequestBody Server server) {
-        return new ResponseEntity(HttpStatus.CREATED);
+    public ResponseEntity<Void> addServer(@RequestBody Server server) {
+        if (serverRepository.findBySystemID(server.getSystemID()).isEmpty()) {
+            serverRepository.save(server);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
 

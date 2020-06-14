@@ -27,6 +27,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static com.dryadandnaiad.sethlans.utils.FileUtils.installApplication;
+
 /**
  * File created by Mario Estrella on 4/30/2020.
  * Dryad and Naiad Software LLC
@@ -100,16 +102,7 @@ public class PythonUtils {
     }
 
     public static boolean installPython(String binaryDir, OS os) {
-        switch (os) {
-            case WINDOWS_64:
-                return FileUtils.extractArchive(binaryDir + File.separator + WINDOWS_ARCHIVE, binaryDir);
-            case LINUX_64:
-                return FileUtils.extractArchive(binaryDir + File.separator + LINUX_ARCHIVE, binaryDir);
-            case MACOS:
-                return FileUtils.extractArchive(binaryDir + File.separator + MACOS_ARCHIVE, binaryDir);
-            default:
-                log.error("Operating System not supported. " + os.getName());
-        }
-        return false;
+        return installApplication(binaryDir, os, WINDOWS_ARCHIVE, LINUX_ARCHIVE, MACOS_ARCHIVE, log);
     }
+
 }

@@ -43,7 +43,7 @@ public class SethlansUserDetailsServiceImpl implements SethlansUserDetailsServic
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         if (userRepository.findUserByUsername(username.toLowerCase()).isPresent()) {
-            return userDetailsConverter.convert(userRepository.findUserByUsername(username).get());
+            return userDetailsConverter.convert(userRepository.findUserByUsername(username.toLowerCase()).get());
         }
         throw new UsernameNotFoundException(username + " does not exist in database.");
     }

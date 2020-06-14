@@ -20,7 +20,6 @@ package com.dryadandnaiad.sethlans.services;
 import com.dryadandnaiad.sethlans.SethlansApplication;
 import com.dryadandnaiad.sethlans.executor.MainExecutor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,11 +31,6 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class SethlansManagerServiceImpl implements SethlansManagerService {
-    private final ApplicationContext applicationContext;
-
-    public SethlansManagerServiceImpl(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
 
     @Override
     public void restart() {

@@ -43,7 +43,4 @@ public class Server extends AbstractModel {
     private String ipAddress;
     private String networkPort;
     private String systemID;
-    private boolean acknowledged;
-    private boolean pendingResponse;
-    private boolean nodeUpdated;
 }

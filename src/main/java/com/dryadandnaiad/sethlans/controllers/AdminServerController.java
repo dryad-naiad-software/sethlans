@@ -65,8 +65,8 @@ public class AdminServerController {
     }
 
     @PostMapping("/add_nodes")
-    public ResponseEntity addNodes(@RequestBody List<NodeForm> selectedNodes) {
-        return new ResponseEntity(HttpStatus.CREATED);
+    public ResponseEntity<Void> addNodes(@RequestBody List<NodeForm> selectedNodes) {
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 }
