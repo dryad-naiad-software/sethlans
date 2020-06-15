@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
 import com.google.common.io.CharStreams;
 import lombok.extern.slf4j.Slf4j;
+import org.jasypt.contrib.org.apache.commons.codec_1_3.binary.Base64;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -34,7 +35,9 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -123,6 +126,7 @@ public class NetworkUtils {
 
             if (connection.getResponseCode() == 200) {
                 var reader = new InputStreamReader(connection.getInputStream());
+                connection.disconnect();
                 return CharStreams.toString(reader);
             }
         } catch (IOException e) {
@@ -134,11 +138,115 @@ public class NetworkUtils {
     }
 
     public static ResponseEntity<Void> postJSONToURLWithAuth(URL url, String json, String username, String password) {
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        try {
+            var auth = username + ":" + password;
+            var encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.UTF_8));
+            var authHeaderValue = "Basic " + new String(encodedAuth);
+            var firstConnection = (HttpsURLConnection) url.openConnection();
+            if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
+                firstConnection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
+                firstConnection.setHostnameVerifier(SSLUtilities.allHostsValid());
+            }
+            firstConnection.setRequestMethod("GET");
+            firstConnection.setRequestProperty("Authorization", authHeaderValue);
+            firstConnection.setRequestProperty("X-CSRF-Token", "Fetch");
+            firstConnection.connect();
+
+            var sessionCookies = getSessionCookies(firstConnection);
+            var xsrfToken = extractXRSFToken(firstConnection);
+
+            firstConnection.disconnect();
+
+            var secondConnection = (HttpsURLConnection) url.openConnection();
+            if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
+                secondConnection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
+                secondConnection.setHostnameVerifier(SSLUtilities.allHostsValid());
+            }
+
+            secondConnection.setRequestMethod("POST");
+            secondConnection.setRequestProperty("X-CSRF-Token", xsrfToken);
+            secondConnection.setRequestProperty("Content-Type", "application/json; utf-8");
+            secondConnection.setRequestProperty("Accept", "application/json");
+            setSessionCookies(secondConnection, sessionCookies);
+            return sendJSON(json, secondConnection);
+
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
+
 
     public static ResponseEntity<Void> postJSONToURL(URL url, String json) {
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        try {
+            var connection = (HttpsURLConnection) url.openConnection();
+            if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
+                connection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
+                connection.setHostnameVerifier(SSLUtilities.allHostsValid());
+            }
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json; utf-8");
+            connection.setRequestProperty("Accept", "application/json");
+
+            return sendJSON(json, connection);
+
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
+    private static List<String> getSessionCookies(HttpsURLConnection conn) {
+        var response_headers = conn.getHeaderFields();
+        var keys = response_headers.keySet().iterator();
+        String key;
+        while (keys.hasNext()) {
+            key = keys.next();
+            if ("set-cookie".equalsIgnoreCase(key)) {
+                return response_headers.get(key);
+            }
+        }
+        return null;
+    }
+
+    private static void setSessionCookies(HttpsURLConnection conn, List<String> session) {
+        if (session != null) {
+            StringBuilder aggregated_cookies = new StringBuilder();
+            for (String cookie : session) {
+                aggregated_cookies.append(cookie).append("; ");
+            }
+            conn.setRequestProperty("cookie", aggregated_cookies.toString());
+        }
+    }
+
+    private static String extractXRSFToken(HttpsURLConnection conn) {
+        List<String> value = null;
+        var headers = conn.getHeaderFields();
+        for (String key : headers.keySet()) {
+            if ("X-CSRF-Token".equalsIgnoreCase(key)) {
+                value = headers.get(key);
+            }
+        }
+
+        if (value == null || value.size() == 0) {
+            return null;
+        }
+        return value.get(0);
+    }
+
+    private static ResponseEntity<Void> sendJSON(String json, HttpsURLConnection connection) throws IOException {
+        connection.setDoOutput(true);
+        var outputStream = connection.getOutputStream();
+        var input = json.getBytes(StandardCharsets.UTF_8);
+        outputStream.write(input, 0, input.length);
+        if (connection.getResponseCode() == 201) {
+            connection.disconnect();
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } else {
+            connection.disconnect();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 }
