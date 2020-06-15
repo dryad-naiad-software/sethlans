@@ -95,8 +95,9 @@ class SetupControllerTest {
     void prePopulatedSetupForm() throws Exception {
         var result = mockMvc.perform(get("/api/v1/setup/get_setup")).andExpect(status().isOk()).andReturn();
         var objectMapper = new ObjectMapper();
-        var setupForm = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<SetupForm>() {
-        });
+        var setupForm = objectMapper.readValue(result.getResponse().getContentAsString(), new
+                TypeReference<SetupForm>() {
+                });
         var availableGPU = ScanGPU.listDevices();
         assertThat(setupForm).isNotNull();
         assertThat(setupForm.getIpAddress()).isEqualTo(QueryUtils.getIP());

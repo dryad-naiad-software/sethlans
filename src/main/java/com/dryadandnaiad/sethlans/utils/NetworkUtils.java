@@ -26,7 +26,6 @@ import com.google.common.io.CharStreams;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.contrib.org.apache.commons.codec_1_3.binary.Base64;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
@@ -40,6 +39,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 /**
  * File created by Mario Estrella on 6/11/2020.
@@ -137,7 +138,7 @@ public class NetworkUtils {
         return null;
     }
 
-    public static ResponseEntity<Void> postJSONToURLWithAuth(URL url, String json, String username, String password) {
+    public static HttpStatus postJSONToURLWithAuth(URL url, String json, String username, String password) {
         try {
             var auth = username + ":" + password;
             var encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.UTF_8));
@@ -173,12 +174,12 @@ public class NetworkUtils {
         } catch (IOException e) {
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return BAD_REQUEST;
         }
     }
 
 
-    public static ResponseEntity<Void> postJSONToURL(URL url, String json) {
+    public static HttpStatus postJSONToURL(URL url, String json) {
         try {
             var connection = (HttpsURLConnection) url.openConnection();
             if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
@@ -194,7 +195,7 @@ public class NetworkUtils {
         } catch (IOException e) {
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return BAD_REQUEST;
         }
     }
 
@@ -236,17 +237,17 @@ public class NetworkUtils {
         return value.get(0);
     }
 
-    private static ResponseEntity<Void> sendJSON(String json, HttpsURLConnection connection) throws IOException {
+    private static HttpStatus sendJSON(String json, HttpsURLConnection connection) throws IOException {
         connection.setDoOutput(true);
         var outputStream = connection.getOutputStream();
         var input = json.getBytes(StandardCharsets.UTF_8);
         outputStream.write(input, 0, input.length);
         if (connection.getResponseCode() == 201) {
             connection.disconnect();
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            return HttpStatus.CREATED;
         } else {
             connection.disconnect();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return BAD_REQUEST;
         }
     }
 }
