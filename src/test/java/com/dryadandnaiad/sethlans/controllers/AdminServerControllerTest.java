@@ -115,7 +115,7 @@ class AdminServerControllerTest {
         nodeList.add(Node.builder().ipAddress(QueryUtils.getIP()).networkPort("7443").build());
         var objectMapper = new ObjectMapper();
         var nodeJSON = objectMapper.writeValueAsString(nodeList);
-        var result = mvc.perform(get("/api/v1/management/node_list")
+        var result = mvc.perform(get("/api/v1/management/retrieve_node_list")
                 .contentType(MediaType.APPLICATION_JSON).content(nodeJSON))
                 .andExpect(status().isOk()).andReturn();
         var nodeSet = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<Set<Node>>() {

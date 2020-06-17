@@ -22,10 +22,9 @@ import com.dryadandnaiad.sethlans.repositories.ServerRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * File created by Mario Estrella on 6/14/2020.
@@ -51,6 +50,11 @@ public class AdminNodeController {
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
         return new ResponseEntity<>(HttpStatus.CONFLICT);
+    }
+
+    @GetMapping("/list_servers")
+    public List<Server> servers() {
+        return serverRepository.findAll();
     }
 
 

@@ -63,7 +63,7 @@ public class AdminServerController {
         return NetworkUtils.discoverNodesViaMulticast();
     }
 
-    @GetMapping("/node_list")
+    @GetMapping("/retrieve_node_list")
     public Set<Node> nodesSet(@RequestBody List<NodeForm> nodes) {
         var nodeSet = new HashSet<Node>();
         for (NodeForm node : nodes) {

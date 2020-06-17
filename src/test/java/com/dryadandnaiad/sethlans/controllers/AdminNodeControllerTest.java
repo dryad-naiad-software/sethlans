@@ -28,6 +28,7 @@ import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterAll;
@@ -45,7 +46,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
+import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -105,5 +109,11 @@ class AdminNodeControllerTest {
         mvc.perform(post("/api/v1/management/add_server")
                 .contentType(MediaType.APPLICATION_JSON).content(serverJson))
                 .andExpect(status().isCreated());
+        var result = mvc.perform(get("/api/v1/management/list_servers")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn();
+        var servers = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<List<Server>>() {
+        });
+        assertThat(servers).hasSize(1);
     }
 }
