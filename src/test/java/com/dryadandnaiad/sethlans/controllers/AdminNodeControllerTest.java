@@ -114,6 +114,6 @@ class AdminNodeControllerTest {
                 .andExpect(status().isOk()).andReturn();
         var servers = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<List<Server>>() {
         });
-        assertThat(servers).hasSize(1);
+        assertThat(servers).hasSizeGreaterThan(0);
     }
 }

@@ -54,8 +54,4 @@ public class InfoController {
                 .build();
     }
 
-    @GetMapping("/system_id")
-    public String getSystemID() {
-        return ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID);
-    }
 }

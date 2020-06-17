@@ -66,7 +66,7 @@ class DownloadServiceTest {
     static void beforeAll() throws Exception {
         var setupSettings = SetupForm.builder()
                 .appURL("https://localhost:7443")
-                .ipAddress("10.10.10.10")
+                .ipAddress(QueryUtils.getIP())
                 .logLevel(LogLevel.DEBUG)
                 .mode(SethlansMode.SERVER)
                 .port("7443").build();

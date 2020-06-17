@@ -95,7 +95,7 @@ public class AdminServerController {
                 var addServerURL = new URL("https://" + selectedNode.getIpAddress() + ":" +
                         selectedNode.getNetworkPort() + "/api/v1/management/add_server");
                 var getSystemIDURL = new URL("https://" + selectedNode.getIpAddress() + ":" +
-                        selectedNode.getNetworkPort() + "/api/v1/info/system_id");
+                        selectedNode.getNetworkPort() + "/api/v1/management/system_id");
                 if (NetworkUtils.postJSONToURLWithAuth(loginURL,
                         addServerURL, serverAsJson, selectedNode.getUsername(),
                         selectedNode.getPassword()).equals(HttpStatus.CREATED)) {
