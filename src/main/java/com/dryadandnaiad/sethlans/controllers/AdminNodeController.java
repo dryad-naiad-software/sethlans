@@ -19,6 +19,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.repositories.ServerRepository;
+import com.dryadandnaiad.sethlans.services.BenchmarkService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -40,9 +41,11 @@ import java.util.List;
 public class AdminNodeController {
 
     private final ServerRepository serverRepository;
+    private final BenchmarkService benchmarkService;
 
-    public AdminNodeController(ServerRepository serverRepository) {
+    public AdminNodeController(ServerRepository serverRepository, BenchmarkService benchmarkService) {
         this.serverRepository = serverRepository;
+        this.benchmarkService = benchmarkService;
     }
 
     @PostMapping("/add_server")
@@ -52,12 +55,32 @@ public class AdminNodeController {
             serverRepository.save(server);
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
+        log.error("Server already exists on this node.");
         return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
     @GetMapping("/list_servers")
     public List<Server> servers() {
         return serverRepository.findAll();
+    }
+
+    @GetMapping
+    public ResponseEntity<Void> requestBenchmark(@RequestBody Server server) {
+        if (serverRepository.findBySystemID(server.getSystemID()).isPresent()) {
+            benchmarkService.processBenchmarkRequest(server);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        }
+        log.error("Server is not authorized on this node.");
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping
+    public boolean benchmarkStatus(@RequestBody Server server) {
+        if (serverRepository.findBySystemID(server.getSystemID()).isPresent()) {
+            return benchmarkService.benchmarkStatus(server);
+        }
+        log.error("Server is not authorized on this node.");
+        return false;
     }
 
 
