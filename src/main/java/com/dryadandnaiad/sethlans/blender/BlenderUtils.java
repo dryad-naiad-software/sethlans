@@ -250,7 +250,9 @@ public class BlenderUtils {
         return availableVersions;
     }
 
-    public static File downloadBlenderToNode(String serverURL, String binaryDir, OS os) {
+    public static File downloadBlenderToNode(String downloadURL, String md5URL, String downloadDir, OS os) {
+
+
         //TODO write download to node
         return null;
     }

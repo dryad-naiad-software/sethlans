@@ -56,18 +56,11 @@ public class ServerQueueController {
     byte[] getLatestBlenderArchive(@RequestParam("system-id") String systemID,
                                    @RequestParam("os") String os) {
         if (nodeRepository.findNodeBySystemIDEquals(systemID).isPresent()) {
-            var blenderArchives = blenderArchiveRepository.findAllByDownloadedIsTrueAndBlenderOSEquals(OS.valueOf(os));
-            var blenderVersions = new ArrayList<String>();
-            for (BlenderArchive blenderArchive : blenderArchives) {
-                blenderVersions.add(blenderArchive.getBlenderVersion());
-            }
-            blenderVersions.sort(new AlphaNumericComparator());
-            var selectedArchive = blenderArchiveRepository.findBlenderBinaryByBlenderVersionEqualsAndBlenderOSEquals
-                    (blenderVersions.get(0), OS.valueOf(os));
-            if (selectedArchive.isPresent()) {
+            var selectedArchive = getLatestBlenderArchive(os);
+            if (selectedArchive != null) {
                 try {
                     InputStream inputStream = new BufferedInputStream(new
-                            FileInputStream(new File(selectedArchive.get().getBlenderFile())));
+                            FileInputStream(new File(selectedArchive.getBlenderFile())));
                     return IOUtils.toByteArray(inputStream);
                 } catch (IOException e) {
                     log.error(e.getMessage());
@@ -78,4 +71,31 @@ public class ServerQueueController {
         }
         return null;
     }
+
+    @GetMapping("/latest_blender_archive_md5")
+    public String getLatestBlenderArchiveMD5(@RequestParam("system-id") String systemID,
+                                             @RequestParam("os") String os) {
+        if (nodeRepository.findNodeBySystemIDEquals(systemID).isPresent()) {
+            var selectedArchive = getLatestBlenderArchive(os);
+            if (selectedArchive != null) {
+                return selectedArchive.getBlenderFileMd5();
+            }
+            return null;
+        }
+        return null;
+    }
+
+    private BlenderArchive getLatestBlenderArchive(String os) {
+        var blenderArchives = blenderArchiveRepository.findAllByDownloadedIsTrueAndBlenderOSEquals(OS.valueOf(os));
+        var blenderVersions = new ArrayList<String>();
+        for (BlenderArchive blenderArchive : blenderArchives) {
+            blenderVersions.add(blenderArchive.getBlenderVersion());
+            blenderVersions.sort(new AlphaNumericComparator());
+            var selectedArchive = blenderArchiveRepository.findBlenderBinaryByBlenderVersionEqualsAndBlenderOSEquals
+                    (blenderVersions.get(0), OS.valueOf(os));
+            return selectedArchive.orElse(null);
+        }
+        return null;
+    }
+
 }
