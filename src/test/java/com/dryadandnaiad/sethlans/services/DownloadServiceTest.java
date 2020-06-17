@@ -19,10 +19,10 @@ package com.dryadandnaiad.sethlans.services;
 
 import com.dryadandnaiad.sethlans.enums.LogLevel;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
-import com.dryadandnaiad.sethlans.models.blender.BlenderBinary;
+import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
-import com.dryadandnaiad.sethlans.repositories.BlenderBinaryRepository;
+import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +56,7 @@ class DownloadServiceTest {
     static File SETHLANS_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + ".sethlans");
 
     @Resource
-    BlenderBinaryRepository blenderBinaryRepository;
+    BlenderArchiveRepository blenderArchiveRepository;
 
     @Autowired
     DownloadService downloadService;
@@ -92,17 +92,17 @@ class DownloadServiceTest {
 
     @Test
     void downloadBlenderFilesAsync() throws InterruptedException {
-        blenderBinaryRepository.save(BlenderBinary.builder()
+        blenderArchiveRepository.save(BlenderArchive.builder()
                 .blenderOS(QueryUtils.getOS())
                 .downloaded(false)
                 .blenderVersion("2.79b")
                 .build());
 
-        var blenderBinary = blenderBinaryRepository.findAll().get(0);
+        var blenderBinary = blenderArchiveRepository.findAll().get(0);
         assertThat(blenderBinary).isNotNull();
         Thread.sleep(11000);
         while (!blenderBinary.isDownloaded()) {
-            blenderBinary = blenderBinaryRepository.findAll().get(0);
+            blenderBinary = blenderArchiveRepository.findAll().get(0);
             Thread.sleep(1000);
             assertThat(new File(SETHLANS_DIRECTORY + File.separator + "downloads")).isNotEmptyDirectory();
         }

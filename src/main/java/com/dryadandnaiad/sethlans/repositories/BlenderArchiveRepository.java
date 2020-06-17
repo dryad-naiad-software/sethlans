@@ -17,9 +17,13 @@
 
 package com.dryadandnaiad.sethlans.repositories;
 
-import com.dryadandnaiad.sethlans.models.blender.BlenderBinary;
+import com.dryadandnaiad.sethlans.enums.OS;
+import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * File created by Mario Estrella on 5/25/2020.
@@ -28,5 +32,8 @@ import org.springframework.stereotype.Repository;
  * Project: sethlans
  */
 @Repository
-public interface BlenderBinaryRepository extends JpaRepository<BlenderBinary, Long> {
+public interface BlenderArchiveRepository extends JpaRepository<BlenderArchive, Long> {
+    List<BlenderArchive> findAllByDownloadedIsTrueAndBlenderOSEquals(OS os);
+
+    Optional<BlenderArchive> findBlenderBinaryByBlenderVersionEqualsAndBlenderOSEquals(String blenderVersion, OS os);
 }

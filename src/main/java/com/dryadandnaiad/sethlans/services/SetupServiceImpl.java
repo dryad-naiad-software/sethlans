@@ -19,9 +19,9 @@ package com.dryadandnaiad.sethlans.services;
 
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
-import com.dryadandnaiad.sethlans.models.blender.BlenderBinary;
+import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
-import com.dryadandnaiad.sethlans.repositories.BlenderBinaryRepository;
+import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
@@ -43,11 +43,11 @@ import java.util.stream.Stream;
 @Slf4j
 public class SetupServiceImpl implements SetupService {
     private final UserRepository userRepository;
-    private final BlenderBinaryRepository blenderBinaryRepository;
+    private final BlenderArchiveRepository blenderArchiveRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public SetupServiceImpl(UserRepository userRepository, BlenderBinaryRepository blenderBinaryRepository, BCryptPasswordEncoder bCryptPasswordEncoder, SethlansManagerService sethlansManagerService) {
-        this.blenderBinaryRepository = blenderBinaryRepository;
+    public SetupServiceImpl(UserRepository userRepository, BlenderArchiveRepository blenderArchiveRepository, BCryptPasswordEncoder bCryptPasswordEncoder, SethlansManagerService sethlansManagerService) {
+        this.blenderArchiveRepository = blenderArchiveRepository;
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
@@ -58,7 +58,7 @@ public class SetupServiceImpl implements SetupService {
             PropertiesUtils.writeSetupSettings(setupForm);
             PropertiesUtils.writeDirectories(setupForm.getMode());
             if (setupForm.getMode().equals(SethlansMode.DUAL) || setupForm.getMode().equals(SethlansMode.SERVER)) {
-                blenderBinaryRepository.save(BlenderBinary.builder()
+                blenderArchiveRepository.save(BlenderArchive.builder()
                         .blenderOS(QueryUtils.getOS())
                         .downloaded(false)
                         .blenderVersion(setupForm.getServerSettings().getBlenderVersion())

@@ -39,7 +39,7 @@ import javax.persistence.Entity;
 @Data
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-public class BlenderBinary extends AbstractModel {
+public class BlenderArchive extends AbstractModel {
     private String blenderVersion;
     private OS blenderOS;
     private String blenderFile;

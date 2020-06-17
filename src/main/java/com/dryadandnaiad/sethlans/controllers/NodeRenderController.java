@@ -15,14 +15,10 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.services;
+package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.enums.ConfigKeys;
-import com.dryadandnaiad.sethlans.models.system.Server;
-import com.dryadandnaiad.sethlans.utils.ConfigUtils;
-import com.dryadandnaiad.sethlans.utils.QueryUtils;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * File created by Mario Estrella on 6/17/2020.
@@ -30,21 +26,7 @@ import org.springframework.stereotype.Service;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Service
-public class BenchmarkServiceImpl implements BenchmarkService {
-
-    @Override
-    @Async
-    public void processBenchmarkRequest(Server server) {
-        var nodeSystemID = ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID);
-        var os = QueryUtils.getOS().getName();
-        var url = "https://" + server.getIpAddress() + ":" + server.getNetworkPort() +
-                "/api/v1/server_queue/latest_blender_archive?system-id=" + nodeSystemID + "&os=" + os;
-
-    }
-
-    @Override
-    public boolean benchmarkStatus(Server server) {
-        return false;
-    }
+@RestController
+@RequestMapping("/api/v1/render")
+public class NodeRenderController {
 }

@@ -19,8 +19,8 @@ package com.dryadandnaiad.sethlans.services;
 
 import com.dryadandnaiad.sethlans.blender.BlenderUtils;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
-import com.dryadandnaiad.sethlans.models.blender.BlenderBinary;
-import com.dryadandnaiad.sethlans.repositories.BlenderBinaryRepository;
+import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
+import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -38,10 +38,10 @@ import org.springframework.stereotype.Service;
 @Service
 @Profile({"SERVER", "DUAL"})
 public class DownloadServiceImpl implements DownloadService {
-    private final BlenderBinaryRepository blenderBinaryRepository;
+    private final BlenderArchiveRepository blenderArchiveRepository;
 
-    public DownloadServiceImpl(BlenderBinaryRepository blenderBinaryRepository) {
-        this.blenderBinaryRepository = blenderBinaryRepository;
+    public DownloadServiceImpl(BlenderArchiveRepository blenderArchiveRepository) {
+        this.blenderArchiveRepository = blenderArchiveRepository;
     }
 
     @Override
@@ -58,16 +58,16 @@ public class DownloadServiceImpl implements DownloadService {
         log.info("Attempting to download any needed Blender Binaries.");
         var downloadDir = ConfigUtils.getProperty(ConfigKeys.DOWNLOAD_DIR);
         var jsonLocation = ConfigUtils.getProperty(ConfigKeys.BLENDER_DOWNLOAD_JSON_LOCATION);
-        var blenderBinaries = blenderBinaryRepository.findAll();
-        for (BlenderBinary blenderBinary : blenderBinaries) {
-            if (!blenderBinary.isDownloaded()) {
-                var downloadedFile = BlenderUtils.downloadBlenderToServer(blenderBinary.getBlenderVersion(),
-                        jsonLocation, downloadDir, blenderBinary.getBlenderOS());
+        var blenderBinaries = blenderArchiveRepository.findAll();
+        for (BlenderArchive blenderArchive : blenderBinaries) {
+            if (!blenderArchive.isDownloaded()) {
+                var downloadedFile = BlenderUtils.downloadBlenderToServer(blenderArchive.getBlenderVersion(),
+                        jsonLocation, downloadDir, blenderArchive.getBlenderOS());
                 if (downloadedFile != null) {
-                    blenderBinary.setBlenderFile(downloadedFile.toString());
-                    blenderBinary.setBlenderFileMd5(FileUtils.getMD5ofFile(downloadedFile));
-                    blenderBinary.setDownloaded(true);
-                    blenderBinaryRepository.save(blenderBinary);
+                    blenderArchive.setBlenderFile(downloadedFile.toString());
+                    blenderArchive.setBlenderFileMd5(FileUtils.getMD5ofFile(downloadedFile));
+                    blenderArchive.setDownloaded(true);
+                    blenderArchiveRepository.save(blenderArchive);
                 }
             }
         }
