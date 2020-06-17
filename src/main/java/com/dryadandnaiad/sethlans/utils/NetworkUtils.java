@@ -115,6 +115,42 @@ public class NetworkUtils {
         }
     }
 
+    public static String getJSONFromURLWithAuth(URL login, URL url, String username, String password) {
+        try {
+            var firstConnection = getAuthHttpsURLConnection(login, username, password);
+            var sessionCookies = getSessionCookies(firstConnection);
+            var xsrfToken = extractXRSFToken(firstConnection);
+
+            firstConnection.disconnect();
+
+            var secondConnection = (HttpsURLConnection) url.openConnection();
+            if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
+                secondConnection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
+                secondConnection.setHostnameVerifier(SSLUtilities.allHostsValid());
+            }
+
+            secondConnection.setRequestMethod("GET");
+            secondConnection.setRequestProperty("X-CSRF-Token", xsrfToken);
+            setSessionCookies(secondConnection, sessionCookies);
+            secondConnection.connect();
+
+            if (secondConnection.getResponseCode() == 200) {
+                var reader = new InputStreamReader(secondConnection.getInputStream());
+                var stream = CharStreams.toString(reader);
+                secondConnection.disconnect();
+                return stream;
+            }
+
+
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            return null;
+        }
+        return null;
+    }
+
+
     public static String getJSONFromURL(URL url) {
         try {
             var connection = (HttpsURLConnection) url.openConnection();
@@ -139,20 +175,10 @@ public class NetworkUtils {
         return null;
     }
 
-    public static HttpStatus postJSONToURLWithAuth(URL url, String json, String username, String password) {
+    public static HttpStatus postJSONToURLWithAuth(URL login, URL url,
+                                                   String json, String username, String password) {
         try {
-            var auth = username + ":" + password;
-            var encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.UTF_8));
-            var authHeaderValue = "Basic " + new String(encodedAuth);
-            var firstConnection = (HttpsURLConnection) url.openConnection();
-            if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
-                firstConnection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
-                firstConnection.setHostnameVerifier(SSLUtilities.allHostsValid());
-            }
-            firstConnection.setRequestMethod("GET");
-            firstConnection.setRequestProperty("Authorization", authHeaderValue);
-            firstConnection.setRequestProperty("X-CSRF-Token", "Fetch");
-            firstConnection.connect();
+            var firstConnection = getAuthHttpsURLConnection(login, username, password);
 
             var sessionCookies = getSessionCookies(firstConnection);
             var xsrfToken = extractXRSFToken(firstConnection);
@@ -177,6 +203,22 @@ public class NetworkUtils {
             log.error(Throwables.getStackTraceAsString(e));
             return BAD_REQUEST;
         }
+    }
+
+    private static HttpsURLConnection getAuthHttpsURLConnection(URL login, String username, String password) throws IOException {
+        var auth = username + ":" + password;
+        var encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.UTF_8));
+        var authHeaderValue = "Basic " + new String(encodedAuth);
+        var firstConnection = (HttpsURLConnection) login.openConnection();
+        if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
+            firstConnection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
+            firstConnection.setHostnameVerifier(SSLUtilities.allHostsValid());
+        }
+        firstConnection.setRequestMethod("GET");
+        firstConnection.setRequestProperty("Authorization", authHeaderValue);
+        firstConnection.setRequestProperty("X-CSRF-Token", "Fetch");
+        firstConnection.connect();
+        return firstConnection;
     }
 
 

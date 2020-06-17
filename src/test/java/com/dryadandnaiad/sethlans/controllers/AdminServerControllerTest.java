@@ -20,6 +20,7 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.enums.LogLevel;
 import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.models.forms.NodeForm;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
@@ -50,6 +51,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -111,8 +113,8 @@ class AdminServerControllerTest {
     @WithMockUser("spring")
     @Test
     void nodesSet() throws Exception {
-        var nodeList = new ArrayList<Node>();
-        nodeList.add(Node.builder().ipAddress(QueryUtils.getIP()).networkPort("7443").build());
+        var nodeList = new ArrayList<NodeForm>();
+        nodeList.add(NodeForm.builder().ipAddress(QueryUtils.getIP()).networkPort("7443").build());
         var objectMapper = new ObjectMapper();
         var nodeJSON = objectMapper.writeValueAsString(nodeList);
         var result = mvc.perform(get("/api/v1/management/retrieve_node_list")
@@ -121,6 +123,25 @@ class AdminServerControllerTest {
         var nodeSet = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<Set<Node>>() {
         });
         assertThat(nodeSet).hasSizeGreaterThan(0);
+
+    }
+
+    @WithMockUser("spring")
+    @Test
+    void addNodes() throws Exception {
+        var nodeList = new ArrayList<NodeForm>();
+        nodeList.add(NodeForm.builder()
+                .ipAddress(QueryUtils.getIP())
+                .networkPort("7443")
+                .username("spring")
+                .password("test")
+                .build());
+        var objectMapper = new ObjectMapper();
+        var nodeJSON = objectMapper.writeValueAsString(nodeList);
+        mvc.perform(post("/api/v1/management/add_nodes")
+                .contentType(MediaType.APPLICATION_JSON).content(nodeJSON))
+                .andExpect(status().isCreated());
+
 
     }
 }

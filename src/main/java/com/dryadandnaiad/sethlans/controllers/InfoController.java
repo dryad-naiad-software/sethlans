@@ -53,4 +53,9 @@ public class InfoController {
                 .selectedGPUs(PropertiesUtils.getSelectedGPUs())
                 .build();
     }
+
+    @GetMapping("/system_id")
+    public String getSystemID() {
+        return ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID);
+    }
 }

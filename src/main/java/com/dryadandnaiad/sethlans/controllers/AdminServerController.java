@@ -90,12 +90,21 @@ public class AdminServerController {
             var serverAsJson = objectMapper.writeValueAsString(server);
 
             for (NodeForm selectedNode : selectedNodes) {
-                var url = new URL("https://" + selectedNode.getIpAddress() + ":" +
+                var loginURL = new URL("https://" + selectedNode.getIpAddress() + ":" +
+                        selectedNode.getNetworkPort() + "/login");
+                var addServerURL = new URL("https://" + selectedNode.getIpAddress() + ":" +
                         selectedNode.getNetworkPort() + "/api/v1/management/add_server");
-                if (NetworkUtils.postJSONToURLWithAuth(url, serverAsJson, selectedNode.getUsername(),
+                var getSystemIDURL = new URL("https://" + selectedNode.getIpAddress() + ":" +
+                        selectedNode.getNetworkPort() + "/api/v1/info/system_id");
+                if (NetworkUtils.postJSONToURLWithAuth(loginURL,
+                        addServerURL, serverAsJson, selectedNode.getUsername(),
                         selectedNode.getPassword()).equals(HttpStatus.CREATED)) {
                     var node = NetworkUtils.getNodeViaJson(selectedNode.getIpAddress(), selectedNode.getNetworkPort());
-                    if (node != null) {
+                    var systemID = NetworkUtils.getJSONFromURLWithAuth(loginURL,
+                            getSystemIDURL, selectedNode.getUsername(),
+                            selectedNode.getPassword());
+                    if (node != null && systemID != null) {
+                        node.setSystemID(systemID);
                         log.debug("Adding the following node to server: " + node);
                         nodeRepository.save(node);
                     }

@@ -19,6 +19,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.repositories.ServerRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,7 @@ import java.util.List;
  * Project: sethlans
  */
 @RestController
+@Slf4j
 @RequestMapping("/api/v1/management")
 @Profile({"NODE", "DUAL"})
 public class AdminNodeController {
@@ -46,6 +48,7 @@ public class AdminNodeController {
     @PostMapping("/add_server")
     public ResponseEntity<Void> addServer(@RequestBody Server server) {
         if (serverRepository.findBySystemID(server.getSystemID()).isEmpty()) {
+            log.debug("Adding the following server to node: " + server);
             serverRepository.save(server);
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
