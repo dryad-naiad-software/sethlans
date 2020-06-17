@@ -127,8 +127,9 @@ public class NetworkUtils {
 
             if (connection.getResponseCode() == 200) {
                 var reader = new InputStreamReader(connection.getInputStream());
+                var stream = CharStreams.toString(reader);
                 connection.disconnect();
-                return CharStreams.toString(reader);
+                return stream;
             }
         } catch (IOException e) {
             log.error(e.getMessage());
