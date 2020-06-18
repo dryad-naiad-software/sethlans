@@ -64,7 +64,7 @@ public class AdminNodeController {
         return serverRepository.findAll();
     }
 
-    @GetMapping
+    @GetMapping("/request_benchmark")
     public ResponseEntity<Void> requestBenchmark(@RequestBody Server server) {
         if (serverRepository.findBySystemID(server.getSystemID()).isPresent()) {
             benchmarkService.processBenchmarkRequest(server);
@@ -74,7 +74,7 @@ public class AdminNodeController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping
+    @GetMapping("/benchmark_status")
     public boolean benchmarkStatus(@RequestBody Server server) {
         if (serverRepository.findBySystemID(server.getSystemID()).isPresent()) {
             return benchmarkService.benchmarkStatus(server);
