@@ -48,6 +48,7 @@ public enum ConfigKeys {
     BLEND_FILE_CACHE_DIR("sethlans.blendFileCacheDir"),
     PYTHON_BIN("sethlans.python.binary"),
     FFMPEG_BIN("sethlans.ffmpeg.binary"),
+    BLENDER_EXECUTABLES("sethlans.blender.executables"),
     SELECTED_GPU("sethlans.selectedGPU"),
     COMBINE_GPU("sethlans.render.combined"),
     CPU_CORES("sethlans.cores"),

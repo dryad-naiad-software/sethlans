@@ -22,6 +22,7 @@ import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.OS;
 import com.dryadandnaiad.sethlans.models.blender.BlendFile;
 import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
+import com.dryadandnaiad.sethlans.models.blender.BlenderExecutable;
 import com.dryadandnaiad.sethlans.models.blender.BlenderInstallers;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.system.Server;
@@ -74,59 +75,45 @@ public class BlenderUtils {
 
     }
 
-    public static boolean downloadBlenderFromServer(BlenderArchive blenderArchive,
-                                                    String blenderArchiveJSON,
-                                                    Server server, String nodeSystemID) throws MalformedURLException {
-        var archiveMd5 = blenderArchive.getBlenderFileMd5();
-        var blenderArchiveFilename = Paths.get(blenderArchive.getBlenderFile()).getFileName().toString();
-        var downloadFullPath = ConfigUtils.getProperty(ConfigKeys.DOWNLOAD_DIR) +
-                File.separator + blenderArchiveFilename;
-        var downloadURL = new URL("https://" + server.getIpAddress() + ":" + server.getNetworkPort() +
-                "/api/v1/server_queue/get_blender_archive?system-id=" + nodeSystemID);
-        var downloadedFile = DownloadFile.downloadFileBetweenSethlans(downloadURL,
-                downloadFullPath, blenderArchiveJSON);
-        if (downloadedFile == null) {
+    public static boolean installBlenderFromServer(BlenderArchive blenderArchive,
+                                                   Server server, String nodeSystemID) {
+        try {
+            var archiveMd5 = blenderArchive.getBlenderFileMd5();
+            var objectMapper = new ObjectMapper();
+            var blenderArchiveJSON = objectMapper.writeValueAsString(blenderArchive);
+
+            var blenderArchiveFilename = Paths.get(blenderArchive.getBlenderFile()).getFileName().toString();
+            var downloadFullPath = ConfigUtils.getProperty(ConfigKeys.DOWNLOAD_DIR) +
+                    File.separator + blenderArchiveFilename;
+            var downloadURL = new URL("https://" + server.getIpAddress() + ":" + server.getNetworkPort() +
+                    "/api/v1/server_queue/get_blender_archive?system-id=" + nodeSystemID);
+            var downloadedFile = DownloadFile.downloadFileBetweenSethlans(downloadURL,
+                    downloadFullPath, blenderArchiveJSON);
+            if (downloadedFile == null) {
+                return false;
+            }
+            var binaryDir = ConfigUtils.getProperty(ConfigKeys.BINARY_DIR);
+            if (FileUtils.fileCheckMD5(downloadedFile, archiveMd5)) {
+                if (extractBlender(binaryDir, blenderArchive.getBlenderOS(), downloadedFile.toString(),
+                        blenderArchive.getBlenderVersion())) {
+                    var blenderExecutable =
+                            BlenderExecutable.builder()
+                                    .blenderExecutable(getBlenderExecutable(binaryDir, blenderArchive.getBlenderVersion()))
+                                    .blenderVersion(blenderArchive.getBlenderVersion()).build();
+                    var blenderExecutableList = PropertiesUtils.getInstalledBlenderExecutables();
+                    blenderExecutableList.add(blenderExecutable);
+                    PropertiesUtils.updateInstalledBlenderExecutables(blenderExecutableList);
+                    return true;
+                }
+            }
+        } catch (MalformedURLException | JsonProcessingException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
             return false;
-        }
-        var binaryDir = ConfigUtils.getProperty(ConfigKeys.BINARY_DIR);
-        if (FileUtils.fileCheckMD5(downloadedFile, archiveMd5)) {
-            return extractBlender(binaryDir, blenderArchive.getBlenderOS(), downloadedFile.toString(),
-                    blenderArchive.getBlenderVersion());
         }
         return false;
     }
 
-    public static File latestBlenderCheck(Server server) {
-        try {
-            var binDir = ConfigUtils.getProperty(ConfigKeys.BINARY_DIR);
-            var nodeSystemID = ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID);
-            var os = QueryUtils.getOS().getName();
-            var url = new URL("https://" + server.getIpAddress() + ":" + server.getNetworkPort() +
-                    "/api/v1/server_queue/latest_blender_archive?system-id=" + nodeSystemID + "&os=" + os);
-            var blenderArchiveJSON = NetworkUtils.getJSONFromURL(url);
-            var objectMapper = new ObjectMapper();
-            var blenderArchive = objectMapper.readValue(blenderArchiveJSON, new TypeReference<BlenderArchive>() {
-            });
-            var blenderExecutable = new File(Objects.requireNonNull(BlenderUtils.getBlenderExecutable(binDir,
-                    blenderArchive.getBlenderVersion())));
-            if (!blenderExecutable.exists()) {
-                downloadBlenderFromServer(blenderArchive, blenderArchiveJSON, server, nodeSystemID);
-                return blenderExecutable;
-            }
-            return blenderExecutable;
-
-
-        } catch (MalformedURLException | JsonProcessingException e) {
-            log.error(e.getMessage());
-            log.error(Throwables.getStackTraceAsString(e));
-        }
-        return null;
-    }
-
-    public static String getBlenderVersion(String blenderExecutable) {
-        //TODO extract version from directory name
-        return null;
-    }
 
     public static String getBlenderExecutable(String binaryDir, String version) {
         var os = QueryUtils.getOS();

@@ -19,6 +19,7 @@ package com.dryadandnaiad.sethlans.services;
 
 import com.dryadandnaiad.sethlans.blender.BlenderUtils;
 import com.dryadandnaiad.sethlans.enums.*;
+import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskFrameInfo;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskScriptInfo;
@@ -31,7 +32,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -49,17 +49,21 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
     @Override
     @Async
-    public void processBenchmarkRequest(Server server) {
+    public void processBenchmarkRequest(Server server, BlenderArchive blenderArchive) {
         var benchmarkDir = ConfigUtils.getProperty(ConfigKeys.BENCHMARK_DIR);
-        var blenderExecutable = BlenderUtils.latestBlenderCheck(server);
-        var blenderVersion = BlenderUtils.getBlenderVersion(blenderExecutable.toString());
-        var benchmarkBlend = new File(benchmarkDir + File.separator + "bmw27.blend");
-        if (!benchmarkBlend.exists()) {
-            BlenderUtils.copyBenchmarkToDisk(benchmarkDir);
+        var blenderExectuableList = PropertiesUtils.getInstalledBlenderExecutables();
+        if (blenderExectuableList.isEmpty()) {
+            BlenderUtils.installBlenderFromServer(blenderArchive, server, ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID));
         }
-        var nodeType = PropertiesUtils.getNodeType();
-        var benchmarkList = benchmarks(nodeType, blenderExecutable.toString(),
-                benchmarkBlend.toString(), blenderVersion, server.getSystemID());
+//        var blenderExecutable = BlenderUtils.latesseetBlenderCheck(server);
+//        var blenderVersion = BlenderUtils.getBlenderVersion(blenderExecutable.toString());
+//        var benchmarkBlend = new File(benchmarkDir + File.separator + "bmw27.blend");
+//        if (!benchmarkBlend.exists()) {
+//            BlenderUtils.copyBenchmarkToDisk(benchmarkDir);
+//        }
+//        var nodeType = PropertiesUtils.getNodeType();
+//        var benchmarkList = benchmarks(nodeType, blenderExecutable.toString(),
+//                benchmarkBlend.toString(), blenderVersion, server.getSystemID());
 
 
     }

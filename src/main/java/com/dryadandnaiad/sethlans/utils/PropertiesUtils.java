@@ -20,6 +20,7 @@ package com.dryadandnaiad.sethlans.utils;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.models.blender.BlenderExecutable;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
@@ -32,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,10 +54,7 @@ public class PropertiesUtils {
         var objectMapper = new ObjectMapper();
         try {
             var value = ConfigUtils.getProperty(ConfigKeys.SELECTED_GPU);
-            if (value == null || value.equals("{}")) {
-                return null;
-
-            } else {
+            if (value != null) {
                 return objectMapper.readValue(value,
                         new TypeReference<>() {
                         });
@@ -65,7 +64,37 @@ public class PropertiesUtils {
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
         }
-        return null;
+        return new ArrayList<>();
+    }
+
+    public static List<BlenderExecutable> getInstalledBlenderExecutables() {
+        var objectMapper = new ObjectMapper();
+        try {
+            var value = ConfigUtils.getProperty(ConfigKeys.BLENDER_EXECUTABLES);
+            if (value != null) {
+                return objectMapper.readValue(value,
+                        new TypeReference<>() {
+                        });
+            }
+        } catch (JsonProcessingException e) {
+            log.error("Error getting list of selected GPUs");
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+        }
+        return new ArrayList<>();
+    }
+
+    public static boolean updateInstalledBlenderExecutables(List<BlenderExecutable> blenderExecutables) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            ConfigUtils.writeProperty(ConfigKeys.BLENDER_EXECUTABLES, objectMapper.writeValueAsString(blenderExecutables));
+            return true;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            return false;
+        }
+
     }
 
     public static Integer getSelectedCores() {

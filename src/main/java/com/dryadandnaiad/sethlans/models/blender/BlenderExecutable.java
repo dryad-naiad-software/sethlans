@@ -15,21 +15,20 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.services;
+package com.dryadandnaiad.sethlans.models.blender;
 
-import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
-import com.dryadandnaiad.sethlans.models.system.Server;
+import lombok.Builder;
+import lombok.Data;
 
 /**
- * File created by Mario Estrella on 6/17/2020.
+ * File created by Mario Estrella on 6/18/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-
-public interface BenchmarkService {
-
-    void processBenchmarkRequest(Server server, BlenderArchive blenderArchive);
-
-    boolean benchmarkStatus(Server server);
+@Data
+@Builder
+public class BlenderExecutable {
+    private String blenderVersion;
+    private String blenderExecutable;
 }
