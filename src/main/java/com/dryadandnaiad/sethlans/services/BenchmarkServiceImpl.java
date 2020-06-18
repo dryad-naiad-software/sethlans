@@ -51,14 +51,15 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     @Async
     public void processBenchmarkRequest(Server server) {
         var benchmarkDir = ConfigUtils.getProperty(ConfigKeys.BENCHMARK_DIR);
-        var blenderExectuable = BlenderUtils.latestBlenderCheck(server);
+        var blenderExecutable = BlenderUtils.latestBlenderCheck(server);
+        var blenderVersion = BlenderUtils.getBlenderVersion(blenderExecutable.toString());
         var benchmarkBlend = new File(benchmarkDir + File.separator + "bmw27.blend");
         if (!benchmarkBlend.exists()) {
             BlenderUtils.copyBenchmarkToDisk(benchmarkDir);
         }
         var nodeType = PropertiesUtils.getNodeType();
-        var benchmarkList = benchmarks(nodeType, blenderExectuable.toString(),
-                benchmarkBlend.toString(), "test", server.getSystemID());
+        var benchmarkList = benchmarks(nodeType, blenderExecutable.toString(),
+                benchmarkBlend.toString(), blenderVersion, server.getSystemID());
 
 
     }
@@ -68,7 +69,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         return false;
     }
 
-    private List<RenderTask> benchmarks(NodeType nodeType, String blenderExectuable,
+    private List<RenderTask> benchmarks(NodeType nodeType, String blenderExecutable,
                                         String benchmarkFile, String blenderVersion, String serverSystemID) {
         var benchmarks = new ArrayList<RenderTask>();
         var taskFrameInfo = TaskFrameInfo.builder().frameNumber(1).build();
@@ -89,7 +90,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                 taskScriptInfo.setCores(PropertiesUtils.getSelectedCores());
                 taskScriptInfo.setDeviceType(DeviceType.CPU);
                 benchmarks.add(RenderTask.builder()
-                        .blenderExecutable(blenderExectuable)
+                        .blenderExecutable(blenderExecutable)
                         .frameInfo(taskFrameInfo)
                         .taskBlendFile(benchmarkFile)
                         .isBenchmark(true)

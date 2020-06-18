@@ -123,6 +123,11 @@ public class BlenderUtils {
         return null;
     }
 
+    public static String getBlenderVersion(String blenderExecutable) {
+        //TODO extract version from directory name
+        return null;
+    }
+
     public static String getBlenderExecutable(String binaryDir, String version) {
         var os = QueryUtils.getOS();
         var directory = new File(binaryDir + File.separator + "blender-" + version + "-" +
