@@ -45,7 +45,6 @@ public class RenderTask extends AbstractModel {
     private String taskDir;
     private String projectName;
     private String projectID;
-    private String benchmarkURL;
     private Long renderTime;
     private boolean isBenchmark;
     private boolean cancelRequestReceived;

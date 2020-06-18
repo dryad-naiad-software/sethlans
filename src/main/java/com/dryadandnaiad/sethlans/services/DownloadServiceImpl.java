@@ -54,7 +54,6 @@ public class DownloadServiceImpl implements DownloadService {
                 e.printStackTrace();
             }
         }
-
         log.info("Attempting to download any needed Blender Binaries.");
         var downloadDir = ConfigUtils.getProperty(ConfigKeys.DOWNLOAD_DIR);
         var jsonLocation = ConfigUtils.getProperty(ConfigKeys.BLENDER_DOWNLOAD_JSON_LOCATION);

@@ -18,13 +18,14 @@
 package com.dryadandnaiad.sethlans.blender;
 
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
+import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.OS;
 import com.dryadandnaiad.sethlans.models.blender.BlendFile;
+import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
 import com.dryadandnaiad.sethlans.models.blender.BlenderInstallers;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
-import com.dryadandnaiad.sethlans.utils.DownloadFile;
-import com.dryadandnaiad.sethlans.utils.FileUtils;
-import com.dryadandnaiad.sethlans.utils.QueryUtils;
+import com.dryadandnaiad.sethlans.models.system.Server;
+import com.dryadandnaiad.sethlans.utils.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,9 +40,14 @@ import org.zeroturnaround.exec.stream.slf4j.Slf4jStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -52,6 +58,70 @@ import java.util.concurrent.TimeoutException;
  */
 @Slf4j
 public class BlenderUtils {
+
+    public static boolean copyBenchmarkToDisk(String benchmarkDir) {
+        try {
+            var inputStream = new ResourceUtils("files/benchmark/bmw27.blend").getResource();
+            var path = benchmarkDir + File.separator + "bmw27.blend";
+            Files.copy(inputStream, Paths.get(path));
+            inputStream.close();
+            return new File(path).exists();
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            return false;
+        }
+
+    }
+
+    public static boolean downloadBlenderFromServer(BlenderArchive blenderArchive,
+                                                    String blenderArchiveJSON,
+                                                    Server server, String nodeSystemID) throws MalformedURLException {
+        var archiveMd5 = blenderArchive.getBlenderFileMd5();
+        var blenderArchiveFilename = Paths.get(blenderArchive.getBlenderFile()).getFileName().toString();
+        var downloadFullPath = ConfigUtils.getProperty(ConfigKeys.DOWNLOAD_DIR) +
+                File.separator + blenderArchiveFilename;
+        var downloadURL = new URL("https://" + server.getIpAddress() + ":" + server.getNetworkPort() +
+                "/api/v1/server_queue/get_blender_archive?system-id=" + nodeSystemID);
+        var downloadedFile = DownloadFile.downloadFileBetweenSethlans(downloadURL,
+                downloadFullPath, blenderArchiveJSON);
+        if (downloadedFile == null) {
+            return false;
+        }
+        var binaryDir = ConfigUtils.getProperty(ConfigKeys.BINARY_DIR);
+        if (FileUtils.fileCheckMD5(downloadedFile, archiveMd5)) {
+            return extractBlender(binaryDir, blenderArchive.getBlenderOS(), downloadedFile.toString(),
+                    blenderArchive.getBlenderVersion());
+        }
+        return false;
+    }
+
+    public static File latestBlenderCheck(Server server) {
+        try {
+            var binDir = ConfigUtils.getProperty(ConfigKeys.BINARY_DIR);
+            var nodeSystemID = ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID);
+            var os = QueryUtils.getOS().getName();
+            var url = new URL("https://" + server.getIpAddress() + ":" + server.getNetworkPort() +
+                    "/api/v1/server_queue/latest_blender_archive?system-id=" + nodeSystemID + "&os=" + os);
+            var blenderArchiveJSON = NetworkUtils.getJSONFromURL(url);
+            var objectMapper = new ObjectMapper();
+            var blenderArchive = objectMapper.readValue(blenderArchiveJSON, new TypeReference<BlenderArchive>() {
+            });
+            var blenderExecutable = new File(Objects.requireNonNull(BlenderUtils.getBlenderExecutable(binDir,
+                    blenderArchive.getBlenderVersion())));
+            if (!blenderExecutable.exists()) {
+                downloadBlenderFromServer(blenderArchive, blenderArchiveJSON, server, nodeSystemID);
+                return blenderExecutable;
+            }
+            return blenderExecutable;
+
+
+        } catch (MalformedURLException | JsonProcessingException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+        }
+        return null;
+    }
 
     public static String getBlenderExecutable(String binaryDir, String version) {
         var os = QueryUtils.getOS();
@@ -95,22 +165,6 @@ public class BlenderUtils {
                 return null;
         }
 
-    }
-
-    private static boolean makeExecutable(String file) {
-        try {
-            new ProcessExecutor().command("chmod", "+x", file)
-                    .readOutput(true).exitValues(0).execute();
-            return true;
-        } catch (InvalidExitValueException e) {
-            log.error("Process exited with " + e.getExitValue());
-            log.error(e.getMessage());
-            return false;
-        } catch (InterruptedException | IOException | TimeoutException e) {
-            log.error(e.getMessage());
-            log.error(Throwables.getStackTraceAsString(e));
-            return false;
-        }
     }
 
 
@@ -251,9 +305,9 @@ public class BlenderUtils {
     }
 
 
-
     public static File downloadBlenderToServer(String blenderVersion, String jsonLocation, String downloadDir, OS os) {
-        var selectedInstallers = getInstallersByVersion(getInstallersList(jsonLocation), blenderVersion);
+        var selectedInstallers = getInstallersByVersion(Objects.requireNonNull(getInstallersList(jsonLocation)),
+                blenderVersion);
         if (selectedInstallers == null) {
             log.error("Blender version: " + blenderVersion + ", or JSON file location: "
                     + jsonLocation + " is incorrect");
@@ -341,12 +395,7 @@ public class BlenderUtils {
         return null;
     }
 
-
-    /**
-     * @param dmgFile
-     * @return
-     */
-    public static boolean extractBlenderFromDMG(String dmgFile, String destination) {
+    private static boolean extractBlenderFromDMG(String dmgFile, String destination) {
         if (SystemUtils.IS_OS_MAC) {
             log.info("Copying contents of " + dmgFile + " to " + destination);
             try {
@@ -376,5 +425,21 @@ public class BlenderUtils {
             }
         }
         return false;
+    }
+
+    private static boolean makeExecutable(String file) {
+        try {
+            new ProcessExecutor().command("chmod", "+x", file)
+                    .readOutput(true).exitValues(0).execute();
+            return true;
+        } catch (InvalidExitValueException e) {
+            log.error("Process exited with " + e.getExitValue());
+            log.error(e.getMessage());
+            return false;
+        } catch (InterruptedException | IOException | TimeoutException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            return false;
+        }
     }
 }

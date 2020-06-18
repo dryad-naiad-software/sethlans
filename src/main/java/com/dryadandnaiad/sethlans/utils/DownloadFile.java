@@ -24,7 +24,7 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class DownloadFile {
 
-    public static long downloadFile(String downloadUrl, String saveAsFileName) throws IOException, URISyntaxException {
+    public static boolean downloadFile(String downloadUrl, String saveAsFileName) throws IOException, URISyntaxException {
         log.info("Downloading " + saveAsFileName + " from " + downloadUrl);
         var outputFile = new File(saveAsFileName);
         var downloadFileConnection = new URI(downloadUrl).toURL()
@@ -32,8 +32,7 @@ public class DownloadFile {
         return transferDataAndGetBytesDownloaded(downloadFileConnection, outputFile);
     }
 
-    private static long transferDataAndGetBytesDownloaded(URLConnection downloadFileConnection, File outputFile) throws IOException {
-        long bytesDownloaded = 0;
+    private static boolean transferDataAndGetBytesDownloaded(URLConnection downloadFileConnection, File outputFile) throws IOException {
         try (var is = downloadFileConnection.getInputStream();
              var os = new FileOutputStream(outputFile, true)) {
 
@@ -42,14 +41,13 @@ public class DownloadFile {
             int bytesCount;
             while ((bytesCount = is.read(buffer)) > 0) {
                 os.write(buffer, 0, bytesCount);
-                bytesDownloaded += bytesCount;
             }
         }
         log.info(outputFile.toString() + " Downloaded");
-        return bytesDownloaded;
+        return true;
     }
 
-    public static long downloadFileWithResume(String downloadUrl, String saveAsFileName) throws IOException,
+    public static boolean downloadFileWithResume(String downloadUrl, String saveAsFileName) throws IOException,
             URISyntaxException {
         log.info("Downloading " + saveAsFileName + " from " + downloadUrl);
         var outputFile = new File(saveAsFileName);
@@ -125,7 +123,11 @@ public class DownloadFile {
                 os.write(buffer, 0, bytesCount);
             }
 
-            log.info(outputFile.toString() + " Downloaded");
+            if (outputFile.exists()) {
+                log.info(outputFile.toString() + " Downloaded");
+                return outputFile;
+            }
+
         } catch (IOException e) {
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));

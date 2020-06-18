@@ -17,22 +17,25 @@
 
 package com.dryadandnaiad.sethlans.services;
 
+import com.dryadandnaiad.sethlans.blender.BlenderUtils;
+import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
-import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
+import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
+import com.dryadandnaiad.sethlans.enums.NodeType;
+import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
+import com.dryadandnaiad.sethlans.models.blender.tasks.TaskFrameInfo;
+import com.dryadandnaiad.sethlans.models.blender.tasks.TaskScriptInfo;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
-import com.dryadandnaiad.sethlans.utils.NetworkUtils;
-import com.dryadandnaiad.sethlans.utils.QueryUtils;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Throwables;
+import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * File created by Mario Estrella on 6/17/2020.
@@ -42,25 +45,20 @@ import java.net.URL;
  */
 @Service
 @Slf4j
+@Profile({"NODE", "DUAL"})
 public class BenchmarkServiceImpl implements BenchmarkService {
 
     @Override
     @Async
     public void processBenchmarkRequest(Server server) {
-        try {
-            var nodeSystemID = ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID);
-            var os = QueryUtils.getOS().getName();
-            var url = new URL("https://" + server.getIpAddress() + ":" + server.getNetworkPort() +
-                    "/api/v1/server_queue/latest_blender_archive?system-id=" + nodeSystemID + "&os=" + os);
-
-            var blenderArchiveJSON = NetworkUtils.getJSONFromURL(url);
-            var objectMapper = new ObjectMapper();
-            var blenderArchive = objectMapper.readValue(blenderArchiveJSON, new TypeReference<BlenderArchive>() {
-            });
-        } catch (MalformedURLException | JsonProcessingException e) {
-            log.error(e.getMessage());
-            log.error(Throwables.getStackTraceAsString(e));
+        var benchmarkDir = ConfigUtils.getProperty(ConfigKeys.BENCHMARK_DIR);
+        var blenderExectuable = BlenderUtils.latestBlenderCheck(server);
+        var benchmarkBlend = new File(benchmarkDir + File.separator + "bmw27.blend");
+        if (!benchmarkBlend.exists()) {
+            BlenderUtils.copyBenchmarkToDisk(benchmarkDir);
         }
+        var nodeType = PropertiesUtils.getNodeType();
+
 
     }
 
@@ -68,4 +66,20 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     public boolean benchmarkStatus(Server server) {
         return false;
     }
+
+    private List<RenderTask> benchmarks(NodeType nodeType, String blenderExectuable) {
+        var benchmarks = new ArrayList<RenderTask>();
+        var taskFrameInfo = TaskFrameInfo.builder().frameNumber(1).build();
+        var taskScriptInfo = TaskScriptInfo.builder()
+                .taskResolutionX(800)
+                .taskResolutionY(600)
+                .taskResPercentage(50)
+                .samples(50)
+                .blenderEngine(BlenderEngine.CYCLES)
+                .imageOutputFormat(ImageOutputFormat.PNG)
+                .build();
+
+        return benchmarks;
+    }
+
 }

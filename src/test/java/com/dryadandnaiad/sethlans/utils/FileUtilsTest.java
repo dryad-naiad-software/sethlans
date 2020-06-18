@@ -17,15 +17,12 @@
 
 package com.dryadandnaiad.sethlans.utils;
 
-import com.dryadandnaiad.sethlans.blender.BlenderUtils;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.rauschig.jarchivelib.ArchiveFormat;
 import org.rauschig.jarchivelib.Archiver;
 import org.rauschig.jarchivelib.ArchiverFactory;
@@ -37,12 +34,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.condition.OS.MAC;
 
 
 /**
@@ -145,18 +140,6 @@ class FileUtilsTest {
         assertThat(FileUtils.extractArchive(sevenZArchive.toString(), archiveDir.toString())).isFalse();
     }
 
-    @Test
-    @EnabledOnOs(MAC)
-    void extractBlenderFromDMG() throws IOException, URISyntaxException {
-        val dmgName = TEST_DIRECTORY.toString() + File.separator + "blender-2.82-macOS.dmg";
-        val dmgURL = "https://download.blender.org/release/Blender2.82/blender-2.82-macOS.dmg";
-        DownloadFile.downloadFileWithResume(dmgURL, dmgName);
-        var extractDirectory = new File(TEST_DIRECTORY + File.separator + "Blender.app");
-        assertThat(BlenderUtils.extractBlenderFromDMG(dmgName, TEST_DIRECTORY.toString())).isTrue();
-        assertThat(new File(dmgName)).doesNotExist();
-        assertThat(extractDirectory).exists();
-        FileSystemUtils.deleteRecursively(extractDirectory);
-    }
 
     @Test
     void getExtensionFromString() {
