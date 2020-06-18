@@ -250,12 +250,7 @@ public class BlenderUtils {
         return availableVersions;
     }
 
-    public static File downloadBlenderToNode(String downloadURL, String md5URL, String downloadDir, OS os) {
 
-
-        //TODO write download to node
-        return null;
-    }
 
     public static File downloadBlenderToServer(String blenderVersion, String jsonLocation, String downloadDir, OS os) {
         var selectedInstallers = getInstallersByVersion(getInstallersList(jsonLocation), blenderVersion);

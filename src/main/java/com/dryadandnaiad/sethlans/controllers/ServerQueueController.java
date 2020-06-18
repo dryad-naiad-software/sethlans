@@ -23,9 +23,9 @@ import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
 import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.google.common.base.Throwables;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
@@ -49,41 +49,33 @@ public class ServerQueueController {
         this.nodeRepository = nodeRepository;
     }
 
+    @GetMapping(value = "/latest_blender_archive")
+    public BlenderArchive latestBlenderArchive(@RequestParam("system-id") String systemID,
+                                               @RequestParam("os") String os) {
+        if (nodeRepository.findNodeBySystemIDEquals(systemID).isPresent()) {
+            return getLatestBlenderArchive(os);
+        }
+        return null;
+    }
 
-    @GetMapping(value = "/latest_blender_archive",
-            produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @GetMapping(value = "/get_blender_archive")
     public @ResponseBody
-    byte[] getLatestBlenderArchive(@RequestParam("system-id") String systemID,
-                                   @RequestParam("os") String os) {
+    byte[] getBlenderArchive(@RequestParam("system-id") String systemID,
+                             @RequestBody BlenderArchive blenderArchive) {
         if (nodeRepository.findNodeBySystemIDEquals(systemID).isPresent()) {
-            var selectedArchive = getLatestBlenderArchive(os);
-            if (selectedArchive != null) {
-                try {
-                    InputStream inputStream = new BufferedInputStream(new
-                            FileInputStream(new File(selectedArchive.getBlenderFile())));
-                    return IOUtils.toByteArray(inputStream);
-                } catch (IOException e) {
-                    log.error(e.getMessage());
-                    log.error(Throwables.getStackTraceAsString(e));
-                    return null;
-                }
+            try {
+                InputStream inputStream = new BufferedInputStream(new
+                        FileInputStream(new File(blenderArchive.getBlenderFile())));
+                return IOUtils.toByteArray(inputStream);
+            } catch (IOException e) {
+                log.error(e.getMessage());
+                log.error(Throwables.getStackTraceAsString(e));
+                return null;
             }
         }
         return null;
     }
 
-    @GetMapping("/latest_blender_archive_md5")
-    public String getLatestBlenderArchiveMD5(@RequestParam("system-id") String systemID,
-                                             @RequestParam("os") String os) {
-        if (nodeRepository.findNodeBySystemIDEquals(systemID).isPresent()) {
-            var selectedArchive = getLatestBlenderArchive(os);
-            if (selectedArchive != null) {
-                return selectedArchive.getBlenderFileMd5();
-            }
-            return null;
-        }
-        return null;
-    }
 
     private BlenderArchive getLatestBlenderArchive(String os) {
         var blenderArchives = blenderArchiveRepository.findAllByDownloadedIsTrueAndBlenderOSEquals(OS.valueOf(os));
