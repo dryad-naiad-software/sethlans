@@ -68,6 +68,10 @@ public class PropertiesUtils {
         return null;
     }
 
+    public static Integer getSelectedCores() {
+        return Integer.parseInt(getProperty(ConfigKeys.CPU_CORES));
+    }
+
     public static NodeType getNodeType() {
         return NodeType.valueOf(getProperty(ConfigKeys.NODE_TYPE));
     }

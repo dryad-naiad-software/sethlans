@@ -18,13 +18,11 @@
 package com.dryadandnaiad.sethlans.services;
 
 import com.dryadandnaiad.sethlans.blender.BlenderUtils;
-import com.dryadandnaiad.sethlans.enums.BlenderEngine;
-import com.dryadandnaiad.sethlans.enums.ConfigKeys;
-import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
-import com.dryadandnaiad.sethlans.enums.NodeType;
+import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskFrameInfo;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskScriptInfo;
+import com.dryadandnaiad.sethlans.models.blender.tasks.TaskServerInfo;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
@@ -36,6 +34,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * File created by Mario Estrella on 6/17/2020.
@@ -58,6 +57,8 @@ public class BenchmarkServiceImpl implements BenchmarkService {
             BlenderUtils.copyBenchmarkToDisk(benchmarkDir);
         }
         var nodeType = PropertiesUtils.getNodeType();
+        var benchmarkList = benchmarks(nodeType, blenderExectuable.toString(),
+                benchmarkBlend.toString(), "test", server.getSystemID());
 
 
     }
@@ -67,7 +68,8 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         return false;
     }
 
-    private List<RenderTask> benchmarks(NodeType nodeType, String blenderExectuable) {
+    private List<RenderTask> benchmarks(NodeType nodeType, String blenderExectuable,
+                                        String benchmarkFile, String blenderVersion, String serverSystemID) {
         var benchmarks = new ArrayList<RenderTask>();
         var taskFrameInfo = TaskFrameInfo.builder().frameNumber(1).build();
         var taskScriptInfo = TaskScriptInfo.builder()
@@ -78,6 +80,31 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                 .blenderEngine(BlenderEngine.CYCLES)
                 .imageOutputFormat(ImageOutputFormat.PNG)
                 .build();
+        var taskServerInfo = TaskServerInfo.builder()
+                .systemID(serverSystemID)
+                .serverQueueID("N/A").build();
+        switch (nodeType) {
+            case CPU:
+                taskScriptInfo.setComputeOn(ComputeOn.CPU);
+                taskScriptInfo.setCores(PropertiesUtils.getSelectedCores());
+                taskScriptInfo.setDeviceType(DeviceType.CPU);
+                benchmarks.add(RenderTask.builder()
+                        .blenderExecutable(blenderExectuable)
+                        .frameInfo(taskFrameInfo)
+                        .taskBlendFile(benchmarkFile)
+                        .isBenchmark(true)
+                        .projectName("CPU Benchmark " + UUID.randomUUID().toString())
+                        .serverInfo(taskServerInfo)
+                        .blenderVersion(blenderVersion)
+                        .taskID(UUID.randomUUID().toString())
+                        .taskDir(ConfigUtils.getProperty(ConfigKeys.TEMP_DIR))
+                        .build());
+            case GPU:
+                var selectedGPUs = PropertiesUtils.getSelectedGPUs();
+
+
+        }
+
 
         return benchmarks;
     }
