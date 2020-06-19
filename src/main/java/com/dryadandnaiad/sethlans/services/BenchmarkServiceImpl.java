@@ -26,6 +26,7 @@ import com.dryadandnaiad.sethlans.models.blender.tasks.TaskScriptInfo;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskServerInfo;
 import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import com.dryadandnaiad.sethlans.models.system.Server;
+import com.dryadandnaiad.sethlans.repositories.RenderTaskRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -48,6 +48,12 @@ import java.util.UUID;
 @Slf4j
 @Profile({"NODE", "DUAL"})
 public class BenchmarkServiceImpl implements BenchmarkService {
+
+    private final RenderTaskRepository renderTaskRepository;
+
+    public BenchmarkServiceImpl(RenderTaskRepository renderTaskRepository) {
+        this.renderTaskRepository = renderTaskRepository;
+    }
 
     @Override
     @Async
@@ -65,8 +71,20 @@ public class BenchmarkServiceImpl implements BenchmarkService {
             BlenderUtils.copyBenchmarkToDisk(benchmarkDir);
         }
         var nodeType = PropertiesUtils.getNodeType();
-        var benchmarkList = benchmarks(nodeType, blenderExecutable.toString(),
+        createBenchmarkTasks(nodeType, blenderExecutable.toString(),
                 benchmarkBlend.toString(), blenderVersion, server.getSystemID());
+        var benchmarksToExecute =
+                renderTaskRepository.findRenderTasksByBenchmarkIsTrueAndInProgressIsFalseAndCompleteIsFalse();
+        for (RenderTask renderTask : benchmarksToExecute) {
+            renderTask.setInProgress(true);
+            var renderTime = BlenderUtils.executeRenderTask(renderTask, false);
+            if (renderTime != null) {
+                renderTask.setRenderTime(renderTime);
+                renderTask.setComplete(true);
+                renderTask.setInProgress(false);
+            }
+            renderTaskRepository.save(renderTask);
+        }
 
 
     }
@@ -76,8 +94,8 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         return false;
     }
 
-    private List<RenderTask> benchmarks(NodeType nodeType, String blenderExecutable,
-                                        String benchmarkFile, String blenderVersion, String serverSystemID) {
+    private void createBenchmarkTasks(NodeType nodeType, String blenderExecutable,
+                                      String benchmarkFile, String blenderVersion, String serverSystemID) {
         var benchmarks = new ArrayList<RenderTask>();
         var taskFrameInfo = TaskFrameInfo.builder().frameNumber(1).build();
         var taskScriptInfo = TaskScriptInfo.builder()
@@ -112,7 +130,9 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                             taskFrameInfo, taskServerInfo, benchmarkFile, blenderVersion));
                 }
         }
-        return benchmarks;
+        for (RenderTask benchmark : benchmarks) {
+            renderTaskRepository.save(benchmark);
+        }
     }
 
     private RenderTask cpuBenchmark(TaskScriptInfo taskScriptInfo, String blenderExecutable,

@@ -52,6 +52,7 @@ public enum ConfigKeys {
     SELECTED_GPU("sethlans.selectedGPU"),
     COMBINE_GPU("sethlans.render.combined"),
     CPU_CORES("sethlans.cores"),
+    CPU_RATING("sethlans.cpu.rating"),
     TILE_SIZE_CPU("sethlans.tileSizeCPU"),
     TILE_SIZE_GPU("sethlans.tileSizeGPU"),
     SESSION_TIMEOUT("server.session.timeout"),

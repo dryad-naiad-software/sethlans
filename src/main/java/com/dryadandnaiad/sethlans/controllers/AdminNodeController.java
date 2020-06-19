@@ -17,15 +17,26 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.repositories.ServerRepository;
 import com.dryadandnaiad.sethlans.services.BenchmarkService;
+import com.dryadandnaiad.sethlans.utils.ConfigUtils;
+import com.dryadandnaiad.sethlans.utils.NetworkUtils;
+import com.dryadandnaiad.sethlans.utils.QueryUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -67,7 +78,19 @@ public class AdminNodeController {
     @GetMapping("/request_benchmark")
     public ResponseEntity<Void> requestBenchmark(@RequestBody Server server) {
         if (serverRepository.findBySystemID(server.getSystemID()).isPresent()) {
-            benchmarkService.processBenchmarkRequest(server);
+            var objectMapper = new ObjectMapper();
+            var nodeID = ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID);
+            try {
+                var url = new URL("https://" + server.getIpAddress() + ":" + server.getNetworkPort()
+                        + "/latest_blender_archive?system-id=" + nodeID + "&os=" + QueryUtils.getOS().getName());
+                var blenderArchiveJSON = NetworkUtils.getJSONFromURL(url);
+                var blenderArchive = objectMapper.readValue(blenderArchiveJSON, new TypeReference<BlenderArchive>() {
+                });
+                benchmarkService.processBenchmarkRequest(server, blenderArchive);
+            } catch (JsonProcessingException | MalformedURLException e) {
+                log.error(e.getMessage());
+                log.error(Throwables.getStackTraceAsString(e));
+            }
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         }
         log.error("Server is not authorized on this node.");
