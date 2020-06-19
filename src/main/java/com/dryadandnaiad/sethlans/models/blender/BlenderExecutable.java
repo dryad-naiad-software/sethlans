@@ -17,6 +17,7 @@
 
 package com.dryadandnaiad.sethlans.models.blender;
 
+import com.dryadandnaiad.sethlans.enums.OS;
 import lombok.Builder;
 import lombok.Data;
 
@@ -31,4 +32,5 @@ import lombok.Data;
 public class BlenderExecutable {
     private String blenderVersion;
     private String blenderExecutable;
+    private OS os;
 }

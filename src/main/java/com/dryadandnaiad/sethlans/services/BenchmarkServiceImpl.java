@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskFrameInfo;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskScriptInfo;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskServerInfo;
+import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
@@ -32,6 +33,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -51,19 +53,20 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     @Async
     public void processBenchmarkRequest(Server server, BlenderArchive blenderArchive) {
         var benchmarkDir = ConfigUtils.getProperty(ConfigKeys.BENCHMARK_DIR);
-        var blenderExectuableList = PropertiesUtils.getInstalledBlenderExecutables();
-        if (blenderExectuableList.isEmpty()) {
-            BlenderUtils.installBlenderFromServer(blenderArchive, server, ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID));
+        var blenderExecutableList = PropertiesUtils.getInstalledBlenderExecutables();
+        if (blenderExecutableList.isEmpty()) {
+            BlenderUtils.installBlenderFromServer(blenderArchive,
+                    server, ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID));
         }
-//        var blenderExecutable = BlenderUtils.latesseetBlenderCheck(server);
-//        var blenderVersion = BlenderUtils.getBlenderVersion(blenderExecutable.toString());
-//        var benchmarkBlend = new File(benchmarkDir + File.separator + "bmw27.blend");
-//        if (!benchmarkBlend.exists()) {
-//            BlenderUtils.copyBenchmarkToDisk(benchmarkDir);
-//        }
-//        var nodeType = PropertiesUtils.getNodeType();
-//        var benchmarkList = benchmarks(nodeType, blenderExecutable.toString(),
-//                benchmarkBlend.toString(), blenderVersion, server.getSystemID());
+        var blenderExecutable = BlenderUtils.getLatestExecutable();
+        var blenderVersion = blenderExecutable.getBlenderVersion();
+        var benchmarkBlend = new File(benchmarkDir + File.separator + "bmw27.blend");
+        if (!benchmarkBlend.exists()) {
+            BlenderUtils.copyBenchmarkToDisk(benchmarkDir);
+        }
+        var nodeType = PropertiesUtils.getNodeType();
+        var benchmarkList = benchmarks(nodeType, blenderExecutable.toString(),
+                benchmarkBlend.toString(), blenderVersion, server.getSystemID());
 
 
     }
@@ -88,30 +91,71 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         var taskServerInfo = TaskServerInfo.builder()
                 .systemID(serverSystemID)
                 .serverQueueID("N/A").build();
+        var selectedGPUs = PropertiesUtils.getSelectedGPUs();
+
         switch (nodeType) {
             case CPU:
-                taskScriptInfo.setComputeOn(ComputeOn.CPU);
-                taskScriptInfo.setCores(PropertiesUtils.getSelectedCores());
-                taskScriptInfo.setDeviceType(DeviceType.CPU);
-                benchmarks.add(RenderTask.builder()
-                        .blenderExecutable(blenderExecutable)
-                        .frameInfo(taskFrameInfo)
-                        .taskBlendFile(benchmarkFile)
-                        .isBenchmark(true)
-                        .projectName("CPU Benchmark " + UUID.randomUUID().toString())
-                        .serverInfo(taskServerInfo)
-                        .blenderVersion(blenderVersion)
-                        .taskID(UUID.randomUUID().toString())
-                        .taskDir(ConfigUtils.getProperty(ConfigKeys.TEMP_DIR))
-                        .build());
+                benchmarks.add(cpuBenchmark(taskScriptInfo, blenderExecutable,
+                        taskFrameInfo, taskServerInfo, benchmarkFile, blenderVersion));
+                break;
             case GPU:
-                var selectedGPUs = PropertiesUtils.getSelectedGPUs();
-
-
+                for (GPU gpu : selectedGPUs) {
+                    benchmarks.add(gpuBenchmark(gpu, taskScriptInfo, blenderExecutable,
+                            taskFrameInfo, taskServerInfo, benchmarkFile, blenderVersion));
+                }
+                break;
+            case CPU_GPU:
+                benchmarks.add(cpuBenchmark(taskScriptInfo, blenderExecutable,
+                        taskFrameInfo, taskServerInfo, benchmarkFile, blenderVersion));
+                for (GPU gpu : selectedGPUs) {
+                    benchmarks.add(gpuBenchmark(gpu, taskScriptInfo, blenderExecutable,
+                            taskFrameInfo, taskServerInfo, benchmarkFile, blenderVersion));
+                }
         }
-
-
         return benchmarks;
+    }
+
+    private RenderTask cpuBenchmark(TaskScriptInfo taskScriptInfo, String blenderExecutable,
+                                    TaskFrameInfo taskFrameInfo,
+                                    TaskServerInfo taskServerInfo, String benchmarkFile, String blenderVersion) {
+        taskScriptInfo.setComputeOn(ComputeOn.CPU);
+        taskScriptInfo.setCores(PropertiesUtils.getSelectedCores());
+        taskScriptInfo.setDeviceType(DeviceType.CPU);
+        return RenderTask.builder()
+                .blenderExecutable(blenderExecutable)
+                .frameInfo(taskFrameInfo)
+                .scriptInfo(taskScriptInfo)
+                .serverInfo(taskServerInfo)
+                .taskBlendFile(benchmarkFile)
+                .isBenchmark(true)
+                .projectName("CPU Benchmark " + UUID.randomUUID().toString())
+                .blenderVersion(blenderVersion)
+                .taskID(UUID.randomUUID().toString())
+                .taskDir(ConfigUtils.getProperty(ConfigKeys.TEMP_DIR))
+                .build();
+    }
+
+    private RenderTask gpuBenchmark(GPU gpu, TaskScriptInfo taskScriptInfo, String blenderExecutable,
+                                    TaskFrameInfo taskFrameInfo,
+                                    TaskServerInfo taskServerInfo, String benchmarkFile, String blenderVersion) {
+        taskScriptInfo.setComputeOn(ComputeOn.GPU);
+        var deviceIDList = new ArrayList<String>();
+        deviceIDList.add(gpu.getGpuID());
+        taskScriptInfo.setDeviceType(gpu.getDeviceType());
+        taskScriptInfo.setDeviceIDs(deviceIDList);
+        return RenderTask.builder()
+                .blenderExecutable(blenderExecutable)
+                .frameInfo(taskFrameInfo)
+                .scriptInfo(taskScriptInfo)
+                .serverInfo(taskServerInfo)
+                .taskBlendFile(benchmarkFile)
+                .isBenchmark(true)
+                .projectName(gpu.getGpuID() + " Benchmark " + UUID.randomUUID().toString())
+                .blenderVersion(blenderVersion)
+                .taskID(UUID.randomUUID().toString())
+                .taskDir(ConfigUtils.getProperty(ConfigKeys.TEMP_DIR))
+                .build();
+
     }
 
 }

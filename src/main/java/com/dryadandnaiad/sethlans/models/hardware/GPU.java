@@ -18,6 +18,7 @@
 
 package com.dryadandnaiad.sethlans.models.hardware;
 
+import com.dryadandnaiad.sethlans.enums.DeviceType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -40,8 +41,6 @@ public class GPU {
     private String model;
     private Long memory; // in B
     private Integer rating;
-    private boolean openCLDevice;
-    private boolean cudaDevice;
-    private boolean optixDevice;
+    private DeviceType deviceType;
     private String gpuID;
 }

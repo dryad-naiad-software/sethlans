@@ -18,6 +18,7 @@
 package com.dryadandnaiad.sethlans.devices;
 
 
+import com.dryadandnaiad.sethlans.enums.DeviceType;
 import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import com.google.common.base.Throwables;
 import com.sun.jna.ptr.IntByReference;
@@ -121,14 +122,20 @@ public class ScanGPU {
                 }
 
                 log.info("One CUDA Device found, adding to list.");
-                devices.add(GPU.builder()
+
+                var gpuToAdd = GPU.builder()
                         .model(modelName)
                         .memory(ram.getValue())
                         .gpuID(gpuID)
-                        .openCLDevice(false)
-                        .cudaDevice(true)
-                        .optixDevice(optix)
-                        .build());
+                        .build();
+
+                if (optix) {
+                    gpuToAdd.setDeviceType(DeviceType.OPTIX);
+                } else {
+                    gpuToAdd.setDeviceType(DeviceType.CUDA);
+                }
+
+                devices.add(gpuToAdd);
             }
 
         } catch (UnsatisfiedLinkError e) {
@@ -195,8 +202,7 @@ public class ScanGPU {
                                 .model(model)
                                 .memory(memory)
                                 .gpuID(gpuID)
-                                .openCLDevice(true)
-                                .cudaDevice(false)
+                                .deviceType(DeviceType.OPENCL)
                                 .build());
                     }
                 }

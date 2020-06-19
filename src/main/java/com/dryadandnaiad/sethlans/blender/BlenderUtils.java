@@ -17,6 +17,7 @@
 
 package com.dryadandnaiad.sethlans.blender;
 
+import com.dryadandnaiad.sethlans.comparators.AlphaNumericComparator;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.OS;
@@ -75,6 +76,21 @@ public class BlenderUtils {
 
     }
 
+    public static BlenderExecutable getLatestExecutable() {
+        var installedExecutables = PropertiesUtils.getInstalledBlenderExecutables();
+        var versions = new ArrayList<String>();
+        for (BlenderExecutable installedExecutable : installedExecutables) {
+            versions.add(installedExecutable.getBlenderVersion());
+        }
+        versions.sort(new AlphaNumericComparator());
+        for (BlenderExecutable installedExecutable : installedExecutables) {
+            if (installedExecutable.getBlenderVersion().equals(versions.get(0))) {
+                return installedExecutable;
+            }
+        }
+        return installedExecutables.get(0);
+    }
+
     public static boolean installBlenderFromServer(BlenderArchive blenderArchive,
                                                    Server server, String nodeSystemID) {
         try {
@@ -98,6 +114,7 @@ public class BlenderUtils {
                         blenderArchive.getBlenderVersion())) {
                     var blenderExecutable =
                             BlenderExecutable.builder()
+                                    .os(blenderArchive.getBlenderOS())
                                     .blenderExecutable(getBlenderExecutable(binaryDir, blenderArchive.getBlenderVersion()))
                                     .blenderVersion(blenderArchive.getBlenderVersion()).build();
                     var blenderExecutableList = PropertiesUtils.getInstalledBlenderExecutables();
