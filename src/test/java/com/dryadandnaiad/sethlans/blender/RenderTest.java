@@ -339,7 +339,7 @@ public class RenderTest {
                 .blenderExecutable(blenderExecutable)
                 .scriptInfo(scriptInfo)
                 .frameInfo(frameInfo)
-                .isBenchmark(false)
+                .benchmark(false)
                 .taskBlendFile(blendFile)
                 .projectName("A Sample Project")
                 .useParts(false)
