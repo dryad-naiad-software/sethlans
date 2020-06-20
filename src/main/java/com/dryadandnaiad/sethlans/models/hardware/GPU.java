@@ -40,7 +40,7 @@ import javax.persistence.Embeddable;
 public class GPU {
     private String model;
     private Long memory; // in B
-    private Integer rating;
+    private Long rating;
     private DeviceType deviceType;
     private String gpuID;
 }

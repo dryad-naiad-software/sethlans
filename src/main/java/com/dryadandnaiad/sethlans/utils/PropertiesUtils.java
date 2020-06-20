@@ -67,6 +67,21 @@ public class PropertiesUtils {
         return new ArrayList<>();
     }
 
+    public Integer getCPURating() {
+        return Integer.parseInt(ConfigUtils.getProperty(ConfigKeys.CPU_RATING));
+    }
+
+    public static void updateSelectedGPUs(List<GPU> selectedGPUs) {
+        var objectMapper = new ObjectMapper();
+        try {
+            ConfigUtils.writeProperty(ConfigKeys.SELECTED_GPU, objectMapper.writeValueAsString(selectedGPUs));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+        }
+
+    }
+
     public static List<BlenderExecutable> getInstalledBlenderExecutables() {
         var objectMapper = new ObjectMapper();
         try {
@@ -129,22 +144,25 @@ public class PropertiesUtils {
     }
 
     public static void writeNodeSettings(NodeSettings nodeSettings) throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
         writeProperty(ConfigKeys.NODE_TYPE, nodeSettings.getNodeType().toString());
+        writeProperty(ConfigKeys.CPU_RATING, "0");
         if (!nodeSettings.getNodeType().equals(NodeType.GPU)) {
             writeProperty(ConfigKeys.CPU_CORES, nodeSettings.getCores().toString());
             writeProperty(ConfigKeys.TILE_SIZE_CPU, nodeSettings.getTileSizeCPU().toString());
         } else {
             writeProperty(ConfigKeys.CPU_CORES, "0");
+            writeProperty(ConfigKeys.CPU_RATING, "0");
             writeProperty(ConfigKeys.TILE_SIZE_CPU, "0");
         }
         if (!nodeSettings.getNodeType().equals(NodeType.CPU)) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String selectedGPUs = objectMapper.writeValueAsString(nodeSettings.getSelectedGPUs());
+            var selectedGPUs = objectMapper.writeValueAsString(nodeSettings.getSelectedGPUs());
             writeProperty(ConfigKeys.SELECTED_GPU, selectedGPUs);
             writeProperty(ConfigKeys.TILE_SIZE_GPU, nodeSettings.getTileSizeGPU().toString());
             writeProperty(ConfigKeys.COMBINE_GPU, Boolean.toString(nodeSettings.isGpuCombined()));
         } else {
-            writeProperty(ConfigKeys.SELECTED_GPU, "{}");
+            var selectedGPUs = new ArrayList<GPU>();
+            writeProperty(ConfigKeys.SELECTED_GPU, objectMapper.writeValueAsString(selectedGPUs));
             writeProperty(ConfigKeys.TILE_SIZE_GPU, "0");
         }
 

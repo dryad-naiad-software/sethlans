@@ -82,6 +82,21 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                 renderTask.setRenderTime(renderTime);
                 renderTask.setComplete(true);
                 renderTask.setInProgress(false);
+                try {
+                    if (renderTask.getScriptInfo().getDeviceIDs().get(0).contains("CPU"))
+                        ConfigUtils.writeProperty(ConfigKeys.CPU_RATING, String.valueOf(renderTime));
+                    else {
+                        var selectedGPUs = PropertiesUtils.getSelectedGPUs();
+                        for (GPU gpUs : selectedGPUs) {
+                            if (renderTask.getScriptInfo().getDeviceIDs().get(0).equals(gpUs.getGpuID())) {
+                                gpUs.setRating(renderTime);
+                            }
+                        }
+                        PropertiesUtils.updateSelectedGPUs(selectedGPUs);
+                    }
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                }
             }
             renderTaskRepository.save(renderTask);
         }
