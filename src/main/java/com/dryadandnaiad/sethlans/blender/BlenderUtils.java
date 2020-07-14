@@ -95,16 +95,15 @@ public class BlenderUtils {
                                                    Server server, String nodeSystemID) {
         try {
             var archiveMd5 = blenderArchive.getBlenderFileMd5();
-            var objectMapper = new ObjectMapper();
-            var blenderArchiveJSON = objectMapper.writeValueAsString(blenderArchive);
 
             var blenderArchiveFilename = Paths.get(blenderArchive.getBlenderFile()).getFileName().toString();
             var downloadFullPath = ConfigUtils.getProperty(ConfigKeys.DOWNLOAD_DIR) +
                     File.separator + blenderArchiveFilename;
             var downloadURL = new URL("https://" + server.getIpAddress() + ":" + server.getNetworkPort() +
-                    "/api/v1/server_queue/get_blender_archive?system-id=" + nodeSystemID);
+                    "/api/v1/server_queue/get_blender_archive?system-id=" + nodeSystemID + "&archive-os=" +
+                    blenderArchive.getBlenderOS() + "&archive-version=" + blenderArchive.getBlenderVersion());
             var downloadedFile = DownloadFile.downloadFileBetweenSethlans(downloadURL,
-                    downloadFullPath, blenderArchiveJSON);
+                    downloadFullPath);
             if (downloadedFile == null) {
                 return false;
             }
@@ -123,7 +122,7 @@ public class BlenderUtils {
                     return true;
                 }
             }
-        } catch (MalformedURLException | JsonProcessingException e) {
+        } catch (MalformedURLException e) {
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
             return false;

@@ -111,6 +111,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
     private void createBenchmarkTasks(NodeType nodeType, String blenderExecutable,
                                       String benchmarkFile, String blenderVersion, String serverSystemID) {
+        log.info("Creating Benchmarks");
         var benchmarks = new ArrayList<RenderTask>();
         var taskFrameInfo = TaskFrameInfo.builder().frameNumber(1).build();
         var taskScriptInfo = TaskScriptInfo.builder()

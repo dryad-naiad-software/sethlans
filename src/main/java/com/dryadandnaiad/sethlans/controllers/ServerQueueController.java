@@ -23,7 +23,6 @@ import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
 import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.google.common.base.Throwables;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.web.bind.annotation.*;
@@ -61,12 +60,19 @@ public class ServerQueueController {
     @GetMapping(value = "/get_blender_archive")
     public @ResponseBody
     byte[] getBlenderArchive(@RequestParam("system-id") String systemID,
-                             @RequestBody BlenderArchive blenderArchive) {
+                             @RequestParam("archive-os") OS archiveOS,
+                             @RequestParam("archive-version") String archiveVersion) {
         if (nodeRepository.findNodeBySystemIDEquals(systemID).isPresent()) {
             try {
-                InputStream inputStream = new BufferedInputStream(new
-                        FileInputStream(new File(blenderArchive.getBlenderFile())));
-                return IOUtils.toByteArray(inputStream);
+                if (blenderArchiveRepository.findBlenderBinaryByBlenderVersionEqualsAndBlenderOSEquals
+                        (archiveVersion, archiveOS).isPresent()) {
+                    var blenderArchive = blenderArchiveRepository.
+                            findBlenderBinaryByBlenderVersionEqualsAndBlenderOSEquals(archiveVersion, archiveOS).get();
+                    InputStream inputStream = new BufferedInputStream(new
+                            FileInputStream(new File(blenderArchive.getBlenderFile())));
+                    return IOUtils.toByteArray(inputStream);
+                }
+
             } catch (IOException e) {
                 log.error(e.getMessage());
                 log.error(Throwables.getStackTraceAsString(e));
