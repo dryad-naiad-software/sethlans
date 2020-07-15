@@ -17,6 +17,7 @@
 
 package com.dryadandnaiad.sethlans.services;
 
+import com.dryadandnaiad.sethlans.devices.ScanGPU;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.LogLevel;
 import com.dryadandnaiad.sethlans.enums.NodeType;
@@ -87,16 +88,15 @@ class BenchmarkServiceTest {
 
     @BeforeAll
     static void beforeAll() throws Exception {
+        FileSystemUtils.deleteRecursively(SETHLANS_DIRECTORY);
         var setupSettings = SetupForm.builder()
                 .appURL("https://localhost:7443")
                 .ipAddress(QueryUtils.getIP())
                 .logLevel(LogLevel.DEBUG)
                 .mode(SethlansMode.DUAL)
                 .port("7443").build();
-        var nodeSettings = NodeSettings.builder().nodeType(NodeType.CPU).tileSizeCPU(32).cores(8).build();
         PropertiesUtils.writeSetupSettings(setupSettings);
         PropertiesUtils.writeDirectories(SethlansMode.DUAL);
-        PropertiesUtils.writeNodeSettings(nodeSettings);
         var mailSettings = MailSettings.builder()
                 .mailEnabled(true)
                 .mailHost("localhost")
@@ -117,7 +117,10 @@ class BenchmarkServiceTest {
 
 
     @Test
-    void processBenchmarkRequest() throws InterruptedException {
+    void cpuBenchmarkTest() throws Exception {
+        var nodeSettings = NodeSettings.builder().nodeType(NodeType.CPU).tileSizeCPU(32).cores(8).build();
+        PropertiesUtils.writeNodeSettings(nodeSettings);
+
         blenderArchiveRepository.save(BlenderArchive.builder()
                 .blenderOS(QueryUtils.getOS())
                 .downloaded(false)
@@ -167,6 +170,69 @@ class BenchmarkServiceTest {
         Thread.sleep(10000);
         while (!renderTask.isComplete()) {
             renderTask = renderTaskRepository.findAll().get(0);
+            Thread.sleep(1000);
+        }
+        var cpuRating = PropertiesUtils.getCPURating();
+        assertThat(cpuRating > 0);
+    }
+
+    @Test
+    void gpuBenchmarkTest() throws Exception {
+        var selectedGPUs = ScanGPU.listDevices();
+        var nodeSettings = NodeSettings.builder().nodeType(NodeType.CPU_GPU).tileSizeCPU(32)
+                .tileSizeGPU(256).cores(8).selectedGPUs(selectedGPUs).build();
+        PropertiesUtils.writeNodeSettings(nodeSettings);
+
+        blenderArchiveRepository.save(BlenderArchive.builder()
+                .blenderOS(QueryUtils.getOS())
+                .downloaded(false)
+                .blenderVersion("2.83.2.2")
+                .build());
+
+        var blenderBinary = blenderArchiveRepository.findAll().get(0);
+        assertThat(blenderBinary).isNotNull();
+        Thread.sleep(10000);
+        while (!blenderBinary.isDownloaded()) {
+            blenderBinary = blenderArchiveRepository.findAll().get(0);
+            Thread.sleep(1000);
+        }
+        assertThat(new File(SETHLANS_DIRECTORY + File.separator + "downloads")).isNotEmptyDirectory();
+        var systemInfo = QueryUtils.getCurrentSystemInfo();
+
+        var node = Node.builder()
+                .nodeType(PropertiesUtils.getNodeType())
+                .os(QueryUtils.getOS())
+                .systemID(ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID))
+                .ipAddress(systemInfo.getIpAddress())
+                .hostname(systemInfo.getHostname())
+                .networkPort(ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT))
+                .cpu(systemInfo.getCpu())
+                .selectedGPUs(PropertiesUtils.getSelectedGPUs())
+                .build();
+
+        nodeRepository.save(node);
+
+
+        var server = Server.builder()
+                .ipAddress(QueryUtils.getIP())
+                .systemID(ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID))
+                .hostname(QueryUtils.getHostname())
+                .networkPort(ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT)).build();
+
+        serverRepository.save(server);
+
+
+        benchmarkService.processBenchmarkRequest(server, blenderBinary);
+        while (renderTaskRepository.findAll().size() == 0) {
+            Thread.sleep(10000);
+        }
+        var itemsBenchmarked = selectedGPUs.size() + 1;
+
+        var renderTask = renderTaskRepository.findAll().get(itemsBenchmarked - 1);
+        assertThat(renderTask).isNotNull();
+        Thread.sleep(10000);
+        while (!renderTask.isComplete()) {
+            renderTask = renderTaskRepository.findAll().get(itemsBenchmarked - 1);
             Thread.sleep(1000);
         }
         var cpuRating = PropertiesUtils.getCPURating();

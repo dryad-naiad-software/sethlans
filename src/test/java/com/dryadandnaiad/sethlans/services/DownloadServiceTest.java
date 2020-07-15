@@ -64,6 +64,8 @@ class DownloadServiceTest {
 
     @BeforeAll
     static void beforeAll() throws Exception {
+        FileSystemUtils.deleteRecursively(SETHLANS_DIRECTORY);
+
         var setupSettings = SetupForm.builder()
                 .appURL("https://localhost:7443")
                 .ipAddress(QueryUtils.getIP())

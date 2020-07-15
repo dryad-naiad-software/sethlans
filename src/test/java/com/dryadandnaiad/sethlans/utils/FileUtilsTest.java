@@ -151,10 +151,10 @@ class FileUtilsTest {
 
     @Test
     void removeExtensionFromString() {
-        var toTest = "blender-2.83-macos.dmg";
-        var toTest2 = "blender-2.83-linux.tar.gz";
-        assertThat(FileUtils.removeExtensionFromString(toTest)).isEqualTo("blender-2.83-macos");
-        assertThat(FileUtils.removeExtensionFromString(toTest2)).isEqualTo("blender-2.83-linux");
+        var toTest = "blender-2.83.2-macos.dmg";
+        var toTest2 = "blender-2.83.2-linux.tar.gz";
+        assertThat(FileUtils.removeExtensionFromString(toTest)).isEqualTo("blender-2.83.2-macos");
+        assertThat(FileUtils.removeExtensionFromString(toTest2)).isEqualTo("blender-2.83.2-linux");
     }
 
     @Test

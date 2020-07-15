@@ -84,7 +84,7 @@ class BlenderScriptTest {
         var renderTask = RenderTask.builder()
                 .taskID(UUID.randomUUID().toString())
                 .taskDir(TEST_DIRECTORY.toString())
-                .blenderVersion("2.83")
+                .blenderVersion("2.83.2")
                 .scriptInfo(scriptInfo)
                 .frameInfo(frameInfo)
                 .benchmark(false)
@@ -129,7 +129,7 @@ class BlenderScriptTest {
         var renderTask = RenderTask.builder()
                 .taskID(UUID.randomUUID().toString())
                 .taskDir(TEST_DIRECTORY.toString())
-                .blenderVersion("2.83")
+                .blenderVersion("2.83.2")
                 .scriptInfo(scriptInfo)
                 .benchmark(true)
                 .useParts(false)
@@ -161,7 +161,7 @@ class BlenderScriptTest {
         var renderTask = RenderTask.builder()
                 .taskID(UUID.randomUUID().toString())
                 .taskDir(TEST_DIRECTORY.toString())
-                .blenderVersion("2.83")
+                .blenderVersion("2.83.2")
                 .benchmark(false)
                 .useParts(true)
                 .scriptInfo(scriptInfo)
@@ -205,7 +205,7 @@ class BlenderScriptTest {
                 .scriptInfo(scriptInfo)
                 .build();
         assertThat(BlenderScript.writeRenderScript(renderTask)).isTrue();
-        renderTask.setBlenderVersion("2.83");
+        renderTask.setBlenderVersion("2.83.2");
         renderTask.setTaskID(UUID.randomUUID().toString());
         assertThat(BlenderScript.writeRenderScript(renderTask)).isFalse();
     }
@@ -272,7 +272,7 @@ class BlenderScriptTest {
         var renderTask = RenderTask.builder()
                 .taskID(UUID.randomUUID().toString())
                 .taskDir(TEST_DIRECTORY.toString())
-                .blenderVersion("2.83")
+                .blenderVersion("2.83.2")
                 .benchmark(false)
                 .useParts(true)
                 .frameInfo(frameInfo)

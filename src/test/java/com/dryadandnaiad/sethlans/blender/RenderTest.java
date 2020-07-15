@@ -53,8 +53,9 @@ public class RenderTest {
 
     @BeforeAll
     static void beforeAll() {
+        FileSystemUtils.deleteRecursively(BIN_DIRECTORY);
         BIN_DIRECTORY.mkdirs();
-        var version = "2.83";
+        var version = "2.83.2";
         var os = QueryUtils.getOS();
         var download = BlenderUtils.downloadBlenderToServer(version,
                 "resource",
@@ -91,7 +92,7 @@ public class RenderTest {
     void executeRenderTaskEeveeFrame() {
         var file1 = "wasp_bot.blend";
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
-        var version = "2.83";
+        var version = "2.83.2";
         var blenderExecutable = BlenderUtils.getBlenderExecutable(BIN_DIRECTORY.toString(), version);
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.CPU, BlenderEngine.BLENDER_EEVEE, blenderExecutable);
@@ -112,7 +113,7 @@ public class RenderTest {
     void executeRenderTaskEeveeFramePart() {
         var file1 = "wasp_bot.blend";
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
-        var version = "2.83";
+        var version = "2.83.2";
         var blenderExecutable = BlenderUtils.getBlenderExecutable(BIN_DIRECTORY.toString(), version);
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.CPU, BlenderEngine.BLENDER_EEVEE, blenderExecutable);
@@ -182,7 +183,7 @@ public class RenderTest {
     void executeRenderTaskCyclesCPUFrame() {
         var file1 = "bmw27_gpu.blend";
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
-        var version = "2.83";
+        var version = "2.83.2";
         var blenderExecutable = BlenderUtils.getBlenderExecutable(BIN_DIRECTORY.toString(), version);
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.CPU, BlenderEngine.CYCLES, blenderExecutable);
@@ -202,7 +203,7 @@ public class RenderTest {
     void executeRenderTaskHDR() {
         var file1 = "bmw27_gpu.blend";
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
-        var version = "2.83";
+        var version = "2.83.2";
         var blenderExecutable = BlenderUtils.getBlenderExecutable(BIN_DIRECTORY.toString(), version);
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.CPU, BlenderEngine.CYCLES, blenderExecutable);
@@ -223,7 +224,7 @@ public class RenderTest {
     void executeRenderTaskTIFF() {
         var file1 = "bmw27_gpu.blend";
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
-        var version = "2.83";
+        var version = "2.83.2";
         var blenderExecutable = BlenderUtils.getBlenderExecutable(BIN_DIRECTORY.toString(), version);
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.CPU, BlenderEngine.CYCLES, blenderExecutable);
@@ -245,7 +246,7 @@ public class RenderTest {
     void executeRenderTaskCyclesCPUFramePart() {
         var file1 = "bmw27_gpu.blend";
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
-        var version = "2.83";
+        var version = "2.83.2";
         var blenderExecutable = BlenderUtils.getBlenderExecutable(BIN_DIRECTORY.toString(), version);
         var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
                 ComputeOn.CPU, BlenderEngine.CYCLES, blenderExecutable);
@@ -279,7 +280,7 @@ public class RenderTest {
         if (gpuDevices.size() != 0) {
             var file1 = "bmw27_gpu.blend";
             TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
-            var version = "2.83";
+            var version = "2.83.2";
             var blenderExecutable = BlenderUtils.getBlenderExecutable(BIN_DIRECTORY.toString(), version);
             var tileSize = 256;
             var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
