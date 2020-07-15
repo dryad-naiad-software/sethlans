@@ -29,6 +29,7 @@ import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
+import com.dryadandnaiad.sethlans.repositories.RenderTaskRepository;
 import com.dryadandnaiad.sethlans.repositories.ServerRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
@@ -73,6 +74,9 @@ class BenchmarkServiceTest {
     ServerRepository serverRepository;
 
     @Resource
+    RenderTaskRepository renderTaskRepository;
+
+    @Resource
     NodeRepository nodeRepository;
 
     @Autowired
@@ -89,7 +93,7 @@ class BenchmarkServiceTest {
                 .logLevel(LogLevel.DEBUG)
                 .mode(SethlansMode.DUAL)
                 .port("7443").build();
-        var nodeSettings = NodeSettings.builder().nodeType(NodeType.CPU).tileSizeCPU(32).cores(4).build();
+        var nodeSettings = NodeSettings.builder().nodeType(NodeType.CPU).tileSizeCPU(32).cores(8).build();
         PropertiesUtils.writeSetupSettings(setupSettings);
         PropertiesUtils.writeDirectories(SethlansMode.DUAL);
         PropertiesUtils.writeNodeSettings(nodeSettings);
@@ -134,6 +138,7 @@ class BenchmarkServiceTest {
         var node = Node.builder()
                 .nodeType(PropertiesUtils.getNodeType())
                 .os(QueryUtils.getOS())
+                .systemID(ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID))
                 .ipAddress(systemInfo.getIpAddress())
                 .hostname(systemInfo.getHostname())
                 .networkPort(ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT))
@@ -154,7 +159,19 @@ class BenchmarkServiceTest {
 
 
         benchmarkService.processBenchmarkRequest(server, blenderBinary);
-        Thread.sleep(2000000);
+        while (renderTaskRepository.findAll().size() == 0) {
+            Thread.sleep(10000);
+        }
+
+        var renderTask = renderTaskRepository.findAll().get(0);
+        assertThat(renderTask).isNotNull();
+        Thread.sleep(10000);
+        while (!renderTask.isComplete()) {
+            renderTask = renderTaskRepository.findAll().get(0);
+            Thread.sleep(1000);
+        }
+        var cpuRating = PropertiesUtils.getCPURating();
+        assertThat(cpuRating > 0);
     }
 
     @Test

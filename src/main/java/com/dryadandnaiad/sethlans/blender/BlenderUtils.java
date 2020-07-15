@@ -97,7 +97,7 @@ public class BlenderUtils {
             var archiveMd5 = blenderArchive.getBlenderFileMd5();
 
             var blenderArchiveFilename = Paths.get(blenderArchive.getBlenderFile()).getFileName().toString();
-            var downloadFullPath = ConfigUtils.getProperty(ConfigKeys.DOWNLOAD_DIR) +
+            var downloadFullPath = ConfigUtils.getProperty(ConfigKeys.TEMP_DIR) +
                     File.separator + blenderArchiveFilename;
             var downloadURL = new URL("https://" + server.getIpAddress() + ":" + server.getNetworkPort() +
                     "/api/v1/server_queue/get_blender_archive?system-id=" + nodeSystemID + "&archive-os=" +

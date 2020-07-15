@@ -17,6 +17,7 @@
 
 package com.dryadandnaiad.sethlans.services;
 
+import com.dryadandnaiad.sethlans.blender.BlenderScript;
 import com.dryadandnaiad.sethlans.blender.BlenderUtils;
 import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
@@ -29,6 +30,7 @@ import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.repositories.RenderTaskRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
+import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
@@ -71,34 +73,39 @@ public class BenchmarkServiceImpl implements BenchmarkService {
             BlenderUtils.copyBenchmarkToDisk(benchmarkDir);
         }
         var nodeType = PropertiesUtils.getNodeType();
-        createBenchmarkTasks(nodeType, blenderExecutable.toString(),
+        createBenchmarkTasks(nodeType, blenderExecutable.getBlenderExecutable(),
                 benchmarkBlend.toString(), blenderVersion, server.getSystemID());
         var benchmarksToExecute =
                 renderTaskRepository.findRenderTasksByBenchmarkIsTrueAndInProgressIsFalseAndCompleteIsFalse();
         for (RenderTask renderTask : benchmarksToExecute) {
-            renderTask.setInProgress(true);
-            var renderTime = BlenderUtils.executeRenderTask(renderTask, false);
-            if (renderTime != null) {
-                renderTask.setRenderTime(renderTime);
-                renderTask.setComplete(true);
-                renderTask.setInProgress(false);
-                try {
-                    if (renderTask.getScriptInfo().getDeviceIDs().get(0).contains("CPU"))
-                        ConfigUtils.writeProperty(ConfigKeys.CPU_RATING, String.valueOf(renderTime));
-                    else {
-                        var selectedGPUs = PropertiesUtils.getSelectedGPUs();
-                        for (GPU gpUs : selectedGPUs) {
-                            if (renderTask.getScriptInfo().getDeviceIDs().get(0).equals(gpUs.getGpuID())) {
-                                gpUs.setRating(renderTime);
+            if (BlenderScript.writeRenderScript(renderTask)) {
+                renderTask.setInProgress(true);
+                var renderTime = BlenderUtils.executeRenderTask(renderTask, false);
+                if (renderTime != null) {
+                    renderTask.setRenderTime(renderTime);
+                    renderTask.setComplete(true);
+                    renderTask.setInProgress(false);
+                    try {
+                        if (renderTask.getScriptInfo().getDeviceType().equals(DeviceType.CPU))
+                            ConfigUtils.writeProperty(ConfigKeys.CPU_RATING, String.valueOf(renderTime));
+                        else {
+                            var selectedGPUs = PropertiesUtils.getSelectedGPUs();
+                            for (GPU gpUs : selectedGPUs) {
+                                if (renderTask.getScriptInfo().getDeviceIDs().get(0).equals(gpUs.getGpuID())) {
+                                    gpUs.setRating(renderTime);
+                                }
                             }
+                            PropertiesUtils.updateSelectedGPUs(selectedGPUs);
                         }
-                        PropertiesUtils.updateSelectedGPUs(selectedGPUs);
+                    } catch (Exception e) {
+                        log.error(e.getMessage());
+                        log.error(Throwables.getStackTraceAsString(e));
                     }
-                } catch (Exception e) {
-                    log.error(e.getMessage());
                 }
+                renderTaskRepository.save(renderTask);
             }
-            renderTaskRepository.save(renderTask);
+
+
         }
 
 
@@ -157,6 +164,8 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         taskScriptInfo.setComputeOn(ComputeOn.CPU);
         taskScriptInfo.setCores(PropertiesUtils.getSelectedCores());
         taskScriptInfo.setDeviceType(DeviceType.CPU);
+        taskScriptInfo.setTaskTileSize(PropertiesUtils.getCPUTileSize());
+        var benchmarkID = UUID.randomUUID().toString();
         return RenderTask.builder()
                 .blenderExecutable(blenderExecutable)
                 .frameInfo(taskFrameInfo)
@@ -164,7 +173,8 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                 .serverInfo(taskServerInfo)
                 .taskBlendFile(benchmarkFile)
                 .benchmark(true)
-                .projectName("CPU Benchmark " + UUID.randomUUID().toString())
+                .projectName("CPU Benchmark " + benchmarkID)
+                .projectID(benchmarkID)
                 .blenderVersion(blenderVersion)
                 .taskID(UUID.randomUUID().toString())
                 .taskDir(ConfigUtils.getProperty(ConfigKeys.TEMP_DIR))
@@ -179,6 +189,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         deviceIDList.add(gpu.getGpuID());
         taskScriptInfo.setDeviceType(gpu.getDeviceType());
         taskScriptInfo.setDeviceIDs(deviceIDList);
+        taskScriptInfo.setTaskTileSize(PropertiesUtils.getGPUTileSize());
         return RenderTask.builder()
                 .blenderExecutable(blenderExecutable)
                 .frameInfo(taskFrameInfo)

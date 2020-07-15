@@ -67,7 +67,7 @@ public class PropertiesUtils {
         return new ArrayList<>();
     }
 
-    public Integer getCPURating() {
+    public static Integer getCPURating() {
         return Integer.parseInt(ConfigUtils.getProperty(ConfigKeys.CPU_RATING));
     }
 
@@ -80,6 +80,14 @@ public class PropertiesUtils {
             log.error(Throwables.getStackTraceAsString(e));
         }
 
+    }
+
+    public static Integer getCPUTileSize() {
+        return Integer.parseInt(ConfigUtils.getProperty(ConfigKeys.TILE_SIZE_CPU));
+    }
+
+    public static Integer getGPUTileSize() {
+        return Integer.parseInt(ConfigUtils.getProperty(ConfigKeys.TILE_SIZE_GPU));
     }
 
     public static List<BlenderExecutable> getInstalledBlenderExecutables() {

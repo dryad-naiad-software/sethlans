@@ -18,8 +18,10 @@
 package com.dryadandnaiad.sethlans.models.blender;
 
 import com.dryadandnaiad.sethlans.enums.OS;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * File created by Mario Estrella on 6/18/2020.
@@ -28,6 +30,8 @@ import lombok.Data;
  * Project: sethlans
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class BlenderExecutable {
     private String blenderVersion;

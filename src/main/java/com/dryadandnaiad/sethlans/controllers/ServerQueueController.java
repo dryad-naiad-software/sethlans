@@ -62,8 +62,11 @@ public class ServerQueueController {
     byte[] getBlenderArchive(@RequestParam("system-id") String systemID,
                              @RequestParam("archive-os") OS archiveOS,
                              @RequestParam("archive-version") String archiveVersion) {
+
+
         if (nodeRepository.findNodeBySystemIDEquals(systemID).isPresent()) {
             try {
+                log.debug(blenderArchiveRepository.findAll().toString());
                 if (blenderArchiveRepository.findBlenderBinaryByBlenderVersionEqualsAndBlenderOSEquals
                         (archiveVersion, archiveOS).isPresent()) {
                     var blenderArchive = blenderArchiveRepository.
