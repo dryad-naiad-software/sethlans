@@ -29,6 +29,7 @@ import javax.persistence.Embeddable;
  */
 @Getter
 @Setter
+@ToString
 @Builder
 @Embeddable
 @NoArgsConstructor

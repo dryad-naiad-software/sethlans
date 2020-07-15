@@ -112,7 +112,7 @@ class BenchmarkServiceTest {
 
     @AfterAll
     static void afterAll() {
-        FileSystemUtils.deleteRecursively(SETHLANS_DIRECTORY);
+        //FileSystemUtils.deleteRecursively(SETHLANS_DIRECTORY);
     }
 
 
@@ -186,7 +186,7 @@ class BenchmarkServiceTest {
         blenderArchiveRepository.save(BlenderArchive.builder()
                 .blenderOS(QueryUtils.getOS())
                 .downloaded(false)
-                .blenderVersion("2.83.2.2")
+                .blenderVersion("2.83.2")
                 .build());
 
         var blenderBinary = blenderArchiveRepository.findAll().get(0);
@@ -227,6 +227,7 @@ class BenchmarkServiceTest {
             Thread.sleep(10000);
         }
         var itemsBenchmarked = selectedGPUs.size() + 1;
+
 
         var renderTask = renderTaskRepository.findAll().get(itemsBenchmarked - 1);
         assertThat(renderTask).isNotNull();

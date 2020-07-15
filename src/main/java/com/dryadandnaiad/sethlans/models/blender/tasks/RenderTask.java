@@ -35,6 +35,7 @@ import javax.persistence.Entity;
 @Getter
 @Setter
 @SuperBuilder
+@ToString
 @EqualsAndHashCode(callSuper = true)
 public class RenderTask extends AbstractModel {
     private String blenderVersion;

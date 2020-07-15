@@ -78,6 +78,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         var benchmarksToExecute =
                 renderTaskRepository.findRenderTasksByBenchmarkIsTrueAndInProgressIsFalseAndCompleteIsFalse();
         for (RenderTask renderTask : benchmarksToExecute) {
+            log.debug("Starting to execute " + renderTask.toString());
             if (BlenderScript.writeRenderScript(renderTask)) {
                 renderTask.setInProgress(true);
                 var renderTime = BlenderUtils.executeRenderTask(renderTask, false);
@@ -121,14 +122,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         log.info("Creating Benchmarks");
         var benchmarks = new ArrayList<RenderTask>();
         var taskFrameInfo = TaskFrameInfo.builder().frameNumber(1).build();
-        var taskScriptInfo = TaskScriptInfo.builder()
-                .taskResolutionX(800)
-                .taskResolutionY(600)
-                .taskResPercentage(50)
-                .samples(50)
-                .blenderEngine(BlenderEngine.CYCLES)
-                .imageOutputFormat(ImageOutputFormat.PNG)
-                .build();
+
         var taskServerInfo = TaskServerInfo.builder()
                 .systemID(serverSystemID)
                 .serverQueueID("N/A").build();
@@ -136,21 +130,24 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
         switch (nodeType) {
             case CPU:
-                benchmarks.add(cpuBenchmark(taskScriptInfo, blenderExecutable,
+                benchmarks.add(cpuBenchmark(blenderExecutable,
                         taskFrameInfo, taskServerInfo, benchmarkFile, blenderVersion));
                 break;
             case GPU:
                 for (GPU gpu : selectedGPUs) {
-                    benchmarks.add(gpuBenchmark(gpu, taskScriptInfo, blenderExecutable,
+                    benchmarks.add(gpuBenchmark(gpu, blenderExecutable,
                             taskFrameInfo, taskServerInfo, benchmarkFile, blenderVersion));
                 }
                 break;
             case CPU_GPU:
-                benchmarks.add(cpuBenchmark(taskScriptInfo, blenderExecutable,
-                        taskFrameInfo, taskServerInfo, benchmarkFile, blenderVersion));
+                var cpuToBenchmark = cpuBenchmark(blenderExecutable,
+                        taskFrameInfo, taskServerInfo, benchmarkFile, blenderVersion);
+                benchmarks.add(cpuToBenchmark);
+
                 for (GPU gpu : selectedGPUs) {
-                    benchmarks.add(gpuBenchmark(gpu, taskScriptInfo, blenderExecutable,
-                            taskFrameInfo, taskServerInfo, benchmarkFile, blenderVersion));
+                    var gpuToBenchmark = gpuBenchmark(gpu, blenderExecutable,
+                            taskFrameInfo, taskServerInfo, benchmarkFile, blenderVersion);
+                    benchmarks.add(gpuToBenchmark);
                 }
         }
         for (RenderTask benchmark : benchmarks) {
@@ -158,13 +155,22 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         }
     }
 
-    private RenderTask cpuBenchmark(TaskScriptInfo taskScriptInfo, String blenderExecutable,
+    private RenderTask cpuBenchmark(String blenderExecutable,
                                     TaskFrameInfo taskFrameInfo,
                                     TaskServerInfo taskServerInfo, String benchmarkFile, String blenderVersion) {
-        taskScriptInfo.setComputeOn(ComputeOn.CPU);
-        taskScriptInfo.setCores(PropertiesUtils.getSelectedCores());
-        taskScriptInfo.setDeviceType(DeviceType.CPU);
-        taskScriptInfo.setTaskTileSize(PropertiesUtils.getCPUTileSize());
+        var taskScriptInfo = TaskScriptInfo.builder()
+                .taskResolutionX(800)
+                .taskResolutionY(600)
+                .taskResPercentage(50)
+                .samples(50)
+                .computeOn(ComputeOn.CPU)
+                .deviceType(DeviceType.CPU)
+                .deviceIDs(new ArrayList<>())
+                .taskTileSize(PropertiesUtils.getCPUTileSize())
+                .blenderEngine(BlenderEngine.CYCLES)
+                .cores(PropertiesUtils.getSelectedCores())
+                .imageOutputFormat(ImageOutputFormat.PNG)
+                .build();
         var benchmarkID = UUID.randomUUID().toString();
         return RenderTask.builder()
                 .blenderExecutable(blenderExecutable)
@@ -181,15 +187,24 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                 .build();
     }
 
-    private RenderTask gpuBenchmark(GPU gpu, TaskScriptInfo taskScriptInfo, String blenderExecutable,
+    private RenderTask gpuBenchmark(GPU gpu, String blenderExecutable,
                                     TaskFrameInfo taskFrameInfo,
                                     TaskServerInfo taskServerInfo, String benchmarkFile, String blenderVersion) {
-        taskScriptInfo.setComputeOn(ComputeOn.GPU);
         var deviceIDList = new ArrayList<String>();
         deviceIDList.add(gpu.getGpuID());
-        taskScriptInfo.setDeviceType(gpu.getDeviceType());
-        taskScriptInfo.setDeviceIDs(deviceIDList);
-        taskScriptInfo.setTaskTileSize(PropertiesUtils.getGPUTileSize());
+        var taskScriptInfo = TaskScriptInfo.builder()
+                .taskResolutionX(800)
+                .taskResolutionY(600)
+                .taskResPercentage(50)
+                .samples(50)
+                .computeOn(ComputeOn.GPU)
+                .deviceType(gpu.getDeviceType())
+                .deviceIDs(deviceIDList)
+                .taskTileSize(PropertiesUtils.getGPUTileSize())
+                .blenderEngine(BlenderEngine.CYCLES)
+                .imageOutputFormat(ImageOutputFormat.PNG)
+                .build();
+        var benchmarkID = UUID.randomUUID().toString();
         return RenderTask.builder()
                 .blenderExecutable(blenderExecutable)
                 .frameInfo(taskFrameInfo)
@@ -197,9 +212,9 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                 .serverInfo(taskServerInfo)
                 .taskBlendFile(benchmarkFile)
                 .benchmark(true)
-                .projectName(gpu.getGpuID() + " Benchmark " + UUID.randomUUID().toString())
+                .projectName(gpu.getGpuID() + " Benchmark " + benchmarkID)
                 .blenderVersion(blenderVersion)
-                .taskID(UUID.randomUUID().toString())
+                .taskID(benchmarkID)
                 .taskDir(ConfigUtils.getProperty(ConfigKeys.TEMP_DIR))
                 .build();
 

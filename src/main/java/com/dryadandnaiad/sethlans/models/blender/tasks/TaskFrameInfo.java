@@ -30,6 +30,7 @@ import javax.persistence.Embeddable;
 @Getter
 @Setter
 @Builder
+@ToString
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor

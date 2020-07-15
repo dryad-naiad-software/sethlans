@@ -39,6 +39,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@ToString
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
