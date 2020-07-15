@@ -126,11 +126,10 @@ class BenchmarkServiceTest {
 
         var blenderBinary = blenderArchiveRepository.findAll().get(0);
         assertThat(blenderBinary).isNotNull();
-        Thread.sleep(11000);
+        Thread.sleep(10000);
         while (!blenderBinary.isDownloaded()) {
             blenderBinary = blenderArchiveRepository.findAll().get(0);
             Thread.sleep(1000);
-            assertThat(new File(SETHLANS_DIRECTORY + File.separator + "downloads")).isNotEmptyDirectory();
         }
         assertThat(new File(SETHLANS_DIRECTORY + File.separator + "downloads")).isNotEmptyDirectory();
         var systemInfo = QueryUtils.getCurrentSystemInfo();
