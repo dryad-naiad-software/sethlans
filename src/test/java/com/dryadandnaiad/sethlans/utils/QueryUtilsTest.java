@@ -29,8 +29,8 @@ import org.apache.commons.validator.routines.InetAddressValidator;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * File created by Mario Estrella on 4/19/2020.
@@ -56,7 +56,7 @@ class QueryUtilsTest {
         assertThat(ipAddress).isNotEqualTo("0.0.0.0");
         assertThat(ipAddress).isNotEqualTo("255.255.255.255");
         assertThat(ipAddress).isNotEqualTo("127.0.0.1");
-        assertTrue("Not a valid IP address", validator.isValidInet4Address(ipAddress));
+        assertTrue(validator.isValidInet4Address(ipAddress), "Not a valid IP address");
     }
 
     @Test

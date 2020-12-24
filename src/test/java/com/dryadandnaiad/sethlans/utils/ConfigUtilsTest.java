@@ -25,7 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * File created by Mario Estrella on 4/20/2020.
@@ -55,16 +55,15 @@ class ConfigUtilsTest {
     void writeProperty() throws Exception {
         var configFile = ConfigUtils.getConfigFile();
         ConfigUtils.writeProperty(ConfigKeys.MAIL_HOST, "localhost.local");
-        assertTrue("Key is not present", FileUtils.readFileToString(configFile,
-                "UTF-8").contains(ConfigKeys.MAIL_HOST.toString()));
-        assertTrue("Value is not present", FileUtils.readFileToString(configFile,
-                "UTF-8").contains("localhost.local"));
+        assertTrue(FileUtils.readFileToString(configFile,
+                "UTF-8").contains(ConfigKeys.MAIL_HOST.toString()), "Key is not present");
+        assertTrue(FileUtils.readFileToString(configFile,
+                "UTF-8").contains("localhost.local"), "Value is not present");
     }
 
     @Test
     void getProperty() {
-        assertNotNull("Unable to find value in sethlans.properties located in resources",
-                ConfigUtils.getProperty(ConfigKeys.LOG_LEVEL));
-        assertNull("Property should be null", ConfigUtils.getProperty(ConfigKeys.BENCHMARK_DIR));
+        assertNotNull(ConfigUtils.getProperty(ConfigKeys.LOG_LEVEL), "Unable to find value in sethlans.properties located in resources");
+        assertNull(ConfigUtils.getProperty(ConfigKeys.BENCHMARK_DIR), "Property should be null");
     }
 }

@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * File created by Mario Estrella on 4/22/2020.
@@ -68,7 +68,7 @@ class PropertiesUtilsTest {
 
     @Test
     void getMode() {
-        assertEquals("Values do not match", SethlansMode.SERVER, PropertiesUtils.getMode());
+        assertEquals(SethlansMode.SERVER, PropertiesUtils.getMode(), "Values do not match");
     }
 
 

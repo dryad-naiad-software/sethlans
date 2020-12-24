@@ -40,13 +40,12 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.FileSystemUtils;
 
 import javax.annotation.Resource;
@@ -63,8 +62,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("DUAL")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestPropertySource(locations = "classpath:sethlans.properties")
-@RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
+@DirtiesContext
 class BenchmarkServiceTest {
 
     static File SETHLANS_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + ".sethlans");
@@ -113,7 +112,7 @@ class BenchmarkServiceTest {
 
     @AfterAll
     static void afterAll() {
-        //FileSystemUtils.deleteRecursively(SETHLANS_DIRECTORY);
+        FileSystemUtils.deleteRecursively(SETHLANS_DIRECTORY);
     }
 
 
@@ -129,6 +128,7 @@ class BenchmarkServiceTest {
                 .build());
 
         var blenderBinary = blenderArchiveRepository.findAll().get(0);
+        System.out.println(blenderBinary);
         assertThat(blenderBinary).isNotNull();
         Thread.sleep(10000);
         while (!blenderBinary.isDownloaded()) {
