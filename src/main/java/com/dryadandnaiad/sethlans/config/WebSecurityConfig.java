@@ -61,7 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        if (!PropertiesUtils.getFirstTime()) {
+        if (!PropertiesUtils.isFirstTime()) {
             http
                     .authorizeRequests()
                     .antMatchers("/", "/home").permitAll()
@@ -91,7 +91,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) {
-        if (!PropertiesUtils.getFirstTime()) {
+        if (!PropertiesUtils.isFirstTime()) {
             web.ignoring()
                     .antMatchers(HttpMethod.OPTIONS, "/**")
                     .antMatchers("/*.js")

@@ -65,7 +65,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(locations = "classpath:sethlans.properties")
 @AutoConfigureMockMvc
 @DirtiesContext
-class AdminServerControllerTest {
+class AdminServerEndPointControllerTest {
     static File SETHLANS_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + ".sethlans");
 
     @Autowired
@@ -98,7 +98,7 @@ class AdminServerControllerTest {
     @WithMockUser("spring")
     @Test
     void nodeScan() throws Exception {
-        var result = mvc.perform(get("/api/v1/management/node_scan")
+        var result = mvc.perform(get("/api/v1/management/network_node_scan")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
         var objectMapper = new ObjectMapper();
@@ -116,7 +116,7 @@ class AdminServerControllerTest {
         nodeList.add(NodeForm.builder().ipAddress(QueryUtils.getIP()).networkPort("7443").build());
         var objectMapper = new ObjectMapper();
         var nodeJSON = objectMapper.writeValueAsString(nodeList);
-        var result = mvc.perform(get("/api/v1/management/retrieve_node_list")
+        var result = mvc.perform(get("/api/v1/management/retrieve_node_detail_list")
                 .contentType(MediaType.APPLICATION_JSON).content(nodeJSON))
                 .andExpect(status().isOk()).andReturn();
         var nodeSet = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<Set<Node>>() {
@@ -137,7 +137,7 @@ class AdminServerControllerTest {
                 .build());
         var objectMapper = new ObjectMapper();
         var nodeJSON = objectMapper.writeValueAsString(nodeList);
-        mvc.perform(post("/api/v1/management/add_nodes")
+        mvc.perform(post("/api/v1/management/add_nodes_to_server")
                 .contentType(MediaType.APPLICATION_JSON).content(nodeJSON))
                 .andExpect(status().isCreated());
 

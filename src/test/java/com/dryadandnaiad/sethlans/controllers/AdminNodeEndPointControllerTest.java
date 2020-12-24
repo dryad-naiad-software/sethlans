@@ -63,7 +63,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(locations = "classpath:sethlans.properties")
 @AutoConfigureMockMvc
 @DirtiesContext
-class AdminNodeControllerTest {
+class AdminNodeEndPointControllerTest {
 
     static File SETHLANS_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + ".sethlans");
 
@@ -105,10 +105,10 @@ class AdminNodeControllerTest {
                 .build();
         var objectMapper = new ObjectMapper();
         var serverJson = objectMapper.writeValueAsString(server);
-        mvc.perform(post("/api/v1/management/add_server")
+        mvc.perform(post("/api/v1/management/add_server_to_node")
                 .contentType(MediaType.APPLICATION_JSON).content(serverJson))
                 .andExpect(status().isCreated());
-        var result = mvc.perform(get("/api/v1/management/list_servers")
+        var result = mvc.perform(get("/api/v1/management/list_servers_on_node")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
         var servers = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<List<Server>>() {

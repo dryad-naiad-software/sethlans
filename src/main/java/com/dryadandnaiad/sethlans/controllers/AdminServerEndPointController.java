@@ -50,20 +50,20 @@ import java.util.Set;
 @RequestMapping("/api/v1/management")
 @Profile({"SERVER", "DUAL"})
 @Slf4j
-public class AdminServerController {
+public class AdminServerEndPointController {
 
     private final NodeRepository nodeRepository;
 
-    public AdminServerController(NodeRepository nodeRepository) {
+    public AdminServerEndPointController(NodeRepository nodeRepository) {
         this.nodeRepository = nodeRepository;
     }
 
-    @GetMapping("/node_scan")
+    @GetMapping("/network_node_scan")
     public Set<Node> nodeScan() {
         return NetworkUtils.discoverNodesViaMulticast();
     }
 
-    @GetMapping("/retrieve_node_list")
+    @GetMapping("/retrieve_node_detail_list")
     public Set<Node> nodesSet(@RequestBody List<NodeForm> nodes) {
         var nodeSet = new HashSet<Node>();
         for (NodeForm node : nodes) {
@@ -75,7 +75,7 @@ public class AdminServerController {
         return nodeSet;
     }
 
-    @PostMapping("/add_nodes")
+    @PostMapping("/add_nodes_to_server")
     public ResponseEntity<Void> addNodes(@RequestBody List<NodeForm> selectedNodes) {
         var count = nodeRepository.count();
         try {
@@ -93,7 +93,7 @@ public class AdminServerController {
                 var loginURL = new URL("https://" + selectedNode.getIpAddress() + ":" +
                         selectedNode.getNetworkPort() + "/login");
                 var addServerURL = new URL("https://" + selectedNode.getIpAddress() + ":" +
-                        selectedNode.getNetworkPort() + "/api/v1/management/add_server");
+                        selectedNode.getNetworkPort() + "/api/v1/management/add_server_to_node");
                 var getSystemIDURL = new URL("https://" + selectedNode.getIpAddress() + ":" +
                         selectedNode.getNetworkPort() + "/api/v1/management/system_id");
                 if (NetworkUtils.postJSONToURLWithAuth(loginURL,

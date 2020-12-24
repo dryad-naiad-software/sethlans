@@ -73,8 +73,8 @@ class PropertiesUtilsTest {
 
 
     @Test
-    void getFirstTime() {
-        assertThat(PropertiesUtils.getFirstTime()).isTrue();
+    void isFirstTime() {
+        assertThat(PropertiesUtils.isFirstTime()).isTrue();
     }
 
     @Test
@@ -205,4 +205,8 @@ class PropertiesUtilsTest {
         assertThat(new File(blendFileCacheDirectory)).exists();
     }
 
+    @Test
+    void isNodeDisabled() {
+        assertThat(PropertiesUtils.isNodeDisabled()).isTrue();
+    }
 }

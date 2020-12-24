@@ -49,17 +49,17 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/api/v1/management")
 @Profile({"NODE", "DUAL"})
-public class AdminNodeController {
+public class AdminNodeEndPointController {
 
     private final ServerRepository serverRepository;
     private final BenchmarkService benchmarkService;
 
-    public AdminNodeController(ServerRepository serverRepository, BenchmarkService benchmarkService) {
+    public AdminNodeEndPointController(ServerRepository serverRepository, BenchmarkService benchmarkService) {
         this.serverRepository = serverRepository;
         this.benchmarkService = benchmarkService;
     }
 
-    @PostMapping("/add_server")
+    @PostMapping("/add_server_to_node")
     public ResponseEntity<Void> addServer(@RequestBody Server server) {
         if (serverRepository.findBySystemID(server.getSystemID()).isEmpty()) {
             log.debug("Adding the following server to node: " + server);
@@ -70,12 +70,12 @@ public class AdminNodeController {
         return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
-    @GetMapping("/list_servers")
+    @GetMapping("/list_servers_on_node")
     public List<Server> servers() {
         return serverRepository.findAll();
     }
 
-    @GetMapping("/request_benchmark")
+    @GetMapping("/benchmark_request")
     public ResponseEntity<Void> requestBenchmark(@RequestBody Server server) {
         if (serverRepository.findBySystemID(server.getSystemID()).isPresent()) {
             var objectMapper = new ObjectMapper();
