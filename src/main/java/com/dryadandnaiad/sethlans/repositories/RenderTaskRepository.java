@@ -30,4 +30,6 @@ import java.util.List;
  */
 public interface RenderTaskRepository extends JpaRepository<RenderTask, Long> {
     List<RenderTask> findRenderTasksByBenchmarkIsTrueAndInProgressIsFalseAndCompleteIsFalse();
+
+    List<RenderTask> findRenderTaskByBenchmarkIsTrue();
 }

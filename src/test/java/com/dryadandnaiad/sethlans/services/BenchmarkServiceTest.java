@@ -23,6 +23,8 @@ import com.dryadandnaiad.sethlans.enums.LogLevel;
 import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
+import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
+import com.dryadandnaiad.sethlans.models.blender.tasks.TaskServerInfo;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
@@ -50,8 +52,12 @@ import org.springframework.util.FileSystemUtils;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 /**
  * File created by Mario Estrella on 7/11/2020.
@@ -244,5 +250,19 @@ class BenchmarkServiceTest {
 
     @Test
     void benchmarkStatus() {
+        var server = Server.builder().systemID(UUID.randomUUID().toString()).build();
+        var serverInfo = TaskServerInfo.builder().systemID(server.getSystemID()).build();
+        var renderTask = RenderTask.builder().serverInfo(serverInfo).benchmark(true).complete(true).build();
+        var renderTask2 = RenderTask.builder().serverInfo(serverInfo).benchmark(false).complete(true).build();
+        renderTaskRepository.save(renderTask);
+        renderTaskRepository.save(renderTask2);
+        assertTrue(benchmarkService.benchmarkStatus(server));
+        var renderTask3 = RenderTask.builder().serverInfo(serverInfo).benchmark(false).complete(true).build();
+        var renderTask4 = RenderTask.builder().serverInfo(serverInfo).benchmark(true).complete(false).build();
+        renderTaskRepository.save(renderTask3);
+        renderTaskRepository.save(renderTask4);
+        assertFalse(benchmarkService.benchmarkStatus(server));
+
+
     }
 }

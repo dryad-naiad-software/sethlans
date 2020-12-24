@@ -114,7 +114,18 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
     @Override
     public boolean benchmarkStatus(Server server) {
-        return false;
+        var systemID = server.getSystemID();
+        var benchmarkList = renderTaskRepository.findRenderTaskByBenchmarkIsTrue();
+        for (RenderTask benchmark : benchmarkList) {
+            if (benchmark.getServerInfo().getSystemID().equals(systemID)) {
+                if (!benchmark.isComplete()) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void createBenchmarkTasks(NodeType nodeType, String blenderExecutable,
