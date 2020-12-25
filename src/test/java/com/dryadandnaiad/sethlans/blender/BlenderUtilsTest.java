@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.utils.PythonUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,6 +54,11 @@ class BlenderUtilsTest {
 
     @AfterEach
     void tearDown() {
+        FileSystemUtils.deleteRecursively(TEST_DIRECTORY);
+    }
+
+    @AfterAll
+    static void afterAll() {
         FileSystemUtils.deleteRecursively(TEST_DIRECTORY);
     }
 

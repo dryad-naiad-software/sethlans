@@ -205,6 +205,7 @@ class BenchmarkServiceTest {
             Thread.sleep(1000);
         }
         assertThat(new File(SETHLANS_DIRECTORY + File.separator + "downloads")).isNotEmptyDirectory();
+        System.out.println("Download Complete");
         var systemInfo = QueryUtils.getCurrentSystemInfo();
 
         var node = Node.builder()
@@ -245,6 +246,7 @@ class BenchmarkServiceTest {
             Thread.sleep(1000);
         }
         var cpuRating = PropertiesUtils.getCPURating();
+        System.out.println("Complete");
         assertThat(cpuRating > 0);
     }
 

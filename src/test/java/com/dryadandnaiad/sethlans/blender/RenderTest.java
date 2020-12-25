@@ -53,6 +53,7 @@ public class RenderTest {
 
     @BeforeAll
     static void beforeAll() {
+        FileSystemUtils.deleteRecursively(TEST_DIRECTORY);
         FileSystemUtils.deleteRecursively(BIN_DIRECTORY);
         BIN_DIRECTORY.mkdirs();
         var version = "2.83.2";
@@ -60,14 +61,14 @@ public class RenderTest {
         var download = BlenderUtils.downloadBlenderToServer(version,
                 BIN_DIRECTORY.toString(),
                 os);
-        BlenderUtils.extractBlender(BIN_DIRECTORY.toString(),
-                os, download.toString(), version);
+        assertThat(BlenderUtils.extractBlender(BIN_DIRECTORY.toString(),
+                os, download.toString(), version)).isTrue();
         version = "2.79b";
         download = BlenderUtils.downloadBlenderToServer(version,
                 BIN_DIRECTORY.toString(),
                 os);
-        BlenderUtils.extractBlender(BIN_DIRECTORY.toString(),
-                os, download.toString(), version);
+        assertThat(BlenderUtils.extractBlender(BIN_DIRECTORY.toString(),
+                os, download.toString(), version)).isTrue();
     }
 
     @AfterAll
