@@ -97,12 +97,10 @@ class BlenderUtilsTest {
     void downloadBlenderToServer() {
         assertThat(BlenderUtils
                 .downloadBlenderToServer("2.80b",
-                        "resource",
                         TEST_DIRECTORY.toString(),
                         OS.LINUX_64)).isNull();
         var blenderDownload = BlenderUtils
                 .downloadBlenderToServer("2.79b",
-                        "resource",
                         TEST_DIRECTORY.toString(),
                         OS.LINUX_64);
         assertThat(blenderDownload).isNotNull();
@@ -111,7 +109,7 @@ class BlenderUtilsTest {
 
     @Test
     void availableBlenderVersions() {
-        assertThat(BlenderUtils.availableBlenderVersions("resource")).hasSizeGreaterThan(0);
+        assertThat(BlenderUtils.availableBlenderVersions()).hasSizeGreaterThan(0);
     }
 
     @Test
@@ -119,7 +117,6 @@ class BlenderUtilsTest {
         var version = "2.83.2";
         var blenderDownload = BlenderUtils
                 .downloadBlenderToServer(version,
-                        "resource",
                         TEST_DIRECTORY.toString(),
                         OS.WINDOWS_64);
         assertThat(BlenderUtils.extractBlender(TEST_DIRECTORY.toString(), OS.WINDOWS_64,
@@ -132,7 +129,6 @@ class BlenderUtilsTest {
         var version = "2.83.2";
         var blenderDownload = BlenderUtils
                 .downloadBlenderToServer(version,
-                        "resource",
                         TEST_DIRECTORY.toString(),
                         OS.LINUX_64);
         assertThat(BlenderUtils.extractBlender(TEST_DIRECTORY.toString(), OS.LINUX_64,
@@ -147,7 +143,6 @@ class BlenderUtilsTest {
         var version = "2.83.2";
         var blenderDownload = BlenderUtils
                 .downloadBlenderToServer(version,
-                        "resource",
                         TEST_DIRECTORY.toString(),
                         OS.MACOS);
         assertThat(BlenderUtils.extractBlender(TEST_DIRECTORY.toString(), OS.MACOS,

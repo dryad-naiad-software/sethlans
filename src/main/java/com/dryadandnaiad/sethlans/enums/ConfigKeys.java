@@ -29,7 +29,6 @@ public enum ConfigKeys {
     BINARY_DIR("sethlans.binDir"),
     BLEND_FILE_CACHE_DIR("sethlans.blendFileCacheDir"),
     BLENDER_DEBUG("blender.debug"),
-    BLENDER_DOWNLOAD_JSON_LOCATION("sethlans.blender.json.location"),
     BLENDER_EXECUTABLES("sethlans.blender.executables"),
     CACHE_DIR("sethlans.cacheDir"),
     COMBINE_GPU("sethlans.render.combined"),

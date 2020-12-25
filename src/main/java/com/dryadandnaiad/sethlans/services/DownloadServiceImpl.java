@@ -56,12 +56,11 @@ public class DownloadServiceImpl implements DownloadService {
         }
         log.info("Attempting to download any needed Blender Binaries.");
         var downloadDir = ConfigUtils.getProperty(ConfigKeys.DOWNLOAD_DIR);
-        var jsonLocation = ConfigUtils.getProperty(ConfigKeys.BLENDER_DOWNLOAD_JSON_LOCATION);
         var blenderBinaries = blenderArchiveRepository.findAll();
         for (BlenderArchive blenderArchive : blenderBinaries) {
             if (!blenderArchive.isDownloaded()) {
                 var downloadedFile = BlenderUtils.downloadBlenderToServer(blenderArchive.getBlenderVersion(),
-                        jsonLocation, downloadDir, blenderArchive.getBlenderOS());
+                        downloadDir, blenderArchive.getBlenderOS());
                 if (downloadedFile != null) {
                     blenderArchive.setBlenderFile(downloadedFile.toString());
                     blenderArchive.setBlenderFileMd5(FileUtils.getMD5ofFile(downloadedFile));

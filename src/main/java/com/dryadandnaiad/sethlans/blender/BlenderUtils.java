@@ -303,9 +303,9 @@ public class BlenderUtils {
         return false;
     }
 
-    public static List<String> availableBlenderVersions(String jsonLocation) {
+    public static List<String> availableBlenderVersions() {
         var availableVersions = new ArrayList<String>();
-        var blenderInstallersList = getInstallersList(jsonLocation);
+        var blenderInstallersList = getInstallersList();
         for (BlenderInstallers blenderInstallers : blenderInstallersList) {
             availableVersions.add(blenderInstallers.getBlenderVersion());
         }
@@ -313,12 +313,11 @@ public class BlenderUtils {
     }
 
 
-    public static File downloadBlenderToServer(String blenderVersion, String jsonLocation, String downloadDir, OS os) {
-        var selectedInstallers = getInstallersByVersion(Objects.requireNonNull(getInstallersList(jsonLocation)),
+    public static File downloadBlenderToServer(String blenderVersion, String downloadDir, OS os) {
+        var selectedInstallers = getInstallersByVersion(Objects.requireNonNull(getInstallersList()),
                 blenderVersion);
         if (selectedInstallers == null) {
-            log.error("Blender version: " + blenderVersion + ", or JSON file location: "
-                    + jsonLocation + " is incorrect");
+            log.error("Blender version: " + blenderVersion + " is incorrect");
             return null;
         }
         List<String> downloadURLs;
@@ -364,28 +363,19 @@ public class BlenderUtils {
         return null;
     }
 
-    private static List<BlenderInstallers> getInstallersList(String jsonLocation) {
-        String blenderDownloadJSON;
+    private static List<BlenderInstallers> getInstallersList() {
+        String blenderDownloadJSON =
+                "https://gist.githubusercontent.com/marioestrella/def9d852b3298008ae16040bbbabc524" +
+                        "/raw/48ed0b6ba7ffe27d5faa0609d2e6b27aaf178f95/blenderdownloads.json";
         List<BlenderInstallers> blenderInstallersList;
-
-
-        if (jsonLocation.equals("resource")) {
-            blenderDownloadJSON = QueryUtils.getStringFromResource("blenderdownload.json");
-
-        } else {
-            blenderDownloadJSON = QueryUtils.getStringFromFile(jsonLocation);
-        }
-        if (blenderDownloadJSON == null) {
-            return null;
-        }
         var mapper = new ObjectMapper();
 
 
         try {
-            blenderInstallersList = mapper.readValue(blenderDownloadJSON, new TypeReference<>() {
+            blenderInstallersList = mapper.readValue(new URL(blenderDownloadJSON), new TypeReference<>() {
             });
             return blenderInstallersList;
-        } catch (JsonProcessingException e) {
+        } catch (IOException e) {
             log.error("Unable to process JSON " + e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
             return null;

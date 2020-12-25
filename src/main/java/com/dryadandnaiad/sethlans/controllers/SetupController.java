@@ -61,8 +61,7 @@ public class SetupController {
                 .appURL("https://" + QueryUtils.getHostname().toLowerCase() + ":" + port + "/")
                 .availableTypes(QueryUtils.getAvailableTypes())
                 .availableGPUs(ScanGPU.listDevices())
-                .blenderVersions(BlenderUtils.availableBlenderVersions(
-                        ConfigUtils.getProperty(ConfigKeys.BLENDER_DOWNLOAD_JSON_LOCATION)))
+                .blenderVersions(BlenderUtils.availableBlenderVersions())
                 .build();
 
     }

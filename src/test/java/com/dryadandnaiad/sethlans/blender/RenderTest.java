@@ -58,14 +58,12 @@ public class RenderTest {
         var version = "2.83.2";
         var os = QueryUtils.getOS();
         var download = BlenderUtils.downloadBlenderToServer(version,
-                "resource",
                 BIN_DIRECTORY.toString(),
                 os);
         BlenderUtils.extractBlender(BIN_DIRECTORY.toString(),
                 os, download.toString(), version);
         version = "2.79b";
         download = BlenderUtils.downloadBlenderToServer(version,
-                "resource",
                 BIN_DIRECTORY.toString(),
                 os);
         BlenderUtils.extractBlender(BIN_DIRECTORY.toString(),
