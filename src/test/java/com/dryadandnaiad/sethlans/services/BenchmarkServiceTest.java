@@ -134,7 +134,6 @@ class BenchmarkServiceTest {
                 .build());
 
         var blenderBinary = blenderArchiveRepository.findAll().get(0);
-        System.out.println(blenderBinary);
         assertThat(blenderBinary).isNotNull();
         Thread.sleep(10000);
         while (!blenderBinary.isDownloaded()) {
@@ -264,6 +263,10 @@ class BenchmarkServiceTest {
         renderTaskRepository.save(renderTask3);
         renderTaskRepository.save(renderTask4);
         assertFalse(benchmarkService.benchmarkStatus(server));
+        renderTaskRepository.delete(renderTask);
+        renderTaskRepository.delete(renderTask2);
+        renderTaskRepository.delete(renderTask3);
+        renderTaskRepository.delete(renderTask4);
 
 
     }
