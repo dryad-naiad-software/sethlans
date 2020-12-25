@@ -15,23 +15,27 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.repositories;
+package com.dryadandnaiad.sethlans.models.blender.project;
 
-import com.dryadandnaiad.sethlans.models.system.Node;
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.Optional;
+import com.dryadandnaiad.sethlans.enums.ProjectType;
+import lombok.Builder;
+import lombok.Data;
 
 /**
- * File created by Mario Estrella on 6/11/2020.
+ * File created by Mario Estrella on 12/25/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface NodeRepository extends JpaRepository<Node, Long> {
-    Optional<Node> findNodeBySystemIDEquals(String systemID);
-
-    long countNodesByActiveIsTrue();
-
-    boolean existsNodeByActiveIsTrue();
+@Data
+@Builder
+public class ProjectView {
+    private Long id;
+    private ProjectType projectType;
+    private ProjectSettings projectSettings;
+    private ProjectStatus projectStatus;
+    private Long userId;
+    private String projectName;
+    private boolean thumbnailPresent;
+    private String thumbnailURL;
 }

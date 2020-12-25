@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.repositories.ServerRepository;
 import com.dryadandnaiad.sethlans.services.BenchmarkService;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.NetworkUtils;
+import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -104,6 +105,11 @@ public class AdminNodeEndPointController {
         }
         log.error("Server is not authorized on this node.");
         return false;
+    }
+
+    @GetMapping("/node_disabled")
+    public boolean isNodeDisabled() {
+        return PropertiesUtils.isNodeDisabled();
     }
 
 

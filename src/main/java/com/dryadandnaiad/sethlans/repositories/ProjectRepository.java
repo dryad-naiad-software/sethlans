@@ -17,21 +17,18 @@
 
 package com.dryadandnaiad.sethlans.repositories;
 
-import com.dryadandnaiad.sethlans.models.system.Node;
+import com.dryadandnaiad.sethlans.models.blender.project.Project;
+import com.dryadandnaiad.sethlans.models.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import java.util.List;
 
 /**
- * File created by Mario Estrella on 6/11/2020.
+ * File created by Mario Estrella on 12/25/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface NodeRepository extends JpaRepository<Node, Long> {
-    Optional<Node> findNodeBySystemIDEquals(String systemID);
-
-    long countNodesByActiveIsTrue();
-
-    boolean existsNodeByActiveIsTrue();
+public interface ProjectRepository extends JpaRepository<Project, Long> {
+    List<Project> getProjectsByUser(User user);
 }

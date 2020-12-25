@@ -15,23 +15,25 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.repositories;
+package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.models.system.Node;
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.Optional;
+import org.junit.jupiter.api.Test;
 
 /**
- * File created by Mario Estrella on 6/11/2020.
+ * File created by Mario Estrella on 12/25/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface NodeRepository extends JpaRepository<Node, Long> {
-    Optional<Node> findNodeBySystemIDEquals(String systemID);
+class ProjectUIControllerTest {
 
-    long countNodesByActiveIsTrue();
+    @Test
+    void nodesReady() {
+        //TODO
+    }
 
-    boolean existsNodeByActiveIsTrue();
+    @Test
+    void getProjects() {
+        //TODO
+    }
 }

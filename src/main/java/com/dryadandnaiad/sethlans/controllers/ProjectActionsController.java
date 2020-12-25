@@ -15,23 +15,22 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.repositories;
+package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.models.system.Node;
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * File created by Mario Estrella on 6/11/2020.
+ * File created by Mario Estrella on 12/25/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface NodeRepository extends JpaRepository<Node, Long> {
-    Optional<Node> findNodeBySystemIDEquals(String systemID);
-
-    long countNodesByActiveIsTrue();
-
-    boolean existsNodeByActiveIsTrue();
+@RestController
+@Profile({"SERVER", "DUAL"})
+@RequestMapping("/api/v1/project")
+@Slf4j
+public class ProjectActionsController {
 }

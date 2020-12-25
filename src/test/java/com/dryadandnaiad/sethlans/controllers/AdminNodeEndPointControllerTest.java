@@ -115,4 +115,12 @@ class AdminNodeEndPointControllerTest {
         });
         assertThat(servers).hasSizeGreaterThan(0);
     }
+
+    @Test
+    void isNodeDisabled() throws Exception {
+        var result = mvc.perform(get("/api/v1/management/node_disabled")
+                .contentType(MediaType.TEXT_PLAIN))
+                .andExpect(status().isOk()).andReturn();
+        assertThat(result.getResponse().getContentAsString()).isEqualTo("false");
+    }
 }
