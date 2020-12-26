@@ -30,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -76,6 +77,7 @@ public class SetupServiceImpl implements SetupService {
         }
         var user = setupForm.getUser();
         user.setUsername(user.getUsername().toLowerCase());
+        user.setUserID(UUID.randomUUID().toString());
         user.setRoles(Stream.of(Role.SUPER_ADMINISTRATOR).collect(Collectors.toSet()));
         user.setActive(true);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));

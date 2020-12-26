@@ -50,7 +50,7 @@ public class SethlansApplication {
     public static void doMain(String[] args) {
         List<String> arrayArgs = new ArrayList<>();
         arrayArgs.add("--spring.config.name=sethlans");
-        arrayArgs.add("--spring.config.additional-location=" + System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "config" + File.separator);
+        arrayArgs.add("--spring.config.additional-location=" + System.getProperty("user.home") + File.separator + ".sethlans" + File.separator + "config" + File.separator + "sethlans.properties");
         arrayArgs.add("--spring.main.headless=false");
         String[] springArgs = new String[arrayArgs.size()];
         springArgs = arrayArgs.toArray(springArgs);
