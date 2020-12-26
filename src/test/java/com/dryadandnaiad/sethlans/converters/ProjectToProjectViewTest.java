@@ -150,7 +150,6 @@ class ProjectToProjectViewTest {
         var projectView = projectToProjectView.convert(project);
         for (Field f : projectView.getClass().getDeclaredFields()) {
             assertThat(f).isNotNull();
-
         }
 
     }

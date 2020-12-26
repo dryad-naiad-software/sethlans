@@ -17,7 +17,14 @@
 
 package com.dryadandnaiad.sethlans.converters;
 
+import com.dryadandnaiad.sethlans.enums.Role;
+import com.dryadandnaiad.sethlans.models.user.User;
 import org.junit.jupiter.api.Test;
+
+import java.util.HashSet;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * File created by Mario Estrella on 12/25/2020.
@@ -26,9 +33,25 @@ import org.junit.jupiter.api.Test;
  * Project: sethlans
  */
 class UserToSethlansUserDetailsTest {
+    UserToSethlansUserDetails userToSethlansUserDetails = new UserToSethlansUserDetails();
 
     @Test
     void convert() {
-        //TODO test case for user to sethlans user details
+        var roles = new HashSet<Role>();
+
+        roles.add(Role.SUPER_ADMINISTRATOR);
+
+        var user = User.builder()
+                .active(true)
+                .id(12345L)
+                .userID(UUID.randomUUID().toString())
+                .username("testuser")
+                .password("test1234")
+                .roles(roles)
+                .build();
+
+        var userDetails = userToSethlansUserDetails.convert(user);
+        assertThat(userDetails).isNotNull();
+
     }
 }
