@@ -30,11 +30,11 @@ import lombok.Data;
 @Data
 @Builder
 public class ProjectView {
-    private Long id;
+    private String projectID;
     private ProjectType projectType;
     private ProjectSettings projectSettings;
     private ProjectStatus projectStatus;
-    private Long userId;
+    private String userID;
     private String projectName;
     private boolean thumbnailPresent;
     private String thumbnailURL;

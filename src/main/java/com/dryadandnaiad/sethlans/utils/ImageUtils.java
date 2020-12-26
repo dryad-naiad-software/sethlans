@@ -46,13 +46,13 @@ import java.util.List;
 public class ImageUtils {
 
     public static boolean combineParts(Frame frame, ImageOutputFormat imageOutputFormat) {
-        log.info("Combining parts for " + frame.getFrameFileName());
+        log.info("Combining parts for " + frame.getFrameName());
         if (imageOutputFormat.equals(ImageOutputFormat.HDR)) {
             return combineHDR(frame);
         }
         var images = new ArrayList<BufferedImage>();
         var numberOfParts = frame.getPartsPerFrame();
-        var filenameBase = frame.getFrameFileName();
+        var filenameBase = frame.getFrameName();
         var partDirectory = frame.getStoredDir() + File.separator + "parts";
 
         try {
@@ -87,7 +87,7 @@ public class ImageUtils {
             }
 
             var frameFilename = new File(frame.getStoredDir() + File.separator +
-                    frame.getFrameFileName() + "." + imageOutputFormat.name().toLowerCase());
+                    frame.getFrameName() + "." + imageOutputFormat.name().toLowerCase());
 
             if (!ImageIO.write(concatImage, imageOutputFormat.name().toUpperCase(), frameFilename
             )) {
@@ -120,7 +120,7 @@ public class ImageUtils {
     public static boolean combineHDR(Frame frame) {
         nu.pattern.OpenCV.loadLocally();
         var numberOfParts = frame.getPartsPerFrame();
-        var filenameBase = frame.getFrameFileName();
+        var filenameBase = frame.getFrameName();
         var partDirectory = frame.getStoredDir() + File.separator + "parts";
         int squareRootOfParts = (int) Math.sqrt(numberOfParts);
         var imageArrays = new ArrayList<ArrayList<Mat>>();
@@ -153,7 +153,7 @@ public class ImageUtils {
             }
 
             var frameFilename = new File(frame.getStoredDir() + File.separator +
-                    frame.getFrameFileName() + "." + "hdr");
+                    frame.getFrameName() + "." + "hdr");
 
             var rowResult = new ArrayList<Mat>();
 
@@ -195,9 +195,9 @@ public class ImageUtils {
         var thumbnailDir = new File(frame.getStoredDir() + File.separator + "thumbnails");
         thumbnailDir.mkdirs();
         var originalImage = new File(frame.getStoredDir()
-                + File.separator + frame.getFrameFileName() + "." + frame.getFileExtension());
+                + File.separator + frame.getFrameName() + "." + frame.getFileExtension());
         var thumbnail = new File(thumbnailDir + File.separator
-                + frame.getFrameFileName() + "-thumbnail" + "." + "png");
+                + frame.getFrameName() + "-thumbnail" + "." + "png");
         log.info("Creating thumbnail for " + originalImage);
         try {
             Thumbnails.of(originalImage).size(128, 128).toFile(thumbnail);

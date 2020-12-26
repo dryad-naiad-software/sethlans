@@ -46,6 +46,7 @@ import java.util.Set;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 public class User extends AbstractModel {
+    private String userID;
     private String username;
     private String password;
     private boolean active;

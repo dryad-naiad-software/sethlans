@@ -50,6 +50,5 @@ public class ProjectStatus {
     private boolean userStopped;
     private boolean queueFillComplete;
     private boolean reEncode;
-    private String currentFrameThumbnail;
     private ProjectState projectState;
 }

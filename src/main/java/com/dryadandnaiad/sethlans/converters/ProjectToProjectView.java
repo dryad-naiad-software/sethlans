@@ -32,14 +32,15 @@ import org.springframework.stereotype.Component;
 public class ProjectToProjectView implements Converter<Project, ProjectView> {
     @Override
     public ProjectView convert(Project project) {
-        var projectView = ProjectView.builder().id(project.getId())
+        var projectView = ProjectView.builder()
+                .projectID(project.getProjectID())
                 .projectName(project.getProjectName())
                 .projectSettings(project.getProjectSettings())
                 .projectStatus(project.getProjectStatus())
                 .projectType(project.getProjectType())
                 .thumbnailPresent(project.getThumbnailFileNames().size() > 0)
                 .thumbnailURL(project.getThumbnailFileNames().get(project.getThumbnailFileNames().size() - 1))
-                .userId(project.getUser().getId())
+                .userID(project.getUser().getUserID())
                 .build();
         return projectView;
     }

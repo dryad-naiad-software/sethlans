@@ -36,7 +36,7 @@ import javax.persistence.Embeddable;
 @Builder
 @Embeddable
 public class Frame {
-    private String frameFileName;
+    private String frameName;
     private Integer frameNumber;
     private boolean combined;
     private String storedDir;
