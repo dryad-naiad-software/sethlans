@@ -55,7 +55,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@ActiveProfiles("NODE")
+@ActiveProfiles("DUAL")
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext
@@ -72,12 +72,12 @@ class InfoControllerTest {
                 .appURL("https://localhost:7443")
                 .ipAddress(QueryUtils.getIP())
                 .logLevel(LogLevel.DEBUG)
-                .mode(SethlansMode.NODE)
+                .mode(SethlansMode.DUAL)
                 .port("7443").build();
         var nodeSettings = NodeSettings.builder().nodeType(NodeType.CPU).tileSizeCPU(32).cores(4).build();
         PropertiesUtils.writeNodeSettings(nodeSettings);
         PropertiesUtils.writeSetupSettings(setupSettings);
-        PropertiesUtils.writeDirectories(SethlansMode.NODE);
+        PropertiesUtils.writeDirectories(SethlansMode.DUAL);
         var mailSettings = MailSettings.builder()
                 .mailEnabled(false)
                 .build();
@@ -103,5 +103,13 @@ class InfoControllerTest {
         assertThat(node.getIpAddress()).isEqualTo(QueryUtils.getIP());
         assertThat(node.getNetworkPort()).isEqualTo("7443");
         assertThat(node.getNodeType()).isEqualTo(NodeType.CPU);
+    }
+
+    @Test
+    void getVersion() throws Exception {
+        var result = mvc.perform(get("/api/v1/info/version")
+                .contentType(MediaType.TEXT_PLAIN))
+                .andExpect(status().isOk()).andReturn();
+        assertThat(result.getResponse().getContentAsString()).isNotNull();
     }
 }

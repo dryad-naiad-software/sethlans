@@ -54,4 +54,9 @@ public class InfoController {
                 .build();
     }
 
+    @GetMapping("/version")
+    public String getVersion() {
+        return QueryUtils.getVersion();
+    }
+
 }
