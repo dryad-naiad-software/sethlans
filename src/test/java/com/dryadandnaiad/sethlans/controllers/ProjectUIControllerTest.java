@@ -26,8 +26,12 @@ import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.user.User;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
+import com.dryadandnaiad.sethlans.repositories.ProjectRepository;
+import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -46,6 +50,8 @@ import org.springframework.util.FileSystemUtils;
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,6 +78,12 @@ class ProjectUIControllerTest {
 
     @Resource
     NodeRepository nodeRepository;
+
+    @Resource
+    ProjectRepository projectRepository;
+
+    @Resource
+    UserRepository userRepository;
 
 
     @BeforeAll
@@ -100,6 +112,21 @@ class ProjectUIControllerTest {
 
     @Test
     void nodesReady() throws Exception {
+
+        var node1 = Node.builder()
+                .ipAddress("10.10.10.12")
+                .networkPort("7443")
+                .nodeType(NodeType.CPU)
+                .systemID(UUID.randomUUID().toString())
+                .active(false)
+                .build();
+        nodeRepository.save(node1);
+
+        var result = mvc.perform(get("/api/v1/project/nodes_ready")
+                .contentType(MediaType.TEXT_PLAIN))
+                .andExpect(status().isOk()).andReturn();
+        assertThat(result.getResponse().getContentAsString()).isEqualTo("false");
+
         var nodeList = new ArrayList<Node>();
         nodeList.add(Node.builder()
                 .ipAddress("10.10.10.10")
@@ -119,25 +146,74 @@ class ProjectUIControllerTest {
             nodeRepository.save(node);
         }
 
-        var result = mvc.perform(get("/api/v1/project/nodes_ready")
+        var result2 = mvc.perform(get("/api/v1/project/nodes_ready")
                 .contentType(MediaType.TEXT_PLAIN))
                 .andExpect(status().isOk()).andReturn();
-        assertThat(result.getResponse().getContentAsString()).isEqualTo("true");
+        assertThat(result2.getResponse().getContentAsString()).isEqualTo("true");
+
+        var node2 = Node.builder()
+                .ipAddress("10.10.10.12")
+                .networkPort("7443")
+                .nodeType(NodeType.CPU)
+                .systemID(UUID.randomUUID().toString())
+                .active(true)
+                .build();
+        nodeRepository.save(node2);
+
+        var result3 = mvc.perform(get("/api/v1/project/nodes_ready")
+                .contentType(MediaType.TEXT_PLAIN))
+                .andExpect(status().isOk()).andReturn();
+        assertThat(result3.getResponse().getContentAsString()).isEqualTo("true");
+
+
     }
 
     @Test
     @WithMockUser(username = "testuser", password = "test1234", roles = "USER")
-    void getProjects() {
-        //TODO
+    void getProjects() throws Exception {
+        userRepository.save(getUser());
+
+        var user = userRepository.findUserByUsername("testuser").get();
+
+        var adminUser = getUser();
+        adminUser.getRoles().remove(Role.USER);
+        adminUser.getRoles().add(Role.SUPER_ADMINISTRATOR);
+        adminUser.setUsername("adminTestUser");
+
+        userRepository.save(adminUser);
+
+        var objectMapper = new ObjectMapper();
+
+        for (int i = 0; i < 5; i++) {
+            var project = getProject();
+            project.setUser(user);
+            projectRepository.save(project);
+        }
+
+        var project6 = getProject();
+        project6.setUser(adminUser);
+        projectRepository.save(project6);
+
+        assertThat(projectRepository.findAll().size()).isEqualTo(6);
+
+        var result = mvc.perform(get("/api/v1/project/project_list")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn();
+        var projectViewList = objectMapper.readValue(result.getResponse().getContentAsString(),
+                new TypeReference<List<ProjectView>>() {
+                });
+        assertThat(projectViewList.size()).isEqualTo(5);
     }
 
     User getUser() {
+        var set = new HashSet<Role>();
+        set.add(Role.USER);
         return User.builder()
                 .active(true)
-                .id(12345L)
                 .userID(UUID.randomUUID().toString())
                 .username("testuser")
                 .password("test1234")
+                .roles(set)
                 .build();
     }
 
@@ -224,9 +300,8 @@ class ProjectUIControllerTest {
 
 
         return Project.builder()
-                .id(12415L)
                 .projectID(UUID.randomUUID().toString())
-                .projectName("A Sample Project")
+                .projectName(UUID.randomUUID().toString())
                 .projectRootDir("/root")
                 .projectType(ProjectType.STILL_IMAGE)
                 .projectSettings(projectSettings)
@@ -234,7 +309,6 @@ class ProjectUIControllerTest {
                 .thumbnailFileNames(thumbnailFiles)
                 .frameFileNames(frameFiles)
                 .frameList(frames)
-                .user(getUser())
                 .build();
     }
 

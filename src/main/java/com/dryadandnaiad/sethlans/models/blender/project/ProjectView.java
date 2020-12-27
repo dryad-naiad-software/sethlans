@@ -18,8 +18,10 @@
 package com.dryadandnaiad.sethlans.models.blender.project;
 
 import com.dryadandnaiad.sethlans.enums.ProjectType;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * File created by Mario Estrella on 12/25/2020.
@@ -28,6 +30,8 @@ import lombok.Data;
  * Project: sethlans
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class ProjectView {
     private String projectID;
