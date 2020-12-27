@@ -26,7 +26,10 @@ import com.dryadandnaiad.sethlans.models.blender.tasks.TaskServerInfo;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
+import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Server;
+import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
+import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.repositories.RenderTaskRepository;
 import com.dryadandnaiad.sethlans.repositories.ServerRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
@@ -80,7 +83,13 @@ class AdminNodeEndPointControllerTest {
     ServerRepository serverRepository;
 
     @Resource
+    NodeRepository nodeRepository;
+
+    @Resource
     RenderTaskRepository renderTaskRepository;
+
+    @Resource
+    BlenderArchiveRepository blenderArchiveRepository;
 
     @BeforeAll
     static void beforeAll() throws Exception {
@@ -136,8 +145,50 @@ class AdminNodeEndPointControllerTest {
         assertThat(result.getResponse().getContentAsString()).isEqualTo("false");
     }
 
+
     @Test
-    void requestBenchmark() {
+    void requestBenchmark() throws Exception {
+        // This test is just checking to make sure the endpoint is active, the actual logic is tested in the benchmark
+        // service series of tests
+        var nodeSettings = NodeSettings.builder().nodeType(NodeType.CPU).tileSizeCPU(32).cores(8).build();
+        PropertiesUtils.writeNodeSettings(nodeSettings);
+
+        var systemInfo = QueryUtils.getCurrentSystemInfo();
+
+        var node = Node.builder()
+                .nodeType(PropertiesUtils.getNodeType())
+                .os(QueryUtils.getOS())
+                .systemID(ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID))
+                .ipAddress(systemInfo.getIpAddress())
+                .hostname(systemInfo.getHostname())
+                .networkPort(ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT))
+                .cpu(systemInfo.getCpu())
+                .selectedGPUs(PropertiesUtils.getSelectedGPUs())
+                .build();
+
+        nodeRepository.save(node);
+
+
+        var server = Server.builder()
+                .ipAddress(QueryUtils.getIP())
+                .systemID(ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID))
+                .hostname(QueryUtils.getHostname())
+                .networkPort(ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT)).build();
+
+        serverRepository.save(server);
+
+        var objectMapper = new ObjectMapper();
+        var serverJSON = objectMapper.writeValueAsString(server);
+
+        mvc.perform(get("/api/v1/management/benchmark_request")
+                .contentType(MediaType.APPLICATION_JSON).content(serverJSON))
+                .andExpect(status().isInternalServerError());
+
+        serverRepository.delete(server);
+
+        mvc.perform(get("/api/v1/management/benchmark_request")
+                .contentType(MediaType.APPLICATION_JSON).content(serverJSON))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -164,9 +215,6 @@ class AdminNodeEndPointControllerTest {
                 .contentType(MediaType.APPLICATION_JSON).content(serverJSON))
                 .andExpect(status().isOk()).andReturn();
         assertThat(result.getResponse().getContentAsString()).isEqualTo("false");
-        renderTaskRepository.delete(renderTask);
-        renderTaskRepository.delete(renderTask2);
-        renderTaskRepository.delete(renderTask3);
-        renderTaskRepository.delete(renderTask4);
+        renderTaskRepository.deleteAll();
     }
 }

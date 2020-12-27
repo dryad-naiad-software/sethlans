@@ -88,9 +88,10 @@ public class AdminNodeEndPointController {
                 var blenderArchive = objectMapper.readValue(blenderArchiveJSON, new TypeReference<BlenderArchive>() {
                 });
                 benchmarkService.processBenchmarkRequest(server, blenderArchive);
-            } catch (JsonProcessingException | MalformedURLException e) {
+            } catch (JsonProcessingException | MalformedURLException | IllegalArgumentException e) {
                 log.error(e.getMessage());
                 log.error(Throwables.getStackTraceAsString(e));
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         }

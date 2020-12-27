@@ -180,6 +180,8 @@ class BenchmarkServiceTest {
         }
         var cpuRating = PropertiesUtils.getCPURating();
         assertThat(cpuRating > 0);
+        renderTaskRepository.deleteAll();
+
     }
 
     @Test
@@ -245,6 +247,8 @@ class BenchmarkServiceTest {
         }
         var cpuRating = PropertiesUtils.getCPURating();
         assertThat(cpuRating > 0);
+        renderTaskRepository.deleteAll();
+
     }
 
     @Test
@@ -261,11 +265,6 @@ class BenchmarkServiceTest {
         renderTaskRepository.save(renderTask3);
         renderTaskRepository.save(renderTask4);
         assertFalse(benchmarkService.benchmarkStatus(server));
-        renderTaskRepository.delete(renderTask);
-        renderTaskRepository.delete(renderTask2);
-        renderTaskRepository.delete(renderTask3);
-        renderTaskRepository.delete(renderTask4);
-
-
+        renderTaskRepository.deleteAll();
     }
 }
