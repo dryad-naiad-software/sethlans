@@ -21,10 +21,14 @@ import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.LogLevel;
 import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
+import com.dryadandnaiad.sethlans.models.blender.tasks.TaskServerInfo;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.dryadandnaiad.sethlans.models.system.Server;
+import com.dryadandnaiad.sethlans.repositories.RenderTaskRepository;
+import com.dryadandnaiad.sethlans.repositories.ServerRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
@@ -44,8 +48,10 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.FileSystemUtils;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -69,6 +75,12 @@ class AdminNodeEndPointControllerTest {
 
     @Autowired
     private MockMvc mvc;
+
+    @Resource
+    ServerRepository serverRepository;
+
+    @Resource
+    RenderTaskRepository renderTaskRepository;
 
     @BeforeAll
     static void beforeAll() throws Exception {
@@ -122,5 +134,39 @@ class AdminNodeEndPointControllerTest {
                 .contentType(MediaType.TEXT_PLAIN))
                 .andExpect(status().isOk()).andReturn();
         assertThat(result.getResponse().getContentAsString()).isEqualTo("false");
+    }
+
+    @Test
+    void requestBenchmark() {
+    }
+
+    @Test
+    void benchmarkStatus() throws Exception {
+        var objectMapper = new ObjectMapper();
+        var server = Server.builder().systemID(UUID.randomUUID().toString()).build();
+        var serverJSON = objectMapper.writeValueAsString(server);
+
+        var serverInfo = TaskServerInfo.builder().systemID(server.getSystemID()).build();
+        serverRepository.save(server);
+        var renderTask = RenderTask.builder().serverInfo(serverInfo).benchmark(true).complete(true).build();
+        var renderTask2 = RenderTask.builder().serverInfo(serverInfo).benchmark(false).complete(true).build();
+        renderTaskRepository.save(renderTask);
+        renderTaskRepository.save(renderTask2);
+        var result = mvc.perform(get("/api/v1/management/benchmark_status")
+                .contentType(MediaType.APPLICATION_JSON).content(serverJSON))
+                .andExpect(status().isOk()).andReturn();
+        assertThat(result.getResponse().getContentAsString()).isEqualTo("true");
+        var renderTask3 = RenderTask.builder().serverInfo(serverInfo).benchmark(false).complete(true).build();
+        var renderTask4 = RenderTask.builder().serverInfo(serverInfo).benchmark(true).complete(false).build();
+        renderTaskRepository.save(renderTask3);
+        renderTaskRepository.save(renderTask4);
+        result = mvc.perform(get("/api/v1/management/benchmark_status")
+                .contentType(MediaType.APPLICATION_JSON).content(serverJSON))
+                .andExpect(status().isOk()).andReturn();
+        assertThat(result.getResponse().getContentAsString()).isEqualTo("false");
+        renderTaskRepository.delete(renderTask);
+        renderTaskRepository.delete(renderTask2);
+        renderTaskRepository.delete(renderTask3);
+        renderTaskRepository.delete(renderTask4);
     }
 }
