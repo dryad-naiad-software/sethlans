@@ -23,7 +23,9 @@ import com.dryadandnaiad.sethlans.models.blender.project.*;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
+import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import org.apache.commons.lang3.SystemUtils;
@@ -33,15 +35,22 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.FileSystemUtils;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * File created by Mario Estrella on 12/25/2020.
@@ -60,6 +69,9 @@ class ProjectUIControllerTest {
 
     @Autowired
     private MockMvc mvc;
+
+    @Resource
+    NodeRepository nodeRepository;
 
 
     @BeforeAll
@@ -87,11 +99,34 @@ class ProjectUIControllerTest {
     }
 
     @Test
-    void nodesReady() {
-        //TODO
+    void nodesReady() throws Exception {
+        var nodeList = new ArrayList<Node>();
+        nodeList.add(Node.builder()
+                .ipAddress("10.10.10.10")
+                .networkPort("7443")
+                .active(true)
+                .nodeType(NodeType.CPU)
+                .systemID(UUID.randomUUID().toString())
+                .build());
+        nodeList.add(Node.builder()
+                .ipAddress("10.10.10.1")
+                .networkPort("7443")
+                .nodeType(NodeType.CPU)
+                .systemID(UUID.randomUUID().toString())
+                .active(true)
+                .build());
+        for (Node node : nodeList) {
+            nodeRepository.save(node);
+        }
+
+        var result = mvc.perform(get("/api/v1/project/nodes_ready")
+                .contentType(MediaType.TEXT_PLAIN))
+                .andExpect(status().isOk()).andReturn();
+        assertThat(result.getResponse().getContentAsString()).isEqualTo("true");
     }
 
     @Test
+    @WithMockUser(username = "testuser", password = "test1234", roles = "USER")
     void getProjects() {
         //TODO
     }
