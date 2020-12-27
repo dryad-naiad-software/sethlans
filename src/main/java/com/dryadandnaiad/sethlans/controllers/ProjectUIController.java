@@ -77,7 +77,7 @@ public class ProjectUIController {
                 var user = userRepository.findUserByUsername(auth.getName()).get();
                 projects = projectRepository.getProjectsByUser(user);
             } else {
-                return null;
+                return new ArrayList<>();
             }
 
         }

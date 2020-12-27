@@ -215,6 +215,11 @@ class AdminNodeEndPointControllerTest {
                 .contentType(MediaType.APPLICATION_JSON).content(serverJSON))
                 .andExpect(status().isOk()).andReturn();
         assertThat(result.getResponse().getContentAsString()).isEqualTo("false");
+        serverRepository.delete(server);
+        result = mvc.perform(get("/api/v1/management/benchmark_status")
+                .contentType(MediaType.APPLICATION_JSON).content(serverJSON))
+                .andExpect(status().isOk()).andReturn();
+        assertThat(result.getResponse().getContentAsString()).isEqualTo("false");
         renderTaskRepository.deleteAll();
     }
 }

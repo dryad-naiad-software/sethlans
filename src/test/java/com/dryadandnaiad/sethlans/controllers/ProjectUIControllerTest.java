@@ -17,17 +17,19 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.enums.*;
-import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
-import com.dryadandnaiad.sethlans.models.blender.project.*;
+import com.dryadandnaiad.sethlans.enums.LogLevel;
+import com.dryadandnaiad.sethlans.enums.NodeType;
+import com.dryadandnaiad.sethlans.enums.Role;
+import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.models.blender.project.ProjectView;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.dryadandnaiad.sethlans.models.system.Node;
-import com.dryadandnaiad.sethlans.models.user.User;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.repositories.ProjectRepository;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
+import com.dryadandnaiad.sethlans.testutils.TestUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -170,31 +172,41 @@ class ProjectUIControllerTest {
 
     @Test
     @WithMockUser(username = "testuser", password = "test1234", roles = "USER")
-    void getProjects() throws Exception {
-        userRepository.save(getUser());
+    void getProjectsWithUser() throws Exception {
+        var roles = new HashSet<Role>();
+        roles.add(Role.USER);
+        userRepository.save(TestUtils.getUser(roles, "testuser", "test1234"));
+        userRepository.save(TestUtils.getUser(roles, "anotherUser", "aSimplePass2"));
 
         var user = userRepository.findUserByUsername("testuser").get();
+        var anotherUser = userRepository.findUserByUsername("anotherUser").get();
 
-        var adminUser = getUser();
-        adminUser.getRoles().remove(Role.USER);
-        adminUser.getRoles().add(Role.SUPER_ADMINISTRATOR);
-        adminUser.setUsername("adminTestUser");
+        roles.remove(Role.USER);
+        roles.add(Role.SUPER_ADMINISTRATOR);
 
-        userRepository.save(adminUser);
+        userRepository.save(TestUtils.getUser(roles, "adminUser", "test1234"));
+
+        var adminUser = userRepository.findUserByUsername("adminUser").get();
 
         var objectMapper = new ObjectMapper();
 
         for (int i = 0; i < 5; i++) {
-            var project = getProject();
+            var project = TestUtils.getProject();
             project.setUser(user);
             projectRepository.save(project);
         }
 
-        var project6 = getProject();
+        for (int i = 0; i < 5; i++) {
+            var project = TestUtils.getProject();
+            project.setUser(anotherUser);
+            projectRepository.save(project);
+        }
+
+        var project6 = TestUtils.getProject();
         project6.setUser(adminUser);
         projectRepository.save(project6);
 
-        assertThat(projectRepository.findAll().size()).isEqualTo(6);
+        assertThat(projectRepository.findAll().size()).isEqualTo(11);
 
         var result = mvc.perform(get("/api/v1/project/project_list")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -203,114 +215,57 @@ class ProjectUIControllerTest {
                 new TypeReference<List<ProjectView>>() {
                 });
         assertThat(projectViewList.size()).isEqualTo(5);
+        projectRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
-    User getUser() {
-        var set = new HashSet<Role>();
-        set.add(Role.USER);
-        return User.builder()
-                .active(true)
-                .userID(UUID.randomUUID().toString())
-                .username("testuser")
-                .password("test1234")
-                .roles(set)
-                .build();
+    @Test
+    @WithMockUser(username = "adminUser", password = "test1234", roles = "SUPER_ADMINISTRATOR")
+    void getProjectsWithAdmin() throws Exception {
+        var roles = new HashSet<Role>();
+        roles.add(Role.USER);
+        userRepository.save(TestUtils.getUser(roles, "testuser", "test1234"));
+        userRepository.save(TestUtils.getUser(roles, "anotherUser", "aSimplePass2"));
+
+        var user = userRepository.findUserByUsername("testuser").get();
+        var anotherUser = userRepository.findUserByUsername("anotherUser").get();
+
+        roles.remove(Role.USER);
+        roles.add(Role.SUPER_ADMINISTRATOR);
+
+        userRepository.save(TestUtils.getUser(roles, "adminUser", "test1234"));
+
+        var adminUser = userRepository.findUserByUsername("adminUser").get();
+
+        var objectMapper = new ObjectMapper();
+
+        for (int i = 0; i < 5; i++) {
+            var project = TestUtils.getProject();
+            project.setUser(user);
+            projectRepository.save(project);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            var project = TestUtils.getProject();
+            project.setUser(anotherUser);
+            projectRepository.save(project);
+        }
+
+        var project6 = TestUtils.getProject();
+        project6.setUser(adminUser);
+        projectRepository.save(project6);
+
+        assertThat(projectRepository.findAll().size()).isEqualTo(11);
+
+        var result = mvc.perform(get("/api/v1/project/project_list")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn();
+        var projectViewList = objectMapper.readValue(result.getResponse().getContentAsString(),
+                new TypeReference<List<ProjectView>>() {
+                });
+        assertThat(projectViewList.size()).isEqualTo(11);
+        projectRepository.deleteAll();
+        userRepository.deleteAll();
     }
-
-    Project getProject() {
-        var videoSettings = VideoSettings.builder()
-                .videoFileLocation("/home/testfile.mp4")
-                .videoOutputFormat(VideoOutputFormat.MP4)
-                .videoQuality(VideoQuality.HIGH_X264)
-                .codec(VideoCodec.LIBX264)
-                .frameRate(30)
-                .pixelFormat(PixelFormat.YUV420P)
-                .build();
-        var imageSettings = ImageSettings.builder()
-                .imageOutputFormat(ImageOutputFormat.PNG)
-                .resolutionX(1980)
-                .resolutionY(1024)
-                .resPercentage(50)
-                .build();
-        var projectSettings = ProjectSettings.builder()
-                .blenderEngine(BlenderEngine.CYCLES)
-                .computeOn(ComputeOn.CPU)
-                .blenderVersion("2.79b")
-                .animationType(AnimationType.IMAGES)
-                .startFrame(2)
-                .endFrame(100)
-                .stepFrame(1)
-                .samples(50)
-                .partsPerFrame(4)
-                .totalNumberOfFrames(500)
-                .useParts(true)
-                .blendFilename("sampleblend.blend")
-                .blendFilenameMD5Sum("dsafjaoif23548239")
-                .blendFileLocation("/home")
-                .videoSettings(videoSettings)
-                .imageSettings(imageSettings)
-                .build();
-
-        var projectStatus = ProjectStatus.builder()
-                .projectState(ProjectState.FINISHED)
-                .allImagesProcessed(true)
-                .queueIndex(1)
-                .currentPercentage(50)
-                .totalQueueSize(34)
-                .userStopped(false)
-                .queueFillComplete(true)
-                .reEncode(false)
-                .completedFrames(34)
-                .totalRenderTime(123L)
-                .totalProjectTime(123L)
-                .remainingQueueSize(123)
-                .timerStart(123L)
-                .timerEnd(123L)
-                .build();
-
-        var thumbnailFiles = new ArrayList<String>();
-        thumbnailFiles.add("test1234-1-thumb.png");
-        thumbnailFiles.add("test1234-2-thumb.png");
-
-        var frameFiles = new ArrayList<String>();
-        frameFiles.add("test1234-1.png");
-        frameFiles.add("test1234-2.png");
-
-        var frames = new ArrayList<Frame>();
-
-        var frame1 = Frame.builder()
-                .frameNumber(1)
-                .partsPerFrame(4)
-                .frameName("test1234-1")
-                .combined(true)
-                .fileExtension("png")
-                .storedDir("/temp")
-                .build();
-        var frame2 = Frame.builder()
-                .frameNumber(2)
-                .partsPerFrame(4)
-                .frameName("test1234-2")
-                .combined(true)
-                .fileExtension("png")
-                .storedDir("/temp")
-                .build();
-
-        frames.add(frame1);
-        frames.add(frame2);
-
-
-        return Project.builder()
-                .projectID(UUID.randomUUID().toString())
-                .projectName(UUID.randomUUID().toString())
-                .projectRootDir("/root")
-                .projectType(ProjectType.STILL_IMAGE)
-                .projectSettings(projectSettings)
-                .projectStatus(projectStatus)
-                .thumbnailFileNames(thumbnailFiles)
-                .frameFileNames(frameFiles)
-                .frameList(frames)
-                .build();
-    }
-
 
 }
