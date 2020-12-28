@@ -17,8 +17,12 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.services.ProjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,4 +37,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/project")
 @Slf4j
 public class ProjectActionsController {
+    private final ProjectService projectService;
+
+    public ProjectActionsController(ProjectService projectService) {
+        this.projectService = projectService;
+    }
+
+
+    @DeleteMapping("/delete_all_projects")
+    public ResponseEntity<Void> deleteAllProjects() {
+        projectService.deleteAllProjects();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

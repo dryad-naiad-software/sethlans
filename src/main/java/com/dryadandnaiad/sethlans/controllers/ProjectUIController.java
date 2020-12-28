@@ -25,14 +25,18 @@ import com.dryadandnaiad.sethlans.repositories.ProjectRepository;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * File created by Mario Estrella on 12/25/2020.
@@ -85,5 +89,22 @@ public class ProjectUIController {
             projectsToSend.add(projectToProjectView.convert(project));
         }
         return projectsToSend;
+    }
+
+    @GetMapping("/{project_id}")
+    public ResponseEntity<ProjectView> getProject(@PathVariable("project_id") String projectID) {
+        Optional<Project> project;
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            project = projectRepository.getProjectByProjectID(projectID);
+        } else {
+            var user = userRepository.findUserByUsername(auth.getName()).orElse(null);
+            project = projectRepository.getProjectByUserAndProjectID(user, projectID);
+        }
+
+        return project.map(value -> new ResponseEntity<>(projectToProjectView.convert(value), HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+
     }
 }

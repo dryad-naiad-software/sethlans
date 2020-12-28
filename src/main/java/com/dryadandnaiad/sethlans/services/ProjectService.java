@@ -15,27 +15,30 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.repositories;
+package com.dryadandnaiad.sethlans.services;
 
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
-import com.dryadandnaiad.sethlans.models.user.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
- * File created by Mario Estrella on 12/25/2020.
+ * File created by Mario Estrella on 12/27/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-public interface ProjectRepository extends JpaRepository<Project, Long> {
-    List<Project> getProjectsByUser(User user);
+public interface ProjectService {
 
-    Optional<Project> getProjectByProjectID(String projectID);
+    boolean startProject(Project project);
 
-    Optional<Project> getProjectByUserAndProjectID(User user, String projectID);
+    boolean resumeProject(Project project);
 
-    void deleteAllByUser(User user);
+    boolean pauseProject(Project project);
+
+    boolean stopProject(Project project);
+
+    void deleteProject(Project project);
+
+    void deleteAllUserProjects(String username);
+
+    void deleteAllProjects();
+
 }

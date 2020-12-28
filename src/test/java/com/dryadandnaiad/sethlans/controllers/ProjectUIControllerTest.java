@@ -178,15 +178,15 @@ class ProjectUIControllerTest {
         userRepository.save(TestUtils.getUser(roles, "testuser", "test1234"));
         userRepository.save(TestUtils.getUser(roles, "anotherUser", "aSimplePass2"));
 
-        var user = userRepository.findUserByUsername("testuser").get();
-        var anotherUser = userRepository.findUserByUsername("anotherUser").get();
+        var user = userRepository.findUserByUsername("testuser").orElse(null);
+        var anotherUser = userRepository.findUserByUsername("anotherUser").orElse(null);
 
         roles.remove(Role.USER);
         roles.add(Role.SUPER_ADMINISTRATOR);
 
         userRepository.save(TestUtils.getUser(roles, "adminUser", "test1234"));
 
-        var adminUser = userRepository.findUserByUsername("adminUser").get();
+        var adminUser = userRepository.findUserByUsername("adminUser").orElse(null);
 
         var objectMapper = new ObjectMapper();
 
@@ -227,15 +227,15 @@ class ProjectUIControllerTest {
         userRepository.save(TestUtils.getUser(roles, "testuser", "test1234"));
         userRepository.save(TestUtils.getUser(roles, "anotherUser", "aSimplePass2"));
 
-        var user = userRepository.findUserByUsername("testuser").get();
-        var anotherUser = userRepository.findUserByUsername("anotherUser").get();
+        var user = userRepository.findUserByUsername("testuser").orElse(null);
+        var anotherUser = userRepository.findUserByUsername("anotherUser").orElse(null);
 
         roles.remove(Role.USER);
         roles.add(Role.SUPER_ADMINISTRATOR);
 
         userRepository.save(TestUtils.getUser(roles, "adminUser", "test1234"));
 
-        var adminUser = userRepository.findUserByUsername("adminUser").get();
+        var adminUser = userRepository.findUserByUsername("adminUser").orElse(null);
 
         var objectMapper = new ObjectMapper();
 
@@ -268,4 +268,8 @@ class ProjectUIControllerTest {
         userRepository.deleteAll();
     }
 
+    @Test
+    void getProjectName() {
+        //TODO
+    }
 }
