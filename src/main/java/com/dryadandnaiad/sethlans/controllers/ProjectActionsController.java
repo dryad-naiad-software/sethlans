@@ -81,8 +81,7 @@ public class ProjectActionsController {
                         originalFilename);
 
             } else {
-                var storeUpload = new File(tempDir + File.separator + uploadTag + "-" +
-                        projectFile.getOriginalFilename().toLowerCase());
+                var storeUpload = new File(tempDir + File.separator + filename);
                 projectFile.transferTo(storeUpload);
             }
         } catch (IOException e) {
