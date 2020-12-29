@@ -81,4 +81,11 @@ public class SetupController {
         sethlansManagerService.restart();
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
+
+    @GetMapping("/shutdown")
+    public ResponseEntity<Void> shutdownSethlans() {
+        sethlansManagerService.shutdown();
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
 }

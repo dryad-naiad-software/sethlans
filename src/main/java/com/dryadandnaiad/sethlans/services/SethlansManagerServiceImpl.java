@@ -19,7 +19,9 @@ package com.dryadandnaiad.sethlans.services;
 
 import com.dryadandnaiad.sethlans.SethlansApplication;
 import com.dryadandnaiad.sethlans.executor.MainExecutor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,18 +34,24 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class SethlansManagerServiceImpl implements SethlansManagerService {
 
+    @SneakyThrows
+    @Async
     @Override
     public void restart() {
+        Thread.sleep(5000);
         SethlansApplication.restart();
     }
 
+    @Async
     @Override
     public void shutdown() {
         try {
             log.info("Shutting down Sethlans...");
+            Thread.sleep(5000);
             MainExecutor mainExecutor = MainExecutor.getInstance();
             mainExecutor.getExecutor().shutdown();
             Thread.sleep(10000);
+            System.exit(0);
         } catch (InterruptedException e) {
             log.info("System Shutdown service closed");
             System.exit(0);
