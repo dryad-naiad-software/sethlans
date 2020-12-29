@@ -15,26 +15,21 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.models.forms;
+package com.dryadandnaiad.sethlans.converters;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.dryadandnaiad.sethlans.models.blender.project.Project;
+import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
+import org.springframework.core.convert.converter.Converter;
 
 /**
- * File created by Mario Estrella on 6/14/2020.
+ * File created by Mario Estrella on 12/28/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class NodeForm {
-    private String ipAddress;
-    private String networkPort;
-    private String username;
-    private String password;
+public class ProjectFormToProject implements Converter<ProjectForm, Project> {
+    @Override
+    public Project convert(ProjectForm projectForm) {
+        return null;
+    }
 }

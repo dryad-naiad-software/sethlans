@@ -17,14 +17,24 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.services.ProjectService;
+import com.dryadandnaiad.sethlans.utils.ConfigUtils;
+import com.dryadandnaiad.sethlans.utils.QueryUtils;
+import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * File created by Mario Estrella on 12/25/2020.
@@ -45,9 +55,43 @@ public class ProjectActionsController {
 
 
     @DeleteMapping("/delete_all_projects")
-    public ResponseEntity<Void> deleteAllProjects() {
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteAllProjects() {
         projectService.deleteAllProjects();
-        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/upload_new_project")
+    public ResponseEntity<ProjectForm> newProjectUpload(@RequestParam("project_file") MultipartFile projectFile) {
+        var originalFilename = Objects.requireNonNull(projectFile.getOriginalFilename()).toLowerCase();
+        var uploadTag = QueryUtils.getShortUUID();
+        log.info(originalFilename + " uploaded.");
+        var filename = uploadTag + "-" + originalFilename;
+        var tempDir = ConfigUtils.getProperty(ConfigKeys.TEMP_DIR);
+        var zipLocation = new File(tempDir + File.separator + uploadTag + "_zip_file");
+        var filenameSplit = Arrays.asList(originalFilename.split("\\.(?=[^.]+$)"));
+        log.debug("Filename and Extension: " + filenameSplit.toString());
+        var projectForm = new ProjectForm();
+
+        try {
+            if (Objects.requireNonNull(projectFile.getContentType()).contains("zip") || filenameSplit.get(1).contains("zip")) {
+                zipLocation.mkdir();
+                var storeUpload = new File(zipLocation + File.separator + filename);
+                projectFile.transferTo(storeUpload);
+                var filenameWithoutExt = FilenameUtils.removeExtension(
+                        originalFilename);
+
+            } else {
+                var storeUpload = new File(tempDir + File.separator + uploadTag + "-" +
+                        projectFile.getOriginalFilename().toLowerCase());
+                projectFile.transferTo(storeUpload);
+            }
+        } catch (IOException e) {
+            log.error("Error saving upload " + e.getMessage());
+            log.debug(Throwables.getStackTraceAsString(e));
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+
     }
 
 }

@@ -17,13 +17,15 @@
 
 package com.dryadandnaiad.sethlans.models.forms;
 
+import com.dryadandnaiad.sethlans.enums.ProjectType;
+import com.dryadandnaiad.sethlans.models.blender.project.ProjectSettings;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * File created by Mario Estrella on 6/14/2020.
+ * File created by Mario Estrella on 12/28/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
@@ -32,9 +34,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class NodeForm {
-    private String ipAddress;
-    private String networkPort;
-    private String username;
-    private String password;
+public class ProjectForm {
+    private String projectName;
+    private ProjectType projectType;
+    private ProjectSettings projectSettings;
+    private String uploadedFile;
 }
