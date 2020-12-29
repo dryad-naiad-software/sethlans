@@ -69,7 +69,7 @@ public class ProjectActionsController {
         projectService.deleteAllProjects();
     }
 
-    @PostMapping("/upload_new_project")
+    @PostMapping("/upload_project_file")
     public ResponseEntity<ProjectForm> newProjectUpload(@RequestParam("project_file") MultipartFile projectFile) {
         var originalFilename = Objects.requireNonNull(projectFile.getOriginalFilename()).toLowerCase();
         var uploadTag = QueryUtils.getShortUUID();
@@ -103,7 +103,13 @@ public class ProjectActionsController {
                         }
                     }
                 }
+                throw new IOException(filename + " does not contain a blend file!");
+
+
             } else {
+                if (!filenameSplit.get(1).contains("blend")) {
+                    throw new IOException("This is not a valid blend file " + filename);
+                }
                 var storeUpload = new File(tempDir + File.separator + filename);
                 projectFile.transferTo(storeUpload);
                 projectForm.setProjectFileLocation(tempDir + File.separator + filename);

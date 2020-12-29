@@ -18,8 +18,11 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.services.SethlansManagerService;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,9 +37,27 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/management")
 @Profile({"SERVER", "NODE", "DUAL"})
 public class AdminController {
+    private final SethlansManagerService sethlansManagerService;
+
+    public AdminController(SethlansManagerService sethlansManagerService) {
+        this.sethlansManagerService = sethlansManagerService;
+    }
+
 
     @GetMapping("/system_id")
     public String getSystemID() {
         return ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID);
+    }
+
+    @GetMapping("/restart")
+    public ResponseEntity<Void> restartSethlans() {
+        sethlansManagerService.restart();
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/shutdown")
+    public ResponseEntity<Void> shutdownSethlans() {
+        sethlansManagerService.shutdown();
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 }
