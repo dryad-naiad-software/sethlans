@@ -17,10 +17,18 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.blender.BlenderUtils;
+import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
+import com.dryadandnaiad.sethlans.enums.ProjectType;
+import com.dryadandnaiad.sethlans.models.blender.BlendFile;
+import com.dryadandnaiad.sethlans.models.blender.project.ImageSettings;
+import com.dryadandnaiad.sethlans.models.blender.project.ProjectSettings;
 import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.services.ProjectService;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
+import com.dryadandnaiad.sethlans.utils.FileUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +43,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * File created by Mario Estrella on 12/25/2020.
@@ -70,19 +79,40 @@ public class ProjectActionsController {
         var zipLocation = new File(tempDir + File.separator + uploadTag + "_zip_file");
         var filenameSplit = Arrays.asList(originalFilename.split("\\.(?=[^.]+$)"));
         log.debug("Filename and Extension: " + filenameSplit.toString());
-        var projectForm = new ProjectForm();
+        var projectForm = ProjectForm.builder().originalFile(originalFilename).build();
+        var blendFile = new BlendFile();
 
         try {
-            if (Objects.requireNonNull(projectFile.getContentType()).contains("zip") || filenameSplit.get(1).contains("zip")) {
+            if (Objects.requireNonNull(projectFile.getContentType()).contains("zip") ||
+                    filenameSplit.get(1).contains("zip")) {
                 zipLocation.mkdir();
                 var storeUpload = new File(zipLocation + File.separator + filename);
                 projectFile.transferTo(storeUpload);
                 var filenameWithoutExt = FilenameUtils.removeExtension(
                         originalFilename);
-
+                projectForm.setProjectFileLocation(zipLocation + File.separator + filename);
+                FileUtils.extractArchive(filename, zipLocation.toString());
+                var files = zipLocation.listFiles();
+                for (File file : files != null ? files : new File[0]) {
+                    if (file.toString().contains(filenameWithoutExt + ".blend")) {
+                        blendFile = BlenderUtils.parseBlendFile(file.toString(),
+                                ConfigUtils.getProperty(ConfigKeys.SCRIPTS_DIR),
+                                ConfigUtils.getProperty(ConfigKeys.PYTHON_DIR));
+                        if (blendFile == null) {
+                            throw new IOException("Unable to read blend file");
+                        }
+                    }
+                }
             } else {
                 var storeUpload = new File(tempDir + File.separator + filename);
                 projectFile.transferTo(storeUpload);
+                projectForm.setProjectFileLocation(tempDir + File.separator + filename);
+                blendFile = BlenderUtils.parseBlendFile(projectForm.getProjectFileLocation(),
+                        ConfigUtils.getProperty(ConfigKeys.SCRIPTS_DIR),
+                        ConfigUtils.getProperty(ConfigKeys.PYTHON_DIR));
+                if (blendFile == null) {
+                    throw new IOException("Unable to read blend file");
+                }
             }
         } catch (IOException e) {
             log.error("Error saving upload " + e.getMessage());
@@ -90,7 +120,31 @@ public class ProjectActionsController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+        var imageSettings = ImageSettings.builder()
+                .resolutionX(blendFile.getResolutionX())
+                .resolutionY(blendFile.getResolutionY())
+                .resPercentage(blendFile.getResPercent())
+                .imageOutputFormat(ImageOutputFormat.PNG)
+                .build();
 
+        var projectSettings = ProjectSettings.builder()
+                .samples(50)
+                .partsPerFrame(4)
+                .useParts(true)
+                .computeOn(ComputeOn.HYBRID)
+                .startFrame(blendFile.getFrameStart())
+                .endFrame(blendFile.getFrameEnd())
+                .stepFrame(blendFile.getFrameSkip())
+                .imageSettings(imageSettings)
+                .blenderEngine(blendFile.getEngine())
+                .build();
+
+        projectForm.setProjectSettings(projectSettings);
+        projectForm.setProjectType(ProjectType.STILL_IMAGE);
+        projectForm.setProjectID(UUID.randomUUID().toString());
+        projectForm.setProjectName("");
+
+        return new ResponseEntity<>(projectForm, HttpStatus.OK);
     }
 
 }

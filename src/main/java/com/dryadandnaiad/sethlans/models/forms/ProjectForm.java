@@ -38,5 +38,8 @@ public class ProjectForm {
     private String projectName;
     private ProjectType projectType;
     private ProjectSettings projectSettings;
-    private String uploadedFile;
+    private String projectID;
+    private String originalFile;
+    private String projectFileLocation;
+
 }
