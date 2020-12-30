@@ -35,5 +35,7 @@ import java.util.Optional;
 public interface BlenderArchiveRepository extends JpaRepository<BlenderArchive, Long> {
     List<BlenderArchive> findAllByDownloadedIsTrueAndBlenderOSEquals(OS os);
 
+    List<BlenderArchive> findAllByDownloadedIsTrue();
+
     Optional<BlenderArchive> findBlenderBinaryByBlenderVersionEqualsAndBlenderOSEquals(String blenderVersion, OS os);
 }

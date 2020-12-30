@@ -173,6 +173,9 @@ public class FileUtils {
     public static boolean extractArchive(String extractFile, String location) {
         var toExtract = new File(extractFile);
         var extractLocation = new File(location);
+        if (!toExtract.exists()) {
+            return false;
+        }
         try {
             if (toExtract.toString().contains(".txz") || toExtract.toString().contains(".tar.xz")) {
                 extractLocation.mkdirs();
