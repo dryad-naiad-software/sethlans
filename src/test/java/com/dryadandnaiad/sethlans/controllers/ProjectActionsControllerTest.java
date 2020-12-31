@@ -17,10 +17,7 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
-import com.dryadandnaiad.sethlans.enums.ConfigKeys;
-import com.dryadandnaiad.sethlans.enums.LogLevel;
-import com.dryadandnaiad.sethlans.enums.NodeType;
-import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
 import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
@@ -30,6 +27,7 @@ import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.repositories.ProjectRepository;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.dryadandnaiad.sethlans.testutils.TestFileUtils;
+import com.dryadandnaiad.sethlans.testutils.TestUtils;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.dryadandnaiad.sethlans.utils.PythonUtils;
@@ -44,6 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
@@ -51,10 +50,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.FileSystemUtils;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -69,6 +72,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(locations = "classpath:sethlans.properties")
 @AutoConfigureMockMvc
 @DirtiesContext
+@Transactional
 class ProjectActionsControllerTest {
 
     static File SETHLANS_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + ".sethlans");
@@ -121,7 +125,53 @@ class ProjectActionsControllerTest {
     }
 
     @Test
-    void deleteAllProjects() {
+    @WithMockUser(username = "testuser1", password = "test1234$", roles = "USER")
+    void deleteAllProjectsUser() throws Exception {
+        var project1 = TestUtils.getProject();
+        var project2 = TestUtils.getProject();
+        var project3 = TestUtils.getProject();
+        var project4 = TestUtils.getProject();
+        var user1 = TestUtils.getUser(Stream.of(Role.USER).collect(Collectors.toSet()), "testuser1", "test1234$");
+        var user2 = TestUtils.getUser(Stream.of(Role.USER).collect(Collectors.toSet()), "testuser2", "test123456%");
+        userRepository.save(user1);
+        userRepository.save(user2);
+        project1.setUser(user1);
+        project2.setUser(user1);
+        project3.setUser(user2);
+        project4.setUser(user1);
+        projectRepository.save(project1);
+        projectRepository.save(project2);
+        projectRepository.save(project3);
+        projectRepository.save(project4);
+        mvc.perform(delete("/api/v1/project/delete_all_projects"))
+                .andExpect(status().isOk());
+        assertThat(projectRepository.count()).isEqualTo(1);
+
+    }
+
+    @Test
+    @WithMockUser(username = "testuser1", password = "test1234$", roles = "ADMINISTRATOR")
+    void deleteAllProjectsAdmin() throws Exception {
+        var project1 = TestUtils.getProject();
+        var project2 = TestUtils.getProject();
+        var project3 = TestUtils.getProject();
+        var project4 = TestUtils.getProject();
+        var user1 = TestUtils.getUser(Stream.of(Role.ADMINISTRATOR).collect(Collectors.toSet()), "testuser1", "test1234$");
+        var user2 = TestUtils.getUser(Stream.of(Role.USER).collect(Collectors.toSet()), "testuser2", "test123456%");
+        userRepository.save(user1);
+        userRepository.save(user2);
+        project1.setUser(user2);
+        project2.setUser(user2);
+        project3.setUser(user2);
+        project4.setUser(user2);
+        projectRepository.save(project1);
+        projectRepository.save(project2);
+        projectRepository.save(project3);
+        projectRepository.save(project4);
+        mvc.perform(delete("/api/v1/project/delete_all_projects"))
+                .andExpect(status().isOk());
+        assertThat(projectRepository.count()).isEqualTo(0);
+
     }
 
     @Test
@@ -141,6 +191,17 @@ class ProjectActionsControllerTest {
 
     @Test
     void newProjectUploadBlend() throws Exception {
+
+        var scriptDir = SETHLANS_DIRECTORY + File.separator + "scripts";
+        new File(scriptDir).mkdirs();
+        var binaryDir = SETHLANS_DIRECTORY + File.separator + "binaries";
+        new File(binaryDir).mkdirs();
+        var pythonDir = binaryDir + File.separator + "python";
+        ConfigUtils.writeProperty(ConfigKeys.PYTHON_DIR, pythonDir);
+        PythonUtils.copyPythonArchiveToDisk(binaryDir, QueryUtils.getOS());
+        PythonUtils.copyAndExtractScripts(scriptDir);
+        PythonUtils.installPython(binaryDir, QueryUtils.getOS());
+
         blenderArchiveRepository.save(BlenderArchive.builder()
                 .blenderOS(QueryUtils.getOS())
                 .downloaded(true)
