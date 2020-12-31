@@ -17,6 +17,10 @@
 
 package com.dryadandnaiad.sethlans.services;
 
+import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
+
 /**
  * File created by Mario Estrella on 12/27/2020.
  * Dryad and Naiad Software LLC
@@ -41,4 +45,5 @@ public interface ProjectService {
 
     boolean projectExists(String projectID);
 
+    ResponseEntity<ProjectForm> projectFileUpload(MultipartFile projectFile);
 }

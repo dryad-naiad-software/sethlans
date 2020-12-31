@@ -18,22 +18,16 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.enums.*;
-import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
-import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
-import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.repositories.ProjectRepository;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
-import com.dryadandnaiad.sethlans.testutils.TestFileUtils;
 import com.dryadandnaiad.sethlans.testutils.TestUtils;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.dryadandnaiad.sethlans.utils.PythonUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -52,7 +46,6 @@ import org.springframework.util.FileSystemUtils;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -85,9 +78,6 @@ class ProjectActionsControllerTest {
 
     @Resource
     UserRepository userRepository;
-
-    @Resource
-    BlenderArchiveRepository blenderArchiveRepository;
 
 
     @BeforeAll
@@ -159,49 +149,7 @@ class ProjectActionsControllerTest {
                 .file(firstFile))
                 .andExpect(status().isBadRequest());
 
-        MockMultipartFile secondFile = new MockMultipartFile("project_file", "filename.zip", "application/zip", "some xml".getBytes());
-        mvc.perform(multipart("/api/v1/project/upload_project_file")
-                .file(secondFile))
-                .andExpect(status().isBadRequest());
-
     }
 
-    @Test
-    void newProjectUploadBlend() throws Exception {
 
-        var scriptDir = SETHLANS_DIRECTORY + File.separator + "scripts";
-        new File(scriptDir).mkdirs();
-        var binaryDir = SETHLANS_DIRECTORY + File.separator + "binaries";
-        new File(binaryDir).mkdirs();
-        var pythonDir = binaryDir + File.separator + "python";
-        ConfigUtils.writeProperty(ConfigKeys.PYTHON_DIR, pythonDir);
-        PythonUtils.copyPythonArchiveToDisk(binaryDir, QueryUtils.getOS());
-        PythonUtils.copyAndExtractScripts(scriptDir);
-        PythonUtils.installPython(binaryDir, QueryUtils.getOS());
-
-        blenderArchiveRepository.save(BlenderArchive.builder()
-                .blenderOS(QueryUtils.getOS())
-                .downloaded(true)
-                .blenderVersion("2.79b")
-                .build());
-        blenderArchiveRepository.save(BlenderArchive.builder()
-                .blenderOS(QueryUtils.getOS())
-                .downloaded(true)
-                .blenderVersion("2.83.2")
-                .build());
-
-
-        var file1 = "bmw27_gpu.blend";
-        TestFileUtils.copyTestArchiveToDisk(SETHLANS_DIRECTORY.toString(), "blend_files/" + file1, file1);
-        MockMultipartFile blendFile = new MockMultipartFile("project_file", "bmw27_gpu.blend", "application/octet-stream", new FileInputStream(SETHLANS_DIRECTORY + File.separator + file1));
-        var result = mvc.perform(multipart("/api/v1/project/upload_project_file")
-                .file(blendFile))
-                .andExpect(status().isOk()).andReturn();
-        var objectMapper = new ObjectMapper();
-        var projectForm = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<ProjectForm>() {
-        });
-
-        assertThat(projectForm).isNotNull();
-
-    }
 }

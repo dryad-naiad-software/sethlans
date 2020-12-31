@@ -17,23 +17,27 @@
 
 package com.dryadandnaiad.sethlans.services;
 
-import com.dryadandnaiad.sethlans.enums.LogLevel;
-import com.dryadandnaiad.sethlans.enums.NodeType;
-import com.dryadandnaiad.sethlans.enums.Role;
-import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.enums.*;
+import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
+import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.repositories.ProjectRepository;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
+import com.dryadandnaiad.sethlans.testutils.TestFileUtils;
 import com.dryadandnaiad.sethlans.testutils.TestUtils;
+import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
+import com.dryadandnaiad.sethlans.utils.PythonUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -43,6 +47,7 @@ import org.springframework.util.FileSystemUtils;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -73,6 +78,9 @@ class ProjectServiceTest {
 
     @Resource
     ProjectService projectService;
+
+    @Resource
+    BlenderArchiveRepository blenderArchiveRepository;
 
     @BeforeAll
     static void beforeAll() throws Exception {
@@ -277,5 +285,38 @@ class ProjectServiceTest {
         assertThat(projectService.projectExists(project1.getProjectID())).isTrue();
         assertThat(projectService.projectExists(UUID.randomUUID().toString())).isFalse();
 
+    }
+
+    @Test
+    void projectFileUpload() throws Exception {
+        var scriptDir = SETHLANS_DIRECTORY + File.separator + "scripts";
+        new File(scriptDir).mkdirs();
+        var binaryDir = SETHLANS_DIRECTORY + File.separator + "binaries";
+        new File(binaryDir).mkdirs();
+        var pythonDir = binaryDir + File.separator + "python";
+        ConfigUtils.writeProperty(ConfigKeys.PYTHON_DIR, pythonDir);
+        PythonUtils.copyPythonArchiveToDisk(binaryDir, QueryUtils.getOS());
+        PythonUtils.copyAndExtractScripts(scriptDir);
+        PythonUtils.installPython(binaryDir, QueryUtils.getOS());
+
+        blenderArchiveRepository.save(BlenderArchive.builder()
+                .blenderOS(QueryUtils.getOS())
+                .downloaded(true)
+                .blenderVersion("2.79b")
+                .build());
+        blenderArchiveRepository.save(BlenderArchive.builder()
+                .blenderOS(QueryUtils.getOS())
+                .downloaded(true)
+                .blenderVersion("2.83.2")
+                .build());
+        var file1 = "bmw27_gpu.blend";
+        TestFileUtils.copyTestArchiveToDisk(SETHLANS_DIRECTORY.toString(), "blend_files/" + file1, file1);
+        MockMultipartFile blendFile = new MockMultipartFile("project_file", "bmw27_gpu.blend", "application/octet-stream", new FileInputStream(SETHLANS_DIRECTORY + File.separator + file1));
+        var projectForm = projectService.projectFileUpload(blendFile).getBody();
+        assertThat(projectForm).isNotNull();
+        MockMultipartFile zipFileInvalid = new MockMultipartFile("project_file", "filename.zip", "application/zip", "some xml".getBytes());
+        assertThat(projectService.projectFileUpload(zipFileInvalid).getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        MockMultipartFile invalidFile = new MockMultipartFile("project_file", "filename.txt", "text/plain", "some xml".getBytes());
+        assertThat(projectService.projectFileUpload(invalidFile).getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 }
