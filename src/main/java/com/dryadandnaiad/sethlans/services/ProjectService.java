@@ -17,8 +17,6 @@
 
 package com.dryadandnaiad.sethlans.services;
 
-import com.dryadandnaiad.sethlans.models.blender.project.Project;
-
 /**
  * File created by Mario Estrella on 12/27/2020.
  * Dryad and Naiad Software LLC
@@ -27,17 +25,17 @@ import com.dryadandnaiad.sethlans.models.blender.project.Project;
  */
 public interface ProjectService {
 
-    boolean startProject(Project project);
+    boolean startProject(String projectID);
 
-    boolean resumeProject(Project project);
+    boolean resumeProject(String projectID);
 
-    boolean pauseProject(Project project);
+    boolean pauseProject(String projectID);
 
-    boolean stopProject(Project project);
+    boolean stopProject(String projectID);
 
-    void deleteProject(Project project);
+    void deleteProject(String projectID);
 
-    void deleteAllUserProjects(String username);
+    void deleteAllProjectsByUser(String userID);
 
     void deleteAllProjects();
 

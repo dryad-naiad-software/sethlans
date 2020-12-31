@@ -126,53 +126,30 @@ class ProjectActionsControllerTest {
 
     @Test
     @WithMockUser(username = "testuser1", password = "test1234$", roles = "USER")
-    void deleteAllProjectsUser() throws Exception {
+    void deleteAllProjects() throws Exception {
         var project1 = TestUtils.getProject();
         var project2 = TestUtils.getProject();
         var project3 = TestUtils.getProject();
         var project4 = TestUtils.getProject();
         var user1 = TestUtils.getUser(Stream.of(Role.USER).collect(Collectors.toSet()), "testuser1", "test1234$");
-        var user2 = TestUtils.getUser(Stream.of(Role.USER).collect(Collectors.toSet()), "testuser2", "test123456%");
         userRepository.save(user1);
-        userRepository.save(user2);
         project1.setUser(user1);
         project2.setUser(user1);
-        project3.setUser(user2);
+        project3.setUser(user1);
         project4.setUser(user1);
         projectRepository.save(project1);
         projectRepository.save(project2);
         projectRepository.save(project3);
         projectRepository.save(project4);
-        mvc.perform(delete("/api/v1/project/delete_all_projects"))
-                .andExpect(status().isOk());
-        assertThat(projectRepository.count()).isEqualTo(1);
-
-    }
-
-    @Test
-    @WithMockUser(username = "testuser1", password = "test1234$", roles = "ADMINISTRATOR")
-    void deleteAllProjectsAdmin() throws Exception {
-        var project1 = TestUtils.getProject();
-        var project2 = TestUtils.getProject();
-        var project3 = TestUtils.getProject();
-        var project4 = TestUtils.getProject();
-        var user1 = TestUtils.getUser(Stream.of(Role.ADMINISTRATOR).collect(Collectors.toSet()), "testuser1", "test1234$");
-        var user2 = TestUtils.getUser(Stream.of(Role.USER).collect(Collectors.toSet()), "testuser2", "test123456%");
-        userRepository.save(user1);
-        userRepository.save(user2);
-        project1.setUser(user2);
-        project2.setUser(user2);
-        project3.setUser(user2);
-        project4.setUser(user2);
-        projectRepository.save(project1);
-        projectRepository.save(project2);
-        projectRepository.save(project3);
-        projectRepository.save(project4);
+        assertThat(projectRepository.count()).isEqualTo(4);
         mvc.perform(delete("/api/v1/project/delete_all_projects"))
                 .andExpect(status().isOk());
         assertThat(projectRepository.count()).isEqualTo(0);
+        projectRepository.deleteAll();
+
 
     }
+
 
     @Test
     void newProjectUploadFail() throws Exception {

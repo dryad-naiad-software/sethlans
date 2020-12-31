@@ -17,9 +17,9 @@
 
 package com.dryadandnaiad.sethlans.services;
 
-import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.repositories.ProjectRepository;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
  * Project: sethlans
  */
 @Service
+@Slf4j
 public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
@@ -42,47 +43,54 @@ public class ProjectServiceImpl implements ProjectService {
 
 
     @Override
-    public boolean startProject(Project project) {
+    public boolean startProject(String projectID) {
         return false;
     }
 
     @Override
-    public boolean resumeProject(Project project) {
+    public boolean resumeProject(String projectID) {
         return false;
     }
 
     @Override
-    public boolean pauseProject(Project project) {
+    public boolean pauseProject(String projectID) {
         return false;
     }
 
     @Override
-    public boolean stopProject(Project project) {
+    public boolean stopProject(String projectID) {
         return false;
     }
 
     @Override
-    public void deleteProject(Project project) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-            projectRepository.delete(project);
-        } else {
-            if (project.getUser().getUsername().equals(auth.getName())) {
-                projectRepository.delete(project);
-            }
-        }
-
-    }
-
-    @Override
-    public void deleteAllUserProjects(String username) {
-        if (userRepository.findUserByUsername(username).isPresent()) {
+    public void deleteProject(String projectID) {
+        if (projectRepository.getProjectByProjectID(projectID).isPresent()) {
+            var project = projectRepository.getProjectByProjectID(projectID).get();
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-                projectRepository.deleteAllByUser(userRepository.findUserByUsername(username).get());
+                projectRepository.delete(project);
             } else {
-                if (username.equals(auth.getName())) {
-                    projectRepository.deleteAllByUser(userRepository.findUserByUsername(username).get());
+                if (project.getUser().getUsername().equals(auth.getName())) {
+                    projectRepository.delete(project);
+                }
+            }
+        } else {
+            log.info("Unable to delete, there is no project with project id: " + projectID);
+
+        }
+
+
+    }
+
+    @Override
+    public void deleteAllProjectsByUser(String userID) {
+        if (userRepository.findUserByUserID(userID).isPresent()) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+                projectRepository.deleteAllByUser(userRepository.findUserByUserID(userID).get());
+            } else {
+                if (userRepository.findUserByUserID(userID).get().getUsername().equals(auth.getName())) {
+                    projectRepository.deleteAllByUser(userRepository.findUserByUserID(userID).get());
                 }
             }
         }

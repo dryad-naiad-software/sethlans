@@ -68,6 +68,12 @@ public class ProjectActionsController {
         this.blenderArchiveRepository = blenderArchiveRepository;
     }
 
+    @DeleteMapping("/delete_project/{project_id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteProject(@PathVariable("project_id") String projectID) {
+        projectService.deleteProject(projectID);
+    }
+
 
     @DeleteMapping("/delete_all_projects")
     @ResponseStatus(HttpStatus.OK)
