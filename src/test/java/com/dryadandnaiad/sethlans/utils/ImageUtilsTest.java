@@ -18,8 +18,10 @@
 package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
+import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.testutils.TestFileUtils;
+import com.dryadandnaiad.sethlans.testutils.TestUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -28,6 +30,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -235,4 +239,14 @@ class ImageUtilsTest {
     }
 
 
+    @Test
+    void configureFrameList() {
+        var project = TestUtils.getProject();
+        var user = TestUtils.getUser(Stream.of(Role.USER).collect(Collectors.toSet()),
+                "testuser1", "test1234$");
+        project.setUser(user);
+        var frameList = ImageUtils.configureFrameList(project);
+        assertThat(frameList.size()).isEqualTo(project.getProjectSettings().getTotalNumberOfFrames());
+
+    }
 }

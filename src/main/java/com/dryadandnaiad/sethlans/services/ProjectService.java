@@ -39,4 +39,6 @@ public interface ProjectService {
 
     void deleteAllProjects();
 
+    boolean projectExists(String projectID);
+
 }

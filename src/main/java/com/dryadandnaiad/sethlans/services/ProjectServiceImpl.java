@@ -41,7 +41,6 @@ public class ProjectServiceImpl implements ProjectService {
         this.userRepository = userRepository;
     }
 
-
     @Override
     public boolean startProject(String projectID) {
         return false;
@@ -76,10 +75,7 @@ public class ProjectServiceImpl implements ProjectService {
             }
         } else {
             log.info("Unable to delete, there is no project with project id: " + projectID);
-
         }
-
-
     }
 
     @Override
@@ -106,4 +102,10 @@ public class ProjectServiceImpl implements ProjectService {
                 projectRepository.deleteAllByUser(userRepository.findUserByUsername(auth.getName()).get());
         }
     }
+
+    @Override
+    public boolean projectExists(String projectID) {
+        return projectRepository.getProjectByProjectID(projectID).isPresent();
+    }
+
 }

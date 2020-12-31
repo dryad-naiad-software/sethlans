@@ -43,6 +43,7 @@ import org.springframework.util.FileSystemUtils;
 import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.io.File;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -98,7 +99,46 @@ class ProjectServiceTest {
     }
 
     @Test
-    void deleteProject() {
+    @WithMockUser(username = "testuser1", password = "test1234$", roles = "USER")
+    void deleteProjectAsUser() {
+        var project1 = TestUtils.getProject();
+        var project2 = TestUtils.getProject();
+        var user1 = TestUtils.getUser(Stream.of(Role.USER).collect(Collectors.toSet()), "testuser1", "test1234$");
+        var user2 = TestUtils.getUser(Stream.of(Role.USER).collect(Collectors.toSet()), "testuser2", "test123456%");
+        userRepository.save(user1);
+        userRepository.save(user2);
+        project1.setUser(user1);
+        project2.setUser(user2);
+        projectRepository.save(project1);
+        projectRepository.save(project2);
+        assertThat(projectRepository.count()).isEqualTo(2);
+        projectService.deleteProject(project2.getProjectID());
+        assertThat(projectRepository.count()).isEqualTo(2);
+        projectService.deleteProject(project1.getProjectID());
+        assertThat(projectRepository.count()).isEqualTo(1);
+        projectService.deleteProject(UUID.randomUUID().toString());
+    }
+
+    @Test
+    @WithMockUser(username = "administrator1", password = "test1234$", roles = "ADMINISTRATOR")
+    void deleteProjectAsAdmin() {
+        var project1 = TestUtils.getProject();
+        var project2 = TestUtils.getProject();
+        var user1 = TestUtils.getUser(Stream.of(Role.USER).collect(Collectors.toSet()), "testuser1", "test1234$");
+        var user2 = TestUtils.getUser(Stream.of(Role.USER).collect(Collectors.toSet()), "testuser2", "test123456%");
+        var adminUser = TestUtils.getUser(Stream.of(Role.ADMINISTRATOR).collect(Collectors.toSet()), "administrator1", "test1234$");
+        userRepository.save(user1);
+        userRepository.save(user2);
+        userRepository.save(adminUser);
+        project1.setUser(user1);
+        project2.setUser(user2);
+        projectRepository.save(project1);
+        projectRepository.save(project2);
+        assertThat(projectRepository.count()).isEqualTo(2);
+        projectService.deleteProject(project2.getProjectID());
+        assertThat(projectRepository.count()).isEqualTo(1);
+        projectService.deleteProject(project1.getProjectID());
+        assertThat(projectRepository.count()).isEqualTo(0);
     }
 
     @Test
@@ -209,5 +249,33 @@ class ProjectServiceTest {
         projectService.deleteAllProjects();
         assertThat(projectRepository.count()).isEqualTo(0);
         projectRepository.deleteAll();
+    }
+
+    @Test
+    void startProject() {
+    }
+
+    @Test
+    void resumeProject() {
+    }
+
+    @Test
+    void pauseProject() {
+    }
+
+    @Test
+    void stopProject() {
+    }
+
+    @Test
+    void projectExists() {
+        var project1 = TestUtils.getProject();
+        var user1 = TestUtils.getUser(Stream.of(Role.USER).collect(Collectors.toSet()), "testuser1", "test1234$");
+        userRepository.save(user1);
+        project1.setUser(user1);
+        projectRepository.save(project1);
+        assertThat(projectService.projectExists(project1.getProjectID())).isTrue();
+        assertThat(projectService.projectExists(UUID.randomUUID().toString())).isFalse();
+
     }
 }

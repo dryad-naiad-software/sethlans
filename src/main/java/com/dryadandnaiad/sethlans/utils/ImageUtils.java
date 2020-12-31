@@ -20,9 +20,11 @@ package com.dryadandnaiad.sethlans.utils;
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.models.blender.frames.Part;
+import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
+import org.apache.commons.lang3.StringUtils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -208,6 +210,39 @@ public class ImageUtils {
             log.error(Throwables.getStackTraceAsString(e));
             return false;
         }
+
+    }
+
+    public static List<Frame> configureFrameList(Project project) {
+        List<Frame> frameList = new ArrayList<>();
+        var truncatedProjectName = StringUtils.left(project.getProjectName(), 10);
+        var truncatedUUID = StringUtils.left(project.getProjectID(), 4);
+        var cleanedProjectName = truncatedProjectName.replaceAll(" ", "")
+                .replaceAll("[^a-zA-Z0-9_-]", "").toLowerCase();
+        var fileExtension = "";
+        switch (project.getProjectSettings().getImageSettings().getImageOutputFormat()) {
+            case HDR:
+                fileExtension = "hdr";
+                break;
+            case PNG:
+                fileExtension = "png";
+                break;
+            case TIFF:
+                fileExtension = "tif";
+                break;
+        }
+        for (int i = 0; i < project.getProjectSettings().getTotalNumberOfFrames(); i++) {
+            frameList.add(Frame.builder()
+                    .partsPerFrame(project.getProjectSettings().getPartsPerFrame())
+                    .frameName(cleanedProjectName + "-" + truncatedUUID + "-" + (i + 1))
+                    .frameNumber(i + 1)
+                    .combined(false)
+                    .storedDir(project.getProjectRootDir() + File.separator + "frames")
+                    .fileExtension(fileExtension).build());
+
+        }
+
+        return frameList;
 
     }
 

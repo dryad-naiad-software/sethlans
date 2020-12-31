@@ -21,6 +21,7 @@ import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.models.blender.project.*;
 import com.dryadandnaiad.sethlans.models.user.User;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -64,12 +65,12 @@ public class TestUtils {
                 .computeOn(ComputeOn.CPU)
                 .blenderVersion("2.79b")
                 .animationType(AnimationType.IMAGES)
-                .startFrame(2)
+                .startFrame(1)
                 .endFrame(100)
                 .stepFrame(1)
                 .samples(50)
                 .partsPerFrame(4)
-                .totalNumberOfFrames(500)
+                .totalNumberOfFrames(100)
                 .useParts(true)
                 .blendFilename("sampleblend.blend")
                 .blendFilenameMD5Sum("dsafjaoif23548239")
@@ -128,7 +129,7 @@ public class TestUtils {
 
         return Project.builder()
                 .projectID(UUID.randomUUID().toString())
-                .projectName(UUID.randomUUID().toString())
+                .projectName(RandomStringUtils.randomAlphabetic(40))
                 .projectRootDir("/root")
                 .projectType(ProjectType.STILL_IMAGE)
                 .projectSettings(projectSettings)
