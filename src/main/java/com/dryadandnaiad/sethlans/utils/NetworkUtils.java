@@ -40,8 +40,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-
 /**
  * File created by Mario Estrella on 6/11/2020.
  * Dryad and Naiad Software LLC
@@ -116,12 +114,20 @@ public class NetworkUtils {
     }
 
     public static String getJSONFromURLWithAuth(URL login, URL url, String username, String password) {
+        var responseCode = 0;
+
         try {
             var firstConnection = getAuthHttpsURLConnection(login, username, password);
             var sessionCookies = getSessionCookies(firstConnection);
             var xsrfToken = extractXRSFToken(firstConnection);
 
             firstConnection.disconnect();
+            responseCode = firstConnection.getResponseCode();
+
+            if (responseCode > 299) {
+                return null;
+            }
+
 
             var secondConnection = (HttpsURLConnection) url.openConnection();
             if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
@@ -166,24 +172,34 @@ public class NetworkUtils {
                 var stream = CharStreams.toString(reader);
                 connection.disconnect();
                 return stream;
+            } else {
+                log.error("Error connecting to url " + url + " : Response code: " + connection.getResponseCode());
+                return null;
             }
         } catch (IOException e) {
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
             return null;
         }
-        return null;
     }
 
     public static HttpStatus postJSONToURLWithAuth(URL login, URL url,
                                                    String json, String username, String password) {
+        var responseCode = 0;
         try {
             var firstConnection = getAuthHttpsURLConnection(login, username, password);
 
             var sessionCookies = getSessionCookies(firstConnection);
             var xsrfToken = extractXRSFToken(firstConnection);
 
+            responseCode = firstConnection.getResponseCode();
+
             firstConnection.disconnect();
+
+            if (responseCode > 299) {
+                return HttpStatus.valueOf(responseCode);
+            }
+
 
             var secondConnection = (HttpsURLConnection) url.openConnection();
             if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
@@ -201,7 +217,7 @@ public class NetworkUtils {
         } catch (IOException e) {
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
-            return BAD_REQUEST;
+            return HttpStatus.valueOf(responseCode);
         }
     }
 
@@ -223,6 +239,8 @@ public class NetworkUtils {
 
 
     public static HttpStatus postJSONToURL(URL url, String json) {
+        var responseCode = 0;
+
         try {
             var connection = (HttpsURLConnection) url.openConnection();
             if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
@@ -232,13 +250,14 @@ public class NetworkUtils {
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json; utf-8");
             connection.setRequestProperty("Accept", "application/json");
+            responseCode = connection.getResponseCode();
 
             return sendJSON(json, connection);
 
         } catch (IOException e) {
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
-            return BAD_REQUEST;
+            return HttpStatus.valueOf(responseCode);
         }
     }
 
@@ -290,7 +309,7 @@ public class NetworkUtils {
             return HttpStatus.CREATED;
         } else {
             connection.disconnect();
-            return BAD_REQUEST;
+            return HttpStatus.valueOf(connection.getResponseCode());
         }
     }
 

@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
  */
 @Slf4j
 @RestController
+@Profile({"SERVER", "DUAL"})
 @RequestMapping("/api/v1/server_queue")
 public class ServerQueueController {
     private final BlenderArchiveRepository blenderArchiveRepository;

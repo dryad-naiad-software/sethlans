@@ -58,8 +58,10 @@ public class NodeServiceImpl implements NodeService {
         var nodeID = ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID);
         try {
             var url = new URL("https://" + server.getIpAddress() + ":" + server.getNetworkPort()
-                    + "/latest_blender_archive?system-id=" + nodeID + "&os=" + QueryUtils.getOS().getName());
+                    + "/api/v1/server_queue/latest_blender_archive?system-id=" + nodeID + "&os=" + QueryUtils.getOS().toString());
+            log.debug(url.toString());
             var blenderArchiveJSON = NetworkUtils.getJSONFromURL(url);
+            log.debug(blenderArchiveJSON);
             var blenderArchive = objectMapper.readValue(blenderArchiveJSON, new TypeReference<BlenderArchive>() {
             });
             benchmarkService.processBenchmarkRequest(server, blenderArchive);

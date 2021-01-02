@@ -17,6 +17,7 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,6 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
  * Project: sethlans
  */
 @RestController
+@Profile({"NODE", "DUAL"})
+
 @RequestMapping("/api/v1/render")
 public class NodeRenderController {
 }
