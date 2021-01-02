@@ -31,6 +31,8 @@ import java.util.Optional;
 public interface NodeRepository extends JpaRepository<Node, Long> {
     Optional<Node> findNodeBySystemIDEquals(String systemID);
 
+    boolean existsNodeByIpAddressAndNetworkPort(String ipAddress, String port);
+
     long countNodesByActiveIsTrue();
 
     boolean existsNodeByActiveIsTrue();

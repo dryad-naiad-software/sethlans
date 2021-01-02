@@ -54,7 +54,7 @@ public class ServerServiceImpl implements ServerService {
     }
 
     @Override
-    public ResponseEntity<Void> addNodes(List<NodeForm> selectedNodes) {
+    public ResponseEntity<String> addNodes(List<NodeForm> selectedNodes) {
         var count = nodeRepository.count();
         try {
             var server = Server.builder()
@@ -68,6 +68,13 @@ public class ServerServiceImpl implements ServerService {
             var serverAsJson = objectMapper.writeValueAsString(server);
 
             for (NodeForm selectedNode : selectedNodes) {
+                if (nodeRepository.existsNodeByIpAddressAndNetworkPort(selectedNode.getIpAddress(),
+                        selectedNode.getNetworkPort())) {
+                    return new ResponseEntity<>("Error adding " + selectedNode.getIpAddress() + ":" +
+                            selectedNode.getNetworkPort() +
+                            " this node already exists on this server.",
+                            HttpStatus.BAD_REQUEST);
+                }
                 var loginURL = new URL("https://" + selectedNode.getIpAddress() + ":" +
                         selectedNode.getNetworkPort() + "/login");
                 var addServerURL = new URL("https://" + selectedNode.getIpAddress() + ":" +
@@ -86,17 +93,19 @@ public class ServerServiceImpl implements ServerService {
                         log.debug("Adding the following node to server: " + node);
                         nodeRepository.save(node);
                     }
+                } else {
+                    log.error("Unable to add " + selectedNode.getIpAddress());
+                    return new ResponseEntity<>("Error adding " + selectedNode.getIpAddress() + ":" +
+                            selectedNode.getNetworkPort() +
+                            "! Please check to see if node is active or correct credentials are being used.",
+                            HttpStatus.BAD_REQUEST);
                 }
             }
-            if (nodeRepository.count() > count) {
-                return new ResponseEntity<>(HttpStatus.CREATED);
-            } else {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
+            return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (JsonProcessingException | MalformedURLException e) {
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

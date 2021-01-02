@@ -140,7 +140,5 @@ class AdminServerEndPointControllerTest {
         mvc.perform(post("/api/v1/management/add_nodes_to_server")
                 .contentType(MediaType.APPLICATION_JSON).content(nodeJSON))
                 .andExpect(status().isCreated());
-
-
     }
 }

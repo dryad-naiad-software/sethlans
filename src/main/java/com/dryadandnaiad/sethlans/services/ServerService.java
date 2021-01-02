@@ -29,5 +29,5 @@ import java.util.List;
  * Project: sethlans
  */
 public interface ServerService {
-    ResponseEntity<Void> addNodes(List<NodeForm> selectedNodes);
+    ResponseEntity<String> addNodes(List<NodeForm> selectedNodes);
 }
