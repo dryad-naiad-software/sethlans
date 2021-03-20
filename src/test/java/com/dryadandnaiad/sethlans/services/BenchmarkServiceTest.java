@@ -193,7 +193,7 @@ class BenchmarkServiceTest {
         blenderArchiveRepository.save(BlenderArchive.builder()
                 .blenderOS(QueryUtils.getOS())
                 .downloaded(false)
-                .blenderVersion("2.83.2")
+                .blenderVersion("2.83")
                 .build());
 
         var blenderBinary = blenderArchiveRepository.findAll().get(0);

@@ -40,7 +40,7 @@ public class MakeParts {
 //    @BeforeAll
 //    static void beforeAll() {
 //        BIN_DIRECTORY.mkdirs();
-//        var version = "2.83.2";
+//        var version = "2.83";
 //        var os = QueryUtils.getOS();
 //        var download = BlenderUtils.downloadBlenderToServer(version,
 //                "resource",
@@ -59,7 +59,7 @@ public class MakeParts {
 //    void createParts() {
 //        var file1 = "pavillon_barcelone_v1.2_textures_animation.blend";
 //        TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "blend_files/" + file1, file1);
-//        var version = "2.83.2";
+//        var version = "2.83";
 //        var blenderExecutable = BlenderUtils.getBlenderExecutable(BIN_DIRECTORY.toString(), version);
 //        var renderTask = makeRenderTask(version, TEST_DIRECTORY + File.separator + file1,
 //                ComputeOn.HYBRID, BlenderEngine.CYCLES, blenderExecutable, ImageOutputFormat.PNG);

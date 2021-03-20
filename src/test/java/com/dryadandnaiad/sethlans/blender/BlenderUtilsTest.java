@@ -116,11 +116,12 @@ class BlenderUtilsTest {
     @Test
     void availableBlenderVersions() {
         assertThat(BlenderUtils.availableBlenderVersions()).hasSizeGreaterThan(0);
+        System.out.println(BlenderUtils.availableBlenderVersions());
     }
 
     @Test
     void extractBlenderWindowsBinary() {
-        var version = "2.83.2";
+        var version = "2.83";
         var blenderDownload = BlenderUtils
                 .downloadBlenderToServer(version,
                         TEST_DIRECTORY.toString(),
@@ -132,7 +133,7 @@ class BlenderUtilsTest {
 
     @Test
     void extractBlenderLinuxBinary() {
-        var version = "2.83.2";
+        var version = "2.83";
         var blenderDownload = BlenderUtils
                 .downloadBlenderToServer(version,
                         TEST_DIRECTORY.toString(),
@@ -146,7 +147,7 @@ class BlenderUtilsTest {
     @Test
     @EnabledOnOs(MAC)
     void extractBlenderMacBinary() {
-        var version = "2.83.2";
+        var version = "2.83";
         var blenderDownload = BlenderUtils
                 .downloadBlenderToServer(version,
                         TEST_DIRECTORY.toString(),

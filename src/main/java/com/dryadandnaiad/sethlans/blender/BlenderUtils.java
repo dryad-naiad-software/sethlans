@@ -365,8 +365,7 @@ public class BlenderUtils {
 
     private static List<BlenderInstallers> getInstallersList() {
         String blenderDownloadJSON =
-                "https://gist.githubusercontent.com/marioestrella/def9d852b3298008ae16040bbbabc524" +
-                        "/raw/48ed0b6ba7ffe27d5faa0609d2e6b27aaf178f95/blenderdownloads.json";
+                "https://raw.githubusercontent.com/dryad-naiad-software/sethlans/1.5.0_spring5/blenderdownloads.json";
         List<BlenderInstallers> blenderInstallersList;
         var mapper = new ObjectMapper();
 

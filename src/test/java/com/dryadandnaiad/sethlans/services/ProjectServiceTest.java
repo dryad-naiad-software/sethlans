@@ -307,7 +307,7 @@ class ProjectServiceTest {
         blenderArchiveRepository.save(BlenderArchive.builder()
                 .blenderOS(QueryUtils.getOS())
                 .downloaded(true)
-                .blenderVersion("2.83.2")
+                .blenderVersion("2.83")
                 .build());
         var file1 = "bmw27_gpu.blend";
         TestFileUtils.copyTestArchiveToDisk(SETHLANS_DIRECTORY.toString(), "blend_files/" + file1, file1);
