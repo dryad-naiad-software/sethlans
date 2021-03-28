@@ -181,6 +181,9 @@ create table user
     last_updated                       timestamp,
     version                            bigint,
     active                             boolean not null,
+    account_non_expired                boolean not null,
+    account_non_locked                 boolean not null,
+    credentials_non_expired            boolean not null,
     email                              varchar(255),
     node_email_notifications           boolean not null,
     password                           varchar(255),
@@ -222,7 +225,11 @@ alter table project_frame_list
     add constraint FKlifif3dtu4hq9m37l4a6yjppl foreign key (project_id) references project;
 alter table project_thumbnail_file_names
     add constraint FKiwudsv5vimn14ciimru3jennx foreign key (project_id) references project;
-alter table render_task_deviceids add constraint FKj90ikv9jkqjje8cbf4tdurxlb foreign key (render_task_id) references render_task;
-alter table user_challenge_list add constraint FKr851d51ro5a0we9puu6sg1fal foreign key (user_id) references user;
-alter table user_roles add constraint FK55itppkw3i07do3h7qoclqd4k foreign key (user_id) references user;
-alter table user_tokens add constraint FKcd1yoodas8b3t22j5jhd9vjvw foreign key (user_id) references user;
+alter table render_task_deviceids
+    add constraint FKj90ikv9jkqjje8cbf4tdurxlb foreign key (render_task_id) references render_task;
+alter table user_challenge_list
+    add constraint FKr851d51ro5a0we9puu6sg1fal foreign key (user_id) references user;
+alter table user_roles
+    add constraint FK55itppkw3i07do3h7qoclqd4k foreign key (user_id) references user;
+alter table user_tokens
+    add constraint FKcd1yoodas8b3t22j5jhd9vjvw foreign key (user_id) references user;

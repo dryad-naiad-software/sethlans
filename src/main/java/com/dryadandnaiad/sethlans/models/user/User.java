@@ -50,6 +50,9 @@ public class User extends AbstractModel {
     private String username;
     private String password;
     private boolean active;
+    private boolean accountNonExpired;
+    private boolean accountNonLocked;
+    private boolean credentialsNonExpired;
     private String email;
     private boolean welcomeEmailSent;
     private boolean securityQuestionsSet;

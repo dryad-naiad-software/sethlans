@@ -41,6 +41,9 @@ public class UserToSethlansUserDetails implements Converter<User, UserDetails> {
         userDetails.setUsername(user.getUsername().toLowerCase());
         userDetails.setPassword(user.getPassword());
         userDetails.setEnabled(user.isActive());
+        userDetails.setCredentialsNonExpired(user.isCredentialsNonExpired());
+        userDetails.setAccountNonLocked(user.isAccountNonLocked());
+        userDetails.setAccountNonExpired(user.isAccountNonExpired());
 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.getRoles().forEach(role -> {

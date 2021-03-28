@@ -35,6 +35,9 @@ public class SethlansUserDetails implements UserDetails {
     private Collection<SimpleGrantedAuthority> authorities;
     private String username;
     private String password;
+    private Boolean accountNonExpired;
+    private Boolean accountNonLocked;
+    private Boolean credentialsNonExpired;
     private Boolean enabled;
 
     @Override
@@ -54,17 +57,17 @@ public class SethlansUserDetails implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return accountNonExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return accountNonLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return credentialsNonExpired;
     }
 
     @Override
