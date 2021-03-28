@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - run: DEBIAN_FRONTEND="noninteractive"
-      - run: apt update && apt install -y libglu1 git maven
+      - run: sudo apt update && sudo apt install -y libglu1 git maven
 
 
       - checkout
