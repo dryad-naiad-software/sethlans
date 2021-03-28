@@ -4,7 +4,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: ubuntu:focal
+      - image: openjdk-11-buster
 
     # Specify service dependencies here if necessary
     # CircleCI maintains a library of pre-built images
@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - run: DEBIAN_FRONTEND="noninteractive"
-      - run: apt update && apt install -y libglu1 openjdk-11-jdk-headless git maven
+      - run: apt update && apt install -y libglu1 git maven
 
 
       - checkout
