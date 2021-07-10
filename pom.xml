@@ -196,8 +196,14 @@
         <dependency>
             <groupId>org.jcuda</groupId>
             <artifactId>jcuda</artifactId>
-            <version>10.2.0</version>
+            <version>11.2.0</version>
         </dependency>
+<!--        Use 10.x for MacOS builds-->
+<!--        <dependency>-->
+<!--            <groupId>org.jcuda</groupId>-->
+<!--            <artifactId>jcuda</artifactId>-->
+<!--            <version>10.2.0</version>-->
+<!--        </dependency>-->
 
         <!--        Testing-->
         <dependency>
