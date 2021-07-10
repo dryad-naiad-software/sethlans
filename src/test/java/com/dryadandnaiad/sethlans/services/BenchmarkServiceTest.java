@@ -115,7 +115,8 @@ class BenchmarkServiceTest {
     }
 
     @AfterAll
-    static void afterAll() {
+    static void afterAll() throws InterruptedException {
+        Thread.sleep(2000);
         FileSystemUtils.deleteRecursively(SETHLANS_DIRECTORY);
     }
 
@@ -128,7 +129,7 @@ class BenchmarkServiceTest {
         blenderArchiveRepository.save(BlenderArchive.builder()
                 .blenderOS(QueryUtils.getOS())
                 .downloaded(false)
-                .blenderVersion("2.79b")
+                .blenderVersion("2.83")
                 .build());
 
         var blenderBinary = blenderArchiveRepository.findAll().get(0);
@@ -179,7 +180,6 @@ class BenchmarkServiceTest {
         var cpuRating = PropertiesUtils.getCPURating();
         assertThat(cpuRating > 0);
         renderTaskRepository.deleteAll();
-
     }
 
     @Test
