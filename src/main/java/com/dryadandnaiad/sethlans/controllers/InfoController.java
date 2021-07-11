@@ -28,6 +28,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * File created by Mario Estrella on 6/11/2020.
  * Dryad and Naiad Software LLC
@@ -54,9 +57,16 @@ public class InfoController {
                 .build();
     }
 
+    @GetMapping("/is_first_time")
+    public Boolean isFirstTime(){
+        return PropertiesUtils.isFirstTime();
+    }
+
     @GetMapping("/version")
-    public String getVersion() {
-        return QueryUtils.getVersion();
+    public Map<String, String> getVersion() {
+        var version = new HashMap<String, String>();
+        version.put("version", QueryUtils.getVersion());
+        return version;
     }
 
 }

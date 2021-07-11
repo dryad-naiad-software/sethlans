@@ -21,7 +21,9 @@ import com.dryadandnaiad.sethlans.blender.BlenderUtils;
 import com.dryadandnaiad.sethlans.devices.ScanGPU;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.LogLevel;
+import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
+import com.dryadandnaiad.sethlans.models.user.User;
 import com.dryadandnaiad.sethlans.services.SethlansManagerService;
 import com.dryadandnaiad.sethlans.services.SetupService;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
@@ -57,6 +59,7 @@ public class SetupController {
         return SetupForm.builder()
                 .ipAddress(QueryUtils.getIP())
                 .port(port)
+                .mode(SethlansMode.DUAL)
                 .logLevel(LogLevel.INFO)
                 .appURL("https://" + QueryUtils.getHostname().toLowerCase() + ":" + port + "/")
                 .availableTypes(QueryUtils.getAvailableTypes())
@@ -69,6 +72,9 @@ public class SetupController {
 
     @PostMapping("/submit")
     public ResponseEntity<Void> completeSetup(@RequestBody SetupForm setupForm) {
+        if(setupForm.getUser().getChallengeList().isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         if (setupService.saveSetupSettings(setupForm)) {
             return new ResponseEntity<>(HttpStatus.CREATED);
         } else {

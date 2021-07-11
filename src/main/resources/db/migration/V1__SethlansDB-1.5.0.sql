@@ -201,7 +201,7 @@ create table user
 create table user_challenge_list
 (
     user_id          bigint  not null,
-    challenge        varchar(255),
+    challenge        integer,
     response         varchar(255),
     response_updated boolean not null
 );
@@ -209,11 +209,6 @@ create table user_roles
 (
     user_id bigint not null,
     roles   integer
-);
-create table user_tokens
-(
-    user_id bigint not null,
-    tokens  varchar(255)
 );
 alter table node_selectedgpus
     add constraint FKecl1m1xgun9u2m0hgdkf0igv9 foreign key (node_id) references node;
@@ -231,5 +226,3 @@ alter table user_challenge_list
     add constraint FKr851d51ro5a0we9puu6sg1fal foreign key (user_id) references user;
 alter table user_roles
     add constraint FK55itppkw3i07do3h7qoclqd4k foreign key (user_id) references user;
-alter table user_tokens
-    add constraint FKcd1yoodas8b3t22j5jhd9vjvw foreign key (user_id) references user;

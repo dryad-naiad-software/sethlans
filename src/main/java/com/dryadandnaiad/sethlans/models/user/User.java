@@ -64,9 +64,6 @@ public class User extends AbstractModel {
     private boolean passwordUpdated;
     @ElementCollection(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
-    private List<String> tokens;
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SELECT)
     private List<UserChallenge> challengeList;
     @ElementCollection(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
