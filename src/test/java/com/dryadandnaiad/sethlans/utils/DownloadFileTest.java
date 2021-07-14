@@ -16,9 +16,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class DownloadFileTest {
 
     static File TEST_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + "testing");
-    static String FILE_URL = "http://ovh.net/files/1Mio.dat";
-    static String FILE_NAME = TEST_DIRECTORY.toString() + File.separator + "file.dat";
-    static String FILE_MD5_HASH = "6cb91af4ed4c60c11613b75cd1fc6116";
+    static String FILE_URL = "https://raw.githubusercontent.com/dryad-naiad-software/sethlans/master/LICENSE";
+    static String FILE_NAME = TEST_DIRECTORY + File.separator + "file.txt";
+    static String FILE_MD5_HASH = "e62f173a712a1f52dfd3f1047afb214b";
 
     @BeforeEach
     void setUp() {
