@@ -22,10 +22,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/api/v1/management/**").hasAnyAuthority(Role.ADMINISTRATOR.toString(), Role.SUPER_ADMINISTRATOR.toString())
                     .anyRequest().authenticated());
             http.formLogin();
+            http.csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
         } else {
             http.authorizeRequests().antMatchers("/*").permitAll();
+            http.csrf().disable();
         }
-        http.csrf().disable();
+
+
     }
 
 }
