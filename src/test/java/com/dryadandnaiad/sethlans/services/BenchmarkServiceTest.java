@@ -134,7 +134,7 @@ class BenchmarkServiceTest {
 
         var blenderBinary = blenderArchiveRepository.findAll().get(0);
         assertThat(blenderBinary).isNotNull();
-        Thread.sleep(10000);
+        Thread.sleep(30000);
         while (!blenderBinary.isDownloaded()) {
             blenderBinary = blenderArchiveRepository.findAll().get(0);
             Thread.sleep(1000);
