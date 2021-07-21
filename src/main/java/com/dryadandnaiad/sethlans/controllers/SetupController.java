@@ -64,13 +64,10 @@ public class SetupController {
     @GetMapping("/get_setup")
     public SetupForm prePopulatedSetupForm() {
         var port = ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT);
-        var challenge = UserChallenge.builder().challenge(SecurityQuestion.QUESTION1).response("test").responseUpdated(false).build();
-        var challengeList = Arrays.asList(challenge);
 
         return SetupForm.builder()
                 .ipAddress(QueryUtils.getIP())
                 .port(port)
-                .user(User.builder().username("test").challengeList(challengeList).active(true).build())
                 .mode(SethlansMode.DUAL)
                 .logLevel(LogLevel.INFO)
                 .appURL("https://" + QueryUtils.getHostname().toLowerCase() + ":" + port + "/")

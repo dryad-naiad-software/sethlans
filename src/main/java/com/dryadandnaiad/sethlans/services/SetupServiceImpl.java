@@ -80,6 +80,9 @@ public class SetupServiceImpl implements SetupService {
         user.setUserID(UUID.randomUUID().toString());
         user.setRoles(Stream.of(Role.SUPER_ADMINISTRATOR).collect(Collectors.toSet()));
         user.setActive(true);
+        user.setAccountNonExpired(true);
+        user.setAccountNonLocked(true);
+        user.setCredentialsNonExpired(true);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return true;

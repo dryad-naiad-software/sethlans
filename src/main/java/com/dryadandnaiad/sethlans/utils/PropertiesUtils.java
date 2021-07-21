@@ -145,6 +145,7 @@ public class PropertiesUtils {
 
     public static void writeSetupSettings(SetupForm setupForm) throws Exception {
         writeProperty(ConfigKeys.MODE, setupForm.getMode().name());
+        writeProperty(ConfigKeys.FIRST_TIME, "false");
         writeProperty(ConfigKeys.SETHLANS_IP, setupForm.getIpAddress());
         writeProperty(ConfigKeys.HTTPS_PORT, setupForm.getPort());
         writeProperty(ConfigKeys.SETHLANS_URL, setupForm.getAppURL());
