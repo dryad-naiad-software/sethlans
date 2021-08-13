@@ -23,9 +23,9 @@ import com.dryadandnaiad.sethlans.models.blender.project.*;
 import com.dryadandnaiad.sethlans.models.user.User;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.UUID;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * File created by Mario Estrella on 12/27/2020.
@@ -138,5 +138,20 @@ public class TestUtils {
                 .frameFileNames(frameFiles)
                 .frameList(frames)
                 .build();
+    }
+
+    public static void commentGenerator(String comment) {
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        Date today = Calendar.getInstance().getTime();
+        String date = df.format(today);
+        System.out.println(date + ": " + comment + System.lineSeparator());
+    }
+
+    public static String hostWithoutDomainName(String baseHost) {
+        int iend = baseHost.indexOf(".");
+        if (iend != -1) {
+            return "https://" + baseHost.substring(0, iend).toLowerCase();
+        }
+        return "https://" + baseHost.toLowerCase();
     }
 }
