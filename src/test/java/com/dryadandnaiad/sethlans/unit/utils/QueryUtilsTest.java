@@ -15,13 +15,14 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.utils;
+package com.dryadandnaiad.sethlans.unit.utils;
 
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.models.blender.project.ImageSettings;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.models.blender.project.ProjectSettings;
+import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang3.SystemUtils;

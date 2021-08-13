@@ -15,8 +15,9 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.blender;
+package com.dryadandnaiad.sethlans.unit.blender;
 
+import com.dryadandnaiad.sethlans.blender.BlenderUtils;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.OS;
 import com.dryadandnaiad.sethlans.testutils.TestFileUtils;

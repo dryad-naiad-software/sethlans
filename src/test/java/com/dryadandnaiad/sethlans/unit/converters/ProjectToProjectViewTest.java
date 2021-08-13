@@ -15,8 +15,9 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.converters;
+package com.dryadandnaiad.sethlans.unit.converters;
 
+import com.dryadandnaiad.sethlans.converters.ProjectToProjectView;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.testutils.TestUtils;
 import lombok.extern.slf4j.Slf4j;

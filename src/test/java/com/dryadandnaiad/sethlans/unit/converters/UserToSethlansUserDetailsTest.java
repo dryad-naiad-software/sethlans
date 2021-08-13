@@ -15,42 +15,44 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.comparators;
+package com.dryadandnaiad.sethlans.unit.converters;
 
-import lombok.extern.slf4j.Slf4j;
+import com.dryadandnaiad.sethlans.converters.UserToSethlansUserDetails;
+import com.dryadandnaiad.sethlans.enums.Role;
+import com.dryadandnaiad.sethlans.models.user.User;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * File created by Mario Estrella on 4/26/2020.
+ * File created by Mario Estrella on 12/25/2020.
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
-@Slf4j
-class AlphaNumericComparatorTest {
+class UserToSethlansUserDetailsTest {
+    UserToSethlansUserDetails userToSethlansUserDetails = new UserToSethlansUserDetails();
 
     @Test
-    void compare() {
-        var testList = new ArrayList<String>();
-        testList.add("Delta4");
-        testList.add("Alpha12");
-        testList.add("Charlie3");
-        testList.add("Bravo77");
-        testList.add("Echo2");
-        testList.add("Bravo10");
-        testList.add("Charlie1");
-        testList.add("Alpha5");
-        var sortedList = new ArrayList<>(testList);
-        sortedList.sort(new AlphaNumericComparator());
-        assertThat(sortedList.size()).isEqualTo(testList.size());
-        assertThat(sortedList.get(0)).isEqualTo("Alpha5");
-        assertThat(sortedList.get(7)).isEqualTo("Echo2");
-        Collections.reverse(sortedList);
-        assertThat(sortedList.get(7)).isEqualTo("Alpha5");
+    void convert() {
+        var roles = new HashSet<Role>();
+
+        roles.add(Role.SUPER_ADMINISTRATOR);
+
+        var user = User.builder()
+                .active(true)
+                .id(12345L)
+                .userID(UUID.randomUUID().toString())
+                .username("testuser")
+                .password("test1234")
+                .roles(roles)
+                .build();
+
+        var userDetails = userToSethlansUserDetails.convert(user);
+        assertThat(userDetails).isNotNull();
+
     }
 }

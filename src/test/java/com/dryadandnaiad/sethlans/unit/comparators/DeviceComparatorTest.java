@@ -15,8 +15,9 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.comparators;
+package com.dryadandnaiad.sethlans.unit.comparators;
 
+import com.dryadandnaiad.sethlans.comparators.DeviceComparator;
 import com.dryadandnaiad.sethlans.models.hardware.Device;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

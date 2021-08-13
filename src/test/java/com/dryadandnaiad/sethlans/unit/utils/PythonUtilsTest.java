@@ -15,9 +15,10 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.utils;
+package com.dryadandnaiad.sethlans.unit.utils;
 
 import com.dryadandnaiad.sethlans.enums.OS;
+import com.dryadandnaiad.sethlans.utils.PythonUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

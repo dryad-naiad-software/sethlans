@@ -15,15 +15,18 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.utils;
+package com.dryadandnaiad.sethlans.unit.utils;
 
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.testutils.TestFileUtils;
 import com.dryadandnaiad.sethlans.testutils.TestUtils;
+import com.dryadandnaiad.sethlans.utils.FileUtils;
+import com.dryadandnaiad.sethlans.utils.ImageUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,7 +72,7 @@ class ImageUtilsTest {
                 .storedDir(TEST_DIRECTORY.toString())
                 .fileExtension("png")
                 .build();
-        assertThat(ImageUtils.createThumbnail(frame)).isTrue();
+        Assertions.assertThat(ImageUtils.createThumbnail(frame)).isTrue();
     }
 
     @Test

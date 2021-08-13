@@ -15,11 +15,13 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.utils;
+package com.dryadandnaiad.sethlans.unit.utils;
 
+import com.dryadandnaiad.sethlans.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -63,7 +65,7 @@ class FileUtilsTest {
 
     @Test
     void isDirectoryEmpty() throws IOException {
-        assertThat(FileUtils.isDirectoryEmpty(TEST_DIRECTORY)).isTrue();
+        Assertions.assertThat(FileUtils.isDirectoryEmpty(TEST_DIRECTORY)).isTrue();
         var file = new File(TEST_DIRECTORY + File.separator + "sample.txt");
         file.createNewFile();
         assertThat(FileUtils.isDirectoryEmpty(TEST_DIRECTORY)).isFalse();

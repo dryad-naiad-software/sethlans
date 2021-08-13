@@ -15,8 +15,9 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.blender;
+package com.dryadandnaiad.sethlans.unit.blender;
 
+import com.dryadandnaiad.sethlans.blender.BlenderScript;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.enums.DeviceType;
@@ -25,6 +26,7 @@ import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskFrameInfo;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskScriptInfo;
 import org.apache.commons.lang3.SystemUtils;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -91,7 +93,7 @@ class BlenderScriptTest {
                 .useParts(true)
                 .build();
         renderTask.getScriptInfo().setTaskTileSize(null);
-        assertThat(BlenderScript.writeRenderScript(renderTask)).isFalse();
+        Assertions.assertThat(BlenderScript.writeRenderScript(renderTask)).isFalse();
         renderTask.getScriptInfo().setCores(null);
         assertThat(BlenderScript.writeRenderScript(renderTask)).isFalse();
         renderTask.getFrameInfo().setPartMaxX(null);

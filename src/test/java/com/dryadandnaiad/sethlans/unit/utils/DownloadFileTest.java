@@ -1,7 +1,10 @@
-package com.dryadandnaiad.sethlans.utils;
+package com.dryadandnaiad.sethlans.unit.utils;
 
+import com.dryadandnaiad.sethlans.utils.DownloadFile;
+import com.dryadandnaiad.sethlans.utils.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.FileSystemUtils;
@@ -34,7 +37,7 @@ class DownloadFileTest {
     @Test
     void downloadFile() throws IOException, URISyntaxException, NoSuchAlgorithmException {
         DownloadFile.downloadFile(FILE_URL, FILE_NAME);
-        assertTrue(FileUtils.fileCheckMD5(new File(FILE_NAME), FILE_MD5_HASH));
+        Assertions.assertTrue(FileUtils.fileCheckMD5(new File(FILE_NAME), FILE_MD5_HASH));
     }
 
     @Test

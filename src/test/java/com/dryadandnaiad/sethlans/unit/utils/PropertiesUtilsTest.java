@@ -15,7 +15,7 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.utils;
+package com.dryadandnaiad.sethlans.unit.utils;
 
 import com.dryadandnaiad.sethlans.devices.ScanGPU;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
@@ -26,12 +26,11 @@ import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
+import com.dryadandnaiad.sethlans.utils.ConfigUtils;
+import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
@@ -68,7 +67,7 @@ class PropertiesUtilsTest {
 
     @Test
     void getMode() {
-        assertEquals(SethlansMode.SERVER, PropertiesUtils.getMode(), "Values do not match");
+        Assertions.assertEquals(SethlansMode.SERVER, PropertiesUtils.getMode(), "Values do not match");
     }
 
 
