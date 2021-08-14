@@ -58,8 +58,10 @@ public class InfoController {
     }
 
     @GetMapping("/is_first_time")
-    public Boolean isFirstTime(){
-        return PropertiesUtils.isFirstTime();
+    public Map<String, Boolean> isFirstTime(){
+        var firstTime = new HashMap<String, Boolean>();
+        firstTime.put("first_time", PropertiesUtils.isFirstTime());
+        return firstTime;
     }
 
     @GetMapping("/version")
