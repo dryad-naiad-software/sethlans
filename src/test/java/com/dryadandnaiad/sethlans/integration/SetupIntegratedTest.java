@@ -1,6 +1,8 @@
 package com.dryadandnaiad.sethlans.integration;
 
+import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
+import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
@@ -55,6 +57,18 @@ public class SetupIntegratedTest {
 
 
         var setupForm = mapper.readValue(get("/api/v1/setup/get_setup").then().extract().response().body().asString(), SetupForm.class);
+
+        var blenderVersions = setupForm.getBlenderVersions();
+
+        var availableGPUs = setupForm.getAvailableGPUs();
+
+        var nodeTypes = setupForm.getAvailableTypes();
+
+        var serverSettings = ServerSettings.builder().blenderVersion(blenderVersions.get(0)).build();
+
+        setupForm.setMode(SethlansMode.SERVER);
+        setupForm.setServerSettings(serverSettings);
+
 
         System.out.println(setupForm);
     }
