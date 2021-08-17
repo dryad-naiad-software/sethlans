@@ -27,6 +27,8 @@ import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -85,6 +87,39 @@ public class SetupServiceImpl implements SetupService {
         user.setCredentialsNonExpired(true);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+        return true;
+    }
+
+    @Override
+    public boolean validSetupForm(SetupForm setupForm) {
+        if (setupForm.getUser() == null) {
+            return false;
+        }
+
+
+        if (setupForm.getUser().getChallengeList() == null) {
+            return false;
+        }
+
+        switch (setupForm.getMode()) {
+            case SERVER:
+                if (setupForm.getMailSettings() == null || setupForm.getServerSettings() == null) {
+                    return false;
+                }
+                break;
+            case NODE:
+                if (setupForm.getNodeSettings() == null) {
+                    return false;
+                }
+                break;
+            case DUAL:
+                if (setupForm.getMailSettings() == null || setupForm.getServerSettings() == null || setupForm.getNodeSettings() == null) {
+                    return false;
+                }
+            default:
+                break;
+        }
+
         return true;
     }
 }

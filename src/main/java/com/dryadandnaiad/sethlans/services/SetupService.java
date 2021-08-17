@@ -27,4 +27,6 @@ import com.dryadandnaiad.sethlans.models.forms.SetupForm;
  */
 public interface SetupService {
     boolean saveSetupSettings(SetupForm setupForm);
+
+    boolean validSetupForm(SetupForm setupForm);
 }
