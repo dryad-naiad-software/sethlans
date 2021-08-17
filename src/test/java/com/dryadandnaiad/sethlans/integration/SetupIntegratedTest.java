@@ -1,13 +1,20 @@
 package com.dryadandnaiad.sethlans.integration;
 
+import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
+import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
+import com.dryadandnaiad.sethlans.models.user.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 import static com.dryadandnaiad.sethlans.testutils.TestUtils.commentGenerator;
 import static com.dryadandnaiad.sethlans.testutils.TestUtils.hostWithoutDomainName;
@@ -49,7 +56,7 @@ public class SetupIntegratedTest {
     }
 
     @Test
-    public void test_server_setup() throws InterruptedException, JsonProcessingException {
+    public void test_server_setup() throws JsonProcessingException {
         var mapper = new ObjectMapper();
         commentGenerator("Verifying that Sethlans Setup is active");
         given().log().ifValidationFails().get("/api/v1/info/is_first_time").then().
@@ -66,8 +73,19 @@ public class SetupIntegratedTest {
 
         var serverSettings = ServerSettings.builder().blenderVersion(blenderVersions.get(0)).build();
 
+        var mailSettings = MailSettings.builder().mailEnabled(false).build();
+
+        var user = User.builder().
+                username("testuser").
+                password("testPa$$1234").
+                active(true).
+                email("testuser@test.com").
+                roles(new HashSet<>(List.of(Role.SUPER_ADMINISTRATOR))).build();
+
         setupForm.setMode(SethlansMode.SERVER);
         setupForm.setServerSettings(serverSettings);
+        setupForm.setMailSettings(mailSettings);
+        setupForm.setUser(user);
 
 
         System.out.println(setupForm);

@@ -81,7 +81,32 @@ public class SetupController {
 
     @PostMapping("/submit")
     public ResponseEntity<Void> completeSetup(@RequestBody SetupForm setupForm) {
-        if(setupForm.getUser().getChallengeList().isEmpty()) {
+
+        // TODO Form validation
+        if (setupForm.getUser() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        switch (setupForm.getMode()) {
+            case SERVER:
+                if (setupForm.getMailSettings() == null || setupForm.getServerSettings() == null) {
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+                break;
+            case NODE:
+                if (setupForm.getNodeSettings() == null) {
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+                break;
+            case DUAL:
+                if (setupForm.getMailSettings() == null || setupForm.getServerSettings() == null || setupForm.getNodeSettings() == null) {
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
+            default:
+                break;
+        }
+
+
+        if (setupForm.getUser().getChallengeList() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         if (setupService.saveSetupSettings(setupForm)) {
