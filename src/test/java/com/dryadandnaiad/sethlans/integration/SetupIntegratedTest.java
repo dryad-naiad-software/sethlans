@@ -1,17 +1,22 @@
 package com.dryadandnaiad.sethlans.integration;
 
 import com.dryadandnaiad.sethlans.enums.Role;
+import com.dryadandnaiad.sethlans.enums.SecurityQuestion;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
 import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.models.user.UserChallenge;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.undertow.util.StatusCodes;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -61,12 +66,13 @@ public class SetupIntegratedTest {
         var mapper = new ObjectMapper();
         commentGenerator("Verifying that Sethlans Setup is active");
         given().log().ifValidationFails().get("/api/v1/info/is_first_time").then().
-                statusCode(200).assertThat().body("first_time", equalTo(true));
-
+                statusCode(StatusCodes.OK).assertThat().body("first_time", equalTo(true));
 
         var setupForm = mapper.readValue(get("/api/v1/setup/get_setup").then().extract().response().body().asString(), SetupForm.class);
 
         var blenderVersions = setupForm.getBlenderVersions();
+
+        var challenge = UserChallenge.builder().challenge(SecurityQuestion.QUESTION1).response("Test").build();
 
         var serverSettings = ServerSettings.builder().blenderVersion(blenderVersions.get(0)).build();
 
@@ -76,6 +82,7 @@ public class SetupIntegratedTest {
                 username("testuser").
                 password("testPa$$1234").
                 active(true).
+                challengeList(List.of(challenge)).
                 email("testuser@test.com").
                 roles(new HashSet<>(List.of(Role.SUPER_ADMINISTRATOR))).build();
 
@@ -83,6 +90,12 @@ public class SetupIntegratedTest {
         setupForm.setServerSettings(serverSettings);
         setupForm.setMailSettings(mailSettings);
         setupForm.setUser(user);
+
+        given().log().ifValidationFails().accept(ContentType.JSON).contentType(ContentType.JSON).body(mapper.writeValueAsString(setupForm)).post("/api/v1/setup/submit");
+
+        given().log().ifValidationFails().get("/api/v1/setup/restart").then().
+                statusCode(StatusCodes.ACCEPTED);
+
 
 
         System.out.println(setupForm);
