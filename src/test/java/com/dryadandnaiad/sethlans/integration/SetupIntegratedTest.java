@@ -46,7 +46,8 @@ public class SetupIntegratedTest {
 
         var baseHost = System.getProperty("sethlans.host");
         if (baseHost == null) {
-            baseHost = "https://localhost";
+            //baseHost = "https://localhost";
+            baseHost = "https://iota";
         } else {
             baseHost = hostWithoutDomainName(baseHost);
         }
@@ -66,10 +67,6 @@ public class SetupIntegratedTest {
         var setupForm = mapper.readValue(get("/api/v1/setup/get_setup").then().extract().response().body().asString(), SetupForm.class);
 
         var blenderVersions = setupForm.getBlenderVersions();
-
-        var availableGPUs = setupForm.getAvailableGPUs();
-
-        var nodeTypes = setupForm.getAvailableTypes();
 
         var serverSettings = ServerSettings.builder().blenderVersion(blenderVersions.get(0)).build();
 
