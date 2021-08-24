@@ -22,7 +22,7 @@ import com.dryadandnaiad.sethlans.models.blender.project.ImageSettings;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.models.blender.project.ProjectSettings;
 import com.dryadandnaiad.sethlans.models.blender.project.VideoSettings;
-import com.dryadandnaiad.sethlans.testutils.TestFileUtils;
+import com.dryadandnaiad.sethlans.tools.TestFileUtils;
 import com.dryadandnaiad.sethlans.utils.FFmpegUtils;
 import com.dryadandnaiad.sethlans.utils.FileUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;

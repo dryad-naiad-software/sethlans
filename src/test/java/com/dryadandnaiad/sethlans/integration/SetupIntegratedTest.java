@@ -8,6 +8,7 @@ import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
 import com.dryadandnaiad.sethlans.models.user.User;
 import com.dryadandnaiad.sethlans.models.user.UserChallenge;
+import com.dryadandnaiad.sethlans.tools.TestUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
@@ -16,13 +17,11 @@ import io.undertow.util.StatusCodes;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-import static com.dryadandnaiad.sethlans.testutils.TestUtils.commentGenerator;
-import static com.dryadandnaiad.sethlans.testutils.TestUtils.hostWithoutDomainName;
+import static com.dryadandnaiad.sethlans.tools.TestUtils.commentGenerator;
+import static com.dryadandnaiad.sethlans.tools.TestUtils.hostWithoutDomainName;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.get;
 import static org.hamcrest.Matchers.equalTo;
@@ -62,7 +61,7 @@ public class SetupIntegratedTest {
     }
 
     @Test
-    public void test_server_setup() throws JsonProcessingException {
+    public void test_server_setup() throws JsonProcessingException, InterruptedException {
         var mapper = new ObjectMapper();
         commentGenerator("Verifying that Sethlans Setup is active");
         given()
@@ -123,6 +122,17 @@ public class SetupIntegratedTest {
                 .get("/api/v1/setup/restart")
                 .then()
                 .statusCode(StatusCodes.ACCEPTED);
+
+        Thread.sleep(10000);
+
+        var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
+
+        String firstTime = given().log()
+                .ifValidationFails().cookie("XSRF-TOKEN", token)
+                .when().get("/api/v1/info/is_first_time")
+                .then().statusCode(200).extract().response().getBody().asString();
+
+        System.out.println(firstTime);
 
         System.out.println(setupForm);
     }

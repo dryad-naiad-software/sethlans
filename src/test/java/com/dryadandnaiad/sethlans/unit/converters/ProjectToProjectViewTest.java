@@ -19,7 +19,7 @@ package com.dryadandnaiad.sethlans.unit.converters;
 
 import com.dryadandnaiad.sethlans.converters.ProjectToProjectView;
 import com.dryadandnaiad.sethlans.enums.Role;
-import com.dryadandnaiad.sethlans.testutils.TestUtils;
+import com.dryadandnaiad.sethlans.tools.TestUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 

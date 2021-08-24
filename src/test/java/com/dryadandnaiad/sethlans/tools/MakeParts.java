@@ -15,7 +15,7 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.testutils;
+package com.dryadandnaiad.sethlans.tools;
 
 /**
  * File created by Mario Estrella on 5/20/2020.

@@ -15,17 +15,20 @@
  *   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.dryadandnaiad.sethlans.testutils;
+package com.dryadandnaiad.sethlans.tools;
 
 import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.models.blender.project.*;
 import com.dryadandnaiad.sethlans.models.user.User;
+import io.restassured.RestAssured;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static io.restassured.RestAssured.*;
 
 /**
  * File created by Mario Estrella on 12/27/2020.
@@ -153,5 +156,26 @@ public class TestUtils {
             return "https://" + baseHost.substring(0, iend).toLowerCase();
         }
         return "https://" + baseHost.toLowerCase();
+    }
+
+    public static String loginGetCSRFToken(String username, String password) {
+        commentGenerator("Starting login using username: " + username.toLowerCase() + ", " + " password: " + password);
+        var response =
+                given().
+                        when().get("/login").
+                        then().extract().response();
+        String token =  response.cookie("XSRF-TOKEN");
+
+        response = given().log().ifValidationFails()
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token).param("username", username.toLowerCase()).param("password", password)
+                .when().post("/login").then().statusCode(302).extract().response();
+
+        sessionId = response.cookie("JSESSIONID");
+        commentGenerator("Login completed, obtained the following cookies");
+        commentGenerator("XSRF-TOKEN: " + token);
+        commentGenerator("JSESSIONID: " + sessionId);
+
+        return token;
     }
 }

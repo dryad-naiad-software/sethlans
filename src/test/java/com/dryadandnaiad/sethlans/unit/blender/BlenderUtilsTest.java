@@ -20,7 +20,7 @@ package com.dryadandnaiad.sethlans.unit.blender;
 import com.dryadandnaiad.sethlans.blender.BlenderUtils;
 import com.dryadandnaiad.sethlans.enums.BlenderEngine;
 import com.dryadandnaiad.sethlans.enums.OS;
-import com.dryadandnaiad.sethlans.testutils.TestFileUtils;
+import com.dryadandnaiad.sethlans.tools.TestFileUtils;
 import com.dryadandnaiad.sethlans.utils.PythonUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import lombok.extern.slf4j.Slf4j;
