@@ -65,38 +65,64 @@ public class SetupIntegratedTest {
     public void test_server_setup() throws JsonProcessingException {
         var mapper = new ObjectMapper();
         commentGenerator("Verifying that Sethlans Setup is active");
-        given().log().ifValidationFails().get("/api/v1/info/is_first_time").then().
-                statusCode(StatusCodes.OK).assertThat().body("first_time", equalTo(true));
+        given()
+                .log()
+                .ifValidationFails()
+                .get("/api/v1/info/is_first_time")
+                .then()
+                .statusCode(StatusCodes.OK)
+                .assertThat()
+                .body("first_time", equalTo(true));
 
-        var setupForm = mapper.readValue(get("/api/v1/setup/get_setup").then().extract().response().body().asString(), SetupForm.class);
+        var setupForm = mapper
+                .readValue(get("/api/v1/setup/get_setup")
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), SetupForm.class);
 
         var blenderVersions = setupForm.getBlenderVersions();
 
-        var challenge = UserChallenge.builder().challenge(SecurityQuestion.QUESTION1).response("Test").build();
+        var challenge = UserChallenge.builder()
+                .challenge(SecurityQuestion.QUESTION1)
+                .response("Test").build();
 
-        var serverSettings = ServerSettings.builder().blenderVersion(blenderVersions.get(0)).build();
+        var serverSettings = ServerSettings.builder()
+                .blenderVersion(blenderVersions.get(0))
+                .build();
 
-        var mailSettings = MailSettings.builder().mailEnabled(false).build();
+        var mailSettings = MailSettings.builder()
+                .mailEnabled(false)
+                .build();
 
-        var user = User.builder().
-                username("testuser").
-                password("testPa$$1234").
-                active(true).
-                challengeList(List.of(challenge)).
-                email("testuser@test.com").
-                roles(new HashSet<>(List.of(Role.SUPER_ADMINISTRATOR))).build();
+        var user = User.builder()
+                .username("testuser")
+                .password("testPa$$1234")
+                .active(true)
+                .challengeList(List.of(challenge))
+                .email("testuser@test.com")
+                .roles(new HashSet<>(List.of(Role.SUPER_ADMINISTRATOR))).build();
 
         setupForm.setMode(SethlansMode.SERVER);
         setupForm.setServerSettings(serverSettings);
         setupForm.setMailSettings(mailSettings);
         setupForm.setUser(user);
 
-        given().log().ifValidationFails().accept(ContentType.JSON).contentType(ContentType.JSON).body(mapper.writeValueAsString(setupForm)).post("/api/v1/setup/submit");
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(mapper.writeValueAsString(setupForm))
+                .post("/api/v1/setup/submit");
 
-        given().log().ifValidationFails().get("/api/v1/setup/restart").then().
-                statusCode(StatusCodes.ACCEPTED);
-
-
+        given()
+                .log()
+                .ifValidationFails()
+                .get("/api/v1/setup/restart")
+                .then()
+                .statusCode(StatusCodes.ACCEPTED);
 
         System.out.println(setupForm);
     }
