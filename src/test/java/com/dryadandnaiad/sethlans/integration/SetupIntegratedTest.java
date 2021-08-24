@@ -1,10 +1,13 @@
 package com.dryadandnaiad.sethlans.integration;
 
+import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SecurityQuestion;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
+import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
+import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
 import com.dryadandnaiad.sethlans.models.user.User;
 import com.dryadandnaiad.sethlans.models.user.UserChallenge;
@@ -17,6 +20,7 @@ import io.undertow.util.StatusCodes;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -32,8 +36,6 @@ public class SetupIntegratedTest {
 
     @BeforeAll
     public static void setup() {
-        commentGenerator("Starting Server Setup Test");
-
         var port = System.getProperty("sethlans.port");
         if (port == null) {
             RestAssured.port = 7443;
@@ -58,12 +60,27 @@ public class SetupIntegratedTest {
         RestAssured.baseURI = baseHost;
         RestAssured.useRelaxedHTTPSValidation();
 
+        commentGenerator("Starting Setup Test on " + baseHost + ":" + RestAssured.port);
+
     }
 
     @Test
-    public void test_server_setup() throws JsonProcessingException, InterruptedException {
+    public void after_setup() {
+        var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
+
+        String firstTime = given().log()
+                .ifValidationFails().cookie("XSRF-TOKEN", token)
+                .when().get("/api/v1/info/is_first_time")
+                .then().statusCode(200).extract().response().getBody().asString();
+
+        System.out.println(firstTime);
+
+    }
+
+    @Test
+    public void test_full_setup() throws JsonProcessingException, InterruptedException {
         var mapper = new ObjectMapper();
-        commentGenerator("Verifying that Sethlans Setup is active");
+        commentGenerator("Check if first_time is true");
         given()
                 .log()
                 .ifValidationFails()
@@ -73,6 +90,8 @@ public class SetupIntegratedTest {
                 .assertThat()
                 .body("first_time", equalTo(true));
 
+        commentGenerator("Getting Setup Form");
+
         var setupForm = mapper
                 .readValue(get("/api/v1/setup/get_setup")
                         .then()
@@ -80,6 +99,18 @@ public class SetupIntegratedTest {
                         .response()
                         .body()
                         .asString(), SetupForm.class);
+
+        commentGenerator("Retrieved Setup Form: \n" + setupForm);
+
+        var nodeType = NodeType.CPU;
+        var selectedGPUs = new ArrayList<GPU>();
+
+        if(setupForm.getAvailableGPUs().size() > 0) {
+            nodeType = NodeType.CPU_GPU;
+            selectedGPUs.add(setupForm.getAvailableGPUs().get(0));
+        }
+
+
 
         var blenderVersions = setupForm.getBlenderVersions();
 
@@ -89,6 +120,15 @@ public class SetupIntegratedTest {
 
         var serverSettings = ServerSettings.builder()
                 .blenderVersion(blenderVersions.get(0))
+                .build();
+
+        var nodeSettings = NodeSettings.builder()
+                .nodeType(nodeType)
+                .cores(2)
+                .tileSizeCPU(16)
+                .tileSizeGPU(256)
+                .selectedGPUs(selectedGPUs)
+                .gpuCombined(false)
                 .build();
 
         var mailSettings = MailSettings.builder()
@@ -103,8 +143,9 @@ public class SetupIntegratedTest {
                 .email("testuser@test.com")
                 .roles(new HashSet<>(List.of(Role.SUPER_ADMINISTRATOR))).build();
 
-        setupForm.setMode(SethlansMode.SERVER);
+        setupForm.setMode(SethlansMode.DUAL);
         setupForm.setServerSettings(serverSettings);
+        setupForm.setNodeSettings(nodeSettings);
         setupForm.setMailSettings(mailSettings);
         setupForm.setUser(user);
 
@@ -123,17 +164,5 @@ public class SetupIntegratedTest {
                 .then()
                 .statusCode(StatusCodes.ACCEPTED);
 
-        Thread.sleep(10000);
-
-        var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
-
-        String firstTime = given().log()
-                .ifValidationFails().cookie("XSRF-TOKEN", token)
-                .when().get("/api/v1/info/is_first_time")
-                .then().statusCode(200).extract().response().getBody().asString();
-
-        System.out.println(firstTime);
-
-        System.out.println(setupForm);
     }
 }
