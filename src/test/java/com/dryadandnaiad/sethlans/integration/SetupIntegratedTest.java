@@ -9,6 +9,7 @@ import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
+import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.user.User;
 import com.dryadandnaiad.sethlans.models.user.UserChallenge;
 import com.dryadandnaiad.sethlans.tools.TestUtils;
@@ -65,15 +66,29 @@ public class SetupIntegratedTest {
     }
 
     @Test
-    public void after_setup() {
+    public void after_setup() throws JsonProcessingException {
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
+        var mapper = new ObjectMapper();
 
-        String firstTime = given().log()
-                .ifValidationFails().cookie("XSRF-TOKEN", token)
-                .when().get("/api/v1/info/is_first_time")
-                .then().statusCode(200).extract().response().getBody().asString();
 
-        System.out.println(firstTime);
+        given()
+                .log()
+                .ifValidationFails()
+                .get("/api/v1/info/is_first_time")
+                .then()
+                .statusCode(StatusCodes.OK)
+                .assertThat()
+                .body("first_time", equalTo(false));
+
+        var nodeInfo = mapper
+                .readValue(get("/api/v1/info/node_info")
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), Node.class);
+
+        System.out.println(nodeInfo);
 
     }
 
@@ -109,8 +124,6 @@ public class SetupIntegratedTest {
             nodeType = NodeType.CPU_GPU;
             selectedGPUs.add(setupForm.getAvailableGPUs().get(0));
         }
-
-
 
         var blenderVersions = setupForm.getBlenderVersions();
 
