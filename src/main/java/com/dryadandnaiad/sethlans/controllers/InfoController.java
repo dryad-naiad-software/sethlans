@@ -50,6 +50,7 @@ public class InfoController {
                 .nodeType(PropertiesUtils.getNodeType())
                 .os(QueryUtils.getOS())
                 .ipAddress(systemInfo.getIpAddress())
+                .systemID(ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID))
                 .hostname(systemInfo.getHostname())
                 .networkPort(ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT))
                 .cpu(systemInfo.getCpu())
