@@ -22,6 +22,7 @@ import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.undertow.util.StatusCodes;
 import lombok.extern.slf4j.Slf4j;
+import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,9 @@ import java.util.List;
 import static com.dryadandnaiad.sethlans.tools.TestUtils.hostWithoutDomainName;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.get;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 @Slf4j
 public class SetupIntegratedTest {
@@ -69,58 +72,12 @@ public class SetupIntegratedTest {
         RestAssured.baseURI = baseHost;
         RestAssured.useRelaxedHTTPSValidation();
 
-
-
         log.info("Starting Setup Test on " + baseHost + ":" + RestAssured.port);
 
     }
 
-    @Disabled
-    @Test
-    public void after_setup() throws JsonProcessingException {
-        var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
-        var mapper = new ObjectMapper();
-
-
-        given()
-                .log()
-                .ifValidationFails()
-                .get("/api/v1/info/is_first_time")
-                .then()
-                .statusCode(StatusCodes.OK)
-                .assertThat()
-                .body("first_time", equalTo(false));
-
-        var nodeInfo = mapper
-                .readValue(get("/api/v1/info/node_info")
-                        .then()
-                        .extract()
-                        .response()
-                        .body()
-                        .asString(), Node.class);
-
-        var systemVersion = get("/api/v1/info/version")
-                .then()
-                .extract()
-                .response()
-                .body()
-                .asString();
-
-        var systemId = get("/api/v1/management/system_id")
-                .then()
-                .extract()
-                .response()
-                .body()
-                .asString();
-
-        log.info(nodeInfo.toString());
-        log.info(systemVersion);
-        log.info(systemId);
-
-    }
 
     @Test
-    @Disabled
     public void test_full_setup() throws JsonProcessingException, InterruptedException {
         var mapper = new ObjectMapper();
         log.info("Check if first_time is true");
@@ -204,6 +161,47 @@ public class SetupIntegratedTest {
                 .get("/api/v1/setup/restart")
                 .then()
                 .statusCode(StatusCodes.ACCEPTED);
+
+        Thread.sleep(10000);
+
+        TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
+
+        given()
+                .log()
+                .ifValidationFails()
+                .get("/api/v1/info/is_first_time")
+                .then()
+                .statusCode(StatusCodes.OK)
+                .assertThat()
+                .body("first_time", equalTo(false));
+
+        given()
+                .log()
+                .ifValidationFails()
+                .get("/api/v1/info/mode")
+                .then()
+                .statusCode(StatusCodes.OK)
+                .assertThat()
+                .body("mode", equalTo("DUAL"));
+
+        var nodeInfo = mapper
+                .readValue(get("/api/v1/info/node_info")
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), Node.class);
+
+        assertThat(nodeInfo, notNullValue());
+        log.info(nodeInfo.toString());
+
+        given()
+                .log()
+                .ifValidationFails()
+                .get("/api/v1/management/shutdown")
+                .then()
+                .statusCode(StatusCodes.ACCEPTED);
+
 
     }
 }
