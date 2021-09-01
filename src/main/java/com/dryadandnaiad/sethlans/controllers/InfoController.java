@@ -18,6 +18,7 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
@@ -41,6 +42,13 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/info")
 public class InfoController {
+
+    @GetMapping("/mode")
+    public Map<String, SethlansMode> getMode() {
+        var mode = new HashMap<String, SethlansMode>();
+        mode.put("mode", PropertiesUtils.getMode());
+        return mode;
+    }
 
     @GetMapping("/node_info")
     @Profile({"NODE", "DUAL"})
