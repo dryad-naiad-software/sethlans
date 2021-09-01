@@ -170,7 +170,7 @@ public class SetupIntegratedTest {
 
         TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
 
-        log.info("Verifying that first time is false");
+        log.info("Verifying that first_time is false");
         given()
                 .log()
                 .ifValidationFails()
