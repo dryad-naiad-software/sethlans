@@ -64,8 +64,7 @@ public class SetupIntegratedTest {
 
         var baseHost = System.getProperty("sethlans.host");
         if (baseHost == null) {
-            //baseHost = "https://localhost";
-            baseHost = "https://iota";
+            baseHost = "https://localhost";
         } else {
             baseHost = hostWithoutDomainName(baseHost);
         }
