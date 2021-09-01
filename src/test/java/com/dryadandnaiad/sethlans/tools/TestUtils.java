@@ -22,6 +22,7 @@ import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.models.blender.project.*;
 import com.dryadandnaiad.sethlans.models.user.User;
 import io.restassured.RestAssured;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.text.DateFormat;
@@ -36,6 +37,7 @@ import static io.restassured.RestAssured.*;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+@Slf4j
 public class TestUtils {
 
     public static User getUser(Set<Role> roles, String username, String password) {
@@ -143,12 +145,6 @@ public class TestUtils {
                 .build();
     }
 
-    public static void commentGenerator(String comment) {
-        DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-        Date today = Calendar.getInstance().getTime();
-        String date = df.format(today);
-        System.out.println(date + ": " + comment + System.lineSeparator());
-    }
 
     public static String hostWithoutDomainName(String baseHost) {
         int iend = baseHost.indexOf(".");
@@ -159,7 +155,7 @@ public class TestUtils {
     }
 
     public static String loginGetCSRFToken(String username, String password) {
-        commentGenerator("Starting login using username: " + username.toLowerCase() + ", " + " password: " + password);
+        log.info("Starting login using username: " + username.toLowerCase() + ", " + " password: " + password);
         var response =
                 given().
                         when().get("/login").
@@ -172,9 +168,9 @@ public class TestUtils {
                 .when().post("/login").then().statusCode(302).extract().response();
 
         sessionId = response.cookie("JSESSIONID");
-        commentGenerator("Login completed, obtained the following cookies");
-        commentGenerator("XSRF-TOKEN: " + token);
-        commentGenerator("JSESSIONID: " + sessionId);
+        log.info("Login completed, obtained the following cookies");
+        log.info("XSRF-TOKEN: " + token);
+        log.info("JSESSIONID: " + sessionId);
 
         return token;
     }

@@ -16,27 +16,35 @@ import com.dryadandnaiad.sethlans.tools.TestUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
+import io.restassured.config.RestAssuredConfig;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.undertow.util.StatusCodes;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import static com.dryadandnaiad.sethlans.tools.TestUtils.commentGenerator;
 import static com.dryadandnaiad.sethlans.tools.TestUtils.hostWithoutDomainName;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.get;
 import static org.hamcrest.Matchers.equalTo;
 
+@Slf4j
 public class SetupIntegratedTest {
-    private String token;
 
 
     @BeforeAll
-    public static void setup() {
+    public static void setup() throws FileNotFoundException {
+
         var port = System.getProperty("sethlans.port");
         if (port == null) {
             RestAssured.port = 7443;
@@ -61,10 +69,13 @@ public class SetupIntegratedTest {
         RestAssured.baseURI = baseHost;
         RestAssured.useRelaxedHTTPSValidation();
 
-        commentGenerator("Starting Setup Test on " + baseHost + ":" + RestAssured.port);
+
+
+        log.info("Starting Setup Test on " + baseHost + ":" + RestAssured.port);
 
     }
 
+    @Disabled
     @Test
     public void after_setup() throws JsonProcessingException {
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
@@ -88,14 +99,31 @@ public class SetupIntegratedTest {
                         .body()
                         .asString(), Node.class);
 
-        System.out.println(nodeInfo);
+        var systemVersion = get("/api/v1/info/version")
+                .then()
+                .extract()
+                .response()
+                .body()
+                .asString();
+
+        var systemId = get("/api/v1/management/system_id")
+                .then()
+                .extract()
+                .response()
+                .body()
+                .asString();
+
+        log.info(nodeInfo.toString());
+        log.info(systemVersion);
+        log.info(systemId);
 
     }
 
     @Test
+    @Disabled
     public void test_full_setup() throws JsonProcessingException, InterruptedException {
         var mapper = new ObjectMapper();
-        commentGenerator("Check if first_time is true");
+        log.info("Check if first_time is true");
         given()
                 .log()
                 .ifValidationFails()
@@ -105,7 +133,7 @@ public class SetupIntegratedTest {
                 .assertThat()
                 .body("first_time", equalTo(true));
 
-        commentGenerator("Getting Setup Form");
+        log.info("Getting Setup Form");
 
         var setupForm = mapper
                 .readValue(get("/api/v1/setup/get_setup")
@@ -115,7 +143,7 @@ public class SetupIntegratedTest {
                         .body()
                         .asString(), SetupForm.class);
 
-        commentGenerator("Retrieved Setup Form: \n" + setupForm);
+        log.info("Retrieved Setup Form: \n" + setupForm);
 
         var nodeType = NodeType.CPU;
         var selectedGPUs = new ArrayList<GPU>();
