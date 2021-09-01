@@ -146,13 +146,16 @@ public class SetupIntegratedTest {
         setupForm.setMailSettings(mailSettings);
         setupForm.setUser(user);
 
+        log.info("Submitting Setup Form \n" + setupForm);
         given()
                 .log()
                 .ifValidationFails()
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
                 .body(mapper.writeValueAsString(setupForm))
-                .post("/api/v1/setup/submit");
+                .post("/api/v1/setup/submit").then().statusCode(StatusCodes.CREATED);
+
+        log.info("Restarting Sethlans");
 
         given()
                 .log()
@@ -161,10 +164,13 @@ public class SetupIntegratedTest {
                 .then()
                 .statusCode(StatusCodes.ACCEPTED);
 
+        log.info("Waiting 10 seconds");
+
         Thread.sleep(10000);
 
         TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
 
+        log.info("Verifying that first time is false");
         given()
                 .log()
                 .ifValidationFails()
@@ -174,6 +180,7 @@ public class SetupIntegratedTest {
                 .assertThat()
                 .body("first_time", equalTo(false));
 
+        log.info("Verifying that Sethlans Mode is DUAL");
         given()
                 .log()
                 .ifValidationFails()
@@ -183,6 +190,7 @@ public class SetupIntegratedTest {
                 .assertThat()
                 .body("mode", equalTo("DUAL"));
 
+        log.info("Obtaining Node Info");
         var nodeInfo = mapper
                 .readValue(get("/api/v1/info/node_info")
                         .then()
@@ -194,13 +202,14 @@ public class SetupIntegratedTest {
         assertThat(nodeInfo, notNullValue());
         log.info(nodeInfo.toString());
 
+        log.info("Shutting down " + RestAssured.baseURI);
+
         given()
                 .log()
                 .ifValidationFails()
                 .get("/api/v1/management/shutdown")
                 .then()
                 .statusCode(StatusCodes.ACCEPTED);
-
 
     }
 }
