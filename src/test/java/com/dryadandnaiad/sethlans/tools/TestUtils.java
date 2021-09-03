@@ -220,6 +220,7 @@ public class TestUtils {
                 .roles(new HashSet<>(List.of(Role.SUPER_ADMINISTRATOR))).build();
 
         setupForm.setMode(SethlansMode.DUAL);
+        setupForm.setLogLevel(LogLevel.DEBUG);
         setupForm.setServerSettings(serverSettings);
         setupForm.setMailSettings(mailSettings);
         setupForm.setNodeSettings(nodeSettings);
@@ -259,6 +260,7 @@ public class TestUtils {
                 .roles(new HashSet<>(List.of(Role.SUPER_ADMINISTRATOR))).build();
 
         setupForm.setMode(SethlansMode.NODE);
+        setupForm.setLogLevel(LogLevel.DEBUG);
         setupForm.setNodeSettings(nodeSettings);
         setupForm.setUser(user);
         return setupForm;
@@ -288,6 +290,7 @@ public class TestUtils {
                 .roles(new HashSet<>(List.of(Role.SUPER_ADMINISTRATOR))).build();
 
         setupForm.setMode(SethlansMode.SERVER);
+        setupForm.setLogLevel(LogLevel.DEBUG);
         setupForm.setServerSettings(serverSettings);
         setupForm.setMailSettings(mailSettings);
         setupForm.setUser(user);
