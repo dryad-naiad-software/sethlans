@@ -55,6 +55,7 @@ public class ServerServiceImpl implements ServerService {
 
     @Override
     public ResponseEntity<String> addNodes(List<NodeForm> selectedNodes) {
+        log.info("Adding Nodes: " + selectedNodes);
         var count = nodeRepository.count();
         try {
             var server = Server.builder()
@@ -70,10 +71,10 @@ public class ServerServiceImpl implements ServerService {
             for (NodeForm selectedNode : selectedNodes) {
                 if (nodeRepository.existsNodeByIpAddressAndNetworkPort(selectedNode.getIpAddress(),
                         selectedNode.getNetworkPort())) {
-                    return new ResponseEntity<>("Error adding " + selectedNode.getIpAddress() + ":" +
+                    log.error("Error adding " + selectedNode.getIpAddress() + ":" +
                             selectedNode.getNetworkPort() +
-                            " this node already exists on this server.",
-                            HttpStatus.BAD_REQUEST);
+                            " this node already exists on this server.");
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
                 var loginURL = new URL("https://" + selectedNode.getIpAddress() + ":" +
                         selectedNode.getNetworkPort() + "/login");
@@ -95,10 +96,10 @@ public class ServerServiceImpl implements ServerService {
                     }
                 } else {
                     log.error("Unable to add " + selectedNode.getIpAddress());
-                    return new ResponseEntity<>("Error adding " + selectedNode.getIpAddress() + ":" +
+                    log.error("Error adding " + selectedNode.getIpAddress() + ":" +
                             selectedNode.getNetworkPort() +
-                            "! Please check to see if node is active or correct credentials are being used.",
-                            HttpStatus.BAD_REQUEST);
+                            "! Please check to see if node is active or correct credentials are being used.");
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
             }
             return new ResponseEntity<>(HttpStatus.CREATED);

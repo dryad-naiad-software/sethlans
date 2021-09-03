@@ -66,6 +66,7 @@ public class AdminServerEndPointController {
 
     @PostMapping("/add_nodes_to_server")
     public ResponseEntity<String> addNodes(@RequestBody List<NodeForm> selectedNodes) {
+        log.info(selectedNodes.toString());
         return serverService.addNodes(selectedNodes);
     }
 

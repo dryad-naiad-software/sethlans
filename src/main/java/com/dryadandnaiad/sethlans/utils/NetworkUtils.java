@@ -185,8 +185,10 @@ public class NetworkUtils {
 
     public static HttpStatus postJSONToURLWithAuth(URL login, URL url,
                                                    String json, String username, String password) {
+        log.debug("Communicating via API to " + url);
         var responseCode = 0;
         try {
+            log.debug("Attempting login via " + login);
             var firstConnection = getAuthHttpsURLConnection(login, username, password);
 
             var sessionCookies = getSessionCookies(firstConnection);
@@ -197,6 +199,7 @@ public class NetworkUtils {
             firstConnection.disconnect();
 
             if (responseCode > 299) {
+                log.error("Initial connection got an unexpected response code " + HttpStatus.valueOf(responseCode));
                 return HttpStatus.valueOf(responseCode);
             }
 
