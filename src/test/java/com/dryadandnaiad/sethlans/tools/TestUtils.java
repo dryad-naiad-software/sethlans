@@ -20,16 +20,20 @@ package com.dryadandnaiad.sethlans.tools;
 import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.models.blender.project.*;
+import com.dryadandnaiad.sethlans.models.forms.SetupForm;
+import com.dryadandnaiad.sethlans.models.hardware.GPU;
+import com.dryadandnaiad.sethlans.models.settings.MailSettings;
+import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
+import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
 import com.dryadandnaiad.sethlans.models.user.User;
-import io.restassured.RestAssured;
+import com.dryadandnaiad.sethlans.models.user.UserChallenge;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static io.restassured.RestAssured.*;
+import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.sessionId;
 
 /**
  * File created by Mario Estrella on 12/27/2020.
@@ -173,5 +177,120 @@ public class TestUtils {
         log.info("JSESSIONID: " + sessionId);
 
         return token;
+    }
+
+    public static SetupForm setupDual(SetupForm setupForm) {
+        var blenderVersions = setupForm.getBlenderVersions();
+
+        var nodeType = NodeType.CPU;
+        var selectedGPUs = new ArrayList<GPU>();
+
+        if(setupForm.getAvailableGPUs().size() > 0) {
+            nodeType = NodeType.CPU_GPU;
+            selectedGPUs.add(setupForm.getAvailableGPUs().get(0));
+        }
+
+        var challenge = UserChallenge.builder()
+                .challenge(SecurityQuestion.QUESTION1)
+                .response("Test").build();
+
+        var serverSettings = ServerSettings.builder()
+                .blenderVersion(blenderVersions.get(0))
+                .build();
+
+        var mailSettings = MailSettings.builder()
+                .mailEnabled(false)
+                .build();
+
+        var nodeSettings = NodeSettings.builder()
+                .nodeType(nodeType)
+                .cores(2)
+                .tileSizeCPU(16)
+                .tileSizeGPU(256)
+                .selectedGPUs(selectedGPUs)
+                .gpuCombined(false)
+                .build();
+
+        var user = User.builder()
+                .username("testuser")
+                .password("testPa$$1234")
+                .active(true)
+                .challengeList(List.of(challenge))
+                .email("testuser@test.com")
+                .roles(new HashSet<>(List.of(Role.SUPER_ADMINISTRATOR))).build();
+
+        setupForm.setMode(SethlansMode.DUAL);
+        setupForm.setServerSettings(serverSettings);
+        setupForm.setMailSettings(mailSettings);
+        setupForm.setNodeSettings(nodeSettings);
+        setupForm.setUser(user);
+        return setupForm;
+    }
+
+    public static SetupForm setupNode(SetupForm setupForm) {
+
+        var nodeType = NodeType.CPU;
+        var selectedGPUs = new ArrayList<GPU>();
+
+        if(setupForm.getAvailableGPUs().size() > 0) {
+            nodeType = NodeType.CPU_GPU;
+            selectedGPUs.add(setupForm.getAvailableGPUs().get(0));
+        }
+
+        var challenge = UserChallenge.builder()
+                .challenge(SecurityQuestion.QUESTION1)
+                .response("Test").build();
+
+        var nodeSettings = NodeSettings.builder()
+                .nodeType(nodeType)
+                .cores(2)
+                .tileSizeCPU(16)
+                .tileSizeGPU(256)
+                .selectedGPUs(selectedGPUs)
+                .gpuCombined(false)
+                .build();
+
+        var user = User.builder()
+                .username("testuser")
+                .password("testPa$$1234")
+                .active(true)
+                .challengeList(List.of(challenge))
+                .email("testuser@test.com")
+                .roles(new HashSet<>(List.of(Role.SUPER_ADMINISTRATOR))).build();
+
+        setupForm.setMode(SethlansMode.NODE);
+        setupForm.setNodeSettings(nodeSettings);
+        setupForm.setUser(user);
+        return setupForm;
+    }
+
+    public static SetupForm setupServer(SetupForm setupForm) {
+        var blenderVersions = setupForm.getBlenderVersions();
+
+        var challenge = UserChallenge.builder()
+                .challenge(SecurityQuestion.QUESTION1)
+                .response("Test").build();
+
+        var serverSettings = ServerSettings.builder()
+                .blenderVersion(blenderVersions.get(0))
+                .build();
+
+        var mailSettings = MailSettings.builder()
+                .mailEnabled(false)
+                .build();
+
+        var user = User.builder()
+                .username("testuser")
+                .password("testPa$$1234")
+                .active(true)
+                .challengeList(List.of(challenge))
+                .email("testuser@test.com")
+                .roles(new HashSet<>(List.of(Role.SUPER_ADMINISTRATOR))).build();
+
+        setupForm.setMode(SethlansMode.SERVER);
+        setupForm.setServerSettings(serverSettings);
+        setupForm.setMailSettings(mailSettings);
+        setupForm.setUser(user);
+        return setupForm;
     }
 }
