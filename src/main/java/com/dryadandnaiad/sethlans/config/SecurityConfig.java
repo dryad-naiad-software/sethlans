@@ -18,6 +18,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         if (!PropertiesUtils.isFirstTime()) {
             http.authorizeRequests(authorize -> {
                 authorize.antMatchers("/api/v1/info/version").permitAll();
+                authorize.antMatchers("/api/v1/info/node_info").permitAll();
             });
             http.authorizeRequests((requests) -> requests
                     .antMatchers("/api/v1/management/**").hasAnyAuthority(Role.ADMINISTRATOR.toString(), Role.SUPER_ADMINISTRATOR.toString())
