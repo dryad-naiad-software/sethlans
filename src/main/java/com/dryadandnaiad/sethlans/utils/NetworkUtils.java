@@ -113,46 +113,46 @@ public class NetworkUtils {
         }
     }
 
-    public static String getJSONFromURLWithAuth(URL login, URL url, String username, String password) {
-        var responseCode = 0;
-
-        try {
-            var firstConnection = getAuthHttpsURLConnection(login, username, password);
-            var sessionCookies = getSessionCookies(firstConnection);
-            var xsrfToken = extractXRSFToken(firstConnection);
-
-            firstConnection.disconnect();
-            responseCode = firstConnection.getResponseCode();
-
-            if (responseCode > 299) {
-                return null;
-            }
-
-
-            var secondConnection = (HttpsURLConnection) url.openConnection();
-            if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
-                secondConnection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
-                secondConnection.setHostnameVerifier(SSLUtilities.allHostsValid());
-            }
-
-            secondConnection.setRequestMethod("GET");
-            secondConnection.setRequestProperty("X-CSRF-Token", xsrfToken);
-            setSessionCookies(secondConnection, sessionCookies);
-            secondConnection.connect();
-
-            if (secondConnection.getResponseCode() == 200) {
-                var reader = new InputStreamReader(secondConnection.getInputStream());
-                var stream = CharStreams.toString(reader);
-                secondConnection.disconnect();
-                return stream;
-            }
-
-
-        } catch (IOException e) {
-            log.error(e.getMessage());
-            log.error(Throwables.getStackTraceAsString(e));
-            return null;
-        }
+    public static String getJSONFromURLWithAuth(String login, String url, String username, String password) {
+//        var responseCode = 0;
+//
+//        try {
+//            var firstConnection = getAuthHttpsURLConnection(login, username, password);
+//            var sessionCookies = getSessionCookies(firstConnection);
+//            var xsrfToken = extractXRSFToken(firstConnection);
+//
+//            firstConnection.disconnect();
+//            responseCode = firstConnection.getResponseCode();
+//
+//            if (responseCode > 299) {
+//                return null;
+//            }
+//
+//
+//            var secondConnection = (HttpsURLConnection) url.openConnection();
+//            if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
+//                secondConnection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
+//                secondConnection.setHostnameVerifier(SSLUtilities.allHostsValid());
+//            }
+//
+//            secondConnection.setRequestMethod("GET");
+//            secondConnection.setRequestProperty("X-CSRF-Token", xsrfToken);
+//            setSessionCookies(secondConnection, sessionCookies);
+//            secondConnection.connect();
+//
+//            if (secondConnection.getResponseCode() == 200) {
+//                var reader = new InputStreamReader(secondConnection.getInputStream());
+//                var stream = CharStreams.toString(reader);
+//                secondConnection.disconnect();
+//                return stream;
+//            }
+//
+//
+//        } catch (IOException e) {
+//            log.error(e.getMessage());
+//            log.error(Throwables.getStackTraceAsString(e));
+//            return null;
+//        }
         return null;
     }
 
@@ -183,45 +183,55 @@ public class NetworkUtils {
         }
     }
 
-    public static HttpStatus postJSONToURLWithAuth(URL login, URL url,
+    public static HttpStatus postJSONToURLWithAuth(String port, String host, String login, String api,
                                                    String json, String username, String password) {
-        log.debug("Communicating via API to " + url);
-        var responseCode = 0;
-        try {
-            log.debug("Attempting login via " + login);
-            var firstConnection = getAuthHttpsURLConnection(login, username, password);
-
-            var sessionCookies = getSessionCookies(firstConnection);
-            var xsrfToken = extractXRSFToken(firstConnection);
-
-            responseCode = firstConnection.getResponseCode();
-
-            firstConnection.disconnect();
-
-            if (responseCode > 299) {
-                log.error("Initial connection got an unexpected response code " + HttpStatus.valueOf(responseCode));
-                return HttpStatus.valueOf(responseCode);
-            }
 
 
-            var secondConnection = (HttpsURLConnection) url.openConnection();
-            if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
-                secondConnection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
-                secondConnection.setHostnameVerifier(SSLUtilities.allHostsValid());
-            }
 
-            secondConnection.setRequestMethod("POST");
-            secondConnection.setRequestProperty("X-CSRF-Token", xsrfToken);
-            secondConnection.setRequestProperty("Content-Type", "application/json; utf-8");
-            secondConnection.setRequestProperty("Accept", "application/json");
-            setSessionCookies(secondConnection, sessionCookies);
-            return sendJSON(json, secondConnection);
 
-        } catch (IOException e) {
-            log.error(e.getMessage());
-            log.error(Throwables.getStackTraceAsString(e));
-            return HttpStatus.valueOf(responseCode);
-        }
+
+
+
+
+//
+//        log.debug("Communicating via API to " + url);
+//        var responseCode = 0;
+//        try {
+//            log.debug("Attempting login via " + login);
+//            var firstConnection = getAuthHttpsURLConnection(login, username, password);
+//
+//            var sessionCookies = getSessionCookies(firstConnection);
+//            var xsrfToken = extractXRSFToken(firstConnection);
+//
+//            responseCode = firstConnection.getResponseCode();
+//
+//            firstConnection.disconnect();
+//
+//            if (responseCode > 299) {
+//                log.error("Initial connection got an unexpected response code " + HttpStatus.valueOf(responseCode));
+//                return HttpStatus.valueOf(responseCode);
+//            }
+//
+//
+//            var secondConnection = (HttpsURLConnection) url.openConnection();
+//            if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
+//                secondConnection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
+//                secondConnection.setHostnameVerifier(SSLUtilities.allHostsValid());
+//            }
+//
+//            secondConnection.setRequestMethod("POST");
+//            secondConnection.setRequestProperty("X-CSRF-Token", xsrfToken);
+//            secondConnection.setRequestProperty("Content-Type", "application/json; utf-8");
+//            secondConnection.setRequestProperty("Accept", "application/json");
+//            setSessionCookies(secondConnection, sessionCookies);
+//            return sendJSON(json, secondConnection);
+//
+//        } catch (IOException e) {
+//            log.error(e.getMessage());
+//            log.error(Throwables.getStackTraceAsString(e));
+//            return HttpStatus.valueOf(responseCode);
+//        }
+        return HttpStatus.valueOf(401);
     }
 
     private static HttpsURLConnection getAuthHttpsURLConnection(URL login, String username, String password) throws IOException {

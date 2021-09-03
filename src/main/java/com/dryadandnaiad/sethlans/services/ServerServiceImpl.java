@@ -33,8 +33,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -76,13 +74,10 @@ public class ServerServiceImpl implements ServerService {
                             " this node already exists on this server.");
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
-                var loginURL = new URL("https://" + selectedNode.getIpAddress() + ":" +
-                        selectedNode.getNetworkPort() + "/login");
-                var addServerURL = new URL("https://" + selectedNode.getIpAddress() + ":" +
-                        selectedNode.getNetworkPort() + "/api/v1/management/add_server_to_node");
-                var getSystemIDURL = new URL("https://" + selectedNode.getIpAddress() + ":" +
-                        selectedNode.getNetworkPort() + "/api/v1/management/system_id");
-                if (NetworkUtils.postJSONToURLWithAuth(loginURL,
+                var loginURL = "/login";
+                var addServerURL = "/api/v1/management/add_server_to_node";
+                var getSystemIDURL = "/api/v1/management/system_id";
+                if (NetworkUtils.postJSONToURLWithAuth(selectedNode.getNetworkPort(), selectedNode.getIpAddress(), loginURL,
                         addServerURL, serverAsJson, selectedNode.getUsername(),
                         selectedNode.getPassword()).equals(HttpStatus.CREATED)) {
                     var node = NetworkUtils.getNodeViaJson(selectedNode.getIpAddress(), selectedNode.getNetworkPort());
@@ -103,7 +98,7 @@ public class ServerServiceImpl implements ServerService {
                 }
             }
             return new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (JsonProcessingException | MalformedURLException e) {
+        } catch (JsonProcessingException e) {
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
