@@ -22,14 +22,17 @@ import com.dryadandnaiad.sethlans.models.system.Node;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
-import com.google.common.io.CharStreams;
+import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.contrib.org.apache.commons.codec_1_3.binary.Base64;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.netty.http.client.HttpClient;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
@@ -158,26 +161,22 @@ public class NetworkUtils {
 
 
     public static String getJSONFromURL(URL url) {
-        try {
-            var connection = (HttpsURLConnection) url.openConnection();
-            if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
-                connection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
-                connection.setHostnameVerifier(SSLUtilities.allHostsValid());
-            }
-            connection.setRequestMethod("GET");
-            connection.connect();
+        WebClient webClient;
 
-            if (connection.getResponseCode() == 200) {
-                var reader = new InputStreamReader(connection.getInputStream());
-                var stream = CharStreams.toString(reader);
-                connection.disconnect();
-                return stream;
+        try {
+            if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
+                log.debug("Using Sethlans Self Signed Cert.");
+                var sslContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+                var httpClient = HttpClient.create().secure(t -> t.sslContext(sslContext));
+                webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(httpClient)).baseUrl(url.toString()).build();
             } else {
-                log.error("Error connecting to url " + url + " : Response code: " + connection.getResponseCode());
-                return null;
+                webClient = WebClient.create(url.toString());
             }
-        } catch (IOException e) {
-            log.error(e.getMessage());
+
+            return webClient.get().retrieve().bodyToMono(String.class).block();
+
+        } catch (Exception e) {
+            log.error("Ran into an error attempting to access " + url.toString());
             log.error(Throwables.getStackTraceAsString(e));
             return null;
         }
@@ -185,13 +184,6 @@ public class NetworkUtils {
 
     public static HttpStatus postJSONToURLWithAuth(String port, String host, String login, String api,
                                                    String json, String username, String password) {
-
-
-
-
-
-
-
 
 //
 //        log.debug("Communicating via API to " + url);
