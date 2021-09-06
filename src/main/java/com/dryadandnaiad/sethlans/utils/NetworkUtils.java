@@ -25,10 +25,13 @@ import com.google.common.base.Throwables;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.jasypt.contrib.org.apache.commons.codec_1_3.binary.Base64;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -117,6 +120,42 @@ public class NetworkUtils {
     }
 
     public static String getJSONFromURLWithAuth(String login, String url, String username, String password) {
+        var formData = new LinkedMultiValueMap<String, String>();
+        formData.add("username", username);
+        formData.add("password", password);
+        WebClient webClient;
+
+        try {
+
+            if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
+                log.debug("Using Sethlans Self Signed Cert.");
+                var sslContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+                var httpClient = HttpClient.create().secure(t -> t.sslContext(sslContext));
+                webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(httpClient)).build();
+            } else {
+                webClient = WebClient.create();
+            }
+            var token = "";
+
+            var response = webClient.post()
+                    .uri(login)
+                    .body(Mono.just(formData), LinkedMultiValueMap.class)
+                    .retrieve().toBodilessEntity().block();
+            var cookies = response.getHeaders().get("Set-Cookie");
+            for (String cookie: cookies) {
+                if(cookie.contains("XSRF-TOKEN")) {
+                    token = StringUtils.substringBefore(cookie, ";");
+                }
+
+            }
+            System.out.println(token);
+
+        } catch (Exception e) {
+            log.error("Ran into an error attempting to access " + url);
+            log.error(Throwables.getStackTraceAsString(e));
+            return null;
+        }
+
 //        var responseCode = 0;
 //
 //        try {

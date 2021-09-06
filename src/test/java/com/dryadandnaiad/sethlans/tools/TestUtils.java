@@ -168,7 +168,9 @@ public class TestUtils {
 
         response = given().log().ifValidationFails()
                 .header("X-XSRF-TOKEN", token)
-                .cookie("XSRF-TOKEN", token).param("username", username.toLowerCase()).param("password", password)
+                .cookie("XSRF-TOKEN", token)
+                .param("username", username.toLowerCase())
+                .param("password", password)
                 .when().post("/login").then().statusCode(302).extract().response();
 
         sessionId = response.cookie("JSESSIONID");
