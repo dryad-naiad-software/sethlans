@@ -23,13 +23,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.undertow.util.StatusCodes;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.net.URL;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -158,10 +159,11 @@ public class NetworkUtils {
         return getJSON(path, host, port);
     }
 
-    public static boolean postJSONToURLWithAuth(String port, String host, String login, String api,
+    public static boolean postJSONToURLWithAuth(String port, String host, String path, boolean secure,
                                                 String json, String username, String password) {
+        host = setHost(host, port, secure);
 
-        return false;
+        return postJSON(path, host, port, authGetCSRFToken(username, password), json);
     }
 
     private static String authGetCSRFToken(String username, String password) {
@@ -189,8 +191,45 @@ public class NetworkUtils {
     }
 
 
-    public static boolean postJSON(URL url, String json) {
-        return false;
+    public static boolean postJSON(String path, String host, String port, String token, String json) {
+        if (token.isEmpty()) {
+            try {
+                given()
+                        .log()
+                        .ifValidationFails()
+                        .accept(ContentType.JSON)
+                        .contentType(ContentType.JSON)
+                        .body(json)
+                        .post(path)
+                        .then()
+                        .statusCode(StatusCodes.CREATED);
+                return true;
+            } catch (AssertionError e) {
+                log.error("Unable to connect to " + host + ":" + port + path);
+                log.error(Throwables.getStackTraceAsString(e));
+                return false;
+            }
+        } else {
+            try {
+                given()
+                        .log()
+                        .ifValidationFails()
+                        .accept(ContentType.JSON)
+                        .contentType(ContentType.JSON)
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie("XSRF-TOKEN", token)
+                        .body(json)
+                        .post(path)
+                        .then()
+                        .statusCode(StatusCodes.CREATED);
+                return true;
+            } catch (AssertionError e) {
+                log.error("Unable to connect to " + host + ":" + port + path);
+                log.error(Throwables.getStackTraceAsString(e));
+                return false;
+            }
+
+        }
 
     }
 

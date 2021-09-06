@@ -77,14 +77,14 @@ public class ServerServiceImpl implements ServerService {
                 var loginURL = "/login";
                 var addServerURL = "/api/v1/management/add_server_to_node";
                 var getSystemIDURL = "/api/v1/management/system_id";
-                if (NetworkUtils.postJSONToURLWithAuth(selectedNode.getNetworkPort(), selectedNode.getIpAddress(), loginURL,
-                        addServerURL, serverAsJson, selectedNode.getUsername(),
+                if (NetworkUtils.postJSONToURLWithAuth(selectedNode.getNetworkPort(), selectedNode.getIpAddress(),
+                        addServerURL, true, serverAsJson, selectedNode.getUsername(),
                         selectedNode.getPassword())) {
-                    var node = NetworkUtils.getNodeViaJson(selectedNode.getIpAddress(), selectedNode.getNetworkPort());
-//                    var systemID = NetworkUtils.getJSONFromURLWithAuth(loginURL,
-//                            getSystemIDURL, selectedNode.getUsername(),
-//                            selectedNode.getPassword());
-                    var systemID = "";
+                    var node = NetworkUtils.getNodeViaJson(selectedNode.getIpAddress(),
+                            selectedNode.getNetworkPort());
+                    var systemID = NetworkUtils.getJSONFromURLWithAuth(getSystemIDURL,
+                            selectedNode.getIpAddress(), selectedNode.getNetworkPort(), true,
+                            selectedNode.getUsername(), selectedNode.getPassword());
                     if (node != null && systemID != null) {
                         node.setSystemID(systemID);
                         log.debug("Adding the following node to server: " + node);
