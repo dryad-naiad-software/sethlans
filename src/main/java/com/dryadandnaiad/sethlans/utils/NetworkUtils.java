@@ -110,13 +110,34 @@ public class NetworkUtils {
         }
     }
 
-    public static String getJSONFromURLWithAuth(String path, String host, String port, String username, String password) {
+    public static String getJSONFromURLWithAuth(String path, String host, String port, boolean secure,
+                                                String username, String password) {
+        host = setHost(host, port, secure);
 
-        return null;
+
+        var token = authGetCSRFToken(username, password);
+
+        return getJSON(path, host, port);
+
     }
 
+    private static String getJSON(String path, String host, String port) {
+        try {
+            RestAssured.basePath = path;
+            return get()
+                    .then().statusCode(200)
+                    .extract()
+                    .response()
+                    .body()
+                    .asString();
+        } catch (AssertionError e) {
+            log.error("Unable to connect to " + host + ":" + port + path);
+            log.error(Throwables.getStackTraceAsString(e));
+            return null;
+        }
+    }
 
-    public static String getJSONFromURL(String path, String host, String port, boolean secure) {
+    private static String setHost(String host, String port, boolean secure) {
         if (secure) {
             host = "https://" + host;
         } else {
@@ -127,33 +148,28 @@ public class NetworkUtils {
         }
         RestAssured.port = Integer.parseInt(port);
         RestAssured.baseURI = host;
-        RestAssured.basePath = path;
-        try {
-            var response = get()
-                    .then().statusCode(200)
-                    .extract()
-                    .response()
-                    .body()
-                    .asString();
-            return response;
-        } catch (AssertionError e) {
-            log.error("Unable to connect to " + host + ":" + port + path);
-            log.error(Throwables.getStackTraceAsString(e));
-            return null;
-        }
+        return host;
+    }
+
+
+    public static String getJSONFromURL(String path, String host, String port, boolean secure) {
+        host = setHost(host, port, secure);
+
+        return getJSON(path, host, port);
     }
 
     public static boolean postJSONToURLWithAuth(String port, String host, String login, String api,
-                                                   String json, String username, String password) {
+                                                String json, String username, String password) {
 
         return false;
     }
 
     private static String authGetCSRFToken(String username, String password) {
         log.info("Starting login using username: " + username.toLowerCase() + ", " + " password: " + password);
+        RestAssured.basePath = "/login";
         var response =
                 given().
-                        when().get("/login").
+                        when().get().
                         then().extract().response();
         String token = response.cookie("XSRF-TOKEN");
 
@@ -162,7 +178,7 @@ public class NetworkUtils {
                 .cookie("XSRF-TOKEN", token)
                 .param("username", username.toLowerCase())
                 .param("password", password)
-                .when().post("/login").then().statusCode(302).extract().response();
+                .when().post().then().statusCode(302).extract().response();
 
         sessionId = response.cookie("JSESSIONID");
         log.info("Login completed, obtained the following cookies");
@@ -173,7 +189,7 @@ public class NetworkUtils {
     }
 
 
-    public static boolean postJSONToURL(URL url, String json) {
+    public static boolean postJSON(URL url, String json) {
         return false;
 
     }

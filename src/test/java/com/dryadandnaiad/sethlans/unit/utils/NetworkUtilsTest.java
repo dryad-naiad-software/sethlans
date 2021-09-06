@@ -13,8 +13,8 @@ class NetworkUtilsTest {
     @Test
     void getJSONFromURLWithAuth() throws MalformedURLException {
         var url = new URL("https://tau:7443/login");
-//        System.out.println(NetworkUtils.getJSONFromURLWithAuth("url.toString()",
-//                "https://tau:7443/api/v1/management/network_node_scan", "testuser", "testPa$$1234"));
+        System.out.println(NetworkUtils.getJSONFromURLWithAuth("/api/v1/management/network_node_scan",
+                "tau", "7443", true, "testuser", "testPa$$1234"));
 
     }
 
