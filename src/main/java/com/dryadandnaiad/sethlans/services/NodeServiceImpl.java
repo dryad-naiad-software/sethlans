@@ -33,9 +33,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 /**
  * File created by Mario Estrella on 1/1/2021.
  * Dryad and Naiad Software LLC
@@ -57,15 +54,15 @@ public class NodeServiceImpl implements NodeService {
         var objectMapper = new ObjectMapper();
         var nodeID = ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID);
         try {
-            var url = new URL("https://" + server.getIpAddress() + ":" + server.getNetworkPort()
-                    + "/api/v1/server_queue/latest_blender_archive?system-id=" + nodeID + "&os=" + QueryUtils.getOS().toString());
-            log.debug(url.toString());
-            var blenderArchiveJSON = NetworkUtils.getJSONFromURL(url);
+            var path = "/api/v1/server_queue/latest_blender_archive?system-id=" + nodeID + "&os=" + QueryUtils.getOS().toString();
+            var host = server.getIpAddress();
+            var port = server.getNetworkPort();
+            var blenderArchiveJSON = NetworkUtils.getJSONFromURL(path,host, port, true);
             log.debug(blenderArchiveJSON);
             var blenderArchive = objectMapper.readValue(blenderArchiveJSON, new TypeReference<BlenderArchive>() {
             });
             benchmarkService.processBenchmarkRequest(server, blenderArchive);
-        } catch (JsonProcessingException | MalformedURLException | IllegalArgumentException e) {
+        } catch (JsonProcessingException | IllegalArgumentException e) {
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

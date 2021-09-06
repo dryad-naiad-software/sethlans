@@ -22,29 +22,19 @@ import com.dryadandnaiad.sethlans.models.system.Node;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
-import io.netty.handler.ssl.SslContextBuilder;
-import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import io.restassured.RestAssured;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.jasypt.contrib.org.apache.commons.codec_1_3.binary.Base64;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClient;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
+import static io.restassured.RestAssured.*;
 
 /**
  * File created by Mario Estrella on 6/11/2020.
@@ -54,6 +44,7 @@ import java.util.Set;
  */
 @Slf4j
 public class NetworkUtils {
+
 
     public static Set<String> getSethlansMulticastMessages() {
         var detectedNodes = new HashSet<String>();
@@ -107,10 +98,10 @@ public class NetworkUtils {
 
     public static Node getNodeViaJson(String ip, String port) {
         try {
-            var nodeURL = new URL("https://" + ip + ":" + port + "/api/v1/info/node_info");
-            log.info("Retrieving node information from " + nodeURL);
+            var path = "/api/v1/info/node_info";
+            log.info("Retrieving node information from " + ip + ":" + port);
             var objectMapper = new ObjectMapper();
-            return objectMapper.readValue(getJSONFromURL(nodeURL), new TypeReference<>() {
+            return objectMapper.readValue(getJSONFromURL(path, ip, port, true), new TypeReference<>() {
             });
         } catch (IOException e) {
             log.error(e.getMessage());
@@ -119,242 +110,72 @@ public class NetworkUtils {
         }
     }
 
-    public static String getJSONFromURLWithAuth(String login, String url, String username, String password) {
-        var formData = new LinkedMultiValueMap<String, String>();
-        formData.add("username", username);
-        formData.add("password", password);
-        WebClient webClient;
+    public static String getJSONFromURLWithAuth(String path, String host, String port, String username, String password) {
 
-        try {
-
-            if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
-                log.debug("Using Sethlans Self Signed Cert.");
-                var sslContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
-                var httpClient = HttpClient.create().secure(t -> t.sslContext(sslContext));
-                webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(httpClient)).build();
-            } else {
-                webClient = WebClient.create();
-            }
-            var token = "";
-
-            var response = webClient.post()
-                    .uri(login)
-                    .body(Mono.just(formData), LinkedMultiValueMap.class)
-                    .retrieve().toBodilessEntity().block();
-            var cookies = response.getHeaders().get("Set-Cookie");
-            for (String cookie: cookies) {
-                if(cookie.contains("XSRF-TOKEN")) {
-                    token = StringUtils.substringBefore(cookie, ";");
-                }
-
-            }
-            System.out.println(token);
-
-        } catch (Exception e) {
-            log.error("Ran into an error attempting to access " + url);
-            log.error(Throwables.getStackTraceAsString(e));
-            return null;
-        }
-
-//        var responseCode = 0;
-//
-//        try {
-//            var firstConnection = getAuthHttpsURLConnection(login, username, password);
-//            var sessionCookies = getSessionCookies(firstConnection);
-//            var xsrfToken = extractXRSFToken(firstConnection);
-//
-//            firstConnection.disconnect();
-//            responseCode = firstConnection.getResponseCode();
-//
-//            if (responseCode > 299) {
-//                return null;
-//            }
-//
-//
-//            var secondConnection = (HttpsURLConnection) url.openConnection();
-//            if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
-//                secondConnection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
-//                secondConnection.setHostnameVerifier(SSLUtilities.allHostsValid());
-//            }
-//
-//            secondConnection.setRequestMethod("GET");
-//            secondConnection.setRequestProperty("X-CSRF-Token", xsrfToken);
-//            setSessionCookies(secondConnection, sessionCookies);
-//            secondConnection.connect();
-//
-//            if (secondConnection.getResponseCode() == 200) {
-//                var reader = new InputStreamReader(secondConnection.getInputStream());
-//                var stream = CharStreams.toString(reader);
-//                secondConnection.disconnect();
-//                return stream;
-//            }
-//
-//
-//        } catch (IOException e) {
-//            log.error(e.getMessage());
-//            log.error(Throwables.getStackTraceAsString(e));
-//            return null;
-//        }
         return null;
     }
 
 
-    public static String getJSONFromURL(URL url) {
-        WebClient webClient;
-
+    public static String getJSONFromURL(String path, String host, String port, boolean secure) {
+        if (secure) {
+            host = "https://" + host;
+        } else {
+            host = "http://" + host;
+        }
+        if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
+            RestAssured.useRelaxedHTTPSValidation();
+        }
+        RestAssured.port = Integer.parseInt(port);
+        RestAssured.baseURI = host;
+        RestAssured.basePath = path;
         try {
-            if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
-                log.debug("Using Sethlans Self Signed Cert.");
-                var sslContext = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();
-                var httpClient = HttpClient.create().secure(t -> t.sslContext(sslContext));
-                webClient = WebClient.builder().clientConnector(new ReactorClientHttpConnector(httpClient)).baseUrl(url.toString()).build();
-            } else {
-                webClient = WebClient.create(url.toString());
-            }
-
-            return webClient.get().retrieve().bodyToMono(String.class).block();
-
-        } catch (Exception e) {
-            log.error("Ran into an error attempting to access " + url.toString());
+            var response = get()
+                    .then().statusCode(200)
+                    .extract()
+                    .response()
+                    .body()
+                    .asString();
+            return response;
+        } catch (AssertionError e) {
+            log.error("Unable to connect to " + host + ":" + port + path);
             log.error(Throwables.getStackTraceAsString(e));
             return null;
         }
     }
 
-    public static HttpStatus postJSONToURLWithAuth(String port, String host, String login, String api,
+    public static boolean postJSONToURLWithAuth(String port, String host, String login, String api,
                                                    String json, String username, String password) {
 
-//
-//        log.debug("Communicating via API to " + url);
-//        var responseCode = 0;
-//        try {
-//            log.debug("Attempting login via " + login);
-//            var firstConnection = getAuthHttpsURLConnection(login, username, password);
-//
-//            var sessionCookies = getSessionCookies(firstConnection);
-//            var xsrfToken = extractXRSFToken(firstConnection);
-//
-//            responseCode = firstConnection.getResponseCode();
-//
-//            firstConnection.disconnect();
-//
-//            if (responseCode > 299) {
-//                log.error("Initial connection got an unexpected response code " + HttpStatus.valueOf(responseCode));
-//                return HttpStatus.valueOf(responseCode);
-//            }
-//
-//
-//            var secondConnection = (HttpsURLConnection) url.openConnection();
-//            if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
-//                secondConnection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
-//                secondConnection.setHostnameVerifier(SSLUtilities.allHostsValid());
-//            }
-//
-//            secondConnection.setRequestMethod("POST");
-//            secondConnection.setRequestProperty("X-CSRF-Token", xsrfToken);
-//            secondConnection.setRequestProperty("Content-Type", "application/json; utf-8");
-//            secondConnection.setRequestProperty("Accept", "application/json");
-//            setSessionCookies(secondConnection, sessionCookies);
-//            return sendJSON(json, secondConnection);
-//
-//        } catch (IOException e) {
-//            log.error(e.getMessage());
-//            log.error(Throwables.getStackTraceAsString(e));
-//            return HttpStatus.valueOf(responseCode);
-//        }
-        return HttpStatus.valueOf(401);
+        return false;
     }
 
-    private static HttpsURLConnection getAuthHttpsURLConnection(URL login, String username, String password) throws IOException {
-        var auth = username + ":" + password;
-        var encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.UTF_8));
-        var authHeaderValue = "Basic " + new String(encodedAuth);
-        var firstConnection = (HttpsURLConnection) login.openConnection();
-        if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
-            firstConnection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
-            firstConnection.setHostnameVerifier(SSLUtilities.allHostsValid());
-        }
-        firstConnection.setRequestMethod("GET");
-        firstConnection.setRequestProperty("Authorization", authHeaderValue);
-        firstConnection.setRequestProperty("X-CSRF-Token", "Fetch");
-        firstConnection.connect();
-        return firstConnection;
+    private static String authGetCSRFToken(String username, String password) {
+        log.info("Starting login using username: " + username.toLowerCase() + ", " + " password: " + password);
+        var response =
+                given().
+                        when().get("/login").
+                        then().extract().response();
+        String token = response.cookie("XSRF-TOKEN");
+
+        response = given().log().ifValidationFails()
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token)
+                .param("username", username.toLowerCase())
+                .param("password", password)
+                .when().post("/login").then().statusCode(302).extract().response();
+
+        sessionId = response.cookie("JSESSIONID");
+        log.info("Login completed, obtained the following cookies");
+        log.info("XSRF-TOKEN: " + token);
+        log.info("JSESSIONID: " + sessionId);
+
+        return token;
     }
 
 
-    public static HttpStatus postJSONToURL(URL url, String json) {
-        var responseCode = 0;
+    public static boolean postJSONToURL(URL url, String json) {
+        return false;
 
-        try {
-            var connection = (HttpsURLConnection) url.openConnection();
-            if (Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.USE_SETHLANS_CERT))) {
-                connection.setSSLSocketFactory(SSLUtilities.buildSSLSocketFactory());
-                connection.setHostnameVerifier(SSLUtilities.allHostsValid());
-            }
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/json; utf-8");
-            connection.setRequestProperty("Accept", "application/json");
-            responseCode = connection.getResponseCode();
-
-            return sendJSON(json, connection);
-
-        } catch (IOException e) {
-            log.error(e.getMessage());
-            log.error(Throwables.getStackTraceAsString(e));
-            return HttpStatus.valueOf(responseCode);
-        }
-    }
-
-    private static List<String> getSessionCookies(HttpsURLConnection conn) {
-        var response_headers = conn.getHeaderFields();
-        var keys = response_headers.keySet().iterator();
-        String key;
-        while (keys.hasNext()) {
-            key = keys.next();
-            if ("set-cookie".equalsIgnoreCase(key)) {
-                return response_headers.get(key);
-            }
-        }
-        return null;
-    }
-
-    private static void setSessionCookies(HttpsURLConnection conn, List<String> session) {
-        if (session != null) {
-            StringBuilder aggregated_cookies = new StringBuilder();
-            for (String cookie : session) {
-                aggregated_cookies.append(cookie).append("; ");
-            }
-            conn.setRequestProperty("cookie", aggregated_cookies.toString());
-        }
-    }
-
-    private static String extractXRSFToken(HttpsURLConnection conn) {
-        List<String> value = null;
-        var headers = conn.getHeaderFields();
-        for (String key : headers.keySet()) {
-            if ("X-CSRF-Token".equalsIgnoreCase(key)) {
-                value = headers.get(key);
-            }
-        }
-
-        if (value == null || value.size() == 0) {
-            return null;
-        }
-        return value.get(0);
-    }
-
-    private static HttpStatus sendJSON(String json, HttpsURLConnection connection) throws IOException {
-        connection.setDoOutput(true);
-        var outputStream = connection.getOutputStream();
-        var input = json.getBytes(StandardCharsets.UTF_8);
-        outputStream.write(input, 0, input.length);
-        if (connection.getResponseCode() == 201) {
-            connection.disconnect();
-            return HttpStatus.CREATED;
-        } else {
-            connection.disconnect();
-            return HttpStatus.valueOf(connection.getResponseCode());
-        }
     }
 
 
