@@ -192,6 +192,7 @@ public class NetworkUtils {
 
 
     public static boolean postJSON(String path, String host, String port, String token, String json) {
+        RestAssured.basePath = path;
         if (token.isEmpty()) {
             try {
                 given()
@@ -200,7 +201,7 @@ public class NetworkUtils {
                         .accept(ContentType.JSON)
                         .contentType(ContentType.JSON)
                         .body(json)
-                        .post(path)
+                        .post()
                         .then()
                         .statusCode(StatusCodes.CREATED);
                 return true;
@@ -219,7 +220,7 @@ public class NetworkUtils {
                         .header("X-XSRF-TOKEN", token)
                         .cookie("XSRF-TOKEN", token)
                         .body(json)
-                        .post(path)
+                        .post()
                         .then()
                         .statusCode(StatusCodes.CREATED);
                 return true;
