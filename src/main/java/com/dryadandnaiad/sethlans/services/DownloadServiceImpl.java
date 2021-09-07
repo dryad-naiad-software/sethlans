@@ -26,6 +26,7 @@ import com.dryadandnaiad.sethlans.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
@@ -46,14 +47,8 @@ public class DownloadServiceImpl implements DownloadService {
 
     @Override
     @Async
-    public void downloadBlenderFilesAsync(boolean wait) {
-        if (wait) {
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    @Scheduled(fixedRate=200000)
+    public void downloadBlenderFilesAsync() {
         log.info("Attempting to download any needed Blender Binaries.");
         var downloadDir = ConfigUtils.getProperty(ConfigKeys.DOWNLOAD_DIR);
         var blenderBinaries = blenderArchiveRepository.findAll();

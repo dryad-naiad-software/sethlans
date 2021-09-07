@@ -30,4 +30,6 @@ import java.util.List;
  */
 public interface ServerService {
     ResponseEntity<String> addNodes(List<NodeForm> selectedNodes);
+
+    void startBenchmarks();
 }

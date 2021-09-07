@@ -20,6 +20,7 @@ package com.dryadandnaiad.sethlans.repositories;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -36,4 +37,6 @@ public interface NodeRepository extends JpaRepository<Node, Long> {
     long countNodesByActiveIsTrue();
 
     boolean existsNodeByActiveIsTrue();
+
+    List<Node> findNodesByBenchmarkCompleteFalse();
 }

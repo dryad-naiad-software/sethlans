@@ -19,7 +19,6 @@ package com.dryadandnaiad.sethlans.services;
 
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.models.forms.NodeForm;
-import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
@@ -32,6 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -103,6 +104,21 @@ public class ServerServiceImpl implements ServerService {
             log.error(Throwables.getStackTraceAsString(e));
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @Override
+    @Async
+    @Scheduled(fixedRate = 200000)
+    public void startBenchmarks() {
+
+        log.info("Checking to see if any nodes are pending a benchmark.");
+        var nodesToBenchmark = nodeRepository.findNodesByBenchmarkCompleteFalse();
+
+        if (nodesToBenchmark.size() > 0) {
+            log.info(nodesToBenchmark.size() + " nodes need to be benchmarked.");
+
+        }
+
     }
 
 }

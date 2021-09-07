@@ -25,6 +25,9 @@ import static com.dryadandnaiad.sethlans.tools.TestUtils.hostWithoutDomainName;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+
 @Slf4j
 public class NodeBenchmarkIntegrationTest {
     @BeforeAll
@@ -148,7 +151,10 @@ public class NodeBenchmarkIntegrationTest {
                         .asString(), new TypeReference<List<Node>>() {
                 });
 
-        System.out.println(nodesOnServer);
+
+        assertThat(nodesOnServer.get(0).getHostname().toLowerCase()).contains(System.getProperty("sethlans.host").toLowerCase());
+        log.info("Added the following node to server:");
+        log.info(nodesOnServer.toString());
 
         var serversOnNode =  mapper
                 .readValue(get("/api/v1/management/list_servers_on_node")
@@ -159,7 +165,10 @@ public class NodeBenchmarkIntegrationTest {
                         .asString(), new TypeReference<List<Server>>() {
                 });
 
-        System.out.println(serversOnNode);
+        assertThat(serversOnNode.get(0).getHostname().toLowerCase()).contains(System.getProperty("sethlans.host").toLowerCase());
+        log.info("Confirmed server is present on node:");
+        log.info(serversOnNode.toString());
+
 
     }
 
