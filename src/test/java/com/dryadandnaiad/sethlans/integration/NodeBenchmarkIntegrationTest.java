@@ -3,6 +3,7 @@ package com.dryadandnaiad.sethlans.integration;
 import com.dryadandnaiad.sethlans.models.forms.NodeForm;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.system.Node;
+import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.tools.TestUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -148,6 +149,17 @@ public class NodeBenchmarkIntegrationTest {
                 });
 
         System.out.println(nodesOnServer);
+
+        var serversOnNode =  mapper
+                .readValue(get("/api/v1/management/list_servers_on_node")
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), new TypeReference<List<Server>>() {
+                });
+
+        System.out.println(serversOnNode);
 
     }
 

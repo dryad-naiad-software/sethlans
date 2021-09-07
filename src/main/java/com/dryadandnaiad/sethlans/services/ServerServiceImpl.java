@@ -105,8 +105,4 @@ public class ServerServiceImpl implements ServerService {
         }
     }
 
-    @Override
-    public List<Node> getNodes() {
-        return nodeRepository.findAll();
-    }
 }

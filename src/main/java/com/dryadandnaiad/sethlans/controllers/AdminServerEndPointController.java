@@ -19,6 +19,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.models.forms.NodeForm;
 import com.dryadandnaiad.sethlans.models.system.Node;
+import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.services.ServerService;
 import com.dryadandnaiad.sethlans.utils.NetworkUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -42,9 +43,11 @@ import java.util.Set;
 @Slf4j
 public class AdminServerEndPointController {
     private final ServerService serverService;
+    private final NodeRepository nodeRepository;
 
-    public AdminServerEndPointController(ServerService serverService) {
+    public AdminServerEndPointController(ServerService serverService, NodeRepository nodeRepository) {
         this.serverService = serverService;
+        this.nodeRepository = nodeRepository;
     }
 
     @GetMapping("/network_node_scan")
@@ -66,7 +69,7 @@ public class AdminServerEndPointController {
 
     @GetMapping("/current_node_list")
     public List<Node> nodeList() {
-        return serverService.getNodes();
+        return nodeRepository.findAll();
     }
 
     @PostMapping("/add_nodes_to_server")
