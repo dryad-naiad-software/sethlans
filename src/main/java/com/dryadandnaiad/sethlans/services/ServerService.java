@@ -18,6 +18,7 @@
 package com.dryadandnaiad.sethlans.services;
 
 import com.dryadandnaiad.sethlans.models.forms.NodeForm;
+import com.dryadandnaiad.sethlans.models.system.Node;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -30,4 +31,6 @@ import java.util.List;
  */
 public interface ServerService {
     ResponseEntity<String> addNodes(List<NodeForm> selectedNodes);
+
+    List<Node> getNodes();
 }

@@ -19,6 +19,7 @@ package com.dryadandnaiad.sethlans.services;
 
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.models.forms.NodeForm;
+import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
@@ -102,5 +103,10 @@ public class ServerServiceImpl implements ServerService {
             log.error(Throwables.getStackTraceAsString(e));
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @Override
+    public List<Node> getNodes() {
+        return nodeRepository.findAll();
     }
 }

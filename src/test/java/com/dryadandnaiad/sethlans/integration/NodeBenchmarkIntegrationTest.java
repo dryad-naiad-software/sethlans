@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import static com.dryadandnaiad.sethlans.tools.TestUtils.hostWithoutDomainName;
@@ -135,7 +136,18 @@ public class NodeBenchmarkIntegrationTest {
 
         log.info("Waiting 10 seconds");
 
-        Thread.sleep(60000);
+        Thread.sleep(10000);
+
+        var nodesOnServer = mapper
+                .readValue(get("/api/v1/management/current_node_list")
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), new TypeReference<List<Node>>() {
+                });
+
+        System.out.println(nodesOnServer);
 
     }
 

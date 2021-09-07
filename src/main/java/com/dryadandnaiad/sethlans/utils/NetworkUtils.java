@@ -116,7 +116,7 @@ public class NetworkUtils {
         host = setHost(host, port, secure);
 
 
-        var token = authGetCSRFToken(username, password);
+        authGetCSRFToken(username, password);
 
         return getJSON(path, host, port);
 
@@ -169,7 +169,7 @@ public class NetworkUtils {
     public static boolean postJSONToURL(String path, String host, String port, String json, boolean secure) {
         host = setHost(host, port, secure);
         var token = "";
-        return postJSON(path, host,port, token, json);
+        return postJSON(path, host, port, token, json);
     }
 
     private static String authGetCSRFToken(String username, String password) {
