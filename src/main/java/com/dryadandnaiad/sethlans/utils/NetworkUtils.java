@@ -166,6 +166,12 @@ public class NetworkUtils {
         return postJSON(path, host, port, authGetCSRFToken(username, password), json);
     }
 
+    public static boolean postJSONToURL(String path, String host, String port, String json, boolean secure) {
+        host = setHost(host, port, secure);
+        var token = "";
+        return postJSON(path, host,port, token, json);
+    }
+
     private static String authGetCSRFToken(String username, String password) {
         log.info("Starting login using username: " + username.toLowerCase() + ", " + " password: " + password);
         RestAssured.basePath = "/login";
@@ -191,7 +197,7 @@ public class NetworkUtils {
     }
 
 
-    public static boolean postJSON(String path, String host, String port, String token, String json) {
+    private static boolean postJSON(String path, String host, String port, String token, String json) {
         RestAssured.basePath = path;
         if (token.isEmpty()) {
             try {

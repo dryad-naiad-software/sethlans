@@ -54,7 +54,6 @@ public class ServerServiceImpl implements ServerService {
     @Override
     public ResponseEntity<String> addNodes(List<NodeForm> selectedNodes) {
         log.info("Adding Nodes: " + selectedNodes);
-        var count = nodeRepository.count();
         try {
             var server = Server.builder()
                     .hostname(QueryUtils.getHostname())
@@ -74,7 +73,6 @@ public class ServerServiceImpl implements ServerService {
                             " this node already exists on this server.");
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
-                var loginURL = "/login";
                 var addServerURL = "/api/v1/management/add_server_to_node";
                 var getSystemIDURL = "/api/v1/management/system_id";
                 if (NetworkUtils.postJSONToURLWithAuth(selectedNode.getNetworkPort(), selectedNode.getIpAddress(),

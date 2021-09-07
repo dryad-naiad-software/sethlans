@@ -91,7 +91,7 @@ public class NodeBenchmarkIntegrationTest {
     }
 
     @Test
-    public void node_benchmark_test() throws JsonProcessingException {
+    public void node_benchmark_test() throws JsonProcessingException, InterruptedException {
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
         var mapper = new ObjectMapper();
         log.info("Scanning for Nodes on the local network");
@@ -132,6 +132,10 @@ public class NodeBenchmarkIntegrationTest {
                 .post("/api/v1/management/add_nodes_to_server")
                 .then()
                 .statusCode(StatusCodes.CREATED);
+
+        log.info("Waiting 10 seconds");
+
+        Thread.sleep(60000);
 
     }
 
