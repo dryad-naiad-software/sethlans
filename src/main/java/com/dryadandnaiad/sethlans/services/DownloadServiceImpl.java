@@ -47,7 +47,7 @@ public class DownloadServiceImpl implements DownloadService {
 
     @Override
     @Async
-    @Scheduled(fixedDelay=50000, initialDelay = 200000)
+    @Scheduled(fixedDelay=50000)
     public void downloadBlenderFilesAsync() {
         log.info("Attempting to download any needed Blender Binaries.");
         var downloadDir = ConfigUtils.getProperty(ConfigKeys.DOWNLOAD_DIR);

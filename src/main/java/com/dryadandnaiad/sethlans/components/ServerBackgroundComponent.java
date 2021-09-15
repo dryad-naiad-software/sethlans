@@ -21,6 +21,7 @@ import com.dryadandnaiad.sethlans.services.DownloadService;
 import com.dryadandnaiad.sethlans.services.ServerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -44,6 +45,7 @@ public class ServerBackgroundComponent {
     }
 
     @PostConstruct
+    @Scheduled(initialDelay = 50000)
     public void startBackgroundServices() {
         downloadService.downloadBlenderFilesAsync();
         serverService.startBenchmarks();
