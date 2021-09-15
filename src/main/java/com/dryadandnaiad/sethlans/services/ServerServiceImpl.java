@@ -19,6 +19,7 @@ package com.dryadandnaiad.sethlans.services;
 
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.models.forms.NodeForm;
+import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
@@ -108,7 +109,7 @@ public class ServerServiceImpl implements ServerService {
 
     @Override
     @Async
-    @Scheduled(fixedRate = 200000)
+    @Scheduled(fixedDelay = 50000, initialDelay = 200000)
     public void startBenchmarks() {
 
         log.info("Checking to see if any nodes are pending a benchmark.");
@@ -116,6 +117,9 @@ public class ServerServiceImpl implements ServerService {
 
         if (nodesToBenchmark.size() > 0) {
             log.info(nodesToBenchmark.size() + " nodes need to be benchmarked.");
+            for (Node node: nodesToBenchmark) {
+
+            }
 
         }
 

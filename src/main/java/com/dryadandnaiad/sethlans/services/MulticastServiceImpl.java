@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -43,6 +44,7 @@ public class MulticastServiceImpl implements MulticastService {
 
     @Async
     @Override
+    @Scheduled(fixedDelay = 3000)
     public void sendSethlansMulticast() {
         var ip = QueryUtils.getIP();
         var port = ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT);
@@ -56,22 +58,12 @@ public class MulticastServiceImpl implements MulticastService {
             var multicastSocket = new MulticastSocket(multicastSocketPort);
             multicastSocket.setReuseAddress(true);
             var multicastGroup = InetAddress.getByName(ConfigUtils.getProperty(ConfigKeys.MULTICAST_IP));
-            int count = 0;
-            while (true) {
-                var datagramPacket = new DatagramPacket(buffer, buffer.length, multicastGroup, multicastSocketPort);
-                multicastSocket.send(datagramPacket);
-                Thread.sleep(3000);
-                count++;
-                if (count == 30) {
-                    log.info("One multicast packet sent every 3 seconds. Sent 30 multicast packets.");
-                }
+            var datagramPacket = new DatagramPacket(buffer, buffer.length, multicastGroup, multicastSocketPort);
+            multicastSocket.send(datagramPacket);
 
-            }
         } catch (IOException e) {
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
-        } catch (InterruptedException e) {
-            log.debug("Stopping Multicast Service");
         }
 
     }
