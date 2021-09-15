@@ -154,7 +154,7 @@ public class SetupIntegrationTest {
                 .ifValidationFails()
                 .get("/api/v1/setup/restart")
                 .then()
-                .statusCode(StatusCodes.ACCEPTED);
+                .statusCode(StatusCodes.OK);
 
         log.info("Waiting 10 seconds");
 
@@ -201,7 +201,7 @@ public class SetupIntegrationTest {
                 .ifValidationFails()
                 .get("/api/v1/management/shutdown")
                 .then()
-                .statusCode(StatusCodes.ACCEPTED);
+                .statusCode(StatusCodes.OK);
 
     }
 }
