@@ -114,14 +114,31 @@ public class ServerServiceImpl implements ServerService {
 
         log.info("Checking to see if any nodes are pending a benchmark.");
         var nodesToBenchmark = nodeRepository.findNodesByBenchmarkCompleteFalse();
+        try {
+            var server = Server.builder()
+                    .hostname(QueryUtils.getHostname())
+                    .ipAddress(QueryUtils.getIP())
+                    .networkPort(ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT))
+                    .systemID(ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID))
+                    .build();
 
-        if (nodesToBenchmark.size() > 0) {
-            log.info(nodesToBenchmark.size() + " nodes need to be benchmarked.");
-            for (Node node: nodesToBenchmark) {
+            var objectMapper = new ObjectMapper();
+            var serverAsJson = objectMapper.writeValueAsString(server);
 
+            if (nodesToBenchmark.size() > 0) {
+                log.info(nodesToBenchmark.size() + " nodes need to be benchmarked.");
+                for (Node node : nodesToBenchmark) {
+                    var path = "/api/v1/management/benchmark_request";
+                    var host = node.getIpAddress();
+                    var port = node.getNetworkPort();
+                    NetworkUtils.postJSONToURL(path, host, port, serverAsJson, true);
+                }
             }
-
+        } catch (JsonProcessingException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
         }
+
 
     }
 

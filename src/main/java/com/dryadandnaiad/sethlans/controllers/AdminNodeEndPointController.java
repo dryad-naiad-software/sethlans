@@ -38,7 +38,7 @@ import java.util.List;
  */
 @RestController
 @Slf4j
-@RequestMapping("/api/v1/management")
+@RequestMapping("/api/v1/management/")
 @Profile({"NODE", "DUAL"})
 public class AdminNodeEndPointController {
 
