@@ -68,7 +68,7 @@ public class AdminNodeEndPointController {
         return serverRepository.findAll();
     }
 
-    @GetMapping("/benchmark_request")
+    @PostMapping("/benchmark_request")
     public ResponseEntity<Void> incomingBenchmarkRequest(@RequestBody Server server) {
         log.debug("Incoming benchmark request");
         if (serverRepository.findBySystemID(server.getSystemID()).isPresent()) {
@@ -79,9 +79,9 @@ public class AdminNodeEndPointController {
     }
 
     @GetMapping("/benchmark_status")
-    public boolean benchmarkStatus(@RequestBody Server server) {
-        if (serverRepository.findBySystemID(server.getSystemID()).isPresent()) {
-            return benchmarkService.benchmarkStatus(server);
+    public boolean benchmarkStatus(@RequestParam String serverID) {
+        if (serverRepository.findBySystemID(serverID).isPresent()) {
+            return benchmarkService.benchmarkStatus(serverRepository.findBySystemID(serverID).get());
         }
         log.error("Server is not authorized on this node.");
         return false;
