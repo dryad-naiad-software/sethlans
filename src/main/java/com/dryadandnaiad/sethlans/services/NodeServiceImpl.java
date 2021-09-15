@@ -51,6 +51,7 @@ public class NodeServiceImpl implements NodeService {
 
     @Override
     public ResponseEntity<Void> incomingBenchmarkRequest(Server server) {
+        log.debug("Incoming Benchmark Request from " + server);
         var objectMapper = new ObjectMapper();
         var nodeID = ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID);
         try {
