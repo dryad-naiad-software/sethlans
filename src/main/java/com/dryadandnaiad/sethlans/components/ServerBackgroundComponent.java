@@ -44,8 +44,7 @@ public class ServerBackgroundComponent {
     }
 
     @PostConstruct
-    public void startBackgroundServices() throws InterruptedException {
-        Thread.sleep(20000);
+    public void startBackgroundServices() {
         downloadService.downloadBlenderFilesAsync();
         serverService.startBenchmarks();
 
