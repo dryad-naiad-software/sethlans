@@ -70,6 +70,7 @@ public class AdminNodeEndPointController {
 
     @GetMapping("/benchmark_request")
     public ResponseEntity<Void> incomingBenchmarkRequest(@RequestBody Server server) {
+        log.debug("Incoming benchmark request");
         if (serverRepository.findBySystemID(server.getSystemID()).isPresent()) {
             return nodeService.incomingBenchmarkRequest(server);
         }
