@@ -60,6 +60,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     @Override
     @Async
     public void processBenchmarkRequest(Server server, BlenderArchive blenderArchive) {
+        log.debug("Processing Benchmark request from " + server.getHostname() );
         var benchmarkDir = ConfigUtils.getProperty(ConfigKeys.BENCHMARK_DIR);
         var blenderExecutableList = PropertiesUtils.getInstalledBlenderExecutables();
         if (blenderExecutableList.isEmpty()) {

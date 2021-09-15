@@ -32,6 +32,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -150,6 +151,24 @@ public class NetworkUtils {
         RestAssured.port = Integer.parseInt(port);
         RestAssured.baseURI = host;
         return host;
+    }
+
+    public static String getJSONWithParams(String path, String host, String port, Map<String, String> params, boolean secure) {
+        host = setHost(host, port, secure);
+
+        try {
+            RestAssured.basePath = path;
+            return given().params(params).when().get()
+                    .then().statusCode(200)
+                    .extract()
+                    .response()
+                    .body()
+                    .asString();
+        } catch (AssertionError | Exception e) {
+            log.error("Unable to connect to " + host + ":" + port + path);
+            log.error(Throwables.getStackTraceAsString(e));
+            return null;
+        }
     }
 
 

@@ -96,13 +96,13 @@ public class SetupController {
     @GetMapping("/restart")
     public ResponseEntity<Void> restartSethlans() {
         sethlansManagerService.restart();
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/shutdown")
     public ResponseEntity<Void> shutdownSethlans() {
         sethlansManagerService.shutdown();
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

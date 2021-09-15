@@ -27,6 +27,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -55,10 +56,14 @@ public class NodeServiceImpl implements NodeService {
         var objectMapper = new ObjectMapper();
         var nodeID = ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID);
         try {
-            var path = "/api/v1/server_queue/latest_blender_archive?system-id=" + nodeID + "&os=" + QueryUtils.getOS().toString();
+            var params = ImmutableMap.<String, String>builder()
+                    .put("system-id", nodeID)
+                    .put("os", QueryUtils.getOS().toString())
+                    .build();
+            var path = "/api/v1/server_queue/latest_blender_archive";
             var host = server.getIpAddress();
             var port = server.getNetworkPort();
-            var blenderArchiveJSON = NetworkUtils.getJSONFromURL(path,host, port, true);
+            var blenderArchiveJSON = NetworkUtils.getJSONWithParams(path,host, port, params, true);
             log.debug(blenderArchiveJSON);
             var blenderArchive = objectMapper.readValue(blenderArchiveJSON, new TypeReference<BlenderArchive>() {
             });
@@ -68,6 +73,6 @@ public class NodeServiceImpl implements NodeService {
             log.error(Throwables.getStackTraceAsString(e));
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
