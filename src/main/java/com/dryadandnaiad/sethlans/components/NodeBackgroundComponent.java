@@ -42,6 +42,7 @@ public class NodeBackgroundComponent {
 
     @PostConstruct
     public void startMulticast() {
+        log.debug("Starting Sethlans Multicast");
         multicastService.sendSethlansMulticast();
     }
 }

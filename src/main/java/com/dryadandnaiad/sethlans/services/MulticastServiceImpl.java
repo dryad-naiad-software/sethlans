@@ -50,9 +50,7 @@ public class MulticastServiceImpl implements MulticastService {
         var port = ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT);
         var multicastSocketPort =
                 Integer.parseInt(Objects.requireNonNull(ConfigUtils.getProperty(ConfigKeys.MULTICAST_PORT)));
-
         var message = "Sethlans:" + ip + ":" + port;
-
         try {
             byte[] buffer = message.getBytes();
             var multicastSocket = new MulticastSocket(multicastSocketPort);
