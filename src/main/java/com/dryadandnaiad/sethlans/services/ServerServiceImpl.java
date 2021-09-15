@@ -109,12 +109,11 @@ public class ServerServiceImpl implements ServerService {
 
     @Override
     @Async
-    @Scheduled(fixedDelay = 200000)
+    @Scheduled(fixedDelay = 200000, initialDelay = 200000)
     public void startBenchmarks() {
         log.info("Checking to see if any nodes are pending a benchmark.");
         var nodesToBenchmark = nodeRepository.findNodesByBenchmarkCompleteFalse();
         try {
-            Thread.sleep(20000);
             var server = Server.builder()
                     .hostname(QueryUtils.getHostname())
                     .ipAddress(QueryUtils.getIP())
@@ -134,7 +133,7 @@ public class ServerServiceImpl implements ServerService {
                     NetworkUtils.postJSONToURL(path, host, port, serverAsJson, true);
                 }
             }
-        } catch (JsonProcessingException | InterruptedException e) {
+        } catch (JsonProcessingException e) {
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
         }
