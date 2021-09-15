@@ -131,7 +131,7 @@ public class NetworkUtils {
                     .response()
                     .body()
                     .asString();
-        } catch (AssertionError e) {
+        } catch (AssertionError | Exception e) {
             log.error("Unable to connect to " + host + ":" + port + path);
             log.error(Throwables.getStackTraceAsString(e));
             return null;
@@ -211,7 +211,7 @@ public class NetworkUtils {
                         .then()
                         .statusCode(StatusCodes.CREATED);
                 return true;
-            } catch (AssertionError e) {
+            } catch (AssertionError | Exception e) {
                 log.error("Unable to connect to " + host + ":" + port + path);
                 log.error(Throwables.getStackTraceAsString(e));
                 return false;
@@ -230,7 +230,7 @@ public class NetworkUtils {
                         .then()
                         .statusCode(StatusCodes.CREATED);
                 return true;
-            } catch (AssertionError e) {
+            } catch (AssertionError | Exception e) {
                 log.error("Unable to connect to " + host + ":" + port + path);
                 log.error(Throwables.getStackTraceAsString(e));
                 return false;

@@ -109,7 +109,7 @@ public class ServerServiceImpl implements ServerService {
 
     @Override
     @Async
-    @Scheduled(fixedDelay = 200000, initialDelay = 200000)
+    @Scheduled(fixedDelay = 200000)
     public void startBenchmarks() {
         log.info("Checking to see if any nodes are pending a benchmark.");
         var nodesToBenchmark = nodeRepository.findNodesByBenchmarkCompleteFalse();
