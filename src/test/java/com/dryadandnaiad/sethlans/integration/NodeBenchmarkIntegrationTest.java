@@ -169,7 +169,7 @@ public class NodeBenchmarkIntegrationTest {
         log.info("Confirmed server is present on node:");
         log.info(serversOnNode.toString());
 
-        Thread.sleep(900000);
+        Thread.sleep(9000000);
 
 
     }

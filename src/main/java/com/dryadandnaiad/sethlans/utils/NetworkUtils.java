@@ -192,7 +192,7 @@ public class NetworkUtils {
     }
 
     private static String authGetCSRFToken(String username, String password) {
-        log.info("Starting login using username: " + username.toLowerCase() + ", " + " password: " + password);
+        log.debug("Starting login");
         RestAssured.basePath = "/login";
         var response =
                 given().
@@ -208,9 +208,9 @@ public class NetworkUtils {
                 .when().post().then().statusCode(302).extract().response();
 
         sessionId = response.cookie("JSESSIONID");
-        log.info("Login completed, obtained the following cookies");
-        log.info("XSRF-TOKEN: " + token);
-        log.info("JSESSIONID: " + sessionId);
+        log.debug("Login completed, obtained the following cookies");
+        log.debug("XSRF-TOKEN: " + token);
+        log.debug("JSESSIONID: " + sessionId);
 
         return token;
     }
