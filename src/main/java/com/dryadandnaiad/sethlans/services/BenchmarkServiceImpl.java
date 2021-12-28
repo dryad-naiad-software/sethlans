@@ -26,10 +26,14 @@ import com.dryadandnaiad.sethlans.models.blender.tasks.TaskFrameInfo;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskScriptInfo;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskServerInfo;
 import com.dryadandnaiad.sethlans.models.hardware.GPU;
+import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.repositories.RenderTaskRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
+import com.dryadandnaiad.sethlans.utils.NetworkUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -60,7 +64,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     @Override
     @Async
     public void processBenchmarkRequest(Server server, BlenderArchive blenderArchive) {
-        log.debug("Processing Benchmark request from " + server.getHostname() );
+        log.debug("Processing Benchmark request from " + server.getHostname());
         var benchmarkDir = ConfigUtils.getProperty(ConfigKeys.BENCHMARK_DIR);
         var blenderExecutableList = PropertiesUtils.getInstalledBlenderExecutables();
         if (blenderExecutableList.isEmpty()) {
@@ -105,6 +109,37 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                     }
                 }
                 renderTaskRepository.save(renderTask);
+
+                if (benchmarksComplete(server)) {
+                    var path = "/api/v1/management/update_node_benchmark_state";
+                    var host = server.getIpAddress();
+                    var port = server.getNetworkPort();
+                    var node = Node.builder()
+                            .nodeType(nodeType)
+                            .benchmarkComplete(true)
+                            .systemID(PropertiesUtils.getSystemID()).build();
+                    switch (nodeType) {
+                        case CPU:
+                            node.setCpuRating(PropertiesUtils.getCPURating());
+                            break;
+                        case GPU:
+                            node.setSelectedGPUs(PropertiesUtils.getSelectedGPUs());
+                            break;
+                        case CPU_GPU:
+                            node.setCpuRating(PropertiesUtils.getCPURating());
+                            node.setSelectedGPUs(PropertiesUtils.getSelectedGPUs());
+                            break;
+                    }
+                    try {
+                        var objectMapper = new ObjectMapper();
+                        var nodeAsJSON = objectMapper.writeValueAsString(node);
+                        NetworkUtils.postJSONToURL(path, host, port, nodeAsJSON, true);
+                    } catch (JsonProcessingException e) {
+                        log.error(e.getMessage());
+                        log.error(Throwables.getStackTraceAsString(e));
+                    }
+
+                }
             }
 
 
@@ -114,7 +149,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     }
 
     @Override
-    public boolean benchmarkStatus(Server server) {
+    public boolean benchmarksComplete(Server server) {
         var systemID = server.getSystemID();
         var benchmarkList = renderTaskRepository.findRenderTaskByBenchmarkIsTrue();
         for (RenderTask benchmark : benchmarkList) {

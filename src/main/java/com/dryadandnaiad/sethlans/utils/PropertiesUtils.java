@@ -120,6 +120,10 @@ public class PropertiesUtils {
 
     }
 
+    public static String getSystemID() {
+        return getProperty(ConfigKeys.SYSTEM_ID);
+    }
+
 
     public static Integer getSelectedCores() {
         return Integer.parseInt(getProperty(ConfigKeys.CPU_CORES));

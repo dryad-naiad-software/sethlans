@@ -45,8 +45,12 @@ public class ServerBackgroundComponent {
 
     @PostConstruct
     public void startBackgroundServices() {
-        downloadService.downloadBlenderFilesAsync();
-        serverService.startBenchmarks();
+        try {
+            downloadService.downloadBlenderFilesAsync();
+            serverService.startBenchmarks();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
     }
 }

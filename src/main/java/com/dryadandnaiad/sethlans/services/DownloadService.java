@@ -25,5 +25,5 @@ package com.dryadandnaiad.sethlans.services;
  */
 public interface DownloadService {
 
-    void downloadBlenderFilesAsync();
+    void downloadBlenderFilesAsync() throws InterruptedException;
 }

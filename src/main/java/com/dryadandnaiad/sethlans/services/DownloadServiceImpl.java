@@ -26,7 +26,6 @@ import com.dryadandnaiad.sethlans.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
@@ -47,22 +46,26 @@ public class DownloadServiceImpl implements DownloadService {
 
     @Override
     @Async
-    @Scheduled(fixedDelay=50000)
-    public void downloadBlenderFilesAsync() {
-        log.info("Attempting to download any needed Blender Binaries.");
-        var downloadDir = ConfigUtils.getProperty(ConfigKeys.DOWNLOAD_DIR);
-        var blenderBinaries = blenderArchiveRepository.findAll();
-        for (BlenderArchive blenderArchive : blenderBinaries) {
-            if (!blenderArchive.isDownloaded()) {
-                var downloadedFile = BlenderUtils.downloadBlenderToServer(blenderArchive.getBlenderVersion(),
-                        downloadDir, blenderArchive.getBlenderOS());
-                if (downloadedFile != null) {
-                    blenderArchive.setBlenderFile(downloadedFile.toString());
-                    blenderArchive.setBlenderFileMd5(FileUtils.getMD5ofFile(downloadedFile));
-                    blenderArchive.setDownloaded(true);
-                    blenderArchiveRepository.save(blenderArchive);
+    public void downloadBlenderFilesAsync() throws InterruptedException {
+        Thread.sleep(20000);
+        while(true) {
+            log.info("Attempting to download any needed Blender Binaries.");
+            var downloadDir = ConfigUtils.getProperty(ConfigKeys.DOWNLOAD_DIR);
+            var blenderBinaries = blenderArchiveRepository.findAll();
+            for (BlenderArchive blenderArchive : blenderBinaries) {
+                if (!blenderArchive.isDownloaded()) {
+                    var downloadedFile = BlenderUtils.downloadBlenderToServer(blenderArchive.getBlenderVersion(),
+                            downloadDir, blenderArchive.getBlenderOS());
+                    if (downloadedFile != null) {
+                        blenderArchive.setBlenderFile(downloadedFile.toString());
+                        blenderArchive.setBlenderFileMd5(FileUtils.getMD5ofFile(downloadedFile));
+                        blenderArchive.setDownloaded(true);
+                        blenderArchiveRepository.save(blenderArchive);
+                    }
                 }
             }
+            Thread.sleep(600000);
         }
+
     }
 }

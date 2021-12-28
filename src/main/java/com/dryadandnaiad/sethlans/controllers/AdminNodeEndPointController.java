@@ -80,7 +80,7 @@ public class AdminNodeEndPointController {
     @GetMapping("/benchmark_status")
     public boolean benchmarkStatus(@RequestParam String serverID) {
         if (serverRepository.findBySystemID(serverID).isPresent()) {
-            return benchmarkService.benchmarkStatus(serverRepository.findBySystemID(serverID).get());
+            return benchmarkService.benchmarksComplete(serverRepository.findBySystemID(serverID).get());
         }
         log.error("Server is not authorized on this node.");
         return false;

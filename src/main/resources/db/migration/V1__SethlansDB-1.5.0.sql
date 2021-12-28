@@ -19,6 +19,7 @@ create table node
     last_updated          timestamp,
     version               bigint,
     active                boolean not null,
+    benchmark_pending     boolean not null,
     benchmark_complete    boolean not null,
     arch                  varchar(255),
     cores                 integer,

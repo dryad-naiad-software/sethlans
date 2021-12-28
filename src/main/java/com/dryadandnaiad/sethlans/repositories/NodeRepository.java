@@ -38,5 +38,5 @@ public interface NodeRepository extends JpaRepository<Node, Long> {
 
     boolean existsNodeByActiveIsTrue();
 
-    List<Node> findNodesByBenchmarkCompleteFalse();
+    List<Node> findNodesByBenchmarkCompleteFalseAndBenchmarkPendingFalse();
 }

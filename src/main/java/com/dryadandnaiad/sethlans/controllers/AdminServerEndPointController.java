@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.services.ServerService;
 import com.dryadandnaiad.sethlans.utils.NetworkUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -77,5 +78,33 @@ public class AdminServerEndPointController {
         log.info(selectedNodes.toString());
         return serverService.addNodes(selectedNodes);
     }
+
+    @PostMapping("/update_node_benchmark_state")
+    public ResponseEntity<Void> updateNodeBenchmarkState(@RequestBody Node node) {
+        var nodeID = node.getSystemID();
+        var nodeType = node.getNodeType();
+        if (nodeRepository.findNodeBySystemIDEquals(nodeID).isPresent()) {
+            var nodeToSave = nodeRepository.findNodeBySystemIDEquals(nodeID).get();
+
+            switch (nodeType) {
+                case CPU:
+                    nodeToSave.setCpuRating(node.getCpuRating());
+                    break;
+                case GPU:
+                    nodeToSave.setSelectedGPUs(node.getSelectedGPUs());
+                    break;
+                case CPU_GPU:
+                    nodeToSave.setCpuRating(node.getCpuRating());
+                    nodeToSave.setSelectedGPUs(node.getSelectedGPUs());
+            }
+            nodeToSave.setBenchmarkPending(false);
+            nodeToSave.setBenchmarkComplete(true);
+            nodeRepository.save(nodeToSave);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
 }

@@ -31,5 +31,5 @@ public interface BenchmarkService {
 
     void processBenchmarkRequest(Server server, BlenderArchive blenderArchive);
 
-    boolean benchmarkStatus(Server server);
+    boolean benchmarksComplete(Server server);
 }

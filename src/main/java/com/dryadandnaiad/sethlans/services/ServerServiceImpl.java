@@ -33,7 +33,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -109,34 +108,42 @@ public class ServerServiceImpl implements ServerService {
 
     @Override
     @Async
-    @Scheduled(fixedDelay = 200000)
-    public void startBenchmarks() {
-        log.info("Checking to see if any nodes are pending a benchmark.");
-        var nodesToBenchmark = nodeRepository.findNodesByBenchmarkCompleteFalse();
-        try {
-            var server = Server.builder()
-                    .hostname(QueryUtils.getHostname())
-                    .ipAddress(QueryUtils.getIP())
-                    .networkPort(ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT))
-                    .systemID(ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID))
-                    .build();
+    public void startBenchmarks() throws InterruptedException {
+        Thread.sleep(300000);
+        while(true){
+            log.info("Checking to see if any nodes are pending a benchmark.");
+            var nodesToBenchmark =
+                    nodeRepository.findNodesByBenchmarkCompleteFalseAndBenchmarkPendingFalse();
+            try {
+                var server = Server.builder()
+                        .hostname(QueryUtils.getHostname())
+                        .ipAddress(QueryUtils.getIP())
+                        .networkPort(ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT))
+                        .systemID(ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID))
+                        .build();
 
-            var objectMapper = new ObjectMapper();
-            var serverAsJson = objectMapper.writeValueAsString(server);
+                var objectMapper = new ObjectMapper();
+                var serverAsJson = objectMapper.writeValueAsString(server);
 
-            if (nodesToBenchmark.size() > 0) {
-                log.info(nodesToBenchmark.size() + " nodes need to be benchmarked.");
-                for (Node node : nodesToBenchmark) {
-                    var path = "/api/v1/management/benchmark_request";
-                    var host = node.getIpAddress();
-                    var port = node.getNetworkPort();
-                    NetworkUtils.postJSONToURL(path, host, port, serverAsJson, true);
+                if (nodesToBenchmark.size() > 0) {
+                    log.info(nodesToBenchmark.size() + " nodes need to be benchmarked.");
+                    for (Node node : nodesToBenchmark) {
+                        var path = "/api/v1/management/benchmark_request";
+                        var host = node.getIpAddress();
+                        var port = node.getNetworkPort();
+                        if(NetworkUtils.postJSONToURL(path, host, port, serverAsJson, true)) {
+                            node.setBenchmarkPending(true);
+                            nodeRepository.save(node);
+                        }
+                    }
                 }
+            } catch (JsonProcessingException e) {
+                log.error(e.getMessage());
+                log.error(Throwables.getStackTraceAsString(e));
             }
-        } catch (JsonProcessingException e) {
-            log.error(e.getMessage());
-            log.error(Throwables.getStackTraceAsString(e));
+            Thread.sleep(600000);
         }
+
 
 
     }
