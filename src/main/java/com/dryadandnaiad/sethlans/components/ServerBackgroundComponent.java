@@ -47,7 +47,7 @@ public class ServerBackgroundComponent {
     public void startBackgroundServices() {
         try {
             downloadService.downloadBlenderFilesAsync();
-            serverService.startPendingBenchmarks();
+            serverService.pendingBenchmarksToSend();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

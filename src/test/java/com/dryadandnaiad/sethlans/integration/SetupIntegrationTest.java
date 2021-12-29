@@ -19,6 +19,8 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.undertow.util.StatusCodes;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import java.io.FileNotFoundException;
@@ -194,14 +196,16 @@ public class SetupIntegrationTest {
         assertThat(nodeInfo, notNullValue());
         log.info(nodeInfo.toString());
 
-        log.info("Shutting down " + RestAssured.baseURI);
+    }
 
-        given()
+    @AfterAll
+    public static void shutdown() {
+        var response = given()
                 .log()
                 .ifValidationFails()
-                .get("/api/v1/management/shutdown")
-                .then()
-                .statusCode(StatusCodes.OK);
+                .get("/api/v1/management/shutdown");
 
+        Assertions.assertThat(response.getStatusCode()).isGreaterThanOrEqualTo(200).isLessThan(300);
     }
+
 }

@@ -21,6 +21,7 @@ import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.models.forms.NodeForm;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Server;
+import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.NetworkUtils;
@@ -48,9 +49,11 @@ import java.util.List;
 @Profile({"SERVER", "DUAL"})
 public class ServerServiceImpl implements ServerService {
     private final NodeRepository nodeRepository;
+    private final BlenderArchiveRepository blenderArchiveRepository;
 
-    public ServerServiceImpl(NodeRepository nodeRepository) {
+    public ServerServiceImpl(NodeRepository nodeRepository, BlenderArchiveRepository blenderArchiveRepository) {
         this.nodeRepository = nodeRepository;
+        this.blenderArchiveRepository = blenderArchiveRepository;
     }
 
     @Override
@@ -108,38 +111,42 @@ public class ServerServiceImpl implements ServerService {
 
     @Override
     @Async
-    public void startPendingBenchmarks() throws InterruptedException {
+    public void pendingBenchmarksToSend() throws InterruptedException {
+        if(blenderArchiveRepository.findAllByDownloadedIsTrue().isEmpty()) {
             Thread.sleep(300000);
-            log.info("Checking to see if any nodes are pending a benchmark.");
-            var nodesToBenchmark =
-                    nodeRepository.findNodesByBenchmarkCompleteFalseAndBenchmarkPendingFalse();
-            try {
-                var server = Server.builder()
-                        .hostname(QueryUtils.getHostname())
-                        .ipAddress(QueryUtils.getIP())
-                        .networkPort(ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT))
-                        .systemID(ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID))
-                        .build();
+        } else {
+            Thread.sleep(60000);
+        }
+        log.info("Checking to see if any nodes are pending a benchmark.");
+        var nodesToBenchmark =
+                nodeRepository.findNodesByBenchmarkCompleteFalseAndBenchmarkPendingFalse();
+        try {
+            var server = Server.builder()
+                    .hostname(QueryUtils.getHostname())
+                    .ipAddress(QueryUtils.getIP())
+                    .networkPort(ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT))
+                    .systemID(ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID))
+                    .build();
 
-                var objectMapper = new ObjectMapper();
-                var serverAsJson = objectMapper.writeValueAsString(server);
+            var objectMapper = new ObjectMapper();
+            var serverAsJson = objectMapper.writeValueAsString(server);
 
-                if (nodesToBenchmark.size() > 0) {
-                    log.info(nodesToBenchmark.size() + " nodes need to be benchmarked.");
-                    for (Node node : nodesToBenchmark) {
-                        var path = "/api/v1/management/benchmark_request";
-                        var host = node.getIpAddress();
-                        var port = node.getNetworkPort();
-                        if(NetworkUtils.postJSONToURL(path, host, port, serverAsJson, true)) {
-                            node.setBenchmarkPending(true);
-                            nodeRepository.save(node);
-                        }
+            if (nodesToBenchmark.size() > 0) {
+                log.info(nodesToBenchmark.size() + " nodes need to be benchmarked.");
+                for (Node node : nodesToBenchmark) {
+                    var path = "/api/v1/management/benchmark_request";
+                    var host = node.getIpAddress();
+                    var port = node.getNetworkPort();
+                    if (NetworkUtils.postJSONToURL(path, host, port, serverAsJson, true)) {
+                        node.setBenchmarkPending(true);
+                        nodeRepository.save(node);
                     }
                 }
-            } catch (JsonProcessingException e) {
-                log.error(e.getMessage());
-                log.error(Throwables.getStackTraceAsString(e));
             }
+        } catch (JsonProcessingException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+        }
     }
 
 }

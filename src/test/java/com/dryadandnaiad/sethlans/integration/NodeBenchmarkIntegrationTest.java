@@ -26,7 +26,6 @@ import java.util.Set;
 import static com.dryadandnaiad.sethlans.tools.TestUtils.hostWithoutDomainName;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -204,12 +203,12 @@ public class NodeBenchmarkIntegrationTest {
 
     @AfterAll
     public static void shutdown() {
-        given()
+        var response = given()
                 .log()
                 .ifValidationFails()
-                .get("/api/v1/management/shutdown")
-                .then()
-                .statusCode(StatusCodes.ACCEPTED);
+                .get("/api/v1/management/shutdown");
+
+        assertThat(response.getStatusCode()).isGreaterThanOrEqualTo(200).isLessThan(300);
     }
 
 

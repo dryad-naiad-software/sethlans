@@ -86,6 +86,13 @@ public class BenchmarkServiceImpl implements BenchmarkService {
 
     }
 
+    @Override
+    @Async
+    public void pendingBenchmarks() {
+        var benchmarksToExecute =
+                renderTaskRepository.findRenderTasksByBenchmarkIsTrueAndInProgressIsFalseAndCompleteIsFalse();
+    }
+
     private void runBenchmarks() {
         var benchmarksToExecute =
                 renderTaskRepository.findRenderTasksByBenchmarkIsTrueAndInProgressIsFalseAndCompleteIsFalse();

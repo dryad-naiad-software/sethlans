@@ -31,5 +31,5 @@ import java.util.List;
 public interface ServerService {
     ResponseEntity<String> addNodes(List<NodeForm> selectedNodes);
 
-    void startPendingBenchmarks() throws InterruptedException;
+    void pendingBenchmarksToSend() throws InterruptedException;
 }

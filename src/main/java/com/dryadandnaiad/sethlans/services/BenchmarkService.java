@@ -19,6 +19,7 @@ package com.dryadandnaiad.sethlans.services;
 
 import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
 import com.dryadandnaiad.sethlans.models.system.Server;
+import org.springframework.scheduling.annotation.Async;
 
 /**
  * File created by Mario Estrella on 6/17/2020.
@@ -30,6 +31,9 @@ import com.dryadandnaiad.sethlans.models.system.Server;
 public interface BenchmarkService {
 
     void processBenchmarkRequest(Server server, BlenderArchive blenderArchive);
+
+    @Async
+    void pendingBenchmarks();
 
     boolean benchmarksComplete(Server server);
 }
