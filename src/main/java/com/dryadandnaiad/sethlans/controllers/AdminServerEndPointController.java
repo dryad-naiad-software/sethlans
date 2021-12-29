@@ -22,6 +22,8 @@ import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.services.ServerService;
 import com.dryadandnaiad.sethlans.utils.NetworkUtils;
+import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
+import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -79,12 +81,29 @@ public class AdminServerEndPointController {
         return serverService.addNodes(selectedNodes);
     }
 
+    @GetMapping("/node_benchmark_status")
+    public boolean isNodeBenchmarkComplete(@RequestParam String nodeID) {
+        if (nodeRepository.findNodeBySystemIDEquals(nodeID).isPresent()) {
+            var nodeToCheck = nodeRepository.findNodeBySystemIDEquals(nodeID).get();
+            var path = "/api/v1/management/benchmark_status";
+            var host = nodeToCheck.getIpAddress();
+            var port = nodeToCheck.getNetworkPort();
+            var params = ImmutableMap.<String, String>builder()
+                    .put("serverID", PropertiesUtils.getSystemID())
+                    .build();
+            return Boolean.parseBoolean(NetworkUtils.getJSONWithParams(path, host, port, params, true));
+        }
+
+        return false;
+    }
+
     @PostMapping("/update_node_benchmark_state")
     public ResponseEntity<Void> updateNodeBenchmarkState(@RequestBody Node node) {
         var nodeID = node.getSystemID();
         var nodeType = node.getNodeType();
         if (nodeRepository.findNodeBySystemIDEquals(nodeID).isPresent()) {
             var nodeToSave = nodeRepository.findNodeBySystemIDEquals(nodeID).get();
+            log.debug("Received Benchmark(s) from " + nodeToSave.getHostname() );
 
             switch (nodeType) {
                 case CPU:

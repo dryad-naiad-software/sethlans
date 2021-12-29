@@ -160,6 +160,9 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     public boolean benchmarksComplete(Server server) {
         var systemID = server.getSystemID();
         var benchmarkList = renderTaskRepository.findRenderTaskByBenchmarkIsTrue();
+        if (benchmarkList.isEmpty()) {
+            return false;
+        }
         for (RenderTask benchmark : benchmarkList) {
             if (benchmark.getServerInfo().getSystemID().equals(systemID)) {
                 if (!benchmark.isComplete()) {

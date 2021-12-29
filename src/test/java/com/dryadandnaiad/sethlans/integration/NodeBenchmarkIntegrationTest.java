@@ -5,9 +5,11 @@ import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.tools.TestUtils;
+import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableMap;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.undertow.util.StatusCodes;
@@ -169,7 +171,33 @@ public class NodeBenchmarkIntegrationTest {
         log.info("Confirmed server is present on node:");
         log.info(serversOnNode.toString());
 
-        Thread.sleep(9000000);
+        Thread.sleep(60000);
+        var params = ImmutableMap.<String, String>builder()
+                .put("nodeID", PropertiesUtils.getSystemID())
+                .build();
+
+        var benchmarkState = Boolean.parseBoolean(given().params(params).when().get("/api/v1/management/node_benchmark_status")
+                .then()
+                .extract()
+                .response()
+                .body()
+                .asString());
+
+        log.info("Waiting for Benchmark(s) to complete");
+
+        while (!benchmarkState) {
+            Thread.sleep(10000);
+            benchmarkState = Boolean.parseBoolean(given().params(params).when().get("/api/v1/management/node_benchmark_status")
+                    .then()
+                    .extract()
+                    .response()
+                    .body()
+                    .asString());
+        }
+
+        log.info("Benchmark Complete");
+
+        Thread.sleep(30000);
 
 
     }
