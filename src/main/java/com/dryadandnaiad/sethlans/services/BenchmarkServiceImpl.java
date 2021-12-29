@@ -80,6 +80,13 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         var nodeType = PropertiesUtils.getNodeType();
         createBenchmarkTasks(nodeType, blenderExecutable.getBlenderExecutable(),
                 benchmarkBlend.toString(), blenderVersion, server.getSystemID());
+
+        runBenchmarks();
+        reportBenchmarkState(server, nodeType);
+
+    }
+
+    private void runBenchmarks() {
         var benchmarksToExecute =
                 renderTaskRepository.findRenderTasksByBenchmarkIsTrueAndInProgressIsFalseAndCompleteIsFalse();
         for (RenderTask renderTask : benchmarksToExecute) {
@@ -110,43 +117,44 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                 }
                 renderTaskRepository.save(renderTask);
 
-                if (benchmarksComplete(server)) {
-                    var path = "/api/v1/management/update_node_benchmark_state";
-                    var host = server.getIpAddress();
-                    var port = server.getNetworkPort();
-                    var node = Node.builder()
-                            .nodeType(nodeType)
-                            .benchmarkComplete(true)
-                            .systemID(PropertiesUtils.getSystemID()).build();
-                    switch (nodeType) {
-                        case CPU:
-                            node.setCpuRating(PropertiesUtils.getCPURating());
-                            break;
-                        case GPU:
-                            node.setSelectedGPUs(PropertiesUtils.getSelectedGPUs());
-                            break;
-                        case CPU_GPU:
-                            node.setCpuRating(PropertiesUtils.getCPURating());
-                            node.setSelectedGPUs(PropertiesUtils.getSelectedGPUs());
-                            break;
-                    }
-                    try {
-                        var objectMapper = new ObjectMapper();
-                        var nodeAsJSON = objectMapper.writeValueAsString(node);
-                        NetworkUtils.postJSONToURL(path, host, port, nodeAsJSON, true);
-                    } catch (JsonProcessingException e) {
-                        log.error(e.getMessage());
-                        log.error(Throwables.getStackTraceAsString(e));
-                    }
 
-                }
+            }
+        }
+    }
+
+    private void reportBenchmarkState(Server server, NodeType nodeType) {
+        if (benchmarksComplete(server)) {
+            var path = "/api/v1/management/update_node_benchmark_state";
+            var host = server.getIpAddress();
+            var port = server.getNetworkPort();
+            var node = Node.builder()
+                    .nodeType(nodeType)
+                    .benchmarkComplete(true)
+                    .systemID(PropertiesUtils.getSystemID()).build();
+            switch (nodeType) {
+                case CPU:
+                    node.setCpuRating(PropertiesUtils.getCPURating());
+                    break;
+                case GPU:
+                    node.setSelectedGPUs(PropertiesUtils.getSelectedGPUs());
+                    break;
+                case CPU_GPU:
+                    node.setCpuRating(PropertiesUtils.getCPURating());
+                    node.setSelectedGPUs(PropertiesUtils.getSelectedGPUs());
+                    break;
+            }
+            try {
+                var objectMapper = new ObjectMapper();
+                var nodeAsJSON = objectMapper.writeValueAsString(node);
+                NetworkUtils.postJSONToURL(path, host, port, nodeAsJSON, true);
+            } catch (JsonProcessingException e) {
+                log.error(e.getMessage());
+                log.error(Throwables.getStackTraceAsString(e));
             }
 
-
         }
-
-
     }
+
 
     @Override
     public boolean benchmarksComplete(Server server) {
@@ -197,9 +205,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                     benchmarks.add(gpuToBenchmark);
                 }
         }
-        for (RenderTask benchmark : benchmarks) {
-            renderTaskRepository.save(benchmark);
-        }
+        renderTaskRepository.saveAll(benchmarks);
     }
 
     private RenderTask cpuBenchmark(String blenderExecutable,
@@ -260,8 +266,9 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                 .taskBlendFile(benchmarkFile)
                 .benchmark(true)
                 .projectName(gpu.getGpuID() + " Benchmark " + benchmarkID)
+                .projectID(benchmarkID)
                 .blenderVersion(blenderVersion)
-                .taskID(benchmarkID)
+                .taskID(UUID.randomUUID().toString())
                 .taskDir(ConfigUtils.getProperty(ConfigKeys.TEMP_DIR))
                 .build();
 

@@ -108,8 +108,7 @@ public class ServerServiceImpl implements ServerService {
 
     @Override
     @Async
-    public void startBenchmarks() throws InterruptedException {
-        while(true){
+    public void startPendingBenchmarks() throws InterruptedException {
             Thread.sleep(300000);
             log.info("Checking to see if any nodes are pending a benchmark.");
             var nodesToBenchmark =
@@ -141,10 +140,6 @@ public class ServerServiceImpl implements ServerService {
                 log.error(e.getMessage());
                 log.error(Throwables.getStackTraceAsString(e));
             }
-        }
-
-
-
     }
 
 }
