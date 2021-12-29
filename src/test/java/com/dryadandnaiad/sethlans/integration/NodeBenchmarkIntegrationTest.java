@@ -5,7 +5,6 @@ import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.tools.TestUtils;
-import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -172,8 +171,10 @@ public class NodeBenchmarkIntegrationTest {
 
         Thread.sleep(60000);
         var params = ImmutableMap.<String, String>builder()
-                .put("nodeID", PropertiesUtils.getSystemID())
+                .put("nodeID", nodesOnServer.get(0).getSystemID())
                 .build();
+
+        log.info(params.toString());
 
         var benchmarkState = Boolean.parseBoolean(given().params(params).when().get("/api/v1/management/node_benchmark_status")
                 .then()
