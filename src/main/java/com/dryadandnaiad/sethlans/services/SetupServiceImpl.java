@@ -21,14 +21,13 @@ import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
+import com.dryadandnaiad.sethlans.models.user.UserChallenge;
 import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -86,6 +85,9 @@ public class SetupServiceImpl implements SetupService {
         user.setAccountNonLocked(true);
         user.setCredentialsNonExpired(true);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        for (UserChallenge challenge: user.getChallengeList()) {
+            challenge.setResponse(bCryptPasswordEncoder.encode(challenge.getResponse()));
+        }
         userRepository.save(user);
         return true;
     }

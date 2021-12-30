@@ -1,0 +1,116 @@
+package com.dryadandnaiad.sethlans.integration;
+
+import com.dryadandnaiad.sethlans.models.forms.SetupForm;
+import com.dryadandnaiad.sethlans.tools.TestUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.undertow.util.StatusCodes;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.io.FileNotFoundException;
+
+import static com.dryadandnaiad.sethlans.tools.TestUtils.hostWithoutDomainName;
+import static io.restassured.RestAssured.get;
+import static io.restassured.RestAssured.given;
+
+@Slf4j
+public class UserIntegrationTest {
+
+    @BeforeAll
+    public static void setup() throws FileNotFoundException, JsonProcessingException, InterruptedException {
+
+        var port = System.getProperty("sethlans.port");
+        if (port == null) {
+            RestAssured.port = 7443;
+        } else {
+            RestAssured.port = Integer.parseInt(port);
+        }
+
+        var basePath = System.getProperty("sethlans.base");
+        if (basePath == null) {
+            basePath = "/";
+        }
+        RestAssured.basePath = basePath;
+
+        var baseHost = System.getProperty("sethlans.host");
+        if (baseHost == null) {
+            baseHost = "https://localhost";
+        } else {
+            baseHost = hostWithoutDomainName(baseHost);
+        }
+        RestAssured.baseURI = baseHost;
+        RestAssured.useRelaxedHTTPSValidation();
+
+        log.info("Preparing system for test");
+        var mapper = new ObjectMapper();
+
+        var setupForm = mapper
+                .readValue(get("/api/v1/setup/get_setup")
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), SetupForm.class);
+
+        setupForm = TestUtils.setupDual(setupForm);
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(mapper.writeValueAsString(setupForm))
+                .post("/api/v1/setup/submit")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
+        log.info("Restarting Sethlans");
+
+        given()
+                .log()
+                .ifValidationFails()
+                .get("/api/v1/setup/restart")
+                .then()
+                .statusCode(StatusCodes.OK);
+
+        log.info("Waiting 10 seconds");
+
+        Thread.sleep(10000);
+
+        log.info("Starting User Integration Tests on " + baseHost + ":" + RestAssured.port);
+
+    }
+
+    @Test
+    public void test_user_list(){
+        var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
+        var userList = get("/api/v1/management/user_list")
+                .then()
+                .extract()
+                .response()
+                .body()
+                .asString();
+
+        log.info(userList);
+
+
+
+    }
+
+    @Test
+    public void test_current_user(){
+        var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
+        var currentUser = get("/api/v1/management/get_current_user")
+                .then()
+                .extract()
+                .response()
+                .body()
+                .asString();
+
+        log.info(currentUser);
+    }
+}

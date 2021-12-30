@@ -17,10 +17,12 @@
 
 package com.dryadandnaiad.sethlans.repositories;
 
+import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.models.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -34,4 +36,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserByUsername(String username);
 
     Optional<User> findUserByUserID(String userID);
+
+    List<User> findAllByRolesNotContaining(Role role);
 }

@@ -17,15 +17,26 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.converters.UserToUserQuery;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.enums.Role;
+import com.dryadandnaiad.sethlans.models.query.UserQuery;
+import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.dryadandnaiad.sethlans.services.SethlansManagerService;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * File created by Mario Estrella on 6/14/2020.
@@ -38,9 +49,57 @@ import org.springframework.web.bind.annotation.RestController;
 @Profile({"SERVER", "NODE", "DUAL"})
 public class AdminController {
     private final SethlansManagerService sethlansManagerService;
+    private final UserRepository userRepository;
 
-    public AdminController(SethlansManagerService sethlansManagerService) {
+    public AdminController(SethlansManagerService sethlansManagerService, UserRepository userRepository) {
         this.sethlansManagerService = sethlansManagerService;
+        this.userRepository = userRepository;
+    }
+
+    @GetMapping("/get_current_user")
+    public UserQuery getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (userRepository.findUserByUsername(auth.getName()).isPresent()) {
+            var converter = new UserToUserQuery();
+            return converter.convert(userRepository.findUserByUsername(auth.getName()).get());
+        }
+        return null;
+    }
+
+    @GetMapping("/user_list")
+    public List<UserQuery> getUserList() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (userRepository.findUserByUsername(auth.getName()).isPresent()) {
+            var requestingUser = userRepository.findUserByUsername(auth.getName()).get();
+            List<User> userList;
+            if (requestingUser.getRoles().contains(Role.SUPER_ADMINISTRATOR)) {
+                userList = userRepository.findAll();
+            } else if (requestingUser.getRoles().contains(Role.ADMINISTRATOR) && !requestingUser.getRoles().contains(Role.SUPER_ADMINISTRATOR)) {
+                userList = userRepository.findAllByRolesNotContaining(Role.SUPER_ADMINISTRATOR);
+            } else {
+                userList = new ArrayList<>();
+                userList.add(requestingUser);
+            }
+            var userQueryList = new ArrayList<UserQuery>();
+            var converter = new UserToUserQuery();
+
+            for (User user:userList) {
+                userQueryList.add(converter.convert(user));
+            }
+            return userQueryList;
+
+        }
+        return null;
+    }
+
+    @PostMapping("/create_user")
+    public void createUser(){
+
+    }
+
+    @PostMapping("/update_user")
+    public void updateUser(){
+
     }
 
 
