@@ -22,21 +22,24 @@ import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.models.query.UserQuery;
 import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.models.user.UserChallenge;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.dryadandnaiad.sethlans.services.SethlansManagerService;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
+import com.dryadandnaiad.sethlans.utils.UserUtils;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * File created by Mario Estrella on 6/14/2020.
@@ -50,10 +53,13 @@ import java.util.List;
 public class AdminController {
     private final SethlansManagerService sethlansManagerService;
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public AdminController(SethlansManagerService sethlansManagerService, UserRepository userRepository) {
+    public AdminController(SethlansManagerService sethlansManagerService, UserRepository userRepository,
+                           BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.sethlansManagerService = sethlansManagerService;
         this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @GetMapping("/get_current_user")
@@ -83,7 +89,7 @@ public class AdminController {
             var userQueryList = new ArrayList<UserQuery>();
             var converter = new UserToUserQuery();
 
-            for (User user:userList) {
+            for (User user : userList) {
                 userQueryList.add(converter.convert(user));
             }
             return userQueryList;
@@ -93,12 +99,36 @@ public class AdminController {
     }
 
     @PostMapping("/create_user")
-    public void createUser(){
-
+    public ResponseEntity<Void> createUser(@RequestBody User user) {
+        if (user.getPassword().isEmpty() || user.getEmail().isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        if (userRepository.findUserByUsername(user.getUsername().toLowerCase()).isPresent()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        user.setUsername(user.getUsername().toLowerCase());
+        user.setUserID(UUID.randomUUID().toString());
+        user.setRoles(Stream.of(Role.USER).collect(Collectors.toSet()));
+        user.setActive(true);
+        user.setAccountNonExpired(true);
+        user.setAccountNonLocked(true);
+        user.setCredentialsNonExpired(true);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        for (UserChallenge challenge : user.getChallengeList()) {
+            challenge.setResponse(bCryptPasswordEncoder.encode(challenge.getResponse()));
+        }
+        userRepository.save(user);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/update_user")
-    public void updateUser(){
+    @PutMapping("/update_user")
+    public ResponseEntity<Void> updateUser(@RequestBody User user) {
+        if (userRepository.findUserByUsername(user.getUsername().toLowerCase()).isPresent()) {
+            var userInDatabase = userRepository.findUserByUsername(user.getUsername().toLowerCase()).get();
+            userRepository.save(UserUtils.updateDatabaseUser(user, userInDatabase, bCryptPasswordEncoder));
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
     }
 

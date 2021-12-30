@@ -8,6 +8,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.undertow.util.StatusCodes;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +17,7 @@ import java.io.FileNotFoundException;
 import static com.dryadandnaiad.sethlans.tools.TestUtils.hostWithoutDomainName;
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 public class UserIntegrationTest {
@@ -112,5 +114,15 @@ public class UserIntegrationTest {
                 .asString();
 
         log.info(currentUser);
+    }
+
+    @AfterAll
+    public static void shutdown() {
+        var response = given()
+                .log()
+                .ifValidationFails()
+                .get("/api/v1/management/shutdown");
+
+        assertThat(response.getStatusCode()).isGreaterThanOrEqualTo(200).isLessThan(300);
     }
 }
