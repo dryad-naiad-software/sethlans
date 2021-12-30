@@ -28,6 +28,7 @@ import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -98,8 +99,12 @@ public class SetupServiceImpl implements SetupService {
             return false;
         }
 
+        if (!EmailValidator.getInstance().isValid(setupForm.getUser().getEmail())) {
+            return false;
+        }
 
-        if (setupForm.getUser().getChallengeList() == null) {
+
+        if (setupForm.getUser().getChallengeList() == null || setupForm.getUser().getChallengeList().isEmpty()) {
             return false;
         }
 

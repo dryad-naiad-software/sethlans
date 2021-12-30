@@ -27,6 +27,7 @@ import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.dryadandnaiad.sethlans.services.SethlansManagerService;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.UserUtils;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -105,6 +106,13 @@ public class AdminController {
         }
         if (userRepository.findUserByUsername(user.getUsername().toLowerCase()).isPresent()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        if(!EmailValidator.getInstance().isValid(user.getEmail())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if (user.getChallengeList() == null || user.getChallengeList().isEmpty()) {
+            new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         user.setUsername(user.getUsername().toLowerCase());
         user.setUserID(UUID.randomUUID().toString());

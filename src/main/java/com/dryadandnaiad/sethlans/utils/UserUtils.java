@@ -2,6 +2,7 @@ package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.models.user.User;
 import com.dryadandnaiad.sethlans.models.user.UserChallenge;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class UserUtils {
@@ -18,7 +19,9 @@ public class UserUtils {
             }
             userInDatabase.setChallengeList(updatedUser.getChallengeList());
         }
-        userInDatabase.setEmail(updatedUser.getEmail());
+        if(EmailValidator.getInstance().isValid(updatedUser.getEmail())) {
+            userInDatabase.setEmail(updatedUser.getEmail());
+        }
         userInDatabase.setRoles(updatedUser.getRoles());
         userInDatabase.setActive(updatedUser.isActive());
         userInDatabase.setPromptPasswordChange(updatedUser.isPromptPasswordChange());

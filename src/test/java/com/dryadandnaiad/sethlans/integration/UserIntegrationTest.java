@@ -1,8 +1,13 @@
 package com.dryadandnaiad.sethlans.integration;
 
+import com.dryadandnaiad.sethlans.enums.Role;
+import com.dryadandnaiad.sethlans.enums.SecurityQuestion;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
+import com.dryadandnaiad.sethlans.models.user.User;
+import com.dryadandnaiad.sethlans.models.user.UserChallenge;
 import com.dryadandnaiad.sethlans.tools.TestUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -13,6 +18,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
+import java.util.HashSet;
+import java.util.List;
 
 import static com.dryadandnaiad.sethlans.tools.TestUtils.hostWithoutDomainName;
 import static io.restassured.RestAssured.get;
@@ -99,21 +106,51 @@ public class UserIntegrationTest {
 
         log.info(userList);
 
+    }
 
+    @Test
+    public void test_create_user() throws JsonProcessingException {
+        var mapper = new ObjectMapper();
+        var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
+        var challenge = UserChallenge.builder()
+                .challenge(SecurityQuestion.QUESTION1)
+                .response("Test").build();
+
+        var user = User.builder()
+                .username("NewUser24")
+                .password("newPassWord1241")
+                .challengeList(List.of(challenge))
+                .email("cat@cat.com")
+                .roles(new HashSet<>(List.of(Role.USER))).build();
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token)
+                .body(mapper.writeValueAsString(user))
+                .post("/api/v1/management/create_user")
+                .then()
+                .statusCode(StatusCodes.CREATED);
 
     }
 
     @Test
-    public void test_current_user(){
+    public void test_current_user() throws JsonProcessingException {
+        var mapper = new ObjectMapper();
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
-        var currentUser = get("/api/v1/management/get_current_user")
+        var currentUser =  mapper
+                .readValue(get("/api/v1/management/get_current_user")
                 .then()
                 .extract()
                 .response()
                 .body()
-                .asString();
+                .asString(),new TypeReference<User>() {
+                });
 
-        log.info(currentUser);
+        assertThat(currentUser).isInstanceOf(User.class);
     }
 
     @AfterAll
