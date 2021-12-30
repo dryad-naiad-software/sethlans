@@ -19,10 +19,14 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.undertow.util.StatusCodes;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.SystemUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.FileSystemUtils;
+
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -199,13 +203,17 @@ public class SetupIntegrationTest {
     }
 
     @AfterAll
-    public static void shutdown() {
+    public static void shutdown() throws InterruptedException {
         var response = given()
                 .log()
                 .ifValidationFails()
                 .get("/api/v1/management/shutdown");
 
         Assertions.assertThat(response.getStatusCode()).isGreaterThanOrEqualTo(200).isLessThan(300);
+        Thread.sleep(10000);
+
+        FileSystemUtils.deleteRecursively( new File(SystemUtils.USER_HOME + File.separator + ".sethlans"));
+        Thread.sleep(5000);
     }
 
 }
