@@ -29,6 +29,7 @@ import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.repositories.RenderTaskRepository;
+import com.dryadandnaiad.sethlans.repositories.ServerRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.NetworkUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
@@ -42,6 +43,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.UUID;
 
 /**
@@ -56,9 +58,11 @@ import java.util.UUID;
 public class BenchmarkServiceImpl implements BenchmarkService {
 
     private final RenderTaskRepository renderTaskRepository;
+    private final ServerRepository serverRepository;
 
-    public BenchmarkServiceImpl(RenderTaskRepository renderTaskRepository) {
+    public BenchmarkServiceImpl(RenderTaskRepository renderTaskRepository, ServerRepository serverRepository) {
         this.renderTaskRepository = renderTaskRepository;
+        this.serverRepository = serverRepository;
     }
 
     @Override
@@ -89,8 +93,27 @@ public class BenchmarkServiceImpl implements BenchmarkService {
     @Override
     @Async
     public void pendingBenchmarks() {
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         var benchmarksToExecute =
                 renderTaskRepository.findRenderTasksByBenchmarkIsTrueAndInProgressIsFalseAndCompleteIsFalse();
+        if (!benchmarksToExecute.isEmpty()) {
+            log.debug("Processing pending benchmark render tasks");
+            var nodeType = PropertiesUtils.getNodeType();
+            var servers = new HashSet<Server>();
+            for (RenderTask benchmark : benchmarksToExecute) {
+                servers.add(serverRepository.findBySystemID(benchmark
+                        .getServerInfo()
+                        .getSystemID())
+                        .orElse(null));
+            }
+            for (Server server : servers) {
+                reportBenchmarkState(server, nodeType);
+            }
+        }
     }
 
     private void runBenchmarks() {
