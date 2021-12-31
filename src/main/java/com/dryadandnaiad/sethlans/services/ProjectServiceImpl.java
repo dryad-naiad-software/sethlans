@@ -146,7 +146,7 @@ public class ProjectServiceImpl implements ProjectService {
         var tempDir = ConfigUtils.getProperty(ConfigKeys.TEMP_DIR);
         var zipLocation = new File(tempDir + File.separator + uploadTag + "_zip_file");
         var filenameSplit = Arrays.asList(originalFilename.split("\\.(?=[^.]+$)"));
-        log.debug("Filename and Extension: " + filenameSplit.toString());
+        log.debug("Filename and Extension: " + filenameSplit);
         var projectForm = ProjectForm.builder().originalFile(originalFilename).build();
         var blendFile = new BlendFile();
 
@@ -238,7 +238,7 @@ public class ProjectServiceImpl implements ProjectService {
         projectForm.setProjectID(UUID.randomUUID().toString());
         projectForm.setProjectName("");
 
-        return new ResponseEntity<>(projectForm, HttpStatus.OK);
+        return new ResponseEntity<>(projectForm, HttpStatus.CREATED);
     }
 
 }

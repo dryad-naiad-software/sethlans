@@ -48,15 +48,15 @@ import java.util.Optional;
 @Profile({"SERVER", "DUAL"})
 @RequestMapping("/api/v1/project")
 @Slf4j
-public class ProjectUIController {
+public class ProjectQueryController {
     private final ProjectRepository projectRepository;
     private final NodeRepository nodeRepository;
     private final ProjectToProjectView projectToProjectView;
     private final UserRepository userRepository;
 
 
-    public ProjectUIController(ProjectRepository projectRepository, NodeRepository nodeRepository,
-                               ProjectToProjectView projectToProjectView, UserRepository userRepository) {
+    public ProjectQueryController(ProjectRepository projectRepository, NodeRepository nodeRepository,
+                                  ProjectToProjectView projectToProjectView, UserRepository userRepository) {
         this.projectRepository = projectRepository;
         this.nodeRepository = nodeRepository;
         this.projectToProjectView = projectToProjectView;
