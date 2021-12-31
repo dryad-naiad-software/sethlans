@@ -63,6 +63,23 @@ public class AdminController {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
+    @GetMapping("/get_user")
+    public UserQuery getUser(@RequestParam String username) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (userRepository.findUserByUsername(auth.getName()).isPresent()) {
+            var requestingUser = userRepository.findUserByUsername(auth.getName()).get();
+            if (requestingUser.getRoles().contains(Role.SUPER_ADMINISTRATOR) || requestingUser.getRoles().contains(Role.ADMINISTRATOR)) {
+
+                if (userRepository.findUserByUsername(username).isPresent()) {
+                    var converter = new UserToUserQuery();
+                    return converter.convert(userRepository.findUserByUsername(username).get());
+                }
+            }
+        }
+
+        return null;
+    }
+
     @GetMapping("/get_current_user")
     public UserQuery getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

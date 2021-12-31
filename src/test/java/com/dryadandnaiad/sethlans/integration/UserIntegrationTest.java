@@ -9,6 +9,7 @@ import com.dryadandnaiad.sethlans.tools.TestUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableMap;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.undertow.util.StatusCodes;
@@ -109,6 +110,45 @@ public class UserIntegrationTest {
 
         log.info(userList);
 
+    }
+
+    @Test
+    public void test_update_user() throws JsonProcessingException {
+        var mapper = new ObjectMapper();
+        var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
+        var challenge = UserChallenge.builder()
+                .challenge(SecurityQuestion.QUESTION1)
+                .response("Test").build();
+
+        var user = User.builder()
+                .username("testuser")
+                .password("newPassWord1241")
+                .active(true)
+                .challengeList(List.of(challenge))
+                .email("cat@cat.com").build();
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token)
+                .body(mapper.writeValueAsString(user))
+                .put("/api/v1/management/update_user")
+                .then()
+                .statusCode(StatusCodes.ACCEPTED);
+
+        var params = ImmutableMap.<String, String>builder()
+                .put("username", "testuser")
+                .build();
+
+        log.info(given().params(params).when().get("/api/v1/management/get_user")
+                .then()
+                .extract()
+                .response()
+                .body()
+                .asString());
     }
 
     @Test

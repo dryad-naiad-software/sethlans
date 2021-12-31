@@ -22,7 +22,9 @@ public class UserUtils {
         if(EmailValidator.getInstance().isValid(updatedUser.getEmail())) {
             userInDatabase.setEmail(updatedUser.getEmail());
         }
-        userInDatabase.setRoles(updatedUser.getRoles());
+        if(updatedUser.getRoles() != null) {
+            userInDatabase.setRoles(updatedUser.getRoles());
+        }
         userInDatabase.setActive(updatedUser.isActive());
         userInDatabase.setPromptPasswordChange(updatedUser.isPromptPasswordChange());
         userInDatabase.setNodeEmailNotifications(updatedUser.isNodeEmailNotifications());
