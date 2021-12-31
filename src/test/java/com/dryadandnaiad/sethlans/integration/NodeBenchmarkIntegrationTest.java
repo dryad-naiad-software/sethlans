@@ -129,17 +129,6 @@ public class NodeBenchmarkIntegrationTest {
 
         }
 
-        given()
-                .log()
-                .ifValidationFails()
-                .accept(ContentType.JSON)
-                .contentType(ContentType.JSON)
-                .header("X-XSRF-TOKEN", token)
-                .cookie("XSRF-TOKEN", token)
-                .body(mapper.writeValueAsString(nodeList))
-                .post("/api/v1/management/add_nodes_to_server")
-                .then()
-                .statusCode(StatusCodes.CREATED);
 
         log.info("Waiting 10 seconds");
 

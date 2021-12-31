@@ -19,6 +19,7 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.models.forms.NodeForm;
 import com.dryadandnaiad.sethlans.models.system.Node;
+import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.services.ServerService;
 import com.dryadandnaiad.sethlans.utils.NetworkUtils;
@@ -47,10 +48,18 @@ import java.util.Set;
 public class AdminServerEndPointController {
     private final ServerService serverService;
     private final NodeRepository nodeRepository;
+    private final BlenderArchiveRepository blenderArchiveRepository;
 
-    public AdminServerEndPointController(ServerService serverService, NodeRepository nodeRepository) {
+    public AdminServerEndPointController(ServerService serverService, NodeRepository nodeRepository,
+                                         BlenderArchiveRepository blenderArchiveRepository) {
         this.serverService = serverService;
         this.nodeRepository = nodeRepository;
+        this.blenderArchiveRepository = blenderArchiveRepository;
+    }
+
+    @GetMapping("/blender_download_complete")
+    public boolean isBlenderDownloadComplete() {
+        return !blenderArchiveRepository.findAllByDownloadedIsTrue().isEmpty();
     }
 
     @GetMapping("/network_node_scan")

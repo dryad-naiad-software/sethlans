@@ -17,6 +17,7 @@
 
 package com.dryadandnaiad.sethlans.services;
 
+import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
@@ -24,7 +25,9 @@ import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.user.UserChallenge;
 import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
+import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
+import com.dryadandnaiad.sethlans.utils.PythonUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
@@ -71,6 +74,12 @@ public class SetupServiceImpl implements SetupService {
                 PropertiesUtils.writeNodeSettings(setupForm.getNodeSettings());
             }
             PropertiesUtils.writeMailSettings(setupForm.getMailSettings());
+            var binaryDir = ConfigUtils.getProperty(ConfigKeys.BINARY_DIR);
+            var scriptDir = ConfigUtils.getProperty(ConfigKeys.SCRIPTS_DIR);
+            PythonUtils.copyPythonArchiveToDisk(binaryDir, QueryUtils.getOS());
+            PythonUtils.copyAndExtractScripts(scriptDir);
+            PythonUtils.installPython(binaryDir, QueryUtils.getOS());
+
 
         } catch (Exception e) {
             log.error(e.getMessage());

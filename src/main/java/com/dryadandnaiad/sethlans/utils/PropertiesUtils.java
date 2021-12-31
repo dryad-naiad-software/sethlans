@@ -214,11 +214,13 @@ public class PropertiesUtils {
         var blendFileCacheDirectory = rootDirectory + File.separator + "blendfile_cache";
         var logDirectory = rootDirectory + File.separator + "logs";
         var binDirectory = rootDirectory + File.separator + "bin";
+        var pythonDirectory = binDirectory + File.separator + "python";
         var benchmarkDirectory = rootDirectory + File.separator + "benchmarks";
         var projectDirectory = rootDirectory + File.separator + "projects";
 
         writeProperty(ConfigKeys.ROOT_DIR, rootDirectory);
         writeProperty(ConfigKeys.SCRIPTS_DIR, scriptsDirectory);
+        writeProperty(ConfigKeys.PYTHON_DIR, pythonDirectory);
         writeProperty(ConfigKeys.TEMP_DIR, tempDirectory);
         writeProperty(ConfigKeys.BINARY_DIR, binDirectory);
         writeProperty(ConfigKeys.LOGGING_DIR, logDirectory);
