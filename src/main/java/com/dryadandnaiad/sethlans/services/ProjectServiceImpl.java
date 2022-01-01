@@ -149,6 +149,7 @@ public class ProjectServiceImpl implements ProjectService {
         log.debug("Filename and Extension: " + filenameSplit);
         var projectForm = ProjectForm.builder().originalFile(originalFilename).build();
         var blendFile = new BlendFile();
+        var blendFilename = "";
 
         try {
             if (projectFile.isEmpty()) {
@@ -171,6 +172,7 @@ public class ProjectServiceImpl implements ProjectService {
                             blendFile = BlenderUtils.parseBlendFile(file.toString(),
                                     ConfigUtils.getProperty(ConfigKeys.SCRIPTS_DIR),
                                     ConfigUtils.getProperty(ConfigKeys.PYTHON_DIR));
+                            blendFilename = file.toString();
                             if (blendFile == null) {
                                 throw new IOException("Unable to read blend file");
                             }
@@ -187,6 +189,7 @@ public class ProjectServiceImpl implements ProjectService {
                 if (!filenameSplit.get(1).contains("blend")) {
                     throw new IOException("This is not a valid blend file: " + originalFilename);
                 }
+                blendFilename = originalFilename;
                 var storeUpload = new File(tempDir + File.separator + filename);
                 log.debug("Upload will be stored here: " + storeUpload);
                 Files.copy(stream, Paths.get(storeUpload.toString()), StandardCopyOption.REPLACE_EXISTING);
@@ -231,6 +234,7 @@ public class ProjectServiceImpl implements ProjectService {
                 .imageSettings(imageSettings)
                 .blenderEngine(blendFile.getEngine())
                 .blenderVersion(versions.get(0))
+                .blendFilename(blendFilename)
                 .build();
 
         projectForm.setProjectSettings(projectSettings);
@@ -239,6 +243,37 @@ public class ProjectServiceImpl implements ProjectService {
         projectForm.setProjectName("");
 
         return new ResponseEntity<>(projectForm, HttpStatus.CREATED);
+    }
+
+    @Override
+    public boolean createProject(ProjectForm projectForm) {
+        if (projectForm.getProjectName().isEmpty() || projectForm.getProjectName().isBlank()) {
+            return false;
+        }
+        switch (projectForm.getProjectType()) {
+            case ANIMATION -> {
+                if (projectForm.getProjectSettings().getVideoSettings() == null) {
+                    return false;
+                }
+            }
+            case STILL_IMAGE -> {
+                if (projectForm.getProjectSettings().getImageSettings() == null) {
+                    return false;
+                }
+            }
+        }
+        try {
+            var projectDirectory = new File(ConfigUtils.getProperty(ConfigKeys.PROJECT_DIR) + File.separator + projectForm.getProjectID());
+
+            org.apache.commons.io.FileUtils.moveFile(new File(projectForm.getProjectFileLocation()), new File(projectDirectory + File.separator + projectForm.getProjectSettings().getBlendFilename()));
+            projectForm.setProjectFileLocation(projectDirectory + File.separator + projectForm.getProjectSettings().getBlendFilename());
+            projectForm.getProjectSettings().setBlendFilenameMD5Sum(FileUtils.getMD5ofFile(new File(projectDirectory + File.separator + projectForm.getProjectSettings().getBlendFilename())));
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
 }

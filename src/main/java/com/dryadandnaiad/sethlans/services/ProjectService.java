@@ -46,4 +46,6 @@ public interface ProjectService {
     boolean projectExists(String projectID);
 
     ResponseEntity<ProjectForm> projectFileUpload(MultipartFile projectFile);
+
+    boolean createProject(ProjectForm projectForm);
 }
