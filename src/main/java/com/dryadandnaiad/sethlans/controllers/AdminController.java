@@ -55,12 +55,14 @@ public class AdminController {
     private final SethlansManagerService sethlansManagerService;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserToUserQuery userToUserQuery;
 
     public AdminController(SethlansManagerService sethlansManagerService, UserRepository userRepository,
-                           BCryptPasswordEncoder bCryptPasswordEncoder) {
+                           BCryptPasswordEncoder bCryptPasswordEncoder, UserToUserQuery userToUserQuery) {
         this.sethlansManagerService = sethlansManagerService;
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.userToUserQuery = userToUserQuery;
     }
 
     @GetMapping("/get_user")
@@ -71,8 +73,7 @@ public class AdminController {
             if (requestingUser.getRoles().contains(Role.SUPER_ADMINISTRATOR) || requestingUser.getRoles().contains(Role.ADMINISTRATOR)) {
 
                 if (userRepository.findUserByUsername(username).isPresent()) {
-                    var converter = new UserToUserQuery();
-                    return converter.convert(userRepository.findUserByUsername(username).get());
+                    return userToUserQuery.convert(userRepository.findUserByUsername(username).get());
                 }
             }
         }
@@ -84,8 +85,7 @@ public class AdminController {
     public UserQuery getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (userRepository.findUserByUsername(auth.getName()).isPresent()) {
-            var converter = new UserToUserQuery();
-            return converter.convert(userRepository.findUserByUsername(auth.getName()).get());
+            return userToUserQuery.convert(userRepository.findUserByUsername(auth.getName()).get());
         }
         return null;
     }
@@ -105,10 +105,9 @@ public class AdminController {
                 userList.add(requestingUser);
             }
             var userQueryList = new ArrayList<UserQuery>();
-            var converter = new UserToUserQuery();
 
             for (User user : userList) {
-                userQueryList.add(converter.convert(user));
+                userQueryList.add(userToUserQuery.convert(user));
             }
             return userQueryList;
 

@@ -4,7 +4,9 @@ import com.dryadandnaiad.sethlans.models.query.UserQuery;
 import com.dryadandnaiad.sethlans.models.user.User;
 import com.dryadandnaiad.sethlans.models.user.UserChallenge;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserToUserQuery implements Converter<User, UserQuery> {
     @Override
     public UserQuery convert(User user) {

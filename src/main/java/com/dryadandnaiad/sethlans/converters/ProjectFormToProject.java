@@ -19,7 +19,11 @@ package com.dryadandnaiad.sethlans.converters;
 
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
+import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
 /**
  * File created by Mario Estrella on 12/28/2020.
@@ -27,9 +31,29 @@ import org.springframework.core.convert.converter.Converter;
  * mestrella@dryadandnaiad.com
  * Project: sethlans
  */
+
+@Component
 public class ProjectFormToProject implements Converter<ProjectForm, Project> {
+    private final UserRepository userRepository;
+
+    public ProjectFormToProject(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+
     @Override
     public Project convert(ProjectForm projectForm) {
-        return null;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        var user = userRepository.findUserByUsername(auth.getName()).orElse(null);
+
+        var project = Project.builder()
+                .projectID(projectForm.getProjectID())
+                .projectName(projectForm.getProjectName())
+                .projectType(projectForm.getProjectType())
+                .projectSettings(projectForm.getProjectSettings())
+                .user(user)
+                .build();
+
+        return project;
     }
 }

@@ -90,9 +90,9 @@ public class UserIntegrationTest {
                 .then()
                 .statusCode(StatusCodes.OK);
 
-        log.info("Waiting 10 seconds");
+        log.info("Waiting 20 seconds");
 
-        Thread.sleep(10000);
+        Thread.sleep(20000);
 
         log.info("Starting User Integration Tests on " + baseHost + ":" + RestAssured.port);
 
@@ -120,12 +120,12 @@ public class UserIntegrationTest {
                 .challenge(SecurityQuestion.QUESTION1)
                 .response("Test").build();
 
-        var user = User.builder()
-                .username("testuser")
+        var user1 = User.builder()
+                .username("NewU3ser24")
                 .password("newPassWord1241")
-                .active(true)
                 .challengeList(List.of(challenge))
-                .email("cat@cat.com").build();
+                .email("cat@cat.com")
+                .roles(new HashSet<>(List.of(Role.USER))).build();
 
         given()
                 .log()
@@ -134,13 +134,32 @@ public class UserIntegrationTest {
                 .contentType(ContentType.JSON)
                 .header("X-XSRF-TOKEN", token)
                 .cookie("XSRF-TOKEN", token)
-                .body(mapper.writeValueAsString(user))
+                .body(mapper.writeValueAsString(user1))
+                .post("/api/v1/management/create_user")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
+        var user2 = User.builder()
+                .username("newu3ser24")
+                .password("newPassWSa2ord1241")
+                .active(true)
+                .challengeList(List.of(challenge))
+                .email("ca2t@cat.com").build();
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token)
+                .body(mapper.writeValueAsString(user2))
                 .put("/api/v1/management/update_user")
                 .then()
                 .statusCode(StatusCodes.ACCEPTED);
 
         var params = ImmutableMap.<String, String>builder()
-                .put("username", "testuser")
+                .put("username", "newuser24")
                 .build();
 
         log.info(given().params(params).when().get("/api/v1/management/get_user")

@@ -115,15 +115,12 @@ public class AdminServerEndPointController {
             log.debug("Received Benchmark(s) from " + nodeToSave.getHostname() );
 
             switch (nodeType) {
-                case CPU:
-                    nodeToSave.setCpuRating(node.getCpuRating());
-                    break;
-                case GPU:
-                    nodeToSave.setSelectedGPUs(node.getSelectedGPUs());
-                    break;
-                case CPU_GPU:
+                case CPU -> nodeToSave.setCpuRating(node.getCpuRating());
+                case GPU -> nodeToSave.setSelectedGPUs(node.getSelectedGPUs());
+                case CPU_GPU -> {
                     nodeToSave.setCpuRating(node.getCpuRating());
                     nodeToSave.setSelectedGPUs(node.getSelectedGPUs());
+                }
             }
             nodeToSave.setBenchmarkPending(false);
             nodeToSave.setBenchmarkComplete(true);
