@@ -19,6 +19,7 @@ package com.dryadandnaiad.sethlans.services;
 
 import com.dryadandnaiad.sethlans.blender.BlenderUtils;
 import com.dryadandnaiad.sethlans.comparators.AlphaNumericComparator;
+import com.dryadandnaiad.sethlans.converters.ProjectFormToProject;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
@@ -63,11 +64,13 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final BlenderArchiveRepository blenderArchiveRepository;
+    private final ProjectFormToProject projectFormToProject;
 
-    public ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository, BlenderArchiveRepository blenderArchiveRepository) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository, BlenderArchiveRepository blenderArchiveRepository, ProjectFormToProject projectFormToProject) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
         this.blenderArchiveRepository = blenderArchiveRepository;
+        this.projectFormToProject = projectFormToProject;
     }
 
     @Override
@@ -268,6 +271,11 @@ public class ProjectServiceImpl implements ProjectService {
             org.apache.commons.io.FileUtils.moveFile(new File(projectForm.getProjectFileLocation()), new File(projectDirectory + File.separator + projectForm.getProjectSettings().getBlendFilename()));
             projectForm.setProjectFileLocation(projectDirectory + File.separator + projectForm.getProjectSettings().getBlendFilename());
             projectForm.getProjectSettings().setBlendFilenameMD5Sum(FileUtils.getMD5ofFile(new File(projectDirectory + File.separator + projectForm.getProjectSettings().getBlendFilename())));
+
+            var project = projectFormToProject.convert(projectForm);
+            project.setProjectRootDir(projectDirectory.toString());
+            projectRepository.save(project);
+
 
 
         } catch (IOException e) {

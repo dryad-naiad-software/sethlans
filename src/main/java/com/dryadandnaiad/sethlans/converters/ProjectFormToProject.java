@@ -17,7 +17,9 @@
 
 package com.dryadandnaiad.sethlans.converters;
 
+import com.dryadandnaiad.sethlans.enums.ProjectState;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
+import com.dryadandnaiad.sethlans.models.blender.project.ProjectStatus;
 import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import org.springframework.core.convert.converter.Converter;
@@ -51,6 +53,22 @@ public class ProjectFormToProject implements Converter<ProjectForm, Project> {
                 .projectName(projectForm.getProjectName())
                 .projectType(projectForm.getProjectType())
                 .projectSettings(projectForm.getProjectSettings())
+                .projectStatus(ProjectStatus.builder()
+                        .projectState(ProjectState.ADDED)
+                        .currentPercentage(0)
+                        .completedFrames(0)
+                        .totalQueueSize(0)
+                        .queueIndex(0)
+                        .remainingQueueSize(0)
+                        .totalProjectTime(0L)
+                        .totalRenderTime(0L)
+                        .timerStart(0L)
+                        .timerEnd(0L)
+                        .allImagesProcessed(false)
+                        .queueFillComplete(false)
+                        .reEncode(false)
+                        .userStopped(false)
+                        .build())
                 .user(user)
                 .build();
 
