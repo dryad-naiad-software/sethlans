@@ -1,5 +1,6 @@
 package com.dryadandnaiad.sethlans.integration;
 
+import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.tools.TestFileUtils;
 import com.dryadandnaiad.sethlans.tools.TestUtils;
@@ -107,7 +108,7 @@ public class ProjectIntegrationTest {
     }
 
     @Test
-    public void create_project_test() throws InterruptedException {
+    public void create_project_test() throws InterruptedException, JsonProcessingException {
         var mapper = new ObjectMapper();
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
 
@@ -144,7 +145,9 @@ public class ProjectIntegrationTest {
                 .body()
                 .asString();
 
-        log.info(response);
+        var projectForm = mapper.readValue(response, ProjectForm.class);
+
+        log.info(projectForm.toString());
 
         Thread.sleep(10000);
 
