@@ -298,4 +298,21 @@ public class TestUtils {
         setupForm.setUser(user);
         return setupForm;
     }
+
+    public static String titleGenerator(){
+        ArrayList<String> titles = new ArrayList<>(Arrays.asList(
+                "Lorem ipsum dolor sit amet",
+                "Est consequuntur corporis sed internos",
+                "Esse et obcaecati itaque eum nemo amet",
+                "Nam dolor ducimus qui galisum deserunt",
+                "Et consectetur omnis vel voluptatem",
+                "Sed perspiciatis pariatur in sunt sunt id molestias dolores",
+                "Tenetur ea dolore rerum qui magni quisquam"));
+
+        var random = new Random();
+
+        return titles.get(random.nextInt(titles.size()));
+
+
+    }
 }
