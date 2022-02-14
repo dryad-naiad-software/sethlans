@@ -61,4 +61,12 @@ public class ProjectActionsController {
         return projectService.projectFileUpload(projectFile);
     }
 
+    @PostMapping("/create_project")
+    public ResponseEntity<Void> createProject(@RequestBody ProjectForm projectForm) {
+        if (projectService.createProject(projectForm)){
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
 }

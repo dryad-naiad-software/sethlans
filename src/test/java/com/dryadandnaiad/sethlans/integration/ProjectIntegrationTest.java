@@ -1,10 +1,12 @@
 package com.dryadandnaiad.sethlans.integration;
 
+import com.dryadandnaiad.sethlans.models.blender.project.ProjectView;
 import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.tools.TestFileUtils;
 import com.dryadandnaiad.sethlans.tools.TestUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -18,6 +20,7 @@ import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.List;
 
 import static com.dryadandnaiad.sethlans.tools.TestUtils.hostWithoutDomainName;
 import static io.restassured.RestAssured.get;
@@ -155,6 +158,27 @@ public class ProjectIntegrationTest {
         projectForm.setProjectName(TestUtils.titleGenerator());
         log.info(projectForm.toString());
 
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(mapper.writeValueAsString(projectForm))
+                .post("/api/v1/project/create_project")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
+
+        var projects = mapper
+                .readValue(get("/api/v1/project/project_list")
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), new TypeReference<List<ProjectView>>() {
+                });
+
+        log.info(projects.toString());
 
 
     }
@@ -169,7 +193,7 @@ public class ProjectIntegrationTest {
         assertThat(response.getStatusCode()).isGreaterThanOrEqualTo(200).isLessThan(300);
         Thread.sleep(10000);
 
-        FileSystemUtils.deleteRecursively( new File(SystemUtils.USER_HOME + File.separator + ".sethlans"));
+        FileSystemUtils.deleteRecursively(new File(SystemUtils.USER_HOME + File.separator + ".sethlans"));
         Thread.sleep(5000);
     }
 }
