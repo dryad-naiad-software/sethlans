@@ -170,10 +170,12 @@ public class FileUtils {
      * @param location
      * @return boolean
      */
-    public static boolean extractArchive(String extractFile, String location) {
+    public static boolean extractArchive(String extractFile, String location, boolean deleteArchive) {
+        log.info("Attempting extraction " + extractFile +  " "  + location );
         var toExtract = new File(extractFile);
         var extractLocation = new File(location);
         if (!toExtract.exists()) {
+            log.error(extractFile + " does not exist.");
             return false;
         }
         try {
@@ -182,7 +184,9 @@ public class FileUtils {
                 log.info("Extracting " + toExtract + " to " + extractLocation);
                 Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.XZ);
                 archiver.extract(toExtract, extractLocation);
-                toExtract.delete();
+                if(deleteArchive){
+                    toExtract.delete();
+                }
                 return true;
             }
             if (toExtract.toString().contains(".tar.gz")) {
@@ -190,7 +194,9 @@ public class FileUtils {
                 log.info("Extracting " + toExtract + " to " + extractLocation);
                 Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.GZIP);
                 archiver.extract(toExtract, extractLocation);
-                toExtract.delete();
+                if(deleteArchive){
+                    toExtract.delete();
+                }
                 return true;
             }
             if (toExtract.toString().contains(".tar.bz2")) {
@@ -198,7 +204,9 @@ public class FileUtils {
                 log.info("Extracting " + toExtract + " to " + extractLocation);
                 Archiver archiver = ArchiverFactory.createArchiver(ArchiveFormat.TAR, CompressionType.BZIP2);
                 archiver.extract(toExtract, extractLocation);
-                toExtract.delete();
+                if(deleteArchive){
+                    toExtract.delete();
+                }
                 return true;
             }
             if (toExtract.toString().contains(".zip")) {
@@ -206,7 +214,9 @@ public class FileUtils {
                 ZipFile archiver = new ZipFile(toExtract);
                 log.info("Extracting " + toExtract + " to " + extractLocation);
                 archiver.extractAll(extractLocation.toString());
-                toExtract.delete();
+                if(deleteArchive){
+                    toExtract.delete();
+                }
                 return true;
             } else {
                 log.error("Unsupported archive extension/format provided.");
@@ -272,11 +282,11 @@ public class FileUtils {
     public static boolean installApplication(String binaryDir, OS os, String windowsArchive, String linuxArchive, String macosArchive, Logger log) {
         switch (os) {
             case WINDOWS_64:
-                return extractArchive(binaryDir + File.separator + windowsArchive, binaryDir);
+                return extractArchive(binaryDir + File.separator + windowsArchive, binaryDir, true);
             case LINUX_64:
-                return extractArchive(binaryDir + File.separator + linuxArchive, binaryDir);
+                return extractArchive(binaryDir + File.separator + linuxArchive, binaryDir, true);
             case MACOS:
-                return extractArchive(binaryDir + File.separator + macosArchive, binaryDir);
+                return extractArchive(binaryDir + File.separator + macosArchive, binaryDir, true);
             default:
                 log.error("Operating System not supported. " + os.getName());
         }

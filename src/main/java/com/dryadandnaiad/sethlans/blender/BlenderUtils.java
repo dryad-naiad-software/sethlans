@@ -291,7 +291,7 @@ public class BlenderUtils {
                 }
             }
         } else {
-            if (FileUtils.extractArchive(fileName, tempDirectory.toString())) {
+            if (FileUtils.extractArchive(fileName, tempDirectory.toString(), true)) {
                 var directories = FileUtils.listDirectories(tempDirectory.toString());
                 if (new File(tempDirectory + File.separator + directories.iterator().next())
                         .renameTo(directoryName)) {

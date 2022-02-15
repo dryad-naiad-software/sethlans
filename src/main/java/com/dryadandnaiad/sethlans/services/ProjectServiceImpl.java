@@ -163,29 +163,32 @@ public class ProjectServiceImpl implements ProjectService {
                     filenameSplit.get(1).contains("zip")) {
                 zipLocation.mkdir();
                 var storeUpload = new File(zipLocation + File.separator + filename);
-                log.debug("Upload will be stored here: " + storeUpload);
+                log.debug("Zip will be extracted and files will be stored here: " + storeUpload);
                 Files.copy(stream, Paths.get(storeUpload.toString()), StandardCopyOption.REPLACE_EXISTING);
                 var filenameWithoutExt = FilenameUtils.removeExtension(
                         originalFilename);
                 projectForm.setProjectFileLocation(zipLocation + File.separator + filename);
-                if (FileUtils.extractArchive(filename, zipLocation.toString())) {
+                if (FileUtils.extractArchive(storeUpload.toString(), zipLocation.toString(), false)) {
                     var files = zipLocation.listFiles();
                     for (File file : files != null ? files : new File[0]) {
-                        if (file.toString().contains(filenameWithoutExt + ".blend")) {
+                        log.info(file.toString());
+                        log.info(filenameWithoutExt);
+                        if (file.toString().contains(".blend")) {
                             blendFile = BlenderUtils.parseBlendFile(file.toString(),
                                     ConfigUtils.getProperty(ConfigKeys.SCRIPTS_DIR),
                                     ConfigUtils.getProperty(ConfigKeys.PYTHON_DIR));
-                            blendFilename = file.toString();
                             if (blendFile == null) {
                                 throw new IOException("Unable to read blend file");
                             }
+                            blendFilename = file.toString();
+                            break;
+                        } else {
+                            throw new IOException(originalFilename + " does not contain a blend file!");
                         }
                     }
                 } else {
                     throw new IOException(originalFilename + " is not a valid archive.");
                 }
-
-                throw new IOException(originalFilename + " does not contain a blend file!");
 
 
             } else {
@@ -204,48 +207,51 @@ public class ProjectServiceImpl implements ProjectService {
                     throw new IOException("Unable to read blend file");
                 }
             }
+            var imageSettings = ImageSettings.builder()
+                    .resolutionX(blendFile.getResolutionX())
+                    .resolutionY(blendFile.getResolutionY())
+                    .resPercentage(blendFile.getResPercent())
+                    .imageOutputFormat(ImageOutputFormat.PNG)
+                    .build();
+
+            var blenderArchiveList = blenderArchiveRepository.findAllByDownloadedIsTrue();
+            var versions = new ArrayList<String>();
+            for (BlenderArchive blenderArchive : blenderArchiveList) {
+                versions.add(blenderArchive.getBlenderVersion());
+            }
+            versions.sort(new AlphaNumericComparator());
+            Collections.reverse(versions);
+            log.info(blendFilename);
+
+
+            var projectSettings = ProjectSettings.builder()
+                    .samples(50)
+                    .partsPerFrame(4)
+                    .useParts(true)
+                    .computeOn(ComputeOn.HYBRID)
+                    .startFrame(blendFile.getFrameStart())
+                    .endFrame(blendFile.getFrameEnd())
+                    .stepFrame(blendFile.getFrameSkip())
+                    .imageSettings(imageSettings)
+                    .blenderEngine(blendFile.getEngine())
+                    .blenderVersion(versions.get(0))
+                    .blendFilename(blendFilename)
+                    .build();
+
+            projectForm.setProjectSettings(projectSettings);
+            projectForm.setProjectType(ProjectType.STILL_IMAGE);
+            projectForm.setProjectID(UUID.randomUUID().toString());
+            projectForm.setProjectName("");
+            log.info(projectForm.toString());
+
+            return new ResponseEntity<>(projectForm, HttpStatus.CREATED);
         } catch (IOException | UnsupportedOperationException e) {
             log.error("Error saving upload: " + e.getMessage());
             log.debug(Throwables.getStackTraceAsString(e));
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        var imageSettings = ImageSettings.builder()
-                .resolutionX(blendFile.getResolutionX())
-                .resolutionY(blendFile.getResolutionY())
-                .resPercentage(blendFile.getResPercent())
-                .imageOutputFormat(ImageOutputFormat.PNG)
-                .build();
 
-        var blenderArchiveList = blenderArchiveRepository.findAllByDownloadedIsTrue();
-        var versions = new ArrayList<String>();
-        for (BlenderArchive blenderArchive : blenderArchiveList) {
-            versions.add(blenderArchive.getBlenderVersion());
-        }
-        versions.sort(new AlphaNumericComparator());
-        Collections.reverse(versions);
-
-
-        var projectSettings = ProjectSettings.builder()
-                .samples(50)
-                .partsPerFrame(4)
-                .useParts(true)
-                .computeOn(ComputeOn.HYBRID)
-                .startFrame(blendFile.getFrameStart())
-                .endFrame(blendFile.getFrameEnd())
-                .stepFrame(blendFile.getFrameSkip())
-                .imageSettings(imageSettings)
-                .blenderEngine(blendFile.getEngine())
-                .blenderVersion(versions.get(0))
-                .blendFilename(blendFilename)
-                .build();
-
-        projectForm.setProjectSettings(projectSettings);
-        projectForm.setProjectType(ProjectType.STILL_IMAGE);
-        projectForm.setProjectID(UUID.randomUUID().toString());
-        projectForm.setProjectName("");
-
-        return new ResponseEntity<>(projectForm, HttpStatus.CREATED);
     }
 
     @Override
@@ -275,7 +281,6 @@ public class ProjectServiceImpl implements ProjectService {
             var project = projectFormToProject.convert(projectForm);
             project.setProjectRootDir(projectDirectory.toString());
             projectRepository.save(project);
-
 
 
         } catch (IOException e) {

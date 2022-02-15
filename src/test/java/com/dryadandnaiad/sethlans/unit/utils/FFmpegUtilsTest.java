@@ -212,7 +212,7 @@ class FFmpegUtilsTest {
         var archive = "movie.tar.xz";
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "movie/" + archive, archive);
         FileUtils.extractArchive(TEST_DIRECTORY.toString() + File.separator + archive,
-                imageDir.toString());
+                imageDir.toString(), false);
         var initialList = FileUtils.listFiles(imageDir.toString());
         var imageList = new ArrayList<String>();
         for (String file : initialList) {

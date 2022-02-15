@@ -93,7 +93,7 @@ public class PythonUtils {
             InputStream inputStream = new ResourceUtils(SCRIPTS).getResource();
             Files.copy(inputStream, Paths.get(path));
             inputStream.close();
-            return FileUtils.extractArchive(path, scriptsDir);
+            return FileUtils.extractArchive(path, scriptsDir, true);
         } catch (IOException e) {
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));

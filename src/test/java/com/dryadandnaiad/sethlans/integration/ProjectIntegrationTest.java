@@ -16,7 +16,6 @@ import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -101,11 +100,13 @@ public class ProjectIntegrationTest {
         var file2 = "refract_monkey.blend";
         var file3 = "bmw27_gpu.blend";
         var file4 = "scene-helicopter-27.blend";
+        var file5 = "pavillon_barcelone_v1.2.zip";
 
         TestFileUtils.copyTestArchiveToDisk(BLEND_DIRECTORY.toString(), "blend_files/" + file1, file1);
         TestFileUtils.copyTestArchiveToDisk(BLEND_DIRECTORY.toString(), "blend_files/" + file2, file2);
         TestFileUtils.copyTestArchiveToDisk(BLEND_DIRECTORY.toString(), "blend_files/" + file3, file3);
         TestFileUtils.copyTestArchiveToDisk(BLEND_DIRECTORY.toString(), "blend_files/" + file4, file4);
+        TestFileUtils.copyTestArchiveToDisk(BLEND_DIRECTORY.toString(), "blend_files/" + file5, file5);
 
         log.info("Starting Project Test on " + baseHost + ":" + RestAssured.port);
 
@@ -269,7 +270,7 @@ public class ProjectIntegrationTest {
     }
 
     @Test
-    public void create_project_test() throws InterruptedException, JsonProcessingException {
+    public void create_project_blend_test() throws InterruptedException, JsonProcessingException {
         var mapper = new ObjectMapper();
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
 
@@ -336,6 +337,74 @@ public class ProjectIntegrationTest {
         assertThat(projects.size()).isGreaterThanOrEqualTo(1);
     }
 
+    @Test
+    public void create_project_zip_test() throws InterruptedException, JsonProcessingException {
+        var mapper = new ObjectMapper();
+        var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
+
+        var downloadState = Boolean.parseBoolean(given().when().get("/api/v1/management/blender_download_complete")
+                .then()
+                .extract()
+                .response()
+                .body()
+                .asString());
+
+        while (!downloadState) {
+            Thread.sleep(5000);
+            downloadState = Boolean.parseBoolean(given().when().get("/api/v1/management/blender_download_complete")
+                    .then()
+                    .extract()
+                    .response()
+                    .body()
+                    .asString());
+        }
+
+        var response = given()
+                .log()
+                .ifValidationFails()
+                .multiPart("project_file", new File(BLEND_DIRECTORY.toString() + "/pavillon_barcelone_v1.2.zip"))
+                .accept(ContentType.JSON)
+                .contentType(ContentType.MULTIPART)
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token)
+                .post("/api/v1/project/upload_project_file")
+                .then()
+                .statusCode(StatusCodes.CREATED)
+                .extract()
+                .response()
+                .body()
+                .asString();
+
+        var projectForm = mapper.readValue(response, ProjectForm.class);
+
+        log.info(projectForm.toString());
+
+        projectForm.setProjectName(TestUtils.titleGenerator());
+        log.info(projectForm.toString());
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(mapper.writeValueAsString(projectForm))
+                .post("/api/v1/project/create_project")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
+
+        var projects = mapper
+                .readValue(get("/api/v1/project/project_list")
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), new TypeReference<List<ProjectView>>() {
+                });
+
+        assertThat(projects.size()).isGreaterThanOrEqualTo(1);
+    }
+
     @AfterAll
     public static void shutdown() throws InterruptedException {
         var response = given()
@@ -346,7 +415,7 @@ public class ProjectIntegrationTest {
         assertThat(response.getStatusCode()).isGreaterThanOrEqualTo(200).isLessThan(300);
         Thread.sleep(10000);
 
-        FileSystemUtils.deleteRecursively(new File(SystemUtils.USER_HOME + File.separator + ".sethlans"));
+        //FileSystemUtils.deleteRecursively(new File(SystemUtils.USER_HOME + File.separator + ".sethlans"));
         Thread.sleep(5000);
     }
 }

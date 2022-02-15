@@ -117,7 +117,7 @@ class ImageUtilsTest {
         var partLocation = new File(TEST_DIRECTORY + File.separator + "frames" + File.separator + "parts");
         partLocation.mkdirs();
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "image_parts/" + file1, file1);
-        FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString());
+        FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString(), true);
         var frame = Frame.builder()
                 .frameName("asamplep-4d6e-0001")
                 .fileExtension("png")
@@ -136,7 +136,7 @@ class ImageUtilsTest {
         var partLocation = new File(TEST_DIRECTORY + File.separator + "frames" + File.separator + "parts");
         partLocation.mkdirs();
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "image_parts/" + file1, file1);
-        FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString());
+        FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString(), true);
         var frame = Frame.builder()
                 .frameName("asamplep-2a7f-0001")
                 .fileExtension("png")
@@ -155,7 +155,7 @@ class ImageUtilsTest {
         var partLocation = new File(TEST_DIRECTORY + File.separator + "frames" + File.separator + "parts");
         partLocation.mkdirs();
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "image_parts/" + file1, file1);
-        FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString());
+        FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString(), true);
         var frame = Frame.builder()
                 .frameName("asamplep-4d6e-0001")
                 .fileExtension("hdr")
@@ -174,7 +174,7 @@ class ImageUtilsTest {
         var partLocation = new File(TEST_DIRECTORY + File.separator + "frames" + File.separator + "parts");
         partLocation.mkdirs();
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "image_parts/" + file1, file1);
-        FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString());
+        FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString(), true);
         var frame = Frame.builder()
                 .frameName("asamplep-4d6e-0001")
                 .fileExtension("hdr")
@@ -192,7 +192,7 @@ class ImageUtilsTest {
         var partLocation = new File(TEST_DIRECTORY + File.separator + "frames" + File.separator + "parts");
         partLocation.mkdirs();
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "image_parts/" + file1, file1);
-        FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString());
+        FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString(), true);
         var frame = Frame.builder()
                 .frameName("asamplep-2a7f-0001")
                 .fileExtension("hdr")
@@ -210,7 +210,7 @@ class ImageUtilsTest {
         var partLocation = new File(TEST_DIRECTORY + File.separator + "frames" + File.separator + "parts");
         partLocation.mkdirs();
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "image_parts/" + file1, file1);
-        FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString());
+        FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString(), true);
         var frame = Frame.builder()
                 .frameName("asamplep-4d6e-0001")
                 .fileExtension("png")
@@ -229,7 +229,7 @@ class ImageUtilsTest {
         var partLocation = new File(TEST_DIRECTORY + File.separator + "frames" + File.separator + "parts");
         partLocation.mkdirs();
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "image_parts/" + file1, file1);
-        FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString());
+        FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString(), true);
         var frame = Frame.builder()
                 .frameName("asamplep-4d6e-0001")
                 .fileExtension("tif")
