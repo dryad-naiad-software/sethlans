@@ -112,6 +112,163 @@ public class ProjectIntegrationTest {
     }
 
     @Test
+    public void list_projects() throws JsonProcessingException, InterruptedException {
+        var mapper = new ObjectMapper();
+        var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
+
+        var downloadState = Boolean.parseBoolean(given().when().get("/api/v1/management/blender_download_complete")
+                .then()
+                .extract()
+                .response()
+                .body()
+                .asString());
+
+        while (!downloadState) {
+            Thread.sleep(5000);
+            downloadState = Boolean.parseBoolean(given().when().get("/api/v1/management/blender_download_complete")
+                    .then()
+                    .extract()
+                    .response()
+                    .body()
+                    .asString());
+        }
+
+        var response = given()
+                .log()
+                .ifValidationFails()
+                .multiPart("project_file", new File(BLEND_DIRECTORY.toString() + "/refract_monkey.blend"))
+                .accept(ContentType.JSON)
+                .contentType(ContentType.MULTIPART)
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token)
+                .post("/api/v1/project/upload_project_file")
+                .then()
+                .statusCode(StatusCodes.CREATED)
+                .extract()
+                .response()
+                .body()
+                .asString();
+
+        var projectForm = mapper.readValue(response, ProjectForm.class);
+        projectForm.setProjectName(TestUtils.titleGenerator());
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(mapper.writeValueAsString(projectForm))
+                .post("/api/v1/project/create_project")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
+        response = given()
+                .log()
+                .ifValidationFails()
+                .multiPart("project_file", new File(BLEND_DIRECTORY.toString() + "/bmw27_gpu.blend"))
+                .accept(ContentType.JSON)
+                .contentType(ContentType.MULTIPART)
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token)
+                .post("/api/v1/project/upload_project_file")
+                .then()
+                .statusCode(StatusCodes.CREATED)
+                .extract()
+                .response()
+                .body()
+                .asString();
+
+        projectForm = mapper.readValue(response, ProjectForm.class);
+        projectForm.setProjectName(TestUtils.titleGenerator());
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(mapper.writeValueAsString(projectForm))
+                .post("/api/v1/project/create_project")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
+        response = given()
+                .log()
+                .ifValidationFails()
+                .multiPart("project_file", new File(BLEND_DIRECTORY.toString() + "/scene-helicopter-27.blend"))
+                .accept(ContentType.JSON)
+                .contentType(ContentType.MULTIPART)
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token)
+                .post("/api/v1/project/upload_project_file")
+                .then()
+                .statusCode(StatusCodes.CREATED)
+                .extract()
+                .response()
+                .body()
+                .asString();
+
+        projectForm = mapper.readValue(response, ProjectForm.class);
+        projectForm.setProjectName(TestUtils.titleGenerator());
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(mapper.writeValueAsString(projectForm))
+                .post("/api/v1/project/create_project")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
+        response = given()
+                .log()
+                .ifValidationFails()
+                .multiPart("project_file", new File(BLEND_DIRECTORY.toString() + "/wasp_bot.blend"))
+                .accept(ContentType.JSON)
+                .contentType(ContentType.MULTIPART)
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token)
+                .post("/api/v1/project/upload_project_file")
+                .then()
+                .statusCode(StatusCodes.CREATED)
+                .extract()
+                .response()
+                .body()
+                .asString();
+
+        projectForm = mapper.readValue(response, ProjectForm.class);
+        projectForm.setProjectName(TestUtils.titleGenerator());
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(mapper.writeValueAsString(projectForm))
+                .post("/api/v1/project/create_project")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
+        var projects = mapper
+                .readValue(get("/api/v1/project/project_list")
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), new TypeReference<List<ProjectView>>() {
+                });
+
+        log.info("Number of Projects: " + projects.size());
+        assertThat(projects.size()).isGreaterThanOrEqualTo(4);
+
+        for (ProjectView project: projects) {
+            log.info(project.toString());
+        }
+
+
+    }
+
+    @Test
     public void create_project_test() throws InterruptedException, JsonProcessingException {
         var mapper = new ObjectMapper();
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
@@ -153,8 +310,6 @@ public class ProjectIntegrationTest {
 
         log.info(projectForm.toString());
 
-        Thread.sleep(10000);
-
         projectForm.setProjectName(TestUtils.titleGenerator());
         log.info(projectForm.toString());
 
@@ -178,9 +333,7 @@ public class ProjectIntegrationTest {
                         .asString(), new TypeReference<List<ProjectView>>() {
                 });
 
-        log.info(projects.toString());
-
-
+        assertThat(projects.size()).isGreaterThanOrEqualTo(1);
     }
 
     @AfterAll

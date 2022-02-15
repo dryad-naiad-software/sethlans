@@ -70,7 +70,6 @@ public class ProjectQueryController {
 
     @GetMapping("/project_list")
     public List<ProjectView> getProjects() {
-        log.info("Getting List");
         var projectsToSend = new ArrayList<ProjectView>();
         List<Project> projects;
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
