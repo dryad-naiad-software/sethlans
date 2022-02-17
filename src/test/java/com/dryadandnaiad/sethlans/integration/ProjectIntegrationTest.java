@@ -16,6 +16,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -415,7 +416,7 @@ public class ProjectIntegrationTest {
         assertThat(response.getStatusCode()).isGreaterThanOrEqualTo(200).isLessThan(300);
         Thread.sleep(10000);
 
-        //FileSystemUtils.deleteRecursively(new File(SystemUtils.USER_HOME + File.separator + ".sethlans"));
+        FileSystemUtils.deleteRecursively(new File(SystemUtils.USER_HOME + File.separator + ".sethlans"));
         Thread.sleep(5000);
     }
 }

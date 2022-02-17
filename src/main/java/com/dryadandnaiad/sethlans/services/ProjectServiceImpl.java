@@ -168,9 +168,10 @@ public class ProjectServiceImpl implements ProjectService {
                 var filenameWithoutExt = FilenameUtils.removeExtension(
                         originalFilename);
                 projectForm.setProjectFileLocation(zipLocation + File.separator + filename);
+                var blendFileNotFound = true;
                 if (FileUtils.extractArchive(storeUpload.toString(), zipLocation.toString(), false)) {
                     var files = zipLocation.listFiles();
-                    for (File file : files != null ? files : new File[0]) {
+                    for (File file : files) {
                         log.info(file.toString());
                         log.info(filenameWithoutExt);
                         if (file.toString().contains(".blend")) {
@@ -180,11 +181,13 @@ public class ProjectServiceImpl implements ProjectService {
                             if (blendFile == null) {
                                 throw new IOException("Unable to read blend file");
                             }
+                            blendFileNotFound = false;
                             blendFilename = file.toString();
                             break;
-                        } else {
-                            throw new IOException(originalFilename + " does not contain a blend file!");
                         }
+                    }
+                    if (blendFileNotFound) {
+                        throw new IOException(originalFilename + " does not contain a blend file!");
                     }
                 } else {
                     throw new IOException(originalFilename + " is not a valid archive.");
@@ -273,10 +276,17 @@ public class ProjectServiceImpl implements ProjectService {
         }
         try {
             var projectDirectory = new File(ConfigUtils.getProperty(ConfigKeys.PROJECT_DIR) + File.separator + projectForm.getProjectID());
+            if (projectForm.getProjectFileLocation().contains(".zip")) {
+                org.apache.commons.io.FileUtils.moveFile(new File(projectForm.getProjectFileLocation()), new File(projectDirectory + File.separator + projectForm.getOriginalFile()));
+                projectForm.setProjectFileLocation(projectDirectory + File.separator + projectForm.getOriginalFile());
+                projectForm.getProjectSettings().setBlendFilenameMD5Sum(FileUtils.getMD5ofFile(new File(projectForm.getProjectFileLocation())));
 
-            org.apache.commons.io.FileUtils.moveFile(new File(projectForm.getProjectFileLocation()), new File(projectDirectory + File.separator + projectForm.getProjectSettings().getBlendFilename()));
-            projectForm.setProjectFileLocation(projectDirectory + File.separator + projectForm.getProjectSettings().getBlendFilename());
-            projectForm.getProjectSettings().setBlendFilenameMD5Sum(FileUtils.getMD5ofFile(new File(projectDirectory + File.separator + projectForm.getProjectSettings().getBlendFilename())));
+            } else {
+                org.apache.commons.io.FileUtils.moveFile(new File(projectForm.getProjectFileLocation()), new File(projectDirectory + File.separator + projectForm.getProjectSettings().getBlendFilename()));
+                projectForm.setProjectFileLocation(projectDirectory + File.separator + projectForm.getProjectSettings().getBlendFilename());
+                projectForm.getProjectSettings().setBlendFilenameMD5Sum(FileUtils.getMD5ofFile(new File(projectDirectory + File.separator + projectForm.getProjectSettings().getBlendFilename())));
+
+            }
 
             var project = projectFormToProject.convert(projectForm);
             project.setProjectRootDir(projectDirectory.toString());
