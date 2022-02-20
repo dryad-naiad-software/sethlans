@@ -129,6 +129,18 @@ public class NodeBenchmarkIntegrationTest {
 
         }
 
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token)
+                .body(mapper.writeValueAsString(nodeList))
+                .post("/api/v1/management/add_nodes_to_server")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
 
         log.info("Waiting 10 seconds");
 
@@ -142,7 +154,6 @@ public class NodeBenchmarkIntegrationTest {
                         .body()
                         .asString(), new TypeReference<List<Node>>() {
                 });
-
 
         assertThat(nodesOnServer.get(0).getHostname().toLowerCase()).contains(System.getProperty("sethlans.host").toLowerCase());
         log.info("Added the following node to server:");
