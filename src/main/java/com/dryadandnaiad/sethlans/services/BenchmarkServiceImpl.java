@@ -164,13 +164,26 @@ public class BenchmarkServiceImpl implements BenchmarkService {
             switch (nodeType) {
                 case CPU:
                     node.setCpuRating(PropertiesUtils.getCPURating());
+                    node.setTotalRenderingSlots(1);
                     break;
                 case GPU:
-                    node.setSelectedGPUs(PropertiesUtils.getSelectedGPUs());
+                    var selectedGPUs = PropertiesUtils.getSelectedGPUs();
+                    node.setSelectedGPUs(selectedGPUs);
+                    if(PropertiesUtils.isGPUCombined()){
+                       node.setTotalRenderingSlots(1);
+                    } else {
+                        node.setTotalRenderingSlots(selectedGPUs.size());
+                    }
                     break;
                 case CPU_GPU:
+                    var selectedGPUs1 = PropertiesUtils.getSelectedGPUs();
                     node.setCpuRating(PropertiesUtils.getCPURating());
-                    node.setSelectedGPUs(PropertiesUtils.getSelectedGPUs());
+                    node.setSelectedGPUs(selectedGPUs1);
+                    if(PropertiesUtils.isGPUCombined()){
+                        node.setTotalRenderingSlots(2);
+                    } else {
+                        node.setTotalRenderingSlots(selectedGPUs1.size() + 1);
+                    }
                     break;
             }
             try {

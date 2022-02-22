@@ -215,6 +215,7 @@ public class NodeBenchmarkIntegrationTest {
         assertThat(response.getStatusCode()).isGreaterThanOrEqualTo(200).isLessThan(300);
         Thread.sleep(10000);
 
+
         FileSystemUtils.deleteRecursively( new File(SystemUtils.USER_HOME + File.separator + ".sethlans"));
         Thread.sleep(5000);
     }

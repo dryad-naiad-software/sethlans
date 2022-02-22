@@ -50,6 +50,10 @@ import static com.dryadandnaiad.sethlans.utils.ConfigUtils.*;
 @Slf4j
 public class PropertiesUtils {
 
+    public static boolean isGPUCombined() {
+        return Boolean.getBoolean(ConfigUtils.getProperty(ConfigKeys.COMBINE_GPU));
+    }
+
     public static List<GPU> getSelectedGPUs() {
         var objectMapper = new ObjectMapper();
         try {

@@ -124,6 +124,8 @@ public class AdminServerEndPointController {
             }
             nodeToSave.setBenchmarkPending(false);
             nodeToSave.setBenchmarkComplete(true);
+            nodeToSave.setActive(true);
+            nodeToSave.setTotalRenderingSlots(node.getTotalRenderingSlots());
             nodeRepository.save(nodeToSave);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } else {
