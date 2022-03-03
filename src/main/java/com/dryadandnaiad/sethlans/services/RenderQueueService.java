@@ -1,4 +1,4 @@
 package com.dryadandnaiad.sethlans.services;
 
-public interface ProjectQueueService {
+public interface RenderQueueService {
 }
