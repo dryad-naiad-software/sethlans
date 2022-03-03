@@ -4,11 +4,15 @@ import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+@Slf4j
+@Profile({"SERVER", "DUAL"})
 @Service
 public class ServerQueueServiceImpl implements ServerQueueService {
     private BlockingQueue<RenderTask> serverQueue;
@@ -27,7 +31,7 @@ public class ServerQueueServiceImpl implements ServerQueueService {
     public void updateQueueLimit() {
         var slots = 0;
 
-        var nodes = nodeRepository.findNodesByBenchmarkCompleteAndActive();
+        var nodes = nodeRepository.findNodesByBenchmarkCompleteTrueAndActiveTrue();
 
         for (Node node : nodes) {
             slots += node.getTotalRenderingSlots();
