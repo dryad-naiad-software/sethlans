@@ -1,5 +1,7 @@
 package com.dryadandnaiad.sethlans.integration;
 
+import com.dryadandnaiad.sethlans.enums.AnimationType;
+import com.dryadandnaiad.sethlans.enums.ProjectType;
 import com.dryadandnaiad.sethlans.models.blender.project.ProjectView;
 import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
@@ -493,6 +495,37 @@ public class ProjectIntegrationTest {
                 .then()
                 .statusCode(StatusCodes.CREATED);
 
+        response = given()
+                .log()
+                .ifValidationFails()
+                .multiPart("project_file", new File(BLEND_DIRECTORY.toString() + "/wasp_bot.blend"))
+                .accept(ContentType.JSON)
+                .contentType(ContentType.MULTIPART)
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token)
+                .post("/api/v1/project/upload_project_file")
+                .then()
+                .statusCode(StatusCodes.CREATED)
+                .extract()
+                .response()
+                .body()
+                .asString();
+
+        projectForm = mapper.readValue(response, ProjectForm.class);
+        projectForm.setProjectName(TestUtils.titleGenerator());
+        projectForm.getProjectSettings().setAnimationType(AnimationType.IMAGES);
+        projectForm.setProjectType(ProjectType.ANIMATION);
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(mapper.writeValueAsString(projectForm))
+                .post("/api/v1/project/create_project")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
         var projects = mapper
                 .readValue(get("/api/v1/project/project_list")
                         .then()
@@ -503,7 +536,7 @@ public class ProjectIntegrationTest {
                 });
 
         log.info("Number of Projects: " + projects.size());
-        assertThat(projects.size()).isGreaterThanOrEqualTo(4);
+        assertThat(projects.size()).isGreaterThanOrEqualTo(5);
 
         for (ProjectView project : projects) {
             log.info(project.toString());

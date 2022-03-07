@@ -20,10 +20,7 @@ package com.dryadandnaiad.sethlans.services;
 import com.dryadandnaiad.sethlans.blender.BlenderUtils;
 import com.dryadandnaiad.sethlans.comparators.AlphaNumericComparator;
 import com.dryadandnaiad.sethlans.converters.ProjectFormToProject;
-import com.dryadandnaiad.sethlans.enums.ComputeOn;
-import com.dryadandnaiad.sethlans.enums.ConfigKeys;
-import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
-import com.dryadandnaiad.sethlans.enums.ProjectType;
+import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.models.blender.BlendFile;
 import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
 import com.dryadandnaiad.sethlans.models.blender.project.ImageSettings;
@@ -264,7 +261,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
         switch (projectForm.getProjectType()) {
             case ANIMATION -> {
-                if (projectForm.getProjectSettings().getVideoSettings() == null) {
+                if (projectForm.getProjectSettings().getAnimationType() == AnimationType.MOVIE && projectForm.getProjectSettings().getVideoSettings() == null) {
                     return false;
                 }
             }
@@ -290,6 +287,9 @@ public class ProjectServiceImpl implements ProjectService {
 
             var project = projectFormToProject.convert(projectForm);
             project.getProjectStatus().setQueueIndex(0);
+            if(project.getProjectType() == ProjectType.STILL_IMAGE) {
+                project.getProjectSettings().setEndFrame(project.getProjectSettings().getStartFrame());
+            }
             project.setProjectRootDir(projectDirectory.toString());
             projectRepository.save(project);
 
