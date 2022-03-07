@@ -149,7 +149,6 @@ create table render_task
     task_resolutionx        integer,
     task_resolutiony        integer,
     task_tile_size          integer,
-    server_queueid          varchar(255),
     systemid                varchar(255),
     task_blend_file         varchar(255),
     task_blend_filemd5sum   varchar(255),

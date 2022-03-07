@@ -225,8 +225,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         var taskFrameInfo = TaskFrameInfo.builder().frameNumber(1).build();
 
         var taskServerInfo = TaskServerInfo.builder()
-                .systemID(serverSystemID)
-                .serverQueueID("N/A").build();
+                .systemID(serverSystemID).build();
         var selectedGPUs = PropertiesUtils.getSelectedGPUs();
 
         switch (nodeType) {

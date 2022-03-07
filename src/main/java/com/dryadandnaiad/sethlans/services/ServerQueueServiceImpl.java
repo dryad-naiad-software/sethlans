@@ -2,8 +2,11 @@ package com.dryadandnaiad.sethlans.services;
 
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
+import com.dryadandnaiad.sethlans.models.blender.tasks.TaskFrameInfo;
+import com.dryadandnaiad.sethlans.models.blender.tasks.TaskServerInfo;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
+import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,37 @@ public class ServerQueueServiceImpl implements ServerQueueService {
 
     @Override
     public void addRenderTasksToServerQueue(Project project) {
+        // TODO Work needs to be done to handle the following.  The total number of queue items will be equal to the number of parts x number of frames
+        // TODO This will apply to both animations and still images.  For Still Images that don't have parts then the frame will be 1.
+        var queueReady = true;
+        var serverInfo = TaskServerInfo.builder().systemID(PropertiesUtils.getSystemID()).build();
+
+        while (queueReady) {
+            TaskFrameInfo frameInfo;
+            if (project.getProjectSettings().isUseParts()) {
+                var parts = project.getProjectSettings().getPartsPerFrame();
+
+                frameInfo = TaskFrameInfo.builder()
+                        .frameNumber(null)
+                        .partNumber(null)
+                        .build();
+
+            } else {
+                frameInfo = TaskFrameInfo.builder()
+                        .frameNumber(project.getProjectStatus().getQueueIndex())
+                        .build();
+
+            }
+            var renderTask = RenderTask.builder()
+                    .projectID(project.getProjectID())
+                    .projectName(project.getProjectName())
+                    .useParts(project.getProjectSettings().isUseParts())
+                    .serverInfo(serverInfo)
+                    .frameInfo(frameInfo)
+                    .build();
+
+            queueReady = serverQueue.offer(renderTask);
+        }
 
     }
 

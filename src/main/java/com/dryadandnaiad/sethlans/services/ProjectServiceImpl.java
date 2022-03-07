@@ -289,6 +289,7 @@ public class ProjectServiceImpl implements ProjectService {
             }
 
             var project = projectFormToProject.convert(projectForm);
+            project.getProjectStatus().setQueueIndex(0);
             project.setProjectRootDir(projectDirectory.toString());
             projectRepository.save(project);
 
