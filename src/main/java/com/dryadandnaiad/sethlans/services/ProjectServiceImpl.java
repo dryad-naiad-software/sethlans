@@ -289,7 +289,36 @@ public class ProjectServiceImpl implements ProjectService {
             project.getProjectStatus().setQueueIndex(0);
             if(project.getProjectType() == ProjectType.STILL_IMAGE) {
                 project.getProjectSettings().setEndFrame(project.getProjectSettings().getStartFrame());
+                project.getProjectSettings().setTotalNumberOfFrames(1);
+                if(project.getProjectSettings().isUseParts()) {
+                    project.getProjectStatus().setTotalQueueSize(project.getProjectSettings().getPartsPerFrame());
+                }
+            } else {
+                var startFrame = project.getProjectSettings().getStartFrame();
+                var endFrame = project.getProjectSettings().getEndFrame();
+                var step = project.getProjectSettings().getStepFrame();
+                int totalFrames = 0;
+                if(startFrame == 1) {
+                    totalFrames = endFrame / step;
+                } else {
+                    for (var i = startFrame; i < endFrame; i+=step) {
+                        totalFrames++;
+                    }
+                }
+
+                project.getProjectSettings().setTotalNumberOfFrames(totalFrames);
+                if(project.getProjectSettings().isUseParts()) {
+                    project.getProjectStatus()
+                            .setTotalQueueSize(totalFrames * project.getProjectSettings().getPartsPerFrame());
+
+                } else {
+                    project.getProjectStatus()
+                            .setTotalQueueSize(totalFrames);
+                }
+
             }
+            project.getProjectStatus().setRemainingQueueSize(project.getProjectStatus().getTotalQueueSize());
+
             project.setProjectRootDir(projectDirectory.toString());
             projectRepository.save(project);
 

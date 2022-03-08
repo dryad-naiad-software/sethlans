@@ -526,6 +526,188 @@ public class ProjectIntegrationTest {
                 .then()
                 .statusCode(StatusCodes.CREATED);
 
+        response = given()
+                .log()
+                .ifValidationFails()
+                .multiPart("project_file", new File(BLEND_DIRECTORY.toString() + "/wasp_bot.blend"))
+                .accept(ContentType.JSON)
+                .contentType(ContentType.MULTIPART)
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token)
+                .post("/api/v1/project/upload_project_file")
+                .then()
+                .statusCode(StatusCodes.CREATED)
+                .extract()
+                .response()
+                .body()
+                .asString();
+
+        projectForm = mapper.readValue(response, ProjectForm.class);
+        projectForm.setProjectName(TestUtils.titleGenerator());
+        projectForm.getProjectSettings().setAnimationType(AnimationType.IMAGES);
+        projectForm.setProjectType(ProjectType.ANIMATION);
+        projectForm.getProjectSettings().setStepFrame(2);
+
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(mapper.writeValueAsString(projectForm))
+                .post("/api/v1/project/create_project")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
+        response = given()
+                .log()
+                .ifValidationFails()
+                .multiPart("project_file", new File(BLEND_DIRECTORY.toString() + "/wasp_bot.blend"))
+                .accept(ContentType.JSON)
+                .contentType(ContentType.MULTIPART)
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token)
+                .post("/api/v1/project/upload_project_file")
+                .then()
+                .statusCode(StatusCodes.CREATED)
+                .extract()
+                .response()
+                .body()
+                .asString();
+
+        projectForm = mapper.readValue(response, ProjectForm.class);
+        projectForm.setProjectName(TestUtils.titleGenerator());
+        projectForm.getProjectSettings().setAnimationType(AnimationType.IMAGES);
+        projectForm.setProjectType(ProjectType.ANIMATION);
+        projectForm.getProjectSettings().setStartFrame(25);
+        projectForm.getProjectSettings().setEndFrame(315);
+
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(mapper.writeValueAsString(projectForm))
+                .post("/api/v1/project/create_project")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
+        response = given()
+                .log()
+                .ifValidationFails()
+                .multiPart("project_file", new File(BLEND_DIRECTORY.toString() + "/wasp_bot.blend"))
+                .accept(ContentType.JSON)
+                .contentType(ContentType.MULTIPART)
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token)
+                .post("/api/v1/project/upload_project_file")
+                .then()
+                .statusCode(StatusCodes.CREATED)
+                .extract()
+                .response()
+                .body()
+                .asString();
+
+        projectForm = mapper.readValue(response, ProjectForm.class);
+        projectForm.setProjectName(TestUtils.titleGenerator());
+        projectForm.getProjectSettings().setAnimationType(AnimationType.IMAGES);
+        projectForm.setProjectType(ProjectType.ANIMATION);
+        projectForm.getProjectSettings().setStartFrame(25);
+        projectForm.getProjectSettings().setEndFrame(315);
+        projectForm.getProjectSettings().setStepFrame(2);
+
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(mapper.writeValueAsString(projectForm))
+                .post("/api/v1/project/create_project")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
+        response = given()
+                .log()
+                .ifValidationFails()
+                .multiPart("project_file", new File(BLEND_DIRECTORY.toString() + "/wasp_bot.blend"))
+                .accept(ContentType.JSON)
+                .contentType(ContentType.MULTIPART)
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token)
+                .post("/api/v1/project/upload_project_file")
+                .then()
+                .statusCode(StatusCodes.CREATED)
+                .extract()
+                .response()
+                .body()
+                .asString();
+
+        projectForm = mapper.readValue(response, ProjectForm.class);
+        projectForm.setProjectName(TestUtils.titleGenerator());
+        projectForm.getProjectSettings().setAnimationType(AnimationType.IMAGES);
+        projectForm.setProjectType(ProjectType.ANIMATION);
+        projectForm.getProjectSettings().setStartFrame(18);
+        projectForm.getProjectSettings().setEndFrame(337);
+        projectForm.getProjectSettings().setStepFrame(1);
+
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(mapper.writeValueAsString(projectForm))
+                .post("/api/v1/project/create_project")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(mapper.writeValueAsString(projectForm))
+                .post("/api/v1/project/create_project")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
+        response = given()
+                .log()
+                .ifValidationFails()
+                .multiPart("project_file", new File(BLEND_DIRECTORY.toString() + "/wasp_bot.blend"))
+                .accept(ContentType.JSON)
+                .contentType(ContentType.MULTIPART)
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token)
+                .post("/api/v1/project/upload_project_file")
+                .then()
+                .statusCode(StatusCodes.CREATED)
+                .extract()
+                .response()
+                .body()
+                .asString();
+
+        projectForm = mapper.readValue(response, ProjectForm.class);
+        projectForm.setProjectName(TestUtils.titleGenerator());
+        projectForm.getProjectSettings().setAnimationType(AnimationType.IMAGES);
+        projectForm.setProjectType(ProjectType.ANIMATION);
+        projectForm.getProjectSettings().setStartFrame(1);
+        projectForm.getProjectSettings().setEndFrame(500);
+        projectForm.getProjectSettings().setStepFrame(2);
+
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(mapper.writeValueAsString(projectForm))
+                .post("/api/v1/project/create_project")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
         var projects = mapper
                 .readValue(get("/api/v1/project/project_list")
                         .then()
@@ -536,13 +718,18 @@ public class ProjectIntegrationTest {
                 });
 
         log.info("Number of Projects: " + projects.size());
-        assertThat(projects.size()).isGreaterThanOrEqualTo(5);
+        assertThat(projects.size()).isGreaterThanOrEqualTo(10);
 
         for (ProjectView project : projects) {
             log.info(project.toString());
         }
 
 
+    }
+
+    @Test
+    public void verifyFramesAndQueueSizes() {
+        //TODO Verify total queue sizes, remaining queue sizes.
     }
 
     @Test
