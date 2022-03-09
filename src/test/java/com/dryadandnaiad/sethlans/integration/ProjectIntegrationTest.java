@@ -526,7 +526,51 @@ public class ProjectIntegrationTest {
                 .then()
                 .statusCode(StatusCodes.CREATED);
 
-        response = given()
+
+
+        var projects = mapper
+                .readValue(get("/api/v1/project/project_list")
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), new TypeReference<List<ProjectView>>() {
+                });
+
+        log.info("Number of Projects: " + projects.size());
+        assertThat(projects.size()).isGreaterThanOrEqualTo(5);
+
+        for (ProjectView project : projects) {
+            log.info(project.toString());
+        }
+
+
+    }
+
+    @Test
+    public void verifyFramesAndQueueSizes() throws InterruptedException, JsonProcessingException {
+
+        var mapper = new ObjectMapper();
+        var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
+
+        var downloadState = Boolean.parseBoolean(given().when().get("/api/v1/management/blender_download_complete")
+                .then()
+                .extract()
+                .response()
+                .body()
+                .asString());
+
+        while (!downloadState) {
+            Thread.sleep(5000);
+            downloadState = Boolean.parseBoolean(given().when().get("/api/v1/management/blender_download_complete")
+                    .then()
+                    .extract()
+                    .response()
+                    .body()
+                    .asString());
+        }
+
+        var response = given()
                 .log()
                 .ifValidationFails()
                 .multiPart("project_file", new File(BLEND_DIRECTORY.toString() + "/wasp_bot.blend"))
@@ -542,7 +586,7 @@ public class ProjectIntegrationTest {
                 .body()
                 .asString();
 
-        projectForm = mapper.readValue(response, ProjectForm.class);
+        var projectForm = mapper.readValue(response, ProjectForm.class);
         projectForm.setProjectName(TestUtils.titleGenerator());
         projectForm.getProjectSettings().setAnimationType(AnimationType.IMAGES);
         projectForm.setProjectType(ProjectType.ANIMATION);
@@ -558,6 +602,17 @@ public class ProjectIntegrationTest {
                 .post("/api/v1/project/create_project")
                 .then()
                 .statusCode(StatusCodes.CREATED);
+
+        var project = mapper
+                .readValue(get("/api/v1/project/" + projectForm.getProjectID())
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), ProjectView.class);
+
+        log.info(project.toString());
+
 
         response = given()
                 .log()
@@ -593,6 +648,16 @@ public class ProjectIntegrationTest {
                 .then()
                 .statusCode(StatusCodes.CREATED);
 
+        project = mapper
+                .readValue(get("/api/v1/project/" + projectForm.getProjectID())
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), ProjectView.class);
+
+        log.info(project.toString());
+
         response = given()
                 .log()
                 .ifValidationFails()
@@ -627,6 +692,16 @@ public class ProjectIntegrationTest {
                 .post("/api/v1/project/create_project")
                 .then()
                 .statusCode(StatusCodes.CREATED);
+
+        project = mapper
+                .readValue(get("/api/v1/project/" + projectForm.getProjectID())
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), ProjectView.class);
+
+        log.info(project.toString());
 
         response = given()
                 .log()
@@ -663,15 +738,6 @@ public class ProjectIntegrationTest {
                 .then()
                 .statusCode(StatusCodes.CREATED);
 
-        given()
-                .log()
-                .ifValidationFails()
-                .accept(ContentType.JSON)
-                .contentType(ContentType.JSON)
-                .body(mapper.writeValueAsString(projectForm))
-                .post("/api/v1/project/create_project")
-                .then()
-                .statusCode(StatusCodes.CREATED);
 
         response = given()
                 .log()
@@ -708,27 +774,15 @@ public class ProjectIntegrationTest {
                 .then()
                 .statusCode(StatusCodes.CREATED);
 
-        var projects = mapper
-                .readValue(get("/api/v1/project/project_list")
+        project = mapper
+                .readValue(get("/api/v1/project/" + projectForm.getProjectID())
                         .then()
                         .extract()
                         .response()
                         .body()
-                        .asString(), new TypeReference<List<ProjectView>>() {
-                });
+                        .asString(), ProjectView.class);
 
-        log.info("Number of Projects: " + projects.size());
-        assertThat(projects.size()).isGreaterThanOrEqualTo(10);
-
-        for (ProjectView project : projects) {
-            log.info(project.toString());
-        }
-
-
-    }
-
-    @Test
-    public void verifyFramesAndQueueSizes() {
+        log.info(project.toString());
         //TODO Verify total queue sizes, remaining queue sizes.
     }
 
