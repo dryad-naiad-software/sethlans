@@ -611,7 +611,8 @@ public class ProjectIntegrationTest {
                         .body()
                         .asString(), ProjectView.class);
 
-        log.info(project.toString());
+        assertThat(project.getProjectSettings().getTotalNumberOfFrames()).isEqualTo(125);
+        assertThat(project.getProjectStatus().getTotalQueueSize()).isEqualTo(500);
 
 
         response = given()
@@ -656,7 +657,8 @@ public class ProjectIntegrationTest {
                         .body()
                         .asString(), ProjectView.class);
 
-        log.info(project.toString());
+        assertThat(project.getProjectSettings().getTotalNumberOfFrames()).isEqualTo(290);
+        assertThat(project.getProjectStatus().getTotalQueueSize()).isEqualTo(1160);
 
         response = given()
                 .log()
@@ -701,7 +703,8 @@ public class ProjectIntegrationTest {
                         .body()
                         .asString(), ProjectView.class);
 
-        log.info(project.toString());
+        assertThat(project.getProjectSettings().getTotalNumberOfFrames()).isEqualTo(145);
+        assertThat(project.getProjectStatus().getTotalQueueSize()).isEqualTo(580);
 
         response = given()
                 .log()
@@ -737,6 +740,17 @@ public class ProjectIntegrationTest {
                 .post("/api/v1/project/create_project")
                 .then()
                 .statusCode(StatusCodes.CREATED);
+
+        project = mapper
+                .readValue(get("/api/v1/project/" + projectForm.getProjectID())
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), ProjectView.class);
+
+        assertThat(project.getProjectSettings().getTotalNumberOfFrames()).isEqualTo(319);
+        assertThat(project.getProjectStatus().getTotalQueueSize()).isEqualTo(1276);
 
 
         response = given()
@@ -782,8 +796,51 @@ public class ProjectIntegrationTest {
                         .body()
                         .asString(), ProjectView.class);
 
-        log.info(project.toString());
-        //TODO Verify total queue sizes, remaining queue sizes.
+        assertThat(project.getProjectSettings().getTotalNumberOfFrames()).isEqualTo(250);
+        assertThat(project.getProjectStatus().getTotalQueueSize()).isEqualTo(1000);
+
+        response = given()
+                .log()
+                .ifValidationFails()
+                .multiPart("project_file", new File(BLEND_DIRECTORY.toString() + "/wasp_bot.blend"))
+                .accept(ContentType.JSON)
+                .contentType(ContentType.MULTIPART)
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token)
+                .post("/api/v1/project/upload_project_file")
+                .then()
+                .statusCode(StatusCodes.CREATED)
+                .extract()
+                .response()
+                .body()
+                .asString();
+
+        projectForm = mapper.readValue(response, ProjectForm.class);
+        projectForm.setProjectName(TestUtils.titleGenerator());
+        projectForm.getProjectSettings().setAnimationType(AnimationType.IMAGES);
+        projectForm.setProjectType(ProjectType.ANIMATION);
+
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(mapper.writeValueAsString(projectForm))
+                .post("/api/v1/project/create_project")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
+        project = mapper
+                .readValue(get("/api/v1/project/" + projectForm.getProjectID())
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), ProjectView.class);
+
+        assertThat(project.getProjectSettings().getTotalNumberOfFrames()).isEqualTo(250);
+        assertThat(project.getProjectStatus().getTotalQueueSize()).isEqualTo(1000);
     }
 
     @Test
