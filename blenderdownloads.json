@@ -2,50 +2,50 @@
   {
     "blenderVersion": "2.93",
     "macOS": [
-      "https://download.blender.org/release/Blender2.93/blender-2.93.1-macos-x64.dmg",
-      "https://mirror.clarkson.edu/blender/release/Blender2.93/blender-2.93.1-macos-x64.dmg",
-      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.93/blender-2.93.1-macos-x64.dmg",
-      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.93/blender-2.93.1-macos-x64.dmg"
+      "https://download.blender.org/release/Blender2.93/blender-2.93.8-macos-x64.dmg",
+      "https://mirror.clarkson.edu/blender/release/Blender2.93/blender-2.93.8-macos-x64.dmg",
+      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.93/blender-2.93.8-macos-x64.dmg",
+      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.93/blender-2.93.8-macos-x64.dmg"
     ],
     "windows64": [
-      "https://download.blender.org/release/Blender2.93/blender-2.93.1-windows-x64.zip",
-      "https://mirror.clarkson.edu/blender/release/Blender2.93/blender-2.93.1-windows-x64.zip",
-      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.93/blender-2.93.1-windows-x64.zip",
-      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.93/blender-2.93.1-windows-x64.zip"
+      "https://download.blender.org/release/Blender2.93/blender-2.93.8-windows-x64.zip",
+      "https://mirror.clarkson.edu/blender/release/Blender2.93/blender-2.93.8-windows-x64.zip",
+      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.93/blender-2.93.8-windows-x64.zip",
+      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.93/blender-2.93.8-windows-x64.zip"
     ],
     "linux64": [
-      "https://download.blender.org/release/Blender2.93/blender-2.93.1-linux-x64.tar.xz",
-      "https://mirror.clarkson.edu/blender/release/Blender2.93/blender-2.93.1-linux-x64.tar.xz",
-      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.93/blender-2.93.1-linux-x64.tar.xz",
-      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.93/blender-2.93.1-linux-x64.tar.xz"
+      "https://download.blender.org/release/Blender2.93/blender-2.93.8-linux-x64.tar.xz",
+      "https://mirror.clarkson.edu/blender/release/Blender2.93/blender-2.93.8-linux-x64.tar.xz",
+      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.93/blender-2.93.8-linux-x64.tar.xz",
+      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.93/blender-2.93.8-linux-x64.tar.xz"
     ],
-    "md5MacOS": "6f3c189c68ea2ebe3073d57b77305cf9",
-    "md5Windows64": "7f01f714c5c213961c3c204ac2121e5c",
-    "md5Linux64": "3d4e287b35d6400a46b100e9bd12bc4e"
+    "md5MacOS": "88d276e9ef94c6d13a23f2aed47139e1",
+    "md5Windows64": "8db9f8ba6c8c28004c6567daf03e8a9f",
+    "md5Linux64": "110f93b6e56b13c3ea10ecf8eaf5e614"
   },
   {
     "blenderVersion": "2.83",
     "macOS": [
-      "https://download.blender.org/release/Blender2.83/blender-2.83.16-macos-x64.dmg",
-      "https://mirror.clarkson.edu/blender/release/Blender2.83/blender-2.83.16-macos-x64.dmg",
-      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.83/blender-2.83.16-macos-x64.dmg",
-      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.83/blender-2.83.16-macos-x64.dmg"
+      "https://download.blender.org/release/Blender2.83/blender-2.83.19-macos-x64.dmg",
+      "https://mirror.clarkson.edu/blender/release/Blender2.83/blender-2.83.19-macos-x64.dmg",
+      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.83/blender-2.83.19-macos-x64.dmg",
+      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.83/blender-2.83.19-macos-x64.dmg"
     ],
     "windows64": [
-      "https://download.blender.org/release/Blender2.83/blender-2.83.16-windows-x64.zip",
-      "https://mirror.clarkson.edu/blender/release/Blender2.83/blender-2.83.16-windows-x64.zip",
-      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.83/blender-2.83.16-windows-x64.zip",
-      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.83/blender-2.83.16-windows-x64.zip"
+      "https://download.blender.org/release/Blender2.83/blender-2.83.19-windows-x64.zip",
+      "https://mirror.clarkson.edu/blender/release/Blender2.83/blender-2.83.19-windows-x64.zip",
+      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.83/blender-2.83.19-windows-x64.zip",
+      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.83/blender-2.83.19-windows-x64.zip"
     ],
     "linux64": [
-      "https://download.blender.org/release/Blender2.83/blender-2.83.16-linux-x64.tar.xz",
-      "https://mirror.clarkson.edu/blender/release/Blender2.83/blender-2.83.16-linux-x64.tar.xz",
-      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.83/blender-2.83.16-linux-x64.tar.xz",
-      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.83/blender-2.83.16-linux-x64.tar.xz"
+      "https://download.blender.org/release/Blender2.83/blender-2.83.19-linux-x64.tar.xz",
+      "https://mirror.clarkson.edu/blender/release/Blender2.83/blender-2.83.19-linux-x64.tar.xz",
+      "http://ftp.halifax.rwth-aachen.de/blender/release/Blender2.83/blender-2.83.19-linux-x64.tar.xz",
+      "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.83/blender-2.83.19-linux-x64.tar.xz"
     ],
-    "md5MacOS": "21dae8df0ef080c4fd53ba60c23ddf56",
-    "md5Windows64": "a57f23cf7ab8609a33a3fbf1be177d35",
-    "md5Linux64": "3cab6228799792ab730a73429bd9aa3f"
+    "md5MacOS": "ec24d404943461af201bd2932122deca",
+    "md5Windows64": "4124fe94fd46acd102bb13c2e894d075",
+    "md5Linux64": "0b10d7f2e0f78a682eeef2c138689d83"
   },
   {
     "blenderVersion": "2.79b",
