@@ -42,13 +42,14 @@ public class ProjectStatus {
     private Integer totalQueueSize;
     private Integer remainingQueueSize;
     private Integer queueIndex;
+    private Integer currentFrame;
+    private Integer currentPart;
     private Long totalRenderTime;
     private Long totalProjectTime;
     private Long timerStart;
     private Long timerEnd;
     private boolean allImagesProcessed;
     private boolean userStopped;
-    private boolean queueFillComplete;
     private boolean reEncode;
     private ProjectState projectState;
 }

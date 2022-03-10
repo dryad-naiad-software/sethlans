@@ -27,6 +27,7 @@ import com.dryadandnaiad.sethlans.models.blender.project.ImageSettings;
 import com.dryadandnaiad.sethlans.models.blender.project.ProjectSettings;
 import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
+import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.repositories.ProjectRepository;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
@@ -35,6 +36,7 @@ import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -56,22 +58,47 @@ import java.util.*;
  * Project: sethlans
  */
 @Service
+@Profile({"SERVER", "DUAL"})
 @Slf4j
 public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final BlenderArchiveRepository blenderArchiveRepository;
     private final ProjectFormToProject projectFormToProject;
+    private final ServerQueueService serverQueueService;
+    private final NodeRepository nodeRepository;
 
-    public ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository, BlenderArchiveRepository blenderArchiveRepository, ProjectFormToProject projectFormToProject) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository,
+                              BlenderArchiveRepository blenderArchiveRepository,
+                              ProjectFormToProject projectFormToProject, ServerQueueService serverQueueService,
+                              NodeRepository nodeRepository) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
         this.blenderArchiveRepository = blenderArchiveRepository;
         this.projectFormToProject = projectFormToProject;
+        this.serverQueueService = serverQueueService;
+        this.nodeRepository = nodeRepository;
     }
 
     @Override
     public boolean startProject(String projectID) {
+        if (nodeRepository.existsNodeByActiveIsTrue()) {
+            if (projectRepository.getProjectByProjectID(projectID).isPresent()) {
+                var project = projectRepository.getProjectByProjectID(projectID).get();
+                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+                if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+                    serverQueueService.addRenderTasksToServerQueue(project);
+                } else {
+                    if (project.getUser().getUsername().equals(auth.getName())) {
+                        serverQueueService.addRenderTasksToServerQueue(project);
+                    }
+                }
+                return true;
+            }
+
+        } else {
+            return false;
+        }
         return false;
     }
 
@@ -287,10 +314,10 @@ public class ProjectServiceImpl implements ProjectService {
 
             var project = projectFormToProject.convert(projectForm);
             project.getProjectStatus().setQueueIndex(0);
-            if(project.getProjectType() == ProjectType.STILL_IMAGE) {
+            if (project.getProjectType() == ProjectType.STILL_IMAGE) {
                 project.getProjectSettings().setEndFrame(project.getProjectSettings().getStartFrame());
                 project.getProjectSettings().setTotalNumberOfFrames(1);
-                if(project.getProjectSettings().isUseParts()) {
+                if (project.getProjectSettings().isUseParts()) {
                     project.getProjectStatus().setTotalQueueSize(project.getProjectSettings().getPartsPerFrame());
                 }
             } else {
@@ -298,16 +325,16 @@ public class ProjectServiceImpl implements ProjectService {
                 var endFrame = project.getProjectSettings().getEndFrame();
                 var step = project.getProjectSettings().getStepFrame();
                 int totalFrames = 0;
-                if(startFrame == 1) {
+                if (startFrame == 1) {
                     totalFrames = endFrame / step;
                 } else {
-                    for (var i = startFrame; i < endFrame; i+=step) {
+                    for (var i = startFrame; i < endFrame; i += step) {
                         totalFrames++;
                     }
                 }
 
                 project.getProjectSettings().setTotalNumberOfFrames(totalFrames);
-                if(project.getProjectSettings().isUseParts()) {
+                if (project.getProjectSettings().isUseParts()) {
                     project.getProjectStatus()
                             .setTotalQueueSize(totalFrames * project.getProjectSettings().getPartsPerFrame());
 

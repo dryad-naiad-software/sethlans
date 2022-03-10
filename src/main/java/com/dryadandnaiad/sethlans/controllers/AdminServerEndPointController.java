@@ -21,6 +21,7 @@ import com.dryadandnaiad.sethlans.models.forms.NodeForm;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
+import com.dryadandnaiad.sethlans.services.ServerQueueService;
 import com.dryadandnaiad.sethlans.services.ServerService;
 import com.dryadandnaiad.sethlans.utils.NetworkUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
@@ -49,12 +50,14 @@ public class AdminServerEndPointController {
     private final ServerService serverService;
     private final NodeRepository nodeRepository;
     private final BlenderArchiveRepository blenderArchiveRepository;
+    private final ServerQueueService serverQueueService;
 
     public AdminServerEndPointController(ServerService serverService, NodeRepository nodeRepository,
-                                         BlenderArchiveRepository blenderArchiveRepository) {
+                                         BlenderArchiveRepository blenderArchiveRepository, ServerQueueService serverQueueService) {
         this.serverService = serverService;
         this.nodeRepository = nodeRepository;
         this.blenderArchiveRepository = blenderArchiveRepository;
+        this.serverQueueService = serverQueueService;
     }
 
     @GetMapping("/blender_download_complete")
@@ -127,6 +130,7 @@ public class AdminServerEndPointController {
             nodeToSave.setActive(true);
             nodeToSave.setTotalRenderingSlots(node.getTotalRenderingSlots());
             nodeRepository.save(nodeToSave);
+            serverQueueService.updateQueueLimit();
             return new ResponseEntity<>(HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

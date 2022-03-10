@@ -1,16 +1,19 @@
 package com.dryadandnaiad.sethlans.services;
 
+import com.dryadandnaiad.sethlans.enums.ProjectState;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskFrameInfo;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskServerInfo;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
+import com.dryadandnaiad.sethlans.repositories.ProjectRepository;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -19,16 +22,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Service
 public class ServerQueueServiceImpl implements ServerQueueService {
     private BlockingQueue<RenderTask> serverQueue;
+    private final ProjectRepository projectRepository;
     private final NodeRepository nodeRepository;
 
-    public ServerQueueServiceImpl(NodeRepository nodeRepository) {
+    public ServerQueueServiceImpl(ProjectRepository projectRepository, NodeRepository nodeRepository) {
+        this.projectRepository = projectRepository;
         this.nodeRepository = nodeRepository;
     }
 
     @Override
     public void addRenderTasksToServerQueue(Project project) {
-        // TODO Work needs to be done to handle the following.  The total number of queue items will be equal to the number of parts x number of frames
-        // TODO This will apply to both animations and still images.  For Still Images that don't have parts then the frame will be 1.
         var queueReady = true;
         var serverInfo = TaskServerInfo.builder().systemID(PropertiesUtils.getSystemID()).build();
 
@@ -36,15 +39,39 @@ public class ServerQueueServiceImpl implements ServerQueueService {
             TaskFrameInfo frameInfo;
             if (project.getProjectSettings().isUseParts()) {
                 var parts = project.getProjectSettings().getPartsPerFrame();
+                Integer frameNumber;
+                Integer partNumber;
+                if (project.getProjectStatus().getQueueIndex() == 0) {
+                    frameNumber = 1;
+                    partNumber = 1;
+                } else {
+                    frameNumber = project.getProjectStatus().getCurrentFrame();
+                    partNumber = project.getProjectStatus().getCurrentPart();
+                    if (Objects.equals(partNumber, parts)) {
+                        partNumber = 1;
+                        frameNumber = frameNumber + 1;
+                    } else {
+                        partNumber = partNumber + 1;
+                    }
+                }
+                project.getProjectStatus().setCurrentFrame(frameNumber);
+                project.getProjectStatus().setCurrentPart(partNumber);
 
                 frameInfo = TaskFrameInfo.builder()
-                        .frameNumber(null)
-                        .partNumber(null)
+                        .frameNumber(frameNumber)
+                        .partNumber(partNumber)
                         .build();
 
             } else {
+                Integer frameNumber;
+                if (project.getProjectStatus().getQueueIndex() == 0) {
+                    frameNumber = 1;
+                } else {
+                    frameNumber = project.getProjectStatus().getQueueIndex();
+                }
+                project.getProjectStatus().setCurrentFrame(frameNumber);
                 frameInfo = TaskFrameInfo.builder()
-                        .frameNumber(project.getProjectStatus().getQueueIndex())
+                        .frameNumber(frameNumber)
                         .build();
 
             }
@@ -57,6 +84,14 @@ public class ServerQueueServiceImpl implements ServerQueueService {
                     .build();
 
             queueReady = serverQueue.offer(renderTask);
+            if (queueReady) {
+                if(project.getProjectStatus().getProjectState().equals(ProjectState.ADDED)) {
+                    project.getProjectStatus().setProjectState(ProjectState.PENDING);
+                }
+                project.getProjectStatus().setQueueIndex(project.getProjectStatus().getQueueIndex() + 1);
+                project.getProjectStatus().setRemainingQueueSize(project.getProjectStatus().getRemainingQueueSize() - 1);
+                projectRepository.save(project);
+            }
         }
 
     }
@@ -76,12 +111,13 @@ public class ServerQueueServiceImpl implements ServerQueueService {
 
         if (serverQueue != null) {
             BlockingQueue<RenderTask> tempQueue = new LinkedBlockingQueue<>(queueSize);
-            for (RenderTask task : serverQueue) {
-                tempQueue.add(task);
-            }
+            tempQueue.addAll(serverQueue);
             serverQueue = tempQueue;
+            log.debug("Server queue updated, queue size: " + queueSize);
+
         } else {
             serverQueue = new LinkedBlockingQueue<>(queueSize);
+            log.debug("Server queue created, queue size: " + queueSize);
         }
 
     }

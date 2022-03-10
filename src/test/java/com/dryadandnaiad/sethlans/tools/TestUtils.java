@@ -95,7 +95,6 @@ public class TestUtils {
                 .currentPercentage(50)
                 .totalQueueSize(34)
                 .userStopped(false)
-                .queueFillComplete(true)
                 .reEncode(false)
                 .completedFrames(34)
                 .totalRenderTime(123L)
