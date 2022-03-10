@@ -102,6 +102,23 @@ public class NodeBenchmarkIntegrationTest {
     public void node_benchmark_test() throws JsonProcessingException, InterruptedException {
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
         var mapper = new ObjectMapper();
+
+        var downloadState = Boolean.parseBoolean(given().when().get("/api/v1/management/blender_download_complete")
+                .then()
+                .extract()
+                .response()
+                .body()
+                .asString());
+
+        while (!downloadState) {
+            Thread.sleep(5000);
+            downloadState = Boolean.parseBoolean(given().when().get("/api/v1/management/blender_download_complete")
+                    .then()
+                    .extract()
+                    .response()
+                    .body()
+                    .asString());
+        }
         log.info("Scanning for Nodes on the local network");
         var nodeSet = mapper
                 .readValue(get("/api/v1/management/network_node_scan")
@@ -172,7 +189,6 @@ public class NodeBenchmarkIntegrationTest {
         log.info("Confirmed server is present on node:");
         log.info(serversOnNode.toString());
 
-        Thread.sleep(60000);
         var params = ImmutableMap.<String, String>builder()
                 .put("nodeID", nodesOnServer.get(0).getSystemID())
                 .build();

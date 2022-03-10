@@ -20,8 +20,8 @@
       "http://ftp.nluug.nl/pub/graphics/blender/release/Blender2.93/blender-2.93.8-linux-x64.tar.xz"
     ],
     "md5MacOS": "88d276e9ef94c6d13a23f2aed47139e1",
-    "md5Windows64": "8db9f8ba6c8c28004c6567daf03e8a9f",
-    "md5Linux64": "110f93b6e56b13c3ea10ecf8eaf5e614"
+    "md5Windows64": "110f93b6e56b13c3ea10ecf8eaf5e614",
+    "md5Linux64": "8db9f8ba6c8c28004c6567daf03e8a9f"
   },
   {
     "blenderVersion": "2.83",
