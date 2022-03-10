@@ -92,6 +92,14 @@ public class ServerServiceImpl implements ServerService {
                         node.setSystemID(systemID);
                         log.debug("Adding the following node to server: " + node);
                         nodeRepository.save(node);
+                        var checkBenchmark = new Thread(() -> {
+                            try {
+                                pendingBenchmarksToSend();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        });
+                        checkBenchmark.start();
                     }
                 } else {
                     log.error("Unable to add " + selectedNode.getIpAddress());
@@ -115,7 +123,7 @@ public class ServerServiceImpl implements ServerService {
         if(blenderArchiveRepository.findAllByDownloadedIsTrue().isEmpty()) {
             Thread.sleep(300000);
         } else {
-            Thread.sleep(60000);
+            Thread.sleep(30000);
         }
         log.info("Checking to see if any nodes are pending a benchmark.");
         var nodesToBenchmark =

@@ -119,6 +119,8 @@ public class ProjectIntegrationTest {
     public void delete_project() throws JsonProcessingException, InterruptedException {
         var mapper = new ObjectMapper();
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
+        log.info("Waiting for Blender download(s) to complete.");
+
 
         var downloadState = Boolean.parseBoolean(given().when().get("/api/v1/management/blender_download_complete")
                 .then()
@@ -136,6 +138,8 @@ public class ProjectIntegrationTest {
                     .body()
                     .asString());
         }
+
+        log.info("Blender download(s) complete.");
 
         var response = given()
                 .log()
@@ -194,6 +198,9 @@ public class ProjectIntegrationTest {
         var mapper = new ObjectMapper();
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
 
+        log.info("Waiting for Blender download(s) to complete.");
+
+
         var downloadState = Boolean.parseBoolean(given().when().get("/api/v1/management/blender_download_complete")
                 .then()
                 .extract()
@@ -210,6 +217,8 @@ public class ProjectIntegrationTest {
                     .body()
                     .asString());
         }
+
+        log.info("Blender download(s) complete.");
 
         var response = given()
                 .log()
@@ -362,6 +371,9 @@ public class ProjectIntegrationTest {
         var mapper = new ObjectMapper();
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
 
+        log.info("Waiting for Blender download(s) to complete.");
+
+
         var downloadState = Boolean.parseBoolean(given().when().get("/api/v1/management/blender_download_complete")
                 .then()
                 .extract()
@@ -378,6 +390,8 @@ public class ProjectIntegrationTest {
                     .body()
                     .asString());
         }
+
+        log.info("Blender download(s) complete.");
 
         var response = given()
                 .log()
@@ -527,7 +541,6 @@ public class ProjectIntegrationTest {
                 .statusCode(StatusCodes.CREATED);
 
 
-
         var projects = mapper
                 .readValue(get("/api/v1/project/project_list")
                         .then()
@@ -553,6 +566,9 @@ public class ProjectIntegrationTest {
         var mapper = new ObjectMapper();
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
 
+        log.info("Waiting for Blender download(s) to complete.");
+
+
         var downloadState = Boolean.parseBoolean(given().when().get("/api/v1/management/blender_download_complete")
                 .then()
                 .extract()
@@ -569,6 +585,8 @@ public class ProjectIntegrationTest {
                     .body()
                     .asString());
         }
+
+        log.info("Blender download(s) complete.");
 
         var response = given()
                 .log()
@@ -848,6 +866,9 @@ public class ProjectIntegrationTest {
         var mapper = new ObjectMapper();
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
 
+        log.info("Waiting for Blender download(s) to complete.");
+
+
         var downloadState = Boolean.parseBoolean(given().when().get("/api/v1/management/blender_download_complete")
                 .then()
                 .extract()
@@ -864,6 +885,8 @@ public class ProjectIntegrationTest {
                     .body()
                     .asString());
         }
+
+        log.info("Blender download(s) complete.");
 
         var response = given()
                 .log()
@@ -918,6 +941,9 @@ public class ProjectIntegrationTest {
         var mapper = new ObjectMapper();
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
 
+        log.info("Waiting for Blender download(s) to complete.");
+
+
         var downloadState = Boolean.parseBoolean(given().when().get("/api/v1/management/blender_download_complete")
                 .then()
                 .extract()
@@ -934,6 +960,8 @@ public class ProjectIntegrationTest {
                     .body()
                     .asString());
         }
+
+        log.info("Blender download(s) complete.");
 
         var response = given()
                 .log()

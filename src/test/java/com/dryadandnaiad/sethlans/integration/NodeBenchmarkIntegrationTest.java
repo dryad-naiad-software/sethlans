@@ -102,6 +102,7 @@ public class NodeBenchmarkIntegrationTest {
     public void node_benchmark_test() throws JsonProcessingException, InterruptedException {
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
         var mapper = new ObjectMapper();
+        log.info("Waiting for Blender download(s) to complete.");
 
         var downloadState = Boolean.parseBoolean(given().when().get("/api/v1/management/blender_download_complete")
                 .then()
@@ -119,6 +120,8 @@ public class NodeBenchmarkIntegrationTest {
                     .body()
                     .asString());
         }
+        log.info("Blender download(s) complete.");
+
         log.info("Scanning for Nodes on the local network");
         var nodeSet = mapper
                 .readValue(get("/api/v1/management/network_node_scan")
