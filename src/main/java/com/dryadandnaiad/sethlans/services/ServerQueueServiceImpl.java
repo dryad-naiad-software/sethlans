@@ -9,6 +9,7 @@ import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.repositories.ProjectRepository;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
+import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Profile({"SERVER", "DUAL"})
@@ -31,7 +33,20 @@ public class ServerQueueServiceImpl implements ServerQueueService {
     }
 
     @Override
+    public RenderTask retrieveRenderTaskFromServerQueue(){
+        try {
+            return serverQueue.poll(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            return null;
+        }
+    }
+
+    @Override
     public void addRenderTasksToServerQueue(Project project) {
+        log.debug("Attempting to add tasks to server task queue. There are " + serverQueue.size() + " items.");
+
         var queueReady = true;
         var serverInfo = TaskServerInfo.builder().systemID(PropertiesUtils.getSystemID()).build();
 
@@ -93,6 +108,8 @@ public class ServerQueueServiceImpl implements ServerQueueService {
                 projectRepository.save(project);
             }
         }
+        log.debug("Adding of tasks has completed. Server task queue has " + serverQueue.size() + " items.");
+        log.debug(serverQueue.toString());
 
     }
 

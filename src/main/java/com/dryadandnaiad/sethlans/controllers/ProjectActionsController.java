@@ -18,6 +18,7 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
+import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.services.ProjectService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -38,9 +39,11 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class ProjectActionsController {
     private final ProjectService projectService;
+    private final NodeRepository nodeRepository;
 
-    public ProjectActionsController(ProjectService projectService) {
+    public ProjectActionsController(ProjectService projectService, NodeRepository nodeRepository) {
         this.projectService = projectService;
+        this.nodeRepository = nodeRepository;
     }
 
     @DeleteMapping("/delete_project/{project_id}")
@@ -63,8 +66,18 @@ public class ProjectActionsController {
 
     @PostMapping("/create_project")
     public ResponseEntity<Void> createProject(@RequestBody ProjectForm projectForm) {
-        if (projectService.createProject(projectForm)){
+        if (projectService.createProject(projectForm)) {
             return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/start_project")
+    public ResponseEntity<Void> startProject(@RequestParam String projectID) {
+        if (nodeRepository.existsNodeByActiveIsTrue()) {
+            if (projectService.startProject(projectID)) {
+                return new ResponseEntity<>(HttpStatus.ACCEPTED);
+            }
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }

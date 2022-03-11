@@ -20,8 +20,10 @@ package com.dryadandnaiad.sethlans.controllers;
 import com.dryadandnaiad.sethlans.comparators.AlphaNumericComparator;
 import com.dryadandnaiad.sethlans.enums.OS;
 import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
+import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
+import com.dryadandnaiad.sethlans.services.ServerQueueService;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -44,10 +46,20 @@ import java.util.ArrayList;
 public class ServerQueueController {
     private final BlenderArchiveRepository blenderArchiveRepository;
     private final NodeRepository nodeRepository;
+    private final ServerQueueService serverQueueService;
 
-    public ServerQueueController(BlenderArchiveRepository blenderArchiveRepository, NodeRepository nodeRepository) {
+    public ServerQueueController(BlenderArchiveRepository blenderArchiveRepository, NodeRepository nodeRepository, ServerQueueService serverQueueService) {
         this.blenderArchiveRepository = blenderArchiveRepository;
         this.nodeRepository = nodeRepository;
+        this.serverQueueService = serverQueueService;
+    }
+
+    @GetMapping(value = "/retrieve_task")
+    public RenderTask retrieveRenderTask(@RequestParam("system-id") String systemID){
+        if (nodeRepository.findNodeBySystemIDEquals(systemID).isPresent()) {
+            return serverQueueService.retrieveRenderTaskFromServerQueue();
+        }
+        return null;
     }
 
     @GetMapping(value = "/latest_blender_archive")
