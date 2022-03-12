@@ -9,4 +9,6 @@ public interface ServerQueueService {
     void addRenderTasksToServerQueue(Project project);
 
     void updateQueueLimit();
+
+    void resetRenderTaskQueue();
 }

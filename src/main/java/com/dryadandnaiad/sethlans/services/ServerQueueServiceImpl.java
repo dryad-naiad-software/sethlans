@@ -128,7 +128,7 @@ public class ServerQueueServiceImpl implements ServerQueueService {
 
         if (serverQueue != null) {
             BlockingQueue<RenderTask> tempQueue = new LinkedBlockingQueue<>(queueSize);
-            tempQueue.addAll(serverQueue);
+            serverQueue.drainTo(tempQueue);
             serverQueue = tempQueue;
             log.debug("Server queue updated, queue size: " + queueSize);
 
@@ -136,6 +136,22 @@ public class ServerQueueServiceImpl implements ServerQueueService {
             serverQueue = new LinkedBlockingQueue<>(queueSize);
             log.debug("Server queue created, queue size: " + queueSize);
         }
+
+    }
+
+    @Override
+    public void resetRenderTaskQueue() {
+        log.debug("Resetting server render task queue");
+        var slots = 0;
+
+        var nodes = nodeRepository.findNodesByBenchmarkCompleteTrueAndActiveTrue();
+
+        for (Node node : nodes) {
+            slots += node.getTotalRenderingSlots();
+        }
+
+        var queueSize = slots * 2;
+        serverQueue = new LinkedBlockingQueue<>(queueSize);
 
     }
 }

@@ -60,6 +60,12 @@ public class AdminServerEndPointController {
         this.serverQueueService = serverQueueService;
     }
 
+    @GetMapping("/reset_server_queue")
+    public ResponseEntity<Void> resetServerQueue() {
+        serverQueueService.resetRenderTaskQueue();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @GetMapping("/blender_download_complete")
     public boolean isBlenderDownloadComplete() {
         return !blenderArchiveRepository.findAllByDownloadedIsTrue().isEmpty();

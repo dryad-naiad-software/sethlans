@@ -1,5 +1,8 @@
 package com.dryadandnaiad.sethlans.integration;
 
+import com.dryadandnaiad.sethlans.enums.AnimationType;
+import com.dryadandnaiad.sethlans.enums.ProjectType;
+import com.dryadandnaiad.sethlans.models.blender.project.ProjectView;
 import com.dryadandnaiad.sethlans.models.forms.NodeForm;
 import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
@@ -282,6 +285,81 @@ public class ServerQueueIntegrationTest {
                 .post("/api/v1/project/start_project")
                 .then()
                 .statusCode(StatusCodes.ACCEPTED);
+
+        given()
+                .log()
+                .ifValidationFails()
+                .get("/api/v1/management/reset_server_queue")
+                .then()
+                .statusCode(StatusCodes.OK);
+
+        var project = mapper
+                .readValue(get("/api/v1/project/" + projectForm.getProjectID())
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), ProjectView.class);
+        log.info(project.toString());
+    }
+
+    @Test
+    public void pavillonBarceloneAnimation4Parts() throws JsonProcessingException {
+        var mapper = new ObjectMapper();
+        var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
+
+        var response = given()
+                .log()
+                .ifValidationFails()
+                .multiPart("project_file", new File(BLEND_DIRECTORY.toString() + "/pavillon_barcelone_v1.2.zip"))
+                .accept(ContentType.JSON)
+                .contentType(ContentType.MULTIPART)
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token)
+                .post("/api/v1/project/upload_project_file")
+                .then()
+                .statusCode(StatusCodes.CREATED)
+                .extract()
+                .response()
+                .body()
+                .asString();
+
+        var projectForm = mapper.readValue(response, ProjectForm.class);
+        projectForm.setProjectName(TestUtils.titleGenerator());
+        projectForm.getProjectSettings().setStartFrame(1);
+        projectForm.getProjectSettings().setEndFrame(50);
+        projectForm.getProjectSettings().setPartsPerFrame(2);
+        projectForm.getProjectSettings().setUseParts(true);
+        projectForm.getProjectSettings().setAnimationType(AnimationType.IMAGES);
+        projectForm.setProjectType(ProjectType.ANIMATION);
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(mapper.writeValueAsString(projectForm))
+                .post("/api/v1/project/create_project")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
+
+        given()
+                .log()
+                .ifValidationFails()
+                .param("projectID", projectForm.getProjectID())
+                .post("/api/v1/project/start_project")
+                .then()
+                .statusCode(StatusCodes.ACCEPTED);
+
+        var project = mapper
+                .readValue(get("/api/v1/project/" + projectForm.getProjectID())
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), ProjectView.class);
+        log.info(project.toString());
     }
 
     @AfterAll
