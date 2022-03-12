@@ -154,18 +154,27 @@ public class ServerQueueIntegrationTest {
         log.info(nodeSet.toString());
 
         var nodeList = new ArrayList<NodeForm>();
-
-        for (Node node : nodeSet) {
-            if (node.getHostname().equalsIgnoreCase(System.getProperty("sethlans.host"))) {
-                var nodeForm = NodeForm.builder()
-                        .ipAddress(node.getIpAddress())
-                        .networkPort(node.getNetworkPort())
-                        .username("testuser")
-                        .password("testPa$$1234").build();
-                nodeList.add(nodeForm);
+        if(System.getProperty("sethlans.host") != null) {
+            for (Node node : nodeSet) {
+                if (node.getHostname().equalsIgnoreCase(System.getProperty("sethlans.host"))) {
+                    var nodeForm = NodeForm.builder()
+                            .ipAddress(node.getIpAddress())
+                            .networkPort(node.getNetworkPort())
+                            .username("testuser")
+                            .password("testPa$$1234").build();
+                    nodeList.add(nodeForm);
+                }
             }
-
+        } else {
+            var node = nodeSet.iterator().next();
+            var nodeForm = NodeForm.builder()
+                    .ipAddress(node.getIpAddress())
+                    .networkPort(node.getNetworkPort())
+                    .username("testuser")
+                    .password("testPa$$1234").build();
+            nodeList.add(nodeForm);
         }
+
 
         given()
                 .log()
