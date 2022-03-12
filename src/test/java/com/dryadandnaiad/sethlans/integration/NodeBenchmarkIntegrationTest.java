@@ -188,7 +188,9 @@ public class NodeBenchmarkIntegrationTest {
                         .asString(), new TypeReference<List<Server>>() {
                 });
 
-        assertThat(serversOnNode.get(0).getHostname().toLowerCase()).contains(System.getProperty("sethlans.host").toLowerCase());
+        if(System.getProperty("sethlans.host") != null) {
+            assertThat(nodesOnServer.get(0).getHostname().toLowerCase()).contains(System.getProperty("sethlans.host").toLowerCase());
+        }
         log.info("Confirmed server is present on node:");
         log.info(serversOnNode.toString());
 

@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -153,5 +154,10 @@ public class ServerQueueServiceImpl implements ServerQueueService {
         var queueSize = slots * 2;
         serverQueue = new LinkedBlockingQueue<>(queueSize);
 
+    }
+
+    @Override
+    public List<RenderTask> listCurrentTasksInQueue() {
+        return serverQueue.stream().toList();
     }
 }

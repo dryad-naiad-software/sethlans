@@ -3,6 +3,7 @@ package com.dryadandnaiad.sethlans.integration;
 import com.dryadandnaiad.sethlans.enums.AnimationType;
 import com.dryadandnaiad.sethlans.enums.ProjectType;
 import com.dryadandnaiad.sethlans.models.blender.project.ProjectView;
+import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.forms.NodeForm;
 import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
@@ -192,7 +193,9 @@ public class ServerQueueIntegrationTest {
                         .asString(), new TypeReference<List<Node>>() {
                 });
 
-        assertThat(nodesOnServer.get(0).getHostname().toLowerCase()).contains(System.getProperty("sethlans.host").toLowerCase());
+        if(System.getProperty("sethlans.host") != null) {
+            assertThat(nodesOnServer.get(0).getHostname().toLowerCase()).contains(System.getProperty("sethlans.host").toLowerCase());
+        }
         log.info("Added the following node to server:");
         log.info(nodesOnServer.toString());
 
@@ -286,13 +289,6 @@ public class ServerQueueIntegrationTest {
                 .then()
                 .statusCode(StatusCodes.ACCEPTED);
 
-        given()
-                .log()
-                .ifValidationFails()
-                .get("/api/v1/management/reset_server_queue")
-                .then()
-                .statusCode(StatusCodes.OK);
-
         var project = mapper
                 .readValue(get("/api/v1/project/" + projectForm.getProjectID())
                         .then()
@@ -300,7 +296,29 @@ public class ServerQueueIntegrationTest {
                         .response()
                         .body()
                         .asString(), ProjectView.class);
+
+        var queue = mapper
+                .readValue(get("/api/v1/management/view_server_queue")
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), new TypeReference<List<RenderTask>>() {
+                });
+
         log.info(project.toString());
+        log.info(queue.toString());
+        assertThat(queue.size()).isEqualTo(4);
+        assertThat(project.getProjectStatus().getCurrentFrame()).isEqualTo(1);
+        assertThat(project.getProjectStatus().getQueueIndex()).isEqualTo(4);
+        assertThat(project.getProjectStatus().getCurrentPart()).isEqualTo(4);
+
+        given()
+                .log()
+                .ifValidationFails()
+                .get("/api/v1/management/reset_server_queue")
+                .then()
+                .statusCode(StatusCodes.OK);
     }
 
     @Test
@@ -359,7 +377,28 @@ public class ServerQueueIntegrationTest {
                         .response()
                         .body()
                         .asString(), ProjectView.class);
+        var queue = mapper
+                .readValue(get("/api/v1/management/view_server_queue")
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), new TypeReference<List<RenderTask>>() {
+                });
+
         log.info(project.toString());
+        log.info(queue.toString());
+        assertThat(queue.size()).isEqualTo(4);
+        assertThat(project.getProjectStatus().getCurrentFrame()).isEqualTo(2);
+        assertThat(project.getProjectStatus().getQueueIndex()).isEqualTo(4);
+        assertThat(project.getProjectStatus().getCurrentPart()).isEqualTo(2);
+
+        given()
+                .log()
+                .ifValidationFails()
+                .get("/api/v1/management/reset_server_queue")
+                .then()
+                .statusCode(StatusCodes.OK);
     }
 
     @AfterAll

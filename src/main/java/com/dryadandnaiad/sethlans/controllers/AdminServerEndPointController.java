@@ -17,6 +17,7 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.forms.NodeForm;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
@@ -58,6 +59,11 @@ public class AdminServerEndPointController {
         this.nodeRepository = nodeRepository;
         this.blenderArchiveRepository = blenderArchiveRepository;
         this.serverQueueService = serverQueueService;
+    }
+
+    @GetMapping("/view_server_queue")
+    public List<RenderTask> viewServerQueue() {
+        return serverQueueService.listCurrentTasksInQueue();
     }
 
     @GetMapping("/reset_server_queue")
