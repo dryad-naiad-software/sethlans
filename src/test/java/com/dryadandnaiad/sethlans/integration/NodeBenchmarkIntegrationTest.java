@@ -184,7 +184,11 @@ public class NodeBenchmarkIntegrationTest {
                         .asString(), new TypeReference<List<Node>>() {
                 });
 
-        assertThat(nodesOnServer.get(0).getHostname().toLowerCase()).contains(System.getProperty("sethlans.host").toLowerCase());
+
+        if(System.getProperty("sethlans.host") != null) {
+            assertThat(nodesOnServer.get(0).getHostname().toLowerCase()).contains(System.getProperty("sethlans.host").toLowerCase());
+        }
+
         log.info("Added the following node to server:");
         log.info(nodesOnServer.toString());
 

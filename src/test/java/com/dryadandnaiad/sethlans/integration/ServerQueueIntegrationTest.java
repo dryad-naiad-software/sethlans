@@ -217,8 +217,10 @@ public class ServerQueueIntegrationTest {
                         .asString(), new TypeReference<List<Server>>() {
                 });
 
-        assertThat(serversOnNode.get(0).getHostname().toLowerCase()).contains(System.getProperty("sethlans.host").toLowerCase());
-        log.info("Confirmed server is present on node:");
+        if(System.getProperty("sethlans.host") != null) {
+            assertThat(nodesOnServer.get(0).getHostname().toLowerCase()).contains(System.getProperty("sethlans.host").toLowerCase());
+            log.info("Confirmed server is present on node:");
+        }
         log.info(serversOnNode.toString());
 
         var params = ImmutableMap.<String, String>builder()
