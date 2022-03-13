@@ -401,7 +401,6 @@ public class ServerQueueIntegrationTest {
         assertThat(queue.size()).isGreaterThanOrEqualTo(2);
         assertThat(project.getProjectStatus().getCurrentFrame()).isGreaterThanOrEqualTo(2);
         assertThat(project.getProjectStatus().getQueueIndex()).isGreaterThanOrEqualTo(2);
-        assertThat(project.getProjectStatus().getCurrentPart()).isGreaterThanOrEqualTo(2);
 
         given()
                 .log()
