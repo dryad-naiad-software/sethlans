@@ -10,11 +10,11 @@ public interface ServerQueueService {
 
     void addRenderTasksToPendingQueue(Project project);
 
-    void addRenderTasksToCompletedQueue(RenderTask renderTask);
+    RenderTask retrieveRenderTaskFromCompletedQueue();
+
+    boolean addRenderTasksToCompletedQueue(RenderTask renderTask);
 
     void updatePendingQueueLimit();
-
-    void updatedCompletedQueueLimit();
 
     void resetPendingRenderTaskQueue();
 

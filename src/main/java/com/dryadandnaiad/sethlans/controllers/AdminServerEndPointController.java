@@ -143,7 +143,6 @@ public class AdminServerEndPointController {
             nodeToSave.setTotalRenderingSlots(node.getTotalRenderingSlots());
             nodeRepository.save(nodeToSave);
             serverQueueService.updatePendingQueueLimit();
-            serverQueueService.updatedCompletedQueueLimit();
             return new ResponseEntity<>(HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

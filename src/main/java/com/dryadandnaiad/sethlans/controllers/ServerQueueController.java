@@ -19,10 +19,12 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.comparators.AlphaNumericComparator;
 import com.dryadandnaiad.sethlans.enums.OS;
+import com.dryadandnaiad.sethlans.enums.ProjectState;
 import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
+import com.dryadandnaiad.sethlans.repositories.ProjectRepository;
 import com.dryadandnaiad.sethlans.services.ServerQueueService;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
@@ -47,17 +49,27 @@ public class ServerQueueController {
     private final BlenderArchiveRepository blenderArchiveRepository;
     private final NodeRepository nodeRepository;
     private final ServerQueueService serverQueueService;
+    private final ProjectRepository projectRepository;
 
-    public ServerQueueController(BlenderArchiveRepository blenderArchiveRepository, NodeRepository nodeRepository, ServerQueueService serverQueueService) {
+    public ServerQueueController(BlenderArchiveRepository blenderArchiveRepository, NodeRepository nodeRepository, ServerQueueService serverQueueService, ProjectRepository projectRepository) {
         this.blenderArchiveRepository = blenderArchiveRepository;
         this.nodeRepository = nodeRepository;
         this.serverQueueService = serverQueueService;
+        this.projectRepository = projectRepository;
     }
 
     @GetMapping(value = "/retrieve_task")
     public RenderTask retrieveRenderTask(@RequestParam("system-id") String systemID){
         if (nodeRepository.findNodeBySystemIDEquals(systemID).isPresent()) {
-            return serverQueueService.retrieveRenderTaskFromPendingQueue();
+            var renderTask = serverQueueService.retrieveRenderTaskFromPendingQueue();
+            if(renderTask != null) {
+                var project = projectRepository.getProjectByProjectID(renderTask.getProjectID()).get();
+                if(project.getProjectStatus().getProjectState().equals(ProjectState.PENDING)) {
+                    project.getProjectStatus().setProjectState(ProjectState.STARTED);
+                    projectRepository.save(project);
+                }
+            }
+            return renderTask;
         }
         return null;
     }

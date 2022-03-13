@@ -27,11 +27,12 @@ public class ServerQueueServiceImpl implements ServerQueueService {
     private BlockingQueue<RenderTask> pendingRenderQueue;
     private final ProjectRepository projectRepository;
     private final NodeRepository nodeRepository;
-    private BlockingQueue<RenderTask> completedRenderQueue;
+    private final BlockingQueue<RenderTask> completedRenderQueue;
 
     public ServerQueueServiceImpl(ProjectRepository projectRepository, NodeRepository nodeRepository) {
         this.projectRepository = projectRepository;
         this.nodeRepository = nodeRepository;
+        this.completedRenderQueue = new LinkedBlockingQueue<>(PropertiesUtils.getServerCompleteQueueSize());
     }
 
     @Override
@@ -120,8 +121,27 @@ public class ServerQueueServiceImpl implements ServerQueueService {
     }
 
     @Override
-    public void addRenderTasksToCompletedQueue(RenderTask renderTask) {
+    public RenderTask retrieveRenderTaskFromCompletedQueue() {
+        try {
+            return completedRenderQueue.poll(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            return null;
+        }
+    }
 
+    @Override
+    public boolean addRenderTasksToCompletedQueue(RenderTask renderTask) {
+        var taskAdded = completedRenderQueue.offer(renderTask);
+        if (taskAdded) {
+            var project = projectRepository.getProjectByProjectID(renderTask.getProjectID()).get();
+            if (project.getProjectStatus().getProjectState().equals(ProjectState.STARTED)) {
+                project.getProjectStatus().setProjectState(ProjectState.RENDERING);
+                projectRepository.save(project);
+            }
+        }
+        return taskAdded;
     }
 
     @Override
@@ -146,21 +166,6 @@ public class ServerQueueServiceImpl implements ServerQueueService {
         } else {
             pendingRenderQueue = new LinkedBlockingQueue<>(queueSize);
             log.debug("Server pending render queue created, queue size: " + queueSize);
-        }
-
-    }
-
-    @Override
-    public void updatedCompletedQueueLimit() {
-        if (completedRenderQueue != null) {
-            BlockingQueue<RenderTask> tempQueue = new LinkedBlockingQueue<>(PropertiesUtils.getServerCompleteQueueSize());
-            completedRenderQueue.drainTo(tempQueue);
-            completedRenderQueue = tempQueue;
-            log.debug("Server completed render queue updated, queue size: " + PropertiesUtils.getServerCompleteQueueSize());
-
-        } else {
-            completedRenderQueue = new LinkedBlockingQueue<>(PropertiesUtils.getServerCompleteQueueSize());
-            log.debug("Server completed render queue created, queue size: " + PropertiesUtils.getServerCompleteQueueSize());
         }
 
     }
