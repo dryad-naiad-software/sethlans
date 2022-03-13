@@ -41,6 +41,7 @@ public class RenderTask extends AbstractModel {
     private String blenderVersion;
     private String blenderExecutable;
     private String taskID;
+    private String taskImageFile;
     private String taskBlendFile;
     private String taskBlendFileMD5Sum;
     private String taskDir;

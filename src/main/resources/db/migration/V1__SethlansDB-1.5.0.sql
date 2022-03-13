@@ -153,6 +153,7 @@ create table render_task
     systemid                varchar(255),
     task_blend_file         varchar(255),
     task_blend_filemd5sum   varchar(255),
+    task_image_file         varchar(255),
     task_dir                varchar(255),
     taskid                  varchar(255),
     use_parts               boolean not null,
