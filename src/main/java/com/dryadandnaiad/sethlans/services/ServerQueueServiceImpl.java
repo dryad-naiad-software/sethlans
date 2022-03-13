@@ -65,7 +65,7 @@ public class ServerQueueServiceImpl implements ServerQueueService {
                     partNumber = project.getProjectStatus().getCurrentPart();
                     if (Objects.equals(partNumber, parts)) {
                         partNumber = 1;
-                        frameNumber = frameNumber + 1;
+                        frameNumber = frameNumber + project.getProjectSettings().getStepFrame();
                     } else {
                         partNumber = partNumber + 1;
                     }
@@ -83,7 +83,7 @@ public class ServerQueueServiceImpl implements ServerQueueService {
                 if (project.getProjectStatus().getQueueIndex() == 0) {
                     frameNumber = project.getProjectSettings().getStartFrame();
                 } else {
-                    frameNumber = project.getProjectStatus().getCurrentFrame() + 1;
+                    frameNumber = project.getProjectStatus().getCurrentFrame() + project.getProjectSettings().getStepFrame();
                 }
                 project.getProjectStatus().setCurrentFrame(frameNumber);
                 frameInfo = TaskFrameInfo.builder()
