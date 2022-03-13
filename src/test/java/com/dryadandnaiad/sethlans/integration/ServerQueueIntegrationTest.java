@@ -398,7 +398,7 @@ public class ServerQueueIntegrationTest {
 
         log.info(project.toString());
         log.info(queue.toString());
-        assertThat(queue.size()).isEqualTo(4);
+        assertThat(queue.size()).isGreaterThanOrEqualTo(2);
         assertThat(project.getProjectStatus().getCurrentFrame()).isGreaterThanOrEqualTo(2);
         assertThat(project.getProjectStatus().getQueueIndex()).isGreaterThanOrEqualTo(2);
         assertThat(project.getProjectStatus().getCurrentPart()).isGreaterThanOrEqualTo(2);

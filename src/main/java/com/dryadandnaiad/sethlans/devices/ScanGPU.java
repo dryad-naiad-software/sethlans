@@ -217,9 +217,6 @@ public class ScanGPU {
         if (SystemUtils.IS_OS_WINDOWS) {
             return "nvcuda";
         }
-        if (SystemUtils.IS_OS_MAC) {
-            return "/usr/local/cuda/lib/libcuda.dylib";
-        }
         if (SystemUtils.IS_OS_LINUX) {
             return "cuda";
         }
@@ -228,7 +225,9 @@ public class ScanGPU {
 
     public static List<GPU> listDevices() {
         devices = new ArrayList<>();
-        generateCUDA();
+        if (!SystemUtils.IS_OS_MAC) {
+            generateCUDA();
+        }
         generateOpenCL();
         return devices;
     }
