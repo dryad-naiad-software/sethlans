@@ -37,7 +37,7 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
-public class ServerQueueIntegrationTest {
+public class ServerPendingQueueIntegrationTest {
 
     static File TEST_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + ".sethlans");
     static File BLEND_DIRECTORY = new File(TEST_DIRECTORY.toString() + File.separator + "blend_files/");
@@ -309,7 +309,7 @@ public class ServerQueueIntegrationTest {
                         .asString(), ProjectView.class);
 
         var queue = mapper
-                .readValue(get("/api/v1/management/view_server_queue")
+                .readValue(get("/api/v1/management/view_server_pending_queue")
                         .then()
                         .extract()
                         .response()
@@ -327,7 +327,7 @@ public class ServerQueueIntegrationTest {
         given()
                 .log()
                 .ifValidationFails()
-                .get("/api/v1/management/reset_server_queue")
+                .get("/api/v1/management/reset_server_pending_queue")
                 .then()
                 .statusCode(StatusCodes.OK);
     }
@@ -388,7 +388,7 @@ public class ServerQueueIntegrationTest {
                         .body()
                         .asString(), ProjectView.class);
         var queue = mapper
-                .readValue(get("/api/v1/management/view_server_queue")
+                .readValue(get("/api/v1/management/view_server_pending_queue")
                         .then()
                         .extract()
                         .response()
@@ -405,7 +405,7 @@ public class ServerQueueIntegrationTest {
         given()
                 .log()
                 .ifValidationFails()
-                .get("/api/v1/management/reset_server_queue")
+                .get("/api/v1/management/reset_server_pending_queue")
                 .then()
                 .statusCode(StatusCodes.OK);
     }
@@ -467,7 +467,7 @@ public class ServerQueueIntegrationTest {
                         .body()
                         .asString(), ProjectView.class);
         var queue = mapper
-                .readValue(get("/api/v1/management/view_server_queue")
+                .readValue(get("/api/v1/management/view_server_pending_queue")
                         .then()
                         .extract()
                         .response()
@@ -487,7 +487,7 @@ public class ServerQueueIntegrationTest {
         given()
                 .log()
                 .ifValidationFails()
-                .get("/api/v1/management/reset_server_queue")
+                .get("/api/v1/management/reset_server_pending_queue")
                 .then()
                 .statusCode(StatusCodes.OK);
     }

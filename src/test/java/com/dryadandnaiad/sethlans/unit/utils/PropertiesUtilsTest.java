@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * File created by Mario Estrella on 4/22/2020.
@@ -148,6 +147,8 @@ class PropertiesUtilsTest {
         assertThat(ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID)).isNotNull();
         assertThat(ConfigUtils.getProperty(ConfigKeys.SETHLANS_URL)).isEqualTo("https://localhost:7443");
         assertThat(ConfigUtils.getProperty(ConfigKeys.GETTING_STARTED)).isEqualTo("true");
+        assertThat(ConfigUtils.getProperty(ConfigKeys.SERVER_COMPLETE_QUEUE_SIZE)).isEqualTo("500");
+        assertThat(PropertiesUtils.getServerCompleteQueueSize()).isEqualTo(500);
     }
 
 

@@ -6,13 +6,17 @@ import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import java.util.List;
 
 public interface ServerQueueService {
-    RenderTask retrieveRenderTaskFromServerQueue();
+    RenderTask retrieveRenderTaskFromPendingQueue();
 
-    void addRenderTasksToServerQueue(Project project);
+    void addRenderTasksToPendingQueue(Project project);
 
-    void updateQueueLimit();
+    void addRenderTasksToCompletedQueue(RenderTask renderTask);
 
-    void resetRenderTaskQueue();
+    void updatePendingQueueLimit();
+
+    void updatedCompletedQueueLimit();
+
+    void resetPendingRenderTaskQueue();
 
     List<RenderTask> listCurrentTasksInQueue();
 }

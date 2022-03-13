@@ -61,14 +61,14 @@ public class AdminServerEndPointController {
         this.serverQueueService = serverQueueService;
     }
 
-    @GetMapping("/view_server_queue")
+    @GetMapping("/view_server_pending_queue")
     public List<RenderTask> viewServerQueue() {
         return serverQueueService.listCurrentTasksInQueue();
     }
 
-    @GetMapping("/reset_server_queue")
+    @GetMapping("/reset_server_pending_queue")
     public ResponseEntity<Void> resetServerQueue() {
-        serverQueueService.resetRenderTaskQueue();
+        serverQueueService.resetPendingRenderTaskQueue();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -142,7 +142,8 @@ public class AdminServerEndPointController {
             nodeToSave.setActive(true);
             nodeToSave.setTotalRenderingSlots(node.getTotalRenderingSlots());
             nodeRepository.save(nodeToSave);
-            serverQueueService.updateQueueLimit();
+            serverQueueService.updatePendingQueueLimit();
+            serverQueueService.updatedCompletedQueueLimit();
             return new ResponseEntity<>(HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

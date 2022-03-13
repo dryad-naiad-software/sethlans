@@ -62,6 +62,7 @@ public enum ConfigKeys {
     PYTHON_DIR("sethlans.pythonDir"),
     ROOT_DIR("sethlans.rootDir"),
     SCRIPTS_DIR("sethlans.scriptsDir"),
+    SERVER_COMPLETE_QUEUE_SIZE("sethlans.server.complete.queue.size"),
     SELECTED_GPU("sethlans.selectedGPU"),
     SESSION_TIMEOUT("server.session.timeout"),
     SETHLANS_IP("server.ipAddress"),

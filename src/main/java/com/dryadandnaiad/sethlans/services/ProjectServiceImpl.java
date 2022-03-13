@@ -87,10 +87,10 @@ public class ProjectServiceImpl implements ProjectService {
                 var project = projectRepository.getProjectByProjectID(projectID).get();
                 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
                 if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-                    serverQueueService.addRenderTasksToServerQueue(project);
+                    serverQueueService.addRenderTasksToPendingQueue(project);
                 } else {
                     if (project.getUser().getUsername().equals(auth.getName())) {
-                        serverQueueService.addRenderTasksToServerQueue(project);
+                        serverQueueService.addRenderTasksToPendingQueue(project);
                     }
                 }
                 return true;

@@ -24,9 +24,10 @@ import java.util.concurrent.TimeUnit;
 @Profile({"SERVER", "DUAL"})
 @Service
 public class ServerQueueServiceImpl implements ServerQueueService {
-    private BlockingQueue<RenderTask> serverQueue;
+    private BlockingQueue<RenderTask> pendingRenderQueue;
     private final ProjectRepository projectRepository;
     private final NodeRepository nodeRepository;
+    private BlockingQueue<RenderTask> completedRenderQueue;
 
     public ServerQueueServiceImpl(ProjectRepository projectRepository, NodeRepository nodeRepository) {
         this.projectRepository = projectRepository;
@@ -34,9 +35,9 @@ public class ServerQueueServiceImpl implements ServerQueueService {
     }
 
     @Override
-    public RenderTask retrieveRenderTaskFromServerQueue(){
+    public RenderTask retrieveRenderTaskFromPendingQueue() {
         try {
-            return serverQueue.poll(5, TimeUnit.SECONDS);
+            return pendingRenderQueue.poll(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
@@ -44,9 +45,11 @@ public class ServerQueueServiceImpl implements ServerQueueService {
         }
     }
 
+
     @Override
-    public void addRenderTasksToServerQueue(Project project) {
-        log.debug("Attempting to add tasks to server task queue. There are " + serverQueue.size() + " items.");
+    public void addRenderTasksToPendingQueue(Project project) {
+        log.debug("Attempting to add render tasks to server pending queue. There are "
+                + pendingRenderQueue.size() + " items.");
 
         var queueReady = true;
         var serverInfo = TaskServerInfo.builder().systemID(PropertiesUtils.getSystemID()).build();
@@ -83,7 +86,8 @@ public class ServerQueueServiceImpl implements ServerQueueService {
                 if (project.getProjectStatus().getQueueIndex() == 0) {
                     frameNumber = project.getProjectSettings().getStartFrame();
                 } else {
-                    frameNumber = project.getProjectStatus().getCurrentFrame() + project.getProjectSettings().getStepFrame();
+                    frameNumber = project.getProjectStatus().getCurrentFrame()
+                            + project.getProjectSettings().getStepFrame();
                 }
                 project.getProjectStatus().setCurrentFrame(frameNumber);
                 frameInfo = TaskFrameInfo.builder()
@@ -99,9 +103,9 @@ public class ServerQueueServiceImpl implements ServerQueueService {
                     .frameInfo(frameInfo)
                     .build();
 
-            queueReady = serverQueue.offer(renderTask);
+            queueReady = pendingRenderQueue.offer(renderTask);
             if (queueReady) {
-                if(project.getProjectStatus().getProjectState().equals(ProjectState.ADDED)) {
+                if (project.getProjectStatus().getProjectState().equals(ProjectState.ADDED)) {
                     project.getProjectStatus().setProjectState(ProjectState.PENDING);
                 }
                 project.getProjectStatus().setQueueIndex(project.getProjectStatus().getQueueIndex() + 1);
@@ -109,13 +113,19 @@ public class ServerQueueServiceImpl implements ServerQueueService {
                 projectRepository.save(project);
             }
         }
-        log.debug("Adding of tasks has completed. Server task queue has " + serverQueue.size() + " items.");
-        log.debug(serverQueue.toString());
+        log.debug("Adding of render tasks has completed. " +
+                "Server pending task queue has " + pendingRenderQueue.size() + " items.");
+        log.debug(pendingRenderQueue.toString());
 
     }
 
     @Override
-    public void updateQueueLimit() {
+    public void addRenderTasksToCompletedQueue(RenderTask renderTask) {
+
+    }
+
+    @Override
+    public void updatePendingQueueLimit() {
         var slots = 0;
 
         var nodes = nodeRepository.findNodesByBenchmarkCompleteTrueAndActiveTrue();
@@ -127,22 +137,37 @@ public class ServerQueueServiceImpl implements ServerQueueService {
         var queueSize = slots * 2;
 
 
-        if (serverQueue != null) {
+        if (pendingRenderQueue != null) {
             BlockingQueue<RenderTask> tempQueue = new LinkedBlockingQueue<>(queueSize);
-            serverQueue.drainTo(tempQueue);
-            serverQueue = tempQueue;
-            log.debug("Server queue updated, queue size: " + queueSize);
+            pendingRenderQueue.drainTo(tempQueue);
+            pendingRenderQueue = tempQueue;
+            log.debug("Server pending render queue updated, queue size: " + queueSize);
 
         } else {
-            serverQueue = new LinkedBlockingQueue<>(queueSize);
-            log.debug("Server queue created, queue size: " + queueSize);
+            pendingRenderQueue = new LinkedBlockingQueue<>(queueSize);
+            log.debug("Server pending render queue created, queue size: " + queueSize);
         }
 
     }
 
     @Override
-    public void resetRenderTaskQueue() {
-        log.debug("Resetting server render task queue");
+    public void updatedCompletedQueueLimit() {
+        if (completedRenderQueue != null) {
+            BlockingQueue<RenderTask> tempQueue = new LinkedBlockingQueue<>(PropertiesUtils.getServerCompleteQueueSize());
+            completedRenderQueue.drainTo(tempQueue);
+            completedRenderQueue = tempQueue;
+            log.debug("Server completed render queue updated, queue size: " + PropertiesUtils.getServerCompleteQueueSize());
+
+        } else {
+            completedRenderQueue = new LinkedBlockingQueue<>(PropertiesUtils.getServerCompleteQueueSize());
+            log.debug("Server completed render queue created, queue size: " + PropertiesUtils.getServerCompleteQueueSize());
+        }
+
+    }
+
+    @Override
+    public void resetPendingRenderTaskQueue() {
+        log.debug("Resetting server pending render task queue");
         var slots = 0;
 
         var nodes = nodeRepository.findNodesByBenchmarkCompleteTrueAndActiveTrue();
@@ -152,12 +177,12 @@ public class ServerQueueServiceImpl implements ServerQueueService {
         }
 
         var queueSize = slots * 2;
-        serverQueue = new LinkedBlockingQueue<>(queueSize);
+        pendingRenderQueue = new LinkedBlockingQueue<>(queueSize);
 
     }
 
     @Override
     public List<RenderTask> listCurrentTasksInQueue() {
-        return serverQueue.stream().toList();
+        return pendingRenderQueue.stream().toList();
     }
 }

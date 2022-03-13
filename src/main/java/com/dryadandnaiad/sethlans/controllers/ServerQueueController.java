@@ -57,7 +57,7 @@ public class ServerQueueController {
     @GetMapping(value = "/retrieve_task")
     public RenderTask retrieveRenderTask(@RequestParam("system-id") String systemID){
         if (nodeRepository.findNodeBySystemIDEquals(systemID).isPresent()) {
-            return serverQueueService.retrieveRenderTaskFromServerQueue();
+            return serverQueueService.retrieveRenderTaskFromPendingQueue();
         }
         return null;
     }
