@@ -162,34 +162,37 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                     .benchmarkComplete(true)
                     .systemID(PropertiesUtils.getSystemID()).build();
             switch (nodeType) {
-                case CPU:
+                case CPU -> {
                     node.setCpuRating(PropertiesUtils.getCPURating());
                     node.setTotalRenderingSlots(1);
-                    break;
-                case GPU:
+                }
+                case GPU -> {
                     var selectedGPUs = PropertiesUtils.getSelectedGPUs();
                     node.setSelectedGPUs(selectedGPUs);
-                    if(PropertiesUtils.isGPUCombined()){
-                       node.setTotalRenderingSlots(1);
+                    if (PropertiesUtils.isGPUCombined()) {
+                        node.setTotalRenderingSlots(1);
                     } else {
                         node.setTotalRenderingSlots(selectedGPUs.size());
                     }
-                    break;
-                case CPU_GPU:
+                }
+                case CPU_GPU -> {
                     var selectedGPUs1 = PropertiesUtils.getSelectedGPUs();
                     node.setCpuRating(PropertiesUtils.getCPURating());
                     node.setSelectedGPUs(selectedGPUs1);
-                    if(PropertiesUtils.isGPUCombined()){
+                    if (PropertiesUtils.isGPUCombined()) {
                         node.setTotalRenderingSlots(2);
                     } else {
                         node.setTotalRenderingSlots(selectedGPUs1.size() + 1);
                     }
-                    break;
+                }
             }
             try {
                 var objectMapper = new ObjectMapper();
                 var nodeAsJSON = objectMapper.writeValueAsString(node);
                 NetworkUtils.postJSONToURL(path, host, port, nodeAsJSON, true);
+                server = serverRepository.findBySystemID(server.getSystemID()).get();
+                server.setBenchmarkComplete(true);
+                serverRepository.save(server);
             } catch (JsonProcessingException e) {
                 log.error(e.getMessage());
                 log.error(Throwables.getStackTraceAsString(e));

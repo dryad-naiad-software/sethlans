@@ -170,6 +170,7 @@ create table server
     date_created timestamp,
     last_updated timestamp,
     version      bigint,
+    benchmark_complete    boolean not null,
     hostname     varchar(255),
     ip_address   varchar(255),
     network_port varchar(255),
