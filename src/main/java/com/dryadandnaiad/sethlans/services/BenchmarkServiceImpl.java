@@ -106,8 +106,8 @@ public class BenchmarkServiceImpl implements BenchmarkService {
             var servers = new HashSet<Server>();
             for (RenderTask benchmark : benchmarksToExecute) {
                 servers.add(serverRepository.findBySystemID(benchmark
-                        .getServerInfo()
-                        .getSystemID())
+                                .getServerInfo()
+                                .getSystemID())
                         .orElse(null));
             }
             for (Server server : servers) {
@@ -161,30 +161,41 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                     .nodeType(nodeType)
                     .benchmarkComplete(true)
                     .systemID(PropertiesUtils.getSystemID()).build();
-            switch (nodeType) {
-                case CPU -> {
-                    node.setCpuRating(PropertiesUtils.getCPURating());
-                    node.setTotalRenderingSlots(1);
-                }
-                case GPU -> {
-                    var selectedGPUs = PropertiesUtils.getSelectedGPUs();
-                    node.setSelectedGPUs(selectedGPUs);
-                    if (PropertiesUtils.isGPUCombined()) {
+            try {
+                switch (nodeType) {
+                    case CPU -> {
+                        node.setCpuRating(PropertiesUtils.getCPURating());
                         node.setTotalRenderingSlots(1);
-                    } else {
-                        node.setTotalRenderingSlots(selectedGPUs.size());
+                        ConfigUtils.writeProperty(ConfigKeys.NODE_TOTAL_SLOTS, "1");
+                    }
+                    case GPU -> {
+                        var selectedGPUs = PropertiesUtils.getSelectedGPUs();
+                        node.setSelectedGPUs(selectedGPUs);
+                        if (PropertiesUtils.isGPUCombined()) {
+                            node.setTotalRenderingSlots(1);
+                            ConfigUtils.writeProperty(ConfigKeys.NODE_TOTAL_SLOTS, "1");
+                        } else {
+                            node.setTotalRenderingSlots(selectedGPUs.size());
+                            ConfigUtils.writeProperty(ConfigKeys.NODE_TOTAL_SLOTS, String.valueOf(selectedGPUs.size()));
+
+                        }
+                    }
+                    case CPU_GPU -> {
+                        var selectedGPUs1 = PropertiesUtils.getSelectedGPUs();
+                        node.setCpuRating(PropertiesUtils.getCPURating());
+                        node.setSelectedGPUs(selectedGPUs1);
+                        if (PropertiesUtils.isGPUCombined()) {
+                            node.setTotalRenderingSlots(2);
+                            ConfigUtils.writeProperty(ConfigKeys.NODE_TOTAL_SLOTS, "2");
+                        } else {
+                            node.setTotalRenderingSlots(selectedGPUs1.size() + 1);
+                            ConfigUtils.writeProperty(ConfigKeys.NODE_TOTAL_SLOTS, String.valueOf(selectedGPUs1.size() + 1));
+                        }
                     }
                 }
-                case CPU_GPU -> {
-                    var selectedGPUs1 = PropertiesUtils.getSelectedGPUs();
-                    node.setCpuRating(PropertiesUtils.getCPURating());
-                    node.setSelectedGPUs(selectedGPUs1);
-                    if (PropertiesUtils.isGPUCombined()) {
-                        node.setTotalRenderingSlots(2);
-                    } else {
-                        node.setTotalRenderingSlots(selectedGPUs1.size() + 1);
-                    }
-                }
+            } catch (Exception e) {
+                log.error(e.getMessage());
+                log.error(Throwables.getStackTraceAsString(e));
             }
             try {
                 var objectMapper = new ObjectMapper();

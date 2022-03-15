@@ -54,6 +54,10 @@ public class PropertiesUtils {
         return Boolean.parseBoolean(ConfigUtils.getProperty(ConfigKeys.COMBINE_GPU));
     }
 
+    public static Integer getTotalNodeSlots() {
+        return Integer.parseInt(ConfigUtils.getProperty(ConfigKeys.NODE_TOTAL_SLOTS));
+    }
+
     public static Integer getServerCompleteQueueSize() {
         return Integer.parseInt(ConfigUtils.getProperty(ConfigKeys.SERVER_COMPLETE_QUEUE_SIZE));
     }

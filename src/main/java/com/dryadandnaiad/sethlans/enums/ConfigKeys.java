@@ -58,6 +58,7 @@ public enum ConfigKeys {
     MULTICAST_PORT("sethlans.multicast.port"),
     NODE_DISABLED("sethlans.nodeDisabled"),
     NODE_TYPE("sethlans.nodeType"),
+    NODE_TOTAL_SLOTS("sethlans.node.total.slots"),
     PROJECT_DIR("sethlans.projectDir"),
     PYTHON_DIR("sethlans.pythonDir"),
     ROOT_DIR("sethlans.rootDir"),
