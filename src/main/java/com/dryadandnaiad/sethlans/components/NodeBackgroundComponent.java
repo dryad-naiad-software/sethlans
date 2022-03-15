@@ -19,6 +19,7 @@ package com.dryadandnaiad.sethlans.components;
 
 import com.dryadandnaiad.sethlans.services.BenchmarkService;
 import com.dryadandnaiad.sethlans.services.MulticastService;
+import com.dryadandnaiad.sethlans.services.RenderTaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -37,10 +38,13 @@ import javax.annotation.PostConstruct;
 public class NodeBackgroundComponent {
     private final MulticastService multicastService;
     private final BenchmarkService benchmarkService;
+    private final RenderTaskService renderTaskService;
 
-    public NodeBackgroundComponent(MulticastService multicastService, BenchmarkService benchmarkService) {
+    public NodeBackgroundComponent(MulticastService multicastService, BenchmarkService benchmarkService,
+                                   RenderTaskService renderTaskService) {
         this.multicastService = multicastService;
         this.benchmarkService = benchmarkService;
+        this.renderTaskService = renderTaskService;
     }
 
     @PostConstruct
@@ -48,5 +52,10 @@ public class NodeBackgroundComponent {
         log.debug("Starting Sethlans Multicast");
         multicastService.sendSethlansMulticast();
         benchmarkService.pendingBenchmarks();
+        try {
+            renderTaskService.retrievePendingRenderTasks();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

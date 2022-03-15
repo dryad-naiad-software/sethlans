@@ -5,6 +5,6 @@ import org.springframework.scheduling.annotation.Async;
 public interface RenderTaskService {
 
     @Async
-    void retrievePendingRenderTasks();
+    void retrievePendingRenderTasks() throws InterruptedException;
 
 }

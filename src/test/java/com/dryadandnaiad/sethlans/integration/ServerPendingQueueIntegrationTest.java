@@ -333,7 +333,7 @@ public class ServerPendingQueueIntegrationTest {
     }
 
     @Test
-    public void pavillonBarceloneAnimation() throws JsonProcessingException {
+    public void pavillonBarceloneAnimation() throws JsonProcessingException, InterruptedException {
         var mapper = new ObjectMapper();
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
 
@@ -408,6 +408,7 @@ public class ServerPendingQueueIntegrationTest {
                 .get("/api/v1/management/reset_server_pending_queue")
                 .then()
                 .statusCode(StatusCodes.OK);
+        Thread.sleep(20000);
     }
 
     @Test
