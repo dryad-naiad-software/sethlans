@@ -25,8 +25,8 @@ public class RenderTaskServiceImpl implements RenderTaskService {
     @Override
     public void retrievePendingRenderTasks() throws InterruptedException {
         Thread.sleep(20000);
-        var servers = serverRepository.findServersByBenchmarkCompleteTrue();
         while(true) {
+            var servers = serverRepository.findServersByBenchmarkCompleteTrue();
             if (servers.size() > 0) {
                 var totalSlot = PropertiesUtils.getTotalNodeSlots();
                 log.debug("Testing");

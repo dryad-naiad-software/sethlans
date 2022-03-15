@@ -408,7 +408,7 @@ public class ServerPendingQueueIntegrationTest {
                 .get("/api/v1/management/reset_server_pending_queue")
                 .then()
                 .statusCode(StatusCodes.OK);
-        Thread.sleep(20000);
+        Thread.sleep(10000);
     }
 
     @Test
