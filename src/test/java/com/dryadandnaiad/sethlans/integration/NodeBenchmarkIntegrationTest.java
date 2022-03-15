@@ -234,7 +234,7 @@ public class NodeBenchmarkIntegrationTest {
 
         log.info("Benchmark Complete");
 
-        Thread.sleep(30000);
+        Thread.sleep(10000);
 
 
     }

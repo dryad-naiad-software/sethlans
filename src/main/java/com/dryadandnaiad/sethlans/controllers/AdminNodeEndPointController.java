@@ -17,10 +17,12 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.repositories.ServerRepository;
 import com.dryadandnaiad.sethlans.services.BenchmarkService;
 import com.dryadandnaiad.sethlans.services.NodeService;
+import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -86,9 +88,25 @@ public class AdminNodeEndPointController {
         return false;
     }
 
-    @GetMapping("/node_disabled")
-    public boolean isNodeDisabled() {
-        return PropertiesUtils.isNodeDisabled();
+    @GetMapping("/is_node_paused")
+    public boolean isNodePaused() {
+        return PropertiesUtils.isNodePaused();
+    }
+
+    @PostMapping("/pause_node")
+    public ResponseEntity<Void> pauseNode(@RequestParam boolean pause) {
+        log.info("Changing node status.");
+        if(pause) {
+            log.info("Node is paused.");
+        } else {
+            log.info("Node is not paused.");
+        }
+        try {
+            ConfigUtils.writeProperty(ConfigKeys.NODE_PAUSED, Boolean.toString(pause));
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 

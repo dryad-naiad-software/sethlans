@@ -56,7 +56,7 @@ public enum ConfigKeys {
     MODE("spring.profiles.active"),
     MULTICAST_IP("sethlans.multicast"),
     MULTICAST_PORT("sethlans.multicast.port"),
-    NODE_DISABLED("sethlans.nodeDisabled"),
+    NODE_PAUSED("sethlans.node.paused"),
     NODE_TYPE("sethlans.nodeType"),
     NODE_TOTAL_SLOTS("sethlans.node.total.slots"),
     PROJECT_DIR("sethlans.projectDir"),

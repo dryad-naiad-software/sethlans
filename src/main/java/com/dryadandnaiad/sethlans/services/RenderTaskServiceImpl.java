@@ -26,15 +26,17 @@ public class RenderTaskServiceImpl implements RenderTaskService {
     public void retrievePendingRenderTasks() throws InterruptedException {
         Thread.sleep(20000);
         while(true) {
-            var servers = serverRepository.findServersByBenchmarkCompleteTrue();
-            if (servers.size() > 0) {
-                var totalSlot = PropertiesUtils.getTotalNodeSlots();
-                log.debug("Testing");
-                var pendingRenderTasks = renderTaskRepository.findRenderTasksByBenchmarkIsFalseAndCompleteIsFalse();
+            if(!PropertiesUtils.isNodePaused()) {
+                var servers = serverRepository.findServersByBenchmarkCompleteTrue();
+                if (servers.size() > 0) {
+                    var totalSlot = PropertiesUtils.getTotalNodeSlots();
+                    log.debug("Testing");
+                    var pendingRenderTasks = renderTaskRepository.findRenderTasksByBenchmarkIsFalseAndCompleteIsFalse();
 
-                if(pendingRenderTasks.size() < totalSlot) {
-                    log.debug("Total number of slots " + totalSlot);
-                    log.debug("Total number of tasks " + pendingRenderTasks.size());
+                    if(pendingRenderTasks.size() < totalSlot) {
+                        log.debug("Total number of slots " + totalSlot);
+                        log.debug("Total number of tasks " + pendingRenderTasks.size());
+                    }
                 }
             }
             Thread.sleep(5000);

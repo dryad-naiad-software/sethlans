@@ -207,6 +207,6 @@ class PropertiesUtilsTest {
 
     @Test
     void isNodeDisabled() {
-        assertThat(PropertiesUtils.isNodeDisabled()).isTrue();
+        assertThat(PropertiesUtils.isNodePaused()).isTrue();
     }
 }

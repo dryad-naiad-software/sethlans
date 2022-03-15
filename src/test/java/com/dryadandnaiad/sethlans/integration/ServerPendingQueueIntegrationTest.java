@@ -250,6 +250,14 @@ public class ServerPendingQueueIntegrationTest {
 
         log.info("Benchmark Complete");
 
+        given()
+                .log()
+                .ifValidationFails()
+                .param("pause", true)
+                .post("/api/v1/management/pause_node")
+                .then()
+                .statusCode(StatusCodes.ACCEPTED);
+
         log.info("Starting Server Queue Test on " + baseHost + ":" + RestAssured.port);
 
     }

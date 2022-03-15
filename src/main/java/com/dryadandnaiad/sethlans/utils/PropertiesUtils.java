@@ -150,8 +150,8 @@ public class PropertiesUtils {
         return Boolean.parseBoolean(getProperty(ConfigKeys.FIRST_TIME));
     }
 
-    public static boolean isNodeDisabled() {
-        return Boolean.parseBoolean(getProperty(ConfigKeys.NODE_DISABLED));
+    public static boolean isNodePaused() {
+        return Boolean.parseBoolean(getProperty(ConfigKeys.NODE_PAUSED));
     }
 
 
@@ -178,7 +178,7 @@ public class PropertiesUtils {
         ObjectMapper objectMapper = new ObjectMapper();
         writeProperty(ConfigKeys.NODE_TYPE, nodeSettings.getNodeType().toString());
         writeProperty(ConfigKeys.CPU_RATING, "0");
-        writeProperty(ConfigKeys.NODE_DISABLED, "false");
+        writeProperty(ConfigKeys.NODE_PAUSED, "false");
         if (!nodeSettings.getNodeType().equals(NodeType.GPU)) {
             writeProperty(ConfigKeys.CPU_CORES, nodeSettings.getCores().toString());
             writeProperty(ConfigKeys.TILE_SIZE_CPU, nodeSettings.getTileSizeCPU().toString());

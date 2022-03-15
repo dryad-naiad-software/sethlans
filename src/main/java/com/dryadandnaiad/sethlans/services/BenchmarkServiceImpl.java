@@ -271,10 +271,10 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                                     TaskFrameInfo taskFrameInfo,
                                     TaskServerInfo taskServerInfo, String benchmarkFile, String blenderVersion) {
         var taskScriptInfo = TaskScriptInfo.builder()
-                .taskResolutionX(800)
-                .taskResolutionY(600)
+                .taskResolutionX(640)
+                .taskResolutionY(480)
                 .taskResPercentage(50)
-                .samples(50)
+                .samples(10)
                 .computeOn(ComputeOn.CPU)
                 .deviceType(DeviceType.CPU)
                 .deviceIDs(new ArrayList<>())
@@ -305,10 +305,10 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         var deviceIDList = new ArrayList<String>();
         deviceIDList.add(gpu.getGpuID());
         var taskScriptInfo = TaskScriptInfo.builder()
-                .taskResolutionX(800)
-                .taskResolutionY(600)
+                .taskResolutionX(640)
+                .taskResolutionY(480)
                 .taskResPercentage(50)
-                .samples(50)
+                .samples(10)
                 .computeOn(ComputeOn.GPU)
                 .deviceType(gpu.getDeviceType())
                 .deviceIDs(deviceIDList)
