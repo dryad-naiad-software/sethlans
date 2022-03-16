@@ -306,6 +306,8 @@ public class NodeRenderTaskIntegrationTest {
                         .body()
                         .asString(), ProjectView.class);
 
+        Thread.sleep(60000);
+
         var queue = mapper
                 .readValue(get("/api/v1/management/view_server_pending_queue")
                         .then()
@@ -321,7 +323,7 @@ public class NodeRenderTaskIntegrationTest {
         assertThat(project.getProjectStatus().getCurrentFrame()).isEqualTo(1);
         assertThat(project.getProjectStatus().getQueueIndex()).isGreaterThanOrEqualTo(2);
         assertThat(project.getProjectStatus().getCurrentPart()).isGreaterThanOrEqualTo(2);
-        Thread.sleep(500000);
+        Thread.sleep(60000);
 
 
     }

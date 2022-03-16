@@ -48,15 +48,22 @@ public class RenderTaskServiceImpl implements RenderTaskService {
                             var host = server.getIpAddress();
                             var port = server.getNetworkPort();
                             var renderTaskJson = NetworkUtils.getJSONWithParams(path, host, port, params, true);
-                            var objectMapper = new ObjectMapper();
-                            try {
-                                var renderTask = objectMapper
-                                        .readValue(renderTaskJson, RenderTask.class);
-                                renderTaskRepository.save(renderTask);
-                            } catch (JsonProcessingException e) {
-                                log.error(e.getMessage());
-                                log.error(Throwables.getStackTraceAsString(e));
+                            if(renderTaskJson == null|| renderTaskJson.isEmpty()) {
+                                log.debug("No tasks present on server.");
+                            } else {
+                                var objectMapper = new ObjectMapper();
+                                try {
+                                    var renderTask = objectMapper
+                                            .readValue(renderTaskJson, RenderTask.class);
+                                    renderTaskRepository.save(renderTask);
+                                    log.debug("Render Task added to node:");
+                                    log.debug(renderTask.toString());
+                                } catch (JsonProcessingException e) {
+                                    log.error(e.getMessage());
+                                    log.error(Throwables.getStackTraceAsString(e));
+                                }
                             }
+
                         }
 
                     }
