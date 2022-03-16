@@ -61,7 +61,8 @@ public class ServerQueueController {
     @GetMapping(value = "/retrieve_task")
     public RenderTask retrieveRenderTask(@RequestParam("system-id") String systemID){
         if (nodeRepository.findNodeBySystemIDEquals(systemID).isPresent()) {
-            var renderTask = serverQueueService.retrieveRenderTaskFromPendingQueue();
+            var node = nodeRepository.findNodeBySystemIDEquals(systemID).get();
+            var renderTask = serverQueueService.retrieveRenderTaskFromPendingQueue(node.getNodeType());
             if(renderTask != null) {
                 var project = projectRepository.getProjectByProjectID(renderTask.getProjectID()).get();
                 if(project.getProjectStatus().getProjectState().equals(ProjectState.PENDING)) {

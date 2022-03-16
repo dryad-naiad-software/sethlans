@@ -1,5 +1,7 @@
 package com.dryadandnaiad.sethlans.services;
 
+import com.dryadandnaiad.sethlans.enums.ComputeOn;
+import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.enums.ProjectState;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
@@ -36,9 +38,29 @@ public class ServerQueueServiceImpl implements ServerQueueService {
     }
 
     @Override
-    public RenderTask retrieveRenderTaskFromPendingQueue() {
+    public RenderTask retrieveRenderTaskFromPendingQueue(NodeType nodeType) {
         try {
-            return pendingRenderQueue.poll(5, TimeUnit.SECONDS);
+            var task = pendingRenderQueue.peek();
+            if (task != null) {
+                var project = projectRepository.getProjectByProjectID(task.getProjectID()).get();
+                switch (nodeType) {
+                    case CPU_GPU:
+                        return pendingRenderQueue.poll(5, TimeUnit.SECONDS);
+                    case CPU:
+                        if (project.getProjectSettings().getComputeOn() != ComputeOn.GPU) {
+                            return pendingRenderQueue.poll(5, TimeUnit.SECONDS);
+                        }
+                        return null;
+                    case GPU:
+                        if (project.getProjectSettings().getComputeOn() != ComputeOn.CPU) {
+                            return pendingRenderQueue.poll(5, TimeUnit.SECONDS);
+                        }
+                        return null;
+                }
+            }
+            return null;
+
+
         } catch (InterruptedException e) {
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
