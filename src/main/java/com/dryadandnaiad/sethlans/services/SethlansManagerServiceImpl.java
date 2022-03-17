@@ -53,7 +53,7 @@ public class SethlansManagerServiceImpl implements SethlansManagerService {
             Thread.sleep(10000);
             System.exit(0);
         } catch (InterruptedException e) {
-            log.info("System Shutdown service closed");
+            log.debug("System Shutdown service closed");
             System.exit(0);
         }
 

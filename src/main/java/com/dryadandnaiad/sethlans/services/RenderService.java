@@ -2,9 +2,12 @@ package com.dryadandnaiad.sethlans.services;
 
 import org.springframework.scheduling.annotation.Async;
 
-public interface RenderTaskService {
+public interface RenderService {
 
     @Async
-    void retrievePendingRenderTasks() throws InterruptedException;
+    void retrievePendingRenderTasks();
+
+    @Async
+    void pendingRenders();
 
 }

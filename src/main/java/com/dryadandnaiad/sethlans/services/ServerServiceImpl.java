@@ -93,11 +93,7 @@ public class ServerServiceImpl implements ServerService {
                         log.debug("Adding the following node to server: " + node);
                         nodeRepository.save(node);
                         var checkBenchmark = new Thread(() -> {
-                            try {
-                                pendingBenchmarksToSend();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+                            pendingBenchmarksToSend();
                         });
                         checkBenchmark.start();
                     }
@@ -119,11 +115,19 @@ public class ServerServiceImpl implements ServerService {
 
     @Override
     @Async
-    public void pendingBenchmarksToSend() throws InterruptedException {
+    public void pendingBenchmarksToSend() {
         if(blenderArchiveRepository.findAllByDownloadedIsTrue().isEmpty()) {
-            Thread.sleep(300000);
+            try {
+                Thread.sleep(300000);
+            } catch (InterruptedException e) {
+                log.debug(e.getMessage());
+            }
         } else {
-            Thread.sleep(30000);
+            try {
+                Thread.sleep(30000);
+            } catch (InterruptedException e) {
+                log.debug(e.getMessage());
+            }
         }
         log.info("Checking to see if any nodes are pending a benchmark.");
         var nodesToBenchmark =

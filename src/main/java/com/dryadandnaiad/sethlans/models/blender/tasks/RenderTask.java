@@ -53,6 +53,7 @@ public class RenderTask extends AbstractModel {
     private boolean complete;
     private boolean inProgress;
     private boolean useParts;
+    private boolean sentToServer;
     private TaskFrameInfo frameInfo;
     private TaskScriptInfo scriptInfo;
     private TaskServerInfo serverInfo;

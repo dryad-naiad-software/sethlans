@@ -241,16 +241,12 @@ public class BlenderUtils {
         String pythonBinary;
         var script = scriptsDir + File.separator + "blend_info.py";
         switch (os) {
-            case WINDOWS_64:
-                pythonBinary = pythonDir + File.separator + "bin" + File.separator + "python.exe";
-                break;
-            case LINUX_64:
-            case MACOS:
-                pythonBinary = pythonDir + File.separator + "bin" + File.separator + "python3.7m";
-                break;
-            default:
+            case WINDOWS_64 -> pythonBinary = pythonDir + File.separator + "bin" + File.separator + "python.exe";
+            case LINUX_64, MACOS -> pythonBinary = pythonDir + File.separator + "bin" + File.separator + "python3.7m";
+            default -> {
                 log.error("Operating System not supported. " + os.getName());
                 return null;
+            }
         }
 
         String output;
@@ -324,21 +320,22 @@ public class BlenderUtils {
         String md5;
 
         switch (os) {
-            case MACOS:
+            case MACOS -> {
                 downloadURLs = selectedInstallers.getMacOS();
                 md5 = selectedInstallers.getMd5MacOS();
-                break;
-            case WINDOWS_64:
+            }
+            case WINDOWS_64 -> {
                 downloadURLs = selectedInstallers.getWindows64();
                 md5 = selectedInstallers.getMd5Windows64();
-                break;
-            case LINUX_64:
+            }
+            case LINUX_64 -> {
                 downloadURLs = selectedInstallers.getLinux64();
                 md5 = selectedInstallers.getMd5Linux64();
-                break;
-            default:
+            }
+            default -> {
                 log.error("Invalid OS given. " + os.getName() + " is not supported.");
                 return null;
+            }
         }
         var fileToSave = new File(downloadDir + File.separator +
                 blenderVersion + "-" + os.getName().toLowerCase() +

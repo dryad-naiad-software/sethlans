@@ -96,7 +96,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.debug(e.getMessage());
         }
         var benchmarksToExecute =
                 renderTaskRepository.findRenderTasksByBenchmarkIsTrueAndInProgressIsFalseAndCompleteIsFalse();

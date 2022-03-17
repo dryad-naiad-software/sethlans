@@ -19,8 +19,8 @@ package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
-import com.dryadandnaiad.sethlans.models.blender.frames.Part;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
+import com.dryadandnaiad.sethlans.models.blender.tasks.TaskFrameInfo;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
@@ -246,18 +246,18 @@ public class ImageUtils {
 
     }
 
-    public static List<Part> configurePartCoordinates(int partsPerFrame) {
-        List<Part> partCoordinatesList = new ArrayList<>();
+    public static List<TaskFrameInfo> configurePartCoordinates(int partsPerFrame) {
+        List<TaskFrameInfo> partCoordinatesList = new ArrayList<>();
         var partsPerRow = (int) Math.sqrt(partsPerFrame);
         var slices = 1.0 / partsPerRow;
 
         for (int y = 0; y < partsPerRow; y++) {
             for (int x = 0; x < partsPerRow; x++) {
-                Part partCoordinates = new Part();
-                partCoordinates.setMinX(slices * x);
-                partCoordinates.setMaxX(slices * (x + 1));
-                partCoordinates.setMinY(1.0 - (slices * (y + 1)));
-                partCoordinates.setMaxY(1.0 - (slices * y));
+                TaskFrameInfo partCoordinates = new TaskFrameInfo();
+                partCoordinates.setPartMinX(slices * x);
+                partCoordinates.setPartMaxX(slices * (x + 1));
+                partCoordinates.setPartMinY(1.0 - (slices * (y + 1)));
+                partCoordinates.setPartMaxY(1.0 - (slices * y));
                 partCoordinatesList.add(partCoordinates);
             }
         }

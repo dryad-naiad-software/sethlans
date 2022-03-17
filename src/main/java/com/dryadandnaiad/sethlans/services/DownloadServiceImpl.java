@@ -46,8 +46,12 @@ public class DownloadServiceImpl implements DownloadService {
 
     @Override
     @Async
-    public void downloadBlenderFilesAsync() throws InterruptedException {
-        Thread.sleep(20000);
+    public void downloadBlenderFilesAsync() {
+        try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            log.debug(e.getMessage());
+        }
         while(true) {
             log.info("Attempting to download any needed Blender Binaries.");
             var downloadDir = ConfigUtils.getProperty(ConfigKeys.DOWNLOAD_DIR);
@@ -64,7 +68,11 @@ public class DownloadServiceImpl implements DownloadService {
                     }
                 }
             }
-            Thread.sleep(600000);
+            try {
+                Thread.sleep(600000);
+            } catch (InterruptedException e) {
+                log.debug(e.getMessage());
+            }
         }
 
     }

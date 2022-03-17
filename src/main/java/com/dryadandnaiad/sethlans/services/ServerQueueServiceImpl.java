@@ -6,18 +6,20 @@ import com.dryadandnaiad.sethlans.enums.ProjectState;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskFrameInfo;
+import com.dryadandnaiad.sethlans.models.blender.tasks.TaskScriptInfo;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskServerInfo;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.repositories.ProjectRepository;
+import com.dryadandnaiad.sethlans.utils.ImageUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
-import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -62,8 +64,7 @@ public class ServerQueueServiceImpl implements ServerQueueService {
 
 
         } catch (InterruptedException e) {
-            log.error(e.getMessage());
-            log.error(Throwables.getStackTraceAsString(e));
+            log.debug(e.getMessage());
             return null;
         }
     }
@@ -99,10 +100,11 @@ public class ServerQueueServiceImpl implements ServerQueueService {
                 project.getProjectStatus().setCurrentFrame(frameNumber);
                 project.getProjectStatus().setCurrentPart(partNumber);
 
-                frameInfo = TaskFrameInfo.builder()
-                        .frameNumber(frameNumber)
-                        .partNumber(partNumber)
-                        .build();
+                var partCoordinates = ImageUtils.configurePartCoordinates(parts);
+
+                frameInfo = partCoordinates.get(partNumber-1);
+                frameInfo.setFrameNumber(frameNumber);
+                frameInfo.setPartNumber(partNumber);
 
             } else {
                 Integer frameNumber;
@@ -118,12 +120,23 @@ public class ServerQueueServiceImpl implements ServerQueueService {
                         .build();
 
             }
+            TaskScriptInfo scriptInfo = TaskScriptInfo.builder()
+                    .blenderEngine(project.getProjectSettings().getBlenderEngine())
+                    .imageOutputFormat(project.getProjectSettings().getImageSettings().getImageOutputFormat())
+                    .samples(project.getProjectSettings().getSamples())
+                    .taskResolutionX(project.getProjectSettings().getImageSettings().getResolutionX())
+                    .taskResolutionY(project.getProjectSettings().getImageSettings().getResolutionY())
+                    .taskResPercentage(project.getProjectSettings().getImageSettings().getResPercentage())
+                    .build();
             var renderTask = RenderTask.builder()
                     .projectID(project.getProjectID())
                     .projectName(project.getProjectName())
+                    .blenderVersion(project.getProjectSettings().getBlenderVersion())
                     .useParts(project.getProjectSettings().isUseParts())
+                    .taskID(UUID.randomUUID().toString())
                     .serverInfo(serverInfo)
                     .frameInfo(frameInfo)
+                    .scriptInfo(scriptInfo)
                     .build();
 
             queueReady = pendingRenderQueue.offer(renderTask);
@@ -147,8 +160,7 @@ public class ServerQueueServiceImpl implements ServerQueueService {
         try {
             return completedRenderQueue.poll(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            log.error(e.getMessage());
-            log.error(Throwables.getStackTraceAsString(e));
+            log.debug(e.getMessage());
             return null;
         }
     }
@@ -212,4 +224,5 @@ public class ServerQueueServiceImpl implements ServerQueueService {
     public List<RenderTask> listCurrentTasksInQueue() {
         return pendingRenderQueue.stream().toList();
     }
+
 }

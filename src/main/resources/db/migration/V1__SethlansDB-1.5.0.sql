@@ -146,6 +146,7 @@ create table render_task
     device_type             integer,
     image_output_format     integer,
     samples                 integer,
+    sent_to_server          boolean not null,
     task_res_percentage     integer,
     task_resolutionx        integer,
     task_resolutiony        integer,

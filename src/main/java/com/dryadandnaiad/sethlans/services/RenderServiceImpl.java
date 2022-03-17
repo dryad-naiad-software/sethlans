@@ -18,20 +18,24 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @Profile({"NODE", "DUAL"})
-public class RenderTaskServiceImpl implements RenderTaskService {
+public class RenderServiceImpl implements RenderService {
 
     private final ServerRepository serverRepository;
     private final RenderTaskRepository renderTaskRepository;
 
-    public RenderTaskServiceImpl(ServerRepository serverRepository, RenderTaskRepository renderTaskRepository) {
+    public RenderServiceImpl(ServerRepository serverRepository, RenderTaskRepository renderTaskRepository) {
         this.serverRepository = serverRepository;
         this.renderTaskRepository = renderTaskRepository;
     }
 
     @Async
     @Override
-    public void retrievePendingRenderTasks() throws InterruptedException {
-        Thread.sleep(20000);
+    public void retrievePendingRenderTasks() {
+        try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            log.debug(e.getMessage());
+        }
         while (true) {
             if (!PropertiesUtils.isNodePaused()) {
                 var servers = serverRepository.findServersByBenchmarkCompleteTrue();
@@ -69,9 +73,25 @@ public class RenderTaskServiceImpl implements RenderTaskService {
                     }
                 }
             }
-            Thread.sleep(5000);
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                log.debug(e.getMessage());
+            }
         }
 
 
+    }
+
+    @Async
+    @Override
+    public void pendingRenders() {
+        try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            log.debug(e.getMessage());
+        }
+        var pendingRenderTasks =
+                renderTaskRepository.findRenderTasksByBenchmarkIsFalseAndInProgressIsFalseAndCompleteIsFalse();
     }
 }

@@ -49,7 +49,7 @@ public class ServerBackgroundComponent {
             downloadService.downloadBlenderFilesAsync();
             serverService.pendingBenchmarksToSend();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.debug(e.getMessage());
         }
 
     }
