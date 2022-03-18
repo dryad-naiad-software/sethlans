@@ -49,9 +49,9 @@ public class NodeBackgroundComponent {
 
     @PostConstruct
     public void startServices() {
-        log.debug("Starting Sethlans Multicast");
         multicastService.sendSethlansMulticast();
         benchmarkService.pendingBenchmarks();
         renderTaskService.retrievePendingRenderTasks();
+        renderTaskService.executeRenders();
     }
 }
