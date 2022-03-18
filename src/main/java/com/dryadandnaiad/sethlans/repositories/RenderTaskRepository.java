@@ -37,5 +37,7 @@ public interface RenderTaskRepository extends JpaRepository<RenderTask, Long> {
 
     List<RenderTask> findRenderTasksByBenchmarkIsFalseAndInProgressIsFalseAndCompleteIsFalse();
 
+    List<RenderTask> findRenderTaskByBenchmarkIsFalseAndInProgressIsTrueAndCompleteIsFalse();
+
     List<RenderTask> findRenderTasksByBenchmarkIsFalseAndInProgressIsFalseAndCompleteIsTrueAndSentToServerIsFalse();
 }

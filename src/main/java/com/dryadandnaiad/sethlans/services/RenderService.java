@@ -8,6 +8,6 @@ public interface RenderService {
     void retrievePendingRenderTasks();
 
     @Async
-    void pendingRenders();
+    void executeRenders();
 
 }

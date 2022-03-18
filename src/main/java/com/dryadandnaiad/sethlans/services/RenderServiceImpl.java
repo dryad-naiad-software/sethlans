@@ -15,6 +15,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @Profile({"NODE", "DUAL"})
@@ -52,7 +54,7 @@ public class RenderServiceImpl implements RenderService {
                             var host = server.getIpAddress();
                             var port = server.getNetworkPort();
                             var renderTaskJson = NetworkUtils.getJSONWithParams(path, host, port, params, true);
-                            if(renderTaskJson == null|| renderTaskJson.isEmpty()) {
+                            if (renderTaskJson == null || renderTaskJson.isEmpty()) {
                                 log.debug("No tasks present on server.");
                             } else {
                                 var objectMapper = new ObjectMapper();
@@ -85,13 +87,46 @@ public class RenderServiceImpl implements RenderService {
 
     @Async
     @Override
-    public void pendingRenders() {
+    public void executeRenders() {
         try {
             Thread.sleep(20000);
         } catch (InterruptedException e) {
             log.debug(e.getMessage());
         }
-        var pendingRenderTasks =
-                renderTaskRepository.findRenderTasksByBenchmarkIsFalseAndInProgressIsFalseAndCompleteIsFalse();
+        if (!PropertiesUtils.isNodePaused()) {
+            var activeRenders =
+                    renderTaskRepository.findRenderTaskByBenchmarkIsFalseAndInProgressIsTrueAndCompleteIsFalse();
+            var slotsInUse = activeRenders.size();
+            var totalSlots = PropertiesUtils.getTotalNodeSlots();
+            if (slotsInUse < totalSlots) {
+                var renderTasksToExecute =
+                        renderTaskRepository.findRenderTasksByBenchmarkIsFalseAndInProgressIsFalseAndCompleteIsFalse();
+                if (!renderTasksToExecute.isEmpty()) {
+                    for (int i = 0; i < (totalSlots - slotsInUse); i++) {
+                        assignComputeMethod(renderTasksToExecute.get(i), activeRenders);
+
+                    }
+                }
+
+
+            }
+
+        }
+
+    }
+
+    private RenderTask assignComputeMethod(RenderTask renderTaskToAssign, List<RenderTask> activeRenders) {
+        var nodeType = PropertiesUtils.getNodeType();
+        var cpuInUse = false;
+        var gpuInUse = false;
+        var selectedGPUs = PropertiesUtils.getSelectedGPUs();
+        var combinedGPU = PropertiesUtils.isGPUCombined();
+        for (RenderTask renderTask : activeRenders) {
+
+        }
+
+
+
+        return renderTaskToAssign;
     }
 }
