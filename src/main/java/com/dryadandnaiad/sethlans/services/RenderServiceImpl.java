@@ -1,11 +1,15 @@
 package com.dryadandnaiad.sethlans.services;
 
+import com.dryadandnaiad.sethlans.blender.BlenderUtils;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
+import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.models.blender.BlenderExecutable;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.repositories.RenderTaskRepository;
 import com.dryadandnaiad.sethlans.repositories.ServerRepository;
+import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.NetworkUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,6 +21,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -65,8 +70,12 @@ public class RenderServiceImpl implements RenderService {
                                 try {
                                     var renderTask = objectMapper
                                             .readValue(renderTaskJson, RenderTask.class);
+                                    blenderVersionCheck(renderTask.getBlenderVersion(), server);
+                                    setBlenderExecutable(renderTask);
+                                    renderTask.setTaskDir(ConfigUtils.getProperty(ConfigKeys.TEMP_DIR) + File.separator + renderTask.getTaskID());
                                     renderTaskRepository.save(renderTask);
                                     log.debug("Render Task added to node:");
+                                    log.debug(renderTask.getTaskID());
                                     log.debug(renderTask.toString());
                                 } catch (JsonProcessingException e) {
                                     log.error(e.getMessage());
@@ -102,7 +111,6 @@ public class RenderServiceImpl implements RenderService {
                 var servers = serverRepository.findServersByBenchmarkCompleteTrue();
                 var renderTasksToExecute =
                         renderTaskRepository.findRenderTasksByBenchmarkIsFalseAndInProgressIsFalseAndCompleteIsFalse();
-                log.debug(renderTasksToExecute.toString());
                 if (servers.size() > 0 && renderTasksToExecute.size() > 0) {
                     var activeRenders =
                             renderTaskRepository.findRenderTaskByBenchmarkIsFalseAndInProgressIsTrueAndCompleteIsFalse();
@@ -112,8 +120,6 @@ public class RenderServiceImpl implements RenderService {
                         if (!renderTasksToExecute.isEmpty()) {
                             renderTaskRepository.save(assignComputeMethod(renderTasksToExecute.get(0), activeRenders));
                         }
-                        activeRenders = renderTaskRepository.findRenderTaskByBenchmarkIsFalseAndInProgressIsTrueAndCompleteIsFalse();
-                        log.debug(activeRenders.toString());
                     }
                 }
             }
@@ -123,14 +129,13 @@ public class RenderServiceImpl implements RenderService {
                 log.debug(e.getMessage());
             }
         }
-
-
     }
 
     private RenderTask assignComputeMethod(RenderTask renderTaskToAssign, List<RenderTask> activeRenders) {
         var nodeType = PropertiesUtils.getNodeType();
         var selectedGPUs = PropertiesUtils.getSelectedGPUs();
         var combinedGPU = PropertiesUtils.isGPUCombined();
+        log.debug("Assigning compute method to " + renderTaskToAssign.getTaskID());
 
         switch (nodeType) {
             case CPU_GPU -> {
@@ -139,9 +144,14 @@ public class RenderServiceImpl implements RenderService {
                 for (RenderTask renderTask : activeRenders) {
                     if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.GPU) && combinedGPU) {
                         gpuInUse = true;
+                        log.debug("GPU In Use");
+                    } else if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.GPU) && selectedGPUs.size() == 1) {
+                        gpuInUse = true;
+                        log.debug("GPU In Use");
                     }
                     if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.CPU)) {
                         cpuInUse = true;
+                        log.debug("CPU In Use");
                     }
                 }
                 if (!gpuInUse) {
@@ -177,11 +187,31 @@ public class RenderServiceImpl implements RenderService {
                 var freeIds = new ArrayList<>(ids);
                 freeIds.removeAll(inUseIds);
                 renderTaskToAssign.getScriptInfo().setDeviceIDs(Collections.singletonList(freeIds.get(0)));
-                renderTaskToAssign.setInProgress(true);
             }
         }
 
-
+        renderTaskToAssign.setInProgress(true);
         return renderTaskToAssign;
+    }
+
+    private RenderTask setBlenderExecutable(RenderTask renderTask) {
+        var blenderVersion = renderTask.getBlenderVersion();
+        var blenderList = PropertiesUtils.getInstalledBlenderExecutables();
+        for (BlenderExecutable blender : blenderList) {
+            if (blender.getBlenderVersion().equals(blenderVersion)) {
+                renderTask.setBlenderExecutable(blender.getBlenderExecutable());
+            }
+        }
+        return renderTask;
+    }
+
+    private boolean blenderVersionCheck(String version, Server server) {
+        var blenderList = PropertiesUtils.getInstalledBlenderExecutables();
+        for (BlenderExecutable blender : blenderList) {
+            if (blender.getBlenderVersion().equals(version)) {
+                return true;
+            }
+        }
+        return BlenderUtils.requestBlenderFromServer(version, server);
     }
 }

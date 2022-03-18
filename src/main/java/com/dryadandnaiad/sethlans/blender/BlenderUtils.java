@@ -32,6 +32,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 import org.springframework.util.FileSystemUtils;
@@ -91,6 +92,37 @@ public class BlenderUtils {
         return installedExecutables.get(0);
     }
 
+    public static boolean requestBlenderFromServer(String version, Server server) {
+        var path = "/api/v1/server_queue/get_blender_executable";
+        var host = server.getIpAddress();
+        var port = server.getNetworkPort();
+        var params = ImmutableMap.<String, String>builder()
+                .put("system-id", PropertiesUtils.getSystemID())
+                .put("os", QueryUtils.getOS().toString())
+                .put("version", version)
+                .build();
+
+        var json = NetworkUtils.getJSONWithParams(path, host, port, params, true);
+        if (json == null || json.isEmpty()) {
+            log.info("Requested version is not on the server");
+            return false;
+        } else {
+            var objectMapper = new ObjectMapper();
+            try {
+                var blenderArchive = objectMapper
+                        .readValue(json, BlenderArchive.class);
+                return installBlenderFromServer(blenderArchive, server, PropertiesUtils.getSystemID());
+
+            } catch (JsonProcessingException e) {
+                log.error(e.getMessage());
+                log.error(Throwables.getStackTraceAsString(e));
+                return false;
+            }
+        }
+
+    }
+
+
     public static boolean installBlenderFromServer(BlenderArchive blenderArchive,
                                                    Server server, String nodeSystemID) {
         try {
@@ -100,7 +132,7 @@ public class BlenderUtils {
             var downloadFullPath = ConfigUtils.getProperty(ConfigKeys.TEMP_DIR) +
                     File.separator + blenderArchiveFilename;
             var downloadURL = new URL("https://" + server.getIpAddress() + ":" + server.getNetworkPort() +
-                    "/api/v1/server_queue/get_blender_archive?system-id=" + nodeSystemID + "&archive-os=" +
+                    "/api/v1/server_queue/get_blender_executable?system-id=" + nodeSystemID + "&archive-os=" +
                     blenderArchive.getBlenderOS() + "&archive-version=" + blenderArchive.getBlenderVersion());
             var downloadedFile = DownloadFile.downloadFileBetweenSethlans(downloadURL,
                     downloadFullPath);
@@ -201,15 +233,15 @@ public class BlenderUtils {
             var startTime = System.currentTimeMillis();
             if (debug) {
                 output = new ProcessExecutor().command(renderTask.getBlenderExecutable(), "-d", "-b",
-                        renderTask.getTaskBlendFile(), "-P", renderTask.getTaskDir() + File.separator +
-                                renderTask.getTaskID() + ".py", "-o", outputPathAndFilename, "-f",
-                        renderTask.getFrameInfo().getFrameNumber().toString())
+                                renderTask.getTaskBlendFile(), "-P", renderTask.getTaskDir() + File.separator +
+                                        renderTask.getTaskID() + ".py", "-o", outputPathAndFilename, "-f",
+                                renderTask.getFrameInfo().getFrameNumber().toString())
                         .readOutput(true).exitValues(0).execute().outputUTF8();
             } else {
                 output = new ProcessExecutor().command(renderTask.getBlenderExecutable(), "-b",
-                        renderTask.getTaskBlendFile(), "-P", renderTask.getTaskDir() + File.separator +
-                                renderTask.getTaskID() + ".py", "-o", outputPathAndFilename, "-f",
-                        renderTask.getFrameInfo().getFrameNumber().toString())
+                                renderTask.getTaskBlendFile(), "-P", renderTask.getTaskDir() + File.separator +
+                                        renderTask.getTaskID() + ".py", "-o", outputPathAndFilename, "-f",
+                                renderTask.getFrameInfo().getFrameNumber().toString())
                         .readOutput(true).exitValues(0).execute().outputUTF8();
             }
             var endTime = System.currentTimeMillis();

@@ -85,10 +85,27 @@ public class ServerQueueController {
     }
 
     @GetMapping(value = "/get_blender_archive")
+    public BlenderArchive getBlenderArchive(@RequestParam("system-id") String systemID,
+                                            @RequestParam("os") String os,
+                                            @RequestParam("version") String version) {
+        if (nodeRepository.findNodeBySystemIDEquals(systemID).isPresent()) {
+            log.debug(blenderArchiveRepository.findAll().toString());
+            if (blenderArchiveRepository.findBlenderBinaryByBlenderVersionEqualsAndBlenderOSEquals
+                    (version, OS.valueOf(os)).isPresent()) {
+                return blenderArchiveRepository.
+                        findBlenderBinaryByBlenderVersionEqualsAndBlenderOSEquals(version, OS.valueOf(os)).get();
+            }
+        }
+        return null;
+
+    }
+
+
+    @GetMapping(value = "/get_blender_executable")
     public @ResponseBody
-    byte[] getBlenderArchive(@RequestParam("system-id") String systemID,
-                             @RequestParam("archive-os") OS archiveOS,
-                             @RequestParam("archive-version") String archiveVersion) {
+    byte[] getBlenderExecutable(@RequestParam("system-id") String systemID,
+                                @RequestParam("archive-os") OS archiveOS,
+                                @RequestParam("archive-version") String archiveVersion) {
 
 
         if (nodeRepository.findNodeBySystemIDEquals(systemID).isPresent()) {

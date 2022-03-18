@@ -42,6 +42,7 @@ public class BlenderScript {
 
 
     public static boolean writeRenderScript(RenderTask renderTask) {
+        new File(renderTask.getTaskDir()).mkdir();
         File script = new File(renderTask.getTaskDir() + File.separator + renderTask.getTaskID() + ".py");
         try {
             var location = renderTask.getTaskDir().replace("\\", "/");

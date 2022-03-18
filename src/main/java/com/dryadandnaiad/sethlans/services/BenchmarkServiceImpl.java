@@ -284,6 +284,8 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                 .imageOutputFormat(ImageOutputFormat.PNG)
                 .build();
         var benchmarkID = UUID.randomUUID().toString();
+        var taskID = UUID.randomUUID().toString();
+
         return RenderTask.builder()
                 .blenderExecutable(blenderExecutable)
                 .frameInfo(taskFrameInfo)
@@ -294,8 +296,8 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                 .projectName("CPU Benchmark " + benchmarkID)
                 .projectID(benchmarkID)
                 .blenderVersion(blenderVersion)
-                .taskID(UUID.randomUUID().toString())
-                .taskDir(ConfigUtils.getProperty(ConfigKeys.TEMP_DIR))
+                .taskID(taskID)
+                .taskDir(ConfigUtils.getProperty(ConfigKeys.TEMP_DIR) + File.separator + taskID)
                 .build();
     }
 
@@ -317,6 +319,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                 .imageOutputFormat(ImageOutputFormat.PNG)
                 .build();
         var benchmarkID = UUID.randomUUID().toString();
+        var taskID = UUID.randomUUID().toString();
         return RenderTask.builder()
                 .blenderExecutable(blenderExecutable)
                 .frameInfo(taskFrameInfo)
@@ -327,8 +330,8 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                 .projectName(gpu.getGpuID() + " Benchmark " + benchmarkID)
                 .projectID(benchmarkID)
                 .blenderVersion(blenderVersion)
-                .taskID(UUID.randomUUID().toString())
-                .taskDir(ConfigUtils.getProperty(ConfigKeys.TEMP_DIR))
+                .taskID(taskID)
+                .taskDir(ConfigUtils.getProperty(ConfigKeys.TEMP_DIR) + File.separator + taskID)
                 .build();
 
     }
