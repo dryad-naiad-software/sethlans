@@ -70,7 +70,9 @@ public class RenderServiceImpl implements RenderService {
                                 try {
                                     var renderTask = objectMapper
                                             .readValue(renderTaskJson, RenderTask.class);
-                                    blenderVersionCheck(renderTask.getBlenderVersion(), server);
+                                    if(!blenderVersionCheck(renderTask.getBlenderVersion(), server)){
+                                        throw new Exception("Blender version not present on node or server");
+                                    }
                                     setBlenderExecutable(renderTask);
                                     renderTask.setTaskDir(ConfigUtils.getProperty(ConfigKeys.TEMP_DIR) + File.separator + renderTask.getTaskID());
                                     renderTaskRepository.save(renderTask);
@@ -80,6 +82,8 @@ public class RenderServiceImpl implements RenderService {
                                 } catch (JsonProcessingException e) {
                                     log.error(e.getMessage());
                                     log.error(Throwables.getStackTraceAsString(e));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
                             }
 
@@ -158,10 +162,14 @@ public class RenderServiceImpl implements RenderService {
                     renderTaskToAssign.getScriptInfo().setComputeOn(ComputeOn.GPU);
                 } else if (!cpuInUse) {
                     renderTaskToAssign.getScriptInfo().setComputeOn(ComputeOn.CPU);
+                    renderTaskToAssign.getScriptInfo().setCores(PropertiesUtils.getSelectedCores());
                 }
             }
             case GPU -> renderTaskToAssign.getScriptInfo().setComputeOn(ComputeOn.GPU);
-            case CPU -> renderTaskToAssign.getScriptInfo().setComputeOn(ComputeOn.CPU);
+            case CPU ->  {
+                renderTaskToAssign.getScriptInfo().setComputeOn(ComputeOn.CPU);
+                renderTaskToAssign.getScriptInfo().setCores(PropertiesUtils.getSelectedCores());
+            }
         }
 
         if (renderTaskToAssign.getScriptInfo().getComputeOn().equals(ComputeOn.GPU)) {
@@ -191,10 +199,11 @@ public class RenderServiceImpl implements RenderService {
         }
 
         renderTaskToAssign.setInProgress(true);
+        log.debug(renderTaskToAssign.toString());
         return renderTaskToAssign;
     }
 
-    private RenderTask setBlenderExecutable(RenderTask renderTask) {
+    private void setBlenderExecutable(RenderTask renderTask) {
         var blenderVersion = renderTask.getBlenderVersion();
         var blenderList = PropertiesUtils.getInstalledBlenderExecutables();
         for (BlenderExecutable blender : blenderList) {
@@ -202,7 +211,6 @@ public class RenderServiceImpl implements RenderService {
                 renderTask.setBlenderExecutable(blender.getBlenderExecutable());
             }
         }
-        return renderTask;
     }
 
     private boolean blenderVersionCheck(String version, Server server) {
