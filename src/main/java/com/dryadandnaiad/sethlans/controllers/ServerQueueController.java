@@ -89,6 +89,11 @@ public class ServerQueueController {
                 var project = projectRepository.getProjectByProjectID(renderTask.getProjectID()).get();
                 renderTask.setTaskBlendFileMD5Sum(project.getProjectSettings().getBlendFilenameMD5Sum());
                 renderTask.setTaskBlendFile(project.getProjectSettings().getBlendFilename());
+                if(project.getProjectSettings().getZipFilename() != null) {
+                    renderTask.setZipFileProject(true);
+                    renderTask.setZipFile(project.getProjectSettings().getZipFilename());
+                    renderTask.setZipFileMD5Sum(project.getProjectSettings().getZipFilenameMD5Sum());
+                }
                 if (project.getProjectStatus().getProjectState().equals(ProjectState.PENDING)) {
                     project.getProjectStatus().setProjectState(ProjectState.STARTED);
                     projectRepository.save(project);

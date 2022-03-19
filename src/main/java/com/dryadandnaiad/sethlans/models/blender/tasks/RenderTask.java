@@ -42,12 +42,15 @@ public class RenderTask extends AbstractModel {
     private String blenderExecutable;
     private String taskID;
     private String taskImageFile;
+    private String zipFile;
+    private String zipFileMD5Sum;
     private String taskBlendFile;
     private String taskBlendFileMD5Sum;
     private String taskDir;
     private String projectName;
     private String projectID;
     private Long renderTime;
+    private boolean zipFileProject;
     private boolean benchmark;
     private boolean cancelRequestReceived;
     private boolean complete;

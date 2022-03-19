@@ -303,7 +303,10 @@ public class ProjectServiceImpl implements ProjectService {
             if (projectForm.getProjectFileLocation().contains(".zip")) {
                 org.apache.commons.io.FileUtils.moveFile(new File(projectForm.getProjectFileLocation()), new File(projectDirectory + File.separator + projectForm.getOriginalFile()));
                 projectForm.setProjectFileLocation(projectDirectory + File.separator + projectForm.getOriginalFile());
-                projectForm.getProjectSettings().setBlendFilenameMD5Sum(FileUtils.getMD5ofFile(new File(projectForm.getProjectFileLocation())));
+                projectForm.getProjectSettings().setBlendFilenameMD5Sum(FileUtils.getMD5ofFile(new File(projectForm.getProjectSettings().getBlendFilename())));
+                projectForm.getProjectSettings().setBlendFilename(Paths.get(projectForm.getProjectSettings().getBlendFilename()).getFileName().toString());
+                projectForm.getProjectSettings().setZipFilename(projectForm.getOriginalFile());
+                projectForm.getProjectSettings().setZipFilenameMD5Sum(FileUtils.getMD5ofFile(new File(projectForm.getProjectFileLocation())));
 
             } else {
                 org.apache.commons.io.FileUtils.moveFile(new File(projectForm.getProjectFileLocation()), new File(projectDirectory + File.separator + projectForm.getProjectSettings().getBlendFilename()));

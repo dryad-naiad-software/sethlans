@@ -96,6 +96,8 @@ create table project
     user_stopped           boolean not null,
     project_type           integer,
     user_id                bigint,
+    zip_filename           varchar(255),
+    zip_filenamemd5sum     varchar(255),
     primary key (id)
 );
 create table project_frame_file_names
@@ -157,6 +159,9 @@ create table render_task
     task_dir                varchar(255),
     taskid                  varchar(255),
     use_parts               boolean not null,
+    zip_file_project        boolean not null,
+    zip_file                varchar(255),
+    zip_filemd5sum   varchar(255),
     primary key (id)
 );
 create table render_task_deviceids

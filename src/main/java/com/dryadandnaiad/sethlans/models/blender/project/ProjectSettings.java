@@ -53,6 +53,8 @@ public class ProjectSettings {
     private String blendFilename;
     private String blendFilenameMD5Sum;
     private String blenderVersion;
+    private String zipFilename;
+    private String zipFilenameMD5Sum;
     private VideoSettings videoSettings;
     private ImageSettings imageSettings;
 }
