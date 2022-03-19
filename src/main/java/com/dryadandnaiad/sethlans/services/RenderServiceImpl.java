@@ -1,5 +1,6 @@
 package com.dryadandnaiad.sethlans.services;
 
+import com.dryadandnaiad.sethlans.blender.BlenderScript;
 import com.dryadandnaiad.sethlans.blender.BlenderUtils;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
@@ -70,14 +71,15 @@ public class RenderServiceImpl implements RenderService {
                                 try {
                                     var renderTask = objectMapper
                                             .readValue(renderTaskJson, RenderTask.class);
-                                    if(!blenderVersionCheck(renderTask.getBlenderVersion(), server)){
+                                    if (!blenderVersionCheck(renderTask.getBlenderVersion(), server)) {
                                         throw new Exception("Blender version not present on node or server");
                                     }
                                     setBlenderExecutable(renderTask);
-                                    renderTask.setTaskDir(ConfigUtils.getProperty(ConfigKeys.TEMP_DIR) + File.separator
+                                    renderTask.setTaskDir(ConfigUtils.getProperty(ConfigKeys.CACHE_DIR) + File.separator
                                             + renderTask.getTaskID());
+                                    new File(renderTask.getTaskDir()).mkdirs();
                                     getBlendFile(renderTask, server);
-
+                                    setImageFileName(renderTask);
                                     renderTaskRepository.save(renderTask);
                                     log.debug("Render Task added to node:");
                                     log.debug(renderTask.getTaskID());
@@ -124,6 +126,22 @@ public class RenderServiceImpl implements RenderService {
                     if (slotsInUse < totalSlots) {
                         if (!renderTasksToExecute.isEmpty()) {
                             renderTaskRepository.save(assignComputeMethod(renderTasksToExecute.get(0), activeRenders));
+                            var renderTask =
+                                    renderTaskRepository.getRenderTaskByTaskID(renderTasksToExecute.get(0).getTaskID());
+                            if (BlenderScript.writeRenderScript(renderTask)) {
+                                new Thread(() -> {
+                                    renderTask
+                                            .setRenderTime(BlenderUtils.executeRenderTask
+                                                    (renderTask, false));
+                                    if(renderTask.getRenderTime() != null) {
+                                        renderTask.setInProgress(false);
+                                        renderTask.setComplete(true);
+                                        renderTaskRepository.save(renderTask);
+                                    }
+                                }).start();
+
+
+                            }
                         }
                     }
                 }
@@ -162,15 +180,22 @@ public class RenderServiceImpl implements RenderService {
                 }
                 if (!gpuInUse) {
                     renderTaskToAssign.getScriptInfo().setComputeOn(ComputeOn.GPU);
+                    renderTaskToAssign.getScriptInfo().setTaskTileSize(PropertiesUtils.getGPUTileSize());
                 } else if (!cpuInUse) {
                     renderTaskToAssign.getScriptInfo().setComputeOn(ComputeOn.CPU);
                     renderTaskToAssign.getScriptInfo().setCores(PropertiesUtils.getSelectedCores());
+                    renderTaskToAssign.getScriptInfo().setTaskTileSize(PropertiesUtils.getCPUTileSize());
+
                 }
             }
-            case GPU -> renderTaskToAssign.getScriptInfo().setComputeOn(ComputeOn.GPU);
-            case CPU ->  {
+            case GPU -> {
+                renderTaskToAssign.getScriptInfo().setComputeOn(ComputeOn.GPU);
+                renderTaskToAssign.getScriptInfo().setTaskTileSize(PropertiesUtils.getGPUTileSize());
+            }
+            case CPU -> {
                 renderTaskToAssign.getScriptInfo().setComputeOn(ComputeOn.CPU);
                 renderTaskToAssign.getScriptInfo().setCores(PropertiesUtils.getSelectedCores());
+                renderTaskToAssign.getScriptInfo().setTaskTileSize(PropertiesUtils.getCPUTileSize());
             }
         }
 
@@ -205,15 +230,28 @@ public class RenderServiceImpl implements RenderService {
         return renderTaskToAssign;
     }
 
+    private void setImageFileName(RenderTask renderTask) {
+        var frame = renderTask.getFrameInfo().getFrameNumber();
+        var part = renderTask.getFrameInfo().getPartNumber();
+        var taskID = renderTask.getTaskID();
+        var extension = renderTask.getScriptInfo().getImageOutputFormat();
+        if (renderTask.isUseParts()) {
+            renderTask.setTaskImageFile(taskID + "-frame-" + frame + "-part-"
+                    + part + "." + extension.name().toLowerCase());
+        } else {
+            renderTask.setTaskImageFile(taskID + "-frame-" + frame + "." + extension.name().toLowerCase());
+        }
+    }
+
     private void getBlendFile(RenderTask renderTask, Server server) throws Exception {
         var cachedProjectFile = new
                 File(ConfigUtils.getProperty(ConfigKeys.BLEND_FILE_CACHE_DIR)
                 + File.separator + renderTask.getProjectID()
                 + File.separator + renderTask.getTaskBlendFile());
-        if(!cachedProjectFile.exists()) {
+        if (!cachedProjectFile.exists()) {
             var projectFile = BlenderUtils.downloadProjectFileFromServer(renderTask,
                     server);
-            if(projectFile == null) {
+            if (projectFile == null) {
                 throw new Exception("Unable to download project file");
             } else {
                 renderTask.setTaskBlendFile(projectFile);

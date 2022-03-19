@@ -297,6 +297,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                 .projectID(benchmarkID)
                 .blenderVersion(blenderVersion)
                 .taskID(taskID)
+                .taskImageFile(taskID + "-frame-" + "1" + "." + ImageOutputFormat.PNG.name().toLowerCase())
                 .taskDir(ConfigUtils.getProperty(ConfigKeys.TEMP_DIR) + File.separator + taskID)
                 .build();
     }
@@ -331,6 +332,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                 .projectID(benchmarkID)
                 .blenderVersion(blenderVersion)
                 .taskID(taskID)
+                .taskImageFile(taskID + "-frame-" + "1" + "." + ImageOutputFormat.PNG.name().toLowerCase())
                 .taskDir(ConfigUtils.getProperty(ConfigKeys.TEMP_DIR) + File.separator + taskID)
                 .build();
 

@@ -267,18 +267,8 @@ public class BlenderUtils {
 
 
     public static Long executeRenderTask(RenderTask renderTask, boolean debug) {
-        var projectNameAndID = QueryUtils.truncatedProjectNameAndID(renderTask.getProjectName(),
-                renderTask.getProjectID());
-        String outputPathAndFilename;
-        if (renderTask.isUseParts()) {
-            outputPathAndFilename = renderTask.getTaskDir()
-                    + File.separator + projectNameAndID + "-"
-                    + "####" + "-"
-                    + renderTask.getFrameInfo().getPartNumber();
-        } else {
-            outputPathAndFilename = renderTask.getTaskDir()
-                    + File.separator + projectNameAndID + "-" + "####";
-        }
+
+        String outputPathAndFilename = renderTask.getTaskDir() + File.separator + renderTask.getTaskImageFile();
 
         log.info("Starting to render of `" + renderTask.getProjectName() + "`");
         log.info("Frame: " + renderTask.getFrameInfo().getFrameNumber());

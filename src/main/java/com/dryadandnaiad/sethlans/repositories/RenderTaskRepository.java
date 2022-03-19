@@ -29,6 +29,9 @@ import java.util.List;
  * Project: sethlans
  */
 public interface RenderTaskRepository extends JpaRepository<RenderTask, Long> {
+
+    RenderTask getRenderTaskByTaskID(String taskid);
+
     List<RenderTask> findRenderTasksByBenchmarkIsTrueAndInProgressIsFalseAndCompleteIsFalse();
 
     List<RenderTask> findRenderTaskByBenchmarkIsTrue();
