@@ -66,7 +66,15 @@ public class ServerQueueController {
         if (nodeRepository.findNodeBySystemIDEquals(systemID).isPresent()) {
             var project = projectRepository.getProjectByProjectID(projectID).get();
             try {
-                var fileToSend = project.getProjectRootDir() + File.separator + project.getProjectSettings().getBlendFilename();
+                String fileToSend;
+                if (project.getProjectSettings().getZipFilename() != null) {
+                    fileToSend = project.getProjectRootDir() + File.separator
+                            + project.getProjectSettings().getZipFilename();
+                } else {
+                    fileToSend = project.getProjectRootDir() + File.separator
+                            + project.getProjectSettings().getBlendFilename();
+
+                }
                 var inputStream = new BufferedInputStream(new
                         FileInputStream(fileToSend));
                 return IOUtils.toByteArray(inputStream);
@@ -89,7 +97,7 @@ public class ServerQueueController {
                 var project = projectRepository.getProjectByProjectID(renderTask.getProjectID()).get();
                 renderTask.setTaskBlendFileMD5Sum(project.getProjectSettings().getBlendFilenameMD5Sum());
                 renderTask.setTaskBlendFile(project.getProjectSettings().getBlendFilename());
-                if(project.getProjectSettings().getZipFilename() != null) {
+                if (project.getProjectSettings().getZipFilename() != null) {
                     renderTask.setZipFileProject(true);
                     renderTask.setZipFile(project.getProjectSettings().getZipFilename());
                     renderTask.setZipFileMD5Sum(project.getProjectSettings().getZipFilenameMD5Sum());

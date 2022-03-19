@@ -124,13 +124,26 @@ public class BlenderUtils {
 
     public static String downloadProjectFileFromServer(RenderTask renderTask, Server server) {
         try {
+            String tempPath;
+            String zipFileName;
+            String zipFileNameMd5 = null;
+
             var projectFileMd5 = renderTask.getTaskBlendFileMD5Sum();
             var projectFileName = renderTask.getTaskBlendFile();
-            var tempPath = ConfigUtils.getProperty(ConfigKeys.TEMP_DIR) + File.separator + QueryUtils.getShortUUID() + projectFileName;
             var projectFilePath = new File(ConfigUtils.getProperty(ConfigKeys.BLEND_FILE_CACHE_DIR) + File.separator + renderTask.getProjectID());
             var fullPath = projectFilePath + File.separator + projectFileName;
             projectFilePath.mkdirs();
             var nodeSystemID = PropertiesUtils.getSystemID();
+
+
+            if(renderTask.isZipFileProject()) {
+                zipFileName = renderTask.getZipFile();
+                zipFileNameMd5 = renderTask.getZipFileMD5Sum();
+                tempPath = ConfigUtils.getProperty(ConfigKeys.TEMP_DIR) + File.separator + QueryUtils.getShortUUID() + zipFileName;
+            } else {
+                tempPath = ConfigUtils.getProperty(ConfigKeys.TEMP_DIR) + File.separator + QueryUtils.getShortUUID() + projectFileName;
+            }
+
             var downloadURL = new URL("https://" + server.getIpAddress() + ":" + server.getNetworkPort() +
                     "/api/v1/server_queue/retieve_project_file?system-id=" + nodeSystemID + "&project-id=" +
                     renderTask.getProjectID());
@@ -139,12 +152,25 @@ public class BlenderUtils {
             if (downloadedFile == null) {
                 return null;
             }
-            if(FileUtils.fileCheckMD5(downloadedFile, projectFileMd5)) {
-                org.apache.commons.io.FileUtils.copyFile(new File(tempPath), new File(fullPath));
-                return downloadedFile.toString();
+
+            if(renderTask.isZipFileProject()) {
+                if(FileUtils.fileCheckMD5(downloadedFile, zipFileNameMd5)) {
+                    org.apache.commons.io.FileUtils.copyFile(new File(tempPath), new File(fullPath));
+                    FileUtils.extractArchive(downloadedFile.toString(), projectFilePath.toString(), true);
+                    return fullPath;
+                } else {
+                    return null;
+                }
             } else {
-                return null;
+                if(FileUtils.fileCheckMD5(downloadedFile, projectFileMd5)) {
+                    org.apache.commons.io.FileUtils.copyFile(new File(tempPath), new File(fullPath));
+                    return downloadedFile.toString();
+                } else {
+                    return null;
+                }
             }
+
+
 
 
         } catch (IOException e) {
