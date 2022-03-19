@@ -122,9 +122,12 @@ public class DownloadFile {
                 os.write(buffer, 0, bytesCount);
             }
 
-            if (outputFile.exists()) {
+            if (outputFile.exists() && outputFile.length() > 0) {
                 log.info(outputFile + " Downloaded");
                 return outputFile;
+            } else {
+                log.error(outputFile + " failed to download.");
+                return null;
             }
 
         } catch (IOException e) {

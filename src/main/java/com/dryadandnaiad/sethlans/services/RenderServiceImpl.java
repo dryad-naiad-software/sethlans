@@ -85,8 +85,9 @@ public class RenderServiceImpl implements RenderService {
                                                 server);
                                         if(projectFile == null) {
                                             throw new Exception("Unable to download project file");
+                                        } else {
+                                            renderTask.setTaskBlendFile(projectFile);
                                         }
-                                        renderTask.setTaskBlendFile(projectFile);
 
                                     } else {
                                         renderTask.setTaskBlendFile(cachedProjectFile.toString());

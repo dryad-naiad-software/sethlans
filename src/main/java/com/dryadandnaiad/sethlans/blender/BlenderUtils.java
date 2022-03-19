@@ -126,31 +126,32 @@ public class BlenderUtils {
         try {
             var projectFileMd5 = renderTask.getTaskBlendFileMD5Sum();
             var projectFileName = renderTask.getTaskBlendFile();
+            var tempPath = ConfigUtils.getProperty(ConfigKeys.TEMP_DIR) + File.separator + QueryUtils.getShortUUID() + projectFileName;
             var projectFilePath = new File(ConfigUtils.getProperty(ConfigKeys.BLEND_FILE_CACHE_DIR) + File.separator + renderTask.getProjectID());
-            var downloadFullPath = projectFilePath + File.separator + projectFileName;
+            var fullPath = projectFilePath + File.separator + projectFileName;
             projectFilePath.mkdirs();
             var nodeSystemID = PropertiesUtils.getSystemID();
             var downloadURL = new URL("https://" + server.getIpAddress() + ":" + server.getNetworkPort() +
                     "/api/v1/server_queue/retieve_project_file?system-id=" + nodeSystemID + "&project-id=" +
                     renderTask.getProjectID());
             var downloadedFile = DownloadFile.downloadFileBetweenSethlans(downloadURL,
-                    downloadFullPath);
+                    tempPath);
             if (downloadedFile == null) {
                 return null;
             }
             if(FileUtils.fileCheckMD5(downloadedFile, projectFileMd5)) {
+                org.apache.commons.io.FileUtils.copyFile(new File(tempPath), new File(fullPath));
                 return downloadedFile.toString();
+            } else {
+                return null;
             }
 
 
-        } catch (MalformedURLException e) {
+        } catch (IOException e) {
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
             return null;
         }
-        return null;
-
-
     }
 
 

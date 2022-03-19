@@ -1,5 +1,7 @@
 package com.dryadandnaiad.sethlans.integration;
 
+import com.dryadandnaiad.sethlans.enums.AnimationType;
+import com.dryadandnaiad.sethlans.enums.ProjectType;
 import com.dryadandnaiad.sethlans.models.blender.project.ProjectView;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.forms.NodeForm;
@@ -248,6 +250,81 @@ public class NodeRenderTaskIntegrationTest {
         log.info("Benchmark Complete");
 
         log.info("Starting Node Render Task Test on " + baseHost + ":" + RestAssured.port);
+
+    }
+
+    @Test
+    public void pavillonBarceloneZip() throws JsonProcessingException, InterruptedException {
+        var mapper = new ObjectMapper();
+        var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
+
+        var response = given()
+                .log()
+                .ifValidationFails()
+                .multiPart("project_file", new File(BLEND_DIRECTORY.toString() + "/pavillon_barcelone_v1.2.zip"))
+                .accept(ContentType.JSON)
+                .contentType(ContentType.MULTIPART)
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token)
+                .post("/api/v1/project/upload_project_file")
+                .then()
+                .statusCode(StatusCodes.CREATED)
+                .extract()
+                .response()
+                .body()
+                .asString();
+
+        var projectForm = mapper.readValue(response, ProjectForm.class);
+
+        projectForm.setProjectName(TestUtils.titleGenerator());
+        projectForm.getProjectSettings().setAnimationType(AnimationType.IMAGES);
+        projectForm.setProjectType(ProjectType.ANIMATION);
+        projectForm.getProjectSettings().setStartFrame(1);
+        projectForm.getProjectSettings().setEndFrame(25);
+        projectForm.getProjectSettings().setUseParts(false);
+        log.info(projectForm.toString());
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(mapper.writeValueAsString(projectForm))
+                .post("/api/v1/project/create_project")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
+        given()
+                .log()
+                .ifValidationFails()
+                .param("projectID", projectForm.getProjectID())
+                .post("/api/v1/project/start_project")
+                .then()
+                .statusCode(StatusCodes.ACCEPTED);
+
+        var project = mapper
+                .readValue(get("/api/v1/project/" + projectForm.getProjectID())
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), ProjectView.class);
+
+        Thread.sleep(10000);
+
+        var queue = mapper
+                .readValue(get("/api/v1/management/view_server_pending_queue")
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), new TypeReference<List<RenderTask>>() {
+                });
+
+        log.info(project.toString());
+        log.info(queue.toString());
+
+        Thread.sleep(90000);
 
     }
 
