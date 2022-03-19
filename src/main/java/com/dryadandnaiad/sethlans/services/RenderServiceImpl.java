@@ -76,22 +76,8 @@ public class RenderServiceImpl implements RenderService {
                                     setBlenderExecutable(renderTask);
                                     renderTask.setTaskDir(ConfigUtils.getProperty(ConfigKeys.TEMP_DIR) + File.separator
                                             + renderTask.getTaskID());
-                                    var cachedProjectFile = new
-                                            File(ConfigUtils.getProperty(ConfigKeys.BLEND_FILE_CACHE_DIR)
-                                            + File.separator + renderTask.getProjectID()
-                                            + File.separator + renderTask.getTaskBlendFile());
-                                    if(!cachedProjectFile.exists()) {
-                                        var projectFile = BlenderUtils.downloadProjectFileFromServer(renderTask,
-                                                server);
-                                        if(projectFile == null) {
-                                            throw new Exception("Unable to download project file");
-                                        } else {
-                                            renderTask.setTaskBlendFile(projectFile);
-                                        }
+                                    getBlendFile(renderTask, server);
 
-                                    } else {
-                                        renderTask.setTaskBlendFile(cachedProjectFile.toString());
-                                    }
                                     renderTaskRepository.save(renderTask);
                                     log.debug("Render Task added to node:");
                                     log.debug(renderTask.getTaskID());
@@ -217,6 +203,25 @@ public class RenderServiceImpl implements RenderService {
         renderTaskToAssign.setInProgress(true);
         log.debug(renderTaskToAssign.toString());
         return renderTaskToAssign;
+    }
+
+    private void getBlendFile(RenderTask renderTask, Server server) throws Exception {
+        var cachedProjectFile = new
+                File(ConfigUtils.getProperty(ConfigKeys.BLEND_FILE_CACHE_DIR)
+                + File.separator + renderTask.getProjectID()
+                + File.separator + renderTask.getTaskBlendFile());
+        if(!cachedProjectFile.exists()) {
+            var projectFile = BlenderUtils.downloadProjectFileFromServer(renderTask,
+                    server);
+            if(projectFile == null) {
+                throw new Exception("Unable to download project file");
+            } else {
+                renderTask.setTaskBlendFile(projectFile);
+            }
+
+        } else {
+            renderTask.setTaskBlendFile(cachedProjectFile.toString());
+        }
     }
 
     private void setBlenderExecutable(RenderTask renderTask) {
