@@ -52,7 +52,6 @@ public class ProjectSettings {
     private boolean useParts;
     private String blendFilename;
     private String blendFilenameMD5Sum;
-    private String blendFileLocation;
     private String blenderVersion;
     private VideoSettings videoSettings;
     private ImageSettings imageSettings;

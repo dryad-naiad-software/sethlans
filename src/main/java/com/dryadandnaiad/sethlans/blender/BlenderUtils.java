@@ -122,6 +122,37 @@ public class BlenderUtils {
 
     }
 
+    public static String downloadProjectFileFromServer(RenderTask renderTask, Server server) {
+        try {
+            var projectFileMd5 = renderTask.getTaskBlendFileMD5Sum();
+            var projectFileName = renderTask.getTaskBlendFile();
+            var projectFilePath = new File(ConfigUtils.getProperty(ConfigKeys.BLEND_FILE_CACHE_DIR) + File.separator + renderTask.getProjectID());
+            var downloadFullPath = projectFilePath + File.separator + projectFileName;
+            projectFilePath.mkdirs();
+            var nodeSystemID = PropertiesUtils.getSystemID();
+            var downloadURL = new URL("https://" + server.getIpAddress() + ":" + server.getNetworkPort() +
+                    "/api/v1/server_queue/retieve_project_file?system-id=" + nodeSystemID + "&project-id=" +
+                    renderTask.getProjectID());
+            var downloadedFile = DownloadFile.downloadFileBetweenSethlans(downloadURL,
+                    downloadFullPath);
+            if (downloadedFile == null) {
+                return null;
+            }
+            if(FileUtils.fileCheckMD5(downloadedFile, projectFileMd5)) {
+                return downloadedFile.toString();
+            }
+
+
+        } catch (MalformedURLException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            return null;
+        }
+        return null;
+
+
+    }
+
 
     public static boolean installBlenderFromServer(BlenderArchive blenderArchive,
                                                    Server server, String nodeSystemID) {

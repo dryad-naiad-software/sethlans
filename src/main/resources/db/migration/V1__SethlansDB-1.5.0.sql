@@ -57,7 +57,6 @@ create table project
     project_name           varchar(255),
     project_root_dir       varchar(255),
     animation_type         integer,
-    blend_file_location    varchar(255),
     blend_filename         varchar(255),
     blend_filenamemd5sum   varchar(255),
     blender_engine         integer,

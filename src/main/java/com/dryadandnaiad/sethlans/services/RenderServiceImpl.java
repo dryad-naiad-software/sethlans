@@ -12,7 +12,6 @@ import com.dryadandnaiad.sethlans.repositories.ServerRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.NetworkUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
@@ -62,7 +61,8 @@ public class RenderServiceImpl implements RenderService {
                             var path = "/api/v1/server_queue/retrieve_task";
                             var host = server.getIpAddress();
                             var port = server.getNetworkPort();
-                            var renderTaskJson = NetworkUtils.getJSONWithParams(path, host, port, params, true);
+                            var renderTaskJson = NetworkUtils.getJSONWithParams(path, host, port,
+                                    params, true);
                             if (renderTaskJson == null || renderTaskJson.isEmpty()) {
                                 log.debug("No tasks present on server.");
                             } else {
@@ -74,16 +74,30 @@ public class RenderServiceImpl implements RenderService {
                                         throw new Exception("Blender version not present on node or server");
                                     }
                                     setBlenderExecutable(renderTask);
-                                    renderTask.setTaskDir(ConfigUtils.getProperty(ConfigKeys.TEMP_DIR) + File.separator + renderTask.getTaskID());
+                                    renderTask.setTaskDir(ConfigUtils.getProperty(ConfigKeys.TEMP_DIR) + File.separator
+                                            + renderTask.getTaskID());
+                                    var cachedProjectFile = new
+                                            File(ConfigUtils.getProperty(ConfigKeys.BLEND_FILE_CACHE_DIR)
+                                            + File.separator + renderTask.getProjectID()
+                                            + File.separator + renderTask.getTaskBlendFile());
+                                    if(!cachedProjectFile.exists()) {
+                                        var projectFile = BlenderUtils.downloadProjectFileFromServer(renderTask,
+                                                server);
+                                        if(projectFile == null) {
+                                            throw new Exception("Unable to download project file");
+                                        }
+                                        renderTask.setTaskBlendFile(projectFile);
+
+                                    } else {
+                                        renderTask.setTaskBlendFile(cachedProjectFile.toString());
+                                    }
                                     renderTaskRepository.save(renderTask);
                                     log.debug("Render Task added to node:");
                                     log.debug(renderTask.getTaskID());
                                     log.debug(renderTask.toString());
-                                } catch (JsonProcessingException e) {
+                                } catch (Exception e) {
                                     log.error(e.getMessage());
                                     log.error(Throwables.getStackTraceAsString(e));
-                                } catch (Exception e) {
-                                    e.printStackTrace();
                                 }
                             }
 
@@ -149,7 +163,8 @@ public class RenderServiceImpl implements RenderService {
                     if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.GPU) && combinedGPU) {
                         gpuInUse = true;
                         log.debug("GPU In Use");
-                    } else if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.GPU) && selectedGPUs.size() == 1) {
+                    } else if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.GPU)
+                            && selectedGPUs.size() == 1) {
                         gpuInUse = true;
                         log.debug("GPU In Use");
                     }

@@ -58,14 +58,38 @@ public class ServerQueueController {
         this.projectRepository = projectRepository;
     }
 
+
+    @GetMapping(value = "/retieve_project_file")
+    public @ResponseBody
+    byte[] getProjectFile(@RequestParam("system-id") String systemID,
+                          @RequestParam("project-id") String projectID) {
+        if (nodeRepository.findNodeBySystemIDEquals(systemID).isPresent()) {
+            var project = projectRepository.getProjectByProjectID(projectID).get();
+            try {
+                var fileToSend = project.getProjectRootDir() + File.separator + project.getProjectSettings().getBlendFilename();
+                var inputStream = new BufferedInputStream(new
+                        FileInputStream(fileToSend));
+                return IOUtils.toByteArray(inputStream);
+            } catch (IOException e) {
+                log.error(e.getMessage());
+                log.error(Throwables.getStackTraceAsString(e));
+                return null;
+            }
+
+        }
+        return null;
+    }
+
     @GetMapping(value = "/retrieve_task")
-    public RenderTask retrieveRenderTask(@RequestParam("system-id") String systemID){
+    public RenderTask retrieveRenderTask(@RequestParam("system-id") String systemID) {
         if (nodeRepository.findNodeBySystemIDEquals(systemID).isPresent()) {
             var node = nodeRepository.findNodeBySystemIDEquals(systemID).get();
             var renderTask = serverQueueService.retrieveRenderTaskFromPendingQueue(node.getNodeType());
-            if(renderTask != null) {
+            if (renderTask != null) {
                 var project = projectRepository.getProjectByProjectID(renderTask.getProjectID()).get();
-                if(project.getProjectStatus().getProjectState().equals(ProjectState.PENDING)) {
+                renderTask.setTaskBlendFileMD5Sum(project.getProjectSettings().getBlendFilenameMD5Sum());
+                renderTask.setTaskBlendFile(project.getProjectSettings().getBlendFilename());
+                if (project.getProjectStatus().getProjectState().equals(ProjectState.PENDING)) {
                     project.getProjectStatus().setProjectState(ProjectState.STARTED);
                     projectRepository.save(project);
                 }
@@ -116,7 +140,7 @@ public class ServerQueueController {
                     var blenderArchive = blenderArchiveRepository.
                             findBlenderBinaryByBlenderVersionEqualsAndBlenderOSEquals(archiveVersion, archiveOS).get();
                     InputStream inputStream = new BufferedInputStream(new
-                            FileInputStream(new File(blenderArchive.getBlenderFile())));
+                            FileInputStream(blenderArchive.getBlenderFile()));
                     return IOUtils.toByteArray(inputStream);
                 }
 

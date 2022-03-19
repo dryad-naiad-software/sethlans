@@ -83,7 +83,6 @@ public class TestUtils {
                 .useParts(true)
                 .blendFilename("sampleblend.blend")
                 .blendFilenameMD5Sum("dsafjaoif23548239")
-                .blendFileLocation("/home")
                 .videoSettings(videoSettings)
                 .imageSettings(imageSettings)
                 .build();

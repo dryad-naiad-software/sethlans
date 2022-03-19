@@ -123,7 +123,7 @@ public class DownloadFile {
             }
 
             if (outputFile.exists()) {
-                log.info(outputFile.toString() + " Downloaded");
+                log.info(outputFile + " Downloaded");
                 return outputFile;
             }
 
