@@ -283,13 +283,13 @@ public class BlenderUtils {
                 output = new ProcessExecutor().command(renderTask.getBlenderExecutable(), "-d", "-b",
                                 renderTask.getTaskBlendFile(), "-P", renderTask.getTaskDir() + File.separator +
                                         renderTask.getTaskID() + ".py", "-o", outputPathAndFilename, "-f",
-                                renderTask.getFrameInfo().getFrameNumber().toString())
+                                renderTask.getFrameInfo().getFrameNumber().toString()).destroyOnExit()
                         .readOutput(true).exitValues(0).execute().outputUTF8();
             } else {
                 output = new ProcessExecutor().command(renderTask.getBlenderExecutable(), "-b",
                                 renderTask.getTaskBlendFile(), "-P", renderTask.getTaskDir() + File.separator +
                                         renderTask.getTaskID() + ".py", "-o", outputPathAndFilename, "-f",
-                                renderTask.getFrameInfo().getFrameNumber().toString())
+                                renderTask.getFrameInfo().getFrameNumber().toString()).destroyOnExit()
                         .readOutput(true).exitValues(0).execute().outputUTF8();
             }
             var endTime = System.currentTimeMillis();
