@@ -204,7 +204,7 @@ public class TestUtils {
 
         var nodeSettings = NodeSettings.builder()
                 .nodeType(nodeType)
-                .cores(2)
+                .cores(12)
                 .tileSizeCPU(16)
                 .tileSizeGPU(256)
                 .selectedGPUs(selectedGPUs)

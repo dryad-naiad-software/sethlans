@@ -26,10 +26,13 @@ import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.repositories.ProjectRepository;
 import com.dryadandnaiad.sethlans.services.ServerQueueService;
+import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
@@ -59,7 +62,7 @@ public class ServerQueueController {
     }
 
 
-    @GetMapping(value = "/retieve_project_file")
+    @GetMapping(value = "/retrieve_project_file")
     public @ResponseBody
     byte[] getProjectFile(@RequestParam("system-id") String systemID,
                           @RequestParam("project-id") String projectID) {
@@ -86,6 +89,15 @@ public class ServerQueueController {
 
         }
         return null;
+    }
+
+    @PostMapping(value = "/receive_task")
+    public ResponseEntity<Void> receiveRenderTask(@RequestBody RenderTask renderTask) {
+        if (renderTask.getServerInfo().getSystemID().equals(PropertiesUtils.getSystemID())) {
+            serverQueueService.addRenderTasksToCompletedQueue(renderTask);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping(value = "/retrieve_task")

@@ -53,5 +53,6 @@ public class NodeBackgroundComponent {
         benchmarkService.pendingBenchmarks();
         renderTaskService.retrievePendingRenderTasks();
         renderTaskService.executeRenders();
+        renderTaskService.sendCompletedRendersToServers();
     }
 }

@@ -324,7 +324,7 @@ public class NodeRenderTaskIntegrationTest {
         log.info(project.toString());
         log.info(queue.toString());
 
-        Thread.sleep(120000);
+        Thread.sleep(300000);
 
     }
 

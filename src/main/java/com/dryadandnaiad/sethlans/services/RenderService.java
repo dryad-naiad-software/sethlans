@@ -10,4 +10,7 @@ public interface RenderService {
     @Async
     void executeRenders();
 
+    @Async
+    void sendCompletedRendersToServers();
+
 }

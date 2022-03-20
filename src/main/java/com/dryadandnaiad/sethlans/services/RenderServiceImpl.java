@@ -13,6 +13,7 @@ import com.dryadandnaiad.sethlans.repositories.ServerRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.NetworkUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
@@ -133,7 +134,7 @@ public class RenderServiceImpl implements RenderService {
                                     renderTask
                                             .setRenderTime(BlenderUtils.executeRenderTask
                                                     (renderTask, false));
-                                    if(renderTask.getRenderTime() != null) {
+                                    if (renderTask.getRenderTime() != null) {
                                         renderTask.setInProgress(false);
                                         renderTask.setComplete(true);
                                         renderTaskRepository.save(renderTask);
@@ -152,6 +153,50 @@ public class RenderServiceImpl implements RenderService {
                 log.debug(e.getMessage());
             }
         }
+    }
+
+    @Async
+    @Override
+    public void sendCompletedRendersToServers() {
+        try {
+            Thread.sleep(30000);
+        } catch (InterruptedException e) {
+            log.debug(e.getMessage());
+        }
+        while (true) {
+            var servers = serverRepository.findServersByBenchmarkCompleteTrue();
+            var tasksToSend =
+                    renderTaskRepository.findRenderTasksByBenchmarkIsFalseAndInProgressIsFalseAndCompleteIsTrueAndSentToServerIsFalse();
+            if (servers.size() > 0 && tasksToSend.size() > 0) {
+                for (RenderTask renderTask : tasksToSend) {
+                    try {
+                        var server = serverRepository.findBySystemID(renderTask.getServerInfo().getSystemID()).get();
+                        var path = "/api/v1/server_queue/receive_task";
+                        var host = server.getIpAddress();
+                        var port = server.getNetworkPort();
+                        var objectMapper = new ObjectMapper();
+                        var taskJson = objectMapper
+                                .writeValueAsString(renderTask);
+                        var accepted = NetworkUtils.postJSONToURL(path, host, port, taskJson, true);
+                        if (accepted) {
+                            renderTask.setSentToServer(true);
+                            renderTaskRepository.save(renderTask);
+                        }
+
+                    } catch (JsonProcessingException e) {
+                        log.error(e.getMessage());
+                        log.error(Throwables.getStackTraceAsString(e));
+                    }
+                }
+
+            }
+            try {
+                Thread.sleep(20000);
+            } catch (InterruptedException e) {
+                log.debug(e.getMessage());
+            }
+        }
+
     }
 
     private RenderTask assignComputeMethod(RenderTask renderTaskToAssign, List<RenderTask> activeRenders) {

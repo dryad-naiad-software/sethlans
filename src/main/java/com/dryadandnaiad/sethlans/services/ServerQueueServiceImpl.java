@@ -169,6 +169,7 @@ public class ServerQueueServiceImpl implements ServerQueueService {
     public boolean addRenderTasksToCompletedQueue(RenderTask renderTask) {
         var taskAdded = completedRenderQueue.offer(renderTask);
         if (taskAdded) {
+            log.debug(completedRenderQueue.toString());
             var project = projectRepository.getProjectByProjectID(renderTask.getProjectID()).get();
             if (project.getProjectStatus().getProjectState().equals(ProjectState.STARTED)) {
                 project.getProjectStatus().setProjectState(ProjectState.RENDERING);

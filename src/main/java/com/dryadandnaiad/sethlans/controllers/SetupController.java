@@ -18,17 +18,10 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.blender.BlenderUtils;
-import com.dryadandnaiad.sethlans.devices.ScanGPU;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.LogLevel;
-import com.dryadandnaiad.sethlans.enums.SecurityQuestion;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
-import com.dryadandnaiad.sethlans.models.settings.MailSettings;
-import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
-import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
-import com.dryadandnaiad.sethlans.models.user.User;
-import com.dryadandnaiad.sethlans.models.user.UserChallenge;
 import com.dryadandnaiad.sethlans.services.SethlansManagerService;
 import com.dryadandnaiad.sethlans.services.SetupService;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
@@ -38,9 +31,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * File created by Mario Estrella on 5/24/2020.
@@ -64,6 +54,7 @@ public class SetupController {
     @GetMapping("/get_setup")
     public SetupForm prePopulatedSetupForm() {
         var port = ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT);
+        var systemInfo = QueryUtils.getCurrentSystemInfo();
 
         return SetupForm.builder()
                 .ipAddress(QueryUtils.getIP())
@@ -72,7 +63,8 @@ public class SetupController {
                 .logLevel(LogLevel.INFO)
                 .appURL("https://" + QueryUtils.getHostname().toLowerCase() + ":" + port + "/")
                 .availableTypes(QueryUtils.getAvailableTypes())
-                .availableGPUs(ScanGPU.listDevices())
+                .availableGPUs(systemInfo.getGpuList())
+                .systemInfo(systemInfo)
                 .blenderVersions(BlenderUtils.availableBlenderVersions())
                 .build();
 

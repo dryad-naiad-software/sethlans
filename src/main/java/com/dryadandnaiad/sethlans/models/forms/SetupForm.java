@@ -24,6 +24,7 @@ import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
+import com.dryadandnaiad.sethlans.models.system.SystemInfo;
 import com.dryadandnaiad.sethlans.models.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,6 +54,7 @@ public class SetupForm {
     private MailSettings mailSettings;
     private NodeSettings nodeSettings;
     private ServerSettings serverSettings;
+    private SystemInfo systemInfo;
     private String ipAddress;
     private String port;
     private String appURL;

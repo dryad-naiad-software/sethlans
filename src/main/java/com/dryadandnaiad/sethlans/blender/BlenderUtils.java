@@ -145,7 +145,7 @@ public class BlenderUtils {
             }
 
             var downloadURL = new URL("https://" + server.getIpAddress() + ":" + server.getNetworkPort() +
-                    "/api/v1/server_queue/retieve_project_file?system-id=" + nodeSystemID + "&project-id=" +
+                    "/api/v1/server_queue/retrieve_project_file?system-id=" + nodeSystemID + "&project-id=" +
                     renderTask.getProjectID());
             var downloadedFile = DownloadFile.downloadFileBetweenSethlans(downloadURL,
                     tempPath);
