@@ -167,6 +167,8 @@ public class ServerQueueServiceImpl implements ServerQueueService {
 
     @Override
     public boolean addRenderTasksToCompletedQueue(RenderTask renderTask) {
+        log.debug("Attempting to add render tasks to server completed queue. There are "
+                + completedRenderQueue.size() + " items.");
         var taskAdded = completedRenderQueue.offer(renderTask);
         if (taskAdded) {
             log.debug(completedRenderQueue.toString());
@@ -176,6 +178,8 @@ public class ServerQueueServiceImpl implements ServerQueueService {
                 projectRepository.save(project);
             }
         }
+        log.debug("Adding of render tasks has completed. " +
+                "Server completed task queue has " + completedRenderQueue.size() + " items.");
         return taskAdded;
     }
 
