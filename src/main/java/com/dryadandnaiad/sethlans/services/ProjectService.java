@@ -19,6 +19,7 @@ package com.dryadandnaiad.sethlans.services;
 
 import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -48,4 +49,7 @@ public interface ProjectService {
     ResponseEntity<ProjectForm> projectFileUpload(MultipartFile projectFile);
 
     boolean createProject(ProjectForm projectForm);
+
+    @Async
+    void processCompletedRenders();
 }

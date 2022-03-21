@@ -21,6 +21,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 authorize.antMatchers("/api/v1/info/node_info").permitAll();
                 authorize.antMatchers("/api/v1/management/benchmark_**").permitAll();
                 authorize.antMatchers("/api/v1/server_queue/**").permitAll();
+                authorize.antMatchers("/api/v1/node_task/**").permitAll();
+
             });
             http.authorizeRequests((requests) -> requests
                     .antMatchers("/api/v1/management/**").hasAnyAuthority(Role.ADMINISTRATOR.toString(), Role.SUPER_ADMINISTRATOR.toString())

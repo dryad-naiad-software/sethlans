@@ -18,6 +18,7 @@
 package com.dryadandnaiad.sethlans.components;
 
 import com.dryadandnaiad.sethlans.services.DownloadService;
+import com.dryadandnaiad.sethlans.services.ProjectService;
 import com.dryadandnaiad.sethlans.services.ServerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -37,10 +38,12 @@ import javax.annotation.PostConstruct;
 public class ServerBackgroundComponent {
     private final DownloadService downloadService;
     private final ServerService serverService;
+    private final ProjectService projectService;
 
-    public ServerBackgroundComponent(DownloadService downloadService, ServerService serverService) {
+    public ServerBackgroundComponent(DownloadService downloadService, ServerService serverService, ProjectService projectService) {
         this.downloadService = downloadService;
         this.serverService = serverService;
+        this.projectService = projectService;
     }
 
     @PostConstruct
@@ -48,6 +51,7 @@ public class ServerBackgroundComponent {
         try {
             downloadService.downloadBlenderFilesAsync();
             serverService.pendingBenchmarksToSend();
+            projectService.processCompletedRenders();
         } catch (InterruptedException e) {
             log.debug(e.getMessage());
         }

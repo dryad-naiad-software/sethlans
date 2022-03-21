@@ -11,6 +11,7 @@ import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.repositories.RenderTaskRepository;
 import com.dryadandnaiad.sethlans.repositories.ServerRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
+import com.dryadandnaiad.sethlans.utils.FileUtils;
 import com.dryadandnaiad.sethlans.utils.NetworkUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -80,7 +81,8 @@ public class RenderServiceImpl implements RenderService {
                                             + renderTask.getTaskID());
                                     new File(renderTask.getTaskDir()).mkdirs();
                                     getBlendFile(renderTask, server);
-                                    setImageFileName(renderTask);
+                                    BlenderUtils.setImageFileName(renderTask);
+                                    renderTask.setNodeID(PropertiesUtils.getSystemID());
                                     renderTaskRepository.save(renderTask);
                                     log.debug("Render Task added to node:");
                                     log.debug(renderTask.getTaskID());
@@ -136,6 +138,10 @@ public class RenderServiceImpl implements RenderService {
                                                     (renderTask, false));
                                     if (renderTask.getRenderTime() != null) {
                                         renderTask.setInProgress(false);
+                                        renderTask.setTaskImageFileMD5Sum(
+                                                FileUtils.getMD5ofFile(new File(renderTask.getTaskDir()
+                                                        + File.separator
+                                                        + renderTask.getTaskImageFile())));
                                         renderTask.setComplete(true);
                                         renderTaskRepository.save(renderTask);
                                     }
@@ -275,18 +281,6 @@ public class RenderServiceImpl implements RenderService {
         return renderTaskToAssign;
     }
 
-    private void setImageFileName(RenderTask renderTask) {
-        var frame = renderTask.getFrameInfo().getFrameNumber();
-        var part = renderTask.getFrameInfo().getPartNumber();
-        var taskID = renderTask.getTaskID();
-        var extension = renderTask.getScriptInfo().getImageOutputFormat();
-        if (renderTask.isUseParts()) {
-            renderTask.setTaskImageFile(taskID + "-frame-" + frame + "-part-"
-                    + part + "." + extension.name().toLowerCase());
-        } else {
-            renderTask.setTaskImageFile(taskID + "-frame-" + frame + "." + extension.name().toLowerCase());
-        }
-    }
 
     private void getBlendFile(RenderTask renderTask, Server server) throws Exception {
         var cachedProjectFile = new

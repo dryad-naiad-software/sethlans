@@ -15,6 +15,8 @@ public interface ServerQueueService {
 
     boolean addRenderTasksToCompletedQueue(RenderTask renderTask);
 
+    int currentNumberOfTasksInCompleteQueue();
+
     void updatePendingQueueLimit();
 
     void resetPendingRenderTaskQueue();

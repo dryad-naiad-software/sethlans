@@ -39,6 +39,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -358,5 +359,43 @@ public class ProjectServiceImpl implements ProjectService {
         }
         return true;
     }
+
+    @Override
+    @Async
+    public void processCompletedRenders() {
+        try {
+            Thread.sleep(30000);
+        } catch (InterruptedException e) {
+            log.debug(e.getMessage());
+        }
+        while (true) {
+            if (serverQueueService.currentNumberOfTasksInCompleteQueue() > 0) {
+                var taskToProcess = serverQueueService.retrieveRenderTaskFromCompletedQueue();
+                var node = nodeRepository.findNodeBySystemIDEquals(taskToProcess.getNodeID()).get();
+                var project = projectRepository.getProjectByProjectID(taskToProcess.getProjectID()).get();
+                var imagesDir = new File(project.getProjectRootDir() + File.separator + "images");
+                var thumbnailsDir = new File(project.getProjectRootDir() + File.separator + "thumbnails");
+                imagesDir.mkdirs();
+                thumbnailsDir.mkdirs();
+                if (project.getProjectSettings().isUseParts()) {
+                    var toCombineDir = new File(project.getProjectRootDir() + File.separator + "to_combine");
+                    toCombineDir.mkdirs();
+                    var frameDir = new File(toCombineDir + File.separator
+                            + taskToProcess.getFrameInfo().getFrameNumber());
+                    frameDir.mkdirs();
+                    BlenderUtils.downloadImageFileFromNode(taskToProcess, node, frameDir);
+                }
+                BlenderUtils.downloadImageFileFromNode(taskToProcess, node, imagesDir);
+            }
+            try {
+                Thread.sleep(20000);
+            } catch (InterruptedException e) {
+                log.debug(e.getMessage());
+            }
+        }
+
+
+    }
+
 
 }

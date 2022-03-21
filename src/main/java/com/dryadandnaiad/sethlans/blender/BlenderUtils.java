@@ -26,6 +26,7 @@ import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
 import com.dryadandnaiad.sethlans.models.blender.BlenderExecutable;
 import com.dryadandnaiad.sethlans.models.blender.BlenderInstallers;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
+import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.utils.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -122,6 +123,42 @@ public class BlenderUtils {
 
     }
 
+    public static String downloadImageFileFromNode(RenderTask renderTask, Node node, File directory) {
+        try {
+            var imageFileMd5 = renderTask.getTaskImageFileMD5Sum();
+            var imageFileName = renderTask.getTaskImageFile();
+            String tempPath = ConfigUtils.getProperty(ConfigKeys.TEMP_DIR)
+                    + File.separator + QueryUtils.getShortUUID() + imageFileName;
+            String fullPath = directory + File.separator + imageFileName;
+
+
+            var serverSystemID = PropertiesUtils.getSystemID();
+
+
+            var downloadURL = new URL("https://" + node.getIpAddress() + ":" + node.getNetworkPort() +
+                    "/api/v1/node_task/retrieve_image_file?system-id=" + serverSystemID + "&task-id=" +
+                    renderTask.getTaskID());
+            var downloadedFile = DownloadFile.downloadFileBetweenSethlans(downloadURL,
+                    tempPath);
+            if (downloadedFile == null) {
+                return null;
+            }
+
+            if (FileUtils.fileCheckMD5(downloadedFile, imageFileMd5)) {
+                org.apache.commons.io.FileUtils.copyFile(new File(tempPath), new File(fullPath));
+                return downloadedFile.toString();
+            } else {
+                return null;
+
+            }
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+            return null;
+        }
+    }
+
+
     public static String downloadProjectFileFromServer(RenderTask renderTask, Server server) {
         try {
             String tempPath;
@@ -136,7 +173,7 @@ public class BlenderUtils {
             var nodeSystemID = PropertiesUtils.getSystemID();
 
 
-            if(renderTask.isZipFileProject()) {
+            if (renderTask.isZipFileProject()) {
                 zipFileName = renderTask.getZipFile();
                 zipFileNameMd5 = renderTask.getZipFileMD5Sum();
                 tempPath = ConfigUtils.getProperty(ConfigKeys.TEMP_DIR) + File.separator + QueryUtils.getShortUUID() + zipFileName;
@@ -153,8 +190,8 @@ public class BlenderUtils {
                 return null;
             }
 
-            if(renderTask.isZipFileProject()) {
-                if(FileUtils.fileCheckMD5(downloadedFile, zipFileNameMd5)) {
+            if (renderTask.isZipFileProject()) {
+                if (FileUtils.fileCheckMD5(downloadedFile, zipFileNameMd5)) {
                     org.apache.commons.io.FileUtils.copyFile(new File(tempPath), new File(fullPath));
                     FileUtils.extractArchive(downloadedFile.toString(), projectFilePath.toString(), true);
                     return fullPath;
@@ -162,17 +199,13 @@ public class BlenderUtils {
                     return null;
                 }
             } else {
-                if(FileUtils.fileCheckMD5(downloadedFile, projectFileMd5)) {
+                if (FileUtils.fileCheckMD5(downloadedFile, projectFileMd5)) {
                     org.apache.commons.io.FileUtils.copyFile(new File(tempPath), new File(fullPath));
                     return downloadedFile.toString();
                 } else {
                     return null;
                 }
             }
-
-
-
-
         } catch (IOException e) {
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
@@ -265,10 +298,23 @@ public class BlenderUtils {
 
     }
 
+    public static void setImageFileName(RenderTask renderTask) {
+        var frame = renderTask.getFrameInfo().getFrameNumber();
+        var part = renderTask.getFrameInfo().getPartNumber();
+        var projectID = renderTask.getProjectID();
+        var extension = renderTask.getScriptInfo().getImageOutputFormat();
+        if (renderTask.isUseParts()) {
+            renderTask.setTaskImageFile(projectID + "-frame-" + frame + "-part-"
+                    + part + "." + extension.name().toLowerCase());
+        } else {
+            renderTask.setTaskImageFile(projectID + "-frame-" + frame + "." + extension.name().toLowerCase());
+        }
+    }
+
 
     public static Long executeRenderTask(RenderTask renderTask, boolean debug) {
 
-        String outputPathAndFilename = renderTask.getTaskDir() + File.separator + renderTask.getTaskImageFile();
+        String outputPath = renderTask.getTaskDir() + File.separator + "result";
 
         log.info("Starting to render of `" + renderTask.getProjectName() + "`");
         log.info("Frame: " + renderTask.getFrameInfo().getFrameNumber());
@@ -282,18 +328,25 @@ public class BlenderUtils {
             if (debug) {
                 output = new ProcessExecutor().command(renderTask.getBlenderExecutable(), "-d", "-b",
                                 renderTask.getTaskBlendFile(), "-P", renderTask.getTaskDir() + File.separator +
-                                        renderTask.getTaskID() + ".py", "-o", outputPathAndFilename, "-f",
+                                        renderTask.getTaskID() + ".py", "-o", outputPath, "-f",
                                 renderTask.getFrameInfo().getFrameNumber().toString()).destroyOnExit()
                         .readOutput(true).exitValues(0).execute().outputUTF8();
             } else {
                 output = new ProcessExecutor().command(renderTask.getBlenderExecutable(), "-b",
                                 renderTask.getTaskBlendFile(), "-P", renderTask.getTaskDir() + File.separator +
-                                        renderTask.getTaskID() + ".py", "-o", outputPathAndFilename, "-f",
+                                        renderTask.getTaskID() + ".py", "-o", outputPath, "-f",
                                 renderTask.getFrameInfo().getFrameNumber().toString()).destroyOnExit()
                         .readOutput(true).exitValues(0).execute().outputUTF8();
             }
             var endTime = System.currentTimeMillis();
             log.debug(output);
+            var taskDir = new File(renderTask.getTaskDir());
+            File[] files = taskDir.listFiles((dir1, name) -> name.startsWith("result"));
+            if (files != null && files.length == 1) {
+                files[0].renameTo(new File(renderTask.getTaskDir() + File.separator
+                        + renderTask.getTaskImageFile()));
+                log.debug("Renaming file after render.");
+            }
             return endTime - startTime;
 
 

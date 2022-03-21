@@ -18,7 +18,6 @@
 package com.dryadandnaiad.sethlans.tools;
 
 import com.dryadandnaiad.sethlans.enums.*;
-import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.models.blender.project.*;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.hardware.GPU;
@@ -103,36 +102,6 @@ public class TestUtils {
                 .timerEnd(123L)
                 .build();
 
-        var thumbnailFiles = new ArrayList<String>();
-        thumbnailFiles.add("test1234-1-thumb.png");
-        thumbnailFiles.add("test1234-2-thumb.png");
-
-        var frameFiles = new ArrayList<String>();
-        frameFiles.add("test1234-1.png");
-        frameFiles.add("test1234-2.png");
-
-        var frames = new ArrayList<Frame>();
-
-        var frame1 = Frame.builder()
-                .frameNumber(1)
-                .partsPerFrame(4)
-                .frameName("test1234-1")
-                .combined(true)
-                .fileExtension("png")
-                .storedDir("/temp")
-                .build();
-        var frame2 = Frame.builder()
-                .frameNumber(2)
-                .partsPerFrame(4)
-                .frameName("test1234-2")
-                .combined(true)
-                .fileExtension("png")
-                .storedDir("/temp")
-                .build();
-
-        frames.add(frame1);
-        frames.add(frame2);
-
 
         return Project.builder()
                 .projectID(UUID.randomUUID().toString())
@@ -141,9 +110,6 @@ public class TestUtils {
                 .projectType(ProjectType.STILL_IMAGE)
                 .projectSettings(projectSettings)
                 .projectStatus(projectStatus)
-                .thumbnailFileNames(thumbnailFiles)
-                .frameFileNames(frameFiles)
-                .frameList(frames)
                 .build();
     }
 

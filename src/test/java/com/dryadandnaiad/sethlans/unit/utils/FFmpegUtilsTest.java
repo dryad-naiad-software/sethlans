@@ -173,7 +173,6 @@ class FFmpegUtilsTest {
         var ffmpegDirectory = new File(binaryDirectory + File.separator + "ffmpeg");
         var project = createProject();
         var filename = "test";
-        project.getFrameFileNames().set(0, filename);
         assertThat(FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString())).isFalse();
     }
 
@@ -185,7 +184,6 @@ class FFmpegUtilsTest {
         FFmpegUtils.installFFmpeg(binaryDirectory.toString(), QueryUtils.getOS());
         var ffmpegDirectory = new File(binaryDirectory + File.separator + "ffmpeg");
         var project = createProject();
-        project.setFrameFileNames(new ArrayList<>());
         assertThat(FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString())).isFalse();
     }
 
@@ -239,7 +237,6 @@ class FFmpegUtilsTest {
                 .projectType(ProjectType.ANIMATION)
                 .projectSettings(projectSettings)
                 .projectRootDir(projectDir.toString())
-                .frameFileNames(imageList)
                 .build();
     }
 

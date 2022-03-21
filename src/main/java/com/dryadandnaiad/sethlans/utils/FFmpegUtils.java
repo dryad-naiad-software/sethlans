@@ -26,7 +26,6 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
-import org.springframework.util.FileSystemUtils;
 import org.zeroturnaround.exec.InvalidExitValueException;
 import org.zeroturnaround.exec.ProcessExecutor;
 
@@ -36,7 +35,6 @@ import java.nio.file.Paths;
 import java.util.concurrent.TimeoutException;
 
 import static com.dryadandnaiad.sethlans.utils.FileUtils.installApplication;
-import static org.apache.commons.io.FileUtils.copyFileToDirectory;
 
 /**
  * File created by Mario Estrella on 5/1/2020.
@@ -121,29 +119,31 @@ public class FFmpegUtils {
             return false;
         }
 
-        if (blenderProject.getFrameFileNames() == null || blenderProject.getFrameFileNames().isEmpty()) {
-            log.error("No frame filenames present.");
-            return false;
-        }
-        // Copy images to temporary directory for video processing
-        log.info("Copying image files to temporary directory.");
-        var tempDir = new File(blenderProject.getProjectRootDir()
-                + File.separator + "temp");
-        tempDir.mkdirs();
-        for (String frameFileName : blenderProject.getFrameFileNames()) {
-            try {
-                log.debug("Copying " + frameFileName + " to " + tempDir.toString());
-                copyFileToDirectory(new File(frameFileName), tempDir);
-            } catch (IOException e) {
-                log.error("Error copying file: " + frameFileName);
-                log.error(e.getMessage());
-                log.error(Throwables.getStackTraceAsString(e));
-                return false;
-            }
-        }
+        //TODO filenames will just be generated based on fixed directories and filename patterns.
+
+//        if (blenderProject.getFrameFileNames() == null || blenderProject.getFrameFileNames().isEmpty()) {
+//            log.error("No frame filenames present.");
+//            return false;
+//        }
+//        // Copy images to temporary directory for video processing
+//        log.info("Copying image files to temporary directory.");
+//        var tempDir = new File(blenderProject.getProjectRootDir()
+//                + File.separator + "temp");
+//        tempDir.mkdirs();
+//        for (String frameFileName : blenderProject.getFrameFileNames()) {
+//            try {
+//                log.debug("Copying " + frameFileName + " to " + tempDir.toString());
+//                copyFileToDirectory(new File(frameFileName), tempDir);
+//            } catch (IOException e) {
+//                log.error("Error copying file: " + frameFileName);
+//                log.error(e.getMessage());
+//                log.error(Throwables.getStackTraceAsString(e));
+//                return false;
+//            }
+//        }
 
         var result = executeFFmpegCommand(createFFmpegCommand(ffmpegBinary, blenderProject), blenderProject.getProjectName());
-        FileSystemUtils.deleteRecursively(tempDir);
+        // FileSystemUtils.deleteRecursively(tempDir);
         if (result) {
             return verifyVideoFile(videoFile, getFFprobeBinary(ffmpegDir));
         } else {

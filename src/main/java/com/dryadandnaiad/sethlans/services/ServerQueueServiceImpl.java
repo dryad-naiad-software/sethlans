@@ -184,6 +184,11 @@ public class ServerQueueServiceImpl implements ServerQueueService {
     }
 
     @Override
+    public int currentNumberOfTasksInCompleteQueue() {
+        return completedRenderQueue.size();
+    }
+
+    @Override
     public void updatePendingQueueLimit() {
         var slots = 0;
 

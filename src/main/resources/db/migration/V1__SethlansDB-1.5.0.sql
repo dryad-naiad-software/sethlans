@@ -100,26 +100,7 @@ create table project
     zip_filenamemd5sum     varchar(255),
     primary key (id)
 );
-create table project_frame_file_names
-(
-    project_id       bigint not null,
-    frame_file_names varchar(255)
-);
-create table project_frame_list
-(
-    project_id      bigint  not null,
-    combined        boolean not null,
-    file_extension  varchar(255),
-    frame_name      varchar(255),
-    frame_number    integer,
-    parts_per_frame integer,
-    stored_dir      varchar(255)
-);
-create table project_thumbnail_file_names
-(
-    project_id           bigint not null,
-    thumbnail_file_names varchar(255)
-);
+
 create table render_task
 (
     id                      bigint  not null,
@@ -139,6 +120,7 @@ create table render_task
     part_number             integer,
     in_progress             boolean not null,
     projectid               varchar(255),
+    nodeid                  varchar(255),
     project_name            varchar(255),
     render_time             bigint,
     blender_engine          integer,
@@ -156,12 +138,13 @@ create table render_task
     task_blend_file         varchar(255),
     task_blend_filemd5sum   varchar(255),
     task_image_file         varchar(255),
+    task_image_filemd5sum   varchar(255),
     task_dir                varchar(255),
     taskid                  varchar(255),
     use_parts               boolean not null,
     zip_file_project        boolean not null,
     zip_file                varchar(255),
-    zip_filemd5sum   varchar(255),
+    zip_filemd5sum          varchar(255),
     primary key (id)
 );
 create table render_task_deviceids
@@ -222,12 +205,6 @@ alter table node_selectedgpus
     add constraint FKecl1m1xgun9u2m0hgdkf0igv9 foreign key (node_id) references node;
 alter table project
     add constraint FKo06v2e9kuapcugnyhttqa1vpt foreign key (user_id) references user;
-alter table project_frame_file_names
-    add constraint FKdua5syfnvj1vfxoubcaabrexo foreign key (project_id) references project;
-alter table project_frame_list
-    add constraint FKlifif3dtu4hq9m37l4a6yjppl foreign key (project_id) references project;
-alter table project_thumbnail_file_names
-    add constraint FKiwudsv5vimn14ciimru3jennx foreign key (project_id) references project;
 alter table render_task_deviceids
     add constraint FKj90ikv9jkqjje8cbf4tdurxlb foreign key (render_task_id) references render_task;
 alter table user_challenge_list
