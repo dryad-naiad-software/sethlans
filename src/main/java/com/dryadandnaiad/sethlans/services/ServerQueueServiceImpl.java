@@ -3,7 +3,6 @@ package com.dryadandnaiad.sethlans.services;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.enums.ProjectState;
-import com.dryadandnaiad.sethlans.enums.ProjectType;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskFrameInfo;
@@ -80,19 +79,7 @@ public class ServerQueueServiceImpl implements ServerQueueService {
 
         var serverInfo = TaskServerInfo.builder().systemID(PropertiesUtils.getSystemID()).build();
 
-        // TODO Pending queue needs to account for animations and still images and update the queue accordingly
-
-
-        while (queueReady) {
-            if (project.getProjectType().equals(ProjectType.ANIMATION) && !(project.getProjectStatus().getCurrentFrame()
-                    < project.getProjectSettings().getEndFrame())) {
-                break;
-            }
-
-            if (project.getProjectType().equals(ProjectType.STILL_IMAGE) && !(project.getProjectStatus().getCurrentFrame()
-                    <= project.getProjectSettings().getEndFrame())) {
-                break;
-            }
+        while (queueReady && project.getProjectStatus().getRemainingQueueSize() > 0) {
 
             TaskFrameInfo frameInfo;
             if (project.getProjectSettings().isUseParts()) {
@@ -161,7 +148,12 @@ public class ServerQueueServiceImpl implements ServerQueueService {
                 }
                 project.getProjectStatus().setQueueIndex(project.getProjectStatus().getQueueIndex() + 1);
                 project.getProjectStatus().setRemainingQueueSize(project.getProjectStatus().getRemainingQueueSize() - 1);
+                var remainingQueueSize = project.getProjectStatus().getRemainingQueueSize();
+                log.debug("project remaining queue size " + remainingQueueSize);
                 projectRepository.save(project);
+                if (remainingQueueSize <= 0) {
+                    break;
+                }
             }
         }
         log.debug("Adding of render tasks has completed. " +
