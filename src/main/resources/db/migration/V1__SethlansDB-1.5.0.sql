@@ -88,6 +88,7 @@ create table project
     queue_index            integer,
     re_encode              boolean not null,
     remaining_queue_size   integer,
+    rendered_queue_items   integer,
     timer_end              bigint,
     timer_start            bigint,
     total_project_time     bigint,

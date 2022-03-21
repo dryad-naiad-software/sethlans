@@ -169,7 +169,7 @@ public class PropertiesUtils {
         writeProperty(ConfigKeys.LOG_LEVEL, setupForm.getLogLevel().toString());
         if (setupForm.getMode().equals(SethlansMode.SERVER) || setupForm.getMode().equals(SethlansMode.DUAL)) {
             writeProperty(ConfigKeys.GETTING_STARTED, "true");
-            writeProperty(ConfigKeys.SERVER_COMPLETE_QUEUE_SIZE, "25");
+            writeProperty(ConfigKeys.SERVER_COMPLETE_QUEUE_SIZE, "75");
         }
 
     }

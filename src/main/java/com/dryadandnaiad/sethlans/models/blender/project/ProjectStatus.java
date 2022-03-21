@@ -41,6 +41,7 @@ public class ProjectStatus {
     private Integer completedFrames;
     private Integer totalQueueSize;
     private Integer remainingQueueSize;
+    private Integer renderedQueueItems;
     private Integer queueIndex;
     private Integer currentFrame;
     private Integer currentPart;

@@ -74,13 +74,12 @@ public class ServerQueueServiceImpl implements ServerQueueService {
     public void addRenderTasksToPendingQueue(Project project) {
         log.debug("Attempting to add render tasks to server pending queue. There are "
                 + pendingRenderQueue.size() + " items.");
-
         var queueReady = true;
 
         var serverInfo = TaskServerInfo.builder().systemID(PropertiesUtils.getSystemID()).build();
 
         while (queueReady && project.getProjectStatus().getRemainingQueueSize() > 0) {
-
+            project = projectRepository.getProjectByProjectID(project.getProjectID()).get();
             TaskFrameInfo frameInfo;
             if (project.getProjectSettings().isUseParts()) {
                 var parts = project.getProjectSettings().getPartsPerFrame();
@@ -149,7 +148,7 @@ public class ServerQueueServiceImpl implements ServerQueueService {
                 project.getProjectStatus().setQueueIndex(project.getProjectStatus().getQueueIndex() + 1);
                 project.getProjectStatus().setRemainingQueueSize(project.getProjectStatus().getRemainingQueueSize() - 1);
                 var remainingQueueSize = project.getProjectStatus().getRemainingQueueSize();
-                log.debug("project remaining queue size " + remainingQueueSize);
+                log.debug("Project remaining queue size " + remainingQueueSize);
                 projectRepository.save(project);
                 if (remainingQueueSize <= 0) {
                     break;
@@ -178,18 +177,6 @@ public class ServerQueueServiceImpl implements ServerQueueService {
         log.debug("Attempting to add render tasks to server completed queue. There are "
                 + completedRenderQueue.size() + " items.");
         var taskAdded = completedRenderQueue.offer(renderTask);
-        if (taskAdded) {
-            log.debug(completedRenderQueue.toString());
-            var project = projectRepository.getProjectByProjectID(renderTask.getProjectID()).get();
-            if (project.getProjectStatus().getProjectState().equals(ProjectState.RENDERING)) {
-                addRenderTasksToPendingQueue(project);
-            }
-            if (project.getProjectStatus().getProjectState().equals(ProjectState.STARTED)) {
-                project.getProjectStatus().setProjectState(ProjectState.RENDERING);
-                projectRepository.save(project);
-            }
-
-        }
         log.debug("Adding of render tasks has completed. " +
                 "Server completed task queue has " + completedRenderQueue.size() + " items.");
         return taskAdded;

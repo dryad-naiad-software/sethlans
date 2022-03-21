@@ -350,6 +350,7 @@ public class ProjectServiceImpl implements ProjectService {
             }
             project.getProjectStatus().setCurrentFrame(0);
             project.getProjectStatus().setCurrentPart(0);
+            project.getProjectStatus().setRenderedQueueItems(0);
             project.getProjectStatus().setRemainingQueueSize(project.getProjectStatus().getTotalQueueSize());
 
             project.setProjectRootDir(projectDirectory.toString());
@@ -375,6 +376,9 @@ public class ProjectServiceImpl implements ProjectService {
                 var taskToProcess = serverQueueService.retrieveRenderTaskFromCompletedQueue();
                 var node = nodeRepository.findNodeBySystemIDEquals(taskToProcess.getNodeID()).get();
                 var project = projectRepository.getProjectByProjectID(taskToProcess.getProjectID()).get();
+                if (project.getProjectStatus().getProjectState().equals(ProjectState.STARTED)) {
+                    project.getProjectStatus().setProjectState(ProjectState.RENDERING);
+                }
                 var imagesDir = new File(project.getProjectRootDir() + File.separator + "images");
                 var thumbnailsDir = new File(project.getProjectRootDir() + File.separator + "thumbnails");
                 imagesDir.mkdirs();
@@ -391,8 +395,26 @@ public class ProjectServiceImpl implements ProjectService {
                 if (complete) {
                     project.getProjectStatus().setCompletedFrames(project.getProjectStatus().getCompletedFrames() + 1);
                 }
+                if (Objects.equals(project.getProjectStatus().getCompletedFrames(),
+                        project.getProjectSettings().getTotalNumberOfFrames())) {
+                    project.getProjectStatus().setAllImagesProcessed(true);
+                    project.getProjectStatus().setTimerEnd(new Date().getTime());
+                    project.getProjectStatus().setTotalProjectTime(project.getProjectStatus().getTimerEnd() -
+                            project.getProjectStatus().getTimerStart());
 
-
+                }
+                project.getProjectStatus().setRenderedQueueItems(project.getProjectStatus().getRenderedQueueItems() + 1);
+                project.getProjectStatus().setCurrentPercentage(
+                        project.getProjectStatus().getRenderedQueueItems() * 100 / project.getProjectStatus().getTotalQueueSize()
+                );
+                project.getProjectStatus().setTotalRenderTime(project.getProjectStatus().getTotalRenderTime() +
+                        taskToProcess.getRenderTime());
+                log.debug(project.toString());
+                projectRepository.save(project);
+                project = projectRepository.getProjectByProjectID(project.getProjectID()).get();
+                if (project.getProjectStatus().getProjectState().equals(ProjectState.RENDERING)) {
+                    serverQueueService.addRenderTasksToPendingQueue(project);
+                }
             }
             try {
                 Thread.sleep(5000);

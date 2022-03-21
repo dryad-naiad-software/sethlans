@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * File created by Mario Estrella on 6/17/2020.
@@ -116,6 +117,8 @@ public class ServerQueueController {
                 }
                 if (project.getProjectStatus().getProjectState().equals(ProjectState.PENDING)) {
                     project.getProjectStatus().setProjectState(ProjectState.STARTED);
+                    project.getProjectStatus().setTimerStart(new Date().getTime());
+                    project.getProjectStatus().setTotalRenderTime(0L);
                     projectRepository.save(project);
                 }
             }
