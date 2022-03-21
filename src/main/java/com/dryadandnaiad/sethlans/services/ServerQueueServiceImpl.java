@@ -3,6 +3,7 @@ package com.dryadandnaiad.sethlans.services;
 import com.dryadandnaiad.sethlans.enums.ComputeOn;
 import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.enums.ProjectState;
+import com.dryadandnaiad.sethlans.enums.ProjectType;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskFrameInfo;
@@ -76,9 +77,23 @@ public class ServerQueueServiceImpl implements ServerQueueService {
                 + pendingRenderQueue.size() + " items.");
 
         var queueReady = true;
+
         var serverInfo = TaskServerInfo.builder().systemID(PropertiesUtils.getSystemID()).build();
 
+        // TODO Pending queue needs to account for animations and still images and update the queue accordingly
+
+
         while (queueReady) {
+            if (project.getProjectType().equals(ProjectType.ANIMATION) && !(project.getProjectStatus().getCurrentFrame()
+                    < project.getProjectSettings().getEndFrame())) {
+                break;
+            }
+
+            if (project.getProjectType().equals(ProjectType.STILL_IMAGE) && !(project.getProjectStatus().getCurrentFrame()
+                    <= project.getProjectSettings().getEndFrame())) {
+                break;
+            }
+
             TaskFrameInfo frameInfo;
             if (project.getProjectSettings().isUseParts()) {
                 var parts = project.getProjectSettings().getPartsPerFrame();
@@ -155,6 +170,7 @@ public class ServerQueueServiceImpl implements ServerQueueService {
 
     }
 
+
     @Override
     public RenderTask retrieveRenderTaskFromCompletedQueue() {
         try {
@@ -173,10 +189,14 @@ public class ServerQueueServiceImpl implements ServerQueueService {
         if (taskAdded) {
             log.debug(completedRenderQueue.toString());
             var project = projectRepository.getProjectByProjectID(renderTask.getProjectID()).get();
+            if (project.getProjectStatus().getProjectState().equals(ProjectState.RENDERING)) {
+                addRenderTasksToPendingQueue(project);
+            }
             if (project.getProjectStatus().getProjectState().equals(ProjectState.STARTED)) {
                 project.getProjectStatus().setProjectState(ProjectState.RENDERING);
                 projectRepository.save(project);
             }
+
         }
         log.debug("Adding of render tasks has completed. " +
                 "Server completed task queue has " + completedRenderQueue.size() + " items.");

@@ -40,7 +40,8 @@ public class ServerBackgroundComponent {
     private final ServerService serverService;
     private final ProjectService projectService;
 
-    public ServerBackgroundComponent(DownloadService downloadService, ServerService serverService, ProjectService projectService) {
+    public ServerBackgroundComponent(DownloadService downloadService, ServerService serverService,
+                                     ProjectService projectService) {
         this.downloadService = downloadService;
         this.serverService = serverService;
         this.projectService = projectService;
@@ -52,6 +53,7 @@ public class ServerBackgroundComponent {
             downloadService.downloadBlenderFilesAsync();
             serverService.pendingBenchmarksToSend();
             projectService.processCompletedRenders();
+
         } catch (InterruptedException e) {
             log.debug(e.getMessage());
         }

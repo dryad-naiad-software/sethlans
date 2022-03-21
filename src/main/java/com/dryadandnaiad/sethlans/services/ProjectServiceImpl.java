@@ -348,6 +348,8 @@ public class ProjectServiceImpl implements ProjectService {
                 }
 
             }
+            project.getProjectStatus().setCurrentFrame(0);
+            project.getProjectStatus().setCurrentPart(0);
             project.getProjectStatus().setRemainingQueueSize(project.getProjectStatus().getTotalQueueSize());
 
             project.setProjectRootDir(projectDirectory.toString());
@@ -385,10 +387,15 @@ public class ProjectServiceImpl implements ProjectService {
                     frameDir.mkdirs();
                     BlenderUtils.downloadImageFileFromNode(taskToProcess, node, frameDir);
                 }
-                BlenderUtils.downloadImageFileFromNode(taskToProcess, node, imagesDir);
+                var complete = BlenderUtils.downloadImageFileFromNode(taskToProcess, node, imagesDir);
+                if (complete) {
+                    project.getProjectStatus().setCompletedFrames(project.getProjectStatus().getCompletedFrames() + 1);
+                }
+
+
             }
             try {
-                Thread.sleep(20000);
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
                 log.debug(e.getMessage());
             }

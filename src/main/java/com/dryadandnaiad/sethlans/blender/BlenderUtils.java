@@ -123,7 +123,7 @@ public class BlenderUtils {
 
     }
 
-    public static String downloadImageFileFromNode(RenderTask renderTask, Node node, File directory) {
+    public static boolean downloadImageFileFromNode(RenderTask renderTask, Node node, File directory) {
         try {
             var imageFileMd5 = renderTask.getTaskImageFileMD5Sum();
             var imageFileName = renderTask.getTaskImageFile();
@@ -141,20 +141,20 @@ public class BlenderUtils {
             var downloadedFile = DownloadFile.downloadFileBetweenSethlans(downloadURL,
                     tempPath);
             if (downloadedFile == null) {
-                return null;
+                return false;
             }
 
             if (FileUtils.fileCheckMD5(downloadedFile, imageFileMd5)) {
                 org.apache.commons.io.FileUtils.copyFile(new File(tempPath), new File(fullPath));
-                return downloadedFile.toString();
+                return true;
             } else {
-                return null;
+                return false;
 
             }
         } catch (IOException e) {
             log.error(e.getMessage());
             log.error(Throwables.getStackTraceAsString(e));
-            return null;
+            return false;
         }
     }
 

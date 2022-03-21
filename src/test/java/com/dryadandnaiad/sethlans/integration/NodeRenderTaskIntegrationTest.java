@@ -109,12 +109,15 @@ public class NodeRenderTaskIntegrationTest {
         var file3 = "bmw27_gpu.blend";
         var file4 = "scene-helicopter-27.blend";
         var file5 = "pavillon_barcelone_v1.2.zip";
+        var file6 = "pavillon_barcelone_v1.2_textures_animation.blend";
 
         TestFileUtils.copyTestArchiveToDisk(BLEND_DIRECTORY.toString(), "blend_files/" + file1, file1);
         TestFileUtils.copyTestArchiveToDisk(BLEND_DIRECTORY.toString(), "blend_files/" + file2, file2);
         TestFileUtils.copyTestArchiveToDisk(BLEND_DIRECTORY.toString(), "blend_files/" + file3, file3);
         TestFileUtils.copyTestArchiveToDisk(BLEND_DIRECTORY.toString(), "blend_files/" + file4, file4);
         TestFileUtils.copyTestArchiveToDisk(BLEND_DIRECTORY.toString(), "blend_files/" + file5, file5);
+        TestFileUtils.copyTestArchiveToDisk(BLEND_DIRECTORY.toString(), "blend_files/" + file6, file6);
+
 
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
         log.info("Waiting for Blender download(s) to complete.");
@@ -254,14 +257,15 @@ public class NodeRenderTaskIntegrationTest {
     }
 
     @Test
-    public void pavillonBarceloneZip() throws JsonProcessingException, InterruptedException {
+    public void pavillonBarceloneAnimation() throws JsonProcessingException, InterruptedException {
         var mapper = new ObjectMapper();
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
 
         var response = given()
                 .log()
                 .ifValidationFails()
-                .multiPart("project_file", new File(BLEND_DIRECTORY.toString() + "/pavillon_barcelone_v1.2.zip"))
+                .multiPart("project_file", new File(BLEND_DIRECTORY.toString()
+                        + "/pavillon_barcelone_v1.2_textures_animation.blend"))
                 .accept(ContentType.JSON)
                 .contentType(ContentType.MULTIPART)
                 .header("X-XSRF-TOKEN", token)
@@ -324,7 +328,7 @@ public class NodeRenderTaskIntegrationTest {
         log.info(project.toString());
         log.info(queue.toString());
 
-        Thread.sleep(300000);
+        Thread.sleep(600000);
 
     }
 
