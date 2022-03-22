@@ -40,6 +40,4 @@ public class ProjectView {
     private ProjectStatus projectStatus;
     private String userID;
     private String projectName;
-    private boolean thumbnailPresent;
-    private String thumbnailURL;
 }

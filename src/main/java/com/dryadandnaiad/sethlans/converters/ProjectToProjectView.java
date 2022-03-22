@@ -40,10 +40,6 @@ public class ProjectToProjectView implements Converter<Project, ProjectView> {
                 .projectType(project.getProjectType())
                 .userID(project.getUser().getUserID())
                 .build();
-//        if(project.getThumbnailFileNames().size() > 0) {
-//            projectView.setThumbnailURL(project.getThumbnailFileNames()
-//                    .get(project.getThumbnailFileNames().size() - 1));
-//        }
         return projectView;
     }
 }

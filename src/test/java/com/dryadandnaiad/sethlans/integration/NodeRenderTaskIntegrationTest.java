@@ -1,6 +1,7 @@
 package com.dryadandnaiad.sethlans.integration;
 
 import com.dryadandnaiad.sethlans.enums.AnimationType;
+import com.dryadandnaiad.sethlans.enums.ProjectState;
 import com.dryadandnaiad.sethlans.enums.ProjectType;
 import com.dryadandnaiad.sethlans.models.blender.project.ProjectView;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
@@ -306,6 +307,8 @@ public class NodeRenderTaskIntegrationTest {
                 .then()
                 .statusCode(StatusCodes.ACCEPTED);
 
+        Thread.sleep(10000);
+
         var project = mapper
                 .readValue(get("/api/v1/project/" + projectForm.getProjectID())
                         .then()
@@ -326,9 +329,21 @@ public class NodeRenderTaskIntegrationTest {
                 });
 
         log.info(project.toString());
-        log.info(queue.toString());
 
-        Thread.sleep(600000);
+        log.info("Starting render");
+        while (!project.getProjectStatus().getProjectState().equals(ProjectState.FINISHED)) {
+            project = mapper
+                    .readValue(get("/api/v1/project/" + projectForm.getProjectID())
+                            .then()
+                            .extract()
+                            .response()
+                            .body()
+                            .asString(), ProjectView.class);
+            Thread.sleep(10000);
+        }
+        log.info("Render Complete");
+        log.info(project.toString());
+        Thread.sleep(10000);
 
     }
 
@@ -398,9 +413,21 @@ public class NodeRenderTaskIntegrationTest {
                 });
 
         log.info(project.toString());
-        log.info(queue.toString());
 
-        Thread.sleep(300000);
+        log.info("Starting render");
+        while (!project.getProjectStatus().getProjectState().equals(ProjectState.FINISHED)) {
+            project = mapper
+                    .readValue(get("/api/v1/project/" + projectForm.getProjectID())
+                            .then()
+                            .extract()
+                            .response()
+                            .body()
+                            .asString(), ProjectView.class);
+            Thread.sleep(10000);
+        }
+        log.info("Render Complete");
+        log.info(project.toString());
+        Thread.sleep(10000);
 
 
     }

@@ -438,7 +438,7 @@ public class ProjectServiceImpl implements ProjectService {
                     project.getProjectStatus().setTimerEnd(new Date().getTime());
                     project.getProjectStatus().setTotalProjectTime(project.getProjectStatus().getTimerEnd() -
                             project.getProjectStatus().getTimerStart());
-
+                    project.getProjectStatus().setProjectState(ProjectState.FINISHED);
                 }
                 project.getProjectStatus().setRenderedQueueItems(project.getProjectStatus().getRenderedQueueItems() + 1);
                 project.getProjectStatus().setCurrentPercentage(
