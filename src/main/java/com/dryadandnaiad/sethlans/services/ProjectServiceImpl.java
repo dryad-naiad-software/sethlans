@@ -31,10 +31,7 @@ import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.repositories.ProjectRepository;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
-import com.dryadandnaiad.sethlans.utils.ConfigUtils;
-import com.dryadandnaiad.sethlans.utils.FileUtils;
-import com.dryadandnaiad.sethlans.utils.ImageUtils;
-import com.dryadandnaiad.sethlans.utils.QueryUtils;
+import com.dryadandnaiad.sethlans.utils.*;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -384,6 +381,9 @@ public class ProjectServiceImpl implements ProjectService {
                 if (project.getProjectType().equals(ProjectType.ANIMATION) &&
                         project.getProjectSettings().getAnimationType().equals(AnimationType.MOVIE)) {
                     var videoDir = new File(project.getProjectRootDir() + File.separator + "video");
+                    project.getProjectSettings().getVideoSettings().setVideoFileLocation(videoDir + File.separator
+                            + project.getProjectName() + "." + project.getProjectSettings().getVideoSettings()
+                            .getVideoOutputFormat().name().toLowerCase());
                     videoDir.mkdirs();
                 }
 
@@ -448,6 +448,18 @@ public class ProjectServiceImpl implements ProjectService {
                     if (project.getProjectType().equals(ProjectType.ANIMATION) &&
                             project.getProjectSettings().getAnimationType().equals(AnimationType.MOVIE)) {
                         project.getProjectStatus().setProjectState(ProjectState.PROCESSING);
+
+                        com.dryadandnaiad.sethlans.models.blender.project.Project finalProject = project;
+                        var renderVideo = new Thread(() -> {
+                            var encoded =
+                                    FFmpegUtils.encodeImagesToVideo(finalProject, ConfigUtils
+                                            .getProperty(ConfigKeys.FFMPEG_DIR));
+                            if (encoded) {
+                                updateProjectAfterVideo(finalProject.getProjectID());
+                            }
+                        });
+                        renderVideo.start();
+
                     }
                 }
                 project.getProjectStatus().setRenderedQueueItems(project.getProjectStatus().getRenderedQueueItems() + 1);
@@ -470,8 +482,12 @@ public class ProjectServiceImpl implements ProjectService {
                 log.debug(e.getMessage());
             }
         }
+    }
 
-
+    private void updateProjectAfterVideo(String projectID) {
+        var project = projectRepository.getProjectByProjectID(projectID).get();
+        project.getProjectStatus().setProjectState(ProjectState.FINISHED);
+        projectRepository.save(project);
     }
 
 

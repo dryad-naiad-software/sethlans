@@ -282,7 +282,7 @@ public class NodeRenderTaskIntegrationTest {
         var videoSettings = VideoSettings.builder()
                 .codec(VideoCodec.LIBX264)
                 .videoOutputFormat(VideoOutputFormat.MP4)
-                .frameRate(30)
+                .frameRate(15)
                 .videoQuality(VideoQuality.HIGH_X264)
                 .pixelFormat(PixelFormat.YUV420P)
                 .build();

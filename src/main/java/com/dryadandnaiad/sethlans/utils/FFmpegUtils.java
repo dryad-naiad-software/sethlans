@@ -27,6 +27,7 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.PumpStreamHandler;
+import org.springframework.util.FileSystemUtils;
 import org.zeroturnaround.exec.InvalidExitValueException;
 import org.zeroturnaround.exec.ProcessExecutor;
 
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import static com.dryadandnaiad.sethlans.utils.FileUtils.installApplication;
+import static org.apache.commons.io.FileUtils.copyFileToDirectory;
 
 /**
  * File created by Mario Estrella on 5/1/2020.
@@ -124,36 +126,42 @@ public class FFmpegUtils {
 
         List<Frame> frameList = new ArrayList<>();
 
+        for (int i = 0; i < blenderProject.getProjectSettings().getTotalNumberOfFrames(); i++) {
+            var frame = Frame.builder()
+                    .frameName(blenderProject.getProjectID() + "-frame-" + (i + 1))
+                    .frameNumber(i + 1)
+                    .imageDir(blenderProject.getProjectRootDir() + File.separator + "images")
+                    .thumbsDir(blenderProject.getProjectRootDir() + File.separator + "thumbnails")
+                    .fileExtension(blenderProject
+                            .getProjectSettings()
+                            .getImageSettings()
+                            .getImageOutputFormat()
+                            .name().toLowerCase())
+                    .build();
+            frameList.add(frame);
+        }
 
-//        var frame = Frame.builder()
-//                .frameName(blenderProject.getProjectID() + "-frame-" + taskToProcess.getFrameInfo().getFrameNumber())
-//                .frameNumber(taskToProcess.getFrameInfo().getFrameNumber())
-//                .imageDir(imagesDir.toString())
-//                .thumbsDir(thumbnailsDir.toString())
-//                .fileExtension(taskToProcess.getScriptInfo().getImageOutputFormat().name().toLowerCase())
-//                .build();
+        // Copy images to temporary directory for video processing
+        log.info("Copying image files to temporary directory.");
+        var tempDir = new File(blenderProject.getProjectRootDir()
+                + File.separator + "temp-" + QueryUtils.getShortUUID());
+        tempDir.mkdirs();
+        for (Frame frame : frameList) {
+            var originalImage = new File(frame.getImageDir()
+                    + File.separator + frame.getFrameName() + "." + frame.getFileExtension());
+            try {
+                log.debug("Copying " + frame.getFrameName() + " to " + tempDir);
+                copyFileToDirectory(originalImage, tempDir);
+            } catch (IOException e) {
+                log.error("Error copying file: " + originalImage);
+                log.error(e.getMessage());
+                log.error(Throwables.getStackTraceAsString(e));
+                return false;
+            }
+        }
 
-        //TODO filenames will just be generated based on fixed directories and filename patterns.
-
-//        // Copy images to temporary directory for video processing
-//        log.info("Copying image files to temporary directory.");
-//        var tempDir = new File(blenderProject.getProjectRootDir()
-//                + File.separator + "temp");
-//        tempDir.mkdirs();
-//        for (String frameFileName : blenderProject.getFrameFileNames()) {
-//            try {
-//                log.debug("Copying " + frameFileName + " to " + tempDir.toString());
-//                copyFileToDirectory(new File(frameFileName), tempDir);
-//            } catch (IOException e) {
-//                log.error("Error copying file: " + frameFileName);
-//                log.error(e.getMessage());
-//                log.error(Throwables.getStackTraceAsString(e));
-//                return false;
-//            }
-//        }
-
-        var result = executeFFmpegCommand(createFFmpegCommand(ffmpegBinary, blenderProject), blenderProject.getProjectName());
-        // FileSystemUtils.deleteRecursively(tempDir);
+        var result = executeFFmpegCommand(createFFmpegCommand(ffmpegBinary, tempDir, blenderProject), blenderProject.getProjectName());
+        FileSystemUtils.deleteRecursively(tempDir);
         if (result) {
             return verifyVideoFile(videoFile, getFFprobeBinary(ffmpegDir));
         } else {
@@ -162,7 +170,7 @@ public class FFmpegUtils {
     }
 
 
-    private static CommandLine createFFmpegCommand(String ffmpegBinary, Project blenderProject) {
+    private static CommandLine createFFmpegCommand(String ffmpegBinary, File tempDir, Project blenderProject) {
         var videoSettings = blenderProject.getProjectSettings().getVideoSettings();
 
         var ffmpeg = new CommandLine(ffmpegBinary);
@@ -172,10 +180,9 @@ public class FFmpegUtils {
 
         // Configure input images
         ffmpeg.addArgument("-i");
-        ffmpeg.addArgument(blenderProject.getProjectRootDir() + File.separator + "temp" +
+        ffmpeg.addArgument(tempDir +
                 File.separator +
-                QueryUtils.truncatedProjectNameAndID(blenderProject.getProjectName(),
-                        blenderProject.getProjectID()) + "-" + "%04d." +
+                blenderProject.getProjectID() + "-frame-" + "%1d." +
                 blenderProject.getProjectSettings().getImageSettings().getImageOutputFormat()
                         .name().toLowerCase());
 
