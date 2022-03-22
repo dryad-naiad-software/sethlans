@@ -23,6 +23,7 @@ import com.dryadandnaiad.sethlans.converters.ProjectFormToProject;
 import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.models.blender.BlendFile;
 import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
+import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.models.blender.project.ImageSettings;
 import com.dryadandnaiad.sethlans.models.blender.project.ProjectSettings;
 import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
@@ -32,6 +33,7 @@ import com.dryadandnaiad.sethlans.repositories.ProjectRepository;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.FileUtils;
+import com.dryadandnaiad.sethlans.utils.ImageUtils;
 import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
@@ -383,18 +385,53 @@ public class ProjectServiceImpl implements ProjectService {
                 var thumbnailsDir = new File(project.getProjectRootDir() + File.separator + "thumbnails");
                 imagesDir.mkdirs();
                 thumbnailsDir.mkdirs();
+                boolean complete;
+                Frame frame;
+
                 if (project.getProjectSettings().isUseParts()) {
                     var toCombineDir = new File(project.getProjectRootDir() + File.separator + "to_combine");
                     toCombineDir.mkdirs();
                     var frameDir = new File(toCombineDir + File.separator
                             + taskToProcess.getFrameInfo().getFrameNumber());
                     frameDir.mkdirs();
-                    BlenderUtils.downloadImageFileFromNode(taskToProcess, node, frameDir);
+                    complete = BlenderUtils.downloadImageFileFromNode(taskToProcess, node, frameDir);
+                    frame = Frame.builder()
+                            .partsPerFrame(project.getProjectSettings().getPartsPerFrame())
+                            .frameName(project.getProjectID() + "-frame-" + taskToProcess.getFrameInfo().getFrameNumber())
+                            .frameNumber(taskToProcess.getFrameInfo().getFrameNumber())
+                            .imageDir(imagesDir.toString())
+                            .partsDir(frameDir.toString())
+                            .thumbsDir(thumbnailsDir.toString())
+                            .fileExtension(taskToProcess.getScriptInfo().getImageOutputFormat().name().toLowerCase())
+                            .build();
+                    if (complete) {
+                        var combined = ImageUtils.combineParts(frame,
+                                taskToProcess.getScriptInfo().getImageOutputFormat());
+                        if (combined) {
+                            ImageUtils.createThumbnail(frame);
+                            project.getProjectStatus()
+                                    .setCompletedFrames(project.getProjectStatus().getCompletedFrames() + 1);
+                        }
+                    }
+
+
+                } else {
+                    complete = BlenderUtils.downloadImageFileFromNode(taskToProcess, node, imagesDir);
+                    frame = Frame.builder()
+                            .frameName(project.getProjectID() + "-frame-" + taskToProcess.getFrameInfo().getFrameNumber())
+                            .frameNumber(taskToProcess.getFrameInfo().getFrameNumber())
+                            .imageDir(imagesDir.toString())
+                            .thumbsDir(thumbnailsDir.toString())
+                            .fileExtension(taskToProcess.getScriptInfo().getImageOutputFormat().name().toLowerCase())
+                            .build();
+                    ImageUtils.createThumbnail(frame);
+                    if (complete) {
+                        project.getProjectStatus()
+                                .setCompletedFrames(project.getProjectStatus().getCompletedFrames() + 1);
+                    }
                 }
-                var complete = BlenderUtils.downloadImageFileFromNode(taskToProcess, node, imagesDir);
-                if (complete) {
-                    project.getProjectStatus().setCompletedFrames(project.getProjectStatus().getCompletedFrames() + 1);
-                }
+
+
                 if (Objects.equals(project.getProjectStatus().getCompletedFrames(),
                         project.getProjectSettings().getTotalNumberOfFrames())) {
                     project.getProjectStatus().setAllImagesProcessed(true);

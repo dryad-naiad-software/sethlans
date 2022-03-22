@@ -22,8 +22,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Embeddable;
-
 /**
  * File created by Mario Estrella on 4/1/2020.
  * Dryad and Naiad Software LLC
@@ -34,12 +32,12 @@ import javax.persistence.Embeddable;
 @NoArgsConstructor
 @Data
 @Builder
-@Embeddable
 public class Frame {
     private String frameName;
     private Integer frameNumber;
-    private boolean combined;
-    private String storedDir;
+    private String imageDir;
+    private String partsDir;
+    private String thumbsDir;
     private String fileExtension;
     private Integer partsPerFrame;
 }

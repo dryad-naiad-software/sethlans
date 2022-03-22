@@ -19,12 +19,10 @@ package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
-import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskFrameInfo;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
-import org.apache.commons.lang3.StringUtils;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -34,8 +32,12 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 
 /**
@@ -48,21 +50,31 @@ import java.util.List;
 public class ImageUtils {
 
     public static boolean combineParts(Frame frame, ImageOutputFormat imageOutputFormat) {
+        try (Stream<Path> files = Files.list(Paths.get(frame.getPartsDir()))) {
+            var count = files.count();
+            if (count != frame.getPartsPerFrame()) {
+                return false;
+            }
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+        }
         log.info("Combining parts for " + frame.getFrameName());
+
         if (imageOutputFormat.equals(ImageOutputFormat.HDR)) {
             return combineHDR(frame);
         }
         var images = new ArrayList<BufferedImage>();
         var numberOfParts = frame.getPartsPerFrame();
         var filenameBase = frame.getFrameName();
-        var partDirectory = frame.getStoredDir() + File.separator + "parts";
+        var partDirectory = frame.getPartsDir();
 
         try {
 
             for (int i = 0; i < numberOfParts; i++) {
                 var filename = new File(partDirectory + File.separator +
-                        filenameBase + "-" + (i + 1) + "." + frame.getFileExtension());
-                log.debug("Processing part: " + filename.toString());
+                        filenameBase + "-part-" + (i + 1) + "." + frame.getFileExtension());
+                log.debug("Processing part: " + filename);
                 images.add(ImageIO.read(filename));
             }
             if (images.size() == 0) {
@@ -88,7 +100,7 @@ public class ImageUtils {
                 }
             }
 
-            var frameFilename = new File(frame.getStoredDir() + File.separator +
+            var frameFilename = new File(frame.getImageDir() + File.separator +
                     frame.getFrameName() + "." + imageOutputFormat.name().toLowerCase());
 
             if (!ImageIO.write(concatImage, imageOutputFormat.name().toUpperCase(), frameFilename
@@ -97,14 +109,14 @@ public class ImageUtils {
                 return false;
             }
 
-            log.info("Completed processing of " + frameFilename.toString());
+            log.info("Completed processing of " + frameFilename);
 
 
             // Part Cleanup
             for (int i = 0; i < numberOfParts; i++) {
                 var filename = new File(partDirectory + File.separator +
-                        filenameBase + "-" + (i + 1) + "." + imageOutputFormat.name().toLowerCase());
-                log.debug("Deleting part " + filename.toString());
+                        filenameBase + "-part-" + (i + 1) + "." + frame.getFileExtension());
+                log.debug("Deleting part " + filename);
                 filename.delete();
             }
 
@@ -123,7 +135,7 @@ public class ImageUtils {
         nu.pattern.OpenCV.loadLocally();
         var numberOfParts = frame.getPartsPerFrame();
         var filenameBase = frame.getFrameName();
-        var partDirectory = frame.getStoredDir() + File.separator + "parts";
+        var partDirectory = frame.getPartsDir();
         int squareRootOfParts = (int) Math.sqrt(numberOfParts);
         var imageArrays = new ArrayList<ArrayList<Mat>>();
 
@@ -135,7 +147,7 @@ public class ImageUtils {
             }
             for (int i = 0; i < numberOfParts; i++) {
                 var filename = new File(partDirectory + File.separator +
-                        filenameBase + "-" + (i + 1) + "." + frame.getFileExtension());
+                        filenameBase + "-part-" + (i + 1) + "." + frame.getFileExtension());
                 log.debug("Processing part: " + filename.toString());
                 var arrayId = 0;
                 var currentArray = imageArrays.get(arrayId);
@@ -154,7 +166,7 @@ public class ImageUtils {
                 }
             }
 
-            var frameFilename = new File(frame.getStoredDir() + File.separator +
+            var frameFilename = new File(frame.getImageDir() + File.separator +
                     frame.getFrameName() + "." + "hdr");
 
             var rowResult = new ArrayList<Mat>();
@@ -178,8 +190,8 @@ public class ImageUtils {
             // Part Cleanup
             for (int i = 0; i < numberOfParts; i++) {
                 var filename = new File(partDirectory + File.separator +
-                        filenameBase + "-" + (i + 1) + "." + "hdr");
-                log.debug("Deleting part " + filename.toString());
+                        filenameBase + "-part-" + (i + 1) + "." + "hdr");
+                log.debug("Deleting part " + filename);
                 filename.delete();
             }
 
@@ -194,11 +206,9 @@ public class ImageUtils {
 
 
     public static boolean createThumbnail(Frame frame) {
-        var thumbnailDir = new File(frame.getStoredDir() + File.separator + "thumbnails");
-        thumbnailDir.mkdirs();
-        var originalImage = new File(frame.getStoredDir()
+        var originalImage = new File(frame.getImageDir()
                 + File.separator + frame.getFrameName() + "." + frame.getFileExtension());
-        var thumbnail = new File(thumbnailDir + File.separator
+        var thumbnail = new File(frame.getThumbsDir() + File.separator
                 + frame.getFrameName() + "-thumbnail" + "." + "png");
         log.info("Creating thumbnail for " + originalImage);
         try {
@@ -210,39 +220,6 @@ public class ImageUtils {
             log.error(Throwables.getStackTraceAsString(e));
             return false;
         }
-
-    }
-
-    public static List<Frame> configureFrameList(Project project) {
-        List<Frame> frameList = new ArrayList<>();
-        var truncatedProjectName = StringUtils.left(project.getProjectName(), 10);
-        var truncatedUUID = StringUtils.left(project.getProjectID(), 4);
-        var cleanedProjectName = truncatedProjectName.replaceAll(" ", "")
-                .replaceAll("[^a-zA-Z0-9_-]", "").toLowerCase();
-        var fileExtension = "";
-        switch (project.getProjectSettings().getImageSettings().getImageOutputFormat()) {
-            case HDR:
-                fileExtension = "hdr";
-                break;
-            case PNG:
-                fileExtension = "png";
-                break;
-            case TIFF:
-                fileExtension = "tif";
-                break;
-        }
-        for (int i = 0; i < project.getProjectSettings().getTotalNumberOfFrames(); i++) {
-            frameList.add(Frame.builder()
-                    .partsPerFrame(project.getProjectSettings().getPartsPerFrame())
-                    .frameName(cleanedProjectName + "-" + truncatedUUID + "-" + (i + 1))
-                    .frameNumber(i + 1)
-                    .combined(false)
-                    .storedDir(project.getProjectRootDir() + File.separator + "frames")
-                    .fileExtension(fileExtension).build());
-
-        }
-
-        return frameList;
 
     }
 

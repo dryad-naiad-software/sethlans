@@ -50,6 +50,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeoutException;
@@ -145,7 +146,9 @@ public class BlenderUtils {
             }
 
             if (FileUtils.fileCheckMD5(downloadedFile, imageFileMd5)) {
-                org.apache.commons.io.FileUtils.copyFile(new File(tempPath), new File(fullPath));
+                var tempFile = new File(tempPath);
+                org.apache.commons.io.FileUtils.copyFile(tempFile, new File(fullPath));
+                tempFile.delete();
                 return true;
             } else {
                 return false;
@@ -200,7 +203,9 @@ public class BlenderUtils {
                 }
             } else {
                 if (FileUtils.fileCheckMD5(downloadedFile, projectFileMd5)) {
-                    org.apache.commons.io.FileUtils.copyFile(new File(tempPath), new File(fullPath));
+                    var tempFile = new File(tempPath);
+                    org.apache.commons.io.FileUtils.copyFile(tempFile, new File(fullPath));
+                    tempFile.delete();
                     return downloadedFile.toString();
                 } else {
                     return null;
@@ -263,21 +268,22 @@ public class BlenderUtils {
         }
         File file;
         switch (os) {
-            case WINDOWS_64:
+            case WINDOWS_64 -> {
                 file = new File(directory + File.separator + "blender.exe");
                 if (file.exists()) {
                     return file.toString();
                 }
                 return null;
-
-            case LINUX_64:
+            }
+            case LINUX_64 -> {
                 file = new File(directory + File.separator + "blender");
                 if (!file.exists()) return null;
                 if (makeExecutable(file.toString())) {
                     return file.toString();
                 }
                 return null;
-            case MACOS:
+            }
+            case MACOS -> {
                 if (version.contains("2.79b")) {
                     file = new File(directory + File.separator +
                             "MacOS" + File.separator + "blender");
@@ -285,15 +291,16 @@ public class BlenderUtils {
                     file = new File(directory + File.separator +
                             "MacOS" + File.separator + "Blender");
                 }
-
                 if (!file.exists()) return null;
                 if (makeExecutable(file.toString())) {
                     return file.toString();
                 }
                 return null;
-            default:
+            }
+            default -> {
                 log.error("Operating System not supported. " + os.getName());
                 return null;
+            }
         }
 
     }
@@ -324,7 +331,7 @@ public class BlenderUtils {
         String output;
 
         try {
-            var startTime = System.currentTimeMillis();
+            var startTime = new Date().getTime();
             if (debug) {
                 output = new ProcessExecutor().command(renderTask.getBlenderExecutable(), "-d", "-b",
                                 renderTask.getTaskBlendFile(), "-P", renderTask.getTaskDir() + File.separator +
@@ -338,7 +345,7 @@ public class BlenderUtils {
                                 renderTask.getFrameInfo().getFrameNumber().toString()).destroyOnExit()
                         .readOutput(true).exitValues(0).execute().outputUTF8();
             }
-            var endTime = System.currentTimeMillis();
+            var endTime = new Date().getTime();
             log.debug(output);
             var taskDir = new File(renderTask.getTaskDir());
             File[] files = taskDir.listFiles((dir1, name) -> name.startsWith("result"));

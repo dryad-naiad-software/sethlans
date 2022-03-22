@@ -18,10 +18,8 @@
 package com.dryadandnaiad.sethlans.unit.utils;
 
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
-import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.tools.TestFileUtils;
-import com.dryadandnaiad.sethlans.tools.TestUtils;
 import com.dryadandnaiad.sethlans.utils.FileUtils;
 import com.dryadandnaiad.sethlans.utils.ImageUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -33,8 +31,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -68,8 +64,6 @@ class ImageUtilsTest {
         var frame = Frame.builder()
                 .frameName(filename)
                 .frameNumber(1)
-                .combined(true)
-                .storedDir(TEST_DIRECTORY.toString())
                 .fileExtension("png")
                 .build();
         Assertions.assertThat(ImageUtils.createThumbnail(frame)).isTrue();
@@ -83,8 +77,6 @@ class ImageUtilsTest {
         var frame = Frame.builder()
                 .frameName(filename)
                 .frameNumber(1)
-                .combined(true)
-                .storedDir(TEST_DIRECTORY.toString())
                 .fileExtension("tif")
                 .build();
         assertThat(ImageUtils.createThumbnail(frame)).isTrue();
@@ -98,8 +90,6 @@ class ImageUtilsTest {
         var frame = Frame.builder()
                 .frameName(filename)
                 .frameNumber(1)
-                .combined(true)
-                .storedDir(TEST_DIRECTORY.toString())
                 .fileExtension("hdr")
                 .build();
         assertThat(ImageUtils.createThumbnail(frame)).isTrue();
@@ -122,8 +112,6 @@ class ImageUtilsTest {
                 .frameName("asamplep-4d6e-0001")
                 .fileExtension("png")
                 .partsPerFrame(4)
-                .storedDir(TEST_DIRECTORY + File.separator + "frames")
-                .combined(false)
                 .frameNumber(1)
                 .build();
         assertThat(ImageUtils.combineParts(frame, ImageOutputFormat.PNG)).isTrue();
@@ -141,8 +129,6 @@ class ImageUtilsTest {
                 .frameName("asamplep-2a7f-0001")
                 .fileExtension("png")
                 .partsPerFrame(9)
-                .storedDir(TEST_DIRECTORY + File.separator + "frames")
-                .combined(false)
                 .frameNumber(1)
                 .build();
         assertThat(ImageUtils.combineParts(frame, ImageOutputFormat.PNG)).isTrue();
@@ -160,8 +146,6 @@ class ImageUtilsTest {
                 .frameName("asamplep-4d6e-0001")
                 .fileExtension("hdr")
                 .partsPerFrame(4)
-                .storedDir(TEST_DIRECTORY + File.separator + "frames")
-                .combined(false)
                 .frameNumber(1)
                 .build();
         assertThat(ImageUtils.combineParts(frame, ImageOutputFormat.HDR)).isTrue();
@@ -179,8 +163,6 @@ class ImageUtilsTest {
                 .frameName("asamplep-4d6e-0001")
                 .fileExtension("hdr")
                 .partsPerFrame(9)
-                .storedDir(TEST_DIRECTORY + File.separator + "frames")
-                .combined(false)
                 .frameNumber(1)
                 .build();
         assertThat(ImageUtils.combineParts(frame, ImageOutputFormat.HDR)).isTrue();
@@ -197,8 +179,6 @@ class ImageUtilsTest {
                 .frameName("asamplep-2a7f-0001")
                 .fileExtension("hdr")
                 .partsPerFrame(9)
-                .storedDir(TEST_DIRECTORY + File.separator + "frames")
-                .combined(false)
                 .frameNumber(1)
                 .build();
         assertThat(ImageUtils.combineParts(frame, ImageOutputFormat.HDR)).isTrue();
@@ -215,8 +195,6 @@ class ImageUtilsTest {
                 .frameName("asamplep-4d6e-0001")
                 .fileExtension("png")
                 .partsPerFrame(9)
-                .storedDir(TEST_DIRECTORY + File.separator + "frames")
-                .combined(false)
                 .frameNumber(1)
                 .build();
         assertThat(ImageUtils.combineParts(frame, ImageOutputFormat.PNG)).isTrue();
@@ -234,22 +212,9 @@ class ImageUtilsTest {
                 .frameName("asamplep-4d6e-0001")
                 .fileExtension("tif")
                 .partsPerFrame(4)
-                .storedDir(TEST_DIRECTORY + File.separator + "frames")
-                .combined(false)
                 .frameNumber(1)
                 .build();
         assertThat(ImageUtils.combineParts(frame, ImageOutputFormat.TIFF)).isTrue();
     }
 
-
-    @Test
-    void configureFrameList() {
-        var project = TestUtils.getProject();
-        var user = TestUtils.getUser(Stream.of(Role.USER).collect(Collectors.toSet()),
-                "testuser1", "test1234$");
-        project.setUser(user);
-        var frameList = ImageUtils.configureFrameList(project);
-        assertThat(frameList.size()).isEqualTo(project.getProjectSettings().getTotalNumberOfFrames());
-
-    }
 }
