@@ -206,7 +206,7 @@ public class BlenderUtils {
                     var tempFile = new File(tempPath);
                     org.apache.commons.io.FileUtils.copyFile(tempFile, new File(fullPath));
                     tempFile.delete();
-                    return downloadedFile.toString();
+                    return fullPath;
                 } else {
                     return null;
                 }

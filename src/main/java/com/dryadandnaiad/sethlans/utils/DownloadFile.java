@@ -121,6 +121,7 @@ public class DownloadFile {
             while ((bytesCount = is.read(buffer)) > 0) {
                 os.write(buffer, 0, bytesCount);
             }
+            os.close();
 
             if (outputFile.exists() && outputFile.length() > 0) {
                 log.info(outputFile + " Downloaded");
