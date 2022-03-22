@@ -1,10 +1,8 @@
 package com.dryadandnaiad.sethlans.integration;
 
-import com.dryadandnaiad.sethlans.enums.AnimationType;
-import com.dryadandnaiad.sethlans.enums.ProjectState;
-import com.dryadandnaiad.sethlans.enums.ProjectType;
+import com.dryadandnaiad.sethlans.enums.*;
 import com.dryadandnaiad.sethlans.models.blender.project.ProjectView;
-import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
+import com.dryadandnaiad.sethlans.models.blender.project.VideoSettings;
 import com.dryadandnaiad.sethlans.models.forms.NodeForm;
 import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
@@ -258,7 +256,97 @@ public class NodeRenderTaskIntegrationTest {
     }
 
     @Test
-    public void pavillonBarceloneAnimation() throws JsonProcessingException, InterruptedException {
+    public void pavillonBarceloneAnimationMP4() throws JsonProcessingException, InterruptedException {
+        var mapper = new ObjectMapper();
+        var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
+
+        var response = given()
+                .log()
+                .ifValidationFails()
+                .multiPart("project_file", new File(BLEND_DIRECTORY.toString()
+                        + "/pavillon_barcelone_v1.2_textures_animation.blend"))
+                .accept(ContentType.JSON)
+                .contentType(ContentType.MULTIPART)
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token)
+                .post("/api/v1/project/upload_project_file")
+                .then()
+                .statusCode(StatusCodes.CREATED)
+                .extract()
+                .response()
+                .body()
+                .asString();
+
+        var projectForm = mapper.readValue(response, ProjectForm.class);
+
+        var videoSettings = VideoSettings.builder()
+                .codec(VideoCodec.LIBX264)
+                .videoOutputFormat(VideoOutputFormat.MP4)
+                .frameRate(30)
+                .videoQuality(VideoQuality.HIGH_X264)
+                .pixelFormat(PixelFormat.YUV420P)
+                .build();
+
+        projectForm.setProjectName(TestUtils.titleGenerator());
+        projectForm.getProjectSettings().setAnimationType(AnimationType.MOVIE);
+        projectForm.setProjectType(ProjectType.ANIMATION);
+        projectForm.getProjectSettings().setStartFrame(1);
+        projectForm.getProjectSettings().setEndFrame(120);
+        projectForm.getProjectSettings().setUseParts(false);
+        projectForm.getProjectSettings().setVideoSettings(videoSettings);
+        log.info(projectForm.toString());
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(mapper.writeValueAsString(projectForm))
+                .post("/api/v1/project/create_project")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
+        given()
+                .log()
+                .ifValidationFails()
+                .param("projectID", projectForm.getProjectID())
+                .post("/api/v1/project/start_project")
+                .then()
+                .statusCode(StatusCodes.ACCEPTED);
+
+        Thread.sleep(10000);
+
+        var project = mapper
+                .readValue(get("/api/v1/project/" + projectForm.getProjectID())
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), ProjectView.class);
+
+        Thread.sleep(10000);
+
+        log.info(project.toString());
+
+        log.info("Starting render");
+        while (!project.getProjectStatus().getProjectState().equals(ProjectState.FINISHED)) {
+            project = mapper
+                    .readValue(get("/api/v1/project/" + projectForm.getProjectID())
+                            .then()
+                            .extract()
+                            .response()
+                            .body()
+                            .asString(), ProjectView.class);
+            Thread.sleep(10000);
+        }
+        log.info("Render Complete");
+        log.info(project.toString());
+        Thread.sleep(10000);
+
+    }
+
+    @Test
+    public void pavillonBarceloneAnimationImages() throws JsonProcessingException, InterruptedException {
         var mapper = new ObjectMapper();
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
 
@@ -318,15 +406,6 @@ public class NodeRenderTaskIntegrationTest {
                         .asString(), ProjectView.class);
 
         Thread.sleep(10000);
-
-        var queue = mapper
-                .readValue(get("/api/v1/management/view_server_pending_queue")
-                        .then()
-                        .extract()
-                        .response()
-                        .body()
-                        .asString(), new TypeReference<List<RenderTask>>() {
-                });
 
         log.info(project.toString());
 
@@ -402,15 +481,6 @@ public class NodeRenderTaskIntegrationTest {
                         .asString(), ProjectView.class);
 
         Thread.sleep(10000);
-
-        var queue = mapper
-                .readValue(get("/api/v1/management/view_server_pending_queue")
-                        .then()
-                        .extract()
-                        .response()
-                        .body()
-                        .asString(), new TypeReference<List<RenderTask>>() {
-                });
 
         log.info(project.toString());
 

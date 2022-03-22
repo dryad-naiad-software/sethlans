@@ -230,6 +230,8 @@ public class PropertiesUtils {
         var pythonDirectory = binDirectory + File.separator + "python";
         var benchmarkDirectory = rootDirectory + File.separator + "benchmarks";
         var projectDirectory = rootDirectory + File.separator + "projects";
+        var ffmpegDirectory = binDirectory + File.separator + "ffmpeg";
+
 
         writeProperty(ConfigKeys.ROOT_DIR, rootDirectory);
         writeProperty(ConfigKeys.SCRIPTS_DIR, scriptsDirectory);
@@ -245,6 +247,7 @@ public class PropertiesUtils {
         if (mode.equals(SethlansMode.DUAL) || mode.equals(SethlansMode.SERVER)) {
             writeProperty(ConfigKeys.PROJECT_DIR, projectDirectory);
             writeProperty(ConfigKeys.DOWNLOAD_DIR, downloadDirectory);
+            writeProperty(ConfigKeys.FFMPEG_DIR, ffmpegDirectory);
             createDirectories(new File(projectDirectory));
             createDirectories(new File(downloadDirectory));
         }

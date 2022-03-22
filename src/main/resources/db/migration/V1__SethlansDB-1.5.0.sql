@@ -155,15 +155,15 @@ create table render_task_deviceids
 );
 create table server
 (
-    id           bigint not null,
-    date_created timestamp,
-    last_updated timestamp,
-    version      bigint,
-    benchmark_complete    boolean not null,
-    hostname     varchar(255),
-    ip_address   varchar(255),
-    network_port varchar(255),
-    systemid     varchar(255),
+    id                 bigint  not null,
+    date_created       timestamp,
+    last_updated       timestamp,
+    version            bigint,
+    benchmark_complete boolean not null,
+    hostname           varchar(255),
+    ip_address         varchar(255),
+    network_port       varchar(255),
+    systemid           varchar(255),
     primary key (id)
 );
 create table user

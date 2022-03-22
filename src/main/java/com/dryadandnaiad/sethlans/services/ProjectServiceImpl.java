@@ -381,6 +381,12 @@ public class ProjectServiceImpl implements ProjectService {
                 if (project.getProjectStatus().getProjectState().equals(ProjectState.STARTED)) {
                     project.getProjectStatus().setProjectState(ProjectState.RENDERING);
                 }
+                if (project.getProjectType().equals(ProjectType.ANIMATION) &&
+                        project.getProjectSettings().getAnimationType().equals(AnimationType.MOVIE)) {
+                    var videoDir = new File(project.getProjectRootDir() + File.separator + "video");
+                    videoDir.mkdirs();
+                }
+
                 var imagesDir = new File(project.getProjectRootDir() + File.separator + "images");
                 var thumbnailsDir = new File(project.getProjectRootDir() + File.separator + "thumbnails");
                 imagesDir.mkdirs();
@@ -439,6 +445,10 @@ public class ProjectServiceImpl implements ProjectService {
                     project.getProjectStatus().setTotalProjectTime(project.getProjectStatus().getTimerEnd() -
                             project.getProjectStatus().getTimerStart());
                     project.getProjectStatus().setProjectState(ProjectState.FINISHED);
+                    if (project.getProjectType().equals(ProjectType.ANIMATION) &&
+                            project.getProjectSettings().getAnimationType().equals(AnimationType.MOVIE)) {
+                        project.getProjectStatus().setProjectState(ProjectState.PROCESSING);
+                    }
                 }
                 project.getProjectStatus().setRenderedQueueItems(project.getProjectStatus().getRenderedQueueItems() + 1);
                 project.getProjectStatus().setCurrentPercentage(
@@ -446,6 +456,7 @@ public class ProjectServiceImpl implements ProjectService {
                 );
                 project.getProjectStatus().setTotalRenderTime(project.getProjectStatus().getTotalRenderTime() +
                         taskToProcess.getRenderTime());
+
                 log.debug(project.toString());
                 projectRepository.save(project);
                 project = projectRepository.getProjectByProjectID(project.getProjectID()).get();

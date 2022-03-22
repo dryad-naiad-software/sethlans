@@ -25,10 +25,7 @@ import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.user.UserChallenge;
 import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
-import com.dryadandnaiad.sethlans.utils.ConfigUtils;
-import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
-import com.dryadandnaiad.sethlans.utils.PythonUtils;
-import com.dryadandnaiad.sethlans.utils.QueryUtils;
+import com.dryadandnaiad.sethlans.utils.*;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -79,6 +76,10 @@ public class SetupServiceImpl implements SetupService {
             PythonUtils.copyPythonArchiveToDisk(binaryDir, QueryUtils.getOS());
             PythonUtils.copyAndExtractScripts(scriptDir);
             PythonUtils.installPython(binaryDir, QueryUtils.getOS());
+            if (setupForm.getMode().equals(SethlansMode.DUAL) || setupForm.getMode().equals(SethlansMode.SERVER)) {
+                FFmpegUtils.copyFFmpegArchiveToDisk(binaryDir, QueryUtils.getOS());
+                FFmpegUtils.installFFmpeg(binaryDir, QueryUtils.getOS());
+            }
 
 
         } catch (Exception e) {
@@ -95,7 +96,7 @@ public class SetupServiceImpl implements SetupService {
         user.setAccountNonLocked(true);
         user.setCredentialsNonExpired(true);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        for (UserChallenge challenge: user.getChallengeList()) {
+        for (UserChallenge challenge : user.getChallengeList()) {
             challenge.setResponse(bCryptPasswordEncoder.encode(challenge.getResponse()));
         }
         userRepository.save(user);

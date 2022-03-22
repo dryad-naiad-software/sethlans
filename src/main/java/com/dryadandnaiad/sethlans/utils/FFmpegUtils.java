@@ -19,6 +19,7 @@ package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.OS;
 import com.dryadandnaiad.sethlans.enums.VideoCodec;
+import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,8 @@ import org.zeroturnaround.exec.ProcessExecutor;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import static com.dryadandnaiad.sethlans.utils.FileUtils.installApplication;
@@ -119,12 +122,19 @@ public class FFmpegUtils {
             return false;
         }
 
+        List<Frame> frameList = new ArrayList<>();
+
+
+//        var frame = Frame.builder()
+//                .frameName(blenderProject.getProjectID() + "-frame-" + taskToProcess.getFrameInfo().getFrameNumber())
+//                .frameNumber(taskToProcess.getFrameInfo().getFrameNumber())
+//                .imageDir(imagesDir.toString())
+//                .thumbsDir(thumbnailsDir.toString())
+//                .fileExtension(taskToProcess.getScriptInfo().getImageOutputFormat().name().toLowerCase())
+//                .build();
+
         //TODO filenames will just be generated based on fixed directories and filename patterns.
 
-//        if (blenderProject.getFrameFileNames() == null || blenderProject.getFrameFileNames().isEmpty()) {
-//            log.error("No frame filenames present.");
-//            return false;
-//        }
 //        // Copy images to temporary directory for video processing
 //        log.info("Copying image files to temporary directory.");
 //        var tempDir = new File(blenderProject.getProjectRootDir()
@@ -173,7 +183,7 @@ public class FFmpegUtils {
         // Configure video codec
         ffmpeg.addArgument("-c:v");
         switch (videoSettings.getVideoOutputFormat()) {
-            case MP4:
+            case MP4 -> {
                 ffmpeg.addArgument(videoSettings.getCodec().getName());
                 ffmpeg.addArgument("-crf");
                 ffmpeg.addArgument(videoSettings.getVideoQuality().getName());
@@ -181,13 +191,13 @@ public class FFmpegUtils {
                 ffmpeg.addArgument("medium");
                 ffmpeg.addArgument("-pix_fmt");
                 ffmpeg.addArgument(videoSettings.getPixelFormat().getName());
-                break;
-            case AVI:
+            }
+            case AVI -> {
                 ffmpeg.addArgument(videoSettings.getCodec().getName());
                 ffmpeg.addArgument("-pix_fmt");
                 ffmpeg.addArgument(videoSettings.getPixelFormat().getName());
-                break;
-            case MKV:
+            }
+            case MKV -> {
                 ffmpeg.addArgument(videoSettings.getCodec().getName());
                 if (videoSettings.getCodec().equals(VideoCodec.LIBX264) || videoSettings.getCodec().equals(VideoCodec.LIBX265)) {
                     ffmpeg.addArgument("-crf");
@@ -197,7 +207,7 @@ public class FFmpegUtils {
                 }
                 ffmpeg.addArgument("-pix_fmt");
                 ffmpeg.addArgument(videoSettings.getPixelFormat().getName());
-                break;
+            }
         }
 
         // Configure output file
@@ -246,16 +256,12 @@ public class FFmpegUtils {
         String ffmpegBinary;
         var os = QueryUtils.getOS();
         switch (os) {
-            case WINDOWS_64:
-                ffmpegBinary = ffmpegDir + File.separator + "bin" + File.separator + "ffmpeg.exe";
-                break;
-            case LINUX_64:
-            case MACOS:
-                ffmpegBinary = ffmpegDir + File.separator + "bin" + File.separator + "ffmpeg";
-                break;
-            default:
+            case WINDOWS_64 -> ffmpegBinary = ffmpegDir + File.separator + "bin" + File.separator + "ffmpeg.exe";
+            case LINUX_64, MACOS -> ffmpegBinary = ffmpegDir + File.separator + "bin" + File.separator + "ffmpeg";
+            default -> {
                 log.error("Operating System not supported. " + os.getName());
                 return null;
+            }
         }
         return ffmpegBinary;
     }
