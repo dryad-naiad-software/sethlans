@@ -204,9 +204,4 @@ class PropertiesUtilsTest {
         assertThat(new File(cacheDirectory)).exists();
         assertThat(new File(blendFileCacheDirectory)).exists();
     }
-
-    @Test
-    void isNodeDisabled() {
-        assertThat(PropertiesUtils.isNodePaused()).isTrue();
-    }
 }
