@@ -19,6 +19,7 @@ package com.dryadandnaiad.sethlans.utils;
 
 import com.dryadandnaiad.sethlans.enums.ImageOutputFormat;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
+import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.models.blender.tasks.TaskFrameInfo;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ import net.coobird.thumbnailator.Thumbnails;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.springframework.util.FileSystemUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -38,6 +40,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
+
+import static org.apache.commons.io.FileUtils.copyFile;
 
 
 /**
@@ -241,5 +245,60 @@ public class ImageUtils {
 
         log.debug("Part Coordinate List generated");
         return partCoordinatesList;
+    }
+
+    public static String createZipFileFromImages(Project blenderProject) {
+        var frameList = getFrameList(blenderProject);
+
+        var tempDir = new File(blenderProject.getProjectRootDir()
+                + File.separator + "images-" + QueryUtils.getShortUUID());
+        tempDir.mkdirs();
+
+        var files = new ArrayList<String>();
+
+        for (Frame frame : frameList) {
+            var originalImage = new File(frame.getImageDir()
+                    + File.separator + frame.getFrameName() + "." + frame.getFileExtension());
+            var newImage = new File(tempDir + File.separator + "image" + "-"
+                    + frame.getFrameNumber() + "." + frame.getFileExtension());
+            try {
+                log.debug("Copying " + frame.getFrameName() + " to " + newImage);
+                copyFile(originalImage, newImage);
+                files.add(newImage.toString());
+            } catch (IOException e) {
+                log.error("Error copying file: " + originalImage);
+                log.error(e.getMessage());
+                log.error(Throwables.getStackTraceAsString(e));
+            }
+        }
+
+        var zipFile = FileUtils.createZipArchive(files, blenderProject.getProjectRootDir(),
+                blenderProject.getProjectName());
+
+        if (zipFile.exists()) {
+            FileSystemUtils.deleteRecursively(tempDir);
+            return zipFile.toString();
+        }
+        return null;
+    }
+
+    public static List<Frame> getFrameList(Project blenderProject) {
+        List<Frame> frameList = new ArrayList<>();
+
+        for (int i = 0; i < blenderProject.getProjectSettings().getTotalNumberOfFrames(); i++) {
+            var frame = Frame.builder()
+                    .frameName(blenderProject.getProjectID() + "-frame-" + (i + 1))
+                    .frameNumber(i + 1)
+                    .imageDir(blenderProject.getProjectRootDir() + File.separator + "images")
+                    .thumbsDir(blenderProject.getProjectRootDir() + File.separator + "thumbnails")
+                    .fileExtension(blenderProject
+                            .getProjectSettings()
+                            .getImageSettings()
+                            .getImageOutputFormat()
+                            .name().toLowerCase())
+                    .build();
+            frameList.add(frame);
+        }
+        return frameList;
     }
 }

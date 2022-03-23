@@ -71,9 +71,9 @@ public class ServerQueueController {
             var project = projectRepository.getProjectByProjectID(projectID).get();
             try {
                 String fileToSend;
-                if (project.getProjectSettings().getZipFilename() != null) {
+                if (project.getProjectSettings().getBlenderZipFilename() != null) {
                     fileToSend = project.getProjectRootDir() + File.separator
-                            + project.getProjectSettings().getZipFilename();
+                            + project.getProjectSettings().getBlenderZipFilename();
                 } else {
                     fileToSend = project.getProjectRootDir() + File.separator
                             + project.getProjectSettings().getBlendFilename();
@@ -110,10 +110,10 @@ public class ServerQueueController {
                 var project = projectRepository.getProjectByProjectID(renderTask.getProjectID()).get();
                 renderTask.setTaskBlendFileMD5Sum(project.getProjectSettings().getBlendFilenameMD5Sum());
                 renderTask.setTaskBlendFile(project.getProjectSettings().getBlendFilename());
-                if (project.getProjectSettings().getZipFilename() != null) {
+                if (project.getProjectSettings().getBlenderZipFilename() != null) {
                     renderTask.setZipFileProject(true);
-                    renderTask.setZipFile(project.getProjectSettings().getZipFilename());
-                    renderTask.setZipFileMD5Sum(project.getProjectSettings().getZipFilenameMD5Sum());
+                    renderTask.setZipFile(project.getProjectSettings().getBlenderZipFilename());
+                    renderTask.setZipFileMD5Sum(project.getProjectSettings().getBlenderZipFilenameMD5Sum());
                 }
                 if (project.getProjectStatus().getProjectState().equals(ProjectState.PENDING)) {
                     project.getProjectStatus().setProjectState(ProjectState.STARTED);

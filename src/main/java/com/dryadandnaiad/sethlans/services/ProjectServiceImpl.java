@@ -305,8 +305,8 @@ public class ProjectServiceImpl implements ProjectService {
                 projectForm.setProjectFileLocation(projectDirectory + File.separator + projectForm.getOriginalFile());
                 projectForm.getProjectSettings().setBlendFilenameMD5Sum(FileUtils.getMD5ofFile(new File(projectForm.getProjectSettings().getBlendFilename())));
                 projectForm.getProjectSettings().setBlendFilename(Paths.get(projectForm.getProjectSettings().getBlendFilename()).getFileName().toString());
-                projectForm.getProjectSettings().setZipFilename(projectForm.getOriginalFile());
-                projectForm.getProjectSettings().setZipFilenameMD5Sum(FileUtils.getMD5ofFile(new File(projectForm.getProjectFileLocation())));
+                projectForm.getProjectSettings().setBlenderZipFilename(projectForm.getOriginalFile());
+                projectForm.getProjectSettings().setBlenderZipFilenameMD5Sum(FileUtils.getMD5ofFile(new File(projectForm.getProjectFileLocation())));
 
             } else {
                 org.apache.commons.io.FileUtils.moveFile(new File(projectForm.getProjectFileLocation()), new File(projectDirectory + File.separator + projectForm.getProjectSettings().getBlendFilename()));
@@ -444,6 +444,7 @@ public class ProjectServiceImpl implements ProjectService {
                     project.getProjectStatus().setTimerEnd(new Date().getTime());
                     project.getProjectStatus().setTotalProjectTime(project.getProjectStatus().getTimerEnd() -
                             project.getProjectStatus().getTimerStart());
+                    project.getProjectSettings().getImageSettings().setImageZipFileLocation(ImageUtils.createZipFileFromImages(project));
                     project.getProjectStatus().setProjectState(ProjectState.FINISHED);
                     if (project.getProjectType().equals(ProjectType.ANIMATION) &&
                             project.getProjectSettings().getAnimationType().equals(AnimationType.MOVIE)) {
@@ -483,6 +484,7 @@ public class ProjectServiceImpl implements ProjectService {
             }
         }
     }
+
 
     private void updateProjectAfterVideo(String projectID) {
         var project = projectRepository.getProjectByProjectID(projectID).get();

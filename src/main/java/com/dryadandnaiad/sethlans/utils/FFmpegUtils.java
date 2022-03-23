@@ -34,8 +34,6 @@ import org.zeroturnaround.exec.ProcessExecutor;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import static com.dryadandnaiad.sethlans.utils.FileUtils.installApplication;
@@ -124,23 +122,7 @@ public class FFmpegUtils {
             return false;
         }
 
-
-        List<Frame> frameList = new ArrayList<>();
-
-        for (int i = 0; i < blenderProject.getProjectSettings().getTotalNumberOfFrames(); i++) {
-            var frame = Frame.builder()
-                    .frameName(blenderProject.getProjectID() + "-frame-" + (i + 1))
-                    .frameNumber(i + 1)
-                    .imageDir(blenderProject.getProjectRootDir() + File.separator + "images")
-                    .thumbsDir(blenderProject.getProjectRootDir() + File.separator + "thumbnails")
-                    .fileExtension(blenderProject
-                            .getProjectSettings()
-                            .getImageSettings()
-                            .getImageOutputFormat()
-                            .name().toLowerCase())
-                    .build();
-            frameList.add(frame);
-        }
+        var frameList = ImageUtils.getFrameList(blenderProject);
 
         // Copy images to temporary directory for video processing
         log.info("Copying image files to temporary directory.");

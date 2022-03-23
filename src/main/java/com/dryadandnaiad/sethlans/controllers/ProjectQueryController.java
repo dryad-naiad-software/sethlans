@@ -105,6 +105,23 @@ public class ProjectQueryController {
 
         return project.map(value -> new ResponseEntity<>(projectToProjectView.convert(value), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
-
     }
+
+//    @GetMapping("/{project_id}/download_images")
+//    public @ResponseBody
+//    byte[] getImages(@PathVariable("project_id") String projectID) {
+//        Optional<Project> project;
+//
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+//            project = projectRepository.getProjectByProjectID(projectID);
+//        } else {
+//            var user = userRepository.findUserByUsername(auth.getName()).orElse(null);
+//            project = projectRepository.getProjectByUserAndProjectID(user, projectID);
+//        }
+//        InputStream inputStream = new BufferedInputStream(new
+//                FileInputStream(project));
+//        return IOUtils.toByteArray(inputStream);
+//
+//    }
 }

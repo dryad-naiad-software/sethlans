@@ -41,5 +41,6 @@ public class ImageSettings {
     private Integer resolutionY;
     private Integer resPercentage;
     private ImageOutputFormat imageOutputFormat;
+    private String imageZipFileLocation;
 
 }
