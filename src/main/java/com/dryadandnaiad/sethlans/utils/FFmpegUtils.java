@@ -124,6 +124,7 @@ public class FFmpegUtils {
             return false;
         }
 
+
         List<Frame> frameList = new ArrayList<>();
 
         for (int i = 0; i < blenderProject.getProjectSettings().getTotalNumberOfFrames(); i++) {

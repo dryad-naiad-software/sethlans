@@ -291,7 +291,7 @@ public class NodeRenderTaskIntegrationTest {
         projectForm.getProjectSettings().setAnimationType(AnimationType.MOVIE);
         projectForm.setProjectType(ProjectType.ANIMATION);
         projectForm.getProjectSettings().setStartFrame(1);
-        projectForm.getProjectSettings().setEndFrame(120);
+        projectForm.getProjectSettings().setEndFrame(75);
         projectForm.getProjectSettings().setUseParts(false);
         projectForm.getProjectSettings().setVideoSettings(videoSettings);
         log.info(projectForm.toString());

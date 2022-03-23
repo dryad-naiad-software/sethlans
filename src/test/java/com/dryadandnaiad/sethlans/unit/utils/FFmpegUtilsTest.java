@@ -123,8 +123,7 @@ class FFmpegUtilsTest {
         var videoSettings = project.getProjectSettings().getVideoSettings();
         videoSettings.setCodec(VideoCodec.UTVIDEO);
         videoSettings.setVideoOutputFormat(VideoOutputFormat.AVI);
-        videoSettings.setVideoFileLocation(videoDirectory + File.separator + QueryUtils.truncatedProjectNameAndID(project.getProjectName(),
-                project.getProjectID()) + "." +
+        videoSettings.setVideoFileLocation(videoDirectory + File.separator + project.getProjectName() + "." +
                 VideoOutputFormat.AVI.name().toLowerCase());
         project.getProjectSettings().setVideoSettings(videoSettings);
         assertThat(FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString())).isTrue();
@@ -145,8 +144,7 @@ class FFmpegUtilsTest {
         videoSettings.setVideoQuality(VideoQuality.HIGH_X265);
         videoSettings.setVideoOutputFormat(VideoOutputFormat.MKV);
         videoSettings.setVideoFileLocation(videoDirectory + File.separator +
-                QueryUtils.truncatedProjectNameAndID(project.getProjectName(),
-                        project.getProjectID()) + "." +
+                project.getProjectName() + "." +
                 VideoOutputFormat.MKV.name().toLowerCase());
         project.getProjectSettings().setVideoSettings(videoSettings);
         assertThat(FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString())).isTrue();
@@ -164,17 +162,6 @@ class FFmpegUtilsTest {
         assertThat(FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString())).isFalse();
     }
 
-    @Test
-    void invalidEncodeMissingFile() {
-        var binaryDirectory = new File(TEST_DIRECTORY + File.separator + "binaries");
-        binaryDirectory.mkdirs();
-        FFmpegUtils.copyFFmpegArchiveToDisk(binaryDirectory.toString(), QueryUtils.getOS());
-        FFmpegUtils.installFFmpeg(binaryDirectory.toString(), QueryUtils.getOS());
-        var ffmpegDirectory = new File(binaryDirectory + File.separator + "ffmpeg");
-        var project = createProject();
-        var filename = "test";
-        assertThat(FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString())).isFalse();
-    }
 
     @Test
     void invalidEncodeEmptyFileList() {
@@ -230,9 +217,10 @@ class FFmpegUtilsTest {
                 .videoSettings(videoSettings)
                 .animationType(AnimationType.MOVIE)
                 .imageSettings(imageSettings)
+                .totalNumberOfFrames(20)
                 .build();
         return Project.builder()
-                .projectID("123e4567-e89b-12d3-a456-426655440000")
+                .projectID("cba78a2f-45d7-44ec-a3e7-9fd48b5d1c4f")
                 .projectName("The Sample Project")
                 .projectType(ProjectType.ANIMATION)
                 .projectSettings(projectSettings)
