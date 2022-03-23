@@ -58,39 +58,58 @@ class ImageUtilsTest {
 
     @Test
     void createThumbnailPNG() {
-        var file1 = "asamplep-fd4e-0001.png";
-        TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "frame/" + file1, file1);
-        var filename = "asamplep-fd4e-0001";
+        var imageDir = new File(TEST_DIRECTORY + File.separator + "frames");
+        imageDir.mkdirs();
+        var file1 = "fba51634-4fe3-4c54-880d-71ab67016472-frame-1.png";
+        TestFileUtils.copyTestArchiveToDisk(imageDir.toString(), "frame/" + file1, file1);
+        var filename = "fba51634-4fe3-4c54-880d-71ab67016472-frame-1";
+        var thumbnailsDir = new File(TEST_DIRECTORY + File.separator + "thumbnails");
+        thumbnailsDir.mkdirs();
         var frame = Frame.builder()
                 .frameName(filename)
                 .frameNumber(1)
                 .fileExtension("png")
+                .imageDir(imageDir.toString())
+                .thumbsDir(thumbnailsDir.toString())
                 .build();
         Assertions.assertThat(ImageUtils.createThumbnail(frame)).isTrue();
     }
 
     @Test
     void createThumbnailTIFF() {
-        var file1 = "asamplep-1127-0001.tif";
-        TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "frame/" + file1, file1);
-        var filename = "asamplep-1127-0001";
+        var imageDir = new File(TEST_DIRECTORY + File.separator + "frames");
+        imageDir.mkdirs();
+        var file1 = "fba51634-4fe3-4c54-880d-71ab67016472-frame-1.tiff";
+        TestFileUtils.copyTestArchiveToDisk(imageDir.toString(), "frame/" + file1, file1);
+        var filename = "fba51634-4fe3-4c54-880d-71ab67016472-frame-1";
+        var thumbnailsDir = new File(TEST_DIRECTORY + File.separator + "thumbnails");
+        thumbnailsDir.mkdirs();
         var frame = Frame.builder()
                 .frameName(filename)
                 .frameNumber(1)
-                .fileExtension("tif")
+                .fileExtension("tiff")
+                .imageDir(imageDir.toString())
+                .thumbsDir(thumbnailsDir.toString())
                 .build();
         assertThat(ImageUtils.createThumbnail(frame)).isTrue();
     }
 
     @Test
     void createThumbnailHDR() {
-        var file1 = "asamplep-ee32-0001.hdr";
-        TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "frame/" + file1, file1);
-        var filename = "asamplep-ee32-0001";
+        var imageDir = new File(TEST_DIRECTORY + File.separator + "frames");
+        imageDir.mkdirs();
+        var file1 = "fba51634-4fe3-4c54-880d-71ab67016472-frame-1.hdr";
+        TestFileUtils.copyTestArchiveToDisk(imageDir.toString(), "frame/" + file1, file1);
+        var filename = "fba51634-4fe3-4c54-880d-71ab67016472-frame-1";
+        var thumbnailsDir = new File(TEST_DIRECTORY + File.separator + "thumbnails");
+        thumbnailsDir.mkdirs();
+
         var frame = Frame.builder()
                 .frameName(filename)
                 .frameNumber(1)
                 .fileExtension("hdr")
+                .imageDir(imageDir.toString())
+                .thumbsDir(thumbnailsDir.toString())
                 .build();
         assertThat(ImageUtils.createThumbnail(frame)).isTrue();
     }
@@ -109,10 +128,12 @@ class ImageUtilsTest {
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "image_parts/" + file1, file1);
         FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString(), true);
         var frame = Frame.builder()
-                .frameName("asamplep-4d6e-0001")
+                .frameName("fba51634-4fe3-4c54-880d-71ab67016472-frame-1")
                 .fileExtension("png")
                 .partsPerFrame(4)
                 .frameNumber(1)
+                .imageDir(TEST_DIRECTORY + File.separator + "frames")
+                .partsDir(partLocation.toString())
                 .build();
         assertThat(ImageUtils.combineParts(frame, ImageOutputFormat.PNG)).isTrue();
 
@@ -126,10 +147,12 @@ class ImageUtilsTest {
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "image_parts/" + file1, file1);
         FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString(), true);
         var frame = Frame.builder()
-                .frameName("asamplep-2a7f-0001")
+                .frameName("fba51634-4fe3-4c54-880d-71ab67016472-frame-1")
                 .fileExtension("png")
                 .partsPerFrame(9)
                 .frameNumber(1)
+                .imageDir(TEST_DIRECTORY + File.separator + "frames")
+                .partsDir(partLocation.toString())
                 .build();
         assertThat(ImageUtils.combineParts(frame, ImageOutputFormat.PNG)).isTrue();
 
@@ -143,10 +166,12 @@ class ImageUtilsTest {
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "image_parts/" + file1, file1);
         FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString(), true);
         var frame = Frame.builder()
-                .frameName("asamplep-4d6e-0001")
+                .frameName("fba51634-4fe3-4c54-880d-71ab67016472-frame-1")
                 .fileExtension("hdr")
                 .partsPerFrame(4)
                 .frameNumber(1)
+                .imageDir(TEST_DIRECTORY + File.separator + "frames")
+                .partsDir(partLocation.toString())
                 .build();
         assertThat(ImageUtils.combineParts(frame, ImageOutputFormat.HDR)).isTrue();
 
@@ -160,10 +185,12 @@ class ImageUtilsTest {
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "image_parts/" + file1, file1);
         FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString(), true);
         var frame = Frame.builder()
-                .frameName("asamplep-4d6e-0001")
+                .frameName("fba51634-4fe3-4c54-880d-71ab67016472-frame-1")
                 .fileExtension("hdr")
                 .partsPerFrame(9)
                 .frameNumber(1)
+                .imageDir(TEST_DIRECTORY + File.separator + "frames")
+                .partsDir(partLocation.toString())
                 .build();
         assertThat(ImageUtils.combineParts(frame, ImageOutputFormat.HDR)).isTrue();
     }
@@ -176,10 +203,12 @@ class ImageUtilsTest {
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "image_parts/" + file1, file1);
         FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString(), true);
         var frame = Frame.builder()
-                .frameName("asamplep-2a7f-0001")
+                .frameName("fba51634-4fe3-4c54-880d-71ab67016472-frame-1")
                 .fileExtension("hdr")
                 .partsPerFrame(9)
                 .frameNumber(1)
+                .imageDir(TEST_DIRECTORY + File.separator + "frames")
+                .partsDir(partLocation.toString())
                 .build();
         assertThat(ImageUtils.combineParts(frame, ImageOutputFormat.HDR)).isTrue();
     }
@@ -192,10 +221,12 @@ class ImageUtilsTest {
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "image_parts/" + file1, file1);
         FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString(), true);
         var frame = Frame.builder()
-                .frameName("asamplep-4d6e-0001")
+                .frameName("fba51634-4fe3-4c54-880d-71ab67016472-frame-1")
                 .fileExtension("png")
                 .partsPerFrame(9)
                 .frameNumber(1)
+                .imageDir(TEST_DIRECTORY + File.separator + "frames")
+                .partsDir(partLocation.toString())
                 .build();
         assertThat(ImageUtils.combineParts(frame, ImageOutputFormat.PNG)).isTrue();
 
@@ -209,10 +240,12 @@ class ImageUtilsTest {
         TestFileUtils.copyTestArchiveToDisk(TEST_DIRECTORY.toString(), "image_parts/" + file1, file1);
         FileUtils.extractArchive(TEST_DIRECTORY + File.separator + file1, partLocation.toString(), true);
         var frame = Frame.builder()
-                .frameName("asamplep-4d6e-0001")
-                .fileExtension("tif")
+                .frameName("fba51634-4fe3-4c54-880d-71ab67016472-frame-1")
+                .fileExtension("tiff")
                 .partsPerFrame(4)
                 .frameNumber(1)
+                .imageDir(TEST_DIRECTORY + File.separator + "frames")
+                .partsDir(partLocation.toString())
                 .build();
         assertThat(ImageUtils.combineParts(frame, ImageOutputFormat.TIFF)).isTrue();
     }
