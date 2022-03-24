@@ -18,11 +18,13 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.converters.ProjectToProjectView;
+import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.models.blender.project.ProjectView;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.repositories.ProjectRepository;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
+import com.dryadandnaiad.sethlans.utils.ImageUtils;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -174,5 +176,21 @@ public class ProjectQueryController {
             log.error(Throwables.getStackTraceAsString(e));
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{project_id}/frames/")
+    public List<Frame> getProjectFrames(@PathVariable("project_id") String projectID) {
+        Project project;
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            project = projectRepository.getProjectByProjectID(projectID).get();
+        } else {
+            var user = userRepository.findUserByUsername(auth.getName()).orElse(null);
+            project = projectRepository.getProjectByUserAndProjectID(user, projectID).get();
+        }
+
+        return ImageUtils.getFrameList(project);
+
     }
 }
