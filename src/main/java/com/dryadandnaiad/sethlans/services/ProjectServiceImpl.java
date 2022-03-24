@@ -109,11 +109,43 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public boolean pauseProject(String projectID) {
+        if (projectRepository.getProjectByProjectID(projectID).isPresent()) {
+            var project = projectRepository.getProjectByProjectID(projectID).get();
+            if (!project.getProjectStatus().getProjectState().equals(ProjectState.FINISHED)) {
+                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+                if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+                    project.getProjectStatus().setProjectState(ProjectState.PAUSED);
+                    projectRepository.save(project);
+                    return true;
+                } else if (project.getUser().getUsername().equals(auth.getName())) {
+                    project.getProjectStatus().setProjectState(ProjectState.PAUSED);
+                    projectRepository.save(project);
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 
     @Override
     public boolean stopProject(String projectID) {
+        if (projectRepository.getProjectByProjectID(projectID).isPresent()) {
+            var project = projectRepository.getProjectByProjectID(projectID).get();
+            if (!project.getProjectStatus().getProjectState().equals(ProjectState.FINISHED)) {
+                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+                if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+                    project.getProjectStatus().setProjectState(ProjectState.STOPPED);
+                    projectRepository.save(project);
+                    return true;
+                } else if (project.getUser().getUsername().equals(auth.getName())) {
+                    project.getProjectStatus().setProjectState(ProjectState.STOPPED);
+                    projectRepository.save(project);
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 
@@ -491,6 +523,5 @@ public class ProjectServiceImpl implements ProjectService {
         project.getProjectStatus().setProjectState(ProjectState.FINISHED);
         projectRepository.save(project);
     }
-
 
 }
