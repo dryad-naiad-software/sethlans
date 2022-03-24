@@ -10,6 +10,7 @@ import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.tools.TestFileUtils;
 import com.dryadandnaiad.sethlans.tools.TestUtils;
+import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +26,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -256,7 +259,7 @@ public class NodeRenderTaskIntegrationTest {
     }
 
     @Test
-    public void pavillonBarceloneAnimationMP4() throws JsonProcessingException, InterruptedException {
+    public void pavillonBarceloneAnimationMP4() throws IOException, InterruptedException {
         var mapper = new ObjectMapper();
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
 
@@ -339,6 +342,44 @@ public class NodeRenderTaskIntegrationTest {
                             .asString(), ProjectView.class);
             Thread.sleep(10000);
         }
+        assertThat(project.getProjectStatus().getProjectState().equals(ProjectState.FINISHED)).isTrue();
+
+        var imageZip = given()
+                .log()
+                .ifValidationFails()
+                .get("/api/v1/project/" + projectForm.getProjectID() + "/download_images")
+                .asByteArray();
+
+        var outputZipFile = new File(TEST_DIRECTORY + File.separator
+                + "result" + QueryUtils.getShortUUID() + ".zip");
+
+        var outStream = new FileOutputStream(outputZipFile);
+        outStream.write(imageZip);
+        outStream.close();
+
+        var outputSize = outputZipFile.length();
+
+        assertThat(outputZipFile).exists();
+        assertThat(outputSize).isGreaterThan(0L);
+
+        var movieFile = given()
+                .log()
+                .ifValidationFails()
+                .get("/api/v1/project/" + projectForm.getProjectID() + "/download_video")
+                .asByteArray();
+
+        var outputMovieFile = new File(TEST_DIRECTORY + File.separator
+                + "result" + QueryUtils.getShortUUID() + ".zip");
+
+        var outMovieStream = new FileOutputStream(outputMovieFile);
+        outMovieStream.write(movieFile);
+        outMovieStream.close();
+
+        var outputMovieSize = outputZipFile.length();
+
+        assertThat(outputMovieFile).exists();
+        assertThat(outputMovieSize).isGreaterThan(0L);
+
         log.info("Render Complete");
         log.info(project.toString());
         Thread.sleep(10000);
@@ -346,7 +387,7 @@ public class NodeRenderTaskIntegrationTest {
     }
 
     @Test
-    public void pavillonBarceloneAnimationImages() throws JsonProcessingException, InterruptedException {
+    public void pavillonBarceloneAnimationImages() throws IOException, InterruptedException {
         var mapper = new ObjectMapper();
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
 
@@ -420,16 +461,36 @@ public class NodeRenderTaskIntegrationTest {
                             .asString(), ProjectView.class);
             Thread.sleep(10000);
         }
+        assertThat(project.getProjectStatus().getProjectState().equals(ProjectState.FINISHED)).isTrue();
         log.info("Render Complete");
         log.info(project.toString());
         log.info("https://localhost:7443/api/v1/project/" + projectForm.getProjectID() + "/download_images");
+
+        var imageZip = given()
+                .log()
+                .ifValidationFails()
+                .get("/api/v1/project/" + projectForm.getProjectID() + "/download_images")
+                .asByteArray();
+
+        var outputZipFile = new File(TEST_DIRECTORY + File.separator
+                + "result" + QueryUtils.getShortUUID() + ".zip");
+
+        var outStream = new FileOutputStream(outputZipFile);
+        outStream.write(imageZip);
+        outStream.close();
+
+        var outputSize = outputZipFile.length();
+
+        assertThat(outputZipFile).exists();
+        assertThat(outputSize).isGreaterThan(0L);
+
 
         Thread.sleep(10000);
 
     }
 
     @Test
-    public void bmwStaticImage4Parts() throws JsonProcessingException, InterruptedException {
+    public void bmwStaticImage4Parts() throws IOException, InterruptedException {
         var mapper = new ObjectMapper();
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
 
@@ -497,8 +558,30 @@ public class NodeRenderTaskIntegrationTest {
                             .asString(), ProjectView.class);
             Thread.sleep(10000);
         }
+        assertThat(project.getProjectStatus().getProjectState().equals(ProjectState.FINISHED)).isTrue();
+
         log.info("Render Complete");
         log.info(project.toString());
+        log.info("https://localhost:7443/api/v1/project/" + projectForm.getProjectID() + "/download_images");
+
+        var imageZip = given()
+                .log()
+                .ifValidationFails()
+                .get("/api/v1/project/" + projectForm.getProjectID() + "/download_images")
+                .asByteArray();
+
+        var outputZipFile = new File(TEST_DIRECTORY + File.separator
+                + "result" + QueryUtils.getShortUUID() + ".zip");
+
+        var outStream = new FileOutputStream(outputZipFile);
+        outStream.write(imageZip);
+        outStream.close();
+
+        var outputSize = outputZipFile.length();
+
+        assertThat(outputZipFile).exists();
+        assertThat(outputSize).isGreaterThan(0L);
+
         Thread.sleep(10000);
 
 
