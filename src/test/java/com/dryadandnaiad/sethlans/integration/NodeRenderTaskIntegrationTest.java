@@ -422,6 +422,8 @@ public class NodeRenderTaskIntegrationTest {
         }
         log.info("Render Complete");
         log.info(project.toString());
+        log.info("https://localhost:7443/api/v1/project/" + projectForm.getProjectID() + "/download_images");
+
         Thread.sleep(10000);
 
     }

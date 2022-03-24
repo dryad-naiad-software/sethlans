@@ -210,6 +210,13 @@ public class RenderServiceImpl implements RenderService {
         var selectedGPUs = PropertiesUtils.getSelectedGPUs();
         var combinedGPU = PropertiesUtils.isGPUCombined();
         log.debug("Assigning compute method to " + renderTaskToAssign.getTaskID());
+        var inUseIds = new ArrayList<String>();
+
+        for (RenderTask renderTask : activeRenders) {
+            if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.GPU)) {
+                inUseIds.add(renderTask.getScriptInfo().getDeviceIDs().get(0));
+            }
+        }
 
         switch (nodeType) {
             case CPU_GPU -> {
@@ -223,6 +230,9 @@ public class RenderServiceImpl implements RenderService {
                             && selectedGPUs.size() == 1) {
                         gpuInUse = true;
                         log.debug("GPU In Use");
+                    } else if (inUseIds.size() == selectedGPUs.size()) {
+                        gpuInUse = true;
+                        log.debug("All GPU In Use");
                     }
                     if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.CPU)) {
                         cpuInUse = true;
@@ -233,6 +243,7 @@ public class RenderServiceImpl implements RenderService {
                     renderTaskToAssign.getScriptInfo().setComputeOn(ComputeOn.GPU);
                     renderTaskToAssign.getScriptInfo().setTaskTileSize(PropertiesUtils.getGPUTileSize());
                 } else if (!cpuInUse) {
+                    log.debug("Assigning to CPU");
                     renderTaskToAssign.getScriptInfo().setComputeOn(ComputeOn.CPU);
                     renderTaskToAssign.getScriptInfo().setCores(PropertiesUtils.getSelectedCores());
                     renderTaskToAssign.getScriptInfo().setTaskTileSize(PropertiesUtils.getCPUTileSize());
@@ -259,20 +270,23 @@ public class RenderServiceImpl implements RenderService {
             } else {
                 ids.add(selectedGPUs.get(0).getGpuID());
             }
+            log.debug("Current GPU Id's on System "
+                    + ids);
             if (combinedGPU || selectedGPUs.size() == 1) {
                 renderTaskToAssign.getScriptInfo().setDeviceType(selectedGPUs.get(0).getDeviceType());
                 renderTaskToAssign.getScriptInfo().setDeviceIDs(ids);
             } else {
-                renderTaskToAssign.getScriptInfo().setDeviceType(selectedGPUs.get(0).getDeviceType());
-                var inUseIds = new ArrayList<String>();
-                for (RenderTask renderTask : activeRenders) {
-                    if (renderTask.getScriptInfo().getComputeOn().equals(ComputeOn.GPU)) {
-                        inUseIds.add(renderTask.getScriptInfo().getDeviceIDs().get(0));
-                    }
-                }
                 var freeIds = new ArrayList<>(ids);
                 freeIds.removeAll(inUseIds);
-                renderTaskToAssign.getScriptInfo().setDeviceIDs(Collections.singletonList(freeIds.get(0)));
+                log.debug("Current GPU ID's available " + freeIds);
+                if (freeIds.size() > 0) {
+                    for (GPU gpu : selectedGPUs) {
+                        if (freeIds.get(0).equals(gpu.getGpuID())) {
+                            renderTaskToAssign.getScriptInfo().setDeviceType(gpu.getDeviceType());
+                        }
+                    }
+                    renderTaskToAssign.getScriptInfo().setDeviceIDs(Collections.singletonList(freeIds.get(0)));
+                }
             }
         }
 

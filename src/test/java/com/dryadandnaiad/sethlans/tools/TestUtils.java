@@ -153,7 +153,7 @@ public class TestUtils {
 
         if(setupForm.getAvailableGPUs().size() > 0) {
             nodeType = NodeType.CPU_GPU;
-            selectedGPUs.add(setupForm.getAvailableGPUs().get(0));
+            selectedGPUs.addAll(setupForm.getAvailableGPUs());
         }
 
         var challenge = UserChallenge.builder()

@@ -23,9 +23,13 @@ import com.dryadandnaiad.sethlans.models.blender.project.ProjectView;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
 import com.dryadandnaiad.sethlans.repositories.ProjectRepository;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
+import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,6 +38,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -107,21 +114,65 @@ public class ProjectQueryController {
                 .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
     }
 
-//    @GetMapping("/{project_id}/download_images")
-//    public @ResponseBody
-//    byte[] getImages(@PathVariable("project_id") String projectID) {
-//        Optional<Project> project;
-//
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-//            project = projectRepository.getProjectByProjectID(projectID);
-//        } else {
-//            var user = userRepository.findUserByUsername(auth.getName()).orElse(null);
-//            project = projectRepository.getProjectByUserAndProjectID(user, projectID);
-//        }
-//        InputStream inputStream = new BufferedInputStream(new
-//                FileInputStream(project));
-//        return IOUtils.toByteArray(inputStream);
-//
-//    }
+    @GetMapping("/{project_id}/download_video")
+    public ResponseEntity<InputStreamResource> downloadVideo(@PathVariable("project_id") String projectID) {
+        Project project;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            project = projectRepository.getProjectByProjectID(projectID).get();
+        } else {
+            var user = userRepository.findUserByUsername(auth.getName()).orElse(null);
+            project = projectRepository.getProjectByUserAndProjectID(user, projectID).get();
+        }
+        try {
+            var movieFile = new File(project
+                    .getProjectSettings()
+                    .getVideoSettings().getVideoFileLocation());
+            var resource =
+                    new InputStreamResource(new FileInputStream(movieFile));
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" +
+                            project.getProjectName() + "." + project.getProjectSettings().getVideoSettings()
+                            .getVideoOutputFormat().name().toLowerCase())
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .contentLength(movieFile.length())
+                    .body(resource);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{project_id}/download_images")
+    public ResponseEntity<InputStreamResource> getImages(@PathVariable("project_id") String projectID) {
+        Project project;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+            project = projectRepository.getProjectByProjectID(projectID).get();
+        } else {
+            var user = userRepository.findUserByUsername(auth.getName()).orElse(null);
+            project = projectRepository.getProjectByUserAndProjectID(user, projectID).get();
+        }
+        try {
+            var zipFile = new File(project
+                    .getProjectSettings()
+                    .getImageSettings()
+                    .getImageZipFileLocation());
+            var resource =
+                    new InputStreamResource(new FileInputStream(zipFile));
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename="
+                            + project.getProjectName() + ".zip")
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .contentLength(zipFile.length())
+                    .body(resource);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+        }
+        return ResponseEntity.notFound().build();
+    }
 }
