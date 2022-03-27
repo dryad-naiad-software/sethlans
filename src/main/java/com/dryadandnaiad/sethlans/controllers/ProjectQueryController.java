@@ -135,7 +135,8 @@ public class ProjectQueryController {
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" +
-                            project.getProjectName() + "." + project.getProjectSettings().getVideoSettings()
+                            project.getProjectName().replaceAll(" ", "_")
+                            + "." + project.getProjectSettings().getVideoSettings()
                             .getVideoOutputFormat().name().toLowerCase())
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .contentLength(movieFile.length())

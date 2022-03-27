@@ -99,13 +99,14 @@ class FFmpegUtilsTest {
         var binaryDirectory = new File(TEST_DIRECTORY + File.separator + "binaries");
         var videoDirectory = new File(projectDir + File.separator + "video");
         binaryDirectory.mkdirs();
+        videoDirectory.mkdirs();
         FFmpegUtils.copyFFmpegArchiveToDisk(binaryDirectory.toString(), QueryUtils.getOS());
         FFmpegUtils.installFFmpeg(binaryDirectory.toString(), QueryUtils.getOS());
         var ffmpegDirectory = new File(binaryDirectory + File.separator + "ffmpeg");
         var project = createProject();
         var videoSettings = project.getProjectSettings().getVideoSettings();
-        videoSettings.setVideoFileLocation(videoDirectory + File.separator + QueryUtils.truncatedProjectNameAndID(project.getProjectName(),
-                project.getProjectID()) + "." +
+        videoSettings.setVideoFileLocation(videoDirectory + File.separator +
+                project.getProjectName().replaceAll(" ", "_") + "." +
                 VideoOutputFormat.MP4.name().toLowerCase());
         assertThat(FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString())).isTrue();
     }
@@ -123,7 +124,8 @@ class FFmpegUtilsTest {
         var videoSettings = project.getProjectSettings().getVideoSettings();
         videoSettings.setCodec(VideoCodec.UTVIDEO);
         videoSettings.setVideoOutputFormat(VideoOutputFormat.AVI);
-        videoSettings.setVideoFileLocation(videoDirectory + File.separator + project.getProjectName() + "." +
+        videoSettings.setVideoFileLocation(videoDirectory + File.separator +
+                project.getProjectName().replaceAll(" ", "_") + "." +
                 VideoOutputFormat.AVI.name().toLowerCase());
         project.getProjectSettings().setVideoSettings(videoSettings);
         assertThat(FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString())).isTrue();
@@ -144,7 +146,7 @@ class FFmpegUtilsTest {
         videoSettings.setVideoQuality(VideoQuality.HIGH_X265);
         videoSettings.setVideoOutputFormat(VideoOutputFormat.MKV);
         videoSettings.setVideoFileLocation(videoDirectory + File.separator +
-                project.getProjectName() + "." +
+                project.getProjectName().replaceAll(" ", "_") + "." +
                 VideoOutputFormat.MKV.name().toLowerCase());
         project.getProjectSettings().setVideoSettings(videoSettings);
         assertThat(FFmpegUtils.encodeImagesToVideo(project, ffmpegDirectory.toString())).isTrue();

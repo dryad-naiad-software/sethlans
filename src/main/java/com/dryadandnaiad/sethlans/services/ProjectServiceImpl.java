@@ -414,7 +414,8 @@ public class ProjectServiceImpl implements ProjectService {
                         project.getProjectSettings().getAnimationType().equals(AnimationType.MOVIE)) {
                     var videoDir = new File(project.getProjectRootDir() + File.separator + "video");
                     project.getProjectSettings().getVideoSettings().setVideoFileLocation(videoDir + File.separator
-                            + project.getProjectName() + "." + project.getProjectSettings().getVideoSettings()
+                            + project.getProjectName().replaceAll(" ", "_")
+                            + "." + project.getProjectSettings().getVideoSettings()
                             .getVideoOutputFormat().name().toLowerCase());
                     videoDir.mkdirs();
                 }
