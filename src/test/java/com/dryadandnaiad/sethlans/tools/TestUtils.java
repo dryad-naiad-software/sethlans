@@ -154,6 +154,7 @@ public class TestUtils {
         if(setupForm.getAvailableGPUs().size() > 0) {
             nodeType = NodeType.CPU_GPU;
             selectedGPUs.addAll(setupForm.getAvailableGPUs());
+            selectedGPUs.removeIf(gpu -> gpu.getModel().contains("Vega 8 Graphics"));
         }
 
         var challenge = UserChallenge.builder()
