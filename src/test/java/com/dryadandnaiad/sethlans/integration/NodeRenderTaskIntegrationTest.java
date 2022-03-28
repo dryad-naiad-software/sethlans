@@ -370,7 +370,8 @@ public class NodeRenderTaskIntegrationTest {
                 .asByteArray();
 
         var outputMovieFile = new File(TEST_DIRECTORY + File.separator
-                + "result" + QueryUtils.getShortUUID() + ".zip");
+                + "result" + QueryUtils.getShortUUID() + "." +
+                project.getProjectSettings().getVideoSettings().getVideoOutputFormat().name().toLowerCase());
 
         var outMovieStream = new FileOutputStream(outputMovieFile);
         outMovieStream.write(movieFile);
