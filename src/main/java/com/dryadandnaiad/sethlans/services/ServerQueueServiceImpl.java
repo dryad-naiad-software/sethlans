@@ -80,80 +80,86 @@ public class ServerQueueServiceImpl implements ServerQueueService {
 
         while (queueReady && project.getProjectStatus().getRemainingQueueSize() > 0) {
             project = projectRepository.getProjectByProjectID(project.getProjectID()).get();
-            TaskFrameInfo frameInfo;
-            if (project.getProjectSettings().isUseParts()) {
-                var parts = project.getProjectSettings().getPartsPerFrame();
-                Integer frameNumber;
-                Integer partNumber;
-                if (project.getProjectStatus().getQueueIndex() == 0) {
-                    frameNumber = project.getProjectSettings().getStartFrame();
-                    partNumber = 1;
-                } else {
-                    frameNumber = project.getProjectStatus().getCurrentFrame();
-                    partNumber = project.getProjectStatus().getCurrentPart();
-                    if (Objects.equals(partNumber, parts)) {
-                        partNumber = 1;
-                        frameNumber = frameNumber + project.getProjectSettings().getStepFrame();
-                    } else {
-                        partNumber = partNumber + 1;
-                    }
-                }
-                project.getProjectStatus().setCurrentFrame(frameNumber);
-                project.getProjectStatus().setCurrentPart(partNumber);
-
-                var partCoordinates = ImageUtils.configurePartCoordinates(parts);
-
-                frameInfo = partCoordinates.get(partNumber-1);
-                frameInfo.setFrameNumber(frameNumber);
-                frameInfo.setPartNumber(partNumber);
-
+            if (project.getProjectStatus().getProjectState().equals(ProjectState.STOPPED) || project.getProjectStatus().getProjectState().equals(ProjectState.PAUSED)) {
+                log.info(project.getProjectID() + " is currently paused or stopped, no further render tasks will be created.");
             } else {
-                Integer frameNumber;
-                if (project.getProjectStatus().getQueueIndex() == 0) {
-                    frameNumber = project.getProjectSettings().getStartFrame();
+                TaskFrameInfo frameInfo;
+                if (project.getProjectSettings().isUseParts()) {
+                    var parts = project.getProjectSettings().getPartsPerFrame();
+                    Integer frameNumber;
+                    Integer partNumber;
+                    if (project.getProjectStatus().getQueueIndex() == 0) {
+                        frameNumber = project.getProjectSettings().getStartFrame();
+                        partNumber = 1;
+                    } else {
+                        frameNumber = project.getProjectStatus().getCurrentFrame();
+                        partNumber = project.getProjectStatus().getCurrentPart();
+                        if (Objects.equals(partNumber, parts)) {
+                            partNumber = 1;
+                            frameNumber = frameNumber + project.getProjectSettings().getStepFrame();
+                        } else {
+                            partNumber = partNumber + 1;
+                        }
+                    }
+                    project.getProjectStatus().setCurrentFrame(frameNumber);
+                    project.getProjectStatus().setCurrentPart(partNumber);
+
+                    var partCoordinates = ImageUtils.configurePartCoordinates(parts);
+
+                    frameInfo = partCoordinates.get(partNumber - 1);
+                    frameInfo.setFrameNumber(frameNumber);
+                    frameInfo.setPartNumber(partNumber);
+
                 } else {
-                    frameNumber = project.getProjectStatus().getCurrentFrame()
-                            + project.getProjectSettings().getStepFrame();
+                    Integer frameNumber;
+                    if (project.getProjectStatus().getQueueIndex() == 0) {
+                        frameNumber = project.getProjectSettings().getStartFrame();
+                    } else {
+                        frameNumber = project.getProjectStatus().getCurrentFrame()
+                                + project.getProjectSettings().getStepFrame();
+                    }
+                    project.getProjectStatus().setCurrentFrame(frameNumber);
+                    frameInfo = TaskFrameInfo.builder()
+                            .frameNumber(frameNumber)
+                            .build();
+
                 }
-                project.getProjectStatus().setCurrentFrame(frameNumber);
-                frameInfo = TaskFrameInfo.builder()
-                        .frameNumber(frameNumber)
+                TaskScriptInfo scriptInfo = TaskScriptInfo.builder()
+                        .blenderEngine(project.getProjectSettings().getBlenderEngine())
+                        .imageOutputFormat(project.getProjectSettings().getImageSettings().getImageOutputFormat())
+                        .samples(project.getProjectSettings().getSamples())
+                        .taskResolutionX(project.getProjectSettings().getImageSettings().getResolutionX())
+                        .taskResolutionY(project.getProjectSettings().getImageSettings().getResolutionY())
+                        .taskResPercentage(project.getProjectSettings().getImageSettings().getResPercentage())
+                        .build();
+                var renderTask = RenderTask.builder()
+                        .projectID(project.getProjectID())
+                        .projectName(project.getProjectName())
+                        .blenderVersion(project.getProjectSettings().getBlenderVersion())
+                        .useParts(project.getProjectSettings().isUseParts())
+                        .taskID(UUID.randomUUID().toString())
+                        .serverInfo(serverInfo)
+                        .frameInfo(frameInfo)
+                        .scriptInfo(scriptInfo)
                         .build();
 
+                queueReady = pendingRenderQueue.offer(renderTask);
+                if (queueReady) {
+                    if (project.getProjectStatus().getProjectState().equals(ProjectState.ADDED) ||
+                            project.getProjectStatus().getProjectState().equals(ProjectState.STOPPED)) {
+                        project.getProjectStatus().setProjectState(ProjectState.PENDING);
+                    }
+                    project.getProjectStatus().setQueueIndex(project.getProjectStatus().getQueueIndex() + 1);
+                    project.getProjectStatus().setRemainingQueueSize(project.getProjectStatus().getRemainingQueueSize() - 1);
+                    var remainingQueueSize = project.getProjectStatus().getRemainingQueueSize();
+                    log.debug("Project remaining queue size " + remainingQueueSize);
+                    projectRepository.save(project);
+                    if (remainingQueueSize <= 0) {
+                        break;
+                    }
+                }
             }
-            TaskScriptInfo scriptInfo = TaskScriptInfo.builder()
-                    .blenderEngine(project.getProjectSettings().getBlenderEngine())
-                    .imageOutputFormat(project.getProjectSettings().getImageSettings().getImageOutputFormat())
-                    .samples(project.getProjectSettings().getSamples())
-                    .taskResolutionX(project.getProjectSettings().getImageSettings().getResolutionX())
-                    .taskResolutionY(project.getProjectSettings().getImageSettings().getResolutionY())
-                    .taskResPercentage(project.getProjectSettings().getImageSettings().getResPercentage())
-                    .build();
-            var renderTask = RenderTask.builder()
-                    .projectID(project.getProjectID())
-                    .projectName(project.getProjectName())
-                    .blenderVersion(project.getProjectSettings().getBlenderVersion())
-                    .useParts(project.getProjectSettings().isUseParts())
-                    .taskID(UUID.randomUUID().toString())
-                    .serverInfo(serverInfo)
-                    .frameInfo(frameInfo)
-                    .scriptInfo(scriptInfo)
-                    .build();
 
-            queueReady = pendingRenderQueue.offer(renderTask);
-            if (queueReady) {
-                if (project.getProjectStatus().getProjectState().equals(ProjectState.ADDED)) {
-                    project.getProjectStatus().setProjectState(ProjectState.PENDING);
-                }
-                project.getProjectStatus().setQueueIndex(project.getProjectStatus().getQueueIndex() + 1);
-                project.getProjectStatus().setRemainingQueueSize(project.getProjectStatus().getRemainingQueueSize() - 1);
-                var remainingQueueSize = project.getProjectStatus().getRemainingQueueSize();
-                log.debug("Project remaining queue size " + remainingQueueSize);
-                projectRepository.save(project);
-                if (remainingQueueSize <= 0) {
-                    break;
-                }
-            }
         }
         log.debug("Adding of render tasks has completed. " +
                 "Server pending task queue has " + pendingRenderQueue.size() + " items.");

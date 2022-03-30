@@ -95,7 +95,6 @@ create table project
     total_project_time         bigint,
     total_queue_size           integer,
     total_render_time          bigint,
-    user_stopped               boolean not null,
     project_type               integer,
     user_id                    bigint,
     blender_zip_filename       varchar(255),

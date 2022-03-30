@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.models.blender.BlendFile;
 import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
 import com.dryadandnaiad.sethlans.models.blender.frames.Frame;
 import com.dryadandnaiad.sethlans.models.blender.project.ImageSettings;
+import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.models.blender.project.ProjectSettings;
 import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
 import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
@@ -104,6 +105,25 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public boolean resumeProject(String projectID) {
+        if (projectRepository.getProjectByProjectID(projectID).isPresent()) {
+            var project = projectRepository.getProjectByProjectID(projectID).get();
+            if (!project.getProjectStatus().getProjectState().equals(ProjectState.FINISHED)) {
+                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+                if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
+                    project.getProjectStatus().setProjectState(ProjectState.PENDING);
+                    projectRepository.save(project);
+                    project = projectRepository.getProjectByProjectID(projectID).get();
+                    serverQueueService.addRenderTasksToPendingQueue(project);
+                    return true;
+                } else if (project.getUser().getUsername().equals(auth.getName())) {
+                    project.getProjectStatus().setProjectState(ProjectState.PENDING);
+                    projectRepository.save(project);
+                    project = projectRepository.getProjectByProjectID(projectID).get();
+                    serverQueueService.addRenderTasksToPendingQueue(project);
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -136,10 +156,12 @@ public class ProjectServiceImpl implements ProjectService {
                 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
                 if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
                     project.getProjectStatus().setProjectState(ProjectState.STOPPED);
+                    resetProject(project);
                     projectRepository.save(project);
                     return true;
                 } else if (project.getUser().getUsername().equals(auth.getName())) {
                     project.getProjectStatus().setProjectState(ProjectState.STOPPED);
+                    resetProject(project);
                     projectRepository.save(project);
                     return true;
                 }
@@ -523,6 +545,22 @@ public class ProjectServiceImpl implements ProjectService {
         var project = projectRepository.getProjectByProjectID(projectID).get();
         project.getProjectStatus().setProjectState(ProjectState.FINISHED);
         projectRepository.save(project);
+    }
+
+    private void resetProject(Project project) {
+        var projectStatus = project.getProjectStatus();
+        projectStatus.setTimerStart(0L);
+        projectStatus.setTimerEnd(0L);
+        projectStatus.setCurrentPercentage(0);
+        projectStatus.setTotalProjectTime(0L);
+        projectStatus.setTotalRenderTime(0L);
+        projectStatus.setRenderedQueueItems(0);
+        projectStatus.setCurrentPart(0);
+        projectStatus.setCurrentFrame(0);
+        projectStatus.setQueueIndex(0);
+        projectStatus.setAllImagesProcessed(false);
+        projectStatus.setRemainingQueueSize(projectStatus.getTotalQueueSize());
+        projectStatus.setCompletedFrames(0);
     }
 
 }

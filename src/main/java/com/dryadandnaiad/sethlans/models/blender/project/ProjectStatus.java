@@ -50,7 +50,6 @@ public class ProjectStatus {
     private Long timerStart;
     private Long timerEnd;
     private boolean allImagesProcessed;
-    private boolean userStopped;
     private boolean reEncode;
     private ProjectState projectState;
 }
