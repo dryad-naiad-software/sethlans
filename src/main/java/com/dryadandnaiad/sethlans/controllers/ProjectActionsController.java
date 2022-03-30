@@ -82,4 +82,24 @@ public class ProjectActionsController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @PostMapping("/stop_project")
+    public ResponseEntity<Void> stopProject(@RequestParam String projectID) {
+        if (nodeRepository.existsNodeByActiveIsTrue()) {
+            if (projectService.stopProject(projectID)) {
+                return new ResponseEntity<>(HttpStatus.ACCEPTED);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/pause_project")
+    public ResponseEntity<Void> pauseProject(@RequestParam String projectID) {
+        if (nodeRepository.existsNodeByActiveIsTrue()) {
+            if (projectService.pauseProject(projectID)) {
+                return new ResponseEntity<>(HttpStatus.ACCEPTED);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
 }

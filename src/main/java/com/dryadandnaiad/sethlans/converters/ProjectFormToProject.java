@@ -66,7 +66,6 @@ public class ProjectFormToProject implements Converter<ProjectForm, Project> {
                         .timerEnd(0L)
                         .allImagesProcessed(false)
                         .reEncode(false)
-                        .userStopped(false)
                         .build())
                 .user(user)
                 .build();
