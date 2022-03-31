@@ -486,7 +486,7 @@ public class BlenderUtils {
                 if (FileUtils.fileCheckMD5(fileToSave, md5)) {
                     return fileToSave;
                 } else {
-                    fileToSave.delete();
+                    FileSystemUtils.deleteRecursively(fileToSave);
                     return null;
                 }
             } catch (FileNotFoundException e) {
@@ -500,7 +500,7 @@ public class BlenderUtils {
         return null;
     }
 
-    private static List<BlenderInstallers> getInstallersList() {
+    public static List<BlenderInstallers> getInstallersList() {
         String blenderDownloadJSON =
                 "https://raw.githubusercontent.com/dryad-naiad-software/sethlans/1.5.0_spring5/blenderdownloads.json";
         List<BlenderInstallers> blenderInstallersList;

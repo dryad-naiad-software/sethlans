@@ -102,4 +102,14 @@ public class ProjectActionsController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @PostMapping("/resume_project")
+    public ResponseEntity<Void> resumeProject(@RequestParam String projectID) {
+        if (nodeRepository.existsNodeByActiveIsTrue()) {
+            if (projectService.resumeProject(projectID)) {
+                return new ResponseEntity<>(HttpStatus.ACCEPTED);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
 }

@@ -30,7 +30,7 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
-public class ProjectIntegrationTest {
+public class ProjectCreationIntegrationTest {
 
     static File TEST_DIRECTORY = new File(SystemUtils.USER_HOME + File.separator + ".sethlans");
     static File BLEND_DIRECTORY = new File(TEST_DIRECTORY.toString() + File.separator + "blend_files/");

@@ -7,7 +7,8 @@ A distributed render environment for [Blender](https://www.blender.org).
 
 ## Overview
 
-Sethlans is designed as a distributed render farm/network renderer that can work in both local and remote networks utilizing Blender as the rendering backend.  It is written in Java 11 and is open source software.
+Sethlans is designed as a distributed render farm/network renderer that can work in both local and remote networks
+utilizing Blender as the rendering backend. It is written in Java 17 and is open source software.
 
 ## Features
 * Cross Platform

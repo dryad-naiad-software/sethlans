@@ -17,10 +17,12 @@
 
 package com.dryadandnaiad.sethlans.services;
 
+import com.dryadandnaiad.sethlans.blender.BlenderUtils;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
+import com.dryadandnaiad.sethlans.models.blender.BlenderInstallers;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.user.UserChallenge;
 import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
@@ -61,9 +63,24 @@ public class SetupServiceImpl implements SetupService {
             PropertiesUtils.writeSetupSettings(setupForm);
             PropertiesUtils.writeDirectories(setupForm.getMode());
             if (setupForm.getMode().equals(SethlansMode.DUAL) || setupForm.getMode().equals(SethlansMode.SERVER)) {
+                var blenderInstallers = BlenderUtils.getInstallersList();
+                var os = QueryUtils.getOS();
+                String md5 = null;
+                for (BlenderInstallers blenderInstaller : blenderInstallers) {
+                    if (blenderInstaller.getBlenderVersion().equals(setupForm.getServerSettings().getBlenderVersion())) {
+                        switch (os) {
+                            case WINDOWS_64 -> md5 = blenderInstaller.getMd5Windows64();
+                            case LINUX_64 -> md5 = blenderInstaller.getMd5Linux64();
+                            case MACOS -> md5 = blenderInstaller.getMd5MacOS();
+                        }
+                    }
+
+
+                }
                 blenderArchiveRepository.save(BlenderArchive.builder()
                         .blenderOS(QueryUtils.getOS())
                         .downloaded(false)
+                        .blenderFileMd5(md5)
                         .blenderVersion(setupForm.getServerSettings().getBlenderVersion())
                         .build());
             }

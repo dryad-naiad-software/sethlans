@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileSystemUtils;
 
 /**
  * File created by Mario Estrella on 6/2/2020.
@@ -61,10 +62,14 @@ public class DownloadServiceImpl implements DownloadService {
                     var downloadedFile = BlenderUtils.downloadBlenderToServer(blenderArchive.getBlenderVersion(),
                             downloadDir, blenderArchive.getBlenderOS());
                     if (downloadedFile != null) {
-                        blenderArchive.setBlenderFile(downloadedFile.toString());
-                        blenderArchive.setBlenderFileMd5(FileUtils.getMD5ofFile(downloadedFile));
-                        blenderArchive.setDownloaded(true);
-                        blenderArchiveRepository.save(blenderArchive);
+                        if (blenderArchive.getBlenderFileMd5().equals(FileUtils.getMD5ofFile(downloadedFile))) {
+                            blenderArchive.setBlenderFile(downloadedFile.toString());
+                            blenderArchive.setDownloaded(true);
+                            blenderArchiveRepository.save(blenderArchive);
+                        } else {
+                            FileSystemUtils.deleteRecursively(downloadedFile);
+                        }
+
                     }
                 }
             }
