@@ -20,8 +20,10 @@ import io.restassured.http.ContentType;
 import io.undertow.util.StatusCodes;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -436,6 +438,203 @@ public class ProjectActionIntegrationTest {
 
         log.info("Project has resumed");
 
+
+        while (!project.getProjectStatus().getProjectState().equals(ProjectState.FINISHED)) {
+            project = mapper
+                    .readValue(get("/api/v1/project/" + projectForm.getProjectID())
+                            .then()
+                            .extract()
+                            .response()
+                            .body()
+                            .asString(), ProjectView.class);
+            Thread.sleep(10000);
+        }
+        assertThat(project.getProjectStatus().getProjectState().equals(ProjectState.FINISHED)).isTrue();
+
+        var imageZip = given()
+                .log()
+                .ifValidationFails()
+                .get("/api/v1/project/" + projectForm.getProjectID() + "/download_images")
+                .asByteArray();
+
+        var outputZipFile = new File(TEST_DIRECTORY + File.separator
+                + "result" + QueryUtils.getShortUUID() + ".zip");
+
+        var outStream = new FileOutputStream(outputZipFile);
+        outStream.write(imageZip);
+        outStream.close();
+
+        var outputSize = outputZipFile.length();
+
+        assertThat(outputZipFile).exists();
+        assertThat(outputSize).isGreaterThan(0L);
+
+        var movieFile = given()
+                .log()
+                .ifValidationFails()
+                .get("/api/v1/project/" + projectForm.getProjectID() + "/download_video")
+                .asByteArray();
+
+        var outputMovieFile = new File(TEST_DIRECTORY + File.separator
+                + "result" + QueryUtils.getShortUUID() + "." +
+                project.getProjectSettings().getVideoSettings().getVideoOutputFormat().name().toLowerCase());
+
+        var outMovieStream = new FileOutputStream(outputMovieFile);
+        outMovieStream.write(movieFile);
+        outMovieStream.close();
+
+        var outputMovieSize = outputZipFile.length();
+
+        assertThat(outputMovieFile).exists();
+        assertThat(outputMovieSize).isGreaterThan(0L);
+
+        log.info("Render Complete");
+        log.info(project.toString());
+        Thread.sleep(10000);
+
+    }
+
+
+    @AfterAll
+    public static void shutdown() throws InterruptedException {
+        var response = given()
+                .log()
+                .ifValidationFails()
+                .get("/api/v1/management/shutdown");
+
+        assertThat(response.getStatusCode()).isGreaterThanOrEqualTo(200).isLessThan(300);
+        Thread.sleep(10000);
+
+        FileSystemUtils.deleteRecursively(new File(SystemUtils.USER_HOME + File.separator + ".sethlans"));
+        Thread.sleep(5000);
+    }
+
+    @Test
+    public void pavillonBarceloneAnimationMP4Stop() throws IOException, InterruptedException {
+        var mapper = new ObjectMapper();
+        var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
+
+        var response = given()
+                .log()
+                .ifValidationFails()
+                .multiPart("project_file", new File(BLEND_DIRECTORY.toString()
+                        + "/pavillon_barcelone_v1.2_textures_animation.blend"))
+                .accept(ContentType.JSON)
+                .contentType(ContentType.MULTIPART)
+                .header("X-XSRF-TOKEN", token)
+                .cookie("XSRF-TOKEN", token)
+                .post("/api/v1/project/upload_project_file")
+                .then()
+                .statusCode(StatusCodes.CREATED)
+                .extract()
+                .response()
+                .body()
+                .asString();
+
+        var projectForm = mapper.readValue(response, ProjectForm.class);
+
+        var videoSettings = VideoSettings.builder()
+                .codec(VideoCodec.LIBX264)
+                .videoOutputFormat(VideoOutputFormat.MP4)
+                .frameRate(15)
+                .videoQuality(VideoQuality.HIGH_X264)
+                .pixelFormat(PixelFormat.YUV420P)
+                .build();
+
+        projectForm.setProjectName(TestUtils.titleGenerator());
+        projectForm.getProjectSettings().setAnimationType(AnimationType.MOVIE);
+        projectForm.setProjectType(ProjectType.ANIMATION);
+        projectForm.getProjectSettings().setStartFrame(1);
+        projectForm.getProjectSettings().setEndFrame(75);
+        projectForm.getProjectSettings().setUseParts(false);
+        projectForm.getProjectSettings().setVideoSettings(videoSettings);
+        log.info(projectForm.toString());
+
+        given()
+                .log()
+                .ifValidationFails()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(mapper.writeValueAsString(projectForm))
+                .post("/api/v1/project/create_project")
+                .then()
+                .statusCode(StatusCodes.CREATED);
+
+        given()
+                .log()
+                .ifValidationFails()
+                .param("projectID", projectForm.getProjectID())
+                .post("/api/v1/project/start_project")
+                .then()
+                .statusCode(StatusCodes.ACCEPTED);
+
+        Thread.sleep(10000);
+
+        var project = mapper
+                .readValue(get("/api/v1/project/" + projectForm.getProjectID())
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), ProjectView.class);
+
+        Thread.sleep(10000);
+
+        log.info(project.toString());
+
+        log.info("Starting render");
+
+        Thread.sleep(120000);
+
+
+        given()
+                .log()
+                .ifValidationFails()
+                .param("projectID", projectForm.getProjectID())
+                .post("/api/v1/project/stop_project")
+                .then()
+                .statusCode(StatusCodes.ACCEPTED);
+
+        Thread.sleep(10000);
+
+        project = mapper
+                .readValue(get("/api/v1/project/" + projectForm.getProjectID())
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), ProjectView.class);
+
+
+        assertThat(project.getProjectStatus().getProjectState()).isEqualByComparingTo(ProjectState.STOPPED);
+
+        log.info("Project is Stopped");
+
+        Thread.sleep(300000);
+
+        given()
+                .log()
+                .ifValidationFails()
+                .param("projectID", projectForm.getProjectID())
+                .post("/api/v1/project/start_project")
+                .then()
+                .statusCode(StatusCodes.ACCEPTED);
+
+        Thread.sleep(60000);
+
+        project = mapper
+                .readValue(get("/api/v1/project/" + projectForm.getProjectID())
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), ProjectView.class);
+
+        log.info(project.toString());
+
+        log.info("Starting render");
+
+        assertThat(project.getProjectStatus().getProjectState()).isEqualByComparingTo(ProjectState.RENDERING);
 
         while (!project.getProjectStatus().getProjectState().equals(ProjectState.FINISHED)) {
             project = mapper

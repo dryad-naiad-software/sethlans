@@ -43,6 +43,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -87,14 +88,18 @@ public class ProjectServiceImpl implements ProjectService {
             if (projectRepository.getProjectByProjectID(projectID).isPresent()) {
                 var project = projectRepository.getProjectByProjectID(projectID).get();
                 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-                if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
-                    serverQueueService.addRenderTasksToPendingQueue(project);
-                } else {
-                    if (project.getUser().getUsername().equals(auth.getName())) {
+                if (project.getProjectStatus().getProjectState().equals(ProjectState.STOPPED) ||
+                        project.getProjectStatus().getProjectState().equals(ProjectState.ADDED)) {
+                    if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
                         serverQueueService.addRenderTasksToPendingQueue(project);
+                    } else {
+                        if (project.getUser().getUsername().equals(auth.getName())) {
+                            serverQueueService.addRenderTasksToPendingQueue(project);
+                        }
                     }
+                    return true;
                 }
-                return true;
+
             }
 
         } else {
@@ -429,107 +434,126 @@ public class ProjectServiceImpl implements ProjectService {
                 var taskToProcess = serverQueueService.retrieveRenderTaskFromCompletedQueue();
                 var node = nodeRepository.findNodeBySystemIDEquals(taskToProcess.getNodeID()).get();
                 var project = projectRepository.getProjectByProjectID(taskToProcess.getProjectID()).get();
-                if (project.getProjectStatus().getProjectState().equals(ProjectState.STARTED)) {
-                    project.getProjectStatus().setProjectState(ProjectState.RENDERING);
-                }
-                if (project.getProjectType().equals(ProjectType.ANIMATION) &&
-                        project.getProjectSettings().getAnimationType().equals(AnimationType.MOVIE)) {
-                    var videoDir = new File(project.getProjectRootDir() + File.separator + "video");
-                    project.getProjectSettings().getVideoSettings().setVideoFileLocation(videoDir + File.separator
-                            + project.getProjectName().replaceAll(" ", "_")
-                            + "." + project.getProjectSettings().getVideoSettings()
-                            .getVideoOutputFormat().name().toLowerCase());
-                    videoDir.mkdirs();
-                }
+                if (!project.getProjectStatus().getProjectState().equals(ProjectState.STOPPED)) {
+                    if (project.getProjectStatus().getProjectState().equals(ProjectState.STARTED)) {
+                        project.getProjectStatus().setProjectState(ProjectState.RENDERING);
+                    }
+                    if (project.getProjectType().equals(ProjectType.ANIMATION) &&
+                            project.getProjectSettings().getAnimationType().equals(AnimationType.MOVIE)) {
+                        var videoDir = new File(project.getProjectRootDir() + File.separator + "video");
+                        project.getProjectSettings().getVideoSettings().setVideoFileLocation(videoDir + File.separator
+                                + project.getProjectName().replaceAll(" ", "_")
+                                + "." + project.getProjectSettings().getVideoSettings()
+                                .getVideoOutputFormat().name().toLowerCase());
+                        videoDir.mkdirs();
+                    }
 
-                var imagesDir = new File(project.getProjectRootDir() + File.separator + "images");
-                var thumbnailsDir = new File(project.getProjectRootDir() + File.separator + "thumbnails");
-                imagesDir.mkdirs();
-                thumbnailsDir.mkdirs();
-                boolean complete;
-                Frame frame;
+                    var imagesDir = new File(project.getProjectRootDir() + File.separator + "images");
+                    var thumbnailsDir = new File(project.getProjectRootDir() + File.separator + "thumbnails");
+                    imagesDir.mkdirs();
+                    thumbnailsDir.mkdirs();
+                    boolean complete;
+                    Frame frame;
 
-                if (project.getProjectSettings().isUseParts()) {
-                    var toCombineDir = new File(project.getProjectRootDir() + File.separator + "to_combine");
-                    toCombineDir.mkdirs();
-                    var frameDir = new File(toCombineDir + File.separator
-                            + taskToProcess.getFrameInfo().getFrameNumber());
-                    frameDir.mkdirs();
-                    complete = BlenderUtils.downloadImageFileFromNode(taskToProcess, node, frameDir);
-                    frame = Frame.builder()
-                            .partsPerFrame(project.getProjectSettings().getPartsPerFrame())
-                            .frameName(project.getProjectID() + "-frame-" + taskToProcess.getFrameInfo().getFrameNumber())
-                            .frameNumber(taskToProcess.getFrameInfo().getFrameNumber())
-                            .imageDir(imagesDir.toString())
-                            .partsDir(frameDir.toString())
-                            .thumbsDir(thumbnailsDir.toString())
-                            .fileExtension(taskToProcess.getScriptInfo().getImageOutputFormat().name().toLowerCase())
-                            .build();
-                    if (complete) {
-                        var combined = ImageUtils.combineParts(frame,
-                                taskToProcess.getScriptInfo().getImageOutputFormat());
-                        if (combined) {
-                            ImageUtils.createThumbnail(frame);
+                    if (project.getProjectSettings().isUseParts()) {
+                        var toCombineDir = new File(project.getProjectRootDir() + File.separator + "to_combine");
+                        toCombineDir.mkdirs();
+                        var frameDir = new File(toCombineDir + File.separator
+                                + taskToProcess.getFrameInfo().getFrameNumber());
+                        frameDir.mkdirs();
+                        complete = BlenderUtils.downloadImageFileFromNode(taskToProcess, node, frameDir);
+                        frame = Frame.builder()
+                                .partsPerFrame(project.getProjectSettings().getPartsPerFrame())
+                                .frameName(project.getProjectID() + "-frame-" + taskToProcess.getFrameInfo().getFrameNumber())
+                                .frameNumber(taskToProcess.getFrameInfo().getFrameNumber())
+                                .imageDir(imagesDir.toString())
+                                .partsDir(frameDir.toString())
+                                .thumbsDir(thumbnailsDir.toString())
+                                .fileExtension(taskToProcess.getScriptInfo().getImageOutputFormat().name().toLowerCase())
+                                .build();
+                        if (complete) {
+                            var combined = ImageUtils.combineParts(frame,
+                                    taskToProcess.getScriptInfo().getImageOutputFormat());
+                            if (combined) {
+                                ImageUtils.createThumbnail(frame);
+                                project.getProjectStatus()
+                                        .setCompletedFrames(project.getProjectStatus().getCompletedFrames() + 1);
+                            }
+                        }
+
+
+                    } else {
+                        complete = BlenderUtils.downloadImageFileFromNode(taskToProcess, node, imagesDir);
+                        frame = Frame.builder()
+                                .frameName(project.getProjectID() + "-frame-" + taskToProcess.getFrameInfo().getFrameNumber())
+                                .frameNumber(taskToProcess.getFrameInfo().getFrameNumber())
+                                .imageDir(imagesDir.toString())
+                                .thumbsDir(thumbnailsDir.toString())
+                                .fileExtension(taskToProcess.getScriptInfo().getImageOutputFormat().name().toLowerCase())
+                                .build();
+                        ImageUtils.createThumbnail(frame);
+                        if (complete) {
                             project.getProjectStatus()
                                     .setCompletedFrames(project.getProjectStatus().getCompletedFrames() + 1);
                         }
                     }
 
 
-                } else {
-                    complete = BlenderUtils.downloadImageFileFromNode(taskToProcess, node, imagesDir);
-                    frame = Frame.builder()
-                            .frameName(project.getProjectID() + "-frame-" + taskToProcess.getFrameInfo().getFrameNumber())
-                            .frameNumber(taskToProcess.getFrameInfo().getFrameNumber())
-                            .imageDir(imagesDir.toString())
-                            .thumbsDir(thumbnailsDir.toString())
-                            .fileExtension(taskToProcess.getScriptInfo().getImageOutputFormat().name().toLowerCase())
-                            .build();
-                    ImageUtils.createThumbnail(frame);
-                    if (complete) {
-                        project.getProjectStatus()
-                                .setCompletedFrames(project.getProjectStatus().getCompletedFrames() + 1);
+                    if (Objects.equals(project.getProjectStatus().getCompletedFrames(),
+                            project.getProjectSettings().getTotalNumberOfFrames())) {
+                        project.getProjectStatus().setAllImagesProcessed(true);
+                        project.getProjectStatus().setTimerEnd(new Date().getTime());
+                        project.getProjectStatus().setTotalProjectTime(project.getProjectStatus().getTimerEnd() -
+                                project.getProjectStatus().getTimerStart());
+                        project.getProjectSettings().getImageSettings().setImageZipFileLocation(ImageUtils.createZipFileFromImages(project));
+                        project.getProjectStatus().setProjectState(ProjectState.FINISHED);
+                        if (project.getProjectType().equals(ProjectType.ANIMATION) &&
+                                project.getProjectSettings().getAnimationType().equals(AnimationType.MOVIE)) {
+                            project.getProjectStatus().setProjectState(ProjectState.PROCESSING);
+
+                            com.dryadandnaiad.sethlans.models.blender.project.Project finalProject = project;
+                            var renderVideo = new Thread(() -> {
+                                var encoded =
+                                        FFmpegUtils.encodeImagesToVideo(finalProject, ConfigUtils
+                                                .getProperty(ConfigKeys.FFMPEG_DIR));
+                                if (encoded) {
+                                    updateProjectAfterVideo(finalProject.getProjectID());
+                                }
+                            });
+                            renderVideo.start();
+
+                        }
                     }
-                }
+                    project.getProjectStatus().setRenderedQueueItems(project.getProjectStatus().getRenderedQueueItems() + 1);
+                    project.getProjectStatus().setCurrentPercentage(
+                            project.getProjectStatus().getRenderedQueueItems() * 100 / project.getProjectStatus().getTotalQueueSize()
+                    );
+                    project.getProjectStatus().setTotalRenderTime(project.getProjectStatus().getTotalRenderTime() +
+                            taskToProcess.getRenderTime());
 
+                    log.debug(project.toString());
+                    projectRepository.save(project);
+                    project = projectRepository.getProjectByProjectID(project.getProjectID()).get();
+                    if (project.getProjectStatus().getProjectState().equals(ProjectState.RENDERING)) {
+                        serverQueueService.addRenderTasksToPendingQueue(project);
+                    }
+                } else {
+                    var imagesDir = new File(project.getProjectRootDir() + File.separator + "images");
+                    var thumbnailsDir = new File(project.getProjectRootDir() + File.separator + "thumbnails");
 
-                if (Objects.equals(project.getProjectStatus().getCompletedFrames(),
-                        project.getProjectSettings().getTotalNumberOfFrames())) {
-                    project.getProjectStatus().setAllImagesProcessed(true);
-                    project.getProjectStatus().setTimerEnd(new Date().getTime());
-                    project.getProjectStatus().setTotalProjectTime(project.getProjectStatus().getTimerEnd() -
-                            project.getProjectStatus().getTimerStart());
-                    project.getProjectSettings().getImageSettings().setImageZipFileLocation(ImageUtils.createZipFileFromImages(project));
-                    project.getProjectStatus().setProjectState(ProjectState.FINISHED);
+                    log.debug(project.getProjectID() + " has been stopped.  Incoming render task will be discarded.");
+
+                    FileSystemUtils.deleteRecursively(imagesDir);
+                    FileSystemUtils.deleteRecursively(thumbnailsDir);
+                    if (project.getProjectSettings().isUseParts()) {
+                        var toCombineDir = new File(project.getProjectRootDir() + File.separator + "to_combine");
+                        FileSystemUtils.deleteRecursively(toCombineDir);
+                    }
                     if (project.getProjectType().equals(ProjectType.ANIMATION) &&
                             project.getProjectSettings().getAnimationType().equals(AnimationType.MOVIE)) {
-                        project.getProjectStatus().setProjectState(ProjectState.PROCESSING);
-
-                        com.dryadandnaiad.sethlans.models.blender.project.Project finalProject = project;
-                        var renderVideo = new Thread(() -> {
-                            var encoded =
-                                    FFmpegUtils.encodeImagesToVideo(finalProject, ConfigUtils
-                                            .getProperty(ConfigKeys.FFMPEG_DIR));
-                            if (encoded) {
-                                updateProjectAfterVideo(finalProject.getProjectID());
-                            }
-                        });
-                        renderVideo.start();
-
+                        var videoDir = new File(project.getProjectRootDir() + File.separator + "video");
+                        FileSystemUtils.deleteRecursively(videoDir);
                     }
-                }
-                project.getProjectStatus().setRenderedQueueItems(project.getProjectStatus().getRenderedQueueItems() + 1);
-                project.getProjectStatus().setCurrentPercentage(
-                        project.getProjectStatus().getRenderedQueueItems() * 100 / project.getProjectStatus().getTotalQueueSize()
-                );
-                project.getProjectStatus().setTotalRenderTime(project.getProjectStatus().getTotalRenderTime() +
-                        taskToProcess.getRenderTime());
-
-                log.debug(project.toString());
-                projectRepository.save(project);
-                project = projectRepository.getProjectByProjectID(project.getProjectID()).get();
-                if (project.getProjectStatus().getProjectState().equals(ProjectState.RENDERING)) {
-                    serverQueueService.addRenderTasksToPendingQueue(project);
                 }
             }
             try {

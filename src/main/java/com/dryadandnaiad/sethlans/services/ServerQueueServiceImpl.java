@@ -80,7 +80,7 @@ public class ServerQueueServiceImpl implements ServerQueueService {
 
         while (queueReady && project.getProjectStatus().getRemainingQueueSize() > 0) {
             project = projectRepository.getProjectByProjectID(project.getProjectID()).get();
-            if (project.getProjectStatus().getProjectState().equals(ProjectState.STOPPED) || project.getProjectStatus().getProjectState().equals(ProjectState.PAUSED)) {
+            if (project.getProjectStatus().getProjectState().equals(ProjectState.PAUSED)) {
                 log.info(project.getProjectID() + " is currently paused or stopped, no further render tasks will be created.");
             } else {
                 TaskFrameInfo frameInfo;
