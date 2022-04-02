@@ -595,7 +595,7 @@ public class ProjectActionIntegrationTest {
                 .then()
                 .statusCode(StatusCodes.ACCEPTED);
 
-        Thread.sleep(10000);
+        Thread.sleep(20000);
 
         project = mapper
                 .readValue(get("/api/v1/project/" + projectForm.getProjectID())
@@ -609,6 +609,11 @@ public class ProjectActionIntegrationTest {
         assertThat(project.getProjectStatus().getProjectState()).isEqualByComparingTo(ProjectState.STOPPED);
 
         log.info("Project is Stopped");
+        log.info(project.toString());
+        assertThat(project.getProjectStatus().getCompletedFrames()).isEqualTo(0);
+        assertThat(project.getProjectStatus().getQueueIndex()).isEqualTo(0);
+        var imageDir = new File(project.getProjectRootDir() + File.separator + "images");
+        assertThat(imageDir).doesNotExist();
 
         Thread.sleep(300000);
 
@@ -630,9 +635,9 @@ public class ProjectActionIntegrationTest {
                         .body()
                         .asString(), ProjectView.class);
 
-        log.info(project.toString());
 
         log.info("Starting render");
+        log.info(project.toString());
 
         assertThat(project.getProjectStatus().getProjectState()).isEqualByComparingTo(ProjectState.RENDERING);
 

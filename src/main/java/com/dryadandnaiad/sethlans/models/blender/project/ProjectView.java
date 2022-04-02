@@ -40,4 +40,6 @@ public class ProjectView {
     private ProjectStatus projectStatus;
     private String userID;
     private String projectName;
+    private String projectRootDir;
+
 }
