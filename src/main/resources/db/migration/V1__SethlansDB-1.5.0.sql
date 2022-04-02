@@ -102,6 +102,17 @@ create table project
     primary key (id)
 );
 
+create table notification
+(
+    id           bigint not null,
+    date_created timestamp,
+    last_updated timestamp,
+    version      bigint,
+    message      varchar(255),
+    message_date timestamp,
+    primary key (id)
+);
+
 create table render_task
 (
     id                      bigint  not null,
