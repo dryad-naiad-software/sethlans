@@ -38,4 +38,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserByUserID(String userID);
 
     List<User> findAllByRolesNotContaining(Role role);
+
+    List<User> findAllByRolesContaining(Role role);
 }

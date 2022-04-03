@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,6 +17,8 @@ import java.util.Date;
 @SuperBuilder
 @Entity
 public class Notification extends AbstractModel {
-    private Date messageDate;
+    private LocalDateTime messageDate;
     private String message;
+    private boolean messageRead;
+    private String userID;
 }

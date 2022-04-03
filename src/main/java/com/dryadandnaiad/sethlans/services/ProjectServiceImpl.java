@@ -28,10 +28,8 @@ import com.dryadandnaiad.sethlans.models.blender.project.ImageSettings;
 import com.dryadandnaiad.sethlans.models.blender.project.Project;
 import com.dryadandnaiad.sethlans.models.blender.project.ProjectSettings;
 import com.dryadandnaiad.sethlans.models.forms.ProjectForm;
-import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
-import com.dryadandnaiad.sethlans.repositories.NodeRepository;
-import com.dryadandnaiad.sethlans.repositories.ProjectRepository;
-import com.dryadandnaiad.sethlans.repositories.UserRepository;
+import com.dryadandnaiad.sethlans.models.system.Notification;
+import com.dryadandnaiad.sethlans.repositories.*;
 import com.dryadandnaiad.sethlans.utils.*;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +49,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -69,17 +68,19 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectFormToProject projectFormToProject;
     private final ServerQueueService serverQueueService;
     private final NodeRepository nodeRepository;
+    private final NotificationRepository notificationRepository;
 
     public ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository,
                               BlenderArchiveRepository blenderArchiveRepository,
                               ProjectFormToProject projectFormToProject, ServerQueueService serverQueueService,
-                              NodeRepository nodeRepository) {
+                              NodeRepository nodeRepository, NotificationRepository notificationRepository) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
         this.blenderArchiveRepository = blenderArchiveRepository;
         this.projectFormToProject = projectFormToProject;
         this.serverQueueService = serverQueueService;
         this.nodeRepository = nodeRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     @Override
@@ -97,6 +98,12 @@ public class ProjectServiceImpl implements ProjectService {
                             serverQueueService.addRenderTasksToPendingQueue(project);
                         }
                     }
+                    var notification = Notification.builder()
+                            .userID(project.getUser().getUserID())
+                            .messageDate(LocalDateTime.now())
+                            .message(project.getProjectName() + " has been started.")
+                            .build();
+                    notificationRepository.save(notification);
                     return true;
                 }
 
@@ -117,12 +124,14 @@ public class ProjectServiceImpl implements ProjectService {
                 if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
                     project.getProjectStatus().setProjectState(ProjectState.PENDING);
                     projectRepository.save(project);
+                    log.debug("Saving project" + project.toString());
                     project = projectRepository.getProjectByProjectID(projectID).get();
                     serverQueueService.addRenderTasksToPendingQueue(project);
                     return true;
                 } else if (project.getUser().getUsername().equals(auth.getName())) {
                     project.getProjectStatus().setProjectState(ProjectState.PENDING);
                     projectRepository.save(project);
+                    log.debug("Saving project" + project.toString());
                     project = projectRepository.getProjectByProjectID(projectID).get();
                     serverQueueService.addRenderTasksToPendingQueue(project);
                     return true;
@@ -141,10 +150,14 @@ public class ProjectServiceImpl implements ProjectService {
                 if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
                     project.getProjectStatus().setProjectState(ProjectState.PAUSED);
                     projectRepository.save(project);
+                    log.debug("Saving project" + project.toString());
+
                     return true;
                 } else if (project.getUser().getUsername().equals(auth.getName())) {
                     project.getProjectStatus().setProjectState(ProjectState.PAUSED);
                     projectRepository.save(project);
+                    log.debug("Saving project" + project.toString());
+
                     return true;
                 }
             }
@@ -163,11 +176,27 @@ public class ProjectServiceImpl implements ProjectService {
                     project.getProjectStatus().setProjectState(ProjectState.STOPPED);
                     resetProject(project);
                     projectRepository.save(project);
+                    log.debug("Saving project" + project.toString());
+
+                    var notification = Notification.builder()
+                            .userID(project.getUser().getUserID())
+                            .messageDate(LocalDateTime.now())
+                            .message(project.getProjectName() + " has been stopped and reset.")
+                            .build();
+                    notificationRepository.save(notification);
                     return true;
                 } else if (project.getUser().getUsername().equals(auth.getName())) {
                     project.getProjectStatus().setProjectState(ProjectState.STOPPED);
                     resetProject(project);
                     projectRepository.save(project);
+                    log.debug("Saving project" + project.toString());
+
+                    var notification = Notification.builder()
+                            .userID(project.getUser().getUserID())
+                            .messageDate(LocalDateTime.now())
+                            .message(project.getProjectName() + " has been stopped and reset.")
+                            .build();
+                    notificationRepository.save(notification);
                     return true;
                 }
             }
@@ -199,9 +228,21 @@ public class ProjectServiceImpl implements ProjectService {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
                 projectRepository.deleteAllByUser(userRepository.findUserByUserID(userID).get());
+                var notification = Notification.builder()
+                        .userID(userID)
+                        .messageDate(LocalDateTime.now())
+                        .message("All projects have been deleted.")
+                        .build();
+                notificationRepository.save(notification);
             } else {
                 if (userRepository.findUserByUserID(userID).get().getUsername().equals(auth.getName())) {
                     projectRepository.deleteAllByUser(userRepository.findUserByUserID(userID).get());
+                    var notification = Notification.builder()
+                            .userID(userID)
+                            .messageDate(LocalDateTime.now())
+                            .message("All projects have been deleted.")
+                            .build();
+                    notificationRepository.save(notification);
                 }
             }
         }
@@ -413,6 +454,14 @@ public class ProjectServiceImpl implements ProjectService {
 
             project.setProjectRootDir(projectDirectory.toString());
             projectRepository.save(project);
+            log.debug("Saving project" + project.toString());
+
+            var notification = Notification.builder()
+                    .userID(project.getUser().getUserID())
+                    .messageDate(LocalDateTime.now())
+                    .message(project.getProjectName() + " has been created.")
+                    .build();
+            notificationRepository.save(notification);
 
 
         } catch (IOException e) {
@@ -507,6 +556,12 @@ public class ProjectServiceImpl implements ProjectService {
                                 project.getProjectStatus().getTimerStart());
                         project.getProjectSettings().getImageSettings().setImageZipFileLocation(ImageUtils.createZipFileFromImages(project));
                         project.getProjectStatus().setProjectState(ProjectState.FINISHED);
+                        var notification = Notification.builder()
+                                .userID(project.getUser().getUserID())
+                                .messageDate(LocalDateTime.now())
+                                .message("Rendering has completed for " + project.getProjectName() + ".")
+                                .build();
+                        notificationRepository.save(notification);
                         if (project.getProjectType().equals(ProjectType.ANIMATION) &&
                                 project.getProjectSettings().getAnimationType().equals(AnimationType.MOVIE)) {
                             project.getProjectStatus().setProjectState(ProjectState.PROCESSING);
@@ -517,6 +572,12 @@ public class ProjectServiceImpl implements ProjectService {
                                         FFmpegUtils.encodeImagesToVideo(finalProject, ConfigUtils
                                                 .getProperty(ConfigKeys.FFMPEG_DIR));
                                 if (encoded) {
+                                    var videoNotification = Notification.builder()
+                                            .userID(finalProject.getUser().getUserID())
+                                            .messageDate(LocalDateTime.now())
+                                            .message("Video Encoding complete for " + finalProject.getProjectName() + ".")
+                                            .build();
+                                    notificationRepository.save(videoNotification);
                                     updateProjectAfterVideo(finalProject.getProjectID());
                                 }
                             });
@@ -533,6 +594,9 @@ public class ProjectServiceImpl implements ProjectService {
 
                     log.debug(project.toString());
                     projectRepository.save(project);
+                    log.debug("Saving project" + project.toString());
+
+
                     project = projectRepository.getProjectByProjectID(project.getProjectID()).get();
                     if (project.getProjectStatus().getProjectState().equals(ProjectState.RENDERING)) {
                         serverQueueService.addRenderTasksToPendingQueue(project);
@@ -569,6 +633,14 @@ public class ProjectServiceImpl implements ProjectService {
         var project = projectRepository.getProjectByProjectID(projectID).get();
         project.getProjectStatus().setProjectState(ProjectState.FINISHED);
         projectRepository.save(project);
+        log.debug("Saving project" + project.toString());
+
+        var notification = Notification.builder()
+                .userID(project.getUser().getUserID())
+                .messageDate(LocalDateTime.now())
+                .message("Rendering has completed for " + project.getProjectName() + ".")
+                .build();
+        notificationRepository.save(notification);
     }
 
     private void resetProject(Project project) {
