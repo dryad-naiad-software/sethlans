@@ -119,6 +119,7 @@ public class ServerQueueController {
                     project.getProjectStatus().setProjectState(ProjectState.STARTED);
                     project.getProjectStatus().setTimerStart(new Date().getTime());
                     project.getProjectStatus().setTotalRenderTime(0L);
+                    log.debug("Saving project" + project.toString());
                     projectRepository.save(project);
                 }
             }

@@ -19,8 +19,13 @@ package com.dryadandnaiad.sethlans.services;
 
 import com.dryadandnaiad.sethlans.blender.BlenderUtils;
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.models.blender.BlenderArchive;
+import com.dryadandnaiad.sethlans.models.system.Notification;
+import com.dryadandnaiad.sethlans.models.user.User;
 import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
+import com.dryadandnaiad.sethlans.repositories.NotificationRepository;
+import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +33,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
+
+import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
 
 /**
  * File created by Mario Estrella on 6/2/2020.
@@ -40,9 +48,14 @@ import org.springframework.util.FileSystemUtils;
 @Profile({"SERVER", "DUAL"})
 public class DownloadServiceImpl implements DownloadService {
     private final BlenderArchiveRepository blenderArchiveRepository;
+    private final UserRepository userRepository;
+    private final NotificationRepository notificationRepository;
 
-    public DownloadServiceImpl(BlenderArchiveRepository blenderArchiveRepository) {
+    public DownloadServiceImpl(BlenderArchiveRepository blenderArchiveRepository, UserRepository userRepository,
+                               NotificationRepository notificationRepository) {
         this.blenderArchiveRepository = blenderArchiveRepository;
+        this.userRepository = userRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     @Override
@@ -66,6 +79,20 @@ public class DownloadServiceImpl implements DownloadService {
                             blenderArchive.setBlenderFile(downloadedFile.toString());
                             blenderArchive.setDownloaded(true);
                             blenderArchiveRepository.save(blenderArchive);
+                            var notification = Notification.builder()
+                                    .messageDate(LocalDateTime.now())
+                                    .message("Blender " + blenderArchive.getBlenderVersion() + " for "
+                                            + blenderArchive.getBlenderOS().name() + " has been downloaded.")
+                                    .build();
+                            var super_administrators =
+                                    userRepository.findAllByRolesContaining(Role.SUPER_ADMINISTRATOR);
+                            var administrators = userRepository.findAllByRolesContaining(Role.ADMINISTRATOR);
+                            var admins = new LinkedHashSet<>(super_administrators);
+                            admins.addAll(administrators);
+                            for (User user : admins) {
+                                notification.setUserID(user.getUserID());
+                                notificationRepository.save(notification);
+                            }
                         } else {
                             FileSystemUtils.deleteRecursively(downloadedFile);
                         }

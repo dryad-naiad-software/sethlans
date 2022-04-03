@@ -17,11 +17,16 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.forms.NodeForm;
 import com.dryadandnaiad.sethlans.models.system.Node;
+import com.dryadandnaiad.sethlans.models.system.Notification;
+import com.dryadandnaiad.sethlans.models.user.User;
 import com.dryadandnaiad.sethlans.repositories.BlenderArchiveRepository;
 import com.dryadandnaiad.sethlans.repositories.NodeRepository;
+import com.dryadandnaiad.sethlans.repositories.NotificationRepository;
+import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.dryadandnaiad.sethlans.services.ServerQueueService;
 import com.dryadandnaiad.sethlans.services.ServerService;
 import com.dryadandnaiad.sethlans.utils.NetworkUtils;
@@ -33,7 +38,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -52,13 +59,19 @@ public class AdminServerEndPointController {
     private final NodeRepository nodeRepository;
     private final BlenderArchiveRepository blenderArchiveRepository;
     private final ServerQueueService serverQueueService;
+    private final NotificationRepository notificationRepository;
+    private final UserRepository userRepository;
 
     public AdminServerEndPointController(ServerService serverService, NodeRepository nodeRepository,
-                                         BlenderArchiveRepository blenderArchiveRepository, ServerQueueService serverQueueService) {
+                                         BlenderArchiveRepository blenderArchiveRepository,
+                                         ServerQueueService serverQueueService,
+                                         NotificationRepository notificationRepository, UserRepository userRepository) {
         this.serverService = serverService;
         this.nodeRepository = nodeRepository;
         this.blenderArchiveRepository = blenderArchiveRepository;
         this.serverQueueService = serverQueueService;
+        this.notificationRepository = notificationRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/view_server_pending_queue")
@@ -143,6 +156,18 @@ public class AdminServerEndPointController {
             nodeToSave.setTotalRenderingSlots(node.getTotalRenderingSlots());
             nodeRepository.save(nodeToSave);
             serverQueueService.updatePendingQueueLimit();
+            var notification = Notification.builder()
+                    .messageDate(LocalDateTime.now())
+                    .message("Benchmarks have been received from " + nodeToSave.getHostname())
+                    .build();
+            var super_administrators = userRepository.findAllByRolesContaining(Role.SUPER_ADMINISTRATOR);
+            var administrators = userRepository.findAllByRolesContaining(Role.ADMINISTRATOR);
+            var admins = new LinkedHashSet<>(super_administrators);
+            admins.addAll(administrators);
+            for (User user : admins) {
+                notification.setUserID(user.getUserID());
+                notificationRepository.save(notification);
+            }
             return new ResponseEntity<>(HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

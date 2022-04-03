@@ -32,6 +32,7 @@ public class ServerQueueServiceImpl implements ServerQueueService {
     private final ProjectRepository projectRepository;
     private final NodeRepository nodeRepository;
     private final BlockingQueue<RenderTask> completedRenderQueue;
+    private int queueSize = 0;
 
     public ServerQueueServiceImpl(ProjectRepository projectRepository, NodeRepository nodeRepository) {
         this.projectRepository = projectRepository;
@@ -72,57 +73,29 @@ public class ServerQueueServiceImpl implements ServerQueueService {
 
     @Override
     public void addRenderTasksToPendingQueue(Project project) {
-        log.debug("Attempting to add render tasks to server pending queue. There are "
-                + pendingRenderQueue.size() + " items.");
-        var queueReady = true;
+
+        var queueReady = pendingRenderQueue.size() < queueSize;
 
         var serverInfo = TaskServerInfo.builder().systemID(PropertiesUtils.getSystemID()).build();
 
         while (queueReady && project.getProjectStatus().getRemainingQueueSize() > 0) {
+            if (pendingRenderQueue.size() == queueSize) {
+                break;
+            }
+            log.debug("Attempting to add render tasks to server pending queue. There are "
+                    + pendingRenderQueue.size() + " items.");
+            log.debug(pendingRenderQueue.toString());
             project = projectRepository.getProjectByProjectID(project.getProjectID()).get();
             if (project.getProjectStatus().getProjectState().equals(ProjectState.PAUSED)) {
                 log.info(project.getProjectID() + " is currently paused or stopped, no further render tasks will be created.");
             } else {
+                log.debug("Previous Frame " + project.getProjectStatus().getCurrentFrame());
                 TaskFrameInfo frameInfo;
                 if (project.getProjectSettings().isUseParts()) {
-                    var parts = project.getProjectSettings().getPartsPerFrame();
-                    Integer frameNumber;
-                    Integer partNumber;
-                    if (project.getProjectStatus().getQueueIndex() == 0) {
-                        frameNumber = project.getProjectSettings().getStartFrame();
-                        partNumber = 1;
-                    } else {
-                        frameNumber = project.getProjectStatus().getCurrentFrame();
-                        partNumber = project.getProjectStatus().getCurrentPart();
-                        if (Objects.equals(partNumber, parts)) {
-                            partNumber = 1;
-                            frameNumber = frameNumber + project.getProjectSettings().getStepFrame();
-                        } else {
-                            partNumber = partNumber + 1;
-                        }
-                    }
-                    project.getProjectStatus().setCurrentFrame(frameNumber);
-                    project.getProjectStatus().setCurrentPart(partNumber);
-
-                    var partCoordinates = ImageUtils.configurePartCoordinates(parts);
-
-                    frameInfo = partCoordinates.get(partNumber - 1);
-                    frameInfo.setFrameNumber(frameNumber);
-                    frameInfo.setPartNumber(partNumber);
-
+                    log.debug("Previous Part " + project.getProjectStatus().getCurrentPart());
+                    frameInfo = getCurrentFrameAndPart(project);
                 } else {
-                    Integer frameNumber;
-                    if (project.getProjectStatus().getQueueIndex() == 0) {
-                        frameNumber = project.getProjectSettings().getStartFrame();
-                    } else {
-                        frameNumber = project.getProjectStatus().getCurrentFrame()
-                                + project.getProjectSettings().getStepFrame();
-                    }
-                    project.getProjectStatus().setCurrentFrame(frameNumber);
-                    frameInfo = TaskFrameInfo.builder()
-                            .frameNumber(frameNumber)
-                            .build();
-
+                    frameInfo = getCurrentFrame(project);
                 }
                 TaskScriptInfo scriptInfo = TaskScriptInfo.builder()
                         .blenderEngine(project.getProjectSettings().getBlenderEngine())
@@ -153,10 +126,18 @@ public class ServerQueueServiceImpl implements ServerQueueService {
                     project.getProjectStatus().setRemainingQueueSize(project.getProjectStatus().getRemainingQueueSize() - 1);
                     var remainingQueueSize = project.getProjectStatus().getRemainingQueueSize();
                     log.debug("Project remaining queue size " + remainingQueueSize);
+                    log.debug("Current Queue Index " + project.getProjectStatus().getQueueIndex());
+                    log.debug("Current Frame  " + project.getProjectStatus().getCurrentFrame());
+                    if (project.getProjectSettings().isUseParts()) {
+                        log.debug("Current Part  " + project.getProjectStatus().getCurrentPart());
+                    }
+                    log.debug("Saving project" + project.toString());
                     projectRepository.save(project);
                     if (remainingQueueSize <= 0) {
                         break;
                     }
+                } else {
+                    log.debug("Queue is currently full, render task was not added. \n" + renderTask);
                 }
             }
 
@@ -165,6 +146,52 @@ public class ServerQueueServiceImpl implements ServerQueueService {
                 "Server pending task queue has " + pendingRenderQueue.size() + " items.");
         log.debug(pendingRenderQueue.toString());
 
+    }
+
+    private TaskFrameInfo getCurrentFrame(Project project) {
+        Integer frameNumber;
+        if (project.getProjectStatus().getQueueIndex() == 0) {
+            frameNumber = project.getProjectSettings().getStartFrame();
+        } else {
+            frameNumber = project.getProjectStatus().getCurrentFrame()
+                    + project.getProjectSettings().getStepFrame();
+        }
+        log.debug("Frame Number Calculated " + frameNumber);
+
+        project.getProjectStatus().setCurrentFrame(frameNumber);
+        return TaskFrameInfo.builder()
+                .frameNumber(frameNumber)
+                .build();
+    }
+
+    private TaskFrameInfo getCurrentFrameAndPart(Project project) {
+        var parts = project.getProjectSettings().getPartsPerFrame();
+        Integer frameNumber;
+        Integer partNumber;
+        if (project.getProjectStatus().getQueueIndex() == 0) {
+            frameNumber = project.getProjectSettings().getStartFrame();
+            partNumber = 1;
+        } else {
+            frameNumber = project.getProjectStatus().getCurrentFrame();
+            partNumber = project.getProjectStatus().getCurrentPart();
+            if (Objects.equals(partNumber, parts)) {
+                partNumber = 1;
+                frameNumber = frameNumber + project.getProjectSettings().getStepFrame();
+            } else {
+                partNumber = partNumber + 1;
+            }
+        }
+        project.getProjectStatus().setCurrentFrame(frameNumber);
+        project.getProjectStatus().setCurrentPart(partNumber);
+
+        var partCoordinates = ImageUtils.configurePartCoordinates(parts);
+
+        TaskFrameInfo frameInfo = partCoordinates.get(partNumber - 1);
+        frameInfo.setFrameNumber(frameNumber);
+        frameInfo.setPartNumber(partNumber);
+        log.debug("Frame Number Calculated " + frameNumber);
+        log.debug("Part Number Calculated " + partNumber);
+        return frameInfo;
     }
 
 
@@ -203,7 +230,7 @@ public class ServerQueueServiceImpl implements ServerQueueService {
             slots += node.getTotalRenderingSlots();
         }
 
-        var queueSize = slots * 2;
+        queueSize = slots * 2;
 
 
         if (pendingRenderQueue != null) {
@@ -230,7 +257,7 @@ public class ServerQueueServiceImpl implements ServerQueueService {
             slots += node.getTotalRenderingSlots();
         }
 
-        var queueSize = slots * 2;
+        queueSize = slots * 2;
         pendingRenderQueue = new LinkedBlockingQueue<>(queueSize);
 
     }

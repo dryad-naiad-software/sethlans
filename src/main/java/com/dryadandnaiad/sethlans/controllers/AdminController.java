@@ -66,14 +66,13 @@ public class AdminController {
     }
 
     @GetMapping("/get_user")
-    public UserQuery getUser(@RequestParam String username) {
+    public UserQuery getUser(@RequestParam String userid) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (userRepository.findUserByUsername(auth.getName()).isPresent()) {
             var requestingUser = userRepository.findUserByUsername(auth.getName()).get();
             if (requestingUser.getRoles().contains(Role.SUPER_ADMINISTRATOR) || requestingUser.getRoles().contains(Role.ADMINISTRATOR)) {
-
-                if (userRepository.findUserByUsername(username).isPresent()) {
-                    return userToUserQuery.convert(userRepository.findUserByUsername(username).get());
+                if (userRepository.findUserByUserID(userid).isPresent()) {
+                    return userToUserQuery.convert(userRepository.findUserByUserID(userid).get());
                 }
             }
         }
