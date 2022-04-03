@@ -122,6 +122,12 @@
 
 
         <!-- Other Dependencies - Non Spring Specific-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.13.2</version>
+        </dependency>
+
 
         <dependency>
             <groupId>com.h2database</groupId>

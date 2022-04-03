@@ -131,6 +131,7 @@ public class NotificationIntegrationTest {
     @Test
     public void check_notifications() throws JsonProcessingException, InterruptedException {
         var mapper = new ObjectMapper();
+        mapper.findAndRegisterModules();
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
 
         log.info("Waiting for Blender download(s) to complete.");
