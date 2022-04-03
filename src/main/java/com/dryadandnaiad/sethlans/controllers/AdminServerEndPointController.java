@@ -39,10 +39,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * File created by Mario Estrella on 6/12/2020.
@@ -157,6 +154,7 @@ public class AdminServerEndPointController {
             nodeRepository.save(nodeToSave);
             serverQueueService.updatePendingQueueLimit();
             var notification = Notification.builder()
+                    .notificationID(UUID.randomUUID().toString())
                     .messageDate(LocalDateTime.now())
                     .message("Benchmarks have been received from " + nodeToSave.getHostname())
                     .build();

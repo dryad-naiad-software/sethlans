@@ -36,6 +36,7 @@ import org.springframework.util.FileSystemUtils;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
+import java.util.UUID;
 
 /**
  * File created by Mario Estrella on 6/2/2020.
@@ -80,6 +81,7 @@ public class DownloadServiceImpl implements DownloadService {
                             blenderArchive.setDownloaded(true);
                             blenderArchiveRepository.save(blenderArchive);
                             var notification = Notification.builder()
+                                    .notificationID(UUID.randomUUID().toString())
                                     .messageDate(LocalDateTime.now())
                                     .message("Blender " + blenderArchive.getBlenderVersion() + " for "
                                             + blenderArchive.getBlenderOS().name() + " has been downloaded.")

@@ -100,6 +100,7 @@ public class ProjectServiceImpl implements ProjectService {
                     }
                     var notification = Notification.builder()
                             .userID(project.getUser().getUserID())
+                            .notificationID(UUID.randomUUID().toString())
                             .messageDate(LocalDateTime.now())
                             .message(project.getProjectName() + " has been started.")
                             .build();
@@ -180,6 +181,7 @@ public class ProjectServiceImpl implements ProjectService {
 
                     var notification = Notification.builder()
                             .userID(project.getUser().getUserID())
+                            .notificationID(UUID.randomUUID().toString())
                             .messageDate(LocalDateTime.now())
                             .message(project.getProjectName() + " has been stopped and reset.")
                             .build();
@@ -192,6 +194,7 @@ public class ProjectServiceImpl implements ProjectService {
                     log.debug("Saving project" + project.toString());
 
                     var notification = Notification.builder()
+                            .notificationID(UUID.randomUUID().toString())
                             .userID(project.getUser().getUserID())
                             .messageDate(LocalDateTime.now())
                             .message(project.getProjectName() + " has been stopped and reset.")
@@ -229,6 +232,7 @@ public class ProjectServiceImpl implements ProjectService {
             if (auth.getAuthorities().toString().contains("ADMINISTRATOR")) {
                 projectRepository.deleteAllByUser(userRepository.findUserByUserID(userID).get());
                 var notification = Notification.builder()
+                        .notificationID(UUID.randomUUID().toString())
                         .userID(userID)
                         .messageDate(LocalDateTime.now())
                         .message("All projects have been deleted.")
@@ -238,6 +242,7 @@ public class ProjectServiceImpl implements ProjectService {
                 if (userRepository.findUserByUserID(userID).get().getUsername().equals(auth.getName())) {
                     projectRepository.deleteAllByUser(userRepository.findUserByUserID(userID).get());
                     var notification = Notification.builder()
+                            .notificationID(UUID.randomUUID().toString())
                             .userID(userID)
                             .messageDate(LocalDateTime.now())
                             .message("All projects have been deleted.")
@@ -458,6 +463,7 @@ public class ProjectServiceImpl implements ProjectService {
 
             var notification = Notification.builder()
                     .userID(project.getUser().getUserID())
+                    .notificationID(UUID.randomUUID().toString())
                     .messageDate(LocalDateTime.now())
                     .message(project.getProjectName() + " has been created.")
                     .build();
@@ -557,6 +563,7 @@ public class ProjectServiceImpl implements ProjectService {
                         project.getProjectSettings().getImageSettings().setImageZipFileLocation(ImageUtils.createZipFileFromImages(project));
                         project.getProjectStatus().setProjectState(ProjectState.FINISHED);
                         var notification = Notification.builder()
+                                .notificationID(UUID.randomUUID().toString())
                                 .userID(project.getUser().getUserID())
                                 .messageDate(LocalDateTime.now())
                                 .message("Rendering has completed for " + project.getProjectName() + ".")
@@ -573,6 +580,7 @@ public class ProjectServiceImpl implements ProjectService {
                                                 .getProperty(ConfigKeys.FFMPEG_DIR));
                                 if (encoded) {
                                     var videoNotification = Notification.builder()
+                                            .notificationID(UUID.randomUUID().toString())
                                             .userID(finalProject.getUser().getUserID())
                                             .messageDate(LocalDateTime.now())
                                             .message("Video Encoding complete for " + finalProject.getProjectName() + ".")
@@ -634,13 +642,6 @@ public class ProjectServiceImpl implements ProjectService {
         project.getProjectStatus().setProjectState(ProjectState.FINISHED);
         projectRepository.save(project);
         log.debug("Saving project" + project.toString());
-
-        var notification = Notification.builder()
-                .userID(project.getUser().getUserID())
-                .messageDate(LocalDateTime.now())
-                .message("Rendering has completed for " + project.getProjectName() + ".")
-                .build();
-        notificationRepository.save(notification);
     }
 
     private void resetProject(Project project) {

@@ -23,6 +23,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.FileSystemUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -493,20 +494,6 @@ public class ProjectActionIntegrationTest {
 
     }
 
-    @AfterAll
-    public static void shutdown() throws InterruptedException {
-        var response = given()
-                .log()
-                .ifValidationFails()
-                .get("/api/v1/management/shutdown");
-
-        assertThat(response.getStatusCode()).isGreaterThanOrEqualTo(200).isLessThan(300);
-        Thread.sleep(10000);
-
-        // FileSystemUtils.deleteRecursively(new File(SystemUtils.USER_HOME + File.separator + ".sethlans"));
-        Thread.sleep(5000);
-    }
-
     @Test
     public void pavillonBarceloneAnimationMP4Stop() throws IOException, InterruptedException {
         var mapper = new ObjectMapper();
@@ -692,5 +679,19 @@ public class ProjectActionIntegrationTest {
         log.info(project.toString());
         Thread.sleep(10000);
 
+    }
+
+    @AfterAll
+    public static void shutdown() throws InterruptedException {
+        var response = given()
+                .log()
+                .ifValidationFails()
+                .get("/api/v1/management/shutdown");
+
+        assertThat(response.getStatusCode()).isGreaterThanOrEqualTo(200).isLessThan(300);
+        Thread.sleep(10000);
+
+        FileSystemUtils.deleteRecursively(new File(SystemUtils.USER_HOME + File.separator + ".sethlans"));
+        Thread.sleep(5000);
     }
 }

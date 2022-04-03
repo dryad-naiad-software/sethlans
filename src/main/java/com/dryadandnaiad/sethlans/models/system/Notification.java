@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @Entity
 public class Notification extends AbstractModel {
+    private String notificationID;
     private LocalDateTime messageDate;
     private String message;
     private boolean messageRead;

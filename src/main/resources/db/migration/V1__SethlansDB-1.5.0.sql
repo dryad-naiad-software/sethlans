@@ -104,14 +104,15 @@ create table project
 
 create table notification
 (
-    id           bigint  not null,
-    date_created timestamp,
-    last_updated timestamp,
-    version      bigint,
-    message_read boolean not null,
-    message      varchar(255),
-    message_date timestamp,
-    userid       varchar(255),
+    id             bigint  not null,
+    date_created   timestamp,
+    last_updated   timestamp,
+    version        bigint,
+    notificationid varchar(255),
+    message_read   boolean not null,
+    message        varchar(255),
+    message_date   timestamp,
+    userid         varchar(255),
     primary key (id)
 );
 
