@@ -16,31 +16,28 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-import {Component, OnInit} from '@angular/core';
-import {SethlansService} from "./sethlans.service";
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
-})
+import {NavBarComponent} from './nav-bar.component';
 
-/**
- * File created by Mario Estrella on 4/3/2022
- * Dryad and Naiad Software LLC
- * mestrella@dryadandnaiad.com
- * Project: sethlans_ui
- */
+describe('NavBarComponent', () => {
+  let component: NavBarComponent;
+  let fixture: ComponentFixture<NavBarComponent>;
 
-export class AppComponent implements OnInit {
-  firstTime: boolean = false;
-
-  constructor(private sethlansService: SethlansService) {
-  }
-
-  ngOnInit(): void {
-    this.sethlansService.isFirstTime().subscribe((data: any) => {
-      this.firstTime = data.first_time;
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [NavBarComponent]
     })
-  }
-}
+      .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(NavBarComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

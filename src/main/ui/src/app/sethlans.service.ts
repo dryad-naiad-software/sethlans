@@ -16,13 +16,11 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-import {Component, OnInit} from '@angular/core';
-import {SethlansService} from "./sethlans.service";
+import {Injectable} from '@angular/core';
+import {HttpClient} from "@angular/common/http";
 
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+@Injectable({
+  providedIn: 'root'
 })
 
 /**
@@ -32,15 +30,16 @@ import {SethlansService} from "./sethlans.service";
  * Project: sethlans_ui
  */
 
-export class AppComponent implements OnInit {
+export class SethlansService {
+
+
+  rootURL = '/api/v1';
   firstTime: boolean = false;
 
-  constructor(private sethlansService: SethlansService) {
+  constructor(private http: HttpClient) {
   }
 
-  ngOnInit(): void {
-    this.sethlansService.isFirstTime().subscribe((data: any) => {
-      this.firstTime = data.first_time;
-    })
+  isFirstTime() {
+    return this.http.get(this.rootURL + '/info/is_first_time')
   }
 }

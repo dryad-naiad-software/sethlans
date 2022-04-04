@@ -16,31 +16,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-import {Component, OnInit} from '@angular/core';
-import {SethlansService} from "./sethlans.service";
+import {TestBed} from '@angular/core/testing';
 
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
-})
+import {SethlansService} from './sethlans.service';
 
-/**
- * File created by Mario Estrella on 4/3/2022
- * Dryad and Naiad Software LLC
- * mestrella@dryadandnaiad.com
- * Project: sethlans_ui
- */
+describe('SethlansService', () => {
+  let service: SethlansService;
 
-export class AppComponent implements OnInit {
-  firstTime: boolean = false;
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(SethlansService);
+  });
 
-  constructor(private sethlansService: SethlansService) {
-  }
-
-  ngOnInit(): void {
-    this.sethlansService.isFirstTime().subscribe((data: any) => {
-      this.firstTime = data.first_time;
-    })
-  }
-}
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+});

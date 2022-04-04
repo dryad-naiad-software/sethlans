@@ -17,13 +17,7 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {SethlansService} from "./sethlans.service";
-
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
-})
+import {SethlansService} from "../sethlans.service";
 
 /**
  * File created by Mario Estrella on 4/3/2022
@@ -32,8 +26,15 @@ import {SethlansService} from "./sethlans.service";
  * Project: sethlans_ui
  */
 
-export class AppComponent implements OnInit {
+@Component({
+  selector: 'app-nav-bar',
+  templateUrl: './nav-bar.component.html',
+  styleUrls: ['./nav-bar.component.css']
+})
+export class NavBarComponent implements OnInit {
+
   firstTime: boolean = false;
+
 
   constructor(private sethlansService: SethlansService) {
   }
@@ -43,4 +44,5 @@ export class AppComponent implements OnInit {
       this.firstTime = data.first_time;
     })
   }
+
 }

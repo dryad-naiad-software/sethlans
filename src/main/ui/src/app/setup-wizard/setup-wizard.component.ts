@@ -17,12 +17,11 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {SethlansService} from "./sethlans.service";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: 'app-setup-wizard',
+  templateUrl: './setup-wizard.component.html',
+  styleUrls: ['./setup-wizard.component.css']
 })
 
 /**
@@ -32,15 +31,12 @@ import {SethlansService} from "./sethlans.service";
  * Project: sethlans_ui
  */
 
-export class AppComponent implements OnInit {
-  firstTime: boolean = false;
+export class SetupWizardComponent implements OnInit {
 
-  constructor(private sethlansService: SethlansService) {
+  constructor() {
   }
 
   ngOnInit(): void {
-    this.sethlansService.isFirstTime().subscribe((data: any) => {
-      this.firstTime = data.first_time;
-    })
   }
+
 }
