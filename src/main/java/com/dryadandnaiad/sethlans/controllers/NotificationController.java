@@ -34,10 +34,10 @@ public class NotificationController {
     }
 
     @PostMapping("/mark_read")
-    public ResponseEntity<Void> markAsRead(@RequestParam String notificationUUID) {
+    public ResponseEntity<Void> markAsRead(@RequestParam String notificationID) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         var user = userRepository.findUserByUsername(auth.getName()).get();
-        var notification = notificationRepository.findNotificationByNotificationID(notificationUUID);
+        var notification = notificationRepository.findNotificationByNotificationID(notificationID);
         if (notification.getUserID().equals(user.getUserID())) {
             notification.setMessageRead(true);
             notificationRepository.save(notification);

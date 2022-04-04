@@ -314,5 +314,28 @@ public class NotificationIntegrationTest {
 
         log.info(notifications.toString());
 
+        var notification = notifications.get(1);
+
+        given()
+                .log()
+                .ifValidationFails()
+                .param("notificationID", notification.getNotificationID())
+                .post("/api/v1/notifications/mark_read")
+                .then()
+                .statusCode(StatusCodes.ACCEPTED);
+
+        notifications = mapper
+                .readValue(get("/api/v1/notifications/get_notifications")
+                        .then()
+                        .extract()
+                        .response()
+                        .body()
+                        .asString(), new TypeReference<List<Notification>>() {
+                });
+
+        notification = notifications.get(1);
+
+        assertThat(notification.isMessageRead()).isEqualTo(true);
+
     }
 }
