@@ -17,18 +17,12 @@
   -->
 
 <footer class="bg-dark text-light">
-  <div class="row pt-2 px-md-5">
-    <div class="col-3">
-      <p class="font-weight-bold float-right pl-5">{{mode.toString()}}</p>
-    </div>
-    <div class="col-6">
-      <p class="d-none d-sm-block font-weight-light text-center" style="font-size: small">&copy; 2018-{{year}} Dryad and
-        Naiad Software
-        LLC</p>
-    </div>
-    <div class="col-3">
-      <p
-        class="font-weight-light float-right pr-5" style="font-size: small">Version {{sethlansVersion}}</p>
+  <div class="row pt-1 px-md-4">
+    <div class="d-flex justify-content-between py-1 my-1">
+      <p class="fw-bold float-right ps-5" style="font-size: large">{{mode.toString()}}</p>
+      <p class="d-none d-sm-block fw-light text-center" style="font-size: small">&copy; 2018-{{year}} Dryad and
+        Naiad Software LLC</p>
+      <p class="fw-light float-right" style="font-size: medium">Version {{sethlansVersion}}</p>
     </div>
   </div>
 </footer>
