@@ -80,4 +80,11 @@ public class InfoController {
         return version;
     }
 
+    @GetMapping("/build_year")
+    public Map<String, String> getBuildYear() {
+        var buildYear = new HashMap<String, String>();
+        buildYear.put("year", QueryUtils.getBuildYear());
+        return buildYear;
+    }
+
 }

@@ -198,6 +198,21 @@ public class QueryUtils {
         return null;
     }
 
+    public static String getBuildYear() {
+        val properties = new Properties();
+        try {
+            properties.load(new InputStreamReader(new ResourceUtils("git.properties").getResource(),
+                    StandardCharsets.UTF_8));
+            String buildYear = properties.getProperty("git.commit.time").substring(0, 4);
+            return buildYear;
+        } catch (IOException e) {
+            log.error(Throwables.getStackTraceAsString(e));
+            log.error("Unable to access git.properties file");
+        }
+        return null;
+    }
+
+
     /**
      * Takes in time in milliseconds(long) and returns it in a readable format.
      *
