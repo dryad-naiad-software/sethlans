@@ -321,9 +321,9 @@
             </plugin>
             <!-- Git Version Plugin -->
             <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-                <version>4.0.0</version>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
+                <version>5.0.0</version>
                 <executions>
                     <execution>
                         <phase>validate</phase>
@@ -337,6 +337,7 @@
                     <includeOnlyProperties>
                         <includeOnlyProperty>git.build.version</includeOnlyProperty>
                         <includeOnlyProperty>git.total.commit.count</includeOnlyProperty>
+                        <includeOnlyProperty>git.commit.time</includeOnlyProperty>
                     </includeOnlyProperties>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
                     <generateGitPropertiesFilename>src/main/resources/git.properties</generateGitPropertiesFilename>

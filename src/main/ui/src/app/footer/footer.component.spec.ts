@@ -16,42 +16,28 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-@Injectable({
-  providedIn: 'root'
-})
+import {FooterComponent} from './footer.component';
 
-/**
- * File created by Mario Estrella on 4/3/2022
- * Dryad and Naiad Software LLC
- * mestrella@dryadandnaiad.com
- * Project: sethlans_ui
- */
+describe('FooterComponent', () => {
+  let component: FooterComponent;
+  let fixture: ComponentFixture<FooterComponent>;
 
-export class SethlansService {
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [FooterComponent]
+    })
+      .compileComponents();
+  });
 
+  beforeEach(() => {
+    fixture = TestBed.createComponent(FooterComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-  rootURL = '/api/v1';
-  firstTime: boolean = false;
-
-  constructor(private http: HttpClient) {
-  }
-
-  isFirstTime() {
-    return this.http.get(this.rootURL + '/info/is_first_time');
-  }
-
-  version() {
-    return this.http.get(this.rootURL + '/info/version');
-  }
-
-  mode() {
-    return this.http.get(this.rootURL + "/info/mode")
-  }
-
-  year() {
-    return this.http.get(this.rootURL + "/info/build_year")
-  }
-}
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

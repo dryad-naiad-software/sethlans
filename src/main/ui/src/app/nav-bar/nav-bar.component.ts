@@ -32,8 +32,9 @@ import {SethlansService} from "../sethlans.service";
   styleUrls: ['./nav-bar.component.css']
 })
 export class NavBarComponent implements OnInit {
-
   firstTime: boolean = false;
+  logo: any = 'assets/images/logo-text-white.png';
+  logoDark: any = 'assets/images/logo-text-dark.png';
 
 
   constructor(private sethlansService: SethlansService) {

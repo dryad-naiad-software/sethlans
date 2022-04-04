@@ -21,4 +21,8 @@
 </div>
 <div class="px-5 m-auto pt-2">
   <app-setup-wizard *ngIf="firstTime"></app-setup-wizard>
+  <router-outlet *ngIf="!firstTime"></router-outlet>
+</div>
+<div class="pt-5">
+  <app-footer class="fixed-bottom"></app-footer>
 </div>

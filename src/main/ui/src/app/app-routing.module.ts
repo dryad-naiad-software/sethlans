@@ -16,42 +16,22 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {DashboardComponent} from './dashboard/dashboard.component';
 
-@Injectable({
-  providedIn: 'root'
+
+const routes: Routes = [
+  {path: '', component: DashboardComponent}
+];
+
+
+@NgModule({
+  declarations: [],
+  imports: [
+    RouterModule.forRoot(routes)
+  ],
+  exports: [RouterModule]
 })
-
-/**
- * File created by Mario Estrella on 4/3/2022
- * Dryad and Naiad Software LLC
- * mestrella@dryadandnaiad.com
- * Project: sethlans_ui
- */
-
-export class SethlansService {
-
-
-  rootURL = '/api/v1';
-  firstTime: boolean = false;
-
-  constructor(private http: HttpClient) {
-  }
-
-  isFirstTime() {
-    return this.http.get(this.rootURL + '/info/is_first_time');
-  }
-
-  version() {
-    return this.http.get(this.rootURL + '/info/version');
-  }
-
-  mode() {
-    return this.http.get(this.rootURL + "/info/mode")
-  }
-
-  year() {
-    return this.http.get(this.rootURL + "/info/build_year")
-  }
+export class AppRoutingModule {
 }

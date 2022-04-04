@@ -23,6 +23,10 @@ import {AppComponent} from './app.component';
 import {NavBarComponent} from './nav-bar/nav-bar.component';
 import {SetupWizardComponent} from './setup-wizard/setup-wizard.component';
 import {HttpClientModule} from '@angular/common/http';
+import {AppRoutingModule} from './app-routing.module';
+import {DashboardComponent} from './dashboard/dashboard.component';
+import {FooterComponent} from './footer/footer.component';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
 /**
  * File created by Mario Estrella on 4/3/2022
@@ -35,9 +39,11 @@ import {HttpClientModule} from '@angular/common/http';
   declarations: [
     AppComponent,
     NavBarComponent,
-    SetupWizardComponent],
+    SetupWizardComponent,
+    DashboardComponent,
+    FooterComponent],
   imports: [
-    BrowserModule, HttpClientModule
+    BrowserModule, HttpClientModule, AppRoutingModule, NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]

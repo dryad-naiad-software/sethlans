@@ -16,42 +16,33 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {Component, OnInit} from '@angular/core';
+import {SethlansService} from "../sethlans.service";
+import {Mode} from "../enums/mode.enum";
 
-@Injectable({
-  providedIn: 'root'
+@Component({
+  selector: 'app-footer',
+  templateUrl: './footer.component.html',
+  styleUrls: ['./footer.component.css']
 })
+export class FooterComponent implements OnInit {
+  mode: Mode = Mode.SETUP;
+  sethlansVersion: string = "";
+  year: string = "";
 
-/**
- * File created by Mario Estrella on 4/3/2022
- * Dryad and Naiad Software LLC
- * mestrella@dryadandnaiad.com
- * Project: sethlans_ui
- */
-
-export class SethlansService {
-
-
-  rootURL = '/api/v1';
-  firstTime: boolean = false;
-
-  constructor(private http: HttpClient) {
+  constructor(private sethlansService: SethlansService) {
   }
 
-  isFirstTime() {
-    return this.http.get(this.rootURL + '/info/is_first_time');
+  ngOnInit(): void {
+    this.sethlansService.version().subscribe((data: any) => {
+      this.sethlansVersion = data.version;
+    });
+    this.sethlansService.mode().subscribe((data: any) => {
+      this.mode = data.mode;
+    });
+    this.sethlansService.year().subscribe((data: any) => {
+      this.year = data.year;
+    });
   }
 
-  version() {
-    return this.http.get(this.rootURL + '/info/version');
-  }
-
-  mode() {
-    return this.http.get(this.rootURL + "/info/mode")
-  }
-
-  year() {
-    return this.http.get(this.rootURL + "/info/build_year")
-  }
 }
