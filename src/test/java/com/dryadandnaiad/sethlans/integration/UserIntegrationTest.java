@@ -1,7 +1,6 @@
 package com.dryadandnaiad.sethlans.integration;
 
 import com.dryadandnaiad.sethlans.enums.Role;
-import com.dryadandnaiad.sethlans.enums.SecurityQuestion;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.user.User;
 import com.dryadandnaiad.sethlans.models.user.UserChallenge;
@@ -117,7 +116,7 @@ public class UserIntegrationTest {
         var mapper = new ObjectMapper();
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
         var challenge = UserChallenge.builder()
-                .challenge(SecurityQuestion.QUESTION1)
+                .challenge("Test1234")
                 .response("Test").build();
 
         var user1 = User.builder()
@@ -175,7 +174,7 @@ public class UserIntegrationTest {
         var mapper = new ObjectMapper();
         var token = TestUtils.loginGetCSRFToken("testuser", "testPa$$1234");
         var challenge = UserChallenge.builder()
-                .challenge(SecurityQuestion.QUESTION1)
+                .challenge("Test 12345")
                 .response("Test").build();
 
         var user = User.builder()

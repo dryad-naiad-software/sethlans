@@ -2,7 +2,6 @@ package com.dryadandnaiad.sethlans.integration;
 
 import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.enums.Role;
-import com.dryadandnaiad.sethlans.enums.SecurityQuestion;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.hardware.GPU;
@@ -33,8 +32,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import static com.dryadandnaiad.sethlans.tools.TestUtils.hostWithoutDomainName;
-import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.get;
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
@@ -110,7 +109,7 @@ public class SetupIntegrationTest {
         var blenderVersions = setupForm.getBlenderVersions();
 
         var challenge = UserChallenge.builder()
-                .challenge(SecurityQuestion.QUESTION1)
+                .challenge("Question")
                 .response("Test").build();
 
         var serverSettings = ServerSettings.builder()

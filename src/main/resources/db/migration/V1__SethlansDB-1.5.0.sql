@@ -207,7 +207,7 @@ create table user
 create table user_challenge_list
 (
     user_id          bigint  not null,
-    challenge        integer,
+    challenge        varchar(255),
     response         varchar(255),
     response_updated boolean not null
 );

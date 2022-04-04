@@ -17,7 +17,6 @@
 
 package com.dryadandnaiad.sethlans.models.user;
 
-import com.dryadandnaiad.sethlans.enums.SecurityQuestion;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,7 +36,7 @@ import javax.persistence.Embeddable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserChallenge {
-    private SecurityQuestion challenge;
+    private String challenge;
     private String response;
     private boolean responseUpdated;
 }

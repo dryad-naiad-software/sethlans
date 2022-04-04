@@ -157,7 +157,7 @@ public class TestUtils {
         }
 
         var challenge = UserChallenge.builder()
-                .challenge(SecurityQuestion.QUESTION1)
+                .challenge("Test1234")
                 .response("Test").build();
 
         var serverSettings = ServerSettings.builder()
@@ -205,7 +205,7 @@ public class TestUtils {
         }
 
         var challenge = UserChallenge.builder()
-                .challenge(SecurityQuestion.QUESTION1)
+                .challenge("Test1234")
                 .response("Test").build();
 
         var nodeSettings = NodeSettings.builder()
@@ -236,7 +236,7 @@ public class TestUtils {
         var blenderVersions = setupForm.getBlenderVersions();
 
         var challenge = UserChallenge.builder()
-                .challenge(SecurityQuestion.QUESTION1)
+                .challenge("Test1234")
                 .response("Test").build();
 
         var serverSettings = ServerSettings.builder()
