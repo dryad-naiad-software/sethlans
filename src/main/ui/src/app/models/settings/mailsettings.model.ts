@@ -17,14 +17,34 @@
  */
 
 /**
- * File created by Mario Estrella on 4/3/2022
+ * File created by Mario Estrella on 4/4/2022
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans_ui
  */
-export enum Mode {
-  SERVER = 'SERVER',
-  NODE = 'NODE',
-  DUAL = 'DUAL',
-  SETUP = 'SETUP'
+
+export class MailSettings {
+  mailHost: string;
+  mailPort: string;
+  username: string;
+  password: string;
+  replyToAddress: string;
+  mailEnabled: boolean;
+  smtpAuth: boolean;
+  sslEnabled: boolean;
+  startTLSEnabled: boolean;
+  startTLSRequired: boolean;
+
+  constructor(obj: any) {
+    this.mailHost = obj.mailHost;
+    this.mailPort = obj.mailPort;
+    this.username = obj.username;
+    this.password = obj.password;
+    this.replyToAddress = obj.replyToAddress;
+    this.mailEnabled = obj.mailEnabled;
+    this.smtpAuth = obj.smtpAuth;
+    this.sslEnabled = obj.sslEnabled;
+    this.startTLSEnabled = obj.startTLSEnabled;
+    this.startTLSRequired = obj.startTLSRequired;
+  }
 }

@@ -17,7 +17,14 @@
  */
 
 import {Mode} from "../../enums/mode.enum";
-import {User} from "../user.model";
+import {User} from "../user/user.model";
+import {LogLevel} from "../../enums/loglevel.enum";
+import {NodeType} from "../../enums/nodetype.enum";
+import {GPU} from "../hardware/gpu.model";
+import {MailSettings} from "../settings/mailsettings.model";
+import {NodeSettings} from "../settings/nodesettings.model";
+import {ServerSettings} from "../settings/serversettings.model";
+import {SystemInfo} from "../system/systeminfo.model";
 
 /**
  * File created by Mario Estrella on 4/3/2022
@@ -29,10 +36,32 @@ import {User} from "../user.model";
 export class SetupForm {
   mode: Mode;
   user: User;
+  logLevel: LogLevel;
+  availableTypes: Array<NodeType>;
+  availableGPUs: Array<GPU>;
+  blenderVersions: Array<string>;
+  mailSettings: MailSettings;
+  nodeSettings: NodeSettings;
+  serverSettings: ServerSettings;
+  systemInfo: SystemInfo;
+  ipAddress: string;
+  port: string;
+  appURL: string;
 
 
   constructor(obj: any) {
     this.mode = obj.mode;
     this.user = obj.user;
+    this.logLevel = obj.logLevel;
+    this.availableTypes = obj.availableTypes;
+    this.availableGPUs = obj.availableGPUs;
+    this.blenderVersions = obj.blenderVersions;
+    this.mailSettings = obj.mailSettings;
+    this.nodeSettings = obj.nodeSettings;
+    this.serverSettings = obj.serverSettings;
+    this.systemInfo = obj.systemInfo;
+    this.ipAddress = obj.ipAddress;
+    this.port = obj.port;
+    this.appURL = obj.appURL;
   }
 }

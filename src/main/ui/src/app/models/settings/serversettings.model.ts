@@ -17,14 +17,15 @@
  */
 
 /**
- * File created by Mario Estrella on 4/3/2022
+ * File created by Mario Estrella on 4/4/2022
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans_ui
  */
-export enum Mode {
-  SERVER = 'SERVER',
-  NODE = 'NODE',
-  DUAL = 'DUAL',
-  SETUP = 'SETUP'
+export class ServerSettings {
+  blenderVersion: string;
+
+  constructor(obj: any) {
+    this.blenderVersion = obj.blenderVersion;
+  }
 }

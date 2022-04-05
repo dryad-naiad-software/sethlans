@@ -88,13 +88,17 @@ public class SetupIntegrationTest {
 
         log.info("Getting Setup Form");
 
+        var setupFormJson = get("/api/v1/setup/get_setup")
+                .then()
+                .extract()
+                .response()
+                .body()
+                .asString();
+
+        log.info(setupFormJson);
+
         var setupForm = mapper
-                .readValue(get("/api/v1/setup/get_setup")
-                        .then()
-                        .extract()
-                        .response()
-                        .body()
-                        .asString(), SetupForm.class);
+                .readValue(setupFormJson, SetupForm.class);
 
         log.info("Retrieved Setup Form: \n" + setupForm);
 

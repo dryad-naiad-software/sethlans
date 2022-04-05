@@ -16,15 +16,26 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+import {DeviceType} from "../../enums/devicetype.enum";
+
 /**
- * File created by Mario Estrella on 4/3/2022
+ * File created by Mario Estrella on 4/4/2022
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans_ui
  */
-export enum Mode {
-  SERVER = 'SERVER',
-  NODE = 'NODE',
-  DUAL = 'DUAL',
-  SETUP = 'SETUP'
+export class GPU {
+  model: string;
+  memory: number;
+  rating: number;
+  deviceType: DeviceType;
+  gpuID: string;
+
+  constructor(obj: any) {
+    this.model = obj.model;
+    this.memory = obj.memory;
+    this.rating = obj.rating;
+    this.deviceType = obj.deviceType;
+    this.gpuID = obj.gpuID;
+  }
 }

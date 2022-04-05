@@ -16,15 +16,29 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+import {NodeType} from "../../enums/nodetype.enum";
+import {GPU} from "../hardware/gpu.model";
+
 /**
- * File created by Mario Estrella on 4/3/2022
+ * File created by Mario Estrella on 4/4/2022
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans_ui
  */
-export enum Mode {
-  SERVER = 'SERVER',
-  NODE = 'NODE',
-  DUAL = 'DUAL',
-  SETUP = 'SETUP'
+export class NodeSettings {
+  nodeType: NodeType;
+  cores: number;
+  tileSizeGPU: number;
+  tileSizeCPU: number;
+  selectedGPUs: Array<GPU>;
+  gpuCombined: boolean;
+
+  constructor(obj: any) {
+    this.nodeType = obj.nodeType;
+    this.cores = obj.cores;
+    this.tileSizeGPU = obj.tileSizeGPU;
+    this.tileSizeCPU = obj.tileSizeCPU;
+    this.selectedGPUs = obj.selectedGPUs;
+    this.gpuCombined = obj.gpuCombined;
+  }
 }

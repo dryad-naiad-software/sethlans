@@ -16,15 +16,38 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+import {UserChallenge} from "./user-challenge.model";
+import {Role} from "../../enums/role.enum";
+
 /**
  * File created by Mario Estrella on 4/3/2022
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans_ui
  */
-export enum Mode {
-  SERVER = 'SERVER',
-  NODE = 'NODE',
-  DUAL = 'DUAL',
-  SETUP = 'SETUP'
+
+export class User {
+  userID: string;
+  username: string;
+  email: string;
+  active: boolean;
+  systemEmailNotifications: boolean;
+  nodeEmailNotifications: boolean;
+  projectEmailNotifications: boolean;
+  videoEncodingEmailNotifications: boolean;
+  challengeList: Array<UserChallenge>;
+  roles: Array<Role>;
+
+  constructor(obj: any) {
+    this.userID = obj.userID;
+    this.username = obj.username;
+    this.email = obj.email;
+    this.active = obj.active;
+    this.systemEmailNotifications = obj.systemEmailNotifications;
+    this.nodeEmailNotifications = obj.nodeEmailNotifications;
+    this.projectEmailNotifications = obj.projectEmailNotifications;
+    this.videoEncodingEmailNotifications = obj.videoEncodingEmailNotifications;
+    this.challengeList = obj.challengeList;
+    this.roles = obj.roles;
+  }
 }

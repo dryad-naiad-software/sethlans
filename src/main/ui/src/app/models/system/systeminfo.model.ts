@@ -16,15 +16,31 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+import {OS} from "../../enums/os.enum";
+import {CPU} from "../hardware/cpu.model";
+import {GPU} from "../hardware/gpu.model";
+
 /**
- * File created by Mario Estrella on 4/3/2022
+ * File created by Mario Estrella on 4/4/2022
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans_ui
  */
-export enum Mode {
-  SERVER = 'SERVER',
-  NODE = 'NODE',
-  DUAL = 'DUAL',
-  SETUP = 'SETUP'
+export class SystemInfo {
+  hostname: string;
+  ipAddress: string;
+  networkPort: string;
+  os: OS;
+  cpu: CPU;
+  gpuList: Array<GPU>;
+
+  constructor(obj: any) {
+    this.hostname = obj.hostname;
+    this.ipAddress = obj.ipAddress;
+    this.networkPort = obj.networkPort;
+    this.os = obj.os;
+    this.cpu = obj.cpu;
+    this.gpuList = obj.gpuList;
+  }
+
 }

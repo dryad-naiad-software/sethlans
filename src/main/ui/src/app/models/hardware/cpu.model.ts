@@ -17,31 +17,27 @@
  */
 
 /**
- * File created by Mario Estrella on 4/3/2022
+ * File created by Mario Estrella on 4/4/2022
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans_ui
  */
-
-export class User {
-  userID: string;
-  username: string;
-  email: string;
-  active: boolean;
-  systemEmailNotifications: boolean;
-  nodeEmailNotifications: boolean;
-  projectEmailNotifications: boolean;
-  videoEncodingEmailNotifications: boolean;
-
+export class CPU {
+  name: string;
+  model: string;
+  family: string;
+  arch: string;
+  cores: number;
+  cpuPackage: number;
+  totalMemory: string;
 
   constructor(obj: any) {
-    this.userID = obj.userID;
-    this.username = obj.username;
-    this.email = obj.email;
-    this.active = obj.active;
-    this.systemEmailNotifications = obj.systemEmailNotifications;
-    this.nodeEmailNotifications = obj.nodeEmailNotifications;
-    this.projectEmailNotifications = obj.projectEmailNotifications;
-    this.videoEncodingEmailNotifications = obj.videoEncodingEmailNotifications;
+    this.name = obj.name;
+    this.model = obj.model;
+    this.family = obj.family;
+    this.arch = obj.arch;
+    this.cores = obj.cores;
+    this.cpuPackage = obj.cpuPackage;
+    this.totalMemory = obj.totalMemory;
   }
 }
