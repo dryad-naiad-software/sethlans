@@ -19,6 +19,7 @@
 import {Component, OnInit} from '@angular/core';
 import {SethlansService} from "../sethlans.service";
 import {SetupForm} from "../models/forms/setup-form.model";
+import {SetupWizardProgress} from "../enums/setupwizardprogress.enum";
 
 @Component({
   selector: 'app-setup-wizard',
@@ -35,6 +36,8 @@ import {SetupForm} from "../models/forms/setup-form.model";
 
 export class SetupWizardComponent implements OnInit {
   setupForm: SetupForm | undefined;
+  setupWizardProgress: SetupWizardProgress = SetupWizardProgress.BEGIN;
+  SetupWizardProgress = SetupWizardProgress;
 
   constructor(private sethlansService: SethlansService) {
   }
@@ -45,6 +48,7 @@ export class SetupWizardComponent implements OnInit {
   loadSetupForm() {
     this.sethlansService.getSetup().subscribe((obj: any) => {
       this.setupForm = new SetupForm(obj)
+      console.log(this.setupForm)
     })
   }
 

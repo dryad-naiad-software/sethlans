@@ -15,4 +15,22 @@
   ~ along with this program; if not, write to the Free Software
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   -->
+<div class="row pb-1">
+  <div class="col-md-8 m-auto">
+    <div class="card">
+      <div class="card-header">
+        <h4 style="font-family: 'Fjalla One', sans-serif">Sethlans Setup Wizard</h4>
+      </div>
+      <div class="card-body">
+        <p> Blah</p>
+      </div>
+      <div class="card-footer">
+        <button (click)="loadSetupForm()" *ngIf="setupWizardProgress == SetupWizardProgress.BEGIN"
+                class="btn btn-outline-primary float-right"> Start
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 

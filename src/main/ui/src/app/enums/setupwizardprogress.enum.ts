@@ -16,5 +16,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-/* You can add global styles to this file, and also import other style files */
-@import "@fontsource/fjalla-one";
+/**
+ * File created by Mario Estrella on 4/4/2022
+ * Dryad and Naiad Software LLC
+ * mestrella@dryadandnaiad.com
+ * Project: sethlans_ui
+ */
+export enum SetupWizardProgress {
+  BEGIN
+}
