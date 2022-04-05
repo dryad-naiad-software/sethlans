@@ -28,6 +28,7 @@ import {DashboardComponent} from './dashboard/dashboard.component';
 import {FooterComponent} from './footer/footer.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {FormsModule} from "@angular/forms";
 
 /**
  * File created by Mario Estrella on 4/3/2022
@@ -44,7 +45,7 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
     DashboardComponent,
     FooterComponent],
   imports: [
-    BrowserModule, HttpClientModule, AppRoutingModule, NgbModule, FontAwesomeModule
+    BrowserModule, HttpClientModule, AppRoutingModule, NgbModule, FontAwesomeModule, FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

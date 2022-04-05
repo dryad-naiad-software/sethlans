@@ -22,12 +22,225 @@
         <h4 style="font-family: 'Fjalla One', sans-serif">Sethlans Setup Wizard</h4>
       </div>
       <div class="card-body">
-        <p> Blah</p>
+        <div *ngIf="setupWizardProgress == SetupWizardProgress.BEGIN">
+          <p>Welcome to the Sethlans Setup Wizard. </p>
+          <p> This wizard will walk you through the initial setup of the Sethlans Distributed Rendering Environment.</p>
+          <h5>Overview</h5>
+          <p>Sethlans is designed as a distributed render farm/network renderer that can work in both local and remote
+            networks utilizing Blender as the rendering backend. </p>
+          <h5>Features</h5>
+          <ul>
+            <li>AVI and MP4 animation encoding</li>
+            <li>Multi-GPU support on nodes</li>
+            <li>AMD GPU Support</li>
+            <li>Combined CPU and GPU rendering on a single node</li>
+            <li>Blender version selection per project</li>
+          </ul>
+        </div>
+        <!--Setup Wizard Nav Menu-->
+        <div *ngIf="setupWizardProgress != SetupWizardProgress.BEGIN">
+          <ul class="nav nav-tabs justify-content-between pb-3">
+            <li>
+              <button (click)="goToMode()"
+                      [ngClass]="setupWizardProgress == SetupWizardProgress.MODE ? 'btn-outline-primary' : 'btn-outline-dark'"
+                      class="btn btn-lg btn-circle" ngbTooltip="Mode Selection"
+                      type="button">
+                <fa-icon [icon]="faFlagCheckered"></fa-icon>
+              </button>
+            </li>
+            <li>
+              <button (click)="goToAdmin()"
+                      [ngClass]="setupWizardProgress == SetupWizardProgress.ADMIN_SETUP ? 'btn-outline-primary' : 'btn-outline-dark'"
+                      class="btn btn-lg btn-circle" ngbTooltip="Admin User Setup"
+                      type="button">
+                <fa-icon [icon]="faUserNinja"></fa-icon>
+              </button>
+            </li>
+            <li>
+              <button (click)="goToModeSetup()"
+                      [ngClass]="setupWizardProgress == SetupWizardProgress.MODE_SETUP ? 'btn-outline-primary' : 'btn-outline-dark'"
+                      class="btn btn-lg btn-circle" ngbTooltip="Sethlans Mode Setup"
+                      type="button">
+                <fa-icon [icon]="faGear"></fa-icon>
+              </button>
+            </li>
+          </ul>
+        </div>
+        <!--Mode Setup-->
+        <div *ngIf="setupWizardProgress == SetupWizardProgress.MODE" class="row py-1">
+          <div class="col-md-4 ms-1">
+            <h5>Sethlans Modes</h5>
+            <div class="form-check" ngbTooltip="Sethlans will act as a server and as a node" placement="left">
+              <label class="form-check-label">
+                <input [(ngModel)]="setupForm!.mode"
+                       [value]="Mode.DUAL"
+                       class="form-check-input"
+                       name="mode"
+                       required
+                       type="radio">Dual
+              </label>
+            </div>
+            <div class="form-check" ngbTooltip="Sethlans will be configured as a server" placement="left">
+              <label class="form-check-label">
+                <input [(ngModel)]="setupForm!.mode"
+                       [value]="Mode.SERVER"
+                       class="form-check-input"
+                       name="mode"
+                       required
+                       type="radio">Server
+              </label>
+            </div>
+            <div class="form-check" ngbTooltip="Sethlans will be configured as a node only" placement="left">
+              <label class="form-check-label">
+                <input [(ngModel)]="setupForm!.mode"
+                       [value]="Mode.NODE"
+                       class="form-check-input"
+                       name="mode"
+                       required
+                       type="radio">Node
+              </label>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <ul>
+              <li>
+                <p><strong>Dual:</strong> Combination of a server and a node. Allows both the creation and management of
+                  render
+                  queues and the rendering of tasks.</p>
+
+              </li>
+              <li>
+                <p><strong>Server:</strong> Creation of render projects, management of render queues, provides
+                  notifications for
+                  projects, manages nodes. </p>
+              </li>
+              <li>
+                <p><strong>Node:</strong> Receives rendering tasks from the server, returns finished products back to
+                  the
+                  server.</p>
+              </li>
+
+            </ul>
+
+          </div>
+
+        </div>
+        <!--Admin Setup -->
+        <div *ngIf="setupWizardProgress == SetupWizardProgress.ADMIN_SETUP" class="row py-1">
+          <h6>Admin Registration</h6>
+          <div class="row">
+            <div class="col-md"
+                 ngbTooltip="Minimum of 4 characters, alpha-numeric characters only."
+                 placement="left">
+              <input class="form-control form-control-sm"
+                     id="username"
+                     name="username"
+                     pattern="^[a-zA-Z0-9]{4,}$" placeholder="Username"
+                     required type="text"/>
+              <div class="alert alert-danger">
+                <ul>
+                  <li>Username is required.</li>
+                  <li>Minimum of 4 characters, alpha-numeric characters only.</li>
+                </ul>
+              </div>
+            </div>
+            <div *ngIf="setupForm!.mode != Mode.NODE" class="col-md" ngbTooltip="Email used for notifications."
+                 placement="left">
+              <input class="form-control form-control-sm"
+                     id="email"
+                     name="email"
+                     pattern="^[^\s@]+@[^\s@]+\.[^\s@]{1,}$"
+                     placeholder="Email Address"
+                     required type="text">
+              <div class="alert alert-danger">
+                <ul>
+                  <li>Email is required and must be valid.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="row pt-3">
+            <div class="col-md"
+                 ngbTooltip="Password needs to be a minimum of 8 characters."
+                 placement="left">
+              <div class="input-group">
+                <input
+                  class="form-control form-control-sm"
+                  id="password"
+                  name="password"
+                  pattern="^.{8,35}$"
+                  placeholder="Password" required>
+                <span class="input-group-text" style="background-color: white"><fa-icon
+                  [icon]="faEye"></fa-icon> </span>
+              </div>
+              <div class="alert alert-danger">
+                <ul>
+                  <li>Password is required.</li>
+                  <li>Password must be a minimum 8 characters.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="row pt-3">
+            <div class="col-md"
+                 ngbTooltip="Password needs to be a minimum of 8 characters."
+                 placement="left">
+              <div class="input-group">
+                <input
+                  class="form-control form-control-sm"
+                  id="passwordConfirm"
+                  name="passwordConfirm"
+                  pattern="^.{8,35}$"
+                  placeholder="Confirm Password" required>
+                <span class="input-group-text" style="background-color: white"><fa-icon
+                  [icon]="faEye"></fa-icon> </span>
+              </div>
+              <div class="alert alert-danger">
+                <ul>
+                  <li>Password is required.</li>
+                  <li>Password must be a minimum 8 characters.</li>
+                  <li>Passwords must match.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="row py-1">
+            <h6>Password Recovery Questions</h6>
+          </div>
+        </div>
+
+        <!--Sethlans Mode Setup -->
+        <div *ngIf="setupWizardProgress == SetupWizardProgress.MODE_SETUP" class="row py-1">
+          <div *ngIf="setupForm!.mode == Mode.SERVER || setupForm!.mode == Mode.DUAL" class="row">
+            <p>Select Blender Binary Version</p>
+
+          </div>
+
+        </div>
+
+        <!-- System Setup-->
+        <div *ngIf="setupWizardProgress == SetupWizardProgress.SETTINGS" class="row">
+
+        </div>
       </div>
       <div class="card-footer">
-        <button (click)="loadSetupForm()" *ngIf="setupWizardProgress == SetupWizardProgress.BEGIN"
-                class="btn btn-outline-primary float-right"> Start
+        <button (click)="previous()"
+                *ngIf="setupWizardProgress != SetupWizardProgress.BEGIN"
+                [disabled]="setupWizardProgress == SetupWizardProgress.MODE"
+                class="btn btn-outline-primary float-start"> Previous
         </button>
+
+        <button (click)="next()"
+                *ngIf="setupWizardProgress != SetupWizardProgress.BEGIN && setupWizardProgress != SetupWizardProgress.SUMMARY
+        && setupWizardProgress != SetupWizardProgress.FINISHED" [disabled]="formSent"
+                class="btn btn-outline-primary float-end"> Next
+        </button>
+        <nav>
+          <button (click)="loadSetupForm()" *ngIf="setupWizardProgress == SetupWizardProgress.BEGIN"
+                  class="btn btn-outline-primary float-end"> Start
+          </button>
+        </nav>
+
       </div>
     </div>
   </div>

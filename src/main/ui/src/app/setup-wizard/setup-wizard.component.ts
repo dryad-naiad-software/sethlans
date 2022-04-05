@@ -20,6 +20,9 @@ import {Component, OnInit} from '@angular/core';
 import {SethlansService} from "../sethlans.service";
 import {SetupForm} from "../models/forms/setup-form.model";
 import {SetupWizardProgress} from "../enums/setupwizardprogress.enum";
+import {faFlagCheckered, faGear, faUserNinja} from "@fortawesome/free-solid-svg-icons";
+import {faEye} from "@fortawesome/free-regular-svg-icons";
+import {Mode} from "../enums/mode.enum";
 
 @Component({
   selector: 'app-setup-wizard',
@@ -38,6 +41,12 @@ export class SetupWizardComponent implements OnInit {
   setupForm: SetupForm | undefined;
   setupWizardProgress: SetupWizardProgress = SetupWizardProgress.BEGIN;
   SetupWizardProgress = SetupWizardProgress;
+  faFlagCheckered = faFlagCheckered;
+  faUserNinja = faUserNinja;
+  faGear = faGear;
+  faEye = faEye;
+  formSent: boolean = false;
+  Mode = Mode;
 
   constructor(private sethlansService: SethlansService) {
   }
@@ -48,8 +57,45 @@ export class SetupWizardComponent implements OnInit {
   loadSetupForm() {
     this.sethlansService.getSetup().subscribe((obj: any) => {
       this.setupForm = new SetupForm(obj)
-      console.log(this.setupForm)
+      this.setupForm.mode = Mode.DUAL;
+      this.setupWizardProgress = SetupWizardProgress.MODE;
     })
+  }
+
+  goToMode() {
+    this.setupWizardProgress = SetupWizardProgress.MODE;
+  }
+
+  goToAdmin() {
+    this.setupWizardProgress = SetupWizardProgress.ADMIN_SETUP;
+  }
+
+  goToModeSetup() {
+    this.setupWizardProgress = SetupWizardProgress.MODE_SETUP;
+
+  }
+
+  previous() {
+    switch (this.setupWizardProgress) {
+      case SetupWizardProgress.ADMIN_SETUP:
+        this.goToMode();
+        break;
+      case SetupWizardProgress.MODE_SETUP:
+        this.goToAdmin();
+        break;
+    }
+
+  }
+
+  next() {
+    switch (this.setupWizardProgress) {
+      case SetupWizardProgress.MODE:
+        this.goToAdmin();
+        break;
+      case SetupWizardProgress.ADMIN_SETUP:
+        this.goToModeSetup();
+    }
+
   }
 
 }

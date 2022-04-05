@@ -23,5 +23,12 @@
  * Project: sethlans_ui
  */
 export enum SetupWizardProgress {
-  BEGIN
+  BEGIN,
+  MODE,
+  ADMIN_SETUP,
+  MODE_SETUP,
+  SETTINGS,
+  MAIL,
+  SUMMARY,
+  FINISHED
 }
