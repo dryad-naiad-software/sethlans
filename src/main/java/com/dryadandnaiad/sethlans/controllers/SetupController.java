@@ -22,6 +22,9 @@ import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.LogLevel;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
 import com.dryadandnaiad.sethlans.models.forms.SetupForm;
+import com.dryadandnaiad.sethlans.models.settings.MailSettings;
+import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
+import com.dryadandnaiad.sethlans.models.settings.ServerSettings;
 import com.dryadandnaiad.sethlans.services.SethlansManagerService;
 import com.dryadandnaiad.sethlans.services.SetupService;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
@@ -64,6 +67,9 @@ public class SetupController {
                 .appURL("https://" + QueryUtils.getHostname().toLowerCase() + ":" + port + "/")
                 .availableTypes(QueryUtils.getAvailableTypes())
                 .availableGPUs(systemInfo.getGpuList())
+                .mailSettings(new MailSettings())
+                .nodeSettings(new NodeSettings())
+                .serverSettings(new ServerSettings())
                 .systemInfo(systemInfo)
                 .blenderVersions(BlenderUtils.availableBlenderVersions())
                 .build();

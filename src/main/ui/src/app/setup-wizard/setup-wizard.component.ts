@@ -17,6 +17,8 @@
  */
 
 import {Component, OnInit} from '@angular/core';
+import {SethlansService} from "../sethlans.service";
+import {SetupForm} from "../models/forms/setup-form.model";
 
 @Component({
   selector: 'app-setup-wizard',
@@ -32,11 +34,18 @@ import {Component, OnInit} from '@angular/core';
  */
 
 export class SetupWizardComponent implements OnInit {
+  setupForm: SetupForm | undefined;
 
-  constructor() {
+  constructor(private sethlansService: SethlansService) {
   }
 
   ngOnInit(): void {
+  }
+
+  loadSetupForm() {
+    this.sethlansService.getSetup().subscribe((obj: any) => {
+      this.setupForm = new SetupForm(obj)
+    })
   }
 
 }

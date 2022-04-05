@@ -54,4 +54,8 @@ export class SethlansService {
   year() {
     return this.http.get(this.rootURL + "/info/build_year")
   }
+
+  getSetup() {
+    return this.http.get(this.rootURL + "/setup/get_setup")
+  }
 }
