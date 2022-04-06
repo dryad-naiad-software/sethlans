@@ -178,6 +178,19 @@ public class QueryUtils {
     }
 
 
+    public static List<String> challengeQuestions() {
+        var questions = new ArrayList<String>();
+        questions.add("What city were you born in?");
+        questions.add("What is your oldest sibling’s middle name?");
+        questions.add("What was the first concert you attended?");
+        questions.add("What was the make and model of your first car?");
+        questions.add("In what city or town did your parents meet?");
+        questions.add("In what city or town was your first job?");
+        questions.add("What street did you live on in third grade?");
+        return questions;
+    }
+
+
     /**
      * Retrieves the current version and build.
      *

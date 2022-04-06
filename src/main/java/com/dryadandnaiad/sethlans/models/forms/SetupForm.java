@@ -54,6 +54,7 @@ public class SetupForm {
     private MailSettings mailSettings;
     private NodeSettings nodeSettings;
     private ServerSettings serverSettings;
+    private List<String> challengeQuestions;
     private SystemInfo systemInfo;
     private String ipAddress;
     private String port;
