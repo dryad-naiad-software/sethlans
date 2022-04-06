@@ -43,6 +43,7 @@ export class SetupForm {
   mailSettings: MailSettings;
   nodeSettings: NodeSettings;
   serverSettings: ServerSettings;
+  challengeQuestions: Array<string>;
   systemInfo: SystemInfo;
   ipAddress: string;
   port: string;
@@ -59,6 +60,7 @@ export class SetupForm {
     this.mailSettings = obj.mailSettings;
     this.nodeSettings = obj.nodeSettings;
     this.serverSettings = obj.serverSettings;
+    this.challengeQuestions = obj.challengeQuestions;
     this.systemInfo = obj.systemInfo;
     this.ipAddress = obj.ipAddress;
     this.port = obj.port;

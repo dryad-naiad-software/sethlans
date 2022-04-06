@@ -180,8 +180,6 @@
                 </ul>
               </div>
             </div>
-          </div>
-          <div class="row pt-3">
             <div class="col-md"
                  ngbTooltip="Password needs to be a minimum of 8 characters."
                  placement="left">
@@ -204,8 +202,62 @@
               </div>
             </div>
           </div>
+
           <div class="row py-1">
             <h6>Password Recovery Questions</h6>
+            <div class="row">
+              <div class="col-md">
+                <select (change)="updateChallenge(0, $any($event.target).value)" class="form-control" name="challenge1">
+                  <option *ngFor="let challenge of setupForm!.challengeQuestions"
+                          [ngValue]="challenge">{{challenge}}</option>
+                </select>
+              </div>
+              <div class="col-md">
+                <div class="input-group">
+                  <input class="form-control">
+                  <span class="input-group-text" style="background-color: white"><fa-icon
+                    [icon]="faEye"></fa-icon> </span>
+                </div>
+
+
+              </div>
+
+
+            </div>
+            <div class="row">
+              <div class="col-md">
+                <select (change)="updateChallenge(1, $any($event.target).value)" class="form-control" name="challenge2">
+                  <option *ngFor="let challenge of setupForm!.challengeQuestions"
+                          [ngValue]="challenge">{{challenge}}</option>
+                </select>
+              </div>
+              <div class="col-md">
+                <div class="input-group">
+                  <input class="form-control">
+                  <span class="input-group-text" style="background-color: white"><fa-icon
+                    [icon]="faEye"></fa-icon> </span>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="row">
+              <div class="col-md">
+                <select (change)="updateChallenge(2, $any($event.target).value)" class="form-control" name="challenge3">
+                  <option *ngFor="let challenge of setupForm!.challengeQuestions"
+                          [ngValue]="challenge">{{challenge}}</option>
+                </select>
+              </div>
+              <div class="col-md">
+                <div class="input-group">
+                  <input class="form-control">
+                  <span class="input-group-text" style="background-color: white"><fa-icon
+                    [icon]="faEye"></fa-icon> </span>
+                </div>
+              </div>
+
+
+            </div>
           </div>
         </div>
 
@@ -213,7 +265,9 @@
         <div *ngIf="setupWizardProgress == SetupWizardProgress.MODE_SETUP" class="row py-1">
           <div *ngIf="setupForm!.mode == Mode.SERVER || setupForm!.mode == Mode.DUAL" class="row">
             <p>Select Blender Binary Version</p>
-
+            <select [(ngModel)]="setupForm!.serverSettings.blenderVersion" class="form-control" name="version">
+              <option *ngFor="let version of setupForm!.blenderVersions" ngValue="{{version}}">{{version}}</option>
+            </select>
           </div>
 
         </div>
@@ -246,4 +300,7 @@
   </div>
 </div>
 
-
+<div>
+  Debugging:
+  <pre>{{ setupForm | json }}</pre>
+</div>

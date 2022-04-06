@@ -23,6 +23,8 @@ import {SetupWizardProgress} from "../enums/setupwizardprogress.enum";
 import {faFlagCheckered, faGear, faUserNinja} from "@fortawesome/free-solid-svg-icons";
 import {faEye} from "@fortawesome/free-regular-svg-icons";
 import {Mode} from "../enums/mode.enum";
+import {UserChallenge} from "../models/user/user-challenge.model";
+import {Role} from "../enums/role.enum";
 
 @Component({
   selector: 'app-setup-wizard',
@@ -59,7 +61,41 @@ export class SetupWizardComponent implements OnInit {
       this.setupForm = new SetupForm(obj)
       this.setupForm.mode = Mode.DUAL;
       this.setupWizardProgress = SetupWizardProgress.MODE;
+      this.setupForm.serverSettings.blenderVersion = this.setupForm.blenderVersions[0];
+      this.setupForm.user.challengeList = new Array<UserChallenge>();
+      this.setupForm.user.roles = new Array<Role>()
+      this.setupForm.user.roles.push(Role.SUPER_ADMINISTRATOR)
+      this.setupForm.user.active = true;
+      let challenge1: UserChallenge = {
+        challenge: this.setupForm.challengeQuestions[0],
+        response: 'answer',
+        responseUpdated: false
+      };
+      let challenge2: UserChallenge = {
+        challenge: this.setupForm.challengeQuestions[0],
+        response: 'answer',
+        responseUpdated: false
+      };
+      let challenge3: UserChallenge = {
+        challenge: this.setupForm.challengeQuestions[0],
+        response: 'answer',
+        responseUpdated: false
+      };
+      this.setupForm.user.challengeList.push(challenge1);
+      this.setupForm.user.challengeList.push(challenge2);
+      this.setupForm.user.challengeList.push(challenge3);
     })
+  }
+
+  updateChallenge(id: number, question: string) {
+    let challenge: UserChallenge | undefined = this.setupForm?.user.challengeList[id];
+    // @ts-ignore
+    challenge.challenge = question;
+
+  }
+
+  updateResponse(id: number, text: string) {
+
   }
 
   goToMode() {
