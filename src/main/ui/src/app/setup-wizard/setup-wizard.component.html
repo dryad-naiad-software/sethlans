@@ -15,8 +15,8 @@
   ~ along with this program; if not, write to the Free Software
   ~ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   -->
-<div class="row pb-1">
-  <div class="col-md-8 m-auto">
+<div class="row">
+  <div class="col-md-8 mx-auto mt-3 mb-3">
     <div class="card">
       <div class="card-header">
         <h4 style="font-family: 'Fjalla One', sans-serif">Sethlans Setup Wizard</h4>
@@ -266,13 +266,49 @@
         <!--Sethlans Mode Setup -->
         <div *ngIf="setupWizardProgress == SetupWizardProgress.MODE_SETUP" class="row py-1">
           <div *ngIf="setupForm!.mode == Mode.SERVER || setupForm!.mode == Mode.DUAL" class="row">
-            <p>Select Blender Binary Version</p>
-            <select [(ngModel)]="setupForm!.serverSettings.blenderVersion" class="form-select form-select-sm"
-                    name="version">
-              <option *ngFor="let version of setupForm!.blenderVersions" ngValue="{{version}}">{{version}}</option>
-            </select>
+            <div class="col-md-12">
+              <h6>Select Blender Binary Version</h6>
+              <select [(ngModel)]="setupForm!.serverSettings.blenderVersion" class="form-select form-select-sm"
+                      name="version">
+                <option *ngFor="let version of setupForm!.blenderVersions" ngValue="{{version}}">{{version}}</option>
+              </select>
+            </div>
           </div>
+          <div *ngIf="setupForm!.mode == Mode.NODE || setupForm!.mode == Mode.DUAL" class="row">
+            <div class="col-md-12 pt-3">
+              <h6>Compute Method Selection</h6>
+              <select [(ngModel)]="setupForm!.nodeSettings.nodeType" class="form-select form-select-sm"
+                      name="nodeTypes">
+                <option *ngFor="let nodeTypes of setupForm!.availableTypes" ngValue="{{nodeTypes}}">
+                  {{nodeTypes}}</option>
+              </select>
+            </div>
+          </div>
+          <div *ngIf="setupForm!.mode == Mode.NODE || setupForm!.mode == Mode.DUAL" class="row">
+            <div *ngIf="setupForm!.nodeSettings.nodeType != NodeType.GPU" class="col-md-6 pt-3">
+              <h6>CPU Settings</h6>
+              <p>Selected Cores: {{setupForm!.nodeSettings.cores}}</p>
+              <mat-slider [(ngModel)]="setupForm!.nodeSettings.cores"
+                          max="{{setupForm!.systemInfo.cpu.cores}}"
+                          min="1"
+                          step="1"></mat-slider>
+              <p>CPU Tile Size</p>
+              <input
+                [(ngModel)]="setupForm!.nodeSettings.tileSizeCPU"
+                class="form-control form-control-sm"
+              />
+            </div>
+            <div *ngIf="setupForm!.nodeSettings.nodeType != NodeType.CPU" class="col-md-6 pt-3">
+              <h6>GPU Settings</h6>
 
+              <p>GPU Tile Size</p>
+              <input
+                [(ngModel)]="setupForm!.nodeSettings.tileSizeGPU"
+                class="form-control form-control-sm"
+              />
+              <p>Combine GPUs</p>
+            </div>
+          </div>
         </div>
 
         <!-- System Setup-->

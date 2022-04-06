@@ -25,6 +25,7 @@ import {faEye} from "@fortawesome/free-regular-svg-icons";
 import {Mode} from "../enums/mode.enum";
 import {UserChallenge} from "../models/user/user-challenge.model";
 import {Role} from "../enums/role.enum";
+import {NodeType} from "../enums/nodetype.enum";
 
 @Component({
   selector: 'app-setup-wizard',
@@ -49,6 +50,7 @@ export class SetupWizardComponent implements OnInit {
   faEye = faEye;
   formSent: boolean = false;
   Mode = Mode;
+  NodeType = NodeType;
   usernameRegEx = new RegExp('^[a-zA-Z0-9]{4,}$')
   emailRegEx = new RegExp('^[^\\s@]+@[^\\s@]+\\.[^\\s@]{1,}$')
   passwordRegEx = new RegExp('^.{8,35}$')
@@ -71,6 +73,14 @@ export class SetupWizardComponent implements OnInit {
       this.setupForm.mode = Mode.DUAL;
       this.setupWizardProgress = SetupWizardProgress.MODE;
       this.setupForm.serverSettings.blenderVersion = this.setupForm.blenderVersions[0];
+      if (this.setupForm.availableTypes.length > 1) {
+        this.setupForm.nodeSettings.nodeType = NodeType.CPU_GPU;
+        this.setupForm.nodeSettings.tileSizeGPU = 256;
+      } else {
+        this.setupForm.nodeSettings.nodeType = NodeType.CPU;
+      }
+      this.setupForm.nodeSettings.cores = this.setupForm.systemInfo.cpu.cores - 1;
+      this.setupForm.nodeSettings.tileSizeCPU = 32;
       this.setupForm.user.challengeList = new Array<UserChallenge>();
       this.setupForm.user.roles = new Array<Role>()
       this.setupForm.user.roles.push(Role.SUPER_ADMINISTRATOR)
