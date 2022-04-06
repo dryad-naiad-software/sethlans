@@ -49,6 +49,15 @@ export class SetupWizardComponent implements OnInit {
   faEye = faEye;
   formSent: boolean = false;
   Mode = Mode;
+  usernameRegEx = new RegExp('^[a-zA-Z0-9]{4,}$')
+  emailRegEx = new RegExp('^[^\\s@]+@[^\\s@]+\\.[^\\s@]{1,}$')
+  passwordRegEx = new RegExp('^.{8,35}$')
+  usernameError = false;
+  emailError = false;
+  passwordError = false;
+  passwordMatch = true;
+  confirmPass = '';
+  showPass = false;
 
   constructor(private sethlansService: SethlansService) {
   }
@@ -66,6 +75,9 @@ export class SetupWizardComponent implements OnInit {
       this.setupForm.user.roles = new Array<Role>()
       this.setupForm.user.roles.push(Role.SUPER_ADMINISTRATOR)
       this.setupForm.user.active = true;
+      this.setupForm.user.username = ''
+      this.setupForm.user.password = ''
+      this.setupForm.user.email = ''
       let challenge1: UserChallenge = {
         challenge: this.setupForm.challengeQuestions[0],
         response: 'answer',
@@ -91,11 +103,30 @@ export class SetupWizardComponent implements OnInit {
     let challenge: UserChallenge | undefined = this.setupForm?.user.challengeList[id];
     // @ts-ignore
     challenge.challenge = question;
+  }
+
+  updateResponse(id: number, response: string) {
+    let challenge: UserChallenge | undefined = this.setupForm?.user.challengeList[id];
+    // @ts-ignore
+    challenge?.response = response;
+
 
   }
 
-  updateResponse(id: number, text: string) {
+  validateUsername() {
+    this.usernameError = !this.setupForm?.user.username.match(this.usernameRegEx);
+  }
 
+  validateEmail() {
+    this.emailError = !this.setupForm?.user.email.match(this.emailRegEx);
+  }
+
+  validatePassword() {
+    this.passwordError = !this.setupForm?.user.password.match(this.passwordRegEx);
+  }
+
+  checkPasswordConfirm() {
+    this.passwordMatch = this.setupForm?.user.password === this.confirmPass;
   }
 
   goToMode() {
