@@ -20,7 +20,7 @@ import {Component, OnInit} from '@angular/core';
 import {SethlansService} from "../sethlans.service";
 import {SetupForm} from "../models/forms/setup-form.model";
 import {SetupWizardProgress} from "../enums/setupwizardprogress.enum";
-import {faFlagCheckered, faGear, faSliders, faUserNinja} from "@fortawesome/free-solid-svg-icons";
+import {faCheck, faFlagCheckered, faGear, faSliders, faUserNinja} from "@fortawesome/free-solid-svg-icons";
 import {faEye, faRectangleList} from "@fortawesome/free-regular-svg-icons";
 import {Mode} from "../enums/mode.enum";
 import {UserChallenge} from "../models/user/user-challenge.model";
@@ -51,6 +51,7 @@ export class SetupWizardComponent implements OnInit {
   faGear = faGear;
   faEye = faEye;
   faSliders = faSliders;
+  faCheck = faCheck;
   faRectangleList = faRectangleList;
   formSent: boolean = false;
   Mode = Mode;
@@ -61,11 +62,24 @@ export class SetupWizardComponent implements OnInit {
   passwordRegEx = new RegExp('^.{8,35}$')
   usernameError = false;
   emailError = false;
+  challenge1 = ''
+  challenge2 = ''
+  challenge3 = ''
+  response1 = ''
+  response2 = ''
+  response3 = ''
   passwordError = false;
   passwordMatch = true;
+  responseError1 = true;
+  responseError2 = true;
+  responseError3 = true;
   confirmPass = '';
   showPass = false;
   showMailSettings = false;
+  nextEnabled = true;
+  modeSettingsEnabled = false;
+  settingsEnabled = false;
+  summaryEnabled = false;
 
   constructor(private sethlansService: SethlansService) {
   }
@@ -97,23 +111,46 @@ export class SetupWizardComponent implements OnInit {
       this.setupForm.user.email = ''
       let challenge1: UserChallenge = {
         challenge: this.setupForm.challengeQuestions[0],
-        response: 'answer',
+        response: '',
         responseUpdated: false
       };
       let challenge2: UserChallenge = {
-        challenge: this.setupForm.challengeQuestions[0],
-        response: 'answer',
+        challenge: this.setupForm.challengeQuestions[1],
+        response: '',
         responseUpdated: false
       };
       let challenge3: UserChallenge = {
-        challenge: this.setupForm.challengeQuestions[0],
-        response: 'answer',
+        challenge: this.setupForm.challengeQuestions[3],
+        response: '',
         responseUpdated: false
       };
+      this.challenge1 = this.setupForm.challengeQuestions[0];
+      this.challenge2 = this.setupForm.challengeQuestions[1];
+      this.challenge3 = this.setupForm.challengeQuestions[2];
+
       this.setupForm.user.challengeList.push(challenge1);
       this.setupForm.user.challengeList.push(challenge2);
       this.setupForm.user.challengeList.push(challenge3);
     })
+  }
+
+  checkUser() {
+    if (this.setupForm?.user.username == '') {
+      return false;
+    } else if (this.setupForm?.user.password == '') {
+      return false;
+    } else if (this.confirmPass != this.setupForm?.user.password) {
+      return false;
+    } else if (this.usernameError || this.responseError1 || this.responseError2 || this.responseError3
+      || this.passwordError) {
+      return false;
+    } else if (this.setupForm.user.email == '' && this.setupForm.mode != Mode.NODE) {
+      return false;
+    } else if (this.emailError && this.setupForm?.mode != Mode.NODE) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   updateChallenge(id: number, question: string) {
@@ -126,36 +163,81 @@ export class SetupWizardComponent implements OnInit {
     let challenge: UserChallenge | undefined = this.setupForm?.user.challengeList[id];
     // @ts-ignore
     challenge?.response = response;
-
-
+    // @ts-ignore
+    challenge?.responseUpdated = true;
+    if (id == 0) {
+      this.response1 = response;
+    }
+    if (id == 1) {
+      this.response2 = response;
+    }
+    if (id == 3) {
+      this.response3 = response;
+    }
+    this.validateResponse(id, response);
   }
 
   validateUsername() {
     this.usernameError = !this.setupForm?.user.username.match(this.usernameRegEx);
+    this.nextEnabled = this.checkUser()
   }
 
   validateEmail() {
     this.emailError = !this.setupForm?.user.email.match(this.emailRegEx);
+    this.nextEnabled = this.checkUser()
+
   }
 
   validatePassword() {
     this.passwordError = !this.setupForm?.user.password.match(this.passwordRegEx);
+    this.nextEnabled = this.checkUser()
+
   }
 
   checkPasswordConfirm() {
     this.passwordMatch = this.setupForm?.user.password === this.confirmPass;
+    this.nextEnabled = this.checkUser()
+  }
+
+  validateResponse(id: number, response: string) {
+    if (id == 0) {
+      this.responseError1 = !(response.length > 4);
+    }
+    if (id == 1) {
+      this.responseError2 = !(response.length > 4);
+    }
+    if (id == 2) {
+      this.responseError3 = !(response.length > 4);
+    }
+    this.nextEnabled = this.checkUser();
+
+  }
+
+  checkGPUs() {
+
+    if (this.setupForm?.mode != Mode.SERVER) {
+      if (this.setupForm?.nodeSettings.nodeType != NodeType.CPU
+        && this.setupForm?.nodeSettings.selectedGPUs.length == 0) {
+        return false;
+      }
+    }
+    return true;
   }
 
   goToMode() {
+    this.nextEnabled = true;
     this.setupWizardProgress = SetupWizardProgress.MODE;
   }
 
   goToAdmin() {
+    this.nextEnabled = this.checkUser();
     this.setupWizardProgress = SetupWizardProgress.ADMIN_SETUP;
   }
 
   goToModeSetup() {
+    this.nextEnabled = this.checkGPUs();
     this.setupWizardProgress = SetupWizardProgress.MODE_SETUP;
+
   }
 
   goToSettings() {
@@ -168,6 +250,7 @@ export class SetupWizardComponent implements OnInit {
   goToSummary() {
     this.setupWizardProgress = SetupWizardProgress.SUMMARY;
   }
+
 
   previous() {
     switch (this.setupWizardProgress) {
@@ -188,6 +271,7 @@ export class SetupWizardComponent implements OnInit {
   }
 
   finish() {
+    this.setupWizardProgress = SetupWizardProgress.FINISHED;
 
   }
 
@@ -197,12 +281,15 @@ export class SetupWizardComponent implements OnInit {
         this.goToAdmin();
         break;
       case SetupWizardProgress.ADMIN_SETUP:
+        this.modeSettingsEnabled = true;
         this.goToModeSetup();
         break;
       case SetupWizardProgress.MODE_SETUP:
+        this.settingsEnabled = true;
         this.goToSettings();
         break;
       case SetupWizardProgress.SETTINGS:
+        this.summaryEnabled = true;
         this.goToSummary();
         break;
     }

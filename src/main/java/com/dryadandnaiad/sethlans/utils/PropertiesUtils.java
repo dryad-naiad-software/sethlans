@@ -163,6 +163,7 @@ public class PropertiesUtils {
         writeProperty(ConfigKeys.MODE, setupForm.getMode().name());
         writeProperty(ConfigKeys.FIRST_TIME, "false");
         writeProperty(ConfigKeys.SETHLANS_IP, setupForm.getIpAddress());
+        writeProperty(ConfigKeys.SETHLANS_HOSTNAME, setupForm.getHostname());
         writeProperty(ConfigKeys.HTTPS_PORT, setupForm.getPort());
         writeProperty(ConfigKeys.SETHLANS_URL, setupForm.getAppURL());
         writeProperty(ConfigKeys.SYSTEM_ID, UUID.randomUUID().toString());

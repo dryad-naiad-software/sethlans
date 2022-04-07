@@ -42,6 +42,8 @@
           <ul class="nav nav-tabs justify-content-between pb-3">
             <li>
               <button (click)="goToMode()"
+                      [disabled]="setupWizardProgress == SetupWizardProgress.FINISHED"
+
                       [ngClass]="setupWizardProgress == SetupWizardProgress.MODE
                       ? 'btn-outline-primary' : 'btn-outline-dark'"
                       class="btn btn-lg btn-circle" ngbTooltip="Mode Selection"
@@ -51,6 +53,8 @@
             </li>
             <li>
               <button (click)="goToAdmin()"
+                      [disabled]="setupWizardProgress == SetupWizardProgress.FINISHED"
+
                       [ngClass]="setupWizardProgress == SetupWizardProgress.ADMIN_SETUP
                       ? 'btn-outline-primary' : 'btn-outline-dark'"
                       class="btn btn-lg btn-circle" ngbTooltip="Admin User Setup"
@@ -60,6 +64,8 @@
             </li>
             <li>
               <button (click)="goToModeSetup()"
+                      [disabled]="setupWizardProgress == SetupWizardProgress.FINISHED || !modeSettingsEnabled"
+
                       [ngClass]="setupWizardProgress == SetupWizardProgress.MODE_SETUP
                       ? 'btn-outline-primary' : 'btn-outline-dark'"
                       class="btn btn-lg btn-circle" ngbTooltip="Sethlans Mode Setup"
@@ -69,6 +75,8 @@
             </li>
             <li>
               <button (click)="goToSettings()"
+                      [disabled]="setupWizardProgress == SetupWizardProgress.FINISHED || !settingsEnabled"
+
                       [ngClass]="setupWizardProgress == SetupWizardProgress.SETTINGS
                       ? 'btn-outline-primary' : 'btn-outline-dark'"
                       class="btn btn-lg btn-circle" ngbTooltip="Sethlans Settings"
@@ -78,11 +86,22 @@
             </li>
             <li>
               <button (click)="goToSummary()"
+                      [disabled]="setupWizardProgress == SetupWizardProgress.FINISHED || !summaryEnabled"
                       [ngClass]="setupWizardProgress == SetupWizardProgress.SUMMARY
                       ? 'btn-outline-primary' : 'btn-outline-dark'"
                       class="btn btn-lg btn-circle" ngbTooltip="Summary"
                       type="button">
                 <fa-icon [icon]="faRectangleList"></fa-icon>
+              </button>
+            </li>
+            <li>
+              <button
+                [disabled]="setupWizardProgress != SetupWizardProgress.FINISHED"
+                [ngClass]="setupWizardProgress == SetupWizardProgress.FINISHED
+                      ? 'btn-outline-success' : 'btn-outline-secondary'"
+                class="btn btn-lg btn-circle" ngbTooltip="Finished"
+                type="button">
+                <fa-icon [icon]="faCheck"></fa-icon>
               </button>
             </li>
           </ul>
@@ -228,7 +247,8 @@
             <h6>Password Recovery Questions</h6>
             <div class="row pt-2">
               <div class="col-md">
-                <select (change)="updateChallenge(0, $any($event.target).value)" class="form-select form-select-sm"
+                <select (change)="updateChallenge(0, $any($event.target).value)" [(ngModel)]="challenge1"
+                        class="form-select form-select-sm"
                         name="challenge1">
                   <option *ngFor="let challenge of setupForm!.challengeQuestions"
                           [ngValue]="challenge">{{challenge}}</option>
@@ -236,16 +256,17 @@
               </div>
               <div class="col-md">
                 <div class="input-group input-group-sm">
-                  <input
-                    (keyup)="updateResponse(0, $any($event.target).value)"
-                    class="form-control form-control-sm"
-                    placeholder="Response" required>
+                  <input [(ngModel)]="response1"
+                         (keyup)="updateResponse(0, $any($event.target).value)"
+                         class="form-control form-control-sm"
+                         placeholder="Response" required>
                 </div>
               </div>
             </div>
             <div class="row pt-3">
               <div class="col-md ">
-                <select (change)="updateChallenge(1, $any($event.target).value)" class="form-select form-select-sm"
+                <select (change)="updateChallenge(1, $any($event.target).value)" [(ngModel)]="challenge2"
+                        class="form-select form-select-sm"
                         name="challenge2">
                   <option *ngFor="let challenge of setupForm!.challengeQuestions"
                           [ngValue]="challenge">{{challenge}}</option>
@@ -253,10 +274,10 @@
               </div>
               <div class="col-md">
                 <div class="input-group input-group-sm">
-                  <input
-                    (keyup)="updateResponse(1, $any($event.target).value)"
-                    class="form-control form-control-sm"
-                    placeholder="Response" required>
+                  <input [(ngModel)]="response2"
+                         (keyup)="updateResponse(1, $any($event.target).value)"
+                         class="form-control form-control-sm"
+                         placeholder="Response" required>
                 </div>
               </div>
 
@@ -264,7 +285,8 @@
 
             <div class="row pt-3">
               <div class="col-md ">
-                <select (change)="updateChallenge(2, $any($event.target).value)" class="form-select form-select-sm"
+                <select (change)="updateChallenge(2, $any($event.target).value)" [(ngModel)]="challenge3"
+                        class="form-select form-select-sm"
                         name="challenge3">
                   <option *ngFor="let challenge of setupForm!.challengeQuestions"
                           [ngValue]="challenge">{{challenge}}</option>
@@ -272,10 +294,10 @@
               </div>
               <div class="col-md">
                 <div class="input-group input-group-sm">
-                  <input
-                    (keyup)="updateResponse(2, $any($event.target).value)"
-                    class="form-control form-control-sm"
-                    placeholder="Response" required>
+                  <input [(ngModel)]="response3"
+                         (keyup)="updateResponse(2, $any($event.target).value)"
+                         class="form-control form-control-sm"
+                         placeholder="Response" required>
                 </div>
               </div>
 
@@ -298,7 +320,8 @@
           <div *ngIf="setupForm!.mode == Mode.NODE || setupForm!.mode == Mode.DUAL" class="row">
             <div class="col-md-12 pt-3">
               <h6>Compute Method Selection</h6>
-              <select [(ngModel)]="setupForm!.nodeSettings.nodeType" class="form-select form-select-sm"
+              <select (click)="nextEnabled = checkGPUs()" [(ngModel)]="setupForm!.nodeSettings.nodeType"
+                      class="form-select form-select-sm"
                       name="nodeTypes">
                 <option *ngFor="let nodeTypes of setupForm!.availableTypes" ngValue="{{nodeTypes}}">
                   {{nodeTypes}}</option>
@@ -319,7 +342,8 @@
             </div>
             <div *ngIf="setupForm!.nodeSettings.nodeType != NodeType.CPU" class="col-md-6 pt-3">
               <h6>GPU Settings</h6>
-              <select [(ngModel)]="setupForm!.nodeSettings.selectedGPUs" class="form-select" multiple>
+              <select (click)="nextEnabled = checkGPUs()" [(ngModel)]="setupForm!.nodeSettings.selectedGPUs"
+                      class="form-select" multiple>
                 <option *ngFor="let gpus of setupForm!.availableGPUs" [value]="gpus">{{gpus.model}}</option>
               </select>
               <div class="form-check form-switch pt-1">
@@ -585,23 +609,42 @@
           </div>
 
         </div>
+        <!--Finished Page-->
+        <div *ngIf="setupWizardProgress == SetupWizardProgress.FINISHED" class="row pt-2">
+          <div class="col-md-2">
+          </div>
+          <div class="col-md-8 text-center">
+            <h4>Sethlans Setup Has Completed!</h4>
+            <br/>
+            <p>Sethlans is restarting and will be accessible via the following link:</p>
+            <a href="{{setupForm!.appURL}}">{{setupForm!.appURL}}</a>
+            <br/>
+            <br/>
+            <p>This page will automatically redirect in 30 seconds</p>
+
+          </div>
+
+        </div>
       </div>
       <div class="card-footer">
         <nav>
           <button (click)="previous()"
-                  *ngIf="setupWizardProgress != SetupWizardProgress.BEGIN"
+                  *ngIf="setupWizardProgress != SetupWizardProgress.BEGIN
+                  && setupWizardProgress != SetupWizardProgress.FINISHED"
                   [disabled]="setupWizardProgress == SetupWizardProgress.MODE"
                   class="btn btn-outline-primary float-start"> Previous
           </button>
 
-          <button (click)="next()"
-                  *ngIf="setupWizardProgress != SetupWizardProgress.BEGIN && setupWizardProgress != SetupWizardProgress.SUMMARY
-        && setupWizardProgress != SetupWizardProgress.FINISHED" [disabled]="formSent"
+          <button (click)="next()" *ngIf="setupWizardProgress != SetupWizardProgress.BEGIN && setupWizardProgress != SetupWizardProgress.SUMMARY
+        && setupWizardProgress != SetupWizardProgress.FINISHED"
+                  [disabled]="!nextEnabled"
                   class="btn btn-outline-primary float-end"> Next
           </button>
 
           <button (click)="finish()"
-                  *ngIf="setupWizardProgress == SetupWizardProgress.SUMMARY" [disabled]="formSent"
+                  *ngIf="setupWizardProgress == SetupWizardProgress.SUMMARY ||
+                  setupWizardProgress == SetupWizardProgress.FINISHED"
+                  [disabled]="setupWizardProgress == SetupWizardProgress.FINISHED"
                   class="btn btn-outline-primary float-end"> Finish
           </button>
 

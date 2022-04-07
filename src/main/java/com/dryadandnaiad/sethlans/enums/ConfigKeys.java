@@ -66,6 +66,7 @@ public enum ConfigKeys {
     SERVER_COMPLETE_QUEUE_SIZE("sethlans.server.complete.queue.size"),
     SELECTED_GPU("sethlans.selectedGPU"),
     SESSION_TIMEOUT("server.session.timeout"),
+    SETHLANS_HOSTNAME("server.hostname"),
     SETHLANS_IP("server.ipAddress"),
     SETHLANS_URL("sethlans.url"),
     SYSTEM_ID("sethlans.systemID"),

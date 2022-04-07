@@ -98,7 +98,10 @@ public class QueryUtils {
     public static String getHostname() {
         String hostname = null;
         try {
-            hostname = InetAddress.getLocalHost().getHostName();
+            hostname = getProperty(ConfigKeys.SETHLANS_HOSTNAME);
+            if(hostname == null) {
+                hostname = InetAddress.getLocalHost().getHostName();
+            }
         } catch (UnknownHostException e) {
             log.error(Throwables.getStackTraceAsString(e));
         }
