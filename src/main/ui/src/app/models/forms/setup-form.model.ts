@@ -37,6 +37,7 @@ export class SetupForm {
   mode: Mode;
   user: User;
   logLevel: LogLevel;
+  hostname: string;
   availableTypes: Array<NodeType>;
   availableGPUs: Array<GPU>;
   blenderVersions: Array<string>;
@@ -65,5 +66,6 @@ export class SetupForm {
     this.ipAddress = obj.ipAddress;
     this.port = obj.port;
     this.appURL = obj.appURL;
+    this.hostname = obj.hostname;
   }
 }

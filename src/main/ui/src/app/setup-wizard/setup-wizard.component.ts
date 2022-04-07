@@ -21,7 +21,7 @@ import {SethlansService} from "../sethlans.service";
 import {SetupForm} from "../models/forms/setup-form.model";
 import {SetupWizardProgress} from "../enums/setupwizardprogress.enum";
 import {faFlagCheckered, faGear, faSliders, faUserNinja} from "@fortawesome/free-solid-svg-icons";
-import {faEye} from "@fortawesome/free-regular-svg-icons";
+import {faEye, faRectangleList} from "@fortawesome/free-regular-svg-icons";
 import {Mode} from "../enums/mode.enum";
 import {UserChallenge} from "../models/user/user-challenge.model";
 import {Role} from "../enums/role.enum";
@@ -51,6 +51,7 @@ export class SetupWizardComponent implements OnInit {
   faGear = faGear;
   faEye = faEye;
   faSliders = faSliders;
+  faRectangleList = faRectangleList;
   formSent: boolean = false;
   Mode = Mode;
   LogLevel = LogLevel;
@@ -164,6 +165,10 @@ export class SetupWizardComponent implements OnInit {
     }
   }
 
+  goToSummary() {
+    this.setupWizardProgress = SetupWizardProgress.SUMMARY;
+  }
+
   previous() {
     switch (this.setupWizardProgress) {
       case SetupWizardProgress.ADMIN_SETUP:
@@ -175,7 +180,14 @@ export class SetupWizardComponent implements OnInit {
       case SetupWizardProgress.SETTINGS:
         this.goToModeSetup();
         break;
+      case SetupWizardProgress.SUMMARY:
+        this.goToSettings();
+        break;
     }
+
+  }
+
+  finish() {
 
   }
 
@@ -189,6 +201,9 @@ export class SetupWizardComponent implements OnInit {
         break;
       case SetupWizardProgress.MODE_SETUP:
         this.goToSettings();
+        break;
+      case SetupWizardProgress.SETTINGS:
+        this.goToSummary();
         break;
     }
 

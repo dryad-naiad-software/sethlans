@@ -36,6 +36,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Locale;
+
 /**
  * File created by Mario Estrella on 5/24/2020.
  * Dryad and Naiad Software LLC
@@ -65,6 +67,7 @@ public class SetupController {
                 .port(port)
                 .mode(SethlansMode.DUAL)
                 .logLevel(LogLevel.INFO)
+                .hostname(QueryUtils.getHostname().toLowerCase())
                 .appURL("https://" + QueryUtils.getHostname().toLowerCase() + ":" + port + "/")
                 .availableTypes(QueryUtils.getAvailableTypes())
                 .availableGPUs(systemInfo.getGpuList())

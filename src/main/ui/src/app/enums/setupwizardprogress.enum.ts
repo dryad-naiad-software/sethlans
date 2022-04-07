@@ -28,7 +28,6 @@ export enum SetupWizardProgress {
   ADMIN_SETUP,
   MODE_SETUP,
   SETTINGS,
-  MAIL,
   SUMMARY,
   FINISHED
 }

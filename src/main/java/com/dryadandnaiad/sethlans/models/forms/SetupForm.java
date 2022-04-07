@@ -58,5 +58,6 @@ public class SetupForm {
     private SystemInfo systemInfo;
     private String ipAddress;
     private String port;
+    private String hostname;
     private String appURL;
 }

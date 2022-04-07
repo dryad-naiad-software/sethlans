@@ -51,7 +51,8 @@
             </li>
             <li>
               <button (click)="goToAdmin()"
-                      [ngClass]="setupWizardProgress == SetupWizardProgress.ADMIN_SETUP ? 'btn-outline-primary' : 'btn-outline-dark'"
+                      [ngClass]="setupWizardProgress == SetupWizardProgress.ADMIN_SETUP
+                      ? 'btn-outline-primary' : 'btn-outline-dark'"
                       class="btn btn-lg btn-circle" ngbTooltip="Admin User Setup"
                       type="button">
                 <fa-icon [icon]="faUserNinja"></fa-icon>
@@ -59,7 +60,8 @@
             </li>
             <li>
               <button (click)="goToModeSetup()"
-                      [ngClass]="setupWizardProgress == SetupWizardProgress.MODE_SETUP ? 'btn-outline-primary' : 'btn-outline-dark'"
+                      [ngClass]="setupWizardProgress == SetupWizardProgress.MODE_SETUP
+                      ? 'btn-outline-primary' : 'btn-outline-dark'"
                       class="btn btn-lg btn-circle" ngbTooltip="Sethlans Mode Setup"
                       type="button">
                 <fa-icon [icon]="faGear"></fa-icon>
@@ -67,10 +69,20 @@
             </li>
             <li>
               <button (click)="goToSettings()"
-                      [ngClass]="setupWizardProgress == SetupWizardProgress.SETTINGS ? 'btn-outline-primary' : 'btn-outline-dark'"
+                      [ngClass]="setupWizardProgress == SetupWizardProgress.SETTINGS
+                      ? 'btn-outline-primary' : 'btn-outline-dark'"
                       class="btn btn-lg btn-circle" ngbTooltip="Sethlans Settings"
                       type="button">
                 <fa-icon [icon]="faSliders"></fa-icon>
+              </button>
+            </li>
+            <li>
+              <button (click)="goToSummary()"
+                      [ngClass]="setupWizardProgress == SetupWizardProgress.SUMMARY
+                      ? 'btn-outline-primary' : 'btn-outline-dark'"
+                      class="btn btn-lg btn-circle" ngbTooltip="Summary"
+                      type="button">
+                <fa-icon [icon]="faRectangleList"></fa-icon>
               </button>
             </li>
           </ul>
@@ -327,7 +339,7 @@
           </div>
         </div>
 
-        <!-- System Setup-->
+        <!-- Settings Setup-->
         <div *ngIf="setupWizardProgress == SetupWizardProgress.SETTINGS" class="row">
           <ul class="nav nav-tabs">
             <li class="nav-item">
@@ -335,7 +347,7 @@
                       [ngClass]="showMailSettings
                       ? '' : 'active'"
                       class="nav-link"
-                >Main Settings</span>
+                >Settings</span>
             </li>
             <li *ngIf="setupForm!.mode != Mode.NODE" class="nav-item">
                 <span (click)="showMailSettings=true"
@@ -365,9 +377,14 @@
                        required type="text"/>
                 <br/>
               </div>
-
-
             </div>
+            <h6>Sethlans Hostname</h6>
+            <input [(ngModel)]="setupForm!.hostname"
+                   class="form-control form-control-sm"
+                   id="sethlansHostname"
+                   id="sethlansHostname"
+                   required type="text"/>
+            <br/>
 
             <h6>Sethlans URL</h6>
             <input [(ngModel)]="setupForm!.appURL"
@@ -476,20 +493,118 @@
 
           </div>
         </div>
+        <!--Summary Page-->
+        <div *ngIf="setupWizardProgress == SetupWizardProgress.SUMMARY" class="row">
+          <div class="col-md-6">
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th scope="col">Setting</th>
+                <th scope="col">Value</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Mode</td>
+                <td>{{setupForm!.mode}}</td>
+              </tr>
+              <tr>
+                <td>Administrative User</td>
+                <td>{{setupForm!.user.username}}</td>
+              </tr>
+              <tr>
+                <td>Hostname</td>
+                <td>{{setupForm!.hostname}}</td>
+              </tr>
+              <tr>
+                <td>IP Address</td>
+                <td>{{setupForm!.ipAddress}}</td>
+              </tr>
+              <tr>
+                <td>HTTPS Port</td>
+                <td>{{setupForm!.port}}</td>
+              </tr>
+              <tr>
+                <td>Logging Level</td>
+                <td>{{setupForm!.logLevel}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-md-6">
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th scope="col">Setting</th>
+                <th scope="col">Value</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngIf="setupForm!.mode == Mode.DUAL || setupForm!.mode == Mode.SERVER">
+                <td>Initial Blender Version</td>
+                <td>{{setupForm!.serverSettings.blenderVersion}}</td>
+              </tr>
+              <tr *ngIf="setupForm!.mode == Mode.DUAL || setupForm!.mode == Mode.NODE">
+                <td>Compute Method</td>
+                <td>{{setupForm!.nodeSettings.nodeType}}</td>
+              </tr>
+              <tr *ngIf="setupForm!.mode == Mode.DUAL || setupForm!.mode == Mode.NODE">
+                <td>Rendering Cores</td>
+                <td *ngIf="setupForm!.nodeSettings.nodeType != NodeType.GPU">{{setupForm!.nodeSettings.cores}}</td>
+                <td *ngIf="setupForm!.nodeSettings.nodeType == NodeType.GPU">N/A</td>
+              </tr>
+              <tr *ngIf="setupForm!.mode == Mode.DUAL || setupForm!.mode == Mode.NODE">
+                <td>CPU Render Tile Size</td>
+                <td
+                  *ngIf="setupForm!.nodeSettings.nodeType != NodeType.GPU">{{setupForm!.nodeSettings.tileSizeCPU}}</td>
+                <td *ngIf="setupForm!.nodeSettings.nodeType == NodeType.GPU">N/A</td>
+              </tr>
+              <tr *ngIf="setupForm!.mode == Mode.DUAL || setupForm!.mode == Mode.NODE">
+                <td>Selected GPUs</td>
+                <td *ngIf="setupForm!.nodeSettings.nodeType != NodeType.CPU">
+                  <p *ngFor="let gpu of setupForm!.nodeSettings.selectedGPUs">
+                    {{gpu.model}}
+                  </p>
+                </td>
+                <td *ngIf="setupForm!.nodeSettings.nodeType == NodeType.CPU">N/A</td>
+              </tr>
+              <tr *ngIf="setupForm!.mode == Mode.DUAL || setupForm!.mode == Mode.NODE">
+                <td>Combined GPU Rendering</td>
+                <td
+                  *ngIf="setupForm!.nodeSettings.nodeType != NodeType.CPU">{{setupForm!.nodeSettings.gpuCombined}}</td>
+                <td *ngIf="setupForm!.nodeSettings.nodeType == NodeType.CPU">N/A</td>
+              </tr>
+              <tr *ngIf="setupForm!.mode == Mode.DUAL || setupForm!.mode == Mode.NODE">
+                <td>GPU Render Tile Size</td>
+                <td
+                  *ngIf="setupForm!.nodeSettings.nodeType != NodeType.CPU">{{setupForm!.nodeSettings.tileSizeGPU}}</td>
+                <td *ngIf="setupForm!.nodeSettings.nodeType == NodeType.CPU">N/A</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
       </div>
       <div class="card-footer">
-        <button (click)="previous()"
-                *ngIf="setupWizardProgress != SetupWizardProgress.BEGIN"
-                [disabled]="setupWizardProgress == SetupWizardProgress.MODE"
-                class="btn btn-outline-primary float-start"> Previous
-        </button>
-
-        <button (click)="next()"
-                *ngIf="setupWizardProgress != SetupWizardProgress.BEGIN && setupWizardProgress != SetupWizardProgress.SUMMARY
-        && setupWizardProgress != SetupWizardProgress.FINISHED" [disabled]="formSent"
-                class="btn btn-outline-primary float-end"> Next
-        </button>
         <nav>
+          <button (click)="previous()"
+                  *ngIf="setupWizardProgress != SetupWizardProgress.BEGIN"
+                  [disabled]="setupWizardProgress == SetupWizardProgress.MODE"
+                  class="btn btn-outline-primary float-start"> Previous
+          </button>
+
+          <button (click)="next()"
+                  *ngIf="setupWizardProgress != SetupWizardProgress.BEGIN && setupWizardProgress != SetupWizardProgress.SUMMARY
+        && setupWizardProgress != SetupWizardProgress.FINISHED" [disabled]="formSent"
+                  class="btn btn-outline-primary float-end"> Next
+          </button>
+
+          <button (click)="finish()"
+                  *ngIf="setupWizardProgress == SetupWizardProgress.SUMMARY" [disabled]="formSent"
+                  class="btn btn-outline-primary float-end"> Finish
+          </button>
+
           <button (click)="loadSetupForm()" *ngIf="setupWizardProgress == SetupWizardProgress.BEGIN"
                   class="btn btn-outline-primary float-end"> Start
           </button>
