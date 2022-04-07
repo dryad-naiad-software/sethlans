@@ -30,7 +30,6 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {FormsModule} from "@angular/forms";
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatSliderModule} from "@angular/material/slider";
 
 /**
  * File created by Mario Estrella on 4/3/2022
@@ -48,7 +47,7 @@ import {MatSliderModule} from "@angular/material/slider";
     FooterComponent],
   imports: [
     BrowserModule, HttpClientModule, AppRoutingModule, NgbModule,
-    FontAwesomeModule, FormsModule, BrowserAnimationsModule, MatSliderModule
+    FontAwesomeModule, FormsModule, BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

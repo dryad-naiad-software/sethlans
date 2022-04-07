@@ -42,7 +42,8 @@
           <ul class="nav nav-tabs justify-content-between pb-3">
             <li>
               <button (click)="goToMode()"
-                      [ngClass]="setupWizardProgress == SetupWizardProgress.MODE ? 'btn-outline-primary' : 'btn-outline-dark'"
+                      [ngClass]="setupWizardProgress == SetupWizardProgress.MODE
+                      ? 'btn-outline-primary' : 'btn-outline-dark'"
                       class="btn btn-lg btn-circle" ngbTooltip="Mode Selection"
                       type="button">
                 <fa-icon [icon]="faFlagCheckered"></fa-icon>
@@ -62,6 +63,14 @@
                       class="btn btn-lg btn-circle" ngbTooltip="Sethlans Mode Setup"
                       type="button">
                 <fa-icon [icon]="faGear"></fa-icon>
+              </button>
+            </li>
+            <li>
+              <button (click)="goToSettings()"
+                      [ngClass]="setupWizardProgress == SetupWizardProgress.SETTINGS ? 'btn-outline-primary' : 'btn-outline-dark'"
+                      class="btn btn-lg btn-circle" ngbTooltip="Sethlans Settings"
+                      type="button">
+                <fa-icon [icon]="faSliders"></fa-icon>
               </button>
             </li>
           </ul>
@@ -287,33 +296,185 @@
           <div *ngIf="setupForm!.mode == Mode.NODE || setupForm!.mode == Mode.DUAL" class="row">
             <div *ngIf="setupForm!.nodeSettings.nodeType != NodeType.GPU" class="col-md-6 pt-3">
               <h6>CPU Settings</h6>
-              <p>Selected Cores: {{setupForm!.nodeSettings.cores}}</p>
-              <mat-slider [(ngModel)]="setupForm!.nodeSettings.cores"
-                          max="{{setupForm!.systemInfo.cpu.cores}}"
-                          min="1"
-                          step="1"></mat-slider>
-              <p>CPU Tile Size</p>
-              <input
-                [(ngModel)]="setupForm!.nodeSettings.tileSizeCPU"
-                class="form-control form-control-sm"
-              />
+              <label class="form-label" for="cores">Selected Cores: {{setupForm!.nodeSettings.cores}}</label>
+              <input [(ngModel)]="setupForm!.nodeSettings.cores" class="form-range" id="cores"
+                     max="{{setupForm!.systemInfo.cpu.cores}}" min="1"
+                     type="range">
+              <label class="form-label" for="cpuTile">CPU Tile Size</label>
+              <input [(ngModel)]="setupForm!.nodeSettings.tileSizeCPU"
+                     class="form-control form-control-sm"
+                     id="cpuTile" type="number">
             </div>
             <div *ngIf="setupForm!.nodeSettings.nodeType != NodeType.CPU" class="col-md-6 pt-3">
               <h6>GPU Settings</h6>
+              <select [(ngModel)]="setupForm!.nodeSettings.selectedGPUs" class="form-select" multiple>
+                <option *ngFor="let gpus of setupForm!.availableGPUs" [value]="gpus">{{gpus.model}}</option>
+              </select>
+              <div class="form-check form-switch pt-1">
+                <input [(ngModel)]="setupForm!.nodeSettings.gpuCombined" class="form-check-input" id="combineGPU"
+                       role="switch"
+                       type="checkbox">
+                <label class="form-check-label" for="combineGPU">Combine GPUs</label>
+              </div>
+              <br/>
 
-              <p>GPU Tile Size</p>
-              <input
-                [(ngModel)]="setupForm!.nodeSettings.tileSizeGPU"
-                class="form-control form-control-sm"
+              <label class="form-label" for="gpuTile">GPU Tile Size</label>
+              <input [(ngModel)]="setupForm!.nodeSettings.tileSizeGPU"
+                     class="form-control form-control-sm "
+                     id="gpuTile" type="number"
               />
-              <p>Combine GPUs</p>
             </div>
           </div>
         </div>
 
         <!-- System Setup-->
         <div *ngIf="setupWizardProgress == SetupWizardProgress.SETTINGS" class="row">
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <span (click)="showMailSettings=false"
+                      [ngClass]="showMailSettings
+                      ? '' : 'active'"
+                      class="nav-link"
+                >Main Settings</span>
+            </li>
+            <li *ngIf="setupForm!.mode != Mode.NODE" class="nav-item">
+                <span (click)="showMailSettings=true"
+                      [ngClass]="showMailSettings
+                      ? 'active' : ''"
+                      class="nav-link"
+                >Mail Settings</span>
+            </li>
+          </ul>
+          <div [hidden]="showMailSettings" class="pt-2">
+            <div class="row">
+              <div class="col-md-9">
+                <h6>IP Address</h6>
+                <input [(ngModel)]="setupForm!.ipAddress"
+                       class="form-control form-control-sm"
+                       id="ipAddress"
+                       id="ipAddress"
+                       required type="text"/>
+                <br/>
+              </div>
+              <div class="col-md-3">
+                <h6>HTTPS Port</h6>
+                <input [(ngModel)]="setupForm!.port"
+                       class="form-control form-control-sm"
+                       id="networkPort"
+                       id="networkPort"
+                       required type="text"/>
+                <br/>
+              </div>
 
+
+            </div>
+
+            <h6>Sethlans URL</h6>
+            <input [(ngModel)]="setupForm!.appURL"
+                   class="form-control form-control-sm"
+                   id="sethlansURL"
+                   id="sethlansURL"
+                   required type="text"/>
+            <br/>
+            <h6>Log Level</h6>
+            <select [(ngModel)]="setupForm!.logLevel" class="form-select form-select-sm"
+                    name="logLevel">
+              <option>{{LogLevel.INFO}}</option>
+              <option>{{LogLevel.DEBUG}}</option>
+
+            </select>
+          </div>
+          <div [hidden]="!showMailSettings" class="pt-2">
+            <div class="form-check form-switch pt-1">
+              <input [(ngModel)]="setupForm!.mailSettings.mailEnabled" class="form-check-input" id="enableSMTP"
+                     role="switch"
+                     type="checkbox">
+              <label class="form-check-label" for="enableSMTP">Configure SMTP Server</label>
+            </div>
+            <br/>
+            <div class="row">
+              <div class="col-md-9">
+                <h6>SMTP Server</h6>
+                <input [(ngModel)]="setupForm!.mailSettings.mailHost" [disabled]="!setupForm!.mailSettings.mailEnabled"
+                       class="form-control form-control-sm"
+                       id="smtpServer"
+                       placeholder="smtp.example.com"
+                       required type="text"/>
+                <br/>
+              </div>
+              <div class="col-md-3">
+                <h6>SMTP Port</h6>
+                <input [(ngModel)]="setupForm!.mailSettings.mailPort" [disabled]="!setupForm!.mailSettings.mailEnabled"
+                       class="form-control form-control-sm"
+                       id="smtpPort"
+                       placeholder="25"
+                       required type="text"/>
+                <br/>
+              </div>
+            </div>
+            <h6>Reply To Address</h6>
+            <input [(ngModel)]="setupForm!.mailSettings.replyToAddress"
+                   [disabled]="!setupForm!.mailSettings.mailEnabled"
+                   class="form-control form-control-sm"
+                   id="replyToAddress"
+                   placeholder="noreply@example.com"
+                   required type="text"/>
+            <br/>
+            <div class="form-check form-check-inline">
+              <input [(ngModel)]="setupForm!.mailSettings.sslEnabled" [disabled]="!setupForm!.mailSettings.mailEnabled"
+                     class="form-check-input" id="useSSL"
+                     role="switch" type="checkbox">
+              <label class="form-check-label" for="useSSL">Use SSL</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [(ngModel)]="setupForm!.mailSettings.startTLSEnabled"
+                     [disabled]="!setupForm!.mailSettings.mailEnabled" class="form-check-input" id="enableSTARTTLS"
+                     role="switch"
+                     type="checkbox">
+              <label class="form-check-label" for="enableSTARTTLS">Enable STARTTLS</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input [(ngModel)]="setupForm!.mailSettings.startTLSRequired"
+                     [disabled]="!setupForm!.mailSettings.mailEnabled" class="form-check-input" id="requireTLS"
+                     role="switch"
+                     type="checkbox">
+              <label class="form-check-label" for="requireTLS">Require STARTTLS</label>
+            </div>
+            <hr/>
+            <div class="form-check form-switch pt-1">
+              <input [(ngModel)]="setupForm!.mailSettings.smtpAuth" [disabled]="!setupForm!.mailSettings.mailEnabled"
+                     class="form-check-input" id="useSMTPAuth"
+                     role="switch"
+                     type="checkbox">
+              <label class="form-check-label" for="enableSMTP">Use SMTP Authentication</label>
+            </div>
+            <br/>
+            <div class="row">
+              <div class="col-md-6">
+                <h6>SMTP Username</h6>
+                <input [(ngModel)]="setupForm!.mailSettings.username"
+                       [disabled]="!setupForm!.mailSettings.mailEnabled || !setupForm!.mailSettings.smtpAuth"
+                       class="form-control form-control-sm"
+                       id="smtpUser"
+                       placeholder="username"
+                       required type="text"/>
+                <br/>
+              </div>
+              <div class="col-md-6">
+
+                <h6>SMTP Password</h6>
+                <input [(ngModel)]="setupForm!.mailSettings.password"
+                       [disabled]="!setupForm!.mailSettings.mailEnabled || !setupForm!.mailSettings.smtpAuth"
+                       class="form-control form-control-sm"
+                       id="smtpPassword"
+                       placeholder="password"
+                       required type="password"/>
+                <br/>
+              </div>
+
+            </div>
+
+          </div>
         </div>
       </div>
       <div class="card-footer">

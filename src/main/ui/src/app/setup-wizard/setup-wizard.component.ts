@@ -20,12 +20,14 @@ import {Component, OnInit} from '@angular/core';
 import {SethlansService} from "../sethlans.service";
 import {SetupForm} from "../models/forms/setup-form.model";
 import {SetupWizardProgress} from "../enums/setupwizardprogress.enum";
-import {faFlagCheckered, faGear, faUserNinja} from "@fortawesome/free-solid-svg-icons";
+import {faFlagCheckered, faGear, faSliders, faUserNinja} from "@fortawesome/free-solid-svg-icons";
 import {faEye} from "@fortawesome/free-regular-svg-icons";
 import {Mode} from "../enums/mode.enum";
 import {UserChallenge} from "../models/user/user-challenge.model";
 import {Role} from "../enums/role.enum";
+import {LogLevel} from "../enums/loglevel.enum";
 import {NodeType} from "../enums/nodetype.enum";
+import {GPU} from "../models/hardware/gpu.model";
 
 @Component({
   selector: 'app-setup-wizard',
@@ -48,8 +50,10 @@ export class SetupWizardComponent implements OnInit {
   faUserNinja = faUserNinja;
   faGear = faGear;
   faEye = faEye;
+  faSliders = faSliders;
   formSent: boolean = false;
   Mode = Mode;
+  LogLevel = LogLevel;
   NodeType = NodeType;
   usernameRegEx = new RegExp('^[a-zA-Z0-9]{4,}$')
   emailRegEx = new RegExp('^[^\\s@]+@[^\\s@]+\\.[^\\s@]{1,}$')
@@ -60,6 +64,7 @@ export class SetupWizardComponent implements OnInit {
   passwordMatch = true;
   confirmPass = '';
   showPass = false;
+  showMailSettings = false;
 
   constructor(private sethlansService: SethlansService) {
   }
@@ -76,6 +81,7 @@ export class SetupWizardComponent implements OnInit {
       if (this.setupForm.availableTypes.length > 1) {
         this.setupForm.nodeSettings.nodeType = NodeType.CPU_GPU;
         this.setupForm.nodeSettings.tileSizeGPU = 256;
+        this.setupForm.nodeSettings.selectedGPUs = new Array<GPU>()
       } else {
         this.setupForm.nodeSettings.nodeType = NodeType.CPU;
       }
@@ -149,7 +155,13 @@ export class SetupWizardComponent implements OnInit {
 
   goToModeSetup() {
     this.setupWizardProgress = SetupWizardProgress.MODE_SETUP;
+  }
 
+  goToSettings() {
+    this.setupWizardProgress = SetupWizardProgress.SETTINGS;
+    if (this.setupForm?.mode == Mode.NODE) {
+      this.showMailSettings = false;
+    }
   }
 
   previous() {
@@ -159,6 +171,9 @@ export class SetupWizardComponent implements OnInit {
         break;
       case SetupWizardProgress.MODE_SETUP:
         this.goToAdmin();
+        break;
+      case SetupWizardProgress.SETTINGS:
+        this.goToModeSetup();
         break;
     }
 
@@ -171,6 +186,10 @@ export class SetupWizardComponent implements OnInit {
         break;
       case SetupWizardProgress.ADMIN_SETUP:
         this.goToModeSetup();
+        break;
+      case SetupWizardProgress.MODE_SETUP:
+        this.goToSettings();
+        break;
     }
 
   }
