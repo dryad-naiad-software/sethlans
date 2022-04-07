@@ -17,7 +17,17 @@
  */
 
 import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {SetupForm} from "../models/forms/setup-form.model";
+import {Observable} from "rxjs";
+import {catchError} from "rxjs/operators";
+import {HandleError, HttpErrorHandler} from './http-error-handler.service';
+
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type': 'application/json',
+  })
+};
 
 @Injectable({
   providedIn: 'root'
@@ -31,12 +41,15 @@ import {HttpClient} from "@angular/common/http";
  */
 
 export class SethlansService {
+  private handleError: HandleError;
 
 
   rootURL = '/api/v1';
   firstTime: boolean = false;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, httpErrorHandler: HttpErrorHandler) {
+    this.handleError = httpErrorHandler.createHandleError('SethlansService');
+
   }
 
   isFirstTime() {
@@ -58,4 +71,12 @@ export class SethlansService {
   getSetup() {
     return this.http.get(this.rootURL + "/setup/get_setup")
   }
+
+  submitSetup(setupForm: SetupForm): Observable<SetupForm> {
+    return this.http.post<SetupForm>(this.rootURL + "/setup/submit", setupForm, httpOptions)
+      .pipe(
+        catchError(this.handleError('submitSetup', setupForm)))
+
+  }
+
 }

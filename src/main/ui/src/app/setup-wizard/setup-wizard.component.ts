@@ -17,7 +17,7 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {SethlansService} from "../sethlans.service";
+import {SethlansService} from "../services/sethlans.service";
 import {SetupForm} from "../models/forms/setup-form.model";
 import {SetupWizardProgress} from "../enums/setupwizardprogress.enum";
 import {faCheck, faFlagCheckered, faGear, faSliders, faUserNinja} from "@fortawesome/free-solid-svg-icons";

@@ -30,6 +30,8 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {FormsModule} from "@angular/forms";
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {HttpErrorHandler} from "./services/http-error-handler.service";
+import {MessageService} from "./services/message.service";
 
 /**
  * File created by Mario Estrella on 4/3/2022
@@ -49,7 +51,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     BrowserModule, HttpClientModule, AppRoutingModule, NgbModule,
     FontAwesomeModule, FormsModule, BrowserAnimationsModule,
   ],
-  providers: [],
+  providers: [HttpErrorHandler, MessageService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

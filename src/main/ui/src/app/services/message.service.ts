@@ -16,34 +16,24 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-import {Component, OnInit} from '@angular/core';
-import {SethlansService} from "../services/sethlans.service";
+import {Injectable} from '@angular/core';
 
-/**
- * File created by Mario Estrella on 4/3/2022
- * Dryad and Naiad Software LLC
- * mestrella@dryadandnaiad.com
- * Project: sethlans_ui
- */
+@Injectable()
+export class MessageService {
+  messages: string[] = [];
 
-@Component({
-  selector: 'app-nav-bar',
-  templateUrl: './nav-bar.component.html',
-  styleUrls: ['./nav-bar.component.css']
-})
-export class NavBarComponent implements OnInit {
-  firstTime: boolean = false;
-  logo: any = 'assets/images/logo-text-white.png';
-  logoDark: any = 'assets/images/logo-text-dark.png';
-
-
-  constructor(private sethlansService: SethlansService) {
+  add(message: string) {
+    this.messages.push(message);
   }
 
-  ngOnInit(): void {
-    this.sethlansService.isFirstTime().subscribe((data: any) => {
-      this.firstTime = data.first_time;
-    })
+  clear() {
+    this.messages = [];
   }
-
 }
+
+
+/*
+Copyright Google LLC. All Rights Reserved.
+Use of this source code is governed by an MIT-style license that
+can be found in the LICENSE file at https://angular.io/license
+*/

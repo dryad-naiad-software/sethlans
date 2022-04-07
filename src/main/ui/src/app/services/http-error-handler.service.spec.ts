@@ -16,34 +16,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-import {Component, OnInit} from '@angular/core';
-import {SethlansService} from "../services/sethlans.service";
+import {TestBed} from '@angular/core/testing';
 
-/**
- * File created by Mario Estrella on 4/3/2022
- * Dryad and Naiad Software LLC
- * mestrella@dryadandnaiad.com
- * Project: sethlans_ui
- */
+import {HttpErrorHandlerService} from './http-error-handler.service';
 
-@Component({
-  selector: 'app-nav-bar',
-  templateUrl: './nav-bar.component.html',
-  styleUrls: ['./nav-bar.component.css']
-})
-export class NavBarComponent implements OnInit {
-  firstTime: boolean = false;
-  logo: any = 'assets/images/logo-text-white.png';
-  logoDark: any = 'assets/images/logo-text-dark.png';
+describe('HttpErrorHandlerService', () => {
+  let service: HttpErrorHandlerService;
 
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(HttpErrorHandlerService);
+  });
 
-  constructor(private sethlansService: SethlansService) {
-  }
-
-  ngOnInit(): void {
-    this.sethlansService.isFirstTime().subscribe((data: any) => {
-      this.firstTime = data.first_time;
-    })
-  }
-
-}
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+});

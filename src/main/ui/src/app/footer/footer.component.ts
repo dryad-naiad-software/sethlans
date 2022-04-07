@@ -17,7 +17,7 @@
  */
 
 import {Component, OnInit} from '@angular/core';
-import {SethlansService} from "../sethlans.service";
+import {SethlansService} from "../services/sethlans.service";
 import {Mode} from "../enums/mode.enum";
 
 @Component({
