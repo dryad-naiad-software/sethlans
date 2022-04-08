@@ -35,6 +35,5 @@ import lombok.NoArgsConstructor;
 public class NodeForm {
     private String ipAddress;
     private String networkPort;
-    private String username;
-    private String password;
+    private String apiKey;
 }

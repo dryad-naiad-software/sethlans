@@ -178,6 +178,7 @@ create table server
     ip_address         varchar(255),
     network_port       varchar(255),
     systemid           varchar(255),
+    api_key            varchar(255),
     primary key (id)
 );
 create table user

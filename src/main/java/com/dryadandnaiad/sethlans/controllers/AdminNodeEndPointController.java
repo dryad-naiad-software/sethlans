@@ -56,13 +56,22 @@ public class AdminNodeEndPointController {
 
     @PostMapping("/add_server_to_node")
     public ResponseEntity<Void> addServer(@RequestBody Server server) {
-        if (serverRepository.findBySystemID(server.getSystemID()).isEmpty()) {
-            log.debug("Adding the following server to node: " + server);
-            serverRepository.save(server);
-            return new ResponseEntity<>(HttpStatus.CREATED);
+        var apiKey = ConfigUtils.getProperty(ConfigKeys.SETHLANS_API_KEY);
+        if (apiKey == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            if (server.getApiKey().equals(apiKey)) {
+                if (serverRepository.findBySystemID(server.getSystemID()).isEmpty()) {
+                    log.debug("Adding the following server to node: " + server);
+                    serverRepository.save(server);
+                    return new ResponseEntity<>(HttpStatus.CREATED);
+                }
+                log.error("Server already exists on this node.");
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            } else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
         }
-        log.error("Server already exists on this node.");
-        return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
     @GetMapping("/list_servers_on_node")

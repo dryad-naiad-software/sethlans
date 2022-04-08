@@ -29,6 +29,7 @@ import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -65,6 +66,7 @@ public class ServerServiceImpl implements ServerService {
                     .ipAddress(QueryUtils.getIP())
                     .networkPort(ConfigUtils.getProperty(ConfigKeys.HTTPS_PORT))
                     .systemID(ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID))
+                    .apiKey(ConfigUtils.getProperty(ConfigKeys.SETHLANS_API_KEY))
                     .build();
             var objectMapper = new ObjectMapper();
 
@@ -80,14 +82,14 @@ public class ServerServiceImpl implements ServerService {
                 }
                 var addServerURL = "/api/v1/management/add_server_to_node";
                 var getSystemIDURL = "/api/v1/management/system_id";
-                if (NetworkUtils.postJSONToURLWithAuth(selectedNode.getNetworkPort(), selectedNode.getIpAddress(),
-                        addServerURL, true, serverAsJson, selectedNode.getUsername(),
-                        selectedNode.getPassword())) {
+                if (NetworkUtils.postJSONToURL(addServerURL, selectedNode.getIpAddress(), selectedNode.getNetworkPort(), serverAsJson, true)) {
                     var node = NetworkUtils.getNodeViaJson(selectedNode.getIpAddress(),
                             selectedNode.getNetworkPort());
-                    var systemID = NetworkUtils.getJSONFromURLWithAuth(getSystemIDURL,
-                            selectedNode.getIpAddress(), selectedNode.getNetworkPort(), true,
-                            selectedNode.getUsername(), selectedNode.getPassword());
+                    var params = ImmutableMap.<String, String>builder()
+                            .put("apiKey", ConfigUtils.getProperty(ConfigKeys.SETHLANS_API_KEY))
+                            .build();
+                    var systemID = NetworkUtils.getJSONWithParams(getSystemIDURL,
+                            selectedNode.getIpAddress(), selectedNode.getNetworkPort(), params, true);
                     if (node != null && systemID != null) {
                         node.setSystemID(systemID);
                         log.debug("Adding the following node to server: " + node);

@@ -163,10 +163,7 @@ public class NodeRenderTaskIntegrationTest {
             for (Node node : nodeSet) {
                 if (node.getHostname().equalsIgnoreCase(System.getProperty("sethlans.host"))) {
                     var nodeForm = NodeForm.builder()
-                            .ipAddress(node.getIpAddress())
-                            .networkPort(node.getNetworkPort())
-                            .username("testuser")
-                            .password("testPa$$1234").build();
+                            .ipAddress(node.getIpAddress()).build();
                     nodeList.add(nodeForm);
                 }
             }
@@ -174,9 +171,7 @@ public class NodeRenderTaskIntegrationTest {
             var node = nodeSet.iterator().next();
             var nodeForm = NodeForm.builder()
                     .ipAddress(node.getIpAddress())
-                    .networkPort(node.getNetworkPort())
-                    .username("testuser")
-                    .password("testPa$$1234").build();
+                    .networkPort(node.getNetworkPort()).build();
             nodeList.add(nodeForm);
         }
 

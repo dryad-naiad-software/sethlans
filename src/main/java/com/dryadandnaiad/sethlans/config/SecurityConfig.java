@@ -24,6 +24,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 authorize.antMatchers("/api/v1/info/node_info").permitAll();
                 authorize.antMatchers("/api/v1/management/is_authenticated").permitAll();
                 authorize.antMatchers("/api/v1/management/benchmark_**").permitAll();
+                authorize.antMatchers("/api/v1/management/add_server_to_node").permitAll();
+                authorize.antMatchers("/api/v1/management/system_id").permitAll();
                 authorize.antMatchers("/api/v1/server_queue/**").permitAll();
                 authorize.antMatchers("/api/v1/node_task/**").permitAll();
 

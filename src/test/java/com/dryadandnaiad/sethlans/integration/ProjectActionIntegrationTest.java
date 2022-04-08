@@ -164,9 +164,7 @@ public class ProjectActionIntegrationTest {
                 if (node.getHostname().equalsIgnoreCase(System.getProperty("sethlans.host"))) {
                     var nodeForm = NodeForm.builder()
                             .ipAddress(node.getIpAddress())
-                            .networkPort(node.getNetworkPort())
-                            .username("testuser")
-                            .password("testPa$$1234").build();
+                            .networkPort(node.getNetworkPort()).build();
                     nodeList.add(nodeForm);
                 }
             }
@@ -174,9 +172,7 @@ public class ProjectActionIntegrationTest {
             var node = nodeSet.iterator().next();
             var nodeForm = NodeForm.builder()
                     .ipAddress(node.getIpAddress())
-                    .networkPort(node.getNetworkPort())
-                    .username("testuser")
-                    .password("testPa$$1234").build();
+                    .networkPort(node.getNetworkPort()).build();
             nodeList.add(nodeForm);
         }
 

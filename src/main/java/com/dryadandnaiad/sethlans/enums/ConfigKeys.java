@@ -69,6 +69,7 @@ public enum ConfigKeys {
     SETHLANS_HOSTNAME("server.hostname"),
     SETHLANS_IP("server.ipAddress"),
     SETHLANS_URL("sethlans.url"),
+    SETHLANS_API_KEY("sethlans.api.key"),
     SYSTEM_ID("sethlans.systemID"),
     TEMP_DIR("sethlans.tempDir"),
     TILE_SIZE_CPU("sethlans.tileSizeCPU"),

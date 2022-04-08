@@ -26,7 +26,6 @@ import com.dryadandnaiad.sethlans.models.user.UserChallenge;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.dryadandnaiad.sethlans.services.SethlansManagerService;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
-import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.dryadandnaiad.sethlans.utils.UserUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.context.annotation.Profile;
@@ -169,8 +168,11 @@ public class AdminController {
 
 
     @GetMapping("/system_id")
-    public String getSystemID() {
-        return ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID);
+    public String getSystemID(@RequestParam String apiKey) {
+        if (apiKey.equals(ConfigUtils.getProperty(ConfigKeys.SETHLANS_API_KEY))) {
+            return ConfigUtils.getProperty(ConfigKeys.SYSTEM_ID);
+        }
+        return null;
     }
 
     @GetMapping("/restart")

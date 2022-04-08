@@ -171,6 +171,7 @@ public class PropertiesUtils {
         if (setupForm.getMode().equals(SethlansMode.SERVER) || setupForm.getMode().equals(SethlansMode.DUAL)) {
             writeProperty(ConfigKeys.GETTING_STARTED, "true");
             writeProperty(ConfigKeys.SERVER_COMPLETE_QUEUE_SIZE, "75");
+            writeProperty(ConfigKeys.SETHLANS_API_KEY, UUID.randomUUID().toString());
         }
 
     }
