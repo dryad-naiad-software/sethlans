@@ -1,0 +1,53 @@
+<div class="row m-auto">
+  <div class="col-xl-5 col-lg-8 m-auto">
+    <div class="card">
+      <div class="card-header bg-dark bg-opacity-75">
+        <h4 class="text-white"
+            style="font-family: 'Fjalla One', sans-serif;">
+          <span>Login</span>
+        </h4>
+      </div>
+      <div class="card-body bg-dark">
+        <div class="row pt-2">
+          <div class="col-md-6 m-auto">
+            <img [src]="logo"
+                 alt="logo"
+                 class="align-top img-fluid"
+                 height="100">
+          </div>
+          <div class="col-md-6">
+            <form #loginForm="ngForm">
+              <div *ngIf="loginError" class="alert alert-danger text-center">Invalid username and/or password.</div>
+              <div class="form-group">
+                <input [(ngModel)]="login.username" class="form-control" id="username" name="username"
+                       placeholder="Username"
+                       required type="text">
+              </div>
+              <div class="form-group">
+                <input (keydown)="loginUser($event, loginForm)" [(ngModel)]="login.password" class="form-control"
+                       id="password" name="password"
+                       placeholder="Password"
+                       required
+                       type="password">
+              </div>
+              <input name="${_csrf.parameterName}"
+                     type="hidden"
+                     value="${_csrf.token}"/>
+            </form>
+            <div class="d-flex justify-content-center">
+              <a class="text-white" href="/forgot_pass">Forgot Password?</a>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+      <div class="card-footer bg-dark">
+        <button (click)="loginSubmit()" [disabled]="!loginForm.valid" class="btn btn-outline-light btn-block">Login
+        </button>
+        <button (click)="registerUser()" class="btn btn-outline-light btn-block">Register New User</button>
+      </div>
+    </div>
+  </div>
+</div>

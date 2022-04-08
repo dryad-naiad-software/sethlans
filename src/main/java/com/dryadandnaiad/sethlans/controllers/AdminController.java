@@ -26,6 +26,7 @@ import com.dryadandnaiad.sethlans.models.user.UserChallenge;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.dryadandnaiad.sethlans.services.SethlansManagerService;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
+import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.dryadandnaiad.sethlans.utils.UserUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.context.annotation.Profile;
@@ -36,9 +37,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -88,6 +87,19 @@ public class AdminController {
         }
         return null;
     }
+
+    @GetMapping("/is_authenticated")
+    public Map<String, Boolean> isFirstTime(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        var authd = false;
+        if (userRepository.findUserByUsername(auth.getName()).isPresent()) {
+            authd = true;
+        }
+        var authenticated = new HashMap<String, Boolean>();
+        authenticated.put("authenticated", authd);
+        return authenticated;
+    }
+
 
     @GetMapping("/user_list")
     public List<UserQuery> getUserList() {

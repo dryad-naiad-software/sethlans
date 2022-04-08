@@ -620,7 +620,7 @@
             <a href="{{setupForm!.appURL}}">{{setupForm!.appURL}}</a>
             <br/>
             <br/>
-            <p>This page will automatically redirect in 30 seconds</p>
+            <p>This page will automatically refresh in 30 seconds</p>
 
           </div>
 
@@ -644,7 +644,7 @@
           <button (click)="finish()"
                   *ngIf="setupWizardProgress == SetupWizardProgress.SUMMARY ||
                   setupWizardProgress == SetupWizardProgress.FINISHED"
-                  [disabled]="setupWizardProgress == SetupWizardProgress.FINISHED"
+                  [disabled]="setupWizardProgress == SetupWizardProgress.FINISHED || finishClicked"
                   class="btn btn-outline-primary float-end"> Finish
           </button>
 

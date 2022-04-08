@@ -23,11 +23,6 @@ import {Observable} from "rxjs";
 import {catchError} from "rxjs/operators";
 import {HandleError, HttpErrorHandler} from './http-error-handler.service';
 
-const httpOptions = {
-  headers: new HttpHeaders({
-    'Content-Type': 'application/json',
-  })
-};
 
 @Injectable({
   providedIn: 'root'
@@ -72,11 +67,31 @@ export class SethlansService {
     return this.http.get(this.rootURL + "/setup/get_setup")
   }
 
-  submitSetup(setupForm: SetupForm): Observable<SetupForm> {
-    return this.http.post<SetupForm>(this.rootURL + "/setup/submit", setupForm, httpOptions)
+  getCurrentUser() {
+    return this.http.get(this.rootURL + "/management/get_current_user")
+  }
+
+  isAuthenticated() {
+    return this.http.get(this.rootURL + "/management/is_authenticated")
+  }
+
+  submitSetup(setupForm: SetupForm | undefined): Observable<any> {
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+
+    return this.http.post<SetupForm>(this.rootURL + "/setup/submit", JSON.stringify(setupForm),
+      {headers: headers, observe: "response"})
       .pipe(
         catchError(this.handleError('submitSetup', setupForm)))
 
+  }
+
+  setupRestart() {
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    return this.http.get(this.rootURL + "/setup/restart", {headers: headers, observe: "response"})
   }
 
 }

@@ -43,6 +43,7 @@ import {GPU} from "../models/hardware/gpu.model";
  */
 
 export class SetupWizardComponent implements OnInit {
+  finishClicked: boolean = false;
   setupForm: SetupForm | undefined;
   setupWizardProgress: SetupWizardProgress = SetupWizardProgress.BEGIN;
   SetupWizardProgress = SetupWizardProgress;
@@ -271,7 +272,21 @@ export class SetupWizardComponent implements OnInit {
   }
 
   finish() {
-    this.setupWizardProgress = SetupWizardProgress.FINISHED;
+    this.finishClicked = true;
+    this.sethlansService.submitSetup(this.setupForm).subscribe((response) => {
+      if (response.statusText == "Created") {
+        this.setupWizardProgress = SetupWizardProgress.FINISHED;
+        this.sethlansService.setupRestart().subscribe((response2) => {
+          if (response2.statusText == "OK") {
+            setTimeout(() => {
+              window.location.reload();
+            }, 30000)
+
+          }
+
+        })
+      }
+    })
 
   }
 

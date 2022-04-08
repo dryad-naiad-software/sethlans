@@ -18,7 +18,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         if (!PropertiesUtils.isFirstTime()) {
             http.authorizeRequests(authorize -> {
                 authorize.antMatchers("/api/v1/info/version").permitAll();
+                authorize.antMatchers("/api/v1/info/is_first_time").permitAll();
+                authorize.antMatchers("/api/v1/info/build_year").permitAll();
+                authorize.antMatchers("/api/v1/info/mode").permitAll();
                 authorize.antMatchers("/api/v1/info/node_info").permitAll();
+                authorize.antMatchers("/api/v1/management/is_authenticated").permitAll();
                 authorize.antMatchers("/api/v1/management/benchmark_**").permitAll();
                 authorize.antMatchers("/api/v1/server_queue/**").permitAll();
                 authorize.antMatchers("/api/v1/node_task/**").permitAll();

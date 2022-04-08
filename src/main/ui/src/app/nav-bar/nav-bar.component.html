@@ -18,4 +18,131 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark py-1 border-bottom">
   <a class="navbar-brand ps-5" href="/">
     <img [src]="logo" alt="logo" class="d-inline-block align-top" height="32"></a>
+  <ul *ngIf="authenticated" class="text-white nav ms-auto pe-5">
+    <!--Home Button -->
+    <li class="nav-item">
+      <a class="text-white nav-link" href="/">
+        <fa-icon [icon]="faHouse"></fa-icon>
+      </a>
+    </li>
+
+    <!--Projects Menu-->
+    <li *ngIf="mode == Mode.SERVER || mode == Mode.DUAL" class="nav-item">
+      <a class="text-white nav-link" href="/projects">
+        <fa-icon [icon]="faPuzzlePiece"></fa-icon>
+        <span>&nbsp;Projects</span>
+      </a>
+    </li>
+
+
+    <!--User Menu-->
+    <li class="nav-item" id="userDropDown" ngbDropdown placement="bottom-right">
+      <a class="text-white nav-link dropdown-toggle" href="javascript:void(0);" ngbDropdownToggle>
+        <fa-icon [icon]="faUser"></fa-icon> &nbsp;{{user?.username}}</a>
+      <div ngbDropdownMenu>
+        <a class="dropdown-item" href="/user_settings">
+          <fa-icon [icon]="faWrench"></fa-icon>
+          <span>&nbsp;User Settings</span></a>
+
+        <a class="dropdown-item" href="/logout">
+          <fa-icon [icon]="faRightFromBracket"></fa-icon>
+          <span>&nbsp;Logout</span></a>
+      </div>
+    </li>
+
+
+    <!--Settings Menu-->
+    <li *ngIf="isAdministrator" class="nav-item" id="adminDropDown" ngbDropdown placement="bottom-right">
+      <a class="text-white nav-link dropdown-toggle" href="javascript:void(0);" ngbDropdownToggle>
+        <fa-icon [icon]="faGear"></fa-icon>
+        <span>&nbsp;Settings</span>
+      </a>
+      <div ngbDropdownMenu>
+        <div *ngIf="mode == Mode.NODE || mode == Mode.DUAL">
+          <h6 class="dropdown-header">Node Management</h6>
+          <a class="dropdown-item" href="/admin/servers">
+            <i class="fas fa-fw fa-server"></i>
+            <span>&nbsp;Servers</span>
+          </a>
+          <a class="dropdown-item" href="/admin/compute_settings">
+            <i class="fas fa-fw fa-microchip"></i>
+            <span>&nbsp;Compute Settings</span>
+          </a>
+          <a class="dropdown-item" href="/admin/node_render_history">
+            <i class="fas fa-fw fa-history"></i>
+            <span>&nbsp;Node Render History</span>
+          </a>
+        </div>
+        <div *ngIf="mode == Mode.SERVER || mode == Mode.DUAL">
+          <div *ngIf="mode == Mode.DUAL" class="dropdown-divider"></div>
+          <h6 class="dropdown-header">Server Management</h6>
+          <a class="dropdown-item" href="/admin/nodes">
+            <i class="fas fa-fw fa-desktop"></i>
+            <span>&nbsp;Nodes</span>
+          </a>
+          <a class="dropdown-item" href="/admin/blender_version_admin">
+            <i class="icon-blender"></i>
+            <span>&nbsp;Blender Version Management</span>
+          </a>
+          <a class="dropdown-item" href="/admin/server_queue_history">
+            <i class="fas fa-fw fa-history"></i>
+            <span>&nbsp;Server Queue History</span>
+          </a>
+        </div>
+        <div>
+          <div class="dropdown-divider"></div>
+          <h6 class="dropdown-header">System Management</h6>
+          <a class="dropdown-item" href="/admin/user_management">
+            <i class="fas fa-fw fa-user"></i>
+            <span>&nbsp;User Management</span>
+          </a>
+          <a *ngIf="isSuperAdministrator" class="dropdown-item" href="/admin/sethlans_settings">
+            <i class="fas fa-fw fa-cogs"></i>
+            <span>&nbsp;Configuration</span>
+          </a>
+          <a class="dropdown-item" href="/admin/logs">
+            <i class="fas fa-fw fa-book"></i>
+            <span>&nbsp;Logs</span>
+          </a>
+          <a *ngIf="isSuperAdministrator" class="dropdown-item" href="/restart">
+            <i class="fas fa-fw fa-sync"></i>
+            <span>&nbsp;Restart</span>
+          </a>
+          <a *ngIf="isSuperAdministrator" class="dropdown-item" href="/shutdown">
+            <i class="fas fa-fw fa-power-off"></i>
+            <span>&nbsp;Shutdown</span>
+          </a>
+        </div>
+      </div>
+    </li>
+
+    <!--Help Menu-->
+    <li class="nav-item" ngbDropdown placement="bottom-right">
+      <a class="text-white nav-link" href="javascript:void(0);" ngbDropdownToggle>
+        <fa-icon [icon]="faQuestionCircle"></fa-icon>
+        <span>&nbsp;Help</span>
+      </a>
+      <div ngbDropdownMenu>
+        <a class="dropdown-item" href="https://sethlans-docs.dryadandnaiad.com/" target="_blank">
+          <fa-icon [icon]="faBookOpen"></fa-icon>
+          <span>&nbsp;Documentation</span></a>
+
+        <a *ngIf="isAdministrator && mode != Mode.NODE" class="dropdown-item" href="/get_started">
+          <fa-icon [icon]="faHourglassStart"></fa-icon>
+          <span>&nbsp;Get Started</span></a>
+
+        <button class="dropdown-item">
+          <fa-icon [icon]="faStar"></fa-icon>
+          <span>&nbsp;About</span></button>
+      </div>
+    </li>
+
+    <!--Notifications-->
+    <li class="nav-item" id="notificationsDropDown" ngbDropdown placement="bottom-right">
+      <a class="text-white nav-link" href="javascript:void(0);" ngbDropdownToggle>
+        <fa-icon [icon]="faBell"></fa-icon>
+        <span *ngIf="newNotifications == true" class="badge badge-notify">1</span>
+      </a>
+    </li>
+  </ul>
 </nav>

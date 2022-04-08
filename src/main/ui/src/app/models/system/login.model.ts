@@ -16,24 +16,23 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {DashboardComponent} from './dashboard/dashboard.component';
-import {LoginComponent} from "./login/login.component";
+/**
+ * File created by Mario Estrella on 4/7/2022
+ * Dryad and Naiad Software LLC
+ * mestrella@dryadandnaiad.com
+ * Project: sethlans_ui
+ */
 
+export class Login {
+  username: string;
+  password: string;
 
-const routes: Routes = [
-  {path: '', component: DashboardComponent},
-  {path: 'login', component: LoginComponent}
-];
+  constructor() {
+    this.username = '';
+    this.password = '';
+  }
 
-
-@NgModule({
-  declarations: [],
-  imports: [
-    RouterModule.forRoot(routes)
-  ],
-  exports: [RouterModule]
-})
-export class AppRoutingModule {
+  loginNotReady(): boolean {
+    return this.username == null || this.password == null || this.username.length === 0 || this.password.length === 0;
+  }
 }
