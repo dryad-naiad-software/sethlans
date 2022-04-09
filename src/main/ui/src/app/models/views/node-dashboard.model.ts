@@ -16,40 +16,39 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-import {Component, OnInit} from '@angular/core';
-import {SethlansService} from "./services/sethlans.service";
-import {Router} from "@angular/router";
-
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
-})
+import {NodeType} from "../../enums/nodetype.enum";
 
 /**
- * File created by Mario Estrella on 4/3/2022
+ * File created by Mario Estrella on 4/8/2022
  * Dryad and Naiad Software LLC
  * mestrella@dryadandnaiad.com
  * Project: sethlans_ui
  */
 
-export class AppComponent implements OnInit {
-  firstTime: boolean = false;
-  authenticated: boolean = false;
+export class NodeDashboard {
+  nodeType: NodeType
+  cpuName: string;
+  totalMemory: string;
+  selectedCores: number;
+  freeSpace: number;
+  totalSpace: number;
+  usedSpace: number;
+  selectedGPUModels: Array<string>
+  availableGPUModels: Array<string>
+  totalSlots: number;
+  gpuCombined: boolean;
 
-  constructor(private sethlansService: SethlansService, private router: Router) {
+  constructor(obj: any) {
+    this.nodeType = obj.nodeType;
+    this.cpuName = obj.cpuName;
+    this.totalMemory = obj.totalMemory;
+    this.selectedCores = obj.selectedCores;
+    this.freeSpace = obj.freeSpace;
+    this.totalSpace = obj.totalSpace;
+    this.usedSpace = obj.usedSpace;
+    this.selectedGPUModels = obj.selectedGPUModels;
+    this.availableGPUModels = obj.availableGPUModels;
+    this.totalSlots = obj.totalSlots;
+    this.gpuCombined = obj.gpuCombined;
   }
-
-  ngOnInit(): void {
-    this.sethlansService.isFirstTime().subscribe((data: any) => {
-      this.firstTime = data.first_time;
-    });
-    this.sethlansService.isAuthenticated().subscribe((data: any) => {
-      this.authenticated = data.authenticated;
-      if (!this.authenticated) {
-        this.router.navigateByUrl('/login');
-      }
-    });
-  }
-
 }

@@ -1,0 +1,57 @@
+<div class="row">
+  <div class="col-lg-4">
+    <h5>Node Information</h5>
+    <ul>
+      <li>Current Compute Type: <i>{{nodeDashboard!.nodeType}}</i>
+      </li>
+
+      <li *ngIf="nodeDashboard!.nodeType !== NodeType.GPU">Selected Cores: <i>{{nodeDashboard!.selectedCores}}</i>
+      </li>
+      <li *ngIf="nodeDashboard!.nodeType !== NodeType.CPU">Selected GPU(s):
+        <ul>
+          <li *ngFor="let gpu of nodeDashboard!.selectedGPUModels"><i>{{gpu}}</i></li>
+        </ul>
+      </li>
+      <li *ngIf="nodeDashboard!.nodeType !== NodeType.CPU && nodeDashboard!.selectedGPUModels.length > 1">Combined GPU
+        Rendering: <i>{{nodeDashboard!.gpuCombined}}</i>
+      </li>
+    </ul>
+  </div>
+
+  <div class="col-lg-5">
+    <h5>System Information</h5>
+    <ul>
+      <li>Processor: <i>{{nodeDashboard!.cpuName}}</i></li>
+      <li>Memory: <i>{{nodeDashboard!.totalMemory}}</i></li>
+      <li *ngIf="nodeDashboard!.availableGPUModels.length > 0">Installed Graphics Card(s):
+        <ul>
+          <li *ngFor="let gpu of nodeDashboard!.availableGPUModels"><i>{{gpu}}</i></li>
+        </ul>
+      </li>
+      <li>Disk Space:
+        <ngb-progressbar
+          [max]="nodeDashboard!.totalSpace"
+          [value]="nodeDashboard!.usedSpace"
+          type="info">
+        </ngb-progressbar>
+        <span class="float-start">
+          <fa-icon [icon]="faSquare" style="color: #17a2b8; font-size: 0.75rem"></fa-icon>
+          &nbsp;Used - {{nodeDashboard!.usedSpace}} GiB</span>
+        <span class="float-end">
+                    <fa-icon [icon]="faSquare" style="color: #e9ecef; font-size: 0.75rem;"></fa-icon>
+          &nbsp;Free - {{nodeDashboard!.freeSpace}} GiB</span>
+      </li>
+
+    </ul>
+
+  </div>
+  <div class="col-lg-3">
+    <h5>Render Information</h5>
+    <ul>
+      <li>Number of Render Slots:
+        <i>{{nodeDashboard!.totalSlots}}</i>
+      </li>
+    </ul>
+
+  </div>
+</div>

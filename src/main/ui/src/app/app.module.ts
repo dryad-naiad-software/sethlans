@@ -33,6 +33,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {HttpErrorHandler} from "./services/http-error-handler.service";
 import {MessageService} from "./services/message.service";
 import {LoginComponent} from './login/login.component';
+import {ServerDashComponent} from './dashboard/server-dash/server-dash.component';
+import {NodeDashComponent} from './dashboard/node-dash/node-dash.component';
 
 /**
  * File created by Mario Estrella on 4/3/2022
@@ -48,7 +50,9 @@ import {LoginComponent} from './login/login.component';
     SetupWizardComponent,
     DashboardComponent,
     FooterComponent,
-    LoginComponent],
+    LoginComponent,
+    ServerDashComponent,
+    NodeDashComponent],
   imports: [
     BrowserModule, HttpClientModule, AppRoutingModule, NgbModule,
     FontAwesomeModule, FormsModule, BrowserAnimationsModule,

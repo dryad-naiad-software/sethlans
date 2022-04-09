@@ -61,15 +61,15 @@
         <div *ngIf="mode == Mode.NODE || mode == Mode.DUAL">
           <h6 class="dropdown-header">Node Management</h6>
           <a class="dropdown-item" href="/admin/servers">
-            <i class="fas fa-fw fa-server"></i>
+            <fa-icon [icon]="faServer"></fa-icon>
             <span>&nbsp;Servers</span>
           </a>
           <a class="dropdown-item" href="/admin/compute_settings">
-            <i class="fas fa-fw fa-microchip"></i>
+            <fa-icon [icon]="faMicrochip"></fa-icon>
             <span>&nbsp;Compute Settings</span>
           </a>
           <a class="dropdown-item" href="/admin/node_render_history">
-            <i class="fas fa-fw fa-history"></i>
+            <fa-icon [icon]="faTimeLine"></fa-icon>
             <span>&nbsp;Node Render History</span>
           </a>
         </div>
@@ -77,7 +77,7 @@
           <div *ngIf="mode == Mode.DUAL" class="dropdown-divider"></div>
           <h6 class="dropdown-header">Server Management</h6>
           <a class="dropdown-item" href="/admin/nodes">
-            <i class="fas fa-fw fa-desktop"></i>
+            <fa-icon [icon]="faDesktop"></fa-icon>
             <span>&nbsp;Nodes</span>
           </a>
           <a class="dropdown-item" href="/admin/blender_version_admin">
@@ -85,7 +85,7 @@
             <span>&nbsp;Blender Version Management</span>
           </a>
           <a class="dropdown-item" href="/admin/server_queue_history">
-            <i class="fas fa-fw fa-history"></i>
+            <fa-icon [icon]="faTimeLine"></fa-icon>
             <span>&nbsp;Server Queue History</span>
           </a>
         </div>
@@ -93,23 +93,23 @@
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">System Management</h6>
           <a class="dropdown-item" href="/admin/user_management">
-            <i class="fas fa-fw fa-user"></i>
+            <fa-icon [icon]="faUser"></fa-icon>
             <span>&nbsp;User Management</span>
           </a>
           <a *ngIf="isSuperAdministrator" class="dropdown-item" href="/admin/sethlans_settings">
-            <i class="fas fa-fw fa-cogs"></i>
+            <fa-icon [icon]="faCogs"></fa-icon>
             <span>&nbsp;Configuration</span>
           </a>
           <a class="dropdown-item" href="/admin/logs">
-            <i class="fas fa-fw fa-book"></i>
+            <fa-icon [icon]="faBook"></fa-icon>
             <span>&nbsp;Logs</span>
           </a>
           <a *ngIf="isSuperAdministrator" class="dropdown-item" href="/restart">
-            <i class="fas fa-fw fa-sync"></i>
+            <fa-icon [icon]="faArrowsRotate"></fa-icon>
             <span>&nbsp;Restart</span>
           </a>
           <a *ngIf="isSuperAdministrator" class="dropdown-item" href="/shutdown">
-            <i class="fas fa-fw fa-power-off"></i>
+            <fa-icon [icon]="faPowerOff"></fa-icon>
             <span>&nbsp;Shutdown</span>
           </a>
         </div>

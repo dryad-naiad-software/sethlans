@@ -18,15 +18,23 @@
 
 import {Component, OnInit} from '@angular/core';
 import {
+  faArrowsRotate,
   faBell,
+  faBook,
   faBookOpen,
+  faCogs,
+  faDesktop,
   faGear,
   faHourglassStart,
   faHouse,
+  faMicrochip,
+  faPowerOff,
   faPuzzlePiece,
   faQuestionCircle,
   faRightFromBracket,
+  faServer,
   faStar,
+  faTimeline,
   faUser,
   faWrench
 } from '@fortawesome/free-solid-svg-icons';
@@ -62,10 +70,18 @@ export class NavBarComponent implements OnInit {
   faStar = faStar;
   faBell = faBell;
   faGear = faGear;
+  faServer = faServer;
+  faPowerOff = faPowerOff;
+  faMicrochip = faMicrochip;
   faHourglassStart = faHourglassStart
   faQuestionCircle = faQuestionCircle;
   faRightFromBracket = faRightFromBracket;
   faPuzzlePiece = faPuzzlePiece;
+  faTimeLine = faTimeline;
+  faDesktop = faDesktop;
+  faArrowsRotate = faArrowsRotate;
+  faBook = faBook;
+  faCogs = faCogs;
   newNotifications = false;
   mode: Mode = Mode.SETUP;
   Mode = Mode;
@@ -80,22 +96,17 @@ export class NavBarComponent implements OnInit {
     })
     this.sethlansService.isAuthenticated().subscribe((data: any) => {
       this.authenticated = data.authenticated;
-      if (data.authenticated) {
-        this.sethlansService.getCurrentUser().subscribe((data2: any) => {
-          this.user = data2;
-          console.log(data2)
-          if (this.user?.roles.indexOf(Role.ADMINISTRATOR) !== -1
-            || this.user?.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
-            this.isAdministrator = true;
-
-          }
-          if (this.user?.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
-            this.isSuperAdministrator = true;
-
-          }
-        })
+    });
+    this.sethlansService.getCurrentUser().subscribe((data: any) => {
+      this.user = data;
+      if (this.user?.roles.indexOf(Role.ADMINISTRATOR) !== -1
+        || this.user?.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
+        this.isAdministrator = true;
       }
-    })
+      if (this.user?.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
+        this.isSuperAdministrator = true;
+      }
+    });
     this.sethlansService.mode().subscribe((data: any) => {
       this.mode = data.mode;
     });

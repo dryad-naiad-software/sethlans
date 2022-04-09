@@ -31,6 +31,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -299,5 +300,20 @@ public class QueryUtils {
             log.error(Throwables.getStackTraceAsString(e));
         }
         return ip;
+    }
+
+
+    public static Long getClientUsedSpace() {
+        return getClientTotalSpace() - getClientFreeSpace();
+    }
+
+
+    public static Long getClientFreeSpace() {
+        return new File(getProperty(ConfigKeys.TEMP_DIR)).getFreeSpace() / 1024 / 1024 / 1024;
+    }
+
+    public static Long getClientTotalSpace() {
+        return new File(getProperty(ConfigKeys.TEMP_DIR)).getTotalSpace() / 1024 / 1024 / 1024;
+
     }
 }

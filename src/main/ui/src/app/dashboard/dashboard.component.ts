@@ -17,6 +17,8 @@
  */
 
 import {Component, OnInit} from '@angular/core';
+import {Mode} from "../enums/mode.enum";
+import {SethlansService} from "../services/sethlans.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -24,11 +26,16 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+  mode: Mode = Mode.SETUP;
+  Mode = Mode;
 
-  constructor() {
+  constructor(private sethlansService: SethlansService) {
   }
 
   ngOnInit(): void {
+    this.sethlansService.mode().subscribe((data: any) => {
+      this.mode = data.mode;
+    });
   }
 
 }

@@ -16,3 +16,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+.badge-notify {
+  background: red;
+  position: relative;
+  top: -10px;
+  right: 10px;
+  font-size: 0.6em;
+}
+
+.notification-drop {
+  min-width: 300px;
+}
+
+.scrollable {
+  overflow-y: auto;
+  height: 375px;
+}

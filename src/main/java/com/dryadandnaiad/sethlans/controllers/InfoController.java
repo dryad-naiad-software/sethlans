@@ -18,7 +18,10 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.enums.NodeType;
 import com.dryadandnaiad.sethlans.enums.SethlansMode;
+import com.dryadandnaiad.sethlans.models.hardware.GPU;
+import com.dryadandnaiad.sethlans.models.query.NodeDashboard;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
@@ -29,6 +32,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,6 +52,38 @@ public class InfoController {
         var mode = new HashMap<String, SethlansMode>();
         mode.put("mode", PropertiesUtils.getMode());
         return mode;
+    }
+
+    @GetMapping("/node_dashboard")
+    @Profile({"NODE", "DUAL"})
+    public NodeDashboard getNodeDashboard() {
+        var systemInfo = QueryUtils.getCurrentSystemInfo();
+        var dashboard = NodeDashboard.builder()
+                .nodeType(PropertiesUtils.getNodeType())
+                .cpuName(systemInfo.getCpu().getName())
+                .totalMemory(systemInfo.getCpu().getTotalMemory())
+                .totalSlots(PropertiesUtils.getTotalNodeSlots())
+                .freeSpace(QueryUtils.getClientFreeSpace())
+                .totalSpace(QueryUtils.getClientTotalSpace())
+                .usedSpace(QueryUtils.getClientUsedSpace())
+                .build();
+        var selectedGPUs = PropertiesUtils.getSelectedGPUs();
+        if (dashboard.getNodeType() != NodeType.CPU) {
+            dashboard.setGpuCombined(PropertiesUtils.isGPUCombined());
+            dashboard.setSelectedGPUModels(new ArrayList<>());
+            dashboard.setAvailableGPUModels(new ArrayList<>());
+            for (GPU gpu : systemInfo.getGpuList()) {
+                dashboard.getAvailableGPUModels().add(gpu.getModel());
+            }
+            for (GPU gpu : selectedGPUs) {
+                dashboard.getSelectedGPUModels().add(gpu.getModel());
+            }
+        }
+        if (dashboard.getNodeType() != NodeType.GPU) {
+            dashboard.setSelectedCores(PropertiesUtils.getSelectedCores());
+        }
+
+        return dashboard;
     }
 
     @GetMapping("/node_info")

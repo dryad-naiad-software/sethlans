@@ -180,6 +180,7 @@ public class PropertiesUtils {
         ObjectMapper objectMapper = new ObjectMapper();
         writeProperty(ConfigKeys.NODE_TYPE, nodeSettings.getNodeType().toString());
         writeProperty(ConfigKeys.CPU_RATING, "0");
+        writeProperty(ConfigKeys.NODE_TOTAL_SLOTS, "0");
         writeProperty(ConfigKeys.NODE_PAUSED, "false");
         if (!nodeSettings.getNodeType().equals(NodeType.GPU)) {
             writeProperty(ConfigKeys.CPU_CORES, nodeSettings.getCores().toString());

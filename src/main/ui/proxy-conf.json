@@ -6,5 +6,9 @@
   "/login": {
     "target": "https://localhost:7443",
     "secure": false
+  },
+  "/logout": {
+    "target": "https://localhost:7443",
+    "secure": false
   }
 }

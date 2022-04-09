@@ -23,7 +23,9 @@
         <h4 style="font-family: 'Fjalla One', sans-serif">Dashboard</h4>
       </div>
       <div class="card-body">
-        <h4>Welcome!</h4>
+        <app-server-dash *ngIf="mode == Mode.SERVER || mode == Mode.DUAL"></app-server-dash>
+        <hr *ngIf="mode == Mode.DUAL"/>
+        <app-node-dash *ngIf="mode == Mode.NODE || mode == Mode.DUAL"></app-node-dash>
       </div>
 
     </div>
