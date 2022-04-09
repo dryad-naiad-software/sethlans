@@ -9,7 +9,6 @@ import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.repositories.RenderTaskRepository;
-import com.dryadandnaiad.sethlans.repositories.ServerRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.FileUtils;
 import com.dryadandnaiad.sethlans.utils.NetworkUtils;
@@ -33,11 +32,9 @@ import java.util.List;
 @Profile({"NODE", "DUAL"})
 public class RenderServiceImpl implements RenderService {
 
-    private final ServerRepository serverRepository;
     private final RenderTaskRepository renderTaskRepository;
 
-    public RenderServiceImpl(ServerRepository serverRepository, RenderTaskRepository renderTaskRepository) {
-        this.serverRepository = serverRepository;
+    public RenderServiceImpl(RenderTaskRepository renderTaskRepository) {
         this.renderTaskRepository = renderTaskRepository;
     }
 
@@ -51,52 +48,50 @@ public class RenderServiceImpl implements RenderService {
         }
         while (true) {
             if (!PropertiesUtils.isNodePaused()) {
-                var servers = serverRepository.findServersByBenchmarkCompleteTrue();
-                if (servers.size() > 0) {
-                    for (Server server : servers) {
-                        var totalSlot = PropertiesUtils.getTotalNodeSlots();
-                        var pendingRenderTasks =
-                                renderTaskRepository.findRenderTasksByBenchmarkIsFalseAndCompleteIsFalse();
-                        if (pendingRenderTasks.size() < totalSlot) {
-                            var params = ImmutableMap.<String, String>builder()
-                                    .put("system-id", PropertiesUtils.getSystemID())
-                                    .build();
-                            var path = "/api/v1/server_queue/retrieve_task";
-                            var host = server.getIpAddress();
-                            var port = server.getNetworkPort();
-                            var renderTaskJson = NetworkUtils.getJSONWithParams(path, host, port,
-                                    params, true);
-                            if (renderTaskJson == null || renderTaskJson.isEmpty()) {
-                                log.debug("No tasks present on server.");
-                            } else {
-                                var objectMapper = new ObjectMapper();
-                                try {
-                                    var renderTask = objectMapper
-                                            .readValue(renderTaskJson, RenderTask.class);
-                                    if (!blenderVersionCheck(renderTask.getBlenderVersion(), server)) {
-                                        throw new Exception("Blender version not present on node or server");
-                                    }
-                                    setBlenderExecutable(renderTask);
-                                    renderTask.setTaskDir(ConfigUtils.getProperty(ConfigKeys.CACHE_DIR) + File.separator
-                                            + renderTask.getTaskID());
-                                    new File(renderTask.getTaskDir()).mkdirs();
-                                    getBlendFile(renderTask, server);
-                                    BlenderUtils.setImageFileName(renderTask);
-                                    renderTask.setNodeID(PropertiesUtils.getSystemID());
-                                    renderTaskRepository.save(renderTask);
-                                    log.debug("Render Task added to node:");
-                                    log.debug(renderTask.getTaskID());
-                                    log.debug(renderTask.toString());
-                                } catch (Exception e) {
-                                    log.error(e.getMessage());
-                                    log.error(Throwables.getStackTraceAsString(e));
+                var server = PropertiesUtils.getAuthorizedServer();
+                if (server != null && server.isBenchmarkComplete()) {
+                    var totalSlot = PropertiesUtils.getTotalNodeSlots();
+                    var pendingRenderTasks =
+                            renderTaskRepository.findRenderTasksByBenchmarkIsFalseAndCompleteIsFalse();
+                    if (pendingRenderTasks.size() < totalSlot) {
+                        var params = ImmutableMap.<String, String>builder()
+                                .put("system-id", PropertiesUtils.getSystemID())
+                                .build();
+                        var path = "/api/v1/server_queue/retrieve_task";
+                        var host = server.getIpAddress();
+                        var port = server.getNetworkPort();
+                        var renderTaskJson = NetworkUtils.getJSONWithParams(path, host, port,
+                                params, true);
+                        if (renderTaskJson == null || renderTaskJson.isEmpty()) {
+                            log.debug("No tasks present on server.");
+                        } else {
+                            var objectMapper = new ObjectMapper();
+                            try {
+                                var renderTask = objectMapper
+                                        .readValue(renderTaskJson, RenderTask.class);
+                                if (!blenderVersionCheck(renderTask.getBlenderVersion(), server)) {
+                                    throw new Exception("Blender version not present on node or server");
                                 }
+                                setBlenderExecutable(renderTask);
+                                renderTask.setTaskDir(ConfigUtils.getProperty(ConfigKeys.CACHE_DIR) + File.separator
+                                        + renderTask.getTaskID());
+                                new File(renderTask.getTaskDir()).mkdirs();
+                                getBlendFile(renderTask, server);
+                                BlenderUtils.setImageFileName(renderTask);
+                                renderTask.setNodeID(PropertiesUtils.getSystemID());
+                                renderTaskRepository.save(renderTask);
+                                log.debug("Render Task added to node:");
+                                log.debug(renderTask.getTaskID());
+                                log.debug(renderTask.toString());
+                            } catch (Exception e) {
+                                log.error(e.getMessage());
+                                log.error(Throwables.getStackTraceAsString(e));
                             }
-
                         }
 
                     }
                 }
+
             }
             try {
                 Thread.sleep(5000);
@@ -118,40 +113,44 @@ public class RenderServiceImpl implements RenderService {
         }
         while (true) {
             if (!PropertiesUtils.isNodePaused()) {
-                var servers = serverRepository.findServersByBenchmarkCompleteTrue();
-                var renderTasksToExecute =
-                        renderTaskRepository.findRenderTasksByBenchmarkIsFalseAndInProgressIsFalseAndCompleteIsFalse();
-                if (servers.size() > 0 && renderTasksToExecute.size() > 0) {
-                    var activeRenders =
-                            renderTaskRepository.findRenderTaskByBenchmarkIsFalseAndInProgressIsTrueAndCompleteIsFalse();
-                    var slotsInUse = activeRenders.size();
-                    var totalSlots = PropertiesUtils.getTotalNodeSlots();
-                    if (slotsInUse < totalSlots) {
-                        if (!renderTasksToExecute.isEmpty()) {
-                            renderTaskRepository.save(assignComputeMethod(renderTasksToExecute.get(0), activeRenders));
-                            var renderTask =
-                                    renderTaskRepository.getRenderTaskByTaskID(renderTasksToExecute.get(0).getTaskID());
-                            if (BlenderScript.writeRenderScript(renderTask)) {
-                                new Thread(() -> {
-                                    renderTask
-                                            .setRenderTime(BlenderUtils.executeRenderTask
-                                                    (renderTask, false));
-                                    if (renderTask.getRenderTime() != null) {
-                                        renderTask.setInProgress(false);
-                                        renderTask.setTaskImageFileMD5Sum(
-                                                FileUtils.getMD5ofFile(new File(renderTask.getTaskDir()
-                                                        + File.separator
-                                                        + renderTask.getTaskImageFile())));
-                                        renderTask.setComplete(true);
-                                        renderTaskRepository.save(renderTask);
-                                    }
-                                }).start();
+                var server = PropertiesUtils.getAuthorizedServer();
+                if (server != null && server.isBenchmarkComplete()) {
+                    var renderTasksToExecute =
+                            renderTaskRepository.findRenderTasksByBenchmarkIsFalseAndInProgressIsFalseAndCompleteIsFalse();
+                    if (renderTasksToExecute.size() > 0) {
+                        var activeRenders =
+                                renderTaskRepository.findRenderTaskByBenchmarkIsFalseAndInProgressIsTrueAndCompleteIsFalse();
+                        var slotsInUse = activeRenders.size();
+                        var totalSlots = PropertiesUtils.getTotalNodeSlots();
+                        if (slotsInUse < totalSlots) {
+                            if (!renderTasksToExecute.isEmpty()) {
+                                renderTaskRepository.save(assignComputeMethod(renderTasksToExecute.get(0), activeRenders));
+                                var renderTask =
+                                        renderTaskRepository.getRenderTaskByTaskID(renderTasksToExecute.get(0).getTaskID());
+                                if (BlenderScript.writeRenderScript(renderTask)) {
+                                    new Thread(() -> {
+                                        renderTask
+                                                .setRenderTime(BlenderUtils.executeRenderTask
+                                                        (renderTask, false));
+                                        if (renderTask.getRenderTime() != null) {
+                                            renderTask.setInProgress(false);
+                                            renderTask.setTaskImageFileMD5Sum(
+                                                    FileUtils.getMD5ofFile(new File(renderTask.getTaskDir()
+                                                            + File.separator
+                                                            + renderTask.getTaskImageFile())));
+                                            renderTask.setComplete(true);
+                                            renderTaskRepository.save(renderTask);
+                                        }
+                                    }).start();
 
 
+                                }
                             }
                         }
                     }
                 }
+
+
             }
             try {
                 Thread.sleep(5000);
@@ -170,32 +169,35 @@ public class RenderServiceImpl implements RenderService {
             log.debug(e.getMessage());
         }
         while (true) {
-            var servers = serverRepository.findServersByBenchmarkCompleteTrue();
-            var tasksToSend =
-                    renderTaskRepository.findRenderTasksByBenchmarkIsFalseAndInProgressIsFalseAndCompleteIsTrueAndSentToServerIsFalse();
-            if (servers.size() > 0 && tasksToSend.size() > 0) {
-                for (RenderTask renderTask : tasksToSend) {
-                    try {
-                        var server = serverRepository.findBySystemID(renderTask.getServerInfo().getSystemID()).get();
-                        var path = "/api/v1/server_queue/receive_task";
-                        var host = server.getIpAddress();
-                        var port = server.getNetworkPort();
-                        var objectMapper = new ObjectMapper();
-                        var taskJson = objectMapper
-                                .writeValueAsString(renderTask);
-                        var accepted = NetworkUtils.postJSONToURL(path, host, port, taskJson, true);
-                        if (accepted) {
-                            renderTask.setSentToServer(true);
-                            renderTaskRepository.save(renderTask);
+            var server = PropertiesUtils.getAuthorizedServer();
+            if (server != null && server.isBenchmarkComplete()) {
+                var tasksToSend =
+                        renderTaskRepository.findRenderTasksByBenchmarkIsFalseAndInProgressIsFalseAndCompleteIsTrueAndSentToServerIsFalse();
+                if (tasksToSend.size() > 0) {
+                    for (RenderTask renderTask : tasksToSend) {
+                        try {
+                            var path = "/api/v1/server_queue/receive_task";
+                            var host = server.getIpAddress();
+                            var port = server.getNetworkPort();
+                            var objectMapper = new ObjectMapper();
+                            var taskJson = objectMapper
+                                    .writeValueAsString(renderTask);
+                            var accepted = NetworkUtils.postJSONToURL(path, host, port, taskJson, true);
+                            if (accepted) {
+                                renderTask.setSentToServer(true);
+                                renderTaskRepository.save(renderTask);
+                            }
+
+                        } catch (JsonProcessingException e) {
+                            log.error(e.getMessage());
+                            log.error(Throwables.getStackTraceAsString(e));
                         }
-
-                    } catch (JsonProcessingException e) {
-                        log.error(e.getMessage());
-                        log.error(Throwables.getStackTraceAsString(e));
                     }
-                }
 
+                }
             }
+
+
             try {
                 Thread.sleep(20000);
             } catch (InterruptedException e) {

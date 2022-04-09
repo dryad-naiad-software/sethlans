@@ -25,6 +25,7 @@ import com.dryadandnaiad.sethlans.models.forms.SetupForm;
 import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import com.dryadandnaiad.sethlans.models.settings.MailSettings;
 import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
+import com.dryadandnaiad.sethlans.models.system.Server;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -62,6 +63,22 @@ public class PropertiesUtils {
         return Integer.parseInt(ConfigUtils.getProperty(ConfigKeys.SERVER_COMPLETE_QUEUE_SIZE));
     }
 
+    public static Server getAuthorizedServer() {
+        var objectMapper = new ObjectMapper();
+        try {
+            var value = ConfigUtils.getProperty(ConfigKeys.AUTHORIZED_SERVER);
+            if (value != null) {
+                return objectMapper.readValue(value, new TypeReference<Server>() {
+                });
+            }
+        } catch (JsonProcessingException e) {
+            log.error("Error getting authorized server");
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+        }
+        return null;
+    }
+
     public static List<GPU> getSelectedGPUs() {
         var objectMapper = new ObjectMapper();
         try {
@@ -92,6 +109,17 @@ public class PropertiesUtils {
             log.error(Throwables.getStackTraceAsString(e));
         }
 
+    }
+
+    public static void updatedAuthorizedServer(Server server) {
+        var objectMapper = new ObjectMapper();
+        try {
+            ConfigUtils.writeProperty(ConfigKeys.AUTHORIZED_SERVER, objectMapper.writeValueAsString(server));
+            ;
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            log.error(Throwables.getStackTraceAsString(e));
+        }
     }
 
     public static Integer getCPUTileSize() {

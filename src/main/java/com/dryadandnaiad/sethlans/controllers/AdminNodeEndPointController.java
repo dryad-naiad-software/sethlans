@@ -19,7 +19,6 @@ package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.models.system.Server;
-import com.dryadandnaiad.sethlans.repositories.ServerRepository;
 import com.dryadandnaiad.sethlans.services.BenchmarkService;
 import com.dryadandnaiad.sethlans.services.NodeService;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
@@ -30,7 +29,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * File created by Mario Estrella on 6/14/2020.
@@ -44,12 +44,10 @@ import java.util.List;
 @Profile({"NODE", "DUAL"})
 public class AdminNodeEndPointController {
 
-    private final ServerRepository serverRepository;
     private final BenchmarkService benchmarkService;
     private final NodeService nodeService;
 
-    public AdminNodeEndPointController(ServerRepository serverRepository, BenchmarkService benchmarkService, NodeService nodeService) {
-        this.serverRepository = serverRepository;
+    public AdminNodeEndPointController(BenchmarkService benchmarkService, NodeService nodeService) {
         this.benchmarkService = benchmarkService;
         this.nodeService = nodeService;
     }
@@ -61,37 +59,43 @@ public class AdminNodeEndPointController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
             if (server.getApiKey().equals(apiKey)) {
-                if (serverRepository.findBySystemID(server.getSystemID()).isEmpty()) {
-                    log.debug("Adding the following server to node: " + server);
-                    serverRepository.save(server);
-                    return new ResponseEntity<>(HttpStatus.CREATED);
-                }
-                log.error("Server already exists on this node.");
-                return new ResponseEntity<>(HttpStatus.CONFLICT);
+                PropertiesUtils.updatedAuthorizedServer(server);
+                return new ResponseEntity<>(HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
     }
 
-    @GetMapping("/list_servers_on_node")
-    public List<Server> servers() {
-        return serverRepository.findAll();
+    @GetMapping("/node_api_key")
+    public Map<String, String> nodeAPIKey() {
+        var apiKey = new HashMap<String, String>();
+        apiKey.put("api_key", ConfigUtils.getProperty(ConfigKeys.SETHLANS_API_KEY));
+        return apiKey;
+    }
+
+    @GetMapping("/authorized_server_on_node")
+    public Server authorizedServer() {
+        return PropertiesUtils.getAuthorizedServer();
+
     }
 
     @PostMapping("/benchmark_request")
     public ResponseEntity<Void> incomingBenchmarkRequest(@RequestBody Server server) {
-        if (serverRepository.findBySystemID(server.getSystemID()).isPresent()) {
+        var authorizedServer = PropertiesUtils.getAuthorizedServer();
+        if (authorizedServer != null && authorizedServer.getSystemID().equals(server.getSystemID())) {
             return nodeService.incomingBenchmarkRequest(server);
         }
+
         log.error("Server is not authorized on this node.");
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/benchmark_status")
     public boolean benchmarkStatus(@RequestParam String serverID) {
-        if (serverRepository.findBySystemID(serverID).isPresent()) {
-            return benchmarkService.benchmarksComplete(serverRepository.findBySystemID(serverID).get());
+        var authorizedServer = PropertiesUtils.getAuthorizedServer();
+        if (authorizedServer != null && authorizedServer.getSystemID().equals(serverID)) {
+            return benchmarkService.benchmarksComplete(authorizedServer);
         }
         log.error("Server is not authorized on this node.");
         return false;

@@ -19,7 +19,7 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.repositories.RenderTaskRepository;
-import com.dryadandnaiad.sethlans.repositories.ServerRepository;
+import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -36,11 +36,9 @@ import java.io.IOException;
 @Profile({"NODE", "DUAL"})
 @RequestMapping("/api/v1/node_task")
 public class NodeTaskController {
-    private final ServerRepository serverRepository;
     private final RenderTaskRepository renderTaskRepository;
 
-    public NodeTaskController(ServerRepository serverRepository, RenderTaskRepository renderTaskRepository) {
-        this.serverRepository = serverRepository;
+    public NodeTaskController(RenderTaskRepository renderTaskRepository) {
         this.renderTaskRepository = renderTaskRepository;
     }
 
@@ -48,7 +46,8 @@ public class NodeTaskController {
     public @ResponseBody
     byte[] getImageFile(@RequestParam("system-id") String systemID,
                         @RequestParam("task-id") String taskID) {
-        if (serverRepository.findBySystemID(systemID).isPresent()) {
+        var authorizedServer = PropertiesUtils.getAuthorizedServer();
+        if (authorizedServer != null && authorizedServer.getSystemID().equals(systemID)) {
             var renderTask = renderTaskRepository.getRenderTaskByTaskID(taskID);
             try {
                 if (renderTask.isSentToServer()) {

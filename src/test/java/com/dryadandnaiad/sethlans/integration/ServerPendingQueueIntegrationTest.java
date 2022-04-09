@@ -205,12 +205,12 @@ public class ServerPendingQueueIntegrationTest {
         log.info(nodesOnServer.toString());
 
         var serversOnNode = mapper
-                .readValue(get("/api/v1/management/list_servers_on_node")
+                .readValue(get("/api/v1/management/authorized_server_on_node")
                         .then()
                         .extract()
                         .response()
                         .body()
-                        .asString(), new TypeReference<List<Server>>() {
+                        .asString(), new TypeReference<Server>() {
                 });
 
         if(System.getProperty("sethlans.host") != null) {

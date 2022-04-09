@@ -24,7 +24,7 @@ package com.dryadandnaiad.sethlans.enums;
  * Project: sethlans
  */
 public enum ConfigKeys {
-
+    AUTHORIZED_SERVER("sethlans.authorized.server"),
     BENCHMARK_DIR("sethlans.benchmarkDir"),
     BINARY_DIR("sethlans.binDir"),
     BLEND_FILE_CACHE_DIR("sethlans.blendFileCacheDir"),

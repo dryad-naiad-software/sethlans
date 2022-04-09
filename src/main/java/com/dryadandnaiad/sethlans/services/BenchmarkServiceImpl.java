@@ -29,7 +29,6 @@ import com.dryadandnaiad.sethlans.models.hardware.GPU;
 import com.dryadandnaiad.sethlans.models.system.Node;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.repositories.RenderTaskRepository;
-import com.dryadandnaiad.sethlans.repositories.ServerRepository;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.NetworkUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
@@ -43,7 +42,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.UUID;
 
 /**
@@ -58,11 +56,9 @@ import java.util.UUID;
 public class BenchmarkServiceImpl implements BenchmarkService {
 
     private final RenderTaskRepository renderTaskRepository;
-    private final ServerRepository serverRepository;
 
-    public BenchmarkServiceImpl(RenderTaskRepository renderTaskRepository, ServerRepository serverRepository) {
+    public BenchmarkServiceImpl(RenderTaskRepository renderTaskRepository) {
         this.renderTaskRepository = renderTaskRepository;
-        this.serverRepository = serverRepository;
     }
 
     @Override
@@ -103,16 +99,8 @@ public class BenchmarkServiceImpl implements BenchmarkService {
         if (!benchmarksToExecute.isEmpty()) {
             log.debug("Processing pending benchmark render tasks");
             var nodeType = PropertiesUtils.getNodeType();
-            var servers = new HashSet<Server>();
-            for (RenderTask benchmark : benchmarksToExecute) {
-                servers.add(serverRepository.findBySystemID(benchmark
-                                .getServerInfo()
-                                .getSystemID())
-                        .orElse(null));
-            }
-            for (Server server : servers) {
-                reportBenchmarkState(server, nodeType);
-            }
+            var server = PropertiesUtils.getAuthorizedServer();
+            reportBenchmarkState(server, nodeType);
         }
     }
 
@@ -201,9 +189,12 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                 var objectMapper = new ObjectMapper();
                 var nodeAsJSON = objectMapper.writeValueAsString(node);
                 NetworkUtils.postJSONToURL(path, host, port, nodeAsJSON, true);
-                server = serverRepository.findBySystemID(server.getSystemID()).get();
-                server.setBenchmarkComplete(true);
-                serverRepository.save(server);
+                server = PropertiesUtils.getAuthorizedServer();
+                if (server != null) {
+                    server.setBenchmarkComplete(true);
+                    PropertiesUtils.updatedAuthorizedServer(server);
+                }
+
             } catch (JsonProcessingException e) {
                 log.error(e.getMessage());
                 log.error(Throwables.getStackTraceAsString(e));
