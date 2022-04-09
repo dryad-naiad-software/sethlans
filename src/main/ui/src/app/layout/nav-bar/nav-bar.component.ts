@@ -38,10 +38,10 @@ import {
   faUser,
   faWrench
 } from '@fortawesome/free-solid-svg-icons';
-import {SethlansService} from "../services/sethlans.service";
-import {Mode} from "../enums/mode.enum";
-import {UserQuery} from "../models/user/userquery.model";
-import {Role} from "../enums/role.enum";
+import {SethlansService} from "../../services/sethlans.service";
+import {Mode} from "../../enums/mode.enum";
+import {UserQuery} from "../../models/user/userquery.model";
+import {Role} from "../../enums/role.enum";
 
 /**
  * File created by Mario Estrella on 4/3/2022

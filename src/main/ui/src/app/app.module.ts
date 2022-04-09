@@ -20,12 +20,12 @@ import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
 import {AppComponent} from './app.component';
-import {NavBarComponent} from './nav-bar/nav-bar.component';
+import {NavBarComponent} from './layout/nav-bar/nav-bar.component';
 import {SetupWizardComponent} from './setup-wizard/setup-wizard.component';
 import {HttpClientModule} from '@angular/common/http';
 import {AppRoutingModule} from './app-routing.module';
 import {DashboardComponent} from './dashboard/dashboard.component';
-import {FooterComponent} from './footer/footer.component';
+import {FooterComponent} from './layout/footer/footer.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {FormsModule} from "@angular/forms";
@@ -35,6 +35,8 @@ import {MessageService} from "./services/message.service";
 import {LoginComponent} from './login/login.component';
 import {ServerDashComponent} from './dashboard/server-dash/server-dash.component';
 import {NodeDashComponent} from './dashboard/node-dash/node-dash.component';
+import {NodesComponent} from './admin/nodes/nodes.component';
+import {AuthorizedServerComponent} from './admin/authorized-server/authorized-server.component';
 
 /**
  * File created by Mario Estrella on 4/3/2022
@@ -52,7 +54,9 @@ import {NodeDashComponent} from './dashboard/node-dash/node-dash.component';
     FooterComponent,
     LoginComponent,
     ServerDashComponent,
-    NodeDashComponent],
+    NodeDashComponent,
+    NodesComponent,
+    AuthorizedServerComponent],
   imports: [
     BrowserModule, HttpClientModule, AppRoutingModule, NgbModule,
     FontAwesomeModule, FormsModule, BrowserAnimationsModule,

@@ -50,11 +50,11 @@ public class ScanGPU {
 
     private static void generateCUDA() {
         boolean optix;
-        log.info("Looking for Compatible CUDA Devices");
+        log.debug("Looking for Compatible CUDA Devices");
 
         String path = getCUDALib();
         if (path == null) {
-            log.info("no CUDA lib path found");
+            log.debug("no CUDA lib path found");
 
         }
         CUDA cudalib;
@@ -73,7 +73,7 @@ public class ScanGPU {
             }
 
             if (result == CUresult.CUDA_ERROR_NO_DEVICE) {
-                log.info("No Device Found");
+                log.debug("No Device Found");
                 return;
             }
 
@@ -121,7 +121,7 @@ public class ScanGPU {
                     gpuID = "CUDA_" + num;
                 }
 
-                log.info("One CUDA Device found, adding to list.");
+                log.debug("One CUDA Device found, adding to list.");
 
                 var gpuToAdd = GPU.builder()
                         .model(modelName)
@@ -152,7 +152,7 @@ public class ScanGPU {
 
     private static void generateOpenCL() {
         try {
-            log.info("Looking for Compatible OpenCL Devices");
+            log.debug("Looking for Compatible OpenCL Devices");
             if (devices == null) {
                 devices = new LinkedList<>();
             }
@@ -196,7 +196,7 @@ public class ScanGPU {
                     gpuID = "OPENCL_" + i;
                     model = openCLgpuID;
                     if (openCLVersion > 1.2) {
-                        log.info("One OpenCL device found, adding to list");
+                        log.debug("One OpenCL device found, adding to list");
                         log.debug("Open CL version " + openCLVersion);
                         devices.add(GPU.builder()
                                 .model(model)

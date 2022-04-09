@@ -20,11 +20,16 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {LoginComponent} from "./login/login.component";
+import {NodesComponent} from "./admin/nodes/nodes.component";
+import {AuthorizedServerComponent} from "./admin/authorized-server/authorized-server.component";
 
 
 const routes: Routes = [
   {path: '', component: DashboardComponent},
-  {path: 'login', component: LoginComponent}
+  {path: 'login', component: LoginComponent},
+  {path: 'admin/nodes', component: NodesComponent},
+  {path: 'admin/server', component: AuthorizedServerComponent}
+
 ];
 
 
