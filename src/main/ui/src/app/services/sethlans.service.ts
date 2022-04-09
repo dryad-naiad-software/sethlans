@@ -79,6 +79,14 @@ export class SethlansService {
     return this.http.get(this.rootURL + "/management/is_authenticated")
   }
 
+  getServersOnNode() {
+    return this.http.get(this.rootURL + "/management/list_servers_on_node")
+  }
+
+  getNodeAPIKey() {
+    return this.http.get(this.rootURL + "/management/node_api_key")
+  }
+
   submitSetup(setupForm: SetupForm | undefined): Observable<any> {
     let headers = new HttpHeaders({
       'Content-Type': 'application/json',

@@ -25,6 +25,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 /**
  * File created by Mario Estrella on 4/2/2020.
@@ -43,6 +44,8 @@ public class Server extends AbstractModel {
     private String ipAddress;
     private String networkPort;
     private String systemID;
-    private String apiKey;
     private boolean benchmarkComplete;
+    @Transient
+    private String apiKey;
+
 }

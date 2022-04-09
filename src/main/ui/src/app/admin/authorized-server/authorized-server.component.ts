@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {faKey} from "@fortawesome/free-solid-svg-icons";
+import {SethlansService} from "../../services/sethlans.service";
+import {Server} from "../../models/system/server.model";
 
 
 @Component({
@@ -9,11 +11,20 @@ import {faKey} from "@fortawesome/free-solid-svg-icons";
 })
 export class AuthorizedServerComponent implements OnInit {
   faKey = faKey;
+  serverList: Array<Server> | undefined
+  nodeAPIKey: string | undefined
 
-  constructor() {
+  constructor(private sethlansService: SethlansService) {
   }
 
   ngOnInit(): void {
+    this.sethlansService.getServersOnNode().subscribe((data: any) => {
+      this.serverList = data;
+    })
+    this.sethlansService.getNodeAPIKey().subscribe((data: any) => {
+      this.nodeAPIKey = data.api_key;
+      console.log(this.nodeAPIKey)
+    })
   }
 
 }
