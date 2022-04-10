@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {faKey} from "@fortawesome/free-solid-svg-icons";
+import {faKey, faPlus, faServer} from "@fortawesome/free-solid-svg-icons";
 import {SethlansService} from "../../services/sethlans.service";
 import {Server} from "../../models/system/server.model";
 
@@ -11,8 +11,12 @@ import {Server} from "../../models/system/server.model";
 })
 export class AuthorizedServerComponent implements OnInit {
   faKey = faKey;
+  faPlus = faPlus;
+  faServer = faServer;
   server: Server | undefined
   nodeAPIKey: string | undefined
+  apiScreenToggle: boolean = false;
+  addAPIScreen: boolean = false;
 
   constructor(private sethlansService: SethlansService) {
   }
@@ -23,8 +27,23 @@ export class AuthorizedServerComponent implements OnInit {
     })
     this.sethlansService.getNodeAPIKey().subscribe((data: any) => {
       this.nodeAPIKey = data.api_key;
-      console.log(this.nodeAPIKey)
     })
+  }
+
+  toggleScreen() {
+    this.apiScreenToggle = !this.apiScreenToggle;
+  }
+
+  clearKey() {
+    this.nodeAPIKey = '';
+  }
+
+  addAPI() {
+    this.addAPIScreen = true;
+  }
+
+  setAPI() {
+    this.addAPIScreen = false;
   }
 
 }

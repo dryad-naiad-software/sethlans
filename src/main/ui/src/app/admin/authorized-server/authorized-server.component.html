@@ -1,5 +1,5 @@
 <div class="row pb-1">
-  <div class="col-md-10 m-auto">
+  <div class="col-md-8 m-auto">
     <div class="card">
       <div class="card-header">
         <div class="row">
@@ -7,39 +7,83 @@
             <h4 style="font-family: 'Fjalla One', sans-serif">Authorized Server</h4>
           </div>
           <div class="col-md-4">
-            <button class="ml-2 btn btn-outline-dark float-end">
+            <button (click)="toggleScreen()" *ngIf="apiScreenToggle == false"
+                    class="ms-2 btn btn-outline-dark float-end">
               <fa-icon [icon]="faKey"></fa-icon>
               <span class="ms-2">API Key</span>
+            </button>
+            <button (click)="toggleScreen()" *ngIf="apiScreenToggle" class="ms-2 btn btn-outline-dark float-end">
+              <fa-icon [icon]="faServer"></fa-icon>
+              <span class="ms-2">Authorized Server</span>
+            </button>
+            <button (click)="addAPI()" *ngIf="apiScreenToggle && nodeAPIKey === ''"
+                    class="ml-2 btn btn-outline-dark float-end">
+              <fa-icon [icon]="faPlus"></fa-icon>
+              <span class="ms-2">Add API Key</span>
             </button>
           </div>
         </div>
       </div>
       <div class="card-body">
-        <table class="table">
-          <thead>
-          <tr>
-            <th scope="col">Benchmark Sent</th>
-            <th scope="col">Hostname</th>
-            <th scope="col">IP Address</th>
-            <th scope="col">Port</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngIf="server!.ipAddress != '' ">
-            <td>{{server!.benchmarkComplete}}</td>
-            <td>{{server!.hostname}}</td>
-            <td>{{server!.ipAddress}}</td>
-            <td>{{server!.networkPort}}</td>
-          </tr>
-          <tr>
-            <td>false</td>
-            <td>N/A</td>
-            <td>N/A</td>
-            <td>N/A</td>
-          </tr>
+        <div class="col-md-10 m-auto">
+          <div *ngIf="addAPIScreen" class="row"
+               ngbTooltip="API Key obtained from Sethlans Server." placement="top">
+            <div class="col-md-12 pt-3">
+              <h6>Add API Key</h6>
+              <input [(ngModel)]="nodeAPIKey"
+                     class="form-control form-control-sm "
+                     id="apiKey" type="text"
+              />
+            </div>
+          </div>
+          <div *ngIf="addAPIScreen" class="row">
+            <div class="col-md-12 pt-2">
+              <button (click)="setAPI()"
+                      class="ml-2 btn btn-outline-primary float-end">Submit
+              </button>
+            </div>
+          </div>
+          <table *ngIf="addAPIScreen == false" class="table">
+            <thead>
+            <tr *ngIf="apiScreenToggle == false">
+              <th scope="col">Benchmark Sent</th>
+              <th scope="col">Hostname</th>
+              <th scope="col">IP Address</th>
+              <th scope="col">Port</th>
+            </tr>
+            <tr *ngIf="apiScreenToggle">
+              <th scope="col">API Key</th>
+              <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngIf="server!.ipAddress != ''  && apiScreenToggle == false">
+              <td>{{server!.benchmarkComplete}}</td>
+              <td>{{server!.hostname}}</td>
+              <td>{{server!.ipAddress}}</td>
+              <td>{{server!.networkPort}}</td>
+            </tr>
+            <tr *ngIf="server!.ipAddress == ''  && apiScreenToggle == false">
+              <td>false</td>
+              <td>N/A</td>
+              <td>N/A</td>
+              <td>N/A</td>
+            </tr>
+            <tr *ngIf="apiScreenToggle">
+              <td *ngIf="nodeAPIKey !== ''">{{nodeAPIKey}}</td>
+              <td *ngIf="nodeAPIKey === ''">N/A</td>
+              <td *ngIf="nodeAPIKey !== ''">
+                <button (click)="clearKey()" class="btn btn-outline-danger btn-sm" type="button">Clear
+                </button>
+              </td>
+              <td *ngIf="nodeAPIKey === ''"></td>
 
-          </tbody>
-        </table>
+            </tr>
+
+            </tbody>
+          </table>
+        </div>
+
       </div>
     </div>
   </div>
