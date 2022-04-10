@@ -576,7 +576,7 @@ public class ProjectActionIntegrationTest {
                 .then()
                 .statusCode(StatusCodes.ACCEPTED);
 
-        Thread.sleep(20000);
+        Thread.sleep(30000);
 
         project = mapper
                 .readValue(get("/api/v1/project/" + projectForm.getProjectID())

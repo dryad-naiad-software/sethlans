@@ -80,7 +80,7 @@ export class SethlansService {
   }
 
   getServersOnNode() {
-    return this.http.get(this.rootURL + "/management/list_servers_on_node")
+    return this.http.get(this.rootURL + "/management/authorized_server_on_node")
   }
 
   getNodeAPIKey() {

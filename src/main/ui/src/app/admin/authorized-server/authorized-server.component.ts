@@ -11,7 +11,7 @@ import {Server} from "../../models/system/server.model";
 })
 export class AuthorizedServerComponent implements OnInit {
   faKey = faKey;
-  serverList: Array<Server> | undefined
+  server: Server | undefined
   nodeAPIKey: string | undefined
 
   constructor(private sethlansService: SethlansService) {
@@ -19,7 +19,7 @@ export class AuthorizedServerComponent implements OnInit {
 
   ngOnInit(): void {
     this.sethlansService.getServersOnNode().subscribe((data: any) => {
-      this.serverList = data;
+      this.server = data;
     })
     this.sethlansService.getNodeAPIKey().subscribe((data: any) => {
       this.nodeAPIKey = data.api_key;

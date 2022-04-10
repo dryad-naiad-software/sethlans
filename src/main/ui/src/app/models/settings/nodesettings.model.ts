@@ -32,6 +32,7 @@ export class NodeSettings {
   tileSizeCPU: number;
   selectedGPUs: Array<GPU>;
   gpuCombined: boolean;
+  apiKey: string;
 
   constructor(obj: any) {
     this.nodeType = obj.nodeType;
@@ -40,5 +41,6 @@ export class NodeSettings {
     this.tileSizeCPU = obj.tileSizeCPU;
     this.selectedGPUs = obj.selectedGPUs;
     this.gpuCombined = obj.gpuCombined;
+    this.apiKey = obj.apiKey;
   }
 }

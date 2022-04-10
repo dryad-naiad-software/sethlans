@@ -102,6 +102,7 @@ export class SetupWizardComponent implements OnInit {
         this.setupForm.nodeSettings.nodeType = NodeType.CPU;
       }
       this.setupForm.nodeSettings.cores = this.setupForm.systemInfo.cpu.cores - 1;
+      this.setupForm.nodeSettings.apiKey = "";
       this.setupForm.nodeSettings.tileSizeCPU = 32;
       this.setupForm.user.challengeList = new Array<UserChallenge>();
       this.setupForm.user.roles = new Array<Role>()

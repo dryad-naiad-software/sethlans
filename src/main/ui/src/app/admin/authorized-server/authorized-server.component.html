@@ -9,12 +9,37 @@
           <div class="col-md-4">
             <button class="ml-2 btn btn-outline-dark float-end">
               <fa-icon [icon]="faKey"></fa-icon>
-              <span class="ms-2">Set API Key</span>
+              <span class="ms-2">API Key</span>
             </button>
           </div>
         </div>
       </div>
       <div class="card-body">
+        <table class="table">
+          <thead>
+          <tr>
+            <th scope="col">Benchmark Sent</th>
+            <th scope="col">Hostname</th>
+            <th scope="col">IP Address</th>
+            <th scope="col">Port</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngIf="server!.ipAddress != '' ">
+            <td>{{server!.benchmarkComplete}}</td>
+            <td>{{server!.hostname}}</td>
+            <td>{{server!.ipAddress}}</td>
+            <td>{{server!.networkPort}}</td>
+          </tr>
+          <tr>
+            <td>false</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+          </tr>
+
+          </tbody>
+        </table>
       </div>
     </div>
   </div>

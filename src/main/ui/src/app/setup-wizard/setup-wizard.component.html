@@ -317,6 +317,16 @@
               </select>
             </div>
           </div>
+          <div *ngIf="setupForm!.mode == Mode.NODE" class="row"
+               ngbTooltip="API Key obtained from Sethlans Server. Can be left blank if not known" placement="top">
+            <div class="col-md-12 pt-3">
+              <h6>API Key</h6>
+              <input [(ngModel)]="setupForm!.nodeSettings.apiKey"
+                     class="form-control form-control-sm "
+                     id="apiKey" type="text"
+              />
+            </div>
+          </div>
           <div *ngIf="setupForm!.mode == Mode.NODE || setupForm!.mode == Mode.DUAL" class="row">
             <div class="col-md-12 pt-3">
               <h6>Compute Method Selection</h6>
@@ -603,6 +613,11 @@
                 <td
                   *ngIf="setupForm!.nodeSettings.nodeType != NodeType.CPU">{{setupForm!.nodeSettings.tileSizeGPU}}</td>
                 <td *ngIf="setupForm!.nodeSettings.nodeType == NodeType.CPU">N/A</td>
+              </tr>
+              <tr *ngIf="setupForm!.mode == Mode.NODE">
+                <td>Sethlans API Key</td>
+                <td>{{setupForm!.nodeSettings.apiKey}}</td>
+
               </tr>
               </tbody>
             </table>

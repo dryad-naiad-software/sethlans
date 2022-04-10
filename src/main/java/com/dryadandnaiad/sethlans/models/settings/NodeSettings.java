@@ -43,4 +43,5 @@ public class NodeSettings {
     private Integer tileSizeCPU;
     private List<GPU> selectedGPUs;
     private boolean gpuCombined;
+    private String apiKey;
 }

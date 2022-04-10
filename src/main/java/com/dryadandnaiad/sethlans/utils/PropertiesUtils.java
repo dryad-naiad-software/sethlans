@@ -201,6 +201,9 @@ public class PropertiesUtils {
             writeProperty(ConfigKeys.SERVER_COMPLETE_QUEUE_SIZE, "75");
             writeProperty(ConfigKeys.SETHLANS_API_KEY, UUID.randomUUID().toString());
         }
+        if (setupForm.getMode().equals(SethlansMode.NODE)) {
+            writeProperty(ConfigKeys.SETHLANS_API_KEY, setupForm.getNodeSettings().getApiKey());
+        }
 
     }
 
