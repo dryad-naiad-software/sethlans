@@ -37,6 +37,7 @@ export class NodeDashboard {
   availableGPUModels: Array<string>
   totalSlots: number;
   gpuCombined: boolean;
+  apiKeyPresent: boolean;
 
   constructor(obj: any) {
     this.nodeType = obj.nodeType;
@@ -50,5 +51,6 @@ export class NodeDashboard {
     this.availableGPUModels = obj.availableGPUModels;
     this.totalSlots = obj.totalSlots;
     this.gpuCombined = obj.gpuCombined;
+    this.apiKeyPresent = obj.apiKeyPresent;
   }
 }

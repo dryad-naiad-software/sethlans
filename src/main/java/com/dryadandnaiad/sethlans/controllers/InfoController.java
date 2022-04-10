@@ -58,6 +58,11 @@ public class InfoController {
     @Profile({"NODE", "DUAL"})
     public NodeDashboard getNodeDashboard() {
         var systemInfo = QueryUtils.getCurrentSystemInfo();
+        var apiPresent = false;
+        var apiKey = ConfigUtils.getProperty(ConfigKeys.SETHLANS_API_KEY);
+        if (!apiKey.equals("")) {
+            apiPresent = true;
+        }
         var dashboard = NodeDashboard.builder()
                 .nodeType(PropertiesUtils.getNodeType())
                 .cpuName(systemInfo.getCpu().getName())
@@ -66,6 +71,7 @@ public class InfoController {
                 .freeSpace(QueryUtils.getClientFreeSpace())
                 .totalSpace(QueryUtils.getClientTotalSpace())
                 .usedSpace(QueryUtils.getClientUsedSpace())
+                .apiKeyPresent(apiPresent)
                 .build();
         var selectedGPUs = PropertiesUtils.getSelectedGPUs();
         if (dashboard.getNodeType() != NodeType.CPU) {

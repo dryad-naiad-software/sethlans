@@ -2,6 +2,10 @@
   <div class="col-lg-4">
     <h5>Node Information</h5>
     <ul>
+      <li>API Key Set:
+        <span *ngIf="nodeDashboard!.apiKeyPresent" class="text-success">TRUE</span>
+        <span *ngIf="nodeDashboard!.apiKeyPresent === false" class="text-danger">FALSE</span>
+      </li>
       <li>Current Compute Type: <i>{{nodeDashboard!.nodeType}}</i>
       </li>
 

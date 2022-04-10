@@ -125,11 +125,11 @@ public class SetupServiceImpl implements SetupService {
         if (setupForm.getUser() == null) {
             return false;
         }
-
-        if (!EmailValidator.getInstance().isValid(setupForm.getUser().getEmail())) {
-            return false;
+        if (!setupForm.getMode().equals(SethlansMode.NODE)) {
+            if (!EmailValidator.getInstance().isValid(setupForm.getUser().getEmail())) {
+                return false;
+            }
         }
-
 
         if (setupForm.getUser().getChallengeList() == null || setupForm.getUser().getChallengeList().isEmpty()) {
             return false;

@@ -48,4 +48,5 @@ public class NodeDashboard {
     private List<String> availableGPUModels;
     private int totalSlots;
     private boolean gpuCombined;
+    private boolean apiKeyPresent;
 }
