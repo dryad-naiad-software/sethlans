@@ -205,8 +205,11 @@ public class PropertiesUtils {
     }
 
     public static void writeNodeSettings(NodeSettings nodeSettings) throws Exception {
+        var server = Server.builder().ipAddress("").networkPort("").systemID("").hostname("").apiKey("").benchmarkComplete(false).build();
         ObjectMapper objectMapper = new ObjectMapper();
         writeProperty(ConfigKeys.NODE_TYPE, nodeSettings.getNodeType().toString());
+        writeProperty(ConfigKeys.AUTHORIZED_SERVER, objectMapper.writeValueAsString(server));
+
         writeProperty(ConfigKeys.CPU_RATING, "0");
         writeProperty(ConfigKeys.NODE_TOTAL_SLOTS, "0");
         writeProperty(ConfigKeys.NODE_PAUSED, "false");
