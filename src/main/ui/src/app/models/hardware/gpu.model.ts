@@ -31,7 +31,15 @@ export class GPU {
   deviceType: DeviceType;
   gpuID: string;
 
-  constructor(obj: any) {
+  constructor() {
+    this.model = "";
+    this.memory = 0;
+    this.rating = 0;
+    this.deviceType = DeviceType.CUDA;
+    this.gpuID = "";
+  }
+
+  setGPU(obj: any) {
     this.model = obj.model;
     this.memory = obj.memory;
     this.rating = obj.rating;
