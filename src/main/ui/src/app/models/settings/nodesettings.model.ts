@@ -28,29 +28,39 @@ import {GPU} from "../hardware/gpu.model";
 export class NodeSettings {
   nodeType: NodeType;
   cores: number;
+  totalCores: number;
   tileSizeGPU: number;
   tileSizeCPU: number;
   selectedGPUs: Array<GPU>;
   gpuCombined: boolean;
   apiKey: string;
+  availableTypes: Array<NodeType>;
+  availableGPUs: Array<GPU>;
 
   constructor() {
     this.nodeType = NodeType.CPU_GPU;
     this.cores = 0;
+    this.totalCores = 0;
     this.tileSizeGPU = 0;
     this.tileSizeCPU = 0;
     this.selectedGPUs = new Array<GPU>();
     this.gpuCombined = false;
     this.apiKey = '';
+    this.availableTypes = new Array<NodeType>();
+    this.availableGPUs = new Array<GPU>();
+
   }
 
   setNodeSettings(obj: any) {
     this.nodeType = obj.nodeType;
     this.cores = obj.cores;
+    this.totalCores = obj.totalCores;
     this.tileSizeGPU = obj.tileSizeGPU;
     this.tileSizeCPU = obj.tileSizeCPU;
     this.selectedGPUs = obj.selectedGPUs;
     this.gpuCombined = obj.gpuCombined;
     this.apiKey = obj.apiKey;
+    this.availableTypes = obj.availableTypes;
+    this.availableGPUs = obj.availableGPUs;
   }
 }

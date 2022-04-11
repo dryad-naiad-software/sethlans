@@ -204,14 +204,17 @@ public class PropertiesUtils {
         if (setupForm.getMode().equals(SethlansMode.NODE)) {
             writeProperty(ConfigKeys.SETHLANS_API_KEY, setupForm.getNodeSettings().getApiKey());
         }
+        if (setupForm.getMode().equals(SethlansMode.NODE) || setupForm.getMode().equals(SethlansMode.DUAL)) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            var server = Server.builder().ipAddress("").networkPort("").systemID("").hostname("").apiKey("").benchmarkComplete(false).build();
+            writeProperty(ConfigKeys.AUTHORIZED_SERVER, objectMapper.writeValueAsString(server));
+        }
 
     }
 
     public static void writeNodeSettings(NodeSettings nodeSettings) throws Exception {
-        var server = Server.builder().ipAddress("").networkPort("").systemID("").hostname("").apiKey("").benchmarkComplete(false).build();
         ObjectMapper objectMapper = new ObjectMapper();
         writeProperty(ConfigKeys.NODE_TYPE, nodeSettings.getNodeType().toString());
-        writeProperty(ConfigKeys.AUTHORIZED_SERVER, objectMapper.writeValueAsString(server));
 
         writeProperty(ConfigKeys.CPU_RATING, "0");
         writeProperty(ConfigKeys.NODE_TOTAL_SLOTS, "0");

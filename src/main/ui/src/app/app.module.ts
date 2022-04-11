@@ -37,6 +37,7 @@ import {ServerDashComponent} from './dashboard/server-dash/server-dash.component
 import {NodeDashComponent} from './dashboard/node-dash/node-dash.component';
 import {NodesComponent} from './admin/nodes/nodes.component';
 import {AuthorizedServerComponent} from './admin/authorized-server/authorized-server.component';
+import {ComputeSettingsComponent} from './admin/compute-settings/compute-settings.component';
 
 /**
  * File created by Mario Estrella on 4/3/2022
@@ -56,7 +57,8 @@ import {AuthorizedServerComponent} from './admin/authorized-server/authorized-se
     ServerDashComponent,
     NodeDashComponent,
     NodesComponent,
-    AuthorizedServerComponent],
+    AuthorizedServerComponent,
+    ComputeSettingsComponent],
   imports: [
     BrowserModule, HttpClientModule, AppRoutingModule, NgbModule,
     FontAwesomeModule, FormsModule, BrowserAnimationsModule,

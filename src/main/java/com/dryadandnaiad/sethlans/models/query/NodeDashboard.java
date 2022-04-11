@@ -49,4 +49,6 @@ public class NodeDashboard {
     private int totalSlots;
     private boolean gpuCombined;
     private boolean apiKeyPresent;
+    private Integer tileSizeCPU;
+    private Integer tileSizeGPU;
 }

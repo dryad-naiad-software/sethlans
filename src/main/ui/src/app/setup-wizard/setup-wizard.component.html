@@ -333,7 +333,7 @@
               <select (click)="nextEnabled = checkGPUs()" [(ngModel)]="setupForm.nodeSettings.nodeType"
                       class="form-select form-select-sm"
                       name="nodeTypes">
-                <option *ngFor="let nodeTypes of setupForm.availableTypes" ngValue="{{nodeTypes}}">
+                <option *ngFor="let nodeTypes of setupForm.nodeSettings.availableTypes" ngValue="{{nodeTypes}}">
                   {{nodeTypes}}</option>
               </select>
             </div>
@@ -354,7 +354,7 @@
               <h6>GPU Settings</h6>
               <select (click)="nextEnabled = checkGPUs()" [(ngModel)]="setupForm.nodeSettings.selectedGPUs"
                       class="form-select" multiple>
-                <option *ngFor="let gpus of setupForm.availableGPUs" [value]="gpus">{{gpus.model}}</option>
+                <option *ngFor="let gpus of setupForm.nodeSettings.availableGPUs" [value]="gpus">{{gpus.model}}</option>
               </select>
               <div class="form-check form-switch pt-1">
                 <input [(ngModel)]="setupForm.nodeSettings.gpuCombined" class="form-check-input" id="combineGPU"
@@ -596,9 +596,9 @@
               <tr *ngIf="setupForm.mode == Mode.DUAL || setupForm.mode == Mode.NODE">
                 <td>Selected GPUs</td>
                 <td *ngIf="setupForm.nodeSettings.nodeType != NodeType.CPU">
-                  <p *ngFor="let gpu of setupForm.nodeSettings.selectedGPUs">
-                    {{gpu.model}}
-                  </p>
+                  <span *ngFor="let gpu of setupForm.nodeSettings.selectedGPUs">
+                    {{gpu.model}}<br/>
+                  </span>
                 </td>
                 <td *ngIf="setupForm.nodeSettings.nodeType == NodeType.CPU">N/A</td>
               </tr>

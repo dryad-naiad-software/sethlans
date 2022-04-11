@@ -105,9 +105,9 @@ public class SetupIntegrationTest {
         var nodeType = NodeType.CPU;
         var selectedGPUs = new ArrayList<GPU>();
 
-        if(setupForm.getAvailableGPUs().size() > 0) {
+        if (setupForm.getNodeSettings().getAvailableGPUs().size() > 0) {
             nodeType = NodeType.CPU_GPU;
-            selectedGPUs.add(setupForm.getAvailableGPUs().get(0));
+            selectedGPUs.add(setupForm.getNodeSettings().getAvailableGPUs().get(0));
         }
 
         var blenderVersions = setupForm.getBlenderVersions();

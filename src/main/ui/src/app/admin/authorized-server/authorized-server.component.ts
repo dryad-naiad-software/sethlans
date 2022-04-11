@@ -26,7 +26,7 @@ export class AuthorizedServerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.sethlansService.getServersOnNode().subscribe((data: any) => {
+    this.sethlansService.getAuthorizedServer().subscribe((data: any) => {
       this.server.setServer(data);
     })
     this.sethlansService.getNodeAPIKey().subscribe((data: any) => {

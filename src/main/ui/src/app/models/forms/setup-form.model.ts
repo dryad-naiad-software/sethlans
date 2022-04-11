@@ -19,8 +19,6 @@
 import {Mode} from "../../enums/mode.enum";
 import {User} from "../user/user.model";
 import {LogLevel} from "../../enums/loglevel.enum";
-import {NodeType} from "../../enums/nodetype.enum";
-import {GPU} from "../hardware/gpu.model";
 import {MailSettings} from "../settings/mailsettings.model";
 import {NodeSettings} from "../settings/nodesettings.model";
 import {ServerSettings} from "../settings/serversettings.model";
@@ -38,8 +36,6 @@ export class SetupForm {
   user: User;
   logLevel: LogLevel;
   hostname: string;
-  availableTypes: Array<NodeType>;
-  availableGPUs: Array<GPU>;
   blenderVersions: Array<string>;
   mailSettings: MailSettings;
   nodeSettings: NodeSettings;
@@ -55,8 +51,6 @@ export class SetupForm {
     this.mode = Mode.DUAL;
     this.user = new User();
     this.logLevel = LogLevel.INFO;
-    this.availableTypes = new Array<NodeType>();
-    this.availableGPUs = new Array<GPU>();
     this.blenderVersions = new Array<string>();
     this.mailSettings = new MailSettings();
     this.nodeSettings = new NodeSettings();
@@ -73,8 +67,6 @@ export class SetupForm {
     this.mode = obj.mode;
     this.user = obj.user;
     this.logLevel = obj.logLevel;
-    this.availableTypes = obj.availableTypes;
-    this.availableGPUs = obj.availableGPUs;
     this.blenderVersions = obj.blenderVersions;
     this.mailSettings = obj.mailSettings;
     this.nodeSettings = obj.nodeSettings;

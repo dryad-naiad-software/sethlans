@@ -25,6 +25,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * File created by Mario Estrella on 5/15/2020.
@@ -42,6 +43,9 @@ public class NodeSettings {
     private Integer tileSizeGPU;
     private Integer tileSizeCPU;
     private List<GPU> selectedGPUs;
+    private Set<NodeType> availableTypes;
+    private List<GPU> availableGPUs;
+    private Integer totalCores;
     private boolean gpuCombined;
     private String apiKey;
 }

@@ -1,0 +1,116 @@
+<div class="row pb-1">
+  <div class="col-md-8 m-auto">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-md-8">
+            <h4 style="font-family: 'Fjalla One', sans-serif">Compute Settings</h4>
+          </div>
+          <div class="col-md-4">
+            <button (click)="toggleChangeSettings()" *ngIf="changeSettingsScreen == false"
+                    class="ms-2 btn btn-outline-dark float-end">
+              <fa-icon [icon]="faCog"></fa-icon>
+              <span class="ms-2">Change Settings</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="col-md-10 m-auto">
+          <div *ngIf="changeSettingsScreen == false" class="row">
+            <h4>Current Compute Settings</h4>
+
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th scope="col">Setting</th>
+                <th scope="col">Value</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Compute Type</td>
+                <td>{{nodeDashboard.nodeType}}</td>
+              </tr>
+              <tr *ngIf="nodeDashboard.nodeType">
+                <td>Rendering Cores</td>
+                <td>{{nodeDashboard.selectedCores}}</td>
+              </tr>
+              <tr>
+                <td>Tile Size: CPU</td>
+                <td>{{nodeDashboard.tileSizeCPU}}</td>
+              </tr>
+              <tr>
+                <td>Tile Size: GPU</td>
+                <td>{{nodeDashboard.tileSizeGPU}}</td>
+              </tr>
+              <tr>
+                <td>Selected GPUs</td>
+                <td><span *ngFor="let gpu of nodeDashboard.selectedGPUModels">{{gpu}}<br/></span></td>
+              </tr>
+              <tr>
+                <td>Combined GPU Rendering</td>
+                <td>{{nodeDashboard.gpuCombined}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div *ngIf="changeSettingsScreen" class="row">
+          <div class="col-md-12 pt-3">
+            <h6>Compute Method Selection</h6>
+            <select
+              [(ngModel)]="nodeSettings.nodeType"
+              class="form-select form-select-sm"
+              name="nodeTypes">
+              <option *ngFor="let nodeType of nodeSettings.availableTypes" ngValue="{{nodeType}}">{{nodeType}}</option>
+            </select>
+          </div>
+          <div *ngIf="nodeSettings.nodeType != NodeType.GPU" class="col-md-6 pt-3">
+            <h6>CPU Settings</h6>
+            <label class="form-label" for="cores">Selected Cores: {{nodeSettings.cores}}</label>
+            <input [(ngModel)]="nodeSettings.cores" class="form-range" id="cores"
+                   max="{{nodeSettings.totalCores}}" min="1"
+                   type="range">
+            <label class="form-label" for="cpuTile">CPU Tile Size</label>
+            <input [(ngModel)]="nodeSettings.tileSizeCPU"
+                   class="form-control form-control-sm"
+                   id="cpuTile" type="number">
+          </div>
+          <div *ngIf="nodeSettings.nodeType != NodeType.CPU" class="col-md-6 pt-3">
+            <h6>GPU Settings</h6>
+            <select [(ngModel)]="nodeSettings.selectedGPUs"
+                    class="form-select" multiple>
+              <option *ngFor="let gpus of nodeSettings.availableGPUs" [value]="gpus">{{gpus.model}}</option>
+            </select>
+            <div class="form-check form-switch pt-1">
+              <input [(ngModel)]="nodeSettings.gpuCombined" class="form-check-input" id="combineGPU"
+                     role="switch"
+                     type="checkbox">
+              <label class="form-check-label" for="combineGPU">Combine GPUs</label>
+            </div>
+            <br/>
+
+            <label class="form-label" for="gpuTile">GPU Tile Size</label>
+            <input [(ngModel)]="nodeSettings.tileSizeGPU"
+                   class="form-control form-control-sm "
+                   id="gpuTile" type="number"
+            />
+          </div>
+        </div>
+      </div>
+      <div *ngIf="changeSettingsScreen" class="card-footer">
+        <button (click)="toggleChangeSettings()" class="btn btn-outline-dark mr-auto float-start" type="button">Cancel
+        </button>
+        <button (click)="updateNodeSettings()" class="btn btn-outline-primary ml-auto float-end"
+                type="button">Submit
+        </button>
+
+      </div>
+    </div>
+  </div>
+</div>
+<!--<div>-->
+<!--  Debugging:-->
+<!--  <pre>{{ nodeSettings | json }}</pre>-->
+<!--</div>-->

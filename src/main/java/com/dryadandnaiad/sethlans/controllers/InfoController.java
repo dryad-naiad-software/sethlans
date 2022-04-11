@@ -76,6 +76,7 @@ public class InfoController {
         var selectedGPUs = PropertiesUtils.getSelectedGPUs();
         if (dashboard.getNodeType() != NodeType.CPU) {
             dashboard.setGpuCombined(PropertiesUtils.isGPUCombined());
+            dashboard.setTileSizeGPU(PropertiesUtils.getGPUTileSize());
             dashboard.setSelectedGPUModels(new ArrayList<>());
             dashboard.setAvailableGPUModels(new ArrayList<>());
             for (GPU gpu : systemInfo.getGpuList()) {
@@ -87,6 +88,7 @@ public class InfoController {
         }
         if (dashboard.getNodeType() != NodeType.GPU) {
             dashboard.setSelectedCores(PropertiesUtils.getSelectedCores());
+            dashboard.setTileSizeCPU(PropertiesUtils.getCPUTileSize());
         }
 
         return dashboard;

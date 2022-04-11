@@ -38,6 +38,8 @@ export class NodeDashboard {
   totalSlots: number;
   gpuCombined: boolean;
   apiKeyPresent: boolean;
+  tileSizeCPU: number;
+  tileSizeGPU: number;
 
   constructor() {
     this.nodeType = NodeType.CPU_GPU;
@@ -51,7 +53,9 @@ export class NodeDashboard {
     this.availableGPUModels = new Array<string>();
     this.totalSlots = 0;
     this.gpuCombined = false;
-    this.apiKeyPresent = false;
+    this.apiKeyPresent = false
+    this.tileSizeGPU = 0;
+    this.tileSizeCPU = 0;
   }
 
   setDashboard(obj: any) {
@@ -67,5 +71,7 @@ export class NodeDashboard {
     this.totalSlots = obj.totalSlots;
     this.gpuCombined = obj.gpuCombined;
     this.apiKeyPresent = obj.apiKeyPresent;
+    this.tileSizeGPU = obj.tileSizeGPU;
+    this.tileSizeCPU = obj.tileSizeCPU;
   }
 }

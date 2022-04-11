@@ -18,11 +18,13 @@
 package com.dryadandnaiad.sethlans.controllers;
 
 import com.dryadandnaiad.sethlans.enums.ConfigKeys;
+import com.dryadandnaiad.sethlans.models.settings.NodeSettings;
 import com.dryadandnaiad.sethlans.models.system.Server;
 import com.dryadandnaiad.sethlans.services.BenchmarkService;
 import com.dryadandnaiad.sethlans.services.NodeService;
 import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
+import com.dryadandnaiad.sethlans.utils.QueryUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -107,15 +109,51 @@ public class AdminNodeEndPointController {
     }
 
     @PostMapping("/pause_node")
-    public ResponseEntity<Void> pauseNode(@RequestParam boolean pause) {
+    public ResponseEntity<Void> pauseNode(@RequestParam("pause") boolean pause) {
         log.info("Changing node status.");
-        if(pause) {
+        if (pause) {
             log.info("Node is paused.");
         } else {
             log.info("Node is not paused.");
         }
         try {
             ConfigUtils.writeProperty(ConfigKeys.NODE_PAUSED, Boolean.toString(pause));
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/set_node_api_key")
+    public ResponseEntity<Void> setNodeAPIKey(@RequestParam("api-key") String apiKey) {
+        try {
+            ConfigUtils.writeProperty(ConfigKeys.SETHLANS_API_KEY, apiKey);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/get_node_settings")
+    public NodeSettings getNodeSettings() {
+        var systemInfo = QueryUtils.getCurrentSystemInfo();
+        return NodeSettings.builder()
+                .nodeType(PropertiesUtils.getNodeType())
+                .availableTypes(QueryUtils.getAvailableTypes())
+                .gpuCombined(PropertiesUtils.isGPUCombined())
+                .availableGPUs(systemInfo.getGpuList())
+                .totalCores(systemInfo.getCpu().getCores())
+                .tileSizeCPU(PropertiesUtils.getCPUTileSize())
+                .cores(PropertiesUtils.getSelectedCores())
+                .tileSizeGPU(PropertiesUtils.getGPUTileSize())
+                .selectedGPUs(PropertiesUtils.getSelectedGPUs())
+                .build();
+    }
+
+    @PostMapping("/change_node_settings")
+    public ResponseEntity<Void> changeNodeSettings(@RequestBody NodeSettings nodeSettings) {
+        try {
+            PropertiesUtils.writeNodeSettings(nodeSettings);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

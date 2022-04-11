@@ -94,7 +94,7 @@ export class SetupWizardComponent implements OnInit {
       this.setupForm.mode = Mode.DUAL;
       this.setupWizardProgress = SetupWizardProgress.MODE;
       this.setupForm.serverSettings.blenderVersion = this.setupForm.blenderVersions[0];
-      if (this.setupForm.availableTypes.length > 1) {
+      if (this.setupForm.nodeSettings.availableTypes.length > 1) {
         this.setupForm.nodeSettings.nodeType = NodeType.CPU_GPU;
         this.setupForm.nodeSettings.tileSizeGPU = 256;
         this.setupForm.nodeSettings.selectedGPUs = new Array<GPU>()

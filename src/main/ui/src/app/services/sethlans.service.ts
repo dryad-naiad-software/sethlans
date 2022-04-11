@@ -22,6 +22,7 @@ import {SetupForm} from "../models/forms/setup-form.model";
 import {Observable} from "rxjs";
 import {catchError} from "rxjs/operators";
 import {HandleError, HttpErrorHandler} from './http-error-handler.service';
+import {NodeSettings} from "../models/settings/nodesettings.model";
 
 
 @Injectable({
@@ -79,8 +80,25 @@ export class SethlansService {
     return this.http.get(this.rootURL + "/management/is_authenticated")
   }
 
-  getServersOnNode() {
+  getAuthorizedServer() {
     return this.http.get(this.rootURL + "/management/authorized_server_on_node")
+  }
+
+  getNodeSettings() {
+    return this.http.get(this.rootURL + "/management/get_node_settings")
+  }
+
+  setNodeSettings(nodeSettings: NodeSettings) {
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    return this.http.post<any>(this.rootURL
+      + "/management/change_node_settings", JSON.stringify(nodeSettings),
+      {
+        headers: headers,
+        observe: "response"
+      })
+      .pipe(catchError(this.handleError('setNodeSettings', nodeSettings)))
   }
 
   getNodeAPIKey() {
