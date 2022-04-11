@@ -38,8 +38,6 @@ import {NodeSettings} from "../models/settings/nodesettings.model";
 
 export class SethlansService {
   private handleError: HandleError;
-
-
   rootURL = '/api/v1';
   firstTime: boolean = false;
 
@@ -82,6 +80,10 @@ export class SethlansService {
 
   getAuthorizedServer() {
     return this.http.get(this.rootURL + "/management/authorized_server_on_node")
+  }
+
+  getCurrentNodeList() {
+    return this.http.get(this.rootURL + "/management/current_node_list")
   }
 
   getNodeSettings() {

@@ -25,7 +25,7 @@
         </div>
       </div>
       <div class="card-body">
-        <div class="col-md-10 m-auto">
+        <div class="col-md-112 m-auto">
           <div *ngIf="addAPIScreen" class="row"
                ngbTooltip="API Key obtained from Sethlans Server." placement="top">
             <div class="col-md-12 pt-3">
@@ -63,12 +63,8 @@
               <td>{{server.ipAddress}}</td>
               <td>{{server.networkPort}}</td>
             </tr>
-            <tr *ngIf="server.ipAddress == ''  && apiScreenToggle == false">
-              <td>false</td>
-              <td>N/A</td>
-              <td>N/A</td>
-              <td>N/A</td>
-            </tr>
+            <p *ngIf="server.ipAddress == ''  && apiScreenToggle == false">No Authorized Server Configured</p>
+
             <tr *ngIf="apiScreenToggle">
               <td *ngIf="nodeAPIKey !== ''">{{nodeAPIKey}}</td>
               <td *ngIf="nodeAPIKey === ''">N/A</td>

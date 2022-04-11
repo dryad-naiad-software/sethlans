@@ -63,4 +63,5 @@ public class Node extends AbstractModel {
     @Fetch(FetchMode.SELECT)
     private List<GPU> selectedGPUs;
     private CPU cpu;
+    private Integer cores;
 }

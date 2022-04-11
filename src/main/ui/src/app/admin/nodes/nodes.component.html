@@ -11,15 +11,60 @@
               <fa-icon [icon]="faPlus"></fa-icon>
               <span class="ms-2">Add Node(s)</span>
             </button>
-            <button class="btn btn-outline-dark float-end me-2">
-              <fa-icon [icon]="faDownload"></fa-icon>
-              <span class="ms-2">Get Logs</span>
-            </button>
+            <!--            <button class="btn btn-outline-dark float-end me-2">-->
+            <!--              <fa-icon [icon]="faDownload"></fa-icon>-->
+            <!--              <span class="ms-2">Get Logs</span>-->
+            <!--            </button>-->
           </div>
         </div>
       </div>
       <div class="card-body">
+        <div class="col-md-12 m-auto">
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th scope="col">Status</th>
+              <th scope="col">Hostname</th>
+              <th scope="col">IP Address</th>
+              <th scope="col">Port</th>
+              <th scope="col">OS</th>
+              <th scope="col">Compute</th>
+              <th scope="col">CPU</th>
+              <th scope="col">Core(s)</th>
+              <th scope="col">GPU(s)</th>
+              <th scope="col">Slots</th>
+              <th scope="col">Benchmark State</th>
+              <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <p *ngIf="nodeList.length == 0">No Nodes Configured</p>
+            <tr *ngFor="let node of nodeList">
+              <td>
+                <span *ngIf="node.active" class="text-success">Active</span>
+                <span *ngIf="node.active == false" class="text-warning">Paused</span>
+              </td>
+              <td>{{node.hostname}}</td>
+              <td>{{node.ipAddress}}</td>
+              <td>{{node.networkPort}}</td>
+              <td>{{node.os}}</td>
+              <td>{{node.nodeType}}</td>
+              <td>{{node.cpu.name}}</td>
+              <td>{{node.cores}}</td>
+              <td><span *ngFor="let gpu of node.selectedGPUs">{{gpu.model}}<br/></span></td>
+              <td>{{node.totalRenderingSlots}}</td>
+              <td>N/A</td>
+              <td>N/A</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
+</div>
+
+<div>
+  Debugging:
+  <pre>{{ nodeList | json }}</pre>
 </div>

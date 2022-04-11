@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {faDownload, faPlus} from "@fortawesome/free-solid-svg-icons";
+import {Node} from "../../models/system/node.model";
+import {SethlansService} from "../../services/sethlans.service";
 
 
 @Component({
@@ -10,11 +12,15 @@ import {faDownload, faPlus} from "@fortawesome/free-solid-svg-icons";
 export class NodesComponent implements OnInit {
   faPlus = faPlus;
   faDownload = faDownload;
+  nodeList = new Array<Node>();
 
-  constructor() {
+  constructor(private sethlansService: SethlansService) {
   }
 
   ngOnInit(): void {
+    this.sethlansService.getCurrentNodeList().subscribe((data: any) => {
+      this.nodeList = data;
+    })
   }
 
 }
