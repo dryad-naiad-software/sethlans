@@ -34,7 +34,16 @@ export class SystemInfo {
   cpu: CPU;
   gpuList: Array<GPU>;
 
-  constructor(obj: any) {
+  constructor() {
+    this.hostname = "";
+    this.ipAddress = "";
+    this.networkPort = "";
+    this.os = OS.UNSUPPORTED;
+    this.cpu = new CPU();
+    this.gpuList = new Array<GPU>();
+  }
+
+  setSystemInfo(obj: any) {
     this.hostname = obj.hostname;
     this.ipAddress = obj.ipAddress;
     this.networkPort = obj.networkPort;

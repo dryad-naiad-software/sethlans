@@ -112,7 +112,7 @@
             <h5>Sethlans Modes</h5>
             <div class="form-check" ngbTooltip="Sethlans will act as a server and as a node" placement="left">
               <label class="form-check-label">
-                <input [(ngModel)]="setupForm!.mode"
+                <input [(ngModel)]="setupForm.mode"
                        [value]="Mode.DUAL"
                        class="form-check-input"
                        name="mode"
@@ -122,7 +122,7 @@
             </div>
             <div class="form-check" ngbTooltip="Sethlans will be configured as a server" placement="left">
               <label class="form-check-label">
-                <input [(ngModel)]="setupForm!.mode"
+                <input [(ngModel)]="setupForm.mode"
                        [value]="Mode.SERVER"
                        class="form-check-input"
                        name="mode"
@@ -132,7 +132,7 @@
             </div>
             <div class="form-check" ngbTooltip="Sethlans will be configured as a node only" placement="left">
               <label class="form-check-label">
-                <input [(ngModel)]="setupForm!.mode"
+                <input [(ngModel)]="setupForm.mode"
                        [value]="Mode.NODE"
                        class="form-check-input"
                        name="mode"
@@ -173,7 +173,7 @@
               <input class="form-control form-control-sm"
                      id="username"
                      (keyup)="validateUsername()"
-                     [(ngModel)]="setupForm!.user.username"
+                     [(ngModel)]="setupForm.user.username"
                      name="username"
                      placeholder="Username"
                      required type="text"/>
@@ -184,13 +184,13 @@
                 </ul>
               </div>
             </div>
-            <div *ngIf="setupForm!.mode != Mode.NODE" class="col-md">
+            <div *ngIf="setupForm.mode != Mode.NODE" class="col-md">
               <input class="form-control form-control-sm"
                      id="email"
                      (keyup)="validateEmail()"
                      name="email"
                      placeholder="Email Address"
-                     [(ngModel)]="setupForm!.user.email"
+                     [(ngModel)]="setupForm.user.email"
                      required type="text">
               <div *ngIf="emailError" class="alert alert-danger">
                 <ul>
@@ -207,7 +207,7 @@
                   id="password"
                   name="password"
                   (keyup)="validatePassword()"
-                  [(ngModel)]="setupForm!.user.password"
+                  [(ngModel)]="setupForm.user.password"
                   [type]="showPass ? 'text' : 'password'"
                   placeholder="Password" required>
                 <span (mousedown)="showPass=true" (mouseup)="showPass=false"
@@ -250,7 +250,7 @@
                 <select (change)="updateChallenge(0, $any($event.target).value)" [(ngModel)]="challenge1"
                         class="form-select form-select-sm"
                         name="challenge1">
-                  <option *ngFor="let challenge of setupForm!.challengeQuestions"
+                  <option *ngFor="let challenge of setupForm.challengeQuestions"
                           [ngValue]="challenge">{{challenge}}</option>
                 </select>
               </div>
@@ -268,7 +268,7 @@
                 <select (change)="updateChallenge(1, $any($event.target).value)" [(ngModel)]="challenge2"
                         class="form-select form-select-sm"
                         name="challenge2">
-                  <option *ngFor="let challenge of setupForm!.challengeQuestions"
+                  <option *ngFor="let challenge of setupForm.challengeQuestions"
                           [ngValue]="challenge">{{challenge}}</option>
                 </select>
               </div>
@@ -288,7 +288,7 @@
                 <select (change)="updateChallenge(2, $any($event.target).value)" [(ngModel)]="challenge3"
                         class="form-select form-select-sm"
                         name="challenge3">
-                  <option *ngFor="let challenge of setupForm!.challengeQuestions"
+                  <option *ngFor="let challenge of setupForm.challengeQuestions"
                           [ngValue]="challenge">{{challenge}}</option>
                 </select>
               </div>
@@ -308,56 +308,56 @@
 
         <!--Sethlans Mode Setup -->
         <div *ngIf="setupWizardProgress == SetupWizardProgress.MODE_SETUP" class="row py-1">
-          <div *ngIf="setupForm!.mode == Mode.SERVER || setupForm!.mode == Mode.DUAL" class="row">
+          <div *ngIf="setupForm.mode == Mode.SERVER || setupForm.mode == Mode.DUAL" class="row">
             <div class="col-md-12">
               <h6>Select Blender Binary Version</h6>
-              <select [(ngModel)]="setupForm!.serverSettings.blenderVersion" class="form-select form-select-sm"
+              <select [(ngModel)]="setupForm.serverSettings.blenderVersion" class="form-select form-select-sm"
                       name="version">
-                <option *ngFor="let version of setupForm!.blenderVersions" ngValue="{{version}}">{{version}}</option>
+                <option *ngFor="let version of setupForm.blenderVersions" ngValue="{{version}}">{{version}}</option>
               </select>
             </div>
           </div>
-          <div *ngIf="setupForm!.mode == Mode.NODE" class="row"
+          <div *ngIf="setupForm.mode == Mode.NODE" class="row"
                ngbTooltip="API Key obtained from Sethlans Server. Can be left blank if not known" placement="top">
             <div class="col-md-12 pt-3">
               <h6>API Key</h6>
-              <input [(ngModel)]="setupForm!.nodeSettings.apiKey"
+              <input [(ngModel)]="setupForm.nodeSettings.apiKey"
                      class="form-control form-control-sm "
                      id="apiKey" type="text"
               />
             </div>
           </div>
-          <div *ngIf="setupForm!.mode == Mode.NODE || setupForm!.mode == Mode.DUAL" class="row">
+          <div *ngIf="setupForm.mode == Mode.NODE || setupForm.mode == Mode.DUAL" class="row">
             <div class="col-md-12 pt-3">
               <h6>Compute Method Selection</h6>
-              <select (click)="nextEnabled = checkGPUs()" [(ngModel)]="setupForm!.nodeSettings.nodeType"
+              <select (click)="nextEnabled = checkGPUs()" [(ngModel)]="setupForm.nodeSettings.nodeType"
                       class="form-select form-select-sm"
                       name="nodeTypes">
-                <option *ngFor="let nodeTypes of setupForm!.availableTypes" ngValue="{{nodeTypes}}">
+                <option *ngFor="let nodeTypes of setupForm.availableTypes" ngValue="{{nodeTypes}}">
                   {{nodeTypes}}</option>
               </select>
             </div>
           </div>
-          <div *ngIf="setupForm!.mode == Mode.NODE || setupForm!.mode == Mode.DUAL" class="row">
-            <div *ngIf="setupForm!.nodeSettings.nodeType != NodeType.GPU" class="col-md-6 pt-3">
+          <div *ngIf="setupForm.mode == Mode.NODE || setupForm.mode == Mode.DUAL" class="row">
+            <div *ngIf="setupForm.nodeSettings.nodeType != NodeType.GPU" class="col-md-6 pt-3">
               <h6>CPU Settings</h6>
-              <label class="form-label" for="cores">Selected Cores: {{setupForm!.nodeSettings.cores}}</label>
-              <input [(ngModel)]="setupForm!.nodeSettings.cores" class="form-range" id="cores"
-                     max="{{setupForm!.systemInfo.cpu.cores}}" min="1"
+              <label class="form-label" for="cores">Selected Cores: {{setupForm.nodeSettings.cores}}</label>
+              <input [(ngModel)]="setupForm.nodeSettings.cores" class="form-range" id="cores"
+                     max="{{setupForm.systemInfo.cpu.cores}}" min="1"
                      type="range">
               <label class="form-label" for="cpuTile">CPU Tile Size</label>
-              <input [(ngModel)]="setupForm!.nodeSettings.tileSizeCPU"
+              <input [(ngModel)]="setupForm.nodeSettings.tileSizeCPU"
                      class="form-control form-control-sm"
                      id="cpuTile" type="number">
             </div>
-            <div *ngIf="setupForm!.nodeSettings.nodeType != NodeType.CPU" class="col-md-6 pt-3">
+            <div *ngIf="setupForm.nodeSettings.nodeType != NodeType.CPU" class="col-md-6 pt-3">
               <h6>GPU Settings</h6>
-              <select (click)="nextEnabled = checkGPUs()" [(ngModel)]="setupForm!.nodeSettings.selectedGPUs"
+              <select (click)="nextEnabled = checkGPUs()" [(ngModel)]="setupForm.nodeSettings.selectedGPUs"
                       class="form-select" multiple>
-                <option *ngFor="let gpus of setupForm!.availableGPUs" [value]="gpus">{{gpus.model}}</option>
+                <option *ngFor="let gpus of setupForm.availableGPUs" [value]="gpus">{{gpus.model}}</option>
               </select>
               <div class="form-check form-switch pt-1">
-                <input [(ngModel)]="setupForm!.nodeSettings.gpuCombined" class="form-check-input" id="combineGPU"
+                <input [(ngModel)]="setupForm.nodeSettings.gpuCombined" class="form-check-input" id="combineGPU"
                        role="switch"
                        type="checkbox">
                 <label class="form-check-label" for="combineGPU">Combine GPUs</label>
@@ -365,7 +365,7 @@
               <br/>
 
               <label class="form-label" for="gpuTile">GPU Tile Size</label>
-              <input [(ngModel)]="setupForm!.nodeSettings.tileSizeGPU"
+              <input [(ngModel)]="setupForm.nodeSettings.tileSizeGPU"
                      class="form-control form-control-sm "
                      id="gpuTile" type="number"
               />
@@ -383,7 +383,7 @@
                       class="nav-link"
                 >Settings</span>
             </li>
-            <li *ngIf="setupForm!.mode != Mode.NODE" class="nav-item">
+            <li *ngIf="setupForm.mode != Mode.NODE" class="nav-item">
                 <span (click)="showMailSettings=true"
                       [ngClass]="showMailSettings
                       ? 'active' : ''"
@@ -395,7 +395,7 @@
             <div class="row">
               <div class="col-md-9">
                 <h6>IP Address</h6>
-                <input [(ngModel)]="setupForm!.ipAddress"
+                <input [(ngModel)]="setupForm.ipAddress"
                        class="form-control form-control-sm"
                        id="ipAddress"
                        id="ipAddress"
@@ -404,7 +404,7 @@
               </div>
               <div class="col-md-3">
                 <h6>HTTPS Port</h6>
-                <input [(ngModel)]="setupForm!.port"
+                <input [(ngModel)]="setupForm.port"
                        class="form-control form-control-sm"
                        id="networkPort"
                        id="networkPort"
@@ -413,7 +413,7 @@
               </div>
             </div>
             <h6>Sethlans Hostname</h6>
-            <input [(ngModel)]="setupForm!.hostname"
+            <input [(ngModel)]="setupForm.hostname"
                    class="form-control form-control-sm"
                    id="sethlansHostname"
                    id="sethlansHostname"
@@ -421,14 +421,14 @@
             <br/>
 
             <h6>Sethlans URL</h6>
-            <input [(ngModel)]="setupForm!.appURL"
+            <input [(ngModel)]="setupForm.appURL"
                    class="form-control form-control-sm"
                    id="sethlansURL"
                    id="sethlansURL"
                    required type="text"/>
             <br/>
             <h6>Log Level</h6>
-            <select [(ngModel)]="setupForm!.logLevel" class="form-select form-select-sm"
+            <select [(ngModel)]="setupForm.logLevel" class="form-select form-select-sm"
                     name="logLevel">
               <option>{{LogLevel.INFO}}</option>
               <option>{{LogLevel.DEBUG}}</option>
@@ -437,7 +437,7 @@
           </div>
           <div [hidden]="!showMailSettings" class="pt-2">
             <div class="form-check form-switch pt-1">
-              <input [(ngModel)]="setupForm!.mailSettings.mailEnabled" class="form-check-input" id="enableSMTP"
+              <input [(ngModel)]="setupForm.mailSettings.mailEnabled" class="form-check-input" id="enableSMTP"
                      role="switch"
                      type="checkbox">
               <label class="form-check-label" for="enableSMTP">Configure SMTP Server</label>
@@ -446,7 +446,7 @@
             <div class="row">
               <div class="col-md-9">
                 <h6>SMTP Server</h6>
-                <input [(ngModel)]="setupForm!.mailSettings.mailHost" [disabled]="!setupForm!.mailSettings.mailEnabled"
+                <input [(ngModel)]="setupForm.mailSettings.mailHost" [disabled]="!setupForm.mailSettings.mailEnabled"
                        class="form-control form-control-sm"
                        id="smtpServer"
                        placeholder="smtp.example.com"
@@ -455,7 +455,7 @@
               </div>
               <div class="col-md-3">
                 <h6>SMTP Port</h6>
-                <input [(ngModel)]="setupForm!.mailSettings.mailPort" [disabled]="!setupForm!.mailSettings.mailEnabled"
+                <input [(ngModel)]="setupForm.mailSettings.mailPort" [disabled]="!setupForm.mailSettings.mailEnabled"
                        class="form-control form-control-sm"
                        id="smtpPort"
                        placeholder="25"
@@ -464,36 +464,36 @@
               </div>
             </div>
             <h6>Reply To Address</h6>
-            <input [(ngModel)]="setupForm!.mailSettings.replyToAddress"
-                   [disabled]="!setupForm!.mailSettings.mailEnabled"
+            <input [(ngModel)]="setupForm.mailSettings.replyToAddress"
+                   [disabled]="!setupForm.mailSettings.mailEnabled"
                    class="form-control form-control-sm"
                    id="replyToAddress"
                    placeholder="noreply@example.com"
                    required type="text"/>
             <br/>
             <div class="form-check form-check-inline">
-              <input [(ngModel)]="setupForm!.mailSettings.sslEnabled" [disabled]="!setupForm!.mailSettings.mailEnabled"
+              <input [(ngModel)]="setupForm.mailSettings.sslEnabled" [disabled]="!setupForm.mailSettings.mailEnabled"
                      class="form-check-input" id="useSSL"
                      role="switch" type="checkbox">
               <label class="form-check-label" for="useSSL">Use SSL</label>
             </div>
             <div class="form-check form-check-inline">
-              <input [(ngModel)]="setupForm!.mailSettings.startTLSEnabled"
-                     [disabled]="!setupForm!.mailSettings.mailEnabled" class="form-check-input" id="enableSTARTTLS"
+              <input [(ngModel)]="setupForm.mailSettings.startTLSEnabled"
+                     [disabled]="!setupForm.mailSettings.mailEnabled" class="form-check-input" id="enableSTARTTLS"
                      role="switch"
                      type="checkbox">
               <label class="form-check-label" for="enableSTARTTLS">Enable STARTTLS</label>
             </div>
             <div class="form-check form-check-inline">
-              <input [(ngModel)]="setupForm!.mailSettings.startTLSRequired"
-                     [disabled]="!setupForm!.mailSettings.mailEnabled" class="form-check-input" id="requireTLS"
+              <input [(ngModel)]="setupForm.mailSettings.startTLSRequired"
+                     [disabled]="!setupForm.mailSettings.mailEnabled" class="form-check-input" id="requireTLS"
                      role="switch"
                      type="checkbox">
               <label class="form-check-label" for="requireTLS">Require STARTTLS</label>
             </div>
             <hr/>
             <div class="form-check form-switch pt-1">
-              <input [(ngModel)]="setupForm!.mailSettings.smtpAuth" [disabled]="!setupForm!.mailSettings.mailEnabled"
+              <input [(ngModel)]="setupForm.mailSettings.smtpAuth" [disabled]="!setupForm.mailSettings.mailEnabled"
                      class="form-check-input" id="useSMTPAuth"
                      role="switch"
                      type="checkbox">
@@ -503,8 +503,8 @@
             <div class="row">
               <div class="col-md-6">
                 <h6>SMTP Username</h6>
-                <input [(ngModel)]="setupForm!.mailSettings.username"
-                       [disabled]="!setupForm!.mailSettings.mailEnabled || !setupForm!.mailSettings.smtpAuth"
+                <input [(ngModel)]="setupForm.mailSettings.username"
+                       [disabled]="!setupForm.mailSettings.mailEnabled || !setupForm.mailSettings.smtpAuth"
                        class="form-control form-control-sm"
                        id="smtpUser"
                        placeholder="username"
@@ -514,8 +514,8 @@
               <div class="col-md-6">
 
                 <h6>SMTP Password</h6>
-                <input [(ngModel)]="setupForm!.mailSettings.password"
-                       [disabled]="!setupForm!.mailSettings.mailEnabled || !setupForm!.mailSettings.smtpAuth"
+                <input [(ngModel)]="setupForm.mailSettings.password"
+                       [disabled]="!setupForm.mailSettings.mailEnabled || !setupForm.mailSettings.smtpAuth"
                        class="form-control form-control-sm"
                        id="smtpPassword"
                        placeholder="password"
@@ -540,27 +540,27 @@
               <tbody>
               <tr>
                 <td>Mode</td>
-                <td>{{setupForm!.mode}}</td>
+                <td>{{setupForm.mode}}</td>
               </tr>
               <tr>
                 <td>Administrative User</td>
-                <td>{{setupForm!.user.username}}</td>
+                <td>{{setupForm.user.username}}</td>
               </tr>
               <tr>
                 <td>Hostname</td>
-                <td>{{setupForm!.hostname}}</td>
+                <td>{{setupForm.hostname}}</td>
               </tr>
               <tr>
                 <td>IP Address</td>
-                <td>{{setupForm!.ipAddress}}</td>
+                <td>{{setupForm.ipAddress}}</td>
               </tr>
               <tr>
                 <td>HTTPS Port</td>
-                <td>{{setupForm!.port}}</td>
+                <td>{{setupForm.port}}</td>
               </tr>
               <tr>
                 <td>Logging Level</td>
-                <td>{{setupForm!.logLevel}}</td>
+                <td>{{setupForm.logLevel}}</td>
               </tr>
               </tbody>
             </table>
@@ -574,49 +574,49 @@
               </tr>
               </thead>
               <tbody>
-              <tr *ngIf="setupForm!.mode == Mode.DUAL || setupForm!.mode == Mode.SERVER">
+              <tr *ngIf="setupForm.mode == Mode.DUAL || setupForm.mode == Mode.SERVER">
                 <td>Initial Blender Version</td>
-                <td>{{setupForm!.serverSettings.blenderVersion}}</td>
+                <td>{{setupForm.serverSettings.blenderVersion}}</td>
               </tr>
-              <tr *ngIf="setupForm!.mode == Mode.DUAL || setupForm!.mode == Mode.NODE">
+              <tr *ngIf="setupForm.mode == Mode.DUAL || setupForm.mode == Mode.NODE">
                 <td>Compute Method</td>
-                <td>{{setupForm!.nodeSettings.nodeType}}</td>
+                <td>{{setupForm.nodeSettings.nodeType}}</td>
               </tr>
-              <tr *ngIf="setupForm!.mode == Mode.DUAL || setupForm!.mode == Mode.NODE">
+              <tr *ngIf="setupForm.mode == Mode.DUAL || setupForm.mode == Mode.NODE">
                 <td>Rendering Cores</td>
-                <td *ngIf="setupForm!.nodeSettings.nodeType != NodeType.GPU">{{setupForm!.nodeSettings.cores}}</td>
-                <td *ngIf="setupForm!.nodeSettings.nodeType == NodeType.GPU">N/A</td>
+                <td *ngIf="setupForm.nodeSettings.nodeType != NodeType.GPU">{{setupForm.nodeSettings.cores}}</td>
+                <td *ngIf="setupForm.nodeSettings.nodeType == NodeType.GPU">N/A</td>
               </tr>
-              <tr *ngIf="setupForm!.mode == Mode.DUAL || setupForm!.mode == Mode.NODE">
+              <tr *ngIf="setupForm.mode == Mode.DUAL || setupForm.mode == Mode.NODE">
                 <td>CPU Render Tile Size</td>
                 <td
-                  *ngIf="setupForm!.nodeSettings.nodeType != NodeType.GPU">{{setupForm!.nodeSettings.tileSizeCPU}}</td>
-                <td *ngIf="setupForm!.nodeSettings.nodeType == NodeType.GPU">N/A</td>
+                  *ngIf="setupForm.nodeSettings.nodeType != NodeType.GPU">{{setupForm.nodeSettings.tileSizeCPU}}</td>
+                <td *ngIf="setupForm.nodeSettings.nodeType == NodeType.GPU">N/A</td>
               </tr>
-              <tr *ngIf="setupForm!.mode == Mode.DUAL || setupForm!.mode == Mode.NODE">
+              <tr *ngIf="setupForm.mode == Mode.DUAL || setupForm.mode == Mode.NODE">
                 <td>Selected GPUs</td>
-                <td *ngIf="setupForm!.nodeSettings.nodeType != NodeType.CPU">
-                  <p *ngFor="let gpu of setupForm!.nodeSettings.selectedGPUs">
+                <td *ngIf="setupForm.nodeSettings.nodeType != NodeType.CPU">
+                  <p *ngFor="let gpu of setupForm.nodeSettings.selectedGPUs">
                     {{gpu.model}}
                   </p>
                 </td>
-                <td *ngIf="setupForm!.nodeSettings.nodeType == NodeType.CPU">N/A</td>
+                <td *ngIf="setupForm.nodeSettings.nodeType == NodeType.CPU">N/A</td>
               </tr>
-              <tr *ngIf="setupForm!.mode == Mode.DUAL || setupForm!.mode == Mode.NODE">
+              <tr *ngIf="setupForm.mode == Mode.DUAL || setupForm.mode == Mode.NODE">
                 <td>Combined GPU Rendering</td>
                 <td
-                  *ngIf="setupForm!.nodeSettings.nodeType != NodeType.CPU">{{setupForm!.nodeSettings.gpuCombined}}</td>
-                <td *ngIf="setupForm!.nodeSettings.nodeType == NodeType.CPU">N/A</td>
+                  *ngIf="setupForm.nodeSettings.nodeType != NodeType.CPU">{{setupForm.nodeSettings.gpuCombined}}</td>
+                <td *ngIf="setupForm.nodeSettings.nodeType == NodeType.CPU">N/A</td>
               </tr>
-              <tr *ngIf="setupForm!.mode == Mode.DUAL || setupForm!.mode == Mode.NODE">
+              <tr *ngIf="setupForm.mode == Mode.DUAL || setupForm.mode == Mode.NODE">
                 <td>GPU Render Tile Size</td>
                 <td
-                  *ngIf="setupForm!.nodeSettings.nodeType != NodeType.CPU">{{setupForm!.nodeSettings.tileSizeGPU}}</td>
-                <td *ngIf="setupForm!.nodeSettings.nodeType == NodeType.CPU">N/A</td>
+                  *ngIf="setupForm.nodeSettings.nodeType != NodeType.CPU">{{setupForm.nodeSettings.tileSizeGPU}}</td>
+                <td *ngIf="setupForm.nodeSettings.nodeType == NodeType.CPU">N/A</td>
               </tr>
-              <tr *ngIf="setupForm!.mode == Mode.NODE">
+              <tr *ngIf="setupForm.mode == Mode.NODE">
                 <td>Sethlans API Key</td>
-                <td>{{setupForm!.nodeSettings.apiKey}}</td>
+                <td>{{setupForm.nodeSettings.apiKey}}</td>
 
               </tr>
               </tbody>
@@ -632,7 +632,7 @@
             <h4>Sethlans Setup Has Completed!</h4>
             <br/>
             <p>Sethlans is restarting and will be accessible via the following link:</p>
-            <a href="{{setupForm!.appURL}}">{{setupForm!.appURL}}</a>
+            <a href="{{setupForm.appURL}}">{{setupForm.appURL}}</a>
             <br/>
             <br/>
             <p>This page will automatically refresh in 30 seconds</p>

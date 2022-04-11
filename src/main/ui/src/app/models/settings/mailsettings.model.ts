@@ -35,7 +35,20 @@ export class MailSettings {
   startTLSEnabled: boolean;
   startTLSRequired: boolean;
 
-  constructor(obj: any) {
+  constructor() {
+    this.mailHost = '';
+    this.mailPort = '';
+    this.username = '';
+    this.password = '';
+    this.replyToAddress = '';
+    this.mailEnabled = false;
+    this.smtpAuth = false;
+    this.sslEnabled = false;
+    this.startTLSEnabled = false;
+    this.startTLSRequired = false;
+  }
+
+  setMailSettings(obj: any) {
     this.mailHost = obj.mailHost;
     this.mailPort = obj.mailPort;
     this.username = obj.username;

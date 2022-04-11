@@ -39,7 +39,22 @@ export class NodeDashboard {
   gpuCombined: boolean;
   apiKeyPresent: boolean;
 
-  constructor(obj: any) {
+  constructor() {
+    this.nodeType = NodeType.CPU_GPU;
+    this.cpuName = "";
+    this.totalMemory = "";
+    this.selectedCores = 0;
+    this.freeSpace = 0;
+    this.totalSpace = 0;
+    this.usedSpace = 0;
+    this.selectedGPUModels = new Array<string>();
+    this.availableGPUModels = new Array<string>();
+    this.totalSlots = 0;
+    this.gpuCombined = false;
+    this.apiKeyPresent = false;
+  }
+
+  setDashboard(obj: any) {
     this.nodeType = obj.nodeType;
     this.cpuName = obj.cpuName;
     this.totalMemory = obj.totalMemory;

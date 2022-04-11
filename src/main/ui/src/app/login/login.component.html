@@ -1,4 +1,4 @@
-<div class="row m-auto">
+<div class="row">
   <div class="col-xl-5 col-lg-8 m-auto">
     <div class="card">
       <div class="card-header bg-dark bg-opacity-75">
@@ -44,9 +44,11 @@
 
       </div>
       <div class="card-footer bg-dark">
-        <button (click)="loginSubmit()" [disabled]="!loginForm.valid" class="btn btn-outline-light btn-block">Login
-        </button>
-        <button (click)="registerUser()" class="btn btn-outline-light btn-block">Register New User</button>
+        <div class="d-grid gap-2">
+          <button (click)="loginSubmit()" [disabled]="!loginForm.valid" class="btn btn-outline-light">Login
+          </button>
+          <button (click)="registerUser()" class="btn btn-outline-light">Register New User</button>
+        </div>
       </div>
     </div>
   </div>

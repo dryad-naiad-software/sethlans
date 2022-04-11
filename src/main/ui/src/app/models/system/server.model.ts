@@ -30,11 +30,20 @@ export class Server {
   systemID: string;
   benchmarkComplete: boolean;
 
-  constructor(obj: any) {
+  constructor() {
+    this.hostname = '';
+    this.ipAddress = '';
+    this.networkPort = '';
+    this.systemID = '';
+    this.benchmarkComplete = false;
+  }
+
+  setServer(obj: any) {
     this.hostname = obj.hostname;
     this.ipAddress = obj.ipAddress;
     this.networkPort = obj.networkPort;
     this.systemID = obj.systemID;
     this.benchmarkComplete = obj.benchmarkComplete;
+
   }
 }

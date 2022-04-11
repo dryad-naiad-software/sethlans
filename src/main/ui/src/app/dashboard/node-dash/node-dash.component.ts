@@ -11,7 +11,7 @@ import {faSquare} from "@fortawesome/free-solid-svg-icons";
   styleUrls: ['./node-dash.component.css']
 })
 export class NodeDashComponent implements OnInit {
-  nodeDashboard: NodeDashboard | undefined;
+  nodeDashboard: NodeDashboard = new NodeDashboard();
   NodeType = NodeType;
   faSquare = faSquare;
 
@@ -22,7 +22,7 @@ export class NodeDashComponent implements OnInit {
 
   ngOnInit(): void {
     this.sethlansService.getNodeDashBoard().subscribe((obj) => {
-      this.nodeDashboard = new NodeDashboard(obj);
+      this.nodeDashboard.setDashboard(obj);
     })
 
   }

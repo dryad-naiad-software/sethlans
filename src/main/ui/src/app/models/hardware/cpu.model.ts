@@ -31,7 +31,17 @@ export class CPU {
   cpuPackage: number;
   totalMemory: string;
 
-  constructor(obj: any) {
+  constructor() {
+    this.name = "";
+    this.model = "";
+    this.family = "";
+    this.arch = "";
+    this.cores = 0;
+    this.cpuPackage = 0;
+    this.totalMemory = '';
+  }
+
+  setCPU(obj: any) {
     this.name = obj.name;
     this.model = obj.model;
     this.family = obj.family;

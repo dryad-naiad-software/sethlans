@@ -57,13 +57,13 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngIf="server!.ipAddress != ''  && apiScreenToggle == false">
-              <td>{{server!.benchmarkComplete}}</td>
-              <td>{{server!.hostname}}</td>
-              <td>{{server!.ipAddress}}</td>
-              <td>{{server!.networkPort}}</td>
+            <tr *ngIf="server.ipAddress != ''  && apiScreenToggle == false">
+              <td>{{server.benchmarkComplete}}</td>
+              <td>{{server.hostname}}</td>
+              <td>{{server.ipAddress}}</td>
+              <td>{{server.networkPort}}</td>
             </tr>
-            <tr *ngIf="server!.ipAddress == ''  && apiScreenToggle == false">
+            <tr *ngIf="server.ipAddress == ''  && apiScreenToggle == false">
               <td>false</td>
               <td>N/A</td>
               <td>N/A</td>
@@ -73,7 +73,8 @@
               <td *ngIf="nodeAPIKey !== ''">{{nodeAPIKey}}</td>
               <td *ngIf="nodeAPIKey === ''">N/A</td>
               <td *ngIf="nodeAPIKey !== ''">
-                <button (click)="clearKey()" class="btn btn-outline-danger btn-sm" type="button">Clear
+                <button (click)="clearKeyModal(deleteAPIKeyConfirm)" *ngIf="mode == Mode.NODE"
+                        class="btn btn-outline-danger btn-sm" type="button">Clear
                 </button>
               </td>
               <td *ngIf="nodeAPIKey === ''"></td>
@@ -88,3 +89,19 @@
     </div>
   </div>
 </div>
+<ng-template #deleteAPIKeyConfirm let-modal>
+  <div class="modal-header">
+    <h4 class="clearKeyConfirm" id="clearKeyConfirm">Clear API Key</h4>
+    <button (click)="modal.dismiss('Cross click')" aria-label="Close" class="btn-close" type="button"></button>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete the following API Key?</p>
+    <p><strong>{{nodeAPIKey}}</strong></p>
+    <button (click)="modal.close('Cancel')" class="btn btn-outline-secondary mr-auto float-start" type="button">No
+    </button>
+    <button (click)="modal.close('Save click');clearAPIKey()" class="btn btn-outline-danger ml-auto float-end"
+            type="button">Yes
+    </button>
+  </div>
+
+</ng-template>

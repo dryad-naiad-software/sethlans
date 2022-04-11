@@ -44,7 +44,7 @@ import {GPU} from "../models/hardware/gpu.model";
 
 export class SetupWizardComponent implements OnInit {
   finishClicked: boolean = false;
-  setupForm: SetupForm | undefined;
+  setupForm: SetupForm = new SetupForm();
   setupWizardProgress: SetupWizardProgress = SetupWizardProgress.BEGIN;
   SetupWizardProgress = SetupWizardProgress;
   faFlagCheckered = faFlagCheckered;
@@ -90,7 +90,7 @@ export class SetupWizardComponent implements OnInit {
 
   loadSetupForm() {
     this.sethlansService.getSetup().subscribe((obj: any) => {
-      this.setupForm = new SetupForm(obj)
+      this.setupForm.setSetupForm(obj)
       this.setupForm.mode = Mode.DUAL;
       this.setupWizardProgress = SetupWizardProgress.MODE;
       this.setupForm.serverSettings.blenderVersion = this.setupForm.blenderVersions[0];
@@ -111,21 +111,24 @@ export class SetupWizardComponent implements OnInit {
       this.setupForm.user.username = ''
       this.setupForm.user.password = ''
       this.setupForm.user.email = ''
-      let challenge1: UserChallenge = {
+      let challenge1: UserChallenge = new UserChallenge();
+      challenge1.setUserChallange({
         challenge: this.setupForm.challengeQuestions[0],
         response: '',
         responseUpdated: false
-      };
-      let challenge2: UserChallenge = {
+      });
+      let challenge2: UserChallenge = new UserChallenge();
+      challenge2.setUserChallange({
         challenge: this.setupForm.challengeQuestions[1],
         response: '',
         responseUpdated: false
-      };
-      let challenge3: UserChallenge = {
+      });
+      let challenge3: UserChallenge = new UserChallenge()
+      challenge3.setUserChallange({
         challenge: this.setupForm.challengeQuestions[3],
         response: '',
         responseUpdated: false
-      };
+      });
       this.challenge1 = this.setupForm.challengeQuestions[0];
       this.challenge2 = this.setupForm.challengeQuestions[1];
       this.challenge3 = this.setupForm.challengeQuestions[2];

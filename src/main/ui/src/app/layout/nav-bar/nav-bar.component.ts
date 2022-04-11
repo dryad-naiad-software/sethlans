@@ -60,7 +60,7 @@ export class NavBarComponent implements OnInit {
   logo: any = 'assets/images/logo-text-white.png';
   logoDark: any = 'assets/images/logo-text-dark.png';
   authenticated: boolean = false;
-  user: UserQuery | undefined;
+  user: UserQuery = new UserQuery();
   isAdministrator = false;
   isSuperAdministrator = false;
   faHouse = faHouse;
@@ -98,12 +98,12 @@ export class NavBarComponent implements OnInit {
       this.authenticated = data.authenticated;
     });
     this.sethlansService.getCurrentUser().subscribe((data: any) => {
-      this.user = data;
-      if (this.user?.roles.indexOf(Role.ADMINISTRATOR) !== -1
-        || this.user?.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
+      this.user.setUserQuery(data);
+      if (this.user.roles.indexOf(Role.ADMINISTRATOR) !== -1
+        || this.user.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
         this.isAdministrator = true;
       }
-      if (this.user?.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
+      if (this.user.roles.indexOf(Role.SUPER_ADMINISTRATOR) !== -1) {
         this.isSuperAdministrator = true;
       }
     });

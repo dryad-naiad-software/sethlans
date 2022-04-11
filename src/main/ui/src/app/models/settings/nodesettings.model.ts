@@ -34,7 +34,17 @@ export class NodeSettings {
   gpuCombined: boolean;
   apiKey: string;
 
-  constructor(obj: any) {
+  constructor() {
+    this.nodeType = NodeType.CPU_GPU;
+    this.cores = 0;
+    this.tileSizeGPU = 0;
+    this.tileSizeCPU = 0;
+    this.selectedGPUs = new Array<GPU>();
+    this.gpuCombined = false;
+    this.apiKey = '';
+  }
+
+  setNodeSettings(obj: any) {
     this.nodeType = obj.nodeType;
     this.cores = obj.cores;
     this.tileSizeGPU = obj.tileSizeGPU;

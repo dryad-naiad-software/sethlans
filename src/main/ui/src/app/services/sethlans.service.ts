@@ -17,7 +17,7 @@
  */
 
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {SetupForm} from "../models/forms/setup-form.model";
 import {Observable} from "rxjs";
 import {catchError} from "rxjs/operators";
@@ -85,6 +85,22 @@ export class SethlansService {
 
   getNodeAPIKey() {
     return this.http.get(this.rootURL + "/management/node_api_key")
+  }
+
+  setNodeAPIKey(nodeAPIKey: string) {
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    const params = new HttpParams()
+      .append('api-key', nodeAPIKey)
+    return this.http.post<any>(this.rootURL
+      + "/management/set_node_api_key", '',
+      {
+        headers: headers,
+        params: params,
+        observe: "response"
+      })
+      .pipe(catchError(this.handleError('setNodeAPIKey', nodeAPIKey)))
   }
 
   submitSetup(setupForm: SetupForm | undefined): Observable<any> {

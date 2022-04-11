@@ -51,7 +51,25 @@ export class SetupForm {
   appURL: string;
 
 
-  constructor(obj: any) {
+  constructor() {
+    this.mode = Mode.DUAL;
+    this.user = new User();
+    this.logLevel = LogLevel.INFO;
+    this.availableTypes = new Array<NodeType>();
+    this.availableGPUs = new Array<GPU>();
+    this.blenderVersions = new Array<string>();
+    this.mailSettings = new MailSettings();
+    this.nodeSettings = new NodeSettings();
+    this.serverSettings = new ServerSettings();
+    this.challengeQuestions = new Array<string>();
+    this.systemInfo = new SystemInfo();
+    this.ipAddress = "";
+    this.port = "";
+    this.appURL = "";
+    this.hostname = "";
+  }
+
+  setSetupForm(obj: any) {
     this.mode = obj.mode;
     this.user = obj.user;
     this.logLevel = obj.logLevel;

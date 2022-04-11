@@ -42,7 +42,23 @@ export class User {
   roles: Array<Role>;
 
 
-  constructor(obj: any) {
+  constructor() {
+    this.userID = "";
+    this.username = "";
+    this.password = "";
+    this.securityQuestionsSet = false;
+    this.email = "";
+    this.promptPasswordChange = false;
+    this.active = false;
+    this.systemEmailNotifications = false;
+    this.nodeEmailNotifications = false;
+    this.projectEmailNotifications = false;
+    this.videoEncodingEmailNotifications = false;
+    this.challengeList = new Array<UserChallenge>();
+    this.roles = new Array<Role>();
+  }
+
+  setUser(obj: any) {
     this.userID = obj.userID;
     this.username = obj.username;
     this.password = obj.password;

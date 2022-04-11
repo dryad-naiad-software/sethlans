@@ -25,7 +25,11 @@
 export class ServerSettings {
   blenderVersion: string;
 
-  constructor(obj: any) {
+  constructor() {
+    this.blenderVersion = '';
+  }
+
+  setServerSettings(obj: any) {
     this.blenderVersion = obj.blenderVersion;
   }
 }

@@ -38,7 +38,20 @@ export class UserQuery {
   challengeList: Array<UserChallenge>;
   roles: Array<Role>;
 
-  constructor(obj: any) {
+  constructor() {
+    this.userID = '';
+    this.username = '';
+    this.email = '';
+    this.active = false;
+    this.systemEmailNotifications = false;
+    this.nodeEmailNotifications = false;
+    this.projectEmailNotifications = false;
+    this.videoEncodingEmailNotifications = false;
+    this.challengeList = new Array<UserChallenge>();
+    this.roles = new Array<Role>();
+  }
+
+  setUserQuery(obj: any) {
     this.userID = obj.userID;
     this.username = obj.username;
     this.email = obj.email;

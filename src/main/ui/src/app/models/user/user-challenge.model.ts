@@ -28,10 +28,16 @@ export class UserChallenge {
   response: string;
   responseUpdated: boolean;
 
-  constructor(obj: any) {
+  constructor() {
+    this.challenge = '';
+    this.response = '';
+    this.responseUpdated = false;
+
+  }
+
+  setUserChallange(obj: any) {
     this.challenge = obj.question;
     this.response = obj.response;
     this.responseUpdated = obj.responseUpdated;
-
   }
 }

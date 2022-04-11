@@ -19,6 +19,19 @@
 /* You can add global styles to this file, and also import other style files */
 @import "@fontsource/fjalla-one/index.css";
 
+.mobile-label {
+  display: none;
+}
+
+
+@media (max-width: 766px) {
+  .mobile-label {
+    width: 100px;
+    display: inline-block;
+    font-weight: bold;
+  }
+}
+
 .btn-circle {
   width: 30px;
   height: 30px;
