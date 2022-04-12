@@ -42,7 +42,7 @@ export class Node {
   cpuRating: number;
   selectedGPUs: Array<GPU>
   cpu: CPU;
-  cores: number;
+  selectedCores: number;
 
   constructor() {
     this.hostname = '';
@@ -58,7 +58,7 @@ export class Node {
     this.totalRenderingSlots = 0;
     this.selectedGPUs = new Array<GPU>();
     this.cpu = new CPU();
-    this.cores = 0;
+    this.selectedCores = 0;
   }
 
   setNode(obj: any) {
@@ -75,7 +75,7 @@ export class Node {
     this.totalRenderingSlots = obj.totalRenderingSlots;
     this.selectedGPUs = obj.selectedGPUs;
     this.cpu = obj.cpu;
-    this.cores = obj.cores;
+    this.selectedCores = obj.selectedCores;
 
   }
 }

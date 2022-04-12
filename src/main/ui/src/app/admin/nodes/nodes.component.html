@@ -1,4 +1,4 @@
-<div class="row pb-1">
+<div *ngIf="nodeWizardScreen == false" class="row pb-1">
   <div class="col-md-10 m-auto">
     <div class="card">
       <div class="card-header">
@@ -7,7 +7,7 @@
             <h4 style="font-family: 'Fjalla One', sans-serif">Nodes</h4>
           </div>
           <div class="col-md-4">
-            <button class="ml-2 btn btn-outline-dark float-end">
+            <button (click)="startNodeWizard()" class="ml-2 btn btn-outline-dark float-end">
               <fa-icon [icon]="faPlus"></fa-icon>
               <span class="ms-2">Add Node(s)</span>
             </button>
@@ -50,7 +50,7 @@
               <td>{{node.os}}</td>
               <td>{{node.nodeType}}</td>
               <td>{{node.cpu.name}}</td>
-              <td>{{node.cores}}</td>
+              <td>{{node.selectedCores}}</td>
               <td><span *ngFor="let gpu of node.selectedGPUs">{{gpu.model}}<br/></span></td>
               <td>{{node.totalRenderingSlots}}</td>
               <td>N/A</td>
@@ -63,8 +63,46 @@
     </div>
   </div>
 </div>
-
-<div>
-  Debugging:
-  <pre>{{ nodeList | json }}</pre>
+<div *ngIf="nodeWizardScreen" class="row pb-1">
+  <div class="col-md-8 m-auto">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-md-8">
+            <h4 style="font-family: 'Fjalla One', sans-serif">Add Node Wizard</h4>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <ul class="nav nav-tabs justify-content-between pb-3">
+          <li>
+            <button [ngClass]="nodeWizardProgress == NodeWizardProgress.START
+                      ? 'btn-outline-primary' : 'btn-outline-dark'"
+                    class="btn btn-lg btn-circle"
+                    type="button">
+              <fa-icon [icon]="faFlagCheckered"></fa-icon>
+            </button>
+          </li>
+        </ul>
+        <div *ngIf="nodeWizardProgress == NodeWizardProgress.START">
+          <div class="alert-primary">
+            <p>Server API Key: </p>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button (click)="cancelNodeWizard()"
+                class="btn btn-outline-dark float-start">Cancel
+        </button>
+        <button
+          class="btn btn-outline-primary float-end">Next
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
+
+<!--<div>-->
+<!--  Debugging:-->
+<!--  <pre>{{ nodeList | json }}</pre>-->
+<!--</div>-->

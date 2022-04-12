@@ -103,6 +103,10 @@ export class SethlansService {
       .pipe(catchError(this.handleError('setNodeSettings', nodeSettings)))
   }
 
+  getServerAPIKey() {
+    return this.http.get(this.rootURL + "/management/server_api_key")
+  }
+
   getNodeAPIKey() {
     return this.http.get(this.rootURL + "/management/node_api_key")
   }

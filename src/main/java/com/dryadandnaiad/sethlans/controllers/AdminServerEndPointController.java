@@ -17,6 +17,7 @@
 
 package com.dryadandnaiad.sethlans.controllers;
 
+import com.dryadandnaiad.sethlans.enums.ConfigKeys;
 import com.dryadandnaiad.sethlans.enums.Role;
 import com.dryadandnaiad.sethlans.models.blender.tasks.RenderTask;
 import com.dryadandnaiad.sethlans.models.forms.NodeForm;
@@ -29,6 +30,7 @@ import com.dryadandnaiad.sethlans.repositories.NotificationRepository;
 import com.dryadandnaiad.sethlans.repositories.UserRepository;
 import com.dryadandnaiad.sethlans.services.ServerQueueService;
 import com.dryadandnaiad.sethlans.services.ServerService;
+import com.dryadandnaiad.sethlans.utils.ConfigUtils;
 import com.dryadandnaiad.sethlans.utils.NetworkUtils;
 import com.dryadandnaiad.sethlans.utils.PropertiesUtils;
 import com.google.common.collect.ImmutableMap;
@@ -69,6 +71,13 @@ public class AdminServerEndPointController {
         this.serverQueueService = serverQueueService;
         this.notificationRepository = notificationRepository;
         this.userRepository = userRepository;
+    }
+
+    @GetMapping("/server_api_key")
+    public Map<String, String> serverAPIKey() {
+        var apiKey = new HashMap<String, String>();
+        apiKey.put("api_key", ConfigUtils.getProperty(ConfigKeys.SETHLANS_API_KEY));
+        return apiKey;
     }
 
     @GetMapping("/view_server_pending_queue")

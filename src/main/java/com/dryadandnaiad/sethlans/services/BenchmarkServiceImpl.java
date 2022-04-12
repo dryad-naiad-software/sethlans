@@ -154,7 +154,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                     case CPU -> {
                         node.setCpuRating(PropertiesUtils.getCPURating());
                         node.setTotalRenderingSlots(1);
-                        node.setCores(PropertiesUtils.getSelectedCores());
+                        node.setSelectedCores(PropertiesUtils.getSelectedCores());
                         ConfigUtils.writeProperty(ConfigKeys.NODE_TOTAL_SLOTS, "1");
                     }
                     case GPU -> {
@@ -172,7 +172,7 @@ public class BenchmarkServiceImpl implements BenchmarkService {
                     case CPU_GPU -> {
                         var selectedGPUs1 = PropertiesUtils.getSelectedGPUs();
                         node.setCpuRating(PropertiesUtils.getCPURating());
-                        node.setCores(PropertiesUtils.getSelectedCores());
+                        node.setSelectedCores(PropertiesUtils.getSelectedCores());
                         node.setSelectedGPUs(selectedGPUs1);
                         if (PropertiesUtils.isGPUCombined()) {
                             node.setTotalRenderingSlots(2);

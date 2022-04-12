@@ -19,8 +19,8 @@ create table node
     last_updated          timestamp,
     version               bigint,
     active                boolean not null,
-    benchmark_pending     boolean not null,
     benchmark_complete    boolean not null,
+    benchmark_pending     boolean not null,
     arch                  varchar(255),
     cores                 integer,
     cpu_package           integer,
@@ -34,6 +34,7 @@ create table node
     network_port          varchar(255),
     node_type             integer,
     os                    integer,
+    selected_cores        integer,
     systemid              varchar(255),
     total_rendering_slots integer,
     primary key (id)
@@ -46,6 +47,19 @@ create table node_selectedgpus
     memory      bigint,
     model       varchar(255),
     rating      bigint
+);
+create table notification
+(
+    id             bigint  not null,
+    date_created   timestamp,
+    last_updated   timestamp,
+    version        bigint,
+    message        varchar(255),
+    message_date   timestamp,
+    message_read   boolean not null,
+    notificationid varchar(255),
+    userid         varchar(255),
+    primary key (id)
 );
 create table project
 (
@@ -61,9 +75,9 @@ create table project
     blend_filenamemd5sum       varchar(255),
     blender_engine             integer,
     blender_version            varchar(255),
+    blender_zip_filename       varchar(255),
+    blender_zip_filenamemd5sum varchar(255),
     compute_on                 integer,
-    current_frame              integer,
-    current_part               integer,
     end_frame                  integer,
     image_output_format        integer,
     image_zip_file_location    varchar(255),
@@ -84,6 +98,8 @@ create table project
     video_quality              integer,
     all_images_processed       boolean not null,
     completed_frames           integer,
+    current_frame              integer,
+    current_part               integer,
     current_percentage         integer,
     project_state              integer,
     queue_index                integer,
@@ -97,25 +113,8 @@ create table project
     total_render_time          bigint,
     project_type               integer,
     user_id                    bigint,
-    blender_zip_filename       varchar(255),
-    blender_zip_filenamemd5sum varchar(255),
     primary key (id)
 );
-
-create table notification
-(
-    id             bigint  not null,
-    date_created   timestamp,
-    last_updated   timestamp,
-    version        bigint,
-    notificationid varchar(255),
-    message_read   boolean not null,
-    message        varchar(255),
-    message_date   timestamp,
-    userid         varchar(255),
-    primary key (id)
-);
-
 create table render_task
 (
     id                      bigint  not null,
@@ -134,8 +133,8 @@ create table render_task
     part_miny               double,
     part_number             integer,
     in_progress             boolean not null,
-    projectid               varchar(255),
     nodeid                  varchar(255),
+    projectid               varchar(255),
     project_name            varchar(255),
     render_time             bigint,
     blender_engine          integer,
@@ -144,22 +143,22 @@ create table render_task
     device_type             integer,
     image_output_format     integer,
     samples                 integer,
-    sent_to_server          boolean not null,
     task_res_percentage     integer,
     task_resolutionx        integer,
     task_resolutiony        integer,
     task_tile_size          integer,
+    sent_to_server          boolean not null,
     systemid                varchar(255),
     task_blend_file         varchar(255),
     task_blend_filemd5sum   varchar(255),
-    task_image_file         varchar(255),
-    task_image_filemd5sum   varchar(255),
     task_dir                varchar(255),
     taskid                  varchar(255),
+    task_image_file         varchar(255),
+    task_image_filemd5sum   varchar(255),
     use_parts               boolean not null,
-    zip_file_project        boolean not null,
     zip_file                varchar(255),
     zip_filemd5sum          varchar(255),
+    zip_file_project        boolean not null,
     primary key (id)
 );
 create table render_task_deviceids
@@ -167,16 +166,15 @@ create table render_task_deviceids
     render_task_id bigint not null,
     deviceids      varchar(255)
 );
-
 create table user
 (
     id                                 bigint  not null,
     date_created                       timestamp,
     last_updated                       timestamp,
     version                            bigint,
-    active                             boolean not null,
     account_non_expired                boolean not null,
     account_non_locked                 boolean not null,
+    active                             boolean not null,
     credentials_non_expired            boolean not null,
     email                              varchar(255),
     node_email_notifications           boolean not null,
